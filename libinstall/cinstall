@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 ###################################################################
 # Centreon is developped with GPL Licence 2.0 
 #
@@ -20,84 +20,266 @@
 # 
 #    For information : infos@centreon.com
 ####################################################################
-# redefine install command
-# username : user proprietary of folder
-# group : group proprietary of folder
-# mode : set permission mode on file (as in chmod), ex:755
-# dirmode : set permission mode on folder, ex:766
+# redefine install command in cinstall (for centreon install script)
 
-## TODO LIST
-# add function to copy and rename directory
+#set -x
 
+###
+## log: print message
+##
+## <code>
+## log "hello word !"
+## </code>
+##
+## param	$@	message
+##
+function log() {
+	if [ $verbose -eq 1 ] ; then 
+		local program=$0
+		local message=$@
+		echo -e "[$program]: $message"
+	fi
+	return 0
+}
+
+###
+## lchown: change username and group
+##
+## it use global $username and $group
+##
+## <code>
+## lchown /tmp/centreon
+## </code>
+##
+## param	$1	directory
+## param	$2	chown/chgrp option (-R)
+##
+function lchown() {
+	local directory="$1"
+	local option=$2
+	log "lchown: directory: $directory, option: $option"
+	if [ -n "$username" ] ; then
+		chown $option $username:$group $directory
+		log "\tchown $option $username:$group $directory"
+	elif [ -n "$group" ] ; then
+		chgrp $option $group $directory
+		log "\tchgrp $option $group $directory"
+	else
+		return 0
+	fi
+	return 0
+}
+
+###
+## find_and_chmod: find and chmod file or direcoty
+##
+## <code>
+## find_and_chmod /tmp/centreon "d" "775" "1"
+## </code>
+##
+## param	$1	directory
+## param	$2	type of search:	f=file
+##					d=directory
+## param	$3	permission mode
+## param	$4	define mindepth in find command (default 0)
+##
+function find_and_chmod() {
+	local directory=$1
+	local type=$2
+	local mode=$3
+	local depth=${4:-0}
+	log "find_and_chmod: directory: $directory"
+	log "\t\t\t type: $type"
+	log "\t\t\t mode: $mode"
+	log "\t\t\tdepth: $depth"
+	find $directory -mindepth $depth -type $type -print | \
+		xargs -I '{}' chmod $mode '{}'
+	
+	log "\tfind $directory -mindepth $depth -type $type -print | \ "
+	log "\t\txargs -I '{}' chmod $mode '{}'"
+	return 0
+}
+
+###
+## usage: print usage of script
+## 
+function usage() {
+	local program=cinstall
+	cat << __EOT__
+
+Usage: $program [OPTION]... SOURCE DEST
+   or: $program [OPTION]... DIRECTORY
+
+In the first form, copy SOURCE to DEST or multiple SOURCE(s) to
+the existing DIRECTORY, while setting permission modes and owner/group.
+In the second form, create all components of the given DIRECTORY.
+
+Options:
+  -u USER	set ownership (super-user only)
+  -g GROUP	set group ownership
+  -m NUM	set permission mode for file(s) (as in chmod)
+  -d NUM	set permission mode for directory(ies) (as in chmod)
+  -b BKPDIR	make a backup of each existing destination
+  -p BASEDIR	use SOURCE in BASEDIR to set a destination permissions
+  -h		display this help and exit
+  -v		verbose mode
+
+
+__EOT__
+return 0
+}
 
 ## Init default variables
 username=""
 group=""
 mode=""
 dirmode=""
-backupdir=0
-file=""
+backupdir=""
+backup=0
+verbose=0
 
-while getopts ":u:g:m:d:bp:" Option ; do
-	echo "Option: $Option, arg: $OPTARG"
+while getopts ":u:g:m:d:b:p:hv" Option ; do
+	#log "Option: $Option, arg: $OPTARG"
 	case $Option in
-		u )	username="${OPTARG}" ;;
-		g )	group="${OPTARG}" ;;
-		m )	mode="${OPTARG}" ;;
-		d )	dirmode="${OPTARG}" ;;
-		p )	basedir="${OPTARG}" ;;
-		b )	backupdir=1 ;;
-		* )	;;
+		u )	username="$OPTARG" ;;
+		g )	group="$OPTARG" ;;
+		m )	mode="$OPTARG" ;;
+		d )	dirmode="$OPTARG" ;;
+		p )	basedir="$OPTARG" ;;
+		b )	backupdir="$OPTARG" ; backup=1 ;;
+		v )	verbose=1 ;;
+		\?|h )	usage ; exit 0 ;;
+		* )	usage ; exit 0 ;;
 	esac 
 done
 shift $(($OPTIND - 1))
 
-echo "arg: $@"
-[ -z "$username" ] && exit 1
-[ ${#mode} -eq 0 -a ${#dirmode} -eq 0 ] &&  exit 1
+[ $# -eq 0 ] && usage && exit 0
+## Check if backupdir exists when backup enabled
+if [ $backup -eq 1 ] ; then
+	log "Backup enabled in $backupdir"
+	if [ ! -d $backupdir ] ; then
+		log "$backupdir not found"
+		mkdir -p $backupdir
+		log "$backupdir create"
+	fi
+fi
+
+### Main
 
 if [ $# -eq 1 ] ; then
-	[ ! -d $1 ] && mkdir -p $1
-	chown -R $username:$group $1
-	find `dirname $1` -type d -print | \
-		xargs -I '{}' chmod $dirmode '{}'
-elif [ $# -eq 2 ] ; then
-	[ $backupdir -eq 1 ] && {
-		[ -d $2 ] && mv $2 $2.`date +%Y%m%d-%H%M%S` 
-		}
-	[ ! -d `dirname $2` ] && mkdir -p `dirname $2`
-	#echo "copy $1 dans $2"
-	cp -r $1 $2
+	dst=$1
+	if [ ! -d $dst ] ; then 
+		mkdir -p $dst
+		log "Create directory: $dst"
+	fi
+
+	## Apply chown on DEST
+	lchown $dst
+
+	if [ -n "$dirmode" ] ; then 
+		if [ -n "$basedir" ] ; then 
+			find_and_chmod $basedir "d" "$dirmode" "1"
+		else 
+			chmod $dirmode $dst
+		fi
+	fi
+fi
+if [ $# -ge 2 ] ; then
+	src=$1
+	dst=""
+	count=1
+	shift
+	## Count number of arguments
+	while [ $# -gt 1 ] ; do
+		src="$src $1"
+		(( count++ ))
+		shift
+	done
+	dst=$1
+	
+	## Test if I want exit program...
+	## SRC=file and DEST=directory
+	## DEST=directory without backup...
+	if [ $count -eq 1 -a -d $dst ] ; then
+		if [ -f "$src" ] ; then
+			log "ERR: count:$count, $src is a file and $dst exists"
+			exit 1
+		elif [ -d "$src" -a $backup -ne 1 ] ; then
+			log "ERR: count:$count, $src is a directory and backup disabled"
+			exit 1
+		fi
+	fi
+	
+	## Backup DEST if necessary
+	if [ $backup -eq 1 -a -e $dst ] ; then
+		bdate=`date +%Y%m%d-%H%M%S`
+		mv $dst $backupdir/`basename $dst`.$bdate 
+		log "Backup $dst in $backupdir/`basename $dst`.$bdate"
+	fi
+
+	[ ! -d `dirname $dst` ] && mkdir -p `dirname $dst`
+	[ $count -gt 1 -a ! -d $dst ] && mkdir -p $dst
+	
+	## Test howto copy SRC into DEST
+	if [ $count -eq 1 -a -f "$src" ] ; then
+		cp $src $dst
+		log "count: $count, src: $src, src = file"
+		log "cp $src $dst"
+	elif [ $count -gt 1 ] ; then 
+		cp -R $src $dst
+		log "count: $count, src: $src"
+		log "cp -R $src $dst"
+	elif [ $count -eq 1 -a -d "$src" ] ; then
+		cp -R $src $dst
+		log "count: $count, src: $src"
+		log "cp -R $src $dst"
+	else 
+		log "No copy"
+		log "count: $count, src: $src"
+		exit 1
+	fi
+
+	
 	if [ -n "$basedir" ] ; then 
+		## find all file for post set permissions
 		cd $basedir
 		files=`mktemp -t cinstall_files.XXXXXX`
 		directory=`mktemp -t cinstall_dirs.XXXXXX`
 		find . -type f -print > $files
-		find . -type d -print | grep -v "^\.$" > $directory
+		find . -mindepth 1 -type d -print  > $directory
 		
-		cd $2
-		cat $files $directory | xargs -I '{}' chown $username:$group '{}' 
-		cat $files | xargs -I '{}' chmod $mode '{}' 
-		cat $directory | xargs -I '{}' chmod $dirmode '{}' 
+		cd $dst
+		## Apply permissions
+		if [ -n "$username" ] ; then
+			cat $files $directory | \
+				xargs -I '{}' chown $username:$group '{}' 
+		elif [ -n "$group" ] ; then
+			cat  $files $directory | \
+				xargs -I '{}' chgrp $group '{}'
+		fi
+		[ -n "$mode" ] && cat $files | \
+			xargs -I '{}' chmod $mode '{}' 
+		[ -n "$dirmode" ] && cat $directory | \
+			xargs -I '{}' chmod $dirmode '{}' 
 
 		rm -f $files $directory
 	else 
-		chown -R $username:$group $2
-		if [ -f $2 ] ; then 
-			echo "$2 est un fichier"
-			chmod $mode $2
-		else 
-			find $2 -type f -print | \
-				xargs -I '{}' chmod $mode '{}' 
-		fi
-		[ -n "$dirmode" ] && {
-			find $2 -type d -print | \
-				xargs -I '{}' chmod $dirmode '{}' 
-				}
-	fi
+		if [ $count -eq 1 -a -f "$src" ] ; then
+			lchown $dst
+			[ -n "mode" ] && chmod $mode $dst
+		elif [ $count -eq 1 -a -d "$src" ] ; then
+			lchown $dst "-R"
+			[ -n "$mode" ] && find_and_chmod $dst "f" "$mode"
+			[ -n "$dirmode" ] && find_and_chmod $dst "d" "$dirmode"
+		elif [ $count -gt 1 ] ; then
+			lchown "$dst/*" "-R"
+			[ -n "$mode" ] && find_and_chmod $dst "f" "$mode" "1"
+			[ -n "$dirmode" ] && find_and_chmod $dst "d" "$dirmode" "1"
 
-else 
-	exit 1
+		fi
+
+	fi
 fi
 exit 0
 

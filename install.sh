@@ -40,18 +40,23 @@ export TEXTDOMAIN
 ## log default vars 
 . $INSTALL_VARS_DIR/vars
 
-## load all functions used in this script
-. $INSTALL_DIR/functions
-
 ## Test if gettext was installed
-pathfind gettext
-if [ $? -eq 0 ] ; then 
+found=0
+for p in $PATH; do
+	[ -x "$p/gettext" ] && found=1
+done
+if [ $found -eq 1 ] ; then 
 	. $INSTALL_DIR/gettext.sh
 else
 	# if not, use my gettext dummy :p
 	PATH="$PATH:$INSTALL_DIR"
 fi
 
+## load all functions used in this script
+. $INSTALL_DIR/functions
+
+## Check if LOG_FILE define
+LOG_FILE=${$LOG_FILE:=install_centreon.log}
 
 ## Valid if you are root 
 USERID=`id -u`

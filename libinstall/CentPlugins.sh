@@ -21,7 +21,7 @@ check_group_nagios
 
 
 ## Populate temporaty source directory
-copyInTempFile >> $LOG_FILE 2>&1
+copyInTempFile 2>>$LOG_FILE
 
 ## Create temporary folder
 log "INFO" "`gettext \"Create working directory\"`"
@@ -45,7 +45,7 @@ for FILE in `ls $TMPDIR/src/plugins/src/check*centreon*` \
 		-e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
 		-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 		-e 's|@CENTPLUGINS_TMP@|'"$CENTPLUGINS_TMP"'|g' \
-		-e 's|\/\/|'\/'|g' \
+		-e 's|\/\/|\/|g' \
 		"$FILE" > "$TMPDIR/work/plugins/`basename $FILE`"
 done
 
@@ -55,10 +55,11 @@ cp -r $TMPDIR/work/plugins/* $TMPDIR/final/plugins >> $LOG_FILE 2>&1
 
 ## Install the plugins
 log "INFO" "`gettext \"Installing the plugins\"`"
-$INSTALL_DIR/cinstall -u root -g root -m 755 \
-	-p "$TMPDIR/final/plugins" "$TMPDIR/final/plugins/*" "$NAGIOS_PLUGIN" >> $LOG_FILE 2>&1
+$INSTALL_DIR/cinstall -m 755 -v -p $TMPDIR/final/plugins \
+	$TMPDIR/final/plugins/* $NAGIOS_PLUGIN >> $LOG_FILE 2>&1
 
 log "INFO" "`gettext \"Install temporary directory for plugins\"` : $CENTPLUGINS_TMP"
-$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 \
+$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 -v \
 	$CENTPLUGINS_TMP >> $LOG_FILE 2>&1
 echo_success "`gettext \"CentPlugins is installed\"`"
+
