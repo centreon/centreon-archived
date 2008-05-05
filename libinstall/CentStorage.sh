@@ -1,5 +1,5 @@
-#Â -*-Shell-script-*-
-#Â install centreon centstorage  
+# -*-Shell-script-*-
+# install centreon centstorage  
 
 echo "------------------------------------------------------------------------"
 echo -e "\t`gettext \"Start CentStorage Installation\"`"
@@ -46,8 +46,8 @@ cp -rf $TMPDIR/src/lib $TMPDIR/final
 ## Change Macro in working dir
 log "INFO" "`gettext \"Change macros for createTablesCentstorage.sql\"`"
 sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
- -e 's|@CENTSTORAGE_RRD@|'"$CENTREON_GENDIR"'|g' \
- $TMPDIR/src/www/install/createTablesCentstorage.sql > $TMPDIR/work/www/install/createTablesCentstorage.sql
+	-e 's|@CENTSTORAGE_RRD@|'"$CENTREON_GENDIR"'|g' \
+	$TMPDIR/src/www/install/createTablesCentstorage.sql > $TMPDIR/work/www/install/createTablesCentstorage.sql
 
 ## Copy in final dir
 log "INFO" "`gettext \"Copying www/install/createTablesCentstorage.sql in final directory\"`"
