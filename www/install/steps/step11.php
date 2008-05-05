@@ -202,9 +202,9 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		}
 	}
 	if (!$return_false){
-		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Insert Basic Configuration</b></td>';
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Insert Commands</b></td>';
 		$mysql_msg = '';
-		$file_sql = file("./insertBaseConf.sql");
+		$file_sql = file("./insertCmd-Tps.sql");
 	    $str = NULL;
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
@@ -228,9 +228,9 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		}
 	}
 	if (!$return_false){
-		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Insert Commands</b></td>';
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Insert Basic Configuration</b></td>';
 		$mysql_msg = '';
-		$file_sql = file("./insertCmd-Tps.sql");
+		$file_sql = file("./insertBaseConf.sql");
 	    $str = NULL;
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
@@ -280,7 +280,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		}
 	}
 	if (!$return_false){
-		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Oreon User Creation</b></td>';
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Centreon User Creation</b></td>';
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
