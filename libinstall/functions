@@ -650,6 +650,7 @@ function configureSUDO(){
 	# Find Nagios Init Script
 	check_nagios_init_script
 	# Prepare sudo.conf
+	
 	cat << __EOT__ > $INSTALL_DIR_CENTREON/examples/centreon.sudo
 #Add by CENTREON installation script
 User_Alias      CENTREON= $WEB_USER
@@ -659,9 +660,9 @@ CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart
 CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload
 ## Snmptrapd Restart
 CENTREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart
-## CentStorage Restart
+## CentStorage Restart
 CENTREON   ALL = NOPASSWD: $INIT_D/centstorage restart
-## CentStorage stop
+## CentStorage stop
 CENTREON   ALL = NOPASSWD: $INIT_D/centstorage stop
 
 __EOT__
@@ -675,12 +676,12 @@ __EOT__
 			cat $INSTALL_DIR_CENTREON/examples/centreon.sudo >> $SUDO_FILE
 			echo_success "`gettext \"Configuring Sudo\"`" "$ok"
 		else
-			echo_passed "`Please config your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
+			echo_passed "`gettext \"Please config your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
 		fi
 	else
 		echo_passed "`gettext \"Sudo is already configurated\"`" "$passed"
 	fi
-	log "INFO" "`Please config your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
+	log "INFO" "`gettext \"Please config your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
 	return 0
 }
 
