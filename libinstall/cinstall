@@ -35,7 +35,7 @@
 ##
 function log() {
 	if [ $verbose -eq 1 ] ; then 
-		local program=$0
+		local program=$program
 		local message=$@
 		echo -e "[$program]: $message"
 	fi
@@ -89,9 +89,7 @@ function find_and_chmod() {
 	local mode=$3
 	local depth=${4:-0}
 	log "find_and_chmod: directory: $directory"
-	log "\t\t\t type: $type"
-	log "\t\t\t mode: $mode"
-	log "\t\t\tdepth: $depth"
+	log "\ttype: $type; mode: $mode; depth: $depth"
 	find $directory -mindepth $depth -type $type -print | \
 		xargs -I '{}' chmod $mode '{}'
 	
@@ -130,6 +128,7 @@ return 0
 }
 
 ## Init default variables
+program=`basename $0`
 username=""
 group=""
 mode=""

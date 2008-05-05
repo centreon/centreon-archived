@@ -20,6 +20,13 @@
 # 
 #    For information : infos@centreon.com
 ####################################################################
+# Todo list
+# - upgrade process 
+# -- 1.x --> 2.x
+# -- 2.x --> 2.x+1
+# -- on upgrade, overwrite existing ? backup ? 
+# - Add centTraps.sh for SNMP TRAPS
+
 
 BASE_DIR=`dirname $0`
 ## set directory
@@ -56,7 +63,7 @@ fi
 . $INSTALL_DIR/functions
 
 ## Check if LOG_FILE define
-LOG_FILE=${$LOG_FILE:=install_centreon.log}
+LOG_FILE=${LOG_FILE:=log\/install_centreon.log}
 
 ## Valid if you are root 
 USERID=`id -u`
@@ -78,9 +85,8 @@ do
 		u )	silent_install=1
 			CENTREON_CONF="${OPTARG}"
 			upgrade=1 ;;
-		\?)	usage ;;
-		h )	usage ;;
-		* )	usage ;;
+		\?|h)	usage ; exit 0 ;;
+		* )	usage ; exit 1 ;;
 	esac
 done
 
@@ -92,7 +98,7 @@ cat << __EOT__
 #                         Centreon (www.centreon.com)                         #
 #                          Thanks for using Centreon                          #
 #                                                                             #
-#                                    v$version 				    #
+#                                    v$version				           #
 #                                                                             #
 #                             infos@oreon-project.org                         #
 #                                                                             #
@@ -145,6 +151,8 @@ if [ $silent_install -ne 1 ] ; then
 	if [ $? -ne 0 ] ; then 
 		echo_info "`gettext \"Your not agree with GPL license ? Okay... have a nice day.\"`"
 		exit 1
+	else
+		log "INFO" "`gettext \"You accept GPL license\"`"
 	fi
 else 
 	. $user_install_vars

@@ -160,6 +160,7 @@ function answer_with_createdir() {
 					echo_passed "`gettext \"Could not create directory.\"`" "$critical"
 					#continue
 				fi
+				log "INFO" "`gettext \"Creating\"` : $res"
 			fi
 		fi
 	done
@@ -649,7 +650,7 @@ function configureSUDO(){
 	# Find Nagios Init Script
 	check_nagios_init_script
 	# Prepare sudo.conf
-	cat << __EOT__ > $BASE_DIR/centreon.sudo.conf
+	cat << __EOT__ > $INSTALL_DIR_CENTREON/examples/centreon.sudo
 #Add by CENTREON installation script
 User_Alias      CENTREON= $WEB_USER
 # Nagios Restart
@@ -671,14 +672,15 @@ __EOT__
 
 		yes_no_default "`gettext \"Do you want I configure your sudo ? (WARNING) \"`"
 		if [ $? -eq 0 ] ; then 
-			cat $BASE_DIR/centreon.sudo.conf >> $SUDO_FILE
+			cat $INSTALL_DIR_CENTREON/examples/centreon.sudo >> $SUDO_FILE
 			echo_success "`gettext \"Configuring Sudo\"`" "$ok"
 		else
-			echo_passed "`Please config your sudo with this example\"`: $BASE_DIR/centreon.sudo.conf"
+			echo_passed "`Please config your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
 		fi
 	else
 		echo_passed "`gettext \"Sudo is already configurated\"`" "$passed"
 	fi
+	log "INFO" "`Please config your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
 	return 0
 }
 
@@ -751,7 +753,7 @@ __EOT__
 	done
 	
 	echo "?>" >> $INSTALL_DIR_CENTREON_CONF
-	chown $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON_CONF >> $LOG_FILE 2>&1
+	chown -v $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON_CONF >> $LOG_FILE 2>&1
 	echo_success "Create $INSTALL_DIR_CENTREON_CONF" "OK"
 	
 }
@@ -830,13 +832,6 @@ BIN_SCP=$BIN_SCP
 __EOT__
 
 echo_success "Create $CENTREON_ETC/instCentCore " "OK"
-}
-# When exit on error
-
-function error()
-{
-    echo "ERROR"
-    exit 2
 }
 
 # Find the user and group nagios in nagios.cfg and ask if we do not find

@@ -128,7 +128,7 @@ if [ $? -eq 0 ] ; then
 		$INIT_D/centstorage >> $LOG_FILE 2>&1
 	yes_no_default "`gettext \"Do you want I install CentStorage run level ?\"`"
 		if [ $? -eq 0 ] ; then
-			install_init_service "centstorage"
+			install_init_service "centstorage" | tee -a $LOG_FILE
 		fi
 else
 	echo_passed "`gettext \"CentStorage init script not installed, please use \"`:\n $INSTALL_DIR_CENTREON/examples/centstorage.init.d" "$passed"
