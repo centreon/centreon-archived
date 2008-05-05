@@ -32,7 +32,7 @@ INSERT INTO `cfg_ndomod` (`id`, `description`, `local`, `ns_nagios_server`, `ins
 -- Contenu de la table `cfg_resource`
 --
 
-INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES(1, '$USER1$', '@NAGIOS_DIR@/libexec/', 'path to the plugins', '1');
+INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES(1, '$USER1$', '@NAGIOS_PLUGIN@', 'path to the plugins', '1');
 INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES(2, '$USER2$', 'public', 'SNMP Community', '1');
 
 --
