@@ -1,3 +1,5 @@
+INSERT INTO `informations` ('key', 'value') VALUES ('version', '2.0-b1');
+
 --
 -- Contenu de la table `nagios_server`
 --
