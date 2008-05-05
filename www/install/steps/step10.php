@@ -33,16 +33,16 @@ aff_header("Centreon Setup Wizard", "Oreon Configuration File", 10);	?>
   	<tr>
 		<td><b>Writable Oreon Configuration File (centreon.conf.php)</b></td>
 		<td align="right"><?php
-       	$uid = posix_getpwuid (fileowner($conf_centreon["centreon_dir"]));
-		$gid = posix_getgrgid (filegroup($conf_centreon["centreon_dir"]));
-       	$perms = substr(sprintf('%o', fileperms($conf_centreon["centreon_dir"])), -3) ;
-		if((strcmp($perms,'755') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
+       	$uid = posix_getpwuid (fileowner($conf_centreon["centreon_etc"]));
+		$gid = posix_getgrgid (filegroup($conf_centreon["centreon_etc"]));
+       	$perms = substr(sprintf('%o', fileperms($conf_centreon["centreon_etc"])), -3) ;
+		if((strcmp($perms,'755') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp("root", $gid['name']) == 0) ){
           	echo '<b><span class="go">OK</font></b>';
         	 $msg =  '';
 		} else {
           	echo '<b><span class="stop">Critical: Not Writeable</font></b>';
-          	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>';
-          	$msg .=  '<br />Should be '. $_SESSION['apache_user'].':'.$_SESSION['apache_group'].' (755)';
+          	$msg =  $uid['name'] .':root&nbsp;(' .$perms. ')</b>';
+          	$msg .=  '<br />Should be '. $_SESSION['apache_user'].':root (755)';
 		    $return_false = 1;
        	}?>
        	</td>
@@ -89,7 +89,7 @@ aff_header("Centreon Setup Wizard", "Oreon Configuration File", 10);	?>
 			$file[28] = "\$centreon_path='".$conf_centreon["centreon_dir"]."';\n";
 			$file[29] = "?>";
 			
-			if ($fd = fopen($conf_centreon["centreon_dir"]."centreon.conf.php", "w"))	{
+			if ($fd = fopen($conf_centreon["centreon_etc"]."centreon.conf.php", "w"))	{
 				for ($i = 0; $i <= 28; $i++)
 					fwrite ($fd, $file[$i]);
 				fclose ($fd);
@@ -102,7 +102,7 @@ aff_header("Centreon Setup Wizard", "Oreon Configuration File", 10);	?>
 		</td>
 	</tr>
     <tr>
-	    <td>&nbsp;&nbsp;&nbsp;<?php echo '/etc/centreon/centreon.conf.php'; ?></td>
+	    <td>&nbsp;&nbsp;&nbsp;<?php echo $conf_centreon["centreon_etc"].'centreon.conf.php'; ?></td>
 	    <td align="right"><b><?php echo $msg ;	?></b></td>
  	</tr>
  	<tr>
@@ -128,7 +128,7 @@ aff_header("Centreon Setup Wizard", "Oreon Configuration File", 10);	?>
 		</td>
 	</tr>
     <tr>
-	    <td>&nbsp;&nbsp;&nbsp;<?php echo $conf_centreon["centreon_dir"].'/conf.pm'; ?></td>
+	    <td>&nbsp;&nbsp;&nbsp;<?php echo $conf_centreon["centreon_etc"].'/conf.pm'; ?></td>
 	    <td align="right"><b><?php echo $msg ;	?></b></td>
  	</tr>
 <?php
