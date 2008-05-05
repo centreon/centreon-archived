@@ -659,9 +659,9 @@ CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart
 CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload
 ## Snmptrapd Restart
 CENTREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart
-##Â CentStorage Restart
+## CentStorage Restart
 CENTREON   ALL = NOPASSWD: $INIT_D/centstorage restart
-##Â CentStorage stop
+## CentStorage stop
 CENTREON   ALL = NOPASSWD: $INIT_D/centstorage stop
 
 __EOT__
