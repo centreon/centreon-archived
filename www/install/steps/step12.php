@@ -26,18 +26,6 @@ aff_header("Centreon Setup Wizard", "Post-Installation", 12);	?>
 	
 	Centreon Setup is finished. 
 	<br />
-	<br />
-	Before using centreon you have to move configuration files in configuration directory.
-	<br /><br />
-	<br>
-	<ul>
-	<li>mv <?php echo $conf_centreon["centreon_dir"]."/conf.pm"?> <?php echo $conf_centreon["centreon_etc"]."/conf.pm"?><br /></li>
-	<li>mv <?php echo $conf_centreon["centreon_dir"]."/centreon.conf.php"?> <?php echo $conf_centreon["centreon_etc"]."/centreon.conf.php"?> </li>
-	</ul>
-	<br />
-	<br />
-	After that you will be able to use your monitoring Solution.<br /><br />Thanks for using Centreon
-	<br /><br />
 	<b>Self service and commercial Support.</b><br /><br />
 	There are various way to get informations about Centreon ; the documentation, the wiki, forum and other stuffs.
 	<ul>
