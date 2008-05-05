@@ -29,15 +29,15 @@ if (isset($passwd_error) && $passwd_error)
     <td align="right"><input type="password" name="pwdroot" value="<?php if (isset($_SESSION["pwdroot"])) print $_SESSION["pwdroot"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Oreon Database Name</b></td>
+    <td><b>Centreon Database Name</b></td>
     <td align="right"><input type="text" name="nameOreonDB" value="<?php if (isset($_SESSION["nameOreonDB"])) print $_SESSION["nameOreonDB"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Oreon Data Storage Database Name</b></td>
+    <td><b>Centstorage Database Name</b></td>
     <td align="right"><input type="text" name="nameOdsDB" value="<?php if (isset($_SESSION["nameOdsDB"])) print $_SESSION["nameOdsDB"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Oreon Database Password</b></td>
+    <td><b>Database Password</b></td>
     <td align="right"><input type="password" name="pwdOreonDB" value="<?php if (isset($_SESSION["pwdOreonDB"])) print $_SESSION["pwdOreonDB"]; ?>"></td>
   </tr>
   <tr>
