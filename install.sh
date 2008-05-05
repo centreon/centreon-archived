@@ -20,7 +20,7 @@
 # 
 #    For information : infos@centreon.com
 ####################################################################
-# Todo list
+# Todo list
 # - upgrade process 
 # -- 1.x --> 2.x
 # -- 2.x --> 2.x+1

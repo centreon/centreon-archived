@@ -59,6 +59,11 @@ log "INFO" "`gettext \"Change right on\"` $CENTREON_LOG"
 $INSTALL_DIR/cinstall -u $WEB_USER -g $NAGIOS_GROUP -d 775 -v \
 	$CENTREON_LOG >> $LOG_FILE 2>&1
 
+# change right on centreon etc
+log "INFO" "`gettext \"Change right on\"` $CENTREON_ETC"
+$INSTALL_DIR/cinstall -u $WEB_USER -d 755 -v \
+	$CENTREON_ETC >> $LOG_FILE 2>&1
+
 ## Copy Web Front Source in final
 log "INFO" "`gettext \"Copy CentWeb and GPL_LIB in temporary final dir\"`"
 cp -Rf $TMPDIR/src/www $TMPDIR/final
