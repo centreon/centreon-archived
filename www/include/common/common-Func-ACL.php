@@ -126,7 +126,7 @@
 						unset($lcaHost[$host["host_name"]]);
 			unset($DBRESULT3);
   		}
-  		if (isset($host))
+  		if (isset($host) && isset($host["host_name"]))
 			$lcaHost[$host["host_name"]] = $host["host_id"];
 		unset($DBRESULT2);
   		$LcaHHG = array();
@@ -257,7 +257,7 @@
 			unset($DBRESULT3);
 
   		}
-  		if (isset($host))
+  		if (isset($host) && isset($host["host_name"]))
 			$lcaHost[$host["host_name"]] = $host["host_id"];
 		unset($DBRESULT2);
   		$LcaHHG = array();
