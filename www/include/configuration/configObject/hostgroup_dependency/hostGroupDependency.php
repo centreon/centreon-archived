@@ -18,10 +18,12 @@
 	if (!isset ($oreon))
 		exit ();
 
-	$lcaHost = getLcaHostByID($pearDB);
-	$lcaHoststr = getLCAHostStr($lcaHost["LcaHost"]);
-	$lcaHostGroupstr = getLcaHGStr($lcaHost["LcaHostGroup"]);
-	$isRestreint = HadUserLca($pearDB);
+	if (!$is_admin){ 
+		$lcaHostByName 	= getLcaHostByName($pearDB);
+		$lcaHostByID 	= getLcaHostByID($pearDB);
+		$lcaHoststr 	= getLCAHostStr($lcaHostByID["LcaHost"]);
+		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
+	}
 	
 	isset($_GET["dep_id"]) ? $cG = $_GET["dep_id"] : $cG = NULL;
 	isset($_POST["dep_id"]) ? $cP = $_POST["dep_id"] : $cP = NULL;
