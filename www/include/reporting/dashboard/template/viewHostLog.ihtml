@@ -1,35 +1,3 @@
-<script type="text/javascript">
-function displayIMG(index, s_id, id)	{
-	// Pour les navigateurs récents
-    if ( document.getElementById && document.getElementById( 'div_img' ) ){
-        Pdiv = document.getElementById( 'div_img' );
-        PcH = true;
-    } else if ( document.all && document.all[ 'div_img' ] ){
-	    // Pour les veilles versions
-        Pdiv = document.all[ 'div_img' ];
-        PcH = true;
-    } else if ( document.layers && document.layers[ 'div_img' ] ){
-    // Pour les très veilles versions
-        Pdiv = document.layers[ 'div_img' ];
-        PcH = true;
-    } else {
-        PcH = false;
-    }
-    if ( PcH ){
-		_img = mk_img('include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index);
-		Pdiv.appendChild(_img);
-		var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
-		var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
-		var posy = tempY + 10;
-		if(h - tempY < 420){
-			posy = tempY-310;
-		}
-		Pdiv.style.display = "block";
-		Pdiv.style.left = tempX +'px';
-		Pdiv.style.top = posy +'px';
-    }
-}
-</script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 {$form.javascript}
 {$styleB}
