@@ -323,6 +323,22 @@ INSERT INTO `service_categories_relation` (`scr_id`, `service_service_id`, `sc_i
 INSERT INTO `service_categories_relation` (`scr_id`, `service_service_id`, `sc_id`) VALUES(83, 4, 1);
 INSERT INTO `service_categories_relation` (`scr_id`, `service_service_id`, `sc_id`) VALUES(84, 13, 4);
 
+
+--
+-- Contenu de la table `traps_vendor`
+--
+
+INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(1, 'Cisco', 'Cisco Networks', '');
+INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(2, 'HP', 'HP Networks', '');
+INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(3, '3com', '3Com', NULL);
+INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(4, 'Linksys', 'Linksys', '');
+INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(6, 'Dell', 'Dell', '');
+INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(7, 'Generic', 'Generic', 'References Generic Traps');
+INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(8, 'Apache', 'Apache', '');
+INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(9, 'Zebra', 'Zebra', '');
+INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(10, 'SQL-Server', 'SQL-Server', '');
+INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(11, 'HP-Compaq', 'HP and Compaq Systems', '');
+
 --
 -- Contenu de la table `traps`
 --
@@ -541,21 +557,6 @@ INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps
 INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps_status`, `manufacturer_id`, `traps_comments`) VALUES(604, 'ciscoConfigManEvent', '.1.3.6.1.4.1.9.9.43.2.0.1', 'Notification of a configuration management event as $*', '0', 1, 'Notification of a configuration management event as\nrecorded in ccmHistoryEventTable.\nVariables:\n  1: ccmHistoryEventCommandSource\n  2: ccmHistoryEventConfigSource\n  3: ccmHistoryEventConfigDestination\n');
 INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps_status`, `manufacturer_id`, `traps_comments`) VALUES(605, 'ccmCLIRunningConfigChanged', '.1.3.6.1.4.1.9.9.43.2.0.2', 'This notification indicates that the running $*', '0', 1, 'This notification indicates that the running\nconfiguration of the managed system has changed\nfrom the CLI.\nIf the managed system supports a separate \nconfiguration mode(where the configuration commands \nare entered under a  configuration session which \naffects the running configuration of the system), \nthen this notification is sent when the configuration \nmode is exited.\nDuring this configuration session there can be \none or more running configuration changes.\nVariables:\n  1: ccmHistoryRunningLastChanged\n  2: ccmHistoryEventTerminalType\n');
 INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps_status`, `manufacturer_id`, `traps_comments`) VALUES(606, 'ccmCTIDRolledOver', '.1.3.6.1.4.1.9.9.43.2.0.3', 'This notification indicates that the Config Change Tracking $*', '0', 1, 'This notification indicates that the Config Change Tracking\nID has rolled over and will be reset.\nVariables:\n');
-
---
--- Contenu de la table `traps_vendor`
---
-
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(1, 'Cisco', 'Cisco Networks', '');
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(2, 'HP', 'HP Networks', '');
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(3, '3com', '3Com', NULL);
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(4, 'Linksys', 'Linksys', '');
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(6, 'Dell', 'Dell', '');
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(7, 'Generic', 'Generic', 'References Generic Traps');
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(8, 'Apache', 'Apache', '');
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(9, 'Zebra', 'Zebra', '');
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(10, 'SQL-Server', 'SQL-Server', '');
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(11, 'HP-Compaq', 'HP and Compaq Systems', '');
 
 --
 -- Contenu de la table `acl_groups`
