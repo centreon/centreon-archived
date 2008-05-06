@@ -1,0 +1,62 @@
+# -*-Shell-script-*-
+# tmpl/vardistrib/debian-etch
+# This file contain reconfigured variables used in install scripts
+# for debian etch (stable version)
+# By default, when you use ./install.sh -f debian-etch, you'll accept GPL licence.
+
+# What do you want to install ? 
+# 0 = no, 1 = yes
+#
+# CentWeb: Web front Centreon for Nagios
+PROCESS_CENTREON_WWW=1
+# CentStorage: ...
+PROCESS_CENTSTORAGE=1
+# CentCore: ...
+PROCESS_CENTCORE=1
+# CentPlugins: Centreon Plugins for nagios
+PROCESS_CENTREON_PLUGINS=1
+# CentTraps: Centreon Snmp traps process for nagios
+PROCESS_CENTREON_SNMP_TRAPS=0
+
+# Your default variables
+LOG_DIR="$BASE_DIR/log"
+LOG_FILE="$LOG_DIR/install_centreon.log"
+
+# Change that with caution
+TMPDIR="/tmp/centreon-setup"
+SNMP_DIR="/etc/snmp/"
+PEAR_MODULES_LIST="pear.lst"
+
+# Default variable when you use debian packages
+INSTALL_DIR_NAGIOS="/usr/share/nagios2"
+INSTALL_DIR_CENTREON="/srv/centreon"
+NAGIOS_ETC="/etc/nagios2"
+NAGIOS_PLUGIN="/usr/lib/nagios/plugins"
+NAGIOS_IMG="/usr/share/nagios2/htdocs/images"
+NAGIOS_BINARY="/usr/sbin/nagios2"
+NAGIOSSTATS_BINARY="/usr/sbin/nagios2stats"
+NAGIOS_VAR="/var/log/nagios2"
+RRD_PERL="/usr/lib/perl5"
+SUDO_FILE="/etc/sudoers"
+WEB_USER="www-data"
+WEB_GROUP="www-data"
+NAGIOS_USER="nagios"
+NAGIOS_GROUP="nagios"
+BIN_RRDTOOL="/usr/bin/rrdtool"
+BIN_MAIL="/usr/bin/mail"
+BIN_SSH="/usr/bin/ssh"
+BIN_SCP="/usr/bin/scp"
+INIT_D="/etc/init.d"
+CRON_D="/etc/cron.d"
+PEAR_PATH="/usr/share/php"
+PHP_BIN="/usr/bin/php"
+CENTREON_LOG="/var/log/centreon"
+CENTREON_ETC="/etc/centreon"
+CENTREON_RUNDIR="/var/run/centreon"
+CENTREON_GENDIR="/var/cache/centreon"
+CENTSTORAGE_RRD="/var/lib/centreon"
+CENTSTORAGE_BINDIR="/usr/sbin"
+CENTCORE_BINDIR="/usr/sbin"
+CENTPLUGINS_TMP="/var/lib/centreon/centplugins"
+
+
