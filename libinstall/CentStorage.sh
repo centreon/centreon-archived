@@ -53,6 +53,12 @@ sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 log "INFO" "`gettext \"Copying www/install/createTablesCentstorage.sql in final directory\"`"
 cp $TMPDIR/work/www/install/createTablesCentstorage.sql $TMPDIR/final/www/install/createTablesCentstorage.sql >> $LOG_FILE 2>&1
 
+## Copy CreateTablesCentStorage.sql in INSTALL_DIR_CENTREON 
+$INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -m 755 -v \ 
+	$TMPDIR/final/www/install/createTablesCentstorage.sql 
+	$INSTALL_DIR_CENTREON/www/install/createTablesCentstorage.sql \ 
+	>> $LOG_FILE 2>&1 
+
 ###### RRD directory
 #################################
 ## Create CentStorage Status folder
