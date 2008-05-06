@@ -77,7 +77,7 @@ mkdir -p $TMPDIR/final/cron/reporting >> $LOG_FILE 2>&1
 
 ## Prepare insertBaseConf.sql
 echo -e "`gettext \"In process\"`"
-### Step 1:
+### Step 1:
 ## Change Macro on sql file
 log "INFO" "`gettext \"Change macros for insertBaseConf.sql\"`"
 sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
@@ -99,7 +99,7 @@ sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 	-e 's|\/\/|\/|g' \
 $TMPDIR/src/www/install/insertBaseConf.sql > $TMPDIR/work/www/install/insertBaseConf.sql
 
-## Copy in final dir
+## Copy in final dir
 log "INFO" "Copying www/install/insertBaseConf.sql in final directory"
 cp $TMPDIR/work/www/install/insertBaseConf.sql $TMPDIR/final/www/install/insertBaseConf.sql >> $LOG_FILE 2>&1
 

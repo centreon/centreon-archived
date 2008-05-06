@@ -100,7 +100,7 @@ function yes_no_default() {
 	fi
 }
 
-## answer_with_testdir()
+## answer_with_testdir()
 # message: string
 # default: string
 # var_ref: global var to contains result
@@ -168,7 +168,7 @@ function answer_with_createdir() {
 	return 0
 }
 
-## answer_with_testfile()
+## answer_with_testfile()
 # message: string
 # default: string
 # var_ref: global var to contains result
@@ -1038,11 +1038,11 @@ function check_group_apache()
 {
 	local found=1
 	if [ -e /etc/apache2/envvars ] ; then
-		# for debian system
+		# for debian system
 		WEB_GROUP=`cat /etc/apache2/envvars |grep "GROUP" |cut -d= -f2`
 		[ -z "$WEB_GROUP" ] && found=0
 	elif [ -e /etc/apache2/uid.conf ] ; then
-		# for SuSe system
+		# for SuSe system
 		WEB_USER=`cat /etc/apache2/uid.conf |grep -e "^Group" | cut -d" " -f2`
 		[ -z "$WEB_GROUP" ] && found=0
 	fi
@@ -1114,7 +1114,7 @@ function upgrade_pear_module() {
 	return $?
 }
 
-## function install_init_service()
+## function install_init_service()
 ## install init script on distrib
 function install_init_service() {
 	# how to find methode to install in rc.d directory a correct link ?

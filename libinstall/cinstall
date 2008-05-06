@@ -52,7 +52,7 @@ function log() {
 ## </code>
 ##
 ## param	$1	directory
-## param	$2	chown/chgrp option (-R)
+## param	$2	chown/chgrp option (-R)
 ##
 function lchown() {
 	local directory="$1"
@@ -75,7 +75,7 @@ function lchown() {
 ##
 ## <code>
 ## find_and_chmod /tmp/centreon "d" "775" "1"
-## </code>
+## </code>
 ##
 ## param	$1	directory
 ## param	$2	type of search:	f=file
@@ -100,7 +100,7 @@ function find_and_chmod() {
 
 ###
 ## usage: print usage of script
-## 
+##
 function usage() {
 	local program=cinstall
 	cat << __EOT__
@@ -249,7 +249,7 @@ if [ $# -ge 2 ] ; then
 		find . -mindepth 1 -type d -print  > $directory
 		
 		cd $dst
-		## Apply permissions
+		## Apply permissions
 		if [ -n "$username" ] ; then
 			cat $files $directory | \
 				xargs -I '{}' chown $username:$group '{}' 

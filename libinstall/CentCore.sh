@@ -1,4 +1,4 @@
-# -*-Shell-script-*-
+# -*-Shell-script-*-
 # install script for centcore
 
 echo "------------------------------------------------------------------------"
@@ -15,7 +15,7 @@ locate_centreon_logdir
 locate_centreon_generationdir
 locate_centcore_bindir
 
-## locate binaries
+## locate binaries
 locate_ssh
 locate_scp
 
@@ -36,7 +36,7 @@ cp -f $BASE_DIR/tmpl/install/centcore.init.d $TMPDIR/src
 
 ###### CentCore binary
 #################################
-## Change macros for CentCore binary
+## Change macros for CentCore binary
 sed -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTCORE_BINDIR@|'"$CENTCORE_BINDIR"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -64,7 +64,7 @@ $INSTALL_DIR/cinstall -g $NAGIOS_USER -d 775 -v \
 
 ###### CentCore init
 #################################
-## Change macros in CentCore init script
+## Change macros in CentCore init script
 sed -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
@@ -102,5 +102,5 @@ fi
 createCentCoreInstallConf
 
 ## wait and see...
-## sql console inject ?
+## sql console inject ?
 

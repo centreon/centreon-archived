@@ -191,5 +191,5 @@ createCentStorageInstallConf
 
 
 ## wait and see...
-##Â sql console inject ?
+## sql console inject ?
 
