@@ -25,6 +25,7 @@ locate_nagios_etcdir
 locate_nagios_vardir
 locate_nagios_plugindir
 locate_nagios_binary
+locate_nagios_imgdir
 locate_nagiosstats_binary
 locate_nagios_plugindir
 locate_cron_d

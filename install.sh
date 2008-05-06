@@ -202,7 +202,8 @@ echo "------------------------------------------------------------------------"
 # 1 = install
 # 2 = question in console
 [ -z $PROCESS_CENTREON_WWW ] && PROCESS_CENTREON_WWW=2
-[ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE=2
+## For a moment, isn't possible to install standalone CentStorage daemon
+[ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE=0
 [ -z $PROCESS_CENTCORE ] && PROCESS_CENTCORE=2
 [ -z $PROCESS_CENTREON_PLUGINS ] && PROCESS_CENTREON_PLUGINS=2
 [ -z $PROCESS_CENTREON_SNMP_TRAPS ] && PROCESS_CENTREON_SNMP_TRAPS=2
