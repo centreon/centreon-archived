@@ -24,9 +24,9 @@
 
 	$msg ='';
 
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# Host comes from DB
+	/*
+	 * Database retrieve information for differents elements list we need on the page
+	 */
 	$Host = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_address, host_snmp_community, host_snmp_version FROM host WHERE host_id =". $host_id ."");
 	if (PEAR::isError($DBRESULT))
@@ -41,25 +41,26 @@
 	}
 
 	$attrsText 		= array("size"=>"15");
-
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Tools"));
 
-	#
-	## Command information
-	#
+	/*
+	 * Command information
+	 */
 	$form->addElement('header', 'host_information', _("Host Information"));
 	$form->addElement('text', 'host_name', _("Host"), $attrsText);
 	$form->addElement('text', 'host_ip', _("IP Address"), $attrsText);
 
-	#
-	## Command information
-	#
+	/*
+	 * Command information
+	 */
 	$form->addElement('header', 'information', _("Result"));
 	$form->addElement('text', 'command_tool', _("Command"), $attrsText);
 	$form->addElement('text', 'command_help', _("Output"), $attrsText);
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
@@ -72,9 +73,10 @@
 		loadXMLDoc('".$tool_cmd_script."','tools');
 		</script>");
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
