@@ -57,7 +57,7 @@
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
-			     'hostspec' => $conf_oreon['host'],
+			     'hostspec' => $conf_oreon['hostCentreon'],
 			     'database' => $conf_oreon['db']);
 	$options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 	
