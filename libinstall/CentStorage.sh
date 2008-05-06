@@ -1,5 +1,5 @@
-# -*-Shell-script-*-
-# install centreon centstorage  
+# -*-Shell-script-*-
+# install centreon centstorage  
 
 echo "------------------------------------------------------------------------"
 echo -e "\t`gettext \"Start CentStorage Installation\"`"
@@ -191,5 +191,5 @@ createCentStorageInstallConf
 
 
 ## wait and see...
-## sql console inject ?
+##Â sql console inject ?
 
