@@ -26,9 +26,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		<td><b>Database : Connection</b></td>	<?php
 	$res = connexion('root', (isset($_SESSION["pwdroot"]) ? $_SESSION["pwdroot"] : '' ) , $_SESSION["dbLocation"]) ;
 	$mysql_msg = $res['1'];
-	if ($mysql_msg == '') {
+	if ($mysql_msg == '')
 		print '<td align="right"><b><span class="go">OK</b></td></tr>';
-	}	
 	
 	# Database creation 
 	$usedb = mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
