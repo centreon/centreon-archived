@@ -88,6 +88,7 @@ log "INFO" "`gettext \"Change macros for centstorage binary\"`"
 sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
+	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
 	-e 's|\/\/|\/|g' \
 	 $TMPDIR/src/bin/centstorage > $TMPDIR/work/bin/centstorage
@@ -117,6 +118,7 @@ log "INFO" "`gettext \"Change macros for centstorage init script\"`"
 sed -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
 	-e 's|\/\/|\/|g' \
