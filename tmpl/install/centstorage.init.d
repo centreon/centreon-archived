@@ -118,8 +118,7 @@ case "$1" in
 	fi
     fi
     echo "Starting centstorage Collector : centstorage"
-    su - @NAGIOS_USER@ -c 'nice -n $NICE $Bin 2>> $centstorageDemLog &'
-    #nice -n $NICE $centstorageBin 2>> $centstorageDemLog &
+    su - @NAGIOS_USER@ -c 'nice $NICE $Bin >> $centstorageDemLog 2>&1'
     if [ -d $centstorageLockDir ]; then touch $centstorageLockDir/$centstorageLockFile; fi
 	#sleep 1
 	#status_nagios nagios
