@@ -29,7 +29,7 @@ if (isset($passwd_error) && $passwd_error)
     <td align="right"><input type="text" name="oreonlogin" value="<?php if (isset($_SESSION["oreonlogin"])) print $_SESSION["oreonlogin"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Administrator password for Centreon</b></td>
+    <td><b>Administrator password</b></td>
     <td align="right"><input type="password" name="oreonpasswd" value="<?php if (isset($_SESSION["oreonpasswd"])) print $_SESSION["oreonpasswd"]; ?>"></td>
   </tr>
   <tr>
@@ -37,15 +37,15 @@ if (isset($passwd_error) && $passwd_error)
     <td align="right"><input type="password" name="oreonpasswd2" value="<?php if (isset($_SESSION["oreonpasswd"])) print $_SESSION["oreonpasswd"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Administrator firstname for Oreon</b></td>
+    <td><b>Administrator firstname</b></td>
     <td align="right"><input type="text" name="oreonfirstname" value="<?php if (isset($_SESSION["oreonfirstname"])) print $_SESSION["oreonfirstname"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Administrator lastname for Oreon</b></td>
+    <td><b>Administrator lastname</b></td>
     <td align="right"><input type="text" name="oreonlastname" value="<?php if (isset($_SESSION["oreonlastname"])) print $_SESSION["oreonlastname"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Administrator Email for Oreon</b></td>
+    <td><b>Administrator Email</b></td>
     <td align="right"><input type="text" name="oreonemail" value="<?php if (isset($_SESSION["oreonemail"])) print $_SESSION["oreonemail"]; ?>"></td>
   </tr>
   </tr>
