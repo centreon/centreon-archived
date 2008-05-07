@@ -32,7 +32,7 @@
 	
 	/* Connect to oreon DB */
 
-	$dsn = array('phptype'=> 'mysql','username' => $conf_oreon['user'],'password' => $conf_oreon['password'],'hostspec' => $conf_oreon['host'],'database' => $conf_oreon['db']);
+	$dsn = array('phptype'=> 'mysql','username' => $conf_oreon['user'],'password' => $conf_oreon['password'],'hostspec' => $conf_oreon['hostCentreon'],'database' => $conf_oreon['db']);
 
 	$pearDB =& DB::connect($dsn, array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE));
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
