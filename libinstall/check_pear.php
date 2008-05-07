@@ -118,6 +118,9 @@ function upgrade($packages) {
 	$ret = 0;
 	foreach ($packages as $package) {
 		$package_info =& $reg->getPackage($package['name']);
+		if (is_null($package_info)) {
+			continue;
+		}
 		$installed_version = $package_info->getVersion();
 		if (version_compare($package['version'], $installed_version, '>')) {
 			echo "\033[s\033[1;37m" . $package['name'] . "\033[0m\033[33G\033[0;37m" . $package['version'] . "\033[0m\033[45G" . $installed_version . "\t";

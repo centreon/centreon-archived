@@ -180,8 +180,8 @@ while [ $pear_module -eq 0 ] ; do
 	if [ $? -ne 0 ] ; then
 		yes_no_default "`gettext \"Do you want I install/upgrade your PEAR modules\"`" "$yes"
 		if [ $? -eq 0 ] ; then
-			install_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
 			upgrade_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
+			install_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
 		else
 			pear_module=1
 		fi
