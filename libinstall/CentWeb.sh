@@ -28,6 +28,7 @@ locate_nagios_binary
 locate_nagios_imgdir
 locate_nagiosstats_binary
 locate_nagios_plugindir
+locate_nagios_p1_file $NAGIOS_ETC
 locate_cron_d
 locate_init_d
 locate_php_bin
@@ -38,6 +39,14 @@ check_group_apache
 check_user_apache
 check_user_nagios
 check_group_nagios
+
+## NDO binary
+yes_no_default "`gettext \"Do you want use NDO ?\"`" "$no"
+if [ $? -eq 0 ] ; then
+	log "INFO" "`gettext \"NDO use...\"`"
+	locate_ndomod_binary
+fi
+
 
 ## Config Sudo
 # I think this process move on CentCore install...
@@ -96,6 +105,8 @@ sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 	-e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' \
 	-e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' \
 	-e 's|@INIT_D@|'"$INIT_D"'|g' \
+	-e 's|@NDOMOD_BINARY@|'"$NDOMOD_BINARY"'|g' \
+	-e 's|@P1_FILE@|'"$NAGIOS_P1_FILE"'|g' \
 	-e 's|\/\/|\/|g' \
 $TMPDIR/src/www/install/insertBaseConf.sql > $TMPDIR/work/www/install/insertBaseConf.sql
 

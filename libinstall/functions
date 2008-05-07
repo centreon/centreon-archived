@@ -21,23 +21,28 @@ SETCOLOR_WARNING="\\033[1;33m"
 SETCOLOR_NORMAL="\\033[0;39m"
 
 function echo_info() {
-    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_INFO}${2}${SETCOLOR_NORMAL}" | tee -a $LOG_FILE
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_INFO}${2}${SETCOLOR_NORMAL}" 
+    echo -e "$1 : $2" >> $LOG_FILE
 }
 
 function echo_success() {
-    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_SUCCESS}${2}${SETCOLOR_NORMAL}" | tee -a $LOG_FILE
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_SUCCESS}${2}${SETCOLOR_NORMAL}" 
+    echo -e "$1 : $2" >> $LOG_FILE
 }
 
 function echo_failure() {
-    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_FAILURE}${2}${SETCOLOR_NORMAL}" | tee -a $LOG_FILE
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_FAILURE}${2}${SETCOLOR_NORMAL}"
+    echo -e "$1 : $2" >> $LOG_FILE
 }
 
 function echo_passed() {
-    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_WARNING}${2}${SETCOLOR_NORMAL}" | tee -a $LOG_FILE
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_WARNING}${2}${SETCOLOR_NORMAL}"
+    echo -e "$1 : $2" >> $LOG_FILE
 }
 
 function echo_warning() {
     echo -e "${1}${MOVE_TO_COL}${SETCOLOR_WARNING}${2}${SETCOLOR_NORMAL}"
+    echo -e "$1 : $2" >> $LOG_FILE
 }
 
 
@@ -324,6 +329,20 @@ function locate_nagiosstats_binary() {
 	log "INFO" "NAGIOSSTATS_BINARY: $NAGIOSSTATS_BINARY"
 }
 
+## Check nagios_p1_file
+function locate_nagios_p1_file() {
+	local nagios_etc=$1
+	if [ -n "$NAGIOS_P1_FILE" ] ; then 
+		NAGIOS_P1_FILE=`grep -r "^p1_file" $nagios_etc | cut -d= -f2`
+		if [ -z "$NAGIOS_P1_FILE" ] ; then
+			log "INFO" "`gettext \"p1_file not found\"`"
+		else
+			log "INFO" "`gettext \"p1_file found\"` : $NAGIOS_P1_FILE"
+			echo_success "p1_file : $NAGIOS_P1_FILE" "$ok"	
+		fi
+	fi
+}
+
 ## Check nagios_img
 function locate_nagios_imgdir() {
 	if [ -z "$NAGIOS_IMG" ] ; then
@@ -331,6 +350,44 @@ function locate_nagios_imgdir() {
 		echo_success "Path $NAGIOS_IMG" "$ok"
 	fi
 	log "INFO" "NAGIOS_IMG: $NAGIOS_IMG"
+}
+
+## Check ndo2db_binary
+function locate_ndo2db_binary() {
+	if [ -z "$NDO2DB_BINARY" ] ; then
+		ndo2db_binaries="ndo2db ndo2db-2x ndo2db-3x"
+		for binary in $ndo2db_binaries ; do
+			pathfind_ret $binary "NDO2DB_BINARY"
+			if [ $? -eq 0 ] ; then
+				NDO2DB_BINARY="$NDO2DB_BINARY/$binary"
+				break
+			fi
+		done
+		if [ -z "$NDO2DB_BINARY" ] ; then 
+			answer_with_testfile "`gettext \"Where is your NDO ndo2db binary ? \"`" "$DEFAULT_NDO2DB_BINARY" "NDO2DB_BINARY"
+		fi
+		echo_success "$NDO2DB_BINARY" "$ok"
+	fi
+	log "INFO" "NDO2DB_BINARY: $NDO2DB_BINARY"
+}
+
+## Check ndomod_binary
+function locate_ndomod_binary() {
+	if [ -z "$NDOMOD_BINARY" ] ; then
+		ndomod_binaries="ndomod ndomod.o ndomod-2x ndomod-2x.o ndomod-3x ndomod-3x.o"
+		for binary in $ndomod_binaries ; do
+			pathfind_ret $binary "NDOMOD_BINARY"
+			if [ $? -eq 0 ] ; then
+				NDOMOD_BINARY="$NDOMOD_BINARY/$binary"
+				break
+			fi
+		done
+		if [ -z "$NDOMOD_BINARY" ] ; then 
+			answer_with_testfile "`gettext \"Where is your NDO ndomod binary ? \"`" "$DEFAULT_NDOMOD_BINARY" "NDOMOD_BINARY"
+		fi
+		echo_success "$NDOMOD_BINARY" "$ok"
+	fi
+	log "INFO" "NDOMOD_BINARY: $NDOMOD_BINARY"
 }
 
 ## Check init.d directory
