@@ -79,7 +79,7 @@
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key => $value)	{
 		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{	
-			if ($key == "aggregate_status_updates" && $value == 2 && $oreon->user->get_version() == 3 );
+			if ($key == "aggregate_status_updates" && ($value == 2 || $oreon->user->get_version() == 3));
 			else if ($key == "enable_notifications" && $value == 2);	
 			else if ($key == "execute_service_checks" && $value == 2);	
 			else if ($key == "accept_passive_service_checks" && $value == 2);	
@@ -118,7 +118,6 @@
 			else if ($key == "downtime_file" && $oreon->user->get_version() == 2);
 			else if ($key == "comment_file" && $oreon->user->get_version() == 2);
 			else if ($key == "state_retention_file" && $oreon->user->get_version() == 2);
-			else if ($key == "aggregate_status_updates" && $oreon->user->get_version() == 2);
 			
 			else if ($key == "global_host_event_handler" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
