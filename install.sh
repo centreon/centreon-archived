@@ -76,7 +76,7 @@ silent_install=0
 upgrade=0
 user_install_vars=""
 
-## Getopts :)
+## Getopts :)
 while getopts "f:u:h" Options
 do
 	case ${Options} in
@@ -196,11 +196,11 @@ echo "------------------------------------------------------------------------"
 echo -e "\t`gettext \"Please choose what do you want to install\"`"
 echo "------------------------------------------------------------------------"
 
-## init install process
+## init install process
 # I prefer split install script.
-# 0 = do not install
-# 1 = install
-# 2 = question in console
+# 0 = do not install
+# 1 = install
+# 2 = question in console
 [ -z $PROCESS_CENTREON_WWW ] && PROCESS_CENTREON_WWW=2
 ## For a moment, isn't possible to install standalone CentStorage daemon
 [ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE=0
@@ -214,7 +214,7 @@ if [ $PROCESS_CENTREON_WWW -eq 2 ] ; then
 	if [ $? -eq 0 ] ; then
 		PROCESS_CENTREON_WWW=1
 		log "INFO" "`gettext \"You select to install Centreon Web Front\"`"
-		## CentStorage dependancy
+		## CentStorage dependancy
 		PROCESS_CENTSTORAGE=1
 	fi
 fi
@@ -267,7 +267,7 @@ if [ $PROCESS_CENTSTORAGE -eq 1 ] ; then
 	. $INSTALL_DIR/CentStorage.sh
 fi
 
-## Start CentCore install
+## Start CentCore install
 if [ $PROCESS_CENTCORE -eq 1 ] ; then
 	. $INSTALL_DIR/CentCore.sh
 fi
