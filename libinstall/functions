@@ -2,6 +2,12 @@
 #
 # functions     This file contains functions to be used by Centreon install scripts
 #
+#################################
+# SVN: $Id: functions 5106 2008-05-07 20:01:48Z watt $
+
+# debug ?
+#set -x
+
 ## VARS
 yes="`gettext \"y\"`"
 no="`gettext \"n\"`"
@@ -332,7 +338,7 @@ function locate_nagiosstats_binary() {
 ## Check nagios_p1_file
 function locate_nagios_p1_file() {
 	local nagios_etc=$1
-	if [ -n "$NAGIOS_P1_FILE" ] ; then 
+	if [ -z "$NAGIOS_P1_FILE" ] ; then 
 		NAGIOS_P1_FILE=`grep -r "^p1_file" $nagios_etc | cut -d= -f2`
 		if [ -z "$NAGIOS_P1_FILE" ] ; then
 			log "INFO" "`gettext \"p1_file not found\"`"
