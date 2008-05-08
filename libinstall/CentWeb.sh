@@ -1,5 +1,7 @@
 # -*-Shell-script-*-
 # Install script for Centreon Web Front
+#################################
+# SVN: $Id$
 
 echo "------------------------------------------------------------------------"
 echo -e "\t`gettext \"Start CentWeb Installation\"`"

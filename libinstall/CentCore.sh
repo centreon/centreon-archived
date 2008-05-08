@@ -1,5 +1,7 @@
 # -*-Shell-script-*-
 # install script for centcore
+#################################
+# SVN: $Id$
 
 echo "------------------------------------------------------------------------"
 echo -e "\t`gettext \"Start CentCore Installation\"`"

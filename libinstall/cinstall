@@ -20,6 +20,8 @@
 # 
 #    For information : infos@centreon.com
 ####################################################################
+# SVN: $Id$
+#
 # redefine install command in cinstall (for centreon install script)
 
 #set -x

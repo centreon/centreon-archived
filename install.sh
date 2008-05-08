@@ -20,12 +20,16 @@
 # 
 #    For information : infos@centreon.com
 ####################################################################
+#
+# SVN: $Id$
+#
 # Todo list
 # - upgrade process 
 # -- 1.x --> 2.x
 # -- 2.x --> 2.x+1
 # -- on upgrade, overwrite existing ? backup ? 
 # - Add centTraps.sh for SNMP TRAPS
+
 
 
 BASE_DIR=`dirname $0`

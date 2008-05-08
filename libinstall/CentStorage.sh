@@ -1,5 +1,7 @@
 # -*-Shell-script-*-
 # install centreon centstorage  
+#################################
+# SVN: $Id$
 
 echo "------------------------------------------------------------------------"
 echo -e "\t`gettext \"Start CentStorage Installation\"`"

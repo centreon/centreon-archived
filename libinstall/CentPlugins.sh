@@ -1,5 +1,7 @@
 # -*-Shell-script-*-
 # install script for CentPlugins
+#################################
+# SVN: $Id$
 
 echo "------------------------------------------------------------------------"
 echo -e "\t`gettext \"Start CentPlugins Installation\"`"

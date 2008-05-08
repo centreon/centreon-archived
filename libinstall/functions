@@ -3,7 +3,7 @@
 # functions     This file contains functions to be used by Centreon install scripts
 #
 #################################
-# SVN: $Id: functions 5106 2008-05-07 20:01:48Z watt $
+# SVN: $Id$
 
 # debug ?
 #set -x
