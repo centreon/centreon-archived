@@ -59,10 +59,14 @@ export line
 . $INSTALL_VARS_DIR/vars
 
 ## Test if gettext was installed
+# I use PATH variable to find
 found="0"
+OLDIFS="$IFS"
+IFS=:
 for p in $PATH ; do
 	[ -x "$p/gettext" ] && found="1"
 done
+IFS=$OLDIFS
 if [ $found -eq 1 ] ; then 
 	. $INSTALL_DIR/gettext.sh
 else
