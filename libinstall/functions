@@ -9,16 +9,16 @@
 #set -x
 
 ## VARS
-yes="`gettext \"y\"`"
-no="`gettext \"n\"`"
-ok="`gettext \"OK\"`"
-fail="`gettext \"FAIL\"`"
-passed="`gettext \"PASSED\"`"
-critical="`gettext \"CRITICAL\"`"
+yes="$(gettext "y")"
+no="$(gettext "n")"
+ok="$(gettext "OK")"
+fail="$(gettext "FAIL")"
+passed="$(gettext "PASSED")"
+critical="$(gettext "CRITICAL")"
 
 ## COLOR FUNCTIONS
 
-RES_COL=60
+RES_COL="60"
 MOVE_TO_COL="\\033[${RES_COL}G"
 SETCOLOR_INFO="\\033[1;38m"
 SETCOLOR_SUCCESS="\\033[1;32m"
@@ -262,27 +262,30 @@ function usage() {
 ## Check nagios_install_dir
 function locate_nagios_installdir() {
 	if [ -z "$INSTALL_DIR_NAGIOS" ] ; then
-		answer_with_testdir "`gettext \"Where is installed Nagios ?\"`" "$DEFAULT_INSTALL_DIR_NAGIOS" "INSTALL_DIR_NAGIOS"
+		answer_with_testdir "$(gettext "Where is installed Nagios ?")" "$DEFAULT_INSTALL_DIR_NAGIOS" "INSTALL_DIR_NAGIOS"
 		echo_success "Path $INSTALL_DIR_NAGIOS" "$ok"
 	fi
+	export INSTALL_DIR_NAGIOS
 	log "INFO" "INSTALL_DIR_NAGIOS: $INSTALL_DIR_NAGIOS"
 }
 ## Check nagios_etc
 function locate_nagios_etcdir() {
 	if [ -z "$NAGIOS_ETC" ] ; then
-		answer_with_testfile "`gettext \"Where is your nagios config file\"`" "$DEFAULT_NAGIOS_ETC/nagios.cfg" "NAGIOS_ETC"
-		NAGIOS_ETC=`dirname $NAGIOS_ETC`
+		answer_with_testfile "$(gettext "Where is your nagios config file")" "$DEFAULT_NAGIOS_ETC/nagios.cfg" "NAGIOS_ETC"
+		NAGIOS_ETC="$(dirname $NAGIOS_ETC)"
 		echo_success "Path $NAGIOS_ETC" "$ok"
 	fi
+	export NAGIOS_ETC
 	log "INFO" "NAGIOS_ETC: $NAGIOS_ETC"
 }
 
 ## Check nagios_var
 function locate_nagios_vardir() {
 	if [ -z "$NAGIOS_VAR" ] ; then
-		answer_with_testdir "`gettext \"Where is your Nagios var directory ?\"`" "$DEFAULT_NAGIOS_VAR" "NAGIOS_VAR"
+		answer_with_testdir "$(gettext "Where is your Nagios var directory ?")" "$DEFAULT_NAGIOS_VAR" "NAGIOS_VAR"
 		echo_success "Path $NAGIOS_VAR" "$ok"
 	fi
+	export NAGIOS_VAR
 	log "INFO" "NAGIOS_VAR: $NAGIOS_VAR"
 }
 
@@ -291,9 +294,10 @@ function locate_nagios_vardir() {
 # now is not possible. You will create manualy.
 function locate_nagios_plugindir() {
 	if [ -z "$NAGIOS_PLUGIN" ] ; then
-		answer_with_testdir "`gettext \"Where is your Nagios plugins (libexec) directory ?\"`" "$DEFAULT_NAGIOS_PLUGIN" "NAGIOS_PLUGIN"
+		answer_with_testdir "$(gettext "Where is your Nagios plugins (libexec) directory ?")" "$DEFAULT_NAGIOS_PLUGIN" "NAGIOS_PLUGIN"
 		echo_success "Path $NAGIOS_PLUGIN" "$ok"
 	fi
+	export NAGIOS_PLUGIN
 	log "INFO" "NAGIOS_PLUGIN: $NAGIOS_PLUGIN"
 }
 
@@ -302,17 +306,18 @@ function locate_nagios_binary() {
 	if [ -z "$NAGIOS_BINARY" ] ; then
 		nagios_binaries="nagios nagios2 nagios3"
 		for binary in $nagios_binaries ; do
-			pathfind_ret $binary "NAGIOS_BINARY"
-			if [ $? -eq 0 ] ; then
+			pathfind_ret "$binary" "NAGIOS_BINARY"
+			if [ "$?" -eq 0 ] ; then
 				NAGIOS_BINARY="$NAGIOS_BINARY/$binary"
 				break
 			fi
 		done
 		if [ -z "$NAGIOS_BINARY" ] ; then 
-			answer_with_testfile "`gettext \"Where is your nagios binary ? \"`" "$DEFAULT_NAGIOS_BINARY" "NAGIOS_BINARY"
+			answer_with_testfile "$(gettext "Where is your nagios binary ? ")" "$DEFAULT_NAGIOS_BINARY" "NAGIOS_BINARY"
 		fi
 		echo_success "$NAGIOS_BINARY" "$ok"
 	fi
+	export NAGIOS_BINARY
 	log "INFO" "NAGIOS_BINARY: $NAGIOS_BINARY"
 }
 
@@ -321,8 +326,8 @@ function locate_nagiosstats_binary() {
 	if [ -z "$NAGIOSSTATS_BINARY" ] ; then
 		nagiostats_binaries="nagiostats nagios2stats nagios3stats"
 		for binary in $nagiostats_binaries ; do
-			pathfind_ret $binary "NAGIOSSTATS_BINARY"
-			if [ $? -eq 0 ] ; then
+			pathfind_ret "$binary" "NAGIOSSTATS_BINARY"
+			if [ "$?" -eq 0 ] ; then
 				NAGIOSSTATS_BINARY="$NAGIOSSTATS_BINARY/$binary"
 				break
 			fi
@@ -332,29 +337,32 @@ function locate_nagiosstats_binary() {
 		fi
 		echo_success "$NAGIOSSTATS_BINARY" "$ok"
 	fi
+	export NAGIOSSTATS_BINARY
 	log "INFO" "NAGIOSSTATS_BINARY: $NAGIOSSTATS_BINARY"
 }
 
 ## Check nagios_p1_file
 function locate_nagios_p1_file() {
-	local nagios_etc=$1
+	local nagios_etc="$1"
 	if [ -z "$NAGIOS_P1_FILE" ] ; then 
-		NAGIOS_P1_FILE=`grep -r "^p1_file" $nagios_etc | cut -d= -f2`
+		NAGIOS_P1_FILE=$(grep -r "^p1_file" $nagios_etc | cut -d= -f2)
 		if [ -z "$NAGIOS_P1_FILE" ] ; then
-			log "INFO" "`gettext \"p1_file not found\"`"
+			log "INFO" "$(gettext "p1_file not found")"
 		else
-			log "INFO" "`gettext \"p1_file found\"` : $NAGIOS_P1_FILE"
+			log "INFO" "$(gettext "p1_file found") : $NAGIOS_P1_FILE"
 			echo_success "p1_file : $NAGIOS_P1_FILE" "$ok"	
 		fi
 	fi
+	export NAGIOS_P1_FILE
 }
 
 ## Check nagios_img
 function locate_nagios_imgdir() {
 	if [ -z "$NAGIOS_IMG" ] ; then
-		answer_with_testdir "`gettext \"Where is your Nagios image directory ?\"`" "$DEFAULT_NAGIOS_IMG" "NAGIOS_IMG"
+		answer_with_testdir "$(gettext "Where is your Nagios image directory ?")" "$DEFAULT_NAGIOS_IMG" "NAGIOS_IMG"
 		echo_success "Path $NAGIOS_IMG" "$ok"
 	fi
+	export NAGIOS_IMG
 	log "INFO" "NAGIOS_IMG: $NAGIOS_IMG"
 }
 
@@ -363,17 +371,18 @@ function locate_ndo2db_binary() {
 	if [ -z "$NDO2DB_BINARY" ] ; then
 		ndo2db_binaries="ndo2db ndo2db-2x ndo2db-3x"
 		for binary in $ndo2db_binaries ; do
-			pathfind_ret $binary "NDO2DB_BINARY"
-			if [ $? -eq 0 ] ; then
+			pathfind_ret "$binary" "NDO2DB_BINARY"
+			if [ "$?" -eq 0 ] ; then
 				NDO2DB_BINARY="$NDO2DB_BINARY/$binary"
 				break
 			fi
 		done
 		if [ -z "$NDO2DB_BINARY" ] ; then 
-			answer_with_testfile "`gettext \"Where is your NDO ndo2db binary ? \"`" "$DEFAULT_NDO2DB_BINARY" "NDO2DB_BINARY"
+			answer_with_testfile "$(gettext "Where is your NDO ndo2db binary ? ")" "$DEFAULT_NDO2DB_BINARY" "NDO2DB_BINARY"
 		fi
 		echo_success "$NDO2DB_BINARY" "$ok"
 	fi
+	export NDO2DB_BINARY
 	log "INFO" "NDO2DB_BINARY: $NDO2DB_BINARY"
 }
 
@@ -382,214 +391,231 @@ function locate_ndomod_binary() {
 	if [ -z "$NDOMOD_BINARY" ] ; then
 		ndomod_binaries="ndomod ndomod.o ndomod-2x ndomod-2x.o ndomod-3x ndomod-3x.o"
 		for binary in $ndomod_binaries ; do
-			pathfind_ret $binary "NDOMOD_BINARY"
-			if [ $? -eq 0 ] ; then
+			pathfind_ret "$binary" "NDOMOD_BINARY"
+			if [ "$?" -eq 0 ] ; then
 				NDOMOD_BINARY="$NDOMOD_BINARY/$binary"
 				break
 			fi
 		done
 		if [ -z "$NDOMOD_BINARY" ] ; then 
-			answer_with_testfile "`gettext \"Where is your NDO ndomod binary ? \"`" "$DEFAULT_NDOMOD_BINARY" "NDOMOD_BINARY"
+			answer_with_testfile "$(gettext "Where is your NDO ndomod binary ? ")" "$DEFAULT_NDOMOD_BINARY" "NDOMOD_BINARY"
 		fi
 		echo_success "$NDOMOD_BINARY" "$ok"
 	fi
+	export NDOMOD_BINARY
 	log "INFO" "NDOMOD_BINARY: $NDOMOD_BINARY"
 }
 
 ## Check init.d directory
 function locate_init_d() {
 	if [ -z "$INIT_D" ] ; then
-		if [ -d /etc/init.d ] ; then
+		if [ -d "/etc/init.d" ] ; then
 			INIT_D="/etc/init.d"
 		# Add most of init.d 
 		else 
-			answer_with_testdir "`gettext \"Where is your init.d directory ?\"`" "$DEFAULT_INIT_D" "INIT_D"
+			answer_with_testdir "$(gettext "Where is your init.d directory ?")" "$DEFAULT_INIT_D" "INIT_D"
 			echo_success "Path $INIT_D" "$ok"
 		fi
 	fi
+	export INIT_D
 	log "INFO" "INIT_D: $INIT_D"
 }
 
 ## Check centreon_logdir
 function locate_centreon_logdir() {
 	if [ -z "$CENTREON_LOG" ] ; then
-		answer_with_createdir "`gettext \"Where is your Centreon log directory\"`" "$DEFAULT_CENTREON_LOG" "CENTREON_LOG"
+		answer_with_createdir "$(gettext "Where is your Centreon log directory")" "$DEFAULT_CENTREON_LOG" "CENTREON_LOG"
 		echo_success "Path $CENTREON_LOG" "$ok"
-	elif [ ! -d $CENTREON_LOG -a $silent_install -eq 1 ] ; then
-		mkdir -p $CENTREON_LOG
+	elif [ ! -d "$CENTREON_LOG" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTREON_LOG"
 		log "INFO" "`gettext \"Create\"` $CENTREON_LOG"
 	fi
+	export CENTREON_LOG
 	log "INFO" "CENTREON_LOG: $CENTREON_LOG"
 }
 
 ## Check centreon_etcdir
 function locate_centreon_etcdir() {
 	if [ -z "$CENTREON_ETC" ] ; then
-		answer_with_createdir "`gettext \"Where is your Centreon etc directory\"`" "$DEFAULT_CENTREON_ETC" "CENTREON_ETC"
+		answer_with_createdir "$(gettext "Where is your Centreon etc directory")" "$DEFAULT_CENTREON_ETC" "CENTREON_ETC"
 		echo_success "Path $CENTREON_ETC" "$ok"
-	elif [ ! -d $CENTREON_ETC -a $silent_install -eq 1 ] ; then
-		mkdir -p $CENTREON_ETC
-		log "INFO" "`gettext \"Create\"` $CENTREON_ETC"
+	elif [ ! -d "$CENTREON_ETC" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTREON_ETC"
+		log "INFO" "$(gettext "Create") $CENTREON_ETC"
 	fi
+	export CENTREON_ETC
 	log "INFO" "CENTREON_ETC: $CENTREON_ETC"
 }
 
 ## Check centreon_installdir
 function locate_centreon_installdir() {
 	if [ -z "$INSTALL_DIR_CENTREON" ] ; then
-		answer_with_createdir "`gettext \"Where is your Centreon directory?\"`" "$DEFAULT_INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
+		answer_with_createdir "$(gettext "Where is your Centreon directory?")" "$DEFAULT_INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
 		echo_success "Path $INSTALL_DIR_CENTREON" "$ok"
-	elif [ ! -d $INSTALL_DIR_CENTREON -a $silent_install -eq 1 ] ; then
-		mkdir -p $INSTALL_DIR_CENTREON
-		log "INFO" "`gettext \"Create\"` $INSTALL_DIR_CENTREON"
+	elif [ ! -d "$INSTALL_DIR_CENTREON" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$INSTALL_DIR_CENTREON"
+		log "INFO" "$(gettext "Create") $INSTALL_DIR_CENTREON"
 	fi	
+	export INSTALL_DIR_CENTREON
 	log "INFO" "INSTALL_DIR_CENTREON: $INSTALL_DIR_CENTREON"
 }
 
 ## Check centreon_gendir
 function locate_centreon_generationdir() {
 	if [ -z "$CENTREON_GENDIR" ] ; then
-		answer_with_createdir "`gettext \"Where is your Centreon generation_files directory?\"`" "$DEFAULT_CENTREON_GENDIR" "CENTREON_GENDIR"
+		answer_with_createdir "$(gettext "Where is your Centreon generation_files directory?")" "$DEFAULT_CENTREON_GENDIR" "CENTREON_GENDIR"
 		echo_success "Path $CENTREON_GENDIR" "$ok"
-	elif [ ! -d $CENTREON_GENDIR -a $silent_install -eq 1 ] ; then
-		mkdir -p $CENTREON_GENDIR
-		log "INFO" "`gettext \"Create\"` $CENTREON_GENDIR"
-	fi	
+	elif [ ! -d "$CENTREON_GENDIR" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTREON_GENDIR"
+		log "INFO" "$(gettext "Create") $CENTREON_GENDIR"
+	fi
+	export CENTREON_GENDIR
 	log "INFO" "CENTREON_GENDIR: $CENTREON_GENDIR"
 }
 
 ## Check centreon_rundir
 function locate_centreon_rundir() {
 	if [ -z "$CENTREON_RUNDIR" ] ; then
-		answer_with_createdir "`gettext \"Where is your Centreon Run Dir directory?\"`" "$DEFAULT_CENTREON_RUNDIR" "CENTREON_RUNDIR"
+		answer_with_createdir "$(gettext "Where is your Centreon Run Dir directory?")" "$DEFAULT_CENTREON_RUNDIR" "CENTREON_RUNDIR"
 		echo_success "Path $CENTREON_RUNDIR" "$ok"
-	elif [ ! -d $CENTREON_RUNDIR -a $silent_install -eq 1 ] ; then
-		mkdir -p $CENTREON_RUNDIR
-		log "INFO" "`gettext \"Create\"` $CENTREON_RUNDIR"
+	elif [ ! -d "$CENTREON_RUNDIR" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTREON_RUNDIR"
+		log "INFO" "$(gettext "Create") $CENTREON_RUNDIR"
 	fi	
+	export CENTREON_RUNDIR
 	log "INFO" "CENTREON_RUNDIR: $CENTREON_RUNDIR"
 }
 
 ## Check centStorage_rrddir
 function locate_centstorage_rrddir() {
 	if [ -z "$CENTSTORAGE_RRD" ] ; then
-		answer_with_createdir "`gettext \"Where is your CentStorage RRD directory\"`" "$DEFAULT_CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
+		answer_with_createdir "$(gettext "Where is your CentStorage RRD directory")" "$DEFAULT_CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
 		echo_success "Path $CENTSTORAGE_RRD" "$ok"
-	elif [ ! -d $CENTSTORAGE_RRD -a $silent_install -eq 1 ] ; then
-		mkdir -p $CENTSTORAGE_RRD
-		log "INFO" "`gettext \"Create\"` $CENTSTORAGE_RRD"
+	elif [ ! -d "$CENTSTORAGE_RRD" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTSTORAGE_RRD"
+		log "INFO" "$(gettext "Create") $CENTSTORAGE_RRD"
 	fi
+	export CENTSTORAGE_RRD
 	log "INFO" "CENTSTORAGE_RRD: $CENTSTORAGE_RRD"
 }
 
 ## Check centStorage_bindir
 function locate_centstorage_bindir() {
 	if [ -z "$CENTSTORAGE_BINDIR" ] ; then
-		answer_with_createdir "`gettext \"Where is your CentStorage binary directory\"`" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
+		answer_with_createdir "$(gettext "Where is your CentStorage binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
 		echo_success "Path $CENTSTORAGE_BINDIR" "$ok"
-	elif [ ! -d $CENTSTORAGE_BINDIR -a $silent_install -eq 1 ] ; then
-		mkdir -p $CENTSTORAGE_BINDIR
-		log "INFO" "`gettext \"Create\"` $CENTSTORAGE_BINDIR"
+	elif [ ! -d "$CENTSTORAGE_BINDIR" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTSTORAGE_BINDIR"
+		log "INFO" "$(gettext "Create") $CENTSTORAGE_BINDIR"
 	fi
+	export CENTSTORAGE_BINDIR
 	log "INFO" "CENTSTORAGE_BINDIR: $CENTSTORAGE_BINDIR"
 }
 
 ## Check centCore_bindir
 function locate_centcore_bindir() {
 	if [ -z "$CENTCORE_BINDIR" ] ; then
-		answer_with_createdir "`gettext \"Where is your CentCore binary directory\"`" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
+		answer_with_createdir "$(gettext "Where is your CentCore binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
 		echo_success "Path $CENTCORE_BINDIR" "$ok"
-	elif [ ! -d $CENTCORE_BINDIR -a $silent_install -eq 1 ] ; then
+	elif [ ! -d "$CENTCORE_BINDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p $CENTCORE_BINDIR
-		log "INFO" "`gettext \"Create\"` $CENTCORE_BINDIR"
+		log "INFO" "$(gettext "Create") $CENTCORE_BINDIR"
 	fi
+	export CENTCORE_BINDIR
 	log "INFO" "CENTCORE_BINDIR: $CENTCORE_BINDIR"
 }
 
 ## Check centPlugins_tmpdir
 function locate_centplugins_tmpdir() {
 	if [ -z "$CENTPLUGINS_TMP" ] ; then
-		answer_with_createdir "`gettext \"Where is your CentPlugins lib directory\"`" "$DEFAULT_CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
+		answer_with_createdir "$(gettext "Where is your CentPlugins lib directory")" "$DEFAULT_CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
 		echo_success "Path $CENTPLUGINS_TMP" "$ok"
-	elif [ ! -d $CENTPLUGINS_TMP -a $silent_install -eq 1 ] ; then
-		mkdir -p $CENTPLUGINS_TMP
-		log "INFO" "`gettext \"Create\"` $CENTPLUGINS_TMP"
+	elif [ ! -d "$CENTPLUGINS_TMP" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTPLUGINS_TMP"
+		log "INFO" "$(gettext "Create") $CENTPLUGINS_TMP"
 	fi
+	export CENTPLUGINS_TMP
 	log "INFO" "CENTPLUGINS_TMP: $CENTPLUGINS_TMP"
 }
 
 ## check sudo_file
 function locate_sudo() {
 	if [ -z "$SUDO_FILE" ] ; then
-		answer_with_testfile "`gettext \"Where is sudo configuration file\"`" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
+		answer_with_testfile "$(gettext "Where is sudo configuration file")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
 		echo_success "$SUDO_FILE" "$ok"
 	fi
+	export SUDO_FILE
 	log "INFO" "SUDO_FILE: $SUDO_FILE"
 }
 
 ## check rrd_perl
 function locate_rrd_perldir() {
 	if [ -z "$RRD_PERL" ] ; then
-		answer_with_testfile "`gettext \"Where is installed RRD perl modules [RRDs.pm]\"`" "$DEFAULT_RRD_PERL/RRDs.pm" "RRD_PERL"
-		RRD_PERL=`dirname $RRD_PERL`
+		answer_with_testfile "$(gettext "Where is installed RRD perl modules [RRDs.pm]")" "$DEFAULT_RRD_PERL/RRDs.pm" "RRD_PERL"
+		RRD_PERL=$(dirname $RRD_PERL)
 		echo_success "Path $RRD_PERL" "$ok"
 	fi
+	export RRD_PERL
 	log "INFO" "RRD_PERL: $RRD_PERL"
 }
 
 ## Check rrdtool
 function locate_rrdtool() {
 	if [ -z "$BIN_RRDTOOL" ] ; then 
-		pathfind_ret rrdtool "BIN_RRDTOOL"
-		if [ $? -ne 0 ] ; then 
-			answer_with_testfile "`gettext \"Where is rrdtool\"`" "$DEFAULT_BIN_RRDTOOL" "BIN_RRDTOOL"
+		pathfind_ret "rrdtool" "BIN_RRDTOOL"
+		if [ "$?" -ne 0 ] ; then 
+			answer_with_testfile "$(gettext "Where is rrdtool")" "$DEFAULT_BIN_RRDTOOL" "BIN_RRDTOOL"
 		else 
 			BIN_RRDTOOL="$BIN_RRDTOOL/rrdtool"
 		fi
 		echo_success "$BIN_RRDTOOL" "$ok"
 	fi
+	export BIN_RRDTOOL
 	log "INFO" "BIN_RRDTOOL: $BIN_RRDTOOL"
 }
 
 ## Check mail
 function locate_mail() {
 	if [ -z "$BIN_MAIL" ] ; then 
-		pathfind_ret mail "BIN_MAIL"
-		if [ $? -ne 0 ] ; then 
-			answer_with_testfile "`gettext \"Where is mail binary\"`" "$DEFAULT_BIN_MAIL" "BIN_MAIL"
+		pathfind_ret "mail" "BIN_MAIL"
+		if [ "$?" -ne 0 ] ; then 
+			answer_with_testfile "$(gettext "Where is mail binary")" "$DEFAULT_BIN_MAIL" "BIN_MAIL"
 		else 
 			BIN_MAIL="$BIN_MAIL/mail"
 		fi
 		echo_success "$BIN_MAIL" "$ok"
 	fi
+	export BIN_MAIL
 	log "INFO" "BIN_MAIL: $BIN_MAIL"
 }
 
 ## Check ssh
 function locate_ssh() {
 	if [ -z "$BIN_SSH" ] ; then 
-		pathfind_ret ssh "BIN_SSH"
-		if [ $? -ne 0 ] ; then 
-			answer_with_testfile "`gettext \"Where is ssh binary\"`" "$DEFAULT_BIN_SSH" "BIN_SSH"
+		pathfind_ret "ssh" "BIN_SSH"
+		if [ "$?" -ne 0 ] ; then 
+			answer_with_testfile "$(gettext "Where is ssh binary")" "$DEFAULT_BIN_SSH" "BIN_SSH"
 		else 
 			BIN_SSH="$BIN_SSH/ssh"
 		fi
 		echo_success "$BIN_SSH" "$ok"
 	fi
+	export BIN_SSH
 	log "INFO" "BIN_SSH: $BIN_SSH"
 }
 
 ## Check scp
 function locate_scp() {
 	if [ -z "$BIN_SCP" ] ; then 
-		pathfind_ret scp "BIN_SCP"
-		if [ $? -ne 0 ] ; then 
-			answer_with_testfile "`gettext \"Where is scp binary\"`" "$DEFAULT_BIN_SCP" "BIN_SCP"
+		pathfind_ret "scp" "BIN_SCP"
+		if [ "$?" -ne 0 ] ; then 
+			answer_with_testfile "$(gettext "Where is scp binary")" "$DEFAULT_BIN_SCP" "BIN_SCP"
 		else 
 			BIN_SCP="$BIN_SCP/scp"
 		fi
 		echo_success "$BIN_SCP" "$ok"
 	fi
+	export BIN_SCP
 	log "INFO" "BIN_SCP: $BIN_SCP"
 }
 
@@ -598,41 +624,44 @@ function locate_php_bin() {
 	if [ -z "$PHP_BIN" ] ; then
 		php_binaries="php php5"
 		for binary in $php_binaries ; do
-			pathfind_ret $binary "PHP_BIN"
-			if [ $? -eq 0 ] ; then
+			pathfind_ret "$binary" "PHP_BIN"
+			if [ "$?" -eq 0 ] ; then
 				PHP_BIN="$PHP_BIN/$binary"
 				break
 			fi
 		done
 		if [ -z "$PHP_BIN" ] ; then 
-			answer_with_testfile "`gettext \"Where is your php binany ? \"`" "$DEFAULT_PHP_BIN" "PHP_BIN"
+			answer_with_testfile "$(gettext "Where is your php binany ? ")" "$DEFAULT_PHP_BIN" "PHP_BIN"
 		fi
 		echo_success "$PHP_BIN" "$ok"
 	fi
+	export PHP_BIN
 	log "INFO" "PHP_BIN: $PHP_BIN"
 }
 
 ## Check pear_path
 function locate_pear() {
 	if [ -z "$PEAR_PATH" ] ; then
-		answer_with_testfile "`gettext \"Where is PEAR [PEAR.php] \"`" "$DEFAULT_PEAR_PATH/PEAR.php" "PEAR_PATH"
-		PEAR_PATH=`dirname $PEAR_PATH`
+		answer_with_testfile "$(gettext "Where is PEAR [PEAR.php] ")" "$DEFAULT_PEAR_PATH/PEAR.php" "PEAR_PATH"
+		PEAR_PATH=$(dirname $PEAR_PATH)
 		echo_success "Path $PEAR_PATH" "$ok"
 	fi
+	export PEAR_PATH
 	log "INFO" "PEAR_PATH: $PEAR_PATH"
 }
 
 ## Check cron.d directory
 function locate_cron_d() {
 	if [ -z "$CRON_D" ] ; then
-		if [ -d /etc/cron.d ] ; then
+		if [ -d "/etc/cron.d" ] ; then
 			CRON_D="/etc/cron.d"
 		# Add most of init.d 
 		else 
-			answer_with_testdir "`gettext \"Where is your cron.d directory ?\"`" "$DEFAULT_CRON_D" "CRON_D"
+			answer_with_testdir "$(gettext "Where is your cron.d directory ?")" "$DEFAULT_CRON_D" "CRON_D"
 			echo_success "Path $CRON_D" "$ok"
 		fi
 	fi
+	export CRON_D
 	log "INFO" "CRON_D: $CRON_D"
 }
 
