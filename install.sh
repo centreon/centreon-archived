@@ -21,7 +21,12 @@
 #    For information : infos@centreon.com
 ####################################################################
 #
-# SVN: $Id$
+# SVN: $URL$
+# SVN: $Rev$
+# SVN: $Author$
+# SVN: $Date$
+# SVN  $Id$
+#
 #
 # Todo list
 # - upgrade process 

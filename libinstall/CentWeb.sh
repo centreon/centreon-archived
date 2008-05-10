@@ -1,4 +1,4 @@
-# -*-Shell-script-*-
+#!/bin/sh
 # Install script for Centreon Web Front
 #################################
 # SVN: $Id$
@@ -20,6 +20,7 @@ locate_centreon_etcdir
 locate_centreon_generationdir
 
 ## Config pre-require
+# define all necessary variables.
 locate_rrd_perldir
 locate_rrdtool
 locate_mail
@@ -41,13 +42,14 @@ locate_php_bin
 check_httpd_directory
 check_group_apache
 check_user_apache
+## Check Nagios config
 check_user_nagios
 check_group_nagios
 
 ## NDO binary
-yes_no_default "`gettext \"Do you want use NDO ?\"`" "$no"
-if [ $? -eq 0 ] ; then
-	log "INFO" "`gettext \"NDO use...\"`"
+yes_no_default "$(gettext "Do you want use NDO ?")" "$no"
+if [ "$?" -eq 0 ] ; then
+	log "INFO" "$(gettext "NDO use...")"
 	locate_ndomod_binary
 fi
 
