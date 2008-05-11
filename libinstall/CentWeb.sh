@@ -113,7 +113,6 @@ sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 	-e 's|@INIT_D@|'"$INIT_D"'|g' \
 	-e 's|@NDOMOD_BINARY@|'"$NDOMOD_BINARY"'|g' \
 	-e 's|@P1_PL@|'"$NAGIOS_P1_FILE"'|g' \
-	-e 's|\/\/|\/|g' \
 	$TMPDIR/src/www/install/insertBaseConf.sql > \
 	$TMPDIR/work/www/install/insertBaseConf.sql
 
