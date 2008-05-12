@@ -345,7 +345,7 @@ function locate_nagiosstats_binary() {
 function locate_nagios_p1_file() {
 	local nagios_etc="$1"
 	if [ -z "$NAGIOS_P1_FILE" ] ; then 
-		NAGIOS_P1_FILE=$(grep -r "^p1_file" $nagios_etc | cut -d= -f2)
+		NAGIOS_P1_FILE=$(grep -r "^p1_file" $nagios_etc | grep -v -i "sample" | cut -d= -f2)
 		if [ -z "$NAGIOS_P1_FILE" ] ; then
 			log "INFO" "$(gettext "p1_file not found")"
 		else
