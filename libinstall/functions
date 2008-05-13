@@ -486,6 +486,19 @@ function locate_centreon_rundir() {
 	log "INFO" "CENTREON_RUNDIR: $CENTREON_RUNDIR"
 }
 
+## Check centreon_varlib
+function locate_centreon_varlib() {
+	if [ -z "$CENTREON_VARLIB" ] ; then
+		answer_with_createdir "$(gettext "Where is your Centreon variable library directory?")" "$DEFAULT_CENTREON_VARLIB" "CENTREON_VARLIB"
+		echo_success "Path $CENTREON_VARLIB" "$ok"
+	elif [ ! -d "$CENTREON_VARLIB" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTREON_VARLIB"
+		log "INFO" "$(gettext "Create") $CENTREON_VARLIB"
+	fi
+	export CENTREON_VARLIB
+	log "INFO" "CENTREON_VARLIB: $CENTREON_VARLIB"
+}
+
 ## Check centStorage_rrddir
 function locate_centstorage_rrddir() {
 	if [ -z "$CENTSTORAGE_RRD" ] ; then

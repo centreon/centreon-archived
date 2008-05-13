@@ -40,13 +40,13 @@ if (POSIX::getuid() == 0 ) {
 
 my $echo = "/bin/echo";
 
-my $installedPath = "@CENTREON_RUNDIR@";
-my $LOG = $installedPath."var/centcore.log";
-my $PID = $installedPath."var/centcore.pid";
-my $cmdFile = "@CENTREON_RUNDIR@/var/centcore.cmd";
+my $installedPath = "@CENTREON_DIR@";
+my $LOG = "@CENTREON_LOG@/centcore.log";
+my $PID = "@CENTREON_RUNDIR@/centcore.pid";
+my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
 
-$ssh = "/usr/bin/ssh";
-$scp = "/usr/bin/scp";
+$ssh = "@BIN_SSH@";
+$scp = "@BIN_SCP@";
 
 my $stop = 1;
 my $debug = 0;

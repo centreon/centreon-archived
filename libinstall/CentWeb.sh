@@ -124,7 +124,34 @@ cp $TMPDIR/work/www/install/insertBaseConf.sql \
 ### Step 2: Change right on Centreon WebFront
 
 ## use this step to change macros on php file...
+echo_info "$(gettext "Change macros for php file")"
+macros="@CENTREON_ETC@"
+file_php_temp=$(mktemp $TMPDIR/file_php_temp.XXXXXX)
 
+# define all file where I apply a sed for $macros
+for macro in $macros ; do
+	log "INFO" "$(gettext "Search file for macro") : $macro"
+	( cd $TMPDIR/src/ ;
+	find www -mindepth 1 -type f -name "*.php" | \
+		xargs grep "$macro" | \
+		cut -d: -f1 | \
+		uniq >> "$file_php_temp" 2>>"$LOG_FILE";
+	)
+done
+
+log "INFO" "$(gettext "Apply macros")"
+
+cat "$file_php_temp" | while read file ; do
+	log "MACRO" "$(gettext "Change macro for") : $file"
+	[ ! -d $(dirname $TMPDIR/work/$file) ] \
+		&& mkdir -p  $(dirname $TMPDIR/work/$file) >> $LOG_FILE 2>&1
+	sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+		$TMPDIR/src/$file > $TMPDIR/work/$file
+	log "MACRO" "$(gettext "Copy in final dir") : $file"
+	cp -f $TMPDIR/work/$file $TMPDIR/final/$file >> $LOG_FILE 2>&1 
+done
+
+echo_success "$(gettext "Change macros for php file")" "$ok"
 
 ### Step 3: Change right on nagios_etcdir
 log "INFO" "$(gettext "Change right on") $NAGIOS_ETC" 

@@ -14,6 +14,7 @@ locate_centreon_installdir
 locate_centreon_etcdir
 locate_centreon_rundir
 locate_centreon_logdir
+locate_centreon_varlib
 locate_centreon_generationdir
 locate_centcore_bindir
 
@@ -42,8 +43,9 @@ cp -f $BASE_DIR/tmpl/install/centcore.init.d $TMPDIR/src
 sed -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTCORE_BINDIR@|'"$CENTCORE_BINDIR"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
-	-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 	-e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
 	-e 's|@BIN_SSH@|'"$BIN_SSH"'|g' \
 	-e 's|@BIN_SCP@|'"$BIN_SCP"'|g' \
@@ -63,6 +65,12 @@ log "INFO" "`gettext \"Copying CentCore in binary directory\"`"
 log "INFO" "`gettext \"Change right\"` : $CENTREON_RUNDIR"
 $INSTALL_DIR/cinstall -g $NAGIOS_USER -d 775 -v \
 	$CENTREON_RUNDIR >> $LOG_FILE 2>&1
+
+## Change tight on CENTREON_VARLIB
+log "INFO" "`gettext \"Change right\"` : $CENTREON_VARLIB"
+$INSTALL_DIR/cinstall -g $NAGIOS_USER -d 775 -v \
+	$CENTREON_VARLIB >> $LOG_FILE 2>&1
+
 
 ###### CentCore init
 #################################
