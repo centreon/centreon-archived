@@ -83,7 +83,7 @@ centstorageLogDir=@CENTREON_LOG@
 centstorageRunDir=@CENTREON_RUNDIR@
 centstorageVarDir=${prefix}/var/
 centstorageRunFile=${centstorageRunDir}/centstorage.pid
-centstorageDemLog=${censtorageLogDir}/centstorage_daemon.log
+centstorageDemLog=@CENTREON_LOG@/centstorage.log
 #centstorageDemLog=${censtorageLogDir}/centstorage.log
 centstorageLockDir=/var/lock/subsys
 centstorageLockFile=centstorage
@@ -118,10 +118,10 @@ case "$1" in
 	fi
     fi
     echo "Starting centstorage Collector : centstorage"
-    su - @NAGIOS_USER@ -c 'nice $NICE $Bin >> $centstorageDemLog 2>&1'
-    if [ -d $centstorageLockDir ]; then touch $centstorageLockDir/$centstorageLockFile; fi
-	#sleep 1
-	#status_nagios nagios
+    su - @NAGIOS_USER@ -c "$Bin 2>&1 >> $centstorageDemLog"
+    if [ -d $centstorageLockDir ]; then 
+    	touch $centstorageLockDir/$centstorageLockFile; 
+    fi
     exit 0
     ;;
     
