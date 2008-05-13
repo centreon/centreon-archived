@@ -49,7 +49,6 @@ sed -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
 	-e 's|@BIN_SSH@|'"$BIN_SSH"'|g' \
 	-e 's|@BIN_SCP@|'"$BIN_SCP"'|g' \
-	-e 's|\/\/|\/|g' \
 	$TMPDIR/src/bin/centcore > $TMPDIR/work/bin/centcore
 
 echo_success "`gettext \"Replace CentCore Macro\"`" "$ok"
@@ -71,7 +70,6 @@ log "INFO" "`gettext \"Change right\"` : $CENTREON_VARLIB"
 $INSTALL_DIR/cinstall -g $NAGIOS_USER -d 775 -v \
 	$CENTREON_VARLIB >> $LOG_FILE 2>&1
 
-
 ###### CentCore init
 #################################
 ## Change macros in CentCore init script
@@ -81,7 +79,6 @@ sed -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
 	-e 's|@CENTCORE_BINDIR@|'"$CENTCORE_BINDIR"'|g' \
 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
-	-e 's|\/\/|\/|g' \
 	$TMPDIR/src/centcore.init.d > $TMPDIR/work/centcore.init.d
 
 echo_success "`gettext \"Replace CentCore init script Macro\"`" "$ok"

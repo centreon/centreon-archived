@@ -194,6 +194,7 @@ log "INFO" "$(gettext "Change macros for centreon.cron")"
 sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	-e 's|@CRONUSER@|'"$NAGIOS_USER"'|g' \
 	$BASE_DIR/tmpl/install/centreon.cron > $TMPDIR/work/centreon.cron
 cp $TMPDIR/work/centreon.cron $TMPDIR/final/centreon.cron >> "$LOG_FILE" 2>&1
 

@@ -118,7 +118,7 @@ case "$1" in
 	fi
     fi
     echo "Starting centstorage Collector : centstorage"
-    su - @NAGIOS_USER@ -c "$Bin 2>&1 >> $centstorageDemLog"
+    su - @NAGIOS_USER@ -c "$Bin >> $centstorageDemLog 2>&1"
     if [ -d $centstorageLockDir ]; then 
     	touch $centstorageLockDir/$centstorageLockFile; 
     fi

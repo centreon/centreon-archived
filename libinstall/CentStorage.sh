@@ -66,7 +66,7 @@ $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -m 755 -v \
 ## Create CentStorage Status folder
 if [ ! -d "$CENTSTORAGE_RRD/status" ] ; then
 	log "INFO" "`gettext \"Create CentStorage status directory\"`"
-	$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 -v \
+	$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 755 -v \
 		$CENTSTORAGE_RRD/status >> $LOG_FILE 2>&1
 	echo_success "`gettext \"Creating Centreon Directory\"` '$CENTSTORAGE_RRD/status'" "$ok"
 else
@@ -75,7 +75,7 @@ fi
 ## Create CentStorage metrics folder
 if [ ! -d "$CENTSTORAGE_RRD/metrics" ] ; then
 	log "INFO" "`gettext \"Create CentStorage metrics directory\"`"
-	$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 -v \
+	$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 755 -v \
 		$CENTSTORAGE_RRD/metrics >> $LOG_FILE 2>&1
 	echo_success "`gettext \"Creating Centreon Directory\"` '$CENTSTORAGE_RRD/metrics'" "$ok"
 else
@@ -180,6 +180,7 @@ log "INFO" "`gettext \"Change macros for centstorage.cron\"`"
 sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	-e 's|@CRONUSER@|'"$NAGIOS_USER"'|g' \
 	$BASE_DIR/tmpl/install/centstorage.cron > $TMPDIR/work/centstorage.cron
 cp $TMPDIR/work/centstorage.cron $TMPDIR/final/centstorage.cron >> $LOG_FILE 2>&1
 log "INFO" "`gettext \"Install centstorage cron\"`"
