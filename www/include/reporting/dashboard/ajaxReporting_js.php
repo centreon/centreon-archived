@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
 	
-	require_once("/etc/centreon/centreon.conf.php");
+	require_once("@CENTREON_ETC@/centreon.conf.php");
 ?>
 <script type="text/javascript">
 

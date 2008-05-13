@@ -19,7 +19,7 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 	
-	include("/etc/centreon/centreon.conf.php");
+	include("@CENTREON_ETC@/centreon.conf.php");
 	require_once ('DB.php');
 	require_once ('./DB-Func.php');
 	require_once ($centreon_path."www/class/Session.class.php");

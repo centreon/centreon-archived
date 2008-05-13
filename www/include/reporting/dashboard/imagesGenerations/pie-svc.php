@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
 
-	include_once("/etc/centreon/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");
 	
 	require_once ("../../class/Session.class.php");
 	require_once ("../../class/Oreon.class.php");

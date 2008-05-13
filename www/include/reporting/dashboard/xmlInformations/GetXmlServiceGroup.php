@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
  	require_once 'DB.php';
-	require_once("/etc/centreon/centreon.conf.php");
+	require_once("@CENTREON_ETC@/centreon.conf.php");
 	require_once $centreon_path.'www/class/other.class.php';
 	
 	$buffer = null;

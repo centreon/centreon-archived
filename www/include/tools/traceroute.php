@@ -17,7 +17,7 @@
 
 	ini_set("Display_errors", "Off");
 
-	 include("/etc/centreon/centreon.conf.php");
+	 include("@CENTREON_ETC@/centreon.conf.php");
 	 require_once ("../../$classdir/Session.class.php");
 	 require_once ("../../$classdir/Oreon.class.php");
 

@@ -18,7 +18,7 @@
 	# return argument for specific command in txt format
 	# use by ajax
 
-	require_once("/etc/centreon/centreon.conf.php");
+	require_once("@CENTREON_ETC@/centreon.conf.php");
 	require_once($centreon_path."www/DBconnect.php");
 
 	function myDecodeService($arg)	{

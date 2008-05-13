@@ -15,13 +15,13 @@
  * For information : contact@centreon.com
  */
  
-	if (!file_exists("/etc/centreon/centreon.conf.php") && is_dir('./install'))
+	if (!file_exists("@CENTREON_ETC@/centreon.conf.php") && is_dir('./install'))
 		header("Location: ./install/setup.php");
-	else if (file_exists("/etc/centreon/centreon.conf.php") && is_dir('install'))
+	else if (file_exists("@CENTREON_ETC@/centreon.conf.php") && is_dir('install'))
 		header("Location: ./install/upgrade.php");
 	else {
-		if (file_exists("/etc/centreon/centreon.conf.php")){
-			require_once ("/etc/centreon/centreon.conf.php");
+		if (file_exists("@CENTREON_ETC@/centreon.conf.php")){
+			require_once ("@CENTREON_ETC@/centreon.conf.php");
 			$freeze = 0;
 		} else {
 			$freeze = 1;

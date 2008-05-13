@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
  
-	include_once ("/etc/centreon/centreon.conf.php");
+	include_once ("@CENTREON_ETC@/centreon.conf.php");
 	include_once("DB.php");
 	include_once("../DBconnect.php");
 	

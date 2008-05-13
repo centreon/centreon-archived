@@ -53,7 +53,7 @@ my $debug = 0;
 my $cfg;
 
 # Include Configuration Data
-require "/etc/centreon/conf.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 sub catch_zap {
 	$stop = 0;
