@@ -279,7 +279,7 @@ sub CheckRestart(){
 	my ($last_restart_stt, $last_restart, $sth2, $data, $y);
 	use vars qw($con_oreon $con_ods);
 	$y = 1;
-	#CheckMySQLConnexion();
+	# CheckMySQLConnexion();
 	$last_restart = getLastRestart();
 	$last_restart_stt = getLastRestartInMemory();
 	if (!$last_restart_stt || $last_restart ne $last_restart_stt){
@@ -290,8 +290,8 @@ sub CheckRestart(){
 		}
 		saveLastRestartInMemory($last_restart);
 	}
-	$con_oreon->disconnect();
-    $con_ods->disconnect();
+#	$con_oreon->disconnect();
+#    $con_ods->disconnect();
 	$y++;
 }
 
