@@ -15,8 +15,8 @@
  * For information : contact@centreon.com
  */
 
-	aff_header("Centreon Setup Wizard", "Welcome to Oreon Setup", 1);
-	print "<p>This installer creates the Oreon database tables and sets the configuration variables that you need to start. The entire process should take about ten minutes.</p>";
+	aff_header("Centreon Setup Wizard", "Welcome to Centreon Setup", 1);
+	print "<p>This installer creates the Centreon database tables and sets the configuration variables that you need to start. The entire process should take about ten minutes.</p>";
 	aff_middle();
 	print "<input class='button' type='submit' name='goto' value='Start' id='defaultFocus' /></td>";
 	aff_footer();
