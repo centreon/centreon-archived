@@ -22,6 +22,9 @@
 sub CheckMySQLDrain(){
 	my ($data, $data_hg, $sth3, %base, %srv_list);
 	
+	$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	
 	my $sth2 = $con_oreon->prepare("SELECT service_service_id, host_host_id FROM host_service_relation WHERE hostgroup_hg_id IS NULL ");
 	if (!$sth2->execute) {writeLogFile("Error in Drain function 2 : " . $sth2->errstr . "\n");}
 	while ($data = $sth2->fetchrow_hashref()){
