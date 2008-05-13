@@ -133,7 +133,7 @@ sub DeleteOldRrdDB(){
 sub check_HostServiceID(){
 	my ($data, $host_name, $service_description, $purge_mod);
 	$con = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	my $sth1 = $conods->prepare("SELECT * FROM index_data ORDER BY host_name");
+	my $sth1 = $con->prepare("SELECT * FROM index_data ORDER BY host_name");
 	if (!$sth1->execute) {
 		writeLogFile("Error : " . $sth1->errstr . "\n");
 	}
@@ -142,7 +142,7 @@ sub check_HostServiceID(){
     	$service_description = getServiceName($data->{'service_id'});
     	if (defined($host_name) && $host_name && defined($service_description) && $service_description && defined($data->{'host_name'}) && defined($data->{'service_description'}) && (($host_name ne $data->{'host_name'}) || ($service_description ne $data->{'service_description'}))){
     		$str = 	"UPDATE index_data SET `host_name` = '".$host_name."', `service_description` = '".$service_description."' WHERE `host_id` = '".$data->{'host_id'}."' AND `service_id` = '".$data->{'service_id'}."'";
-    		my $sth2 = $conods->prepare($str);
+    		my $sth2 = $con->prepare($str);
     		writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
     		undef($sth2);
     	}  
