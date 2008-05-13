@@ -69,7 +69,7 @@
 	
 	include_once("./DBNDOConnect.php");
 	
-	if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
+	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) 
 		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
 	else {
 		switch ($o)	{

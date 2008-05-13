@@ -27,15 +27,16 @@
 	 * DB connexion
 	 */
 	 
-	require_once '@CENTREON_ETC@/centreon.conf.php';
+	#require_once '@CENTREON_ETC@/centreon.conf.php';
+	require_once '/etc/centreon/centreon.conf.php';
 	require_once './DBconnect.php';
 	require_once './DBNDOConnect.php';
 	
 	
-	if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
+	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) 
 		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
 	else {
-/*
+		/*
 		 * Pear library
 		 */
 		require_once "HTML/QuickForm.php";
