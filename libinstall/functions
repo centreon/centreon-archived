@@ -754,6 +754,8 @@ function configureSUDO(){
     	locate_sudo
 	# Find Nagios Init Script
 	check_nagios_init_script
+	# find nagios binary if not define
+	[ -n "$NAGIOS_BINARY" ] && locate_nagios_binary
 	# Prepare sudo.conf
 	
 	cat << __EOT__ > $INSTALL_DIR_CENTREON/examples/centreon.sudo
@@ -763,6 +765,10 @@ User_Alias      CENTREON= $WEB_USER
 CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart
 # Nagios reload
 CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload
+# Nagios test config
+CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY -v *
+# Nagios test for optim config
+CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY -s *
 ## Snmptrapd Restart
 CENTREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart
 ## CentStorage Restart
