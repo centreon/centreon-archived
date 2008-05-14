@@ -12,7 +12,7 @@
 					<td class='ListColLeft' valign="top" align='center'> <b>Service : <xsl:value-of select="name"/></b></td>
 					<td style="text-align:right;width:42px;">
 						<xsl:element name="a">
-							<xsl:attribute name="href">./include/views/graphs/graphODS/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
 							<img src="./img/icones/16x16/text_binary_csv.gif"/>
 						</xsl:element>
 					</td>
@@ -83,7 +83,7 @@
 	
 							<xsl:element name="a">
 							<xsl:attribute name="href">
-							./include/views/graphs/graphODS/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
+							./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
 							</xsl:attribute>
 							<img src="./img/icones/16x16/text_binary_csv.gif"/>
 						</xsl:element>
@@ -196,7 +196,7 @@
 					<td style="text-align:right;width:42px;">
 						<xsl:element name="a">
 							<xsl:attribute name="href">
-							./include/views/graphs/graphODS/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
+							./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
 							</xsl:attribute>
 							<img src="./img/icones/16x16/text_binary_csv.gif"/>
 						</xsl:element>
@@ -286,7 +286,7 @@
 					<td style="text-align:right;width:42px;">
 						<xsl:element name="a">
 							<xsl:attribute name="href">
-							./include/views/graphs/graphODS/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/>
+							./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/>
 							</xsl:attribute>
 							<img src="./img/icones/16x16/text_binary_csv.gif"/>
 						</xsl:element>
