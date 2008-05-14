@@ -694,7 +694,7 @@ local examplesdir=$1
 	
 Alias /centreon $INSTALL_DIR_CENTREON/www/
 <Directory "$INSTALL_DIR_CENTREON/www">
-    Options None
+    Options Indexes
     AllowOverride AuthConfig Options
     Order allow,deny
     Allow from all
