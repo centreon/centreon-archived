@@ -152,7 +152,7 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 			} else {
 	            echo '<b><span class="stop">Critical: Not Writeable</font></b>';
 	          	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b></span>' ;
-	          	$msg .=  '<br />Should be '.$_SESSION['nagios_user'].':'.$_SESSION['apache_group'].' (666)';
+	          	$msg .=  '<br />Should be '.$_SESSION['nagios_user'].':'.$_SESSION['apache_group'].' (775)';
 			   	echo $msg;
 			    $return_false = 1;
 	       	}
