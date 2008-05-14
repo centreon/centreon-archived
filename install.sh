@@ -111,7 +111,7 @@ do
 	esac
 done
 
-version="2.0"
+version="2.0-b1"
 
 cat << __EOT__
 ###############################################################################
@@ -119,7 +119,7 @@ cat << __EOT__
 #                         Centreon (www.centreon.com)                         #
 #                          Thanks for using Centreon                          #
 #                                                                             #
-#                                    v$version				           #
+#                                    v$version                                   #
 #                                                                             #
 #                             infos@oreon-project.org                         #
 #                                                                             #
