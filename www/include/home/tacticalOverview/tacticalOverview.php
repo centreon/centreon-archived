@@ -404,6 +404,7 @@
 				$j++;
 			}
 		}
+		$nb_pb = $j;
 		 
 		 
 		$path = "./include/home/tacticalOverview/";
@@ -422,6 +423,7 @@
 		$tpl->assign("SvcInact", $svcInactive);
 		$tpl->assign("SvcOnPbHost", $onPbHost);
 		$tpl->assign("SvcUnhandled", $svcUnhandled);
+		$tpl->assign("nb_pb", $nb_pb);
 		$tpl->assign("tb_hostname", $tab_hostname);
 		$tpl->assign("tb_svcname", $tab_svcname);
 		$tpl->assign("tb_state", $tab_state);
@@ -474,6 +476,7 @@
 		 *  Strings for service problems
 		 */
 		$tpl->assign("str_unhandled", _("Unhandled Service problems"));
+		$tpl->assign("str_no_unhandled", _("No unhandled service problem"));
 		$tpl->assign("str_hostname", _("Host Name"));
 		$tpl->assign("str_servicename", _("Service Name"));
 		$tpl->assign("str_status", _("Status"));

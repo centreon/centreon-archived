@@ -203,7 +203,10 @@
 		<tr>
 			<td style="font-weight:bold;background-color:#ffffff;">&nbsp;::&nbsp;{$str_unhandled}</td>
 		</tr>
-		<tr>
+		<tr>			
+			{if ($nb_pb == 0)}
+			<td align="center">{$str_no_unhandled}
+			{else}
 			<td>
 				<table class="tactical_light_table">
 					<tr style="font-weight:bold;" class="tactical_light_header">
@@ -243,6 +246,7 @@
 					{/if}
 					{/foreach}
 				</table>
+			{/if}
 			</td>
 		</tr>
 	</table>
