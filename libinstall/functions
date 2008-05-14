@@ -1099,6 +1099,9 @@ function check_httpd_directory()
 		answer_with_testdir "`gettext \"Where is your Apache conf.d directory\"`" "NO_DEFAULT" "DIR_APACHE_CONF"
 		answer_with_testfile "`gettext \"Where is your Apache htpasswd file \"`" "NO_DEFAULT" "HTPASSWD"
 	fi
+	log "INFO" "DIR_APACHE: $DIR_APACHE"
+	log "INFO" "DIR_APACHE_CONF: $DIR_APACHE_CONF"
+	log "INFO" "HTPASSWD: $HTPASSWD"
 
 	if [ -e $DIR_APACHE/apache2.conf ] ; then
 		APACHE_CONF="apache2.conf"
@@ -1112,20 +1115,31 @@ function check_httpd_directory()
 		echo_passed "`gettext \"Apache config file not found\"`" "$critical"
 		answer_with_testfile "`gettext \"Where is your Apache config file \"`" "NO_DEFAULT" "APACHE_CONF"
 	fi
+	log "INFO" "APACHE_CONF: $APACHE_CONF"
 	return 0
 }
 
 function check_user_apache()
 {
-	local found=1
+	local found=0
 	if [ -e /etc/apache2/envvars ] ; then 
+		log "INFO" "$(gettext "Use envvars file for apache user")"
 		# for Debian system (lenny)
 		WEB_USER=`cat /etc/apache2/envvars |grep "USER" | cut -d= -f2`
-		[ -z "$WEB_USER" ] && found=0
+		if [ -z "$WEB_USER" ] ; then 
+			found=0
+		else 
+			found=1
+		fi
 	elif [ -e /etc/apache2/uid.conf ] ; then
+		log "INFO" "$(gettext "Use uid.conf file for apache user")"
 		# for SuSe system
 		WEB_USER=`cat /etc/apache2/uid.conf |grep -e "^User" | cut -d" " -f2`
-		[ -z "$WEB_USER" ] && found=0
+		if [ -z "$WEB_USER" ] ; then 
+			found=0
+		else 
+			found=1
+		fi
 	fi 
 	if [ $found -eq 0 ] ; then 
 		WEB_USER=`cat $DIR_APACHE/$APACHE_CONF | grep -e "^User" | cut -d" " -f2`
@@ -1134,8 +1148,10 @@ function check_user_apache()
 			for fichier in $DIR_APACHE/*
 			do
 				if [ -f "$fichier" ] ; then
+					log "INFO" "$(gettext "check apache user in") : $fichier"
 					WEB_USER_TEMP=`cat $fichier | grep -e "^User" | cut -d" " -f2`
 					if [ -n "$WEB_USER_TEMP" ] ; then
+						log "INFO" "$(gettext "found apache user in") : $fichier"
 						WEB_USER=$WEB_USER_TEMP
 					fi
 				fi
@@ -1147,15 +1163,23 @@ function check_user_apache()
 
 function check_group_apache()
 {
-	local found=1
+	local found=0
 	if [ -e /etc/apache2/envvars ] ; then
 		# for debian system
 		WEB_GROUP=`cat /etc/apache2/envvars |grep "GROUP" |cut -d= -f2`
-		[ -z "$WEB_GROUP" ] && found=0
+		if [ -z "$WEB_GROUP" ] ; then 
+			found=0
+		else 
+			found=1
+		fi
 	elif [ -e /etc/apache2/uid.conf ] ; then
 		# for SuSe system
 		WEB_USER=`cat /etc/apache2/uid.conf |grep -e "^Group" | cut -d" " -f2`
-		[ -z "$WEB_GROUP" ] && found=0
+		if [ -z "$WEB_GROUP" ] ; then 
+			found=0
+		else 
+			found=1
+		fi
 	fi
 	if [ $found -eq 0 ] ; then 
 		WEB_GROUP=`cat $DIR_APACHE/$APACHE_CONF | grep -e "^Group" | cut -d" " -f2`
