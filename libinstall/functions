@@ -333,7 +333,7 @@ function locate_nagiosstats_binary() {
 			fi
 		done
 		if [ -z "$NAGIOSSTATS_BINARY" ] ; then 
-			answer_with_testfile "`gettext \"Where is your nagiostats binany ? \"`" "$DEFAULT_NAGIOSSTATS_BINARY" "NAGIOSSTATS_BINARY"
+			answer_with_testfile "`gettext \"Where is your nagiostats binary ? \"`" "$DEFAULT_NAGIOSSTATS_BINARY" "NAGIOSSTATS_BINARY"
 		fi
 		echo_success "$NAGIOSSTATS_BINARY" "$ok"
 	fi
@@ -564,7 +564,7 @@ function locate_sudo() {
 ## check rrd_perl
 function locate_rrd_perldir() {
 	if [ -z "$RRD_PERL" ] ; then
-		answer_with_testfile "$(gettext "Where is installed RRD perl modules [RRDs.pm]")" "$DEFAULT_RRD_PERL/RRDs.pm" "RRD_PERL"
+		answer_with_testfile "$(gettext "Where is the RRD perl module installed [RRDs.pm]")" "$DEFAULT_RRD_PERL/RRDs.pm" "RRD_PERL"
 		RRD_PERL=$(dirname $RRD_PERL)
 		echo_success "Path $RRD_PERL" "$ok"
 	fi
@@ -707,10 +707,10 @@ __EOT__
 		if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
 			echo "`gettext \"Finding Apache Centreon configuration file\"`"
 			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
-			yes_no_default "`gettext \"Do you want rewrite Apache configuration file ?\"`"
+			yes_no_default "`gettext \"Do you want to rewrite Apache configuration file ?\"`"
 			[ $? -eq 0 ] && write_config=1	
 		else 
-			yes_no_default "`gettext \"Do you want write Apache configuration file ?\"`"
+			yes_no_default "`gettext \"Do you want to write in Apache configuration file ?\"`"
 			[ $? -eq 0 ] && write_config=1
 		fi
 	else 
@@ -722,9 +722,9 @@ __EOT__
 		echo_success "`gettext \"Configuring Apache\"`" "$ok"
 		# After finishing the configuration -> 
 		# restart apache ! (if admin wants :p)
-		yes_no_default "`gettext \"Do you want reload your Apache ?\"`"
+		yes_no_default "`gettext \"Do you want to reload your Apache ?\"`"
 		if [ $? -eq 0 ] ; then 
-			log "INFO" "`gettext \"Reload Apache...\"`"
+			log "INFO" "`gettext \"Reloading Apache...\"`"
 			if [ -x /etc/init.d/apache ] ; then
 				/etc/init.d/apache reload >> $LOG_FILE 2>&1
 			elif [ -x /etc/init.d/httpd ] ; then
@@ -736,7 +736,7 @@ __EOT__
 			elif [ -e /usr/local/etc/rc.d/apache2 ]; then
 				/etc/init.d/apache2 reload >> $LOG_FILE 2>&1
 			else
-				echo_warning "`gettext \"Unable to restart apache server\"`" "$warning"
+				echo_warning "`gettext \"Unable to restart Apache server\"`" "$warning"
 				log "WARN" "`gettext \"Unable to restart Apache server\"`"
 			fi
 		fi
@@ -780,19 +780,19 @@ __EOT__
 
 	sudo=`grep -e "[CO][ER][NE][TO][RN]" $SUDO_FILE > /dev/null; echo $?`
 	if [ $sudo -eq 1 ]; then
-    		echo_info "`gettext \"Your sudo is not configure\"`"
+    		echo_info "`gettext \"Your sudo is not configured\"`"
 
-		yes_no_default "`gettext \"Do you want I configure your sudo ? (WARNING) \"`"
+		yes_no_default "`gettext \"Do you want me to configure your sudo ? (WARNING) \"`"
 		if [ $? -eq 0 ] ; then 
 			cat $INSTALL_DIR_CENTREON/examples/centreon.sudo >> $SUDO_FILE
 			echo_success "`gettext \"Configuring Sudo\"`" "$ok"
 		else
-			echo_passed "`gettext \"Please config your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
+			echo_passed "`gettext \"Please configure your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
 		fi
 	else
-		echo_passed "`gettext \"Sudo is already configurated\"`" "$passed"
+		echo_passed "`gettext \"Sudo is already configured\"`" "$passed"
 	fi
-	log "INFO" "`gettext \"Please config your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
+	log "INFO" "`gettext \"Please configure your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
 	return 0
 }
 
@@ -1024,7 +1024,7 @@ function check_user_nagios()
     else
 	echo -e "`gettext \"Nagios User $NAGIOS_USER Not found\"`"
 	echo ""
-	echo -e "`gettext \"You have to create you nagios user\"`"
+	echo -e "`gettext \"You have to create your nagios user\"`"
 	echo "useradd -G $NAGIOS_GROUP $NAGIOS_USER"
 	exit 1
     fi
@@ -1042,7 +1042,7 @@ function check_group_nagios()
     else
 	echo "Nagios Group $NAGIOS_GROUP Not found"
 	echo ""
-	echo "You have to create you nagios group"
+	echo "You have to create your nagios group"
 	echo "groupadd $NAGIOS_GROUP"
 	exit 1
     fi
@@ -1207,7 +1207,7 @@ function copyInTempFile()
 	# Prepare centreon Plugins
 	echo "`gettext \"Preparing Centreon temporary files\"`"
 	if [ -d $TMPDIR ] ; then
-		echo_passed "$TMPDIR `gettext \"exists, it will move...\"`"
+		echo_passed "$TMPDIR `gettext \"exists, it will be moved...\"`"
 		mv $TMPDIR $TMPDIR.`date +%Y%m%d-%k%m%S`
 	fi
 	mkdir -p $TMPDIR/src
@@ -1282,13 +1282,13 @@ function find_OS() {
 	local dist_found=""
 	if [ -e /etc/debian_version ] ; then 
 		dist_found="DEBIAN"
-		log "INFO" "`gettext \"Distribution Debian\"`"
+		log "INFO" "`gettext \"Debian Distribution\"`"
 	elif [ -e /etc/SuSE-release ] ; then
 		dist_found="SUSE"
-		log "INFO" "`gettext \"Distribution Suse\"`"
+		log "INFO" "`gettext \"Suse Distribution\"`"
 	elif [ -e /etc/redhat-release ] ; then
 		dist_found="REDHAT"
-		log "INFO" "`gettext \"Distribution Redhat\"`"
+		log "INFO" "`gettext \"Redhat Distribution\"`"
 	else
 		dist_found="NOT_FOUND"
 		log "INFO" "`gettext \"Distribution not found\"`"

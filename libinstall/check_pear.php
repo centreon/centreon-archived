@@ -26,18 +26,18 @@ error_reporting(E_ERROR | E_PARSE);
 
 function usage() {
 	print $argv[0] . " check|install [file]\n";
-	print "\tcheck\tcheck if the packages list if installed\n";
+	print "\tcheck\tcheck if the package list is installed\n";
 	print "\tupgrade\tupgrade the packages\n";
 	print "\tinstall\tinstall the packages\n";
 }
 
 function check_file($file) {
 	if (!file_exists($file)) {
-		fwrite(STDERR, "The file with the list of package doesn't exists\n");
+		fwrite(STDERR, "The file with the list of packages does not exist\n");
 		exit(2);
 	}
 	if (!is_readable($file)) {
-		fwrite(STDERR, "The file with the list of package can't be read\n");
+		fwrite(STDERR, "The file with the list of packages cannot be read\n");
 		exit(2);
 	}
 }
@@ -144,7 +144,7 @@ function upgrade($packages) {
 }
 
 if (count($argv) < 2 || count($argv) > 3) {
-	fwrite(STDERR, "Bad number of arguments\n");
+	fwrite(STDERR, "Incorrect number of arguments\n");
 	usage();
 	exit(2);
 }
@@ -175,7 +175,7 @@ switch ($argv[1]) {
 		$ret = upgrade($packages);
 		break;
 	default:
-		fwrite(STDERR, "Bad argument\n");
+		fwrite(STDERR, "Incorrect argument\n");
 		usage();
 		exit(2);
 }

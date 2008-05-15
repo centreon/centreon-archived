@@ -91,7 +91,7 @@ if [ $? -eq 0 ] ; then
 		$TMPDIR/final/centcore.init.d $INIT_D/centcore >> $LOG_FILE 2>&1
 	log "INFO" "`gettext \"CentCore init script installed\"`"
 
-	yes_no_default "`gettext \"Do you want I install CentCore run level ?\"`"
+	yes_no_default "`gettext \"Do you want me to install CentCore run level ?\"`"
 		if [ $? -eq 0 ] ; then
 			install_init_service "centcore"
 			log "INFO" "`gettext \"CentCore run level installed\"`"

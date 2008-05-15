@@ -47,7 +47,7 @@ check_user_nagios
 check_group_nagios
 
 ## NDO binary
-yes_no_default "$(gettext "Do you want use NDO ?")" "$no"
+yes_no_default "$(gettext "Do you want to use NDO ?")" "$no"
 if [ "$?" -eq 0 ] ; then
 	log "INFO" "$(gettext "NDO use...")"
 	locate_ndomod_binary
@@ -81,7 +81,7 @@ $INSTALL_DIR/cinstall -u "$WEB_USER" -d 755 -v \
 	"$CENTREON_ETC" >> "$LOG_FILE" 2>&1
 
 ## Copy Web Front Source in final
-log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final dir")"
+log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
 cp -Rf $TMPDIR/src/www $TMPDIR/final
 cp -Rf $TMPDIR/src/GPL_LIB $TMPDIR/final
 
@@ -230,7 +230,7 @@ pear_module="0"
 while [ "$pear_module" -eq 0 ] ; do 
 	check_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
 	if [ "$?" -ne 0 ] ; then
-		yes_no_default "$(gettext "Do you want I install/upgrade your PEAR modules")" "$yes"
+		yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
 		if [ "$?" -eq 0 ] ; then
 			upgrade_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
 			install_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
@@ -238,7 +238,7 @@ while [ "$pear_module" -eq 0 ] ; do
 			pear_module="1"
 		fi
 	else 
-		echo_success "$(gettext "All PEAR module")" "$ok"
+		echo_success "$(gettext "All PEAR modules")" "$ok"
 		pear_module="1"
 	fi
 done

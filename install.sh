@@ -42,7 +42,7 @@ BASE_DIR=$(dirname $0)
 BASE_DIR=$( cd $BASE_DIR; pwd )
 export BASE_DIR
 if [ -z "${BASE_DIR#/}" ] ; then
-	echo -e "I think is not good to have Centreon source on slash"
+	echo -e "I think it is not right to have Centreon source on slash"
 	exit 1
 fi
 INSTALL_DIR="$BASE_DIR/libinstall"
@@ -177,10 +177,10 @@ if [ "$silent_install" -ne 1 ] ; then
 
 	yes_no_default "$(gettext "Do you accept GPL license ?")" 
 	if [ "$?" -ne 0 ] ; then 
-		echo_info "$(gettext "Your not agree with GPL license ? Okay... have a nice day.")"
+		echo_info "$(gettext "You do not agree to GPL license ? Okay... have a nice day.")"
 		exit 1
 	else
-		log "INFO" "$(gettext "You accept GPL license")"
+		log "INFO" "$(gettext "You accepted GPL license")"
 	fi
 else 
 	. $user_install_vars
@@ -210,7 +210,7 @@ if [ -e "$CENTREON_CONF" -a "$silent_install" -ne 1 ] ; then
 	echo "$line"
 	echo -e "\n\n"
 	echo_success "$(gettext "Finding configuration file \$CENTREON_CONF :")" "$ok"
-	log "INFO" "$(gettext "Old config found in ") $CENTREON_CONF"
+	log "INFO" "$(gettext "Old configuration found in ") $CENTREON_CONF"
 	echo_info "$(gettext "You seem to have an existing Centreon.")\n"
 	yes_no_default "$(gettext "Do you want to use the last Centreon install parameters ?")" "$yes"
 	if [ "$?" -eq 0 ] ; then
