@@ -28,12 +28,12 @@
 <link rel="shortcut icon" href="./img/iconOreon.ico"/>
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/autocompletion.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-
+<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved." />
+<meta name="robots" content="index, follow" />
 <link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?><?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
-
 <script src="./include/common/javascript/scriptaculous/prototype.js" type="text/javascript"></script>
 <script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <?php
