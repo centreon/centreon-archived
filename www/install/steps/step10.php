@@ -31,7 +31,7 @@ aff_header("Centreon Setup Wizard", "Centreon Configuration File", 10);	?>
     	<th style="text-align: right;">Status</th>
   	</tr>
   	<tr>
-		<td><b>Writable Oreon Configuration File (centreon.conf.php)</b></td>
+		<td><b>Writable Centreon Configuration File (centreon.conf.php)</b></td>
 		<td align="right"><?php
        	$uid = posix_getpwuid (fileowner($conf_centreon["centreon_etc"]));
 		$gid = posix_getgrgid (filegroup($conf_centreon["centreon_etc"]));
