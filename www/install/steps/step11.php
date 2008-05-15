@@ -290,13 +290,15 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 			break;
 		if (!$tab && !$nb){
 			$requete = "INSERT INTO `contact` (`contact_name` , `contact_alias` , `contact_passwd` , `contact_lang` , `contact_email` , `contact_oreon` , `contact_admin` , `contact_activate` ) VALUES ";
-			$requete .= "('".htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES). " " .htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)."', '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."', '". md5($_SESSION["oreonpasswd"]) ."', 'en_US', '".$_SESSION['oreonemail']."', '1', '1', '1');";
-			if ($DEBUG) print $requete . "<br />";
+			$requete .= "('".htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES). " " .htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)."', '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."', '". MD5($_SESSION["oreonpasswd"]) ."', 'en_US', '".$_SESSION['oreonemail']."', '1', '1', '1');";
+			if ($DEBUG) 
+				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
 			htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES);
 		} else {
 			$requete = "UPDATE `contact` SET `user_firstname` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES)."',`user_lastname` = '". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)  ."',`user_alias` = '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES) ."',`user_passwd` = '". md5($_SESSION["oreonpasswd"]) ."',`user_mail` = 'nagios@localhost',`user_status` = '32',`user_lang` = 'en_US' WHERE `user_id` =1 LIMIT 1 ;";
-			if ($DEBUG) print $requete . "<br />";
+			if ($DEBUG) 
+				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
 		} 
 		if ($res[1] == '') {
@@ -307,11 +309,30 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		}
 	}
 	if (!$return_false){
-		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Customization</b></td>';
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set NDO Password</b></td>';
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
-	
+		$requete = "UPDATE `cfg_ndo2db` SET `db_pass` = '".$_SESSION["pwdOreonDB"]."';";
+		if ($DEBUG) 
+			print $requete . "<br />";
+		$result = @mysql_query($requete, $res['0']);
+		if ($res[1] == '') {
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		} else {
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
+		    $return_false = 1;
+		}
+	}
+	if (!$return_false){
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set Nagios Version</b></td>';
+		$mysql_msg = '';
+		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
+		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
+		$requete = "UPDATE `general_opt` SET `nagios_version` = '".$_SESSION["nagios_version"]."';";
+		if ($DEBUG) 
+			print $requete . "<br />";
+		$result = @mysql_query($requete, $res['0']);
 		if ($res[1] == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
