@@ -27,7 +27,7 @@ aff_header("Centreon Setup Wizard", "Post-Installation", 12);	?>
 	Centreon Setup is finished. 
 	<br />
 	<b>Self service and commercial Support.</b><br /><br />
-	There are various way to get informations about Centreon ; the documentation, the wiki, forum and other stuffs.
+	There are various ways to get information about Centreon ; the documentation, wiki, forum etc...
 	<ul>
 		<li> Centreon WebSite : <a target="_blank" href="http://www.centreon.com">www.centreon.com</a></li>
 		<li> Centreon Forum : <a target="_blank" href="http://forum.centreon.com">forum.centreon.com</a></li></li>

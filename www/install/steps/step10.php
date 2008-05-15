@@ -24,7 +24,7 @@ if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
 	$_SESSION["ldap_ssl"] = $_POST["ldap_ssl"];
 }
 
-aff_header("Centreon Setup Wizard", "Oreon Configuration File", 10);	?>
+aff_header("Centreon Setup Wizard", "Centreon Configuration File", 10);	?>
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
 	<tr>
     	<th align="left">Component</th>
