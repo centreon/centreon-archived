@@ -211,8 +211,8 @@ if [ -e "$CENTREON_CONF" -a "$silent_install" -ne 1 ] ; then
 	echo -e "\n\n"
 	echo_success "$(gettext "Finding configuration file \$CENTREON_CONF :")" "$ok"
 	log "INFO" "$(gettext "Old config found in ") $CENTREON_CONF"
-	echo_info "$(gettext "You already seem to have to install Centreon.")\n"
-	yes_no_default "$(gettext "Do you want use last Centreon install parameters ?")" "$yes"
+	echo_info "$(gettext "You seem to have an existing Centreon.")\n"
+	yes_no_default "$(gettext "Do you want to use the last Centreon install parameters ?")" "$yes"
 	if [ "$?" -eq 0 ] ; then
 		echo_passed "\n$(gettext "Using \$CENTREON_CONF : ")" "$passed"
 		log "INFO" "$(gettext "Import old install config")"
@@ -221,7 +221,7 @@ if [ -e "$CENTREON_CONF" -a "$silent_install" -ne 1 ] ; then
 fi
 
 echo "$line"
-echo -e "\t$(gettext "Please choose what do you want to install")"
+echo -e "\t$(gettext "Please choose what you want to install")"
 echo "$line"
 
 ## init install process
@@ -241,7 +241,7 @@ if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then
 	yes_no_default "$(gettext "Do you want to install Centreon Web Front")"
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTREON_WWW="1"
-		log "INFO" "$(gettext "You select to install Centreon Web Front")"
+		log "INFO" "$(gettext "You chose to install Centreon Web Front")"
 		## CentStorage dependancy
 		PROCESS_CENTSTORAGE="1"
 	fi
@@ -254,7 +254,7 @@ if [ "$PROCESS_CENTSTORAGE" -eq 2 ] ; then
 	yes_no_default "$(gettext "Do you want to install Centreon CentStorage")"
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTSTORAGE="1"
-		log "INFO" "$(gettext "You select to install CentStorage")"
+		log "INFO" "$(gettext "You chose to install CentStorage")"
 	fi
 fi
 
@@ -263,7 +263,7 @@ if [ "$PROCESS_CENTCORE" -eq 2 ] ; then
 	yes_no_default "$(gettext "Do you want to install Centreon CentCore")"
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTCORE="1"
-		log "INFO" "$(gettext "You select to install CentCore")"
+		log "INFO" "$(gettext "You chose to install CentCore")"
 	fi
 fi
 
@@ -272,7 +272,7 @@ if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then
 	yes_no_default "$(gettext "Do you want to install Centreon Nagios Plugins")"
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTREON_PLUGINS="1"
-		log "INFO" "`gettext \"You select to install Centreon Nagios Plugins\"`"
+		log "INFO" "`gettext \"You chose to install Centreon Nagios Plugins\"`"
 	fi
 fi
 
@@ -281,7 +281,7 @@ if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 2 ] ; then
 	yes_no_default "$(gettext "Do you want to install Centreon Snmp Traps process")"
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTREON_SNMP_TRAPS="1"
-		log "INFO" "$(gettext "You select to install Centreon Snmp Traps process")"
+		log "INFO" "$(gettext "You chose to install Centreon Snmp Traps process")"
 	fi
 fi
 
