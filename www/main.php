@@ -14,14 +14,15 @@
  * 
  * For information : contact@centreon.com
  */
-		
-	 foreach ($_GET as $key => $value){
-		if (!is_array($value)){
-			$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-			//print filter_var($value, INPUT_GET);	
-			$_GET[$key] = $value;
+	
+	if (is_function(filter_var))	
+		foreach ($_GET as $key => $value){
+			if (!is_array($value)){
+				$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+				//print filter_var($value, INPUT_GET);	
+				$_GET[$key] = $value;
+			}
 		}
-	}
 	
 	if (isset($_GET["p"]))
 		$p = $_GET["p"];
