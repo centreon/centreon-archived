@@ -34,7 +34,7 @@ use File::Copy;
 
 my $installedPath = "@CENTREON_PATH@/";
 
-my $LOG = "@CENTREON_LOG@centstorage.log";
+my $LOG = "@CENTREON_LOG@/centstorage.log";
 my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
 
 # Init Globals
