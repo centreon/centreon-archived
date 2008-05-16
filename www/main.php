@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
 	
-	if (is_function(filter_var))	
+	if (function_exists('filter_var'))	
 		foreach ($_GET as $key => $value){
 			if (!is_array($value)){
 				$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
