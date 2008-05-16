@@ -76,7 +76,15 @@
 	 * Host list
 	 */
 	 
-	$DBRESULT =& $pearDB->query("SELECT ns.name, host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, nagios_server ns , ns_host_relation nhr WHERE $SearchTool $LCATool host_register = '1' AND ns.id = nhr.nagios_server_id AND nhr.host_host_id = h.host_id ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
+	$tab_relation = array();
+	$DBRESULT =& $pearDB->query("SELECT nhr.host_host_id, ns.name, ns.id FROM nagios_server ns, ns_host_relation nhr"); 
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
+	while ($relation =& $DBRESULT->fetchRow()) {
+		$tab_relation[$relation["host_host_id"]] = $relation["name"];
+	}
+	
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE $SearchTool $LCATool host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 
@@ -139,7 +147,7 @@
 						"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
 						"RowMenu_desc"=>$host["host_alias"],
 						"RowMenu_address"=>$host["host_address"],
-						"RowMenu_poller"=>$host["name"],
+						"RowMenu_poller"=>$tab_relation[$host["host_id"]],
 						"RowMenu_parent"=>$tplStr,
 						"RowMenu_status"=>$host["host_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);
