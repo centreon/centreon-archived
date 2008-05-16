@@ -182,7 +182,7 @@ INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes
 -- Contenu de la table `ns_host_relation`
 --
 
-INSERT INTO `ns_host_relation` (`nsh_id`, `nagios_server_id`, `host_host_id`) VALUES(918, 1, 14);
+INSERT INTO `ns_host_relation` (`nagios_server_id`, `host_host_id`) VALUES(1, 14);
 
 --
 -- Contenu de la table `contactgroup_host_relation`
