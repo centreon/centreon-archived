@@ -1418,13 +1418,12 @@ CREATE TABLE IF NOT EXISTS `nagios_server` (
 --
 
 CREATE TABLE IF NOT EXISTS `ns_host_relation` (
-  `nsh_id` int(11) NOT NULL auto_increment,
-  `nagios_server_id` int(11) default NULL,
-  `host_host_id` int(11) default NULL,
-  PRIMARY KEY  (`nsh_id`),
+  `nagios_server_id` int(11) NOT NULL default '0',
+  `host_host_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`nagios_server_id`,`host_host_id`),
   KEY `host_host_id` (`host_host_id`),
   KEY `nagios_server_id` (`nagios_server_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Ralation Table For centreon Servers and hosts ' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Relation Table For centreon Servers and hosts ';
 
 -- --------------------------------------------------------
 
