@@ -34,7 +34,7 @@
 	    'phptype'  => 'mysql',
 	    'username' => $conf_oreon['user'],
 	    'password' => $conf_oreon['password'],
-	    'hostspec' => $conf_oreon['host'],
+	    'hostspec' => $conf_oreon['hostCentreon'],
 	    'database' => $conf_oreon['db'],
 	);
 
