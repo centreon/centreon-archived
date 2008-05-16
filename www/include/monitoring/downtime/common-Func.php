@@ -207,7 +207,6 @@
 		foreach ($select as $keycode => $value)
 			$key = $keycode;
 		$informations = split(";", $key);
-		print_r($informations);
 		$str = "echo '[" . time() . "] DEL_HOST_DOWNTIME;".$informations[2]."'";
 		write_command($str);
 	}
@@ -217,7 +216,6 @@
 		foreach ($select as $keycode => $value)
 			$key = $keycode;
 		$informations = split(";", $key);
-		print_r($informations);
 		$str = "echo '[" . time() . "] DEL_SVC_DOWNTIME;".$informations[1]."'";
 		write_command($str);
 	}
