@@ -76,12 +76,21 @@
 	 * Host list
 	 */
 	 
-	$tab_relation = array();
-	$DBRESULT =& $pearDB->query("SELECT nhr.host_host_id, ns.name, ns.id FROM nagios_server ns, ns_host_relation nhr"); 
+	$nagios_server = array();
+	$DBRESULT =& $pearDB->query("SELECT ns.name, ns.id FROM nagios_server ns"); 
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	while ($relation =& $DBRESULT->fetchRow()) {
-		$tab_relation[$relation["host_host_id"]] = $relation["name"];
+		$nagios_server[$relation["id"]] = $relation["name"];
+	}
+	unset($relation);
+	
+	$tab_relation = array();
+	$DBRESULT =& $pearDB->query("SELECT nhr.host_host_id, nhr.nagios_server_id FROM ns_host_relation nhr"); 
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
+	while ($relation =& $DBRESULT->fetchRow()) {
+		$tab_relation[$relation["host_host_id"]] = $nagios_server[$relation["nagios_server_id"]];
 	}
 	
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE $SearchTool $LCATool host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
