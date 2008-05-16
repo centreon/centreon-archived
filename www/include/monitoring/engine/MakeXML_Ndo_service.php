@@ -21,7 +21,9 @@
 
 	include("DB.php");
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+
+#	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBOdsConnect.php");
@@ -29,6 +31,7 @@
 	include_once($centreon_path."www/include/monitoring/engine/common-Func.php");
 	include_once($centreon_path."www/include/common/common-Func-ACL.php");
 	include_once($centreon_path."www/include/common/common-Func.php");
+
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
@@ -45,7 +48,7 @@
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
-	
+
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) 		&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
@@ -173,7 +176,6 @@
 		$rq .= " AND nss.current_state = 2 ";
 	if ($o == "svc_unknown")
 		$rq .= " AND nss.current_state = 3 ";
-	$rq_pagination = $rq;
 
 	switch ($sort_type){
 		case 'host_name' : $rq .= " order by no.name1 ". $order.",no.name2 "; break;
@@ -186,18 +188,24 @@
 	}
 
 	$rq .= " LIMIT ".($num * $limit).",".$limit;
-	$DBRESULT_NDO =& $pearDBndo->query($rq);
-	if (PEAR::isError($DBRESULT_NDO))
-		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-	$buffer .= '<reponse>';
+
 	$ct = 0;
 	$flag = 0;
+	
+	$DBRESULT_NDO2 =& $pearDBndo->query($rq);
+	if (PEAR::isError($DBRESULT_NDO2))
+		print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
 
-	/* Get Pagination Rows */
-	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
-	$numRows = $DBRESULT_PAGINATION->numRows();
+	/* 
+	 * Get Pagination Rows 
+	 */
+	
+	$numRows = $DBRESULT_NDO2->numRows();
+	
+	/*
+	 * Create Buffer
+	 */
+	$buffer .= '<reponse>';
 	$buffer .= '<i>';
 	$buffer .= '<numrows>'.$numRows.'</numrows>';
 	$buffer .= '<num>'.$num.'</num>';
@@ -206,13 +214,15 @@
 	$buffer .= '<nc>'.$nc.'</nc>';
 	$buffer .= '<o>'.$o.'</o>';
 	$buffer .= '</i>';
-	/* End Pagination Rows */
+	/* 
+	 * End Pagination Rows 
+	 */
 
 	$host_prev = "";
 	$class = "list_one";
-	while ($ndo = $DBRESULT_NDO->fetchRow())
-	{
+	while ($ndo =& $DBRESULT_NDO2->fetchRow()) {
 		if (isset($host_status[$ndo["host_name"]])){
+
 			$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]];
 			$color_service = $tab_color_service[$ndo["current_state"]];
 			$passive = 0;
@@ -222,18 +232,15 @@
 
 			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
 				$duration = Duration::toString(time() - $ndo["last_state_change"]);
-			else if($ndo["last_state_change"] > 0)
+			else if ($ndo["last_state_change"] > 0)
 				$duration = " - ";
 
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
 
 			if ($tab_status_svc[$ndo["current_state"]] == "CRITICAL"){
-				if($ndo["problem_has_been_acknowledged"] == 1)
-					$class = "list_four";
-				else
-					$class = "list_down";
+				$ndo["problem_has_been_acknowledged"] == 1 ? $class = "list_four" : $class = "list_down";
 			} else {
-				if( $ndo["problem_has_been_acknowledged"] == 1)
+				if ($ndo["problem_has_been_acknowledged"] == 1)
 					$class = "list_four";
 			}
 
@@ -250,7 +257,7 @@
 				$buffer .= '<hn none="0">'. $ndo["host_name"] . '</hn>';
 				$buffer .= '<hau><![CDATA['. $host_status[$ndo["host_name"]]["action_url"] . ']]></hau>';
 
-				if($host_status[$ndo["host_name"]]["notes_url"])
+				if ($host_status[$ndo["host_name"]]["notes_url"])
 					$buffer .= '<hnu><![CDATA['. $host_status[$ndo["host_name"]]["notes_url"] . ']]></hnu>';				
 				else
 					$buffer .= '<hnu>none</hnu>';
@@ -263,9 +270,11 @@
 			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
 			$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
 			$buffer .= '<svc_id>'. $ndo["object_id"] . '</svc_id>';
+			
 			$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
 			$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
-			$buffer .= '<svc_index>'.getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"]).'</svc_index>';
+			
+			$buffer .= '<svc_index>'.getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO).'</svc_index>';
 			$buffer .= '<sid>'.$sid.'</sid>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
 			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
@@ -278,9 +287,9 @@
 			$buffer .= '<eh>'. $ndo["event_handler_enabled"] . '</eh>';
 			$buffer .= '<is>'. $ndo["is_flapping"] . '</is>';
 			$buffer .= '<fd>'. $ndo["flap_detection_enabled"] . '</fd>';
-	        $buffer .= '<ha>'.$host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';
-	        $buffer .= '<hae>'.$host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';
-	        $buffer .= '<hpe>'.$host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';
+	        $buffer .= '<ha>'. $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';
+	        $buffer .= '<hae>'. $host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';
+	        $buffer .= '<hpe>'. $host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';
 			$buffer .= '<nc>'. date($date_time_format_status, $ndo["next_check"]) . '</nc>';
 			$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"]) . '</lc>';
 			$buffer .= '<d>'. $duration . '</d>';

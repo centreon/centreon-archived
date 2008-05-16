@@ -15,6 +15,8 @@
  * For information : contact@centreon.com
  */
 
+	ini_set("Display_error", "On");
+
 	function get_Host_Status($host_name, $pearDBndo, $general_opt){
 		global $ndo_base_prefix;
 		$rq = "SELECT nhs.current_state FROM `" .$ndo_base_prefix."hoststatus` nhs, `" .$ndo_base_prefix."objects` no " .
@@ -27,16 +29,18 @@
 		return $status["current_state"];
 	}
 	
-	function getMyIndexGraph4Service($host_name = NULL, $service_description = NULL)	{
-		global $pearDBO;
-		if (!$service_description || !$host_name) 
+	function getMyIndexGraph4Service($host_name = NULL, $service_description = NULL, $pearDBO)	{
+		if ((!isset($service_description) || !$service_description ) || (!isset($host_name) || !$host_name)) 
 			return NULL;
 		$DBRESULT =& $pearDBO->query("SELECT id FROM index_data WHERE host_name = '".$host_name."' AND service_description = '".$service_description."' ");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
+			print_r($row);
 			return $row["id"];
+		} else {
+			return 0;
 		}
 		return NULL;
 	}
