@@ -290,13 +290,13 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 			break;
 		if (!$tab && !$nb){
 			$requete = "INSERT INTO `contact` (`contact_name` , `contact_alias` , `contact_passwd` , `contact_lang` , `contact_email` , `contact_oreon` , `contact_admin` , `contact_activate` ) VALUES ";
-			$requete .= "('".htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES). " " .htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)."', '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."', '". MD5($_SESSION["oreonpasswd"]) ."', 'en_US', '".$_SESSION['oreonemail']."', '1', '1', '1');";
+			$requete .= "('".htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES). " " .htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)."', '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."', '". md5($_SESSION["oreonpasswd"]) ."', 'en_US', '".$_SESSION['oreonemail']."', '1', '1', '1');";
 			if ($DEBUG) 
 				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
 			htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES);
 		} else {
-			$requete = "UPDATE `contact` SET `user_firstname` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES)."',`user_lastname` = '". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)  ."',`user_passwd` = '". MD5($_SESSION["oreonpasswd"]) ."', `user_mail` = 'nagios@localhost', `user_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."' LIMIT 1 ;";
+			$requete = "UPDATE `contact` SET `user_firstname` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES)."',`user_lastname` = '". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)  ."',`user_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `user_mail` = 'nagios@localhost', `user_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."' LIMIT 1 ;";
 			if ($DEBUG) 
 				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
