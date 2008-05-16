@@ -37,7 +37,6 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
-			print_r($row);
 			return $row["id"];
 		} else {
 			return 0;
