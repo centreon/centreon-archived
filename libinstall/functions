@@ -750,14 +750,19 @@ __EOT__
 		if [ $? -eq 0 ] ; then 
 			log "INFO" "`gettext \"Reloading Apache...\"`"
 			if [ -x /etc/init.d/apache ] ; then
+				log "DEBUG" "$(gettext "use") : /etc/init.d/apace"
 				/etc/init.d/apache reload >> $LOG_FILE 2>&1
 			elif [ -x /etc/init.d/httpd ] ; then
+				log "DEBUG" "$(gettext "use") : /etc/init.d/httpd"
 				/etc/init.d/httpd reload >> $LOG_FILE 2>&1
 			elif [ -e /etc/init.d/apache2 ] ; then
+				log "DEBUG" "$(gettext "use") : /etc/init.d/apache2"
 				/etc/init.d/apache2 reload >> $LOG_FILE 2>&1
 			elif [ -e /usr/local/etc/rc.d/apache ] ; then
+				log "DEBUG" "$(gettext "use") : /usr/local/etc/rc.d/apache"
 				/usr/local/etc/rc.d/apache reload >> $LOG_FILE 2>&1
 			elif [ -e /usr/local/etc/rc.d/apache2 ]; then
+				log "DEBUG" "$(gettext "use") : /usr/local/etc/rc.d/apache2"
 				/etc/init.d/apache2 reload >> $LOG_FILE 2>&1
 			else
 				echo_warning "`gettext \"Unable to restart Apache server\"`" "$warning"
