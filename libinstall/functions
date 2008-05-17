@@ -349,11 +349,18 @@ function locate_nagios_p1_file() {
 		if [ -z "$NAGIOS_P1_FILE" ] ; then
 			log "INFO" "$(gettext "p1_file not found")"
 		else
+			is_single "$NAGIOS_P1_FILE"
+			if [ "$?" -eq 1 ] ; then
+				echo -e "$(gettext "Please select a good nagios p1 file")"
+				select_in_array \
+					"NAGIOS_P1_FILE" "${NAGIOS_P1_FILE[@]}"
+			fi
 			log "INFO" "$(gettext "p1_file found") : $NAGIOS_P1_FILE"
 			echo_success "p1_file : $NAGIOS_P1_FILE" "$ok"	
 		fi
 	fi
 	export NAGIOS_P1_FILE
+	log "INFO" "NAGIOS_P1_FILE: $NAGIOS_P1_FILE"
 }
 
 ## Check nagios_img
@@ -678,6 +685,23 @@ function locate_cron_d() {
 	log "INFO" "CRON_D: $CRON_D"
 }
 
+## is_single()
+# $1 = vars
+function is_single() {
+	local var="$1"
+
+	local count=0
+	for value in $var ; do
+		let "count += 1"
+	done
+
+	if [ "$count" -eq 1 ] ; then
+		return 0
+	else 
+		return 1
+	fi
+}
+
 # Check apache version, and configure it. Ask to restart apache server
 # Make a copy of the original file as httpd.conf.initial
 
@@ -949,103 +973,142 @@ echo_success "Create $CENTREON_ETC/instCentCore " "OK"
 # Find the user and group nagios in nagios.cfg and ask if we do not find
 function find_user_nagios()
 {
-	NAGIOS_USER=`cat $NAGIOS_ETC/nagios.cfg | grep ^nagios_user | cut -d= -f 2 2>/dev/null`
-	if [ -z "$NAGIOS_USER"  ] ; then
-	local NAGIOS_USER_TEMP=""
-		for fichier in $NAGIOS_ETC/*.cfg
-		do
-			if [ -f "$fichier" ];	then
-			NAGIOS_USER_TEMP=`cat $fichier | grep ^nagios_user | cut -d = -f 2`
-				if [ -n "$NAGIOS_USER_TEMP" ]; then
-					NAGIOS_USER=$NAGIOS_USER_TEMP
+	# If I am on this function, I suppose you don't force a nagios user name. So I init this :p
+	NAGIOS_USER=""
+	# In a first time, I search on nagios.cfg because it had most of chance to find it.
+	if [ -f $NAGIOS_ETC/nagios.cfg ] ; then 
+		NAGIOS_USER=`grep "^nagios_user" $NAGIOS_ETC/nagios.cfg | cut -d= -f2 2>/dev/null`
+	fi
+
+	# If I not locate nagios user, I find on all file.
+	if [ -z "$NAGIOS_USER" ] ; then
+		local NAGIOS_USER_TEMP=""
+		log "INFO" "$(gettext "Find nagios user in all file in") : $NAGIOS_ETC"
+		for fichier in $NAGIOS_ETC/*.cfg ; do
+			if [ -f "$fichier" ] ; then
+			NAGIOS_USER_TEMP=`grep ^nagios_user $fichier | cut -d= -f2 2>/dev/null`
+				if [ -n "$NAGIOS_USER_TEMP" ] ; then
+					NAGIOS_USER="$NAGIOS_USER_TEMP"
 				fi
 			fi
 		done
 	fi
     
 	if [ -z "$NAGIOS_USER"  ] ; then
-		# Nagios User
-		NAGIOS_USER="nagios"
-		local user=""
-		echo_passed "`gettext \"Sorry, we do not found nagios user\"`" "$passed"
-		echo -e "`gettext \"Which is your nagios user ?\"`"
-		echo -n "`gettext \"default to\"` [$NAGIOS_USER]:"
-		read user
-		test_answer NAGIOS_USER $user
-		echo ""
-    else
-		echo_info "`gettext \"Finding Nagios user\"` :" "$NAGIOS_USER"
-    fi
+		log "INFO" "$(gettext "First find nagios user fail")"
+		return 1	
+    	else
+		is_single "$NAGIOS_USER"
+		if [ "$?" -eq 1 ] ; then
+			echo -e "$(gettext "Please select a good nagios user")"
+			select_in_array "NAGIOS_USER" "${NAGIOS_USER[@]}"
+		fi
+		echo_info "$(gettext "Finding Nagios user") :" "$NAGIOS_USER"
+	fi
+	return 0
 }
 
 function find_group_nagios()
 {
-	NAGIOS_GROUP=`cat $NAGIOS_ETC/nagios.cfg | grep ^nagios_group | cut -d = -f 2 2>/dev/null`
-    
+	# Same to user, If I am on this function I must reset NAGIOS_GROUP
+	NAGIOS_GROUP=""
+	# In a first time, I search on nagios.cfg because it had most of chance to find it.
+	if [ -f $NAGIOS_ETC/nagios.cfg ] ; then  
+		NAGIOS_GROUP=`grep "^nagios_group" $NAGIOS_ETC/nagios.cfg | cut -d= -f2 2>/dev/null`
+	fi
+
+	# If I not locate nagios group, I find on all file.
 	if [ -z "$NAGIOS_GROUP"  ] ; then
 	local NAGIOS_GROUP_TEMP=""
-		for fichier in $NAGIOS_ETC/*.cfg
-		do
+		log "INFO" "$(gettext "Find nagios group in all file in") : $NAGIOS_ETC"
+		for fichier in $NAGIOS_ETC/*.cfg ; do
 			if [ -f "$fichier" ];	then
-				NAGIOS_GROUP_TEMP=`cat $fichier | grep ^nagios_group | cut -d = -f 2`
+				NAGIOS_GROUP_TEMP=`grep "^nagios_group" $fichier | cut -d= -f2 2>/dev/null`
 				if [ -n "$NAGIOS_GROUP_TEMP" ]; then
-					NAGIOS_GROUP=$NAGIOS_GROUP_TEMP
+					NAGIOS_GROUP="$NAGIOS_GROUP_TEMP"
 				fi
 			fi
 		done
 	fi
     
 	if [ -z "$NAGIOS_GROUP"  ] ; then
-		# Nagios Group
-		NAGIOS_GROUP="nagios"
-		local user=""
-		echo_passed "`gettext \"Sorry, we do not found nagios group\"`" "PASSED"
-		echo -e "`gettext \"In which group is nagios user ?\"`"
-		echo -n "`gettext \"default to\"` [$NAGIOS_GROUP]:"
-		read temp
-		test_answer NAGIOS_GROUP $user
-		echo ""
-    else
-		echo_info "`gettext \"Finding Nagios group\"` :" "$NAGIOS_GROUP"
-    fi
+		log "INFO" "$(gettext "First find nagios user fail")"
+		return 1
+	else 
+		is_single "$NAGIOS_GROUP"
+		if [ "$?" -eq 1 ] ; then
+			echo -e "$(gettext "Please select a good nagios group")"
+			select_in_array "NAGIOS_GROUP" "${NAGIOS_GROUP[@]}"
+		fi
+		echo_info "$(gettext "Finding Nagios group") :" "$NAGIOS_GROUP"	
+    	fi
+	return 0
 }
 
 # Check the user and group nagios and create it if necessary
 
 function check_user_nagios()
 {
-    # Try to find nagios user/group from nagios.cfg file.
-    # If not, we ask...
-    find_user_nagios
+	if [ -n "$NAGIOS_USER" ] ; then
+		log "DEBUG" "$(gettext "Test user nagios")"
+		id -u "$NAGIOS_USER" >> $LOG_FILE 2>&1
+		if [ "$?" -eq 0 ] ; then
+			echo_info "`gettext \"Finding Nagios user\"` :" "$NAGIOS_USER"
+			return 0
+		fi
+	fi
+    	# Try to find nagios user/group from nagios.cfg file.
+	# If not, we ask...
+	find_user_nagios
 
-    nagios_user_grep=`grep $NAGIOS_USER /etc/passwd > /dev/null; echo $?`
-    if [ $nagios_user_grep -eq 0 ]; then
-    	echo_success "`gettext \"Finding nagios user \$NAGIOS_USER in /etc/passwd\"`" "$ok"
-    else
-	echo -e "`gettext \"Nagios User $NAGIOS_USER Not found\"`"
-	echo ""
-	echo -e "`gettext \"You have to create your nagios user\"`"
-	echo "useradd -G $NAGIOS_GROUP $NAGIOS_USER"
-	exit 1
-    fi
+	if [ "$?" -eq 0 ] ; then 
+		return 0
+	fi
+
+	log "DEBUG" "$(gettext "find nagios user in /etc/passwd file")"
+
+	nagios_user_grep=`grep $NAGIOS_USER /etc/passwd > /dev/null; echo $?`
+	if [ "$nagios_user_grep" -eq 0 ] ; then
+    		echo_success "$(gettext "Finding nagios user \$NAGIOS_USER in /etc/passwd")" "$ok"
+	else
+		echo_failure "$(gettext "Nagios User \$NAGIOS_USER Not found")" "$fail"
+		echo -e "$(gettext "You have to create you nagios user")"
+		echo "useradd -G $NAGIOS_GROUP $NAGIOS_USER"
+		clean_and_exit
+	fi
+	return 0
 }
 
 function check_group_nagios()
 {
-    # Try to find nagios user/group from nagios.cfg file.
-    # If not, we ask...
-    find_group_nagios
+	if [ -n "$NAGIOS_GROUP" ] ; then
+		log "DEBUG" "$(gettext "Test group nagios")"
+		grep "$NAGIOS_GROUP" /etc/groups >> $LOG_FILE 2>&1
+		if [ "$?" -eq 0 ] ; then
+			echo_info "`gettext \"Finding Nagios group\"` :" "$NAGIOS_GROUP"
+			return 0
+		fi
+	fi
+	# Try to find nagios user/group from nagios.cfg file.
+	# If not, we ask...
+	find_group_nagios
 
-    nagios_group_grep=`grep $NAGIOS_GROUP /etc/group > /dev/null; echo $?`
-    if [ $nagios_group_grep == 0 ]; then
-    	echo_success "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "$ok"
-    else
-	echo "Nagios Group $NAGIOS_GROUP Not found"
-	echo ""
-	echo "You have to create your nagios group"
-	echo "groupadd $NAGIOS_GROUP"
-	exit 1
-    fi
+	if [ "$?" -eq 0 ] ; then 
+		return 0
+	fi
+
+	log "DEBUG" "$(gettext "find nagios group in /etc/groups file")"
+
+	nagios_group_grep=`grep $NAGIOS_GROUP /etc/group > /dev/null; echo $?`
+	if [ "$nagios_group_grep" -eq 0 ] ; then
+	    	echo_success "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "$ok"
+	else
+		echo_failure "$(gettext "Nagios group \$NAGIOS_GROUP Not found")" "$fail"
+		echo -e "$(gettext "You have to create you nagios group")"
+		echo "groupadd $NAGIOS_GROUP"
+		clean_and_exit
+	fi
+	return 0
 }
 
 function check_nagios_init_script()
@@ -1295,5 +1358,12 @@ function find_OS() {
 	fi
 	eval $distrib=$dist_found
 	return 0
+}
+
+## Function clean_and_exit()
+# use this function to clean and exit centreon install
+function clean_and_exit() {
+	log "EXIT" "$(gettext "Exit Centreon install")"
+	exit 1
 }
 

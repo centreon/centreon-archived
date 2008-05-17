@@ -191,16 +191,10 @@ fi
 # Check for old configfile
 # use for centreon1.x upgrade
 if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" -a "$silent_install" -ne 1 ] ; then 
-	count="0"
-	CENTREON_CONF=""
-	for conffile in $CENTREON_CONF_1_4 ; do
-		CENTREON_CONF[$count]="$conffile"
-		let "count += 1"
-	done
-	
-	if [ "$count" -gt 1 ] ; then
-		echo_failure "$(gettext "You are \$count config file, please select one")"
-		select_in_array "CENTREON_CONF" "${CENTREON_CONF[@]}"
+	is_single "$CENTREON_CONF_1_4"
+	if [ "$?" -eq 1 ] ; then
+		echo -e "$(gettext "Please select a good centreon config file")"
+		select_in_array "CENTREON_CONF" "${CENTREON_CONF_1_4[@]}"
 	fi
 fi
 
