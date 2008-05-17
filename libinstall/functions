@@ -1283,14 +1283,12 @@ function copyInTempFile()
 	done
 }	
 
-
-
 ## function check_pear_module()
 ## use php script to check pear module
 function check_pear_module() {
 	local module_list=$1
 	echo -e "`gettext \"Check PEAR modules\"`"
-	php $INSTALL_DIR/check_pear.php check $module_list
+	$PHP_BIN $INSTALL_DIR/check_pear.php check $module_list
 	return $?
 }
 
@@ -1299,7 +1297,7 @@ function check_pear_module() {
 function install_pear_module() {
 	local module_list=$1
 	echo -e "`gettext \"Installing PEAR modules\"`"
-	php $INSTALL_DIR/check_pear.php install $module_list
+	$PHP_BIN $INSTALL_DIR/check_pear.php install $module_list
 	return $?
 }
 
@@ -1308,7 +1306,7 @@ function install_pear_module() {
 function upgrade_pear_module() {
 	local module_list=$1
 	echo -e "`gettext \"Upgrading PEAR modules\"`"
-	php $INSTALL_DIR/check_pear.php upgrade $module_list
+	$PHP_BIN $INSTALL_DIR/check_pear.php upgrade $module_list
 	return $?
 }
 
