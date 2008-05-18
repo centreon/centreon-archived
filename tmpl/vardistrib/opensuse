@@ -3,7 +3,7 @@
 # SVN: $Id$
 #
 # This file contain reconfigured variables used in install scripts
-# By default, when you use ./install.sh -f sample.tmpl, you'll accept GPL licence.
+# By default, when you use ./install.sh -f opensuse, you'll accept GPL licence.
 
 #####################################################################
 ## Begin: Install modules
@@ -80,24 +80,24 @@ CENTPLUGINS_TMP="/var/lib/centreon/centplugins"
 #####################################################################
 ## Begin: Nagios preferences
 #####################################################################
-## Install directory
-INSTALL_DIR_NAGIOS="/usr/share/nagios"
+## Install directory
+INSTALL_DIR_NAGIOS=""
 ## Configuration directory
-NAGIOS_ETC="/etc/nagios"
+NAGIOS_ETC=""
 ## Plugins directory
-NAGIOS_PLUGIN="/usr/lib/nagios/plugins"
+NAGIOS_PLUGIN=""
 ## Images (logos) directory
-NAGIOS_IMG="/usr/share/nagios/htdocs/images"
+NAGIOS_IMG=""
 ## The nagios binary (optional)
-#NAGIOS_BINARY="/usr/sbin/nagios"
+#NAGIOS_BINARY=""
 ## The nagiostats binary (optional)
-#NAGIOSSTATS_BINARY="/usr/sbin/nagiostats"
+#NAGIOSSTATS_BINARY=""
 ## Logging directory
-NAGIOS_VAR="/var/log/nagios"
+NAGIOS_VAR=""
 ## Nagios user (optional)
-#NAGIOS_USER="nagios"
+#NAGIOS_USER=""
 ## Nagios group (optional)
-#NAGIOS_GROUP="nagios"
+#NAGIOS_GROUP=""
 #####################################################################
 ## End: Nagios preferences
 #####################################################################
@@ -112,7 +112,7 @@ NAGIOS_VAR="/var/log/nagios"
 #BIN_MAIL="/usr/bin/mail"
 ## SSH (optional)
 #BIN_SSH="/usr/bin/ssh"
-## SCP (optional)
+## SCP (optional)
 #BIN_SCP="/usr/bin/scp"
 ## PHP (optional)
 #PHP_BIN="/usr/bin/php"
@@ -125,19 +125,19 @@ NAGIOS_VAR="/var/log/nagios"
 ## Begin: Others
 #####################################################################
 ## Perl path for RRDs.pm file
-RRD_PERL="/usr/lib/perl5"
-## A sudo file (optional)
+RRD_PERL=""
+## A sudo file (optional)
 #SUDO_FILE="/etc/sudoers"
 ## Apache user (optional)
-#WEB_USER="www-data"
+#WEB_USER=""
 ## Apache group (optional)
-#WEB_GROUP="www-data"
+#WEB_GROUP=""
 ## init script directory (optional)
 #INIT_D="/etc/init.d"
 ## cron config script directory (optional)
 #CRON_D="/etc/cron.d"
 ## Path for PEAR.php file
-PEAR_PATH="/usr/share/php"
+PEAR_PATH=""
 #####################################################################
 ## End: Others
 #####################################################################

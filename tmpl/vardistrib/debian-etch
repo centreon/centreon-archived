@@ -1,5 +1,5 @@
 # -*-Shell-script-*-
-# SVN: $Url$
+# SVN: $URL$
 # SVN: $Id$
 # This file contain reconfigured variables used in install scripts
 # for debian etch (stable version)
@@ -81,7 +81,7 @@ CENTPLUGINS_TMP="/var/lib/centreon/centplugins"
 #####################################################################
 ## Begin: Nagios preferences
 #####################################################################
-## Install directory
+## Install directory
 INSTALL_DIR_NAGIOS="/usr/share/nagios2"
 ## Configuration directory
 NAGIOS_ETC="/etc/nagios2"
@@ -113,7 +113,7 @@ BIN_RRDTOOL="/usr/bin/rrdtool"
 BIN_MAIL="/usr/bin/mail"
 ## SSH (optional)
 BIN_SSH="/usr/bin/ssh"
-## SCP (optional)
+## SCP (optional)
 BIN_SCP="/usr/bin/scp"
 ## PHP (optional)
 PHP_BIN="/usr/bin/php"
@@ -127,7 +127,7 @@ PHP_BIN="/usr/bin/php"
 #####################################################################
 ## Perl path for RRDs.pm file
 RRD_PERL="/usr/lib/perl5"
-## A sudo file (optional)
+## A sudo file (optional)
 SUDO_FILE="/etc/sudoers"
 ## Apache user (optional)
 WEB_USER="www-data"
