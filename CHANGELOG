@@ -1,4 +1,14 @@
-## Centreon 2.0
+## Centreon 2.0-b3
+=> Bugfix : #2	Install : field p1.pl empty after setup
+=> Bugfix : #4	Install: gettext was not found in PATH
+=> Bugfix : #5	Install: problem with var NAGIOS_P1_FILE
+=> Bugfix : #8	Impossible to connect on the Centreon's interface
+=> Bugfix : #10 Problems with ndo db user password
+=> Bugfix : #11	Install Script: php command not found
+=> Bugfix : #14 Message Box in Reporting Page
+
+## Use new bugstracket (trac.centreon.com)
+## Centreon 2.0-b2
 => Bugfix : #bug 461 : Argument defined in template and service
 => Bugfix : Add tests when submit the form (fields mandatory not testing)
 => Bugfix : #bug 458 : Function return_image_list doesn't work for sub dirs
