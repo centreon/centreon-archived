@@ -1,10 +1,9 @@
 # -*-Shell-script-*-
 # SVN: $Url$
 # SVN: $Id$
+#
 # This file contain reconfigured variables used in install scripts
-# for debian etch (stable version)
-# By default, when you use ./install.sh -f debian-etch, you'll accept GPL licence.
-# All default variables are a same if you use debian packages
+# By default, when you use ./install.sh -f sample.tmpl, you'll accept GPL licence.
 
 #####################################################################
 ## Begin: Install modules
@@ -65,9 +64,9 @@ CENTREON_GENDIR="/var/cache/centreon"
 ## CentStorage store a .rrd file
 CENTSTORAGE_RRD="/var/lib/centreon"
 ## path for centstorage binary
-CENTSTORAGE_BINDIR="/usr/sbin"
+CENTSTORAGE_BINDIR="/srv/centreon/bin"
 ## path for centcore binary
-CENTCORE_BINDIR="/usr/sbin"
+CENTCORE_BINDIR="/srv/centreon/bin"
 ## use for all library temporary file
 CENTREON_VARLIB="/var/lib/centreon"
 ## more centreon plugins use a file foreach test.
@@ -82,23 +81,23 @@ CENTPLUGINS_TMP="/var/lib/centreon/centplugins"
 ## Begin: Nagios preferences
 #####################################################################
 ## Install directory
-INSTALL_DIR_NAGIOS="/usr/share/nagios2"
+INSTALL_DIR_NAGIOS="/usr/share/nagios"
 ## Configuration directory
-NAGIOS_ETC="/etc/nagios2"
+NAGIOS_ETC="/etc/nagios"
 ## Plugins directory
 NAGIOS_PLUGIN="/usr/lib/nagios/plugins"
 ## Images (logos) directory
-NAGIOS_IMG="/usr/share/nagios2/htdocs/images"
+NAGIOS_IMG="/usr/share/nagios/htdocs/images"
 ## The nagios binary (optional)
-NAGIOS_BINARY="/usr/sbin/nagios2"
+#NAGIOS_BINARY="/usr/sbin/nagios"
 ## The nagiostats binary (optional)
-NAGIOSSTATS_BINARY="/usr/sbin/nagios2stats"
+#NAGIOSSTATS_BINARY="/usr/sbin/nagiostats"
 ## Logging directory
-NAGIOS_VAR="/var/log/nagios2"
+NAGIOS_VAR="/var/log/nagios"
 ## Nagios user (optional)
-NAGIOS_USER="nagios"
+#NAGIOS_USER="nagios"
 ## Nagios group (optional)
-NAGIOS_GROUP="nagios"
+#NAGIOS_GROUP="nagios"
 #####################################################################
 ## End: Nagios preferences
 #####################################################################
@@ -108,15 +107,15 @@ NAGIOS_GROUP="nagios"
 ## Begin: Other binary
 #####################################################################
 ## RRDTOOL (optional)
-BIN_RRDTOOL="/usr/bin/rrdtool"
+#BIN_RRDTOOL="/usr/bin/rrdtool"
 ## Mail (optional)
-BIN_MAIL="/usr/bin/mail"
+#BIN_MAIL="/usr/bin/mail"
 ## SSH (optional)
-BIN_SSH="/usr/bin/ssh"
+#BIN_SSH="/usr/bin/ssh"
 ## SCP (optional)
-BIN_SCP="/usr/bin/scp"
+#BIN_SCP="/usr/bin/scp"
 ## PHP (optional)
-PHP_BIN="/usr/bin/php"
+#PHP_BIN="/usr/bin/php"
 #####################################################################
 ## End: Other binary
 #####################################################################
@@ -128,15 +127,15 @@ PHP_BIN="/usr/bin/php"
 ## Perl path for RRDs.pm file
 RRD_PERL="/usr/lib/perl5"
 ## A sudo file (optional)
-SUDO_FILE="/etc/sudoers"
+#SUDO_FILE="/etc/sudoers"
 ## Apache user (optional)
-WEB_USER="www-data"
+#WEB_USER="www-data"
 ## Apache group (optional)
-WEB_GROUP="www-data"
+#WEB_GROUP="www-data"
 ## init script directory (optional)
-INIT_D="/etc/init.d"
+#INIT_D="/etc/init.d"
 ## cron config script directory (optional)
-CRON_D="/etc/cron.d"
+#CRON_D="/etc/cron.d"
 ## Path for PEAR.php file
 PEAR_PATH="/usr/share/php"
 #####################################################################
