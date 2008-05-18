@@ -775,7 +775,7 @@ function reload_service_apache() {
 }
 
 ## function prepare_apache_config()
-# This function write a config in directory ($1)
+# This function write a config in directory ($1)
 # and test if that config exist.
 function prepare_apache_config() {
 	local directory="$1"
@@ -800,7 +800,7 @@ Alias /centreon/ $INSTALL_DIR_CENTREON/www/
 
 __EOT__
 
-	if [ -e $directory/centreon.apache.conf ] ; then 
+	if [ -e $directory/centreon.apache.conf ] ; then 
 		return 0
 	else 
 		log "INFO" "$(gettext "Problem when I generate an apache configuration")"
@@ -842,7 +842,7 @@ CENTREON   ALL = NOPASSWD: $INIT_D/centstorage stop
 __EOT__
 
 
-	if [ -e $directory/centreon.sudo ] ; then 
+	if [ -e $directory/centreon.sudo ] ; then 
 		return 0
 	else 
 		log "INFO" "$(gettext "Problem when I generate a sudo configuration")"
@@ -1070,7 +1070,7 @@ function find_user_nagios()
 
 function find_group_nagios()
 {
-	# Same to user, If I am on this function I must reset NAGIOS_GROUP
+	# Same to user, If I am on this function I must reset NAGIOS_GROUP
 	NAGIOS_GROUP=""
 	# In a first time, I search on nagios.cfg because it had most of chance to find it.
 	if [ -f $NAGIOS_ETC/nagios.cfg ] ; then  
@@ -1424,7 +1424,7 @@ function find_OS() {
 }
 
 ## Function clean_and_exit()
-# use this function to clean and exit centreon install
+# use this function to clean and exit centreon install
 function clean_and_exit() {
 	log "EXIT" "$(gettext "Exit Centreon install")"
 	exit 1
