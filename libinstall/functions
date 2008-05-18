@@ -251,9 +251,9 @@ function select_in_array() {
 ## Fonction usage()
 function usage() {
 	local program=$0
-	echo -e "`gettext \"Usage: $program -f <file>\"`"
-	echo -e "\t-f\t`gettext \"file with all variable\"`"
-	echo -e "\t-u\t`gettext \"file with all variable for upgrade :\"` CENTREON_CONF"
+	echo -e "$(gettext "Usage: $program -f <file>")"
+	echo -e "\t-f\t$(gettext "file with all variable")"
+	echo -e "\t-u\t$(gettext "file with all variable for upgrade :") CENTREON_CONF"
 	exit 1
 }
 
@@ -345,7 +345,7 @@ function locate_nagiosstats_binary() {
 function locate_nagios_p1_file() {
 	local nagios_etc="$1"
 	if [ -z "$NAGIOS_P1_FILE" ] ; then 
-		NAGIOS_P1_FILE=$(grep -r "^p1_file" $nagios_etc | grep -v -i "sample" | cut -d= -f2)
+		NAGIOS_P1_FILE=$(grep -r "^p1_file" $nagios_etc | grep -v -i "sample" | cut -d= -f2 | uniq )
 		if [ -z "$NAGIOS_P1_FILE" ] ; then
 			log "INFO" "$(gettext "p1_file not found")"
 		else
@@ -706,17 +706,91 @@ function is_single() {
 # Make a copy of the original file as httpd.conf.initial
 
 function configureApache() {
-	echo -e "\n------------------------------------------------------------------------"
-	echo -e "\t`gettext \"Configure Apache server\"`"
-	echo -e "------------------------------------------------------------------------\n\n"
-local examplesdir=$1
-## Prepare apache config
-	cat << __EOT__ > $examplesdir/centreon.apache.conf
+	echo -e "$line"
+	echo -e "\t$(gettext "Configure Apache server")"
+	echo -e "$line\n\n"
+
+	local write_config="0"
+	local dir_conf="$1"
+	# Generate a apache config in directory
+	prepare_apache_config "$dir_conf"
+
+	if [ "$silent_install" -ne 1 ] ; then 
+		if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
+			echo "$(gettext "Finding Apache Centreon configuration file")"
+			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
+			yes_no_default "$(gettext "Do you want to rewrite Apache configuration file ?")"
+			[ "$?" -eq 0 ] && write_config="1"	
+		else 
+			yes_no_default "$(gettext "Do you want to write in Apache configuration file ?")"
+			[ "$?" -eq 0 ] && write_config="1"
+		fi
+	else 
+		write_config="1"
+    	fi
+	if [ "$write_config" -eq 1 ] ; then 
+		cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf >> $LOG_FILE 2>&1
+		echo_success "$(gettext "Create") '$DIR_APACHE_CONF/centreon.conf'" "$ok"
+		echo_success "$(gettext "Configuring Apache")" "$ok"
+		# After finishing the configuration -> 
+		# reload apache ! (if admin wants :p)
+		yes_no_default "$(gettext "Do you want to reload your Apache ?")"
+		if [ $? -eq 0 ] ; then 
+			reload_service_apache
+		fi
+	else
+		echo_info "$(gettext "Please config Apache with this example"):\n $dir_conf/centreon.apache.conf"
+	fi
+}
+
+## function reload_service_apache
+function reload_service_apache() {
+	local service=""
+	log "INFO" "$(gettext "Reloading Apache...")"
+	if [ -x /etc/init.d/apache ] ; then
+		service="/etc/init.d/apache"
+	elif [ -x /etc/init.d/httpd ] ; then
+		service="/etc/init.d/httpd"
+	elif [ -x /etc/init.d/apache2 ] ; then
+		service="/etc/init.d/apache2"
+	elif [ -x /usr/local/etc/rc.d/apache ] ; then
+		service="/usr/local/etc/rc.d/apache"
+	elif [ -x /usr/local/etc/rc.d/apache2 ]; then
+		service="/etc/init.d/apache2"
+	else
+		echo_warning "$(gettext "Unable to restart Apache server")" "$warning"
+		log "WARN" "$(gettext "Unable to restart Apache server")"
+	fi
+
+	log "DEBUG" "$(gettext "use") : $service"
+	# reload apache service
+	$service reload >> $LOG_FILE 2>&1
+	if [ "$?" -eq 0 ] ; then
+		echo_success "$(gettext "Reloading Apache service")" "$ok"
+		return 0
+	else
+		echo_failure "$(gettext "Reloading Apache service")" "$fail"
+		return 1
+	fi
+}
+
+## function prepare_apache_config()
+# This function write a config in directory ($1)
+# and test if that config exist.
+function prepare_apache_config() {
+	local directory="$1"
+
+	# if INSTALL_DIR_CENTREON not found, ask:
+	[ -z "$INSTALL_DIR_CENTREON" ] && locate_centreon_installdir
+	
+	# Prepare apache config
+	cat << __EOT__ > $directory/centreon.apache.conf
 ##
 ## Section add by Centreon Install Setup
 ##
 	
 Alias /centreon $INSTALL_DIR_CENTREON/www/
+Alias /centreon/ $INSTALL_DIR_CENTREON/www/
 <Directory "$INSTALL_DIR_CENTREON/www">
     Options Indexes
     AllowOverride AuthConfig Options
@@ -726,68 +800,28 @@ Alias /centreon $INSTALL_DIR_CENTREON/www/
 
 __EOT__
 
-	local write_config=0
-	if [ $silent_install -ne 1 ] ; then 
-		if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
-			echo "`gettext \"Finding Apache Centreon configuration file\"`"
-			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
-			yes_no_default "`gettext \"Do you want to rewrite Apache configuration file ?\"`"
-			[ $? -eq 0 ] && write_config=1	
-		else 
-			yes_no_default "`gettext \"Do you want to write in Apache configuration file ?\"`"
-			[ $? -eq 0 ] && write_config=1
-		fi
+	if [ -e $directory/centreon.apache.conf ] ; then 
+		return 0
 	else 
-		write_config=1
-    	fi
-	if [ $write_config -eq 1 ] ; then 
-		cp $examplesdir/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf 2>&1 > /dev/null
-		echo_success "`gettext \"Create\"` '$DIR_APACHE_CONF/centreon.conf'" "$ok"
-		echo_success "`gettext \"Configuring Apache\"`" "$ok"
-		# After finishing the configuration -> 
-		# restart apache ! (if admin wants :p)
-		yes_no_default "`gettext \"Do you want to reload your Apache ?\"`"
-		if [ $? -eq 0 ] ; then 
-			log "INFO" "`gettext \"Reloading Apache...\"`"
-			if [ -x /etc/init.d/apache ] ; then
-				log "DEBUG" "$(gettext "use") : /etc/init.d/apace"
-				/etc/init.d/apache reload >> $LOG_FILE 2>&1
-			elif [ -x /etc/init.d/httpd ] ; then
-				log "DEBUG" "$(gettext "use") : /etc/init.d/httpd"
-				/etc/init.d/httpd reload >> $LOG_FILE 2>&1
-			elif [ -e /etc/init.d/apache2 ] ; then
-				log "DEBUG" "$(gettext "use") : /etc/init.d/apache2"
-				/etc/init.d/apache2 reload >> $LOG_FILE 2>&1
-			elif [ -e /usr/local/etc/rc.d/apache ] ; then
-				log "DEBUG" "$(gettext "use") : /usr/local/etc/rc.d/apache"
-				/usr/local/etc/rc.d/apache reload >> $LOG_FILE 2>&1
-			elif [ -e /usr/local/etc/rc.d/apache2 ]; then
-				log "DEBUG" "$(gettext "use") : /usr/local/etc/rc.d/apache2"
-				/etc/init.d/apache2 reload >> $LOG_FILE 2>&1
-			else
-				echo_warning "`gettext \"Unable to restart Apache server\"`" "$warning"
-				log "WARN" "`gettext \"Unable to restart Apache server\"`"
-			fi
-		fi
-	else
-		echo_info "`gettext \"Please config Apache with this example\"`:\n $examplesdir/centreon.apache.conf"
+		log "INFO" "$(gettext "Problem when I generate an apache configuration")"
+		return 1
 	fi
 }
 
+## function prepare_sudo_config()
+# This function write a config in directory ($1)
+function prepare_sudo_config() {
+	local directory="$1"
 
-function configureSUDO(){
-	echo -e "\n------------------------------------------------------------------------"
-	echo -e "\t`gettext \"Configure Sudo\"`"
-	echo -e "------------------------------------------------------------------------\n\n"
-    
     	locate_sudo
 	# Find Nagios Init Script
 	check_nagios_init_script
 	# find nagios binary if not define
-	[ -n "$NAGIOS_BINARY" ] && locate_nagios_binary
+	[ -z "$NAGIOS_BINARY" ] && locate_nagios_binary
+	[ -z "$INIT_D" ] && locate_init_d
 	# Prepare sudo.conf
 	
-	cat << __EOT__ > $INSTALL_DIR_CENTREON/examples/centreon.sudo
+	cat << __EOT__ > $directory/centreon.sudo
 #Add by CENTREON installation script
 User_Alias      CENTREON= $WEB_USER
 # Nagios Restart
@@ -807,30 +841,51 @@ CENTREON   ALL = NOPASSWD: $INIT_D/centstorage stop
 
 __EOT__
 
-	sudo=`grep -e "[CO][ER][NE][TO][RN]" $SUDO_FILE > /dev/null; echo $?`
-	if [ $sudo -eq 1 ]; then
-    		echo_info "`gettext \"Your sudo is not configured\"`"
 
-		yes_no_default "`gettext \"Do you want me to configure your sudo ? (WARNING) \"`"
+	if [ -e $directory/centreon.sudo ] ; then 
+		return 0
+	else 
+		log "INFO" "$(gettext "Problem when I generate a sudo configuration")"
+		return 1
+	fi
+}
+
+## configureSUDO()
+# Need a directory to store a config 
+function configureSUDO(){
+	echo -e "$line"
+	echo -e "\t$(gettext "Configure Sudo")"
+	echo -e "$line\n\n"
+    
+	local dir_conf="$1"
+	# Generate a sudo config in directory
+	prepare_apache_config "$dir_conf"
+
+	# Try to detect old configuration
+	sudo=`grep -e "[CO][ER][NE][TO][RN]" $SUDO_FILE > /dev/null 2>&1 ; echo $?`
+	if [ $sudo -eq 1 ]; then
+    		echo_info "$(gettext "Your sudo is not configured")"
+
+		yes_no_default "$(gettext "Do you want me to configure your sudo ? (WARNING) ")"
 		if [ $? -eq 0 ] ; then 
-			cat $INSTALL_DIR_CENTREON/examples/centreon.sudo >> $SUDO_FILE
-			echo_success "`gettext \"Configuring Sudo\"`" "$ok"
+			cat $dir_conf/centreon.sudo >> $SUDO_FILE
+			echo_success "$(gettext "Configuring Sudo")" "$ok"
 		else
-			echo_passed "`gettext \"Please configure your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
+			echo_passed "$(gettext "Please configure your sudo with this example"):\n\t $dir_conf/centreon.sudo" "$passed"
 		fi
 	else
-		echo_passed "`gettext \"Sudo is already configured\"`" "$passed"
+		echo_passed "$(gettext "Sudo is already configured")" "$passed"
+		## ticket #7 (upgrade script here)
 	fi
-	log "INFO" "`gettext \"Please configure your sudo with this example\"`: $INSTALL_DIR_CENTREON/examples/centreon.sudo"
+	log "INFO" "$(gettext "Please configure your sudo with this example"): $dir_conf/centreon.sudo"
 	return 0
 }
 
-# attente de relecture
 function createConfFile()
 {
-	echo -e "\n------------------------------------------------------------------------"
-	echo -e "\t\t`gettext \"Centreon Post Install\"`"
-	echo -e "------------------------------------------------------------------------\n\n"
+	echo -e "$line"
+	echo -e "\t\t$(gettext "Centreon Post Instalm")"
+	echo -e "$line\n\n"
 
 	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
 	# Reinit file if exist	
@@ -874,21 +929,21 @@ __EOT__
 
 	# Conf nagios.cfg
 	
-	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _file | grep -v \#`
+	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep "_file" | grep -v "\#"`
 	do
 		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF
 	done
 	
 	# Conf nagios.cfg
 	
-	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _path | grep -v \#`
+	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep "_path" | grep -v "\#"`
 	do
 		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF
 	done
 	
 	# Conf GCI.cfg
 	
-	for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep physical_html_path | grep -v \#`
+	for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep "physical_html_path" | grep -v "\#"`
 	do
 		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF		
 	done
@@ -1106,7 +1161,7 @@ function check_group_nagios()
 
 	nagios_group_grep=`grep $NAGIOS_GROUP /etc/group > /dev/null; echo $?`
 	if [ "$nagios_group_grep" -eq 0 ] ; then
-	    	echo_success "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "$ok"
+	    	echo_success "$(gettext "Finding nagios group \$NAGIOS_GROUP in /etc/group")" "$ok"
 	else
 		echo_failure "$(gettext "Nagios group \$NAGIOS_GROUP Not found")" "$fail"
 		echo -e "$(gettext "You have to create you nagios group")"
@@ -1118,7 +1173,11 @@ function check_group_nagios()
 
 function check_nagios_init_script()
 {
-	if [ -x "/etc/init.d/nagios" ]; then
+	# Try to find nagios init script.
+	# It's possible to force that variable.
+	if [ -x "$NAGIOS_INIT_SCRIPT" ] ; then
+		log "INFO" "$(gettext "Use default variable") : $NAGIOS_INIT_SCRIPT"
+	elif [ -x "/etc/init.d/nagios" ]; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
 	elif [ -x "/etc/init.d/nagios2" ] ; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
@@ -1126,7 +1185,7 @@ function check_nagios_init_script()
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios3"
 	elif [ -x "/usr/local/etc/rc.d/nagios" ] ; then
 		NAGIOS_INIT_SCRIPT="/usr/local/etc/rc.d/nagios"
-	elif [ -x $DEFAULT_NAGIOS_INIT_SCRIPT ] ; then
+	elif [ -x "$DEFAULT_NAGIOS_INIT_SCRIPT" ] ; then
 		NAGIOS_INIT_SCRIPT=$DEFAULT_NAGIOS_INIT_SCRIPT
 	else
     		echo_passed "`gettext \"Not possible to find Nagios init script\"`" "$critical"
@@ -1226,7 +1285,7 @@ function check_user_apache()
 			done
 		fi
 	fi
-	echo_info "`gettext \"Finding Apache user\"` :" "$WEB_USER"
+	echo_info "$(gettext "Finding Apache user") :" "$WEB_USER"
 }
 
 function check_group_apache()
@@ -1264,7 +1323,7 @@ function check_group_apache()
 			done
 		fi
 	fi
-	echo_info "`gettext \"Finding Apache group\"` :" "$WEB_GROUP"
+	echo_info "$(gettext "Finding Apache group") :" "$WEB_GROUP"
 }
 
 
@@ -1273,9 +1332,9 @@ function copyInTempFile()
 {
 	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www plugins"
 	# Prepare centreon Plugins
-	echo "`gettext \"Preparing Centreon temporary files\"`"
+	echo "$gettext "Preparing Centreon temporary files")"
 	if [ -d $TMPDIR ] ; then
-		echo_passed "$TMPDIR `gettext \"exists, it will be moved...\"`"
+		echo_passed "$TMPDIR $(gettext "exists, it will be moved...")"
 		mv $TMPDIR $TMPDIR.`date +%Y%m%d-%k%m%S`
 	fi
 	mkdir -p $TMPDIR/src
@@ -1283,7 +1342,7 @@ function copyInTempFile()
 	mkdir -p $TMPDIR/final
 
 	for folder in $srclistcp ; do
-		log "INFO" "`gettext \"Copy\"` $BASE_DIR/$folder $TMPDIR/src/"
+		log "INFO" "$(gettext "Copy") $BASE_DIR/$folder $TMPDIR/src/"
 		cp -Rf $BASE_DIR/$folder $TMPDIR/src/ 
 	done
 }	
@@ -1292,27 +1351,27 @@ function copyInTempFile()
 ## use php script to check pear module
 function check_pear_module() {
 	local module_list=$1
-	echo -e "`gettext \"Check PEAR modules\"`"
+	echo -e "$(gettext "Check PEAR modules")"
 	$PHP_BIN $INSTALL_DIR/check_pear.php check $module_list
-	return $?
+	return "$?"
 }
 
 ## function install_pear_module()
 ## install missed pear module
 function install_pear_module() {
 	local module_list=$1
-	echo -e "`gettext \"Installing PEAR modules\"`"
+	echo -e "$(gettext "Installing PEAR modules")"
 	$PHP_BIN $INSTALL_DIR/check_pear.php install $module_list
-	return $?
+	return "$?"
 }
 
 ## function upgrade_pear_module()
 ## upgrade local pear module
 function upgrade_pear_module() {
 	local module_list=$1
-	echo -e "`gettext \"Upgrading PEAR modules\"`"
+	echo -e "$(gettext "Upgrading PEAR modules")"
 	$PHP_BIN $INSTALL_DIR/check_pear.php upgrade $module_list
-	return $?
+	return "$?"
 }
 
 ## function install_init_service()
@@ -1333,7 +1392,7 @@ function install_init_service() {
 	elif [ "$OS" = "REDHAT" ] ; then
 		chkconfig --add $service
 	else
-		echo_passed "`gettext \"Impossible to install your run level for \"` $service" "$fail"
+		echo_passed "$(gettext "Impossible to install your run level for ") $service" "$fail"
 	fi
 	return 0
 } 
@@ -1346,18 +1405,19 @@ function install_init_service() {
 function find_OS() {
 	local distrib=$1
 	local dist_found=""
-	if [ -e /etc/debian_version ] ; then 
+	if [ -e "/etc/debian_version" ] ; then 
 		dist_found="DEBIAN"
-		log "INFO" "`gettext \"Debian Distribution\"`"
-	elif [ -e /etc/SuSE-release ] ; then
+		log "INFO" "$(gettext "Debian Distribution")"
+	elif [ -e "/etc/SuSE-release" ] ; then
 		dist_found="SUSE"
-		log "INFO" "`gettext \"Suse Distribution\"`"
-	elif [ -e /etc/redhat-release ] ; then
+		log "INFO" "$(gettext "Suse Distribution")"
+	elif [ -e "/etc/redhat-release" ] ; then
 		dist_found="REDHAT"
-		log "INFO" "`gettext \"Redhat Distribution\"`"
+		log "INFO" "$(gettext "Redhat Distribution")"
 	else
 		dist_found="NOT_FOUND"
-		log "INFO" "`gettext \"Distribution not found\"`"
+		log "INFO" "$(gettext "Distribution not found")"
+		return 1
 	fi
 	eval $distrib=$dist_found
 	return 0

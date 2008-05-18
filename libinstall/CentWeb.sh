@@ -56,7 +56,7 @@ fi
 
 ## Config Sudo
 # I think this process move on CentCore install...
-configureSUDO
+configureSUDO "$INSTALL_DIR_CENTREON/examples"
 
 ## Config Apache
 configureApache "$INSTALL_DIR_CENTREON/examples"
