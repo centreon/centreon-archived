@@ -1234,5 +1234,20 @@
 			return $nagios_server['id'];
 		return 0;
 	}
+	
+	function check_session($sid, $pearDB){
+		if (isset($sid) && !check_injection($sid)){
+			$sid = htmlentities($sid);
+			$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+			if($res->fetchInto($session)){
+				return $session["user_id"];
+			} else
+				get_error('bad session id');		
+		}
+		else
+			get_error('need session identifiant !');
+		return 0;
+	}
+	
 
 ?>

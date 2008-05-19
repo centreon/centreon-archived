@@ -15,20 +15,6 @@
  * For information : contact@centreon.com
  */
  
-	function check_session($sid, $pearDB){
-		if (isset($sid) && !check_injection($sid)){
-			$sid = htmlentities($sid);
-			$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-			if($res->fetchInto($session)){
-				return $session["user_id"];
-			} else
-				get_error('bad session id');		
-		}
-		else
-			get_error('need session identifiant !');
-		return 0;
-	}
-
 	function get_user_param($user_id, $pearDB){
 		$tab_row = array();
 		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");
