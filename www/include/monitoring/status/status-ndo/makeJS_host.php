@@ -62,7 +62,6 @@ function set_header_title(){
 	var _img_asc = mk_img('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_img('./img/icones/7x7/sort_desc.gif', "desc");
 
-
 	if(document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
 		h.innerHTML = '<?php echo _("Hosts")?>';
@@ -111,7 +110,6 @@ function set_header_title(){
 		_linkaction_asc.href = '#' ;
 		_linkaction_asc.onclick=function(){change_order()};
 		h.appendChild(_linkaction_asc);
-
 
 	}
 }

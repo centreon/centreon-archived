@@ -20,6 +20,7 @@ function _mk_img(_src, _alt){
   	_img.src = _src;
   	_img.alt = _alt;
   	_img.title = _alt;
+
 	return _img;
 }
 	
@@ -87,11 +88,10 @@ function create_report_link(_input_name, _id){
 	_linkaction_report.onclick=function(){goToReport(_input_name, _id)}
 	_linkaction_report.appendChild(_img_report);
 	return(_linkaction_report);
-
 }
 
 function create_graph_link(_input_name, _id){	
-	var _img_graph = _mk_img('./img/icones//16x16/column-chart.gif', "Graph");
+	var _img_graph = _mk_img('./img/icones/16x16/column-chart.gif', "Graph");
 	var _linkaction_graph = document.createElement("a");
 	_linkaction_graph.href = '#';
 	_linkaction_graph.onclick=function(){goToGraph(_input_name, _id); false;}

@@ -84,12 +84,16 @@ include_once("makeJS_Common.php");
 	{
 		var _linkBar = document.getElementById('linkBar')
 		var _divBar = document.createElement("div");
+		var _pipe = document.createElement("text");
 		
+		_pipe.innerHTML = " |";
 		_divBar.appendChild(create_graph_link('select','svc_id'));
 		_divBar.appendChild(create_log_link('select','svc_id'));
 //		_divBar.appendChild(create_report_link('select','svc_id'));
 //		_divBar.appendChild(create_IDCard_link('select','svc_id'));
 
+		_divBar.appendChild(_pipe);
+		
 		_divBar.setAttribute('style','float:right; margin-right:110px;' );
 		_linkBar.appendChild(_divBar);
 	}

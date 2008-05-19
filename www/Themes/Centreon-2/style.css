@@ -207,11 +207,13 @@ hr	{
 
 #linkBar {
 	position:absolute;
-	width:150px;
+	width:150px;	
 	text-align:right;
-	top:50px;
-	right:200px;
+	top:129px;
+	right:0px;
 	font-weight: bold;}
+
+/*#linkbar img { margin-bottom:0px; }*/
 
 #date{
 	position:absolute;
