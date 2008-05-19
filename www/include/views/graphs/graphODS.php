@@ -29,7 +29,6 @@
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-
 	$openid = '0';
 	$open_id_sub = '0';
 	if (isset($_GET["openid"])){
@@ -41,12 +40,10 @@
 	(isset($_GET["host_id"]) && $open_id_type == "HH") ? $_GET["host_id"] = $open_id_sub : $_GET["host_id"] = null;
 
 	$id = 1;
-	if (isset($_GET["id"])){
+	if (isset($_GET["id"]))
 		$id = $_GET["id"];
-	} 
-	if (isset($_POST["id"])){
+	if (isset($_POST["id"]))
 		$id = $_POST["id"];
-	}
 
 	if (isset($_POST["svc_id"]) && $_POST["svc_id"]){
 		$id = "";
@@ -105,12 +102,10 @@
 	$form->accept($renderer);
 		
 	$tpl->assign('form', $renderer->toArray());
-	
 	$tpl->assign('from', _(" From "));
-	$tpl->assign('to', _(" to "));
-	
-	$tpl->display("graphODS.ihtml");
+	$tpl->assign('to', _(" to "));	
 
+	$tpl->display("graphODS.ihtml");
 
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
@@ -151,7 +146,6 @@
 		tree.enableCheckBoxes(true);
 		tree.enableThreeStateCheckboxes(true);
 
-
 		// linkBar to log/reporting/graph/ID_card		
 		function getCheckedList(tree){
 			return tree.getAllChecked();
@@ -177,18 +171,16 @@
 		
 		function onCheck(nodeId){
 			multi = 1;
-			if(document.getElementById('openid'))
+			if (document.getElementById('openid'))
 				document.getElementById('openid').innerHTML = tree.getAllChecked();
 			graph_4_host(tree.getAllChecked(),1);
 		}
 		
-		function onNodeSelect(nodeId)
-		{
+		function onNodeSelect(nodeId){
 			multi = 0;
 
 			tree.openItem(nodeId);
-			if(nodeId.substring(0,2) == 'HS' || nodeId.substring(0,2) == 'MS')
-			{
+			if (nodeId.substring(0,2) == 'HS' || nodeId.substring(0,2) == 'MS'){
 				var graphView4xml = document.getElementById('graphView4xml');
 				graphView4xml.innerHTML="..graph.." + nodeId;
 				graph_4_host(nodeId);
@@ -294,6 +286,7 @@
 			if (document.formu2 && document.formu2.template_select && document.formu2.template_select.value != ""){
 				_tpl_id = document.formu2.template_select.value;
 			}
+			
 			// Split metric
 			var _split = 0;
 			if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
@@ -305,17 +298,24 @@
 				_status = 1
 			}
 			
+			var _warning = 0;
+			if (document.formu2 && document.formu2.warning && document.formu2.warning.checked)	{
+				_warning = 1
+			}
+			
+			var _critical = 0;
+			if (document.formu2 && document.formu2.critical && document.formu2.critical.checked)	{
+				_critical = 1
+			}
+			
 			tree.selectItem(id);
 			var proc = new Transformation();
 			var _addrXSL = "./include/views/graphs/GraphService.xsl";
-			var _addrXML = './include/views/graphs/GetODSXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+			var _addrXML = './include/views/graphs/GetODSXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 
-//				var header = document.getElementById('header');
-//				header.innerHTML += _addrXML;
-
-				proc.setXml(_addrXML)
-				proc.setXslt(_addrXSL)
-				proc.transform("graphView4xml");
+			proc.setXml(_addrXML)
+			proc.setXslt(_addrXSL)
+			proc.transform("graphView4xml");
 		}
 	
 		// Let's save the existing assignment, if any
@@ -324,7 +324,7 @@
         // Here is your precious function
         // You can call as many functions as you want here;
         myOnloadFunction1();
-		//graph_4_host('HS_1506', '0');
+		
 		graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
 
         // Now we call old function which was assigned to onLoad, thus playing nice

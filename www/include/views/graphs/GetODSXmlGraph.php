@@ -61,6 +61,8 @@
 	
 	$sid = $_GET['sid'];
 	
+	$contact_id = check_session($sid,$pearDB);
+	
 	$is_admin = isUserAdmin($sid);
 		
 	if (!$is_admin)	{
@@ -72,6 +74,8 @@
 	(isset($_GET["template_id"]) && !check_injection($_GET["template_id"])) ? $template_id = htmlentities($_GET["template_id"]) : $template_id = "1";
 	(isset($_GET["split"]) && !check_injection($_GET["split"])) ? $split = htmlentities($_GET["split"]) : $split = "0";
 	(isset($_GET["status"]) && !check_injection($_GET["status"])) ? $status = htmlentities($_GET["status"]) : $status = "0";
+	(isset($_GET["warning"]) && !check_injection($_GET["warning"])) ? $warning = htmlentities($_GET["warning"]) : $warning = "0";
+	(isset($_GET["critical"]) && !check_injection($_GET["critical"])) ? $critical = htmlentities($_GET["critical"]) : $critical = "0";
 	(isset($_GET["StartDate"]) && !check_injection($_GET["StartDate"])) ? $StartDate = htmlentities($_GET["StartDate"]) : $StartDate = "";
 	(isset($_GET["EndDate"]) && !check_injection($_GET["EndDate"])) ? $EndDate = htmlentities($_GET["EndDate"]) : $EndDate = "";
 	(isset($_GET["StartTime"]) && !check_injection($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"]) : $StartTime = "";
@@ -79,8 +83,6 @@
 	(isset($_GET["period"]) && !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
 	(isset($_GET["multi"]) && !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
 	(isset($_GET["id"])) ? $openid = htmlentities($_GET["id"]) : $openid = "-1";
-
-	$contact_id = '2';
 
 	if ($StartDate !=  "" && $StartTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
@@ -189,7 +191,6 @@
 		if (!in_array($type."_".$id, $tab_id))
 			array_push($tab_id,$type."_".$id);
 	}
-	
 	
 	foreach ($tab_id as $openid) {
 		$tab_tmp = split("_",$openid);
@@ -329,10 +330,10 @@
 					$metrics_list[$metrics_ret["metric_id"]] = $counter;
 			}
 		}		
-		$tab_period['Daily']= (time() - (60 * 60 * 24));
-		$tab_period['Weekly']= (time() - 60 * 60 * 24 * 7);
-		$tab_period['Monthly']= (time() - 60 * 60 * 24 * 31);
-		$tab_period['Yearly']= (time() - 60 * 60 * 24 * 365);
+		$tab_period['Daily']	= (time() - (60 * 60 * 24));
+		$tab_period['Weekly']	= (time() - 60 * 60 * 24 * 7);
+		$tab_period['Monthly']	= (time() - 60 * 60 * 24 * 31);
+		$tab_period['Yearly']	= (time() - 60 * 60 * 24 * 365);
 	
 		echo "<svc>";
 		echo "<name>".$name."</name>";
@@ -348,23 +349,24 @@
 		echo "<opid>".$openid."</opid>";
 		echo "<split>".$split."</split>";
 		echo "<status>".$status."</status>";
-		
+		echo "<warning>".$warning."</warning>";
+		echo "<critical>".$critical."</critical>";
 		foreach ($tab_period as $name => $start){
 			echo "<period>";
 			echo "<name>".$name."</name>";
 			echo "<start>".$start."</start>";
 			echo "<end>".time()."</end>";
 	
-		if ($split)
-			foreach ($metrics as $metric_id => $metric)	{
-				echo "<metric>";
-				echo "<metric_id>".$metric_id."</metric_id>";	
-				echo "</metric>";
-			}
-		echo "</period>";	
+			if ($split)
+				foreach ($metrics as $metric_id => $metric)	{
+					echo "<metric>";
+					echo "<metric_id>".$metric_id."</metric_id>";	
+					echo "</metric>";
+				}
+			echo "</period>";	
+		}
+		echo "</svc>";
 	}
-	echo "</svc>";
-}
 	
 	/*
 	 * For service zoom or multi selected
@@ -485,9 +487,9 @@
 					$metrics_active[$key] = 1;	
 		}
 	
-		if ($multi) 
-			echo "<multi_svc>"; 
-		else 
+		if ($multi)
+			echo "<multi_svc>";
+		else
 			echo "<svc_zoom>";
 
 		echo "<sid>".$sid."</sid>";
@@ -497,6 +499,8 @@
 		echo "<end>".$end."</end>";
 		echo "<index>".$index_id."</index>";
 		echo "<split>".$split."</split>";
+		echo "<critical>".$critical."</critical>";
+		echo "<warning>".$warning."</warning>";
 		echo "<status>".$status."</status>";
 		echo "<tpl>".$template_id."</tpl>";
 		echo "<multi>".$multi."</multi>";
@@ -524,15 +528,15 @@
 					echo "<select>0</select>";
 				else
 					echo "<select>1</select>";
-		
 				echo "<metric_name>" . $metric["metric_name"] ."</metric_name>";
 				echo "</metrics>";
 			}
+			
 			foreach ($graphTs as $id => $tpl){
 				if ($tpl && $id){
 					echo "<tpl>";
-						echo "<tpl_name>".$tpl."</tpl_name>";
-						echo "<tpl_id>".$id."</tpl_id>";
+					echo "<tpl_name>".$tpl."</tpl_name>";
+					echo "<tpl_id>".$id."</tpl_id>";
 					echo "</tpl>";	
 				}
 			}
@@ -560,6 +564,8 @@ echo "<giv_gg_tpl>"._("Template")."</giv_gg_tpl>";
 echo "<advanced>"._("Options")."</advanced>";
 echo "<giv_split_component>"._("Split Components")."</giv_split_component>";
 echo "<status>"._("Display Status")."</status>";
+echo "<warning>"._("Warning")."</warning>";
+echo "<critical>"._("Critical")."</critical>";		
 echo "</lang>";
 
 /*
@@ -568,5 +574,4 @@ echo "</lang>";
 $debug = 0;
 echo "<debug>".$debug."</debug>";
 echo "</root>";
-
 ?>

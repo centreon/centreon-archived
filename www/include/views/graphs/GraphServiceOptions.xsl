@@ -10,9 +10,9 @@
             	<td class="FormHeader" ><xsl:value-of select="//lang/optionAdvanced"/></td>
             </tr>
 			<tr class="list_one">
-            	<td >
+            	<td>
                		<xsl:value-of select="//lang/period"/>
-						<xsl:text> </xsl:text>                		
+					<xsl:text> </xsl:text>                		
             	</td>
 			</tr>
 			<tr class="list_lvl_1">
