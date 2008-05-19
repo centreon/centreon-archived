@@ -177,14 +177,11 @@
 	if(document.getElementById('linkBar')){
 		var _menu_2 = document.getElementById('linkBar')
 		var _divBar = document.createElement("div");
-		var _pipe = document.createElement("text");
 		
-		_pipe.innerHTML = " |";
 		_divBar.appendChild(create_graph_link(tree,'id'));
 		_divBar.appendChild(create_monitoring_link(tree,'id'));
 	//	_divBar.appendChild(create_report_link(tree,'id'));
 	//	_divBar.appendChild(create_IDCard_link(tree,'id'));
-		_divBar.appendChild(_pipe);
 		_divBar.setAttribute('style','float:right; margin-right:110px;' );
 		_menu_2.appendChild(_divBar);
 	}

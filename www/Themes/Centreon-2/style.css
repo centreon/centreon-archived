@@ -209,11 +209,13 @@ hr	{
 	position:absolute;
 	width:150px;	
 	text-align:right;
-	top:129px;
-	right:0px;
+	top:110px;
+	right:-98px;
 	font-weight: bold;}
 
-/*#linkbar img { margin-bottom:0px; }*/
+#linkBar img {
+	margin-left: 4px;
+}
 
 #date{
 	position:absolute;
