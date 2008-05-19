@@ -28,7 +28,7 @@ use strict;
 use DBI;
 
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
-require "@INSTALL_DIR_OREON@/ODS/etc/conf.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 ###############################
 ## GET HOSTNAME FROM IP ADDRESS
