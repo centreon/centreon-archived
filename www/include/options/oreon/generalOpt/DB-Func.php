@@ -289,6 +289,7 @@
 		if ($ret["RRDdatabase_path"][strlen($ret["RRDdatabase_path"]) - 1] != "/")
 			$ret["RRDdatabase_path"] .= "/";
 		$rq = "UPDATE `config` SET `RRDdatabase_path` = '".$ret["RRDdatabase_path"]."',  `RRDdatabase_status_path` = '".$ret["RRDdatabase_status_path"]."',
+				`RRDdatabase_nagios_stats_path` = '".$ret["RRDdatabase_nagios_stats_path"]."',
 				`len_storage_rrd` = '".$ret["len_storage_rrd"]."',
 				`len_storage_mysql` = '".$ret["len_storage_mysql"]."',
 				`autodelete_rrd_db` = '".$ret["autodelete_rrd_db"]."',

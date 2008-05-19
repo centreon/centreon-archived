@@ -18,8 +18,8 @@
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
-	
-	require_once ('DB.php');
+	require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once("$centreon_path/www/DBOdsConnect.php");
 
 	$title	 = array(	"active_host_check" => "Verifications d'hotes", 
 						"active_host_last" => "Hotes Actifs",
@@ -86,8 +86,13 @@
 	
 	$metrics = $differentStats[$options[$_GET["key"]]];
 	$cpt = 1;
+	$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_nagios_stats_path FROM config");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while ($nagios_stats =& $DBRESULT->fetchRow())
+		$nagios_stats_path = $nagios_stats['RRDdatabase_nagios_stats_path'];
 	foreach ($metrics as $key => $value){
-		$command_line .= " DEF:v".$cpt."=/var/lib/ods/perfmon-".$_GET["ns_id"]."/".$options[$_GET["key"]].":".$value.":AVERAGE ";
+		$command_line .= " DEF:v".$cpt."=".$nagios_stats_path."perfmon-".$_GET["ns_id"]."/".$options[$_GET["key"]].":".$value.":AVERAGE ";
 		$cpt++;
 	}
 	$command_line .= " COMMENT:\" \\l\" ";
