@@ -4,7 +4,7 @@
 # SVN: $Id$
 
 echo "$line"
-echo -e "\t$(gettext "Start CentPlugins Installation")"
+echo -e "\t$(gettext "Start CentPlugins Traps Installation")"
 echo "$line"
 
 ## Where is nagios_pluginsdir
@@ -27,8 +27,8 @@ copyInTempFile 2>>$LOG_FILE
 
 ## Create temporary folder
 log "INFO" "$(gettext "Create working directory")"
-mkdir -p $TMPDIR/final/plugins
-mkdir -p $TMPDIR/work/plugins
+mkdir -p $TMPDIR/final/plugins/traps
+mkdir -p $TMPDIR/work/plugins/traps
 
 ## Change Macro in working dir
 for FILE in `ls $TMPDIR/src/plugins/src/check*centreon*` \
@@ -63,9 +63,4 @@ log "INFO" "$(gettext "Install temporary directory for plugins") : $CENTPLUGINS_
 $INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 -v \
 	$CENTPLUGINS_TMP >> $LOG_FILE 2>&1
 echo_success "$(gettext "CentPlugins is installed")"
-
-if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
-	. $INSTALL_DIR/CentPluginsTraps.sh
-fi
-
 
