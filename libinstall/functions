@@ -558,6 +558,40 @@ function locate_centplugins_tmpdir() {
 	log "INFO" "CENTPLUGINS_TMP: $CENTPLUGINS_TMP"
 }
 
+## Check centPluginsTraps_bindir
+function locate_centpluginstraps_bindir() {
+	if [ -z "$CENTPLUGINSTRAPS_BINDIR" ] ; then
+		answer_with_createdir "$(gettext "Where is your CentPlugins Traps binary")" "$DEFAULT_CENTPLUGINSTRAPS_BINDIR" "CENTPLUGINSTRAPS_BINDIR"
+		echo_success "Path $CENTPLUGINSTRAPS_BINDIR" "$ok"
+	elif [ ! -d "$CENTPLUGINSTRAPS_BINDIR" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTPLUGINSTRAPS_BONDIR"
+		log "INFO" "$(gettext "Create") $CENTPLUGINSTRAPS_BINDIR"
+	fi
+	export CENTPLUGINSTRAPS_BINDIR
+	log "INFO" "CENTPLUGINSTRAPS_BINDIR: $CENTPLUGINSTRAPS_BINDIR"
+}
+
+## check snmp_etcdir
+function locate_snmp_etcdir() {
+	if [ -z "$SNMP_ETC" ] ; then
+		answer_with_testdir "$(gettext "Where is your SNMP configuration directory")" "$DEFAULT_SNMP_ETC" "SNMP_ETC"
+		echo_success "$SNMP_ETC" "$ok"
+	fi
+	export SNMP_ETC
+	log "INFO" "SNMP_ETC: $SNMP_FILE"
+}
+
+## check snmptt_bindir
+function locate_snmptt_bindur() {
+	if [ -z "$SNMPTT_BINDIR" ] ; then
+		answer_with_createdir "$(gettext "Where is your SNMPTT binaries directory")" "$DEFAULT_SNMPTT_BINDIR" "SNMPTT_BINDIR"
+		echo_success "$SNMPTT_BINDIR" "$ok"
+	fi
+	export SNMPTT_BINDIR
+	log "INFO" "SNMPTT_BINDIR: $SNMPTT_BINDIR"
+}
+
+
 ## check sudo_file
 function locate_sudo() {
 	if [ -z "$SUDO_FILE" ] ; then
