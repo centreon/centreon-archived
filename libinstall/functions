@@ -103,6 +103,7 @@ function yes_no_default() {
 		echo -e "\n$message\n`gettext \"[y/n], default to [$default]:\"`"
 		echo -en "> "
 		read res
+		[ -z "$res" ] && res="$default"
 	done
 	if [ "$res" = "$yes" ] ; then 
 		return 0
