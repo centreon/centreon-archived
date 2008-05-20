@@ -49,10 +49,10 @@
 
 	/* Connect to Centreon DB */	
 	$dsn = array(	'phptype'  => 'mysql',
-			'username' => $conf_oreon['user'],
-			'password' => $conf_oreon['password'],
-			'hostspec' => $conf_oreon['hostCentreon'],
-			'database' => $conf_oreon['db']);
+			'username' => $conf_centreon['user'],
+			'password' => $conf_centreon['password'],
+			'hostspec' => $conf_centreon['hostCentreon'],
+			'database' => $conf_centreon['db']);
 
 	$pearDB =& DB::connect($dsn, array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE));
 	if (PEAR::isError($pearDB)) 
@@ -62,10 +62,10 @@
 
 	/* Connect to Centstorage DB */	
 	$dsn = array(	'phptype'  => 'mysql',
-			'username' => $conf_oreon['user'],
-			'password' => $conf_oreon['password'],
-			'hostspec' => $conf_oreon['hostCentstorage'],
-			'database' => $conf_oreon['dbcstg']);
+			'username' => $conf_centreon['user'],
+			'password' => $conf_centreon['password'],
+			'hostspec' => $conf_centreon['hostCentstorage'],
+			'database' => $conf_centreon['dbcstg']);
 
 	$pearDBO =& DB::connect($dsn, array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE));
 	if (PEAR::isError($pearDBO)) 

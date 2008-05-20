@@ -33,10 +33,10 @@
 		include_once($oreonPath . "/www/centreon.conf.php");
 		$dsn = array(
 			     'phptype'  => 'mysql',
-			     'username' => $conf_oreon['user'],
-			     'password' => $conf_oreon['password'],
-			     'hostspec' => $conf_oreon['host'],
-			     'database' => $conf_oreon['db'],
+			     'username' => $conf_centreon['user'],
+			     'password' => $conf_centreon['password'],
+			     'hostspec' => $conf_centreon['host'],
+			     'database' => $conf_centreon['db'],
 			     );
 		$options = array(
 				 'debug'       => 2,

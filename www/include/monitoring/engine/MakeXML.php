@@ -28,10 +28,10 @@
 	/* Connect to oreon DB */
 	$dsn = array(
 		     'phptype'  => 'mysql',
-		     'username' => $conf_oreon['user'],
-		     'password' => $conf_oreon['password'],
-		     'hostspec' => $conf_oreon['host'],
-		     'database' => $conf_oreon['db'],
+		     'username' => $conf_centreon['user'],
+		     'password' => $conf_centreon['password'],
+		     'hostspec' => $conf_centreon['host'],
+		     'database' => $conf_centreon['db'],
 		     );
 	$options = array(
 			 'debug'       => 2,
@@ -43,10 +43,10 @@
 
 	/* Connect to ods DB */
 	$dsn = array('phptype'  => 'mysql',
-			     'username' => $conf_oreon['user'],
-			     'password' => $conf_oreon['password'],
-			     'hostspec' => $conf_oreon['host'],
-			     'database' => $conf_oreon['ods'],);
+			     'username' => $conf_centreon['user'],
+			     'password' => $conf_centreon['password'],
+			     'hostspec' => $conf_centreon['host'],
+			     'database' => $conf_centreon['ods'],);
 	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
 	$pearDBO =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDBO)) die("Connecting problems with oreon database : " . $pearDBO->getMessage());

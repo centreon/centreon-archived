@@ -7,10 +7,10 @@
 	include_once("./centreon.conf.php");
 	$dsn = array(
 	    'phptype'  => 'mysql',
-	    'username' => $conf_oreon["user"],
-	    'password' => $conf_oreon["password"],
-	    'hostspec' => $conf_oreon["hostCentstorage"],
-	    'database' => $conf_oreon["dbcstg"],
+	    'username' => $conf_centreon["user"],
+	    'password' => $conf_centreon["password"],
+	    'hostspec' => $conf_centreon["hostCentstorage"],
+	    'database' => $conf_centreon["dbcstg"],
 	);
 	
 	$options = array(

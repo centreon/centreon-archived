@@ -22,10 +22,10 @@
 	$debug = 0;
 	$dsn = array(
 	    'phptype'  => 'mysql',
-	    'username' => $conf_oreon["user"],
-	    'password' => $conf_oreon["password"],
-	    'hostspec' => $conf_oreon["host"],
-	    'database' => $conf_oreon["ods"],
+	    'username' => $conf_centreon["user"],
+	    'password' => $conf_centreon["password"],
+	    'hostspec' => $conf_centreon["host"],
+	    'database' => $conf_centreon["ods"],
 	);
 	
 	$options = array(
@@ -49,7 +49,7 @@
 	<br /><br />
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center"><?php
 	print "<tr><th align='left'>Component</th><th style='text-align: right;'>Status</th></tr>";
-	print "<tr><td><b>Database &#146;".$conf_oreon['db']."&#146; : Upgrade</b></td>";
+	print "<tr><td><b>Database &#146;".$conf_centreon['db']."&#146; : Upgrade</b></td>";
 
 	# get version...	
 	preg_match("/UpdateDB-([a-zA-z0-9\-\.]*).sql/", $_SESSION["mysqlscript"], $matches);

@@ -77,12 +77,12 @@ aff_header("Centreon Setup Wizard", "Centreon Configuration File", 10);	?>
 			$file[15] = " * For information : contact@centreon.com\n";
 			$file[16] = " */\n";
 			$file[17] = "/* \tDatabase */\n";
-			$file[18] = "\$conf_oreon['hostCentreon'] = \"". $_SESSION["dbLocation"] ."\";\n";
-			$file[19] = "\$conf_oreon['hostCentstorage'] = \"". $_SESSION["dbLocation"] ."\";\n";
-			$file[20] = "\$conf_oreon['user'] = \"". $_SESSION["nameOreonDB"] . "\";\n";
-			$file[21] = "\$conf_oreon['password'] = \"". $_SESSION["pwdOreonDB"] . "\";\n";
-			$file[22] = "\$conf_oreon['db'] = \"". $_SESSION["nameOreonDB"] . "\";\n";
-			$file[23] = "\$conf_oreon['dbcstg'] = \"". $_SESSION["nameOdsDB"] . "\";\n";
+			$file[18] = "\$conf_centreon['hostCentreon'] = \"". $_SESSION["dbLocation"] ."\";\n";
+			$file[19] = "\$conf_centreon['hostCentstorage'] = \"". $_SESSION["dbLocation"] ."\";\n";
+			$file[20] = "\$conf_centreon['user'] = \"". $_SESSION["nameOreonDB"] . "\";\n";
+			$file[21] = "\$conf_centreon['password'] = \"". $_SESSION["pwdOreonDB"] . "\";\n";
+			$file[22] = "\$conf_centreon['db'] = \"". $_SESSION["nameOreonDB"] . "\";\n";
+			$file[23] = "\$conf_centreon['dbcstg'] = \"". $_SESSION["nameOdsDB"] . "\";\n";
 			$file[24] = "\n\n";
 			$file[25] = "/* path to classes */\n";
 			$file[26] = "\$classdir='./class';\n";

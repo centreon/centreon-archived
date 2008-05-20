@@ -139,7 +139,7 @@
 		writeShellHeaders($fd, $oreon->optGen['oreon_path'], $pathPatch);
 		foreach ($batchPatch as $patch) {
 			replaceVarInPatch($pathPatch . '/' . $patch->filename, $sysvar);
-			writeShellPatch($fd, $patch, $conf_oreon['user'], $conf_oreon['password'], $conf_oreon['db']);
+			writeShellPatch($fd, $patch, $conf_centreon['user'], $conf_centreon['password'], $conf_centreon['db']);
 		}
 		writeShellFooters($fd);
 		fclose($fd);

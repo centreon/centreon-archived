@@ -55,10 +55,10 @@
 	
 	/* Connect to oreon DB */
 	$dsn = array('phptype'  => 'mysql',
-			     'username' => $conf_oreon['user'],
-			     'password' => $conf_oreon['password'],
-			     'hostspec' => $conf_oreon['hostCentreon'],
-			     'database' => $conf_oreon['db']);
+			     'username' => $conf_centreon['user'],
+			     'password' => $conf_centreon['password'],
+			     'hostspec' => $conf_centreon['hostCentreon'],
+			     'database' => $conf_centreon['db']);
 	$options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 	
 	$pearDB =& DB::connect($dsn, $options);
