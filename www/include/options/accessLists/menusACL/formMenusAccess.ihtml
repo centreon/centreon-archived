@@ -38,7 +38,7 @@
 						{foreach key=key item=c from=$b.childs}
 						<table cellpadding=0 cellspacing=0 border=1 margin=0><tr><td width="200"><li><img id="img_{$c.c_id}" src="img/icones/16x16/navigate_plus.gif"  onclick="toggleDisplay('{$c.c_id}');">
 							<label for="{$c.id}">{$c.name}</label> : </td>
-							<td<Read <input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+							<td>Read <input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
 							- Write <input id="i{$c.c_id}" name="acl_w_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
 							- Both <input id="i{$c.c_id}" name="acl_a_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
 							</td></tr></table>
