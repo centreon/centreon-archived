@@ -196,7 +196,7 @@ sub check_dir
 }
 
 sub get_poller	{
-	use vars qw ($mysql_host $mysql_user $mysql_passwd $mysql_database $mysql_database_data);
+	use vars qw ($mysql_host $mysql_user $mysql_passwd $mysql_database_oreon $mysql_database_ods);
 	require("@CENTREON_ETC@/conf.pm");
 
     my $item;
@@ -209,7 +209,7 @@ sub get_poller	{
     my $nagiostats;
     my $tmp;
 
-    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
+    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
     if (defined($dbh))
     {
 		$item = $dbh->prepare("SELECT id, ns_ip_address, localhost, nagiosstats_bin FROM nagios_server WHERE ns_activate = 1");
@@ -230,7 +230,7 @@ sub get_poller	{
 		    rrd_process($nagiostats, $is_localhost);
 		}
     } else {
-		print "\nMysql Database unreachable on host $host\n";
+		print "\nMysql Database unreachable on host $mysql_host\n";
     }
 }
 
