@@ -222,7 +222,7 @@
 	
 		$SvcStat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	
-		while($DBRESULT_NDO2->fetchInto($ndo))
+		while($ndo = $DBRESULT_NDO2->fetchRow())
 			$SvcStat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
 	
 	
@@ -326,7 +326,7 @@
 			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
 	
 		$svcInactive = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-		while($DBRESULT_NDO2->fetchInto($ndo))
+		while($ndo = $DBRESULT_NDO2->fetchRow())
 			$svcInactive[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
 	
 		/*
