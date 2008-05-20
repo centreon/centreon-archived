@@ -893,7 +893,7 @@ function configureSUDO(){
     
 	local dir_conf="$1"
 	# Generate a sudo config in directory
-	prepare_apache_config "$dir_conf"
+	prepare_sudo_config "$dir_conf"
 
 	# Try to detect old configuration
 	sudo=`grep -e "[CO][ER][NE][TO][RN]" $SUDO_FILE > /dev/null 2>&1 ; echo $?`
@@ -918,7 +918,7 @@ function configureSUDO(){
 function createConfFile()
 {
 	echo -e "$line"
-	echo -e "\t\t$(gettext "Centreon Post Instalm")"
+	echo -e "\t\t$(gettext "Centreon Post Install")"
 	echo -e "$line\n\n"
 
 	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
