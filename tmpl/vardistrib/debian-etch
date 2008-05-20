@@ -39,7 +39,7 @@ LOG_FILE="$LOG_DIR/install_centreon.log"
 ## Centreon temporary directory to work
 TMPDIR="/tmp/centreon-setup"
 ## default snmp config directory
-SNMP_DIR="/etc/snmp/"
+SNMP_ETC="/etc/snmp/"
 ## a list of pear modules require by Centreon
 PEAR_MODULES_LIST="pear.lst"
 #####################################################################
@@ -73,6 +73,8 @@ CENTREON_VARLIB="/var/lib/centreon"
 ## more centreon plugins use a file foreach test.
 ## There files can change (data)
 CENTPLUGINS_TMP="/var/lib/centreon/centplugins"
+## path for snmptt
+SNMPTT_BINDIR="/opt/snmptt"
 #####################################################################
 ## End: Centreon preferences
 #####################################################################

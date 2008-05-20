@@ -583,7 +583,7 @@ function locate_snmp_etcdir() {
 }
 
 ## check snmptt_bindir
-function locate_snmptt_bindur() {
+function locate_snmptt_bindir() {
 	if [ -z "$SNMPTT_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your SNMPTT binaries directory")" "$DEFAULT_SNMPTT_BINDIR" "SNMPTT_BINDIR"
 		echo_success "$SNMPTT_BINDIR" "$ok"

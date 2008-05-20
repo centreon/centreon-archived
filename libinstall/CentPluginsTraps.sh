@@ -31,9 +31,9 @@ mkdir -p $TMPDIR/work/snmptt
 mkdir -p $TMPDIR/final/snmptt
 
 ## Change Macro in working dir
-for FILE in  $TMPDIR/bin/centFillTrapDB \
-	$TMPDIR/bin/centGenSnmpttConfFile \
-	$TMPDIR/bin/centTrapHandler-2.x ; do
+for FILE in  $TMPDIR/src/bin/centFillTrapDB \
+	$TMPDIR/src/bin/centGenSnmpttConfFile \
+	$TMPDIR/src/bin/centTrapHandler-2.x ; do
 
 	sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		"$FILE" > "$TMPDIR/work/bin/`basename $FILE`"
