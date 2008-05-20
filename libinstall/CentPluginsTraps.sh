@@ -84,15 +84,21 @@ if [ -e "$SNMPTT_BINDIR/snmpttconvertmib" ] ; then
 fi
 
 # Change macros on snmptrapd.conf
-sed -e 's|@SNMPTT_INI_FILE@|'"$SNMP_DIR/centreon_traps/snmptt.ini"'|g' \
+sed -e 's|@SNMPTT_INI_FILE@|'"$SNMP_ETC/centreon_traps/snmptt.ini"'|g' \
+	-e 's|@SNMPTT_BINDIR@|'"$SNMPTT_BINDIR"'|g' \
 	$TMPDIR/src/snmptrapd/snmptrapd.conf > \
 	$TMPDIR/work/snmptrapd/snmptrapd.conf
+
+# Change macros on snmptt.ini
+# TODO: SNMPTT_LOG, SNMPTT_SPOOL
+sed -e 's|@SNMP_ETC@|'"$SNMP_ETC"'|g' \
+	$TMPDIR/src/snmptt/snmptt.ini > $TMPDIR/work/snmptt/snmptt.ini
 
 ## Copy in final dir
 log "INFO" "$(gettext "Copying traps config in final directory")"
 cp -r $TMPDIR/work/snmptrapd/snmptrapd.conf \
 	$TMPDIR/final/snmptrapd/snmptrapd.conf >> $LOG_FILE 2>&1
-cp $TMPDIR/src/snmptt/snmptt.ini \
+cp $TMPDIR/work/snmptt/snmptt.ini \
 	$TMPDIR/final/snmptt/snmptt.ini >> $LOG_FILE 2>&1
 cp $TMPDIR/src/snmptrapd/snmp.conf \
 	$TMPDIR/final/snmptrapd/snmp.conf >> $LOG_FILE 2>&1
