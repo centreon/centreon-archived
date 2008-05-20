@@ -232,7 +232,7 @@
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($Hg)){
-							$DBRESULT1 =& $pearDB->query("INSERT INTO ns_host_relation VALUES ('', '".$Hg["nagios_server_id"]."', '".$maxId["MAX(host_id)"]."')");
+							$DBRESULT1 =& $pearDB->query("INSERT INTO ns_host_relation VALUES ('".$Hg["nagios_server_id"]."', '".$maxId["MAX(host_id)"]."')");
 							if (PEAR::isError($DBRESULT1))
 								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 						}
