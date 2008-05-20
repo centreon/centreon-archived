@@ -1,4 +1,4 @@
-# -*-Shell-script-*-
+#!/bin/bash
 # install script for centcore
 #################################
 # SVN: $Id$
