@@ -28,7 +28,7 @@ use strict;
 use Getopt::Long;
 use DBI;
 
-use vars qw($mysql_database $mysql_database_data $mysql_host $mysql_user $mysql_passwd);
+use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
 require "@CENTREON_ETC@/conf.pm";
 
 ######################################
@@ -50,7 +50,7 @@ sub main() {
     print "Generating SNMPTT configuration files...\n";
     my ($nbMan, $nbTraps) = (0,0);
 
-    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
     my $confFiles_path = getPath($dbh);
 
     my $sth = $dbh->prepare("SELECT `oreon_path` FROM `general_opt` LIMIT 1");
