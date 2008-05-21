@@ -15,6 +15,11 @@
  * For information : contact@centreon.com
  */
 	
+/*
+ * SVN: $URL$
+ * SVN: $Id$
+ */
+ 
 	if (function_exists('filter_var'))	
 		foreach ($_GET as $key => $value){
 			if (!is_array($value)){
