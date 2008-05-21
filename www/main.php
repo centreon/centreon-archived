@@ -17,10 +17,28 @@
 	
 /*
  * SVN: $URL$
- * SVN: $Id$
+ * SVN: $Id: main.php 5223 2008-05-21 12:44:13Z jmathis $
  */
- 
-	if (function_exists('filter_var'))	
+	
+	/* 
+	 * Define Local Functions
+	 */
+
+	function getParameters($str){
+		if (isset($_GET[$str]))
+			$var = $_GET[$str];
+		else if (isset($_POST[$str]))
+			$var = $_POST[$str];
+		else
+			$var = NULL;
+		return $var;
+	}
+	
+ 	/*
+ 	 * Purge Values 
+ 	 */
+ 	 
+	if (function_exists('filter_var')){	
 		foreach ($_GET as $key => $value){
 			if (!is_array($value)){
 				$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -28,38 +46,19 @@
 				$_GET[$key] = $value;
 			}
 		}
+	}
 	
-	if (isset($_GET["p"]))
-		$p = $_GET["p"];
-	else if (isset($_POST["p"]))
-		$p = $_POST["p"];
-	else
-		$p = NULL;
-
-	/* 
-	 * POST have priority on GET due to 
-	 * option in listing configuration form 
-	 */
-	if (isset($_POST["o"]))
-		$o = $_POST["o"];
-	else if (isset($_GET["o"]))
-		$o = $_GET["o"];
-	else
-		$o = NULL;
-
-	if (isset($_GET["min"]))
-		$min = $_GET["min"];
-	else if (isset($_POST["min"]))
-		$min = $_POST["min"];
-	else
-		$min = NULL;
-
+	$p = getParameters("p");
+	$o = getParameters("o");
+	$min = getParameters("min");
+	
 	if (isset($_GET["AutoLogin"]) && $_GET["AutoLogin"])
 		print $_GET["AutoLogin"];
 
 	/*
 	 * Include all func
 	 */
+	
 	require_once ("./basic-functions.php");
 	require_once ("./include/common/common-Func.php");
 	require_once ("./header.php");
@@ -209,6 +208,7 @@
 
 	print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
 	print "<!-- Footer -->";
+	
 	/*
 	 * Display Footer
 	 */
