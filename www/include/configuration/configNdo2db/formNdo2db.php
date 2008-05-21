@@ -96,7 +96,7 @@
 	$form->addElement('text', 'db_port', _("Listening Port"), $attrsText);
 	$form->addElement('text', 'db_prefix', _("Prefix"), $attrsText);
 	$form->addElement('text', 'db_user', _("User"), $attrsText);
-	$form->addElement('text', 'db_pass', _("Password"), $attrsText);
+	$form->addElement('password', 'db_pass', _("Password"), $attrsText);
 	
 	# DB retention
 	$form->addElement('text', 'max_timedevents_age', _("Event retention"), $attrsText3);
