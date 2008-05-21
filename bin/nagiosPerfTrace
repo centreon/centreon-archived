@@ -25,7 +25,7 @@ use warnings;
 use RRDs;
 use DBI;
 
-my $global_prefix = "@CENTSTORAGE_LIB@/svc_status";
+my $global_prefix = "@CENTSTORAGE_LIB@/nagios-perf/";
 my $tmp_prefix;
 
 my $global_cmd_buffer;
@@ -234,7 +234,7 @@ sub get_poller	{
     }
 }
 
-if(!-e $global_prefix){
+if (!-e $global_prefix){
 		system("mkdir " . $global_prefix);
 		system("chown nagios:nagcmd " . $global_prefix);
 		system("chmod 775 " . $global_prefix);
