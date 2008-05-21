@@ -209,11 +209,11 @@
 						<xsl:if test="//split = 0">
 						<xsl:if test="//debug = 1">
 							<xsl:element name="a">
-								<xsl:attribute name="href">./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+								<xsl:attribute name="href">./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
 							</xsl:element>
 						</xsl:if>
 						<xsl:element name="img">
-					  		<xsl:attribute name="src">./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+					  		<xsl:attribute name="src">./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
 						</xsl:element>
 					</xsl:if>
 					<xsl:if test="//split = 1">

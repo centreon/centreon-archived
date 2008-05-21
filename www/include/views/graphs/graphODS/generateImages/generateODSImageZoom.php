@@ -15,6 +15,15 @@
  * For information : contact@centreon.com
  */
 
+	$warn = 0;
+	if (isset($_GET["warn"]) && $_GET["warn"] == 1)
+		$warn = 1;
+
+	$crit = 0;
+	if (isset($_GET["crit"]) && $_GET["crit"] == 1)
+		$crit = 1;
+
+
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}

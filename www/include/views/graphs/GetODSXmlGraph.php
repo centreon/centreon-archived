@@ -210,6 +210,7 @@
 		 * for one svc -> daily,weekly,monthly,yearly..
 		 */
 		if ($type == "HS" || $type == "MS"){
+
 			$msg_error 		= 0;
 			$tab_class 		= array("1" => "list_one", "0" => "list_two");
 			$elem 			= array();
