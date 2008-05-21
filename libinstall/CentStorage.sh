@@ -25,6 +25,7 @@ locate_init_d
 locate_cron_d
 
 locate_centstorage_bindir
+#locate_centstorage_libdir
 locate_centstorage_rrddir
 ## Config Nagios
 check_group_nagios
@@ -163,7 +164,7 @@ echo_success "`gettext \"Set logAnalyser properties\"`" "$ok"
 ## nagiosPerfTrace
 log "INFO" "`gettext \"Change macros for nagiosPerfTrace\"`"
 sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@CENTSTORAGE_LIB@|'"$CENTSTORAGE_LIB"'|g' \
+	-e 's|@CENTSTORAGE_LIB@|'"$CENTREON_VARLIB"'|g' \
 	$TMPDIR/src/bin/nagiosPerfTrace > $TMPDIR/work/bin/nagiosPerfTrace
 
 cp $TMPDIR/work/bin/nagiosPerfTrace $TMPDIR/final/bin/nagiosPerfTrace >> $LOG_FILE 2>&1

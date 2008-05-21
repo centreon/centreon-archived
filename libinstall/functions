@@ -533,6 +533,20 @@ function locate_centstorage_bindir() {
 	log "INFO" "CENTSTORAGE_BINDIR: $CENTSTORAGE_BINDIR"
 }
 
+## Check centStorage_libdir
+function locate_centstorage_libdir() {
+	if [ -z "$CENTSTORAGE_LIBDIR" ] ; then
+		answer_with_createdir "$(gettext "Where is your CentStorage library directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_LIBDIR" "CENTSTORAGE_LIBDIR"
+		echo_success "Path $CENTSTORAGE_LIBDIR" "$ok"
+	elif [ ! -d "$CENTSTORAGE_LIBDIR" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTSTORAGE_LIBDIR"
+		log "INFO" "$(gettext "Create") $CENTSTORAGE_LIBDIR"
+	fi
+	export CENTSTORAGE_LIBDIR
+	log "INFO" "CENTSTORAGE_LIBDIR: $CENTSTORAGE_LIBDIR"
+}
+
+
 ## Check centCore_bindir
 function locate_centcore_bindir() {
 	if [ -z "$CENTCORE_BINDIR" ] ; then

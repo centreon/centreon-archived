@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ###################################################################
 # Centreon is developped with GPL Licence 2.0 
 #
