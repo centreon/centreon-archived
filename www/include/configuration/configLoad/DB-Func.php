@@ -287,11 +287,12 @@
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				$useTpl = insertHostCFG($tmpConf);
-				$rq = "INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) VALUES ('".getMyHostID($tmpConf["host_name"])."', '".$_POST['host']."')";
-				$DBRESULT = $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-				
+				if (isset($tmpConf["host_name"]) && !hostExists($tmpConf["host_name"]))	{
+					$rq = "INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) VALUES ('".getMyHostID($tmpConf["host_name"])."', '".$_POST['host']."')";
+					$DBRESULT = $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				}
 				$useTpls[$useTpl[0]] = $useTpl[1];
 				isset($useTpl[2]) ? $parentsTMP[$useTpl[0]] = $useTpl[2] : NULL;
 				$get = false;
@@ -546,10 +547,9 @@
 		global $oreon;
 		global $debug_nagios_import;
 		global $debug_path;
-		if (isset($tmpConf["host_name"]) && testHostExistence($tmpConf["host_name"]) || isset($tmpConf["name"]) && testHostExistence($tmpConf["name"]))	{
+		if (isset($tmpConf["host_name"]) && testHostExistence($tmpConf["host_name"]) || isset($tmpConf["name"]) && testHostTplExistence($tmpConf["name"]))	{
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ."\n", 3, $debug_path."cfgimport.log");
-
 			foreach ($tmpConf as $key=>$value)	{
 				switch($key)	{
 					case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;

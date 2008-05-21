@@ -18,8 +18,21 @@
 	if (!isset ($oreon))
 		exit ();
 		
+	function hostExists($name = NULL)
+	{
+		global $pearDB;
+		
+		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM ns_host_relation WHERE host_host_id = '".getMyHostID(trim($name))."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		if ($DBRESULT->numRows() >= 1)	
+			return true;
+		return false;
+	}
+		
 	function testHostExistence ($name = NULL)	{
 		global $pearDB, $form;
+		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');;
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '1'");
