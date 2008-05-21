@@ -18,6 +18,19 @@
 	if (!isset ($oreon))
 		exit ();
 
+	function serviceExists ($name = NULL)	{
+		global $pearDB;
+		
+		$name = str_replace('/', "#S#", $name);
+		$name = str_replace('\\', "#BS#", $name);
+		$DBRESULT =& $pearDB->query("SELECT service_description FROM service WHERE service_description = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		if ($DBRESULT->numRows() >= 1)
+			return true;
+		return false;
+	}
+
 	function testServiceTemplateExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
