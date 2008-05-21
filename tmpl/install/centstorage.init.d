@@ -76,15 +76,14 @@ elif [ -f /etc/init.d/functions ]; then
     . /etc/init.d/functions
 fi
 
-prefix=@CENTREON_DIR@/
+prefix=@CENTREON_DIR@
 Bin=@CENTSTORAGE_BINDIR@/centstorage
 centstorageCfgFile=@CENTREON_ETC@/conf.pm
 centstorageLogDir=@CENTREON_LOG@
 centstorageRunDir=@CENTREON_RUNDIR@
-centstorageVarDir=${prefix}/var/
-centstorageRunFile=${centstorageRunDir}/centstorage.pid
-centstorageDemLog=@CENTREON_LOG@/centstorage.log
-#centstorageDemLog=${censtorageLogDir}/centstorage.log
+#centstorageVarDir=${prefix}/var/
+centstorageRunFile=${centstorageRunDir}/centstorageid.pid
+centstorageDemLog=${censtorageLogDir}/centstoraged.log
 centstorageLockDir=/var/lock/subsys
 centstorageLockFile=centstorage
 NICE=5

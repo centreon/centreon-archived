@@ -593,7 +593,7 @@ function locate_snmp_etcdir() {
 		echo_success "$SNMP_ETC" "$ok"
 	fi
 	export SNMP_ETC
-	log "INFO" "SNMP_ETC: $SNMP_FILE"
+	log "INFO" "SNMP_ETC: $SNMP_ETC"
 }
 
 ## check snmptt_bindir
