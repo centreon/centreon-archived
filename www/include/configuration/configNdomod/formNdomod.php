@@ -72,7 +72,7 @@
 	$form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
 	$form->addElement('text', 'instance_name', _("Instance Name"), $attrsText);
 	$form->addElement('select', 'output_type', _("Interface Type"), array("file"=>"file","tcpsocket"=>"tcpsocket","unixsocket"=>"unixsocket"));
-	$form->addElement('text', 'output', _("Target"), $attrsText);
+	$form->addElement('text', 'output', _("Output"), $attrsText);
 	$form->addElement('text', 'tcp_port', _("TCP Port"), $attrsText3);
 	$form->addElement('text', 'output_buffer_items', _("Buffer size of the interface"), $attrsText);
 
