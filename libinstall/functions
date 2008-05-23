@@ -159,7 +159,7 @@ function answer_with_createdir() {
 		if [ -z "$res" ] ; then
 			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
-		if [ -z ${res#/} ] ; then
+		if [ -z "${res#/}" -o "$yes" = "$res" -o "$no" = "$res" ] ; then
 			echo_passed  "`gettext \"You select slash...\"`"
 			res="not_define"
 		else 
