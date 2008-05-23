@@ -1,6 +1,9 @@
-## Centreon 2.0-b3
+## Centreon 2.0-b3
 
-=> Bugfix : #2	Install : field p1.pl empty after setup
+=> Bugfix : #18 Snmptrapd configuration problem with centGenSnmpttConfFile
+=> Bugfix : #19	Problem with configuration traps
+=> Bugfix : #9	Install: httpd and mysqld aren't start and reload on the installation
+=> Bugfix : #2	Install: field p1.pl empty after setup
 => Bugfix : #4	Install: gettext was not found in PATH
 => Bugfix : #5	Install: problem with var NAGIOS_P1_FILE
 => Bugfix : #8	Impossible to connect on the Centreon's interface
