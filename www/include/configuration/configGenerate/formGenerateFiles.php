@@ -105,8 +105,7 @@
 					require($path."genExtendedInfos.php");
 					require($path."genHostGroups.php");
 					require($path."genServices.php");
-					if ($oreon->user->get_version() >= 2)
-						require($path."genServiceGroups.php");
+					require($path."genServiceGroups.php");
 					require($path."genEscalations.php");
 					require($path."genDependencies.php");
 					require($path."centreon_pm.php");
@@ -170,12 +169,20 @@
 				$msg_debug[$host['id']] = str_replace ("Total Errors: 0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);		
 			}
 		}
+		
 
 		/*
-		 * Move File
+		 * Move Configuration Files and Images
 		 */
 
 		if (isset($ret["move"]) && $ret["move"])	{
+			$DBRESULT_imgs =& $pearDB->query("SELECT `dir_name`, `img_path` FROM `view_img`, `view_img_dir`, `view_img_dir_relation` WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id");
+			while ($images =& $DBRESULT_imgs->fetchrow()){
+				if (!is_dir($oreon->optGen["nagios_path_img"]."/".$images["dir_name"]))
+					mkdir($oreon->optGen["nagios_path_img"]."/".$images["dir_name"]);
+				copy($centreon_path."www/img/media/".$images["dir_name"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_name"]."/".$images["img_path"]);
+			}
+			
 			$msg_copy = array();
 			foreach ($tab_server as $host)
 				if (isset($host['localhost']) && $host['localhost'] == 1){
@@ -183,15 +190,12 @@
 					foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
 						$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
 						$filename = array_pop(explode("/", $filename));
-						if ($bool)
-							;
-						else
+						if (!$bool)
 							$msg_copy[$host["id"]] .= display_copying_file($filename, _(" - movement <font color='res'>KO</font>"));
 					}
 					$msg_copy[$host["id"]] .= "</table>";
 				} else {
 					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> /usr/local/centreon/var/centcore.cmd", $return);
-					//print("echo 'SENDCFGFILE:".$host['id']."' >> /srv/oreon/var/centcore.cmd");	
 				}
 		}
 		
