@@ -60,6 +60,13 @@
 	require_once "./include/common/common-Func.php";
 	require_once "./include/common/common-Func-ACL.php";
 	
+	if (isset($_POST["o1"]) && isset($_POST["o2"])){
+		if ($_POST["o1"] != "")
+			$o = $_POST["o1"];
+		if ($_POST["o2"] != "")
+			$o = $_POST["o2"];
+	}	
+	
 	switch ($o)	{
 		case "a" 	: require_once($path."formHost.php"); break; #Add a host
 		case "w" 	: require_once($path."formHost.php"); break; #Watch a host
