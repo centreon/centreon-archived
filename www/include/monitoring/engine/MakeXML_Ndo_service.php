@@ -21,7 +21,6 @@
 
 	include("DB.php");
 
-
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/DBconnect.php");
@@ -30,7 +29,6 @@
 	include_once($centreon_path."www/include/monitoring/engine/common-Func.php");
 	include_once($centreon_path."www/include/common/common-Func-ACL.php");
 	include_once($centreon_path."www/include/common/common-Func.php");
-
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
@@ -176,6 +174,8 @@
 	if ($o == "svc_unknown")
 		$rq .= " AND nss.current_state = 3 ";
 
+	$rq_pagination = $rq;
+
 	switch ($sort_type){
 		case 'host_name' : $rq .= " order by no.name1 ". $order.",no.name2 "; break;
 		case 'service_description' : $rq .= " order by no.name2 ". $order.",no.name1 "; break;
@@ -191,7 +191,7 @@
 	$ct = 0;
 	$flag = 0;
 	
-	$DBRESULT_NDO2 =& $pearDBndo->query($rq);
+	$DBRESULT_NDO2 =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_NDO2))
 		print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
 
@@ -219,6 +219,11 @@
 
 	$host_prev = "";
 	$class = "list_one";
+	
+	$DBRESULT_NDO2 =& $pearDBndo->query($rq);
+	if (PEAR::isError($DBRESULT_NDO2))
+		print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
+	
 	while ($ndo =& $DBRESULT_NDO2->fetchRow()) {
 		if (isset($host_status[$ndo["host_name"]])){
 
