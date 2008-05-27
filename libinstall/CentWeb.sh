@@ -7,10 +7,12 @@ echo "$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo "$line"
 
-## check space ton tmp dir
+###### check space ton tmp dir
 check_tmp_disk_space
 [ "$?" -eq 1 ] && purge_centreon_tmp_dir
 
+###### Require
+#################################
 ## Create install_dir_centreon
 locate_centreon_installdir
 # Create an examples directory to save all important templates and config
@@ -69,9 +71,9 @@ copyInTempFile 2>>$LOG_FILE
 
 ## InstallCentreon
 
-echo "$line"
-echo -e "\t$(gettext "Start Centreon Web Front Installation")"
-echo -e "$line\n\n"
+#echo "$line"
+#echo -e "\t$(gettext "Start Centreon Web Front Installation")"
+#echo -e "$line\n\n"
 
 # change right centreon_log directory
 log "INFO" "$(gettext "Change right on") $CENTREON_LOG"

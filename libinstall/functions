@@ -264,7 +264,7 @@ function usage() {
 function locate_nagios_installdir() {
 	if [ -z "$INSTALL_DIR_NAGIOS" ] ; then
 		answer_with_testdir "$(gettext "Where is installed Nagios ?")" "$DEFAULT_INSTALL_DIR_NAGIOS" "INSTALL_DIR_NAGIOS"
-		echo_success "Path $INSTALL_DIR_NAGIOS" "$ok"
+		echo_success "$(gettext "Path" ) $INSTALL_DIR_NAGIOS" "$ok"
 	fi
 	INSTALL_DIR_NAGIOS=${INSTALL_DIR_NAGIOS%/}
 	export INSTALL_DIR_NAGIOS
@@ -275,7 +275,7 @@ function locate_nagios_etcdir() {
 	if [ -z "$NAGIOS_ETC" ] ; then
 		answer_with_testfile "$(gettext "Where is your nagios config file")" "$DEFAULT_NAGIOS_ETC/nagios.cfg" "NAGIOS_ETC"
 		NAGIOS_ETC="$(dirname $NAGIOS_ETC)"
-		echo_success "Path $NAGIOS_ETC" "$ok"
+		echo_success "$(gettext "Path" ) $NAGIOS_ETC" "$ok"
 	fi
 	NAGIOS_ETC=${NAGIOS_ETC%/}
 	export NAGIOS_ETC
@@ -286,7 +286,7 @@ function locate_nagios_etcdir() {
 function locate_nagios_vardir() {
 	if [ -z "$NAGIOS_VAR" ] ; then
 		answer_with_testdir "$(gettext "Where is your Nagios var directory ?")" "$DEFAULT_NAGIOS_VAR" "NAGIOS_VAR"
-		echo_success "Path $NAGIOS_VAR" "$ok"
+		echo_success "$(gettext "Path" ) $NAGIOS_VAR" "$ok"
 	fi
 	NAGIOS_VAR=${NAGIOS_VAR%/}
 	export NAGIOS_VAR
@@ -299,7 +299,7 @@ function locate_nagios_vardir() {
 function locate_nagios_plugindir() {
 	if [ -z "$NAGIOS_PLUGIN" ] ; then
 		answer_with_testdir "$(gettext "Where is your Nagios plugins (libexec) directory ?")" "$DEFAULT_NAGIOS_PLUGIN" "NAGIOS_PLUGIN"
-		echo_success "Path $NAGIOS_PLUGIN" "$ok"
+		echo_success "$(gettext "Path" ) $NAGIOS_PLUGIN" "$ok"
 	fi
 	NAGIOS_PLUGIN=${NAGIOS_PLUGIN%/}
 	export NAGIOS_PLUGIN
@@ -375,7 +375,7 @@ function locate_nagios_p1_file() {
 function locate_nagios_imgdir() {
 	if [ -z "$NAGIOS_IMG" ] ; then
 		answer_with_testdir "$(gettext "Where is your Nagios image directory ?")" "$DEFAULT_NAGIOS_IMG" "NAGIOS_IMG"
-		echo_success "Path $NAGIOS_IMG" "$ok"
+		echo_success "$(gettext "Path" ) $NAGIOS_IMG" "$ok"
 	fi
 	NAGIOS_IMG=${NAGIOS_IMG%/}
 	export NAGIOS_IMG
@@ -432,7 +432,7 @@ function locate_init_d() {
 		# Add most of init.d 
 		else 
 			answer_with_testdir "$(gettext "Where is your init.d directory ?")" "$DEFAULT_INIT_D" "INIT_D"
-			echo_success "Path $INIT_D" "$ok"
+			echo_success "$(gettext "Path" ) $INIT_D" "$ok"
 		fi
 	fi
 	INIT_D=${INIT_D%/}
@@ -444,10 +444,10 @@ function locate_init_d() {
 function locate_centreon_logdir() {
 	if [ -z "$CENTREON_LOG" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon log directory")" "$DEFAULT_CENTREON_LOG" "CENTREON_LOG"
-		echo_success "Path $CENTREON_LOG" "$ok"
+		echo_success "$(gettext "Path" ) $CENTREON_LOG" "$ok"
 	elif [ ! -d "$CENTREON_LOG" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTREON_LOG"
-		log "INFO" "`gettext \"Create\"` $CENTREON_LOG"
+		log "INFO" "$(gettext "Create") $CENTREON_LOG"
 	fi
 	CENTREON_LOG=${CENTREON_LOG%/}
 	export CENTREON_LOG
@@ -458,7 +458,7 @@ function locate_centreon_logdir() {
 function locate_centreon_etcdir() {
 	if [ -z "$CENTREON_ETC" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon etc directory")" "$DEFAULT_CENTREON_ETC" "CENTREON_ETC"
-		echo_success "Path $CENTREON_ETC" "$ok"
+		echo_success "$(gettext "Path" ) $CENTREON_ETC" "$ok"
 	elif [ ! -d "$CENTREON_ETC" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTREON_ETC"
 		log "INFO" "$(gettext "Create") $CENTREON_ETC"
@@ -472,7 +472,7 @@ function locate_centreon_etcdir() {
 function locate_centreon_installdir() {
 	if [ -z "$INSTALL_DIR_CENTREON" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon directory?")" "$DEFAULT_INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
-		echo_success "Path $INSTALL_DIR_CENTREON" "$ok"
+		echo_success "$(gettext "Path" ) $INSTALL_DIR_CENTREON" "$ok"
 	elif [ ! -d "$INSTALL_DIR_CENTREON" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$INSTALL_DIR_CENTREON"
 		log "INFO" "$(gettext "Create") $INSTALL_DIR_CENTREON"
@@ -486,7 +486,7 @@ function locate_centreon_installdir() {
 function locate_centreon_generationdir() {
 	if [ -z "$CENTREON_GENDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon generation_files directory?")" "$DEFAULT_CENTREON_GENDIR" "CENTREON_GENDIR"
-		echo_success "Path $CENTREON_GENDIR" "$ok"
+		echo_success "$(gettext "Path" ) $CENTREON_GENDIR" "$ok"
 	elif [ ! -d "$CENTREON_GENDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTREON_GENDIR"
 		log "INFO" "$(gettext "Create") $CENTREON_GENDIR"
@@ -500,7 +500,7 @@ function locate_centreon_generationdir() {
 function locate_centreon_rundir() {
 	if [ -z "$CENTREON_RUNDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon Run Dir directory?")" "$DEFAULT_CENTREON_RUNDIR" "CENTREON_RUNDIR"
-		echo_success "Path $CENTREON_RUNDIR" "$ok"
+		echo_success "$(gettext "Path" ) $CENTREON_RUNDIR" "$ok"
 	elif [ ! -d "$CENTREON_RUNDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTREON_RUNDIR"
 		log "INFO" "$(gettext "Create") $CENTREON_RUNDIR"
@@ -514,7 +514,7 @@ function locate_centreon_rundir() {
 function locate_centreon_varlib() {
 	if [ -z "$CENTREON_VARLIB" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon variable library directory?")" "$DEFAULT_CENTREON_VARLIB" "CENTREON_VARLIB"
-		echo_success "Path $CENTREON_VARLIB" "$ok"
+		echo_success "$(gettext "Path" ) $CENTREON_VARLIB" "$ok"
 	elif [ ! -d "$CENTREON_VARLIB" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTREON_VARLIB"
 		log "INFO" "$(gettext "Create") $CENTREON_VARLIB"
@@ -528,7 +528,7 @@ function locate_centreon_varlib() {
 function locate_centstorage_rrddir() {
 	if [ -z "$CENTSTORAGE_RRD" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage RRD directory")" "$DEFAULT_CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
-		echo_success "Path $CENTSTORAGE_RRD" "$ok"
+		echo_success "$(gettext "Path" ) $CENTSTORAGE_RRD" "$ok"
 	elif [ ! -d "$CENTSTORAGE_RRD" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTSTORAGE_RRD"
 		log "INFO" "$(gettext "Create") $CENTSTORAGE_RRD"
@@ -542,7 +542,7 @@ function locate_centstorage_rrddir() {
 function locate_centstorage_bindir() {
 	if [ -z "$CENTSTORAGE_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
-		echo_success "Path $CENTSTORAGE_BINDIR" "$ok"
+		echo_success "$(gettext "Path" ) $CENTSTORAGE_BINDIR" "$ok"
 	elif [ ! -d "$CENTSTORAGE_BINDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTSTORAGE_BINDIR"
 		log "INFO" "$(gettext "Create") $CENTSTORAGE_BINDIR"
@@ -556,7 +556,7 @@ function locate_centstorage_bindir() {
 function locate_centstorage_libdir() {
 	if [ -z "$CENTSTORAGE_LIBDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage library directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_LIBDIR" "CENTSTORAGE_LIBDIR"
-		echo_success "Path $CENTSTORAGE_LIBDIR" "$ok"
+		echo_success "$(gettext "Path" ) $CENTSTORAGE_LIBDIR" "$ok"
 	elif [ ! -d "$CENTSTORAGE_LIBDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTSTORAGE_LIBDIR"
 		log "INFO" "$(gettext "Create") $CENTSTORAGE_LIBDIR"
@@ -571,7 +571,7 @@ function locate_centstorage_libdir() {
 function locate_centcore_bindir() {
 	if [ -z "$CENTCORE_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentCore binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
-		echo_success "Path $CENTCORE_BINDIR" "$ok"
+		echo_success "$(gettext "Path" ) $CENTCORE_BINDIR" "$ok"
 	elif [ ! -d "$CENTCORE_BINDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p $CENTCORE_BINDIR
 		log "INFO" "$(gettext "Create") $CENTCORE_BINDIR"
@@ -585,7 +585,7 @@ function locate_centcore_bindir() {
 function locate_centplugins_tmpdir() {
 	if [ -z "$CENTPLUGINS_TMP" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentPlugins lib directory")" "$DEFAULT_CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
-		echo_success "Path $CENTPLUGINS_TMP" "$ok"
+		echo_success "$(gettext "Path" ) $CENTPLUGINS_TMP" "$ok"
 	elif [ ! -d "$CENTPLUGINS_TMP" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTPLUGINS_TMP"
 		log "INFO" "$(gettext "Create") $CENTPLUGINS_TMP"
@@ -599,7 +599,7 @@ function locate_centplugins_tmpdir() {
 function locate_centpluginstraps_bindir() {
 	if [ -z "$CENTPLUGINSTRAPS_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentPlugins Traps binary")" "$DEFAULT_CENTPLUGINSTRAPS_BINDIR" "CENTPLUGINSTRAPS_BINDIR"
-		echo_success "Path $CENTPLUGINSTRAPS_BINDIR" "$ok"
+		echo_success "$(gettext "Path" ) $CENTPLUGINSTRAPS_BINDIR" "$ok"
 	elif [ ! -d "$CENTPLUGINSTRAPS_BINDIR" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTPLUGINSTRAPS_BONDIR"
 		log "INFO" "$(gettext "Create") $CENTPLUGINSTRAPS_BINDIR"
@@ -648,7 +648,7 @@ function locate_rrd_perldir() {
 	if [ -z "$RRD_PERL" ] ; then
 		answer_with_testfile "$(gettext "Where is the RRD perl module installed [RRDs.pm]")" "$DEFAULT_RRD_PERL/RRDs.pm" "RRD_PERL"
 		RRD_PERL=$(dirname $RRD_PERL)
-		echo_success "Path $RRD_PERL" "$ok"
+		echo_success "$(gettext "Path" ) $RRD_PERL" "$ok"
 	fi
 	RRD_PERL=${RRD_PERL%/}
 	export RRD_PERL
@@ -745,7 +745,7 @@ function locate_pear() {
 	if [ -z "$PEAR_PATH" ] ; then
 		answer_with_testfile "$(gettext "Where is PEAR [PEAR.php] ")" "$DEFAULT_PEAR_PATH/PEAR.php" "PEAR_PATH"
 		PEAR_PATH=$(dirname $PEAR_PATH)
-		echo_success "Path $PEAR_PATH" "$ok"
+		echo_success "$(gettext "Path" ) $PEAR_PATH" "$ok"
 	fi
 	PEAR_PATH=${PEAR_PATH%/}
 	export PEAR_PATH
