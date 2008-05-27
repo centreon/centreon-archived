@@ -7,6 +7,9 @@ echo "$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo "$line"
 
+## check space ton tmp dir
+check_tmp_disk_space
+[ "$?" -eq 1 ] && purge_centreon_tmp_dir
 
 ## Create install_dir_centreon
 locate_centreon_installdir

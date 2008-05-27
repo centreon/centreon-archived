@@ -7,6 +7,10 @@ echo "------------------------------------------------------------------------"
 echo -e "\t`gettext \"Start CentCore Installation\"`"
 echo "------------------------------------------------------------------------"
 
+###### Check disk space
+check_tmp_disk_space
+[ "$?" -eq 1 ] && purge_centreon_tmp_dir
+
 ###### Require
 #################################
 ## Where is install_dir_centreon ?

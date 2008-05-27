@@ -7,6 +7,10 @@ echo "$line"
 echo -e "\t$(gettext "Start CentStorage Installation")"
 echo "$line"
 
+###### Check disk space
+check_tmp_disk_space
+[ "$?" -eq 1 ] && purge_centreon_tmp_dir
+
 ###### Require
 #################################
 ## Where is install_dir_centreon ?

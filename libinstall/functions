@@ -1521,3 +1521,40 @@ function clean_and_exit() {
 	exit 1
 }
 
+
+## Function check_tmp_disk_space()
+function check_tmp_disk_space() {
+	local min_space="35584"
+	local free_space=""
+	local tmp_dir=""
+
+	tmp_dir=$(dirname $TMPDIR)
+
+	free_space=$(df -h $tmp_dir | tail -1 | awk '{print $4}')
+
+	if [ "$free_space" -lt "$min_space" ] ; then
+		echo_fail "$(gettext "No space left on tmp dir" : $tmp_dir ) (<$min_space Ko)" "$fail"
+		return 1
+	else
+		return 0
+	fi
+}
+
+## function purge_centreon_tmpdir() 
+# remove last centreon temporary working directory
+function purge_centreon_tmp_dir() {
+	local not_clean="1"
+	while [ $not_clean -ne 0 ] ; do
+		yes_no_default "$(gettext "Do you want I remove a centreon temporary working space to continue installation ?")" "$yes"
+		if [ "$?" -eq 0 ] ; then 
+			local tmp_base_dir=`dirname $TMPDIR`
+			local tmp_dir=`basename $TMPDIR`
+			find $tmp_base_dir -name "$tmp_dir*" -type d \
+				-exec rm -rf {} \;
+			not_clean="0"
+		else
+			return 1
+		fi
+	done
+	return 0
+}
