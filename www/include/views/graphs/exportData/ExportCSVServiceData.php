@@ -53,8 +53,19 @@
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 
+	$DBRESULT =& $pearDBO->query("SELECT host_name, service_description FROM index_data WHERE id = '$index'");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getDebugInfo();
+	while ($res = $DBRESULT->fetchRow()){
+		$hName = $res["host_name"];
+		$sName = $res["service_description"];
+	}	
+
 	header("Content-Type: application/csv-tab-delimited-table");
-	header("Content-disposition: filename=".$index.".csv");
+	if (isset($hName) && isset($sName))
+		header("Content-disposition: filename=".$hName."_".$sName.".csv");
+	else
+		header("Content-disposition: filename=".$index.".csv");
 
 	$DBRESULT =& $pearDBO->query("SELECT metric_id FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index'");
 	if (PEAR::isError($DBRESULT))
