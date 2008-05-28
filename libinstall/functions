@@ -1392,7 +1392,7 @@ function check_group_apache()
 		fi
 	elif [ -e /etc/apache2/uid.conf ] ; then
 		# for SuSe system
-		WEB_USER=`cat /etc/apache2/uid.conf |grep -e "^Group" | cut -d" " -f2`
+		WEB_GROUP=`cat /etc/apache2/uid.conf |grep -e "^Group" | cut -d" " -f2`
 		if [ -z "$WEB_GROUP" ] ; then 
 			found=0
 		else 
