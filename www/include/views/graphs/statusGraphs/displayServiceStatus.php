@@ -19,6 +19,8 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 	
+	//	ini_set("display_error", "On");
+	
 	require_once ('DB.php');
 	require_once("@CENTREON_ETC@/centreon.conf.php");
 	require_once $centreon_path."www/DBconnect.php";
@@ -29,6 +31,12 @@
 	$oreon =& $_SESSION["oreon"];
 	
 	require_once $centreon_path."www/include/common/common-Func.php";
+
+	function getStatusDBDir($pearDBO){
+		$data =& $pearDBO->query("SELECT `RRDdatabase_status_path` FROM `config` LIMIT 1");
+		$dir =& $data->fetchRow();
+		return $dir["RRDdatabase_status_path"];
+	}
 
 	/*
 	 * Verify if start and end date
@@ -73,7 +81,7 @@
 		 
 		include_once($centreon_path."www/DBOdsConnect.php");
 
-		$RRDdatabase_path = "/var/lib/ods/svc_status/";
+		$RRDdatabase_path = getStatusDBDir($pearDBO);
 	
 		/*
 		 * Get index information to have acces to graph
