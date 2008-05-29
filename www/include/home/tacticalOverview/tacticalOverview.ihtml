@@ -155,7 +155,7 @@
 						<td class="SubTacticalDT">
 							<table>
 								{if ($ServiceStatus.3 > 0) && ($SvcUnhandled[3] > 0)}
-								<tr><td style="background-color:{$color.color_unknown};font-weight:bold;"><a href={$url_unknown}>{$ServiceStatus.3} {$str_critical}</a></td></tr>
+								<tr><td style="background-color:{$color.color_unknown};font-weight:bold;"><a href={$url_unknown}>{$ServiceStatus.3} {$str_unknown}</a></td></tr>
 								{else}
 								<tr><td style="background-color:{$color.color_unknown};"><a href={$url_unknown}>{$ServiceStatus.3} {$str_unknown}</a></td></tr>
 								{/if}
