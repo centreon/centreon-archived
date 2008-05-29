@@ -53,27 +53,30 @@
 	$rows = 0;
 	$tmp = "";
 	$tmp2 = "";
-
+	$tab_buffer = array();
 	if (isset($search))	{
 		$search = str_replace('/', "#S#", $search);
 		$search = str_replace('\\', "#BS#", $search);
 		if ($search_type_service) {
 			if ($is_admin)
-				$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND sv.service_alias LIKE '%$search%' AND sv.service_description LIKE '%$search%'");
+				$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$search%' OR sv.service_description LIKE '%$search%')");
 			else
-				$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) AND sv.service_alias LIKE '%$search%' AND sv.service_description LIKE '%$search%'");	
+				$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$search%' OR sv.service_description LIKE '%$search%')");	
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($service = $DBRESULT->fetchRow()){
-				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
+				if (!isset($tab_buffer[$service["service_id"]]))
+					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
+				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];	
+				$tab_buffer[$service["service_id"]] = $service["service_id"];
 				$rows++;
 			}
 		}
 		if ($search_type_host)	{
 			if ($is_admin)
-				$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE host_name like '%".$search."%' AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
+				$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE host_name LIKE '%".$search."%' AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
 			else
-				$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE host_name like '%".$search."%' AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) ";				
+				$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE host_name LIKE '%".$search."%' AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) ";				
 			$DBRESULT =& $pearDB->query($locale_query);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -135,6 +138,7 @@
 						"AND host.host_id = hsr.host_host_id $strLCA " .
 						"AND host.host_register = '1' " .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
+	
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
