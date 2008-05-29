@@ -472,7 +472,7 @@
 	function getMyServiceName($service_id = NULL)	{
 		if (!$service_id) return;
 		global $pearDB;
-		while(1)	{
+		while (1) {
 			$DBRESULT =& $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -481,8 +481,7 @@
 				$row["service_description"] = str_replace('#S#', "/", $row["service_description"]);
 				$row["service_description"] = str_replace('#BS#', "\\", $row["service_description"]);
 				return html_entity_decode($row["service_description"], ENT_QUOTES);
-			}
-			else if ($row["service_template_model_stm_id"])
+			} else if ($row["service_template_model_stm_id"])
 				$service_id = $row["service_template_model_stm_id"];
 			else
 				break;
@@ -1077,8 +1076,8 @@
 		}
 		return $langs;
 	}
-	function getAllHostgroups()
-	{
+	
+	function getAllHostgroups(){
 		global $pearDB;
 		$hgs = array();
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
@@ -1089,8 +1088,7 @@
 		return $hgs;
 	}
 	
-	function service_has_graph($host, $service)
-	{
+	function service_has_graph($host, $service){
 		global $pearDBO;
 		if(is_numeric($host) && is_numeric($service)){
 			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$host."' AND service_id = '".$service."'");
@@ -1111,39 +1109,39 @@
 		return false;	
 	}
 	
-	function host_has_one_or_more_GraphService($host_id)
-	{
+	function host_has_one_or_more_GraphService($host_id){
 		global $pearDBO;
 	
 		$services = getMyHostServices($host_id);
-		foreach($services as $svc_id => $svc_name)
-		{
-			if(service_has_graph($host_id, $svc_id))
-			return true;
-		}
+		foreach ($services as $svc_id => $svc_name)
+			if (service_has_graph($host_id, $svc_id))
+				return true;
 		return false;	
 	}
 	
-	function HG_has_one_or_more_host($hg_id)
-	{
+	function SGIsNotEmpty($sg_id){
+		global $pearDBO;
+		$data = getMyServiceGroupServices($sg_id);
+		return count($data);
+	}
+	
+	function HG_has_one_or_more_host($hg_id){
 		global $pearDBO;
 	
 		$hosts = getMyHostGroupHosts($hg_id);
-		foreach($hosts as $host_id => $host_name)
-		{
+		foreach ($hosts as $host_id => $host_name)	{
 			$services = getMyHostServices($host_id);
-			foreach($services as $svc_id => $svc_name)
-			{
-				if(service_has_graph($host_id, $svc_id))
+			foreach ($services as $svc_id => $svc_name)	{
+				if (service_has_graph($host_id, $svc_id))
 					return true;
 			}
 		}
 		return false;	
 	}
 	
-	function getMyHostServiceID($service_id = NULL)
-	{
-		if (!$service_id) return;
+	function getMyHostServiceID($service_id = NULL){
+		if (!$service_id) 
+			return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT host_id FROM host h,host_service_relation hsr WHERE h.host_id = hsr.host_host_id AND hsr.service_service_id = '".$service_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
