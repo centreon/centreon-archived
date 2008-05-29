@@ -19,10 +19,21 @@ $n = "";
 $name = "";
 $title = "";
 
-$n = filter_var($_GET["n"], FILTER_SANITIZE_SPECIAL_CHARS);
-$name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
-$title = filter_var($_GET["title"], FILTER_SANITIZE_SPECIAL_CHARS);
+function filter_get($str){
+	if (preg_match("/([a-zA-Z0-9\_\-\%\ ]*)/", $str, $matches))
+		return $matches[1];
+	return NULL;	
+}
 
+if (function_exists("filter_var")){
+	$n = filter_var($_GET["n"], FILTER_SANITIZE_SPECIAL_CHARS);
+	$name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
+	$title = filter_var($_GET["title"], FILTER_SANITIZE_SPECIAL_CHARS);
+} else {
+	$n = filter_get($_GET["n"]);
+	$name = filter_get($_GET["name"]);
+	$title = filter_get($_GET["title"]);
+}
 $name1 = $n."";
 $name2 = $n."_color";
 
