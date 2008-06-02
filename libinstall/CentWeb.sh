@@ -77,12 +77,14 @@ copyInTempFile 2>>$LOG_FILE
 
 # change right centreon_log directory
 log "INFO" "$(gettext "Change right on") $CENTREON_LOG"
-$INSTALL_DIR/cinstall -u "$WEB_USER" -g "$NAGIOS_GROUP" -d 775 -v \
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-u "$WEB_USER" -g "$NAGIOS_GROUP" -d 775 \
 	"$CENTREON_LOG" >> "$LOG_FILE" 2>&1
 
 # change right on centreon etc
 log "INFO" "$(gettext "Change right on") $CENTREON_ETC"
-$INSTALL_DIR/cinstall -u "$WEB_USER" -d 755 -v \
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-u "$WEB_USER" -d 755 \
 	"$CENTREON_ETC" >> "$LOG_FILE" 2>&1
 
 ## Copy Web Front Source in final
@@ -94,6 +96,11 @@ cp -Rf $TMPDIR/src/GPL_LIB $TMPDIR/final
 mkdir -p $TMPDIR/work/www/install >> "$LOG_FILE" 2>&1
 mkdir -p $TMPDIR/work/cron/reporting >> "$LOG_FILE" 2>&1
 mkdir -p $TMPDIR/final/cron/reporting >> "$LOG_FILE" 2>&1
+
+## Install Centreon doc (nagios doc)
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-g $WEB_GROUP -d 755 -m 644 \
+	$TMPDIR/src/doc $INSTALL_DIR_CENTREON/doc >> $LOG_FILE 2>&1
 
 ## Prepare insertBaseConf.sql
 echo -e "$(gettext "In process")"
@@ -160,7 +167,8 @@ echo_success "$(gettext "Change macros for php file")" "$ok"
 
 ### Step 3: Change right on nagios_etcdir
 log "INFO" "$(gettext "Change right on") $NAGIOS_ETC" 
-$INSTALL_DIR/cinstall -g "$WEB_GROUP" -d 775 -v \
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-g "$WEB_GROUP" -d 775 \
 	"$NAGIOS_ETC" >> "$LOG_FILE" 2>&1
 
 find "$NAGIOS_ETC" -type f -print | \
@@ -171,10 +179,12 @@ find "$NAGIOS_ETC" -type f -print | \
 ### Step 4: Copy final stuff in system directoy
 log "INFO" "$(gettext "Copy CentWeb in system directory")"
 echo_info "$(gettext "Copy CentWeb in system directory")"
-$INSTALL_DIR/cinstall -u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 -v \
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
 	$TMPDIR/final/www $INSTALL_DIR_CENTREON/www >> "$LOG_FILE" 2>&1
 
-$INSTALL_DIR/cinstall -u "$WEB_USER" -g "$WEB_GROUP" -d 775 -v \
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-u "$WEB_USER" -g "$WEB_GROUP" -d 775 \
 	$CENTREON_GENDIR/filesGeneration/nagiosCFG >> "$LOG_FILE" 2>&1
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
@@ -189,7 +199,8 @@ $INSTALL_DIR/cinstall -u "$WEB_USER" -g "$WEB_GROUP" -d 775 -v \
 	ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
 
 log "INFO" "$(gettext "Copying GPL_LIB")"
-$INSTALL_DIR/cinstall -u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 -v \
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
 	$TMPDIR/final/GPL_LIB $INSTALL_DIR_CENTREON/GPL_LIB >> "$LOG_FILE" 2>&1
 
 echo_passed "$(gettext "CentWeb file installation")" "$ok"
@@ -204,7 +215,8 @@ sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 cp $TMPDIR/work/centreon.cron $TMPDIR/final/centreon.cron >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Install centreon.cron")"
-$INSTALL_DIR/cinstall -m 644 -v \
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-m 644 \
 	$TMPDIR/final/centreon.cron $CRON_D/centreon >> "$LOG_FILE" 2>&1
 echo_success "$(gettext "Install Centreon cron")" "$ok"
 
@@ -226,10 +238,12 @@ cp -f $TMPDIR/work/cron/centAcl.php \
 	$TMPDIR/final/cron/centAcl.php >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Install cron directory")"
-$INSTALL_DIR/cinstall -u "$NAGIOS_USER" -g "$WEB_GROUP" -d 755 -m 755 -v \
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-u "$NAGIOS_USER" -g "$WEB_GROUP" -d 755 -m 755 \
 	$TMPDIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
 
-
+## Prepare to install all pear modules needed.
+# use check_pear.php script
 echo -e "$(gettext "Pear Modules")"
 pear_module="0"
 while [ "$pear_module" -eq 0 ] ; do 

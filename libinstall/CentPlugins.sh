@@ -60,11 +60,13 @@ cp -r $TMPDIR/work/plugins/* $TMPDIR/final/plugins >> $LOG_FILE 2>&1
 
 ## Install the plugins
 log "INFO" "$(gettext "Installing the plugins")"
-$INSTALL_DIR/cinstall -m 755 -v -p $TMPDIR/final/plugins \
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-m 755 -p $TMPDIR/final/plugins \
 	$TMPDIR/final/plugins/* $NAGIOS_PLUGIN >> $LOG_FILE 2>&1
 
 log "INFO" "$(gettext "Install temporary directory for plugins") : $CENTPLUGINS_TMP"
-$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 -v \
+$INSTALL_DIR/cinstall "$cinstall_opts" \
+	-u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 -v \
 	$CENTPLUGINS_TMP >> $LOG_FILE 2>&1
 echo_success "$(gettext "CentPlugins is installed")"
 

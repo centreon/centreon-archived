@@ -20,7 +20,7 @@
 # 
 #    For information : infos@centreon.com
 ####################################################################
-# SVN: $Id$
+# SVN: $Id$
 #
 # redefine install command in cinstall (for centreon install script)
 
@@ -121,6 +121,7 @@ Options:
   -d NUM	set permission mode for directory(ies) (as in chmod)
   -b BKPDIR	make a backup of each existing destination
   -p BASEDIR	use SOURCE in BASEDIR to set a destination permissions
+  -f 		use force command to ecrase old file or directory
   -h		display this help and exit
   -v		verbose mode
 
@@ -138,8 +139,9 @@ dirmode=""
 backupdir=""
 backup=0
 verbose=0
+force=0
 
-while getopts ":u:g:m:d:b:p:hv" Option ; do
+while getopts ":u:g:m:d:b:p:fhv" Option ; do
 	#log "Option: $Option, arg: $OPTARG"
 	case $Option in
 		u )	username="$OPTARG" ;;
@@ -148,6 +150,7 @@ while getopts ":u:g:m:d:b:p:hv" Option ; do
 		d )	dirmode="$OPTARG" ;;
 		p )	basedir="$OPTARG" ;;
 		b )	backupdir="$OPTARG" ; backup=1 ;;
+		f )	force=1 ;;
 		v )	verbose=1 ;;
 		\?|h )	usage ; exit 0 ;;
 		* )	usage ; exit 0 ;;
@@ -206,7 +209,7 @@ if [ $# -ge 2 ] ; then
 		if [ -f "$src" ] ; then
 			log "ERR: count:$count, $src is a file and $dst exists"
 			exit 1
-		elif [ -d "$src" -a $backup -ne 1 ] ; then
+		elif [ -d "$src" -a $backup -ne 1 -a "$force" -eq 0 ] ; then
 			log "ERR: count:$count, $src is a directory and backup disabled"
 			exit 1
 		fi
@@ -224,15 +227,19 @@ if [ $# -ge 2 ] ; then
 	
 	## Test howto copy SRC into DEST
 	if [ $count -eq 1 -a -f "$src" ] ; then
-		cp $src $dst
+		cp -f $src $dst
 		log "count: $count, src: $src, src = file"
 		log "cp $src $dst"
 	elif [ $count -gt 1 ] ; then 
-		cp -R $src $dst
+		if [ "$force" -eq 1 ] ; then 
+			cp -Rf $src "$(dirname $dst)"
+		else 
+			cp -Rf $src $dst
+		fi
 		log "count: $count, src: $src"
 		log "cp -R $src $dst"
 	elif [ $count -eq 1 -a -d "$src" ] ; then
-		cp -R $src $dst
+		cp -Rf $src $dst
 		log "count: $count, src: $src"
 		log "cp -R $src $dst"
 	else 
@@ -283,6 +290,5 @@ if [ $# -ge 2 ] ; then
 	fi
 fi
 exit 0
-
 
 

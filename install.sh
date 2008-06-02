@@ -96,20 +96,34 @@ silent_install="0"
 upgrade="0"
 user_install_vars=""
 
+#define cinstall options
+cinstall_opts=""
+
 ## Getopts :)
 # When you use options, by default I set silent_install to 1.
-while getopts "f:u:h" Options
+while getopts "f:u:hv" Options
 do
 	case ${Options} in
 		f )	silent_install="1"
 			user_install_vars="${OPTARG}" ;;
 		u )	silent_install="1"
-			CENTREON_CONF="${OPTARG}"
+			# At this moment I use a template file to update 
+			# centreon install.
+			# After that I think I demand only a centreon_etc
+			# directory
+			user_install_vars="${OPTARG}"
+			cinstall_opts="$cinstall_opts -f"
 			upgrade="1" ;;
+		v )	cinstall_opts="$cinstall_opts -v" 
+			# need one variable to parse debug log 
+			;;
 		\?|h)	usage ; exit 0 ;;
 		* )	usage ; exit 1 ;;
 	esac
 done
+
+#Export variable for all programs
+export silent_install user_install_vars CENTREON_CONF cinstall_opts
 
 version="2.0-b4"
 
@@ -136,7 +150,7 @@ __EOT__
 if [ -e "$LOG_FILE" ] ; then
 	mv "$LOG_FILE" "$LOG_FILE.`date +%Y%m%d-%H%M%S`"
 fi
-# Clean my log file
+# Clean (and create) my log file
 cat << __EOL__ > "$LOG_FILE"
 __EOL__
 

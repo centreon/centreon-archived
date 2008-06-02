@@ -255,6 +255,7 @@ function usage() {
 	echo -e "$(gettext "Usage: $program -f <file>")"
 	echo -e "\t-f\t$(gettext "file with all variable")"
 	echo -e "\t-u\t$(gettext "file with all variable for upgrade :") CENTREON_CONF"
+	echo -e "\t-v\t$(gettext "verbose mode")"
 	exit 1
 }
 
