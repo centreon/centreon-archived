@@ -14,6 +14,11 @@
  * 
  * For information : contact@centreon.com
  */
+
+/*
+ * SVN: $URL$
+ * SVN: $Id$
+ */ 
 	
 	# function 
 	function get_path($abs_path){

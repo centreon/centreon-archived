@@ -15,6 +15,10 @@
  * For information : contact@centreon.com
  */
 
+/*
+ * SVN: $URL$
+ * SVN: $Id$
+ */
 
 	if (!isset($oreon))
 		exit();

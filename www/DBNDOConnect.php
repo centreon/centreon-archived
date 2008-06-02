@@ -15,6 +15,11 @@
  * For information : contact@centreon.com
  */
 
+/*
+ * SVN: $URL$
+ * SVN: $Id$
+ */ 
+
 	global $pearDBndo;
 
 	// This file have to be included whenever we want to connect to the DB
