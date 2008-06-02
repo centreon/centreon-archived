@@ -17,7 +17,7 @@
 
 /*
  * SVN: $URL$
- * SVN: $Id
+ * SVN: $Id$
  */ 
  
 	if (isset($oreon))
