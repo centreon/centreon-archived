@@ -215,7 +215,6 @@ sub parseLogFile($$) {
 		if (!$sth->execute()) {die "Error:" . $sth->errstr . "\n";}
 		$data = $sth->fetchrow_hashref();
 		$LOG_FILE = $data->{'log_file'};
-	    print "log file : $LOG_FILE\n"; 
 	    if (!(-r $LOG_FILE)) {
 			print "Error : cannot open $LOG_FILE\n";
 			exit(0);
