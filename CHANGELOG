@@ -9,7 +9,7 @@
 => Bugfix : #23 bug in "functions" / check_group_apache ?
 => Bugfix : #24 Login page cannot be shown
 => Bugfix : #31 change color in graphs page
-=> Tash   : add graphs view by servicegroup
+=> Task   : add graphs view by servicegroup
 
 ## Centreon 2.0-b3
 
