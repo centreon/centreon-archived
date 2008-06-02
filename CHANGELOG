@@ -1,3 +1,15 @@
+## Centreon 2.0-b4
+
+=> Bugfix : #1  Setup : purge var in shell installer
+=> Task   : #3  Install Script: Create install for SNMP Traps
+=> Bugfix : #13 XML Problem on Views
+=> Bugfix : #15 Loading hosts.cfg configuration file
+=> Bugfix : #16 Loading services.cfg configuration file
+=> Bugfix : #20 Export CSV bad link
+=> Bugfix : #23 bug in "functions" / check_group_apache ?
+=> Bugfix : #24 Login page cannot be shown
+=> Bugfix : #31 change color in graphs page
+
 ## Centreon 2.0-b3
 
 => Bugfix : #18 Snmptrapd configuration problem with centGenSnmpttConfFile
