@@ -125,7 +125,7 @@
 		var multi = <?php echo $multi; ?>;
 	  	var _menu_div = document.getElementById("menu_40211");
 
-  		tree=new dhtmlXTreeObject("menu_40211","100%","100%","1");
+  		tree = new dhtmlXTreeObject("menu_40211","100%","100%","1");
         tree.setImagePath("./img/icones/csh_vista/");
         //link tree to xml
         tree.setXMLAutoLoading("./include/views/graphs/GetODSXmlTree.php");

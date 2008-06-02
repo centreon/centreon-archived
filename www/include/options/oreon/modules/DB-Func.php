@@ -14,6 +14,7 @@
  * 
  * For information : contact@centreon.com
  */
+
 	if (!isset($oreon))
 		exit();
 

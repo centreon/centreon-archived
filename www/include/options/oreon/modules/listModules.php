@@ -38,68 +38,78 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_rname", _("Real name"));
 	$tpl->assign("headerMenu_release", _("Release"));
 	$tpl->assign("headerMenu_author", _("Author"));
 	$tpl->assign("headerMenu_isinstalled", _("Installed"));
 	$tpl->assign("headerMenu_action", _("Actions"));
-	# end header menu	
+	
 	$tpl->assign("confirm_removing", _("Do you confirm the deletion ?"));
 	
-	#Different style between each lines
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	# Get Modules
+	
+	/*
+	 * Get Modules List
+	 */
 	$handle = opendir("./modules");
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */	
+	
 	$elemArr = array();
 	while (false !== ($filename = readdir($handle)))	{
 		if ($filename != "." && $filename != "..")	{
 			$moduleinfo = getModuleInfoInDB($filename, NULL);
 			# Package already installed
 			if (isset($moduleinfo["rname"]))	{				
-				$elemArr[$i] = array("MenuClass"=>"list_".$style, 
-						"RowMenu_name"=>$moduleinfo["name"],
-						"RowMenu_rname"=>$moduleinfo["rname"],
-						"RowMenu_release"=>$moduleinfo["mod_release"],
-						"RowMenu_author"=>$moduleinfo["author"],
-						"RowMenu_isinstalled"=>_("Yes"),
-						"RowMenu_link"=>"?p=".$p."&o=w&id=".$moduleinfo["id"],
-						"RowMenu_link_install"=>NULL,
-						"RowMenu_link_delete"=>"?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=d",
-						"RowMenu_link_upgrade"=>"?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=u");
+				$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
+										"RowMenu_name"=>$moduleinfo["name"],
+										"RowMenu_rname"=>$moduleinfo["rname"],
+										"RowMenu_release"=>$moduleinfo["mod_release"],
+										"RowMenu_author"=>$moduleinfo["author"],
+										"RowMenu_isinstalled"=>_("Yes"),
+										"RowMenu_link"=>"?p=".$p."&o=w&id=".$moduleinfo["id"],
+										"RowMenu_link_install"=>NULL,
+										"RowMenu_link_delete"=>"?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=d",
+										"RowMenu_link_upgrade"=>"?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=u");
 				$style != "two" ? $style = "two" : $style = "one";
 				$i++;
-			}
-			else	{
+			} else {
 				# Valid package to install
 				if (is_file("./modules/".$filename."/conf.php")) {
 					include_once("./modules/".$filename."/conf.php");
 					if (isset($module_conf[$filename]["name"]))	{							
-						$elemArr[$i] = array("MenuClass"=>"list_".$style, 
-								"RowMenu_name"=>$module_conf[$filename]["name"],
-								"RowMenu_rname"=>$module_conf[$filename]["rname"],
-								"RowMenu_release"=>$module_conf[$filename]["mod_release"],
-								"RowMenu_author"=>$module_conf[$filename]["author"],
-								"RowMenu_isinstalled"=>_("No"),
-								"RowMenu_link"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"],
-								"RowMenu_link_install"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"]."&o=i",
-								"RowMenu_link_delete"=>NULL,
-								"RowMenu_link_upgrade"=>NULL);
+						$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
+												"RowMenu_name"=>$module_conf[$filename]["name"],
+												"RowMenu_rname"=>$module_conf[$filename]["rname"],
+												"RowMenu_release"=>$module_conf[$filename]["mod_release"],
+												"RowMenu_author"=>$module_conf[$filename]["author"],
+												"RowMenu_isinstalled"=>_("No"),
+												"RowMenu_link"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"],
+												"RowMenu_link_install"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"]."&o=i",
+												"RowMenu_link_delete"=>NULL,
+												"RowMenu_link_upgrade"=>NULL);
 						$style != "two" ? $style = "two" : $style = "one";
 						$i++;
 					}
-				}
-				# Non valid package
-				else	{							
-					$elemArr[$i] = array("MenuClass"=>"list_".$style, 
-							"RowMenu_name"=>$filename,
-							"RowMenu_rname"=>_("NA"),
-							"RowMenu_release"=>_("NA"),
-							"RowMenu_author"=>_("NA"),
-							"RowMenu_isinstalled"=>_("Impossible"),
-							"RowMenu_link"=>NULL);
+				} else {							
+					/*
+					 * Non valid package
+					 */	
+					$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
+											"RowMenu_name"=>$filename,
+											"RowMenu_rname"=>_("NA"),
+											"RowMenu_release"=>_("NA"),
+											"RowMenu_author"=>_("NA"),
+											"RowMenu_isinstalled"=>_("Impossible"),
+											"RowMenu_link"=>NULL);
 					$style != "two" ? $style = "two" : $style = "one";
 					$i++;
 				}
@@ -111,9 +121,10 @@
 	$tpl->assign("action_install", _("Install Module"));
 	$tpl->assign("action_delete", _("Uninstall Module"));
 	$tpl->assign("action_upgrade", _("Upgrade"));
-	#
-	##Apply a template definition
-	#
+
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$tpl->display("listModules.ihtml");
 ?>
