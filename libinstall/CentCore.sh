@@ -59,7 +59,7 @@ echo_success "`gettext \"Replace CentCore Macro\"`" "$ok"
 log "INFO" "`gettext \"Copying CentCore binary in final directory\"`"
 cp $TMPDIR/work/bin/centcore $TMPDIR/final/bin/centcore 2>&1  >> $LOG_FILE
 
-$INSTALL_DIR/cinstall "$cinstall_opts" \
+$INSTALL_DIR/cinstall $cinstall_opts \
 	-u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
 	$TMPDIR/final/bin/centcore $CENTCORE_BINDIR/centcore >> $LOG_FILE 2>&1
 echo_success "`gettext \"Copy CentCore in binary directory\"`" "$ok"
@@ -67,12 +67,12 @@ log "INFO" "`gettext \"Copying CentCore in binary directory\"`"
 
 ## Change right on CENTREON_RUNDIR
 log "INFO" "`gettext \"Change right\"` : $CENTREON_RUNDIR"
-$INSTALL_DIR/cinstall "$cinstall_opts" -g $NAGIOS_USER -d 775 \
+$INSTALL_DIR/cinstall $cinstall_opts -g $NAGIOS_USER -d 775 \
 	$CENTREON_RUNDIR >> $LOG_FILE 2>&1
 
 ## Change tight on CENTREON_VARLIB
 log "INFO" "`gettext \"Change right\"` : $CENTREON_VARLIB"
-$INSTALL_DIR/cinstall "$cinstall_opts" -g $NAGIOS_USER -d 775 \
+$INSTALL_DIR/cinstall $cinstall_opts -g $NAGIOS_USER -d 775 \
 	$CENTREON_VARLIB >> $LOG_FILE 2>&1
 
 ###### CentCore init
@@ -92,7 +92,7 @@ cp $TMPDIR/final/centcore.init.d $INSTALL_DIR_CENTREON/examples/centcore.init.d
 
 yes_no_default "`gettext \"Do you want I install CentCore init script ?\"`"
 if [ $? -eq 0 ] ; then 
-	$INSTALL_DIR/cinstall "$cinstall_opts" -m 755 \
+	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMPDIR/final/centcore.init.d $INIT_D/centcore >> $LOG_FILE 2>&1
 	log "INFO" "`gettext \"CentCore init script installed\"`"
 

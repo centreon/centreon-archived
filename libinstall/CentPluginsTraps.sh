@@ -51,13 +51,13 @@ cp -f $TMPDIR/work/bin/* $TMPDIR/final/bin >> $LOG_FILE 2>&1
 
 ## Install the plugins traps binaries
 log "INFO" "$(gettext "Installing the plugins Traps binaries")"
-$INSTALL_DIR/cinstall "$cinstall_opts" \
+$INSTALL_DIR/cinstall $cinstall_opts \
 	-m 755 -p $TMPDIR/final/bin \
 	$TMPDIR/final/bin/* $CENTPLUGINSTRAPS_BINDIR >> $LOG_FILE 2>&1
 
 # Create a SNMP config
 ## Create centreon_traps directory
-$INSTALL_DIR/cinstall "$cinstall_opts" \
+$INSTALL_DIR/cinstall $cinstall_opts \
 	-u $WEB_USER -g $NAGIOS_GROUP -d 775 \
 	$SNMP_ETC/centreon_traps >> $LOG_FILE 2>&1
 
@@ -118,27 +118,27 @@ cp $TMPDIR/src/snmptt/snmpttconvertmib \
 
 ## Install all config file
 log "INFO" "$(gettext "Install") : snmptrapd.conf"
-$INSTALL_DIR/cinstall "$cinstall_opts" -m 644 \
+$INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 	$TMPDIR/final/snmptrapd/snmptrapd.conf \
 	$SNMP_ETC/snmptrapd.conf >> $LOG_FILE 2>&1
 
 log "INFO" "$(gettext "Install") : snmp.conf"
-$INSTALL_DIR/cinstall "$cinstall_opts" -m 644 \
+$INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 	$TMPDIR/final/snmptrapd/snmp.conf \
 	$SNMP_ETC/snmp.conf >> $LOG_FILE 2>&1
 
 log "INFO" "$(gettext "Install") : snmptt.ini"
-$INSTALL_DIR/cinstall "$cinstall_opts" -u $WEB_USER -g $NAGIOS_GROUP -m 644 \
+$INSTALL_DIR/cinstall $cinstall_opts -u $WEB_USER -g $NAGIOS_GROUP -m 644 \
 	$TMPDIR/final/snmptt/snmptt.ini \
 	$SNMP_ETC/centreon_traps/snmptt.ini >> $LOG_FILE 2>&1
 
 log "INFO" "$(gettext "Install") : snmptt"
-$INSTALL_DIR/cinstall "$cinstall_opts" -m 755 \
+$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 	$TMPDIR/final/snmptt/snmptt \
 	$SNMPTT_BINDIR/snmptt >> $LOG_FILE 2>&1
 
 log "INFO" "$(gettext "Install") : snmpttconvertmib"
-$INSTALL_DIR/cinstall "$cinstall_opts" -m 755 \
+$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 	$TMPDIR/final/snmptt/snmpttconvertmib \
 	$SNMPTT_BINDIR/snmpttconvertmib >> $LOG_FILE 2>&1
 
