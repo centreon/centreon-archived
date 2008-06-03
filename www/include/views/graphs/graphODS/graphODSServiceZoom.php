@@ -20,7 +20,7 @@
 
 	# include js for zoombox
 	include('./include/views/graphs/graphODS/zoombox.php');
-	include('./include/views/graphs/graphODS/javascript.php');
+	#include('./include/views/graphs/graphODS/javascript.php');
 		
 		
 	# LCA 
