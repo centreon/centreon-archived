@@ -51,7 +51,7 @@
 		$tab_svcs = explode(",", $id_svc);
 		foreach($tab_svcs as $svc){
 			$tmp = explode(";", $svc);
-			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
+			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
 		}
 	}
 	if (isset($_GET["svc_id"]) && $_GET["svc_id"]){
@@ -60,7 +60,7 @@
 		$tab_svcs = explode(",", $id_svc);
 		foreach($tab_svcs as $svc){
 			$tmp = explode(";", $svc);
-			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
+			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
 		}
 	}
 	
