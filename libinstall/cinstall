@@ -1,40 +1,33 @@
 #!/bin/bash
-###################################################################
-# Centreon is developped with GPL Licence 2.0 
-#
-# GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-#
-# Developped by : Julien Mathis - Romain Le Merlus 
-# Contribute	: Guillaume Watteeux - Maximilien Bersoult
-#
-###################################################################
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-#    For information : infos@centreon.com
-####################################################################
+
+#----
+## @Synopsis	Redefine install command for Centreon Install
+## @License	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+## Centreon is developped with GPL Licence 2.0 
+## <p>
+## Developped by : Julien Mathis - Romain Le Merlus
+## Contribute	: Guillaume Watteeux - Maximilien Bersoult
+## <p>
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation; either version 2
+## of the License, or (at your option) any later version.
+## <p>
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## <p>
+##    For information : infos@centreon.com
+#----
 # SVN: $Id$
 #
-# redefine install command in cinstall (for centreon install script)
-
 #set -x
 
-###
-## log: print message
-##
-## <code>
-## log "hello word !"
-## </code>
-##
-## param	$@	message
-##
+#----
+##	print message 
+##	@param	message
+#----
 function log() {
 	if [ $verbose -eq 1 ] ; then 
 		local program=$program
@@ -44,18 +37,12 @@ function log() {
 	return 0
 }
 
-###
-## lchown: change username and group
-##
-## it use global $username and $group
-##
-## <code>
-## lchown /tmp/centreon
-## </code>
-##
-## param	$1	directory
-## param	$2	chown/chgrp option (-R)
-##
+#----
+##	change username and group in a specific directory
+##	@param	directory
+## 	@param	chown/chgrp option (-R)
+##	@Globals	username, group
+#----
 function lchown() {
 	local directory="$1"
 	local option=$2
@@ -72,19 +59,13 @@ function lchown() {
 	return 0
 }
 
-###
-## find_and_chmod: find and chmod file or direcoty
-##
-## <code>
-## find_and_chmod /tmp/centreon "d" "775" "1"
-## </code>
-##
-## param	$1	directory
-## param	$2	type of search:	f=file
-##					d=directory
-## param	$3	permission mode
-## param	$4	define mindepth in find command (default 0)
-##
+#----
+##	find and chmod file or directory
+##	@param	directory
+## 	@param	type of search:	f=file, d=directory
+## 	@param	permission mode (ex: 775)
+## 	@param	define mindepth in find command (default 0)
+#----
 function find_and_chmod() {
 	local directory=$1
 	local type=$2
@@ -100,9 +81,10 @@ function find_and_chmod() {
 	return 0
 }
 
-###
-## usage: print usage of script
-##
+#----
+##	Usage for this script
+##	@Stdout	Usage information
+#----
 function usage() {
 	local program=cinstall
 	cat << __EOT__
