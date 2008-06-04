@@ -1090,7 +1090,7 @@
 	
 	function service_has_graph($host, $service){
 		global $pearDBO;
-		if(is_numeric($host) && is_numeric($service)){
+		if (is_numeric($host) && is_numeric($service)){
 			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$host."' AND service_id = '".$service."'");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
@@ -1098,7 +1098,7 @@
 			if($DBRESULT->numRows() > 0)
 				return true;
 		}
-		if(!is_numeric($host) && !is_numeric($service)){
+		if (!is_numeric($host) && !is_numeric($service)){
 			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".$host."' AND service_description = '".$service."'");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();

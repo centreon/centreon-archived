@@ -110,16 +110,15 @@
 			 * Send Service/host list for a SG 
 			 */
 			$data = getMyServiceGroupServices($id);
-			print_r($data);
 			foreach ($data as $key => $value){
 				$tab_value = split("_", $key);
 				$host_name = getMyHostName($tab_value[0]);
 				$service_description = getMyServiceName($tab_value[1], $tab_value[0]);
 				if ($is_admin){
-					print("<item child='0' id='HS_".$tab_value[1]."_".$id."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
+					print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
 				} else {
 					//if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_alias"]]))
-			    	print("<item child='0' id='HS_".$tab_value[1]."_".$id."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
+			    	print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
 				}
 			}
 		} else if ($type == "HH") {

@@ -124,7 +124,7 @@
 		array_push($tab_id,$type."_".$id);
 	} else {
 		echo "<opid>".$openid."</opid>";
-		$tab_tmp = split(",",$openid);
+		$tab_tmp = split(",", $openid);
 	
 		foreach ($tab_tmp as $openid) {
 			$tab_tmp = split("_",$openid);
@@ -132,6 +132,7 @@
 			$type = $tab_tmp[0];
 		
 			if ($type == 'HG')	{
+				
 				$hosts = getMyHostGroupHosts($id);
 				foreach ($hosts as $host)	{
 					if (host_has_one_or_more_GraphService($host) && (($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($host)])))){
@@ -142,12 +143,13 @@
 								|| (!$is_admin 
 									&& isset($lca["LcaHost"][getMyHostName($host)]) 
 									&& isset($lca["LcaHost"][getMyHostName($host)]["svc"][$svc_name]))))	{
-								$oid = "HS_".$svc_id;
+								$oid = "HS_".$svc_id."_".$host;
 								array_push($tab_id,$oid);	
 							}
 						}
 					}
 				}
+				
 			} else if ($type == 'HH')	{
 				$services = getMyHostServices($id);
 				foreach ($services as $svc_id => $svc_name)	{
@@ -156,8 +158,17 @@
 						|| (!$is_admin 
 							&& isset($lca["LcaHost"][getMyHostName($id)]) 
 							&& isset($lca["LcaHost"][getMyHostName($id)]["svc"][$svc_name]))))	{
-						$oid = "HS_".$svc_id;
-						array_push($tab_id,$oid);	
+						$oid = "HS_".$svc_id."_".$id;
+						array_push($tab_id, $oid);	
+					}
+				}
+			} else if ($type == 'ST')	{
+				$services = getMyServiceGroupServices($id);
+				foreach ($services as $svc_id => $svc_name)	{ 
+					$tab_tmp = split("_", $svc_id);
+					if (service_has_graph($tab_tmp[0], $tab_tmp[1]) && (($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($id)]) && isset($lca["LcaHost"][getMyHostName($id)]["svc"][$svc_name]))))	{
+						$oid = "HS_".$tab_tmp[1]."_".$tab_tmp[0];
+						array_push($tab_id, $oid);	
 					}
 				}
 			} else if ($type == 'MS')	{
@@ -165,16 +176,12 @@
 			} else	{
 				$hosts = getMyServiceHosts($id);
 				if ($hosts)	{
-					$host_id = array_pop($hosts);					
-					if (service_has_graph($host_id, $id) 
-						&& (($is_admin) 
-						|| (!$is_admin 
-							&& isset($lca["LcaHost"][getMyHostName($id)]) 
-							&& isset($lca["LcaHost"][getMyHostName($id)]["svc"][getMyServiceName($id)]))))	{
-						array_push($tab_id,$openid);
-					}
+					$host_id = array_pop($hosts);
+					if (service_has_graph($host_id, $id) && (($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($id)]) && isset($lca["LcaHost"][getMyHostName($id)]["svc"][getMyServiceName($id)]))))
+						array_push($tab_id, $openid);
 				}
-			}
+			} 
+			
 		}
 	}
 
@@ -187,11 +194,16 @@
 	$tab_real_id = array();
 	foreach ($tab_tmp as $openid)	{
 		$tab_opid = split("_", $openid);
+		if (count($tab_opid) == 4){
+			$tab = split("_", $openid);
+			$openid = $tab[0] ."_". $tab[1] ."_".$tab[2];
+			$tab_opid = split("_", $openid);
+		}
+		
 		$id = $tab_opid[1];
 		$type = $tab_opid[0];
-		if (!in_array($type."_".$id, $tab_id))
-			array_push($tab_id, $type."_".$id);
-		$tab_real_id[$type."_".$id] = $openid;
+
+		$tab_real_id[$openid] = $openid;
 	}
 	
 	function returnType($type, $multi){
@@ -206,12 +218,13 @@
 	
 	$tab_class 		= array("1" => "list_one", "0" => "list_two");
 	
-	foreach ($tab_id as $openid) {
+	foreach ($tab_real_id as $openid) {
+		$bad_value = 0;	
 		$tab_tmp = split("_", $openid);
-		$all_id = $tab_tmp;
 		
 		$id = $tab_tmp[1];
 		$type = $tab_tmp[0];
+		
 		$real_id = $tab_real_id[$openid];
 	
 		$type = returnType($type, $multi);
@@ -552,6 +565,7 @@
 					}
 				}
 				echo "</svc_zoom>";
+
 			} else {
 				foreach ($metrics as $id => $metric){
 					echo "<metrics>";
