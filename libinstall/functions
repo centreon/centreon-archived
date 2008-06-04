@@ -1227,7 +1227,7 @@ function check_group_nagios()
 {
 	if [ -n "$NAGIOS_GROUP" ] ; then
 		log "DEBUG" "$(gettext "Test group nagios")"
-		grep "$NAGIOS_GROUP" /etc/groups >> $LOG_FILE 2>&1
+		grep "$NAGIOS_GROUP" /etc/group >> $LOG_FILE 2>&1
 		if [ "$?" -eq 0 ] ; then
 			echo_info "`gettext \"Finding Nagios group\"` :" "$NAGIOS_GROUP"
 			return 0
@@ -1284,41 +1284,36 @@ function check_httpd_directory()
 	if [ -d /etc/apache/conf ]; then
 		DIR_APACHE="/etc/apache/conf"
 		DIR_APACHE_CONF="/etc/apache/conf.d"
-		HTPASSWD="htpasswd"
 	elif [ -d /usr/local/apache2/conf ] ; then
 		DIR_APACHE="/usr/local/apache2/conf"
 		DIR_APACHE_CONF="/usr/local/apache2/conf"
-		HTPASSWD="htpasswd2"
 	elif [ -d /etc/apache2 ] ; then
 		DIR_APACHE="/etc/apache2"
 		DIR_APACHE_CONF="/etc/apache2/conf.d"
-		HTPASSWD="htpasswd2"
 	elif [ -d /etc/httpd/conf ] ; then
 		DIR_APACHE="/etc/httpd/conf"
 		DIR_APACHE_CONF="/etc/httpd/conf.d"
-		HTPASSWD="htpasswd"
 	elif [ -d /usr/local/etc/apache ] ; then
 		DIR_APACHE="/usr/local/etc/apache"
 		DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
-		HTPASSWD="htpasswd"
 	elif [ -d /usr/local/etc/apache2 ] ; then
 		DIR_APACHE="/usr/local/etc/apache2"
 		DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
-		HTPASSWD="htpasswd"
+	elif [ -d /usr/local/etc/apache22 ] ; then
+		# add for freeBSD 7 with apache2.2
+		DIR_APACHE="/usr/local/etc/apache22"
+		DIR_APACHE_CONF="/usr/local/etc/apache22/Includes"
 	else 
 		echo_passed "`gettext \"Apache config directoty not found\"`" "$critical"
 		answer_with_testdir "`gettext \"Where is your Apache etc directory\"`" "NO_DEFAULT" "DIR_APACHE"
 		answer_with_testdir "`gettext \"Where is your Apache conf.d directory\"`" "NO_DEFAULT" "DIR_APACHE_CONF"
-		answer_with_testfile "`gettext \"Where is your Apache htpasswd file \"`" "NO_DEFAULT" "HTPASSWD"
 	fi
 	DIR_APACHE=${DIR_APACHE%/}
 	export DIR_APCHE
 	DIR_APACHE_CONF=${DIR_APACHE_CONF%/}
 	export DIR_APACHE_CONF
-	export HTPASSWD
 	log "INFO" "DIR_APACHE: $DIR_APACHE"
 	log "INFO" "DIR_APACHE_CONF: $DIR_APACHE_CONF"
-	log "INFO" "HTPASSWD: $HTPASSWD"
 
 	if [ -e $DIR_APACHE/apache2.conf ] ; then
 		APACHE_CONF="apache2.conf"
