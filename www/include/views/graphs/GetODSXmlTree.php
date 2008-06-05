@@ -114,7 +114,7 @@
 				$tab_value = split("_", $key);
 				$host_name = getMyHostName($tab_value[0]);
 				$service_description = getMyServiceName($tab_value[1], $tab_value[0]);
-				if ($is_admin){
+				if ($is_admin) {
 					print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
 				} else {
 					//if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_alias"]]))
@@ -130,9 +130,7 @@
 		    $host_name = getMyHostName($id);
 		        
 		    foreach ($services as $svc_id => $svc_name){
-				if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) 
-		        						&& isset($lca["LcaHost"][$host_name]) 
-		        						&& isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]])))
+				if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]])))
 			        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
 			}
 		} else if ($type == "HS") {	
@@ -357,11 +355,11 @@
 						 */
 						if($host_open){
 							$services = getMyHostServices($host_id);
-							foreach($services as $svc_id => $svc_name)	{//$tab_id = split(",",$openid);
+							foreach ($services as $svc_id => $svc_name)	{
 								$svc_checked = "";
 								if (isset($svcs_selected[$svc_id]))
 									$svc_checked = " checked='1' ";
-					        	print("<item ".$svc_checked."  child='0' id='HS_".$svc_id."_".$host_id."_".$hg_id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
+					        	print("<item ".$svc_checked." child='0' id='HS_".$svc_id."_".$host_id."_".$hg_id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
 							}
 						}
 						print("</item>");

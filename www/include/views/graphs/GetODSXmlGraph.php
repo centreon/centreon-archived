@@ -82,13 +82,20 @@
 	(isset($_GET["EndTime"]) 		&& !check_injection($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) :$EndTime = "";
 	(isset($_GET["period"]) 		&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
 	(isset($_GET["multi"]) 			&& !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
-	(isset($_GET["id"])) ? $openid = htmlentities($_GET["id"]) : $openid = "-1";
+	(isset($_GET["id"])) ? 			$openid = htmlentities($_GET["id"]) : $openid = "-1";
+
+	if (!strncmp($openid, "SS_HS", 5)){
+		$tab = split("_", $openid);
+		$openid = "SS_".$tab[2]."_".$tab[3];
+		unset($tab);
+	}
 
 	if ($StartDate !=  "" && $StartTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
 		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
 	}
+	
 	if ($EndDate !=  "" && $EndTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
@@ -110,29 +117,30 @@
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	while($DBRESULT->fetchInto($graphT))
+	while ($DBRESULT->fetchInto($graphT))
 		$graphTs[$graphT["graph_id"]] = $graphT["name"];
 	$DBRESULT->free();
 
 	$i = 0;
 	$tab_id = array();
-
+	
 	if ($multi == 0){
-		$tab_tmp = split("_",$openid);
-		$id = $tab_tmp[1];
+		$tab_tmp = split("_", $openid);
 		$type = $tab_tmp[0];
-		array_push($tab_id,$type."_".$id);
+		$id = "";
+		for ($i = 1; $i <= (count($tab_tmp) - 1); $i++)
+			$id .= "_".$tab_tmp[$i];
+		array_push($tab_id, $type.$id);
 	} else {
 		echo "<opid>".$openid."</opid>";
 		$tab_tmp = split(",", $openid);
 	
 		foreach ($tab_tmp as $openid) {
-			$tab_tmp = split("_",$openid);
+			$tab_tmp = split("_", $openid);
 			$id = $tab_tmp[1];
 			$type = $tab_tmp[0];
 		
 			if ($type == 'HG')	{
-				
 				$hosts = getMyHostGroupHosts($id);
 				foreach ($hosts as $host)	{
 					if (host_has_one_or_more_GraphService($host) && (($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($host)])))){
@@ -185,26 +193,30 @@
 		}
 	}
 
-	
 	/*
 	 * clean double in tab_id
 	 */
 	$tab_tmp = $tab_id;
 	$tab_id = array();
 	$tab_real_id = array();
-	foreach ($tab_tmp as $openid)	{
-		$tab_opid = split("_", $openid);
-		if (count($tab_opid) == 4){
-			$tab = split("_", $openid);
-			$openid = $tab[0] ."_". $tab[1] ."_".$tab[2];
-			$tab_opid = split("_", $openid);
+	
+	if (count($tab_tmp))
+		foreach ($tab_tmp as $openid)	{
+			/*
+			$tab_opid = split("_", $openid2);
+			print_r($tab_opid);
+			
+			if (count($tab_opid) == 4){
+				$tab = split("_", $openid2);
+				$openid2 = $tab[0] ."_". $tab[1] ."_".$tab[2];
+				$tab_opid = split("_", $openid2);
+			}
+			
+			$id = $tab_opid[1];
+			$type = $tab_opid[0];
+			*/
+			$tab_real_id[$openid] = $openid;
 		}
-		
-		$id = $tab_opid[1];
-		$type = $tab_opid[0];
-
-		$tab_real_id[$openid] = $openid;
-	}
 	
 	function returnType($type, $multi){
 		if ($multi && $type == 'HS')
@@ -216,7 +228,8 @@
 		return $type;
 	}
 	
-	$tab_class 		= array("1" => "list_one", "0" => "list_two");
+	$tab_class = array("1" => "list_one", "0" => "list_two");
+
 	
 	foreach ($tab_real_id as $openid) {
 		$bad_value = 0;	
@@ -226,14 +239,12 @@
 		$type = $tab_tmp[0];
 		
 		$real_id = $tab_real_id[$openid];
-	
 		$type = returnType($type, $multi);
 		
 		/*
 		 * for one svc -> daily,weekly,monthly,yearly..
 		 */
 		if ($type == "HS" || $type == "MS"){
-
 			$msg_error 		= 0;
 			$elem 			= array();
 		
@@ -247,13 +258,13 @@
 
 			if ($type == "HS"){
 				$tab_tmp = split("_", $real_id);
-				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[2]."'");
+				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
 				if (PEAR::isError($DBRESULT2))
 					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-				$DBRESULT2->fetchInto($svc_id);
+				$svc_id =& $DBRESULT2->fetchRow();
 				$template_id = getDefaultGraph($svc_id["service_id"], 1);
 				$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
-				$DBRESULT2->fetchInto($GraphTemplate);
+				$GraphTemplate =& $DBRESULT2->fetchRow();
 				if ($GraphTemplate["split_component"] == 1 )
 					$split = 1;
 			}	
@@ -420,8 +431,8 @@
 			$label = NULL;
 			$elem = array();
 		
-			if	($type == "SS"){
-				$tab_tmp = split("_", $real_id);
+			if ($type == "SS"){
+				$tab_tmp = split("_", $openid);
 				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
 				if (PEAR::isError($DBRESULT2))
 					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
@@ -432,7 +443,7 @@
 				if ($GraphTemplate["split_component"] == 1 ) 
 					$split = 1;
 			}	
-			if($type == "SM"){
+			if ($type == "SM"){
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
 				if (PEAR::isError($DBRESULT2))
 					print "Mysql Error : ".$DBRESULT2->getDebugInfo();

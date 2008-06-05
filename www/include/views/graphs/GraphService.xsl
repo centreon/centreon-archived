@@ -240,7 +240,7 @@
 				<tr>
 	           		<td>
 						<xsl:element name='input'>
-							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>',multi); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi); return false;</xsl:attribute>
 							<xsl:attribute name="name">split</xsl:attribute>
 							<xsl:attribute name="type">checkbox</xsl:attribute>
 							<xsl:if test="//split = 1">
@@ -251,7 +251,7 @@
 	           		</td>
 	           		<td>
 						<xsl:element name='input'>
-							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>',multi); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', multi); return false;</xsl:attribute>
 							<xsl:attribute name="name">status</xsl:attribute>
 							<xsl:attribute name="type">checkbox</xsl:attribute>
 							<xsl:if test="//status = 1">
@@ -279,7 +279,7 @@
 			    	<div id="imggraph">
 						<xsl:if test="split = 0">
 							<xsl:element name="a">
-							<xsl:attribute name="onClick">multi=0;graph_4_host('SS_<xsl:value-of select="id"/>', ''); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">multi=0;graph_4_host('SS_<xsl:value-of select="opid"/>', ''); return false;</xsl:attribute>
 							<xsl:attribute name="href">#</xsl:attribute>
 								<xsl:element name="img">
 								  	<xsl:attribute name="src">./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
