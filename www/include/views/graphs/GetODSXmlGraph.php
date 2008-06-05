@@ -215,7 +215,7 @@
 			$id = $tab_opid[1];
 			$type = $tab_opid[0];
 			*/
-			$tab_real_id[$openid] = $openid;
+			$tab_real_id[substr($openid, 0, 8)] = $openid;
 		}
 	
 	function returnType($type, $multi){
@@ -231,14 +231,14 @@
 	$tab_class = array("1" => "list_one", "0" => "list_two");
 
 	
-	foreach ($tab_real_id as $openid) {
+	foreach ($tab_real_id as $key => $openid) {
 		$bad_value = 0;	
 		$tab_tmp = split("_", $openid);
 		
 		$id = $tab_tmp[1];
 		$type = $tab_tmp[0];
 		
-		$real_id = $tab_real_id[$openid];
+		$real_id = $tab_real_id[$key];
 		$type = returnType($type, $multi);
 		
 		/*
