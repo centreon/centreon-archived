@@ -10,6 +10,8 @@
 => Bugfix : #24 Login page cannot be shown
 => Bugfix : #31 change color in graphs page
 => Task   : add graphs view by servicegroup
+=> Bugfix : fix problem when we duplicate a graph template
+=> Bugfix : change redirection for logs in crons
 
 ## Centreon 2.0-b3
 
