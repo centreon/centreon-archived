@@ -58,13 +58,6 @@
 				if (testExistence($name))	{
 					$val ? $rq = "INSERT INTO giv_graphs_template VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
-					$res =& $pearDB->query("SELECT MAX(graph_id) FROM giv_graphs_template");
-					$maxId =& $res->fetchRow();
-					if (isset($maxId["MAX(graph_id)"]))	{
-						$res =& $pearDB->query("SELECT DISTINCT gc_compo_id FROM giv_graphT_componentT_relation WHERE gg_graph_id = '".$key."'");
-						while($res->fetchInto($graph))
-							$pearDB->query("INSERT INTO giv_graphT_componentT_relation VALUES ('', '".$maxId["MAX(graph_id)"]."', '".$graph["gc_compo_id"]."')");
-					}
 				}
 			}
 		}
