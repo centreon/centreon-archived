@@ -1199,6 +1199,13 @@ function configureSUDO(){
 	return 0
 }
 
+#----
+## Create a config file for Web post install
+## @Globals	line, INSTALL_DIR_CENTREON, CENTREON_ETC, INSTALL_DIR_NAGIOS,
+## @Globals	NAGIOS_ETC, NAGIOS_PLUGIN, NAGIOS_BINARY, NAGIOSSTATS_BINARY, 
+## @Globals	NAGIOS_INIT_SCRIPT, BIN_RRDTOOL, WEB_USER, WEB_GROUP, 
+## @Globals	NAGIOS_USER, NAGIOS_GROUP, BIN_MAIL, BIN_MAIL
+#----
 function createConfFile()
 {
 	echo -e "$line"
@@ -1272,8 +1279,15 @@ __EOT__
 	
 }
 
-## Function createCentWebInstallConf
-# file use for upgrade CentWeb
+#----
+## Create a config file for CentWeb
+## This file will use in upgrade progess.
+## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, INSTALL_DIR_NAGIOS, NAGIOS_ETC,
+## @Globals	NAGIOS_PLUGIN, NAGIOS_IMG, NAGIOS_BINARY, NAGIOSSTATS_BINARY,
+## @Globals	NAGIOS_VAR, RRD_PERL, SUDO_FILE, WEB_USER, WEB_GROUP, NAGIOS_USER
+## @Globals	NAGIOS_GROUP, BIN_RRDTOOL, BIN_MAIL, PEAR_PATH, CENTREON_LOG,
+## @Globals	CENTREON_ETC, CENTREON_GENDIR, CRON_D
+#----
 function createCentreonInstallConf() {
 
 cat << __EOT__ > $CENTREON_ETC/instCentWeb.conf
@@ -1304,8 +1318,13 @@ __EOT__
 echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"
 }
 
-## Function createCentStorageInstallConf
-# file use for upgrade CentStorage
+#---
+## Create a config file for CentStorage
+## This file will use for upgrade process
+## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, CENTREON_LOG, CENTREON_ETC
+##Â @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
+## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
+#----
 function createCentStorageInstallConf() {
 cat << __EOT__ > $CENTREON_ETC/instCentStorage.conf
 INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
@@ -1348,7 +1367,11 @@ __EOT__
 echo_success "Create $CENTREON_ETC/instCentCore " "OK"
 }
 
-# Find the user and group nagios in nagios.cfg and ask if we do not find
+#----
+## Find the user nagios in nagios.cfg and ask if we do not find
+## @return 0
+## @Globals	NAGIOS_ETC, NAGIOS_USER
+#----
 function find_user_nagios()
 {
 	# If I am on this function, I suppose you don't force a nagios user name. So I init this :p
@@ -1386,6 +1409,11 @@ function find_user_nagios()
 	return 0
 }
 
+#----
+## Find the group nagios in nagios.cfg and ask if we do not find
+## @return 0
+## @Globals	NAGIOS_ETC, NAGIOS_GROUP
+#----
 function find_group_nagios()
 {
 	# Same to user, If I am on this function I must reset NAGIOS_GROUP
@@ -1423,8 +1451,12 @@ function find_group_nagios()
 	return 0
 }
 
-# Check the user and group nagios and create it if necessary
-
+#----
+## Check the user nagios
+## if NAGIOS_USER already define, this functions test if is it a valid system user
+## @return 0	found
+## @Globals	NAGIOS_USER
+#----
 function check_user_nagios()
 {
 	if [ -n "$NAGIOS_USER" ] ; then
@@ -1457,6 +1489,10 @@ function check_user_nagios()
 	return 0
 }
 
+#----
+## Check the nagios group
+## @Globals	NAGIOS_GROUP
+#----
 function check_group_nagios()
 {
 	if [ -n "$NAGIOS_GROUP" ] ; then
@@ -1489,6 +1525,11 @@ function check_group_nagios()
 	return 0
 }
 
+#----
+## Define where is a nagios init script
+## Find in list of chose and request if not found
+## @Globals	NAGIOS_INIT_SCRIPT, DEFAULT_NAGIOS_INIT_SCRIPT
+#----
 function check_nagios_init_script()
 {
 	# Try to find nagios init script.
@@ -1513,6 +1554,11 @@ function check_nagios_init_script()
 	echo_success "Nagios init script " "$ok"
 }
 
+#----
+## Define where is Apache config directory
+## @return 0
+## @Globals	DIR_APACHE, DIR_APACHE_CONF, APACHE_CONF
+#----
 function check_httpd_directory()
 {
 	if [ -d /etc/apache/conf ]; then
@@ -1567,6 +1613,10 @@ function check_httpd_directory()
 	return 0
 }
 
+#----
+## Find Apache user
+## @Globals	WEB_USER, DIR_APACHE, APACHE_CONF
+#----
 function check_user_apache()
 {
 	local found=0
@@ -1609,6 +1659,10 @@ function check_user_apache()
 	echo_info "$(gettext "Finding Apache user") :" "$WEB_USER"
 }
 
+#----
+## Find Apache group
+## @Globals	WEB_GROUP, DIR_APACHE, APACHE_CONF
+#----
 function check_group_apache()
 {
 	local found=0
@@ -1648,7 +1702,11 @@ function check_group_apache()
 }
 
 
-
+#----
+## Copy Source directory on temporary working directory
+## Copy Source directory and prepare work and final
+## @Globals	TMPDIR
+#----
 function copyInTempFile()
 {
 	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www plugins"
@@ -1668,8 +1726,12 @@ function copyInTempFile()
 	done
 }	
 
-## function check_pear_module()
+#----
 ## use php script to check pear module
+## @param	list of pear modules
+## @return	return code of php script
+## @Globals	PHP_BIN, INSTALL_DIR
+#----
 function check_pear_module() {
 	local module_list=$1
 	echo -e "$(gettext "Check PEAR modules")"
@@ -1677,8 +1739,12 @@ function check_pear_module() {
 	return "$?"
 }
 
-## function install_pear_module()
-## install missed pear module
+#----
+## use php script to install missed pear module
+## @param	list of pear modules
+## @return	return code of php script
+## @Globals	PHP_BIN, INSTALL_DIR
+#----
 function install_pear_module() {
 	local module_list=$1
 	echo -e "$(gettext "Installing PEAR modules")"
@@ -1686,8 +1752,12 @@ function install_pear_module() {
 	return "$?"
 }
 
-## function upgrade_pear_module()
-## upgrade local pear module
+#----
+## use php script to upgrade pear module
+## @param	list of pear modules
+## @return	return code of php script
+## @Globals	PHP_BIN, INSTALL_DIR
+#----
 function upgrade_pear_module() {
 	local module_list=$1
 	echo -e "$(gettext "Upgrading PEAR modules")"
@@ -1695,8 +1765,14 @@ function upgrade_pear_module() {
 	return "$?"
 }
 
-## function install_init_service()
+#----
 ## install init script on distrib
+## use this fonction to install a init script on your system
+## it call <@function find_OS> to define install command
+## @param	name of service
+## @return 0	install service ok
+## @return 1	install service fail
+#----
 function install_init_service() {
 	# how to find methode to install in rc.d directory a correct link ?
 	# debian	update-rc.d
@@ -1714,15 +1790,20 @@ function install_init_service() {
 		chkconfig --add $service
 	else
 		echo_passed "$(gettext "Impossible to install your run level for ") $service" "$fail"
+		return 1
 	fi
 	return 0
 } 
 
 
-## function find_OS()
+#----
 ## Define OS
-## usage: find_OS DISTRO
-## whitch DISTRO is a global var
+## check on etc to find a specific file <p>
+## Debian, Suse and Redhat
+## @param	variable to set a result
+## @return 0	OS found
+## @return 1	OS not found
+#----
 function find_OS() {
 	local distrib=$1
 	local dist_found=""
@@ -1744,15 +1825,20 @@ function find_OS() {
 	return 0
 }
 
-## Function clean_and_exit()
-# use this function to clean and exit centreon install
+#----
+## use this function to clean and exit centreon install
+#----
 function clean_and_exit() {
 	log "EXIT" "$(gettext "Exit Centreon install")"
 	exit 1
 }
 
-
-## Function check_tmp_disk_space()
+#----
+## Check space left for working directory
+## @return 0	Space ok
+## @return 1	No Space left
+## @Globals	TMPDIR
+#----
 function check_tmp_disk_space() {
 	local min_space="35584"
 	local free_space=""
@@ -1770,8 +1856,12 @@ function check_tmp_disk_space() {
 	fi
 }
 
-## function purge_centreon_tmpdir() 
-# remove last centreon temporary working directory
+#----
+## Ask to remove all temporaries working directory
+## @return 0	remove done
+## @return 1	don't remove (abort by user)
+## @Globals	TMPDIR, yes
+#----
 function purge_centreon_tmp_dir() {
 	local not_clean="1"
 	while [ $not_clean -ne 0 ] ; do
@@ -1788,3 +1878,4 @@ function purge_centreon_tmp_dir() {
 	done
 	return 0
 }
+
