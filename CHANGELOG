@@ -12,6 +12,8 @@
 => Task   : add graphs view by servicegroup
 => Bugfix : fix problem when we duplicate a graph template
 => Bugfix : change redirection for logs in crons
+=> Bugfix : #30 
+=> Bugfix : #31 remove problem with color picker in graphs curve templates. 
 
 ## Centreon 2.0-b3
 
