@@ -1,4 +1,10 @@
 #!/bin/bash
+#----
+## @Synopsis	Install script for CentCore
+## @Copyright	Copyright 2008, Guillaume Watteeux
+## @license	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+## Install script for CentCore
+#----
 # install script for centcore
 #################################
 # SVN: $Id$

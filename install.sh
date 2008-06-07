@@ -1,4 +1,19 @@
 #!/bin/bash
+#----
+## @Synopsis	Install Script for Centreon project
+## @Copyright	Copyright 2008, Guillaume Watteeux
+## @License	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+## Centreon Install Script
+## Use 
+## <pre>
+## Usage: bash install.sh [OPTION]
+## Options:
+##  -f	Input file with all variables define (use for with template)
+##  -u	Input file with all variables define for update centreon
+##  -v	Verbose mode
+##  -h	print usage
+## </pre>
+#----
 ###################################################################
 # Centreon is developped with GPL Licence 2.0 
 #
@@ -33,8 +48,9 @@
 # -- 1.x --> 2.x
 # -- 2.x --> 2.x+1
 # -- on upgrade, overwrite existing ? backup ? 
-# - Add centTraps.sh for SNMP TRAPS
 
+# Define centreon version
+version="2.0-b4"
 
 # define where is a centreon source 
 BASE_DIR=$(dirname $0)
@@ -125,7 +141,6 @@ done
 #Export variable for all programs
 export silent_install user_install_vars CENTREON_CONF cinstall_opts
 
-version="2.0-b4"
 
 cat << __EOT__
 ###############################################################################

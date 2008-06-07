@@ -1,4 +1,10 @@
 #!/bin/bash
+#----
+## @Synopsis	Install script for CentStorage
+## @Copyright	Copyright 2008, Guillaume Watteeux
+## @license	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+## Install script for CentStorage
+#----
 # install centreon centstorage  
 #################################
 # SVN: $Id$

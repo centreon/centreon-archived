@@ -2,27 +2,59 @@
 
 #----
 ## @Synopsis	Redefine install command for Centreon Install
+## @Copyright	Copyright 2008, Guillaume Watteeux
 ## @License	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-## Centreon is developped with GPL Licence 2.0 
+## This program is't a "fork" of install command. Specificly develop for
+## Centreon Install Script. 
 ## <p>
+## Examples:
+## <p>
+## If you want to copy a sources files in a directory where you allready have
+## a files with specific right, you can use this script to define right ONLY 
+## on files and directories, use this command:
+## <pre>
+## cinstall -u user -g group -d 755 -m 644 -p src/dirtocopy src/dirtocopy/* dst/dirtopaste
+## </pre>
+## Usage
+## <pre>
+## Usage: cinstall [OPTION]... SOURCE DEST
+##    or: cinstall [OPTION]... DIRECTORY
+## <br>
+## In the first form, copy SOURCE to DEST or multiple SOURCE(s) to
+## the existing DIRECTORY, while setting permission modes and owner/group.
+## In the second form, create all components of the given DIRECTORY.
+## <br>
+## Options:
+##  -u USER	set ownership (super-user only)
+##  -g GROUP	set group ownership
+##  -m NUM	set permission mode for file(s) (as in chmod)
+##  -d NUM	set permission mode for directory(ies) (as in chmod)
+##  -b BKPDIR	make a backup of each existing destination
+##  -p BASEDIR	use SOURCE in BASEDIR to set a destination permissions
+##  -f 		use force command to ecrase old file or directory
+##  -h		display this help and exit
+##  -v		verbose mode
+## </pre>
+#----
+## Centreon is developped with GPL Licence 2.0 
+## 
 ## Developped by : Julien Mathis - Romain Le Merlus
 ## Contribute	: Guillaume Watteeux - Maximilien Bersoult
 ##
-## <p>
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
 ## as published by the Free Software Foundation; either version 2
 ## of the License, or (at your option) any later version.
-## <p>
+##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## <p>
+##
 ##    For information : infos@centreon.com
-#----
 # SVN: $Id$
-#
+
+# Enable Shell debug ?
 #set -x
 
 #----

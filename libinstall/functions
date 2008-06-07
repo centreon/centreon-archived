@@ -2,7 +2,9 @@
 
 #----
 ## @Synopsis	This file contains functions to be used by Centreon install scripts
+## @Copyright	Copyright 2008, Guillaume Watteeux
 ## @Licence	GPLv2
+## This file contains functions to be used by Centreon install scripts
 #----
 
 #################################

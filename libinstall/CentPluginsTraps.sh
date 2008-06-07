@@ -1,4 +1,10 @@
 #!/bin/bash
+#----
+## @Synopsis	Install script for CentPluginsTraps
+## @Copyright	Copyright 2008, Guillaume Watteeux
+## @license	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+## Install script for CentPluginsTraps
+#----
 # install script for CentPlugins
 #################################
 # SVN: $Id$
