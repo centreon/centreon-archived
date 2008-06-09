@@ -557,6 +557,8 @@ function locate_init_d() {
 	if [ -z "$INIT_D" ] ; then
 		if [ -d "/etc/init.d" ] ; then
 			INIT_D="/etc/init.d"
+		elif [ -d "/usr/local/etc/rc.d" ] ; then
+			INIT_D="/usr/local/etc/rc.d"
 		# Add most of init.d 
 		else 
 			answer_with_testdir "$(gettext "Where is your init.d directory ?")" "$DEFAULT_INIT_D" "INIT_D"
@@ -1324,7 +1326,7 @@ echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"
 ## Create a config file for CentStorage
 ## This file will use for upgrade process
 ## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, CENTREON_LOG, CENTREON_ETC
-##Â @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
+## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
 function createCentStorageInstallConf() {
