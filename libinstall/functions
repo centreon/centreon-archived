@@ -551,6 +551,10 @@ function locate_ndomod_binary() {
 
 #----
 ## Define where is your init.d (rc.d) directory
+## check on system where is a init.d or rc.d directory to install centreon services
+## On GNU/Linux, most of distrib use /etc/init.d
+## On FreeBSD, use /usr/local/etc/rc.d
+## It's possible to add most of directory.
 ## @Globals	INIT.D, DEFAULT_INIT_D 
 #----
 function locate_init_d() {
@@ -1326,7 +1330,7 @@ echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"
 ## Create a config file for CentStorage
 ## This file will use for upgrade process
 ## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, CENTREON_LOG, CENTREON_ETC
-## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
+## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
 function createCentStorageInstallConf() {
@@ -1782,7 +1786,7 @@ function install_init_service() {
 	# debian	update-rc.d
 	# redhat	chkconfig
 	# Suse		chkconfig
-	# FreeBSD	??
+	# FreeBSD	add ${service}_enable=YES in /etc/rc.conf
 	local service=$1
 	OS=""
 	find_OS "OS"
@@ -1792,6 +1796,8 @@ function install_init_service() {
 		chkconfig --add $service
 	elif [ "$OS" = "REDHAT" ] ; then
 		chkconfig --add $service
+	elif [ "$OS" = "FREEBSD" ] ; then
+		echo_info "$(gettext "You must configure your /etc/rc.conf with"): ${service}_enable=YES"
 	else
 		echo_passed "$(gettext "Impossible to install your run level for ") $service" "$fail"
 		return 1
@@ -1803,7 +1809,7 @@ function install_init_service() {
 #----
 ## Define OS
 ## check on etc to find a specific file <p>
-## Debian, Suse and Redhat
+## Debian, Suse, Redhat, FreeBSD
 ## @param	variable to set a result
 ## @return 0	OS found
 ## @return 1	OS not found
@@ -1811,20 +1817,34 @@ function install_init_service() {
 function find_OS() {
 	local distrib=$1
 	local dist_found=""
-	if [ -e "/etc/debian_version" ] ; then 
-		dist_found="DEBIAN"
-		log "INFO" "$(gettext "Debian Distribution")"
-	elif [ -e "/etc/SuSE-release" ] ; then
-		dist_found="SUSE"
-		log "INFO" "$(gettext "Suse Distribution")"
-	elif [ -e "/etc/redhat-release" ] ; then
-		dist_found="REDHAT"
-		log "INFO" "$(gettext "Redhat Distribution")"
+	local system=""
+	system=$(uname -s)
+	if [ "$system" = "Linux" ] ; then
+		if [ -e "/etc/debian_version" ] ; then 
+			dist_found="DEBIAN"
+			log "INFO" "$(gettext "GNU/Linux Debian Distribution")"
+		elif [ -e "/etc/SuSE-release" ] ; then
+			dist_found="SUSE"
+			log "INFO" "$(gettext "GNU/Linux Suse Distribution")"
+		elif [ -e "/etc/redhat-release" ] ; then
+			dist_found="REDHAT"
+			log "INFO" "$(gettext "GNU/Linux Redhat Distribution")"
+		else
+			dist_found="NOT_FOUND"
+			log "INFO" "$(gettext "GNU/Linux distribution not found")"
+		return 1
+		fi
+	elif [ "$system" = "FreeBSD" ] ; then
+		dist_found="FREEBSD"
+		log "INFO" "$(gettext "FreeBSD System")"
+	elif [ "$system" = "AIX" ] ; then
+		dist_found="AIX"
+		log "INFO" "$(gettext "AIX System")"
 	else
 		dist_found="NOT_FOUND"
-		log "INFO" "$(gettext "Distribution not found")"
-		return 1
+		log "INFO" "$(gettext "System not found")"
 	fi
+
 	eval $distrib=$dist_found
 	return 0
 }
