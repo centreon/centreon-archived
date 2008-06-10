@@ -66,6 +66,12 @@ killproc_centstorage()
     kill -s INT $centstoragePID
 }
 
+# Create RunDir if not exit
+rundir_exist()
+{
+[ -e ${centstorageRunDir} ] || \
+        install -d -o@NAGIOS_USER@ -m750 ${centstorageRunDir}
+}
 
 # Source function library
 # Solaris doesn't have an rc.d directory, so do a test first
@@ -116,6 +122,8 @@ case "$1" in
 	    exit 1
 	fi
     fi
+    # Test if running directory exist.
+    rundir_exist
     echo "Starting centstorage Collector : centstorage"
     su - @NAGIOS_USER@ -c "$Bin >> $centstorageDemLog 2>&1"
     if [ -d $centstorageLockDir ]; then 

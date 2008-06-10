@@ -68,6 +68,12 @@ killproc_centcore ()
     kill -H -s INT $PID
 }
 
+# Create RunDir if not exit
+rundir_exist()
+{
+[ -e ${centstorageRunDir} ] || \
+        install -d -o@NAGIOS_USER@ -m750 ${centstorageRunDir}
+}
 
 # Source function library
 # Solaris doesn't have an rc.d directory, so do a test first
@@ -119,6 +125,8 @@ case "$1" in
 	    exit 1
 	fi
     fi
+    # Test if running directory exist.
+    rundir_exist
     echo "Starting Centcore : centcore"
     su - @NAGIOS_USER@ -c "nice -n $NICE $Bin &"
     if [ -d $LockDir ]; then touch $LockDir/$LockFile; fi

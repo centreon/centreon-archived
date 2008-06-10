@@ -73,7 +73,7 @@ log "INFO" "`gettext \"Copying CentCore in binary directory\"`"
 
 ## Change right on CENTREON_RUNDIR
 log "INFO" "`gettext \"Change right\"` : $CENTREON_RUNDIR"
-$INSTALL_DIR/cinstall $cinstall_opts -g $NAGIOS_USER -d 775 \
+$INSTALL_DIR/cinstall $cinstall_opts -u $NAGIOS_USER -d 750 \
 	$CENTREON_RUNDIR >> $LOG_FILE 2>&1
 
 ## Change tight on CENTREON_VARLIB
