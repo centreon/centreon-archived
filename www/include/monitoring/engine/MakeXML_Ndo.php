@@ -185,7 +185,7 @@
 			" nhs.passive_checks_enabled," .
 			" nhs.active_checks_enabled," .
 			" no.name1 as host_name" .
-			" FROM nagios_hoststatus nhs, nagios_objects no" .
+			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = nhs.host_object_id";
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
@@ -212,7 +212,7 @@
 			" nss.flap_detection_enabled," .
 			" no.name1 as host_name," .
 			" no.name2 as service_description" .
-			" FROM nagios_servicestatus nss, nagios_objects no" .
+			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = nss.service_object_id";
 
 	if($search_type_host && $search_type_service && $search){

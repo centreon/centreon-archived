@@ -19,13 +19,15 @@
 	
 	function get_ndo_instance_id($name_instance){
 		global $gopt,$pearDBndo;
-		$rq = "SELECT instance_id FROM nagios_instances WHERE instance_name like '".$name_instance."'";
+		$ndo_base_prefix = getNDOPrefix();
+		
+		$rq = "SELECT instance_id FROM ".$ndo_base_prefix."instances WHERE instance_name like '".$name_instance."'";
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
 		$DBRESULT_NDO->fetchInto($ndo);
 		return $ndo["instance_id"];
 	}
 	
-	$DBRESULT =& $pearDB->query("SELECT cfg.instance_name as name FROM nagios_server ns, cfg_ndomod cfg WHERE cfg.ns_nagios_server = ns.id AND ns.ns_activate = 1");
+	$DBRESULT =& $pearDB->query("SELECT cfg.instance_name as name FROM ".$ndo_base_prefix."server ns, cfg_ndomod cfg WHERE cfg.ns_nagios_server = ns.id AND ns.ns_activate = 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	

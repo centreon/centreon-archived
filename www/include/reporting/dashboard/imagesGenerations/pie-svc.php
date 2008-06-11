@@ -22,8 +22,7 @@
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
-
-	$ndo_base_prefix = "nagios";
+	$ndo_base_prefix = getNDOPrefix();
 	$oreonPath = '/srv/oreon/';
 
 	## pearDB init

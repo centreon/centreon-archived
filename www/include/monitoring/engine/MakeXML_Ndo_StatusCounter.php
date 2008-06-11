@@ -139,7 +139,7 @@
 		$host_stat = array(0=>0, 1=>0, 2=>0, 3=>0);
 
 		while ($ndo = $DBRESULT_NDO1->fetchRow())
-			$host_stat[$ndo["current_state"]] = $ndo["count(nagios_hoststatus.current_state)"];
+			$host_stat[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 
 		/* Get ServiceNDO status */
 		if (!$is_admin)

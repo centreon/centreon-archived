@@ -104,7 +104,7 @@
 		# Host
 		$host = array();
 		# In Nagios V2 -> Contact Group are obligatory
-		if ($oreon->user->get_version() == 2)	{
+		if ($oreon->user->get_version() >= 2)	{
 			$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id, host_id FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";

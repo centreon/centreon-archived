@@ -23,6 +23,7 @@
 	$oreon =& $_SESSION["oreon"];
 
 	$oreonPath = '/srv/oreon/';
+	$ndo_base_prefix = getNDOPrefix();
 
 	require_once("DB.php");
 	include_once($oreonPath . "etc/centreon.conf.php");
@@ -75,11 +76,11 @@
 		$DBRESULT2 =& $pearDB->query("SELECT host_name, service_description FROM service, host, servicegroup_relation WHERE servicegroup_relation.servicegroup_sg_id = '".$sg["sg_id"]."' AND servicegroup_relation.host_host_id = host.host_id AND servicegroup_relation.service_service_id = service.service_id");
 		while ($s = $DBRESULT2->fetchRow()){
 			$DBRESULT3 =& $pearDBndo->query(	"SELECT current_state " .
-												"FROM nagios_servicestatus, nagios_services, nagios_hosts " .
-												"WHERE nagios_services.display_name = '".$s["service_description"]."' " .
-												"AND nagios_servicestatus.service_object_id = nagios_services.service_object_id " .
-												"AND nagios_hosts.display_name = '".$s["host_name"]."'" .
-												"AND nagios_services.host_object_id = nagios_hosts.host_object_id ");
+												"FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."services, ".$ndo_base_prefix."hosts " .
+												"WHERE ".$ndo_base_prefix."services.display_name = '".$s["service_description"]."' " .
+												"AND ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id " .
+												"AND ".$ndo_base_prefix."hosts.display_name = '".$s["host_name"]."'" .
+												"AND ".$ndo_base_prefix."services.host_object_id = ".$ndo_base_prefix."hosts.host_object_id ");
 			if (PEAR::isError($DBRESULT3))
 				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 			while($stt = $DBRESULT3->fetchRow()){

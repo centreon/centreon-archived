@@ -88,7 +88,7 @@
 		
 		$hostStatus = array(0=>0, 1=>0, 2=>0, 3=>0);
 		while ($ndo = $DBRESULT_NDO1->fetchRow())
-			$hostStatus[$ndo["current_state"]] = $ndo["count(nagios_hoststatus.current_state)"];
+			$hostStatus[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 		
 		$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);
 		
@@ -102,14 +102,14 @@
 					" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
 					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 					" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR) ".
-					" GROUP BY nagios_services.host_object_id";
+					" GROUP BY ".$ndo_base_prefix."services.host_object_id";
 		else
 			$rq1 = 	" SELECT ".$ndo_base_prefix."services.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state" . 
 					" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
 					" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
 					" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
 					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-					" GROUP BY nagios_services.host_object_id";
+					" GROUP BY ".$ndo_base_prefix."services.host_object_id";
 					
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
@@ -158,7 +158,7 @@
 		$hostAck = array(0=>0, 1=>0, 2=>0);
 		while ($ndo = $DBRESULT_NDO1->fetchRow())
 		{
-			$hostAck[$ndo["state"]] = $ndo["count(nagios_acknowledgements.state)"];
+			$hostAck[$ndo["state"]] = $ndo["count(".$ndo_base_prefix."acknowledgements.state)"];
 			$hostUnhand[$ndo["state"]] -= $hostAck[$ndo["state"]];
 		}
 		 
@@ -186,7 +186,7 @@
 		$hostInactive = array(0=>0, 1=>0, 2=>0, 3=>0);
 		while ($ndo = $DBRESULT_NDO1->fetchRow())
 		{
-			$hostInactive[$ndo["current_state"]] = $ndo["count(nagios_hoststatus.current_state)"];
+			$hostInactive[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 			$hostUnhand[$ndo["current_state"]] -= $hostInactive[$ndo["current_state"]];
 		}
 		 
@@ -299,7 +299,7 @@
 		
 		$svcAck = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		while ($ndo = $DBRESULT_NDO1->fetchRow())
-			$svcAck[$ndo["state"]] = $ndo["count(nagios_acknowledgements.state)"];
+			$svcAck[$ndo["state"]] = $ndo["count(".$ndo_base_prefix."acknowledgements.state)"];
 		
 		/*
 		 * Get Services  Inactive objects
