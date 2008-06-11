@@ -15,7 +15,6 @@
  * For information : contact@centreon.com
  */
  
-
 	if (isset($_GET["command_id"]))
 		$command_id = $_GET["command_id"];
 	else if (isset($_POST["command_id"]))
@@ -42,16 +41,17 @@
 		$resource_info = $cmd_array[0];
 		$resource_def = str_replace('$', '@DOLLAR@', $resource_info);
 
-		# Match if the first part of the path is a MACRO
-		if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches))	{
+		# Match if the first part of the path is a MACRO		
+		if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches))	{			
 			$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$resource = $DBRESULT->fetchRow();
-			$resource_path = explode("=", $resource["resource_line"]);
-			$resource_path = $resource_path[1];
+			$resource_path = explode("=", $resource["resource_line"]);			
+			$resource_path = $resource_path[1];			
 			unset($cmd_array[0]);
 			$command = rtrim($resource_path, "/")."#S#".implode("#S#", $cmd_array);
+			$command = $resource["resource_line"] . $command;			
 		}
 		else
 			$command = $full_line;
