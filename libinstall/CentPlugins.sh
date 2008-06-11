@@ -80,4 +80,8 @@ if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
 	. $INSTALL_DIR/CentPluginsTraps.sh
 fi
 
+###### Post Install
+#################################
+createCentPluginsInstallConf
+
 

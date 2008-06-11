@@ -52,6 +52,19 @@
 # Define centreon version
 version="2.0-b4"
 
+#----
+## Usage informations for install.sh
+## @Sdtout	Usage informations
+#----
+function usage() {
+	local program=$0
+	echo -e "$(gettext "Usage: $program -f <file>")"
+	echo -e "  -f\t$(gettext "file with all variable")"
+	echo -e "  -u\t$(gettext "your directory with intCent* files")"
+	echo -e "  -v\t$(gettext "verbose mode")"
+	exit 1
+}
+
 # define where is a centreon source 
 BASE_DIR=$(dirname $0)
 ## set directory
@@ -111,6 +124,8 @@ fi
 silent_install="0"
 upgrade="0"
 user_install_vars=""
+inst_upgrade_dir=""
+use_upgrade_files="0"
 
 #define cinstall options
 cinstall_opts=""
@@ -127,7 +142,8 @@ do
 			# centreon install.
 			# After that I think I demand only a centreon_etc
 			# directory
-			user_install_vars="${OPTARG}"
+			#user_install_vars="${OPTARG}"
+			inst_upgrade_dir="${OPTARG}"
 			cinstall_opts="$cinstall_opts -f"
 			upgrade="1" ;;
 		v )	cinstall_opts="$cinstall_opts -v" 
@@ -139,8 +155,7 @@ do
 done
 
 #Export variable for all programs
-export silent_install user_install_vars CENTREON_CONF cinstall_opts
-
+export silent_install user_install_vars CENTREON_CONF cinstall_opts inst_upgrade_dir
 
 cat << __EOT__
 ###############################################################################
@@ -215,37 +230,42 @@ else
 	. $user_install_vars
 fi
 
-## Check if is an upgrade or new install
-## Use this on silent install ???
+# Check if is an upgrade or new install
+# Use this on silent install ???
 # Check for old configfile
 # use for centreon1.x upgrade
-if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" -a "$silent_install" -ne 1 ] ; then 
-	is_single "$CENTREON_CONF_1_4"
-	if [ "$?" -eq 1 ] ; then
-		echo -e "$(gettext "Please select a good centreon config file")"
-		select_in_array "CENTREON_CONF" "${CENTREON_CONF_1_4[@]}"
+#### Move on upgrade specific script.
+#if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" -a "$silent_install" -ne 1 ] ; then 
+#	is_single "$CENTREON_CONF_1_4"
+#	if [ "$?" -eq 1 ] ; then
+#		echo -e "$(gettext "Please select a good centreon config file")"
+#		select_in_array "CENTREON_CONF" "${CENTREON_CONF_1_4[@]}"
+#	fi
+#fi
+
+if [ "$upgrade" -eq 1 -a "$silent_install" -ne 1 ] ; then
+	# Test if instCent* file exist
+	if [ "$(ls $inst_upgrade_dir/instCent* | wc -l )" -ge 1 ] ; then
+		echo "$line"
+		echo -e "\t$(gettext "Detecting old installation")"
+		echo "$line"
+		echo -e "\n\n"
+		echo_success "$(gettext "Finding configuration file in:") $inst_upgrade_dir" "$ok"
+		log "INFO" "$(gettext "Old configuration found in ") $(ls $inst_upgrade_dir/instCent*)"
+		echo_info "$(gettext "You seem to have an existing Centreon.")\n"
+		yes_no_default "$(gettext "Do you want to use the last Centreon install parameters ?")" "$yes"
+		if [ "$?" -eq 0 ] ; then
+			echo_passed "\n$(gettext "Using: ") $(ls $inst_upgrade_dir/instCent*)"
+		use_upgrade_files="1"
+		fi
 	fi
 fi
 
-if [ -e "$CENTREON_CONF" -a "$silent_install" -ne 1 ] ; then
+if [ "$silent_install" -ne 1 ] ; then 
 	echo "$line"
-	echo -e "\t$(gettext "Detecting old installation")"
+	echo -e "\t$(gettext "Please choose what you want to install")"
 	echo "$line"
-	echo -e "\n\n"
-	echo_success "$(gettext "Finding configuration file \$CENTREON_CONF :")" "$ok"
-	log "INFO" "$(gettext "Old configuration found in ") $CENTREON_CONF"
-	echo_info "$(gettext "You seem to have an existing Centreon.")\n"
-	yes_no_default "$(gettext "Do you want to use the last Centreon install parameters ?")" "$yes"
-	if [ "$?" -eq 0 ] ; then
-		echo_passed "\n$(gettext "Using \$CENTREON_CONF : ")" "$passed"
-		log "INFO" "$(gettext "Import old install config")"
-		. $CENTREON_CONF
-	fi
 fi
-
-echo "$line"
-echo -e "\t$(gettext "Please choose what you want to install")"
-echo "$line"
 
 ## init install process
 # I prefer split install script.
@@ -254,6 +274,7 @@ echo "$line"
 # 2 = question in console
 [ -z $PROCESS_CENTREON_WWW ] && PROCESS_CENTREON_WWW="2"
 ## For a moment, isn't possible to install standalone CentStorage daemon
+## without CentWeb
 [ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE="0"
 [ -z $PROCESS_CENTCORE ] && PROCESS_CENTCORE="2"
 [ -z $PROCESS_CENTREON_PLUGINS ] && PROCESS_CENTREON_PLUGINS="2"
@@ -310,21 +331,41 @@ fi
 
 ## Start Centreon Web Front install
 if [ "$PROCESS_CENTREON_WWW" -eq 1 ] ; then 
+	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentWeb.conf" ] ; then
+		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentWeb.conf"
+
+		. $inst_upgrade_dir/instCentWeb.conf
+	fi
 	. $INSTALL_DIR/CentWeb.sh
 fi
 
 ## Start CentStorage install
 if [ "$PROCESS_CENTSTORAGE" -eq 1 ] ; then
+	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentStorage.conf" ] ; then
+		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentStorage.conf"
+
+		. $inst_upgrade_dir/instCentStorage.conf
+	fi
 	. $INSTALL_DIR/CentStorage.sh
 fi
 
 ## Start CentCore install
 if [ "$PROCESS_CENTCORE" -eq 1 ] ; then
+	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentCore.conf" ] ; then
+		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentCore.conf"
+
+		. $inst_upgrade_dir/instCentCore.conf
+	fi
 	. $INSTALL_DIR/CentCore.sh
 fi
 
 ## Start CentPlugins install
 if [ "$PROCESS_CENTREON_PLUGINS" -eq 1 ] ; then
+	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentPlugins.conf" ] ; then
+		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentPlugins.conf"
+
+		. $inst_upgrade_dir/instCentPlugins.conf
+	fi
 	. $INSTALL_DIR/CentPlugins.sh
 fi
 exit 0

@@ -161,8 +161,8 @@ log "INFO" "$(gettext "Apply macros")"
 
 cat "$file_php_temp" | while read file ; do
 	log "MACRO" "$(gettext "Change macro for") : $file"
-	[ ! -d $(dirname $TMPDIR/work/$file) ] \
-		&& mkdir -p  $(dirname $TMPDIR/work/$file) >> $LOG_FILE 2>&1
+	[ ! -d $(dirname $TMPDIR/work/$file) ] && \
+		mkdir -p  $(dirname $TMPDIR/work/$file) >> $LOG_FILE 2>&1
 	sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		$TMPDIR/src/$file > $TMPDIR/work/$file
 	log "MACRO" "$(gettext "Copy in final dir") : $file"
@@ -183,7 +183,6 @@ find "$NAGIOS_ETC" -type f -print | \
 	xargs -I '{}' chown -v "$WEB_USER":"$WEB_GROUP" '{}' >> "$LOG_FILE" 2>&1
 
 ### Step 4: Copy final stuff in system directoy
-log "INFO" "$(gettext "Copy CentWeb in system directory")"
 echo_info "$(gettext "Copy CentWeb in system directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
@@ -197,7 +196,8 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 [ ! -h $INSTALL_DIR_CENTREON/filesGeneration -a ! -d $INSTALL_DIR_CENTREON/filesGeneration ] && \
 	ln -s $CENTREON_GENDIR/filesGeneration $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
 
-$INSTALL_DIR/cinstall -u "$WEB_USER" -g "$WEB_GROUP" -d 775 -v \
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-u "$WEB_USER" -g "$WEB_GROUP" -d 775 -v \
 	$CENTREON_GENDIR/filesUpload/nagiosCFG >> "$LOG_FILE" 2>&1
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
@@ -212,6 +212,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 echo_passed "$(gettext "CentWeb file installation")" "$ok"
 
 ## Cron stuff
+## need to add stuff for Unix system... (freeBSD...)
 log "INFO" "$(gettext "Change macros for centreon.cron")"
 sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \

@@ -335,19 +335,6 @@ function select_in_array() {
 }
 
 #----
-## Usage informations for install.sh
-## @Sdtout	Usage informations
-#----
-function usage() {
-	local program=$0
-	echo -e "$(gettext "Usage: $program -f <file>")"
-	echo -e "\t-f\t$(gettext "file with all variable")"
-	echo -e "\t-u\t$(gettext "file with all variable for upgrade :") CENTREON_CONF"
-	echo -e "\t-v\t$(gettext "verbose mode")"
-	exit 1
-}
-
-#----
 ## Define where nagios is installed
 ## @Globals	INSTALL_DIR_NAGIOS, DEFAULT_INSTALL_DIR_NAGIOS
 #----
@@ -1289,12 +1276,14 @@ __EOT__
 
 #----
 ## Create a config file for CentWeb
+## Create a config file with all used variables.
 ## This file will use in upgrade progess.
-## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, INSTALL_DIR_NAGIOS, NAGIOS_ETC,
+## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, INSTALL_DIR_NAGIOS,
+## @Globals	NAGIOS_ETC, NAGIOS_USER, INIT_D, DIR_APACHE, NAGIOS_P1_FILE
 ## @Globals	NAGIOS_PLUGIN, NAGIOS_IMG, NAGIOS_BINARY, NAGIOSSTATS_BINARY,
-## @Globals	NAGIOS_VAR, RRD_PERL, SUDO_FILE, WEB_USER, WEB_GROUP, NAGIOS_USER
+## @Globals	NAGIOS_VAR, RRD_PERL, SUDO_FILE, WEB_USER, WEB_GROUP,
 ## @Globals	NAGIOS_GROUP, BIN_RRDTOOL, BIN_MAIL, PEAR_PATH, CENTREON_LOG,
-## @Globals	CENTREON_ETC, CENTREON_GENDIR, CRON_D
+## @Globals	CENTREON_ETC, CENTREON_GENDIR, CRON_D, NDOMOD_BINARY
 #----
 function createCentreonInstallConf() {
 
@@ -1320,8 +1309,17 @@ CENTREON_LOG=$CENTREON_LOG
 CENTREON_ETC=$CENTREON_ETC
 CENTREON_GENDIR=$CENTREON_GENDIR
 CRON_D=$CRON_D
+INIT_D=$INIT_D
+PHP_BIN=$PHP_BIN
+DIR_APACHE=$DIR_APACHE
 
 __EOT__
+
+[ -n "$NAGIOS_P1_FILE" ] && \
+	echo "NAGIOS_P1_FILE=$NAGIOS_P1_FILE" >> $CENTREON_ETC/instCentWeb.conf
+
+[ -n "$NDOMOD_BINARY" ] && \
+	echo "NDOMOD_BINARY=$NDOMOD_BINARY" >> $CENTREON_ETC/instCentWeb.conf
 
 echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"
 }
@@ -1339,40 +1337,82 @@ INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 CENTREON_LOG=$CENTREON_LOG
 CENTREON_ETC=$CENTREON_ETC
 CENTREON_RUNDIR=$CENTREON_RUNDIR
-CENTSTORAGE_RRD=$CENTSTORAGE_RRD
+CENTREON_GENDIR=$CENTREON_GENDIR
+RRD_PERL=$RRD_PERL
+NAGIOS_VAR=$NAGIOS_VAR
+INIT_D=$INIT_D
+CRON_D=$CRON_D
 CENTSTORAGE_BINDIR=$CENTSTORAGE_BINDIR
+CENTSTORAGE_RRD=$CENTSTORAGE_RRD
 NAGIOS_USER=$NAGIOS_USER
 NAGIOS_GROUP=$NAGIOS_GROUP
-RRD_PERL=$RRD_PERL
-CRON_D=$CRON_D
-INIT_D=$INIT_D
 
 __EOT__
 
-echo_success "Create $CENTREON_ETC/instCentStorage " "OK"
+echo_success "Create $CENTREON_ETC/instCentStorage.conf " "OK"
 }
 
-## Function createCentCoreInstallConf
-# file use for upgrade CentCore
+#---
+## Create a config file for CentCore
+## This file will use for upgrade process
+## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, CENTREON_LOG, CENTREON_ETC
+## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
+## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
+#----
 function createCentCoreInstallConf() {
 cat << __EOT__ > $CENTREON_ETC/instCentcore.conf
 INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
-CENTREON_LOG=$CENTREON_LOG
 CENTREON_ETC=$CENTREON_ETC
 CENTREON_RUNDIR=$CENTREON_RUNDIR
+CENTREON_LOG=$CENTREON_LOG
+CENTREON_VARLIB=$CENTREON_VARLIB
 CENTREON_GENDIR=$CENTREON_GENDIR
 CENTCORE_BINDIR=$CENTCORE_BINDIR
-NAGIOS_USER=$NAGIOS_USER
-NAGIOS_GROUP=$NAGIOS_GROUP
-RRD_PERL=$RRD_PERL
-CRON_D=$CRON_D
-INIT_D=$INIT_D
 BIN_SSH=$BIN_SSH
 BIN_SCP=$BIN_SCP
+NAGIOS_GROUP=$NAGIOS_GROUP
+NAGIOS_USER=$NAGIOS_USER
+RRD_PERL=$RRD_PERL
+INIT_D=$INIT_D
 
 __EOT__
 
-echo_success "Create $CENTREON_ETC/instCentCore " "OK"
+echo_success "Create $CENTREON_ETC/instCentCore.conf " "OK"
+}
+
+#---
+## Create a config file for CentPlugins
+## This file will use for upgrade process
+## @Globals	CENTREON_ETC, NAGIOS_PLUGIN, INSTALL_DIR_NAGIOS, NAGIOS_ETC
+## @Globals	RRD_PERL, CENTPLUGINS_TMP, NAGIOS_USER, NAGIOS_GROUP, INIT_D
+## @Globals	SNMP_ETC, SNMPTT_BINDIR, CENTPLUGINSTRAPS_BINDIR, WEB_USER
+#----
+function createCentPluginsInstallConf() {
+cat << __EOT__ > $CENTREON_ETC/instCentPlugins.conf
+# Use in CentPlugins.sh
+NAGIOS_PLUGIN=$NAGIOS_PLUGIN
+INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
+NAGIOS_ETC=$NAGIOS_ETC
+RRD_PERL=$RRD_PERL
+CENTPLUGINS_TMP=$CENTPLUGINS_TMP
+NAGIOS_USER=$NAGIOS_USER
+NAGIOS_GROUP=$NAGIOS_GROUP
+INIT_D=$INIT_D
+
+__EOT__
+if [ "PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
+cat << __EOT__ >>  $CENTREON_ETC/instCentPlugins.conf
+# Use in CentPluginsTraps.sh
+CENTREON_ETC=$CENTREON_ETC
+SNMP_ETC=$SNMP_ETC
+SNMPTT_BINDIR=$SNMPTT_BINDIR
+CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
+WEB_USER=$WEB_USER
+
+__EOT__
+fi
+
+echo_success "Create $CENTREON_ETC/instCentPlugins.conf " "OK"
 }
 
 #----
@@ -1597,7 +1637,7 @@ function check_httpd_directory()
 		answer_with_testdir "`gettext \"Where is your Apache conf.d directory\"`" "NO_DEFAULT" "DIR_APACHE_CONF"
 	fi
 	DIR_APACHE=${DIR_APACHE%/}
-	export DIR_APCHE
+	export DIR_APACHE
 	DIR_APACHE_CONF=${DIR_APACHE_CONF%/}
 	export DIR_APACHE_CONF
 	log "INFO" "DIR_APACHE: $DIR_APACHE"
@@ -1902,4 +1942,5 @@ function purge_centreon_tmp_dir() {
 	done
 	return 0
 }
+
 

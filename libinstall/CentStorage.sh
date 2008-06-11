@@ -68,7 +68,7 @@ cp $TMPDIR/work/www/install/createTablesCentstorage.sql $TMPDIR/final/www/instal
 
 ## Copy CreateTablesCentStorage.sql in INSTALL_DIR_CENTREON
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u $WEB_USER -g $WEB_GROUP -m 755 \
+	-u "$WEB_USER" -g "$WEB_GROUP" -m 755 \
 	$TMPDIR/final/www/install/createTablesCentstorage.sql \
 	$INSTALL_DIR_CENTREON/www/install/createTablesCentstorage.sql \
 	>> $LOG_FILE 2>&1
@@ -79,7 +79,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 if [ ! -d "$CENTSTORAGE_RRD/status" ] ; then
 	log "INFO" "$(gettext "Create CentStorage status directory")"
 	$INSTALL_DIR/cinstall $cinstall_opts \
-		-u $NAGIOS_USER -g $NAGIOS_GROUP -d 755 \
+		-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -d 755 \
 		$CENTSTORAGE_RRD/status >> $LOG_FILE 2>&1
 	echo_success "$(gettext "Creating Centreon Directory") '$CENTSTORAGE_RRD/status'" "$ok"
 else
@@ -89,7 +89,7 @@ fi
 if [ ! -d "$CENTSTORAGE_RRD/metrics" ] ; then
 	log "INFO" "$(gettext "Create CentStorage metrics directory")"
 	$INSTALL_DIR/cinstall $cinstall_opts \
-		-u $NAGIOS_USER -g $NAGIOS_GROUP -d 755 \
+		-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -d 755 \
 		$CENTSTORAGE_RRD/metrics >> $LOG_FILE 2>&1
 	echo_success "$(gettext "Creating Centreon Directory") '$CENTSTORAGE_RRD/metrics'" "$ok"
 else
@@ -112,7 +112,7 @@ echo_success "$(gettext "Replace Centstorage Macro")" "$ok"
 log "INFO" "$(gettext "Copying CentStorage binary in final directory")"
 cp $TMPDIR/work/bin/centstorage $TMPDIR/final/bin/centstorage >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
+	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
 	$TMPDIR/final/bin/centstorage $CENTSTORAGE_BINDIR/centstorage \
 	>> $LOG_FILE 2>&1
 
@@ -121,12 +121,12 @@ echo_success "$(gettext "Set CentStorage properties")" "$ok"
 ## Copy lib for CentStorage
 log "INFO" "$(gettext "Install library for centstorage")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-g $NAGIOS_GROUP -m 766 \
+	-g "$NAGIOS_GROUP" -m 766 \
 	$TMPDIR/final/lib $INSTALL_DIR_CENTREON/lib >> $LOG_FILE 2>&1
 
 ## Change right on CENTREON_RUNDIR
 log "INFO" "$(gettext "Change right") : $CENTREON_RUNDIR"
-$INSTALL_DIR/cinstall $cinstall_opts -u $NAGIOS_USER -d 750 \
+$INSTALL_DIR/cinstall $cinstall_opts -u "$NAGIOS_USER" -d 750 \
 	$CENTREON_RUNDIR >> $LOG_FILE 2>&1
 
 ###### CentStorate init
@@ -172,7 +172,7 @@ sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 cp $TMPDIR/work/bin/logAnalyser $TMPDIR/final/bin/logAnalyser >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install logAnalyser in centstorage bin dir")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
+	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
 	$TMPDIR/final/bin/logAnalyser \
 	$CENTSTORAGE_BINDIR/logAnalyser >> $LOG_FILE 2>&1
 
@@ -187,12 +187,11 @@ sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 cp $TMPDIR/work/bin/nagiosPerfTrace $TMPDIR/final/bin/nagiosPerfTrace >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install nagiosPerfTrace in centstorage bin dir")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
+	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
 	$TMPDIR/final/bin/nagiosPerfTrace \
 	$CENTSTORAGE_BINDIR/nagiosPerfTrace >> $LOG_FILE 2>&1
 
 echo_success "$(gettext "Set nagiosPerfTrace properties")" "$ok"
-
 
 ## cron file 
 log "INFO" "$(gettext "Change macros for centstorage.cron")"
@@ -209,11 +208,9 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 
 echo_success "$(gettext "Install CentStorage cron")" "$ok"
 
-
 ###### Post Install
 #################################
 createCentStorageInstallConf
-
 
 ## wait and see...
 ## sql console inject ?
