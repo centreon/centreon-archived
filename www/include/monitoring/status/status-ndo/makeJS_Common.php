@@ -27,7 +27,7 @@
 		return $ndo["instance_id"];
 	}
 	
-	$DBRESULT =& $pearDB->query("SELECT cfg.instance_name as name FROM ".$ndo_base_prefix."server ns, cfg_ndomod cfg WHERE cfg.ns_nagios_server = ns.id AND ns.ns_activate = 1");
+	$DBRESULT =& $pearDB->query("SELECT cfg.instance_name as name FROM nagios_server ns, cfg_ndomod cfg WHERE cfg.ns_nagios_server = ns.id AND ns.ns_activate = 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
