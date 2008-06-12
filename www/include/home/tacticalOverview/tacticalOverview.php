@@ -96,20 +96,22 @@
 		 * Get the  id's of problem hosts
 		*/
 		if (!$is_admin)
-			$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state ".
-					" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
-					" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
-					" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
-					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-					" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR) ".
-					" GROUP BY ".$ndo_base_prefix."services.host_object_id";
-		else
-			$rq1 = 	" SELECT ".$ndo_base_prefix."services.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state" . 
-					" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
-					" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
-					" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
-					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-					" GROUP BY ".$ndo_base_prefix."services.host_object_id";
+					$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state ".
+							" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
+							" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
+							" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
+							" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
+							" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+							" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR) ".
+							" GROUP BY ".$ndo_base_prefix."services.host_object_id";
+				else
+					$rq1 = 	" SELECT ".$ndo_base_prefix."services.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state" . 
+							" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
+							" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
+							" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
+							" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
+							" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+							" GROUP BY ".$ndo_base_prefix."services.host_object_id";
 					
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))

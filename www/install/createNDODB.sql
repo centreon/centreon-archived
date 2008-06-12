@@ -1,5 +1,5 @@
 --
--- Base de données: `centreon2_ndo`
+-- Base de donnï¿½es: `centreon2_ndo`
 --
 
 -- --------------------------------------------------------
@@ -856,6 +856,7 @@ CREATE TABLE IF NOT EXISTS `nagios_objects` (
   `is_active` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`object_id`),
   KEY `objecttype_id` (`objecttype_id`,`name1`,`name2`)
+  KEY `name1` (`name1`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Current and historical objects of all kinds';
 
 -- --------------------------------------------------------
@@ -1156,6 +1157,8 @@ CREATE TABLE IF NOT EXISTS `nagios_services` (
   `icon_image_alt` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`service_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`service_object_id`)
+  KEY `host_object_id` (`host_object_id`),
+  KEY `service_object_id` (`service_object_id`)  
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Service definitions';
 
 -- --------------------------------------------------------
@@ -1308,6 +1311,7 @@ CREATE TABLE IF NOT EXISTS `nagios_timedeventqueue` (
   `recurring_event` smallint(6) NOT NULL default '0',
   `object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`timedeventqueue_id`)
+  KEY `instance_id` (`instance_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Current Nagios event queue';
 
 -- --------------------------------------------------------
