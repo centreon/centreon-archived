@@ -382,7 +382,7 @@ sub sendConfigFile($){
 }
 
 sub initNagios($$){
-	my ($id, $options) = $_;
+	my ($id, $options) = @_;
 	my $conf = getServerConfig($id);
 	my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." ".$options."\n";
 	print "$options : $cmd\n";
