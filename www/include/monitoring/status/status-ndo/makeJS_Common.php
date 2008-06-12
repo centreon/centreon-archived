@@ -194,6 +194,14 @@ function mk_img(_src, _alt)
   	_img.src = _src;
   	_img.alt = _alt;
   	_img.title = _alt;
+  	if(_img.complete)
+  	{
+  		_img.alt = _alt;	
+  	}
+  	else
+  	{
+  		_img.alt = "Image could not be loaded (" +_alt + ")."; 
+  	}
 	return _img;
 }
 
