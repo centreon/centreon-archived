@@ -131,17 +131,29 @@ drawTimePicker(timeFieldName, targetDateField, x, y);
 function drawTimePicker(timeFieldName, targetTimeField, x, y)
 {
  	var timePickerDivID = timeFieldName + "_timePickerDivID";
+ 	
+ 	// Check if the listbox is already open, if yes then close it 	
+ 	if(document.getElementById(timePickerDivID) && document.getElementById(timePickerDivID+"_close")){
+ 		var pickerDiv = document.getElementById(timePickerDivID); 	
+ 		pickerDiv.style.visibility = "hidden";
+ 		pickerDiv.value = '';
+ 		pickerDiv.innerHTML = '';
+ 		var pickerDiv_close = document.getElementById(timePickerDivID+"_close");
+ 		pickerDiv_close.style.visibility = "hidden"; 		
+ 		pickerDiv_close.value = ''; 		
+ 		document.body.removeChild(pickerDiv); 		
+ 		document.body.removeChild(pickerDiv_close); 		
+ 		return false;
+ 	}
  
 	var newNode = document.createElement("select");
     newNode.setAttribute("id", timePickerDivID);
     newNode.setAttribute("class", "tpDiv");
     newNode.setAttribute("size", 6);
     newNode.setAttribute("style", "visibility: hidden;");
-	newNode.onchange = function() { 
-		var pickerDiv = document.getElementById(timePickerDivID);
+	newNode.onchange = function() {	
+		var pickerDiv = document.getElementById(timePickerDivID);		
 		targetTimeField.value = '';
-		targetTimeField.innerHTML = '';
-		
 		targetTimeField.value = pickerDiv.options[pickerDiv.selectedIndex].value;
 		pickerDiv.style.visibility = (pickerDiv.style.visibility == "visible" ? "hidden" : "visible");
 		pickerDiv.style.display = (pickerDiv.style.display == "block" ? "none" : "block");
@@ -149,8 +161,9 @@ function drawTimePicker(timeFieldName, targetTimeField, x, y)
 		var pickerDiv_close = document.getElementById(timePickerDivID+"_close");
 		pickerDiv_close.style.visibility = "hidden";
 		pickerDiv_close.style.display = "block";
-
-
+		
+		document.body.removeChild(pickerDiv);
+ 		document.body.removeChild(pickerDiv_close);
 		return false;
 	};
 
@@ -192,7 +205,7 @@ function drawTimePicker(timeFieldName, targetTimeField, x, y)
 	closeButton.style.position = "absolute";
 	closeButton.id = timePickerDivID + "_close";
 	closeButton.style.left = x + "px";
-	closeButton.style.top = y + 78 + "px";
+	closeButton.style.top = y + 83 + "px";
 	closeButton.style.width = 45 + "px";
 	closeButton.style.zIndex = 10000;
 	closeButton.style.textDecoration = "none";
@@ -207,6 +220,8 @@ function drawTimePicker(timeFieldName, targetTimeField, x, y)
 		var pickerDiv_close = this;
 		pickerDiv_close.style.visibility = "hidden";
 		pickerDiv_close.style.display = "block";
+		document.body.removeChild(pickerDiv);
+		document.body.removeChild(pickerDiv_close);
 		return false;
 	};
     document.body.appendChild(closeButton);    
