@@ -1400,8 +1400,9 @@ NAGIOS_GROUP=$NAGIOS_GROUP
 INIT_D=$INIT_D
 
 __EOT__
-if [ "PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
-cat << __EOT__ >>  $CENTREON_ETC/instCentPlugins.conf
+
+if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
+	cat << __EOT__ >>  $CENTREON_ETC/instCentPlugins.conf
 # Use in CentPluginsTraps.sh
 CENTREON_ETC=$CENTREON_ETC
 SNMP_ETC=$SNMP_ETC
