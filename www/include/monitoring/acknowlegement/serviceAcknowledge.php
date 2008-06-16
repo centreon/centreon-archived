@@ -27,7 +27,7 @@
 
 	# Smarty template Init
 	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl, './template/');
+	$tpl = initSmartyTpl($path, $tpl, './templates/');
 	
 	if (!$is_admin)
 		$lcaHostByName = getLcaHostByName($pearDB);
