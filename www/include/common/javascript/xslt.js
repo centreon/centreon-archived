@@ -301,7 +301,7 @@ document.all[target].innerHTML = '';
 
                        document.all[target].innerHTML = document.all[xmlID].transformNode(document.all[xsltID].XMLDocument);
 //                        document.all[target].innerHTML = document.all[xmlID].transformNode(document.all[xsltID].XMLDocument);
-
+						set_header_title();
 
 
 
