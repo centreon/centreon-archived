@@ -297,7 +297,8 @@
 		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
 		$tpl->assign("h", $hostDB);
 		$tpl->assign("url_id", $url_id);
-		$tpl->assign("tab_comments_host", $tab_comments_host);
+		if (isset($tab_comments_host))
+			$tpl->assign("tab_comments_host", $tab_comments_host);
 		$tpl->assign("host_data", $host_status[$host_name]);
 
 		# Ext informations

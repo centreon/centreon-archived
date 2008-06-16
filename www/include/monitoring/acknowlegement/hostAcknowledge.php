@@ -62,7 +62,7 @@
 
 	$form->addElement('hidden', 'en', $en);
 	
-	$attr = "size=40";
+	$attr =  array("rows"=>"4", "cols"=>"80");
 	$form->addElement('textarea', 'comment', 'comment', $attr);
 	
 	$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
