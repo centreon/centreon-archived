@@ -62,7 +62,7 @@
 				case "h" 	: require_once($path."host.php"); 					break;
 				case "hpb" 	: require_once($path."host.php");		 			break;
 				case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
-				case "hak" 	: require_once($pathRoot."external_cmd/hostAcknowledge.php"); 	break;
+				case "hak" 	: require_once($pathRoot."acknowlegement/hostAcknowledge.php"); 	break;
 				default 	: require_once($path."host.php"); 					break;
 			}
 		} else {
@@ -74,7 +74,7 @@
 					case "h" 	: require_once($path."host.php"); 					break;
 					case "hpb" 	: require_once($path."host.php"); 					break;
 					case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
-					case "hak" 	: require_once($pathRoot."external_cmd/hostAcknowledge.php"); 	break;
+					case "hak" 	: require_once($pathRoot."acknowlegement/hostAcknowledge.php"); 	break;
 					default 	: require_once($path."host.php"); 					break;
 				}
 			}

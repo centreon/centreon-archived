@@ -26,7 +26,7 @@
 
 	# Smarty template Init
 	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl, './template/');
+	$tpl = initSmartyTpl($path, $tpl, './templates/');
 
 	# HOST LCA
 	if (!$is_admin)

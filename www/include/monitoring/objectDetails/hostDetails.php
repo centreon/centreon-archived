@@ -252,8 +252,7 @@
 		$tpl->assign("m_mon_flap_detection", _("Flap Detection"));
 		$tpl->assign("m_mon_services_en_acknowledge", _("Acknowledge Enabled :"));
 		$tpl->assign("m_mon_tips", _("Tips"));
-		$tpl->assign("m_mon_tools", _("Tools"));
-		$tpl->assign("m_mon_host_statistics", _("Host statistics"));
+		$tpl->assign("m_mon_tools", _("Tools"));		
 		$tpl->assign("cmt_host_name", _("Host Name"));
 		$tpl->assign("cmt_entry_time", _("Entry Time"));
 		$tpl->assign("cmt_author", _("Author"));
