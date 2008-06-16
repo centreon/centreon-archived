@@ -32,7 +32,10 @@
 	function getMyIndexGraph4Service($host_name = NULL, $service_description = NULL, $pearDBO)	{
 		if ((!isset($service_description) || !$service_description ) || (!isset($host_name) || !$host_name)) 
 			return NULL;
-		$DBRESULT =& $pearDBO->query("SELECT id FROM index_data WHERE host_name = '".$host_name."' AND service_description = '".$service_description."' ");
+		$DBRESULT =& $pearDBO->query("SELECT id FROM index_data i, metrics m WHERE i.host_name = '".$host_name."' " .
+									"AND m.hidden = '0' " .									
+									"AND i.service_description = '".$service_description."' " .
+									"AND i.id = m.index_id");									
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())	{
