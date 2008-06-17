@@ -99,12 +99,38 @@ NAGIOS_IMG="/usr/share/nagios/htdocs/images"
 NAGIOS_VAR="/var/log/nagios"
 ## Nagios user (optional)
 #NAGIOS_USER="nagios"
+## If you want to force NAGIOS_USER, set FORCE_NAGIOS_USER to 1 (optional)
+#FORCE_NAGIOS_USER=0
 ## Nagios group (optional)
 #NAGIOS_GROUP="nagios"
+## If you want to force NAGIOS_GROUP, set FORCE_NAGIOS_GROUP to 1 (optional)
+#FORCE_NAGIOS_GROUP=0
+## Nagios p1.pl file (perl embedded)
+#NAGIOS_P1_FILE="/usr/lib/nagios2/p1.pl"
+## Nagios NDO module
+#NDOMOD_BINARY=
+## Nagios init script (optional)
+#NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
 #####################################################################
 ## End: Nagios preferences
 #####################################################################
 
+#####################################################################
+## Begin: Apache preferences
+#####################################################################
+## Apache configuration directory (optional)
+#DIR_APACHE="/etc/apache"
+## Apache local specific configuration directory (optional)
+#DIR_APACHE_CONF="/etc/apache/conf.d"
+## Apache configuration file. Only file name. (optional)
+#APACHE_CONF="apache.conf"
+## Apache user (optional)
+WEB_USER="www-data"
+## Apache group (optional)
+WEB_GROUP="www-data"
+#####################################################################
+## End: Apache preferences
+#####################################################################
 
 #####################################################################
 ## Begin: Other binary
@@ -131,10 +157,6 @@ NAGIOS_VAR="/var/log/nagios"
 RRD_PERL="/usr/lib/perl5"
 ## Path to sudoers file (optional)
 #SUDO_FILE="/etc/sudoers"
-## Apache user (optional)
-#WEB_USER="www-data"
-## Apache group (optional)
-#WEB_GROUP="www-data"
 ## init script directory (optional)
 #INIT_D="/etc/init.d"
 ## cron config script directory (optional)

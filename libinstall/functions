@@ -1128,25 +1128,27 @@ function prepare_sudo_config() {
 	[ -z "$INIT_D" ] && locate_init_d
 	# Prepare sudo.conf
 	
-	cat << __EOT__ > $directory/centreon.sudo
-#Add by CENTREON installation script
-User_Alias      CENTREON= $WEB_USER
-# Nagios Restart
-CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart
-# Nagios reload
-CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload
-# Nagios test config
-CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY -v *
-# Nagios test for optim config
-CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY -s *
-## Snmptrapd Restart
-CENTREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart
-## CentStorage Restart
-CENTREON   ALL = NOPASSWD: $INIT_D/centstorage restart
-## CentStorage stop
-CENTREON   ALL = NOPASSWD: $INIT_D/centstorage stop
+	cat <<- __EOT__ > $directory/centreon.sudo
+	## BEGIN: CENTREON SUDO
+	#Add by CENTREON installation script
+	User_Alias      CENTREON=$WEB_USER
+	# Nagios Restart
+	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart
+	# Nagios reload
+	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload
+	# Nagios test config
+	CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY -v *
+	# Nagios test for optim config
+	CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY -s *
+	# Snmptrapd Restart
+	CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
+	# CentStorage Restart
+	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage restart
+	# CentStorage stop
+	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage stop
+	## END: CENTREON SUDO 
 
-__EOT__
+	__EOT__
 
 
 	if [ -e $directory/centreon.sudo ] ; then 
@@ -1286,34 +1288,33 @@ __EOT__
 ## @Globals	CENTREON_ETC, CENTREON_GENDIR, CRON_D, NDOMOD_BINARY
 #----
 function createCentreonInstallConf() {
-
-cat << __EOT__ > $CENTREON_ETC/instCentWeb.conf
-INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
-INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
-NAGIOS_ETC=$NAGIOS_ETC
-NAGIOS_PLUGIN=$NAGIOS_PLUGIN
-NAGIOS_IMG=$NAGIOS_IMG
-NAGIOS_BINARY=$NAGIOS_BINARY
-NAGIOSSTATS_BINARY=$NAGIOSSTATS_BINARY
-NAGIOS_VAR=$NAGIOS_VAR
-RRD_PERL=$RRD_PERL
-SUDO_FILE=$SUDO_FILE
-WEB_USER=$WEB_USER
-WEB_GROUP=$WEB_GROUP
-NAGIOS_USER=$NAGIOS_USER
-NAGIOS_GROUP=$NAGIOS_GROUP
-BIN_RRDTOOL=$BIN_RRDTOOL
-BIN_MAIL=$BIN_MAIL
-PEAR_PATH=$PEAR_PATH
-CENTREON_LOG=$CENTREON_LOG
-CENTREON_ETC=$CENTREON_ETC
-CENTREON_GENDIR=$CENTREON_GENDIR
-CRON_D=$CRON_D
-INIT_D=$INIT_D
-PHP_BIN=$PHP_BIN
-DIR_APACHE=$DIR_APACHE
-
-__EOT__
+	cat <<- __EOT__ > $CENTREON_ETC/instCentWeb.conf
+	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
+	INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
+	NAGIOS_ETC=$NAGIOS_ETC
+	NAGIOS_PLUGIN=$NAGIOS_PLUGIN
+	NAGIOS_IMG=$NAGIOS_IMG
+	NAGIOS_BINARY=$NAGIOS_BINARY
+	NAGIOSSTATS_BINARY=$NAGIOSSTATS_BINARY
+	NAGIOS_VAR=$NAGIOS_VAR
+	RRD_PERL=$RRD_PERL
+	SUDO_FILE=$SUDO_FILE
+	WEB_USER=$WEB_USER
+	WEB_GROUP=$WEB_GROUP
+	NAGIOS_USER=$NAGIOS_USER
+	NAGIOS_GROUP=$NAGIOS_GROUP
+	BIN_RRDTOOL=$BIN_RRDTOOL
+	BIN_MAIL=$BIN_MAIL
+	PEAR_PATH=$PEAR_PATH
+	CENTREON_LOG=$CENTREON_LOG
+	CENTREON_ETC=$CENTREON_ETC
+	CENTREON_GENDIR=$CENTREON_GENDIR
+	CRON_D=$CRON_D
+	INIT_D=$INIT_D
+	PHP_BIN=$PHP_BIN
+	DIR_APACHE=$DIR_APACHE
+	
+	__EOT__
 
 [ -n "$NAGIOS_P1_FILE" ] && \
 	echo "NAGIOS_P1_FILE=$NAGIOS_P1_FILE" >> $CENTREON_ETC/instCentWeb.conf
@@ -1332,22 +1333,22 @@ echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
 function createCentStorageInstallConf() {
-cat << __EOT__ > $CENTREON_ETC/instCentStorage.conf
-INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
-CENTREON_LOG=$CENTREON_LOG
-CENTREON_ETC=$CENTREON_ETC
-CENTREON_RUNDIR=$CENTREON_RUNDIR
-CENTREON_GENDIR=$CENTREON_GENDIR
-RRD_PERL=$RRD_PERL
-NAGIOS_VAR=$NAGIOS_VAR
-INIT_D=$INIT_D
-CRON_D=$CRON_D
-CENTSTORAGE_BINDIR=$CENTSTORAGE_BINDIR
-CENTSTORAGE_RRD=$CENTSTORAGE_RRD
-NAGIOS_USER=$NAGIOS_USER
-NAGIOS_GROUP=$NAGIOS_GROUP
-
-__EOT__
+	cat <<- __EOT__ > $CENTREON_ETC/instCentStorage.conf
+	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
+	CENTREON_LOG=$CENTREON_LOG
+	CENTREON_ETC=$CENTREON_ETC
+	CENTREON_RUNDIR=$CENTREON_RUNDIR
+	CENTREON_GENDIR=$CENTREON_GENDIR
+	RRD_PERL=$RRD_PERL
+	NAGIOS_VAR=$NAGIOS_VAR
+	INIT_D=$INIT_D
+	CRON_D=$CRON_D
+	CENTSTORAGE_BINDIR=$CENTSTORAGE_BINDIR
+	CENTSTORAGE_RRD=$CENTSTORAGE_RRD
+	NAGIOS_USER=$NAGIOS_USER
+	NAGIOS_GROUP=$NAGIOS_GROUP
+	
+	__EOT__
 
 echo_success "Create $CENTREON_ETC/instCentStorage.conf " "OK"
 }
@@ -1360,24 +1361,24 @@ echo_success "Create $CENTREON_ETC/instCentStorage.conf " "OK"
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
 function createCentCoreInstallConf() {
-cat << __EOT__ > $CENTREON_ETC/instCentcore.conf
-INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
-CENTREON_ETC=$CENTREON_ETC
-CENTREON_RUNDIR=$CENTREON_RUNDIR
-CENTREON_LOG=$CENTREON_LOG
-CENTREON_VARLIB=$CENTREON_VARLIB
-CENTREON_GENDIR=$CENTREON_GENDIR
-CENTCORE_BINDIR=$CENTCORE_BINDIR
-BIN_SSH=$BIN_SSH
-BIN_SCP=$BIN_SCP
-NAGIOS_GROUP=$NAGIOS_GROUP
-NAGIOS_USER=$NAGIOS_USER
-RRD_PERL=$RRD_PERL
-INIT_D=$INIT_D
+	cat <<- __EOT__ > $CENTREON_ETC/instCentcore.conf
+	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
+	CENTREON_ETC=$CENTREON_ETC
+	CENTREON_RUNDIR=$CENTREON_RUNDIR
+	CENTREON_LOG=$CENTREON_LOG
+	CENTREON_VARLIB=$CENTREON_VARLIB
+	CENTREON_GENDIR=$CENTREON_GENDIR
+	CENTCORE_BINDIR=$CENTCORE_BINDIR
+	BIN_SSH=$BIN_SSH
+	BIN_SCP=$BIN_SCP
+	NAGIOS_GROUP=$NAGIOS_GROUP
+	NAGIOS_USER=$NAGIOS_USER
+	RRD_PERL=$RRD_PERL
+	INIT_D=$INIT_D
 
-__EOT__
+	__EOT__
 
-echo_success "Create $CENTREON_ETC/instCentCore.conf " "OK"
+	echo_success "Create $CENTREON_ETC/instCentCore.conf " "OK"
 }
 
 #---
@@ -1388,32 +1389,32 @@ echo_success "Create $CENTREON_ETC/instCentCore.conf " "OK"
 ## @Globals	SNMP_ETC, SNMPTT_BINDIR, CENTPLUGINSTRAPS_BINDIR, WEB_USER
 #----
 function createCentPluginsInstallConf() {
-cat << __EOT__ > $CENTREON_ETC/instCentPlugins.conf
-# Use in CentPlugins.sh
-NAGIOS_PLUGIN=$NAGIOS_PLUGIN
-INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
-NAGIOS_ETC=$NAGIOS_ETC
-RRD_PERL=$RRD_PERL
-CENTPLUGINS_TMP=$CENTPLUGINS_TMP
-NAGIOS_USER=$NAGIOS_USER
-NAGIOS_GROUP=$NAGIOS_GROUP
-INIT_D=$INIT_D
+	cat <<- __EOT__ > $CENTREON_ETC/instCentPlugins.conf
+	# Use in CentPlugins.sh
+	NAGIOS_PLUGIN=$NAGIOS_PLUGIN
+	INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
+	NAGIOS_ETC=$NAGIOS_ETC
+	RRD_PERL=$RRD_PERL
+	CENTPLUGINS_TMP=$CENTPLUGINS_TMP
+	NAGIOS_USER=$NAGIOS_USER
+	NAGIOS_GROUP=$NAGIOS_GROUP
+	INIT_D=$INIT_D
+	
+	__EOT__
 
-__EOT__
+	if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
+	cat <<- __EOT__ >>  $CENTREON_ETC/instCentPlugins.conf
+	# Use in CentPluginsTraps.sh
+	CENTREON_ETC=$CENTREON_ETC
+	SNMP_ETC=$SNMP_ETC
+	SNMPTT_BINDIR=$SNMPTT_BINDIR
+	CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
+	WEB_USER=$WEB_USER
+	
+	__EOT__
+	fi
 
-if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
-	cat << __EOT__ >>  $CENTREON_ETC/instCentPlugins.conf
-# Use in CentPluginsTraps.sh
-CENTREON_ETC=$CENTREON_ETC
-SNMP_ETC=$SNMP_ETC
-SNMPTT_BINDIR=$SNMPTT_BINDIR
-CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
-WEB_USER=$WEB_USER
-
-__EOT__
-fi
-
-echo_success "Create $CENTREON_ETC/instCentPlugins.conf " "OK"
+	echo_success "Create $CENTREON_ETC/instCentPlugins.conf " "OK"
 }
 
 #----
@@ -1436,7 +1437,7 @@ function find_user_nagios()
 		log "INFO" "$(gettext "Find nagios user in all file in") : $NAGIOS_ETC"
 		for fichier in $NAGIOS_ETC/*.cfg ; do
 			if [ -f "$fichier" ] ; then
-			NAGIOS_USER_TEMP=`grep ^nagios_user $fichier | cut -d= -f2 2>/dev/null`
+			NAGIOS_USER_TEMP=`grep "^nagios_user" $fichier | cut -d= -f2 2>/dev/null`
 				if [ -n "$NAGIOS_USER_TEMP" ] ; then
 					NAGIOS_USER="$NAGIOS_USER_TEMP"
 				fi
@@ -1508,11 +1509,20 @@ function find_group_nagios()
 #----
 function check_user_nagios()
 {
+	local RC="1"
+	# check if you want to force nagios user
+	FORCE_NAGIOS_USER=${FORCE_NAGIOS_USER:-0}
+
 	if [ -n "$NAGIOS_USER" ] ; then
-		log "DEBUG" "$(gettext "Test user nagios")"
-		id -u "$NAGIOS_USER" >> $LOG_FILE 2>&1
-		if [ "$?" -eq 0 ] ; then
-			echo_info "`gettext \"Finding Nagios user\"` :" "$NAGIOS_USER"
+		if [ "$FORCE_NAGIOS_USER" -eq 0 ] ; then 
+			log "DEBUG" "$(gettext "Test user nagios")"
+			id -u "$NAGIOS_USER" >> $LOG_FILE 2>&1
+			RC="$?"
+		else 
+			RC=0
+		fi
+		if [ "$RC" -eq 0 ] ; then
+			echo_info "$(gettext "Finding Nagios user") :" "$NAGIOS_USER"
 			return 0
 		fi
 	fi
@@ -1524,30 +1534,34 @@ function check_user_nagios()
 		return 0
 	fi
 
-	log "DEBUG" "$(gettext "find nagios user in /etc/passwd file")"
-
-	nagios_user_grep=`grep $NAGIOS_USER /etc/passwd > /dev/null; echo $?`
-	if [ "$nagios_user_grep" -eq 0 ] ; then
-    		echo_success "$(gettext "Finding nagios user \$NAGIOS_USER in /etc/passwd")" "$ok"
-	else
-		echo_failure "$(gettext "Nagios User \$NAGIOS_USER Not found")" "$fail"
-		echo -e "$(gettext "You have to create you nagios user")"
-		echo "useradd -G $NAGIOS_GROUP $NAGIOS_USER"
-		clean_and_exit
-	fi
-	return 0
+	echo_failure "$(gettext "Nagios User not found")" "$fail"
+	echo -e "$(gettext "Have you create you nagios user ? use this command")"
+	echo -e "useradd -G $NAGIOS_GROUP $NAGIOS_USER \n"
+	echo -e "$(gettext "If you want to force a nagios user name, use (FORCE_)NAGIOS_USER variable(s) in a template file and try 'bash install.sh -f file'")"
+	clean_and_exit
+	
 }
 
 #----
 ## Check the nagios group
+## Find un /etc/group if is a valid group.
 ## @Globals	NAGIOS_GROUP
 #----
 function check_group_nagios()
 {
+	local RC="1"
+	# check if you want to force nagios group
+	FORCE_NAGIOS_GROUP=${FORCE_NAGIOS_GROUP:-0}
+
 	if [ -n "$NAGIOS_GROUP" ] ; then
-		log "DEBUG" "$(gettext "Test group nagios")"
-		grep "$NAGIOS_GROUP" /etc/group >> $LOG_FILE 2>&1
-		if [ "$?" -eq 0 ] ; then
+		if [ "$FORCE_NAGIOS_GROUP" -eq 0 ] ; then 
+			log "DEBUG" "$(gettext "Test group nagios")"
+			grep "$NAGIOS_GROUP" /etc/group >> $LOG_FILE 2>&1
+			RC="$?"
+		else
+			RC=0
+		fi
+		if [ "$RC" -eq 0 ] ; then
 			echo_info "`gettext \"Finding Nagios group\"` :" "$NAGIOS_GROUP"
 			return 0
 		fi
@@ -1560,36 +1574,29 @@ function check_group_nagios()
 		return 0
 	fi
 
-	log "DEBUG" "$(gettext "find nagios group in /etc/groups file")"
-
-	nagios_group_grep=`grep $NAGIOS_GROUP /etc/group > /dev/null; echo $?`
-	if [ "$nagios_group_grep" -eq 0 ] ; then
-	    	echo_success "$(gettext "Finding nagios group \$NAGIOS_GROUP in /etc/group")" "$ok"
-	else
-		echo_failure "$(gettext "Nagios group \$NAGIOS_GROUP Not found")" "$fail"
-		echo -e "$(gettext "You have to create you nagios group")"
-		echo "groupadd $NAGIOS_GROUP"
-		clean_and_exit
-	fi
-	return 0
+	echo_failure "$(gettext "Nagios Group not found")" "$fail"
+	echo -e "$(gettext "Have you create you nagios group ? use this command")"
+	echo -e "groupadd $NAGIOS_GROUP \n"
+	echo -e "$(gettext "If you want to force a nagios group name, use (FORCE_)NAGIOS_GROUP variable(s) in a template file and try 'bash install.sh -f file'")"
+	clean_and_exit
 }
 
 #----
 ## Define where is a nagios init script
 ## Find in list of chose and request if not found
-## @Globals	NAGIOS_INIT_SCRIPT, DEFAULT_NAGIOS_INIT_SCRIPT
+## @Globals	NAGIOS_INIT_SCRIPT, DEFAULT_NAGIOS_INIT_SCRIPT, INIT_D
 #----
 function check_nagios_init_script()
 {
 	# Try to find nagios init script.
 	# It's possible to force that variable.
-	if [ -x "$NAGIOS_INIT_SCRIPT" ] ; then
+	if [ -n "$NAGIOS_INIT_SCRIPT" -a -x "$NAGIOS_INIT_SCRIPT" ] ; then
 		log "INFO" "$(gettext "Use default variable") : $NAGIOS_INIT_SCRIPT"
-	elif [ -x "/etc/init.d/nagios" ]; then
+	elif [ -x "$INIT_D/nagios" ]; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
-	elif [ -x "/etc/init.d/nagios2" ] ; then
+	elif [ -x "$INIT_D/nagios2" ] ; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
-	elif [ -x "/etc/init.d/nagios3" ] ; then
+	elif [ -x "$INIT_D/nagios3" ] ; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios3"
 	elif [ -x "/usr/local/etc/rc.d/nagios" ] ; then
 		NAGIOS_INIT_SCRIPT="/usr/local/etc/rc.d/nagios"
@@ -1610,32 +1617,34 @@ function check_nagios_init_script()
 #----
 function check_httpd_directory()
 {
-	if [ -d /etc/apache/conf ]; then
-		DIR_APACHE="/etc/apache/conf"
-		DIR_APACHE_CONF="/etc/apache/conf.d"
-	elif [ -d /usr/local/apache2/conf ] ; then
-		DIR_APACHE="/usr/local/apache2/conf"
-		DIR_APACHE_CONF="/usr/local/apache2/conf"
-	elif [ -d /etc/apache2 ] ; then
-		DIR_APACHE="/etc/apache2"
-		DIR_APACHE_CONF="/etc/apache2/conf.d"
-	elif [ -d /etc/httpd/conf ] ; then
-		DIR_APACHE="/etc/httpd/conf"
-		DIR_APACHE_CONF="/etc/httpd/conf.d"
-	elif [ -d /usr/local/etc/apache ] ; then
-		DIR_APACHE="/usr/local/etc/apache"
-		DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
-	elif [ -d /usr/local/etc/apache2 ] ; then
-		DIR_APACHE="/usr/local/etc/apache2"
-		DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
-	elif [ -d /usr/local/etc/apache22 ] ; then
-		# add for freeBSD 7 with apache2.2
-		DIR_APACHE="/usr/local/etc/apache22"
-		DIR_APACHE_CONF="/usr/local/etc/apache22/Includes"
-	else 
-		echo_passed "`gettext \"Apache config directoty not found\"`" "$critical"
-		answer_with_testdir "`gettext \"Where is your Apache etc directory\"`" "NO_DEFAULT" "DIR_APACHE"
-		answer_with_testdir "`gettext \"Where is your Apache conf.d directory\"`" "NO_DEFAULT" "DIR_APACHE_CONF"
+	if [ -z "$DIR_APACHE" -a -z "$DIR_APACHE_CONF" ] ; then 
+		if [ -d /etc/apache/conf ]; then
+			DIR_APACHE="/etc/apache/conf"
+			DIR_APACHE_CONF="/etc/apache/conf.d"
+		elif [ -d /usr/local/apache2/conf ] ; then
+			DIR_APACHE="/usr/local/apache2/conf"
+			DIR_APACHE_CONF="/usr/local/apache2/conf"
+		elif [ -d /etc/apache2 ] ; then
+			DIR_APACHE="/etc/apache2"
+			DIR_APACHE_CONF="/etc/apache2/conf.d"
+		elif [ -d /etc/httpd/conf ] ; then
+			DIR_APACHE="/etc/httpd/conf"
+			DIR_APACHE_CONF="/etc/httpd/conf.d"
+		elif [ -d /usr/local/etc/apache ] ; then
+			DIR_APACHE="/usr/local/etc/apache"
+			DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
+		elif [ -d /usr/local/etc/apache2 ] ; then
+			DIR_APACHE="/usr/local/etc/apache2"
+			DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
+		elif [ -d /usr/local/etc/apache22 ] ; then
+			# add for freeBSD 7 with apache2.2
+			DIR_APACHE="/usr/local/etc/apache22"
+			DIR_APACHE_CONF="/usr/local/etc/apache22/Includes"
+		else 
+			echo_passed "`gettext \"Apache config directoty not found\"`" "$critical"
+			answer_with_testdir "`gettext \"Where is your Apache etc directory\"`" "NO_DEFAULT" "DIR_APACHE"
+			answer_with_testdir "`gettext \"Where is your Apache conf.d directory\"`" "NO_DEFAULT" "DIR_APACHE_CONF"
+		fi
 	fi
 	DIR_APACHE=${DIR_APACHE%/}
 	export DIR_APACHE
@@ -1644,17 +1653,19 @@ function check_httpd_directory()
 	log "INFO" "DIR_APACHE: $DIR_APACHE"
 	log "INFO" "DIR_APACHE_CONF: $DIR_APACHE_CONF"
 
-	if [ -e $DIR_APACHE/apache2.conf ] ; then
-		APACHE_CONF="apache2.conf"
-	elif [ -e $DIR_APACHE/apache.conf ] ; then
-		APACHE_CONF="apache.conf"
-	elif [ -e $DIR_APACHE/commondhttpd.conf ] ; then
-		APACHE_CONF="commondhttpd.conf"
-	elif [ -e $DIR_APACHE/httpd.conf ] ; then
-		APACHE_CONF="httpd.conf"
-	else
-		echo_passed "`gettext \"Apache config file not found\"`" "$critical"
-		answer_with_testfile "`gettext \"Where is your Apache config file \"`" "NO_DEFAULT" "APACHE_CONF"
+	if [ -z "$APACHE_CONF" ] ; then 
+		if [ -e $DIR_APACHE/apache2.conf ] ; then
+			APACHE_CONF="apache2.conf"
+		elif [ -e $DIR_APACHE/apache.conf ] ; then
+			APACHE_CONF="apache.conf"
+		elif [ -e $DIR_APACHE/commondhttpd.conf ] ; then
+			APACHE_CONF="commondhttpd.conf"
+		elif [ -e $DIR_APACHE/httpd.conf ] ; then
+			APACHE_CONF="httpd.conf"
+		else
+			echo_passed "`gettext \"Apache config file not found\"`" "$critical"
+			answer_with_testfile "`gettext \"Where is your Apache config file \"`" "NO_DEFAULT" "APACHE_CONF"
+		fi
 	fi
 	APACHE_CONF=${APACHE_CONF%/}
 	export APACHE_CONF
@@ -1668,6 +1679,10 @@ function check_httpd_directory()
 #----
 function check_user_apache()
 {
+	if [ -n "$WEB_USER" ] ; then 
+		echo_info "$(gettext "Finding Apache user") :" "$WEB_USER"
+		return 0
+	fi
 	local found=0
 	if [ -e /etc/apache2/envvars ] ; then 
 		log "INFO" "$(gettext "Use envvars file for apache user")"
@@ -1706,6 +1721,7 @@ function check_user_apache()
 		fi
 	fi
 	echo_info "$(gettext "Finding Apache user") :" "$WEB_USER"
+	return 0
 }
 
 #----
@@ -1714,6 +1730,10 @@ function check_user_apache()
 #----
 function check_group_apache()
 {
+	if [ -n "$WEB_GROUP" ] ; then 
+		echo_info "$(gettext "Finding Apache group") :" "$WEB_GROUP"
+		return 0
+	fi
 	local found=0
 	if [ -e /etc/apache2/envvars ] ; then
 		# for debian system
@@ -1748,6 +1768,7 @@ function check_group_apache()
 		fi
 	fi
 	echo_info "$(gettext "Finding Apache group") :" "$WEB_GROUP"
+	return 0
 }
 
 
@@ -1892,9 +1913,13 @@ function find_OS() {
 
 #----
 ## use this function to clean and exit centreon install
+## This function use <@function purge_centreon_tmp_dir> function.
 #----
 function clean_and_exit() {
 	log "EXIT" "$(gettext "Exit Centreon install")"
+	# Add test to define if sudo file was config and exec clean_sudo
+	#clean_sudo
+	purge_centreon_tmp_dir
 	exit 1
 }
 
@@ -1944,4 +1969,22 @@ function purge_centreon_tmp_dir() {
 	return 0
 }
 
+#----
+## Clean sudoers file
+## Generate a file without Centreon config. Need to have a BEGIN and END flags 
+## file. After that, rewrite sudo file with clean file.
+## @Globals	SUDO_FILE, TMPDIR
+#----
+function clean_sudo() {
+	local sudo_old="$SUDO_FILE"
+	local sudo_clean="$TMPDIR/$SUDO_FILE.clean"
 
+	cat $sudo_old | \
+	awk 'BEGIN { flag=0; } \
+	/^## BEGIN: CENTREON SUDO/ { flag=1; next; } \
+	/^## END: CENTREON SUDO/ { flag=0; next; } \
+	{ if (flag == 0) { print $0; } next; }' > $sudo_clean
+
+	mv $sudo_clean $sudo_old
+	return 0
+}
