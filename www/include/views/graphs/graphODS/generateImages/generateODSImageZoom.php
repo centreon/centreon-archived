@@ -14,7 +14,9 @@
  * 
  * For information : contact@centreon.com
  */
-
+ 
+ 	header('Content-Type: image/png');
+ 	
 	$warn = 0;
 	if (isset($_GET["warn"]) && $_GET["warn"] == 1)
 		$warn = 1;

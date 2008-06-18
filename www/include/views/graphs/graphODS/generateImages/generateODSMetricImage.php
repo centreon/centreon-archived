@@ -14,7 +14,9 @@
  * 
  * For information : contact@centreon.com
  */
-
+ 
+ 	header('Content-Type: image/png');
+ 	
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
