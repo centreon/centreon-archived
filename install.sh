@@ -227,7 +227,9 @@ if [ "$silent_install" -ne 1 ] ; then
 		log "INFO" "$(gettext "You accepted GPL license")"
 	fi
 else 
-	. $user_install_vars
+	if [ "$upgrade" -eq 0 ] ; then
+		. $user_install_vars
+	fi
 fi
 
 # Check if is an upgrade or new install

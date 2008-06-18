@@ -1211,6 +1211,7 @@ function createConfFile()
 
 	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
 	# Reinit file if exist	
+	touch $INSTALL_DIR_CENTREON_CONF
 	cat << __EOT__ > $INSTALL_DIR_CENTREON_CONF
 <?php
 /* 
