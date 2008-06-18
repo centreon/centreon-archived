@@ -59,6 +59,7 @@
 	if ($min)
 		switch ($o)	{
 			case "h" 	: require_once($path."minHelpCommand.php"); break; #Show Help Command	# Wistof
+			case "p" 	: require_once($path."minPlayCommand.php"); break; #Test the plugin
 			default 	: require_once($path."minCommand.php"); break;
 		}
 	else
