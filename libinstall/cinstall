@@ -249,15 +249,20 @@ if [ $# -ge 2 ] ; then
 		log "count: $count, src: $src"
 		if [ "$force" -eq 1 ] ; then 
 			cp -Rf $src "$(dirname $dst)"
-			log "cp -Rf $src $(dirname $dst) "
+			log "force=on; cp -Rf $src $(dirname $dst) "
 		else 
-			cp -Rf $src $dst
-			log "cp -Rf $src $dst "
+			cp -R $src $dst
+			log "force=off; cp -R $src $dst "
 		fi
 	elif [ $count -eq 1 -a -d "$src" ] ; then
-		cp -Rf $src $dst
 		log "count: $count, src: $src"
-		log "cp -Rf $src $dst"
+		if [ "$force" -eq 1 ] ; then 
+			cp -Rf $src "$(dirname $dst)"
+			log "force=on; cp -Rf $src $(dirname $dst) "
+		else 
+			cp -R $src $dst
+			log "force=off; cp -R $src $dst "
+		fi
 	else 
 		log "No copy"
 		log "count: $count, src: $src"

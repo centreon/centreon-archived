@@ -143,7 +143,7 @@ do
 			# After that I think I demand only a centreon_etc
 			# directory
 			#user_install_vars="${OPTARG}"
-			inst_upgrade_dir="${OPTARG}"
+			inst_upgrade_dir="${OPTARG%/}"
 			cinstall_opts="$cinstall_opts -f"
 			upgrade="1" ;;
 		v )	cinstall_opts="$cinstall_opts -v" 
@@ -185,7 +185,7 @@ cat << __EOL__ > "$LOG_FILE"
 __EOL__
 
 ## Test all binaries
-BINARIES="rm cp mv chmod chown echo cat more mkdir find sed"
+BINARIES="rm cp mv chmod chown echo cat more mkdir find sed lsb_release"
 
 echo "$line"
 echo -e "\t$(gettext "Checking all needed binaries")"
@@ -193,7 +193,7 @@ echo "$line"
 
 binary_fail="0"
 # For the moment, I check if all binary exists in path.
-# After, I must look a solution to use complet path by binary
+# After, I must look a solution to use complet path by binary
 for binary in $BINARIES; do
 	pathfind "$binary"
 	if [ "$?" -eq 0 ] ; then
@@ -236,7 +236,7 @@ fi
 # Use this on silent install ???
 # Check for old configfile
 # use for centreon1.x upgrade
-#### Move on upgrade specific script.
+#### Move on upgrade specific script.
 #if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" -a "$silent_install" -ne 1 ] ; then 
 #	is_single "$CENTREON_CONF_1_4"
 #	if [ "$?" -eq 1 ] ; then
@@ -245,8 +245,8 @@ fi
 #	fi
 #fi
 
-if [ "$upgrade" -eq 1 -a "$silent_install" -ne 1 ] ; then
-	# Test if instCent* file exist
+if [ "$upgrade" -eq 1 ] ; then
+	# Test if instCent* file exist
 	if [ "$(ls $inst_upgrade_dir/instCent* | wc -l )" -ge 1 ] ; then
 		echo "$line"
 		echo -e "\t$(gettext "Detecting old installation")"
