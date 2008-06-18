@@ -15,7 +15,6 @@
  * For information : contact@centreon.com
  */
  
-	
 	if (!isset($oreon))
 		exit;
 
@@ -28,7 +27,6 @@
 	 */
 	 
 	require_once '@CENTREON_ETC@/centreon.conf.php';
-	#require_once '/etc/centreon/centreon.conf.php';
 	require_once './DBconnect.php';
 	require_once './DBNDOConnect.php';
 	
@@ -57,8 +55,7 @@
 		/*
 		 * Check ACL and generate ACL restrictions
 		 */
-		if (!$is_admin)
-		{
+		if (!$is_admin)	{
 			$lca = getLcaHostByName($pearDB);
 			$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	    }
@@ -103,6 +100,7 @@
 							" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
 							" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 							" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR) ".
+							" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
 							" GROUP BY ".$ndo_base_prefix."services.host_object_id";
 				else
 					$rq1 = 	" SELECT ".$ndo_base_prefix."services.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state" . 
@@ -111,6 +109,7 @@
 							" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
 							" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
 							" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+							" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
 							" GROUP BY ".$ndo_base_prefix."services.host_object_id";
 					
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
@@ -119,13 +118,10 @@
 		
 		$pbCount = 0;
 		while ($ndo = $DBRESULT_NDO1->fetchRow())
-		{
-			if ($ndo["current_state"] != 0)
-			{
+			if ($ndo["current_state"] != 0){
 				$hostPb[$pbCount] = $ndo["host_object_id"];			
 				$pbCount++;
 			}
-		}
 		
 		/*
 		 * Get Host Ack  UP(0), DOWN(1),  UNREACHABLE(2)
@@ -139,6 +135,7 @@
 					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 					" AND ".$ndo_base_prefix."acknowledgements.acknowledgement_type = 0 " .	
 					" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR)" .
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
 					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
 					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
 		else
@@ -149,17 +146,16 @@
 					" AND ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 " .
 					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 					" AND ".$ndo_base_prefix."acknowledgements.acknowledgement_type = 0 " .
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
 					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
 					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
 					
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-		
 		if (PEAR::isError($DBRESULT_NDO1))
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
 		$hostAck = array(0=>0, 1=>0, 2=>0);
-		while ($ndo = $DBRESULT_NDO1->fetchRow())
-		{
+		while ($ndo = $DBRESULT_NDO1->fetchRow())	{
 			$hostAck[$ndo["state"]] = $ndo["count(".$ndo_base_prefix."acknowledgements.state)"];
 			$hostUnhand[$ndo["state"]] -= $hostAck[$ndo["state"]];
 		}
@@ -172,12 +168,14 @@
 					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 0 " .
 					" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR)" .
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
 					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 		else
 			$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state) , ".$ndo_base_prefix."hoststatus.current_state" .
 					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 0 " .
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
 					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 					
@@ -186,8 +184,7 @@
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
 		$hostInactive = array(0=>0, 1=>0, 2=>0, 3=>0);
-		while ($ndo = $DBRESULT_NDO1->fetchRow())
-		{
+		while ($ndo = $DBRESULT_NDO1->fetchRow())	{
 			$hostInactive[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 			$hostUnhand[$ndo["current_state"]] -= $hostInactive[$ndo["current_state"]];
 		}
@@ -208,6 +205,7 @@
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
+					" AND no.name1 NOT LIKE 'Meta_Module' AND no.name1 NOT LIKE 'OSL_Module' " .
 					" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") " .
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 		else
@@ -216,6 +214,7 @@
 					" WHERE no.object_id = nss.service_object_id".
 					" AND no.name1 not like 'OSL_Module' ".
 					" AND no.name1 not like 'Meta_Module' ".
+					" AND no.name1 NOT LIKE 'Meta_Module' AND no.name1 NOT LIKE 'OSL_Module' " .
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 					
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
@@ -240,6 +239,7 @@
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
+					" AND objects.name1 NOT LIKE 'Meta_Module' AND objects.name1 NOT LIKE 'OSL_Module' " .
 					" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") " .
 					" AND no.is_active = 1" .
 					" AND nss.problem_has_been_acknowledged = 0" .
@@ -249,6 +249,7 @@
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, " . $ndo_base_prefix."services" .
 					" WHERE no.object_id = nss.service_object_id".
 					" AND nss.service_object_id = ".$ndo_base_prefix."services.service_object_id".
+					" AND objects.name1 NOT LIKE 'Meta_Module' AND objects.name1 NOT LIKE 'OSL_Module' " .
 					" AND no.name1 not like 'OSL_Module' ".
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.is_active = 1" .
@@ -261,8 +262,7 @@
 		if (PEAR::isError($DBRESULT_NDO1))
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
-		while($ndo = $DBRESULT_NDO1->fetchRow())
-		{
+		while($ndo = $DBRESULT_NDO1->fetchRow())	{
 			if ($ndo["current_state"] != 0)
 				for($i=0; $i<=$pbCount; $i++)
 					if (isSet($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
@@ -282,6 +282,7 @@
 					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 					" AND ".$ndo_base_prefix."acknowledgements.acknowledgement_type = 1 " .	
 					" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR)" .
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
 					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
 					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
 		else
@@ -292,6 +293,7 @@
 					" AND ".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 " .
 					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 					" AND ".$ndo_base_prefix."acknowledgements.acknowledgement_type = 1 " .
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
 					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
 					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
 					
@@ -354,6 +356,7 @@
 					" AND stat.problem_has_been_acknowledged = 0" .
 					" AND obj.is_active = 1" .
 					" AND obj.name1 IN ($lcaSTR)" .
+					" AND obj.name1 NOT LIKE 'Meta_Module' AND obj.name1 NOT LIKE 'OSL_Module' " .
 					" AND obj.name2 = centreon_acl.service_description " .
 					" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") " .
 					" ORDER by stat.current_state DESC, obj.name1";
@@ -367,6 +370,7 @@
 					" AND stat.current_state <> 3" .
 					" AND stat.problem_has_been_acknowledged = 0" .
 					" AND obj.is_active = 1" .				
+					" AND obj.name1 NOT LIKE 'Meta_Module' AND obj.name1 NOT LIKE 'OSL_Module' " .
 					" ORDER by stat.current_state DESC, obj.name1";
 					
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
@@ -382,16 +386,13 @@
 		$tab_output[$j] = "";
 		$tab_ip[$j] = "";
 		
-		while ($ndo =& $DBRESULT_NDO1->fetchRow())
-		{
+		while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 			$is_unhandled = 1;	
-			for($i=0; $i<$pbCount && $is_unhandled; $i++)
-			{
+			for($i=0; $i<$pbCount && $is_unhandled; $i++)	{
 				if (isSet($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
 					$is_unhandled = 0;
 			}
-			if ($is_unhandled)
-			{
+			if ($is_unhandled)	{
 				$tab_hostname[$j] = $ndo["name1"];
 				$tab_svcname[$j] = $ndo["name2"];
 				$tab_state[$j] = $ndo["current_state"];
@@ -488,8 +489,6 @@
 		$tpl->assign("str_actions", _("Actions"));
 		$tpl->assign("str_ip", _("IP Address"));
 		
-		$tpl->display("tacticalOverview.ihtml");
-		
+		$tpl->display("tacticalOverview.ihtml");	
 	}
-
  ?>
