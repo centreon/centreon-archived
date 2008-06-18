@@ -1385,7 +1385,7 @@ function createCentCoreInstallConf() {
 ## Create a config file for CentPlugins
 ## This file will use for upgrade process
 ## @Globals	CENTREON_ETC, NAGIOS_PLUGIN, INSTALL_DIR_NAGIOS, NAGIOS_ETC
-## @Globals	RRD_PERL, CENTPLUGINS_TMP, NAGIOS_USER, NAGIOS_GROUP, INIT_D
+## @Globals	RRD_PERL, CENTPLUGINS_TMP, NAGIOS_USER, NAGIOS_GROUP, INIT_D
 ## @Globals	SNMP_ETC, SNMPTT_BINDIR, CENTPLUGINSTRAPS_BINDIR, WEB_USER
 #----
 function createCentPluginsInstallConf() {
@@ -1404,7 +1404,7 @@ function createCentPluginsInstallConf() {
 
 	if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
 	cat <<- __EOT__ >>  $CENTREON_ETC/instCentPlugins.conf
-	# Use in CentPluginsTraps.sh
+	# Use in CentPluginsTraps.sh
 	CENTREON_ETC=$CENTREON_ETC
 	SNMP_ETC=$SNMP_ETC
 	SNMPTT_BINDIR=$SNMPTT_BINDIR
@@ -1510,7 +1510,7 @@ function find_group_nagios()
 function check_user_nagios()
 {
 	local RC="1"
-	# check if you want to force nagios user
+	# check if you want to force nagios user
 	FORCE_NAGIOS_USER=${FORCE_NAGIOS_USER:-0}
 
 	if [ -n "$NAGIOS_USER" ] ; then
@@ -1679,6 +1679,9 @@ function check_httpd_directory()
 #----
 function check_user_apache()
 {
+	# init WEB_USER if not define
+	WEB_USER="$WEB_USER"
+
 	if [ -n "$WEB_USER" ] ; then 
 		echo_info "$(gettext "Finding Apache user") :" "$WEB_USER"
 		return 0
@@ -1730,6 +1733,9 @@ function check_user_apache()
 #----
 function check_group_apache()
 {
+	# init WEB_GROUP if not define
+	WEB_GROUP="$WEB_GROUP"
+
 	if [ -n "$WEB_GROUP" ] ; then 
 		echo_info "$(gettext "Finding Apache group") :" "$WEB_GROUP"
 		return 0
@@ -1977,12 +1983,15 @@ function purge_centreon_tmp_dir() {
 }
 
 #----
-## Clean sudoers file
+## Clean sudoers file
 ## Generate a file without Centreon config. Need to have a BEGIN and END flags 
-## file. After that, rewrite sudo file with clean file.
-## @Globals	SUDO_FILE, TMPDIR
+## file. After that, rewrite sudo file with clean file.
+## @param	0/1 to active a question to clean sudo (not by default)
+## @Globals	SUDO_FILE, TMPDIR, LOG_FILE
 #----
 function clean_sudo() {
+	local validate=${1:-0}
+	local RC=1
 	local sudo_old="$SUDO_FILE"
 	local sudo_clean="$TMPDIR/$SUDO_FILE.clean"
 
@@ -1992,6 +2001,14 @@ function clean_sudo() {
 	/^## END: CENTREON SUDO/ { flag=0; next; } \
 	{ if (flag == 0) { print $0; } next; }' > $sudo_clean
 
-	mv $sudo_clean $sudo_old
+	log "INFO" "$(gettext "New sudo file generate in:") $sudo_clean"
+	if [ "$validate" -eq 1 ] ; then 
+		yes_no_default "$(gettext "Do you want I clean your sudo files ? (clean centreon config)")"
+		RC="$?"
+	fi
+	if [ "$RC" -eq 0 -o "$validate" -eq 0 ] ; then 
+		cat $sudo_clean > $sudo_old 2>$LOG_FILE
+		return 0
+	fi
 	return 0
 }
