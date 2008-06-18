@@ -1880,15 +1880,19 @@ function find_OS() {
 	local distrib=$1
 	local dist_found=""
 	local system=""
+	local lsb_release=""
 	system=$(uname -s)
 	if [ "$system" = "Linux" ] ; then
-		if [ -e "/etc/debian_version" ] ; then 
+		lsb_release="$(lsb_release -i -s)"
+		if [ "$lsb_release" = "Debian" -o "$lsb_release" = "Ubuntu" ]
+		then 
 			dist_found="DEBIAN"
 			log "INFO" "$(gettext "GNU/Linux Debian Distribution")"
-		elif [ -e "/etc/SuSE-release" ] ; then
+		elif [ "$lsb_release" = "SUSE LINUX" ] ; then
 			dist_found="SUSE"
 			log "INFO" "$(gettext "GNU/Linux Suse Distribution")"
-		elif [ -e "/etc/redhat-release" ] ; then
+		elif [ "$lsb_release" = "RedHatEnterpriseES" -o "$lsb_release" = "Fedora" ]
+		then
 			dist_found="REDHAT"
 			log "INFO" "$(gettext "GNU/Linux Redhat Distribution")"
 		else
@@ -1902,6 +1906,9 @@ function find_OS() {
 	elif [ "$system" = "AIX" ] ; then
 		dist_found="AIX"
 		log "INFO" "$(gettext "AIX System")"
+	elif [ "$system" = "SunOS" ] ; then
+		dist_found="SUNOS"
+		log "INFO" "$(gettext "SunOS System")"
 	else
 		dist_found="NOT_FOUND"
 		log "INFO" "$(gettext "System not found")"
