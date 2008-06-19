@@ -65,8 +65,13 @@
 					unset($hostTemplate);		
 				}
 				
-				if ($host["host_alias"]) $str .= print_line("alias", $host["host_alias"]);
-				if ($host["host_address"]) $str .= print_line("address", $host["host_address"]);
+				if ($host["host_alias"]) 			$str .= print_line("alias", $host["host_alias"]);
+				if ($host["host_address"]) 			$str .= print_line("address", $host["host_address"]);
+				
+				if ($oreon->user->get_version() > 2)	{
+					if ($host["host_snmp_community"]) 	$str .= print_line("_SNMPCOMMUNITY", $host["host_snmp_community"]);
+					if ($host["host_snmp_version"])		$str .= print_line("_SNMPVERSION", $host["host_snmp_version"]);
+				}
 				
 				/* 
 				 * Get Parents List for this host
