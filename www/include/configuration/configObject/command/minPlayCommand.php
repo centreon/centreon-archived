@@ -15,26 +15,31 @@
  * For information : contact@centreon.com
  */
   	
- 	$error_flag = 0;
+ 	$error_msg = "";
 	$command = $_GET["command_line"];
 	$example = $_GET["command_example"];		
 	$args = split("!", $example);
 
 	$resource_def = str_replace('$', '@DOLLAR@', $command);
-	while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches))	{
-			$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
+	while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
+			$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");			
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$resource = $DBRESULT->fetchRow();
-			$resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
+			if (!isset($resource["resource_line"])){
+				$error_msg .= "\$USER".$matches[1]."\$";				
+			}
+			else {
+				$resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
+			}
 	}		
-	while (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches))	{			
-			if (isset($_GET["command_hostaddress"]))
+	while (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{			
+			if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "")
 				$resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
 			else
-				$error_flag = 1;
+				$error_msg .= "\$HOSTADDRESS\$";
 	}
-	while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches))	{
+	while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
 			$match_id = $matches[1];
 			if (isset($args[$match_id])){
 				$resource_def = str_replace("@DOLLAR@ARG". $match_id ."@DOLLAR@", $args[$match_id], $resource_def);
@@ -44,37 +49,47 @@
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$resource = $DBRESULT->fetchRow();
-				$resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
+					if (!isset($resource["resource_line"])){
+						$error_msg .= "\$USER".$match_id."\$";
+					}
+					else {
+						$resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
+					}
 				}
 				if (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches)) {
 					if (isset($_GET["command_hostaddress"]))
 						$resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
 					else
-						$error_flag = 1;
+						$error_msg .= "\$HOSTADDRESS\$";
 				}	
 			}
 			else
-				$error_flag = 1;
+				$error_msg = "\$USER" . $match_id . "\$";
+	}	
+	if ($error_msg != "") {
+		$command = $resource_def;
+		$command = str_replace('@DOLLAR@', '$', $command);	
+		$msg = _("Could not find macro ") . $error_msg;
+		$status = _("ERROR");
+	}
+	else {
+		$command = $resource_def;
+		$stdout = array();
+		unset($stdout);	
+		exec($command, $stdout, $status);	
+		$msg = join(" ",$stdout);
+		$msg = str_replace("\n", "<br />", $msg);
+	
+		if ($status == 1)
+			$status = _("WARNING");
+		else if ($status == 2)
+			$status = _("CRITICAL");
+		else if ($status == 0)
+			$status = _("OK");	
+		else
+			$status = _("UNKNOWN");
 	}
 	
-	$command = $resource_def;
-	$stdout = array();
-	unset($stdout);
-	
-	//$command = "/usr/local/nagios/libexec/check_centreon_dummy -s 1 -o \"OK my ass\"";	
-	exec($command, $stdout, $status);	
-	$msg = join(" ",$stdout);
-	$msg = str_replace("\n", "<br />", $msg);
-	
-	if ($status == 1)
-		$status = "WARNING";
-	else if ($status == 2)
-		$status = "CRITICAL";
-	else if ($status == 0)
-		$status = "OK";	
-	else
-		$status = "UN" .
-				"KNOWN";
 	$attrsText 	= array("size"=>"25");
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title',_("Plugin Test"));
