@@ -206,7 +206,7 @@
 		if (isset($ret["restart"]) && $ret["restart"])	{
 			$stdout = "";
 			$msg_restart = array();
-			foreach ($tab_server as $host)
+			foreach ($tab_server as $host){
 				$nagios_init_script = (isset($oreon->optGen["nagios_init_script"]) ? $oreon->optGen["nagios_init_script"]   : "/etc/init.d/nagios" );
 				if ($ret["restart_mode"] == 1){
 					if (isset($host['localhost']) && $host['localhost'] == 1){
@@ -232,6 +232,7 @@
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				$msg_restart[$host["id"]] = "<br />".str_replace ("\n", "<br />", $stdout);	
+			}
 		}
 	}
 
