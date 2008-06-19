@@ -22,7 +22,9 @@
 		mkdir($nagiosCFGPath.$tab['id']."/");
 	}
 	
-	// Host Extended Information
+	/*
+	 * Host Extended Information
+	 */
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostextinfo.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY `host_name`");
 	if (PEAR::isError($DBRESULT))
@@ -30,12 +32,9 @@
 	$ehi = array();
 	$i = 1;
 	$str = NULL;
-	while($DBRESULT->fetchInto($ehi))	{
+	while ($ehi =& $DBRESULT->fetchRow())	{
 		if (isHostOnThisInstance(getMyHostID($ehi["host_name"]), $tab['id'])) {
-			$BP = false;
-			array_key_exists($ehi["host_id"], $gbArr[2]) ? $BP = true : NULL;
-			
-			if ($BP)	{
+			if (isset($ehi["host_id"][$gbArr[2]])) {
 				$ret["comment"] ? ($str .= "# '" . $ehi["host_name"] . "' Host Extended Information definition " . $i . "\n") : NULL ;
 				$str .= "define hostextinfo{\n";
 				if ($ehi["host_name"])
@@ -70,7 +69,9 @@
 	unset($str);
 	unset($i);
 
-	// Service Extended Information
+	/*
+	 * Service Extended Information
+	 */
 	$handle = create_file($nagiosCFGPath.$tab['id']."/serviceextinfo.cfg", $oreon->user->get_name());
 	$esi = array();
 	$i = 1;
@@ -79,10 +80,8 @@
 	$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_register = '1'");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($esi))	{
-		$BP = false;
-		array_key_exists($esi["service_id"], $gbArr[4]) ? $BP = true : NULL;		
-		if ($BP)	{
+	while ($esi =& $DBRESULT->fetchRow())	{
+		if (isset($esi["service_id"][$gbArr[4]]))	{
 			$hosts = getMyServiceHosts($esi["service_id"]);
 			foreach ($hosts as $key=>$value)	{
 				$BP = false;
@@ -116,9 +115,7 @@
 			}
 			$hgs = getMyServiceHostGroups($esi["service_id"]);
 			foreach ($hgs as $key=>$value)	{
-				$BP = false;
-				array_key_exists($value, $gbArr[3]) ? $BP = true : NULL;				
-				if ($BP)	{
+				if (isset($value[$gbArr[3]]))	{
 					$hostgroup_name = getMyHostGroupName($value);
 					$service_description = getMyServiceName($esi["service_id"]);
 					$service_description = str_replace('#S#', "/", $service_description);
