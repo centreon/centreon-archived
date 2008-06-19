@@ -35,6 +35,7 @@
 		foreach ($comment as $cmt)
 			$str .= "# ".$cmt."\n";
 	}
+	
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/hosts.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/services.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/misccommands.cfg\n";
@@ -42,16 +43,22 @@
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/contactgroups.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/contacts.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/hostgroups.cfg\n";
+	
 	if ($oreon->user->get_version() >= 2)
 		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/servicegroups.cfg\n";
+		
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/timeperiods.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/escalations.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/dependencies.cfg\n";	
+	
 	if ($oreon->user->get_version() >= 2)	{
 		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/hostextinfo.cfg\n";
 		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/serviceextinfo.cfg\n";
 	}
-	# Include for Meta Service the cfg file
+	
+	/*
+	 * Include for Meta Service the cfg file
+	 */
 	if (isset($tab['localhost']) && $tab['localhost'])
 		if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
 			foreach ($files as $filename)	{

@@ -50,10 +50,11 @@
 	$str .= "cfg_file=".$nagios["cfg_dir"]."escalations.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."dependencies.cfg\n";	
 	
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() >= 2)	{
 		$str .= "cfg_file=".$nagios["cfg_dir"]."hostextinfo.cfg\n";
 		$str .= "cfg_file=".$nagios["cfg_dir"]."serviceextinfo.cfg\n";
 	}
+	
 	if (isset($tab['localhost']) && $tab['localhost']){
 		# Include for Meta Service the cfg file
 		if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
