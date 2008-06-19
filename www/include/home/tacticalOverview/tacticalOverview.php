@@ -239,7 +239,6 @@
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
-					" AND objects.name1 NOT LIKE 'Meta_Module' AND objects.name1 NOT LIKE 'OSL_Module' " .
 					" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") " .
 					" AND no.is_active = 1" .
 					" AND nss.problem_has_been_acknowledged = 0" .
@@ -249,7 +248,6 @@
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, " . $ndo_base_prefix."services" .
 					" WHERE no.object_id = nss.service_object_id".
 					" AND nss.service_object_id = ".$ndo_base_prefix."services.service_object_id".
-					" AND objects.name1 NOT LIKE 'Meta_Module' AND objects.name1 NOT LIKE 'OSL_Module' " .
 					" AND no.name1 not like 'OSL_Module' ".
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.is_active = 1" .
@@ -388,11 +386,13 @@
 		
 		while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 			$is_unhandled = 1;	
-			for($i=0; $i<$pbCount && $is_unhandled; $i++)	{
+
+			for($i=0; $i<$pbCount && $is_unhandled; $i++){
 				if (isSet($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
 					$is_unhandled = 0;
 			}
-			if ($is_unhandled)	{
+
+			if ($is_unhandled){
 				$tab_hostname[$j] = $ndo["name1"];
 				$tab_svcname[$j] = $ndo["name2"];
 				$tab_state[$j] = $ndo["current_state"];
