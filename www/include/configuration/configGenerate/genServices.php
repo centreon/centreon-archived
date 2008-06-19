@@ -232,7 +232,7 @@
 				if (PEAR::isError($DBRESULT_TEMP))
 					print "DB Error : ".$DBRESULT_TEMP->getDebugInfo()."<br />";
 				while($DBRESULT_TEMP->fetchInto($template_link))
-					$strTMP .= print_line("#TEMPLATE-HOST-LINK", $template_link["host_name"]);
+					$strTMP .= print_line(";TEMPLATE-HOST-LINK", $template_link["host_name"]);
 				unset($template_link);
 				unset($DBRESULT_TEMP);
 			}

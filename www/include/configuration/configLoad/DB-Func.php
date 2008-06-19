@@ -372,7 +372,7 @@
 				$get = true;
 			} else if ($get)	{
 				if (preg_match($regexp, $str, $regs)){
-					if ($regs[1] == "#TEMPLATE-HOST-LINK"){
+					if ($regs[1] == ";TEMPLATE-HOST-LINK"){
 						if (!isset($tmpConf[$regs[1]]))
 							$tmpConf[$regs[1]] = array();
 						$tmpConf[$regs[1]][trim($regs[2])] = trim($regs[2]);
