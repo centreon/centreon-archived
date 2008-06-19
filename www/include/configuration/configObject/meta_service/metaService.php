@@ -24,7 +24,10 @@
 		$lcaHostGroupstr = getLcaHGStr($lcaHost["LcaHostGroup"]);
 		$lcaHostByName = getLcaHostByName($pearDB);
 	}
-		
+	
+	if (isset($_POST["o"]) && $_POST["o"])
+		$o = $_POST["o"];
+	
 	isset($_GET["meta_id"]) ? $cG = $_GET["meta_id"] : $cG = NULL;
 	isset($_POST["meta_id"]) ? $cP = $_POST["meta_id"] : $cP = NULL;
 	$cG ? $meta_id = $cG : $meta_id = $cP;

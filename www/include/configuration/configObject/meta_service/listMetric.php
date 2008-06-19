@@ -117,26 +117,16 @@
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"");
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} ");
 	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "ds"=>_("Delete")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 
 	
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"");
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} ");
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "ds"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
