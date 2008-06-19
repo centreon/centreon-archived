@@ -1314,16 +1314,17 @@ function createCentreonInstallConf() {
 	INIT_D=$INIT_D
 	PHP_BIN=$PHP_BIN
 	DIR_APACHE=$DIR_APACHE
-	
+	DIR_APACHE_CONF=$DIR_APACHE_CONF
 	__EOT__
 
-[ -n "$NAGIOS_P1_FILE" ] && \
-	echo "NAGIOS_P1_FILE=$NAGIOS_P1_FILE" >> $CENTREON_ETC/instCentWeb.conf
+	[ -n "$NAGIOS_P1_FILE" ] && \
+		echo "NAGIOS_P1_FILE=$NAGIOS_P1_FILE" >> $CENTREON_ETC/instCentWeb.conf
 
-[ -n "$NDOMOD_BINARY" ] && \
-	echo "NDOMOD_BINARY=$NDOMOD_BINARY" >> $CENTREON_ETC/instCentWeb.conf
+	[ -n "$NDOMOD_BINARY" ] && \
+		echo "NDOMOD_BINARY=$NDOMOD_BINARY" >> $CENTREON_ETC/instCentWeb.conf
 
-echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"
+	echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"
+	return 0
 }
 
 #---
@@ -1348,10 +1349,10 @@ function createCentStorageInstallConf() {
 	CENTSTORAGE_RRD=$CENTSTORAGE_RRD
 	NAGIOS_USER=$NAGIOS_USER
 	NAGIOS_GROUP=$NAGIOS_GROUP
-	
 	__EOT__
 
-echo_success "Create $CENTREON_ETC/instCentStorage.conf " "OK"
+	echo_success "Create $CENTREON_ETC/instCentStorage.conf " "OK"
+	return 0
 }
 
 #---
@@ -1362,7 +1363,7 @@ echo_success "Create $CENTREON_ETC/instCentStorage.conf " "OK"
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
 function createCentCoreInstallConf() {
-	cat <<- __EOT__ > $CENTREON_ETC/instCentcore.conf
+	cat <<- __EOT__ > $CENTREON_ETC/instCentCore.conf
 	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 	CENTREON_ETC=$CENTREON_ETC
 	CENTREON_RUNDIR=$CENTREON_RUNDIR
@@ -1376,10 +1377,10 @@ function createCentCoreInstallConf() {
 	NAGIOS_USER=$NAGIOS_USER
 	RRD_PERL=$RRD_PERL
 	INIT_D=$INIT_D
-
 	__EOT__
 
 	echo_success "Create $CENTREON_ETC/instCentCore.conf " "OK"
+	return 0
 }
 
 #---
@@ -1400,7 +1401,6 @@ function createCentPluginsInstallConf() {
 	NAGIOS_USER=$NAGIOS_USER
 	NAGIOS_GROUP=$NAGIOS_GROUP
 	INIT_D=$INIT_D
-	
 	__EOT__
 
 	if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
@@ -1411,11 +1411,11 @@ function createCentPluginsInstallConf() {
 	SNMPTT_BINDIR=$SNMPTT_BINDIR
 	CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
 	WEB_USER=$WEB_USER
-	
 	__EOT__
 	fi
 
 	echo_success "Create $CENTREON_ETC/instCentPlugins.conf " "OK"
+	return 0
 }
 
 #----
@@ -1618,7 +1618,7 @@ function check_nagios_init_script()
 #----
 function check_httpd_directory()
 {
-	if [ -z "$DIR_APACHE" -a -z "$DIR_APACHE_CONF" ] ; then 
+	if [ -z "$DIR_APACHE" -o -z "$DIR_APACHE_CONF" ] ; then 
 		if [ -d /etc/apache/conf ]; then
 			DIR_APACHE="/etc/apache/conf"
 			DIR_APACHE_CONF="/etc/apache/conf.d"
@@ -1874,7 +1874,6 @@ function install_init_service() {
 	return 0
 } 
 
-
 #----
 ## Define OS
 ## check on etc to find a specific file <p>
@@ -2013,3 +2012,4 @@ function clean_sudo() {
 	fi
 	return 0
 }
+

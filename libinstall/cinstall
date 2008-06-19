@@ -248,8 +248,8 @@ if [ $# -ge 2 ] ; then
 	elif [ $count -gt 1 ] ; then 
 		log "count: $count, src: $src"
 		if [ "$force" -eq 1 ] ; then 
-			cp -Rf $src "$(dirname $dst)"
-			log "force=on; cp -Rf $src $(dirname $dst) "
+			cp -Rf $src $dst
+			log "force=on; cp -Rf $src $dst "
 		else 
 			cp -R $src $dst
 			log "force=off; cp -R $src $dst "

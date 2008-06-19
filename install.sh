@@ -248,6 +248,7 @@ fi
 if [ "$upgrade" -eq 1 ] ; then
 	# Test if instCent* file exist
 	if [ "$(ls $inst_upgrade_dir/instCent* | wc -l )" -ge 1 ] ; then
+		inst_upgrade_dir=${inst_upgrade_dir%/}
 		echo "$line"
 		echo -e "\t$(gettext "Detecting old installation")"
 		echo "$line"

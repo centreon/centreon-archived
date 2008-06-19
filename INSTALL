@@ -29,9 +29,35 @@ To use Centreon, you need to have on your server :
 FRANCAIS :
 ----------
 
-Pour installer Oreon sans mise à jour :
+Pour installer Centreon sans mise à jour :
 
-	Lancer la commande "./install.sh"
+	Lancer la commande "bash install.sh"
+
+Pour mettre à jour Centreon (<2.0) :
+
+	TODO
+
+Pour mettre à jour Centreon (>2.0) :
+
+	Lancer "bash install.sh -u /repertoire/etc/centreon"
+	
+	Avec en argument le répertoire où se trouve 
+	vos fichier "instCent*.conf"
+
+Pour installer en utilisant un template pré-defini :
+
+	Lancer "bash install.sh -f tmpl/vardistrib/mon_template"
+
+	Par défaut, il existe des templates déjà configuré dans
+	tmpl/vardistrib. Ces fichiers vous permettrons de lancer 
+	l'installation avec une majorité de variables pré-définis.
+	Le fichier tmpl/vardistrib/sample.tmpl pourra être utilisé
+	pour votre configuration.
+
+L'installeur accepte aussi l'option "-v" qui permet d'activer certains
+messages supplémentaires à destination du fichier de log. 
+Par défaut, le fichier de log se trouve dans le répetoire du même nom
+à la base des sources.
 
 ENGLISH :
 ---------
@@ -43,6 +69,7 @@ For install only :
 For more information :
 - mail infos@centreon.com
 - visit Centreon's forum http://forum.centreon.com
-- visit Centreon's Wiki http://wiki.centreon.com
+- visit Centreon's Wiki http://doc.centreon.com
 
 Thanks for using Centreon.
+
