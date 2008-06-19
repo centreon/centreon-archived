@@ -29,7 +29,7 @@
 	else
 		$command_name = NULL;
 
-	if($command_id != NULL){
+	if ($command_id != NULL){
 		$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -46,17 +46,14 @@
 			$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$resource = $DBRESULT->fetchRow();
-			$resource_path = explode("=", $resource["resource_line"]);			
-			$resource_path = $resource_path[1];			
+			$resource =& $DBRESULT->fetchRow();
+			unset($DBRESULT);
+			$resource_path = $resource["resource_line"];			
 			unset($cmd_array[0]);
 			$command = rtrim($resource_path, "/")."#S#".implode("#S#", $cmd_array);
-			$command = $resource["resource_line"] . $command;			
-		}
-		else
+		} else
 			$command = $full_line;
-	}
-	else{
+	} else {
 		$command = $oreon->optGen["nagios_path_plugins"] . $command_name;
 	}
 
@@ -67,23 +64,26 @@
 	$attrsText 	= array("size"=>"25");
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title',_("Plugin Help"));
-	#
-	## Command information
-	#
+	
+	/*
+	 * Command information
+	 */
 	$form->addElement('header', 'information', _("Help"));
 	$form->addElement('text', 'command_line', _("Command Line"), $attrsText);
 	$form->addElement('text', 'command_help', _("Output"), $attrsText);
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	$tpl->assign('command_line', $command." --help");
 	if (isset($msg) && $msg)
 		$tpl->assign('msg', $msg);
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
