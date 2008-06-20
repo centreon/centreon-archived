@@ -53,21 +53,21 @@ aff_header("Centreon Setup Wizard", "Verifying PHP Pear Component", 7);
 			}
 			?></td>
 	  </tr>
-	  <?phpif($msg)  { ?>
+	  <?php if($msg)  { ?>
 	  <tr>
 	    <td align="right" colspan="2"><?php echo $msg ; ?></td>
 	  </tr>
-	  <?php} ?>
+	  <?php } ?>
 	
-	  <?php} ?>
-	  <?phpif($alldeps)  { ?>
+	  <?php } ?>
+	  <?php if($alldeps)  { ?>
 	   <tr>
 	    <td colspan="2" ><span class="warning">Run this shell command under root user : </span></td>
 	  </tr>
 	  <tr>
 	    <td colspan="2" ><span class="warning">pear install -o -f --alldeps <?php echo $alldeps; ?> </span></td>
 	  </tr>
-	   <?php} ?>
+	   <?php } ?>
 	</table>
 <?php
 
@@ -82,3 +82,4 @@ $str .= " />";
 print $str;
 aff_footer();
 ?>
+
