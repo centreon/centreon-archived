@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
 
-aff_header("Centreon Setup Wizard", "Verifying PHP Pear Component", 7);
+	aff_header("Centreon Setup Wizard", "Verifying PHP Pear Component", 7);
 
 ?>
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">
@@ -32,18 +32,20 @@ aff_header("Centreon Setup Wizard", "Verifying PHP Pear Component", 7);
 	$alldeps = NULL;
 	
 	$include_path = get_include_path();
-	$tab = preg_split('/\:/', $include_path);
-	foreach ($tab as $path){
-		if (is_dir($path))
-			$pear_path = $path;	
-	}
+	
+	$tab_path = split(":", get_include_path());
 	
 	foreach ($pear_module as $module) {	?>
 	   <tr>
 	    <td><b>&nbsp;&nbsp;&nbsp;<?php echo $module["name"] ?></b></td>
 	    <td align="right"><?php
 	    	$msg = NULL;  
-	    	if (file_exists($pear_path."/".$module["path"])) {
+	    	$ok = 0;
+	    	foreach ($tab_path as $path){
+				if (file_exists($path. '/PEAR.php'))
+					$ok = 1;
+			}
+	    	if ($ok) {
 	          	echo '<b><span class="go">OK</font></b>';
 			} else {
 				echo '<b><span class="stop">Failed</font></b>';

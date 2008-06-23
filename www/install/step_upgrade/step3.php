@@ -14,9 +14,10 @@
  * 
  * For information : contact@centreon.com
  */
+ 	
 	include_once ("@CENTREON_ETC@/centreon.conf.php");
-	include_once("DB.php");
-	include_once("../DBconnect.php");
+	include_once ("DB.php");
+	include_once ("../DBconnect.php");
 	
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 	$DBRESULT->fetchInto($version);
@@ -33,7 +34,7 @@
         	<select name="mysqlscript">
         	<?php       		
         		chdir('sql');
-        		foreach (glob("Update-ODS-".$version["value"]."_to_*.sql") as $filename) {
+        		foreach (glob("Update-DB-".$version["value"]."_to_2.0-b5.sql") as $filename) {
 					echo '<option value="'.$filename.'">'.$filename.'</option>'; }
         	?>
         	</select>
