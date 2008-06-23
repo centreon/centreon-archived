@@ -371,5 +371,23 @@ if [ "$PROCESS_CENTREON_PLUGINS" -eq 1 ] ; then
 	fi
 	. $INSTALL_DIR/CentPlugins.sh
 fi
+
+cat << __EOT__
+###############################################################################
+#                                                                             #
+#      Go to the URL : http://your-server/centreon/                           #
+#                   	to finish the setup                                   #
+#                                                                             #
+#                    Report bugs at http://trac.centreon.com                  #
+#                                                                             #
+#                           Thanks for using Centreon.                        #
+#                             -----------------------                         #
+#                        Contact : infos@centreon.com                         #
+#                            http://www.centreon.com                          #
+#                                                                             #
+###############################################################################
+__EOT__
+
+
 exit 0
 
