@@ -108,7 +108,7 @@ sub getServiceInformations($$$)	{
     
     $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable` FROM `traps` WHERE `traps_oid` = '$_[1]'");
     $sth->execute();
-    my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_reschedule_svc_enable) = $sth->fetchrow_array();
+    my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_svc_enable) = $sth->fetchrow_array();
     exit if (!defined $trap_id);
     $sth->finish();
 
@@ -131,7 +131,7 @@ sub getServiceInformations($$$)	{
     $sth_st->execute();
     @service = (@service,getServicesIncludeTemplate($_[0], $sth_st, $host_id, $trap_id));
     $sth_st->finish;
-    return $trap_status, (@service), $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable;
+    return $trap_status, \@service, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable;
 }
 
 #######################################
@@ -148,7 +148,8 @@ sub getTrapsInfos($$$$){
     my @host = get_hostinfos($dbh, $ip, $hostname);
     foreach(@host) {
 		my $this_host = $_;
-		my ($status, @servicename, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable) = getServiceInformations($dbh, $oid, $_);
+		my @servicename=@{$ref_servicename};
+		my ($status, $ref_servicename, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable) = getServiceInformations($dbh, $oid, $_);
 		foreach (@servicename) {
 		    my $this_service = $_;
 	    	my $datetime = `date +%s`;

@@ -69,7 +69,7 @@ sub getStatus($$) {
 
 sub main($$) {
     my $manuf = $_[1];
-    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
     if (!open(FILE, $_[0])) {
 		print "Cannot open configuration file : $_[0]\n";
 		exit;
