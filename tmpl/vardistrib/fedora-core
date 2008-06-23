@@ -92,7 +92,7 @@ NAGIOS_PLUGIN="/usr/lib/nagios/plugins"
 ## Images (logos) directory
 NAGIOS_IMG="/usr/share/nagios/html/images/logos/"
 ## The nagios binary (optional)
-NAGIOS_BINARY="/usr/sbin/nagios"
+NAGIOS_BINARY="/usr/bin/nagios"
 ## The nagiostats binary (optional)
 NAGIOSSTATS_BINARY="/usr/bin/nagiostats"
 ## Logging directory
