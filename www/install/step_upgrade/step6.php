@@ -24,14 +24,10 @@
 	    'phptype'  => 'mysql',
 	    'username' => $conf_centreon["user"],
 	    'password' => $conf_centreon["password"],
-	    'hostspec' => $conf_centreon["host"],
-	    'database' => $conf_centreon["ods"],
-	);
+	    'hostspec' => $conf_centreon["hostCentstorage"],
+	    'database' => $conf_centreon["dbcstg"]);
 	
-	$options = array(
-	    'debug'       => 2,
-	    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE, 
-	);
+	$options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 	
 	global $pearDB0;
 	
