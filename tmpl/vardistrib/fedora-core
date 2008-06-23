@@ -74,7 +74,7 @@ CENTREON_VARLIB="/var/lib/centreon"
 ## These temp datas are store in the CENTPLUGINS_TMP path.
 CENTPLUGINS_TMP="/var/lib/centreon/centplugins"
 ## path for snmptt installation
-SNMPTT_BINDIR="/opt/snmptt"
+SNMPTT_BINDIR="/srv/centreon/bin/"
 #####################################################################
 ## End: Centreon preferences
 #####################################################################
@@ -86,21 +86,21 @@ SNMPTT_BINDIR="/opt/snmptt"
 ## Install directory
 INSTALL_DIR_NAGIOS=""
 ## Configuration directory
-NAGIOS_ETC=""
+NAGIOS_ETC="/etc/nagios/"
 ## Plugins directory
-NAGIOS_PLUGIN=""
+NAGIOS_PLUGIN="/usr/lib/nagios/plugins"
 ## Images (logos) directory
-NAGIOS_IMG=""
+NAGIOS_IMG="/usr/share/nagios/html/images/logos/"
 ## The nagios binary (optional)
-#NAGIOS_BINARY=""
+NAGIOS_BINARY="/usr/sbin/nagios"
 ## The nagiostats binary (optional)
-#NAGIOSSTATS_BINARY=""
+NAGIOSSTATS_BINARY="/usr/bin/nagiostats"
 ## Logging directory
-NAGIOS_VAR=""
+NAGIOS_VAR="/var/log/nagios/"
 ## Nagios user (optional)
-#NAGIOS_USER=""
+NAGIOS_USER="nagios"
 ## Nagios group (optional)
-#NAGIOS_GROUP=""
+NAGIOS_GROUP="nagios"
 #####################################################################
 ## End: Nagios preferences
 #####################################################################
@@ -110,15 +110,15 @@ NAGIOS_VAR=""
 ## Begin: Other binary
 #####################################################################
 ## RRDTOOL (optional)
-#BIN_RRDTOOL="/usr/bin/rrdtool"
+BIN_RRDTOOL="/usr/bin/rrdtool"
 ## Mail (optional)
-#BIN_MAIL="/usr/bin/mail"
+BIN_MAIL="/bin/mail"
 ## SSH (optional)
-#BIN_SSH="/usr/bin/ssh"
+BIN_SSH="/usr/bin/ssh"
 ## SCP (optional)
-#BIN_SCP="/usr/bin/scp"
+BIN_SCP="/usr/bin/scp"
 ## PHP (optional)
-#PHP_BIN="/usr/bin/php"
+PHP_BIN="/usr/bin/php"
 #####################################################################
 ## End: Other binary
 #####################################################################
@@ -128,19 +128,19 @@ NAGIOS_VAR=""
 ## Begin: Others
 #####################################################################
 ## Perl path for RRDs.pm file
-RRD_PERL=""
+RRD_PERL="/usr/lib/perl5/vendor_perl/5.8.8/i386-linux-thread-multi/"
 ## Path to sudoers file (optional)
-#SUDO_FILE="/etc/sudoers"
+SUDO_FILE="/etc/sudoers"
 ## Apache user (optional)
-#WEB_USER=""
+WEB_USER="apache"
 ## Apache group (optional)
-#WEB_GROUP=""
+WEB_GROUP="apache"
 ## init script directory (optional)
-#INIT_D="/etc/init.d"
+INIT_D="/etc/init.d"
 ## cron config script directory (optional)
-#CRON_D="/etc/cron.d"
+CRON_D="/etc/cron.d"
 ## Path for PEAR.php file
-PEAR_PATH=""
+PEAR_PATH="/usr/share/pear/"
 #####################################################################
 ## End: Others
 #####################################################################
