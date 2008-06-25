@@ -102,7 +102,7 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 -- Contenu de la table `general_opt`
 --
 
-INSERT INTO `general_opt` (`gopt_id`, `nagios_path`, `nagios_path_bin`, `nagios_init_script`, `nagios_path_img`, `nagios_path_plugins`, `nagios_version`, `snmp_community`, `snmp_version`, `snmpttconvertmib_path_bin`, `perl_library_path`, `snmp_trapd_path_conf`, `mailer_path_bin`, `rrdtool_path_bin`, `rrdtool_version`, `oreon_path`, `oreon_web_path`, `oreon_refresh`, `color_up`, `color_down`, `color_unreachable`, `color_ok`, `color_warning`, `color_critical`, `color_pending`, `color_unknown`, `session_expire`, `perfparse_installed`, `graph_preferencies`, `maxViewMonitoring`, `maxViewConfiguration`, `AjaxTimeReloadMonitoring`, `AjaxTimeReloadStatistic`, `AjaxFirstTimeReloadMonitoring`, `AjaxFirstTimeReloadStatistic`, `template`, `problem_sort_type`, `problem_sort_order`, `ldap_host`, `ldap_port`, `ldap_base_dn`, `ldap_login_attrib`, `ldap_ssl`, `ldap_search_user`, `ldap_search_user_pwd`, `ldap_search_filter`, `ldap_search_timeout`, `ldap_search_limit`, `ldap_auth_enable`, `debug_path`, `debug_auth`, `debug_nagios_import`, `debug_rrdtool`, `debug_ldap_import`, `debug_inventory`, `gmt`, `patch_type_stable`, `patch_type_RC`, `patch_type_patch`, `patch_type_secu`, `patch_type_beta`, `patch_url_service`, `patch_url_download`, `patch_path_download`, `ndo_activate`, `snmptt_unknowntrap_log_file`) VALUES(1, '@INSTALL_DIR_NAGIOS@', '@NAGIOS_BINARY@', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_IMG@/', '@NAGIOS_PLUGIN@/', '2', 'public', '1', '@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib', '/usr/local/lib', '/etc/snmp/centreon_traps/', '@BIN_MAIL@', '@BIN_RRDTOOL@', '1.2', '@INSTALL_DIR_CENTREON@/', '/centreon/', 60, '#19EE11', '#F91E05', '#82CFD8', '#13EB3A', '#F8C706', '#F91D05', '#2AD1D4', '#D4D5CC', 120, '0', 1, 50, 20, 15, 15, 0, 0, 'Centreon-2', 'last_state_change', 'ASC', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '60', '60', '0', NULL, NULL, NULL, NULL, NULL, NULL, 1, 'Y', 'Y', 'Y', 'Y', 'Y', 'http://update.centreon.com/version.php', 'http://update.centreon.com/patch/', '/tmp/', '1', 'snmptrapd.log');
+INSERT INTO `general_opt` (`gopt_id`, `nagios_path`, `nagios_path_bin`, `nagios_init_script`, `nagios_path_img`, `nagios_path_plugins`, `nagios_version`, `snmp_community`, `snmp_version`, `snmpttconvertmib_path_bin`, `perl_library_path`, `snmp_trapd_path_conf`, `mailer_path_bin`, `rrdtool_path_bin`, `rrdtool_version`, `oreon_path`, `oreon_web_path`, `oreon_refresh`, `color_up`, `color_down`, `color_unreachable`, `color_ok`, `color_warning`, `color_critical`, `color_pending`, `color_unknown`, `session_expire`, `perfparse_installed`, `graph_preferencies`, `maxViewMonitoring`, `maxViewConfiguration`, `AjaxTimeReloadMonitoring`, `AjaxTimeReloadStatistic`, `AjaxFirstTimeReloadMonitoring`, `AjaxFirstTimeReloadStatistic`, `template`, `problem_sort_type`, `problem_sort_order`, `ldap_host`, `ldap_port`, `ldap_base_dn`, `ldap_login_attrib`, `ldap_ssl`, `ldap_search_user`, `ldap_search_user_pwd`, `ldap_search_filter`, `ldap_search_timeout`, `ldap_search_limit`, `ldap_auth_enable`, `debug_path`, `debug_auth`, `debug_nagios_import`, `debug_rrdtool`, `debug_ldap_import`, `debug_inventory`, `gmt`, `patch_type_stable`, `patch_type_RC`, `patch_type_patch`, `patch_type_secu`, `patch_type_beta`, `patch_url_service`, `patch_url_download`, `patch_path_download`, `ndo_activate`, `snmptt_unknowntrap_log_file`) VALUES(1, '@INSTALL_DIR_NAGIOS@', '@NAGIOS_BINARY@', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_IMG@/', '@NAGIOS_PLUGIN@/', '2', 'public', '1', '@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib', '/usr/local/lib', '/etc/snmp/centreon_traps/', '@BIN_MAIL@', '@BIN_RRDTOOL@', '1.2', '@INSTALL_DIR_CENTREON@/', '/centreon/', 60, '#19EE11', '#F91E05', '#82CFD8', '#13EB3A', '#F8C706', '#F91D05', '#2AD1D4', '#D4D5CC', 120, '0', 1, 50, 20, 15, 15, 0, 0, 'Centreon-2', 'last_state_change', 'ASC', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '60', '60', '0', '@INSTALL_DIR_CENTREON@/log/', NULL, NULL, NULL, NULL, NULL, 1, 'Y', 'Y', 'Y', 'Y', 'Y', 'http://update.centreon.com/version.php', 'http://update.centreon.com/patch/', '/tmp/', '1', 'snmptrapd.log');
 
 --
 -- Contenu de la table `giv_components_template`
@@ -567,7 +567,7 @@ INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps
 -- Contenu de la table `acl_groups`
 --
 
-INSERT INTO `acl_groups` (`acl_group_id`, `acl_group_name`, `acl_group_alias`, `acl_group_activate`) VALUES(14, 'Guest', 'Guest', '1');
+INSERT INTO `acl_groups` (`acl_group_id`, `acl_group_name`, `acl_group_alias`, `acl_group_activate`) VALUES(14, 'Guest', 'Guest', '0');
 
 --
 -- Contenu de la table `acl_group_contacts_relations`
@@ -619,11 +619,11 @@ INSERT INTO `acl_res_group_relations` (`argr_id`, `acl_res_id`, `acl_group_id`) 
 -- Contenu de la table `acl_topology`
 --
 
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(4, 'Access simple A la home', 'test2', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(5, 'Access Au monitoring', 'test2', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(6, 'Acces Aux options perso', 'Options', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(11, 'Configurations', 'All configs', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(13, 'Graphiques only', 'Seulement les graphs', '0');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(4, 'Home page', 'Only access on home page', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(5, 'Monitoring page', 'Only access on monitoring pages', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(6, 'Personal option pages ', 'Only access on Option pages', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(11, 'Configuration pages', 'Only access on all configuration pages', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(13, 'Graphic pages', 'Only access on graphic pages', '0');
 
 --
 -- Contenu de la table `acl_topology_relations`
