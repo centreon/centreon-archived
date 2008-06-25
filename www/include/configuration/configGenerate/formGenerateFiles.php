@@ -195,7 +195,7 @@
 					}
 					$msg_copy[$host["id"]] .= "</table>";
 				} else {
-					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> /usr/local/centreon/var/centcore.cmd", $return);
+					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> @CENTREON_VARLIB@/centcore.cmd", $return);
 				}
 		}
 		
@@ -212,13 +212,13 @@
 					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
 					} else { 
-						system("echo 'RELOAD:".$host["id"]."' >> /srv/oreon/var/centcore.cmd");
+						system("echo 'RELOAD:".$host["id"]."' >> @CENTREON_VARLIB@/centcore.cmd");
 					}
 				} else if ($ret["restart_mode"] == 2) {
 					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
 					} else {
-						system("echo \"RESTART:".$host["id"]."\" >> /usr/local/centreon/var/centcore.cmd", $return);
+						system("echo \"RESTART:".$host["id"]."\" >> @CENTREON_VARLIB@/centcore.cmd", $return);
 					}
 				} else if ($ret["restart_mode"] == 3)	{
 					require_once("./include/monitoring/external_cmd/functions.php");

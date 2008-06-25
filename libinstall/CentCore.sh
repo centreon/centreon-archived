@@ -46,6 +46,10 @@ copyInTempFile 2>>$LOG_FILE
 log "INFO" "$(gettext "Create working directory")"
 mkdir -p $TMPDIR/final/bin 
 mkdir -p $TMPDIR/work/bin
+mkdir -p $TMPDIR/work/www/include/configuration/configGenerate
+mkdir -p $TMPDIR/final/www/include/configuration/configGenerate
+mkdir -p $TMPDIR/work/www/include/monitoring/external_cmd
+mkdir -p $TMPDIR/final/www/include/monitoring/external_cmd
 [ ! -d $INSTALL_DIR_CENTREON/examples ] && mkdir -p $INSTALL_DIR_CENTREON/examples
 # Copy init.d template in src
 cp -f $BASE_DIR/tmpl/install/centcore.init.d $TMPDIR/src
@@ -73,6 +77,36 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$TMPDIR/final/bin/centcore $CENTCORE_BINDIR/centcore >> $LOG_FILE 2>&1
 echo_success "$(gettext "Copy CentCore in binary directory")" "$ok"
 log "INFO" "$(gettext "Copying CentCore in binary directory")"
+
+## Change CentCore link in CentWeb
+sed -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	$TMPDIR/src/www/include/configuration/configGenerate/formGenerateFiles.php \
+	> $TMPDIR/work/www/include/configuration/configGenerate/formGenerateFiles.php
+
+sed -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	$TMPDIR/src/www/include/monitoring/external_cmd/functions.php \
+	> $TMPDIR/work/www/include/monitoring/external_cmd/functions.php \
+
+cp $TMPDIR/work/www/include/configuration/configGenerate/formGenerateFiles.php\
+	$TMPDIR/final/www/include/configuration/configGenerate/ \
+	>> $LOG_FILE 2>&1
+cp $TMPDIR/work/www/include/monitoring/external_cmd/functions.php \
+	$TMPDIR/final/www/include/monitoring/external_cmd/ \
+	>> $LOG_FILE 2>&1
+
+$INSTALL_DIR/cinstall $cinstall_opts -f \
+	-u "$WEB_USER" -g "$WEB_GROUP" -m 744 \
+	$TMPDIR/final/www/include/configuration/configGenerate/formGenerateFiles.php \
+	$INSTALL_DIR_CENTREON/www/include/configuration/configGenerate/formGenerateFiles.php \
+	>> $LOG_FILE 2>&1
+
+
+$INSTALL_DIR/cinstall $cinstall_opts -f \
+	-u "$WEB_USER" -g "$WEB_GROUP" -m 744 \
+	$TMPDIR/final/www/include/monitoring/external_cmd/functions.php \
+	$INSTALL_DIR_CENTREON/www/include/monitoring/external_cmd/functions.php \
+	>> $LOG_FILE 2>&1
+
 
 ## Change right on CENTREON_RUNDIR
 log "INFO" "$(gettext "Change right") : $CENTREON_RUNDIR"

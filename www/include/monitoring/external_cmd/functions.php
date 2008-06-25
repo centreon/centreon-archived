@@ -31,7 +31,7 @@
 		if (isHostLocalhost($pearDB, $informations[0]))
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
 		else
-			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . "/usr/local/centreon/var/centcore.cmd";
+			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . "@CENTREON_VARLIB@/centcore.cmd";
 		return passthru($str);
 	}
 
