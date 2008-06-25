@@ -1294,7 +1294,7 @@ CREATE TABLE `centreon`.`host_template_relation` (
 `host_tpl_id` INT NULL ,
 `order` INT NULL ,
 PRIMARY KEY ( `host_host_id` , `host_tpl_id` )
-) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci 
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci ;
 
 -- --------------------------------------------------------
 
@@ -1832,7 +1832,7 @@ CREATE TABLE IF NOT EXISTS `view_img_dir_relation` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Contraintes pour les tables exportées
+-- Contraintes pour les tables exportï¿½es
 --
 
 --
