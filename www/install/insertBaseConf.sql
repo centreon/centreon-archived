@@ -195,11 +195,11 @@ INSERT INTO `contactgroup_host_relation` (`cghr_id`, `host_host_id`, `contactgro
 -- Contenu de la table `hostgroup`
 --
 
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(53, 'Linux_Servers', 'all linux servers', NULL, '0', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(53, 'Linux_Servers', 'All linux servers', NULL, '0', NULL, '1');
 INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(54, 'Windows_Servers', 'All windows servers', NULL, NULL, NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(55, 'Network', 'network', NULL, '0', NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(56, 'Printers', 'Printers Gentilly', NULL, NULL, NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(58, 'Routeurs_Cisco', 'Tous les routeurs Cisco', NULL, '0', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(55, 'Networks', 'All other equipment', NULL, '0', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(56, 'Printers', 'All printers', NULL, NULL, NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(58, 'Cisco_routers', 'All cisco routers', NULL, '0', NULL, '1');
 
 --
 -- Contenu de la table `hostgroup_relation`
