@@ -15,6 +15,9 @@
  * For information : contact@centreon.com
  */
   	
+  	if (!isset ($oreon))
+		exit ();
+  	
  	$error_msg = "";
 	$command = $_GET["command_line"];
 	$example = $_GET["command_example"];		

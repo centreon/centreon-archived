@@ -118,6 +118,7 @@
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				}
 			$DBRESULT =& $pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
+			$DBRESULT =& $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
@@ -339,6 +340,8 @@
 			updateNagiosServerRelation_MC($host_id);
 		else
 			updateNagiosServerRelation($host_id);
+			
+		
 	}	
 	
 	function insertHostInDB ($ret = array())	{
@@ -425,6 +428,27 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(host_id) FROM host");
 		$host_id = $DBRESULT->fetchRow();		
+
+		/*
+ 		*  Insert multiple templates
+ 		*/ 
+ 		$i = 0;
+ 		$j = 1;
+ 		$already_stocked = array();
+ 		$tpSelect = "tpSelect_" . $i;
+ 		while(isset($_POST[$tpSelect]))
+ 		{ 			
+ 			if (!isset($already_stocked[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
+	 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id['MAX(host_id)'] .", ". $_POST[$tpSelect] .", ". $j .")";
+		 		$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$j++;
+				$already_stocked[$_POST[$tpSelect]] = 1;
+ 			}
+			$i++;
+			$tpSelect = "tpSelect_" . $i;
+ 		}		
 		
 		/*
 		 *  Update LCA
@@ -580,6 +604,28 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
+		/*
+		 *  update multiple templates		 
+		 */		 
+		$i = 0;
+		$j = 1;
+ 		$tpSelect = "tpSelect_" . $i;
+ 		$already_stocked = array();
+ 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+ 		while(isset($_POST[$tpSelect]))
+ 		{ 			
+ 			if (!isset($already_stocked[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
+	 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
+		 		$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$j++;
+				$already_stocked[$_POST[$tpSelect]] = 1;
+ 			}
+			$i++;
+			$tpSelect = "tpSelect_" . $i;
+ 		}
 	}
 	
 	function updateHost_MC($host_id = null)	{
@@ -643,6 +689,28 @@
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
+		
+		/*
+		 *  update multiple templates		 
+		 */		 
+		$i = 0;
+		$j = 1;
+ 		$tpSelect = "tpSelect_" . $i;
+ 		$already_stocked = array();
+ 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+ 		while(isset($_POST[$tpSelect]))
+ 		{ 			
+ 			if (!isset($already_stocked[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
+	 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
+		 		$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$j++;
+				$already_stocked[$_POST[$tpSelect]] = 1;
+ 			}
+			$i++;
+			$tpSelect = "tpSelect_" . $i;
+ 		}		
 	}
 	
 	function updateHostHostParent($host_id = null, $ret = array())	{

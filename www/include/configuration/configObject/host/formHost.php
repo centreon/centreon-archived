@@ -101,10 +101,12 @@
 
 	$hTpls = array( NULL => NULL );
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
+	$nbMaxTemplates = 0;
 	while($DBRESULT->fetchInto($hTpl))	{
 		if (!$hTpl["host_name"])
 			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
 		$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
+		$nbMaxTemplates++;
 	}
 	$DBRESULT->free();
 	
@@ -197,6 +199,20 @@
 	$extImg = return_image_list(1);
 	$extImgStatusmap = array();
 	$extImgStatusmap = return_image_list(2);
+	
+	/*
+	 *  Host multiple templates relations stored in DB
+	 */	
+	$mTp = array();
+	$k = 0;
+	$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
+	while($multiTp = $DBRESULT->fetchRow())
+	{
+		$mTp[$k] = $multiTp["host_tpl_id"];
+		$k++;
+	}
+	$DBRESULT->free();
+	
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -244,14 +260,28 @@
 	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
+	$form->addElement('text', 'host_parallel_template', _("Host Parallel Templates"), $hTpls);
+	$form->addElement('static', 'tplTextParallel', _("A host can have more than one template at the same time"));	
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
+	include_once("makeJS_formHost.php");
+	if ($o == "c" || $o == "a" || $o == "mc")
+	{
+		for($k=0; $mTp[$k]; $k++) {?>
+			<script type="text/javascript">
+			tab[<?=$k;?>] = <?=$mTp[$k];?>;		
+			</script> 
+		<?php } ?>
+		<script type="text/javascript">
+			add_select_template();
+		</script>		
+	<?}
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("No"), '0');
 	$form->addGroup($dupSvTpl, 'dupSvTplAssoc', _("Checks Enabled"), '&nbsp;');
 	if ($o == "c")
 		$form->setDefaults(array('dupSvTplAssoc' => '0'));
 	else if ($o == "w")
-		;
+		; 
 	else if ($o != "mc")
 		$form->setDefaults(array('dupSvTplAssoc' => '1'));
 	$form->addElement('static', 'dupSvTplAssocText', _("Create Services linked to the Template too"));
@@ -571,7 +601,7 @@
 	#
 	##End of form definition
 	#
-
+        
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -651,6 +681,7 @@
 		$tpl->assign("History_Options", _("History Options"));
 		$tpl->assign("Event_Handler", _("Event Handler"));
 		$tpl->assign("topdoc", _("Documentation"));
+		$tpl->assign("hostID", $host_id);
 		
 		$tpl->display("formHost.ihtml");
 	}
