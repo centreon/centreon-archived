@@ -19,7 +19,7 @@ For information : contact@centreon.com
  *  Change Tab
  */
 
-function InitChangeTab(){
+function initChangeTab(){
 
 	for (var i = 2; document.getElementById('tab'+i); i++) {
 		document.getElementById('tab'+i).style.display='none';
