@@ -77,20 +77,34 @@
 	}
 	else {
 		$command = $resource_def;
+		$command = str_replace(';', ' ', $command);
 		$stdout = array();
-		unset($stdout);	
-		exec($command, $stdout, $status);	
-		$msg = join(" ",$stdout);
-		$msg = str_replace("\n", "<br />", $msg);
-	
-		if ($status == 1)
-			$status = _("WARNING");
-		else if ($status == 2)
-			$status = _("CRITICAL");
-		else if ($status == 0)
-			$status = _("OK");	
+		unset($stdout);
+		//for security reasons, we do not allow the execution of any command unless it is located in path $USER1$ 
+		$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER1\$' LIMIT 1");			
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$resource = $DBRESULT->fetchRow();
+		$user1Path = $resource["resource_line"];
+		$pathMatch = str_replace('/', '\/', $user1Path);
+		
+		if (preg_match("/^$pathMatch/", $command))
+		{					
+			exec($command, $stdout, $status);	
+			$msg = join(" ",$stdout);
+			$msg = str_replace("\n", "<br />", $msg);
+		
+			if ($status == 1)
+				$status = _("WARNING");
+			else if ($status == 2)
+				$status = _("CRITICAL");
+			else if ($status == 0)
+				$status = _("OK");	
+			else
+				$status = _("UNKNOWN");
+		}
 		else
-			$status = _("UNKNOWN");
+			$msg = _("Plugin has to be in : ") . $user1Path;
 	}
 	
 	$attrsText 	= array("size"=>"25");
