@@ -31,45 +31,17 @@
 		if ($str != "")
 			$condition = " WHERE acl_group_id IN (".$str.")";		
 		$DBRESULT =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
-		while ($res = $DBRESULT->fetchRow()){
+		while ($res =& $DBRESULT->fetchRow()){
 
 			$DBRESULT2 =& $pearDB->query("SELECT acl_resources_sg_relations.sg_id, sg_name FROM servicegroup, acl_resources_sg_relations WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_sg_relations.sg_id = servicegroup.sg_id");	
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while ($DBRESULT2->fetchInto($serviceGroup))
+			while ($serviceGroup =& $DBRESULT2->fetchRow())
 				$lcaServiceGroup[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];
 			$DBRESULT2->free();
 		
 		}
 		$DBRESULT->free();
-		/*
-		if (session_id() == "") $uid = $_POST["sid"] ; else $uid = session_id();
-		$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$DBRESULT->fetchInto($user);
-		$user_id = $user["user_id"];	
-		$lcaServiceGroup = array();
-		$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		if ($DBRESULT->numRows())	{
-			while($DBRESULT->fetchInto($contactGroup))	{
-			 	$DBRESULT1 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
-				if (PEAR::isError($DBRESULT1))
-					print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
-				 if ($DBRESULT1->numRows())
-					while ($DBRESULT1->fetchInto($lca))	{
-						$DBRESULT2 =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup, lca_define_servicegroup_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND sg_id = servicegroup_sg_id");	
-						if (PEAR::isError($DBRESULT2))
-							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-						while ($DBRESULT2->fetchInto($serviceGroup))
-							$lcaServiceGroup[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];
-						unset($DBRESULT2);
-					}
-			}
-		}
-		*/
 		return $lcaServiceGroup;
 	}
 	
@@ -91,13 +63,13 @@
 			$condition = " WHERE acl_group_id IN (".$str.")";		
 		$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
 		
-		while ($res = $DBRESULT2->fetchRow()){
+		while ($res =& $DBRESULT2->fetchRow()){
   			/*
   			 * Hosts
   			 */
   			$host = array();
   			$DBRESULT3 =& $pearDB->query("SELECT host_name, host_id FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id");
-	  		while ($host = $DBRESULT3->fetchRow())
+	  		while ($host =& $DBRESULT3->fetchRow())
 				if ($host["host_name"] != "")
 					$lcaHost[$host["host_name"]] = $host["host_id"];
 			unset($DBRESULT3);
@@ -109,9 +81,9 @@
 											"FROM `hostgroup`, `acl_resources_hg_relations` " .
 											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
 											"AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
-	  		while ($hostgroup = $DBRESULT3->fetchRow()){
+	  		while ($hostgroup =& $DBRESULT3->fetchRow()){
 	  			$DBRESULT4 =& $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation` WHERE host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = '".$hostgroup["hg_id"]."'");
-	  			while ($host_hostgroup = $DBRESULT4->fetchRow())
+	  			while ($host_hostgroup =& $DBRESULT4->fetchRow())
 					$lcaHost[$host_hostgroup["host_name"]] = $host_hostgroup["host_id"];
 				$lcaHostGroup[$hostgroup["hg_alias"]] = $hostgroup["hg_id"];	
 	  		}
@@ -121,7 +93,7 @@
 			$host = array();
 			$DBRESULT3 =& $pearDB->query("SELECT host_name FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND host.host_id = acl_resources_hostex_relations.host_host_id");
 	  		if ($DBRESULT3->numRows())
-		  		while ($host = $DBRESULT3->fetchRow())
+		  		while ($host =& $DBRESULT3->fetchRow())
 					if (isset($lcaHost[$host["host_name"]]))
 						unset($lcaHost[$host["host_name"]]);
 			unset($DBRESULT3);
@@ -158,7 +130,7 @@
 		 * Get User
 		 */			
 		$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
-		$user = $DBRESULT->fetchRow();
+		$user =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		/*
 		 * Get Groups
@@ -166,7 +138,7 @@
 		$groups = array();
 		$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$user["user_id"]."'");
   		if ($num = $DBRESULT->numRows()){
-			while ($group = $DBRESULT->fetchRow())
+			while ($group =& $DBRESULT->fetchRow())
 				$groups[$group["acl_group_id"]] = $group["acl_group_id"];
 			$DBRESULT->free();
   		}
@@ -210,13 +182,13 @@
 			$condition = " WHERE acl_group_id IN (".$str.")";		
 		$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
 		
-		while ($res = $DBRESULT2->fetchRow()){
+		while ($res =& $DBRESULT2->fetchRow()){
   			/*
   			 * Hosts
   			 */
   			$host = array();
   			$DBRESULT3 =& $pearDB->query("SELECT host_name, host_id FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id");
-	  		while ($host = $DBRESULT3->fetchRow())
+	  		while ($host =& $DBRESULT3->fetchRow())
 				if ($host["host_id"] != "")
 					$lcaHost[$host["host_id"]] = $host["host_id"];
 			unset($DBRESULT3);
@@ -228,9 +200,9 @@
 											"FROM `hostgroup`, `acl_resources_hg_relations` " .
 											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
 											"AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
-	  		while ($hostgroup = $DBRESULT3->fetchRow()){
+	  		while ($hostgroup =& $DBRESULT3->fetchRow()){
 	  			$DBRESULT4 =& $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation` WHERE host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = '".$hostgroup["hg_id"]."'");
-	  			while ($host_hostgroup = $DBRESULT4->fetchRow())
+	  			while ($host_hostgroup =& $DBRESULT4->fetchRow())
 					$lcaHost[$host_hostgroup["host_id"]] = $host_hostgroup["host_id"];
 				$lcaHostGroup[$hostgroup["hg_id"]] = $hostgroup["hg_id"];	
 	  		}
@@ -240,7 +212,7 @@
 			$host = array();
 			$DBRESULT3 =& $pearDB->query("SELECT host_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND host.host_id = acl_resources_hostex_relations.host_host_id");
 	  		if ($DBRESULT3->numRows())
-		  		while ($host = $DBRESULT3->fetchRow())
+		  		while ($host =& $DBRESULT3->fetchRow())
 					if (isset($lcaHost[$host["host_id"]]))
 						unset($lcaHost[$host["host_id"]]);
 			unset($DBRESULT3);
@@ -251,7 +223,7 @@
 											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
 													"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id");
 	  		if ($DBRESULT3->numRows())
-		  		while ($host = $DBRESULT3->fetchRow()){
+		  		while ($host =& $DBRESULT3->fetchRow()){
 					$lcaHost[$host["host_host_id"]] = $host["host_host_id"];
 		  		}
 			unset($DBRESULT3);
@@ -274,7 +246,7 @@
 									"FROM acl_resources_sc_relations, acl_res_group_relations " .
 									"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
 									"AND acl_res_group_relations.acl_group_id = '".$groupstr."'");
-		while ($res = $DBRESULT->fetchRow())
+		while ($res =& $DBRESULT->fetchRow())
 			$tab_categories[$res["sc_id"]] = $res["sc_id"];
 	  	unset($res);
 	  	unset($DBRESULT);
@@ -312,7 +284,7 @@
 		
 		$tab = array();
 		$DBRESULT =& $pearDB->query("SELECT sc_id FROM `service_categories_relation` WHERE service_service_id IN (".$str.")");
-		while ($res = $DBRESULT->fetchRow())
+		while ($res =& $DBRESULT->fetchRow())
 			$tab[$res["sc_id"]] = $res["sc_id"];
 		unset($res);		
 		unset($DBRESULT);
@@ -428,7 +400,7 @@
 			return ;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT contact_admin FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
-		$admin = $DBRESULT->fetchRow();
+		$admin =& $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		if (isset($admin["contact_admin"]))
 			return $admin["contact_admin"];
@@ -440,7 +412,7 @@
 			return ;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
-		$admin = $DBRESULT->fetchRow();
+		$admin =& $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		if (isset($admin["contact_id"]))
 			return $admin["contact_id"];
@@ -459,7 +431,7 @@
 		}	
 		$tab_res = array();
 		$DBRESULT =& $pearDB->query("SELECT `acl_res_id` FROM `acl_res_group_relations` WHERE `acl_group_id` IN ($str)");
-		while ($res = $DBRESULT->fetchRow())
+		while ($res =& $DBRESULT->fetchRow())
 			$tab_res[$res["acl_res_id"]] = $res["acl_res_id"];
 		$DBRESULT->free();
 		unset($str);

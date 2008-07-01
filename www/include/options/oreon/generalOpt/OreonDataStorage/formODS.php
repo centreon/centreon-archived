@@ -103,7 +103,7 @@
 		$DBRESULT2 =& $pearDBO->query("SELECT * FROM `config` LIMIT 1");
 		if (PEAR::isError($DBRESULT2))
 			print ("DB error : ".$DBRESULT2->getDebugInfo());
-		$DBRESULT2->fetchInto($oreon->optGen);
+		$oreon->optGen =& $DBRESULT2->fetchRow($oreon->optGen);
 
 		$o = NULL;
    		$valid = true;

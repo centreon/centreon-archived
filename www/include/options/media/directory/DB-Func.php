@@ -48,7 +48,7 @@
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			while ($img = $DBRESULT->fetchRow())
+			while ($img =& $DBRESULT->fetchRow())
 				deleteImgInDB(array($img["img_img_id"]=>$img["img_img_id"]));
 			/*
 			 * Delete directory
@@ -57,7 +57,7 @@
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$dir_alias = $DBRESULT->fetchRow();
+			$dir_alias =& $DBRESULT->fetchRow();
 			rmdir("./img/media/".$dir_alias["dir_alias"]);
 			if (!is_dir("./img/media/".$dir_alias["dir_alias"]))	{
 				$DBRESULT =& $pearDB->query("DELETE FROM view_img_dir WHERE dir_id = '".$key."'");
@@ -73,7 +73,7 @@
 			$DBRESULT =& $pearDB->query("SELECT * FROM view_img_dir WHERE dir_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$row = $DBRESULT->fetchRow();
+			$row =& $DBRESULT->fetchRow();
 			$row["dir_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -94,7 +94,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-						while($DBRESULT->fetchInto($img))	{
+						while ($img =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO view_img_dir_relation VALUES ('', '".$maxId["MAX(dir_id)"]."', '".$img["img_img_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
@@ -129,7 +129,7 @@
 			$DBRESULT =& $pearDB->query("SELECT MAX(dir_id) FROM view_img_dir");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$dir_id = $DBRESULT->fetchRow();
+			$dir_id =& $DBRESULT->fetchRow();
 			return ($dir_id["MAX(dir_id)"]);
 		}
 		else
@@ -153,7 +153,7 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		$old_dir_alias = $DBRESULT->fetchRow();
+		$old_dir_alias =& $DBRESULT->fetchRow();
 		if (!is_dir("./img/media/".$old_dir_alias["dir_alias"]))
 			mkdir("./img/media/".$old_dir_alias["dir_alias"]);
 		rename("./img/media/".$old_dir_alias["dir_alias"], "./img/media/".$ret["dir_alias"]);

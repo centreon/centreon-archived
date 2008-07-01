@@ -32,14 +32,14 @@
 	$DBRESULT1 =& $pearDB->query("SELECT contact_admin FROM contact, session WHERE contact.contact_id = session.user_id AND session_id = '$sid'");
 	if (PEAR::isError($DBRESULT1))
 		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
-	$DBRESULT1->fetchInto($user);
+	$user =& $DBRESULT1->fetchRow();
 	$user_admin = $user["contact_admin"];
 	
 	// Read 
 	$DBRESULT1 =& $pearDB->query("SELECT * FROM general_opt");
 	if (PEAR::isError($DBRESULT1))
 		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";	
-	$DBRESULT1->fetchInto($general_opt);
+	$general_opt =& $DBRESULT1->fetchRow();
 	$version = $general_opt["nagios_version"];
 	
 	// reload Session
@@ -91,7 +91,7 @@
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$fast_parsing = 0;
 	} else {
-		$DBRESULT->fetchInto($config);
+		$config =& $DBRESULT->fetchRow();
 		if (isset($config['fast_parsing']))
 			$fast_parsing = $config['fast_parsing'];		
 		else 
@@ -101,7 +101,7 @@
 	$DBRESULT1 =& $pearDB->query("SELECT status_file FROM cfg_nagios WHERE nagios_activate = '1'");
 	if (PEAR::isError($DBRESULT1))
 		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
-	$DBRESULT1->fetchInto($nagios_cfg);
+	$nagios_cfg =& $DBRESULT1->fetchRow();
 	
 	if (($version == 1 || $version == 2) && $fast_parsing == 0)
 		$file = $nagios_cfg["status_file"];
@@ -118,7 +118,7 @@
 		$DBRESULT1 =& $pearDB->query("SELECT host_name FROM host, hostgroup, hostgroup_relation WHERE hostgroup.hg_name = '".$hg_name."' AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND host.host_id = hostgroup_relation.host_host_id");
 		if (PEAR::isError($DBRESULT1))
 			print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
-		while ($DBRESULT1->fetchInto($h))
+		while ($h =& $DBRESULT1->fetchRow())
 			$hostgroup[$h["host_name"]] = 1;
 		unset($h);
 	}

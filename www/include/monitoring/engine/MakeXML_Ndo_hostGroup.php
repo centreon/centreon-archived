@@ -35,11 +35,10 @@
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$res->fetchInto($session))
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
-	} else {
+	} else
 		get_error('need session identifiant !');
-	}
 	
 	/* 
 	 * requisit 
@@ -76,7 +75,7 @@
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$tab = $DBRESULT->fetchRow();
+		$tab =& $DBRESULT->fetchRow();
 		return($tab["nb"]);
 	}
 
@@ -104,7 +103,7 @@
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$tab = $DBRESULT->fetchRow();
+		$tab =& $DBRESULT->fetchRow();
 		return($tab["nb"]);
 	}
 
@@ -179,7 +178,7 @@
 	$ct = 0;
 	$flag = 0;
 
-	while ($ndo = $DBRESULT_NDO1->fetchRow()) 
+	while ($ndo =& $DBRESULT_NDO1->fetchRow()) 
 	{
 		if (isset($lca["LcaHostGroup"][$ndo["hostgroup_name"]]) || !isset($lca)) {
 			$nb_host_up = 0 + get_hosts_status($ndo["hostgroup_id"], 0);

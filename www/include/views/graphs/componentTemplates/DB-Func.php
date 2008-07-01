@@ -72,7 +72,7 @@
 			$DBRESULT =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo();
-			$DBRESULT->fetchInto($row);
+			$row =& $DBRESULT->fetchRow();
 			$row["compo_id"] = '';
 			$row["default_tpl1"] = '0';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -134,7 +134,7 @@
 		$DBRESULT =& $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo();
-		$compo_id = $DBRESULT->fetchRow();
+		$compo_id =& $DBRESULT->fetchRow();
 		return ($compo_id["MAX(compo_id)"]);
 	}
 	

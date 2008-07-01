@@ -32,15 +32,15 @@
 
 	require_once ("$classdir/Session.class.php");
 	require_once ("$classdir/Oreon.class.php");
-	require_once("DBconnect.php");
+	require_once ("DBconnect.php");
 
 	/*
 	 * Get auth type
 	 */
 	 
-	$optgen =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
-    $cas = $optgen->fetchRow();
-	
+	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
+    $cas = $DBRESULT->fetchRow();
+	$DBRESULT->free();
 
 	// detect installation dir
 	$file_install_acces = 0;
@@ -248,8 +248,9 @@
 		}
 	}
 	
-	$res =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
-	$res->fetchInto($data);
+	$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
+	$data =& $DBRESULT->fetchRow();
+	$DBRESULT->free();
 	$skin = "./Themes/".$data["template"]."/";
 
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">

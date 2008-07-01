@@ -62,7 +62,7 @@
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($dir); $i++) {		
+	for ($i = 0; $dir =& $DBRESULT->fetchRow(); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$dir['dir_id']."]");	
 		$moptions = "<a href='main.php?p=".$p."&dir_id=".$dir['dir_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -73,7 +73,7 @@
 		$DBRESULT2 =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
-		$imgNbr = $DBRESULT2->fetchRow();
+		$imgNbr =& $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$dir["dir_name"],

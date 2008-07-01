@@ -30,17 +30,15 @@
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
 	
-	/* security check 2/2*/
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$res->fetchRow())
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
-		$res->free();
 	} else
 		get_error('need session identifiant !');
-	/* security end 2/2 */
+
 
 	/* requisit */
 	(isset($_GET["instance"]) && !check_injection($_GET["instance"])) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
@@ -107,7 +105,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
-		while($svc = $DBRESULT->fetchRow()){
+		while($svc =& $DBRESULT->fetchRow()){
 			$tab[$svc["service_name"]] = $svc["current_state"];
 		}
 		return($tab);
@@ -229,7 +227,7 @@
 	$h = "";
 	$flag = 0;
 
-	while ($DBRESULT_NDO1->fetchInto($tab)){
+	while ($tab =& $DBRESULT_NDO1->fetchRow()){
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 
 		if ($sg != $tab["alias"]){

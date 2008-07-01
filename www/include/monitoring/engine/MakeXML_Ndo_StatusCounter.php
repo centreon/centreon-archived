@@ -39,6 +39,7 @@
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 	$ndo_base_prefix = getNDOPrefix();
+	$general_opt = getStatusColor($pearDB);
 	
 	# Session...
 	$debug_session = 'KO';
@@ -47,11 +48,13 @@
 	$sid = isset($_POST["sid"]) ? $_POST["sid"] : 0;
 	$sid = isset($_GET["sid"]) ? $_GET["sid"] : $sid;
 
-	/* security check 2/2*/
+	/* 
+	 * Security Check
+	 */
 	if (!check_injection($sid)){
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if ($res->fetchInto($session))
+		if ($session =& $res->fetchRow())
 			$DBRESULT2 =& $pearDB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".$sid."' LIMIT 1");
 		else
 			get_error('bad session id');
@@ -62,11 +65,11 @@
 	 * LCA
 	 */
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$user = $res1->fetchRow();
+	$user =& $res1->fetchRow();
 	$user_id = $user["user_id"];
 
 	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$admin = $res2->fetchrow();
+	$admin =& $res2->fetchRow();
 	
 	global $is_admin;
 	
@@ -113,7 +116,7 @@
 		$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 		if (PEAR::isError($DBRESULT_OPT))
 			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
-		$DBRESULT_OPT->fetchInto($general_opt);
+		$general_opt =& $DBRESULT_OPT->fetchRow();
 
 		include_once($centreon_path . "www/DBNDOConnect.php");
 
@@ -138,7 +141,7 @@
 		
 		$host_stat = array(0=>0, 1=>0, 2=>0, 3=>0);
 
-		while ($ndo = $DBRESULT_NDO1->fetchRow())
+		while ($ndo =& $DBRESULT_NDO1->fetchRow())
 			$host_stat[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 
 		/* Get ServiceNDO status */
@@ -164,7 +167,7 @@
 			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
 
 		$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-		while($DBRESULT_NDO2->fetchInto($ndo))
+		while ($ndo =& $DBRESULT_NDO2->fetchRow())
 			$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
 
 		restore_session($statistic_service, $statistic_host);

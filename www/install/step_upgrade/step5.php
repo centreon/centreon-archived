@@ -20,7 +20,7 @@
 	include_once("../DBconnect.php");
 	
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$DBRESULT->fetchInto($version);
+	$version =& $DBRESULT->fetchRow();
 	
 	aff_header("Centreon Upgrade Wizard", "Select Version", 5); ?>
 	In order for your Oreon upgrade to function properly, please select the mysql script file.<br /><br />

@@ -60,7 +60,7 @@
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($perfparse); $i++) {		
+	for ($i = 0; $perfparse =& $DBRESULT->fetchRow(); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$perfparse['perfparse_id']."]");	
 		$moptions = "<a href='main.php?p=".$p."&perfparse_id=".$perfparse['perfparse_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='main.php?p=".$p."&perfparse_id=".$perfparse['perfparse_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='"._("Modify")."'></a>&nbsp;&nbsp;";

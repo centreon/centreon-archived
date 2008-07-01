@@ -29,16 +29,14 @@
 
 	$ndo_base_prefix = getNDOPrefix();
 	
-	/* security check 2/2*/
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$res->numRows())
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
-	/* security end 2/2 */
 
 	/* requisit */
 	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
@@ -153,7 +151,7 @@
 	$flag = 0;
 
 	$tab_final = array();
-	while ($DBRESULT_NDO1->fetchInto($ndo)){
+	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 		$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
 		if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0")
 			$tab_final[$ndo["host_name"]]["nb_service_k"] =  get_services_status($ndo["host_name"], 0);
@@ -164,8 +162,7 @@
 		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
 	}
 
-	foreach ($tab_final as $host_name => $tab)	
-	{
+	foreach ($tab_final as $host_name => $tab)	{
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 		$buffer .= '<l class="'.$class.'">';
 		$buffer .= '<o>'. $ct++ . '</o>';
@@ -186,7 +183,7 @@
 	}
 	/* end */
 
-	if(!$ct){
+	if (!$ct){
 		$buffer .= '<infos>';
 		$buffer .= 'none';
 		$buffer .= '</infos>';

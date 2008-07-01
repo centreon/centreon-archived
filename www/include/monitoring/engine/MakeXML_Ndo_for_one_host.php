@@ -28,17 +28,13 @@
 	$ndo_base_prefix = getNDOPrefix();
 	
 	/* security check 2/2*/
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
-
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
-			;
-		} else
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 

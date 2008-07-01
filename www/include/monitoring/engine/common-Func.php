@@ -24,7 +24,7 @@
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$status = $DBRESULT->fetchRow();
+		$status =& $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		return $status["current_state"];
 	}
@@ -79,7 +79,7 @@
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$tab = $DBRESULT->fetchRow();
+		$tab =& $DBRESULT->fetchRow();
 		return ($tab["nb"]);
 	}
 ?>

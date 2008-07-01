@@ -46,7 +46,7 @@
 		foreach($graphs as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$key."' LIMIT 1");
-			$row = $res->fetchRow();
+			$row =& $res->fetchRow();
 			$row["graph_id"] = '';
 			$row["default_tpl1"] = '0';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -127,7 +127,7 @@
 		$pearDB->query($rq);
 		defaultOreonGraph();
 		$res =& $pearDB->query("SELECT MAX(graph_id) FROM giv_graphs_template");
-		$graph_id = $res->fetchRow();
+		$graph_id =& $res->fetchRow();
 		return ($graph_id["MAX(graph_id)"]);
 	}
 	

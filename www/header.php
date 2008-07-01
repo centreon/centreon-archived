@@ -65,7 +65,7 @@
 	$DBRESULT =& $pearDB->query("SELECT `session_expire` FROM `general_opt` LIMIT 1");
 	if (PEAR::isError($DBRESULT)) 
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	$DBRESULT->fetchInto($session_expire);
+	$session_expire =& $DBRESULT->fetchRow();
 	$time_limit = time() - ($session_expire["session_expire"] * 60);
 
 	$DBRESULT =& $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");

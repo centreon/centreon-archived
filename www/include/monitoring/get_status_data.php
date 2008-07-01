@@ -31,7 +31,7 @@
 		$DBRESULT =& $pearDB->query("SELECT nagios_version FROM general_opt");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
-		$DBRESULT->fetchInto($nagios_version);
+		$nagios_version =& $DBRESULT->fetchRow();
 		$version = $nagios_version["nagios_version"];
 		
 		$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");

@@ -31,7 +31,7 @@
 		# Set Hosts relations
 		$hostnotexludes = array();
 		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = '".$acl_id."'");
-		for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++) {
+		for ($i = 0; $hosts_list =& $DBRESULT->fetchRow(); $i++) {
 			$acl["acl_hosts"][$i] = $hosts_list["host_host_id"];
 			$hostnotexludes[$hosts_list["host_host_id"]] = 1;
 		}
@@ -39,33 +39,33 @@
 		
 		# Set Hosts exludes relations
 		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = '".$acl_id."'");
-		for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $hosts_list =& $DBRESULT->fetchRow(); $i++)
 			$acl["acl_hostexclude"][$i] = $hosts_list["host_host_id"];		
 		$DBRESULT->free();
 		
 		# Set Hosts Groups relations
 		$DBRESULT =& $pearDB->query("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = '".$acl_id."'");
-		for ($i = 0; $hg_list = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $hg_list =& $DBRESULT->fetchRow(); $i++)
 			$acl["acl_hostgroup"][$i] = $hg_list["hg_hg_id"];
 		$DBRESULT->free();
 
 		# Set Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
-		for ($i = 0; $groups = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $groups =& $DBRESULT->fetchRow(); $i++)
 			$acl["acl_groups"][$i] = $groups["acl_group_id"];
 		$DBRESULT->free();
 		
 		# Set Service Categories relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
 		if ($DBRESULT->numRows())
-			for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++)
+			for ($i = 0; $sc =& $DBRESULT->fetchRow(); $i++)
 				$acl["acl_sc"][$i] = $sc["sc_id"];
 		$DBRESULT->free();
 
 		# Set Service Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = '".$acl_id."'");
 		if ($DBRESULT->numRows())
-			for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++)
+			for ($i = 0; $sg =& $DBRESULT->fetchRow(); $i++)
 				$acl["acl_sg"][$i] = $sg["sg_id"];
 		$DBRESULT->free();
 
@@ -75,31 +75,31 @@
 	$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
 	if (PEAR::isError($DBRESULT)) 
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($group = $DBRESULT->fetchRow())
+	while ($group =& $DBRESULT->fetchRow())
 		$groups[$group["acl_group_id"]] = $group["acl_group_name"];
 	$DBRESULT->free();
 	
 	$hosts = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($DBRESULT->fetchInto($host))
+	while ($host =& $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	
 	$hosttoexcludes = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($DBRESULT->fetchInto($host))
+	while ($host =& $DBRESULT->fetchRow())
 		$hosttoexcludes[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	
 	$hostgroups = array();
 	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	while ($hg = $DBRESULT->fetchRow())
+	while ($hg =& $DBRESULT->fetchRow())
 		$hostgroups[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
 	
 	$service_categories = array();
 	$DBRESULT =& $pearDB->query("SELECT sc_id, sc_name FROM service_categories ORDER BY sc_name");
-	while ($DBRESULT->fetchInto($sc))
+	while ($sc =& $DBRESULT->fetchRow())
 		$service_categories[$sc["sc_id"]] = $sc["sc_name"];
 	$DBRESULT->free();
 	

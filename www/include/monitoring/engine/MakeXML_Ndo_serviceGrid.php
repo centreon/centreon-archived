@@ -36,10 +36,11 @@
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if(!$res->numRows())
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
+
 
 	/* 
 	 * requisit 
@@ -99,7 +100,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
-		while ($svc = $DBRESULT->fetchRow())
+		while ($svc =& $DBRESULT->fetchRow())
 			$tab[$svc["service_name"]] = $svc["current_state"];
 		return($tab);
 	}
@@ -196,7 +197,7 @@
 	$flag = 0;
 
 	$tab_final = array();
-	while ($DBRESULT_NDO1->fetchInto($ndo))	{
+	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
 		$tab_svc = get_services_status($ndo["host_name"]);
 		if (count($tab_svc)){
 			$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;

@@ -76,7 +76,7 @@
 		/*
 		 * Get Values
 		 */
-		$session_value = $session->fetchRow();
+		$session_value =& $session->fetchRow();
 		$session->free();
 
 		/*
@@ -91,7 +91,7 @@
 		 */
 		
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
-		$index_data_ODS = $DBRESULT->fetchRow();
+		$index_data_ODS =& $DBRESULT->fetchRow();
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
 			$host_id = getMyHostID($index_data_ODS["host_name"]);
 			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
@@ -111,13 +111,13 @@
 		 */
 		 
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
-		$DBRESULT->fetchInto($GraphTemplate);
+		$GraphTemplate =& $DBRESULT->fetchRow();
 		
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 			if (PEAR::isError($DBRESULT_meta))
 				print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
-			$DBRESULT_meta->fetchInto($meta);
+			$meta =& $DBRESULT_meta->fetchRow();
 			$index_data_ODS["service_description"] = $meta["meta_name"];
 		}
 		
@@ -169,7 +169,7 @@
 		$DBRESULT =& $pearDB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$_GET["index"]."' AND `contact_id` = '".$session_value["user_id"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		while ($metric_activate = $DBRESULT->fetchRow()){
+		while ($metric_activate =& $DBRESULT->fetchRow()){
 			$metrics_activate[$metric_activate["metric_id"]] = $metric_activate["metric_id"];
 		}
 				
@@ -183,7 +183,7 @@
 		$cpt = 0;
 		
 		$metrics = array();		
-		while ($metric = $DBRESULT->fetchRow()){
+		while ($metric =& $DBRESULT->fetchRow()){
 			if (!isset($_GET["metric"]) || (isset($_GET["metric"]) && isset($_GET["metric"][$metric["metric_id"]]))){	
 				if (!isset($metrics_activate) || (isset($metrics_activate) && isset($metrics_activate[$metric["metric_id"]]) && $metrics_activate[$metric["metric_id"]])){
 					
@@ -194,11 +194,11 @@
 					$metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
 					
 					$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metric["metric_name"]."'");
-					$res_ds->fetchInto($ds_data);
+					$ds_data =& $res_ds->fetchRow();
 					if (!$ds_data){
 						$ds = getDefaultDS();						
 						$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
-						$res_ds->fetchInto($ds_data);
+						$ds_data =& $res_ds->fetchRow();
 						$metrics[$metric["metric_id"]]["ds_id"] = $ds;
 					}
 					/*

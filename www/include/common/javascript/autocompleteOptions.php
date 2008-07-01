@@ -28,12 +28,12 @@
 	header('Content-Type: text/xml;charset=utf-8');
 	echo(utf8_encode("<?xml version='1.0' encoding='UTF-8' ?><options>"));	
 	$debut = strtolower($debut);
-	$res =& $pearDB->query("SELECT city_name FROM view_city WHERE country_id = '".$country."' AND city_name LIKE '".$debut."%' ORDER BY city_name limit 0,15");
+	$DBRESULT =& $pearDB->query("SELECT city_name FROM view_city WHERE country_id = '".$country."' AND city_name LIKE '".$debut."%' ORDER BY city_name limit 0,15");
 	if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
-	while ($res->fetchInto($city))
-			echo(utf8_encode("<option>".$city["city_name"]."</option>"));
+	while ($city =& $DBRESULT->fetchRow())
+		echo(utf8_encode("<option>".$city["city_name"]."</option>"));
 	echo("</options>");
 	$pearDB->disconnect();
 ?>

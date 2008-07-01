@@ -20,7 +20,7 @@
 	include_once ("../DBconnect.php");
 	
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$DBRESULT->fetchInto($version);
+	$version =& $DBRESULT->fetchRow();
 	
 	aff_header("Centreon Upgrade Wizard", "Select Version", 3); ?>
 	In order for your Centreon upgrade to function properly, please select the mysql script file.<br /><br />

@@ -29,11 +29,13 @@
 	# Not list the LCA the user is registered by || is admin
 	if (!$oreon->user->get_admin())	{
 		$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-		while($DBRESULT->fetchInto($contactGroup))	{
+		while ($contactGroup =& $DBRESULT->fetchRow())	{
 		 	$DBRESULT2 =& $pearDB->query("SELECT lca.lca_id FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id");	
-			while ($DBRESULT2->fetchInto($lca))
+			while ($lca =& $DBRESULT2->fetchRow())
 				$lca_reg ? $lca_reg .= ", ".$lca["lca_id"] : $lca_reg = $lca["lca_id"];
+			$DBRESULT2->free();
 		}
+		$DBRESULT->free();
 	}
 	$lca_reg ? $lca_reg = $lca_reg : $lca_reg =  '\'\'';
 	if (isset($search))
@@ -69,7 +71,7 @@
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($lca); $i++) {		
+	for ($i = 0; $lca =& $DBRESULT->fetchRow(); $i++) {		
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$lca['lca_id']."]");	
 		if ($lca["lca_activate"])
@@ -139,5 +141,4 @@
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listLCA.ihtml");	
-	
 ?>

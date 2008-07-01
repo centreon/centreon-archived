@@ -64,7 +64,7 @@
 	
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {		
+	for ($i = 0; $group =& $DBRESULT->fetchRow(); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$group['acl_group_id']."]");	
 		if ($group["acl_group_activate"])
 			$moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -78,7 +78,7 @@
 		$DBRESULT2 =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-		$ctNbr = $DBRESULT2->fetchRow();
+		$ctNbr =& $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$group["acl_group_name"],

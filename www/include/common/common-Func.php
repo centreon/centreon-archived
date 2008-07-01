@@ -186,7 +186,7 @@
 		$DBRESULT =& $pearDB->query("SELECT hg.hg_name, hgr.hostgroup_hg_id FROM hostgroup hg, hostgroup_relation hgr WHERE hgr.host_host_id = '".$host_id."' AND hgr.hostgroup_hg_id = hg.hg_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($hg))
+		while ($hg =& $DBRESULT->fetchRow())
 			$hgs[$hg["hostgroup_hg_id"]] = html_entity_decode($hg["hg_name"], ENT_QUOTES);
 		return $hgs;
 	}
@@ -347,7 +347,7 @@
 		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr, host h WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ORDER by h.host_name");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))
+		while ($elem =& $DBRESULT->fetchRow())
 			$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 		$DBRESULT->free();
 		return $hosts;
@@ -405,7 +405,7 @@
 									"AND servicegroup_relation.host_host_id IS NOT NULL");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))	{
+		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = $elem["service_description"];
@@ -418,7 +418,7 @@
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))	{
+		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 			$hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
@@ -569,7 +569,7 @@
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))	{
+		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
 			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES);
@@ -580,7 +580,7 @@
 				" AND service_id = hsr.service_service_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))
+		while ($elem =& $DBRESULT->fetchRow())
 			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
 		$DBRESULT->free();
 		return $hSvs;
@@ -593,7 +593,7 @@
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_activate = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))	{
+		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
 			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES);
@@ -604,7 +604,7 @@
 				" AND service_id = hsr.service_service_id AND service_activate = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))
+		while ($elem =& $DBRESULT->fetchRow())
 			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
 		$DBRESULT->free();
 		return $hSvs;
@@ -617,7 +617,7 @@
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))	{
+		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
 			$hSvs[$elem["service_description"]] = html_entity_decode($elem["service_id"], ENT_QUOTES);
@@ -628,7 +628,7 @@
 				" AND service_id = hsr.service_service_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))
+		while ($elem =& $DBRESULT->fetchRow())
 			$hSvs[$elem["service_description"]]	= html_entity_decode($elem["service_id"], ENT_QUOTES);
 		$DBRESULT->free();
 		return $hSvs;
@@ -641,14 +641,14 @@
 		$DBRESULT =& $pearDB->query("SELECT host_host_id, hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))	{
+		while ($elem =& $DBRESULT->fetchRow())	{
 			if ($elem["host_host_id"])
 				$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 			else if ($elem["hostgroup_hg_id"]){
 				$DBRESULT2 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$elem["hostgroup_hg_id"]."'");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-				while ($DBRESULT2->fetchInto($elem2))
+				while ($elem2 =& $DBRESULT2->fetchRow())
 					$hosts[$elem2["host_host_id"]] = $elem2["host_host_id"];
 				$DBRESULT2->free();
 			}
@@ -664,7 +664,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))
+		while ($elem =& $DBRESULT->fetchRow())
 			if ($elem["host_host_id"])
 				$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 		$DBRESULT->free();
@@ -678,7 +678,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($elem))
+		while ($elem =& $DBRESULT->fetchRow())
 			if ($elem["hostgroup_hg_id"])
 				$hgs[$elem["hostgroup_hg_id"]] = $elem["hostgroup_hg_id"];
 		$DBRESULT->free();
@@ -1031,7 +1031,7 @@
 		$dir_name = NULL;
 		$dir_name2 = NULL;
 		$cpt = 1;
-		while($elem = $DBRESULT->fetchRow())	{
+		while($elem =& $DBRESULT->fetchRow())	{
 			$dir_name = $elem["dir_name"];
 			if ($dir_name2 != $dir_name)	{
 				$dir_name2 = $dir_name;
@@ -1083,7 +1083,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($hg))
+		while ($hg =& $DBRESULT->fetchRow())
 			$hgs[$hg["hg_id"]] = $hg["hg_name"];
 		return $hgs;
 	}
@@ -1159,7 +1159,7 @@
 			$DBRESULT =& $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$conf_ndo = $DBRESULT->fetchRow();
+			$conf_ndo =& $DBRESULT->fetchRow();
 			unset($DBRESULT);
 			return $conf_ndo;		
 		}
@@ -1170,7 +1170,7 @@
 		$DBRESULT =& $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1;");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$conf_ndo = $DBRESULT->fetchRow();
+		$conf_ndo =& $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		return $conf_ndo["db_prefix"];		
 	}
@@ -1215,7 +1215,7 @@
 		$DBRESULT =& $pearDB->query("SELECT `localhost` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host_name' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$nagios_server = $DBRESULT->fetchRow();
+		$nagios_server =& $DBRESULT->fetchRow();
 		if (isset($nagios_server['localhost']))
 			return $nagios_server['localhost'];
 		return 0;
@@ -1227,7 +1227,7 @@
 		$DBRESULT =& $pearDB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host_name' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$nagios_server = $DBRESULT->fetchRow();
+		$nagios_server =& $DBRESULT->fetchRow();
 		if (isset($nagios_server['id']))
 			return $nagios_server['id'];
 		return 0;
@@ -1237,12 +1237,11 @@
 		if (isset($sid) && !check_injection($sid)){
 			$sid = htmlentities($sid);
 			$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-			if($res->fetchInto($session)){
+			if ($session =& $res->fetchRow()){
 				return $session["user_id"];
 			} else
 				get_error('bad session id');		
-		}
-		else
+		} else
 			get_error('need session identifiant !');
 		return 0;
 	}

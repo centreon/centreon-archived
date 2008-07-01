@@ -63,7 +63,7 @@
 				$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE  `index_id` = '".$key."'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";
-				while($DBRESULT->fetchInto($metrics)){
+				while ($metrics =& $DBRESULT->fetchRow()){
 					$DBRESULT2 =& $pearDBO->query("DELETE FROM data_bin WHERE `id_metric` = '".$metrics['metric_id']."'");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->postDebugInfo()."<br />";
@@ -140,12 +140,12 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$data = array();
-	for ($i = 0;$DBRESULT->fetchInto($index_data);$i++){
+	for ($i = 0;$index_data =& $DBRESULT->fetchRow();$i++){
 		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_data["id"]."'");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$metric = "";
-		for ($im = 0;$DBRESULT2->fetchInto($metrics);$im++){
+		for ($im = 0;$metrics =& $DBRESULT2->fetchRow();$im++){
 			if ($im)
 				$metric .= " - ";
 			$metric .= "<a href='./main.php?p=5010602&o=mmtrc&index_id=".$index_data["id"]."'>".$metrics["metric_name"]."</a>";

@@ -84,7 +84,7 @@
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
 		$hostStatus = array(0=>0, 1=>0, 2=>0, 3=>0);
-		while ($ndo = $DBRESULT_NDO1->fetchRow())
+		while ($ndo =& $DBRESULT_NDO1->fetchRow())
 			$hostStatus[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 		
 		$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);
@@ -117,7 +117,7 @@
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
 		$pbCount = 0;
-		while ($ndo = $DBRESULT_NDO1->fetchRow())
+		while ($ndo =& $DBRESULT_NDO1->fetchRow())
 			if ($ndo["current_state"] != 0){
 				$hostPb[$pbCount] = $ndo["host_object_id"];			
 				$pbCount++;
@@ -155,7 +155,7 @@
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
 		$hostAck = array(0=>0, 1=>0, 2=>0);
-		while ($ndo = $DBRESULT_NDO1->fetchRow())	{
+		while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
 			$hostAck[$ndo["state"]] = $ndo["count(".$ndo_base_prefix."acknowledgements.state)"];
 			$hostUnhand[$ndo["state"]] -= $hostAck[$ndo["state"]];
 		}
@@ -184,7 +184,7 @@
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
 		$hostInactive = array(0=>0, 1=>0, 2=>0, 3=>0);
-		while ($ndo = $DBRESULT_NDO1->fetchRow())	{
+		while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
 			$hostInactive[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 			$hostUnhand[$ndo["current_state"]] -= $hostInactive[$ndo["current_state"]];
 		}
@@ -223,7 +223,7 @@
 	
 		$SvcStat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	
-		while($ndo = $DBRESULT_NDO2->fetchRow())
+		while($ndo =& $DBRESULT_NDO2->fetchRow())
 			$SvcStat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
 	
 	
@@ -260,7 +260,7 @@
 		if (PEAR::isError($DBRESULT_NDO1))
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
-		while($ndo = $DBRESULT_NDO1->fetchRow())	{
+		while($ndo =& $DBRESULT_NDO1->fetchRow())	{
 			if ($ndo["current_state"] != 0)
 				for($i=0; $i<=$pbCount; $i++)
 					if (isSet($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
@@ -300,7 +300,7 @@
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
 		$svcAck = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-		while ($ndo = $DBRESULT_NDO1->fetchRow())
+		while ($ndo =& $DBRESULT_NDO1->fetchRow())
 			$svcAck[$ndo["state"]] = $ndo["count(".$ndo_base_prefix."acknowledgements.state)"];
 		
 		/*
@@ -328,7 +328,7 @@
 			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
 	
 		$svcInactive = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-		while($ndo = $DBRESULT_NDO2->fetchRow())
+		while($ndo =& $DBRESULT_NDO2->fetchRow())
 			$svcInactive[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
 	
 		/*

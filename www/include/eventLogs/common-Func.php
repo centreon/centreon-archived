@@ -22,7 +22,7 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			return null;		
 		}
-		while( $row = $DBRESULT->fetchRow())
+		while( $row =& $DBRESULT->fetchRow())
 			$tab_row[$row["cp_key"]] = $row["cp_value"];
 		return $tab_row;
 	}

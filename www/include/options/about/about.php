@@ -26,7 +26,7 @@
 	$DBRESULT =& $pearDB->query("SELECT oi.value FROM informations oi WHERE oi.key = 'version' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	$release = $DBRESULT->fetchRow();
+	$release =& $DBRESULT->fetchRow();
 	print $release["value"];
 	?></h3></div>
 	

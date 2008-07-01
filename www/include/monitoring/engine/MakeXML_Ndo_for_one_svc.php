@@ -32,7 +32,7 @@
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if(!$res->fetchInto($session))
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');

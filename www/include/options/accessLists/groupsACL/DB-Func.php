@@ -68,7 +68,7 @@
 			$DBRESULT =& $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$row = $DBRESULT->fetchRow();
+			$row =& $DBRESULT->fetchRow();
 			$row["acl_group_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -85,15 +85,17 @@
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
+					$DBRESULT->free();
 					if (isset($maxId["MAX(cg_id)"]))	{
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($cct))	{
+						while ($cct =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO acl_group_contacts_relations VALUES ('', '".$cct["contact_contact_id"]."', '".$maxId["MAX(acl_group_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
+						$DBRESULT->free();
 					}
 				}
 			}
@@ -120,7 +122,7 @@
 		$DBRESULT =& $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$cg_id = $DBRESULT->fetchRow();
+		$cg_id =& $DBRESULT->fetchRow();
 		return ($cg_id["MAX(acl_group_id)"]);
 	}
 	

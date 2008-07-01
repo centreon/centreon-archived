@@ -114,7 +114,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-			while ($DBRESULT2->fetchInto($host)){
+			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
 		        print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/clients.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
@@ -123,7 +123,7 @@
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			$is_admin = isUserAdmin($_GET["sid"]);
-			while ($HG = $DBRESULT->fetchRow()){
+			while ($HG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin){
 					if (HG_has_one_or_more_host($HG["hg_id"])){
@@ -143,7 +143,7 @@
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			$cpt = 0;
 			$hostaloneSTR2 = "";
-			while ($host = $DBRESULT2->fetchRow()){
+			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
 				$cpt++;
 				if ($is_admin){
@@ -167,7 +167,7 @@
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-			while ($MS = $DBRESULT->fetchRow()){
+			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;$cpt++;
 		        $str .= "<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";
 			}

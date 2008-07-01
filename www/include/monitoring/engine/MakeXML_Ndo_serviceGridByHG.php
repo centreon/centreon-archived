@@ -30,16 +30,15 @@
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
 	
-	/* security check 2/2*/
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$res->fetchInto($session))
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
-	/* security end 2/2 */
+
 
 	/* requisit */
 	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
@@ -198,7 +197,7 @@
 	$flag = 0;
 		
 	$tab_final = array();
-	while ($ndo = $DBRESULT_NDO1->fetchRow())	{
+	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
 		if (isset($lca["LcaHostGroup"][$ndo["alias"]]) || !isset($lca["LcaHostGroup"])){
 			$tab_svc = get_services($ndo["host_name"]);
 			if (count($tab_svc)){

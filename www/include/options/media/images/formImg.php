@@ -27,7 +27,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT dir_dir_parent_id FROM view_img_dir_relation WHERE img_img_id = '".$img_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		$dir =  $DBRESULT->fetchRow();
+		$dir =& $DBRESULT->fetchRow();
 		$img["directories"] = $dir["dir_dir_parent_id"];
 		$DBRESULT->free();
 	}
@@ -39,7 +39,7 @@
 	$DBRESULT =& $pearDB->query("SELECT dir_id, dir_name FROM view_img_dir ORDER BY dir_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	while($DBRESULT->fetchInto($dir))
+	while ($dir =& $DBRESULT->fetchRow())
 		$dirs[$dir["dir_id"]] = $dir["dir_name"];
 	$DBRESULT->free();
 	#
@@ -82,7 +82,7 @@
 		$DBRESULT =& $pearDB->query("SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$img["directories"]."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		$dir_alias = $DBRESULT->fetchRow();
+		$dir_alias =& $DBRESULT->fetchRow();
 		$form->addElement('text', 'img_path', "./img/media/".$dir_alias["dir_alias"]."/".$img["img_path"], NULL);
 	}
 	

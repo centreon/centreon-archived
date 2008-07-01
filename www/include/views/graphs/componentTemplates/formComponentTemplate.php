@@ -33,9 +33,10 @@
 	# Graphs comes from DB -> Store in $graphs Array
 	$graphs = array();
 	$res =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-	while($res->fetchInto($graph))
+	while ($graph =& $res->fetchRow())
 		$graphs[$graph["graph_id"]] = $graph["name"];
 	$res->free();
+
 	#
 	# End of "database-retrieved" information
 	##########################################################

@@ -42,15 +42,8 @@
 	 * Verify if start and end date
 	 */	
 
-	if (!isset($_GET["start"]))
-		$start = time() - (60*60*48);
-	else
-		$start = $_GET["start"];
-	
-	if (!isset($_GET["end"]))
-		$end = time();
-	else
-		$end = $_GET["end"];
+	(!isset($_GET["start"])) ? $start = time() - (60*60*48):$start = $_GET["start"];
+	(!isset($_GET["end"])) ? $end = time() : $end = $_GET["end"];
 
 	$len = $end - $start;
 
@@ -63,7 +56,6 @@
 
 		$image = imagecreate(250,100);
 		$fond = imagecolorallocate($image,0xEF,0xF2,0xFB);
-		
 		header("Content-Type: image/gif");
 		imagegif($image);
 
@@ -72,7 +64,7 @@
 		/*
 		 * Get Values
 		 */
-		$session_value = $session->fetchRow();
+		$session_value =& $session->fetchRow();
 		$session->free();
 
 		/*
@@ -96,7 +88,7 @@
 		} else {
 			$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND `service_description` = '".$_GET["service_description"]."' LIMIT 1");
 		}
-		$index_data_ODS = $DBRESULT->fetchRow();
+		$index_data_ODS =& $DBRESULT->fetchRow();
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
 			$host_id = getMyHostID($index_data_ODS["host_name"]);
 			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
@@ -116,13 +108,13 @@
 		 */
 		 
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
-		$DBRESULT->fetchInto($GraphTemplate);
+		$GraphTemplate =& $DBRESULT->fetchRow();
 		
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 			if (PEAR::isError($DBRESULT_meta))
 				print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
-			$DBRESULT_meta->fetchInto($meta);
+			$meta =& $DBRESULT_meta->fetchRow();
 			$index_data_ODS["service_description"] = $meta["meta_name"];
 		}
 		

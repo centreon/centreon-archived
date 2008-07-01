@@ -51,12 +51,13 @@
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
 		if (PEAR::isError($DBRESULT))
 			print "AddSvcDonwtime RQ 1 - Mysql Error : ".$DBRESULT->getMessage();
-		while ($DBRESULT->fetchInto($host)){
+		while ($host =& $DBRESULT->fetchRow()){
 			if (!$host["host_name"])
 				$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
 			if (isset($lcaHostByName["LcaHost"][$host["host_name"]]))
 				$hosts[$host["host_id"]]= $host["host_name"];
 		}
+		$DBRESULT->free();
 	
 		$services = array();
 		if (isset($host_id))

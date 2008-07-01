@@ -27,16 +27,17 @@
 	include_once($centreon_path . "www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();
-
-	/* security check 2/2*/
+	$general_opt = getStatusColor($pearDB);
+	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$res->fetchInto($session))
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
+
 	
 	(isset($_GET["enable"]) && !check_injection($_GET["enable"])) ? $enable = urldecode($_GET["enable"]) : $enable = "enable";
 	(isset($_GET["disable"]) && !check_injection($_GET["disable"])) ? $disable = urldecode($_GET["disable"]) : $disable = "disable";
@@ -62,10 +63,10 @@
 	/* LCA */
 	// check is admin
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$res1->fetchInto($user);
+	$user =& $res1->fetchRow();
 	$user_id = $user["user_id"];
 	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$res2->fetchInto($admin);
+	$admin =& $res2->fetchRow();
 	$is_admin = 0;
 	$is_admin = $admin["contact_admin"];
 
@@ -83,11 +84,6 @@
 	$host_services = array();
 	$metaService_status = array();
 	$tab_host_service = array();
-
-	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
-	$DBRESULT_OPT->fetchInto($general_opt);
 
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];

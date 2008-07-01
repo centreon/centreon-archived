@@ -53,11 +53,11 @@
 	 * LCA
 	 */
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$_GET["sid"]."'");
-	$user = $res1->fetchRow();
+	$user =& $res1->fetchRow();
 	$user_id = $user["user_id"];
 
 	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$admin = $res2->fetchrow();
+	$admin =& $res2->fetchRow();
 	
 	global $is_admin;
 	
@@ -91,12 +91,13 @@
 	$data = array();
 	$color = array();
 	$counter = 0;
-	while($DBRESULT_NDO1->fetchInto($ndo)){
+	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 		$data[] = $ndo["cnt"];
 		$legend[] = $statistic_host[$ndo["current_state"]];
 		$color[] = $oreon->optGen["color_".strtolower($statistic_host[$ndo["current_state"]])];	
 		$counter += $ndo["cnt"];	
 	}
+	$DBRESULT_NDO1->free();
 	
 	foreach ($data as $key => $value)
 		$data[$key] = round($value / $counter * 100, 2);

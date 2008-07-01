@@ -28,7 +28,7 @@
 		$DBRESULT = $pearDB->query("SELECT DISTINCT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$dir_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		for($i = 0; $DBRESULT->fetchInto($imgs); $i++)
+		for($i = 0; $imgs =& $DBRESULT->fetchRow(); $i++)
 			$dir["dir_imgs"][$i] = $imgs["img_img_id"];
 		$DBRESULT->free();
 	}
@@ -40,7 +40,7 @@
 	$DBRESULT = $pearDB->query("SELECT img_id, img_name FROM view_img ORDER BY img_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	while($DBRESULT->fetchInto($img))
+	while ($img =& $DBRESULT->fetchRow())
 		$imgs[$img["img_id"]] = $img["img_name"];
 	$DBRESULT->free();
 	

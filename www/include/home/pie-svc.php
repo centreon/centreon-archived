@@ -60,12 +60,13 @@
 	$data = array();
 	$color = array();
 	$counter = 0;
-	while($DBRESULT_NDO1->fetchInto($ndo)){
+	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 		$data[] = $ndo["cnt"];
 		$legend[] = $statistic[$ndo["current_state"]];
 		$color[] = $oreon->optGen["color_".strtolower($statistic[$ndo["current_state"]])];		
 		$counter += $ndo["cnt"];
 	}
+	$DBRESULT_NDO1->free();
 	
 	foreach ($data as $key => $value)
 		$data[$key] = round($value / $counter * 100, 2);

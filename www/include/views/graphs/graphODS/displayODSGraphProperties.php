@@ -76,7 +76,7 @@
 	$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE id = '".$_GET["index"]."'");
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-	$DBRESULT2->fetchInto($svc_id);
+	$svc_id =& $DBRESULT2->fetchRow();
 	
 	$service_id = $svc_id["service_id"];
 	$index_id = $svc_id["id"];
@@ -86,7 +86,7 @@
 	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$service_id."' ORDER BY `metric_name`");
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-	while ($DBRESULT2->fetchInto($metrics_ret)){
+	while ($metrics_ret =& $DBRESULT2->fetchRow()){
 		$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
 		$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
 	}
@@ -107,7 +107,7 @@
 		$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 		if (PEAR::isError($DBRESULT_meta))
 			print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
-		$DBRESULT_meta->fetchInto($meta);
+		$meta =& $DBRESULT_meta->fetchRow();
 		$svc_id["service_description"] = $meta["meta_name"];
 	}
 	$tpl->assign('service_description', str_replace("#BS#", "\\", str_replace("#S#", "/", $svc_id["service_description"])));
@@ -116,7 +116,7 @@
 		$DBRESULT =& $pearDBO->query("SELECT * FROM config");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo();
-		$DBRESULT->fetchInto($config);
+		$config =& $DBRESULT->fetchRow();
 		$tpl->assign('config', $config);
 		
 		$metrics = array();
@@ -126,7 +126,7 @@
 	
 		$counter = 1;	
 		$metrics = array();	
-		while ($DBRESULT->fetchInto($metric)){
+		while ($metric =& $DBRESULT->fetchRow()){
 			$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 			$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
 			$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];		
@@ -143,7 +143,7 @@
 		$DBRESULT_data =& $pearDBO->query("SELECT storage_type FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
 		if (PEAR::isError($DBRESULT_data))
 			print "DB Error : ".$DBRESULT_data->getDebugInfo();
-		$DBRESULT_data->fetchInto($conf);
+		$conf =& $DBRESULT_data->fetchRow();
 		$DBRESULT_data->free();
 		
 		$storage_type = array(0 => "RRDTool", 1 => "MySQL", 2 => "RRDTool & MySQL");	

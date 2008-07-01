@@ -39,7 +39,7 @@
 				$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE `metric_id` = '".$key."'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";
-				while($DBRESULT->fetchInto($metrics)){
+				while ($metrics =& $DBRESULT->fetchRow()){
 					$DBRESULT2 =& $pearDBO->query("DELETE FROM data_bin WHERE `id_metric` = '".$metrics['metric_id']."'");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->postDebugInfo()."<br />";
@@ -97,12 +97,12 @@
 	if (PEAR::isError($DBRESULT2))
 		print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 	unset($data);
-	for ($im = 0;$DBRESULT2->fetchInto($metrics);$im++){
+	for ($im = 0;$metrics =& $DBRESULT2->fetchRow();$im++){
 		$metric = array();
 		$DBRESULT3 =& $pearDBO->query("SELECT COUNT(*) FROM data_bin WHERE id_metric = '".$metrics["metric_id"]."'");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-		$DBRESULT3->fetchInto($nb_value);
+		$nb_value =& $DBRESULT3->fetchRow();
 		$metric["nb"] = $nb_value["COUNT(*)"];	
 		$metric["metric_id"] = $metrics["metric_id"];
 		$metric["class"] = $tab_class[$im % 2];

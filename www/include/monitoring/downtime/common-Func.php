@@ -55,12 +55,12 @@
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
-		$host_name = $host->fetchRow();				
+		$host_name =& $host->fetchRow();				
 		$service =& $pearDB->query("SELECT service_id FROM service WHERE `service_description` = '".$svc."'");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
-		$service_desc = $service->fetchRow();				
+		$service_desc =& $service->fetchRow();				
 		$str = 	"UPDATE `downtime` SET `deleted` = '1' WHERE `service_id` = '".$service_desc["service_id"]."' AND `host_id` = '".$host_name["host_id"]."' AND `start_time` = '".$start_time."' LIMIT 1 ;";
 		$update =& $pearDB->query($str);
 		if (PEAR::isError($pearDB))
@@ -73,7 +73,7 @@
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
-		$host_name = $host->fetchRow();				
+		$host_name =& $host->fetchRow();				
 		$str = 	"UPDATE `downtime` SET `deleted` = '1' WHERE `host_id` = '".$host_name["host_id"]."' AND `start_time` = '".$start_time."' LIMIT 1 ;";
 		$update =& $pearDB->query($str);
 		if (PEAR::isError($pearDB))

@@ -56,7 +56,7 @@
 		$DBRESULT =& $pearDB->query("SELECT mod_release FROM modules_informations WHERE id = '".$id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print $DBRESULT->getDebugInfo()."<br />";
-		$module = $DBRESULT->fetchRow();
+		$module =& $DBRESULT->fetchRow();
 		if ($module["mod_release"] == $release)
 			return true;
 		else
@@ -86,7 +86,7 @@
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM modules_informations");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$id = $DBRESULT->fetchRow();
+		$id =& $DBRESULT->fetchRow();
 		return ($id["MAX(id)"]);
 	}
 	

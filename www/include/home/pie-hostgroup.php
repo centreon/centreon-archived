@@ -63,16 +63,16 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
-	while($hg = $DBRESULT->fetchRow()){
+	while($hg =& $DBRESULT->fetchRow()){
 		$counterTotal = 0;
 		$counterUP = 0;
 		$counterDown = 0;
 		$DBRESULT2 =& $pearDB->query("SELECT host_name FROM host, hostgroup_relation WHERE  hostgroup_relation.hostgroup_hg_id = '".$hg["hg_id"]."' AND hostgroup_relation.host_host_id = host.host_id");
-		while($h = $DBRESULT2->fetchRow()){
+		while($h =& $DBRESULT2->fetchRow()){
 			$DBRESULT3 =& $pearDBndo->query("SELECT current_state FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."hosts WHERE ".$ndo_base_prefix."hoststatus.host_object_id = ".$ndo_base_prefix."hosts.host_object_id AND ".$ndo_base_prefix."hosts.alias = '".$h["host_name"]."'");
 			if (PEAR::isError($DBRESULT3))
 				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-			while($stt = $DBRESULT3->fetchRow()){
+			while($stt =& $DBRESULT3->fetchRow()){
 				if ($stt["current_state"] == 1)
 					$counterDown++;
 				if ($stt["current_state"] == 0)

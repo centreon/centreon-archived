@@ -28,13 +28,13 @@
 		
 		# Set Topology relations
 		$DBRESULT =& $pearDB->query("SELECT topology_topology_id FROM acl_topology_relations WHERE acl_topo_id = '".$acl_id."'");
-		for ($i = 0; $DBRESULT->fetchInto($topo); $i++)
+		for ($i = 0; $topo =& $DBRESULT->fetchRow(); $i++)
 			$acl["acl_topos"][$topo["topology_topology_id"]] = 1;
 		$DBRESULT->free();
 		
 		# Set Contact Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_topology_relations WHERE acl_topology_id = '".$acl_id."'");
-		for($i = 0; $groups = $DBRESULT->fetchRow(); $i++)
+		for($i = 0; $groups =& $DBRESULT->fetchRow(); $i++)
 			$acl["acl_groups"][$i] = $groups["acl_group_id"];
 		$DBRESULT->free();
 	}
@@ -42,11 +42,11 @@
 	$groups = array();
 	$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
 	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($group = $DBRESULT->fetchRow())
+	while ($group =& $DBRESULT->fetchRow())
 		$groups[$group["acl_group_id"]] = $group["acl_group_name"];
 	$DBRESULT->free();
 
-	if	(!isset($acl["acl_topos"]))
+	if (!isset($acl["acl_topos"]))
 		$acl["acl_topos"] = array();
 
 	/*
@@ -103,7 +103,7 @@
 	$acl_topos 	= array();
 	$acl_topos2 = array();
 	$a = 0;
-	while ($topo1 = $DBRESULT1->fetchRow())	{
+	while ($topo1 =& $DBRESULT1->fetchRow())	{
 		$acl_topos2[$a] = array();
 		$acl_topos2[$a]["name"] = _($topo1["topology_name"]);
 		$acl_topos2[$a]["id"] = $topo1["topology_id"];
@@ -115,7 +115,7 @@
 
 		$b = 0;
 	 	$DBRESULT2 =& $pearDB->query("SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo1["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order");
-		while ($topo2 = $DBRESULT2->fetchRow())	{
+		while ($topo2 =& $DBRESULT2->fetchRow())	{
 			$acl_topos2[$a]["childs"][$b] = array();
 			$acl_topos2[$a]["childs"][$b]["name"] = _($topo2["topology_name"]);
 			$acl_topos2[$a]["childs"][$b]["id"] = $topo2["topology_id"];
@@ -126,7 +126,7 @@
 		 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo2["topology_id"], NULL, _($topo2["topology_name"])."<br />", array("style"=>"margin-top: 5px; margin-left: 20px;"));
 			$c = 0;
 		 	$DBRESULT3 =& $pearDB->query("SELECT topology_id, topology_name, topology_parent, topology_page FROM topology WHERE topology_parent = '".$topo2["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order");
-			while ($topo3 = $DBRESULT3->fetchRow()){
+			while ($topo3 =& $DBRESULT3->fetchRow()){
 				$acl_topos2[$a]["childs"][$b]["childs"][$c] = array();
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["name"] = _($topo3["topology_name"]);
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["id"] = $topo3["topology_id"];
@@ -137,7 +137,7 @@
 			 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo3["topology_id"], null, _($topo3["topology_name"])."<br />", array("style"=>"margin-top: 5px; margin-left: 40px;"));
 				$d = 0;
 			 	$DBRESULT4 =& $pearDB->query("SELECT topology_id, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo3["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order");
-				while ($topo4 = $DBRESULT4->fetchRow()){
+				while ($topo4 =& $DBRESULT4->fetchRow()){
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d] = array();
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["name"] = _($topo4["topology_name"]);
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["id"] = $topo4["topology_id"];

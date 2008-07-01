@@ -77,7 +77,8 @@
 	$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_page = '".$p."'");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	$DBRESULT->fetchInto($current);
+	$current =& $DBRESULT->fetchRow();
+	$DBRESULT->free();
 	
 	$page = $p;
 	if (isset($tabPath[$p]) && !$tabPath[$p]["url"])

@@ -64,7 +64,7 @@
 	$DBRESULT =& $pearDBO->query("SELECT storage_type,host_name,service_description FROM index_data WHERE id = '".$_GET["index"]."'");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	$DBRESULT->fetchInto($index);
+	$index =& $DBRESULT->fetchRow();
 	
 	if ($index["host_name"] == "Meta_Module")
 		$index["host_name"] = "Meta Services";
@@ -99,7 +99,7 @@
 		$DBRESULT =& $pearDBO->query("SELECT storage_type,host_name,service_description FROM index_data WHERE id = '".$_GET["index"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		$DBRESULT->fetchInto($index);
+		$index =& $DBRESULT->fetchRow();
 	}
 	
 	#Apply a template definition
@@ -115,7 +115,7 @@
 		$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 		if (PEAR::isError($DBRESULT_meta))
 			print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
-		$DBRESULT_meta->fetchInto($meta);
+		$meta =& $DBRESULT_meta->fetchRow();
 		$index["service_description"] = $meta["meta_name"];
 	}
 	$tpl->assign('service_description', str_replace("#S#", "/", str_replace("#BS#", "\\", $index["service_description"])));

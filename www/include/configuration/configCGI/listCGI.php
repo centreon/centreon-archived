@@ -35,6 +35,7 @@
 		
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
+	$DBRESULT->free();
 	
 	include("./include/common/checkPagination.php");
 
@@ -75,7 +76,7 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($cgi); $i++) {		
+	for ($i = 0; $cgi =& $DBRESULT->fetchRow(); $i++) {		
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$cgi['cgi_id']."]");	
 		if ($cgi["cgi_activate"])

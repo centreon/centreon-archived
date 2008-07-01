@@ -87,7 +87,7 @@
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
-	for ($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
+	for ($i = 0; $DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()); $i++)
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
 								"Menu1Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1UrlPopup" => $elem["topology_popup"],
@@ -110,7 +110,7 @@
 		print ($DBRESULT->getMessage());
 	$firstP = NULL;
 	$sep = "&nbsp;";
-	for ($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem); $i++)	{
+	for ($i = 0; $DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()); $i++)	{
 		$firstP ? null : $firstP = $elem["topology_page"];
 	    $elemArr[2][$i] = array("Menu2Sep" => $sep,
 								"Menu2Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
@@ -128,7 +128,7 @@
 	$DBRESULT =& $pearDB->query($request);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
-	for ($i = 0; $DBRESULT->fetchInto($elem);$i++)	{
+	for ($i = 0; $elem =& $DBRESULT->fetchRow();$i++)	{
 		# grab menu title for each group
 		$DBRESULT_title =& $pearDB->query("SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1");
 		if (PEAR::isError($DBRESULT_title))
@@ -162,7 +162,7 @@
 		$DBRESULT =& $pearDB->query($request);
 		if (PEAR::isError($DBRESULT))
 			print ($DBRESULT->getMessage());
-		for ($i = 0; $DBRESULT->fetchInto($elem);$i++){
+		for ($i = 0; $elem =& $DBRESULT->fetchRow();$i++){
 			$elemArr[4][$level1.$level2.$level3][$i] = array(	"Menu4Icone" => $elem["topology_icone"],
 																"Menu4Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 																"Menu4UrlPopup" => $elem["topology_url"],
@@ -215,8 +215,9 @@
 		$DBRESULT =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
 		if (PEAR::isError($DBRESULT))
 			print ($DBRESULT->getMessage());
-		while ($session = $DBRESULT->fetchRow())
+		while ($session =& $DBRESULT->fetchRow())
 			$tab_user[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);	
+		$DBRESULT->free();
 		$tpl->assign("tab_user", $tab_user);
 	}
 	$tpl->assign('amIadmin', $oreon->user->admin);

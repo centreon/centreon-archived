@@ -68,7 +68,7 @@
 		$tab_status_service[3] = "UNKNOWN";
 		$tab_status_service[4] = "PENDING";
 
-		while ($ndo = $DBRESULT_NDO->fetchRow())	{
+		while ($ndo =& $DBRESULT_NDO->fetchRow())	{
 			if (!isset($tab_status[$ndo["current_state"]]))
 				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
 			$tab_status[$tab_status_service[$ndo["current_state"]]]++;
@@ -115,7 +115,7 @@
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO))
 			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-		$DBRESULT_NDO->fetchInto($ndo2);
+		$ndo2 =& $DBRESULT_NDO->fetchRow();
 
 		$host_status[$host_name] = $ndo2;
 		$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
@@ -129,15 +129,15 @@
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
-		$res->fetchInto($hostDB);
+		$hostDB =& $res->fetchRow();
 		$current_attempts = getMyHostField($hostDB["host_id"], "host_max_check_attempts");
 		
 		/*
 		$res =& $pearDB->query("SELECT COUNT(table_name) as table_number FROM user_tables WHERE table_name = 'inventory_index' GROUP BY table_name");
-		$nb_table = $res->fetchRow();
+		$nb_table =& $res->fetchRow();
 		if ($nb_table["table_number"]){
 			$res =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '".$hostDB["host_name"]."'");
-			$inventory = $res->fetchRow();
+			$inventory =& $res->fetchRow();
 		}
 		if (isset($inventory) && $inventory["type_ressources"] == 0){
 			$url_id = "p=7&o=t&host_id=" . $key;

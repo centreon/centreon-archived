@@ -70,14 +70,14 @@
 		 */
 		
 		$DBRESULT =& $pearDBO->query("SELECT index_id, metric_name FROM metrics WHERE metric_id = '".$_GET["metric"]."' LIMIT 1");
-		$DBRESULT->fetchInto($metric_ODS);
+		$metric_ODS =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		
 		$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$metric_ODS["index_id"]."'");
 		$metricnumber = $DBRESULT->numRows();
 		
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$metric_ODS["index_id"]."' LIMIT 1");
-		$DBRESULT->fetchInto($index_data_ODS);
+		$index_data_ODS =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
@@ -90,13 +90,13 @@
 
 		# get all template infos
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
-		$DBRESULT->fetchInto($GraphTemplate);
+		$GraphTemplate =& $DBRESULT->fetchRow();
 
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 			if (PEAR::isError($DBRESULT_meta))
 				print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
-			$DBRESULT_meta->fetchInto($meta);
+			$meta =& $DBRESULT_meta->fetchRow();
 			$index_data_ODS["service_description"] = $meta["meta_name"];
 		}
 
@@ -150,19 +150,19 @@
 		$order = ($_GET["cpt"] - 1);
 		$order = $order % $metricnumber;
 		$metrics = array();		
-		while ($DBRESULT->fetchInto($metric)){
+		while ($metric =& $DBRESULT->fetchRow()){
 			$metric["metric_name"] = str_replace("#S#", "slash_", $metric["metric_name"]);
 			$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 			$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
 			$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 			
 			$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metric["metric_name"]."'");
-			$res_ds->fetchInto($ds_data);
+			$ds_data =& $res_ds->fetchRow();
 			
 			if (!$ds_data){
 				$ds = getDefaultDS();						
 				$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
-				$res_ds->fetchInto($ds_data);
+				$ds_data =& $res_ds->fetchRow();
 				$metrics[$metric["metric_id"]]["ds_id"] = $ds;
 			}
 			

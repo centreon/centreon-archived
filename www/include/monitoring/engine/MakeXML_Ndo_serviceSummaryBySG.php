@@ -30,17 +30,14 @@
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
 	
-	/* security check 2/2*/
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$res->fetchRow())
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
-		$res->free();
 	} else
 		get_error('need session identifiant !');
-	/* security end 2/2 */
 
 	/* requisit */
 	(isset($_GET["instance"]) && !check_injection($_GET["instance"])) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
@@ -69,9 +66,7 @@
 	}
 
 	function get_services($host_name){
-		global $pearDBndo;
-		global $general_opt;
-		global $o;
+		global $pearDBndo, $general_opt, $o;
 
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
@@ -94,11 +89,10 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
-		while($DBRESULT->fetchInto($svc))
+		while ($svc =& $DBRESULT->fetchRow())
 			$tab[$svc["service_name"]] = $svc["current_state"];
 		return($tab);
 	}
-
 
 	$service = array();
 	$host_status = array();
@@ -106,7 +100,6 @@
 	$host_services = array();
 	$metaService_status = array();
 	$tab_host_service = array();
-
 
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
@@ -171,20 +164,14 @@
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-
-
 	$buffer .= '<reponse>';
-
 	$buffer .= '<i>';
 	$buffer .= '<numrows>'.$numRows.'</numrows>';
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
 	$buffer .= '<p>'.$p.'</p>';
 
-	if($o == "svcOVSG")
-		$buffer .= '<s>1</s>';
-	else
-		$buffer .= '<s>0</s>';
+	($o == "svcOVSG") ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
 
 	$buffer .= '</i>';
 
@@ -201,16 +188,13 @@
 	$flag = 0;
 	$nb_service = array();
 
-	while($DBRESULT_NDO1->fetchInto($tab))
-	{
-		if($class == "list_one")
-			$class = "list_two";
-		else
-			$class = "list_one";
+	while ($tab =& $DBRESULT_NDO1->fetchRow()){
 
-		if($sg != $tab["alias"]){
+		($class == "list_one") ? $class = "list_two" : $class = "list_one";
+
+		if ($sg != $tab["alias"]){
 			$flag = 0;
-			if($sg != ""){
+			if ($sg != ""){
 				$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
 				$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
 				$buffer .= '<sc color="'.$tab_color_service[2].'">'.$nb_service[2].'</sc>';
@@ -226,16 +210,14 @@
 		$ct++;
 
 
-		if($h != $tab["host_name"]){
-			if($h != "" && $flag){
+		if ($h != $tab["host_name"]){
+			if ($h != "" && $flag){
 				$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
 				$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
 				$buffer .= '<sc color="'.$tab_color_service[2].'">'.$nb_service[2].'</sc>';
 				$buffer .= '<su color="'.$tab_color_service[3].'">'.$nb_service[3].'</su>';
 				$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
-
 				$buffer .= '</h>';
-
 			}
 			$flag = 1;
 			$h = $tab["host_name"];
@@ -254,7 +236,6 @@
 			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
 
 		}
-
 		$nb_service[$tab["current_state"]] += 1;
 
 
@@ -266,12 +247,12 @@
 */
 
 	}
-	if($sg != ""){
-				$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
-				$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
-				$buffer .= '<sc color="'.$tab_color_service[2].'">'.$nb_service[2].'</sc>';
-				$buffer .= '<su color="'.$tab_color_service[3].'">'.$nb_service[3].'</su>';
-				$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
+	if ($sg != ""){
+		$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
+		$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
+		$buffer .= '<sc color="'.$tab_color_service[2].'">'.$nb_service[2].'</sc>';
+		$buffer .= '<su color="'.$tab_color_service[3].'">'.$nb_service[3].'</su>';
+		$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
 		$buffer .= '</h></sg>';
 	}
 /*
@@ -283,5 +264,4 @@
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
-
 ?>

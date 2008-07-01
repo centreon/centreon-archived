@@ -91,7 +91,7 @@
 		$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$oreon->optGen = $DBRESULT->fetchRow();
+		$oreon->optGen =& $DBRESULT->fetchRow();
 		$oreon->user->version = $ret["nagios_version"];
 	}
 

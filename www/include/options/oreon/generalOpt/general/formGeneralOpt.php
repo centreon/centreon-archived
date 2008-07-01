@@ -122,7 +122,7 @@
 		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
 		if (PEAR::isError($DBRESULT2))
 			print ("DB error : ".$DBRESULT2->getDebugInfo());
-		$DBRESULT2->fetchInto($oreon->optGen);
+		$oreon->optGen =& $DBRESULT2->fetchRow($oreon->optGen);
 		$o = NULL;
    		$valid = true;
 		$form->freeze();

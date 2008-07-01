@@ -31,8 +31,8 @@
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_address, host_snmp_community, host_snmp_version FROM host WHERE host_id =". $host_id ."");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	$Host  = array(NULL=>NULL);
-	$DBRESULT->fetchInto($Host);
+	$Host = array(NULL=>NULL);
+	$Host =& $DBRESULT->fetchRow();
 	$DBRESULT->free();
 	switch ($o)	{
 		case "p" : $tool_cmd_script = "include/tools/ping.php?host=".$Host["host_address"]; $tool = _("Ping"); break;

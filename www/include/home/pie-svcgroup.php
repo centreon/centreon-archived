@@ -68,13 +68,13 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
-	while($sg = $DBRESULT->fetchRow()){
+	while($sg =& $DBRESULT->fetchRow()){
 		$counterTotal = 0;
 		$counterOk = 0;
 		$counterWarn = 0;
 		$counterCrit = 0;
 		$DBRESULT2 =& $pearDB->query("SELECT host_name, service_description FROM service, host, servicegroup_relation WHERE servicegroup_relation.servicegroup_sg_id = '".$sg["sg_id"]."' AND servicegroup_relation.host_host_id = host.host_id AND servicegroup_relation.service_service_id = service.service_id");
-		while ($s = $DBRESULT2->fetchRow()){
+		while ($s =& $DBRESULT2->fetchRow()){
 			$DBRESULT3 =& $pearDBndo->query(	"SELECT current_state " .
 												"FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."services, ".$ndo_base_prefix."hosts " .
 												"WHERE ".$ndo_base_prefix."services.display_name = '".$s["service_description"]."' " .
@@ -83,7 +83,7 @@
 												"AND ".$ndo_base_prefix."services.host_object_id = ".$ndo_base_prefix."hosts.host_object_id ");
 			if (PEAR::isError($DBRESULT3))
 				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-			while($stt = $DBRESULT3->fetchRow()){
+			while($stt =& $DBRESULT3->fetchRow()){
 				if ($stt["current_state"] == 1)
 					$counterWarn++;
 				if ($stt["current_state"] == 0)

@@ -48,17 +48,16 @@
 	include_once($oreonPath . "www/DBconnect.php");
 
 	/* security check 2/2*/
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
+		if ($res->fetchInto($session)){
 			;
 		}else
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 

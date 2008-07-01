@@ -30,21 +30,18 @@
 
 	$oreon = 1;
 	
-	include_once($oreonPath . "www/centreon.conf.php");
-	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBOdsConnect.php");
-
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once($centreon_path."www/DBconnect.php");
+	include_once($centreon_path."www/DBOdsConnect.php");
+	
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
-			$_POST["sid"] = $sid;
-		} else
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
-	/* security end 2/2 */
 
 	isset ($_GET["metric_id"]) ? $mtrcs = $_GET["metric_id"] : $mtrcs = NULL;
 	isset ($_POST["metric_id"]) ? $mtrcs = $_POST["metric_id"] : $mtrcs = $mtrcs;
@@ -57,18 +54,14 @@
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 
-
 	header("Content-Type: application/csv-tab-delimited-table");
 	header("Content-disposition: filename=".$mhost.".csv");
 
-	print "Date;value";
+	print "Date;value\n";
 	$begin = time() - 26000;
-	
+		
 	$res =& $pearDB->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$mtrcs."' AND CTIME >= '".$begin."'");
-	
-	
-	$res =& $pearDB->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$mtrcs."' AND CTIME >= '".$begin."'");
-	while ($res->fetchInto($data)){
+	while ($data =& $res->fetchRow()){
 		print $data["ctime"].";".$data["value"]."\n";
 	}
 	exit();

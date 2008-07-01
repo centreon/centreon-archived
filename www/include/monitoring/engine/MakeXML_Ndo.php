@@ -27,20 +27,14 @@
 
 	$ndo_base_prefix = getNDOPrefix();
 
-	/* security check 2/2*/
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
-
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
-			;
-		}else
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
-	/* security end 2/2 */
 
 	/* requisit */
 	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
@@ -158,10 +152,7 @@
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";	
-	$DBRESULT_OPT->fetchInto($general_opt);
+	$general_opt = getStatusColor($pearDB);
 	
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
@@ -270,28 +261,26 @@
 
 	$host_prev = "";
 	$class = "list_one";
-	while($DBRESULT_NDO->fetchInto($ndo))	{
+	while ($ndo =& $DBRESULT_NDO->fetchRow())	{
+		($class == "list_one") ? $class = "list_two" : $class = "list_one";
+
 		$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
 		$color_service = $tab_color_service[$ndo["current_state"]];
 		$passive = 0;
 		$active = 1;
 		$last_check = " ";
 		$duration = " ";
-		if($ndo["last_state_change"] > 0)
+		if ($ndo["last_state_change"] > 0)
 			$duration = Duration::toString(time() - $ndo["last_state_change"]);
 
-		if($class == "list_one")
-			$class = "list_two";
-		else
-			$class = "list_one";
 
-		if($tab_status_svc[$ndo["current_state"]] == "CRITICAL"){
-			if($ndo["problem_has_been_acknowledged"] == 1)
+		if ($tab_status_svc[$ndo["current_state"]] == "CRITICAL"){
+			if ($ndo["problem_has_been_acknowledged"] == 1)
 				$class = "list_four";
 			else
 				$class = "list_down";
 		} else {
-			if( $ndo["problem_has_been_acknowledged"] == 1)
+			if ($ndo["problem_has_been_acknowledged"] == 1)
 				$class = "list_four";
 		}
 
@@ -300,10 +289,10 @@
 		$buffer .= '<o>'. $ct++ . '</o>';
 		$buffer .= '<f>'. $flag . '</f>';
 
-		if($host_prev == $ndo["host_name"]){
+		if ($host_prev == $ndo["host_name"]){
 			$buffer .= '<hc>transparent</hc>';
 			$buffer .= '<hn none="1">'. $ndo["host_name"] . '</hn>';			
-		}else{			
+		} else {			
 			$host_prev = $ndo["host_name"];
 			$buffer .= '<hc>'.$color_host.'</hc>';
 			$buffer .= '<hn none="0">'. $ndo["host_name"] . '</hn>';			
@@ -325,14 +314,13 @@
         $buffer .= '<ha><![CDATA['.$host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .']]></ha>';///
         $buffer .= '<hae><![CDATA['.$host_status[$ndo["host_name"]]["active_checks_enabled"] .']]></hae>';///
         $buffer .= '<hpe><![CDATA['.$host_status[$ndo["host_name"]]["passive_checks_enabled"]  .']]></hpe>';///
-//		$buffer .= '<lsc>'. $ndo["last_state_change"] . '</lsc>';
 		$buffer .= '<lc><![CDATA['. date($date_time_format_status, $ndo["last_check"]) . ']]></lc>';
 		$buffer .= '<d><![CDATA['. $duration . ']]></d>';
 		$buffer .= '</l>';
 	}
 	/* end */
 	
-	if(!$ct){
+	if (!$ct){
 		$buffer .= '<infos>';
 		$buffer .= 'none';
 		$buffer .= '</infos>';

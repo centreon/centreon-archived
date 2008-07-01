@@ -42,7 +42,7 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$DBRESULT->fetchInto($redirect);
+		$redirect =& $DBRESULT->fetchRow();
 		return $redirect;
 	}
 
@@ -69,7 +69,7 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$root_menu = array();
 		if ($DBRESULT->numRows())
-			$DBRESULT->fetchInto($root_menu);
+			$root_menu =& $DBRESULT->fetchRow();
 		return $root_menu;
 	}
 	

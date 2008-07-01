@@ -54,7 +54,7 @@
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
-	$elemArr = array();	for ($i = 0; $res->fetchInto($img); $i++) {
+	$elemArr = array();	for ($i = 0; $img =& $res->fetchRow(); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$img['img_id']."]");	
 		$moptions = "<a href='main.php?p=".$p."&img_id=".$img['img_id']."&o=w&&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 

@@ -139,10 +139,11 @@
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-			while ($DBRESULT2->fetchInto($host)){
+			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
 		        print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
+			$DBRESULT2->free();
 		} else if ($type == "RS") {
 			/*
 			 * Send Service Group list
@@ -150,7 +151,7 @@
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-			while ($SG = $DBRESULT->fetchRow()){
+			while ($SG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin){
 					if (SGIsNotEmpty($SG["sg_id"])){
@@ -162,6 +163,7 @@
 					}					
 				}
 			}
+			$DBRESULT->free();
 		} else if ($type == "RR") {
 			/*
 			 * Send Host Group list
@@ -169,7 +171,7 @@
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-			while ($HG = $DBRESULT->fetchRow()){
+			while ($HG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin){
 					if (HG_has_one_or_more_host($HG["hg_id"])){
@@ -181,6 +183,7 @@
 					}					
 				}
 			}
+			$DBRESULT->free();
 			/*
 			 * Hosts Alone
 			 */
@@ -189,7 +192,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-			while ($DBRESULT2->fetchInto($host)){
+			while ($host $DBRESULT2->fetchRow()){
 				$i++;
 				$cpt++;
 				if ($is_admin){
@@ -199,6 +202,7 @@
 						$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";	
 				}
 			}
+			$DBRESULT2->free();
 			if ($cpt){
 				print ("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
 				print $str ;
@@ -212,7 +216,7 @@
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-			while ($DBRESULT->fetchInto($MS)){
+			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
 				$cpt++;
 		        print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
@@ -243,7 +247,7 @@
 		
 		print("<tree id='1' >");
 		$tab_id = split(",",$url_var);
-		foreach($tab_id as $openid) {
+		foreach ($tab_id as $openid) {
 			$type = substr($openid, 0, 2);
 			$id = substr($openid, 3, strlen($openid));
 	

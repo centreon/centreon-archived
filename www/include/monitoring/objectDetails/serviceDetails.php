@@ -100,7 +100,7 @@
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO))
 			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-		$DBRESULT_NDO->fetchInto($ndo2);
+		$ndo2 =& $DBRESULT_NDO->fetchRow();
 		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 		/* end ndo host detail */
 	}
@@ -117,7 +117,7 @@
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
-		$res->fetchInto($host);
+		$host =& $res->fetchrow();
 		$host_id = getMyHostID($host["host_name"]);
 		$service_id = getMyServiceID($_GET["service_description"], $host_id);
 		$total_current_attempts = getMyServiceField($service_id, "service_max_check_attempts");

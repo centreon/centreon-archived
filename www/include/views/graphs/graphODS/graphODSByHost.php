@@ -48,7 +48,7 @@
 	$DBRESULT =& $pearDBO->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	while ($DBRESULT->fetchInto($hostInOreon)){
+	while ($hostInOreon =& $DBRESULT->fetchRow()){
 		if ($hostInOreon["host_name"] == "Meta_Module")
 			$ppHosts[$hostInOreon["host_name"]] = "Meta Services";
 		else if ($hostInOreon["host_name"] != "OSL_Module")
@@ -62,7 +62,7 @@
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		while ($DBRESULT->fetchInto($svc)){
+		while ($svc =& $DBRESULT->fetchRow()){
 			$ppServices[$svc["service_description"]] = $svc["service_description"];
 		}
 		$DBRESULT->free();
@@ -72,7 +72,7 @@
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		while ($DBRESULT->fetchInto($svc)){
+		while ($svc =& $DBRESULT->fetchRow()){
 			$ppServices[$svc["service_description"]] = $svc["service_description"];
 		}
 		$DBRESULT->free();
@@ -82,7 +82,7 @@
 	$DBRESULT =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	while($DBRESULT->fetchInto($graphT))
+	while ($graphT =& $DBRESULT->fetchRow())
 		$graphTs[$graphT["graph_id"]] = $graphT["name"];
 	$DBRESULT->free();
 	
@@ -164,11 +164,11 @@
 					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			}
 			
-			while ($DBRESULT->fetchInto($index_data)){
+			while ($index_data =& $DBRESULT->fetchRow()){
 				
 				$template_id = getDefaultGraph($index_data["service_id"], 1);
 				$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
-				$DBRESULT2->fetchInto($GraphTemplate);
+				$GraphTemplate =& $DBRESULT2->fetchRow();
 						
 				if (isset($_GET["host_name"])){
 					$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");	
@@ -177,7 +177,9 @@
 				}
 				if (PEAR::isError($DBRESULT2))
 					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-				$DBRESULT2->fetchInto($svc_id);
+				$svc_id =& $DBRESULT2->fetchrow();
+				$DBRESULT->free();
+				
 				$service_id = $svc_id["service_id"];
 				$index_id = $svc_id["id"];
 				if (isset($_GET["host_name"]))
@@ -189,7 +191,7 @@
 					$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 					if (PEAR::isError($DBRESULT_meta))
 						print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
-					$DBRESULT_meta->fetchInto($meta);
+					$meta =& $DBRESULT_meta->fetchrow();
 					$svc_id["service_description"] = $meta["meta_name"];
 				}
 				
@@ -198,8 +200,9 @@
 				$DBRESULT_view =& $pearDB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$index_id."' AND `contact_id` = '".$oreon->user->user_id."'");
 				if (PEAR::isError($DBRESULT_view))
 					print "Mysql Error : ".$DBRESULT_view->getDebugInfo();
-				while ($metric_activate = $DBRESULT_view->fetchRow())
+				while ($metric_activate =& $DBRESULT_view->fetchRow())
 					$metrics_activate[$metric_activate["metric_id"]] = $metric_activate["metric_id"];
+				$DBRESULT_view->free();
 				
 				if ($GraphTemplate["split_component"]){
 					$elem[$index_id]["split"] = 1;
@@ -208,7 +211,7 @@
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_id."' ORDER BY `metric_name`");
 				if (PEAR::isError($DBRESULT2))
 					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-				while ($DBRESULT2->fetchInto($metrics_ret)){	
+				while ($metrics_ret =& $DBRESULT2->fetchrow()){	
 					$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
 					$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
 					if (isset($elem[$index_id]["split"]))
@@ -216,6 +219,7 @@
 							$elem[$index_id]["metrics"][$metrics_ret["metric_id"]] = $metrics_ret["metric_id"];	
 						#}
 				}
+				$DBRESULT2->free();
 				
 				# Create period
 				if (isset($_GET["start"]) && isset($_GET["end"]) && $_GET["start"] && $_GET["end"]){
@@ -230,7 +234,7 @@
 						$DBRESULT2 =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$graph["graph_id"]."'");
 						if (PEAR::isError($DBRESULT2))
 							print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-						$DBRESULT2->fetchInto($graph);
+						$graph =& $DBRESULT2->fetchRow();
 						$period = $graph["period"];
 					}
 				} else if ($_GET["period"])

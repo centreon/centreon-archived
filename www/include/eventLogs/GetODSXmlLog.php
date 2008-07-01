@@ -459,8 +459,8 @@
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	
-	for ($cpts = 0;$DBRESULT->fetchInto($log);)
-	{
+	$cpts = 0;
+	while ($log =& $DBRESULT->fetchRow()) {
 		echo "<line>";
 		echo "<msg_type>".$log["msg_type"]."</msg_type>";
 
@@ -468,7 +468,6 @@
 		 	echo "<retry></retry>";
 		else
 		 	echo "<retry>".$log["retry"]."</retry>";
-
 
 		if ($log["msg_type"] == 2 || $log["msg_type"] == 3)
 			echo "<type>NOTIF</type>";

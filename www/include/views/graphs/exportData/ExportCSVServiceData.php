@@ -37,13 +37,10 @@
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
-			$_POST["sid"] = $sid;
-		} else
+		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
-	/* security end 2/2 */
 
 	isset($_GET["index"]) ? $index = $_GET["index"] : $index = NULL;
 	isset($_POST["index"]) ? $index = $_POST["index"] : $index = $index;
@@ -56,7 +53,7 @@
 	$DBRESULT =& $pearDBO->query("SELECT host_name, service_description FROM index_data WHERE id = '$index'");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	while ($res = $DBRESULT->fetchRow()){
+	while ($res =& $DBRESULT->fetchRow()){
 		$hName = $res["host_name"];
 		$sName = $res["service_description"];
 	}	
@@ -70,11 +67,11 @@
 	$DBRESULT =& $pearDBO->query("SELECT metric_id FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index'");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	while ($DBRESULT->fetchInto($index_data)){	
+	while ($index_data =& $DBRESULT->fetchRow()){	
 		$DBRESULT2 =& $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".$_GET["start"]."' AND ctime < '".$_GET["end"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-		while ($DBRESULT2->fetchInto($data)){
+		while ($data =& $DBRESULT2->fetchRow()){
 			if (!isset($datas[$data["ctime"]]))
 				$datas[$data["ctime"]] = array();
 			$datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
