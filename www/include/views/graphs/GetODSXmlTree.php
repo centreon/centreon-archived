@@ -20,7 +20,8 @@
 
 	require_once 'DB.php';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	//include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
 	
@@ -164,7 +165,21 @@
 				}
 			}
 			$DBRESULT->free();
-		} else if ($type == "RR") {
+		} else if ($type == "MS") {
+			/*
+			 * Send Meta Service list
+			 */
+			$cpt = 0;
+			$str = 0;
+			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getDebugInfo();
+			while ($MS =& $DBRESULT->fetchRow()){
+				$i++;
+		        print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+			}
+		}
+		 else if ($type == "RR") {
 			/*
 			 * Send Host Group list
 			 */
@@ -192,7 +207,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-			while ($host $DBRESULT2->fetchRow()){
+			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
 				$cpt++;
 				if ($is_admin){
@@ -219,7 +234,7 @@
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
 				$cpt++;
-		        print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+		        //print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
 			if ($cpt){
 				print("<item child='1' id='MS_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
