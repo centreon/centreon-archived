@@ -76,8 +76,9 @@
 		$status = _("ERROR");
 	}
 	else {
-		$command = $resource_def;
-		$command = str_replace(';', ' ', $command);
+		$command = $resource_def;		
+		$splitter = split(";", $command);
+		$command = $splitter[0];
 		$stdout = array();
 		unset($stdout);
 		//for security reasons, we do not allow the execution of any command unless it is located in path $USER1$ 
