@@ -23,15 +23,15 @@
 	$tab["0"] = "DISABLE";
 
 	function write_command($cmd, $poller){
-		global $oreon, $key, $pearDB;
+		global $oreon, $pearDB;
 		$str = NULL;
 		$cmd = htmlentities($cmd);
 
-		$informations = split(";", $key);
-		if (isHostLocalhost($pearDB, $informations[0]))
+		if (isHostLocalhost($pearDB, $_GET["host_name"]))
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
 		else
 			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . "@CENTREON_VARLIB@/centcore.cmd";
+		
 		return passthru($str);
 	}
 
