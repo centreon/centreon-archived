@@ -209,7 +209,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
 	$TMPDIR/final/GPL_LIB $INSTALL_DIR_CENTREON/GPL_LIB >> "$LOG_FILE" 2>&1
 
-echo_passed "$(gettext "CentWeb file installation")" "$ok"
+echo_success "$(gettext "CentWeb file installation")" "$ok"
 
 ## Cron stuff
 ## need to add stuff for Unix system... (freeBSD...)
