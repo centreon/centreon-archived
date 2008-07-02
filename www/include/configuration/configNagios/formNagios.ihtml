@@ -25,7 +25,7 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_name.label}</td><td class="FormRowValue">{$form.nagios_name.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.nagios_activate.label}</td><td class="FormRowValue">{$form.nagios_activate.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.nagios_activate.label}</td><td class="FormRowValue">{$form.nagios_activate.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Folders</td></tr>
@@ -33,12 +33,11 @@
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Files</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.downtime_file.label}</td><td class="FormRowValue">{$form.downtime_file.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.comment_file.label}</td><td class="FormRowValue">{$form.comment_file.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.p1_file.label}</td><td class="FormRowValue">{$form.p1_file.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.downtime_file.label}</td><td class="FormRowValue">{$form.downtime_file.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.comment_file.label}</td><td class="FormRowValue">{$form.comment_file.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.p1_file.label}</td><td class="FormRowValue">{$form.p1_file.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
 
 		<tr class="list_one"><td class="FormRowField">{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
 		
