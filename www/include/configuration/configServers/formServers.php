@@ -72,7 +72,7 @@
 	$form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
 	$form->addElement('text', 'init_script', _("Nagios Init Script"), $attrsText);
 	$form->addElement('text', 'nagios_bin', _("nagios Binary"), $attrsText);
-	$form->addElement('text', 'nagiosstats_bin', _("nagiosstats Binary"), $attrsText);
+	$form->addElement('text', 'nagiostats_bin', _("nagiostats Binary"), $attrsText);
 		
 	$Tab = array();
 	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, _("Yes"), '1');
@@ -90,7 +90,7 @@
 		"localhost"=>'0',
 		"ns_ip_address"=>"127.0.0.1",
 		"nagios_bin"=>"/usr/sbin/nagios2",
-		"nagiosstats_bin"=>"/usr/sbin/nagiosstats",
+		"nagiostats_bin"=>"/usr/sbin/nagiostats",
 		"init_script"=>"/etc/init.d/nagios".$oreon->user->get_version(),
 		"ns_activate"=>'1'));
 	} else {
