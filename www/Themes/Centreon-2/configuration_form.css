@@ -44,6 +44,7 @@ For information : contact@centreon.com
 .ListTable 		{width:100%;z-index: 1;}
 .ListTableMedium{width:60%;z-index: 1;}
 .ListTableSmall {width:40%;z-index: 1;}
+.ListTableMultiTp{width:100%;z-index: 1;}
 
 .TableFooter {width:100%;z-index: 1;margin-top:8px;margin-bottom:4px;}
 
@@ -54,6 +55,14 @@ For information : contact@centreon.com
 	empty-cells: show; 
 	border-spacing:0px;
 	border-width: 1px;
+	border-style:solid;
+}
+
+.ListTableMultiTp {
+	border-collapse:collapse;
+	empty-cells: show; 
+	border-spacing:0px;
+	border-width: 0px;
 	border-style:solid;
 }
 

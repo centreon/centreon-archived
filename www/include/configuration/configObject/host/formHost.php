@@ -213,6 +213,23 @@
 	}
 	$DBRESULT->free();
 	
+	/*
+	 *  Host on demand macro stored in DB
+	 */
+	$j = 0;		
+	$DBRESULT =& $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
+	while($od_macro = $DBRESULT->fetchRow())
+	{
+		$od_macro_id[$j] = $od_macro["host_macro_id"];
+		$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
+		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
+		$od_macro_value[$j] = $od_macro["host_macro_value"];
+		$od_macro_host_id[$j] = $od_macro["host_host_id"];
+		$j++;		
+	}
+	$DBRESULT->free();
+	
+	
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -261,20 +278,29 @@
 
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
 	$form->addElement('text', 'host_parallel_template', _("Host Parallel Templates"), $hTpls);
-	$form->addElement('static', 'tplTextParallel', _("A host can have more than one template at the same time"));	
+	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance<br>(cf Nagios documentation for more information)"));	
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
-	include_once("makeJS_formHost.php");
-	if ($o == "c" || $o == "a" || $o == "mc")
-	{
-		for($k=0; $mTp[$k]; $k++) {?>
-			<script type="text/javascript">
-			tab[<?=$k;?>] = <?=$mTp[$k];?>;		
-			</script> 
-		<?php } ?>
-		<script type="text/javascript">
-			add_select_template();
-		</script>		
-	<?}
+	if ($oreon->user->get_version() == 3) {
+		include_once("makeJS_formHost.php");	
+		if ($o == "c" || $o == "a" || $o == "mc")
+		{		
+			for($k=0; isset($mTp[$k]); $k++) {?>
+				<script type="text/javascript">
+				tab[<?=$k;?>] = <?=$mTp[$k];?>;		
+				</script> 
+			<?php
+			}
+			for($k=0; isset($od_macro_id[$k]); $k++) {?>
+				<script type="text/javascript">
+				globalMacroTabId[<?=$k;?>] = <?=$od_macro_id[$k];?>;		
+				globalMacroTabName[<?=$k;?>] = '<?=$od_macro_name[$k];?>';
+				globalMacroTabValue[<?=$k;?>] = '<?=$od_macro_value[$k];?>';
+				globalMacroTabHostId[<?=$k;?>] = <?=$od_macro_host_id[$k];?>;
+				</script> 
+			<?php 
+			}
+		}
+	}
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("No"), '0');
 	$form->addGroup($dupSvTpl, 'dupSvTplAssoc', _("Checks Enabled"), '&nbsp;');
@@ -541,6 +567,28 @@
 	$form->addElement('text', 'ehi_2d_coords', _("Nagios 2d Coords"), $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', _("Nagios 3d Coords"), $attrsText2);
 
+	
+
+	#
+	## Sort 5 - Macros - Nagios 3
+	#
+	if ($oreon->user->get_version() == 3) {
+		if ($o == "a")
+			$form->addElement('header', 'title5', _("Add macros"));
+		else if ($o == "c")
+			$form->addElement('header', 'title5', _("Modify macros"));
+		else if ($o == "w")
+			$form->addElement('header', 'title5', _("View macros"));
+		else if ($o == "mc")
+			$form->addElement('header', 'title5', _("Massive Change"));
+	
+		$form->addElement('header', 'macro', _("Macros"));
+		
+		$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
+		$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
+		$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
+		$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
+	}
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
@@ -553,6 +601,7 @@
 	$host_register = 1;
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+
 	if (is_array($select))	{
 		$select_str = NULL;
 		foreach ($select as $key => $value)
@@ -560,7 +609,7 @@
 		$select_pear =& $form->addElement('hidden', 'select');
 		$select_pear->setValue($select_str);
 	}
-
+	
 	#
 	## Form Rules
 	#
@@ -636,6 +685,7 @@
 	$tpl->assign("sort2", _("Relations"));
 	$tpl->assign("sort3", _("Data Processing"));
 	$tpl->assign("sort4", _("Host Extended Infos"));
+	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign('javascript', "<script type='text/javascript'>function showLogo(_img_dst, _value) {".
 	"var _img = document.getElementById(_img_dst + '_img');".
 	"_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );
@@ -685,4 +735,12 @@
 		
 		$tpl->display("formHost.ihtml");
 	}
+
+if ($oreon->user->get_version() == 3) {
 ?>
+
+<script type="text/javascript">
+		add_select_template();
+		displayExistingMacroHost(<?=$k;?>);
+</script>
+<?php } ?>

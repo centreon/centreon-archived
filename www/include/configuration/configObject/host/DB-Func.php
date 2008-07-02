@@ -119,6 +119,7 @@
 				}
 			$DBRESULT =& $pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
 			$DBRESULT =& $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '".$key."'");
+			$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
@@ -430,25 +431,42 @@
 		$host_id = $DBRESULT->fetchRow();		
 
 		/*
- 		*  Insert multiple templates
- 		*/ 
- 		$i = 0;
- 		$j = 1;
- 		$already_stocked = array();
- 		$tpSelect = "tpSelect_" . $i;
- 		while(isset($_POST[$tpSelect]))
- 		{ 			
- 			if (!isset($already_stocked[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
-	 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id['MAX(host_id)'] .", ". $_POST[$tpSelect] .", ". $j .")";
-		 		$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-				$j++;
-				$already_stocked[$_POST[$tpSelect]] = 1;
- 			}
-			$i++;
-			$tpSelect = "tpSelect_" . $i;
- 		}		
+ 		**  Insert multiple templates
+ 		*/
+ 		if (isset($_POST['nbOfSelect'])) { 
+	 		$already_stored = array();
+	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
+	 		{ 			
+	 			$tpSelect = "tpSelect_" . $i;
+	 			if (!isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
+		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id['MAX(host_id)'] .", ". $_POST[$tpSelect] .", ". $j .")";
+			 		$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					$j++;
+					$already_stored[$_POST[$tpSelect]] = 1;
+	 			}			
+	 		}
+ 		}
+		
+		/*
+		 *  Insert on demand macros
+		 */
+		if (isset($_POST['nbOfMacro'])) {
+			$already_stored = array(); 		
+	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
+	 		{ 			
+	 			$macInput = "macroInput_" . $i;
+	 			$macValue = "macroValue_" . $i;
+	 			if (!isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
+		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $host_id['MAX(host_id)'] .")";
+			 		$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
+					$already_stored[$_POST[$macInput]] = 1;
+	 			}			
+	 		}
+		}
 		
 		/*
 		 *  Update LCA
@@ -606,26 +624,45 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		/*
-		 *  update multiple templates		 
-		 */		 
-		$i = 0;
-		$j = 1;
- 		$tpSelect = "tpSelect_" . $i;
- 		$already_stocked = array();
- 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
- 		while(isset($_POST[$tpSelect]))
- 		{ 			
- 			if (!isset($already_stocked[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
-	 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
-		 		$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-				$j++;
-				$already_stocked[$_POST[$tpSelect]] = 1;
- 			}
-			$i++;
-			$tpSelect = "tpSelect_" . $i;
- 		}
+		 *  Update multiple templates		 
+		 */
+		if (isset($_POST['nbOfSelect'])) {	 		
+	 		$already_stored = array();
+	 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+	 			
+	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
+	 		{ 			
+	 			$tpSelect = "tpSelect_" . $i;
+	 			if (!isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
+		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
+			 		$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					$j++;
+					$already_stored[$_POST[$tpSelect]] = 1;
+	 			}			
+	 		}
+		}
+ 		/*
+		 *  Update demand macros
+		 */
+		if (isset($_POST['nbOfMacro'])) {
+			$already_stored = array();
+			$DBRESULT =& $pearDB->query("DELETE FROM `on_demand_macro_host` WHERE `host_host_id`='".$host_id."'");
+			
+	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
+	 		{ 			
+	 			$macInput = "macroInput_" . $i;
+	 			$macValue = "macroValue_" . $i;
+	 			if (!isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
+		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $host_id .")";
+			 		$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
+					$already_stored[$_POST[$macInput]] = 1;
+	 			}			
+	 		}
+		}
 	}
 	
 	function updateHost_MC($host_id = null)	{
@@ -692,25 +729,64 @@
 		
 		/*
 		 *  update multiple templates		 
-		 */		 
-		$i = 0;
-		$j = 1;
- 		$tpSelect = "tpSelect_" . $i;
- 		$already_stocked = array();
- 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
- 		while(isset($_POST[$tpSelect]))
- 		{ 			
- 			if (!isset($already_stocked[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
-	 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
-		 		$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-				$j++;
-				$already_stocked[$_POST[$tpSelect]] = 1;
- 			}
-			$i++;
-			$tpSelect = "tpSelect_" . $i;
- 		}		
+		 */	 		
+ 		if (isset($_POST['nbOfSelect']) && $_POST['nbOfSelect']) {
+	 		$already_stored = array();
+	 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
+	 		{ 			
+	 			$tpSelect = "tpSelect_" . $i; 		
+	 			if (!isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
+		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
+			 		$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					$j++;
+					$already_stored[$_POST[$tpSelect]] = 1;
+	 			}			
+	 		}
+ 		}
+ 		
+ 		/*
+		 *  Update on demand macros
+		 */
+		if (isset($_POST['nbOfMacro']) && $_POST['nbOfMacro']) {
+			$already_stored = array();
+			$already_stored_in_db = array();
+			
+			$rq = "SELECT host_macro_name FROM `on_demand_macro_host` WHERE `host_host_id`=" . $host_id;
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			while ($mac = $DBRESULT->fetchRow()) {
+				$tmp = str_replace("\$_HOST", "", $mac["host_macro_name"]);
+				$tmp = str_replace("\$", "", $tmp);
+				$tmp = strtolower($tmp);				
+				$already_stored_in_db[$tmp] = 1;
+			}
+			
+			
+	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
+	 		{ 			
+	 			$macInput = "macroInput_" . $i;
+	 			$macValue = "macroValue_" . $i;
+	 			if (isset($already_stored_in_db[$_POST[$macInput]])) {	 			 				
+	 				$rq = "UPDATE on_demand_macro_host SET `host_macro_value`='". $_POST[$macValue] . "'".
+	 					  " WHERE `host_host_id`=" . $host_id .
+	 					  " AND `host_macro_name`='\$_HOST" . $_POST[$macInput] . "\$'";
+			 		$DBRESULT =& $pearDB->query($rq);			 		
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	 			}
+	 			elseif (!isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {		 			
+		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $host_id .")";
+			 		$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
+					$already_stored[$_POST[$macInput]] = 1;
+	 			}	 			
+	 		}
+		}
 	}
 	
 	function updateHostHostParent($host_id = null, $ret = array())	{

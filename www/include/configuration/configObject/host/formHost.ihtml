@@ -6,6 +6,9 @@
 	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
 	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
 	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
+	{if $msg.nagios >= 3}
+	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
+	{/if}
 </ul>
 </div>
 <div id="validFormTop">
@@ -39,21 +42,26 @@
 				&nbsp;<img src='./img/icones/16x16/server_network.gif'  style='cursor:pointer'  onClick="window.open('main.php?p=60103&host_id='+ document.Form.elements['host_template_model_htm_id'].options[document.Form.elements['host_template_model_htm_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
 				&nbsp;<img src='./img/icones/16x16/data_edit.gif'  style='cursor:pointer' onClick="window.open('main.php?p=60103&host_id='+ document.Form.elements['host_template_model_htm_id'].options[document.Form.elements['host_template_model_htm_id'].selectedIndex].value + '&o=c&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=620');">
 			{/if}
-			{if $o == "a" || $o == "c" || $o == "mc"}
-			&nbsp;<img src='./img/icones/16x16/component_add.gif' style='cursor:pointer' onClick="javascript:addBlankSelect();">
+			{if $msg.nagios >= 3}
+				{if $o == "a" || $o == "c" || $o == "mc"}
+				&nbsp;<img src='./img/icones/16x16/component_add.gif' style='cursor:pointer' onClick="javascript:addBlankSelect();">
+				{/if}
 			{/if}
 		</td>
 	</tr>
 	
+	{if $msg.nagios >= 3}
 	<tr class="list_one">
 		<td class="FormRowField">
 			<div style="text-decoration: underline">{$form.host_parallel_template.label}</div>
 			{$form.tplTextParallel.label}
+			<input type="hidden" name="nbOfSelect" id="hiddenInput">
 		</td>
 		<td class="FormRowValue">
 			<div id="parallelTemplate"></div>
 		</td>
 	</tr>
+	{/if}
 		
 	{if $form.dupSvTplAssocText.label}
 	<tr class="list_one">
@@ -203,6 +211,28 @@
 	<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
 </table>
 </div>
+
+{if $msg.nagios >= 3}
+<div id='tab5' class='tab'>
+<table class="ListTable">
+	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title5}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear_new.gif'>&nbsp;&nbsp;{$form.header.macro}</td></tr>		
+	<tr><td><br>&nbsp;&nbsp;{$form.add_new.label}&nbsp;<img src='./img/icones/16x16/component_add.gif' style='cursor:pointer' onClick="javascript:addBlankInput();"><input type="hidden" name="nbOfMacro" id="hiddenMacInput"></td></tr>
+	<tr>
+		<td>
+			<table id="macroTable" class="ListTableSmall">
+				<tr class="ListHeader">
+					<td class="ListColLeft">{$form.macroName.label}</td>
+					<td class="ListColCenter">{$form.macroValue.label}</td>
+					<td class="ListColCenter">{$form.macroDelete.label}</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</div>
+{/if}
+
 <div id="validForm">
 {if $o == "a" || $o == "c" || $o == "mc"}
 	<p>{$form.action.html}</p>

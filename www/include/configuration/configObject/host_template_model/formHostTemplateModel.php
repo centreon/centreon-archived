@@ -145,6 +145,36 @@
 	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
 	$DBRESULT->free();
+	
+	
+	/*
+	 *  Host multiple templates relations stored in DB
+	 */	
+	$mTp = array();
+	$k = 0;
+	$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
+	while($multiTp = $DBRESULT->fetchRow())
+	{
+		$mTp[$k] = $multiTp["host_tpl_id"];
+		$k++;
+	}
+	$DBRESULT->free();
+	
+	/*
+	 *  Host on demand macro stored in DB
+	 */
+	$j = 0;		
+	$DBRESULT =& $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
+	while($od_macro = $DBRESULT->fetchRow())
+	{
+		$od_macro_id[$j] = $od_macro["host_macro_id"];
+		$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
+		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
+		$od_macro_value[$j] = $od_macro["host_macro_value"];
+		$od_macro_host_id[$j] = $od_macro["host_host_id"];
+		$j++;		
+	}
+	$DBRESULT->free();
 			
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
@@ -192,8 +222,29 @@
 	$form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
 
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
+	$form->addElement('text', 'host_parallel_template', _("Host Parallel Templates"), $hTpls);
+	$form->addElement('static', 'tplTextParallel', _("A host can have more than one template at the same time"));	
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
-
+	if ($oreon->user->get_version() == 3) {
+		include_once("include/configuration/configObject/host/makeJS_formHost.php");
+		if ($o == "c" || $o == "a" || $o == "mc")
+		{
+			for($k=0; $mTp[$k]; $k++) {?>
+				<script type="text/javascript">
+				tab[<?=$k;?>] = <?=$mTp[$k];?>;		
+				</script> 
+			<?php }
+			for($k=0; isset($od_macro_id[$k]); $k++) {?>
+				<script type="text/javascript">
+				globalMacroTabId[<?=$k;?>] = <?=$od_macro_id[$k];?>;		
+				globalMacroTabName[<?=$k;?>] = '<?=$od_macro_name[$k];?>';
+				globalMacroTabValue[<?=$k;?>] = '<?=$od_macro_value[$k];?>';
+				globalMacroTabHostId[<?=$k;?>] = <?=$od_macro_host_id[$k];?>;
+				</script>
+			<?php
+			}
+		}
+	}
 	#
 	## Check information
 	#
@@ -409,6 +460,26 @@
 
 	$form->addElement('header', 'oreon', _("Centreon"));
 
+	#
+	## Sort 5 - Macros - NAGIOS 3
+	#
+	if ($oreon->user->get_version() >= 3)	{
+		if ($o == "a")
+			$form->addElement('header', 'title5', _("Add macros"));
+		else if ($o == "c")
+			$form->addElement('header', 'title5', _("Modify macros"));
+		else if ($o == "w")
+			$form->addElement('header', 'title5', _("View macros"));
+		else if ($o == "mc")
+			$form->addElement('header', 'title5', _("Massive Change"));
+	
+		$form->addElement('header', 'macro', _("Macros"));
+		$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
+		$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
+		$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
+		$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);		
+	}
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
@@ -490,7 +561,8 @@
 	$tpl->assign("sort1", _("Host Configuration"));
 	$tpl->assign("sort2", _("Relations"));
 	$tpl->assign("sort3", _("Data Processing"));
-	$tpl->assign("sort4", _("Host Extended Infos"));	
+	$tpl->assign("sort4", _("Host Extended Infos"));
+	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign("initJS", "<script type='text/javascript'>
 							window.onload = function () {
 							init();
@@ -540,4 +612,10 @@
 		
 		$tpl->display("formHost.ihtml");
 	}
+if ($oreon->user->get_version() == 3) {
 ?>
+<script type="text/javascript">
+		add_select_template();
+		displayExistingMacroHost(<?=$k;?>);
+</script>
+<?php } ?>

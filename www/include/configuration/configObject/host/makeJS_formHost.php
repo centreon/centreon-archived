@@ -27,13 +27,18 @@ var _o='<?php echo $o;?>';
 var _p='<?php echo $p;?>';
 
 /*
+**  This first block is the javascript code for the multi template creation
+**  There is also a second block for the multi macro creation 
+*/
+
+
+/*
 ** Function called when user clicks on add button
 */
-function addBlankSelect() {
-	var docXML = xhr.responseXML;
-	
+function addBlankSelect() {	
+	var docXML = xhr.responseXML;	
 	var host_entry = docXML.getElementsByTagName("template");
-	    
+	
 	var tp_id = docXML.getElementsByTagName("tp_id");
 	var id;    
 	
@@ -41,9 +46,10 @@ function addBlankSelect() {
 	var alias;
 	
 	var selectElem = document.createElement('select');
-	var tabElem = document.createElement('table');
-	var trElem = document.createElement('tr');
+	tabElem = document.getElementById('multiTpTable');
+	var trElem = document.createElement('tr');	
 	var tdElem = document.createElement('td');
+	var divElem = document.getElementById('parallelTemplate');;
 	var i;
 	
 	
@@ -61,16 +67,31 @@ function addBlankSelect() {
 	    optionElem.text = alias;
 	    selectElem.appendChild(optionElem);
 	}
-			    		
-	
-	divElem = document.getElementById('parallelTemplate');			
-	tabElem.class = "ListTableMultiTp";		
-	tdElem.class = "FormRowValue";
-	
+
 	tdElem.appendChild(selectElem);
+	
+	var imgElem = document.createElement("img");
+	imgElem.src = "./img/icones/16x16/delete.gif";	
+	imgElem.onclick = function(){		
+		tabElem.removeChild(trElem);
+	}
+	tdElem.appendChild(imgElem);
+	
 	trElem.appendChild(tdElem);
+	if (trClassFlag) {
+		trClassFlag = 0;
+		trElem.className = "list_one";
+	}
+	else {
+		trClassFlag = 1;
+		trElem.className = "list_two";
+	}
 	tabElem.appendChild(trElem);	
 	divElem.appendChild(tabElem);
+	
+	//We create a hidden input so that the php sided code can retrieve the globalk variable
+	var hidElem = document.getElementById("hiddenInput");
+	hidElem.value = globalk;	
 }
 
 /*
@@ -83,21 +104,34 @@ function displaySelectedTp(){
 	        
 	    var tp_id = docXML.getElementsByTagName("tp_id");
 	    var id;
-	        
+	    
 	    var tp_alias = docXML.getElementsByTagName("tp_alias");
 	    var alias;
-	    
+	    	    	    
 	    var i;
+	    var imgElem;	    
 	    
+	    var tabElem = document.createElement('table');
+	    tabElem.id = "multiTpTable";
+	    tabElem.className = "ListTableMultiTp";	    
+	    	    
 	    for (globalk=0; tab[globalk]; globalk++){
 		    var selectElem = document.createElement('select');
-			var tabElem = document.createElement('table');
-			var trElem = document.createElement('tr');
+			var trElem = document.createElement('tr');			
+			trElem.id = "trElem_" + globalk;
+			if (trClassFlag) {
+				trClassFlag = 0;
+				trElem.className = "list_one";
+			}
+			else {
+				trClassFlag = 1;
+				trElem.className = "list_two";
+			}
 			var tdElem = document.createElement('td');
 		    
 		    selectElem.id = 'tpSelect_' + globalk;
 			selectElem.name = 'tpSelect_' + globalk;
-			selectElem.value = 'tpSelect_' + globalk;			
+			selectElem.value = 'tpSelect_' + globalk;
 			for(i=0; i<host_entry.length;i++)
 			{
 			   	id = tp_id.item(i).firstChild.data;    	
@@ -109,18 +143,34 @@ function displaySelectedTp(){
 			    optionElem.value = id;
 			    optionElem.text = alias;    
 			    selectElem.appendChild(optionElem);
-			}
-			    		
-			divElem = document.getElementById('parallelTemplate');
+			}			
 			
 			tabElem.class = "ListTableMultiTp";		
 			tdElem.class = "FormRowValue";
 			
 			tdElem.appendChild(selectElem);
+			
+			imgElem = document.createElement("img");
+			imgElem.id = globalk;
+			imgElem.src = "./img/icones/16x16/delete.gif";			
+			imgElem.title = '<?php echo _("Delete");?>';
+			imgElem.onclick = function(){				
+				var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
+				if (response) {
+					document.getElementById('trElem_' + this.id).innerHTML = "";
+				}
+			}
+			tdElem.appendChild(imgElem);			
 			trElem.appendChild(tdElem);
 			tabElem.appendChild(trElem);	
-			divElem.appendChild(tabElem);			
-		}
+		}	
+		var divElem = document.getElementById('parallelTemplate');
+		
+		divElem.appendChild(tabElem)
+		
+		//We create a hidden input so that the php sided code can retrieve the globalk variable
+		var hidElem = document.getElementById("hiddenInput");
+		hidElem.value = globalk;
 }
 
 /*
@@ -130,8 +180,8 @@ function get_select_options() {
 	if (xhr.readyState != 4 && xhr.readyState != "complete")		
     	return(0);
     if (xhr.status == 200)
-    {
-    	displaySelectedTp();
+    {    	
+    	displaySelectedTp(xhr);
     }	
 }
 
@@ -152,7 +202,11 @@ function add_select_template(){
      	alert("AJAX is not supported");
     
     xhr.onreadystatechange = function() { get_select_options(); };
-    xhr.open("GET", "./include/configuration/configObject/host/makeXMLhost.php", true);
+    <?php
+    if ($o == "a" || $o == "mc")
+    	$host_id = -1; 
+    ?>
+    xhr.open("GET", "./include/configuration/configObject/host/makeXMLhost.php?host_id="+<?php echo $host_id;?>, true);
     xhr.send(null);
 }
 
@@ -160,7 +214,128 @@ function add_select_template(){
 ** Global variables
 */
 var tab = new Array();
-var globalk;
 var xhr;
-var divElem;
+var globalk;
+var trClassFlag = 1;
+
+/*
+**  This second block is the javascript code for the multi macro creation 
+*/
+function addBlankInput() {	
+	var tabElem = document.getElementById('macroTable');
+	var keyElem = document.createElement('input');
+	var valueElem = document.createElement('input');
+	var imgElem = document.createElement('img');			
+	var trElem = document.createElement('tr');
+	trElem.id = "trElem_" + globalj;
+	if (trMacroClassFlag) {
+		trElem.className = "list_one";
+		trMacroClassFlag = 0;
+	}
+	else {
+		trElem.className = "list_two";
+		trMacroClassFlag = 1;
+	}
+	trElem.id = "trMacroInput_" + globalj;	
+	var tdElem1 = document.createElement('td');
+	tdElem1.className = "ListColCenter";
+	var tdElem2 = document.createElement('td');
+	tdElem2.className = "ListColLeft";
+	var tdElem3 = document.createElement('td');
+	tdElem3.className = "ListColCenter";
+	keyElem.id = 'macroInput_' + globalj;	
+	keyElem.name = 'macroInput_' + globalj;
+	keyElem.value = '';
+	tdElem1.appendChild(keyElem);	
+				
+	valueElem.id = 'macroValue_' + globalj;
+	valueElem.name = 'macroValue_' + globalj;
+	valueElem.value = "";	
+	tdElem2.appendChild(valueElem);	
+		
+	imgElem.src = "./img/icones/16x16/delete.gif";
+	imgElem.id = globalj;	
+	imgElem.onclick = function(){
+		var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
+		if (response){			
+			document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+		}
+	}	
+	tdElem3.appendChild(imgElem);	
+	trElem.appendChild(tdElem1);
+	trElem.appendChild(tdElem2);
+	trElem.appendChild(tdElem3);		
+	tabElem.appendChild(trElem);	
+	globalj++;
+	document.getElementById('hiddenMacInput').value = globalj;
+}
+
+/*
+** Function for displaying existing macro
+*/
+
+function displayExistingMacroHost(max){
+	for (var i=0; i < max; i++) {
+		var keyElem = document.createElement('input');
+		var valueElem = document.createElement('input');
+		var imgElem = document.createElement('img');	
+		var tabElem = document.getElementById('macroTable');
+		var trElem = document.createElement('tr');
+		
+		trElem.id = "trElem_" + globalj;
+		if (trMacroClassFlag) {
+			trElem.className = "list_one";
+			trMacroClassFlag = 0;
+		}
+		else {
+			trElem.className = "list_two";
+			trMacroClassFlag = 1;
+		}		
+		trElem.id = "trMacroInput_" + globalj;
+		
+		var tdElem1 = document.createElement('td');
+		tdElem1.className = "ListColCenter";
+		var tdElem2 = document.createElement('td');
+		tdElem2.className = "ListColLeft";
+		var tdElem3 = document.createElement('td');
+		tdElem3.className = "ListColCenter";	
+			
+		keyElem.id = 'macroInput_' + globalj;	
+		keyElem.name = 'macroInput_' + globalj;
+		keyElem.value = globalMacroTabName[globalj];		
+		tdElem1.appendChild(keyElem);	
+					
+		valueElem.id = 'macroValue_' + globalj;
+		valueElem.name = 'macroValue_' + globalj;
+		valueElem.value = globalMacroTabValue[globalj];		
+		tdElem2.appendChild(valueElem);	
+			
+		imgElem.src = "./img/icones/16x16/delete.gif";
+		imgElem.id = globalj;
+		imgElem.onclick = function(){
+			var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
+			if (response){
+				document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+			}
+		}
+		tdElem3.appendChild(imgElem);		
+		trElem.appendChild(tdElem1);
+		trElem.appendChild(tdElem2);
+		trElem.appendChild(tdElem3);			
+		globalj++;
+		tabElem.appendChild(trElem);
+	}
+	document.getElementById('hiddenMacInput').value = globalj;
+}
+
+/*
+** Global variables
+*/
+var globalj=0;
+var trMacroClassFlag = 1;
+var globalMacroTabId = new Array();
+var globalMacroTabName = new Array();
+var globalMacroTabValue = new Array();
+var globalMacroTabHostId = new Array();
+
 </script>

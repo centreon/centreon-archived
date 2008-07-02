@@ -1458,6 +1458,21 @@ CREATE TABLE IF NOT EXISTS `ods_view_details` (
 
 -- --------------------------------------------------------
 
+-- 
+-- Structure de la table `on_demand_macro_host`
+-- 
+
+CREATE TABLE IF NOT EXISTS `on_demand_macro_host` (
+  `host_macro_id` int(11) NOT NULL auto_increment,
+  `host_macro_name` varchar(255) NOT NULL,
+  `host_macro_value` varchar(255) NOT NULL,
+  `host_host_id` varchar(11) NOT NULL,
+  PRIMARY KEY  (`host_macro_id`),
+  KEY `host_host_id` (`host_host_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+-- --------------------------------------------------------
+
 --
 -- Structure de la table `purge_policy`
 --

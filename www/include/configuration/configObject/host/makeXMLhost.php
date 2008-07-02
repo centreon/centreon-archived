@@ -41,10 +41,12 @@ echo "</template>\n";
  */
 while ($h = $DBRESULT->fetchRow())
 {
-	echo "<template>";
-	echo "<tp_id>".$h['host_id']."</tp_id>\n";	
-	echo "<tp_alias>".$h['host_name']."</tp_alias>\n";	
-	echo "</template>\n";
+	if ($h['host_id'] != $_GET['host_id']) {
+		echo "<template>";
+		echo "<tp_id>".$h['host_id']."</tp_id>\n";	
+		echo "<tp_alias>".$h['host_name']."</tp_alias>\n";	
+		echo "</template>\n";
+	}
 }
 echo "</template_data>\n";
 ?>
