@@ -9,7 +9,7 @@ INSERT INTO `centreon`.`informations` (`key` ,`value`) VALUES ('version', '2.0-b
 -- Contenu de la table `nagios_server`
 --
 
-INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiosstats_bin`) VALUES(1, 'Poller Principal', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSSTATS_BINARY@');
+INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`) VALUES(1, 'Poller Principal', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@');
 
 --
 -- Contenu de la table `cfg_cgi`

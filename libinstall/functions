@@ -422,24 +422,24 @@ function locate_nagios_binary() {
 ## By default, use nagiostats,nagios2stats or nagios3stats name and find in PATH
 ## @Globals	NAGIOSSTATS_BINARY, DEFAULT_NAGIOSSTATS_BINARY
 #----
-function locate_nagiosstats_binary() {
-	if [ -z "$NAGIOSSTATS_BINARY" ] ; then
+function locate_nagiostats_binary() {
+	if [ -z "$NAGIOSTATS_BINARY" ] ; then
 		nagiostats_binaries="nagiostats nagios2stats nagios3stats"
 		for binary in $nagiostats_binaries ; do
-			pathfind_ret "$binary" "NAGIOSSTATS_BINARY"
+			pathfind_ret "$binary" "NAGIOSTATS_BINARY"
 			if [ "$?" -eq 0 ] ; then
-				NAGIOSSTATS_BINARY="$NAGIOSSTATS_BINARY/$binary"
+				NAGIOSTATS_BINARY="$NAGIOSTATS_BINARY/$binary"
 				break
 			fi
 		done
-		if [ -z "$NAGIOSSTATS_BINARY" ] ; then 
-			answer_with_testfile "`gettext \"Where is your nagiostats binary ? \"`" "$DEFAULT_NAGIOSSTATS_BINARY" "NAGIOSSTATS_BINARY"
+		if [ -z "$NAGIOSTATS_BINARY" ] ; then 
+			answer_with_testfile "`gettext \"Where is your nagiostats binary ? \"`" "$DEFAULT_NAGIOSTATS_BINARY" "NAGIOSTATS_BINARY"
 		fi
-		echo_success "$NAGIOSSTATS_BINARY" "$ok"
+		echo_success "$NAGIOSTATS_BINARY" "$ok"
 	fi
-	NAGIOSSTATS_BINARY=${NAGIOSSTATS_BINARY%/}
-	export NAGIOSSTATS_BINARY
-	log "INFO" "NAGIOSSTATS_BINARY: $NAGIOSSTATS_BINARY"
+	NAGIOSTATS_BINARY=${NAGIOSTATS_BINARY%/}
+	export NAGIOSTATS_BINARY
+	log "INFO" "NAGIOSTATS_BINARY: $NAGIOSTATS_BINARY"
 }
 
 #----
@@ -1199,7 +1199,7 @@ function configureSUDO(){
 #----
 ## Create a config file for Web post install
 ## @Globals	line, INSTALL_DIR_CENTREON, CENTREON_ETC, INSTALL_DIR_NAGIOS,
-## @Globals	NAGIOS_ETC, NAGIOS_PLUGIN, NAGIOS_BINARY, NAGIOSSTATS_BINARY, 
+## @Globals	NAGIOS_ETC, NAGIOS_PLUGIN, NAGIOS_BINARY, NAGIOSTATS_BINARY, 
 ## @Globals	NAGIOS_INIT_SCRIPT, BIN_RRDTOOL, WEB_USER, WEB_GROUP, 
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, BIN_MAIL, BIN_MAIL
 #----
@@ -1238,7 +1238,7 @@ function createConfFile()
 \$conf_centreon['nagios_conf'] = "$NAGIOS_ETC/";
 \$conf_centreon['nagios_plugins'] = "$NAGIOS_PLUGIN/";
 \$conf_centreon['nagios_binary'] = "$NAGIOS_BINARY";
-\$conf_centreon['nagiosstats_binary'] = "$NAGIOSSTATS_BINARY";
+\$conf_centreon['nagiostats_binary'] = "$NAGIOSTATS_BINARY";
 \$conf_centreon['nagios_init_script'] = "$NAGIOS_INIT_SCRIPT";
 \$conf_centreon['rrdtool_dir'] = "$BIN_RRDTOOL";
 \$conf_centreon['apache_user'] = "$WEB_USER";
@@ -1283,7 +1283,7 @@ __EOT__
 ## This file will use in upgrade progess.
 ## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, INSTALL_DIR_NAGIOS,
 ## @Globals	NAGIOS_ETC, NAGIOS_USER, INIT_D, DIR_APACHE, NAGIOS_P1_FILE
-## @Globals	NAGIOS_PLUGIN, NAGIOS_IMG, NAGIOS_BINARY, NAGIOSSTATS_BINARY,
+## @Globals	NAGIOS_PLUGIN, NAGIOS_IMG, NAGIOS_BINARY, NAGIOSTATS_BINARY,
 ## @Globals	NAGIOS_VAR, RRD_PERL, SUDO_FILE, WEB_USER, WEB_GROUP,
 ## @Globals	NAGIOS_GROUP, BIN_RRDTOOL, BIN_MAIL, PEAR_PATH, CENTREON_LOG,
 ## @Globals	CENTREON_ETC, CENTREON_GENDIR, CRON_D, NDOMOD_BINARY
@@ -1296,7 +1296,7 @@ function createCentreonInstallConf() {
 	NAGIOS_PLUGIN=$NAGIOS_PLUGIN
 	NAGIOS_IMG=$NAGIOS_IMG
 	NAGIOS_BINARY=$NAGIOS_BINARY
-	NAGIOSSTATS_BINARY=$NAGIOSSTATS_BINARY
+	NAGIOSTATS_BINARY=$NAGIOSTATS_BINARY
 	NAGIOS_VAR=$NAGIOS_VAR
 	RRD_PERL=$RRD_PERL
 	SUDO_FILE=$SUDO_FILE

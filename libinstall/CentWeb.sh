@@ -42,7 +42,7 @@ locate_nagios_vardir
 locate_nagios_plugindir
 locate_nagios_binary
 locate_nagios_imgdir
-locate_nagiosstats_binary
+locate_nagiostats_binary
 locate_nagios_plugindir
 locate_nagios_p1_file $NAGIOS_ETC
 locate_cron_d
@@ -115,7 +115,7 @@ echo -e "$(gettext "In process")"
 log "INFO" "$(gettext "Change macros for insertBaseConf.sql")"
 sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 	-e 's|@NAGIOS_BINARY@|'"$NAGIOS_BINARY"'|g' \
-	-e 's|@NAGIOSSTATS_BINARY@|'"$NAGIOSSTATS_BINARY"'|g' \
+	-e 's|@NAGIOSTATS_BINARY@|'"$NAGIOSTATS_BINARY"'|g' \
 	-e 's|@NAGIOS_IMG@|'"$NAGIOS_IMG"'|g' \
 	-e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \

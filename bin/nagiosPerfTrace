@@ -203,7 +203,7 @@ sub get_poller	{
     my $id;
     my $ip;
     my $is_localhost;
-    my $nagiosstats_bin;
+    my $nagiostats_bin;
     my $cfg_item;
     my $cfg_dir;
     my $nagiostats;
@@ -212,19 +212,19 @@ sub get_poller	{
     my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
     if (defined($dbh))
     {
-		$item = $dbh->prepare("SELECT id, ns_ip_address, localhost, nagiosstats_bin FROM nagios_server WHERE ns_activate = 1");
+		$item = $dbh->prepare("SELECT id, ns_ip_address, localhost, nagiostats_bin FROM nagios_server WHERE ns_activate = 1");
 		if (!$item->execute) {die "Error:" . $item->errstr . "\n";}
-		while (($id, $ip, $is_localhost, $nagiosstats_bin) = $item->fetchrow_array())	{
+		while (($id, $ip, $is_localhost, $nagiostats_bin) = $item->fetchrow_array())	{
 		    $cfg_item = $dbh->prepare("SELECT cfg_dir FROM cfg_nagios WHERE nagios_server_id = " . $id);
 		    if (!$cfg_item->execute) {
 		    	die "Error:" . $cfg_item->errstr . "\n";
 		    }
 		    $cfg_dir = $cfg_item->fetchrow_hashref;
 		    if ($is_localhost){
-				$nagiostats = `$nagiosstats_bin`;
+				$nagiostats = `$nagiostats_bin`;
 		    } else {
 				$tmp = $cfg_dir->{'cfg_dir'};
-				$nagiostats = `ssh $ip $item->{'nagiosstats_bin'} -c ${tmp}nagios.cfg`;
+				$nagiostats = `ssh $ip $item->{'nagiostats_bin'} -c ${tmp}nagios.cfg`;
 		    }
 		    check_dir($id);
 		    rrd_process($nagiostats, $is_localhost);
