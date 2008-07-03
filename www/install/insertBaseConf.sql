@@ -158,6 +158,22 @@ INSERT INTO `host` (`host_id`, `host_template_model_htm_id`, `command_command_id
 INSERT INTO `host` (`host_id`, `host_template_model_htm_id`, `command_command_id`, `command_command_id_arg1`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `purge_policy_id`, `command_command_id2`, `command_command_id_arg2`, `host_name`, `host_alias`, `host_address`, `host_max_check_attempts`, `host_check_interval`, `host_active_checks_enabled`, `host_passive_checks_enabled`, `host_checks_enabled`, `host_obsess_over_host`, `host_check_freshness`, `host_freshness_threshold`, `host_event_handler_enabled`, `host_low_flap_threshold`, `host_high_flap_threshold`, `host_flap_detection_enabled`, `host_process_perf_data`, `host_retain_status_information`, `host_retain_nonstatus_information`, `host_notification_interval`, `host_notification_options`, `host_notifications_enabled`, `host_stalking_options`, `host_snmp_community`, `host_snmp_version`, `host_comment`, `host_register`, `host_activate`) VALUES(14, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Centreon-Server', 'Monitoring Server', '127.0.0.1', NULL, NULL, '2', '2', '2', '2', '2', NULL, '2', NULL, NULL, '2', '2', '2', '2', NULL, NULL, '2', NULL, NULL, '0', NULL, '1', '1');
 
 --
+-- Contenu de la table `host_template_relation`
+--
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('3', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('4', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('5', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('6', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('7', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('8', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('9', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('10', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('11', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('12', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('13', '2', '1');
+INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES ('14', '2', '1');
+
+--
 -- Contenu de la table `extended_host_information`
 --
 
