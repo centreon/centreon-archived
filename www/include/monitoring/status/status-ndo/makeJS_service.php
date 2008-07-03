@@ -30,34 +30,34 @@
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
-var _debug = 0;
-
-var _search = '<?php echo $search; ?>';
-var _sid='<?php echo $sid?>';
-var _search_type_host='<?php echo $search_type_host?>';
-var _search_type_service='<?php echo $search_type_service?>';
-var _num='<?php echo $num?>';
-var _limit='<?php echo $limit?>';
-var _sort_type='<?php echo $sort_type?>';
-var _order='<?php echo $order?>';
-var _date_time_format_status='<?php echo _("d/m/Y H:i:s")?>';
-var _o='<?php echo $o?>';
-var _p='<?php echo $p?>';
-
-var _addrXSL = "./include/monitoring/status/status-ndo/templates/service.xsl";
-var _timeoutID = 0;
-var _on = 1;
-var _time_reload = <?php echo $tM?>;
-var _time_live = <?php echo $tFM?>;
-var _nb = 0;
-var _oldInputFieldValue = '<?php echo $search?>';
-var _currentInputFieldValue=""; // valeur actuelle du champ texte
-var _resultCache=new Object();
-var _first = 1;
-var _lock = 0;
-var _instance = 'ALL';
-var _default_instance = '0';
-var _nc = 0;
+	var _debug = 0;
+	
+	var _search = '<?php echo $search; ?>';
+	var _sid='<?php echo $sid?>';
+	var _search_type_host='<?php echo $search_type_host?>';
+	var _search_type_service='<?php echo $search_type_service?>';
+	var _num='<?php echo $num?>';
+	var _limit='<?php echo $limit?>';
+	var _sort_type='<?php echo $sort_type?>';
+	var _order='<?php echo $order?>';
+	var _date_time_format_status='<?php echo _("d/m/Y H:i:s")?>';
+	var _o='<?php echo $o?>';
+	var _p='<?php echo $p?>';
+	
+	var _addrXSL = "./include/monitoring/status/status-ndo/templates/service.xsl";
+	var _timeoutID = 0;
+	var _on = 1;
+	var _time_reload = <?php echo $tM?>;
+	var _time_live = <?php echo $tFM?>;
+	var _nb = 0;
+	var _oldInputFieldValue = '<?php echo $search?>';
+	var _currentInputFieldValue=""; // valeur actuelle du champ texte
+	var _resultCache=new Object();
+	var _first = 1;
+	var _lock = 0;
+	var _instance = 'ALL';
+	var _default_instance = '0';
+	var _nc = 0;
 <?php
 include_once("makeJS_Common.php");
 ?>
@@ -101,11 +101,12 @@ var tempX = 0;
 var tempY = 0;
 
 function position(e)
-	{
+{
 	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
 	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
-	}
-if(navigator.appName.substring(0,3) == "Net")
+}
+
+if (navigator.appName.substring(0,3) == "Net")
 	document.captureEvents(Event.MOUSEMOVE);
 document.onmousemove = position;
 
@@ -113,8 +114,7 @@ function set_header_title(){
 	var _img_asc = mk_img('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_img('./img/icones/7x7/sort_desc.gif', "desc");
 
-	if(document.getElementById('host_name')){
-
+	if (document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
 		h.innerHTML = '<?php echo _("Hosts"); ?>';
 	  	h.indice = 'host_name';
@@ -158,7 +158,6 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
-
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
 		if(_order == 'ASC')
@@ -168,9 +167,7 @@ function set_header_title(){
 		_linkaction_asc.href = '#' ;
 		_linkaction_asc.onclick=function(){change_order()};
 		h.appendChild(_linkaction_asc);
-
 	}
-
 }
 
 
