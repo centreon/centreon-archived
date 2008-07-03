@@ -31,6 +31,8 @@
 	{if $form.nagios_server_id.label}
 	<tr class="list_one"><td class="FormRowField">{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
 	{/if}
+	
+	{if $msg.nagios >= 2 && $msg.nagios < 3}
 	<tr class="list_two">
 		<td class="FormRowField">
 			<div style="text-decoration: underline">{$form.host_template_model_htm_id.label}</div>
@@ -41,14 +43,10 @@
 			{if $o == "a" || $o == "c"}
 				&nbsp;<img src='./img/icones/16x16/server_network.gif'  style='cursor:pointer'  onClick="window.open('main.php?p=60103&host_id='+ document.Form.elements['host_template_model_htm_id'].options[document.Form.elements['host_template_model_htm_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
 				&nbsp;<img src='./img/icones/16x16/data_edit.gif'  style='cursor:pointer' onClick="window.open('main.php?p=60103&host_id='+ document.Form.elements['host_template_model_htm_id'].options[document.Form.elements['host_template_model_htm_id'].selectedIndex].value + '&o=c&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=620');">
-			{/if}
-			{if $msg.nagios >= 3}
-				{if $o == "a" || $o == "c" || $o == "mc"}
-				&nbsp;<img src='./img/icones/16x16/component_add.gif' style='cursor:pointer' onClick="javascript:addBlankSelect();">
-				{/if}
-			{/if}
+			{/if}			
 		</td>
 	</tr>
+	{/if}
 	
 	{if $msg.nagios >= 3}
 	<tr class="list_one">
@@ -57,7 +55,10 @@
 			{$form.tplTextParallel.label}
 			<input type="hidden" name="nbOfSelect" id="hiddenInput">
 		</td>
-		<td class="FormRowValue">
+		<td class="FormRowValue">			
+			{if $o == "a" || $o == "c" || $o == "mc"}
+				{$add_mtp_label}&nbsp;<img src='./img/icones/16x16/component_add.gif' style='cursor:pointer' onClick="javascript:addBlankSelect();">			
+			{/if}
 			<div id="parallelTemplate"></div>
 		</td>
 	</tr>

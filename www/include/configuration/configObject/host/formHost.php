@@ -279,7 +279,7 @@
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
 	$form->addElement('text', 'host_parallel_template', _("Host Multiple Templates"), $hTpls);
 	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance<br>(cf Nagios documentation for more information)"));	
-	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
+	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));	
 	if ($oreon->user->get_version() == 3) {
 		include_once("makeJS_formHost.php");	
 		if ($o == "c" || $o == "a" || $o == "mc")
@@ -732,6 +732,7 @@
 		$tpl->assign("Event_Handler", _("Event Handler"));
 		$tpl->assign("topdoc", _("Documentation"));
 		$tpl->assign("hostID", $host_id);
+		$tpl->assign("add_mtp_label", _("Add a template"));
 		
 		$tpl->display("formHost.ihtml");
 	}
