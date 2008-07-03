@@ -32,10 +32,22 @@
 	$attrSelect = array("style" => "width: 220px;");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+	/*
+	 * Init Header for tables in template
+	 */
 	$form->addElement('header', 'title', _("Snmptrapd Configuration"));
 	$form->addElement('header', 'opt', _("Export Options"));
 	$form->addElement('header', 'result', _("Actions"));	    
-	$form->addElement('checkbox', 'restart', _("Generate configuration file and restart snmptrapd"));
+	
+	/*
+	 * Add checkbox for enable restart
+	 */
+	$form->addElement('checkbox', 'restart', _("Generate configuration files for SNMPTT"));
+
+	/*
+	 * Set checkbox checked.
+	 */
+	$form->setDefaults(array('restart' => '1'));
 	
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -53,7 +65,7 @@
 		$ret = $form->getSubmitValues();
 		if (isset($ret["restart"]["restart"]) && $ret["restart"]["restart"])	{
 			$stdout = shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
-			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
+			$msg .= "<br>".str_replace ("\n", "<br>", $stdout)."<br>";
 		}
 	}
 
