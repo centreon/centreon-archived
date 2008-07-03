@@ -139,7 +139,6 @@
 					
 		$rq .= 	" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 not like 'OSL_Module'" .
-				" AND no.name1 not like 'Meta_Module'" .
 				" AND no.is_active = 1" .
 			  	" AND objecttype_id = 2";
 
