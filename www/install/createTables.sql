@@ -1423,7 +1423,7 @@ CREATE TABLE IF NOT EXISTS `nagios_server` (
   `ns_status` enum('0','1','2','3','4') default '0',
   `init_script` varchar(255) default NULL,
   `nagios_bin` varchar(255) default NULL,
-  `nagiosstats_bin` varchar(255) default NULL,
+  `nagiostats_bin` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
