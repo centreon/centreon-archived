@@ -27,7 +27,7 @@
 		$str = NULL;
 		$cmd = htmlentities($cmd);
 		$informations = split(";", $key);
-		if (isHostLocalhost($pearDB, $informations[0])
+		if (isHostLocalhost($pearDB, $informations[0]))
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
 		else
 			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . "@CENTREON_VARLIB@/centcore.cmd";
@@ -190,8 +190,7 @@
 	}
 
 	function submitPassiveCheck(){
-		global $pearDB;
-		global $key;
+		global $pearDB, $key;
 		$key = $_GET["host_name"];
 		$flg = write_command(" PROCESS_SERVICE_CHECK_RESULT;".$_GET["host_name"].";".$_GET["service_description"].";".$_GET["return_code"].";".$_GET["output"]."|".$_GET["dataPerform"], GetMyHostPoller($pearDB, $_GET["host_name"]));
 		return _("Your command has been sent");
