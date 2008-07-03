@@ -34,7 +34,8 @@
 	 * pearDB init
 	 */ 
 	require_once 'DB.php';
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+//	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
 	/*
@@ -231,7 +232,10 @@
 	$tab_class = array("1" => "list_one", "0" => "list_two");
 
 	
+	
 	foreach ($tab_real_id as $key => $openid) {
+		print "|" . $type . "|";
+	
 		$bad_value = 0;	
 		$tab_tmp = split("_", $openid);
 		
@@ -240,11 +244,12 @@
 		
 		$real_id = $tab_real_id[$key];
 		$type = returnType($type, $multi);
-		
+		print "|" . $type . "|";
 		/*
 		 * for one svc -> daily,weekly,monthly,yearly..
 		 */
 		if ($type == "HS" || $type == "MS"){
+			print "OK\n";
 			$msg_error 		= 0;
 			$elem 			= array();
 		
@@ -265,16 +270,14 @@
 				$template_id = getDefaultGraph($svc_id["service_id"], 1);
 				$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 				$GraphTemplate =& $DBRESULT2->fetchRow();
-				if ($GraphTemplate["split_component"] == 1 )
+				if ($GraphTemplate["split_component"] == 1)
 					$split = 1;
 			}	
 			if ($type == "MS"){			
-				
+				$other_services = array();
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
 				if (PEAR::isError($DBRESULT2))
 					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-				
-				$other_services = array();
 				if ($svc_id =& $DBRESULT2->fetchRow()){
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 						$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
@@ -449,11 +452,11 @@
 					$split = 1;
 			}	
 			if ($type == "SM"){
+				$other_services = array();
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
 				if (PEAR::isError($DBRESULT2))
 					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-				$other_services = array();
-		
+				
 				if ($svc_id =& $DBRESULT2->fetchRow()){
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 						$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
