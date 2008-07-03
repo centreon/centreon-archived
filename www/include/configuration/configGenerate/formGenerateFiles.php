@@ -176,6 +176,11 @@
 		 */
 
 		if (isset($ret["move"]) && $ret["move"])	{
+			
+			/*
+			 * Copying image in logos directory
+			 * 
+			 */
 			$DBRESULT_imgs =& $pearDB->query("SELECT `dir_name`, `img_path` FROM `view_img`, `view_img_dir`, `view_img_dir_relation` WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id");
 			while ($images =& $DBRESULT_imgs->fetchrow()){
 				if (!is_dir($oreon->optGen["nagios_path_img"]."/".$images["dir_name"]))
@@ -186,14 +191,18 @@
 			$msg_copy = array();
 			foreach ($tab_server as $host)
 				if (isset($host['localhost']) && $host['localhost'] == 1){
-					$msg_copy[$host["id"]] = "<table border=0 width=300>";
+					$msg_copy[$host["id"]] = "";
 					foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
 						$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
 						$filename = array_pop(explode("/", $filename));
 						if (!$bool)
 							$msg_copy[$host["id"]] .= display_copying_file($filename, _(" - movement <font color='res'>KO</font>"));
 					}
-					$msg_copy[$host["id"]] .= "</table>";
+					if (strlen($msg_copy[$host["id"]])){
+						$msg_copy[$host["id"]] = "<table border=0 width=300>".$msg_copy[$host["id"]]."</table>";
+					} else {
+						$msg_copy[$host["id"]] = "<br>"._("Centreon : All configuration files copied with success.");
+					}
 				} else {
 					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> @CENTREON_VARLIB@/centcore.cmd", $return);
 				}
