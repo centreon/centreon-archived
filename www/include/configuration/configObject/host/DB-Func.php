@@ -452,13 +452,15 @@
 		/*
 		 *  Insert on demand macros
 		 */
-		if (isset($_POST['nbOfMacro'])) {
+		if (isset($_POST['nbOfMacro'])) {			
 			$already_stored = array(); 		
 	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
 	 		{ 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
 	 			if (!isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
+		 			$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
+		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $host_id['MAX(host_id)'] .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
@@ -655,6 +657,8 @@
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
 	 			if (!isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
+		 			$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
+		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $host_id .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
@@ -771,6 +775,8 @@
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
 	 			if (isset($already_stored_in_db[$_POST[$macInput]])) {	 			 				
+	 				$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
+		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 	 				$rq = "UPDATE on_demand_macro_host SET `host_macro_value`='". $_POST[$macValue] . "'".
 	 					  " WHERE `host_host_id`=" . $host_id .
 	 					  " AND `host_macro_name`='\$_HOST" . $_POST[$macInput] . "\$'";
@@ -779,6 +785,8 @@
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 			}
 	 			elseif (!isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {		 			
+		 			$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
+		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $host_id .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))

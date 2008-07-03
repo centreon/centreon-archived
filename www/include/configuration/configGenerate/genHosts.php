@@ -29,7 +29,7 @@
 	$host = array();
 	$i = 1;
 	$str = NULL;
-	while($DBRESULT->fetchInto($host))	{
+	while($host = $DBRESULT->fetchRow())	{
 		if (isHostOnThisInstance($host["host_id"], $tab['id']) || $host["host_register"] == 0) {
 			$BP = false;
 			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
@@ -54,12 +54,43 @@
 				 * Get Template Model Relation
 				 */
 				
-				if ($host["host_template_model_htm_id"]) {
+				/*
+				 *  For Nagios 3 ::: Multi Templates
+				 */
+				if ($oreon->user->get_version() >= 3) {
+					$rq = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id=" . $host["host_id"] . " ORDER BY `order`";
+					$DBRESULT2 =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT2))
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+					$tpl_str = "";
+					$first_on_list = 1;
+					while ($tpl_id = $DBRESULT2->fetchRow()) {
+						$rq = "SELECT host_name FROM `host` WHERE host_id=" . $tpl_id["host_tpl_id"];
+						$DBRESULT3 =& $pearDB->query($rq);
+						if (PEAR::isError($DBRESULT3))
+							print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+						while ($tpl_name = $DBRESULT3->fetchRow()) { 
+							if ($first_on_list) {
+								$first_on_list = 0;
+								$tpl_str .= $tpl_name["host_name"];
+							}
+							else
+								$tpl_str .= "," . $tpl_name["host_name"];							
+						}	
+					}
+					if ($DBRESULT2->numRows())
+						$str .= print_line("use", $tpl_str);
+					$DBRESULT2->free();
+				}
+				/*
+				 *  For Nagios 1 & 2
+				 */
+				elseif ($host["host_template_model_htm_id"]) {			
 					$hostTemplate = array();
 					$DBRESULT2 =& $pearDB->query("SELECT host.host_name FROM host WHERE host.host_id = '".$host["host_template_model_htm_id"]."'");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-					while($DBRESULT2->fetchInto($hostTemplate))
+					while($hostTemplate = $DBRESULT2->fetchRow())
 						$str .= print_line("use", $hostTemplate["host_name"]);
 					$DBRESULT2->free();
 					unset($hostTemplate);		
@@ -82,7 +113,7 @@
 				$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-				while($DBRESULT2->fetchInto($hostParent))	{
+				while($hostParent = $DBRESULT2->fetchRow())	{
 					$DBRESULT3 =& $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$hostParent["host_id"]."' AND nagios_server_id = '".$tab['id']."'");
 					if (PEAR::isError($DBRESULT3))
 						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
@@ -101,7 +132,7 @@
 					$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hgr.hostgroup_hg_id = hg.hg_id ORDER BY `hg_name`");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-					while($DBRESULT2->fetchInto($hostGroup))	{
+					while($hostGroup = $DBRESULT2->fetchRow())	{
 						$BP = false;
 						array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
 						
@@ -125,7 +156,7 @@
 				
 				$host["command_command_id_arg2"] = removeSpecialChar($host["command_command_id_arg2"]);
 				
-				while($DBRESULT2->fetchInto($command))
+				while($command = $DBRESULT2->fetchRow())
 					$str .= print_line("check_command", $command["command_name"].$host["command_command_id_arg1"]);
 				$DBRESULT2->free();
 				unset($command);
@@ -142,7 +173,7 @@
 					$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id"]."' LIMIT 1");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-					while($DBRESULT2->fetchInto($timePeriod))
+					while($timePeriod = $DBRESULT2->fetchRow())
 						$str .= print_line("check_period", $timePeriod["tp_name"]);
 					$DBRESULT2->free();
 					unset($timePeriod);
@@ -162,7 +193,7 @@
 				$host["command_command_id_arg2"] = str_replace('#S#', "/", $host["command_command_id_arg2"]);
 				$host["command_command_id_arg2"] = str_replace('#BS#', "\\", $host["command_command_id_arg2"]);
 					
-				while($DBRESULT2->fetchInto($command))
+				while($command = $DBRESULT2->fetchRow())
 					$str .= print_line("event_handler", $command["command_name"].$host["command_command_id_arg2"]);
 				$DBRESULT2->free();
 				unset($command);
@@ -181,7 +212,7 @@
 					$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-					while($DBRESULT2->fetchInto($contactGroup))	{				
+					while($contactGroup = $DBRESULT2->fetchRow())	{				
 						$BP = false;
 						array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
 				
@@ -200,7 +231,7 @@
 				$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id2"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-				while($DBRESULT2->fetchInto($timePeriod))
+				while($timePeriod = $DBRESULT2->fetchRow())
 					$str .= print_line("notification_period", $timePeriod["tp_name"]);
 				$DBRESULT2->free();
 				unset($timePeriod);
@@ -209,6 +240,22 @@
 				if ($host["host_notifications_enabled"] != 2) $str .= print_line("notifications_enabled", $host["host_notifications_enabled"] == 1 ? "1": "0");
 				if ($host["host_stalking_options"]) $str .= print_line("stalking_options", $host["host_stalking_options"]);
 				if (!$host["host_register"]) $str .= print_line("register", "0");
+				
+				/*
+				 * On-demand macros
+				 */
+				if ($oreon->user->get_version() >= 3) {
+					$rq = "SELECT host_macro_name, host_macro_value FROM on_demand_macro_host WHERE `host_host_id`=" . $host['host_id'];
+					$DBRESULT3 =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT3))
+						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+					while($od_macro = $DBRESULT3->fetchRow()) {
+						$mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);
+						$mac_name = str_replace("\$", "", $mac_name);
+						$mac_value = $od_macro['host_macro_value'];
+						$str .= print_line($mac_name, $mac_value);
+					}
+				}
 				$str .= "}\n\n";
 				$i++;
 			}

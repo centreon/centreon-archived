@@ -277,7 +277,7 @@
 	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
-	$form->addElement('text', 'host_parallel_template', _("Host Parallel Templates"), $hTpls);
+	$form->addElement('text', 'host_parallel_template', _("Host Multiple Templates"), $hTpls);
 	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance<br>(cf Nagios documentation for more information)"));	
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
 	if ($oreon->user->get_version() == 3) {
