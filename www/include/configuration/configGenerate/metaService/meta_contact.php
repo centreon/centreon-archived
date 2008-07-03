@@ -27,7 +27,7 @@
 		$str .= print_line("contact_name", "meta_contact");
 		$str .= print_line("alias", "meta_contact");
 		# Nagios 2 : Contact Groups in Contact
-		if ($oreon->user->get_version() == 2)
+		if ($oreon->user->get_version() >= 2)
 			$str .= print_line("contactgroups", "meta_contactgroup");
 		$str .= print_line("host_notification_period", "meta_timeperiod");
 		$str .= print_line("service_notification_period", "meta_timeperiod");
