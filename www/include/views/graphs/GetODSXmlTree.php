@@ -165,7 +165,7 @@
 				}
 			}
 			$DBRESULT->free();
-		} else if ($type == "MS") {
+		} else if ($type == "MT") {
 			/*
 			 * Send Meta Service list
 			 */
@@ -178,8 +178,7 @@
 				$i++;
 		        print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
-		}
-		 else if ($type == "RR") {
+		} else if ($type == "RR") {
 			/*
 			 * Send Host Group list
 			 */
@@ -237,7 +236,7 @@
 		        //print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
 			if ($cpt){
-				print("<item child='1' id='MS_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
+				print("<item child='1' id='MT_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
 				print $str ;
 				print("</item>");
 			}
