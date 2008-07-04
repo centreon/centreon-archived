@@ -221,7 +221,7 @@ var trClassFlag = 1;
 /*
 **  This second block is the javascript code for the multi macro creation 
 */
-function addBlankInput() {	
+function addBlankInput() {
 	var tabElem = document.getElementById('macroTable');
 	var keyElem = document.createElement('input');
 	var valueElem = document.createElement('input');

@@ -278,7 +278,10 @@
 
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
 	$form->addElement('text', 'host_parallel_template', _("Host Multiple Templates"), $hTpls);
-	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance<br>(cf Nagios documentation for more information)"));	
+	?>
+	<script type="text/javascript" src="lib/wz_tooltip/wz_tooltip.js"></script>
+	<?php
+	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70)\" onmouseout=\"UnTip()\">Here is a self explanatory image.</a>"));	
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));	
 	if ($oreon->user->get_version() == 3) {
 		include_once("makeJS_formHost.php");	
@@ -296,7 +299,7 @@
 				globalMacroTabName[<?=$k;?>] = '<?=$od_macro_name[$k];?>';
 				globalMacroTabValue[<?=$k;?>] = '<?=$od_macro_value[$k];?>';
 				globalMacroTabHostId[<?=$k;?>] = <?=$od_macro_host_id[$k];?>;
-				</script> 
+				</script>				
 			<?php 
 			}
 		}
@@ -625,7 +628,7 @@
 		$form->registerRule('exist', 'callback', 'testHostExistence');
 		$form->addRule('host_name', _("Name is already in use"), 'exist');
 		# If we are using a Template, no need to check the value, we hope there are in the Template
-		if (!$form->getSubmitValue("host_template_model_htm_id"))	{
+		if ((!$form->getSubmitValue("host_template_model_htm_id")) && ($oreon->user->get_version() != 3))	{
 			$form->addRule('host_alias', _("Compulsory Alias"), 'required');
 			$form->addRule('host_address', _("Compulsory Address"), 'required');
 			$form->addRule('host_max_check_attempts', _("Required Field"), 'required');

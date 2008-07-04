@@ -223,7 +223,10 @@
 
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
 	$form->addElement('text', 'host_parallel_template', _("Host Parallel Templates"), $hTpls);
-	$form->addElement('static', 'tplTextParallel', _("A host can have more than one template at the same time"));	
+	?>
+	<script type="text/javascript" src="lib/wz_tooltip/wz_tooltip.js"></script>
+	<?php
+	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70)\" onmouseout=\"UnTip()\">Here is a self explanatory image.</a>"));	
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
 	if ($oreon->user->get_version() == 3) {
 		include_once("include/configuration/configObject/host/makeJS_formHost.php");
@@ -240,7 +243,7 @@
 				globalMacroTabName[<?=$k;?>] = '<?=$od_macro_name[$k];?>';
 				globalMacroTabValue[<?=$k;?>] = '<?=$od_macro_value[$k];?>';
 				globalMacroTabHostId[<?=$k;?>] = <?=$od_macro_host_id[$k];?>;
-				</script>
+				</script>				
 			<?php
 			}
 		}
@@ -609,6 +612,7 @@
 		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
 		$tpl->assign("History_Options", _("History Options"));
 		$tpl->assign("Event_Handler", _("Event Handler"));
+		$tpl->assign("add_mtp_label", _("Add a template"));
 		
 		$tpl->display("formHost.ihtml");
 	}

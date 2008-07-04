@@ -323,6 +323,23 @@
 		return ($tplArr);
 	}
 
+	function getMyHostMultipleTemplateModels($host_id = NULL)	{
+		if (!$host_id) return;
+		global $pearDB;
+		$tplArr = array();
+		$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = '".$host_id."' ORDER BY `order`");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while($row =& $DBRESULT->fetchRow())	{
+			$DBRESULT2 =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$row['host_tpl_id']."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$hTpl =& $DBRESULT2->fetchRow();			
+			$tplArr[$row['host_tpl_id']] = html_entity_decode($hTpl["host_name"], ENT_QUOTES);
+		}		
+		return ($tplArr);
+	}
+
 	#
 	## HOST GROUP
 	#
