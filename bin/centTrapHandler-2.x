@@ -108,7 +108,7 @@ sub getServiceInformations($$$)	{
     
     $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable` FROM `traps` WHERE `traps_oid` = '$_[1]'");
     $sth->execute();
-    my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_svc_enable) = $sth->fetchrow_array();
+    my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_svc_enable,$traps_execution_command_enable) = $sth->fetchrow_array();
     exit if (!defined $trap_id);
     $sth->finish();
 
@@ -148,8 +148,8 @@ sub getTrapsInfos($$$$){
     my @host = get_hostinfos($dbh, $ip, $hostname);
     foreach(@host) {
 		my $this_host = $_;
-		my @servicename=@{$ref_servicename};
 		my ($status, $ref_servicename, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable) = getServiceInformations($dbh, $oid, $_);
+		my @servicename=@{$ref_servicename};
 		foreach (@servicename) {
 		    my $this_service = $_;
 	    	my $datetime = `date +%s`;
@@ -181,6 +181,6 @@ sub getTrapsInfos($$$$){
 #
 
 if (scalar(@ARGV)) {
-    my ($ip, $hostname, $oid, $arguments) = $ARGV;
+    my ($ip, $hostname, $oid, $arguments) = @ARGV;
     getTrapsInfos($ip, $hostname, $oid, $arguments);
 }
