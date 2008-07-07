@@ -19,35 +19,35 @@
 ?>
 <script type="text/javascript">
 
-		var tl;
+var tl;
 
-		function initTimeline() {
-			var eventSource = new Timeline.DefaultEventSource();
-			var bandInfos = [
-			Timeline.createBandInfo({
-				eventSource:    eventSource,
-				width:          "70%", 
-				intervalUnit:   Timeline.DateTime.DAY, 
-				intervalPixels: 300
-		    }),
-			Timeline.createBandInfo({
-	        	showEventText:  false,
-	       		eventSource:    eventSource,
-	        	width:          "30%", 
-	        	intervalUnit:   Timeline.DateTime.MONTH, 
-	    	    intervalPixels: 300
-	    	})
-	  	];
+function initTimeline() {
+	var eventSource = new Timeline.DefaultEventSource();
+	var bandInfos = [
+	Timeline.createBandInfo({
+			eventSource:    eventSource,
+			width:          "70%", 
+			intervalUnit:   Timeline.DateTime.DAY, 
+			intervalPixels: 300
+	    }),
+		Timeline.createBandInfo({
+	    	showEventText:  false,
+	   		eventSource:    eventSource,
+	    	width:          "30%", 
+	    	intervalUnit:   Timeline.DateTime.MONTH, 
+		    intervalPixels: 300
+		})
+	];
+
+	bandInfos[1].syncWith = 0;
+	bandInfos[1].highlight = true;
+	bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
 	
-	  	bandInfos[1].syncWith = 0;
-	  	bandInfos[1].highlight = true;
-	  	bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
+	var arg = 'hostID=<?php echo $host_id ?>&color=<?php echo $color.$today_var ?>';
+	 		  	
+	tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
 	
-		var arg = 'oreonPath=<?php print $centreon_path; ?>&hostID=<?php echo $host_id ?>&color=<?php echo $color.$today_var ?>';
-		 		  	
-	  	tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
-	
-	  	Timeline.loadXML('./include/reporting/dashboard/xmlInformations/GetXml<?php echo $type ?>.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });
-	}
+	Timeline.loadXML('./include/reporting/dashboard/xmlInformations/GetXml<?php echo $type ?>.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });
+}
 
 </SCRIPT>
