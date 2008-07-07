@@ -142,7 +142,10 @@
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
-		        print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+		        if ($is_admin)
+			        print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+				else if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))
+			       print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");			
 			}
 			$DBRESULT2->free();
 		} else if ($type == "RS") {
@@ -176,8 +179,9 @@
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
-		        print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+				print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
+			$DBRESULT->free();
 		} else if ($type == "RR") {
 			/*
 			 * Send Host Group list
@@ -207,13 +211,16 @@
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($host =& $DBRESULT2->fetchRow()){
+				print_r($lca);
 				$i++;
-				$cpt++;
 				if ($is_admin){
+		           	$cpt++;
 		           	$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";
 				} else {
-					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))
+					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]])){
 						$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";	
+						$cpt++;
+					}
 				}
 			}
 			$DBRESULT2->free();
@@ -233,9 +240,8 @@
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
 				$cpt++;
-		        //print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
-			if ($cpt){
+			if ($cpt && $is_admin){
 				print("<item child='1' id='MT_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
 				print $str ;
 				print("</item>");
