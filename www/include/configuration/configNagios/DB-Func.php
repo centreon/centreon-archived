@@ -14,8 +14,6 @@
  * 
  * For information : contact@centreon.com
  */
-	if (!isset($oreon))
-		exit();
 
 	function testExistence ($name = NULL)	{
 		global $pearDB, $form;
