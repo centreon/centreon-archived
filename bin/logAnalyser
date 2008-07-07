@@ -53,14 +53,13 @@ my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql
 my $dbhoreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 
 Getopt::Long::Configure('bundling');
-GetOptions
-    ("h" => \$opt_h,            "help" => \$opt_h,
-     "a" => \$opt_a,            "archives" => \$opt_a);
+GetOptions("h" => \$opt_h, "help" => \$opt_h,
+           "a" => \$opt_a, "archives" => \$opt_a);
 
 if($opt_h) {
-    print "Usage : $0 :\n";
-    print "       -a (--archives) load data from log archives to database\n";
-    print "       -h (--help) show help\n";
+    print " Usage : $0 :\n";
+    print "    -a (--archives) load data from log archives to database\n";
+    print "    -h (--help) show help\n";
     exit(0);
 }
 
@@ -76,90 +75,96 @@ my $last_line_read;
 
 # Parsing nagios.log
 sub parseFile ($$) {
-	my $instance = $_[1];
-	if (!open (FILE, $_[0])){
-		print "Cannot open file : $_[0]\n";
-		return;
-	}
-    $cpt = 0;
-    if (!$opt_a) {
-		while ($cpt < $last_line_read && <FILE>){
-		    $cpt++;
-		}
+    my $instance = $_[1];
+    if (!open (FILE, $_[0])){
+	print "Cannot open file : $_[0]\n";
+	return;
     }
+    $cpt = 0;
+    #
+    # Skip old lines (already read)
+    #
+    if (!$opt_a) {
+	while ($cpt < $last_line_read && <FILE>){
+	    $cpt++;
+	}
+    }
+    #
+    # Now Read unknown log lines
+    #
     while (<FILE>) {
-		if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/){
-		    my @tab = split(/;/, $2);
-		    $ctime = $1;
-		    $tab[5] =~ s/\\/\\\\/g; 
-			$tab[5] =~ s/\'/\\\'/g;
-		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `type`, `retry`, `output`, `instance`) VALUES ('0', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."','".$tab[5]."', '".$instance."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    
-		    	
-		} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/){
-		    my @tab = split(/;/, $2);
-		    $ctime = $1;
-		    $tab[4] =~ s/\\/\\\\/g; 
-			$tab[4] =~ s/\'/\\\'/g;
-		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `status`,  `type`, `retry`, `output`, `instance`) VALUES ('1', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."','".$tab[3]."','".$tab[4]."', '".$instance."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		
-		} elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/){
-		    my @tab = split(/;/, $2);
-		    $ctime = $1;
-		    $tab[5] =~ s/\\/\\\\/g; 
-			$tab[5] =~ s/\'/\\\'/g;
-		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `notification_cmd`, `notification_contact`, `output`, `instance`) VALUES ('2', '$ctime', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$tab[4]."','".$tab[0]."','".$tab[5]."', '".$instance."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		
-		} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/){
-		    my @tab = split(/;/, $2);
-		    $ctime = $1;
-		    $tab[4] =~ s/\\/\\\\/g; 
-			$tab[4] =~ s/\'/\\\'/g;
-		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `notification_contact`, `host_name` , `status`, `notification_cmd`,  `output`, `instance`) VALUES ('3', '$ctime', '".$tab[0]."','".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."', '".$instance."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		
-		} elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sHOST\sSTATE\:\s(.*)$/){
-		    my @tab = split(/;/, $2);
-		    $ctime = $1;
-		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance`) VALUES ('7', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		
-		} elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/){
-		    my @tab = split(/;/, $2);
-		    $ctime = $1;
-		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance`) VALUES ('6', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		
-		} elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/){
-		    my @tab = split(/;/, $2);
-		    $ctime = $1;
-		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance`) VALUES ('9', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		
-		} elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/){
-		    my @tab = split(/;/, $2);
-		    $ctime = $1;
-		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance`) VALUES ('8', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		
-		} elsif ($_ =~ m/^\[([0-9]*)\]\sWarning\:\s(.*)$/){
-		    my $tab = $2;
-		    $ctime = $1;
-		    $tab =~ s/\\/\\\\/g; 
-			$tab =~ s/\'/\\\'/g;
-		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `output`, `instance`) VALUES ('4','$ctime', '".$tab."', '".$instance."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		} elsif ($_ =~ m/^\[([0-9]*)\]\s(.*)$/) {
-		    $ctime = $1;
-		    my $tab = $2;
-		    $tab =~ s/\\/\\\\/g; 
-			$tab =~ s/\'/\\\'/g;
-		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `output`, `instance`) VALUES ('5','$ctime', '".$tab."', '".$instance."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		}
-		$cpt++;
+	if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/){
+	    my @tab = split(/;/, $2);
+	    $ctime = $1;
+	    $tab[5] =~ s/\\/\\\\/g; 
+	    $tab[5] =~ s/\'/\\\'/g;
+	    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `type`, `retry`, `output`, `instance`) VALUES ('0', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."','".$tab[5]."', '".$instance."')");
+	    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    
+
+	} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/){
+	    my @tab = split(/;/, $2);
+	    $ctime = $1;
+	    $tab[4] =~ s/\\/\\\\/g; 
+	    $tab[4] =~ s/\'/\\\'/g;
+	    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `status`,  `type`, `retry`, `output`, `instance`) VALUES ('1', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."','".$tab[3]."','".$tab[4]."', '".$instance."')");
+	    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+
+	} elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/){
+	    my @tab = split(/;/, $2);
+	    $ctime = $1;
+	    $tab[5] =~ s/\\/\\\\/g; 
+	    $tab[5] =~ s/\'/\\\'/g;
+	    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `notification_cmd`, `notification_contact`, `output`, `instance`) VALUES ('2', '$ctime', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$tab[4]."','".$tab[0]."','".$tab[5]."', '".$instance."')");
+	    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+
+	} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/){
+	    my @tab = split(/;/, $2);
+	    $ctime = $1;
+	    $tab[4] =~ s/\\/\\\\/g; 
+	    $tab[4] =~ s/\'/\\\'/g;
+	    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `notification_contact`, `host_name` , `status`, `notification_cmd`,  `output`, `instance`) VALUES ('3', '$ctime', '".$tab[0]."','".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."', '".$instance."')");
+	    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+
+	} elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sHOST\sSTATE\:\s(.*)$/){
+	    my @tab = split(/;/, $2);
+	    $ctime = $1;
+	    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance`) VALUES ('7', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance."')");
+	    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+
+	} elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/){
+	    my @tab = split(/;/, $2);
+	    $ctime = $1;
+	    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance`) VALUES ('6', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance."')");
+	    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+
+	} elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/){
+	    my @tab = split(/;/, $2);
+	    $ctime = $1;
+	    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance`) VALUES ('9', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance."')");
+	    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+
+	} elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/){
+	    my @tab = split(/;/, $2);
+	    $ctime = $1;
+	    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance`) VALUES ('8', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance."')");
+	    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+
+	} elsif ($_ =~ m/^\[([0-9]*)\]\sWarning\:\s(.*)$/){
+	    my $tab = $2;
+	    $ctime = $1;
+	    $tab =~ s/\\/\\\\/g; 
+	    $tab =~ s/\'/\\\'/g;
+	    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `output`, `instance`) VALUES ('4','$ctime', '".$tab."', '".$instance."')");
+	    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+	} elsif ($_ =~ m/^\[([0-9]*)\]\s(.*)$/) {
+	    $ctime = $1;
+	    my $tab = $2;
+	    $tab =~ s/\\/\\\\/g; 
+	    $tab =~ s/\'/\\\'/g;
+	    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `output`, `instance`) VALUES ('5','$ctime', '".$tab."', '".$instance."')");
+	    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+	}
+	$cpt++;
     }
     close(FILE);
     return $cpt;
@@ -168,125 +173,124 @@ sub parseFile ($$) {
 my $retention = $data->{'archive_retention'};
 
 sub parseArchive($$) {
-	
-	my $instance = $_[0];
-	my $localhost = $_[1];
+    my ($instance, $localhost) = @_;
 
-    my $dbh1 = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
-    
-   	my $archives;
+    my $archives;
     if ($localhost){
-		my $sth = $dbhoreon->prepare("SELECT log_archive_path FROM cfg_nagios WHERE nagios_server_id = '".$_[0]."'");
-		if (!$sth->execute()) {die "Error:" . $sth->errstr . "\n";}
-		$data = $sth->fetchrow_hashref();
-		$archives = $data->{'log_archive_path'};
-	} else {
-		$archives = "@CENTREON_LOG@/nagios/archive/$instance/";
+	my $sth = $dbhoreon->prepare("SELECT log_archive_path FROM cfg_nagios WHERE nagios_server_id = '".$_[0]."'");
+	if (!$sth->execute()) {
+	    die "Error:" . $sth->errstr . "\n";
 	}
+	$data = $sth->fetchrow_hashref();
+	$archives = $data->{'log_archive_path'};
+    } else {
+	$archives = "@CENTREON_VARLIB@/log/$instance/archives/";
+    }
 
-	$archives .= "/" if (!($archives =~ /\/$/));
- 
+    $archives .= "/" if (!($archives =~ /\/$/));
+
     my @log_files = split /\s/,`ls $archives`;
     my $last_log = time() - ($retention * 24 * 60 * 60);
-    foreach(@log_files) {
-		$_ =~ /nagios\-([0-9\-]+).log/;
-		my @time = split /\-/, $1;
-		my $temp = $time[0]."/".$time[1]."/".$time[2];
-		$temp = `date -d $temp +%s`;
-		if ($temp > $last_log) {
-		    if(!(-r $archives.$_)) {
-				print "Error : cannot read file $archives$_\n";
-		    } else {
-				print $archives.$_."\n";
-				parseFile($archives.$_, $instance);
-		    }
-		}
+    foreach (@log_files) {
+	$_ =~ /nagios\-([0-9\-]+).log/;
+	my @time = split /\-/, $1;
+	my $temp = $time[0]."/".$time[1]."/".$time[2];
+	$temp = `date -d $temp +%s`;
+	if ($temp > $last_log) {
+	    if(!(-r $archives.$_)) {
+		print "Error : cannot read file $archives$_\n";
+	    } else {
+		print $archives.$_."\n";
+		parseFile($archives.$_, $instance);
+	    }
+	}
     }
 }
 
 sub parseLogFile($$) {
-	# Get parameters
-	my $instance = $_[0];
-	my $localhost = $_[1];
-	
-	my $LOG_FILE;
-	if ($localhost){
-		my $sth = $dbhoreon->prepare("SELECT log_file FROM cfg_nagios, nagios_server WHERE nagios_server_id = '".$_[0]."' AND nagios_server.id = cfg_nagios.nagios_server_id AND nagios_server.ns_activate = 1");
-		if (!$sth->execute()) {die "Error:" . $sth->errstr . "\n";}
-		$data = $sth->fetchrow_hashref();
-		$LOG_FILE = $data->{'log_file'};
-	    if (!(-r $LOG_FILE)) {
-			print "Error : cannot open $LOG_FILE\n";
-			exit(0);
-	    }
-	} else {
-		$LOG_FILE = "@CENTREON_LOG@/nagios/log/$instance/nagios.log";
+    # Get parameters
+    my $instance = $_[0];
+    my $localhost = $_[1];
+
+    my $LOG_FILE;
+    if ($localhost){
+	my $sth = $dbhoreon->prepare("SELECT log_file FROM cfg_nagios, nagios_server WHERE nagios_server_id = '".$_[0]."' AND nagios_server.id = cfg_nagios.nagios_server_id AND nagios_server.ns_activate = 1");
+	if (!$sth->execute()) {die "Error:" . $sth->errstr . "\n";}
+	$data = $sth->fetchrow_hashref();
+	$LOG_FILE = $data->{'log_file'};
+	print "log file : $LOG_FILE\n"; 
+	if (!(-r $LOG_FILE)) {
+	    print "Error : cannot open $LOG_FILE\n";
+	    exit(0);
 	}
+    } else {
+	$LOG_FILE = "@CENTREON_VARLIB@/log/$instance/nagios.log";
+    	print "log file : $LOG_FILE\n"; 
+    }
     # Decide if we have to read the nagios.log from the begining 
 
     if ($hour eq 0 && $min eq 0){
-		$last_line_read = 0;
-		$sth = $dbh->prepare("UPDATE instance SET `log_flag` = '0'");
-		if (!$sth->execute()) {die "Error:" . $sth->errstr . "\n";}
+	$last_line_read = 0;
+	$sth = $dbh->prepare("UPDATE instance SET `log_flag` = '0'");
+	if (!$sth->execute()) {die "Error:" . $sth->errstr . "\n";}
     }
 
-   	$sth = $dbh->prepare("SELECT log_flag FROM instance WHERE instance_id = '".$instance."'");
-   	if (!$sth->execute) {die "Error:" . $sth->errstr . "\n";}
-   	$data = $sth->fetchrow_hashref();
- 	$last_line_read = $data->{'log_flag'};
-   	$last_line_read = 0 if (!defined($last_line_read));
-   	$sth->finish();
-   	
-   	# Parse -> 
-   	
-   	parseFile($LOG_FILE, $instance);
-	
-	# Update statistics and flags
-   	
-   	my $sth1 = $dbh->prepare("UPDATE `instance` SET `log_flag` = '".$cpt."'");
-   	if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
+    $sth = $dbh->prepare("SELECT log_flag FROM instance WHERE instance_id = '".$instance."'");
+    if (!$sth->execute) {die "Error:" . $sth->errstr . "\n";}
+    $data = $sth->fetchrow_hashref();
+    $last_line_read = $data->{'log_flag'};
+    $last_line_read = 0 if (!defined($last_line_read));
+    $sth->finish();
 
-	##############################
+    # Parse -> 
+
+    parseFile($LOG_FILE, $instance);
+
+    ##############################
+    # Update statistics and flags
+    my $sth1 = $dbh->prepare("UPDATE `instance` SET `log_flag` = '".$cpt."'");
+    if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
+    ##############################
 }
 
 exit() if (!$data->{'archive_log'});
 
 my $sth2 = $dbhoreon->prepare("SELECT id,name,localhost FROM nagios_server WHERE ns_activate = 1");
 if (!$sth2->execute) {
-	die "Error:" . $sth2->errstr . "\n";
+    die "Error:" . $sth2->errstr . "\n";
 } else { 
-	while (my $ns_server = $sth2->fetchrow_hashref()){
-		my $sth1 = $dbh->prepare("SELECT instance_name FROM instance WHERE instance_id = '".$ns_server->{'id'}."' LIMIT 1");
-		if (!$sth1->execute) {
-			die "Error:" . $sth1->errstr . "\n";
-		}
-		if (!$sth1->rows()){
-			my $sthinsert = $dbh->prepare("INSERT INTO `instance` (`instance_id` , `instance_name` , `log_flag`) VALUES ('".$ns_server->{'id'}."', '".$ns_server->{'name'}."', '0');");
-			if (!$sthinsert->execute) {
-				die "Error:" . $sthinsert->errstr . "\n";
-			}
-			$sthinsert->finish();			
-		} else {
-			my $sthupdate = $dbh->prepare("UPDATE `instance` SET `instance_name` = '".$ns_server->{'name'}."' WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
-			if (!$sthupdate->execute) {
-				die "Error:" . $sthupdate->errstr . "\n";
-			}
-			$sthupdate->finish();			
-		}
-		$sth1->finish();
-		if ($opt_a) {
-		    parseArchive($ns_server->{'id'}, $ns_server->{'localhost'});
-		} else {
-			parseLogFile($ns_server->{'id'}, $ns_server->{'localhost'});
-		}
+    while (my $ns_server = $sth2->fetchrow_hashref()){
+	my $sth1 = $dbh->prepare("SELECT instance_name FROM instance WHERE instance_id = '".$ns_server->{'id'}."' LIMIT 1");
+	if (!$sth1->execute) {
+	    die "Error:" . $sth1->errstr . "\n";
 	}
+	if (!$sth1->rows()){
+	    my $sthinsert = $dbh->prepare("INSERT INTO `instance` (`instance_id` , `instance_name` , `log_flag`) VALUES ('".$ns_server->{'id'}."', '".$ns_server->{'name'}."', '0');");
+	    if (!$sthinsert->execute) {
+		die "Error:" . $sthinsert->errstr . "\n";
+	    }
+	    $sthinsert->finish();			
+	} else {
+	    my $sthupdate = $dbh->prepare("UPDATE `instance` SET `instance_name` = '".$ns_server->{'name'}."' WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
+	    if (!$sthupdate->execute) {
+		die "Error:" . $sthupdate->errstr . "\n";
+	    }
+	    $sthupdate->finish();			
+	}
+	$sth1->finish();
+	if ($opt_a) {
+	    parseArchive($ns_server->{'id'}, $ns_server->{'localhost'});
+	} else {
+	    parseLogFile($ns_server->{'id'}, $ns_server->{'localhost'});
+	}
+    }
 }
 
 if ($retention ne 0){
-	my $last_log = time() - ($retention * 24 * 60 * 60);
-	my $sth1 = $dbh->prepare("DELETE FROM log WHERE ctime < '$last_log'");
-	if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
-	$sth1->finish();
+    my $last_log = time() - ($retention * 24 * 60 * 60);
+    my $sth1 = $dbh->prepare("DELETE FROM log WHERE ctime < '$last_log'");
+    if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
+    $sth1->finish();
 }
 $dbh->disconnect();
 $dbhoreon->disconnect();
