@@ -120,7 +120,6 @@
 		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		print_r($ret);
 		$rq = "INSERT INTO `acl_resources` ";
 		$rq .= "(acl_res_name, acl_res_alias, acl_res_activate, changed) ";
 		$rq .= "VALUES ('".htmlentities($ret["acl_res_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_res_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES)."', '1')";
