@@ -90,12 +90,15 @@
 	#
 	## Selection de l'host/service (suite)
 	#
-	$lcaSTR = "";
-	if (!$is_admin)
-		$lcaSTR = " AND host_id IN (".$lcaHoststr.") ";
 	
+	$lcaSTR = "";
+	if (!$is_admin){
+		$lca = getLcaHostByID($pearDB);
+		$lcaHoststr = getLCAHostStr($lca["LcaHost"]);
+		$lcaSTR = " AND host_id IN (".$lcaHoststr.") ";
+	}	
 	$res =& $pearDB->query("SELECT host_name FROM host WHERE host_activate = '1' $lcaSTR AND host_register = '1' ORDER BY host_name");		
-	while ($h = $res->fetchRow())
+	while ($h =& $res->fetchRow())
 		if (!isset($lca) || isset($lca["LcaHost"][$h['host_name']]))
 			$host[$h["host_name"]] = $h["host_name"];
 
@@ -106,7 +109,6 @@
 	$selHost =& $formPeriod->addElement('select', 'period', _("Predefined : "), $periodList);
 
 	isset($mhost) ? $formPeriod->addElement('hidden', 'host', $mhost) : NULL;
-	$formPeriod->addElement('hidden', 'timeline', "1");
 
 	$formPeriod->addElement('hidden', 'timeline', "1");
 	$formPeriod->addElement('header', 'title', _("If customized period..."));
@@ -116,6 +118,17 @@
 	$formPeriod->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
 	$sub =& $formPeriod->addElement('submit', 'submit', _("View"));
 	$res =& $formPeriod->addElement('reset', 'reset', _("Reset"));
+
+	function purgeVar($mhost){
+		$mhost = str_replace("\'", '', $mhost);	
+		$mhost = str_replace("\"", '', $mhost);	
+		$tab_mhost = split(";", $mhost);
+		$mhost = $tab_mhost[0];
+		unset($tab_mhost);
+		return $mhost;
+	}
+
+	$mhost = purgeVar($mhost);
 
 	if ($mhost){
 		$i=0;
