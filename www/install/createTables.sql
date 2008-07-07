@@ -1289,7 +1289,7 @@ CREATE TABLE IF NOT EXISTS `host_service_relation` (
 -- Structure de la table `host_template_relation`
 --
 
-CREATE TABLE `centreon`.`host_template_relation` (
+CREATE TABLE `host_template_relation` (
 `host_host_id` INT NULL ,
 `host_tpl_id` INT NULL ,
 `order` INT NULL ,
