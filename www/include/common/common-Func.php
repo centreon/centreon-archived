@@ -1233,6 +1233,20 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$nagios_server =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
+		if (isset($nagios_server['localhost']))
+			return $nagios_server['localhost'];
+		return 0;
+	}
+	
+	function isPollerLocalhost($pearDB, $id = NULL){
+		if (!isset($id))
+			return 0;
+		$DBRESULT =& $pearDB->query("SELECT `localhost` FROM nagios_server WHERE nagios_server.id = '$id' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$nagios_server =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
 		if (isset($nagios_server['localhost']))
 			return $nagios_server['localhost'];
 		return 0;

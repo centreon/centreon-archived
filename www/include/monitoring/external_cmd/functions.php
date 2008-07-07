@@ -14,10 +14,9 @@
  * 
  * For information : contact@centreon.com
  */
+
 	if (!isset($oreon))
-		exit();
-		
-	
+		exit();	
 
 	$tab["1"] = "ENABLE";
 	$tab["0"] = "DISABLE";
@@ -27,11 +26,12 @@
 		$str = NULL;
 		$cmd = htmlentities($cmd);
 		$informations = split(";", $key);
-		if (isHostLocalhost($pearDB, $informations[0]))
+		if ($poller && isPollerLocalhost($pearDB, $poller))
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
+		else if (isHostLocalhost($pearDB, $informations[0]))
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
 		else
 			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . "@CENTREON_VARLIB@/centcore.cmd";
-		
 		return passthru($str);
 	}
 
@@ -164,7 +164,8 @@
 	}
 	
 	function acknowledgeHost(){
-		global $pearDB,$tab, $_GET;
+		global $pearDB,$tab, $_GET, $key;
+		$key = $_GET["host_name"];
 		$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$_GET["host_name"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
 		return _("Your command has been sent");
 	}

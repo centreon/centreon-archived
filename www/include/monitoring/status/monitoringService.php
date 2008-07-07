@@ -32,12 +32,12 @@
 			$_GET["notify"] = 0;
 		if (!isset($_GET["persistent"]))
 			$_GET["persistent"] = 0;
-		acknowledgeService($lang);
+		acknowledgeService();
 	} else if(isset($_GET["cmd"]) && $_GET["cmd"] == 15 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 0)
-		acknowledgeServiceDisable($lang);
+		acknowledgeServiceDisable();
 
 	if (isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"]))
-		submitPassiveCheck($lang);
+		submitPassiveCheck();
 
 	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
 	# Set base value
