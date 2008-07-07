@@ -25,7 +25,6 @@
 
 use strict;
 use POSIX qw(mkfifo);
-#use POSIX qw(setsid :sys_wait_h);
 use DBI;
 
 use File::Copy;
@@ -35,7 +34,7 @@ use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_d
 use vars qw($con $ssh $scp $installedPath);
 
 if (POSIX::getuid() == 0 ) { 
-	print  STDERR "You must not execute centcore with root user \n"; exit 1;
+    print  STDERR "You must not execute centcore with root user \n"; exit 1;
 }
 
 my $echo = "/bin/echo";
@@ -45,8 +44,8 @@ my $LOG = "@CENTREON_LOG@/centcore.log";
 my $PID = "@CENTREON_RUNDIR@/centcore.pid";
 my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
 
-$ssh = "@BIN_SSH@";
-$scp = "@BIN_SCP@";
+$ssh = "/usr/bin/ssh";
+$scp = "/usr/bin/scp";
 
 my $stop = 1;
 my $debug = 0;
@@ -106,114 +105,114 @@ my $timeNagiosLogs = 0;
 my $difTime = 0;
 
 while ($stop) {  
-	# Select Wait
-	if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
-		while (<FILE>){
-			parseRequest($_);
-		}
+    # Select Wait
+    if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
+	while (<FILE>){
+	    parseRequest($_);
 	}
-	close(FILE);
-	if (defined($timeSyncPerf) && $timeSyncPerf) {
-		$difTime = time() - $timeSyncPerf;
-	}
-	if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
-		# Get PerfData on Nagios Poller
-		GetAllNagiosServerPerfData();		
-		$timeSyncPerf = time();
-	}
-	sleep(1);
+    }
+    close(FILE);
+    if (defined($timeSyncPerf) && $timeSyncPerf) {
+	$difTime = time() - $timeSyncPerf;
+    }
+    if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
+	# Get PerfData on Nagios Poller
+	GetAllNagiosServerPerfData();		
+	$timeSyncPerf = time();
+    }
+    sleep(1);
 }
 
 sub moveCmdFile($){
-	my $CMDFILE = $_[0];
-	if (move($CMDFILE, $CMDFILE."_read")){
-		return(1);
-	}
+    my $CMDFILE = $_[0];
+    if (move($CMDFILE, $CMDFILE."_read")){
+	return(1);
+    }
 }
 
 sub removeTmpCmdFile($){
-	my $CMDFILE = $_[0];
-	if (unlink($CMDFILE."_read")){
-		return(1);
-	} else {
-		writeLogFile("Can't remove temporary command file.\n");
-		return 0;
-	}
+    my $CMDFILE = $_[0];
+    if (unlink($CMDFILE."_read")){
+	return(1);
+    } else {
+	writeLogFile("Can't remove temporary command file.\n");
+	return 0;
+    }
 }
 
 sub GetAllNagiosServerPerfData(){
-	CheckMySQLConnexion();
-	my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `localhost` = '0' AND `ns_activate` = '1'");
-	if (!$sth2->execute()) {
-		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
-	}
-	while (my $data = $sth2->fetchrow_hashref()){
-		GetPerfData($data->{'id'});
-		GetLogFile($data->{'id'});
-	}
-	$sth2->finish();
-	$con->disconnect();
-	return;
+    CheckMySQLConnexion();
+    my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `localhost` = '0' AND `ns_activate` = '1'");
+    if (!$sth2->execute()) {
+	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+    }
+    while (my $data = $sth2->fetchrow_hashref()){
+	GetPerfData($data->{'id'});
+	GetLogFile($data->{'id'});
+    }
+    $sth2->finish();
+    $con->disconnect();
+    return;
 }
 
 # -------------------
 #      Functions 
 # -------------------
-
+#
 # Functions
 
 sub getNagiosConfigurationField($$){
-	CheckMySQLConnexion();
-	my $sth2 = $con->prepare("SELECT ".$_[1]." FROM `cfg_nagios` WHERE `nagios_server_id` = '".$_[0]."'");
-	if (!$sth2->execute()) {
-		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
-	}
-	my $data = $sth2->fetchrow_hashref();
-	return $data->{$_[1]};
+    CheckMySQLConnexion();
+    my $sth2 = $con->prepare("SELECT ".$_[1]." FROM `cfg_nagios` WHERE `nagios_server_id` = '".$_[0]."'");
+    if (!$sth2->execute()) {
+	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+    }
+    my $data = $sth2->fetchrow_hashref();
+    return $data->{$_[1]};
 }
 
 sub getLocalOptionsField($){
-	CheckMySQLConnexion();
-	my $sth2 = $con->prepare("SELECT ".$_[0]." FROM `general_opt` LIMIT 1");
-	if (!$sth2->execute()) {
-		writeLogFile("Error when getting general options properties : ".$sth2->errstr."\n");
-	}
-	my $data = $sth2->fetchrow_hashref();
-	return $data->{$_[0]};
+    CheckMySQLConnexion();
+    my $sth2 = $con->prepare("SELECT ".$_[0]." FROM `general_opt` LIMIT 1");
+    if (!$sth2->execute()) {
+	writeLogFile("Error when getting general options properties : ".$sth2->errstr."\n");
+    }
+    my $data = $sth2->fetchrow_hashref();
+    return $data->{$_[0]};
 }
 
 sub getLocalServerID(){
-	CheckMySQLConnexion();
-	my $sth2 = $con->prepare("SELECT id FROM `nagios_server` WHERE `localhost` = '1'");
-	if (!$sth2->execute()) {
-		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
-	}
-	return $sth2->fetchrow_hashref();
+    CheckMySQLConnexion();
+    my $sth2 = $con->prepare("SELECT id FROM `nagios_server` WHERE `localhost` = '1'");
+    if (!$sth2->execute()) {
+	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+    }
+    return $sth2->fetchrow_hashref();
 }
 
 sub getServerConfig($){
-	CheckMySQLConnexion();
-	my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."' AND ns_activate = '1'");
-	if (!$sth2->execute()) {
-		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
-	}
-	return $sth2->fetchrow_hashref();
+    CheckMySQLConnexion();
+    my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."' AND ns_activate = '1'");
+    if (!$sth2->execute()) {
+	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+    }
+    return $sth2->fetchrow_hashref();
 }
 
 sub CheckMySQLConnexion(){
-	while ((!defined($con) || !$con->ping)){
-		if (!defined($con)) {
-			$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-			if (!defined($con)) {
-				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
-				sleep(2);
-			}
-		} else {
-			sleep(2);
-			undef($con);
-			$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-		}
+    while ((!defined($con) || !$con->ping)){
+	if (!defined($con)) {
+	    $con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	    if (!defined($con)) {
+		writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
+		sleep(2);
+	    }
+	} else {
+	    sleep(2);
+	    undef($con);
+	    $con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	}
+    }
 }
 
 #
@@ -222,34 +221,34 @@ sub CheckMySQLConnexion(){
 #
 
 sub sendExternalCommand($$){
-	# Init Parameters
-	my $id = $_[0];
-	my $cmd = $_[1];
-	
-	# Get command file 
-	my $command_file = getNagiosConfigurationField($id, "command_file");
-	
-	# Get server informations
-	my $server_info = getServerConfig($id);
-	
-	# check if ip address is defined
-	if (defined($server_info->{'ns_ip_address'})){
-		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." 'echo \"".$cmd."\" >> ".$command_file."'\n";
-		my $stdout = `$cmd`;
-	    writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"\n");
-	    if (defined($stdout) && $stdout){
-		    writeLogFile("Result : $stdout\n");
-	    }
-	    # Free
-		undef($stdout);
-	} else {
-		writeLogFile("Ip address not defined for poller $id \n");
+    # Init Parameters
+    my $id = $_[0];
+    my $cmd = $_[1];
+
+    # Get command file 
+    my $command_file = getNagiosConfigurationField($id, "command_file");
+
+    # Get server informations
+    my $server_info = getServerConfig($id);
+
+    # check if ip address is defined
+    if (defined($server_info->{'ns_ip_address'})){
+	my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." 'echo \"".$cmd."\" >> ".$command_file."'\n";
+	my $stdout = `$cmd`;
+	writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"\n");
+	if (defined($stdout) && $stdout){
+	    writeLogFile("Result : $stdout\n");
 	}
 	# Free
-	undef($id);
-	undef($cmd);
-	undef($server_info);
-	undef($command_file);
+	undef($stdout);
+    } else {
+	writeLogFile("Ip address not defined for poller $id \n");
+    }
+    # Free
+    undef($id);
+    undef($cmd);
+    undef($server_info);
+    undef($command_file);
 }
 
 #
@@ -261,89 +260,92 @@ sub getNagiosInformation($){
 }
 
 sub GetPerfData($){
-	# init Values
-	my $debug = 0;
-	my $id = $_[0];
+    # init Values
+    my $debug = 1;
+    my $id = $_[0];
 
-	# Get Server Infos
-	my $server_info = getServerConfig($id);
-	my $distantconnexion = $server_info->{'ns_ip_address'};
-	
-	my $distantperffile = getNagiosConfigurationField($id, "service_perfdata_file");
-	my $distanttmpperffile = $distantperffile."-old";
-	
-	my $localbasevardir = "$installedPath/var/perfdata/$id";
-	# check if directory exist
-	mkdir $localbasevardir if (!-d $localbasevardir);
-	
-	my $localhost_id = getLocalServerID(); 
-	my $localtmpperffile = "$localbasevardir/service-perfdata";
-	my $localperffile = getNagiosConfigurationField($localhost_id->{'id'}, "service_perfdata_file");
-	
-	my $origin = $distantconnexion.":".$distanttmpperffile;
-	
-	writeLogFile("$ssh -q -i $distantconnexion ls -l $distantperffile | wc -l 2>> /dev/null\n") if ($debug);
-	my $ls = `$ssh -q $distantconnexion ls -l $distantperffile | wc -l 2>> /dev/null`;
-	
-	# Check if distant perfdata file 
-	if ($ls){
-		# Move perfdata file in temp dir
-		writeLogFile("$ssh -q $distantconnexion mv $distantperffile $distanttmpperffile\n") if ($debug);
-		`$ssh -q $distantconnexion mv $distantperffile $distanttmpperffile`;
-		
-		# Get Perfdata file
-		writeLogFile("scp -q $origin $localtmpperffile\n") if ($debug);
-		`$scp -q $origin $localtmpperffile`;
-		
-		# Remove old perfdata file 
-		writeLogFile("$ssh -q $distantconnexion rm $distanttmpperffile\n") if ($debug);
-		`$ssh -q $distantconnexion rm $distanttmpperffile`;
-		
-		# Write data from distant poller on local file for centstorage
-		if (-f $localtmpperffile){
-			if ($debug) {
-				writeLogFile("cat $localtmpperffile >> $localperffile\n");
-			}
-			`cat $localtmpperffile >> $localperffile`;
-			#`rm -f $localtmpperffile`;
-		}
+    # Get Server Infos
+    my $server_info = getServerConfig($id);
+    my $distantconnexion = $server_info->{'ns_ip_address'};
+
+    my $distantperffile = getNagiosConfigurationField($id, "service_perfdata_file");
+    my $distanttmpperffile = $distantperffile."-old";
+
+    my $localbasevardir = "@CENTREON_VARLIB@/perfdata/$id";
+    # check if directory exist
+    mkdir $localbasevardir if (!-d $localbasevardir);
+
+    my $localhost_id = getLocalServerID(); 
+    my $localtmpperffile = "$localbasevardir/service-perfdata";
+    my $localperffile = getNagiosConfigurationField($localhost_id->{'id'}, "service_perfdata_file");
+
+    my $origin = $distantconnexion.":".$distanttmpperffile;
+
+    writeLogFile("$ssh -q -i $distantconnexion ls -l $distantperffile 2>> /dev/null | wc -l\n") if ($debug);
+    my $ls = `$ssh -q $distantconnexion ls -l $distantperffile 2>> /dev/null | wc -l`;
+
+    # Check if distant perfdata file 
+    if ($ls != 0){
+	# Move perfdata file in temp dir
+	writeLogFile("$ssh -q $distantconnexion mv $distantperffile $distanttmpperffile\n") if ($debug);
+	`$ssh -q $distantconnexion mv $distantperffile $distanttmpperffile`;
+
+	# Get Perfdata file
+	writeLogFile("scp -q $origin $localtmpperffile\n") if ($debug);
+	`$scp -q $origin $localtmpperffile`;
+
+	# Remove old perfdata file 
+	# writeLogFile("$ssh -q $distantconnexion rm $distanttmpperffile\n") if ($debug);
+	# `$ssh -q $distantconnexion rm $distanttmpperffile`;
+
+	# Write data from distant poller on local file for centstorage
+	if (-f $localtmpperffile){
+	    if ($debug) {
+		writeLogFile("cat $localtmpperffile >> $localperffile\n");
+	    }
+	    `cat $localtmpperffile >> $localperffile`;
+	    #`rm -f $localtmpperffile`;
 	}
+    }
 }
 
 sub GetLogFile($){
-	# Init values
-	my $id = $_[0];
-	
-	# Get Server informations
-	my $server_info = getServerConfig($id);
+    # Init values
+    my $id = $_[0];
 
-	# Check configuration
-	my $distantconnexion = $server_info->{'ns_ip_address'};
-	if (!defined($distantconnexion)) {
-		writeLogFile("IP address not defined for poller $id\n");	
+    # Get Server informations
+    my $server_info = getServerConfig($id);
+
+    # Check configuration
+    my $distantconnexion = $server_info->{'ns_ip_address'};
+    if (!defined($distantconnexion)) {
+	writeLogFile("IP address not defined for poller $id\n");	
+    }
+
+    # Set local directory
+    my $localDir = "@CENTREON_VARLIB@/log/$id/";
+
+    # Create tmp directory
+    mkdir $localDir if (!-d $localDir);
+    if (-d $localDir){
+
+	# Get distant log file path
+	my $distantlogfile = getNagiosConfigurationField($id, "log_file");;
+	my $locallogfile = $localDir."nagios.log";
+
+	# check if we can do the transfert
+	if (defined($distantconnexion) && defined($distantlogfile)){
+	    # check if log file exists
+	    my $ls = `ssh -q $distantconnexion ls -l $distantlogfile 2>> /dev/null | wc -l`;
+	    if ($ls){
+		# Get log file
+		my $ret = `scp -q $distantconnexion:$distantlogfile $locallogfile`;
+		writeLogFile("Cannot get log file or log file doesn't exists on poller $id") if (!$ret);
+	    }
 	}
-	
-	# Set local directory
-	my $localDir = $installedPath."/var/log/nagios/$id/";
-	# Create tmp directory
-	mkdir $localDir if (!-d $localDir);
-	if (-d $localDir){
-		# Get distant log file path
-		my $distantlogfile = getNagiosConfigurationField($id, "log_file");;
-		my $locallogfile = $localDir."nagios.log";
-		# check if we can do the transfert
-		if (defined($distantconnexion) && defined($distantlogfile)){
-			# check if log file exists
-			my $ls = `ssh -q -i ~/.ssh/id_dsa $distantconnexion ls -l $distantlogfile | wc -l 2>> /dev/null`;
-			if ($ls){
-				# Get log file
-				my $ret = `scp -q -i ~/.ssh/id_dsa $distantconnexion:$distantlogfile $locallogfile`;
-				#writeLogFile("Cannot get log file or log file doesn't exists on poller $id") if (!$ret);
-			}
-		}
-	} else {
-		writeLogFile("Unable to create $localDir. Can get nagios log file for poller $id\n");
-	}
+    } else {
+	writeLogFile("Unable to create $localDir. Can get nagios log file for poller $id\n");
+    }
 }
 
 #
@@ -351,126 +353,138 @@ sub GetLogFile($){
 #
 
 sub sendConfigFile($){
-	# Init Values
-	my $id = $_[0];
-	
-	my $cfg_dir = getNagiosConfigurationField($_[0], "cfg_dir");
-	my $server_info = getServerConfig($_[0]);
-	my ($md5local, $md5dist, $scpe);
-	
-	opendir(DIR, $installedPath."/filesGeneration/nagiosCFG/$id/");
-	while (my $file = readdir(DIR)){
-	
-		if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
-			my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/$file";
-			my $dest = $server_info->{'user'}."@".$server_info->{'ns_ip_address'}.":$cfg_dir$file";
+    # Init Values
+    my $id = $_[0];
 
-			my $stdout = `scp $origin $dest`;
-			
-			# Check sucessfull copy
-			$md5local = `/usr/bin/md5sum $origin`;
-			$md5dist  = `ssh $server_info->{'ns_ip_address'} /usr/bin/md5sum $cfg_dir$file`;
-			
-			my @tab_local = split(' ', $md5local);		
-			my @tab_dist = split(' ', $md5dist);		
-			if ($tab_local[0] ne $tab_dist[0]){
-				print "Bad Copy !\n";
-			}
-		}
+    my $cfg_dir = getNagiosConfigurationField($_[0], "cfg_dir");
+    my $server_info = getServerConfig($_[0]);
+    my ($md5local, $md5dist, $scpe);
+
+    opendir(DIR, $installedPath."/filesGeneration/nagiosCFG/$id/");
+    while (my $file = readdir(DIR)){
+
+	if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
+	    my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/$file";
+	    my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir$file";
+
+	    my $stdout = `scp $origin $dest`;
+
+	    # Check sucessfull copy
+	    $md5local = `/usr/bin/md5sum $origin`;
+	    $md5dist  = `ssh $server_info->{'ns_ip_address'} /usr/bin/md5sum $cfg_dir$file`;
+
+	    my @tab_local = split(' ', $md5local);		
+	    my @tab_dist = split(' ', $md5dist);		
+	    if ($tab_local[0] ne $tab_dist[0]){
+		print "Bad Copy !\n";
+	    }
 	}
-	undef($cfg_dir);
+    }
+    undef($cfg_dir);
 }
 
 sub initNagios($$){
-	my ($id, $options) = @_;
-	my $conf = getServerConfig($id);
-	my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." ".$options."\n";
-	print "$options : $cmd\n";
-	my $stdout = `$cmd`;
-	# Logs Actions
-	writeLogFile("init Script : 'sudo ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ns_ip_address'}." ($id)\n");
+    my ($id, $options) = $_;
+    my $conf = getServerConfig($id);
+    my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." ".$options."\n";
+    print "$options : $cmd\n";
+    my $stdout = `$cmd`;
+    # Logs Actions
+    writeLogFile("init Script : 'sudo ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ns_ip_address'}." ($id)\n");
     writeLogFile("$stdout\n");
-	undef($conf);
-	undef($cmd);
-	undef($stdout);
+    undef($conf);
+    undef($cmd);
+    undef($stdout);
 }
 
 sub reloadNagios($){
-	my $id = $_[0];
-	
-	my $conf = getServerConfig($id);
-	my $cmd = "ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." reload\n";
-	my $stdout = `$cmd`;
+    my $id = $_[0];
+    
+    my $conf = getServerConfig($id);   
+    # 
+    # Reload nagios : 
+    # /etc/init.d/nagios reload
+    #
+ 
+    my $cmd = "ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." reload\n";
+    my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
-	undef($conf);
-	undef($cmd);
-	undef($stdout);
+    undef($conf);
+    undef($cmd);
+    undef($stdout);
 }
 
 sub stopNagios($){
-	my $id = $_[0];
-	
-	my $conf = getServerConfig($id);
-	# $conf->{'user'}."@".
-	my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." stop\n";
-	my $stdout = `$cmd`;
+    my $id = $_[0];
+    
+    # 
+    # Reload nagios : 
+    # /etc/init.d/nagios stop
+    #
+    my $conf = getServerConfig($id);
+    my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." stop\n";
+    my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
-	undef($conf);
-	undef($cmd);
-	undef($stdout);
+    undef($conf);
+    undef($cmd);
+    undef($stdout);
 }
 
 sub startNagios($){
-	my $id = $_[0];
-	
-	my $conf = getServerConfig($id);
-	# $conf->{'user'}."@".
-	my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." start\n";
-	my $stdout = `$cmd`;
+    my $id = $_[0];
+    
+    my $conf = getServerConfig($id);
+
+    # 
+    # Reload nagios : 
+    # /etc/init.d/nagios start
+    #
+    my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." start\n";
+    my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
-	undef($conf);
-	undef($cmd);
-	undef($stdout);
+    undef($conf);
+    undef($cmd);
+    undef($stdout);
 }
 
 sub testConfig($){
-	my $id = $_[0];
-	
-	my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
-	# $data->{'user'}."@".
-	my $data = getServerConfig($id);
-	my $distantconnexion = $data->{'ns_ip_address'};
-	my $cmd = "$ssh $distantconnexion sudo ".$data->{'nagios_bin'}." -v $cfg_dir/nagios.cfg";
-	my $stdout = `$cmd`;
-	undef($cmd);
-	undef($data);
-	undef($distantconnexion);
+    my $id = $_[0];
+
+    my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
+    # $data->{'user'}."@".
+    my $data = getServerConfig($id);
+    my $distantconnexion = $data->{'ns_ip_address'};
+    my $cmd = "$ssh $distantconnexion sudo ".$data->{'nagios_bin'}." -v $cfg_dir/nagios.cfg";
+    my $stdout = `$cmd`;
+    undef($cmd);
+    undef($data);
+    undef($distantconnexion);
     writeLogFile("$stdout\n");
     undef($cfg_dir);
 }
 
 sub parseRequest($){
-	if (!$_[0]){
-		return ;
-	}
-	# 
-	# Checks keys for launching commands
-	# 
-	if ($_[0] =~ /RESTART\:([0-9]*)/){
-		initNagios($1, "restart");
-	} elsif ($_[0] =~ /RELOAD\:([0-9]*)/){
-		initNagios($1, "reload");
-	} elsif ($_[0] =~ /START\:([0-9]*)/){
-		initNagios($1, "start");
-	} elsif ($_[0] =~ /STOP\:([0-9]*)/){
-		initNagios($1, "stop");
-	} elsif ($_[0] =~ /SENDCFGFILE\:([0-9]*)/){
-		sendConfigFile($1);
-	} elsif ($_[0] =~ /TEST\:([0-9]*)/){
-		testConfig($1);
-	} elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:(.*)/){
-		sendExternalCommand($1, $2);
-	}
+    if (!$_[0]){
+	return ;
+    }
+    # 
+    # Checks keys for launching commands
+    # 
+    if ($_[0] =~ /RESTART\:([0-9]*)/){
+	initNagios($1, "restart");
+    } elsif ($_[0] =~ /RELOAD\:([0-9]*)/){
+	initNagios($1, "reload");
+    } elsif ($_[0] =~ /START\:([0-9]*)/){
+	initNagios($1, "start");
+    } elsif ($_[0] =~ /STOP\:([0-9]*)/){
+	initNagios($1, "stop");
+    } elsif ($_[0] =~ /SENDCFGFILE\:([0-9]*)/){
+	sendConfigFile($1);
+    } elsif ($_[0] =~ /TEST\:([0-9]*)/){
+	testConfig($1);
+    } elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:(.*)/){
+	sendExternalCommand($1, $2);
+    }
 }
 
 unlink($PID);
