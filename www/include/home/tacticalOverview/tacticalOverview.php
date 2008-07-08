@@ -26,7 +26,6 @@
 	 * DB connexion
 	 */
 	 
-	require_once '@CENTREON_ETC@/centreon.conf.php';
 	require_once './DBconnect.php';
 	require_once './DBNDOConnect.php';
 	
@@ -59,7 +58,14 @@
 			$lca = getLcaHostByName($pearDB);
 			$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	    }
+	    
+	    /*
+	     * Get Group list
+	     */
 	
+		$grouplist = getGroupListofUser($pearDB); 
+		$groupnumber = count($grouplist);
+
 		/*
 		 * Get Status Globals for hosts
 		 */
@@ -197,7 +203,7 @@
 		/*
 		 * Get Status global for Services
 		 */		
-		if (!$is_admin)
+		if (!$is_admin && $groupnumber)
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl" .
 					" WHERE no.object_id = nss.service_object_id".
@@ -206,7 +212,7 @@
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
 					" AND no.name1 NOT LIKE 'Meta_Module' AND no.name1 NOT LIKE 'OSL_Module' " .
-					" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") " .
+					" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 		else
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state". 
@@ -215,8 +221,8 @@
 					" AND no.name1 not like 'OSL_Module' ".
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.name1 NOT LIKE 'Meta_Module' AND no.name1 NOT LIKE 'OSL_Module' " .
-					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
-					
+					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";					
+	
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO2))
 			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
@@ -225,12 +231,11 @@
 	
 		while($ndo =& $DBRESULT_NDO2->fetchRow())
 			$SvcStat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
-	
-	
+
 		/*
 		 * Get on pb host
 		*/
-		if (!$is_admin)
+		if (!$is_admin && $groupnumber)
 			$rq2 = 	" SELECT nss.current_state,". $ndo_base_prefix ."services.host_object_id".
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl, " . $ndo_base_prefix."services" .
 					" WHERE no.object_id = nss.service_object_id".
@@ -239,7 +244,7 @@
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
-					" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") " .
+					" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
 					" AND no.is_active = 1" .
 					" AND nss.problem_has_been_acknowledged = 0" .
 					" AND nss.current_state > 0";
@@ -306,7 +311,7 @@
 		/*
 		 * Get Services  Inactive objects
 		 */
-		if (!$is_admin)
+		if (!$is_admin && $groupnumber)
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
 					" WHERE no.object_id = nss.service_object_id".
@@ -314,7 +319,7 @@
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
-					" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") ".
+					" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") ".
 					" AND no.is_active = 0 GROUP BY nss.current_state ORDER by nss.current_state";
 		else
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
@@ -323,6 +328,7 @@
 					" AND no.name1 not like 'OSL_Module' ".
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.is_active = 0 GROUP BY nss.current_state ORDER by nss.current_state";			
+
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO2))
 			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
@@ -330,7 +336,7 @@
 		$svcInactive = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		while($ndo =& $DBRESULT_NDO2->fetchRow())
 			$svcInactive[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
-	
+
 		/*
 		 * Get Undandled Services
 		 */
@@ -343,7 +349,7 @@
 		/*
 		 * Get problem table
 		*/
-		if (!$is_admin)
+		if (!$is_admin && $groupnumber)
 			$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
 					" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht" .
 					" WHERE obj.object_id = stat.service_object_id" .
@@ -356,7 +362,7 @@
 					" AND obj.name1 IN ($lcaSTR)" .
 					" AND obj.name1 NOT LIKE 'Meta_Module' AND obj.name1 NOT LIKE 'OSL_Module' " .
 					" AND obj.name2 = centreon_acl.service_description " .
-					" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") " .
+					" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
 					" ORDER by stat.current_state DESC, obj.name1";
 		else
 			$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
@@ -370,7 +376,7 @@
 					" AND obj.is_active = 1" .				
 					" AND obj.name1 NOT LIKE 'Meta_Module' AND obj.name1 NOT LIKE 'OSL_Module' " .
 					" ORDER by stat.current_state DESC, obj.name1";
-					
+		
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
@@ -408,7 +414,6 @@
 			}
 		}
 		$nb_pb = $j;
-		 
 		 
 		$path = "./include/home/tacticalOverview/";
 	
