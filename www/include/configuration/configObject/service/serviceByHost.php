@@ -32,10 +32,14 @@
 
 	if (!$is_admin){
 		$lcaHost = getLCAHostByID($pearDB);
-		$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
+		$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);		
 		$lcaServiceGroupStr = getLCASGStr($lcaHost["LcaHost"]);
 		//$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
 		$lcaSvcStr = getLCASVCStr($lcaHost);
+		if ($lcaHostStr == "''")
+			$lcaHostStr = 'NULL';
+		if ($lcaSvcStr == "")
+			$lcaSvcStr = 'NULL';
 	}
 		
 	#Pear library
