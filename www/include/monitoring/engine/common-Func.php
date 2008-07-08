@@ -48,7 +48,7 @@
 	}
 	
 	function get_services_status($host_name, $status){
-		global $pearDBndo, $ndo_base_prefix, $general_opt, $o, $is_admin;
+		global $pearDBndo, $ndo_base_prefix, $general_opt, $o, $is_admin, $groupnumber;
 
 		$rq = 	" SELECT count( nss.service_object_id ) AS nb".
 				" FROM " .$ndo_base_prefix."servicestatus nss".
@@ -64,14 +64,14 @@
 				" IN (".
 				" SELECT nno.object_id".
 				" FROM " .$ndo_base_prefix."objects nno";
-		if (!$is_admin)
+		if (!$is_admin && $groupnumber)
 			$rq	.=	", centreon_acl";
 		
 		$rq	.=	" WHERE nno.objecttype_id = 2 ".
 				" AND nno.name1 not like 'OSL_Module'" .
 				" AND nno.name1 not like 'Meta_Module'";
 		
-		if (!$is_admin)
+		if (!$is_admin && $groupnumber)
 			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
 
 		$rq .=	" AND nno.name1 = '".$host_name."')";		

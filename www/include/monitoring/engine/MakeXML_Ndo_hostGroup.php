@@ -40,6 +40,13 @@
 	} else
 		get_error('need session identifiant !');
 	
+	/*
+	 * Get Acl Group list
+	 */
+	
+	$grouplist = getGroupListofUser($pearDB); 
+	$groupnumber = count($grouplist);
+	
 	/* 
 	 * requisit 
 	 */
@@ -59,13 +66,13 @@
 	$general_opt = getStatusColor($pearDB);
 
 	function get_hosts_status($host_group_id, $status){
-		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $is_admin;
+		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $is_admin, $grouplist, $groupnumber;
 
 		$tab_acl = "";
 		$condition_acl = "";
-		if (!$is_admin){
+		if (!$is_admin && $groupnumber){
 			$tab_acl = ", centreon_acl";
-			$condition_acl = " AND nh.display_name = centreon_acl.host_name AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") ";
+			$condition_acl = " AND nh.display_name = centreon_acl.host_name AND centreon_acl.group_id IN (".groupsListStr($grouplist).") ";
 		}
 		$rq = 	" SELECT count( nhs.host_object_id ) AS nb".
 				" FROM " .$ndo_base_prefix."hoststatus nhs".
@@ -80,7 +87,7 @@
 	}
 
 	function get_services_status($host_group_id, $status){
-		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $instance,$lcaSTR, $is_admin;
+		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $instance,$lcaSTR, $is_admin, $grouplist, $groupnumber;
 
 		$rq = 			" SELECT count( nss.service_object_id ) AS nb".
 						" FROM " .$ndo_base_prefix."servicestatus nss ".
@@ -88,8 +95,8 @@
 						" AND nss.service_object_id".
 						" IN (SELECT nno.object_id FROM " .$ndo_base_prefix."objects nno, centreon_acl WHERE nno.objecttype_id = '2' ";
 						
-		if (!$is_admin)
-			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
+		if (!$is_admin && $groupnumber)
+			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr($grouplist).")";
 
 		if ($instance != "ALL")
 			$rq .= 	" AND nno.instance_id = ".$instance;

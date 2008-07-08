@@ -40,8 +40,14 @@
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
-
-
+	
+	/*
+	 * Get Acl Group list
+	 */
+	
+	$grouplist = getGroupListofUser($pearDB); 
+	$groupnumber = count($grouplist);
+	
 	/* 
 	 * requisit 
 	 */
@@ -65,7 +71,7 @@
 	
 	function get_services_status($host_name){
 	
-		global $pearDBndo,$pearDB, $ndo_base_prefix, $general_opt, $o, $instance,$is_admin;
+		global $pearDBndo,$pearDB, $ndo_base_prefix, $general_opt, $o, $instance,$is_admin, $groupnumber, $grouplist;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `".$ndo_base_prefix."servicestatus` nss, `".$ndo_base_prefix."objects` no";
@@ -93,7 +99,7 @@
 		if ($instance != "ALL")
 			$rq .= 	" AND no.instance_id = ".$instance;
 
-		if (!$is_admin)
+		if (!$is_admin && $groupnumber)
 			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
 
 		$DBRESULT =& $pearDBndo->query($rq);
@@ -140,8 +146,8 @@
 				" AND no.name1 NOT LIKE 'OSL_Module'".
 				" AND no.name1 NOT LIKE 'Meta_Module'";
 	
-	if (!$is_admin)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
+	if (!$is_admin && $groupnumber)
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).")";
 
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND no.name1 IN (" .

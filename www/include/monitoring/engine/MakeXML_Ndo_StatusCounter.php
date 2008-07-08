@@ -82,6 +82,13 @@
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	}
 	 
+	/*
+	 * Get Acl Group list
+	 */
+	
+	$grouplist = getGroupListofUser($pearDB); 
+	$groupnumber = count($grouplist);
+	 
 	function restore_session($statistic_service = 'null', $statistic_host = 'null'){
 		global $pearDB;
 		if (isset($statistic_service) && !is_null($statistic_service)){
@@ -103,7 +110,7 @@
 	}
 
 	function read($sid, $lcaSTR){
-		global $pearDB, $flag,$centreon_path, $ndo_base_prefix, $is_admin;
+		global $pearDB, $flag,$centreon_path, $ndo_base_prefix, $is_admin, $groupnumber, $grouplist;
 		$oreon = "";
 		$search = "";
 		$search_type_service = 0;
@@ -145,7 +152,7 @@
 			$host_stat[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 
 		/* Get ServiceNDO status */
-		if (!$is_admin)
+		if (!$is_admin && $groupnumber)
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
 					" WHERE no.object_id = nss.service_object_id".
@@ -153,7 +160,7 @@
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
-					" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") ".
+					" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") ".
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 		else
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .

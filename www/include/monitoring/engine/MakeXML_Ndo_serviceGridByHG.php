@@ -60,23 +60,30 @@
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
 	}
+	
+	/*
+	 * Get Acl Group list
+	 */
+	
+	$grouplist = getGroupListofUser($pearDB); 
+	$groupnumber = count($grouplist);
 
 	function get_services($host_name){
 		
-		global $pearDBndo, $pearDB, $ndo_base_prefix, $general_opt, $o, $instance, $is_admin;
+		global $pearDBndo, $pearDB, $ndo_base_prefix, $general_opt, $o, $instance, $is_admin, $groupnumber, $grouplist;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no";
 				
-				if (!$is_admin)
-					$rq .= ", centreon_acl ";
+		if (!$is_admin && $groupnumber)
+			$rq .= ", centreon_acl ";
 					
 		$rq .= 		" WHERE no.object_id = nss.service_object_id" .
 					" AND no.name1 NOT LIKE 'OSL_Module'" .
 					" AND no.name1 NOT LIKE 'Meta_Module'";
 		
-		if (!$is_admin)
-			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
+		if (!$is_admin && $groupnumber)
+			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr($grouplist).")";
 
 		if	($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 			$rq .= 	" AND nss.current_state != 0" ;
@@ -103,8 +110,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
-		while($DBRESULT->fetchInto($svc)){
-
+		while ($DBRESULT->fetchInto($svc)){
 			$tab[$svc["service_name"]] = $svc["current_state"];
 		}
 		return($tab);
@@ -128,7 +134,8 @@
 
 	$rq1 =  	" SELECT DISTINCT no.name1 as host_name, hg.alias, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
 				" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no ";
-	if (!$is_admin)
+	
+	if (!$is_admin && $groupnumber)
 		$rq1 .= ", centreon_acl ";
 	
 	$rq1 .=  	" WHERE hs.host_object_id = hgm.host_object_id".
@@ -138,8 +145,8 @@
 				" AND no.name1 not like 'Meta_Module'".
 				" AND no.is_active = 1";
 	
-	if (!$is_admin)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
+	if (!$is_admin && $groupnumber)
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).")";
 	
 	if ($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 		$rq1 .= " AND no.name1 IN (" .
@@ -162,7 +169,7 @@
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 
-	if($instance != "ALL")
+	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
 	$rq_pagination = $rq1;

@@ -57,6 +57,13 @@
 	}
 	
 	/*
+	 * Get Acl Group list
+	 */
+	
+	$grouplist = getGroupListofUser($pearDB); 
+	$groupnumber = count($grouplist);
+	
+	/*
 	 * Get status Color
 	 */
 	$general_opt = getStatusColor($pearDB);
@@ -85,11 +92,10 @@
 
 	/* Get Host status */
 	$rq1 = 		" SELECT " .
-				" DISTINCT no.name1 as host_name," .
-				" nhs.current_state" .
+				" DISTINCT no.name1 as host_name, nhs.current_state" .
 				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs";
 	
-	if (!$is_admin)
+	if (!$is_admin && $groupnumber)
 		$rq1 .= ", centreon_acl ";
 
 		$rq1 .=	" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
@@ -116,8 +122,8 @@
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 
-	if (!$is_admin)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
+	if (!$is_admin && $groupnumber)
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).")";
 
 	switch($sort_type){
 		case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 "; break;

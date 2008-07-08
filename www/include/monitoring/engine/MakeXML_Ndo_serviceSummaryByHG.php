@@ -59,6 +59,13 @@
 		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
 	}
 
+	/*
+	 * Get Acl Group list
+	 */
+	
+	$grouplist = getGroupListofUser($pearDB); 
+	$groupnumber = count($grouplist);
+
 	$service = array();
 	$host_status = array();
 	$service_status = array();
@@ -76,7 +83,7 @@
 
 	$rq1 = 			" SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
 					" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no";
-	if (!$is_admin)
+	if (!$is_admin && $groupnumber)
 		$rq1 .= ", centreon_acl";
 			$rq1 .= " WHERE hs.host_object_id = hgm.host_object_id".
 					" AND no.object_id = hgm.host_object_id" .
@@ -106,11 +113,9 @@
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 		
-	if (!$is_admin)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
+	if (!$is_admin && $groupnumber)
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).")";
 	
-	//print $rq1;
-		
 	$rq_pagination = $rq1;
 	
 	/* Get Pagination Rows */
