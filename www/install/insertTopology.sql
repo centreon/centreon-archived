@@ -402,3 +402,6 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(315, 30704, NULL, './include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js', 'initTimeline');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(316, 20206, NULL, './include/common/javascript/ajaxMonitoring.js\r\n', 'initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(317, 20207, NULL, './include/common/javascript/ajaxMonitoring.js\r\n	', 'initM');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(318, 60101, 'a', './include/common/javascript/commandGetArgs/cmdGetExample.js', NULL);
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(319, 60101, 'c', './include/common/javascript/commandGetArgs/cmdGetExample.js', NULL);
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(320, 60101, 'mc', './include/common/javascript/commandGetArgs/cmdGetExample.js', NULL);
