@@ -1887,24 +1887,32 @@ function find_OS() {
 	local dist_found=""
 	local system=""
 	local lsb_release=""
-	system=$(uname -s)
+	system="$(uname -s)"
 	if [ "$system" = "Linux" ] ; then
-		lsb_release="$(lsb_release -i -s)"
-		if [ "$lsb_release" = "Debian" -o "$lsb_release" = "Ubuntu" ]
-		then 
+		if [ "$(pathfind lsb_release; echo $?)" -eq "0" ] ; then
+			lsb_release="$(lsb_release -i -s)"
+		else
+			lsb_release="NOT_FOUND"
+		fi
+		if [ "$lsb_release" = "Debian" ] || \
+			[ "$lsb_release" = "Ubuntu" ] || \
+			[ -e "/etc/debian_version" ] ; then 
 			dist_found="DEBIAN"
 			log "INFO" "$(gettext "GNU/Linux Debian Distribution")"
-		elif [ "$lsb_release" = "SUSE LINUX" ] ; then
+		elif [ "$lsb_release" = "SUSE LINUX" ] || \
+			[ -e "/etc/SuSE-release" ] ; then
 			dist_found="SUSE"
 			log "INFO" "$(gettext "GNU/Linux Suse Distribution")"
-		elif [ "$lsb_release" = "RedHatEnterpriseES" -o "$lsb_release" = "Fedora" ]
-		then
+		elif [ "$lsb_release" = "RedHatEnterpriseES" ] || \
+			[ "$lsb_release" = "Fedora" ] || \
+			[ -e "/etc/redhat-release" ] ; then
 			dist_found="REDHAT"
 			log "INFO" "$(gettext "GNU/Linux Redhat Distribution")"
 		else
 			dist_found="NOT_FOUND"
 			log "INFO" "$(gettext "GNU/Linux distribution not found")"
-		return 1
+			return 1
+
 		fi
 	elif [ "$system" = "FreeBSD" ] ; then
 		dist_found="FREEBSD"

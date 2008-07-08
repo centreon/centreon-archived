@@ -185,7 +185,7 @@ cat << __EOL__ > "$LOG_FILE"
 __EOL__
 
 ## Test all binaries
-BINARIES="rm cp mv chmod chown echo cat more mkdir find sed lsb_release"
+BINARIES="rm cp mv chmod chown echo cat more mkdir find sed"
 
 echo "$line"
 echo -e "\t$(gettext "Checking all needed binaries")"
