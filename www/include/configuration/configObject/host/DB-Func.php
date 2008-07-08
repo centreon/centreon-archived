@@ -1127,7 +1127,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL){
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		while ($hTpl2 = $DBRESULT2->fetchRow()) {			
 			$alias =& getMyServiceAlias($hTpl2["service_service_id"]);			
-			if (testServiceExistence ($alias, array(0=>$hID))) {								
+			if (testServiceExistence ($alias, array(0=>$hID))) {				
 				$service = array("service_template_model_stm_id" => $hTpl2["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
 				$service_id = insertServiceInDB($service);
 				$rq3 = "INSERT INTO host_service_relation (hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) VALUES (NULL, '".$hID."', NULL, '".$service_id."')";
@@ -1198,7 +1198,9 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL){
 	
 	function updateHostTemplateService($host_id = null)	{
 		if (!$host_id) return;
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon, $path;
+		require_once($path."../service/DB-Func.php");
+		
 		$DBRESULT =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."'");
 		$row =& $DBRESULT->fetchRow();
 		if ($row["host_register"] == 0) 	{
@@ -1210,20 +1212,27 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL){
 			$ret = array();
 			$ret = $form->getSubmitValue("host_svTpls");
 			for($i = 0; $i < count($ret); $i++)	{
-				$rq = "INSERT INTO host_service_relation ";
-				$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
-				$rq .= "VALUES ";
-				$rq .= "(NULL, '".$host_id."', NULL, '".$ret[$i]."')";
-				$DBRESULT2 =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+				if (isset($ret[$i]) && $ret[$i] != "") {
+					$rq = "INSERT INTO host_service_relation ";
+					$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
+					$rq .= "VALUES ";
+					$rq .= "(NULL, '".$host_id."', NULL, '".$ret[$i]."')";
+					$DBRESULT2 =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT2))
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+				}
 			}
+		}
+		else if ($oreon->user->get_version() >= 3) {
+			generateHostServiceMultiTemplate($host_id, $host_id);
 		}
 	}
 	
 	function updateHostTemplateService_MC($host_id = null)	{
 		if (!$host_id) return;
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon, $path;
+		require_once($path."../service/DB-Func.php");
+		
 		$DBRESULT =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."'");
 		$row =& $DBRESULT->fetchRow();
 		if ($row["host_register"] == 0) 	{
@@ -1247,6 +1256,9 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL){
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				}
 			}
+		}
+		else if ($oreon->user->get_version() >= 3){
+			generateHostServiceMultiTemplate($host_id, $host_id);
 		}
 	}
 
