@@ -1466,79 +1466,26 @@ CREATE TABLE IF NOT EXISTS `on_demand_macro_host` (
   `host_macro_id` int(11) NOT NULL auto_increment,
   `host_macro_name` varchar(255) NOT NULL,
   `host_macro_value` varchar(255) NOT NULL,
-  `host_host_id` varchar(11) NOT NULL,
+  `host_host_id` int(11) NOT NULL,
   PRIMARY KEY  (`host_macro_id`),
   KEY `host_host_id` (`host_host_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
---
--- Structure de la table `purge_policy`
---
+-- 
+-- Structure de la table `on_demand_macro_service`
+-- 
 
-CREATE TABLE IF NOT EXISTS `purge_policy` (
-  `purge_policy_id` int(11) NOT NULL auto_increment,
-  `purge_policy_name` varchar(255) default NULL,
-  `purge_policy_alias` varchar(255) default NULL,
-  `purge_policy_retention` int(11) default NULL,
-  `purge_policy_raw` enum('0','1') default '0',
-  `purge_policy_bin` enum('0','1') default '0',
-  `purge_policy_metric` enum('0','1') default '0',
-  `purge_policy_service` enum('0','1') default '0',
-  `purge_policy_host` enum('0','1') default '0',
-  `purge_policy_comment` text,
-  PRIMARY KEY  (`purge_policy_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+CREATE TABLE `on_demand_macro_service` (
+  `svc_macro_id` int(11) NOT NULL auto_increment,
+  `svc_macro_name` varchar(255) NOT NULL,
+  `svc_macro_value` varchar(255) NOT NULL,
+  `svc_svc_id` int(11) NOT NULL,
+  PRIMARY KEY  (`svc_macro_id`),
+  KEY `svc_svc_id` (`svc_svc_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
--- --------------------------------------------------------
-
---
--- Structure de la table `reporting_diff_email`
---
-
-CREATE TABLE IF NOT EXISTS `reporting_diff_email` (
-  `rtde_id` int(11) NOT NULL auto_increment,
-  `email` varchar(255) default NULL,
-  `format` enum('1','2') default '2',
-  `comment` text,
-  `activate` enum('0','1') default NULL,
-  PRIMARY KEY  (`rtde_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `reporting_diff_list`
---
-
-CREATE TABLE IF NOT EXISTS `reporting_diff_list` (
-  `rtdl_id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) default NULL,
-  `description` varchar(255) default NULL,
-  `tp_id` int(11) default NULL,
-  `activate` enum('0','1') default NULL,
-  `comment` text,
-  PRIMARY KEY  (`rtdl_id`),
-  KEY `timeperiod_index` (`tp_id`),
-  KEY `name_index` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `reporting_email_list_relation`
---
-
-CREATE TABLE IF NOT EXISTS `reporting_email_list_relation` (
-  `rtelr_id` int(11) NOT NULL auto_increment,
-  `rtdl_id` int(11) default NULL,
-  `rtde_id` int(11) default NULL,
-  `oreon_contact` enum('0','1') default '0',
-  PRIMARY KEY  (`rtelr_id`),
-  KEY `list_index` (`rtdl_id`),
-  KEY `email_index` (`rtde_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -2201,17 +2148,19 @@ ALTER TABLE `ns_host_relation`
   ADD CONSTRAINT `ns_host_relation_ibfk_2` FOREIGN KEY (`nagios_server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `ns_host_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
 
---
--- Contraintes pour la table `reporting_diff_list`
---
-ALTER TABLE `reporting_diff_list`
-  ADD CONSTRAINT `reporting_diff_list_ibfk_1` FOREIGN KEY (`tp_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL;
 
---
--- Contraintes pour la table `reporting_email_list_relation`
---
-ALTER TABLE `reporting_email_list_relation`
-  ADD CONSTRAINT `reporting_email_list_relation_ibfk_1` FOREIGN KEY (`rtdl_id`) REFERENCES `reporting_diff_list` (`rtdl_id`) ON DELETE CASCADE;
+-- 
+-- Contraintes pour la table `on_demand_macro_service`
+-- 
+ALTER TABLE `on_demand_macro_service`
+  ADD CONSTRAINT `on_demand_macro_service_ibfk_1` FOREIGN KEY (`svc_svc_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
+
+-- 
+-- Contraintes pour la table `on_demand_macro_host`
+-- 
+ALTER TABLE `on_demand_macro_host`
+  ADD CONSTRAINT `on_demand_macro_host_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
+
 
 --
 -- Contraintes pour la table `service`
