@@ -50,7 +50,7 @@
 # -- on upgrade, overwrite existing ? backup ? 
 
 # Define centreon version
-version="2.0-b4"
+version="2.0-b5"
 
 #----
 ## Usage informations for install.sh
