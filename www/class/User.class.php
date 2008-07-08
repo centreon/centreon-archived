@@ -65,6 +65,7 @@ class User	{
   	function createLCA($pearDB = NULL)	{
 	  	$have_an_lca = 0;
 	  	$num = 0;
+	  	$i = 0;
 	   	if (!$pearDB)
 	  		return; 
 	  	
@@ -73,7 +74,7 @@ class User	{
 			print "[Create ACL] DB Error : ".$res1->getDebugInfo()."<br />";
 		
 		if ($num = $res1->numRows())	{
-			for ($str = "", $i = 0;$group = $res1->fetchRow() ; $i++)	{
+			for ($str = "", $i = 0; $group = $res1->fetchRow() ; $i++)	{
 				if ($str != "")
 					$str .= ", ";
 				$str .= $group["acl_group_id"];
