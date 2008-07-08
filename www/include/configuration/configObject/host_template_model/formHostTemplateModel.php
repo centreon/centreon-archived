@@ -58,8 +58,15 @@
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$host_id."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			for($i = 0; $DBRESULT->fetchInto($svTpl); $i++)
-				$host["host_svTpls"][$i] = $svTpl["service_service_id"];
+			for($i = 0; $DBRESULT->fetchInto($svTpl); $i++){
+				$DBRESULT2 =& $pearDB->query("SELECT service_register FROM service WHERE service_id = '".$svTpl['service_service_id']."' LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+				$tpReg = $DBRESULT2->fetchRow();
+				if ($tpReg['service_register'] == 0)
+					$host["host_svTpls"][$i] = $svTpl["service_service_id"];
+				
+			}
 			$DBRESULT->free();
 		}
 	}

@@ -57,7 +57,7 @@
 		</td>
 		<td class="FormRowValue">			
 			{if $o == "a" || $o == "c" || $o == "mc"}
-				{$add_mtp_label}&nbsp;<img src='./img/icones/16x16/component_add.gif' style='cursor:pointer' onClick="javascript:addBlankSelect();">			
+				{$add_mtp_label}&nbsp;<img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBlankSelect();">			
 			{/if}
 			<div id="parallelTemplate"></div>
 		</td>
@@ -225,7 +225,7 @@
 				<tr class="ListHeader">
 					<td class="ListColLeft">{$form.macroName.label}</td>
 					<td class="ListColCenter">{$form.macroValue.label}</td>
-					<td class="ListColCenter"><img src='./img/icones/16x16/component_add.gif' style='cursor:pointer' onClick="javascript:addBlankInput();"></td>
+					<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBlankInput();"></td>
 				</tr>
 			</table>
 		</td>
