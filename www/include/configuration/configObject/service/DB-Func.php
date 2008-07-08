@@ -131,6 +131,7 @@
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			}
 			$DBRESULT =& $pearDB->query("DELETE FROM service WHERE service_id = '".$key."'");
+			$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$files = glob($oreon->optGen["oreon_rrdbase_path"]."*_".$key.".rrd");
@@ -452,6 +453,27 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$service_id = $DBRESULT->fetchRow();
+		
+		/*
+		 *  Insert on demand macros
+		 */
+		if (isset($_POST['nbOfMacro'])) {			
+			$already_stored = array(); 		
+	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
+	 		{ 			
+	 			$macInput = "macroInput_" . $i;
+	 			$macValue = "macroValue_" . $i;
+	 			if (!isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
+		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
+		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id["MAX(service_id)"] .")";
+			 		$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
+					$already_stored[$_POST[$macInput]] = 1;
+	 			}			
+	 		}
+		}
 		return ($service_id["MAX(service_id)"]);
 	}
 	
@@ -594,6 +616,29 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			
+		/*
+		 *  Update demand macros
+		 */
+		if (isset($_POST['nbOfMacro'])) {
+			$already_stored = array();
+			$DBRESULT =& $pearDB->query("DELETE FROM `on_demand_macro_service` WHERE `svc_svc_id`='".$service_id."'");
+			
+	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
+	 		{ 			
+	 			$macInput = "macroInput_" . $i;
+	 			$macValue = "macroValue_" . $i;
+	 			if (!isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
+		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
+		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id .")";
+			 		$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
+					$already_stored[$_POST[$macInput]] = 1;
+	 			}			
+	 		}
+		}
 	}
 	
 	function updateService_MC($service_id = null)	{
@@ -666,6 +711,53 @@
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
+		
+		/*
+		 *  Update on demand macros
+		 */
+		if (isset($_POST['nbOfMacro']) && $_POST['nbOfMacro']) {
+			$already_stored = array();
+			$already_stored_in_db = array();
+			
+			$rq = "SELECT svc_macro_name FROM `on_demand_macro_service` WHERE `host_host_id`=" . $service_id;
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			while ($mac = $DBRESULT->fetchRow()) {
+				$tmp = str_replace("\$_SERVICE", "", $mac["svc_macro_name"]);
+				$tmp = str_replace("\$", "", $tmp);
+				$tmp = strtolower($tmp);				
+				$already_stored_in_db[$tmp] = 1;
+			}
+			
+			
+	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
+	 		{ 			
+	 			$macInput = "macroInput_" . $i;
+	 			$macValue = "macroValue_" . $i;
+	 			if (isset($already_stored_in_db[$_POST[$macInput]])) {	 			 				
+	 				$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
+		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
+	 				$rq = "UPDATE on_demand_macro_host SET `host_macro_value`='". $_POST[$macValue] . "'".
+	 					  " WHERE `svc_svc_id`=" . $service_id .
+	 					  " AND `svc_macro_name`='\$_SERVICE" . $_POST[$macInput] . "\$'";
+			 		$DBRESULT =& $pearDB->query($rq);			 		
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	 			}
+	 			elseif (!isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {		 			
+		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
+		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id .")";
+			 		$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
+					$already_stored[$_POST[$macInput]] = 1;
+	 			}	 			
+	 		}
+		}
+		
+		
 	}
 		
 	function updateServiceContactGroup($service_id = null, $ret = array())	{

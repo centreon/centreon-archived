@@ -237,6 +237,22 @@
 				unset($DBRESULT_TEMP);
 			}
 			
+			/*
+			 * On-demand macros
+			 */
+			if ($oreon->user->get_version() >= 3) {
+				$rq = "SELECT svc_macro_name, svc_macro_value FROM on_demand_macro_service WHERE `svc_svc_id`=" . $service['service_id'];
+				$DBRESULT3 =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT3))
+					print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+				while($od_macro = $DBRESULT3->fetchRow()) {
+					$mac_name = str_replace("\$_SERVICE", "_", $od_macro['svc_macro_name']);
+					$mac_name = str_replace("\$", "", $mac_name);
+					$mac_value = $od_macro['svc_macro_value'];
+					$strTMP .= print_line($mac_name, $mac_value);
+				}
+			}
+			
 			$strTMP .= "}\n\n";
 			if (!$service["service_register"] || $LinkedToHost)	{
 				$i++;

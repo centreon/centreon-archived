@@ -221,6 +221,24 @@
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
 	$extImg = return_image_list(1);
+	
+	
+	/*
+	 *  Service on demand macro stored in DB
+	 */
+	$j = 0;		
+	$DBRESULT =& $pearDB->query("SELECT svc_macro_id, svc_macro_name, svc_macro_value, svc_svc_id FROM on_demand_macro_service WHERE svc_svc_id = '". $service_id ."' ORDER BY `svc_macro_id`");
+	while($od_macro = $DBRESULT->fetchRow())
+	{
+		$od_macro_id[$j] = $od_macro["svc_macro_id"];
+		$od_macro_name[$j] = str_replace("\$_SERVICE", "", $od_macro["svc_macro_name"]);
+		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);		
+		$od_macro_value[$j] = $od_macro["svc_macro_value"];
+		$od_macro_svc_id[$j] = $od_macro["svc_svc_id"];
+		$j++;		
+	}
+	$DBRESULT->free();
+	
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -531,6 +549,43 @@
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
+	#
+	## Sort 5 - Macros - Nagios 3
+	#
+	
+	if ($oreon->user->get_version() == 3) {
+		if ($o == "a")
+			$form->addElement('header', 'title5', _("Add macros"));
+		else if ($o == "c")
+			$form->addElement('header', 'title5', _("Modify macros"));
+		else if ($o == "w")
+			$form->addElement('header', 'title5', _("View macros"));
+		else if ($o == "mc")
+			$form->addElement('header', 'title5', _("Massive Change"));
+	
+		$form->addElement('header', 'macro', _("Macros"));
+		
+		$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
+		$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
+		$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
+		$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
+		
+		include_once("makeJS_formService.php");	
+		if ($o == "c" || $o == "a" || $o == "mc")
+		{			
+			for($k=0; isset($od_macro_id[$k]); $k++) {?>				
+				<script type="text/javascript">
+				globalMacroTabId[<?=$k;?>] = <?=$od_macro_id[$k];?>;		
+				globalMacroTabName[<?=$k;?>] = '<?=$od_macro_name[$k];?>';
+				globalMacroTabValue[<?=$k;?>] = '<?=$od_macro_value[$k];?>';
+				globalMacroTabSvcId[<?=$k;?>] = <?=$od_macro_svc_id[$k];?>;				
+				</script>			
+		<?php
+			}
+		}
+	}
+
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
@@ -628,6 +683,7 @@
 	$tpl->assign("sort2", _("Relations"));
 	$tpl->assign("sort3", _("Data Processing"));
 	$tpl->assign("sort4", _("Service Extended Info"));
+	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign('javascript', "<script type='text/javascript'>function showLogo(_img_dst, _value) {var _img = document.getElementById(_img_dst + '_img');_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );		
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
 	$tpl->assign("p", $p);
@@ -684,3 +740,6 @@
 		$tpl->display("formService.ihtml");
 	}
 ?>
+<script type="text/javascript">		
+		displayExistingMacroSvc(<?=$k;?>);
+</script>
