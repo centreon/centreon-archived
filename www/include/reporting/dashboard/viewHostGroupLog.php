@@ -41,6 +41,8 @@
 	
 	require_once './include/reporting/dashboard/dataEngine/HostGroupLog.php';
 		
+	$mhost = purgeVar($mhost);	
+		
 	$tableFile2 = array();
 	if ($handle  = @opendir($oreon->Nagioscfg["log_archive_path"]))	{
 		while ($file = @readdir($handle))

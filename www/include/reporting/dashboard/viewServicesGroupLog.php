@@ -28,7 +28,7 @@
 	$tpl->assign('o', $o);
 
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
-	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
+	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;	
 
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -40,6 +40,8 @@
 	require_once("./include/reporting/dashboard/initReport.php");
 	
 	require_once './include/reporting/dashboard/dataEngine/HostGroupLog.php';
+
+	$mhost = purgeVar($mhost);
 	
 	$tableFile2 = array();
 	if ($handle  = @opendir($oreon->Nagioscfg["log_archive_path"]))	{

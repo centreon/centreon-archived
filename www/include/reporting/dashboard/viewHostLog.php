@@ -116,15 +116,6 @@
 	$sub =& $formPeriod->addElement('submit', 'submit', _("View"));
 	$res =& $formPeriod->addElement('reset', 'reset', _("Reset"));
 
-	function purgeVar($mhost){
-		$mhost = str_replace("\'", '', $mhost);	
-		$mhost = str_replace("\"", '', $mhost);	
-		$tab_mhost = split(";", $mhost);
-		$mhost = $tab_mhost[0];
-		unset($tab_mhost);
-		return $mhost;
-	}
-
 	$mhost = purgeVar($mhost);
 
 	if ($mhost){
@@ -174,11 +165,10 @@
 		 *  For today in timeline
 		 */
 		$tt = 0 + ($today_end - $today_start);
-		$today_pending = $tt - ($today_down + $today_up + $today_unreachable);
-		$today_pending = round(($today_pending/$tt *100),2);
-		$today_up = ($today_up <= 0) ? 0 : round($today_up / $tt *100,2);
-		$today_down = ($today_down <= 0) ? 0 : round($today_down / $tt *100,2);
-		$today_unreachable = ($today_unreachable <= 0) ? 0 : round($today_unreachable / $tt *100,2);
+		$today_pending = 100 - ($today_down + $today_up + $today_unreachable);		
+		$today_up = ($today_up <= 0) ? 0 : round($today_up,2);
+		$today_down = ($today_down <= 0) ? 0 : round($today_down, 2);
+		$today_unreachable = ($today_unreachable <= 0) ? 0 : round($today_unreachable,2);
 		$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 	}
 	

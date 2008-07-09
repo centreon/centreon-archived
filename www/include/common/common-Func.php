@@ -1277,5 +1277,17 @@
 		return 0;
 	}
 	
-
+	/*
+	 * This functions purges the var, remove all the quotes
+	 * and everything that comes after a semi-colon
+	 */
+	function purgeVar($myVar){
+		$myVar = str_replace("\'", '', $myVar);	
+		$myVar = str_replace("\"", '', $myVar);	
+		$tab_myVar = split(";", $myVar);
+		$mhost = $tab_myVar[0];
+		unset($tab_myVar);
+		return $myVar;
+	}
+	
 ?>

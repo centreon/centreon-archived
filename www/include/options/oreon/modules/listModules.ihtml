@@ -31,7 +31,7 @@
 				&nbsp;<a href="{$elemArr[elem].RowMenu_link_install}" style=""><img src='./img/icones/16x16/gears_run.gif' title='{$action_install}' alt='{$action_install}'></a>&nbsp;
 			{/if}
 			{if $elemArr[elem].RowMenu_link_delete}
-				&nbsp;<a href="{$elemArr[elem].RowMenu_link_delete}"  onclick="return confirm('{$confirm_removing}')"><img src='./img/icones/16x16/garbage_empty.gif' title='{$action_delete}' alt='{$action_delete}'></a&nbsp;
+				&nbsp;<a href="{$elemArr[elem].RowMenu_link_delete}"  onclick="return confirm('{$confirm_removing}')"><img src='./img/icones/16x16/garbage_empty.gif' title='{$action_delete}' alt='{$action_delete}'></a>&nbsp;
 			{/if}
 			{if $elemArr[elem].RowMenu_link_upgrade}
 				&nbsp;<a href="{$elemArr[elem].RowMenu_link_upgrade}"><img src='./img/icones/16x16/gear_replace.gif' title='{$action_upgrade}' alt='{$action_upgrade}'></a>&nbsp;

@@ -60,6 +60,9 @@
 	isset ($_GET["service"]) ? $mservice = $_GET["service"] : $mservice = NULL;
 	isset ($_POST["service"]) ? $mservice = $_POST["service"] : $mservice = $mservice;
 
+	$mhost = purgeVar($mhost);
+	$mservice = purgeVar($mservice);
+
 	$tableFile2 = array();
 	if ($handle  = @opendir($oreon->Nagioscfg["log_archive_path"]))	{
 		while ($file = @readdir($handle))
