@@ -623,7 +623,7 @@
 		
 		$tpl->display("formHost.ihtml");
 	}
-if ($oreon->user->get_version() == 3) {
+if ($oreon->user->get_version() == 3 && !$action["action"]["action"]) {
 ?>
 <script type="text/javascript">
 		add_select_template();
