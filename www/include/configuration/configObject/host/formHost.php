@@ -55,7 +55,7 @@
 		 * Set Contact Group
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
-		for ($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
+		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
 			$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
 		
@@ -63,7 +63,7 @@
 		 * Set Host Parents
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
-		for ($i = 0; $DBRESULT->fetchInto($parent); $i++)
+		for ($i = 0; $parent = $DBRESULT->fetchRow(); $i++)
 			$host["host_parents"][$i] = $parent["host_parent_hp_id"];
 		$DBRESULT->free();
 		
@@ -71,7 +71,7 @@
 		 * Set Host Childs
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$host_id."'");
-		for ($i = 0; $DBRESULT->fetchInto($child); $i++)
+		for ($i = 0; $child = $DBRESULT->fetchRow(); $i++)
 			$host["host_childs"][$i] = $child["host_host_id"];
 		$DBRESULT->free();
 		
@@ -79,7 +79,7 @@
 		 * Set Host Group Parents
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
-		for ($i = 0; $DBRESULT->fetchInto($hg); $i++)
+		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
 			$host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
 		
@@ -102,7 +102,7 @@
 	$hTpls = array( NULL => NULL );
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
 	$nbMaxTemplates = 0;
-	while($DBRESULT->fetchInto($hTpl))	{
+	while($hTpl = $DBRESULT->fetchRow())	{
 		if (!$hTpl["host_name"])
 			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
 		$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
@@ -115,7 +115,7 @@
 	 */
 	$tps = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	while($DBRESULT->fetchInto($tp))
+	while($tp = $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
 	
@@ -124,7 +124,7 @@
 	 */
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-	while($DBRESULT->fetchInto($checkCmd))
+	while($checkCmd = $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 	
@@ -133,7 +133,7 @@
 	 */
 	$checkCmdEvent = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
-	while($DBRESULT->fetchInto($checkCmd))
+	while($checkCmd = $DBRESULT->fetchRow())
 		$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 	
@@ -142,7 +142,7 @@
 	 */
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while($DBRESULT->fetchInto($notifCg))
+	while($notifCg = $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
 	
@@ -164,7 +164,7 @@
 /*	else
 		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
 */
-	while($DBRESULT->fetchInto($hg))
+	while($hg = $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
 	
@@ -176,22 +176,14 @@
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
 /*	else
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
-*/	while($DBRESULT->fetchInto($hostP))	{
+*/	while($hostP = $DBRESULT->fetchRow())	{
 		if (!$hostP["host_name"])
 			$hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"])."'";
 		$hostPs[$hostP["host_id"]] = $hostP["host_name"];
 	}
 	$DBRESULT->free();
 	
-	/*
-	 * Deletion Policy definition comes from DB -> Store in $ppols Array
-	 */
-	$ppols = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
-	while($DBRESULT->fetchInto($ppol))
-		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
-	$DBRESULT->free();	
-	
+		
 	/*
 	 * IMG comes from DB -> Store in $extImg Array
 	 */

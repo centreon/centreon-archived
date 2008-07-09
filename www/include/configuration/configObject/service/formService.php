@@ -209,15 +209,6 @@
 		$traps[$trap["traps_id"]] = $trap["traps_name"];
 	$DBRESULT->free();
 	
-	# Deletion Policy definition comes from DB -> Store in $ppols Array
-	$ppols = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($ppol = $DBRESULT->fetchRow())
-		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
-	$DBRESULT->free();
-
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
 	$extImg = return_image_list(1);
