@@ -102,10 +102,12 @@
 	}
 
 	#
-	## Selectioned ?
+	## Selected ?
 	#		
 	isset ($_GET["servicegroup"]) ? $mservicegroup = $_GET["servicegroup"] : $mservicegroup = NULL;
 	isset ($_POST["servicegroup"]) ? $mservicegroup = $_POST["servicegroup"] : $mservicegroup = $mservicegroup;
+
+	$mservicegroup = purgeVar($mservicegroup);
 
 	#
 	## Select form part 1

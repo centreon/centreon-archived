@@ -291,8 +291,7 @@
 		$sbase["average"]["today"]["CRITICALnbEvent"] = 0;
 
 		$i = 0;
-		$svc_tab = getMyServiceGroupServices($servicegroup_id);
-
+		$svc_tab = getMyServiceGroupServices($servicegroup_id);		
 		foreach($svc_tab as $key => $s){
 			$stmp = array();
 			$res = preg_split("/_/", $key);

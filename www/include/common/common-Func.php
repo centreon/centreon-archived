@@ -414,24 +414,26 @@
 		if (!$sg_id) return;
 		global $pearDB;
 		$svs = array();
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, host_host_id " .
-									"FROM servicegroup_relation, service " .
+		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
+									"FROM servicegroup_relation, service, host " .
 									"WHERE servicegroup_sg_id = '".$sg_id."' " .
 									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
 									"AND service.service_id = servicegroup_relation.service_service_id " .
+									"AND servicegroup_relation.host_host_id = host.host_id " .
 									"AND servicegroup_relation.host_host_id IS NOT NULL");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
-			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = $elem["service_description"];
+			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = $elem["service_description"] . ":::" . $elem["host_name"];
 		}
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id " .
-									"FROM servicegroup_relation, service " .
+		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, host_name " .
+									"FROM servicegroup_relation, service, host " .
 									"WHERE servicegroup_sg_id = '".$sg_id."' " .
 									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
 									"AND service.service_id = servicegroup_relation.service_service_id " .
+									"AND servicegroup_relation.host_host_id = host.host_id " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -440,7 +442,7 @@
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 			$hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
 			foreach ($hosts as $key=>$value)
-				$svs[$key."_".$elem["service_id"]] = $elem["service_description"];
+				$svs[$key."_".$elem["service_id"]] = $elem["service_description"] . ":::" . $elem["host_name"];
 		}
 		$DBRESULT->free();
 		return $svs;
