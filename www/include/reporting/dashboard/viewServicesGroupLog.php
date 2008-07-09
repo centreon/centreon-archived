@@ -528,7 +528,7 @@
 	if ($mservicegroup)	{
 		$color = substr($oreon->optGen["color_ok"],1) .':'.
 		 		 substr($oreon->optGen["color_warning"],1) .':'.
-		 		 substr($oreon->optGen["color_unknown"],1) .':'. 
+		 		 substr($oreon->optGen["color_critical"],1) .':'. 
 		 		 substr($oreon->optGen["color_unknown"],1).':CCCCCC';
 		$today_var = '&svc_group_id='.$servicegroup_id.'&today_ok='.$today_ok . '&today_critical='.$today_critical . '&today_warning='.$today_warning.'&today_unknown='.$today_unknown. '&today_pending=' . $today_pending;
 		$today_var .= '&today_OKnbEvent='.$today_OKnbEvent.'&today_UNKNOWNnbEvent='.$today_UNKNOWNnbEvent.'&today_WARNINGnbEvent='.$today_WARNINGnbEvent.'&today_CRITICALnbEvent='.$today_CRITICALnbEvent;
