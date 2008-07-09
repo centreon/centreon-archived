@@ -45,13 +45,13 @@
 					$str .= print_line("notes_url", $field);
 				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_action_url"))
 					$str .= print_line("action_url", $field);
-				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_icon_image"))
+				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_icon_image"))
 					$str .= print_line("icon_image", $field);
 				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_icon_image_alt"))
 					$str .= print_line("icon_image_alt", $field);
-				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_vrml_image"))
+				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_vrml_image"))
 					$str .= print_line("vrml_image", $field);
-				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_statusmap_image"))
+				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_statusmap_image"))
 					$str .= print_line("statusmap_image", $field);
 				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_2d_coords"))
 					$str .= print_line("2d_coords", $field);
@@ -104,7 +104,7 @@
 							$str .= print_line("notes_url", $field);
 						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_action_url"))
 							$str .= print_line("action_url", $field);
-						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image"))
+						if ($field = getMyServiceExtendedInfoImage($esi["service_id"], "esi_icon_image"))
 							$str .= print_line("icon_image", $field);
 						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image_alt"))
 							$str .= print_line("icon_image_alt", $field);
@@ -132,7 +132,7 @@
 						$str .= print_line("notes_url", $field);
 					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_action_url"))
 						$str .= print_line("action_url", $field);
-					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image"))
+					if ($field = getMyServiceExtendedInfoImage($esi["service_id"], "esi_icon_image"))
 						$str .= print_line("icon_image", $field);
 					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image_alt"))
 						$str .= print_line("icon_image_alt", $field);

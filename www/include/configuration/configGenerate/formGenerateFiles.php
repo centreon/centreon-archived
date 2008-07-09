@@ -181,11 +181,11 @@
 			 * Copying image in logos directory
 			 * 
 			 */
-			$DBRESULT_imgs =& $pearDB->query("SELECT `dir_name`, `img_path` FROM `view_img`, `view_img_dir`, `view_img_dir_relation` WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id");
+			$DBRESULT_imgs =& $pearDB->query("SELECT `dir_alias`, `img_path` FROM `view_img`, `view_img_dir`, `view_img_dir_relation` WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id");
 			while ($images =& $DBRESULT_imgs->fetchrow()){
-				if (!is_dir($oreon->optGen["nagios_path_img"]."/".$images["dir_name"]))
-					mkdir($oreon->optGen["nagios_path_img"]."/".$images["dir_name"]);
-				copy($centreon_path."www/img/media/".$images["dir_name"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_name"]."/".$images["img_path"]);
+				if (!is_dir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]))
+					mkdir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]);
+				copy($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
 			}
 			
 			$msg_copy = array();

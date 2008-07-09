@@ -302,6 +302,31 @@
 		}
 	}
 
+	function getMyHostExtendedInfoImage($host_id = NULL, $field)	{
+		if (!$host_id) return;
+		global $pearDB;
+		while(1)	{
+			$DBRESULT =& $pearDB->query("SELECT h.host_template_model_htm_id, ".$field." FROM host h, extended_host_information ehi WHERE h.host_id = '".$host_id."' AND ehi.host_host_id = h.host_id LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$row =& $DBRESULT->fetchRow();			
+			if (isset($row[$field]) && $row[$field])	{
+				$DBRESULT =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = ".$row[$field]." AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$row =& $DBRESULT->fetchRow();
+				if (isset($row["dir_alias"]) && isset($row["img_path"]) && $row["dir_alias"] && $row["img_path"])
+					return $row["dir_alias"]."/".$row["img_path"];
+			}
+			else	{
+				if ($row["host_template_model_htm_id"])
+					$host_id = $row["host_template_model_htm_id"];
+				else
+					return NULL;
+			}
+		}
+	}
+
 	function getMyHostTemplateModels($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -487,6 +512,33 @@
 				break;
 		}
 	}
+
+	function getMyServiceExtendedInfoImage($service_id = NULL, $field)	{
+		if (!$service_id) return;
+		global $pearDB;
+		while(1)	{
+			$DBRESULT =& $pearDB->query("SELECT s.service_template_model_stm_id, ".$field." FROM service s, extended_service_information esi WHERE s.service_id = '".$service_id."' AND esi.service_service_id = s.service_id LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$row =& $DBRESULT->fetchRow();			
+			if (isset($row[$field]) && $row[$field])	{
+				$DBRESULT =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = ".$row[$field]." AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$row =& $DBRESULT->fetchRow();
+				if (isset($row["dir_alias"]) && isset($row["img_path"]) && $row["dir_alias"] && $row["img_path"])
+					return $row["dir_alias"]."/".$row["img_path"];
+			}
+			else	{
+				if ($row["service_template_model_stm_id"])
+					$service_id = $row["service_template_model_stm_id"];
+				else
+					return NULL;
+			}
+		}
+	}
+
+
 
 	function getMyServiceName($service_id = NULL)	{
 		if (!$service_id) return;
@@ -1057,13 +1109,13 @@
 				$images["REP_".$cpt] = $dir_name;
 				$cpt++;
 			}
-			else	{
-				$ext = NULL;
-				$pinfo = pathinfo($elem["img_path"]);
-				if (isset($pinfo["extension"]) && isset($is_a_valid_image[$mode][$pinfo["extension"]]))
-					$ext = "&nbsp;(".$pinfo["extension"].")";
-				$images[$elem["img_id"]] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$elem["img_name"].$ext;
-			}
+			//else	{
+			$ext = NULL;
+			$pinfo = pathinfo($elem["img_path"]);
+			if (isset($pinfo["extension"]) && isset($is_a_valid_image[$mode][$pinfo["extension"]]))
+				$ext = "&nbsp;(".$pinfo["extension"].")";
+			$images[$elem["img_id"]] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$elem["img_name"].$ext;
+			//}
 		}
 		return ($images);
 	}
