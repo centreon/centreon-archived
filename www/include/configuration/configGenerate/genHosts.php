@@ -30,13 +30,12 @@
 	$i = 1;
 	$str = NULL;
 	while($host = $DBRESULT->fetchRow())	{
-		if (isHostOnThisInstance($host["host_id"], $tab['id']) || $host["host_register"] == 0) {
-			$BP = false;
-			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-			
+		if (isHostOnThisInstance($host["host_id"], $tab['id']) || $host["host_register"] == 0) {			
+			$BP = false;			
+			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;			
 			if (!$host["host_register"])
-				$BP = true;
-			if ($BP)	{
+				$BP = true;				
+			if ($BP)	{								
 				$ret["comment"] ? ($str .= "# '" . $host["host_name"]."' host definition ".$i."\n") : NULL;
 				if ($ret["comment"] && $host["host_comment"])	{
 					$comment = array();
@@ -48,8 +47,7 @@
 				if (!$host["host_register"] && $host["host_name"])	
 					$str .= print_line("name", $host["host_name"]);
 				else
-					if ($host["host_name"]) $str .= print_line("host_name", $host["host_name"]);
-				
+					if ($host["host_name"]) $str .= print_line("host_name", $host["host_name"]);									
 				/*
 				 * Get Template Model Relation
 				 */
@@ -260,8 +258,9 @@
 				$i++;
 			}
 		}
+				
 		unset($host);
-	}
+	}	
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/hosts.cfg");
 	fclose($handle);
 	$DBRESULT->free();

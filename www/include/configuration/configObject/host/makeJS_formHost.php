@@ -207,7 +207,7 @@ function add_select_template(){
     	$host_id = -1; 
     ?>
     xhr.open("GET", "./include/configuration/configObject/host/makeXMLhost.php?host_id="+<?php echo $host_id;?>, true);
-    xhr.send(null);
+    xhr.send(null);    
 }
 
 /*

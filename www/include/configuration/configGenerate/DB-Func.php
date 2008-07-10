@@ -109,10 +109,10 @@
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while($DBRESULT->fetchInto($host))	{
-				# If the Host is link to a Template, we think that the dependencies are manage in the template			
-				if ($host["host_template_model_htm_id"])	{
-					if (array_key_exists($host["host_template_model_htm_id"], $hostEnb))
-						$hostEnb[$host["host_id"]] = 1;
+				# If the Host is link to a Template, we think that the dependencies are manage in the template
+				if ($host["host_template_model_htm_id"])	{					
+					if (array_key_exists($host["host_template_model_htm_id"], $hostEnb))					
+						$hostEnb[$host["host_id"]] = 1;											
 				}
 				else	{
 					$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cghr.contactgroup_cg_id FROM contactgroup_host_relation cghr WHERE cghr.host_host_id = '".$host["host_id"]."'");

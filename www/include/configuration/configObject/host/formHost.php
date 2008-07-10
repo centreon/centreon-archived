@@ -99,15 +99,15 @@
 	 * Host Templates comes from DB -> Store in $hTpls Array
 	 */
 
-	$hTpls = array( NULL => NULL );
+	$hTpls = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
 	$nbMaxTemplates = 0;
 	while($hTpl = $DBRESULT->fetchRow())	{
 		if (!$hTpl["host_name"])
-			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
+			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";		
 		$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
 		$nbMaxTemplates++;
-	}
+	}	
 	$DBRESULT->free();
 	
 	/*
@@ -268,7 +268,7 @@
 	
 	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 
-	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
+	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);	
 	$form->addElement('text', 'host_parallel_template', _("Host Multiple Templates"), $hTpls);
 	?>
 	<script type="text/javascript" src="lib/wz_tooltip/wz_tooltip.js"></script>
@@ -618,7 +618,7 @@
 		$form->applyFilter('host_name', 'myReplace');
 		$form->addRule('host_name', _("Compulsory Name"), 'required');
 		$form->registerRule('exist', 'callback', 'testHostExistence');
-		$form->addRule('host_name', _("Name is already in use"), 'exist');
+		$form->addRule('host_name', _("Name is already in use"), 'exist');		
 		# If we are using a Template, no need to check the value, we hope there are in the Template
 		if ((!$form->getSubmitValue("host_template_model_htm_id")) && ($oreon->user->get_version() != 3))	{
 			$form->addRule('host_alias', _("Compulsory Alias"), 'required');
