@@ -1,18 +1,25 @@
 ## Centreon 2.0-b5
 
 => Bugfix : #29 CentPlugins: snmp uptime problem
-=> Bugfix : #32 Affichage de l'écran event log différents selon le lien utilisé.
+=> Bugfix : #32 Event log's displays are different depending on the source URL.
 => Bugfix : #33 Install:RH4 template install
 => Bugfix : #35 Problem when import cfg files (same to #44)
 => Bugfix : #36 Print info when RRD graph not found
 => Bugfix : #42 Optim query SQL and Index
+=> Bugfix : #46 Hard-coded path to centcore.cmd
 => Bugfix : #48 CentCore, problem in initNagios()
 => Bugfix : #50 Javascript error on "Nagios Configuration Files Export" page
 => Bugfix : #51 Meta Services : web bug
 => Bugfix : #53 Internet Explorer : Header fields display no text on Monitoring pages
+=> Bugfix : #54 Bugs in centFillDB and centTrapHandler-2.x
 => Bugfix : #58 Meta_services display
 => Bugfix : #59 Meta_service deletion bug
 => Bugfix : #62 CentWeb-trunk - Missing brackets
+=> Bugifx : #67 Unable to use centreon tactical overview when not admin
+=> Bugfix : #68 ACL problem on dashboard
+=> Bugfix : #69 Removes problem when acknowledging a service.
+=> New feature : Multiple templates for hosts
+=> New feature : On-demand macros for hosts and services
 
 ## Centreon 2.0-b4
 
@@ -29,7 +36,8 @@
 => Bugfix : fix problem when we duplicate a graph template
 => Bugfix : change redirection for logs in crons
 => Bugfix : #30 CentWeb graphic style problem
-=> Bugfix : #31 remove problem with color picker in graphs curve templates. 
+=> Bugfix : #31 remove problem with color picker in graphs curve templates.
+=> New feature : Command tester in Configuration > Command
 
 ## Centreon 2.0-b3
 
