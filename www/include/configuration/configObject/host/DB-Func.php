@@ -562,6 +562,19 @@
 			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
 		}
+		
+		
+		// For Centreon 2, we no longer need "host_template_model_htm_id" in Nagios 3
+		// but we try to keep it compatible with Nagios 2 which needs "host_template_model_htm_id" 
+		if (isset($_POST['nbOfSelect'])) {
+			$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$result = $DBRESULT->fetchRow();
+			$ret["host_template_model_htm_id"] = $result["host_id"];
+			$DBRESULT->free();
+		}
+		
 		$rq = "UPDATE host SET host_template_model_htm_id = ";
 		isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != NULL ? $rq .= "'".$ret["host_template_model_htm_id"]."', ": $rq .= "NULL, ";
 		$rq .= "command_command_id = ";		
@@ -703,6 +716,18 @@
 			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
 		}
+		
+		// For Centreon 2, we no longer need "host_template_model_htm_id" in Nagios 3
+		// but we try to keep it compatible with Nagios 2 which needs "host_template_model_htm_id" 
+		if (isset($_POST['nbOfSelect'])) {
+			$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$result = $DBRESULT->fetchRow();
+			$ret["host_template_model_htm_id"] = $result["host_id"];
+			$DBRESULT->free();
+		}
+		
 		$rq = "UPDATE host SET ";
 		if (isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != NULL) $rq .= "host_template_model_htm_id = '".$ret["host_template_model_htm_id"]."', ";
 		if (isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL) $rq .= "command_command_id = '".$ret["command_command_id"]."', ";		
