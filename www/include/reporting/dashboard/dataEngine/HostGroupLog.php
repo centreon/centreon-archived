@@ -292,9 +292,9 @@
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 
 
+	$str = NULL;
 	if ($mhostgroup){
-		
-		$str = NULL;
+			
 		$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" . $hostgroup_id ."'";
 		$res = & $pearDB->query($request);
 		while ($h =& $res->fetchRow()) {
@@ -302,7 +302,8 @@
 				$str .= ', ';
 			$str .= $h["host_host_id"];
 		}
-		
+	if ($str == NULL)
+		$str = 'NULL';
 		$rq = "SELECT " .
 				"date_start, date_end, " .
 				"avg( `UPTimeScheduled` ) as 'UPTimeScheduled', " .
