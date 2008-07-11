@@ -176,6 +176,7 @@
 	/*
 	 * Create Menu Level 1-2-3-4
 	 */
+	$tpl->assign("PageID", $p);	 
 	$tpl->assign("UserInfoUrl", $userUrl);
 	$tpl->assign("UserName", $oreon->user->get_alias());
 	$tpl->assign("Date", $logDate);
