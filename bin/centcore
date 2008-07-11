@@ -273,6 +273,7 @@ sub GetPerfData($){
 
     my $localbasevardir = "@CENTREON_VARLIB@/perfdata/$id";
     # check if directory exist
+    mkdir "@CENTREON_VARLIB@/perfdata" if (!-d "@CENTREON_VARLIB@/perfdata");
     mkdir $localbasevardir if (!-d $localbasevardir);
 
     my $localhost_id = getLocalServerID(); 
@@ -326,6 +327,7 @@ sub GetLogFile($){
     my $localDir = "@CENTREON_VARLIB@/log/$id/";
 
     # Create tmp directory
+    mkdir "@CENTREON_VARLIB@/log" if (!-d "@CENTREON_VARLIB@/log");
     mkdir $localDir if (!-d $localDir);
     if (-d $localDir){
 
