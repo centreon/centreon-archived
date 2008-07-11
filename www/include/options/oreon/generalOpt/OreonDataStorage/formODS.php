@@ -119,7 +119,7 @@
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
-	$tpl->assign("genOpt_ODS_config", _("ODS Configuration"));
+	$tpl->assign("genOpt_ODS_config", _("Centstorage Configuration"));
 	$tpl->assign("ods_log_retention_unit", _("days"));
 	$tpl->assign("ods_sleep_time_expl", _("in seconds - Must be higher than 10"));
 	$tpl->assign("ods_purge_interval_expl", _("in seconds - Must be higher than 2"));
