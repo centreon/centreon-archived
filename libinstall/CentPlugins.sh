@@ -70,6 +70,12 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 755 -p $TMPDIR/final/plugins \
 	$TMPDIR/final/plugins/* $NAGIOS_PLUGIN >> $LOG_FILE 2>&1
 
+## change right for a specific file
+$INSTALL_DIR/cinstall -f $cinstall_opts -g $NAGIOS_GROUP \
+	-m 664 $TMPDIR/final/plugins/centreon.conf \
+	$NAGIOS_PLUGIN/centreon.conf >> $LOG_FILE 2>&1
+
+
 log "INFO" "$(gettext "Install temporary directory for plugins") : $CENTPLUGINS_TMP"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 -v \
