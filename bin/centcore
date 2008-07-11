@@ -358,8 +358,8 @@ sub sendConfigFile($){
     # Init Values
     my $id = $_[0];
 
-    my $cfg_dir = getNagiosConfigurationField($_[0], "cfg_dir");
-    my $server_info = getServerConfig($_[0]);
+    my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
+    my $server_info = getServerConfig($id);
     my ($md5local, $md5dist, $scpe);
 
     opendir(DIR, $installedPath."/filesGeneration/nagiosCFG/$id/");
@@ -386,7 +386,8 @@ sub sendConfigFile($){
 }
 
 sub initNagios($$){
-    my ($id, $options) = $_;
+    my $id = $_[0];
+    my $options = $_[1];
     my $conf = getServerConfig($id);
     my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." ".$options."\n";
     print "$options : $cmd\n";
