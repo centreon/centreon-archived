@@ -65,7 +65,7 @@ killproc_centcore ()
 	return 1
     fi    
     PID=`head -n 1 $RunFile`
-    kill -H -s INT $PID
+    kill -s INT $PID
 }
 
 # Create RunDir if not exit
