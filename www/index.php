@@ -132,7 +132,7 @@
 					$fallback = false;
 					if ($ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap" ) {
 						$connect = true;
-						print "ok";
+						//print "ok";
 						# BugFix  #265
 						if  ((!(isset($contact['contact_ldap_dn'] )) || $contact['contact_ldap_dn']  == '' ) ) {
 							$contact['contact_ldap_dn']  = "anonymous" ;
