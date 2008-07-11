@@ -167,6 +167,7 @@ fi
 log "INFO" "$(gettext "Change macros for logAnalyser")"
 sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+        -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 	$TMPDIR/src/bin/logAnalyser > $TMPDIR/work/bin/logAnalyser
 
 cp $TMPDIR/work/bin/logAnalyser $TMPDIR/final/bin/logAnalyser >> $LOG_FILE 2>&1
