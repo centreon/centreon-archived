@@ -81,7 +81,7 @@ function lchown() {
 	local option=$2
 	log "lchown: directory: $directory, option: $option"
 	if [ -n "$username" ] ; then
-		chown $option $username:$group $directory
+		${CHOWN} $option $username:$group $directory
 		log "\tchown $option $username:$group $directory"
 	elif [ -n "$group" ] ; then
 		chgrp $option $group $directory
@@ -107,7 +107,7 @@ function find_and_chmod() {
 	log "find_and_chmod: directory: $directory"
 	log "\ttype: $type; mode: $mode; depth: $depth"
 	find $directory -mindepth $depth -type $type -print | \
-		xargs -I '{}' chmod $mode '{}'
+		xargs -I '{}' ${CHMOD} $mode '{}'
 	
 	log "\tfind $directory -mindepth $depth -type $type -print | \ "
 	log "\t\txargs -I '{}' chmod $mode '{}'"
@@ -144,6 +144,12 @@ Options:
 __EOT__
 return 0
 }
+
+[ -z ${GREP} ] && GREP=grep
+[ -z ${CAT} ] && CAT=cat
+[ -z ${SED} ] && SED=sed
+[ -z ${CHMOD} ] && CHMOD=chmod
+[ -z ${CHOWN} ] && CHOWN=chown
 
 ## Init default variables
 program=`basename $0`
@@ -200,7 +206,7 @@ if [ $# -eq 1 ] ; then
 		if [ -n "$basedir" ] ; then 
 			find_and_chmod $basedir "d" "$dirmode" "1"
 		else 
-			chmod $dirmode $dst
+			${CHMOD} $dirmode $dst
 		fi
 	fi
 fi
@@ -281,22 +287,22 @@ if [ $# -ge 2 ] ; then
 		cd $dst
 		## Apply permissions
 		if [ -n "$username" ] ; then
-			cat $files $directory | \
-				xargs -I '{}' chown $username:$group '{}' 
+			${CAT} $files $directory | \
+				xargs -I '{}' ${CHOWN} $username:$group '{}' 
 		elif [ -n "$group" ] ; then
-			cat  $files $directory | \
+			${CAT}  $files $directory | \
 				xargs -I '{}' chgrp $group '{}'
 		fi
-		[ -n "$mode" ] && cat $files | \
-			xargs -I '{}' chmod $mode '{}' 
-		[ -n "$dirmode" ] && cat $directory | \
-			xargs -I '{}' chmod $dirmode '{}' 
+		[ -n "$mode" ] && ${CAT} $files | \
+			xargs -I '{}' ${CHMOD} $mode '{}' 
+		[ -n "$dirmode" ] && ${CAT} $directory | \
+			xargs -I '{}' ${CHMOD} $dirmode '{}' 
 
 		rm -f $files $directory
 	else 
 		if [ $count -eq 1 -a -f "$src" ] ; then
 			lchown $dst
-			[ -n "mode" ] && chmod $mode $dst
+			[ -n "mode" ] && ${CHMOD} $mode $dst
 		elif [ $count -eq 1 -a -d "$src" ] ; then
 			lchown $dst "-R"
 			[ -n "$mode" ] && find_and_chmod $dst "f" "$mode"

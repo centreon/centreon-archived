@@ -113,7 +113,7 @@ echo -e "$(gettext "In process")"
 ### Step 1:
 ## Change Macro on sql file
 log "INFO" "$(gettext "Change macros for insertBaseConf.sql")"
-sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
+${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 	-e 's|@NAGIOS_BINARY@|'"$NAGIOS_BINARY"'|g' \
 	-e 's|@NAGIOSTATS_BINARY@|'"$NAGIOSTATS_BINARY"'|g' \
 	-e 's|@NAGIOS_IMG@|'"$NAGIOS_IMG"'|g' \
@@ -151,7 +151,7 @@ for macro in $macros ; do
 	log "INFO" "$(gettext "Search file for macro") : $macro"
 	( cd $TMPDIR/src/ ;
 	find www -mindepth 1 -type f -name "*.php" | \
-		xargs grep "$macro" | \
+		xargs ${GREP} "$macro" | \
 		cut -d: -f1 | \
 		uniq >> "$file_php_temp" 2>>"$LOG_FILE";
 	)
@@ -159,11 +159,11 @@ done
 
 log "INFO" "$(gettext "Apply macros")"
 
-cat "$file_php_temp" | while read file ; do
+${CAT} "$file_php_temp" | while read file ; do
 	log "MACRO" "$(gettext "Change macro for") : $file"
 	[ ! -d $(dirname $TMPDIR/work/$file) ] && \
 		mkdir -p  $(dirname $TMPDIR/work/$file) >> $LOG_FILE 2>&1
-	sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		$TMPDIR/src/$file > $TMPDIR/work/$file
 	log "MACRO" "$(gettext "Copy in final dir") : $file"
 	cp -f $TMPDIR/work/$file $TMPDIR/final/$file >> $LOG_FILE 2>&1 
@@ -178,9 +178,9 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	"$NAGIOS_ETC" >> "$LOG_FILE" 2>&1
 
 find "$NAGIOS_ETC" -type f -print | \
-	xargs -I '{}' chmod -v 775 '{}' >> "$LOG_FILE" 2>&1
+	xargs -I '{}' ${CHMOD}  775 '{}' >> "$LOG_FILE" 2>&1
 find "$NAGIOS_ETC" -type f -print | \
-	xargs -I '{}' chown -v "$WEB_USER":"$WEB_GROUP" '{}' >> "$LOG_FILE" 2>&1
+	xargs -I '{}' ${CHOWN} "$WEB_USER":"$WEB_GROUP" '{}' >> "$LOG_FILE" 2>&1
 
 ### Step 4: Copy final stuff in system directoy
 echo_info "$(gettext "Copy CentWeb in system directory")"
@@ -214,7 +214,7 @@ echo_success "$(gettext "CentWeb file installation")" "$ok"
 ## Cron stuff
 ## need to add stuff for Unix system... (freeBSD...)
 log "INFO" "$(gettext "Change macros for centreon.cron")"
-sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
+${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CRONUSER@|'"$NAGIOS_USER"'|g' \
@@ -230,7 +230,7 @@ echo_success "$(gettext "Install Centreon cron")" "$ok"
 ## cron binary
 cp -R $TMPDIR/src/cron/ $TMPDIR/final/
 log "INFO" "$(gettext "Change macros for ArchiveLogInDB.php")"
-sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMPDIR/src/cron/reporting/ArchiveLogInDB.php > \
 	$TMPDIR/work/cron/reporting/ArchiveLogInDB.php
 
@@ -238,7 +238,7 @@ cp -f $TMPDIR/work/cron/reporting/ArchiveLogInDB.php \
 	$TMPDIR/final/cron/reporting/ArchiveLogInDB.php
 
 log "INFO" "$(gettext "Change macros for centAcl.php")"
-sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMPDIR/src/cron/centAcl.php > $TMPDIR/work/cron/centAcl.php
 
 cp -f $TMPDIR/work/cron/centAcl.php \

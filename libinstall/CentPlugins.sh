@@ -50,7 +50,7 @@ for FILE in `ls $TMPDIR/src/plugins/src/check*centreon*` \
 	$TMPDIR/src/plugins/src/submit_host_check_result \
 	$TMPDIR/src/plugins/src/submit_service_check_result; do
 
-	sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
+	${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 		-e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
 		-e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' \
 		-e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' \

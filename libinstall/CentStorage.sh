@@ -58,7 +58,7 @@ cp -rf $TMPDIR/src/lib $TMPDIR/final
 #################################
 ## Change Macro in working dir
 log "INFO" "$(gettext "Change macros for createTablesCentstorage.sql")"
-sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
+${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 	-e 's|@CENTSTORAGE_RRD@|'"$CENTSTORAGE_RRD"'|g' \
 	$TMPDIR/src/www/install/createTablesCentstorage.sql > $TMPDIR/work/www/install/createTablesCentstorage.sql
 
@@ -101,7 +101,7 @@ fi
 #################################
 ## Change macros in CentStorage binary
 log "INFO" "$(gettext "Change macros for centstorage binary")"
-sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
+${SED} -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
@@ -133,7 +133,7 @@ $INSTALL_DIR/cinstall $cinstall_opts -u "$NAGIOS_USER" -d 750 \
 #################################
 ## Change macros in CentStorage init script
 log "INFO" "$(gettext "Change macros for centstorage init script")"
-sed -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
+${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
@@ -165,7 +165,7 @@ fi
 ### Macro
 ## logAnalyser
 log "INFO" "$(gettext "Change macros for logAnalyser")"
-sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
         -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 	$TMPDIR/src/bin/logAnalyser > $TMPDIR/work/bin/logAnalyser
@@ -181,7 +181,7 @@ echo_success "$(gettext "Set logAnalyser properties")" "$ok"
 
 ## nagiosPerfTrace
 log "INFO" "$(gettext "Change macros for nagiosPerfTrace")"
-sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTSTORAGE_LIB@|'"$CENTSTORAGE_RRD"'|g' \
 	$TMPDIR/src/bin/nagiosPerfTrace > $TMPDIR/work/bin/nagiosPerfTrace
 
@@ -196,7 +196,7 @@ echo_success "$(gettext "Set nagiosPerfTrace properties")" "$ok"
 
 ## cron file 
 log "INFO" "$(gettext "Change macros for centstorage.cron")"
-sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
+${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CRONUSER@|'"$NAGIOS_USER"'|g' \

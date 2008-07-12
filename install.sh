@@ -157,7 +157,20 @@ done
 #Export variable for all programs
 export silent_install user_install_vars CENTREON_CONF cinstall_opts inst_upgrade_dir
 
-cat << __EOT__
+## init LOG_FILE
+# backup old log file...
+[ ! -d "$LOG_DIR" ] && mkdir -p "$LOG_DIR"
+if [ -e "$LOG_FILE" ] ; then
+	mv "$LOG_FILE" "$LOG_FILE.`date +%Y%m%d-%H%M%S`"
+fi
+# Clean (and create) my log file
+${CAT} << __EOL__ > "$LOG_FILE"
+__EOL__
+
+# Init GREP,CAT,SED,CHMOD,CHOWN variables
+define_specific_binary_vars
+
+${CAT} << __EOT__
 ###############################################################################
 #                                                                             #
 #                         Centreon (www.centreon.com)                         #
@@ -173,19 +186,8 @@ cat << __EOT__
 ###############################################################################
 __EOT__
 
-
-## init LOG_FILE
-# backup old log file...
-[ ! -d "$LOG_DIR" ] && mkdir -p "$LOG_DIR"
-if [ -e "$LOG_FILE" ] ; then
-	mv "$LOG_FILE" "$LOG_FILE.`date +%Y%m%d-%H%M%S`"
-fi
-# Clean (and create) my log file
-cat << __EOL__ > "$LOG_FILE"
-__EOL__
-
 ## Test all binaries
-BINARIES="rm cp mv chmod chown echo cat more mkdir find sed"
+BINARIES="rm cp mv ${CHMOD} ${CHOWN} echo more mkdir find ${GREP} ${CAT} ${SED}"
 
 echo "$line"
 echo -e "\t$(gettext "Checking all needed binaries")"
@@ -195,14 +197,17 @@ binary_fail="0"
 # For the moment, I check if all binary exists in path.
 # After, I must look a solution to use complet path by binary
 for binary in $BINARIES; do
-	pathfind "$binary"
-	if [ "$?" -eq 0 ] ; then
+	if [ ! -e ${binary} ] ; then 
+		pathfind "$binary"
+		if [ "$?" -eq 0 ] ; then
+			echo_success "${binary}" "$ok"
+		else 
+			echo_failure "${binary}" "$fail"
+			log "ERR" "$(gettext "\$binary not found in \$PATH")"
+			binary_fail=1
+		fi
+	else
 		echo_success "${binary}" "$ok"
-	else 
-		echo_failure "${binary}" "$fail"
-		log "ERR" "$(gettext "\$binary not found in \$PATH")"
-		binary_fail=1
-
 	fi
 done
 
@@ -372,7 +377,7 @@ if [ "$PROCESS_CENTREON_PLUGINS" -eq 1 ] ; then
 	. $INSTALL_DIR/CentPlugins.sh
 fi
 
-cat << __EOT__
+${CAT} << __EOT__
 ###############################################################################
 #                                                                             #
 #      Go to the URL : http://your-server/centreon/                           #

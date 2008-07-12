@@ -20,6 +20,12 @@ ok="$(gettext "OK")"
 fail="$(gettext "FAIL")"
 passed="$(gettext "PASSED")"
 critical="$(gettext "CRITICAL")"
+# Init binary to empty to use pathfind or manual define
+GREP=""
+CAT=""
+SED=""
+CHMOD=""
+CHOWN=""
 
 ## COLOR FUNCTIONS
 
@@ -154,6 +160,32 @@ function pathfind_ret() {
 	done
 	IFS="$OLDIFS"
 	return 1
+}
+
+#----
+## define a specific variables for grep,cat,sed,... binaries
+## This functions was been use in first line on your script
+## @return 0	All is't ok
+## @return 1	problem with one variable
+## @Globals	GREP, CAT, SED, CHMOD, CHOWN
+#----
+function define_specific_binary_vars() {
+	local vars_bin="GREP CAT SED CHMOD CHOWN"
+	local var_bin_tolower=""
+	for var_bin in $vars_bin ; do
+		if [ -z $(eval echo \$$var_bin) ] ; then
+			var_bin_tolower="$(echo $var_bin | tr [:upper:] [:lower:])"
+			pathfind_ret "$var_bin_tolower" "$(echo -n $var_bin)"
+			if [ "$?" -eq 0 ] ; then
+				eval "$var_bin='$(eval echo \$$var_bin)/$var_bin_tolower'"
+				export $(echo $var_bin)
+				log "INFO" "$var_bin=$(eval echo \$$var_bin)"
+			else
+				return 1
+			fi
+		fi
+	done
+	return 0
 }
 
 #----
@@ -453,7 +485,7 @@ function locate_nagiostats_binary() {
 function locate_nagios_p1_file() {
 	local nagios_etc="$1"
 	if [ -z "$NAGIOS_P1_FILE" ] ; then 
-		NAGIOS_P1_FILE=$(grep -r "^p1_file" $nagios_etc | grep -v -i "sample" | cut -d= -f2 | uniq )
+		NAGIOS_P1_FILE=$(${GREP} -r "^p1_file" $nagios_etc | ${GREP} -v -i "sample" | cut -d= -f2 | uniq )
 		if [ -z "$NAGIOS_P1_FILE" ] ; then
 			log "INFO" "$(gettext "p1_file not found")"
 		else
@@ -1081,7 +1113,7 @@ function prepare_apache_config() {
 	[ -z "$INSTALL_DIR_CENTREON" ] && locate_centreon_installdir
 	
 	# Prepare apache config
-	cat << __EOT__ > $directory/centreon.apache.conf
+	${CAT} << __EOT__ > $directory/centreon.apache.conf
 ##
 ## Section add by Centreon Install Setup
 ##
@@ -1128,7 +1160,7 @@ function prepare_sudo_config() {
 	[ -z "$INIT_D" ] && locate_init_d
 	# Prepare sudo.conf
 	
-	cat <<- __EOT__ > $directory/centreon.sudo
+	${CAT} <<- __EOT__ > $directory/centreon.sudo
 	## BEGIN: CENTREON SUDO
 	#Add by CENTREON installation script
 	User_Alias      CENTREON=$WEB_USER
@@ -1177,13 +1209,13 @@ function configureSUDO(){
 	prepare_sudo_config "$dir_conf"
 
 	# Try to detect old configuration
-	sudo=`grep -e "[CO][ER][NE][TO][RN]" $SUDO_FILE > /dev/null 2>&1 ; echo $?`
+	sudo=`${GREP} -e "[CO][ER][NE][TO][RN]" $SUDO_FILE > /dev/null 2>&1 ; echo $?`
 	if [ $sudo -eq 1 ]; then
     		echo_info "$(gettext "Your sudo is not configured")"
 
 		yes_no_default "$(gettext "Do you want me to configure your sudo ? (WARNING) ")"
 		if [ $? -eq 0 ] ; then 
-			cat $dir_conf/centreon.sudo >> $SUDO_FILE
+			${CAT} $dir_conf/centreon.sudo >> $SUDO_FILE
 			echo_success "$(gettext "Configuring Sudo")" "$ok"
 		else
 			echo_passed "$(gettext "Please configure your sudo with this example"):\n\t $dir_conf/centreon.sudo" "$passed"
@@ -1212,7 +1244,7 @@ function createConfFile()
 	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
 	# Reinit file if exist	
 	touch $INSTALL_DIR_CENTREON_CONF
-	cat << __EOT__ > $INSTALL_DIR_CENTREON_CONF
+	${CAT} << __EOT__ > $INSTALL_DIR_CENTREON_CONF
 <?php
 /* 
  * Centreon is developped with GPL Licence 2.0 : 
@@ -1252,27 +1284,27 @@ __EOT__
 
 	# Conf nagios.cfg
 	
-	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep "_file" | grep -v "\#"`
+	for fichier in `${CAT} $NAGIOS_ETC/nagios.cfg | ${GREP} "_file" | ${GREP} -v "\#"`
 	do
 		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF
 	done
 	
 	# Conf nagios.cfg
 	
-	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep "_path" | grep -v "\#"`
+	for fichier in `${CAT} $NAGIOS_ETC/nagios.cfg | ${GREP} "_path" | ${GREP} -v "\#"`
 	do
 		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF
 	done
 	
 	# Conf GCI.cfg
 	
-	for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep "physical_html_path" | grep -v "\#"`
+	for fichier in `${CAT} $NAGIOS_ETC/cgi.cfg | ${GREP} "physical_html_path" | ${GREP} -v "\#"`
 	do
 		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF		
 	done
 	
 	echo "?>" >> $INSTALL_DIR_CENTREON_CONF
-	chown -v $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON_CONF >> $LOG_FILE 2>&1
+	${CHOWN} -v $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON_CONF >> $LOG_FILE 2>&1
 	echo_success "Create $INSTALL_DIR_CENTREON_CONF" "OK"
 	
 }
@@ -1289,7 +1321,7 @@ __EOT__
 ## @Globals	CENTREON_ETC, CENTREON_GENDIR, CRON_D, NDOMOD_BINARY
 #----
 function createCentreonInstallConf() {
-	cat <<- __EOT__ > $CENTREON_ETC/instCentWeb.conf
+	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentWeb.conf
 	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 	INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
 	NAGIOS_ETC=$NAGIOS_ETC
@@ -1335,7 +1367,7 @@ function createCentreonInstallConf() {
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
 function createCentStorageInstallConf() {
-	cat <<- __EOT__ > $CENTREON_ETC/instCentStorage.conf
+	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentStorage.conf
 	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 	CENTREON_LOG=$CENTREON_LOG
 	CENTREON_ETC=$CENTREON_ETC
@@ -1363,7 +1395,7 @@ function createCentStorageInstallConf() {
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
 function createCentCoreInstallConf() {
-	cat <<- __EOT__ > $CENTREON_ETC/instCentCore.conf
+	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentCore.conf
 	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 	CENTREON_ETC=$CENTREON_ETC
 	CENTREON_RUNDIR=$CENTREON_RUNDIR
@@ -1391,7 +1423,7 @@ function createCentCoreInstallConf() {
 ## @Globals	SNMP_ETC, SNMPTT_BINDIR, CENTPLUGINSTRAPS_BINDIR, WEB_USER
 #----
 function createCentPluginsInstallConf() {
-	cat <<- __EOT__ > $CENTREON_ETC/instCentPlugins.conf
+	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentPlugins.conf
 	# Use in CentPlugins.sh
 	NAGIOS_PLUGIN=$NAGIOS_PLUGIN
 	INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
@@ -1404,7 +1436,7 @@ function createCentPluginsInstallConf() {
 	__EOT__
 
 	if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
-	cat <<- __EOT__ >>  $CENTREON_ETC/instCentPlugins.conf
+	${CAT} <<- __EOT__ >>  $CENTREON_ETC/instCentPlugins.conf
 	# Use in CentPluginsTraps.sh
 	CENTREON_ETC=$CENTREON_ETC
 	SNMP_ETC=$SNMP_ETC
@@ -1429,7 +1461,7 @@ function find_user_nagios()
 	NAGIOS_USER=""
 	# In a first time, I search on nagios.cfg because it had most of chance to find it.
 	if [ -f $NAGIOS_ETC/nagios.cfg ] ; then 
-		NAGIOS_USER=`grep "^nagios_user" $NAGIOS_ETC/nagios.cfg | cut -d= -f2 2>/dev/null`
+		NAGIOS_USER=`${GREP} "^nagios_user" $NAGIOS_ETC/nagios.cfg | cut -d= -f2 2>/dev/null`
 	fi
 
 	# If I not locate nagios user, I find on all file.
@@ -1438,7 +1470,7 @@ function find_user_nagios()
 		log "INFO" "$(gettext "Find nagios user in all file in") : $NAGIOS_ETC"
 		for fichier in $NAGIOS_ETC/*.cfg ; do
 			if [ -f "$fichier" ] ; then
-			NAGIOS_USER_TEMP=`grep "^nagios_user" $fichier | cut -d= -f2 2>/dev/null`
+			NAGIOS_USER_TEMP=`${GREP} "^nagios_user" $fichier | cut -d= -f2 2>/dev/null`
 				if [ -n "$NAGIOS_USER_TEMP" ] ; then
 					NAGIOS_USER="$NAGIOS_USER_TEMP"
 				fi
@@ -1471,7 +1503,7 @@ function find_group_nagios()
 	NAGIOS_GROUP=""
 	# In a first time, I search on nagios.cfg because it had most of chance to find it.
 	if [ -f $NAGIOS_ETC/nagios.cfg ] ; then  
-		NAGIOS_GROUP=`grep "^nagios_group" $NAGIOS_ETC/nagios.cfg | cut -d= -f2 2>/dev/null`
+		NAGIOS_GROUP=`${GREP} "^nagios_group" $NAGIOS_ETC/nagios.cfg | cut -d= -f2 2>/dev/null`
 	fi
 
 	# If I not locate nagios group, I find on all file.
@@ -1480,7 +1512,7 @@ function find_group_nagios()
 		log "INFO" "$(gettext "Find nagios group in all file in") : $NAGIOS_ETC"
 		for fichier in $NAGIOS_ETC/*.cfg ; do
 			if [ -f "$fichier" ];	then
-				NAGIOS_GROUP_TEMP=`grep "^nagios_group" $fichier | cut -d= -f2 2>/dev/null`
+				NAGIOS_GROUP_TEMP=`${GREP} "^nagios_group" $fichier | cut -d= -f2 2>/dev/null`
 				if [ -n "$NAGIOS_GROUP_TEMP" ]; then
 					NAGIOS_GROUP="$NAGIOS_GROUP_TEMP"
 				fi
@@ -1557,7 +1589,7 @@ function check_group_nagios()
 	if [ -n "$NAGIOS_GROUP" ] ; then
 		if [ "$FORCE_NAGIOS_GROUP" -eq 0 ] ; then 
 			log "DEBUG" "$(gettext "Test group nagios")"
-			grep "$NAGIOS_GROUP" /etc/group >> $LOG_FILE 2>&1
+			${GREP} "$NAGIOS_GROUP" /etc/group >> $LOG_FILE 2>&1
 			RC="$?"
 		else
 			RC=0
@@ -1691,7 +1723,7 @@ function check_user_apache()
 	if [ -e /etc/apache2/envvars ] ; then 
 		log "INFO" "$(gettext "Use envvars file for apache user")"
 		# for Debian system (lenny)
-		WEB_USER=`cat /etc/apache2/envvars |grep "USER" | cut -d= -f2`
+		WEB_USER=`${CAT} /etc/apache2/envvars |${GREP} "USER" | cut -d= -f2`
 		if [ -z "$WEB_USER" ] ; then 
 			found=0
 		else 
@@ -1700,7 +1732,7 @@ function check_user_apache()
 	elif [ -e /etc/apache2/uid.conf ] ; then
 		log "INFO" "$(gettext "Use uid.conf file for apache user")"
 		# for SuSe system
-		WEB_USER=`cat /etc/apache2/uid.conf |grep -e "^User" | cut -d" " -f2`
+		WEB_USER=`${CAT} /etc/apache2/uid.conf |${GREP} -e "^User" | cut -d" " -f2`
 		if [ -z "$WEB_USER" ] ; then 
 			found=0
 		else 
@@ -1708,14 +1740,14 @@ function check_user_apache()
 		fi
 	fi 
 	if [ $found -eq 0 ] ; then 
-		WEB_USER=`cat $DIR_APACHE/$APACHE_CONF | grep -e "^User" | cut -d" " -f2`
+		WEB_USER=`${CAT} $DIR_APACHE/$APACHE_CONF | ${GREP} -e "^User" | cut -d" " -f2`
 		if [ -z "$WEB_USER"  ] ; then
 			local WEB_USER_TEMP=""
 			for fichier in $DIR_APACHE/*
 			do
 				if [ -f "$fichier" ] ; then
 					log "INFO" "$(gettext "check apache user in") : $fichier"
-					WEB_USER_TEMP=`cat $fichier | grep -e "^User" | cut -d" " -f2`
+					WEB_USER_TEMP=`${CAT} $fichier | ${GREP} -e "^User" | cut -d" " -f2`
 					if [ -n "$WEB_USER_TEMP" ] ; then
 						log "INFO" "$(gettext "found apache user in") : $fichier"
 						WEB_USER=$WEB_USER_TEMP
@@ -1744,7 +1776,7 @@ function check_group_apache()
 	local found=0
 	if [ -e /etc/apache2/envvars ] ; then
 		# for debian system
-		WEB_GROUP=`cat /etc/apache2/envvars |grep "GROUP" |cut -d= -f2`
+		WEB_GROUP=`${CAT} /etc/apache2/envvars |${GREP} "GROUP" |cut -d= -f2`
 		if [ -z "$WEB_GROUP" ] ; then 
 			found=0
 		else 
@@ -1752,7 +1784,7 @@ function check_group_apache()
 		fi
 	elif [ -e /etc/apache2/uid.conf ] ; then
 		# for SuSe system
-		WEB_GROUP=`cat /etc/apache2/uid.conf |grep -e "^Group" | cut -d" " -f2`
+		WEB_GROUP=`${CAT} /etc/apache2/uid.conf |${GREP} -e "^Group" | cut -d" " -f2`
 		if [ -z "$WEB_GROUP" ] ; then 
 			found=0
 		else 
@@ -1760,13 +1792,13 @@ function check_group_apache()
 		fi
 	fi
 	if [ $found -eq 0 ] ; then 
-		WEB_GROUP=`cat $DIR_APACHE/$APACHE_CONF | grep -e "^Group" | cut -d" " -f2`
+		WEB_GROUP=`${CAT} $DIR_APACHE/$APACHE_CONF | ${GREP} -e "^Group" | cut -d" " -f2`
 		if [  -z "$WEB_GROUP"  ] ; then
 			local WEB_GROUP_TMP=""
 			for fichier in $DIR_APACHE/*
 			do
 				if [ -f "$fichier" ];	then
-					WEB_GROUP_TEMP=`cat $fichier | grep -e "^Group" | cut -d" " -f2`
+					WEB_GROUP_TEMP=`${CAT} $fichier | ${GREP} -e "^Group" | cut -d" " -f2`
 					if [ -n "$WEB_GROUP_TEMP" ]; then
 						WEB_GROUP=$WEB_GROUP_TEMP
 					fi
@@ -2003,7 +2035,7 @@ function clean_sudo() {
 	local sudo_old="$SUDO_FILE"
 	local sudo_clean="$TMPDIR/$SUDO_FILE.clean"
 
-	cat $sudo_old | \
+	${CAT} $sudo_old | \
 	awk 'BEGIN { flag=0; } \
 	/^## BEGIN: CENTREON SUDO/ { flag=1; next; } \
 	/^## END: CENTREON SUDO/ { flag=0; next; } \
@@ -2015,7 +2047,7 @@ function clean_sudo() {
 		RC="$?"
 	fi
 	if [ "$RC" -eq 0 -o "$validate" -eq 0 ] ; then 
-		cat $sudo_clean > $sudo_old 2>$LOG_FILE
+		${CAT} $sudo_clean > $sudo_old 2>$LOG_FILE
 		return 0
 	fi
 	return 0

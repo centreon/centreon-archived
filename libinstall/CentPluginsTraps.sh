@@ -48,7 +48,7 @@ for FILE in  $TMPDIR/src/bin/centFillTrapDB \
 	$TMPDIR/src/bin/centGenSnmpttConfFile \
 	$TMPDIR/src/bin/centTrapHandler-2.x ; do
 
-	sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		"$FILE" > "$TMPDIR/work/bin/`basename $FILE`"
 done
 
@@ -103,14 +103,14 @@ echo_success "$(gettext "Backup all your snmp files")" "$ok"
 
 log "INFO" "$(gettext "Installing snmptt")"
 # Change macros on snmptrapd.conf
-sed -e 's|@SNMPTT_INI_FILE@|'"$SNMP_ETC/centreon_traps/snmptt.ini"'|g' \
+${SED} -e 's|@SNMPTT_INI_FILE@|'"$SNMP_ETC/centreon_traps/snmptt.ini"'|g' \
 	-e 's|@SNMPTT_BINDIR@|'"$SNMPTT_BINDIR"'|g' \
 	$TMPDIR/src/snmptrapd/snmptrapd.conf > \
 	$TMPDIR/work/snmptrapd/snmptrapd.conf 2>>$LOG_FILE
 
 # Change macros on snmptt.ini
 # TODO: SNMPTT_LOG, SNMPTT_SPOOL
-sed -e 's|@SNMP_ETC@|'"$SNMP_ETC"'|g' \
+${SED} -e 's|@SNMP_ETC@|'"$SNMP_ETC"'|g' \
 	$TMPDIR/src/snmptt/snmptt.ini > $TMPDIR/work/snmptt/snmptt.ini \
 	2>>$LOG_FILE
 

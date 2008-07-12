@@ -57,7 +57,7 @@ cp -f $BASE_DIR/tmpl/install/centcore.init.d $TMPDIR/src
 ###### CentCore binary
 #################################
 ## Change macros for CentCore binary
-sed -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
+${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTCORE_BINDIR@|'"$CENTCORE_BINDIR"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
@@ -79,11 +79,11 @@ echo_success "$(gettext "Copy CentCore in binary directory")" "$ok"
 log "INFO" "$(gettext "Copying CentCore in binary directory")"
 
 ## Change CentCore link in CentWeb
-sed -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+${SED} -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 	$TMPDIR/src/www/include/configuration/configGenerate/formGenerateFiles.php \
 	> $TMPDIR/work/www/include/configuration/configGenerate/formGenerateFiles.php
 
-sed -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+${SED} -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 	$TMPDIR/src/www/include/monitoring/external_cmd/functions.php \
 	> $TMPDIR/work/www/include/monitoring/external_cmd/functions.php \
 
@@ -121,7 +121,7 @@ $INSTALL_DIR/cinstall $cinstall_opts -g "$NAGIOS_USER" -d 775 \
 ###### CentCore init
 #################################
 ## Change macros in CentCore init script
-sed -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
+${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
