@@ -1992,7 +1992,7 @@ function check_tmp_disk_space() {
 	free_space=$(df $tmp_dir | tail -1 | awk '{print $4}')
 
 	if [ "$free_space" -lt "$min_space" ] ; then
-		echo_fail "$(gettext "No space left on tmp dir" : $tmp_dir ) (<$min_space Ko)" "$fail"
+		echo_failure "$(gettext "No space left on tmp dir" : $tmp_dir ) (<$min_space Ko)" "$fail"
 		return 1
 	else
 		return 0
