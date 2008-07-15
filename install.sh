@@ -60,7 +60,7 @@ function usage() {
 	local program=$0
 	echo -e "$(gettext "Usage: $program -f <file>")"
 	echo -e "  -f\t$(gettext "file with all variable")"
-	echo -e "  -u\t$(gettext "your directory with intCent* files")"
+	echo -e "  -u\t$(gettext "your directory with instCent* files")"
 	echo -e "  -v\t$(gettext "verbose mode")"
 	exit 1
 }
