@@ -46,10 +46,10 @@
 	<br /><br />
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center"><?php
 	print "<tr><th align='left'>Component</th><th style='text-align: right;'>Status</th></tr>";
-	print "<tr><td><b>Database &#146;".$conf_centreon['ods']."&#146; : Upgrade</b></td>";
+	print "<tr><td><b>Database &#146;".$conf_centreon['dbcstg']."&#146; : Upgrade</b></td>";
 
 	# get version...	
-	preg_match("/Update-ODS-([a-zA-z0-9\-\.]*).sql/", $_SESSION["mysqlscript"], $matches);
+	preg_match("/Update-CSTG-([a-zA-z0-9\-\.]*).sql/", $_SESSION["mysqlscript"], $matches);
 	$choose_version = $matches[1];
 
 	if ($pearDB) {
