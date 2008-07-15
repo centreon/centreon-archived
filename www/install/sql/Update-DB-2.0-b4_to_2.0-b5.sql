@@ -3,14 +3,14 @@
 -- Update Script for BETA 4 to BETA 5
 --
 
-ALTER TABLE `host` ADD `display_name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `host_alias` ;
-ALTER TABLE `host` ADD `initial_state` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `host_checks_enabled` ;
-ALTER TABLE `host` ADD `flap_detection_options` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `host_flap_detection_enabled` ;
+ALTER TABLE `host` ADD `display_name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `host_alias`;
+ALTER TABLE `host` ADD `initial_state` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `host_checks_enabled`;
+ALTER TABLE `host` ADD `flap_detection_options` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `host_flap_detection_enabled`;
 
-ALTER TABLE `service` CHANGE `service_activate` `service_activate` ENUM( '0', '1', '2' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '1' 
-ALTER TABLE `host` CHANGE `host_activate` `host_activate` ENUM( '0', '1', '2' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '1'
+ALTER TABLE `service` CHANGE `service_activate` `service_activate` ENUM( '0', '1', '2' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '1';
+ALTER TABLE `host` CHANGE `host_activate` `host_activate` ENUM( '0', '1', '2' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '1';
 
-ALTER TABLE `nagios_server` CHANGE `nagiosstats_bin` `nagiostats_bin` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
+ALTER TABLE `nagios_server` CHANGE `nagiosstats_bin` `nagiostats_bin` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
 --
 -- Structure de la table `host_template_relation`
@@ -59,7 +59,7 @@ CREATE TABLE `on_demand_macro_service` (
   `svc_svc_id` int(11) NOT NULL,
   PRIMARY KEY  (`svc_macro_id`),
   KEY `svc_svc_id` (`svc_svc_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
 
 -- --------------------------------------------------------
 
@@ -86,4 +86,4 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 
 ----- END -----
 
-UPDATE `centreon`.`informations` SET `value` = '2.0-b5' WHERE CONVERT( `informations`.`key` USING utf8 ) = 'version' AND CONVERT( `informations`.`value` USING utf8 ) = '2.0-b4' LIMIT 1 ;
+UPDATE `centreon`.`informations` SET `value` = '2.0-b5' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-b4' LIMIT 1;
