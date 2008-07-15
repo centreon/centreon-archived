@@ -79,11 +79,22 @@ ALTER TABLE `on_demand_macro_host`
 
 -- --------------------------------------------------------
 
+-- 
+-- Topology
+-- 
+
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(318, 60101, 'a', './include/common/javascript/commandGetArgs/cmdGetExample.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(319, 60101, 'c', './include/common/javascript/commandGetArgs/cmdGetExample.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(320, 60101, 'mc', './include/common/javascript/commandGetArgs/cmdGetExample.js', NULL);
 
+-- --------------------------------------------------------
 
------ END -----
+-- 
+-- Update Centreon version
+-- 
 
 UPDATE `centreon`.`informations` SET `value` = '2.0-b5' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-b4' LIMIT 1;
+
+-- --------------------------------------------------------
+
+-- --- END -----
