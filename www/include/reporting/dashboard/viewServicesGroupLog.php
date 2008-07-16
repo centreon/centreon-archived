@@ -159,7 +159,7 @@
 	
 	$servicegroup = array();
 	$servicegroup[""] = "";
-	$res =& $pearDB->query("SELECT sg_name FROM servicegroup where sg_activate = '1' ORDER BY sg_name");
+	$res =& $pearDB->query("SELECT DISTINCT sg_name FROM servicegroup sg, servicegroup_relation sg_r WHERE sg.sg_activate = '1' and sg.sg_id = sg_r.servicegroup_sg_id ORDER BY sg_name;");
 	while ($res->fetchInto($sg)){
 			$servicegroup[$sg["sg_name"]] = $sg["sg_name"];
 	}

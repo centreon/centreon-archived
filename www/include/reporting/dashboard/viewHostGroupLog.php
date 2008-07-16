@@ -183,7 +183,7 @@
 	$lcaSTR = "";
 	if (!$is_admin)
 		$lcaSTR = "AND hg_id IN (".$lcaHostGroupstr.")";
-	$res =& $pearDB->query("SELECT hg_name FROM hostgroup where hg_activate = '1' $lcaSTR ORDER BY hg_name");
+	$res =& $pearDB->query("SELECT hg_name FROM hostgroup, hostgroup_relation WHERE hostgroup.hg_activate = '1' and hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id $lcaSTR ORDER by hg_name");
 
 	$hostgroup = array("" => "");
 	while ($hg =& $res->fetchRow())
