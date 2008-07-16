@@ -120,7 +120,7 @@ function find_and_chmod() {
 #----
 function usage() {
 	local program=cinstall
-	cat << __EOT__
+	${CAT} << __EOT__
 
 Usage: $program [OPTION]... SOURCE DEST
    or: $program [OPTION]... DIRECTORY

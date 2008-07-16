@@ -1192,6 +1192,25 @@ function prepare_sudo_config() {
 }
 
 #----
+## Find config problem on sudo
+## If I found a problem, print a warning and need to press enter.
+## @Globals	LOG_FILE
+## @return 0	no problem in sudo file
+## @return 1	possible problem in sudo file
+#----
+function is_suspect_conf_sudo() {
+	local sudo_file="$1"
+	${GREP} -e "^Defaults.*requiretty$" $sudo_file >> $LOG_FILE 2>&1
+	if [ "$?" -eq 0 ] ; then
+		echo_warning "$(gettext "I think you'll have a problem with\n'Default requiretty' in sudo file")"
+		echo -e "$(gettext "Press enter to continue.")"
+		read
+		return 1
+	fi
+	return 0
+}
+
+#----
 ## Configure Sudo on system 
 ## Need a directory to store a config 
 ## Call <@function prepare_sudo_config>
@@ -1225,6 +1244,8 @@ function configureSUDO(){
 		## ticket #7 (upgrade script here)
 	fi
 	log "INFO" "$(gettext "Please configure your sudo with this example"): $dir_conf/centreon.sudo"
+	# Add a simple test for Defaults Requiretty problem on CentOS, Fedora...
+	is_suspect_conf_sudo $SUDO_FILE
 	return 0
 }
 
@@ -2027,13 +2048,14 @@ function purge_centreon_tmp_dir() {
 ## Generate a file without Centreon config. Need to have a BEGIN and END flags 
 ## file. After that, rewrite sudo file with clean file.
 ## @param	0/1 to active a question to clean sudo (not by default)
-## @Globals	SUDO_FILE, TMPDIR, LOG_FILE
+## @param	sudo file
+## @Globals	TMPDIR, LOG_FILE
 #----
 function clean_sudo() {
 	local validate=${1:-0}
 	local RC=1
-	local sudo_old="$SUDO_FILE"
-	local sudo_clean="$TMPDIR/$SUDO_FILE.clean"
+	local sudo_old="$2"
+	local sudo_clean="$TMPDIR/$sudo_old.clean"
 
 	${CAT} $sudo_old | \
 	awk 'BEGIN { flag=0; } \
