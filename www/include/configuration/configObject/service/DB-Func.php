@@ -194,7 +194,7 @@
 		# Foreach Service
 		$maxId["MAX(service_id)"] = NULL;
 		foreach($services as $key=>$value)	{
-			global $pearDB;
+			global $pearDB, $oreon;
 			# Get all information about it
 			$DBRESULT =& $pearDB->query("SELECT * FROM service WHERE service_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
@@ -284,6 +284,23 @@
 							$DBRESULT2 =& $pearDB->query($rq);
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+						}
+						/*
+						 *  on demand macros
+						 */
+						if ($oreon->user->get_version() >= 3){
+							$mTpRq1 = "SELECT * FROM `on_demand_macro_service` WHERE `svc_svc_id` ='".$key."'";
+						 	$DBRESULT3 =& $pearDB->query($mTpRq1);
+						 	if (PEAR::isError($DBRESULT3))
+								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+							while ($sv =& $DBRESULT3->fetchRow()) {
+								$macName = str_replace("\$", "", $sv["svc_macro_name"]);
+								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES" .
+											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $sv['svc_macro_value'] ."')";
+						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
+						 		if (PEAR::isError($DBRESULT4))
+									print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
+							}
 						}
 					}
 				}

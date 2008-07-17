@@ -125,6 +125,9 @@
 		}
 	}
 	
+	/*
+	 *  This function is called for duplicating a host
+	 */
 	function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
 		foreach($hosts as $key=>$value)	{
 			global $pearDB, $path, $oreon, $is_admin;
@@ -251,6 +254,41 @@
 							if (PEAR::isError($DBRESULT1))
 								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 						}
+						/*
+						 *  multiple templates & on demand macros
+						 */
+						 if ($oreon->user->get_version() >= 3)
+						 {
+						 	/*
+						 	 * multiple templates
+						 	 */
+						 	$mTpRq1 = "SELECT * FROM `host_template_relation` WHERE `host_host_id` ='".$key."' ORDER BY `order`";
+						 	$DBRESULT3 =& $pearDB->query($mTpRq1);
+						 	if (PEAR::isError($DBRESULT3))
+								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+							while ($hst =& $DBRESULT3->fetchRow()) {
+								$mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES" .
+											"('".$maxId["MAX(host_id)"]."', '".$hst['host_tpl_id']."', '". $hst['order'] ."')";
+						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
+						 		if (PEAR::isError($DBRESULT4))
+									print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
+							}
+							/*
+							 * on demand macros
+							 */
+							$mTpRq1 = "SELECT * FROM `on_demand_macro_host` WHERE `host_host_id` ='".$key."'";
+						 	$DBRESULT3 =& $pearDB->query($mTpRq1);
+						 	if (PEAR::isError($DBRESULT3))
+								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+							while ($hst =& $DBRESULT3->fetchRow()) {
+								$macName = str_replace("\$", "", $hst["host_macro_name"]);
+								$mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`) VALUES" .
+											"('".$maxId["MAX(host_id)"]."', '\$".$macName."\$', '". $hst['host_macro_value'] ."')";
+						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
+						 		if (PEAR::isError($DBRESULT4))
+									print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
+							}
+						 }
 					}
 				}
 			}
