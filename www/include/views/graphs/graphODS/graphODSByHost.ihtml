@@ -44,7 +44,7 @@
         {foreach from=$elemArr item=curr_id key=key}
         <tr class="list_one">
 			<td class='ListColLeft' valign="top" align='center'> <b>Service : {$elemArr[$key].service_description}</b></td>
-			<td style="text-align:right;width:42px;">&nbsp;<a href="./include/views/graphs/exportData/ExportCSVServiceData.php?p={$p}&o=gp&index={$key}&end={$end}&start={$start}&sid={$session_id}&min={$min}"><img src="./img/icones/16x16/text_binary_csv.gif"></a>&nbsp;<a href=''><img src="./img/icones/16x16/text_binary_xml.gif"></a>&nbsp;</td>
+			<td style="text-align:right;width:42px;">&nbsp;<a href="./include/views/graphs/exportData/ExportCSVServiceData.php?p={$p}&o=gp&index={$key}&end={$end}&start={$start}&sid={$session_id}&min={$min}"><img src="./img/icones/16x16/text_binary_csv.gif"></a>&nbsp;<a href="./include/views/graphs/exportData/ExportXMLServiceData.php?p={$p}&o=gp&index={$key}&end={$end}&start={$start}&sid={$session_id}&min={$min}"><img src="./img/icones/16x16/text_binary_xml.gif"></a>&nbsp;</td>
 		</tr>
 		<tr>
     		<td class='ListColCenter' valign="top" align='center'>
