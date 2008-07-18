@@ -598,6 +598,7 @@
 			$rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
 				"WHERE hsr.service_service_id = svc.service_id " .
 				"AND svc.service_template_model_stm_id = '".$svcID['service_service_id']."' " .
+				"AND svc.service_register = '1' " .
 				"AND hsr.host_host_id = '".$hID."'";
 			$DBRESULT4 =& $pearDB->query($rq2);
 			if (PEAR::isError($DBRESULT4))
@@ -624,6 +625,7 @@
 				$rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
 						"WHERE hsr.service_service_id = svc.service_id " .
 						"AND svc.service_template_model_stm_id = '".$svcID['service_service_id']."' " .
+						"AND svc.service_register = '1' " .
 						"AND hsr.host_host_id = '".$hID."'";
 				$DBRESULT4 =& $pearDB->query($rq2);
 				if (PEAR::isError($DBRESULT4))
