@@ -60,9 +60,9 @@
 	$g->pie_slice_colours($color);
 
 	$g->set_tool_tip( '#val#%' );
-	if ($_GET["service_name"])
+	if (isset($_GET["service_name"]) && isset($_GET["host_name"]))
 		$g->title( $_GET["service_name"] . " on " . $_GET["host_name"], '{font-size:15px; color: #424242}' );
-	else
+	else if (isset($_GET["host_name"]))
 		$g->title( $_GET["host_name"], '{font-size:18px; color: #424242}' );
 	echo $g->render();
 
