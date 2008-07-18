@@ -581,6 +581,58 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
+	/*
+	 * 	this function cleans all the services that were linked to the removed host template  
+ 	 */
+	function deleteHostServiceMultiTemplate($hID, $scndHID){
+		global $pearDB, $path, $oreon;
+	
+		$DBRESULT3 =& $pearDB->query("SELECT service_service_id " .
+	 							"FROM `service` svc, `host_service_relation` hsr " .
+	 							"WHERE svc.service_id = hsr.service_service_id " .
+	 							"AND svc.service_register = '0' " .
+								"AND hsr.host_host_id = '" . $scndHID . "'");
+	 	if (PEAR::isError($DBRESULT3))
+			print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+		while ($svcID =& $DBRESULT3->fetchRow()) {
+			$rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
+				"WHERE hsr.service_service_id = svc.service_id " .
+				"AND svc.service_template_model_stm_id = '".$svcID['service_service_id']."' " .
+				"AND hsr.host_host_id = '".$hID."'";
+			$DBRESULT4 =& $pearDB->query($rq2);
+			if (PEAR::isError($DBRESULT4))
+				print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
+		}
+		
+		$rq = "SELECT host_tpl_id " .
+				"FROM host_template_relation " .
+				"WHERE host_host_id = '".$scndHID."' " .
+				"ORDER BY `order`";
+				
+		$DBRESULT =& $pearDB->query($rq);		
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($result =& $DBRESULT->fetchRow()) {
+			$DBRESULT2 =& $pearDB->query("SELECT service_service_id " .
+	 								"FROM `service` svc, `host_service_relation` hsr " .
+	 								"WHERE svc.service_id = hsr.service_service_id " .
+	 								"AND svc.service_register = '0' " .
+									"AND hsr.host_host_id = '" . $result["host_tpl_id"] . "'");
+	 		if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			while ($svcID =& $DBRESULT2->fetchRow()) {
+				$rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
+						"WHERE hsr.service_service_id = svc.service_id " .
+						"AND svc.service_template_model_stm_id = '".$svcID['service_service_id']."' " .
+						"AND hsr.host_host_id = '".$hID."'";
+				$DBRESULT4 =& $pearDB->query($rq2);
+				if (PEAR::isError($DBRESULT4))
+					print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
+			}
+			deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"]);
+		}	
+	}
+	
 	function updateHost($host_id = null, $from_MC = false)	{
 		if (!$host_id) return;
 		global $form, $pearDB;
@@ -694,10 +746,36 @@
 		/*
 		 *  Update multiple templates		 
 		 */
-		if (isset($_POST['nbOfSelect'])) {	 		
+		if (isset($_POST['nbOfSelect'])) {
 	 		$already_stored = array();
+	 		
+	 		
+	 		$oldTp = array();
+	 		$newTp = array();	 		
+	 		$DBRESULT =& $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+	 		if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	 		while ($hst =& $DBRESULT->fetchRow())
+	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];			
+	 		for ($i=0;$i <= $_POST['nbOfSelect']; $i++)
+	 		{
+	 			$tpSelect = "tpSelect_" . $i;
+	 			$newTp[$_POST[$tpSelect]] = 1;
+	 		}
+	 		foreach ($oldTp as $val)
+	 		{
+	 			/*
+  	 			 * if not set, then that means a template was removed
+	 			 * we will have to remove the services that were linked to that host template as well  
+	 			 */
+	 			if (!isset($newTp[$val])) {
+	 				deleteHostServiceMultiTemplate($host_id, $val);
+	 			}
+	 		}
+	 		
 	 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-	 			
+	 		if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
 	 		{ 			
 	 			$tpSelect = "tpSelect_" . $i;
