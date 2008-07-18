@@ -1,5 +1,4 @@
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
-<script language='javascript' src='./include/common/javascript/datePicker.js'></script>
 {$form.javascript}
 {$styleB}
 <div class="cachediv">
