@@ -131,10 +131,10 @@
 		if ($period == "customized") {
 			$formService->addElement('hidden', 'end', $end);
 			$formService->addElement('hidden', 'start', $start);
-			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end"."&lang=" .$oreon->user->get_lang();
+			$var_url_export_csv = "&amp;period=customized&amp;start=".$start."&amp;end="."$end"."&amp;lang=" .$oreon->user->get_lang();
 		} else {
 			$formService->addElement('hidden', 'period', $period);
-			$var_url_export_csv = "&period=".$period."&lang=" .$oreon->user->get_lang();
+			$var_url_export_csv = "&amp;period=".$period."&amp;lang=" .$oreon->user->get_lang();
 		}
 	}
 

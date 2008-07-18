@@ -156,10 +156,10 @@
 			$formHostGroup->addElement('hidden', 'end', $end);
 			$formHostGroup->addElement('hidden', 'start', $start);
 
-			$var_url_export_csv = "&period=customized&start=".$start."&end=".$end."&lang=" .$oreon->user->get_lang();
+			$var_url_export_csv = "&amp;period=customized&amp;start=".$start."&amp;end=".$end."&amp;lang=" .$oreon->user->get_lang();
 
 		} else {			
-			$var_url_export_csv = "&period=".$period."&lang=" .$oreon->user->get_lang();
+			$var_url_export_csv = "&amp;period=".$period."&amp;lang=" .$oreon->user->get_lang();
 			getDateSelect_predefined($end_date_select, $start_date_select, $period);
 			$formHostGroup->addElement('hidden', 'period', $period);
 		}

@@ -131,9 +131,9 @@
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
 			$formservicegroup->addElement('hidden', 'end', $end);
 			$formservicegroup->addElement('hidden', 'start', $start);
-			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end"."&lang=" .$oreon->user->get_lang();
+			$var_url_export_csv = "&amp;period=customized&amp;start=".$start."&amp;end="."$end"."&amp;lang=" .$oreon->user->get_lang();
 		} else {
-			$var_url_export_csv = "&period=".$period."&lang=" .$oreon->user->get_lang();
+			$var_url_export_csv = "&amp;period=".$period."&amp;lang=" .$oreon->user->get_lang();
 			getDateSelect_predefined($end_date_select, $start_date_select, $period);
 			$formservicegroup->addElement('hidden', 'period', $period);
 		}
