@@ -24,7 +24,7 @@
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-	/* Connect to Oreon DB */
+	/* Connect to Centreon DB */
 	
 	include("../../../../centreon.conf.php");
 	is_file ("../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../lang/en.php");	
@@ -35,7 +35,7 @@
 	    'phptype'  => 'mysql',
 	    'username' => $conf_centreon['user'],
 	    'password' => $conf_centreon['password'],
-	    'hostspec' => $conf_centreon['host'],
+	    'hostspec' => $conf_centreon['hostCentreon'],
 	    'database' => $conf_centreon['db'],
 	);
 

@@ -25,12 +25,12 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 
-	/* Connect to oreon DB */
+	/* Connect to centreon DB */
 	$dsn = array(
 		     'phptype'  => 'mysql',
 		     'username' => $conf_centreon['user'],
 		     'password' => $conf_centreon['password'],
-		     'hostspec' => $conf_centreon['host'],
+		     'hostspec' => $conf_centreon['hostCentreon'],
 		     'database' => $conf_centreon['db'],
 		     );
 	$options = array(
@@ -41,11 +41,11 @@
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
-	/* Connect to ods DB */
+	/* Connect to CentStorage DB */
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_centreon['user'],
 			     'password' => $conf_centreon['password'],
-			     'hostspec' => $conf_centreon['host'],
+			     'hostspec' => $conf_centreon['hostCentstorage'],
 			     'database' => $conf_centreon['ods'],);
 	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
 	$pearDBO =& DB::connect($dsn, $options);

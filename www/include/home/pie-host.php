@@ -28,7 +28,7 @@
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_centreon['user'],
 			     'password' => $conf_centreon['password'],
-			     'hostspec' => $conf_centreon['host'],
+			     'hostspec' => $conf_centreon['hostCentreon'],
 			     'database' => $conf_centreon['db'],);	
 	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);	
 
