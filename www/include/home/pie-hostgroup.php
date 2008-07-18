@@ -21,18 +21,17 @@
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-	$oreonPath = '/srv/oreon/';
-	$ndo_base_prefix = getNDOPrefix();
-	
+	$oreonPath = '/usr/local/centreon/';
+
 	require_once("DB.php");
-	include_once($oreonPath . "etc/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 		
 	/* Connect to oreon DB */
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_centreon['user'],
 			     'password' => $conf_centreon['password'],
-			     'hostspec' => $conf_centreon['host'],
-			     'database' => $conf_centreon['db'],);	
+			     'hostspec' => $conf_centreon['hostCentreon'],
+			     'database' => $conf_centreon['db'],);
 	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);	
 
 	$pearDB =& DB::connect($dsn, $options);
@@ -43,7 +42,7 @@
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 	include_once($oreonPath . "www/include/common/common-Func.php");
 
-	$ndo_base_prefix = getNDOPrefix();	
+	$ndo_base_prefix = getNDOPrefix();
 	
 	include_once($oreonPath . "www/DBNDOConnect.php");
 
@@ -59,20 +58,44 @@
 	$bar_red = new bar_3d( 75, '#EC5C12' );
 	$bar_red->key( 'host Down (%)', 10 );
 	
+
+        /*
+         * LCA
+         */
+
+        $sid = session_id();
+
+        $res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '$sid'");
+        $user = $res1->fetchRow();
+        $user_id = $user["user_id"];
+
+        $res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
+        $admin = $res2->fetchrow();
+
+        global $is_admin;
+
+        $is_admin = 0;
+        $is_admin = $admin["contact_admin"];
+
+        if (!$is_admin){
+                $_POST["sid"] = $_GET["sid"];
+        }
+
+	if ($is_admin){
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	
-	while($hg =& $DBRESULT->fetchRow()){
+
+	while($hg = $DBRESULT->fetchRow()){
 		$counterTotal = 0;
 		$counterUP = 0;
 		$counterDown = 0;
 		$DBRESULT2 =& $pearDB->query("SELECT host_name FROM host, hostgroup_relation WHERE  hostgroup_relation.hostgroup_hg_id = '".$hg["hg_id"]."' AND hostgroup_relation.host_host_id = host.host_id");
-		while($h =& $DBRESULT2->fetchRow()){
-			$DBRESULT3 =& $pearDBndo->query("SELECT current_state FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."hosts WHERE ".$ndo_base_prefix."hoststatus.host_object_id = ".$ndo_base_prefix."hosts.host_object_id AND ".$ndo_base_prefix."hosts.alias = '".$h["host_name"]."'");
+		while($h = $DBRESULT2->fetchRow()){
+			$DBRESULT3 =& $pearDBndo->query("SELECT current_state FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."hosts WHERE ".$ndo_base_prefix."hoststatus.host_object_id = ".$ndo_base_prefix."hosts.host_object_id AND ".$ndo_base_prefix."hosts.display_name = '".$h["host_name"]."'");
 			if (PEAR::isError($DBRESULT3))
 				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-			while($stt =& $DBRESULT3->fetchRow()){
+			while($stt = $DBRESULT3->fetchRow()){
 				if ($stt["current_state"] == 1)
 					$counterDown++;
 				if ($stt["current_state"] == 0)
@@ -93,27 +116,67 @@
 			$strnameY .= $hg["hg_name"];
 		}
 	}
+	}
+	else
+	{
+        //$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup");
+        //if (PEAR::isError($DBRESULT))
+                //print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
-	/*
-	 *  create the dataset
-	 */
-	
-	//
-	// create a 2nd set of bars:
-	//
-	
-	
-	
+        $tmp1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '$user_id'");
+        $tmp2 = $tmp1->fetchRow();
+        $acl_group_id = $tmp2["acl_group_id"];
+
+	$tmp1 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations WHERE acl_res_group_relations.acl_group_id = '$acl_group_id'");
+	$tmp2 = $tmp1->fetchRow();
+	$acl_res_id = $tmp2["acl_res_id"];
+
+	$tmp1 =& $pearDB->query("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_resources_hg_relations.acl_res_id = '$acl_res_id'");
+	while($tmp2 = $tmp1->fetchRow()){
+		$host_group_id = $tmp2["hg_hg_id"];
+
+        	$tmp3 =& $pearDB->query("SELECT hg_name FROM host, hostgroup, acl_resources_hg_relations WHERE hostgroup.hg_id = '$host_group_id' AND acl_resources_hg_relations.acl_res_id = '$acl_res_id'");
+        	$tmp4 = $tmp3->fetchRow();      
+        	$hg_name = $tmp4["hg_name"];
+
+                $counterTotal = 0;
+                $counterUP = 0;
+                $counterDown = 0;
+
+		$DBRESULT2 =& $pearDB->query("SELECT host_name FROM host, hostgroup_relation, acl_resources_hg_relations WHERE  hostgroup_relation.hostgroup_hg_id = '$host_group_id' AND hostgroup_relation.host_host_id = host.host_id AND acl_resources_hg_relations.hg_hg_id = '$host_group_id'");
+
+		while($h = $DBRESULT2->fetchRow()){
+			$DBRESULT3 =& $pearDBndo->query("SELECT current_state FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."hosts, ".$ndo_base_prefix."objects no WHERE ".$ndo_base_prefix."hoststatus.host_object_id = ".$ndo_base_prefix."hosts.host_object_id AND ".$ndo_base_prefix."hosts.display_name = '".$h["host_name"]."'");
+                        if (PEAR::isError($DBRESULT3))
+                                print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+                        while($stt = $DBRESULT3->fetchRow()){
+                                if ($stt["current_state"] == 1)
+                                        $counterDown++;
+                                if ($stt["current_state"] == 0)
+                                        $counterUP++;
+                                $counterTotal++;
+                        }
+                }
+
+                if ($counterTotal){
+                        $percentU = $counterUP / $counterTotal * 100;
+                        $percentD = $counterDown / $counterTotal * 100;
+                        $hostgroupU[$hg["hg_name"]] = $percentU;
+                        $bar_blue->data[] = $percentU;
+                        $bar_red->data[] = $percentD;
+                        if ($percentU > $percentmax)
+                                $percentmax = $percentU;
+                        if ($strnameY)
+                                $strnameY .= ", ";
+                        $strnameY .= $hg_name; //$hg["hg_name"];
+                }
+	}	
+	}
+
 	// create the graph object:
 	$g = new graph();
 	$g->bg_colour = '#F3F6F6';
 	$g->title( _('Status of Host Groups'), '{font-size:18px; color: #424242; margin: 5px; background-color: #F3F6F6; padding:5px; padding-left: 20px; padding-right: 20px;}' );
-	
-	//$g->set_data( $data_1 );
-	//$g->bar_3D( 75, '#D54C78', '2006', 10 );
-	
-	//$g->set_data( $data_2 );
-	//$g->bar_3D( 75, '#3334AD', '2007', 10 );
 	
 	$g->data_sets[] = $bar_blue;
 	$g->data_sets[] = $bar_red;
@@ -129,7 +192,4 @@
 	$g->y_label_steps( 5 );
 	$g->set_y_legend( _('Availability'), 12, '#424242' );
 	echo $g->render();
-
-
-
 ?>
