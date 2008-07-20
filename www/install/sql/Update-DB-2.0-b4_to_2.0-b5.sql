@@ -93,7 +93,7 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 -- Update Centreon version
 -- 
 
-UPDATE `centreon`.`informations` SET `value` = '2.0-b5' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-b4' LIMIT 1;
+UPDATE `informations` SET `value` = '2.0-b5' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-b4' LIMIT 1;
 
 -- --------------------------------------------------------
 
