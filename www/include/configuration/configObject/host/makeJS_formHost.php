@@ -17,8 +17,8 @@
 	if (!isset($oreon))
 		exit();
 
-	if($num < 0)
-		$num =0;
+	if (isset($num) && $num < 0)
+		$num = 0;
 ?>
 
 <script type="text/javascript">
