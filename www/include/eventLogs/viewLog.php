@@ -25,7 +25,7 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			return null;		
 		}
-		while( $row =& $DBRESULT->fetchRow())
+		while( $row = $DBRESULT->fetchRow())
 			$tab_row[$row["cp_key"]] = $row["cp_value"];
 		return $tab_row;
 	}
@@ -205,7 +205,7 @@
 		multi = 1;
 		
 		if(tree.getAllChecked()){
-			log_4_host(tree.getAllChecked(),'');		
+			log_4_host(tree.getAllChecked(),'');
 		} else {
 			//		var logView4xml = document.getElementById('logView4xml').innerHTML = '<- Check or select an item or more !';		
 		}
@@ -362,6 +362,68 @@
 		}
 	}
 
+	
+	// Function used to lauch the CSV export
+
+	function log_CSV(id, formu){	
+		if(document.formu && !document.formu.period_choice[1].checked)	{
+			period = document.formu.period.value;
+		} else if(document.formu)	{
+			period = '';
+			StartDate = document.formu.StartDate.value;
+			EndDate = document.formu.EndDate.value;
+			StartTime = document.formu.StartTime.value;
+			EndTime = document.formu.EndTime.value;
+		}
+		
+		
+		// type
+		if(document.formu2 && document.formu2.notification)
+			_notification = document.formu2.notification.checked;
+		if(document.formu2 && document.formu2.error)
+			_error = document.formu2.error.checked;
+		if(document.formu2 && document.formu2.alert)
+			_alert = document.formu2.alert.checked;
+	
+		if(document.formu2 && document.formu2.up)
+			_up = document.formu2.up.checked;
+		if(document.formu2 && document.formu2.down)
+			_down = document.formu2.down.checked;
+		if(document.formu2 && document.formu2.unreachable)
+			_unreachable = document.formu2.unreachable.checked;
+	
+		if(document.formu2 && document.formu2.ok)
+			_ok = document.formu2.ok.checked;
+	
+		if(document.formu2 && document.formu2.warning)
+			_warning = document.formu2.warning.checked;
+	
+		if(document.formu2 && document.formu2.critical)
+			_critical = document.formu2.critical.checked;
+	
+		if(document.formu2 && document.formu2.unknown)
+			_unknown = document.formu2.unknown.checked;
+	
+		if(document.formu && document.formu.StartDate.value != "")
+			StartDate = document.formu.StartDate.value;
+		if(document.formu && document.formu.EndDate.value != "")
+			EndDate = document.formu.EndDate.value;
+	
+		if(document.formu && document.formu.StartTime.value != "")
+			StartTime = document.formu.StartTime.value;
+		if(document.formu && document.formu.EndTime.value != "")
+			EndTime = document.formu.EndTime.value;
+	
+		tree.selectItem(id);
+	
+	// send all parmeters via the URL
+	
+		var _addrCSV = './include/eventLogs/GetODSCSVLog.php?multi='+multi+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&limit=66000&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+		
+		document.location.href = _addrCSV;
+	}
+	
+	
 	var nowOnload = window.onload;
 	window.onload = function () {
     // Here is your precious function

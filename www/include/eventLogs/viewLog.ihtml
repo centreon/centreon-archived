@@ -11,18 +11,31 @@
 		       {$form.period.label}
 				&nbsp;
 				{$form.period.html}
+				
 			</td>
+			
 			<td>
 				<input type="radio" name="period_choice" value="custom" CHECKED>
 				{$From}
-				&nbsp;<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="8" />
-				&nbsp;<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="5" />&nbsp;
+				&nbsp;
+				<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="8" />
+				&nbsp;
+				<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="5" />
+				&nbsp;
 				{$To}
-				&nbsp;<input id="EndDate" name="EndDate" type="text" value="" onclick="displayDatePicker('EndDate', this)" size="8" />
-				&nbsp;<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="5" />&nbsp;
+				&nbsp;
+				<input id="EndDate" name="EndDate" type="text" value="" onclick="displayDatePicker('EndDate', this)" size="8" />
+				&nbsp;
+				<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="5" />
+				&nbsp;
 			</td>			
 			<td>
 				<input type="button" name="graph" value="Apply" onClick="apply_period();">
+			</td>
+			<td>
+				&nbsp;
+				&nbsp;
+				<a href="javascript:log_CSV()"><img src="./img/icones/16x16/opencalc.gif" alt="export CSV"/></a>
 			</td>
 		</tr>
 	</table>
