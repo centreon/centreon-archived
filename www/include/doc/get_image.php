@@ -30,8 +30,8 @@
 	
 	header("Content-Type: image/png");
 	
-	if (file_exists("../../../doc/".$lang."/images/".$image)){
-		$img = fopen("../../../doc/".$lang."/images/".$image, "r");	
+	if (file_exists("../../../doc/".$oreon->user->get_version()."/".$lang."/images/".$image)){
+		$img = fopen("../../../doc/".$oreon->user->get_version()."/".$lang."/images/".$image, "r");	
 		if (isset($img) && $img)
 			while ($line = fgets($img))
 				print $line;

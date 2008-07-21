@@ -39,12 +39,12 @@
 	$flag_begin = 0;
 	$flag_end = 0;
 	print "<div style='padding=20px'>";
-	if (!file_exists("../doc/".$oreon->user->get_lang()."/"))
+	if (!file_exists("../doc/".$oreon->user->get_version()."/".$oreon->user->get_lang()."/"))
 		$lang = "en_US";
 	else 
 		$lang = $oreon->user->get_lang();
 
-	$doc = fopen("../doc/".$lang."/".$page, "r");	
+	$doc = fopen("../doc/".$oreon->user->get_version()."/".$lang."/".$page, "r");	
 	while ($line = fgets($doc)){
 		if ($flag_begin && !$flag_end){
 			$line = preg_replace("/href\=\"/", "href=\"./main.php?p=$p&doc=1&page=", $line);
