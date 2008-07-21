@@ -40,7 +40,8 @@
 	// End of Pear connection
 
 	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")) {
-		$_SESSION["mysqlscript"] = $_POST["mysqlscript"]; }
+		$_SESSION["mysqlscript"] = $_POST["mysqlscript"]; 
+	}
 
 	aff_header("Centreon Setup Wizard", "Updating Centstorage Database", 4);	?>
 	<br /><br />
@@ -86,7 +87,7 @@
 	    $return_false = 1;	?>
 		<tr>
 			<td colspan="2" align="left"><span class="small"><?php echo $mysql_msg; ?></span></td>
-		</tr><?	
+		</tr><?php	
 	}
 
 	aff_middle();
