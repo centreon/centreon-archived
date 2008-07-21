@@ -34,11 +34,9 @@
 						<tr>
 							<td class="ListColCenter">
 								{php}
-									global $host_name;
-									global $status;
-									global $service_name;
+									global $service_name, $mhost, $status;
 									include_once 'lib/ofc-library/open_flash_chart_object.php';
-									open_flash_chart_object( 300, 250, 'include/reporting/dashboard/imagesGenerations/pie-charts.php?service_name='.$service_name.'&host_name='.$service_name.$host_name.$status );
+									open_flash_chart_object( 300, 250, 'include/reporting/dashboard/imagesGenerations/pie-charts.php?service_name='.$service_name.'&host_name='.$mhost.$status );
 								{/php}
 							</td>					
 						</tr>

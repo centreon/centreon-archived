@@ -144,7 +144,7 @@
 	$formService->addElement('hidden', 'timeline', "1");
 	$formService->addElement('hidden', 'host', $mhost);
 	$serviceList = array();
-	$serviceList = getMyHostServices(getMyHostID($mhost));
+	$serviceList = getMyHostActiveServices(getMyHostID($mhost));
 	$selService =& $formService->addElement('select', 'service', _(" Service "), $serviceList, array("onChange" =>"this.form.submit();"));
 	$formService->setDefaults(array('service' => $mservice));
 
