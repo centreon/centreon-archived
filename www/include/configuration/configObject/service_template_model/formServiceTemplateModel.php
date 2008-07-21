@@ -525,10 +525,10 @@
 		{			
 			for($k=0; isset($od_macro_id[$k]); $k++) {?>				
 				<script type="text/javascript">
-				globalMacroTabId[<?=$k;?>] = <?=$od_macro_id[$k];?>;		
-				globalMacroTabName[<?=$k;?>] = '<?=$od_macro_name[$k];?>';
-				globalMacroTabValue[<?=$k;?>] = '<?=$od_macro_value[$k];?>';
-				globalMacroTabSvcId[<?=$k;?>] = <?=$od_macro_svc_id[$k];?>;				
+				globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
+				globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
+				globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
+				globalMacroTabSvcId[<?php echo $k;?>] = <?php echo $od_macro_svc_id[$k];?>;				
 				</script>			
 		<?php
 			}
@@ -670,5 +670,5 @@
 	}
 ?>
 <script type="text/javascript">		
-		displayExistingMacroSvc(<?=$k;?>);
+		displayExistingMacroSvc(<?php echo $k;?>);
 </script>

@@ -281,16 +281,16 @@
 		{		
 			for($k=0; isset($mTp[$k]); $k++) {?>
 				<script type="text/javascript">
-				tab[<?=$k;?>] = <?=$mTp[$k];?>;		
+				tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;		
 				</script> 
 			<?php
 			}
 			for($k=0; isset($od_macro_id[$k]); $k++) {?>
 				<script type="text/javascript">
-				globalMacroTabId[<?=$k;?>] = <?=$od_macro_id[$k];?>;		
-				globalMacroTabName[<?=$k;?>] = '<?=$od_macro_name[$k];?>';
-				globalMacroTabValue[<?=$k;?>] = '<?=$od_macro_value[$k];?>';
-				globalMacroTabHostId[<?=$k;?>] = <?=$od_macro_host_id[$k];?>;
+				globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
+				globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
+				globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
+				globalMacroTabHostId[<?php echo $k;?>] = <?php echo $od_macro_host_id[$k];?>;
 				</script>				
 			<?php 
 			}
@@ -737,6 +737,6 @@ if ($oreon->user->get_version() == 3 && !$action["action"]["action"]) {
 
 <script type="text/javascript">
 		add_select_template();
-		displayExistingMacroHost(<?=$k;?>);
+		displayExistingMacroHost(<?php echo $k;?>);
 </script>
 <?php } ?>
