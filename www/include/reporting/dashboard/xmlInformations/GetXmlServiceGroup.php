@@ -136,13 +136,13 @@
 			#
 			## make bubul
 			#
-			$bubultab = '{table class=bubultab}';
-			$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bubuleft }Alert{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorOK.';"  }OK:{/td}{td class=bubul}'. Duration::toString($oktime) .'{/td}{td class=bubul}'.(($pok > 0) ? $pok : "0").'%{/td}{td class=bubul}'.$h["OKnbEvent"].'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorCRITICAL.';"  }Critical:{/td}{td class=bubul}'. Duration::toString($criticaltime) .'{/td}{td class=bubul}'.(($pcritical > 0) ? $pcritical : "0").'%{/td}{td class=bubul}'.$h["CRITICALnbEvent"].'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorWARNING.';"  }Warning:{/td}{td class=bubul}'. Duration::toString($warningtime) .'{/td}{td class=bubul}'.(($pwarning > 0) ? $pwarning : "0").'%{/td}{td class=bubul}'.$h["WARNINGnbEvent"].'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;"  }Unknown:{/td}{td class=bubul}'. Duration::toString($pendingtime) .'{/td}{td class=bubul}'.(($ppending > 0) ? $ppending : "0").'%{/td}{td class=bubul}-{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNKNOWN.';"  }Undeterminated:{/td}{td class=bubul}'. Duration::toString($unknowntime) .'{/td}{td class=bubul}'.(($punknown > 0) ? $punknown : "0").'%{/td}{/tr}';
+			$bubultab = '{table class=bulleDashtab}';
+			$bubultab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorOK.';"  }OK:{/td}{td class=bulleDash}'. Duration::toString($oktime) .'{/td}{td class=bulleDash}'.(($pok > 0) ? $pok : "0").'%{/td}{td class=bulleDash}'.$h["OKnbEvent"].'{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorCRITICAL.';"  }Critical:{/td}{td class=bulleDash}'. Duration::toString($criticaltime) .'{/td}{td class=bulleDash}'.(($pcritical > 0) ? $pcritical : "0").'%{/td}{td class=bulleDash}'.$h["CRITICALnbEvent"].'{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorWARNING.';"  }Warning:{/td}{td class=bulleDash}'. Duration::toString($warningtime) .'{/td}{td class=bulleDash}'.(($pwarning > 0) ? $pwarning : "0").'%{/td}{td class=bulleDash}'.$h["WARNINGnbEvent"].'{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bulleDashleft style="background:#cccccc;"  }Unknown:{/td}{td class=bulleDash}'. Duration::toString($pendingtime) .'{/td}{td class=bulleDash}'.(($ppending > 0) ? $ppending : "0").'%{/td}{td class=bulleDash}-{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNKNOWN.';"  }Undeterminated:{/td}{td class=bulleDash}'. Duration::toString($unknowntime) .'{/td}{td class=bulleDash}'.(($punknown > 0) ? $punknown : "0").'%{/td}{/tr}';
 			$bubultab .= '{/table}';
 			
 
@@ -229,13 +229,13 @@
 	#
 	## make bubul
 	#
-	$bubultab = '{table class=bubultab}';
-	$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{td class=bubuleft }Alert{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorOK.';"  }OK:{/td}{td class=bubul}'.Duration::toString($_GET["today_ok"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_ok"] > 0) ? $_GET["today_ok"] : "0").'%{/td}{td class=bubul}'.$_GET["today_OKnbEvent"].'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorCRITICAL.';"  }Critical:{/td}{td class=bubul}'.Duration::toString($_GET["today_critical"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_critical"] > 0) ? $_GET["today_critical"] : "0").'%{/td}{td class=bubul}'.$_GET["today_CRITICALnbEvent"].'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorWARNING.';"  }Warning:{/td}{td class=bubul}'. Duration::toString($_GET["today_warning"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_warning"] > 0) ? $_GET["today_warning"] : "0").'%{/td}{td class=bubul}'.$_GET["today_WARNINGnbEvent"].'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNKNOWN.';"  }Unknown:{/td}{td class=bubul}'. Duration::toString($_GET["today_unknown"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_unknown"] > 0) ? $_GET["today_unknown"] : "0").'%{/td}{td class=bubul}'.$_GET["today_UNKNOWNnbEvent"].'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;"  }Undeterminated:{/td}{td class=bubul}'.  Duration::toString($_GET["today_pending"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_pending"] > 0) ? $_GET["today_pending"] : "0").'%{/td}{/tr}';
+	$bubultab = '{table class=bulleDashtab}';
+	$bubultab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorOK.';"  }OK:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_ok"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_ok"] > 0) ? $_GET["today_ok"] : "0").'%{/td}{td class=bulleDash}'.$_GET["today_OKnbEvent"].'{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorCRITICAL.';"  }Critical:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_critical"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_critical"] > 0) ? $_GET["today_critical"] : "0").'%{/td}{td class=bulleDash}'.$_GET["today_CRITICALnbEvent"].'{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorWARNING.';"  }Warning:{/td}{td class=bulleDash}'. Duration::toString($_GET["today_warning"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_warning"] > 0) ? $_GET["today_warning"] : "0").'%{/td}{td class=bulleDash}'.$_GET["today_WARNINGnbEvent"].'{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNKNOWN.';"  }Unknown:{/td}{td class=bulleDash}'. Duration::toString($_GET["today_unknown"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_unknown"] > 0) ? $_GET["today_unknown"] : "0").'%{/td}{td class=bulleDash}'.$_GET["today_UNKNOWNnbEvent"].'{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bulleDashleft style="background:#cccccc;"  }Undeterminated:{/td}{td class=bulleDash}'.  Duration::toString($_GET["today_pending"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_pending"] > 0) ? $_GET["today_pending"] : "0").'%{/td}{/tr}';
 	$bubultab .= '{/table}';
 
 	$t = round(($t - ($t * 0.11574074074)),2);
