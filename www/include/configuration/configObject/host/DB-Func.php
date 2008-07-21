@@ -582,9 +582,64 @@
 	}
 	
 	/*
+	 * Get list of host templates recursively 
+	 */
+	 function getHostListInUse ($hst_list, $hst)
+	 {
+	 	global $pearDB;
+	 		 	
+	 	$str = $hst_list;
+	 	$rq = "SELECT `host_tpl_id` FROM `host_template_relation` WHERE host_host_id ='".$hst."'";
+	 	$DBRESULT =& $pearDB->query($rq);
+	 	if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	 	while ($result =& $DBRESULT->fetchRow()) {
+	 		$str .= ",'" . $result['host_tpl_id'] . "'";
+	 		$str = getHostListInUse ($str, $result['host_tpl_id']);
+	 	}
+	 	return $str;
+	 }
+	 
+	/*
+	 *  Checks if the service that is gonna be deleted is actually
+	 *  associated to another host template
+	 *  if yes, we do not delete the service
+	 *  Function returns true if it doesn't have to be deleted, otherwise it returns false
+	 */
+	function serviceIsInUse($svc_id, $host_list) {
+		global $pearDB;
+		
+		$hst_list = "";
+		$flag_first = 1;
+		foreach ($host_list as $val)
+	 	{	 		
+	 		if (isset($val)) {
+		 		if (!$flag_first)
+		 			$hst_list .= ",'" . $val . "'";
+		 		else {
+		 			$hst_list .= "'".$val."'";
+		 			$flag_first = 0;
+		 		}		 		
+		 		$hst_list = getHostListInUse($hst_list, $val);
+	 		}
+	 	}
+	 	$rq = "SELECT service_id " .
+	 			"FROM service svc, host_service_relation hsr " .
+	 			"WHERE hsr.service_service_id = svc.service_template_model_stm_id " .
+	 			"AND hsr.service_service_id = '". $svc_id ."' " .
+	 			"AND hsr.host_host_id IN (". $hst_list .")";
+	 	$DBRESULT =& $pearDB->query($rq);
+	 	if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	 	if ($DBRESULT->numRows() >= 1)
+	 		return true;
+	 	return false;
+	}
+	
+	/*
 	 * 	this function cleans all the services that were linked to the removed host template  
  	 */
-	function deleteHostServiceMultiTemplate($hID, $scndHID){
+	function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list){
 		global $pearDB, $path, $oreon;
 	
 		$DBRESULT3 =& $pearDB->query("SELECT service_service_id " .
@@ -595,14 +650,16 @@
 	 	if (PEAR::isError($DBRESULT3))
 			print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 		while ($svcID =& $DBRESULT3->fetchRow()) {
-			$rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
-				"WHERE hsr.service_service_id = svc.service_id " .
-				"AND svc.service_template_model_stm_id = '".$svcID['service_service_id']."' " .
-				"AND svc.service_register = '1' " .
-				"AND hsr.host_host_id = '".$hID."'";
-			$DBRESULT4 =& $pearDB->query($rq2);
-			if (PEAR::isError($DBRESULT4))
-				print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
+			if (!serviceIsInUse($svcID['service_service_id'], $host_list)) {
+				$rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
+					"WHERE hsr.service_service_id = svc.service_id " .
+					"AND svc.service_template_model_stm_id = '".$svcID['service_service_id']."' " .
+					"AND svc.service_register = '1' " .
+					"AND hsr.host_host_id = '".$hID."'";
+				$DBRESULT4 =& $pearDB->query($rq2);
+				if (PEAR::isError($DBRESULT4))
+					print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";			
+			}			
 		}
 		
 		$rq = "SELECT host_tpl_id " .
@@ -613,7 +670,7 @@
 		$DBRESULT =& $pearDB->query($rq);		
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($result =& $DBRESULT->fetchRow()) {
+		while ($result =& $DBRESULT->fetchRow()) {			
 			$DBRESULT2 =& $pearDB->query("SELECT service_service_id " .
 	 								"FROM `service` svc, `host_service_relation` hsr " .
 	 								"WHERE svc.service_id = hsr.service_service_id " .
@@ -631,7 +688,7 @@
 				if (PEAR::isError($DBRESULT4))
 					print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
 			}
-			deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"]);
+			deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"], $host_list);
 		}	
 	}
 	
@@ -762,7 +819,7 @@
 	 		for ($i=0;$i <= $_POST['nbOfSelect']; $i++)
 	 		{
 	 			$tpSelect = "tpSelect_" . $i;
-	 			$newTp[$_POST[$tpSelect]] = 1;
+	 			$newTp[$_POST[$tpSelect]] = $_POST[$tpSelect];
 	 		}
 	 		foreach ($oldTp as $val)
 	 		{
@@ -771,7 +828,7 @@
 	 			 * we will have to remove the services that were linked to that host template as well  
 	 			 */
 	 			if (!isset($newTp[$val])) {
-	 				deleteHostServiceMultiTemplate($host_id, $val);
+	 				deleteHostServiceMultiTemplate($host_id, $val, $newTp);
 	 			}
 	 		}
 	 		
