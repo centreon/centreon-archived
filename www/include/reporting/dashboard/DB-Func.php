@@ -104,7 +104,7 @@
 		$tab_tmp["TunreachableNBAlert"] = 0;
 		$tab_tmp["Tnone"] = 0;
 
-		$rq = "select * from log where host_name like '%".$host_name."%' and ctime <= ".$today_end." AND service_description is null and ctime >= " . $today_start . " AND ( msg_type = '7' OR msg_type = '9' OR msg_type = '1')";
+		$rq = "select * from log where host_name = '".$host_name."' and ctime <= ".$today_end." AND service_description is null and ctime >= " . $today_start . " AND ( msg_type = '7' OR msg_type = '9' OR msg_type = '1')";
 
 		$DBres =& $pearDBO->query($rq);
 		if (PEAR::isError($DBres))
@@ -433,8 +433,8 @@
 		$tab_tmp["CRITICALnbEvent"] = 0;
 		$tab_tmp["Tnone"] = 0;
 
-		$rq = "select * from log where host_name like '%".$host_name."%' and ctime <= ". 
-			$today_end . " AND service_description like '%".$service_description."%' and ctime >= " . $today_start . " AND ( msg_type = '6' OR msg_type = '8' OR msg_type = '2')";
+		$rq = "select * from log where host_name = '".$host_name."' and ctime <= ". 
+			$today_end . " AND service_description = '".$service_description."' and ctime >= " . $today_start . " AND ( msg_type = '6' OR msg_type = '8' OR msg_type = '2')";
 
 		$DBres =& $pearDBO->query($rq);
 		if (PEAR::isError($DBres))
@@ -550,9 +550,9 @@
 		$tab_tmp = array();
 		getTodayLogForSVC(getMyHostName($host_id), getMyServiceName($svc_id), $hbase, $pearDBO, $today_start, $today_end);
 		$tab_svc_bdd["today"]["OKnbEvent"] = $hbase["OKnbEvent"];
-		$tab_svc_bdd["today"]["WARNINGnbEvent"] = $hbase["OKnbEvent"];
-		$tab_svc_bdd["today"]["UNKNOWNnbEvent"] = $hbase["OKnbEvent"];
-		$tab_svc_bdd["today"]["CRITICALnbEvent"] = $hbase["OKnbEvent"];			  	
+		$tab_svc_bdd["today"]["WARNINGnbEvent"] = $hbase["WARNINGnbEvent"];
+		$tab_svc_bdd["today"]["UNKNOWNnbEvent"] = $hbase["UNKNOWNnbEvent"];
+		$tab_svc_bdd["today"]["CRITICALnbEvent"] = $hbase["CRITICALnbEvent"];			  	
 		$tab_svc_bdd["today"]["Tok"] = $hbase["Tok"];
 		$tab_svc_bdd["today"]["Twarn"] = $hbase["Twarn"];
 		$tab_svc_bdd["today"]["Tunknown"] = $hbase["Tunknown"];

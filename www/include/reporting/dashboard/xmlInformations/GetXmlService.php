@@ -117,8 +117,8 @@
 			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorOK.';"  }OK:{/td}{td class=bulleDash}'. Duration::toString($oktime) .'{/td}{td class=bulleDash}'.(($pok > 0) ? $pok : "0").'%{/td}{td class=bulleDash}'.$h["OKnbEvent"].'{/td}{/tr}';
 			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorCRITICAL.';"  }Critical:{/td}{td class=bulleDash}'. Duration::toString($criticaltime) .'{/td}{td class=bulleDash}'.(($pcritical > 0) ? $pcritical : "0").'%{/td}{td class=bulleDash}'.$h["CRITICALnbEvent"].'{/td}{/tr}';
 			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorWARNING.';"  }Warning:{/td}{td class=bulleDash}'. Duration::toString($warningtime) .'{/td}{td class=bulleDash}'.(($pwarning > 0) ? $pwarning : "0").'%{/td}{td class=bulleDash}'.$h["WARNINGnbEvent"].'{/td}{/tr}';
-			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#cccccc;"  }Unknown:{/td}{td class=bulleDash}'. Duration::toString($pendingtime) .'{/td}{td class=bulleDash}'.(($ppending > 0) ? $ppending : "0").'%{/td}{td class=bulleDash}-{/td}{/tr}';
-			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNKNOWN.';"  }Undeterminated:{/td}{td class=bulleDash}'. Duration::toString($unknowntime) .'{/td}{td class=bulleDash}'.(($punknown > 0) ? $punknown : "0").'%{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNKNOWN.';"  }Unknown:{/td}{td class=bulleDash}'. Duration::toString($pendingtime) .'{/td}{td class=bulleDash}'.(($ppending > 0) ? $ppending : "0").'%{/td}{td class=bulleDash}-{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorPENDING.';"  }Undeterminated:{/td}{td class=bulleDash}'. Duration::toString($unknowntime) .'{/td}{td class=bulleDash}'.(($punknown > 0) ? $punknown : "0").'%{/td}{/tr}';
 			$bulleDashtab .= '{/table}';
 			
 			$tp = round(($punknown * $t / 100 ),2);
@@ -140,7 +140,7 @@
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-				$buffer .= ' color="#cccccc"';
+				$buffer .= ' color="#' . $colorPENDING . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($ppending > 0) ? $ppending : "0") . '%" >' ;
 				$buffer .= $bulleDashtab;

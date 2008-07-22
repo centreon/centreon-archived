@@ -281,12 +281,12 @@
 	$tt = 0 + ($today_end - $today_start);
 
 
-	$today_none = $tt - ($today_warning + $today_ok + $today_unknown + $today_critical);
-	$today_none = round(($today_none/$tt *100),2);
-	$today_ok = ($today_ok <= 0) ? 0 : round($today_ok / $tt *100,2);
-	$today_warning = ($today_warning <= 0) ? 0 : round($today_warning / $tt *100,2);
-	$today_unknown = ($today_unknown <= 0) ? 0 : round($today_unknown / $tt *100,2);
-	$today_critical = ($today_critical <= 0) ? 0 : round($today_critical / $tt *100,2);
+	$today_none = 100 - ($today_warning + $today_ok + $today_unknown + $today_critical);
+	$today_none = round($today_none,2);
+	$today_ok = ($today_ok <= 0) ? 0 : round($today_ok,2);
+	$today_warning = ($today_warning <= 0) ? 0 : round($today_warning,2);
+	$today_unknown = ($today_unknown <= 0) ? 0 : round($today_unknown,2);
+	$today_critical = ($today_critical <= 0) ? 0 : round($today_critical,2);
 	$today_none = ($today_none < 0.1) ? "0" : $today_none;
 
 	if ($mhost){
@@ -296,6 +296,7 @@
 		 		 substr($oreon->optGen["color_warning"],1) .':'.
 		 		 substr($oreon->optGen["color_critical"],1) .':'.
 		 		 substr($oreon->optGen["color_pending"],1) .':';
+		 		 substr($oreon->optGen["color_unknown"],1);
 	
 		$today_var = '&serviceID='.$mservice.'&today_ok='.$today_ok . '&today_critical='.$today_critical.'&today_unknown='.$today_unknown. '&today_pending=' . $today_none. '&today_warning=' . $today_warning;
 		$today_var .= '&today_WARNINGnbEvent='.$today_WARNINGnbEvent.'&today_CRITICALnbEvent='.$today_CRITICALnbEvent.'&today_OKnbEvent='.$today_OKnbEvent.'&today_UNKNOWNnbEvent='.$today_UNKNOWNnbEvent;

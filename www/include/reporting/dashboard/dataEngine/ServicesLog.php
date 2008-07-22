@@ -127,7 +127,7 @@
 		$today_ok = $tab_svc_bdd["today"]["Tok"];
 		$today_warning = $tab_svc_bdd["today"]["Twarn"];
 		$today_unknown = $tab_svc_bdd["today"]["Tunknown"];
-		$today_uncritical = $tab_svc_bdd["today"]["Tcri"];
+		$today_critical = $tab_svc_bdd["today"]["Tcri"];
 		#
 		$tt = $end_date_select - $start_date_select;
 		$tab_svc["timeOK"] = (isset($tab_svc_bdd["resume"]["Tok"])) ? $tab_svc_bdd["resume"]["Tok"] : 0;
@@ -159,6 +159,7 @@
 			$tab_svc["PktimeCRITICAL"] = round(0,3);
 		}			
 		# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
+		/*
 		$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 1, '.', '');
 		$tab_svc["PtimeWARNING"] = number_format($tab_svc["PtimeWARNING"], 1, '.', '');
 		$tab_svc["PtimeUNKNOWN"] = number_format($tab_svc["PtimeUNKNOWN"], 1, '.', '');
@@ -170,6 +171,7 @@
 		$tab_svc["PktimeWARNING"] = number_format($tab_svc["PktimeWARNING"], 1, '.', '');
 		$tab_svc["PktimeUNKNOWN"] = number_format($tab_svc["PktimeUNKNOWN"], 1, '.', '');
 		$tab_svc["PktimeCRITICAL"] = number_format($tab_svc["PktimeCRITICAL"], 1, '.', '');
+		*/
 		#end
 	}	
 
