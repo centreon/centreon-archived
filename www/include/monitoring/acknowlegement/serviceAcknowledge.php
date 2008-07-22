@@ -68,7 +68,6 @@
 		$form->applyFilter('__ALL__', 'myTrim');
 		
 		$form->addElement('textarea', 'comment', 'comment', array("rows"=>"7", "cols"=>"100"));
-		
 		$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 		$form->setJsWarnings(_("Invalid information entered"),_("Please correct these fields"));
 		
