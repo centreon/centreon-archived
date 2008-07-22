@@ -15,18 +15,33 @@
  * For information : contact@centreon.com
  */
 
-	if (!isset($oreon))
+        if (!isset($oreon))
 		exit(); 
 
-	$page = filter_var($_GET["page"], FILTER_SANITIZE_SPECIAL_CHARS);
-	$page = filter_var($page, INPUT_GET);
-
-	$lang = $oreon->user->get_lang();
+	if (function_exists("filter_var")) {
+		$page = filter_var($_GET["page"], FILTER_SANITIZE_SPECIAL_CHARS);
+		$page = filter_var($page, INPUT_GET);
+	}
+	else {
+		$page = filter_get($_GET["page"]);
+	}
 
 	$tab_pages = split("/", $page);
 	foreach ($tab_pages as $value)
 		$page = $value;
+
+	if (!file_exists("../doc/".$oreon->user->get_version()."/".$oreon->user->get_lang()."/"))
+		$lang = "en_US";
+	else 
+		$lang = $oreon->user->get_lang();
+
 		
+	$lang = $oreon->user->get_lang();
+	if (preg_match("/png/i", $page)) {
+		print "<img src=\"./include/doc/get_image.php?lang=".$lang."&version=".$oreon->user->get_version()."&img=images/".$page."\" />" ;
+		exit ;
+	}
+
 	unset($tpl);
 	unset($path);
 
@@ -39,10 +54,6 @@
 	$flag_begin = 0;
 	$flag_end = 0;
 	print "<div style='padding=20px'>";
-	if (!file_exists("../doc/".$oreon->user->get_version()."/".$oreon->user->get_lang()."/"))
-		$lang = "en_US";
-	else 
-		$lang = $oreon->user->get_lang();
 
 	$doc = fopen("../doc/".$oreon->user->get_version()."/".$lang."/".$page, "r");	
 	while ($line = fgets($doc)){
@@ -53,7 +64,7 @@
 			$line = preg_replace("/\<li\>/", "<li style=\"padding-left:30px;\">", $line);
 			$line = preg_replace("/\<strong\>/", "<strong style=\"padding-left:20px;\">", $line);
 			$line = preg_replace("/\<p\>/", "<p style=\"text-align:justify;padding-left:20px;padding-right:10px;padding-top:5px;padding-bottom:10px;\">", $line);
-			$line = preg_replace("/\<img src\=\"images\//", "<img src=\"./include/doc/get_image.php?lang=".$oreon->user->get_lang()."&img=", $line);
+			$line = preg_replace("/\<img src\=\"images\//", "<img src=\"./include/doc/get_image.php?lang=".$oreon->user->get_lang()."&version=".$oreon->user->get_version()."&img=", $line);
 			$line = preg_replace("/\<table border\=\"0\"/", "<table border=\"1\"", $line);
 			print $line;
 		}

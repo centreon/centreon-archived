@@ -16,13 +16,21 @@
  */
  
 
-	
-	$img = filter_var($_GET["img"], FILTER_SANITIZE_SPECIAL_CHARS);
-	$img = filter_var($img, INPUT_GET);
+	if (function_exists("filter_var")) {
+		$img = filter_var($_GET["img"], FILTER_SANITIZE_SPECIAL_CHARS);
+		$img = filter_var($img, INPUT_GET);
 
-	$lang = filter_var($_GET["lang"], FILTER_SANITIZE_SPECIAL_CHARS);
-	$lang = filter_var($lang, INPUT_GET);
+		$lang = filter_var($_GET["lang"], FILTER_SANITIZE_SPECIAL_CHARS);
+		$lang = filter_var($lang, INPUT_GET);
 
+		$version = filter_var($_GET["version"], FILTER_SANITIZE_SPECIAL_CHARS);
+		$version = filter_var($version, INPUT_GET);
+	}
+	else {
+		$img = filter_var($_GET["img"]);
+		$lang = filter_var($_GET["lang"]);
+		$version = filter_var($_GET["version"]);
+	}
 
 	$tab_images = split("/", $img);
 	foreach ($tab_images as $value)
@@ -30,8 +38,8 @@
 	
 	header("Content-Type: image/png");
 	
-	if (file_exists("../../../doc/".$oreon->user->get_version()."/".$lang."/images/".$image)){
-		$img = fopen("../../../doc/".$oreon->user->get_version()."/".$lang."/images/".$image, "r");	
+	if (file_exists("../../../doc/".$version."/".$lang."/images/".$image)){
+		$img = fopen("../../../doc/".$version."/".$lang."/images/".$image, "r");	
 		if (isset($img) && $img)
 			while ($line = fgets($img))
 				print $line;
