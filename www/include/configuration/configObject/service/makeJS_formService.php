@@ -32,6 +32,7 @@ function addBlankInput() {
 	var valueElem = document.createElement('input');
 	var imgElem = document.createElement('img');			
 	var trElem = document.createElement('tr');
+	var tbodyElem = document.createElement('tbody');
 	trElem.id = "trElem_" + globalj;
 	if (trMacroClassFlag) {
 		trElem.className = "list_one";
@@ -63,14 +64,20 @@ function addBlankInput() {
 	imgElem.onclick = function(){
 		var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
 		if (response){			
-			document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+			if (navigator.appName == "Microsoft Internet Explorer") {
+				document.getElementById('trMacroInput_' + this.id).innerText = "";
+			}
+			else {
+				document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+			}
 		}
 	}	
 	tdElem3.appendChild(imgElem);	
 	trElem.appendChild(tdElem1);
 	trElem.appendChild(tdElem2);
 	trElem.appendChild(tdElem3);		
-	tabElem.appendChild(trElem);	
+	tbodyElem.appendChild(trElem);	
+	tabElem.appendChild(tbodyElem);
 	globalj++;
 	document.getElementById('hiddenMacInput').value = globalj;
 }
@@ -86,6 +93,7 @@ function displayExistingMacroSvc(max){
 		var imgElem = document.createElement('img');	
 		var tabElem = document.getElementById('macroTable');
 		var trElem = document.createElement('tr');
+		var tbodyElem = document.createElement('tbody');
 		
 		trElem.id = "trElem_" + globalj;
 		if (trMacroClassFlag) {
@@ -120,7 +128,12 @@ function displayExistingMacroSvc(max){
 		imgElem.onclick = function(){
 			var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
 			if (response){
-				document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+				if (navigator.appName == "Microsoft Internet Explorer") {
+					document.getElementById('trMacroInput_' + this.id).innerText = "";
+				}
+				else {
+					document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+				}
 			}
 		}
 		tdElem3.appendChild(imgElem);		
@@ -128,7 +141,8 @@ function displayExistingMacroSvc(max){
 		trElem.appendChild(tdElem2);
 		trElem.appendChild(tdElem3);			
 		globalj++;
-		tabElem.appendChild(trElem);
+		tbodyElem.appendChild(trElem);
+		tabElem.appendChild(tbodyElem);
 	}
 	document.getElementById('hiddenMacInput').value = globalj;
 }
