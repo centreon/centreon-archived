@@ -35,7 +35,7 @@
 			<td>
 				&nbsp;
 				&nbsp;
-				<a href="javascript:log_CSV()"><img src="./img/icones/16x16/opencalc.gif" alt="export CSV"/></a>
+				<a href="javascript:log_CSV()"><img src="./img/icones/16x16/text_binary_csv.gif" alt="export CSV"/></a>
 			</td>
 		</tr>
 	</table>

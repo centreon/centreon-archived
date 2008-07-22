@@ -21,7 +21,7 @@
 			</form>
 		</td>
 		<td>
-			<a href="{$link_csv_url}"><img src="./img/icones/16x16/opencalc.gif" alt={$link_csv_name}/></a>
+			<a href="{$link_csv_url}"><img src="./img/icones/16x16/text_binary_csv.gif" alt={$link_csv_name}/></a>
 		</td>
 	</tr>
 	<tr class='list_lvl_3'>
