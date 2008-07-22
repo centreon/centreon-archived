@@ -260,7 +260,7 @@
 	function updateContact($contact_id = null, $from_MC = false)	{
 		if (!$contact_id) return;
 		global $form;
-		global $pearDB;
+		global $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE contact ";
@@ -305,6 +305,9 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL && $contact_id == $oreon->user->get_id()) {
+			$oreon->user->set_lang($ret["contact_lang"]);
+		}
 	}
 
 	function updateContact_MC($contact_id = null)	{
