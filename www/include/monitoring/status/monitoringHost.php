@@ -48,7 +48,7 @@
 			$_GET["persistent"] = 0;
 		acknowledgeHost();
 	} else if(isset($_GET["cmd"]) && $_GET["cmd"] == 14 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 0){
-		acknowledgeHostDisable($lang);
+		acknowledgeHostDisable();
 	}
 
 	if ($min){
