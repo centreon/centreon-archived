@@ -19,6 +19,7 @@
 		exit();
 
 	require_once './class/other.class.php';
+	include_once("./include/monitoring/common-Func.php");
 	include_once("./include/monitoring/external_cmd/cmd.php");
 
 	#Pear library

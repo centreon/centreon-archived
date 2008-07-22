@@ -23,8 +23,8 @@
 	if (isset($_GET["en"]))
 		$en = $_GET["en"];
 	
-	if (isset($_GET["select"]))
-		foreach ($_GET["select"] as $key => $value){
+	if (isset($_GET["select"])){
+		foreach ($_GET["select"] as $key => $value){	
 			if (isset($_GET["cmd"]))
 				switch ($_GET["cmd"]) {
 					
@@ -150,5 +150,6 @@
 					case 92:	autoCheckHostStart($key); 					 	break;
 					case 93:	autoCheckHostStop($key);  						break;
 				}
+			}
 		}
 ?>

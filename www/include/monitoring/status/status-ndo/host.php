@@ -40,11 +40,8 @@
 
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
-	$rows = 0;
-
 	$rows = 10;
-
-
+	
 	//include("./include/common/checkPagination.php");
 
 	include_once("makeJS_host.php");
@@ -87,14 +84,6 @@
 
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
     $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."), 
-													"3"		=>	_("Verification Check"), 
-													"4"		=>	_("Verification Check (Forced)"), 
-													"70" 	=> 	_("Services : Acknowledge"), 
-													"71" 	=> 	_("Services : Disacknowledge"),
-													"80" 	=> 	_("Services : Enable Notification"), 
-													"81" 	=> 	_("Services : Disable Notification"),
-													"90" 	=> 	_("Services : Enable Check"), 
-													"91" 	=> 	_("Services : Disable Check"),
 													"72" 	=> 	_("Hosts : Acknowledge"),
 													"73" 	=> 	_("Hosts : Disacknowledge"), 
 													"82" 	=> 	_("Hosts : Enable Notification"),
@@ -107,14 +96,6 @@
 
 	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();");
     $form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."), 
-													"3"		=>	_("Verification Check"), 
-													"4"		=>	_("Verification Check (Forced)"), 
-													"70" 	=> 	_("Services : Acknowledge"), 
-													"71" 	=> 	_("Services : Disacknowledge"),
-													"80" 	=> 	_("Services : Enable Notification"), 
-													"81" 	=> 	_("Services : Disable Notification"),
-													"90" 	=> 	_("Services : Enable Check"), 
-													"91" 	=> 	_("Services : Disable Check"),
 													"72" 	=> 	_("Hosts : Acknowledge"),
 													"73" 	=> 	_("Hosts : Disacknowledge"), 
 													"82" 	=> 	_("Hosts : Enable Notification"),
