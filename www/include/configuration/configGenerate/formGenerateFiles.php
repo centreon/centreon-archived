@@ -27,7 +27,7 @@
 	}
 
 	# Get Poller List
-	$tab_nagios_server = array("0" => "All Nagios Servers");
+	$tab_nagios_server = array("0" => _("All Nagios Servers"));
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `localhost` DESC");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";

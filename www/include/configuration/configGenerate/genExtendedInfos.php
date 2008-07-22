@@ -26,7 +26,7 @@
 	 * Host Extended Information
 	 */
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostextinfo.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY `host_name`");
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host, extended_host_information WHERE host_activate = '1' AND `ehi_notes` IS NOT NULL AND `ehi_notes_url` IS NOT NULL AND `ehi_action_url` IS NOT NULL AND `ehi_icon_image` IS NOT NULL AND `ehi_icon_image_alt` IS NOT NULL AND `ehi_vrml_image` IS NOT NULL AND `ehi_statusmap_image` IS NOT NULL AND `ehi_2d_coords` IS NOT NULL AND `ehi_3d_coords` IS NOT NULL AND host_register = '1' AND host_activate = '1' ORDER BY `host_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$ehi = array();
@@ -77,7 +77,7 @@
 	$i = 1;
 	$str = NULL;
 
-	$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_register = '1'");
+	$DBRESULT =& $pearDB->query("SELECT service_id FROM service,extended_service_information WHERE service_service_id = service_id AND service_register = '1' AND `esi_notes` IS NOT NULL AND `esi_notes_url` IS NOT NULL AND `esi_action_url` IS NOT NULL AND `esi_icon_image` IS NOT NULL AND `esi_icon_image_alt`IS NOT NULL");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($esi =& $DBRESULT->fetchRow())	{
@@ -114,7 +114,8 @@
 				}
 			}
 			$hgs = getMyServiceHostGroups($esi["service_id"]);
-			foreach ($hgs as $key=>$value)	{
+			foreach ($hgs as $key => $value)	{
+				print_r($gbArr[3]);
 				if (isset($value[$gbArr[3]]))	{
 					$hostgroup_name = getMyHostGroupName($value);
 					$service_description = getMyServiceName($esi["service_id"]);

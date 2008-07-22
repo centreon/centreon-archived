@@ -55,8 +55,7 @@
 	}
 	
 	function checkDependenciesStrong()	{
-		global $pearDB;
-		global $oreon;
+		global $pearDB,  $oreon;
 		$cctEnb = array();
 		$cgEnb = array();
 		$hostEnb = array();
@@ -264,7 +263,7 @@
 		$DBRESULT =& $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_activate = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while($DBRESULT->fetchInto($oms))
+		while ($DBRESULT->fetchInto($oms))
 			$omsEnb[$oms["meta_id"]] = 1;
 		unset($oms);
 		$DBRESULT->free();
@@ -359,8 +358,7 @@
 			if ($service["service_template_model_stm_id"])	{
 				if (array_key_exists($service["service_template_model_stm_id"], $svEnb))
 					$svEnb[$service["service_id"]] = 1;
-			}
-			else
+			} else
 				$svEnb[$service["service_id"]] = 1;	
 		}
 		$DBRESULT->free();
@@ -510,7 +508,7 @@
 		$str .= "#                   - Romain Le Merlus                            #\n";
 		$str .= "#                                                                 #\n";
 		$str .= "#                           www.centreon.com                      #\n";
-		$str .= "#                For information : contact@centreon.com      #\n";
+		$str .= "#                For information : contact@centreon.com           #\n";
 		$str .= "###################################################################\n";
 		$str .= "#                                                                 #\n";
 		$str .= "#         Last modification " . $time;

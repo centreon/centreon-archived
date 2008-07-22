@@ -23,26 +23,27 @@
 	}
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/services.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT * FROM service ORDER BY `service_register`, `service_description`");
+	$DBRESULT =& $pearDB->query("SELECT * FROM service WHERE `service_activate` = '1' ORDER BY `service_register`, `service_description`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$service = array();
 	$i = 1;
 	$str = NULL;
-	while($DBRESULT->fetchInto($service))	{
+	while ($service =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		$LinkedToHost = 0;
 		$strDef = "";
-		array_key_exists($service["service_id"], $gbArr[4]) ? $BP = true : NULL;
+	
+		isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
 		
 		$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
 		$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 		$service["service_alias"] = str_replace('#S#', "/", $service["service_alias"]);
 		$service["service_alias"] = str_replace('#BS#', "\\", $service["service_alias"]);
 		if ($BP)	{
-			#
-			## Can merge multiple Host or HostGroup Definition
-			#
+			/*
+			 *  Can merge multiple Host or HostGroup Definition
+			 */
 			$strTMP = NULL;
 			$parent = false;
 			$ret["comment"] ? ($strTMP .= "# '" . $service["service_description"] . "' service definition " . $i . "\n") : NULL;
@@ -54,36 +55,40 @@
 			}
 			$strTMP .= "define service{\n";
 			if ($service["service_register"])	{
-				#HostGroup Relation
+				/*
+				 * HostGroup Relation
+				 */
 				$hostGroup = array();
 				$strTMPTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM host_service_relation hsr, hostgroup hg WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.hostgroup_hg_id = hg.hg_id");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-				while($DBRESULT2->fetchInto($hostGroup))	{
+				while ($hostGroup =& $DBRESULT2->fetchRow())	{
 					$BP = false;
-					array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
-					
-					if ($BP && isset($generatedHG[$hostGroup["hg_id"]]) && $generatedHG[$hostGroup["hg_id"]]){
+					if (isset($generatedHG[$hostGroup["hg_id"]]) && $generatedHG[$hostGroup["hg_id"]]){
 						$parent = true;
 						$strTMPTemp != NULL ? $strTMPTemp .= ", ".$hostGroup["hg_name"] : $strTMPTemp = $hostGroup["hg_name"];
 						$LinkedToHost++;
 					}
 				}
 				$DBRESULT2->free();
-				if ($strTMPTemp) $strTMP .= print_line("hostgroup_name", $strTMPTemp);
+				if ($strTMPTemp) 
+					$strTMP .= print_line("hostgroup_name", $strTMPTemp);
 				unset($hostGroup);
 				unset($strTMPTemp);
+				
 				if (!$parent)	{
-					# Host Relation
+					/*
+					 * Host Relation
+					 */
 					$host = array();
 					$strTMPTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_service_relation hsr, host WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.host_host_id = host.host_id");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-					while($DBRESULT2->fetchInto($host))	{
+					while ($DBRESULT2->fetchInto($host))	{
 						$BP = false;
-						array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
+						isset($gbArr[2][$host["host_id"]]) ? $BP = true : NULL;
 						
 						if ($BP)	{
 							$parent = true;
@@ -213,7 +218,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while($DBRESULT2->fetchInto($contactGroup))	{
+			while ($DBRESULT2->fetchInto($contactGroup))	{
 				$BP = false;
 				array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
 				
