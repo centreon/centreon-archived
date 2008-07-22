@@ -44,9 +44,10 @@
 	else {
 		$data = array("host_id" => $host_id, "service_id" => getMyServiceID($svc_description, $host_id));
 		
-		#
-		## Database retrieve information for differents elements list we need on the page
-		#
+		/*
+		 * Database retrieve information for differents
+		 * elements list we need on the page
+		 */
 		$hosts = array(""=>"");
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
 		if (PEAR::isError($DBRESULT))
@@ -54,7 +55,7 @@
 		while ($host =& $DBRESULT->fetchRow()){
 			if (!$host["host_name"])
 				$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-			if (isset($lcaHostByName["LcaHost"][$host["host_name"]]))
+			if (isset($lcaHostByName["LcaHost"][$host["host_name"]]) || $is_admin)
 				$hosts[$host["host_id"]]= $host["host_name"];
 		}
 		$DBRESULT->free();
@@ -87,8 +88,11 @@
 	    $form->addElement('checkbox', 'persistant', _("Persistent"));
 		$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 		
-		$form->addRule('host', _("Required Field"), 'required');
-		$form->addRule('service', _("Required Field"), 'required');
+		/*
+		 * Add Rules
+		 */
+		$form->addRule('host_id', _("Required Field"), 'required');
+		$form->addRule('service_id', _("Required Field"), 'required');
 		$form->addRule('comment', _("Required Field"), 'required');	
 		
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));

@@ -24,7 +24,7 @@
 	
 	if (isset($_GET["host_name"])){
 		$host_id = getMyHostID($_GET["host_name"]);
-		if (!isset($lcaHostByName["LcaHost"] [$_GET["host_name"]]) && $isRestreint)
+		if (!isset($lcaHostByName["LcaHost"] [$_GET["host_name"]]) && !$is_admin)
 			$LCA_error = 1;
 		$host_name = $_GET["host_name"];
 	} else
@@ -70,7 +70,7 @@
 		$form->addElement('checkbox', 'persistant', _("Persistent"));
 		$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 		
-		$form->addRule('host', _("Required Field"), 'required');
+		$form->addRule('host_id', _("Required Field"), 'required');
 		$form->addRule('comment', _("Required Field"), 'required');	
 		
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));

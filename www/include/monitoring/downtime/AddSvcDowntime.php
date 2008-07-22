@@ -31,7 +31,7 @@
 	
 	if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
 		$host_id = getMyHostID($_GET["host_name"]);
-		if (!isset($lcaHostByName[LcaHost] [$_GET["host_name"]]) && $isRestreint)
+		if (!isset($lcaHostByName["LcaHost"][$_GET["host_name"]]) && !$is_admin)
 			$LCA_error = 1;
 		$service_id = getMyServiceID($_GET["service_description"], $host_id);
 		$host_name = $_GET["host_name"];
@@ -54,7 +54,7 @@
 		while ($host =& $DBRESULT->fetchRow()){
 			if (!$host["host_name"])
 				$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-			if (isset($lcaHostByName["LcaHost"][$host["host_name"]]))
+			if (isset($lcaHostByName["LcaHost"][$host["host_name"]]) || $is_admin)
 				$hosts[$host["host_id"]]= $host["host_name"];
 		}
 		$DBRESULT->free();
@@ -91,7 +91,8 @@
 		$form->addElement('text', 'end', _("End Time"), $attrsText);
 		$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 		
-		$form->addRule('host', _("Required Field"), 'required');
+		$form->addRule('host_id', _("Required Field"), 'required');
+		$form->addRule('service_id', _("Required Field"), 'required');
 		$form->addRule('end', _("Required Field"), 'required');
 		$form->addRule('start', _("Required Field"), 'required');
 		$form->addRule('comment', _("Required Field"), 'required');	
