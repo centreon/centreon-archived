@@ -498,7 +498,7 @@
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$j++;
 					$already_stored[$_POST[$tpSelect]] = 1;
-	 			}			
+	 			}	 			
 	 		}
  		}
 		
@@ -1331,6 +1331,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL){
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+
 	while ($hTpl = $DBRESULT->fetchRow()) {		
 		$rq2 = "SELECT service_service_id FROM `host_service_relation` WHERE host_host_id = " . $hTpl['host_tpl_id'];
 		$DBRESULT2 =& $pearDB->query($rq2);

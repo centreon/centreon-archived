@@ -14,13 +14,7 @@
  * 
  * For information : contact@centreon.com
  */
-	if (!isset($oreon))
-		exit();
-
-	if (isset($num) && $num < 0)
-		$num = 0;
 ?>
-
 <script type="text/javascript">
 
 var _o='<?php echo $o;?>';
@@ -30,69 +24,6 @@ var _p='<?php echo $p;?>';
 **  This first block is the javascript code for the multi template creation
 **  There is also a second block for the multi macro creation 
 */
-
-
-/*
-** Function called when user clicks on add button
-*/
-function addBlankSelect() {	
-	var docXML = xhr.responseXML;	
-	var host_entry = docXML.getElementsByTagName("template");
-	
-	var tp_id = docXML.getElementsByTagName("tp_id");
-	var id;    
-	
-	var tp_alias = docXML.getElementsByTagName("tp_alias");
-	var alias;
-	
-	var selectElem = document.createElement('select');
-	tabElem = document.getElementById('multiTpTable');
-	var trElem = document.createElement('tr');	
-	var tdElem = document.createElement('td');
-	var divElem = document.getElementById('parallelTemplate');;
-	var i;
-	
-	
-	selectElem.id = 'tpSelect_' + globalk;	
-	selectElem.name = 'tpSelect_' + globalk;
-	selectElem.value = 'tpSelect_' + globalk;	
-	globalk++;
-	for(i=0; i<host_entry.length;i++)
-	{
-	  	id = tp_id.item(i).firstChild.data;    	
-	   	alias = tp_alias.item(i).firstChild.data;
-	   	var optionElem = document.createElement('option');
-	   	
-	    optionElem.value = id;
-	    optionElem.text = alias;
-	    selectElem.appendChild(optionElem);
-	}
-
-	tdElem.appendChild(selectElem);
-	
-	var imgElem = document.createElement("img");
-	imgElem.src = "./img/icones/16x16/delete.gif";	
-	imgElem.onclick = function(){		
-		tabElem.removeChild(trElem);
-	}
-	tdElem.appendChild(imgElem);
-	
-	trElem.appendChild(tdElem);
-	if (trClassFlag) {
-		trClassFlag = 0;
-		trElem.className = "list_one";
-	}
-	else {
-		trClassFlag = 1;
-		trElem.className = "list_two";
-	}
-	tabElem.appendChild(trElem);	
-	divElem.appendChild(tabElem);
-	
-	//We create a hidden input so that the php sided code can retrieve the globalk variable
-	var hidElem = document.getElementById("hiddenInput");
-	hidElem.value = globalk;	
-}
 
 /*
 ** Function for displaying selected template
@@ -109,9 +40,10 @@ function displaySelectedTp(){
 	    var alias;
 	    	    	    
 	    var i;
-	    var imgElem;	    
-	    
-	    var tabElem = document.createElement('table');
+	    var imgElem;
+	    var tbodyElem = document.createElement('tbody');
+	    tbodyElem.id = "tbody_" + globalk;
+	    var tabElem = document.createElement('table');	    
 	    tabElem.id = "multiTpTable";
 	    tabElem.className = "ListTableMultiTp";	    
 	    	    
@@ -134,19 +66,29 @@ function displaySelectedTp(){
 			selectElem.value = 'tpSelect_' + globalk;
 			for(i=0; i<host_entry.length;i++)
 			{
-			   	id = tp_id.item(i).firstChild.data;    	
+			   	id = tp_id.item(i).firstChild.data;  	
 			   	alias = tp_alias.item(i).firstChild.data;
 			   	var optionElem = document.createElement('option');    	
 			   	if (tab[globalk] == id) {
 					optionElem.selected = true;
 			  	}
 			    optionElem.value = id;
-			    optionElem.text = alias;    
-			    selectElem.appendChild(optionElem);
+			    if (i == 0) {
+			    	optionElem.text = " ";
+			    }
+			    else {
+			    	optionElem.text = alias;
+			    }	
+			    if (navigator.appName == "Microsoft Internet Explorer") {					
+			    	selectElem.add(optionElem);
+			    }
+			    else {
+			    	selectElem.appendChild(optionElem);
+			    }			    
 			}			
 			
-			tabElem.class = "ListTableMultiTp";		
-			tdElem.class = "FormRowValue";
+			tabElem.className = "ListTableMultiTp";		
+			tdElem.className = "FormRowValue";
 			
 			tdElem.appendChild(selectElem);
 			
@@ -156,21 +98,100 @@ function displaySelectedTp(){
 			imgElem.title = '<?php echo _("Delete");?>';
 			imgElem.onclick = function(){				
 				var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
-				if (response) {
-					document.getElementById('trElem_' + this.id).innerHTML = "";
+				if (response) {										
+			    	if (navigator.appName == "Microsoft Internet Explorer") {
+						document.getElementById('trElem_' + this.id).innerText = "";
+					}
+					else {
+						document.getElementById('trElem_' + this.id).innerHTML = "";
+					}					
 				}
 			}
-			tdElem.appendChild(imgElem);			
+			tdElem.appendChild(imgElem);
 			trElem.appendChild(tdElem);
-			tabElem.appendChild(trElem);	
-		}	
-		var divElem = document.getElementById('parallelTemplate');
-		
-		divElem.appendChild(tabElem)
+			tbodyElem.appendChild(trElem);	
+		}			
+		tabElem.appendChild(tbodyElem)
+		var divElem = document.getElementById("parallelTemplate");		
+		divElem.appendChild(tabElem);
 		
 		//We create a hidden input so that the php sided code can retrieve the globalk variable
 		var hidElem = document.getElementById("hiddenInput");
 		hidElem.value = globalk;
+}
+
+/*
+** Function called when user clicks on add button
+*/
+function addBlankSelect() {	
+	var docXML = xhr.responseXML;	
+	var host_entry = docXML.getElementsByTagName("template");
+	
+	var tp_id = docXML.getElementsByTagName("tp_id");
+	var id;    
+	
+	var tp_alias = docXML.getElementsByTagName("tp_alias");
+	var alias;
+	
+	var selectElem = document.createElement('select');
+	tabElem = document.getElementById('multiTpTable');
+	var tbodyElem = document.createElement('tbody');
+	var trElem = document.createElement('tr');	
+	var tdElem = document.createElement('td');
+	var divElem = document.getElementById('parallelTemplate');;
+	var i;
+	
+	
+	selectElem.id = 'tpSelect_' + globalk;	
+	selectElem.name = 'tpSelect_' + globalk;
+	selectElem.value = 'tpSelect_' + globalk;	
+	globalk++;
+	for(i=0; i<host_entry.length;i++)
+	{
+	  	id = tp_id.item(i).firstChild.data; 	
+	   	alias = tp_alias.item(i).firstChild.data;
+	   	var optionElem = document.createElement('option');
+	   	
+	    optionElem.value = id;
+	    if (i==0) {
+	    	optionElem.text = " ";
+	    }
+	    else {
+	    	optionElem.text = alias;
+	    }
+	    if (navigator.appName == "Microsoft Internet Explorer") {					
+			selectElem.add(optionElem);
+		}
+		else {
+	    	selectElem.appendChild(optionElem);
+	    }	
+	}
+
+	tdElem.appendChild(selectElem);
+	
+	var imgElem = document.createElement("img");
+	imgElem.src = "./img/icones/16x16/delete.gif";	
+	imgElem.onclick = function(){				
+		tabElem.removeChild(tbodyElem);
+	}
+	tdElem.appendChild(imgElem);
+	
+	trElem.appendChild(tdElem);
+	if (trClassFlag) {
+		trClassFlag = 0;
+		trElem.className = "list_one";
+	}
+	else {
+		trClassFlag = 1;
+		trElem.className = "list_two";
+	}
+	tbodyElem.appendChild(trElem);
+	tabElem.appendChild(tbodyElem);	
+	divElem.appendChild(tabElem);
+	
+	//We create a hidden input so that the php sided code can retrieve the globalk variable
+	var hidElem = document.getElementById("hiddenInput");
+	hidElem.value = globalk;	
 }
 
 /*
@@ -180,8 +201,8 @@ function get_select_options() {
 	if (xhr.readyState != 4 && xhr.readyState != "complete")		
     	return(0);
     if (xhr.status == 200)
-    {    	
-    	displaySelectedTp(xhr);
+    {    	    	
+   		displaySelectedTp();
     }	
 }
 
@@ -190,11 +211,11 @@ function get_select_options() {
 */
 function add_select_template(){	
 	xhr = null;
-	if (window.XMLHttpRequest) {
+	if (window.XMLHttpRequest) {     
         xhr = new XMLHttpRequest();
     }
     else if (window.ActiveXObject)
-    {
+    {        
         xhr = new ActiveXObject("Microsoft.XMLHTTP");
     }
         
@@ -207,7 +228,7 @@ function add_select_template(){
     	$host_id = -1; 
     ?>
     xhr.open("GET", "./include/configuration/configObject/host/makeXMLhost.php?host_id="+<?php echo $host_id;?>, true);
-    xhr.send(null);    
+    xhr.send(null);
 }
 
 /*
@@ -227,6 +248,8 @@ function addBlankInput() {
 	var valueElem = document.createElement('input');
 	var imgElem = document.createElement('img');			
 	var trElem = document.createElement('tr');
+	var tbodyElem = document.createElement('tbody');
+	
 	trElem.id = "trElem_" + globalj;
 	if (trMacroClassFlag) {
 		trElem.className = "list_one";
@@ -236,6 +259,7 @@ function addBlankInput() {
 		trElem.className = "list_two";
 		trMacroClassFlag = 1;
 	}
+	
 	trElem.id = "trMacroInput_" + globalj;	
 	var tdElem1 = document.createElement('td');
 	tdElem1.className = "ListColCenter";
@@ -258,14 +282,20 @@ function addBlankInput() {
 	imgElem.onclick = function(){
 		var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
 		if (response){			
-			document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+			if (navigator.appName == "Microsoft Internet Explorer") {
+				document.getElementById('trMacroInput_' + this.id).innerText = "";
+			}
+			else {
+				document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+			}
 		}
 	}	
 	tdElem3.appendChild(imgElem);	
 	trElem.appendChild(tdElem1);
 	trElem.appendChild(tdElem2);
-	trElem.appendChild(tdElem3);		
-	tabElem.appendChild(trElem);	
+	trElem.appendChild(tdElem3);
+	tbodyElem.appendChild(trElem);		
+	tabElem.appendChild(tbodyElem);	
 	globalj++;
 	document.getElementById('hiddenMacInput').value = globalj;
 }
@@ -273,14 +303,14 @@ function addBlankInput() {
 /*
 ** Function for displaying existing macro
 */
-
-function displayExistingMacroHost(max){
-	for (var i=0; i < max; i++) {
+function displayExistingMacroHost(max){	
+	for (var i=0; i < max; i++) {	
 		var keyElem = document.createElement('input');
 		var valueElem = document.createElement('input');
 		var imgElem = document.createElement('img');	
 		var tabElem = document.getElementById('macroTable');
 		var trElem = document.createElement('tr');
+		var tbodyElem = document.createElement('tbody');
 		
 		trElem.id = "trElem_" + globalj;
 		if (trMacroClassFlag) {
@@ -315,7 +345,12 @@ function displayExistingMacroHost(max){
 		imgElem.onclick = function(){
 			var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
 			if (response){
-				document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+				if (navigator.appName == "Microsoft Internet Explorer") {
+					document.getElementById('trMacroInput_' + this.id).innerText = "";
+				}
+				else {
+					document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+				}
 			}
 		}
 		tdElem3.appendChild(imgElem);		
@@ -323,7 +358,8 @@ function displayExistingMacroHost(max){
 		trElem.appendChild(tdElem2);
 		trElem.appendChild(tdElem3);			
 		globalj++;
-		tabElem.appendChild(trElem);
+		tbodyElem.appendChild(trElem);
+		tabElem.appendChild(tbodyElem);
 	}
 	document.getElementById('hiddenMacInput').value = globalj;
 }

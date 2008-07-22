@@ -33,7 +33,7 @@ if (PEAR::isError($DBRESULT))
 echo "<template_data>\n";
 echo "<template>";
 echo "<tp_id>0</tp_id>\n";	
-echo "<tp_alias> </tp_alias>\n";	
+echo "<tp_alias>empty</tp_alias>\n";	
 echo "</template>\n";
 
 /*

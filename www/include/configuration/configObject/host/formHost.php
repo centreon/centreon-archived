@@ -728,7 +728,7 @@
 		$tpl->assign("topdoc", _("Documentation"));
 		$tpl->assign("hostID", $host_id);
 		$tpl->assign("add_mtp_label", _("Add a template"));
-		
+		$tpl->assign("k", $k);
 		$tpl->display("formHost.ihtml");
 	}
 
