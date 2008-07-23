@@ -45,11 +45,11 @@
 	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', _("Add a Service Category"));
+		$form->addElement('header', 'title', _("Add a Command Category"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify a Service Category"));
+		$form->addElement('header', 'title', _("Modify a Command Category"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', _("View a Service Category"));
+		$form->addElement('header', 'title', _("View a Command Category"));
 	
 	/*
 	 * Category information
@@ -101,18 +101,18 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch a service_categories information
+	# Just watch a command_categories information
 	if ($o == "w")	{
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
 	    $form->setDefaults($ccdata);
 		$form->freeze();
 	} else if ($o == "c")	{
-		# Modify a service_categories information
+		# Modify a command_categories information
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($ccdata);
 	} else if ($o == "a")	{
-		# Add a service_categories information
+		# Add a command_categories information
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}

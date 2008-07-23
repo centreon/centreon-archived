@@ -50,7 +50,7 @@
 	 */
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Description"));
-	$tpl->assign("headerMenu_linked_svc", _("Number of linked services"));
+	$tpl->assign("headerMenu_linked_cmd", _("Number of linked commands"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
 	/*
