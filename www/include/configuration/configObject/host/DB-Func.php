@@ -660,9 +660,12 @@
 	/*
 	 * 	this function cleans all the services that were linked to the removed host template  
  	 */
-	function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list){
+	function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = NULL){
 		global $pearDB, $path, $oreon;
 	
+		if (isset($antiLoop[$scndHID]) && $antiLoop[$scndHID]) {
+			return 0;
+		}
 		$DBRESULT3 =& $pearDB->query("SELECT service_service_id " .
 	 							"FROM `service` svc, `host_service_relation` hsr " .
 	 							"WHERE svc.service_id = hsr.service_service_id " .
@@ -709,7 +712,8 @@
 				if (PEAR::isError($DBRESULT4))
 					print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
 			}
-			deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"], $host_list);
+			$antiLoop[$scndHID] = 1;
+			deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"], $host_list, $antiLoop);
 		}	
 	}
 	
@@ -1369,9 +1373,12 @@
 		}
 	}
 
-function generateHostServiceMultiTemplate($hID, $hID2 = NULL){
+function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 	global $pearDB, $path, $oreon;
 	
+	if (isset($antiLoop[$hID2]) && $antiLoop[$hID2]) {		
+		return 0;	
+	}
 	$rq = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
@@ -1393,7 +1400,8 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL){
 					print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 			}
 		}
-		generateHostServiceMultiTemplate($hID, $hTpl['host_tpl_id']);
+		$antiLoop[$hID2] = 1;
+		generateHostServiceMultiTemplate($hID, $hTpl['host_tpl_id'], $antiLoop);
 	}
 }
 
