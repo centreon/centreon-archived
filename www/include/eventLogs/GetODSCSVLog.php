@@ -49,7 +49,7 @@
 	
 	$xml = new SimpleXMLElement($flux);
 
-	echo _("Begin date")."; "._("End date").";\n";		
+	echo _("Begin date")."; "._("End date").";\n";
 	echo date('d/m/y (H:i:s)', intval($xml->infos->start)).";".date('d/m/y (H:i:s)', intval($xml->infos->end))."\n";
 	echo "\n";
 	

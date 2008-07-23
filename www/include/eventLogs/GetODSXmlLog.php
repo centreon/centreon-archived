@@ -277,7 +277,7 @@
 		 */
 		foreach ($tab_id as $openid){
 			$tab_tmp = split("_",$openid);
-			$id = $tab_tmp[1];
+			#$id = $tab_tmp[1];
 			$type = $tab_tmp[0];
 
 			if($type == "HG"){
