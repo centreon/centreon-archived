@@ -271,14 +271,14 @@
         isset($ret["enable_environment_macros"]["enable_environment_macros"]) && $ret["enable_environment_macros"]["enable_environment_macros"] != 2 ? $rq .= "'".$ret["enable_environment_macros"]["enable_environment_macros"]."',  " : $rq .= "'2', ";
         isset($ret["use_regexp_matching"]["use_regexp_matching"]) && $ret["use_regexp_matching"]["use_regexp_matching"] != 2 ? $rq .= "'".$ret["use_regexp_matching"]["use_regexp_matching"]."',  " : $rq .= "'2', ";
         isset($ret["use_true_regexp_matching"]["use_true_regexp_matching"]) && $ret["use_true_regexp_matching"]["use_true_regexp_matching"] != 2 ? $rq .= "'".$ret["use_true_regexp_matching"]["use_true_regexp_matching"]."',  " : $rq .= "'2', ";
-        isset($ret["admin_email"]) && $ret["admin_email"] != NULL ? $rq .= "'".htmlentities($ret["admin_email"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["admin_email"]) && $ret["admin_email"] != NULL ? $rq .= "'".htmlentities($ret["admin_email"], ENT_QUOTES)."', " : $rq .= "NULL, ";        
         isset($ret["admin_pager"]) && $ret["admin_pager"] != NULL ? $rq .= "'".htmlentities($ret["admin_pager"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "'".htmlentities($ret["nagios_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"] != NULL ? $rq .= "'".$ret["nagios_activate"]["nagios_activate"]."'," : $rq .= "'0',";
 		isset($ret["broker_module"]) && $ret["broker_module"] != NULL ? $rq .= "'".htmlentities($ret["broker_module"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "'".htmlentities($ret["event_broker_options"], ENT_QUOTES)."') " : $rq .= "NULL, ";
+		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "'".htmlentities($ret["event_broker_options"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "'".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "'2', ";
-		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "'".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."',  " : $rq .= "'2' ) ";
+		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "'".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."') " : $rq .= "'2' ) ";
  
         $DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))

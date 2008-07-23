@@ -388,6 +388,7 @@
 	
 	function insertHostInDB ($ret = array())	{
 		global $oreon;
+		
 		$host_id = insertHost($ret);
 		updateHostHostParent($host_id, $ret);
 		updateHostHostChild($host_id, $ret);
@@ -427,7 +428,7 @@
 		
 		// For Centreon 2, we no longer need "host_template_model_htm_id" in Nagios 3
 		// but we try to keep it compatible with Nagios 2 which needs "host_template_model_htm_id" 
-		if (isset($_POST['nbOfSelect'])) {
+		if (isset($_POST['nbOfSelect']) || $oreon->user->get_version() >= 3) {
 			$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -489,7 +490,24 @@
 		/*
  		**  Insert multiple templates
  		*/
- 		if (isset($_POST['nbOfSelect'])) { 
+ 		if (isset($ret["use"]) && $ret["use"]){
+ 			$already_stored = array();
+ 			$tplTab = split(",", $ret["use"]);
+ 			$j = 0;
+ 			foreach ($tplTab as $val) {
+ 				$tplId = getMyHostID($val); 
+ 					
+	 			if (!isset($already_stored[$tplId]) && $tplId) {
+		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id['MAX(host_id)'] .", ". $tplId .", ". $j .")";
+			 		$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					$j++;
+					$already_stored[$tplId] = 1;
+	 			}
+	 		}
+ 		} 		
+ 		elseif (isset($_POST['nbOfSelect']) || $oreon->user->get_version() >= 3) { 	 		
 	 		$already_stored = array();
 	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
 	 		{ 			
@@ -508,7 +526,7 @@
 		/*
 		 *  Insert on demand macros
 		 */
-		if (isset($_POST['nbOfMacro'])) {			
+		if (isset($_POST['nbOfMacro']) || $oreon->user->get_version() >= 3) {			
 			$already_stored = array(); 		
 	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
 	 		{ 			

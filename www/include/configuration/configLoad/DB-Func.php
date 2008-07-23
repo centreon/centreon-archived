@@ -552,7 +552,7 @@
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ."\n", 3, $debug_path."cfgimport.log");
 			foreach ($tmpConf as $key=>$value)	{
 				switch($key)	{
-					case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
+					case "use" : $use = trim($tmpConf[$key]); /*unset ($tmpConf[$key])*/; break;
 					case "name" : $tmpConf["host_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "alias" : $tmpConf["host_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "address" : $tmpConf["host_address"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -643,7 +643,7 @@
 			$tmpConf["ehi_vrml_image"] = NULL;
 			$tmpConf["ehi_statusmap_image"] = NULL;
 			$tmpConf["ehi_2d_coords"] = NULL;
-			$tmpConf["ehi_3d_coords"] = NULL;
+			$tmpConf["ehi_3d_coords"] = NULL;			
 			$useTpl[0] = insertHostInDB($tmpConf);
 			$useTpl[1] = $use;
 			isset($tmpConf["host_parentsTMP"]) ? $useTpl[2] = $tmpConf["host_parentsTMP"] : NULL;
