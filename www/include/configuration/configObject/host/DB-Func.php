@@ -178,7 +178,10 @@
 								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 						}
 						# We need to duplicate the entire Service and not only create a new relation for it in the DB / Need Service functions
-						require_once($path."../service/DB-Func.php");
+						if (file_exists($path."../service/DB-Func.php"))
+							require_once($path."../service/DB-Func.php");
+						else if (file_exists($path."../service/DB-Func.php"))
+							require_once($path."../configObject/service/DB-Func.php");
 						$hostInf = $maxId["MAX(host_id)"];
 						$serviceArr = array();
 						$serviceNbr = array();
@@ -951,6 +954,30 @@
 		 */	 		
  		if (isset($_POST['nbOfSelect']) && $_POST['nbOfSelect']) {
 	 		$already_stored = array();
+	 		
+	 		$oldTp = array();
+	 		$newTp = array();	 		
+	 		$DBRESULT =& $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+	 		if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	 		while ($hst =& $DBRESULT->fetchRow())
+	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];			
+	 		for ($i=0;$i <= $_POST['nbOfSelect']; $i++)
+	 		{
+	 			$tpSelect = "tpSelect_" . $i;
+	 			$newTp[$_POST[$tpSelect]] = $_POST[$tpSelect];
+	 		}
+	 		foreach ($oldTp as $val)
+	 		{
+	 			/*
+  	 			 * if not set, then that means a template was removed
+	 			 * we will have to remove the services that were linked to that host template as well  
+	 			 */
+	 			if (!isset($newTp[$val])) {
+	 				deleteHostServiceMultiTemplate($host_id, $val, $newTp);
+	 			}
+	 		}
+	 		
 	 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
 	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
 	 		{ 			
@@ -1355,7 +1382,10 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL){
 	function createHostTemplateService($host_id = null, $htm_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB, $path, $oreon;
-		require_once($path."../service/DB-Func.php");
+		if (file_exists($path."../service/DB-Func.php"))
+			require_once($path."../service/DB-Func.php");
+		else if (file_exists($path."../service/DB-Func.php"))
+			require_once($path."../configObject/service/DB-Func.php");
 		# If we select a host template model, we create the services linked to this host template model
 		if ($oreon->user->get_version() < 3) {
 			if ($htm_id)	{
@@ -1411,7 +1441,10 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL){
 	function updateHostTemplateService($host_id = null)	{
 		if (!$host_id) return;
 		global $form, $pearDB, $oreon, $path;
-		require_once($path."../service/DB-Func.php");
+		if (file_exists($path."../service/DB-Func.php"))
+			require_once($path."../service/DB-Func.php");
+		else if (file_exists($path."../service/DB-Func.php"))
+			require_once($path."../configObject/service/DB-Func.php");
 		
 		$DBRESULT =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."'");
 		$row =& $DBRESULT->fetchRow();
@@ -1443,7 +1476,10 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL){
 	function updateHostTemplateService_MC($host_id = null)	{
 		if (!$host_id) return;
 		global $form, $pearDB, $oreon, $path;
-		require_once($path."../service/DB-Func.php");
+		if (file_exists($path."../service/DB-Func.php"))
+			require_once($path."../service/DB-Func.php");
+		else if (file_exists($path."../service/DB-Func.php"))
+			require_once($path."../configObject/service/DB-Func.php");
 		
 		$DBRESULT =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."'");
 		$row =& $DBRESULT->fetchRow();
