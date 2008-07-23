@@ -15,20 +15,6 @@
 						{/php}
 					</td>
 				</tr>
-				<tr>
-					<td colspan="2">{php}
-							include_once './lib/ofc-library/open_flash_chart_object.php';
-							open_flash_chart_object( 700, 220, './include/home/pie-hostgroup.php?sid='.session_id());
-						{/php}
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">{php}
-							include_once './lib/ofc-library/open_flash_chart_object.php';
-							open_flash_chart_object( 700, 220, './include/home/pie-svcgroup.php?sid='.session_id());
-						{/php}
-					</td>
-				</tr>
 			</table>
 		</td>
 	</tr>
