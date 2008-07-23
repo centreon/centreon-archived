@@ -15,7 +15,6 @@
  * For information : contact@centreon.com
  */
 
-
 	$debugXML = 0;
 	$buffer = '';
 
@@ -42,7 +41,6 @@
 	 * debug == 2 => log in file (log.xml) 
 	 */
 	
-
 	/* Connect to oreon DB */
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_centreon['user'],
@@ -64,9 +62,10 @@
 			$lca = getLcaHostByName($pearDB);
 			$lca = getLCASVC($lca);
 		}
-	} else 
+	} else {
 		exit();
-
+	}
+	
 	$normal_mode = 1;
 	(isset($_GET["mode"])) ? $normal_mode = $_GET["mode"] : $normal_mode = 1;
 	(isset($_GET["id"])) ? $url_var = $_GET["id"] : $url_var = 0;
@@ -96,6 +95,21 @@
 			        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 				}
 			}
+		} else if ($type == "ST") {
+			/*
+			 * Send Service/host list for a SG 
+			 */
+			$data = getMyServiceGroupServices($id);
+			foreach ($data as $key => $value){
+				$tab_value = split("_", $key);
+				$host_name = getMyHostName($tab_value[0]);
+				$service_description = getMyServiceName($tab_value[1], $tab_value[0]);
+				if ($is_admin) {
+					print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
+				} else {
+					print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
+				}
+			}
 		} else if ($type == "HH") {
 			/*
 			 * get services for host
@@ -118,6 +132,26 @@
 				$i++;
 		        print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/clients.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
+		} else if ($type == "RS") {
+			/*
+			 * Send Service Group list
+			 */
+			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getDebugInfo();
+			while ($SG =& $DBRESULT->fetchRow()){
+			    $i++;
+				if ($is_admin){
+					if (SGIsNotEmpty($SG["sg_id"])){
+			        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
+					}					
+				} else {
+					if (SGIsNotEmpty($SG["sg_id"]) /*&& isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_alias"]])*/){
+			        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
+					}					
+				}
+			}
+			$DBRESULT->free();
 		} else if ($type == "RR") {
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
 			if (PEAR::isError($DBRESULT))
@@ -177,7 +211,10 @@
 				print("</item>");
 			}
 		} else {
-			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='All Graphs' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='HostGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+			print("<itemtext>label</itemtext>");
+			print("</item>");
+			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RS_0' text='ServiceGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 			print("<itemtext>label</itemtext>");
 			print("</item>");
 		}
