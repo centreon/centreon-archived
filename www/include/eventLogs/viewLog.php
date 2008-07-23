@@ -203,12 +203,9 @@
 	
 	function onCheck(){
 		multi = 1;
+		log_4_host(tree.getAllChecked(),'');
 		
-		if(tree.getAllChecked()){
-			log_4_host(tree.getAllChecked(),'','');
-		} else {
-			//		var logView4xml = document.getElementById('logView4xml').innerHTML = '<- Check or select an item or more !';		
-		}
+		// if (tree.getAllChecked()){ // OLD ROUTINE
 	}
 		
 	// it's fake methode for using ajax system by default
