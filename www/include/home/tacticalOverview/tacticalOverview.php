@@ -229,7 +229,7 @@
 	
 		$SvcStat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	
-		while($ndo =& $DBRESULT_NDO2->fetchRow())
+		while ($ndo =& $DBRESULT_NDO2->fetchRow())
 			$SvcStat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
 
 		/*
@@ -278,13 +278,15 @@
 		 */
 		if (!$is_admin)
 			$rq1 = 	" SELECT count(".$ndo_base_prefix."acknowledgements.state), ".$ndo_base_prefix."acknowledgements.state" .
-					" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus" .
+					" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus, centreon_acl" .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."acknowledgements.object_id" .
 					" AND ".$ndo_base_prefix."acknowledgements.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
 					" AND ".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 " .
 					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 					" AND ".$ndo_base_prefix."acknowledgements.acknowledgement_type = 1 " .	
-					" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR)" .
+					" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name ".
+					" AND ".$ndo_base_prefix."objects.name2 = centreon_acl.service_description " .
+					" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
 					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
 					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
 					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
@@ -359,8 +361,8 @@
 					" AND stat.current_state <> 3" .
 					" AND stat.problem_has_been_acknowledged = 0" .
 					" AND obj.is_active = 1" .
-					" AND obj.name1 IN ($lcaSTR)" .
 					" AND obj.name1 NOT LIKE 'Meta_Module' AND obj.name1 NOT LIKE 'OSL_Module' " .
+					" AND obj.name1 = centreon_acl.host_name ".
 					" AND obj.name2 = centreon_acl.service_description " .
 					" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
 					" ORDER by stat.current_state DESC, obj.name1";
