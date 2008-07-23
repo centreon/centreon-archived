@@ -99,13 +99,26 @@
 		$cmd["command_line"] = str_replace('#R#', "\\r", $cmd["command_line"]);
 		$cmd["command_line"] = str_replace('#S#', "/", $cmd["command_line"]);
 		$cmd["command_line"] = str_replace('#BS#', "\\", $cmd["command_line"]);
-		
+
+		if ($cmd["command_type"] == 1) {
+			$command_type = _("Notification");
+		}
+		else if ($cmd["command_type"] == 2) {
+			$command_type = _("Check");
+		}
+		else if ($cmd["command_type"] == 3) {
+			$command_type = _("Miscellaneous");
+		}
+		else {
+			$command_type = _("Other");
+		}
+
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$cmd["command_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&command_id=".$cmd['command_id']."&type=".$cmd['command_type'],
 						"RowMenu_desc"=>substr($cmd["command_line"], 0, 50)."...",
-						"RowMenu_type"=>$cmd["command_type"] == 2 ? _("Check") : _("Notification"),
+						"RowMenu_type"=>$command_type,
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
