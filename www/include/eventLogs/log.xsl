@@ -14,7 +14,7 @@
 			               	<tr>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">notification</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 	
@@ -26,7 +26,7 @@
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">alert</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 	
@@ -40,7 +40,7 @@
 			               	<tr>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">error</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 	
@@ -62,7 +62,7 @@
 			               	<tr>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">up</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 	
@@ -74,7 +74,7 @@
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">down</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 	
@@ -88,7 +88,7 @@
 			               	<tr>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">unreachable</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 	
@@ -110,7 +110,7 @@
 			               	<tr>			               	
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">ok</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 	
@@ -122,7 +122,7 @@
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">warning</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 	
@@ -136,7 +136,7 @@
 			               	<tr>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">critical</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 	
@@ -148,7 +148,7 @@
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">unknown</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 	

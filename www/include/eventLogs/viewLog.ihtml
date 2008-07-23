@@ -35,9 +35,9 @@
 			<td>
 				&nbsp;
 				&nbsp;
-				<a href="javascript:log_CSV()"><img src="./img/icones/16x16/text_binary_csv.gif" alt="export CSV"/></a>
+				<a href="javascript:log_4_host(this, '', 'CSV')"><img src="./img/icones/16x16/text_binary_csv.gif" alt="export CSV"/></a>
 				&nbsp;
-				<a href="javascript:log_XML()"><img src="./img/icones/16x16/text_binary_xml.gif" alt="export XML"/></a>
+				<a href="javascript:log_4_host(this, '', 'Xml')"><img src="./img/icones/16x16/text_binary_xml.gif" alt="export XML"/></a>
 			</td>
 		</tr>
 	</table>
