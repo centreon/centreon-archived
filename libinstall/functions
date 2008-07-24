@@ -19,6 +19,7 @@ no="$(gettext "n")"
 ok="$(gettext "OK")"
 fail="$(gettext "FAIL")"
 passed="$(gettext "PASSED")"
+warning="$(gettext "WARNING")"
 critical="$(gettext "CRITICAL")"
 # Init binary to empty to use pathfind or manual define
 GREP=""
@@ -201,7 +202,7 @@ function yes_no_default() {
 	local default=${2:-$no}
 	local res="not_define"
 	while [ "$res" != "$yes" ] && [ "$res" != "$no" ] && [ ! -z "$res" ] ; do
-		echo -e "\n$message\n`gettext \"[y/n], default to [$default]:\"`"
+		echo -e "\n$message\n$(gettext "[y/n], default to [$default]:")"
 		echo -en "> "
 		read res
 		[ -z "$res" ] && res="$default"
@@ -228,16 +229,16 @@ function answer_with_testdir() {
 	local res="not_define"
 	local first=0
 	while [ ! -d "$res" ] ; do
-		[ $first -eq 1 ] && echo_passed "`gettext \"\$res is not a directory or does not exist.\"`" "$critical" 
+		[ $first -eq 1 ] && echo_passed "$(gettext "\$res is not a directory or does not exist.")" "$critical" 
 		echo -e "\n$message"
-		[ "$default" != "NO_DEFAULT" ] && echo -e "`gettext \"default to [$default]\"`"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
 		echo -en "> "
 		read res
 		if [ -z "$res" ] ; then 
 			[ $default != "NO_DEFAULT" ] && res=$default
 		fi
 		if [ -z ${res#/} ] ; then
-			echo_passed  "`gettext \"You select slash...\"`"
+			echo_passed  "$(gettext "You select slash...")"
 			res="not_define"
 		else
 			first=1
@@ -262,28 +263,28 @@ function answer_with_createdir() {
 	local res="not_define"
 	local first=0
 	while [ ! -d "$res" ] ; do
-		[ $first -eq 1 ] && echo_passed "`gettext \"Directory \$res does not exists. \"`" "$critical"
+		[ $first -eq 1 ] && echo_passed "$(gettext "Directory \$res does not exists.")" "$critical"
 		echo -e "\n$message"
-		[ "$default" != "NO_DEFAULT" ] && echo -e "`gettext \"default to\"` [$default]"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
 		echo -en "> "
 		read res
 		if [ -z "$res" ] ; then
 			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
 		if [ -z "${res#/}" -o "$yes" = "$res" -o "$no" = "$res" ] ; then
-			echo_passed  "`gettext \"You select slash...\"`"
+			echo_passed  "$(gettext "You select slash...")"
 			res="not_define"
 		else 
 			first=1
 			[ -d "$res" ] && break 
-			yes_no_default "`gettext \"Do you want me to create this directory ?\"` [$res]"
+			yes_no_default "$(gettext "Do you want me to create this directory ?") [$res]"
 			if [ $? -eq 0 ] ; then
 				mkdir -p $res
 				if [ $? -ne 0 ] ; then
-					echo_passed "`gettext \"Could not create directory.\"`" "$critical"
+					echo_passed "$(gettext "Could not create directory.")" "$critical"
 					#continue
 				fi
-				log "INFO" "`gettext \"Creating\"` : $res"
+				log "INFO" "$(gettext "Creating") : $res"
 			fi
 		fi
 	done
@@ -306,9 +307,9 @@ function answer_with_testfile() {
 	local res="not_define"
 	local first=0
 	while [ ! -f "$res" ] ; do
-		[ $first -eq 1 ] && echo_passed "`gettext \"\$res is not a valid file.\"`" "$critical" 
+		[ $first -eq 1 ] && echo_passed "$(gettext "\$res is not a valid file.")" "$critical" 
 		echo -e "\n$message"
-		[ "$default" != "NO_DEFAULT" ] && echo -e "`gettext \"default to\"` [$default]"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
 		echo -en "> "
 		read res
 		if [ -z "$res" ] ; then 
@@ -384,10 +385,9 @@ function locate_nagios_installdir() {
 ## Define where is nagios config directory
 ## @Globals	NAGIOS_ETC, DEFAULT_NAGIOS_ETC
 #----
-function locate_nagios_etcdir() {
+function locate_nagios_etcdir() {/
 	if [ -z "$NAGIOS_ETC" ] ; then
-		answer_with_testfile "$(gettext "Where is your nagios config file")" "$DEFAULT_NAGIOS_ETC/nagios.cfg" "NAGIOS_ETC"
-		NAGIOS_ETC="$(dirname $NAGIOS_ETC)"
+		answer_with_testdir "$(gettext "Where is your nagios config directory")" "$DEFAULT_NAGIOS_ETC" "NAGIOS_ETC"
 		echo_success "$(gettext "Path" ) $NAGIOS_ETC" "$ok"
 	fi
 	NAGIOS_ETC=${NAGIOS_ETC%/}
@@ -452,7 +452,7 @@ function locate_nagios_binary() {
 #----
 ## Define where is your nagiostats binary
 ## By default, use nagiostats,nagios2stats or nagios3stats name and find in PATH
-## @Globals	NAGIOSSTATS_BINARY, DEFAULT_NAGIOSSTATS_BINARY
+## @Globals	NAGIOSTATS_BINARY, DEFAULT_NAGIOSTATS_BINARY
 #----
 function locate_nagiostats_binary() {
 	if [ -z "$NAGIOSTATS_BINARY" ] ; then
@@ -465,7 +465,7 @@ function locate_nagiostats_binary() {
 			fi
 		done
 		if [ -z "$NAGIOSTATS_BINARY" ] ; then 
-			answer_with_testfile "`gettext \"Where is your nagiostats binary ? \"`" "$DEFAULT_NAGIOSTATS_BINARY" "NAGIOSTATS_BINARY"
+			answer_with_testfile "$(gettext "Where is your nagiostats binary ? ")" "$DEFAULT_NAGIOSTATS_BINARY" "NAGIOSTATS_BINARY"
 		fi
 		echo_success "$NAGIOSTATS_BINARY" "$ok"
 	fi
@@ -1246,6 +1246,7 @@ function configureSUDO(){
 	log "INFO" "$(gettext "Please configure your sudo with this example"): $dir_conf/centreon.sudo"
 	# Add a simple test for Defaults Requiretty problem on CentOS, Fedora...
 	is_suspect_conf_sudo $SUDO_FILE
+	[ "$?" -eq 1 ] && echo_warning "$(gettext "For security policy, your sudo's configuration would only run when the user is logged into a real tty. Please adjust your configuration by commenting 'Defaults requiretty' line in your configuration file.)" "$warning"
 	return 0
 }
 
