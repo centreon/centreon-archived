@@ -37,7 +37,7 @@
 	 */ 
 	require_once 'DB.php';
 	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
@@ -80,6 +80,7 @@
 	(isset($_GET["notification"]) && !check_injection($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
 	(isset($_GET["alert"]) && !check_injection($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
 	(isset($_GET["error"]) && !check_injection($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
+	(isset($_GET["oh"]) && !check_injection($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
 
 	if ($contact_id){
 		$user_params = get_user_param($contact_id, $pearDB);		
@@ -119,6 +120,7 @@
 		$down = $user_params["log_filter_host_down"];
 		$warning = $user_params["log_filter_svc_warning"];
 		$critical = $user_params["log_filter_svc_critical"];
+		$oh = $user_params["log_filter_oh"];
 	}
 
 	if ($StartDate !=  "" && $StartTime != ""){
@@ -171,6 +173,7 @@
 	echo "<warning>".$warning."</warning>";
 	echo "<critical>".$critical."</critical>";
 	echo "<unknown>".$unknown."</unknown>";
+	echo "<oh>".$oh."</oh>";
 	echo "</infos>";
 	
 	$msg_type_set = array ();
@@ -200,13 +203,13 @@
 	if ($unreachable == 'true' )
 		array_push ($msg_status_set, "'UNREACHABLE'");
 	
-	if ($ok == 'true' )
+	if ($ok == 'true')
 		array_push ($msg_status_set, "'ok'");
-	if ($warning == 'true' )
+	if ($warning == 'true')
 		array_push ($msg_status_set, "'warning'");
-	if ($critical == 'true' )
+	if ($critical == 'true')
 		array_push ($msg_status_set, "'critical'");
-	if ($unknown == 'true' )
+	if ($unknown == 'true')
 		array_push ($msg_status_set, "'unknown'");
 	
 	if (count($msg_status_set) > 0 ){
@@ -214,6 +217,10 @@
 		if ($error  == 'true' || $notification == 'true')
 			$msg_req .= 'OR status is null';
 		$msg_req .=')';
+	}
+
+	if ($oh == 'true'){
+		$msg_req .= " AND `type` = 'HARD' ";
 	}
 
 	/*
@@ -481,6 +488,7 @@
 	}
 
 	echo "<lang>";
+	
 	echo "<typeAlert>"._("Type")."</typeAlert>";
 	echo "<notification>"._("notification")."</notification>";
 	echo "<alert>"._("alert")."</alert>";
@@ -494,6 +502,20 @@
 	echo "<ok>"._("ok")."</ok>";
 	echo "<critical>"._("critical")."</critical>";
 	echo "<unknown>"._("unknown")."</unknown>";
+	echo "<oh>"._("Only Hard")."</oh>";
+	/*
+	 * Translation for tables.
+	 */
+	echo "<d>"._("Day")."</d>";
+	echo "<t>"._("Time")."</t>";
+	echo "<h>"._("Host")."</h>";
+	echo "<s>"._("Status")."</s>";
+	echo "<T>"._("Type")."</T>";
+	echo "<R>"._("Retry")."</R>";
+	echo "<o>"._("Output")."</o>";
+	echo "<c>"._("Contact")."</c>";
+	echo "<C>"._("Cmd")."</C>";
+	
 	echo "</lang>";
 	echo "</root>";
 ?>

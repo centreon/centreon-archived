@@ -55,6 +55,8 @@
 		$user_params["log_filter_error"] = 1;
 	if (!isset($user_params["log_filter_alert"]))
 		$user_params["log_filter_alert"] = 1;
+	if (!isset($user_params["log_filter_oh"]))
+		$user_params["log_filter_oh"] = 1;
 	
 	#Path to the configuration dir
 	$path = "./include/eventLogs/";
@@ -68,17 +70,17 @@
 
 	$openid = '0';
 	$open_id_sub = '0';
-	if(isset($_GET["openid"])){
+	if (isset($_GET["openid"])){
 		$openid = $_GET["openid"];
 		$open_id_type = substr($openid, 0, 2);
 		$open_id_sub = substr($openid, 3, strlen($openid));
 	}
 
-	if(isset($_GET["id"])){
+	if (isset($_GET["id"])){
 		$id = $_GET["id"];
 	} else
 		$id = 1;
-	if(isset($_POST["id"])){
+	if (isset($_POST["id"])){
 		$id = $_POST["id"];
 	} else
 		$id = 1;
@@ -87,19 +89,18 @@
 		$id = "";
 		$id_svc = $_POST["svc_id"];
 		$tab_svcs = explode(",", $id_svc);
-		foreach($tab_svcs as $svc)
-		{
+		foreach ($tab_svcs as $svc){
 			$tmp = explode(";", $svc);
 			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
 		}
 	}
 	$id_log = "'RR_0'";
 	$multi =0;
-	if(isset($_GET["mode"]) && $_GET["mode"] == "0"){
+	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
 		$mode = 0;
 		$id_log = "'".$id."'";
 		$multi =1;
-	} else{
+	} else {
 		$mode = 1;
 		$id = 1;
 	}
@@ -147,7 +148,8 @@
 	cssNode.type = 'text/css';
 	cssNode.rel = 'stylesheet';
 	cssNode.href = css_file;
-	cssNode.media = 'screen';headID.appendChild(cssNode);
+	cssNode.media = 'screen';
+	headID.appendChild(cssNode);
  
  	var multi = <?php echo $multi; ?>;
  
@@ -174,7 +176,7 @@
 	function getCheckedList(tree){
 		return tree.getAllChecked();
 	}
-	if(document.getElementById('linkBar')){
+	if (document.getElementById('linkBar')){
 		var _menu_2 = document.getElementById('linkBar')
 		var _divBar = document.createElement("div");
 		
@@ -194,7 +196,7 @@
 	
 	function onNodeSelect(nodeId){
 		var logView4xml = document.getElementById('logView4xml');
-		logView4xml.innerHTML="Waiting XML log";
+		logView4xml.innerHTML = "Waiting XML log";
 	
 		tree.openItem(nodeId);
 		multi = 0;
@@ -238,6 +240,8 @@
 	var _notification = <?php echo $user_params["log_filter_notif"]; ?>;
 	var _error 		= <?php echo $user_params["log_filter_error"]; ?>;
 	var _alert 		= <?php echo $user_params["log_filter_alert"]; ?>;
+	
+	var _oh 		= <?php echo $user_params["log_filter_oh"]; ?>;
 	
 	// Period
 	var currentTime = new Date();
@@ -295,7 +299,7 @@
 	}
 
 	function log_4_host(id, formu, type){	
-		if(document.formu && !document.formu.period_choice[1].checked)	{
+		if (document.formu && !document.formu.period_choice[1].checked)	{
 			period = document.formu.period.value;
 		} else if(document.formu)	{
 			period = '';
@@ -306,57 +310,55 @@
 		}
 	
 		// type
-		if(document.formu2 && document.formu2.notification)
+		if (document.formu2 && document.formu2.notification)
 			_notification = document.formu2.notification.checked;
-		if(document.formu2 && document.formu2.error)
+		if (document.formu2 && document.formu2.error)
 			_error = document.formu2.error.checked;
-		if(document.formu2 && document.formu2.alert)
+		if (document.formu2 && document.formu2.alert)
 			_alert = document.formu2.alert.checked;
 	
-		if(document.formu2 && document.formu2.up)
+		if (document.formu2 && document.formu2.up)
 			_up = document.formu2.up.checked;
-		if(document.formu2 && document.formu2.down)
+		if (document.formu2 && document.formu2.down)
 			_down = document.formu2.down.checked;
-		if(document.formu2 && document.formu2.unreachable)
+		if (document.formu2 && document.formu2.unreachable)
 			_unreachable = document.formu2.unreachable.checked;
 	
-		if(document.formu2 && document.formu2.ok)
+		if (document.formu2 && document.formu2.ok)
 			_ok = document.formu2.ok.checked;
-	
-		if(document.formu2 && document.formu2.warning)
+		if (document.formu2 && document.formu2.warning)
 			_warning = document.formu2.warning.checked;
-	
-		if(document.formu2 && document.formu2.critical)
+		if (document.formu2 && document.formu2.critical)
 			_critical = document.formu2.critical.checked;
-	
-		if(document.formu2 && document.formu2.unknown)
+		if (document.formu2 && document.formu2.unknown)
 			_unknown = document.formu2.unknown.checked;
 	
-		if(document.formu && document.formu.StartDate.value != "")
+		if (document.formu && document.formu.StartDate.value != "")
 			StartDate = document.formu.StartDate.value;
-		if(document.formu && document.formu.EndDate.value != "")
+		if (document.formu && document.formu.EndDate.value != "")
 			EndDate = document.formu.EndDate.value;
 	
-		if(document.formu && document.formu.StartTime.value != "")
+		if (document.formu && document.formu.StartTime.value != "")
 			StartTime = document.formu.StartTime.value;
-		if(document.formu && document.formu.EndTime.value != "")
+		if (document.formu && document.formu.EndTime.value != "")
 			EndTime = document.formu.EndTime.value;
+		
+		if (document.formu2 && document.formu2.oh)
+			_oh = document.formu2.oh.checked;
 	
 		tree.selectItem(id);
 	
 		var proc = new Transformation();
 		var _addrXSL = "./include/eventLogs/log.xsl";
 
-		if(!type)
-		{		
-		var _addr = './include/eventLogs/GetODSXmlLog.php?multi='+multi+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
-		proc.setXml(_addr)
-		proc.setXslt(_addrXSL)
-		proc.transform("logView4xml");
-		}
-		else{
-		var _addr = './include/eventLogs/GetODS'+type+'Log.php?multi='+multi+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
-		document.location.href = _addr;
+		if (!type){		
+			var _addr = './include/eventLogs/GetODSXmlLog.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+			proc.setXml(_addr)
+			proc.setXslt(_addrXSL)
+			proc.transform("logView4xml");
+		} else{
+			var _addr = './include/eventLogs/GetODS'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+			document.location.href = _addr;
 		}
 	}
 	
@@ -371,5 +373,4 @@
         nowOnload();
     }
 }
-
 </script>
