@@ -277,7 +277,7 @@
 		 * Get ServiceAck  OK(0), WARNING(1),  CRITICAL(2), UNKNOWN(3)
 		 */
 		if (!$is_admin)
-			$rq1 = 	" SELECT count(".$ndo_base_prefix."acknowledgements.state), ".$ndo_base_prefix."acknowledgements.state" .
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), ".$ndo_base_prefix."acknowledgements.state" .
 					" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus, centreon_acl" .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."acknowledgements.object_id" .
 					" AND ".$ndo_base_prefix."acknowledgements.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
@@ -291,7 +291,7 @@
 					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
 					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
 		else
-			$rq1 = 	" SELECT count(".$ndo_base_prefix."acknowledgements.state), ".$ndo_base_prefix."acknowledgements.state" .
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), ".$ndo_base_prefix."acknowledgements.state" .
 					" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus" .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."acknowledgements.object_id" .
 					" AND ".$ndo_base_prefix."acknowledgements.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
@@ -301,14 +301,13 @@
 					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
 					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
 					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
-					
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
 		$svcAck = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		while ($ndo =& $DBRESULT_NDO1->fetchRow())
-			$svcAck[$ndo["state"]] = $ndo["count(".$ndo_base_prefix."acknowledgements.state)"];
+			$svcAck[$ndo["state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.object_id)"];
 		
 		/*
 		 * Get Services  Inactive objects
