@@ -133,7 +133,7 @@ echo_success "$(gettext "Replace CentCore init script Macro")" "$ok"
 cp $TMPDIR/work/centcore.init.d $TMPDIR/final/centcore.init.d
 cp $TMPDIR/final/centcore.init.d $INSTALL_DIR_CENTREON/examples/centcore.init.d
 
-yes_no_default "$(gettext "Do you want I install CentCore init script ?")"
+yes_no_default "$(gettext "Do you want me to install CentCore init script ?")"
 if [ $? -eq 0 ] ; then 
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMPDIR/final/centcore.init.d $INIT_D/centcore >> $LOG_FILE 2>&1

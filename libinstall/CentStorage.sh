@@ -145,13 +145,13 @@ echo_success "$(gettext "Change macros for centstorage init script")" "$ok"
 cp $TMPDIR/work/centstorage.init.d $TMPDIR/final/centstorage.init.d
 cp $TMPDIR/final/centstorage.init.d $INSTALL_DIR_CENTREON/examples/centstorage.init.d
 
-yes_no_default "$(gettext "Do you want I install CentStorage init script ?")"
+yes_no_default "$(gettext "Do you want me to install CentStorage init script ?")"
 if [ $? -eq 0 ] ; then 
 	log "INFO" "$(gettext "CentStorage init script installed")"
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMPDIR/final/centstorage.init.d \
 		$INIT_D/centstorage >> $LOG_FILE 2>&1
-	yes_no_default "$(gettext "Do you want I install CentStorage run level ?")"
+	yes_no_default "$(gettext "Do you want me to install CentStorage run level ?")"
 		if [ $? -eq 0 ] ; then
 			install_init_service "centstorage" | tee -a $LOG_FILE
 		fi

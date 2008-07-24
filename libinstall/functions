@@ -2029,7 +2029,7 @@ function check_tmp_disk_space() {
 function purge_centreon_tmp_dir() {
 	local not_clean="1"
 	while [ $not_clean -ne 0 ] ; do
-		yes_no_default "$(gettext "Do you want I remove a centreon temporary working space to continue installation ?")" "$yes"
+		yes_no_default "$(gettext "Do you want me to remove the centreon temporary working space to continue installation ?")" "$yes"
 		if [ "$?" -eq 0 ] ; then 
 			local tmp_base_dir=`dirname $TMPDIR`
 			local tmp_dir=`basename $TMPDIR`
@@ -2065,7 +2065,7 @@ function clean_sudo() {
 
 	log "INFO" "$(gettext "New sudo file generate in:") $sudo_clean"
 	if [ "$validate" -eq 1 ] ; then 
-		yes_no_default "$(gettext "Do you want I clean your sudo files ? (clean centreon config)")"
+		yes_no_default "$(gettext "Do you want me to clean your sudo files ? (clean centreon config)")"
 		RC="$?"
 	fi
 	if [ "$RC" -eq 0 -o "$validate" -eq 0 ] ; then 
