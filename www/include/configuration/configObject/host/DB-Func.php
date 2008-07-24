@@ -841,13 +841,13 @@
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 		while ($hst =& $DBRESULT->fetchRow())
 	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];			
-	 		for ($i=0;$i <= $_POST['nbOfSelect']; $i++)
-	 		{
+	 		for ($i=0;$i <= $_POST['nbOfSelect']; $i++){
 	 			$tpSelect = "tpSelect_" . $i;
-	 			$newTp[$_POST[$tpSelect]] = $_POST[$tpSelect];
+				if (isset($_POST[$tpSelect]))
+		 			$newTp[$_POST[$tpSelect]] = $_POST[$tpSelect];
 	 		}
-	 		foreach ($oldTp as $val)
-	 		{
+	 		
+	 		foreach ($oldTp as $val){
 	 			/*
   	 			 * if not set, then that means a template was removed
 	 			 * we will have to remove the services that were linked to that host template as well  
@@ -860,10 +860,9 @@
 	 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
 	 		if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
-	 		{ 			
+	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++){
 	 			$tpSelect = "tpSelect_" . $i;
-	 			if (!isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
+	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
 		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
@@ -880,8 +879,7 @@
 			$already_stored = array();
 			$DBRESULT =& $pearDB->query("DELETE FROM `on_demand_macro_host` WHERE `host_host_id`='".$host_id."'");
 			
-	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
-	 		{ 			
+	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++){ 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
 	 			if (isset($_POST[$macInput]) && !isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
