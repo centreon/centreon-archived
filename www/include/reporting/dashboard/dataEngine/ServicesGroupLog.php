@@ -31,9 +31,8 @@
 	$start_date_select = 0;
 	$end_date_select = 0;
 
-
-	require_once('simple-func.php');
-	require_once('reporting-func.php');
+require_once($centreon_path."www/include/reporting/dashboard/common-Func.php");
+require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 
 	#
 	## Selectioned ?
@@ -345,9 +344,9 @@
 			"avg( `UNKNOWNnbEvent` ) as 'UNKNOWNnbEvent', " .
 			"avg( `CRITICALTimeScheduled` ) as 'CRITICALTimeScheduled', " .
 			"avg( `CRITICALnbEvent` ) as 'CRITICALnbEvent' " .
-			"FROM `log_archive_service` WHERE `date_start` >= " . $sd . " AND `date_end` <= " . $ed .
+			"FROM ".$conf_centreon['dbcstg'].".`log_archive_service` WHERE `date_start` >= " . $sd . " AND `date_end` <= " . $ed .
 			" AND `service_id` IN (" .
-			"SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '" . $servicegroup_id ."') group by date_end, date_start order by date_start desc";
+			"SELECT `service_service_id` FROM ".$conf_centreon['db'].".`servicegroup_relation` WHERE `servicegroup_sg_id` = '" . $servicegroup_id ."') group by date_end, date_start order by date_start desc";
 	$res = & $pearDB->query($rq);
 	while ($h =& $res->fetchRow()) {
 		$oktime = $h["OKTimeScheduled"];
