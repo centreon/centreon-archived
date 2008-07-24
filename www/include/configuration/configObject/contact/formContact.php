@@ -166,13 +166,14 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
 	$form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
 
-   $auth_type = array(NULL=>NULL);
+   $auth_type = array();
    $auth_type["local"] = "local";
 	if ($oreon->optGen['ldap_auth_enable'] == 1) {
 		$auth_type["ldap"] = "ldap";
 		$form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
 	}
-
+	$form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0'));
+   	
    	$form->addElement('select', 'contact_auth_type', _("Authentification Type"), $auth_type);
 
 	##
