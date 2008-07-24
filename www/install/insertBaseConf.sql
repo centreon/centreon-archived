@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `centreon`.`informations` (`key` ,`value`) VALUES ('version', '2.0-b5');
+INSERT INTO `centreon`.`informations` (`key` ,`value`) VALUES ('version', '2.0-b6');
 
 --
 -- Contenu de la table `nagios_server`
