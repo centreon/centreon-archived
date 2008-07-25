@@ -350,7 +350,7 @@
 		}
 	}
 
-	function getMyHostExtendedInfoImage($host_id = NULL, $field)	{
+	function getMyHostExtendedInfoImage($host_id = NULL, $field, $flag1stLevel = NULL)	{
 		if (!$host_id) return;
 		global $pearDB, $oreon;
 		if ($oreon->user->get_version() < 3) {
@@ -374,6 +374,28 @@
 						return NULL;
 				}
 			}
+		}
+		elseif ($oreon->user->get_version() >= 3 && isset($flag1stLevel) && $flag1stLevel) {
+			$rq = "SELECT ehi.".$field." " .
+					"FROM extended_host_information ehi " .
+					"WHERE ehi.host_host_id = '".$host_id."' LIMIT 1";								
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$row =& $DBRESULT->fetchRow();
+			if (isset($row[$field]) && $row[$field])	{
+				$DBRESULT2 =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = ".$row[$field]." AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+				$row2 =& $DBRESULT2->fetchRow();
+				if (isset($row2["dir_alias"]) && isset($row2["img_path"]) && $row2["dir_alias"] && $row2["img_path"])
+					return $row2["dir_alias"]."/".$row2["img_path"];
+			}
+			else {
+				if ($result_field = getMyHostExtendedInfoImage($host_id, $field))
+					return $result_field;
+			}
+			return NULL;
 		}
 		elseif ($oreon->user->get_version() >= 3) {
 			$rq = "SELECT host_tpl_id " .

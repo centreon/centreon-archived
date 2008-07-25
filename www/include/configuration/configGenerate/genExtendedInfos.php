@@ -58,7 +58,7 @@
 					$strTmp .= print_line("action_url", $field);
 					$flag++;
 				}
-				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_icon_image")){
+				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_icon_image", 1)){
 					$strTmp .= print_line("icon_image", $field);
 					$flag++;
 				}
@@ -66,11 +66,11 @@
 					$strTmp .= print_line("icon_image_alt", $field);
 					$flag++;
 				}
-				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_vrml_image")){
+				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_vrml_image", 1)){
 					$strTmp .= print_line("vrml_image", $field);
 					$flag++;
 				}
-				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_statusmap_image")){
+				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_statusmap_image", 1)){
 					$strTmp .= print_line("statusmap_image", $field);
 					$flag++;
 				}
