@@ -119,26 +119,44 @@
 				if ($BP && isAHostTpl($value))	{
 					$host_name = getMyHostName($value);
 					if (isHostOnThisInstance(getMyHostID($host_name), $tab['id'])) {
+						$flag = 0;
+						$strTMP = "";
 						$service_description = getMyServiceName($esi["service_id"]);
 						$service_description = str_replace('#S#', "/", $service_description);
 						$service_description = str_replace('#BS#', "\\", $service_description);
-						$str .= "# '" . $host_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
-						$str .= "define serviceextinfo{\n";
-						if ($host_name)
-							$str .= print_line("host_name", $host_name);
-						if ($service_description)
-							$str .= print_line("service_description", $service_description);									
-						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes"))
-							$str .= print_line("notes", $field);
-						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes_url"))
-							$str .= print_line("notes_url", $field);
-						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_action_url"))
-							$str .= print_line("action_url", $field);
-						if ($field = getMyServiceExtendedInfoImage($esi["service_id"], "esi_icon_image"))
-							$str .= print_line("icon_image", $field);
-						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image_alt"))
-							$str .= print_line("icon_image_alt", $field);
-						$str .= "}\n\n";
+						$strTMP .= "# '" . $host_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
+						$strTMP .= "define serviceextinfo{\n";
+						if ($host_name){
+							$strTMP .= print_line("host_name", $host_name);
+							$flag++;
+						}
+						if ($service_description){
+							$strTMP .= print_line("service_description", $service_description);		
+							$flag++;
+						}							
+						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes")){
+							$strTMP .= print_line("notes", $field);
+							$flag++;
+						}
+						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes_url")){
+							$strTMP .= print_line("notes_url", $field);
+							$flag++;
+						}
+						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_action_url")){
+							$strTMP .= print_line("action_url", $field);
+							$flag++;
+						}
+						if ($field = getMyServiceExtendedInfoImage($esi["service_id"], "esi_icon_image")){
+							$strTMP .= print_line("icon_image", $field);
+							$flag++;
+						}
+						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image_alt")){
+							$strTMP .= print_line("icon_image_alt", $field);
+							$flag++;
+						}
+						$strTMP .= "}\n\n";
+						if ($flag != 0)
+							$str .= $strTMP;
 						$i++;
 					}
 				}
@@ -146,27 +164,45 @@
 			$hgs = getMyServiceHostGroups($esi["service_id"]);
 			foreach ($hgs as $key => $value)	{
 				if (isset($value[$gbArr[3]]))	{
+					$flag = 0;
+					$strTMP = "";
 					$hostgroup_name = getMyHostGroupName($value);
 					$service_description = getMyServiceName($esi["service_id"]);
 					$service_description = str_replace('#S#', "/", $service_description);
 					$service_description = str_replace('#BS#', "\\", $service_description);
-					$str .= "# '" . $hostgroup_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
-					$str .= "define serviceextinfo{\n";
-					if ($hostgroup_name)
-						$str .= print_line("hostgroup_name", $hostgroup_name);
-					if ($service_description)
-						$str .= print_line("service_description", $service_description);									
-					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes"))
-						$str .= print_line("notes", $field);
-					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes_url"))
-						$str .= print_line("notes_url", $field);
-					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_action_url"))
-						$str .= print_line("action_url", $field);
-					if ($field = getMyServiceExtendedInfoImage($esi["service_id"], "esi_icon_image"))
-						$str .= print_line("icon_image", $field);
-					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image_alt"))
-						$str .= print_line("icon_image_alt", $field);
+					$strTMP .= "# '" . $hostgroup_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
+					$strTMP .= "define serviceextinfo{\n";
+					if ($hostgroup_name){
+						$strTMP .= print_line("hostgroup_name", $hostgroup_name);
+						$flag++;
+					}
+					if ($service_description){
+						$strTMP .= print_line("service_description", $service_description);		
+						$flag++;
+					}							
+					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes")){
+						$strTMP .= print_line("notes", $field);
+						$flag++;
+					}
+					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes_url")){
+						$strTMP .= print_line("notes_url", $field);
+						$flag++;
+					}
+					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_action_url")){
+						$strTMP .= print_line("action_url", $field);
+						$flag++;
+					}
+					if ($field = getMyServiceExtendedInfoImage($esi["service_id"], "esi_icon_image")){
+						$strTMP .= print_line("icon_image", $field);
+						$flag++;
+					}
+					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image_alt")){
+						$strTMP .= print_line("icon_image_alt", $field);
+						$flag++;
+					}
 					$str .= "}\n\n";
+					if ($flag != 0)
+						$str .= $strTMP;
 					$i++;
 				}
 			}
