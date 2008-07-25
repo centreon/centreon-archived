@@ -26,10 +26,15 @@
 		$version = filter_var($_GET["version"], FILTER_SANITIZE_SPECIAL_CHARS);
 		$version = filter_var($version, INPUT_GET);
 	}
-	else {
+	else if (function_exists("filter_get")) {
 		$img = filter_var($_GET["img"]);
 		$lang = filter_var($_GET["lang"]);
 		$version = filter_var($_GET["version"]);
+	}
+	else {
+		$img = $_GET["img"];
+		$lang = $_GET["lang"];
+		$version = $_GET["version"];
 	}
 
 	$tab_images = split("/", $img);

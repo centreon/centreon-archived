@@ -22,9 +22,11 @@
 		$page = filter_var($_GET["page"], FILTER_SANITIZE_SPECIAL_CHARS);
 		$page = filter_var($page, INPUT_GET);
 	}
-	else {
+	else if (function_exists("filter_get")) {
 		$page = filter_get($_GET["page"]);
 	}
+	else
+		$page = $_GET["page"];
 
 	$tab_pages = split("/", $page);
 	foreach ($tab_pages as $value)
