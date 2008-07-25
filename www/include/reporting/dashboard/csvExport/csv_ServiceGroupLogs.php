@@ -44,6 +44,8 @@
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 
+	require_once $centreon_path."www/include/reporting/dashboard/dataEngine/ServicesGroupLog.php";
+
 	header("Content-Type: application/csv-tab-delimited-table");
 	header("Content-disposition: filename=".$mservicegroup.".csv");
 
