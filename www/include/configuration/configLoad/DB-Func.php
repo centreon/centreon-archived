@@ -1093,10 +1093,12 @@
 				# Add link with host template
 				if (isset($tab_link_tpl))
 					foreach ($tab_link_tpl as $tkey => $tvalue){
-						$host_host_id = getMyHostID($tvalue);
-						$DBRESULT_TEMP =& $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
-						if (PEAR::isError($DBRESULT_TEMP))
-							print "DB Error : ".$DBRESULT_TEMP->getDebugInfo()."<br />";
+						$host_host_id = getMyHostID($tvalue);						
+						if ($host_host_id) {
+							$DBRESULT_TEMP =& $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
+							if (PEAR::isError($DBRESULT_TEMP))
+								print "DB Error : ".$DBRESULT_TEMP->getDebugInfo()."<br />";
+						}
 					}			
 			}
 		} else {
