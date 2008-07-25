@@ -397,10 +397,10 @@
 		updateHostTemplateService($host_id, $ret);
 		updateNagiosServerRelation($host_id, $ret);
 		global $form;
-		$ret = $form->getSubmitValues();
-		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"] && $ret["host_template_model_htm_id"])
+		$ret = $form->getSubmitValues();		
+		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"] && $ret["host_template_model_htm_id"] && $oreon->user->get_version() < 3)
 			createHostTemplateService($host_id, $ret["host_template_model_htm_id"]);
-		elseif($oreon->user->get_version() >= 3) {
+		elseif(isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"] && $oreon->user->get_version() >= 3) {			
 			createHostTemplateService($host_id);
 		}
 		insertHostExtInfos($host_id, $ret);
@@ -1377,6 +1377,10 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 	if (isset($antiLoop[$hID2]) && $antiLoop[$hID2]) {		
 		return 0;	
 	}
+	if (file_exists($path."../service/DB-Func.php"))
+		require_once($path."../service/DB-Func.php");
+	else if (file_exists($path."../configObject/service/DB-Func.php"))
+		require_once($path."../configObject/service/DB-Func.php");
 	$rq = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
@@ -1408,9 +1412,9 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 		global $pearDB, $path, $oreon;
 		if (file_exists($path."../service/DB-Func.php"))
 			require_once($path."../service/DB-Func.php");
-		else if (file_exists($path."../service/DB-Func.php"))
+		else if (file_exists($path."../configObject/service/DB-Func.php"))
 			require_once($path."../configObject/service/DB-Func.php");
-		# If we select a host template model, we create the services linked to this host template model
+		# If we select a host template model, we create the services linked to this host template model		
 		if ($oreon->user->get_version() < 3) {
 			if ($htm_id)	{
 				$DBRESULT =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
@@ -1457,8 +1461,11 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 					break;
 			}
 		}
-		else {			
-			generateHostServiceMultiTemplate($host_id, $host_id);			
+		else {						
+			global $form;
+			$ret = $form->getSubmitValues();			
+			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
+				generateHostServiceMultiTemplate($host_id, $host_id);
 		}
 	}
 	
@@ -1493,7 +1500,8 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 			}
 		}
 		else if ($oreon->user->get_version() >= 3) {
-			generateHostServiceMultiTemplate($host_id, $host_id);
+			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
+				generateHostServiceMultiTemplate($host_id, $host_id);
 		}
 	}
 	
@@ -1530,7 +1538,8 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 			}
 		}
 		else if ($oreon->user->get_version() >= 3){
-			generateHostServiceMultiTemplate($host_id, $host_id);
+			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
+				generateHostServiceMultiTemplate($host_id, $host_id);
 		}
 	}
 
