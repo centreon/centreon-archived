@@ -512,20 +512,21 @@
 	}
 
 	echo "<lang>";
-	
-	echo "<typeAlert>"._("Type")."</typeAlert>";
-	echo "<notification>"._("notification")."</notification>";
-	echo "<alert>"._("alert")."</alert>";
-	echo "<error>"._("error")."</error>";
-	echo "<service>"._("Service")."</service>";
-	echo "<host>"._("Host")."</host>";
-	echo "<down>"._("down")."</down>";
-	echo "<up>"._("up")."</up>";
-	echo "<unreachable>"._("unreachable")."</unreachable>";
-	echo "<warning>"._("warning")."</warning>";
-	echo "<ok>"._("ok")."</ok>";
-	echo "<critical>"._("critical")."</critical>";
-	echo "<unknown>"._("unknown")."</unknown>";
+	/*
+	 * Translation for Menu.
+	 */
+	echo "<ty>"._("Type")."</ty>";
+	echo "<n>"._("Notifications")."</n>";
+	echo "<a>"._("Alerts")."</a>";
+	echo "<e>"._("Errors")."</e>";
+	echo "<s>"._("Services")."</s>";
+	echo "<do>"._("Down")."</do>";
+	echo "<up>"._("Up")."</up>";
+	echo "<un>"._("Unreachable")."</un>";
+	echo "<w>"._("Warning")."</w>";
+	echo "<ok>"._("Ok")."</ok>";
+	echo "<cr>"._("Critical")."</cr>";
+	echo "<uk>"._("Unknown")."</uk>";
 	echo "<oh>"._("Hard Only")."</oh>";
 	/*
 	 * Translation for tables.

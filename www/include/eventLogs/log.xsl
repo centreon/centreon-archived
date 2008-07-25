@@ -6,8 +6,7 @@
 		<form name="formu2">
 		    <table class="log_option" >
 	            <tr>
-	            	<td>
-	            		<xsl:value-of select="//lang/typeAlert"/>
+	            	<td><b><xsl:value-of select="//lang/ty"/></b>
 	            	</td>
 					<td>
 						<table>
@@ -21,7 +20,7 @@
 											<xsl:attribute name="checked">checked</xsl:attribute>
 										</xsl:if>
 									</xsl:element>
-	               					<xsl:value-of select="//lang/notification"/>
+	               					<xsl:value-of select="//lang/n"/>
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
@@ -32,7 +31,7 @@
 											<xsl:attribute name="checked">checked</xsl:attribute>
 										</xsl:if>
 									</xsl:element>
-	               					<xsl:value-of select="//lang/alert"/>
+	               					<xsl:value-of select="//lang/a"/>
 			               		</td>
 			               	</tr>
 			               	<tr>
@@ -45,14 +44,13 @@
 											<xsl:attribute name="checked">checked</xsl:attribute>
 										</xsl:if>
 									</xsl:element>
-	               					<xsl:value-of select="//lang/error"/>
+	               					<xsl:value-of select="//lang/e"/>
 			               		</td>
 								<td></td>
 			               	</tr>
 						</table>
 					</td>
-			        <td>
-			             <xsl:value-of select="//lang/host"/>
+			        <td><b><xsl:value-of select="//lang/h"/></b>
 			        </td>
 					<td>
 						<table style="">
@@ -77,7 +75,7 @@
 											<xsl:attribute name="checked">checked</xsl:attribute>
 										</xsl:if>
 									</xsl:element>
-	               					<xsl:value-of select="//lang/down"/>
+	               					<xsl:value-of select="//lang/do"/>
 			               		</td>
 			               	</tr>
 			               	<tr>
@@ -90,15 +88,13 @@
 											<xsl:attribute name="checked">checked</xsl:attribute>
 										</xsl:if>
 									</xsl:element>
-	               					<xsl:value-of select="//lang/unreachable"/>
+	               					<xsl:value-of select="//lang/un"/>
 			               		</td>
 								<td></td>
 			               	</tr>
 						</table>
 					</td>
-               		<td>
-               			<xsl:value-of select="//lang/service"/>
-               		</td>
+               		<td><b><xsl:value-of select="//lang/s"/></b></td>
 					<td>
 						<table style="">
 			               	<tr>			               	
@@ -122,7 +118,7 @@
 											<xsl:attribute name="checked">checked</xsl:attribute>
 										</xsl:if>
 									</xsl:element>
-	               					<xsl:value-of select="//lang/warning"/>
+	               					<xsl:value-of select="//lang/w"/>
 			               		</td>
 			               	</tr>
 			               	<tr>
@@ -135,7 +131,7 @@
 											<xsl:attribute name="checked">checked</xsl:attribute>
 										</xsl:if>
 									</xsl:element>
-	               					<xsl:value-of select="//lang/critical"/>
+	               					<xsl:value-of select="//lang/cr"/>
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
@@ -146,14 +142,12 @@
 											<xsl:attribute name="checked">checked</xsl:attribute>
 										</xsl:if>
 									</xsl:element>
-	               					<xsl:value-of select="//lang/unknown"/>
+	               					<xsl:value-of select="//lang/uk"/>
 			               		</td>
 			               	</tr>
 						</table>
 					</td>
-					<td>
-               			<xsl:value-of select="//lang/T"/>
-               		</td>
+					<td><b><xsl:value-of select="//lang/T"/></b></td>
 					<td>
 						<table>
 			               	<tr>			               	
