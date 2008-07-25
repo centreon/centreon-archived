@@ -284,46 +284,127 @@
 		}
 	}
 
+	/*
+	 *  This functions is called recursively until it finds an ehi field
+	 */
+	function getMyHostExtendedInfoFieldFromMultiTemplates($host_id, $field){
+		if (!$host_id) return NULL;
+		global $pearDB;		
+		$rq = "SELECT host_tpl_id " .
+			"FROM host_template_relation " .
+			"WHERE host_host_id = '".$host_id."' " .
+			"ORDER BY `order`";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($row =& $DBRESULT->fetchRow()) {
+			$rq2 = "SELECT ehi.".$field." " .
+				"FROM extended_host_information ehi " .
+				"WHERE ehi.host_host_id = '".$row['host_tpl_id']."' LIMIT 1";								
+			$DBRESULT2 =& $pearDB->query($rq2);
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row2 =& $DBRESULT2->fetchRow();
+			if (isset($row2[$field]) && $row2[$field])
+				return $row2[$field];
+			else {
+				if ($result_field = getMyHostExtendedInfoFieldFromMultiTemplates($row['host_tpl_id'], $field)) {
+					return $result_field;
+				}
+			}
+		}
+		return NULL;
+	}
+
 	function getMyHostExtendedInfoField($host_id = NULL, $field)	{
 		if (!$host_id) return;
-		global $pearDB;
-		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT ehi.".$field.", h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' LIMIT 1");
+		global $pearDB, $oreon;
+		if ($oreon->user->get_version() < 3) {
+			while(1)	{
+				$DBRESULT =& $pearDB->query("SELECT ehi.".$field.", h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$row =& $DBRESULT->fetchRow();
+				//$field_result = $row[$field];
+				if (isset($row[$field]) && $row[$field])
+					return $row[$field];
+				else if ($row["host_template_model_htm_id"])
+					$host_id = $row["host_template_model_htm_id"];
+				else
+					return NULL;
+			}
+		}
+		elseif ($oreon->user->get_version() >= 3) {			
+			$rq = "SELECT ehi.".$field." " .
+				"FROM extended_host_information ehi " .
+				"WHERE ehi.host_host_id = '".$host_id."' LIMIT 1";								
+			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row =& $DBRESULT->fetchRow();
-			//$field_result = $row[$field];
 			if (isset($row[$field]) && $row[$field])
 				return $row[$field];
-			else if ($row["host_template_model_htm_id"])
-				$host_id = $row["host_template_model_htm_id"];
-			else
-				return NULL;
+			else {
+				return getMyHostExtendedInfoFieldFromMultiTemplates($host_id, $field);
+			}
 		}
 	}
 
 	function getMyHostExtendedInfoImage($host_id = NULL, $field)	{
 		if (!$host_id) return;
-		global $pearDB;
-		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT h.host_template_model_htm_id, ".$field." FROM host h, extended_host_information ehi WHERE h.host_id = '".$host_id."' AND ehi.host_host_id = h.host_id LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$row =& $DBRESULT->fetchRow();			
-			if (isset($row[$field]) && $row[$field])	{
-				$DBRESULT =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = ".$row[$field]." AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+		global $pearDB, $oreon;
+		if ($oreon->user->get_version() < 3) {
+			while(1)	{
+				$DBRESULT =& $pearDB->query("SELECT h.host_template_model_htm_id, ".$field." FROM host h, extended_host_information ehi WHERE h.host_id = '".$host_id."' AND ehi.host_host_id = h.host_id LIMIT 1");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-				$row =& $DBRESULT->fetchRow();
-				if (isset($row["dir_alias"]) && isset($row["img_path"]) && $row["dir_alias"] && $row["img_path"])
-					return $row["dir_alias"]."/".$row["img_path"];
+				$row =& $DBRESULT->fetchRow();			
+				if (isset($row[$field]) && $row[$field])	{
+					$DBRESULT =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = ".$row[$field]." AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					$row =& $DBRESULT->fetchRow();
+					if (isset($row["dir_alias"]) && isset($row["img_path"]) && $row["dir_alias"] && $row["img_path"])
+						return $row["dir_alias"]."/".$row["img_path"];
+				}
+				else	{
+					if ($row["host_template_model_htm_id"])
+						$host_id = $row["host_template_model_htm_id"];
+					else
+						return NULL;
+				}
 			}
-			else	{
-				if ($row["host_template_model_htm_id"])
-					$host_id = $row["host_template_model_htm_id"];
-				else
-					return NULL;
+		}
+		elseif ($oreon->user->get_version() >= 3) {
+			$rq = "SELECT host_tpl_id " .
+				"FROM host_template_relation " .
+				"WHERE host_host_id = '".$host_id."' " .
+				"ORDER BY `order`";
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			while ($row =& $DBRESULT->fetchRow()) {
+				$rq2 = "SELECT ehi.".$field." " .
+						"FROM extended_host_information ehi " .
+						"WHERE ehi.host_host_id = '".$row['host_tpl_id']."' LIMIT 1";								
+				$DBRESULT2 =& $pearDB->query($rq2);
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+				$row2 =& $DBRESULT2->fetchRow();
+				if (isset($row2[$field]) && $row2[$field])	{
+					$DBRESULT3 =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = ".$row2[$field]." AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+					if (PEAR::isError($DBRESULT3))
+						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+					$row3 =& $DBRESULT3->fetchRow();
+					if (isset($row3["dir_alias"]) && isset($row3["img_path"]) && $row3["dir_alias"] && $row3["img_path"])
+						return $row3["dir_alias"]."/".$row3["img_path"];
+				}
+				else {
+					if ($result_field = getMyHostExtendedInfoImage($row['host_tpl_id'], $field)) 					
+						return $result_field;
+				}
 			}
+			return NULL;
 		}
 	}
 
