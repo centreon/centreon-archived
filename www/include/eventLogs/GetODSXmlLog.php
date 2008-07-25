@@ -37,7 +37,7 @@
 	 */ 
 	require_once 'DB.php';
 	
-	include_once("/etc/centreon/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
@@ -204,13 +204,13 @@
 		array_push ($msg_status_set, "'UNREACHABLE'");
 	
 	if ($ok == 'true')
-		array_push ($msg_status_set, "'ok'");
+		array_push ($msg_status_set, "'OK'");
 	if ($warning == 'true')
-		array_push ($msg_status_set, "'warning'");
+		array_push ($msg_status_set, "'WARNING'");
 	if ($critical == 'true')
-		array_push ($msg_status_set, "'critical'");
+		array_push ($msg_status_set, "'CRITRICAL'");
 	if ($unknown == 'true')
-		array_push ($msg_status_set, "'unknown'");
+		array_push ($msg_status_set, "'UNKNOWN'");
 	
 	if (count($msg_status_set) > 0 ){
 		$msg_req .= ' AND (status IN (' . implode(",",$msg_status_set). ') ';
@@ -219,38 +219,39 @@
 		$msg_req .=')';
 	}
 
-	if ($oh == 'true'){
+	if ($oh == 'true')
 		$msg_req .= " AND `type` = 'HARD' ";
-	}
 
 	/*
 	 * If multi checked 
 	 */
 	if ($multi == 1){
-		$tab_id = split(",",$openid);
+		$tab_id = split(",", $openid);
 		$tab_host_name = array();
 		$tab_svc = array();
 		/*
 		 * prepare tab with host and svc
 		 */
+		$strSG = "";
+		$tab_SG = array();
+		$flag_already_call = 0;
 		foreach ($tab_id as $openid){
 			$tab_tmp = split("_",$openid);
 			$id = $tab_tmp[1];
 			$type = $tab_tmp[0];
-
 			if ($type == "HG"){
 				$hosts = getMyHostGroupHosts($id);
 				foreach ($hosts as $h_id)	{
 					$host_name = getMyHostName($h_id);
 					array_push ($tab_host_name, "'".$host_name."'");
 				}
-			} else if ($type == 'ST')	{
+			} else if ($type == 'ST'){
 				$services = getMyServiceGroupServices($id);
-				foreach ($services as $svc_id => $svc_name)	{ 
+				foreach ($services as $svc_id => $svc_name)	{
 					$tab_tmp = split("_", $svc_id);
-					if (service_has_graph($tab_tmp[0], $tab_tmp[1]) && (($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($id)]) && isset($lca["LcaHost"][getMyHostName($id)]["svc"][$svc_name]))))	{
-						$oid = "HS_".$tab_tmp[1]."_".$tab_tmp[0];
-						array_push($tab_id, $oid);	
+					if (service_has_graph($tab_tmp[0], $tab_tmp[1]) && (($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($tab_tmp[1])]) && isset($lca["LcaHost"][getMyHostName($id)]["svc"][$svc_name]))))	{
+						$tab_SG[$flag_already_call] = array("h" => getMyHostName($tab_tmp[0]), "s" => getMyServiceName($tab_tmp[1], $tab_tmp[0])); 
+						$flag_already_call++;
 					}
 				}
 			} else if ($type == 'MS')	{
@@ -267,32 +268,55 @@
 				array_push($tab_svc, $tmp);
 			}
 		}
-		
 		/*
 		 * Building request
 		 */
 		
 		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
+		
+		/*
+		 * Add Host
+		 */
+		$str_unitH_flag = 0;
+		$str_unitH = "";
 		if	(count($tab_host_name) > 0){
-			$req .= " AND (host_name in(".implode(",",$tab_host_name).") ";
+			$str_unitH .= " (`host_name` in (".implode(",", $tab_host_name).")) ";
 			if ($error  == 'true' || $notification == 'true')
-				$req .= ' OR host_name is null';		
-			$req .= ")";
+				$str_unitH .= ' OR host_name is null';
+			$str_unitH_flag = 1;
 		}
+		if (count($tab_svc) || count($tab_SG))
+			$str_unitH .= " OR (";
+		/*
+		 * Concat 
+		 *
+		 */
+		$flag = 0;
+		$str_unitSVC = "";
 		if (count($tab_svc) > 0){
-			$req .= " AND ( ";
-			$flag = 0;
 			foreach ($tab_svc as $svc){
-				if ($flag)
-				 	$req .= " OR ";
+				($flag == 1) ? $str_unitSVC .= " OR " : NULL;
+				$str_unitSVC .= " (`host_name` = '".$svc["host_name"]."' AND `service_description` = '".$svc["svc_name"]."') ";
 				$flag = 1;			
-				$req .= " ((host_name like '".$svc["host_name"]."'";
-				if ($error  == 'true' || $notification == 'true')
-					$req .= ' OR host_name is null';
-				$req .= ") AND (service_description like '".$svc["svc_name"]."')) ";
 			}
-			$req .= " )";
-		}	
+			
+		}
+		if (count($tab_SG) > 0){
+			foreach ($tab_SG as $SG){
+				($flag) ? $str_unitSVC .= " OR " : NULL;
+				$str_unitSVC .= " (host_name = '".$SG["h"]."' AND service_description = '".$SG["s"]."') ";
+				$flag = 1;			
+			}
+		}  
+		if (count($tab_svc) || count($tab_SG))
+			$str_unitSVC .= " )";
+		
+		if ($str_unitH || $str_unitSVC)
+			$req .= " AND (".$str_unitH.$str_unitSVC.")";
+		/* 
+		 * Debug
+		 */
+		//print "\n\n\n".$req."\n\n\n";
 	} else {
 		/*
 		 * only click on one element
@@ -361,7 +385,7 @@
 	$lstart = 0;
 	$DBRESULT =& $pearDBO->query($req);
 	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getMessage();
+		print "Mysql Error : ".$DBRESULT->getMessage() . "\n\n\n $req";
 	$rows = $DBRESULT->numrows();
 	if (($num * $limit) > $rows)
 		$num = round($rows / $limit) - 1;
@@ -502,7 +526,7 @@
 	echo "<ok>"._("ok")."</ok>";
 	echo "<critical>"._("critical")."</critical>";
 	echo "<unknown>"._("unknown")."</unknown>";
-	echo "<oh>"._("Only Hard")."</oh>";
+	echo "<oh>"._("Hard Only")."</oh>";
 	/*
 	 * Translation for tables.
 	 */
