@@ -26,39 +26,69 @@
 	 * Host Extended Information
 	 */
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostextinfo.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host, extended_host_information WHERE host_activate = '1' AND `ehi_notes` IS NOT NULL AND `ehi_notes_url` IS NOT NULL AND `ehi_action_url` IS NOT NULL AND `ehi_icon_image` IS NOT NULL AND `ehi_icon_image_alt` IS NOT NULL AND `ehi_vrml_image` IS NOT NULL AND `ehi_statusmap_image` IS NOT NULL AND `ehi_2d_coords` IS NOT NULL AND `ehi_3d_coords` IS NOT NULL AND host_register = '1' AND host_activate = '1' ORDER BY `host_name`");
+	$DBRESULT =& $pearDB->query(	"SELECT host_id, host_name FROM host " .
+									"WHERE host_activate = '1' AND host_register = '1' " .
+									"ORDER BY `host_name`");
+									
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$ehi = array();
 	$i = 1;
 	$str = NULL;
+	
 	while ($ehi =& $DBRESULT->fetchRow())	{
 		if (isHostOnThisInstance(getMyHostID($ehi["host_name"]), $tab['id'])) {
 			if (isset($ehi["host_id"][$gbArr[2]])) {
-				$ret["comment"] ? ($str .= "# '" . $ehi["host_name"] . "' Host Extended Information definition " . $i . "\n") : NULL ;
-				$str .= "define hostextinfo{\n";
-				if ($ehi["host_name"])
-					$str .= print_line("host_name", $ehi["host_name"]);
-				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_notes"))
-					$str .= print_line("notes", $field);
-				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_notes_url"))
-					$str .= print_line("notes_url", $field);
-				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_action_url"))
-					$str .= print_line("action_url", $field);
-				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_icon_image"))
-					$str .= print_line("icon_image", $field);
-				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_icon_image_alt"))
-					$str .= print_line("icon_image_alt", $field);
-				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_vrml_image"))
-					$str .= print_line("vrml_image", $field);
-				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_statusmap_image"))
-					$str .= print_line("statusmap_image", $field);
-				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_2d_coords"))
-					$str .= print_line("2d_coords", $field);
-				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_3d_coords"))
-					$str .= print_line("3d_coords", $field);
-				$str .= "}\n\n";
+				$flag = 0;
+				$strTmp = "";
+				$ret["comment"] ? ($strTmp .= "# '" . $ehi["host_name"] . "' Host Extended Information definition " . $i . "\n") : NULL ;
+				$strTmp .= "define hostextinfo{\n";
+				if ($ehi["host_name"]){
+					$strTmp .= print_line("host_name", $ehi["host_name"]);
+					$flag++;
+				}
+				
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_notes")){
+					$strTmp .= print_line("notes", $field);
+					$flag++;
+				}
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_notes_url")){
+					$strTmp .= print_line("notes_url", $field);
+					$flag++;
+				}
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_action_url")){
+					$strTmp .= print_line("action_url", $field);
+					$flag++;
+				}
+				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_icon_image")){
+					$strTmp .= print_line("icon_image", $field);
+					$flag++;
+				}
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_icon_image_alt")){
+					$strTmp .= print_line("icon_image_alt", $field);
+					$flag++;
+				}
+				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_vrml_image")){
+					$strTmp .= print_line("vrml_image", $field);
+					$flag++;
+				}
+				if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_statusmap_image")){
+					$strTmp .= print_line("statusmap_image", $field);
+					$flag++;
+				}
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_2d_coords")){
+					$strTmp .= print_line("2d_coords", $field);
+					$flag++;
+				}
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_3d_coords")){
+					$strTmp .= print_line("3d_coords", $field);
+					$flag++;
+				}
+				$strTmp .= "}\n\n";
+				if ($flag != 0)
+					$str .= $strTmp;
 				$i++;
+				unset($strTmp);
 			}
 		}
 	}
@@ -115,7 +145,6 @@
 			}
 			$hgs = getMyServiceHostGroups($esi["service_id"]);
 			foreach ($hgs as $key => $value)	{
-				print_r($gbArr[3]);
 				if (isset($value[$gbArr[3]]))	{
 					$hostgroup_name = getMyHostGroupName($value);
 					$service_description = getMyServiceName($esi["service_id"]);
