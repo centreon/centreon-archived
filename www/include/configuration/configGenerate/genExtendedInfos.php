@@ -43,10 +43,8 @@
 				$strTmp = "";
 				$ret["comment"] ? ($strTmp .= "# '" . $ehi["host_name"] . "' Host Extended Information definition " . $i . "\n") : NULL ;
 				$strTmp .= "define hostextinfo{\n";
-				if ($ehi["host_name"]){
+				if ($ehi["host_name"])
 					$strTmp .= print_line("host_name", $ehi["host_name"]);
-					$flag++;
-				}
 				
 				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_notes")){
 					$strTmp .= print_line("notes", $field);
@@ -126,10 +124,8 @@
 						$service_description = str_replace('#BS#', "\\", $service_description);
 						$strTMP .= "# '" . $host_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
 						$strTMP .= "define serviceextinfo{\n";
-						if ($host_name){
+						if ($host_name)
 							$strTMP .= print_line("host_name", $host_name);
-							$flag++;
-						}
 						if ($service_description){
 							$strTMP .= print_line("service_description", $service_description);		
 							$flag++;
@@ -172,10 +168,8 @@
 					$service_description = str_replace('#BS#', "\\", $service_description);
 					$strTMP .= "# '" . $hostgroup_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
 					$strTMP .= "define serviceextinfo{\n";
-					if ($hostgroup_name){
+					if ($hostgroup_name)
 						$strTMP .= print_line("hostgroup_name", $hostgroup_name);
-						$flag++;
-					}
 					if ($service_description){
 						$strTMP .= print_line("service_description", $service_description);		
 						$flag++;
