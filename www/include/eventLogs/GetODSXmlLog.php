@@ -285,7 +285,7 @@
 				$str_unitH .= ' OR host_name is null';
 			$str_unitH_flag = 1;
 		}
-		if (count($tab_svc) || count($tab_SG))
+		if ($str_unitH !=  "" && (count($tab_svc) || count($tab_SG)))
 			$str_unitH .= " OR (";
 		/*
 		 * Concat 
@@ -303,12 +303,12 @@
 		}
 		if (count($tab_SG) > 0){
 			foreach ($tab_SG as $SG){
-				($flag) ? $str_unitSVC .= " OR " : NULL;
+				($flag && strlen($str_unitSVC)) ? $str_unitSVC .= " OR " : NULL;
 				$str_unitSVC .= " (host_name = '".$SG["h"]."' AND service_description = '".$SG["s"]."') ";
 				$flag = 1;			
 			}
 		}  
-		if (count($tab_svc) || count($tab_SG))
+		if ($str_unitH !=  "" && (count($tab_svc) || count($tab_SG)))
 			$str_unitSVC .= " )";
 		
 		if ($str_unitH || $str_unitSVC)
