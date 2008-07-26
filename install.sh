@@ -52,6 +52,9 @@
 # Define centreon version
 version="2.0-b6"
 
+# Debug
+#set -x
+
 #----
 ## Usage informations for install.sh
 ## @Sdtout	Usage informations
@@ -59,8 +62,9 @@ version="2.0-b6"
 function usage() {
 	local program=$0
 	echo -e "$(gettext "Usage: $program -f <file>")"
+	echo -e "  -i\t$(gettext "install centreon")"
 	echo -e "  -f\t$(gettext "file with all variable")"
-	echo -e "  -u\t$(gettext "your directory with instCent* files")"
+	echo -e "  -u\t$(gettext "upgrade centreon with specify your directory with instCent* files")"
 	echo -e "  -v\t$(gettext "verbose mode")"
 	exit 1
 }
@@ -121,6 +125,7 @@ if [ "$USERID" != "0" ]; then
     exit 1
 fi
 
+_tmp_install_opts="0"
 silent_install="0"
 upgrade="0"
 user_install_vars=""
@@ -132,20 +137,22 @@ cinstall_opts=""
 
 ## Getopts :)
 # When you use options, by default I set silent_install to 1.
-while getopts "f:u:hv" Options
+while getopts "if:u:hv" Options
 do
 	case ${Options} in
+		i )	silent_install="0"
+			_tmp_install_opts="1"
+			;;
 		f )	silent_install="1"
-			user_install_vars="${OPTARG}" ;;
+			user_install_vars="${OPTARG}"
+			_tmp_install_opts="1"
+			;;
 		u )	silent_install="1"
-			# At this moment I use a template file to update 
-			# centreon install.
-			# After that I think I demand only a centreon_etc
-			# directory
-			#user_install_vars="${OPTARG}"
 			inst_upgrade_dir="${OPTARG%/}"
 			cinstall_opts="$cinstall_opts -f"
-			upgrade="1" ;;
+			upgrade="1" 
+			_tmp_install_opts="1"
+			;;
 		v )	cinstall_opts="$cinstall_opts -v" 
 			# need one variable to parse debug log 
 			;;
@@ -153,6 +160,11 @@ do
 		* )	usage ; exit 1 ;;
 	esac
 done
+
+if [ "$_tmp_install_opts" -eq 0 ] ; then
+	usage
+	exit 1
+fi
 
 #Export variable for all programs
 export silent_install user_install_vars CENTREON_CONF cinstall_opts inst_upgrade_dir

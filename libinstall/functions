@@ -385,10 +385,10 @@ function locate_nagios_installdir() {
 ## Define where is nagios config directory
 ## @Globals	NAGIOS_ETC, DEFAULT_NAGIOS_ETC
 #----
-function locate_nagios_etcdir() {/
+function locate_nagios_etcdir() {
 	if [ -z "$NAGIOS_ETC" ] ; then
 		answer_with_testdir "$(gettext "Where is your nagios config directory")" "$DEFAULT_NAGIOS_ETC" "NAGIOS_ETC"
-		echo_success "$(gettext "Path" ) $NAGIOS_ETC" "$ok"
+		echo_success "$(gettext "Path") $NAGIOS_ETC" "$ok"
 	fi
 	NAGIOS_ETC=${NAGIOS_ETC%/}
 	export NAGIOS_ETC
@@ -1246,7 +1246,9 @@ function configureSUDO(){
 	log "INFO" "$(gettext "Please configure your sudo with this example"): $dir_conf/centreon.sudo"
 	# Add a simple test for Defaults Requiretty problem on CentOS, Fedora...
 	is_suspect_conf_sudo $SUDO_FILE
-	[ "$?" -eq 1 ] && echo_warning "$(gettext "For security policy, your sudo's configuration would only run when the user is logged into a real tty. Please adjust your configuration by commenting 'Defaults requiretty' line in your configuration file.)" "$warning"
+	if [ "$?" -eq 1 ] ; then
+		echo_warning "$(gettext "For security policy, your sudo's\nconfiguration would only run when the user is logged into a real tty. Please adjust your configuration by commenting 'Defaults requiretty' line in your configuration file.")" "$warning"
+	fi
 	return 0
 }
 
@@ -1326,7 +1328,8 @@ __EOT__
 	done
 	
 	echo "?>" >> $INSTALL_DIR_CENTREON_CONF
-	${CHOWN} -v $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON_CONF >> $LOG_FILE 2>&1
+	log "INFO" "$(gettext "Change right on") : $INSTALL_DIR_CENTREON_CONF"
+	${CHOWN} $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON_CONF >> $LOG_FILE 2>&1
 	echo_success "Create $INSTALL_DIR_CENTREON_CONF" "OK"
 	
 }
@@ -1479,7 +1482,7 @@ function createCentPluginsInstallConf() {
 #----
 function find_user_nagios()
 {
-	# If I am on this function, I suppose you don't force a nagios user name. So I init this :p
+	# If I am on this function, I suppose you do not force a nagios user name. So I init this :p
 	NAGIOS_USER=""
 	# In a first time, I search on nagios.cfg because it had most of chance to find it.
 	if [ -f $NAGIOS_ETC/nagios.cfg ] ; then 
@@ -1658,8 +1661,8 @@ function check_nagios_init_script()
 	elif [ -x "$DEFAULT_NAGIOS_INIT_SCRIPT" ] ; then
 		NAGIOS_INIT_SCRIPT=$DEFAULT_NAGIOS_INIT_SCRIPT
 	else
-    		echo_passed "`gettext \"Not possible to find Nagios init script\"`" "$critical"
-		answer_with_testfile "`gettext \"Where is Nagios init script\"`" "NO_DEFAULT" "NAGIOS_INIT_SCRIPT"
+    		echo_passed "$(gettext "Not possible to find Nagios init script")" "$critical"
+		answer_with_testfile "$(gettext "Where is Nagios init script")" "NO_DEFAULT" "NAGIOS_INIT_SCRIPT"
 	fi
 	NAGIOS_INIT_SCRIPT=${NAGIOS_INIT_SCRIPT%/}
 	echo_success "Nagios init script " "$ok"
@@ -1761,7 +1764,7 @@ function check_user_apache()
 			found=1
 		fi
 	fi 
-	if [ $found -eq 0 ] ; then 
+	if [ "$found" -eq 0 ] ; then 
 		WEB_USER=`${CAT} $DIR_APACHE/$APACHE_CONF | ${GREP} -e "^User" | cut -d" " -f2`
 		if [ -z "$WEB_USER"  ] ; then
 			local WEB_USER_TEMP=""
@@ -1813,7 +1816,7 @@ function check_group_apache()
 			found=1
 		fi
 	fi
-	if [ $found -eq 0 ] ; then 
+	if [ "$found" -eq 0 ] ; then 
 		WEB_GROUP=`${CAT} $DIR_APACHE/$APACHE_CONF | ${GREP} -e "^Group" | cut -d" " -f2`
 		if [  -z "$WEB_GROUP"  ] ; then
 			local WEB_GROUP_TMP=""
@@ -2053,15 +2056,15 @@ function purge_centreon_tmp_dir() {
 ## @Globals	TMPDIR, LOG_FILE
 #----
 function clean_sudo() {
-	local validate=${1:-0}
-	local RC=1
+	local validate="${1:-0}"
+	local RC="1"
 	local sudo_old="$2"
 	local sudo_clean="$TMPDIR/$sudo_old.clean"
 
 	${CAT} $sudo_old | \
-	awk 'BEGIN { flag=0; } \
-	/^## BEGIN: CENTREON SUDO/ { flag=1; next; } \
-	/^## END: CENTREON SUDO/ { flag=0; next; } \
+	awk 'BEGIN { flag=0; }
+	/^## BEGIN: CENTREON SUDO/ { flag=1; next; }
+	/^## END: CENTREON SUDO/ { flag=0; next; }
 	{ if (flag == 0) { print $0; } next; }' > $sudo_clean
 
 	log "INFO" "$(gettext "New sudo file generate in:") $sudo_clean"
