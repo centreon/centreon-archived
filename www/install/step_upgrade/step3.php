@@ -34,7 +34,7 @@
         	<select name="mysqlscript">
         	<?php       		
         		chdir('sql');
-        		foreach (glob("Update-CSTG-".$version["value"]."_to_2.0-b5.sql") as $filename) {
+        		foreach (glob("Update-CSTG-".$version["value"]."_to_*.sql") as $filename) {
 					echo '<option value="'.$filename.'">'.$filename.'</option>'; }
         	?>
         	</select>

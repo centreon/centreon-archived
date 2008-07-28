@@ -19,6 +19,9 @@
 	include_once("DB.php");
 	include_once("../DBconnect.php");
 
+	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
+	$version =& $DBRESULT->fetchRow();
+
 	$debug = 0;
 	$dsn = array(
 	    'phptype'  => 'mysql',
@@ -39,7 +42,8 @@
 	// End of Pear connection
 
 	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")) {
-		$_SESSION["mysqlscript"] = $_POST["mysqlscript"]; }
+		$_SESSION["mysqlscript"] = $_POST["mysqlscript"]; 
+	}
 
 	aff_header("Centreon Setup Wizard", "Updating Centreon Database", 6);	?>
 	<br /><br />
@@ -48,8 +52,9 @@
 	print "<tr><td><b>Database &#146;".$conf_centreon['db']."&#146; : Upgrade</b></td>";
 
 	# get version...	
-	preg_match("/UpdateDB-([a-zA-z0-9\-\.]*).sql/", $_SESSION["mysqlscript"], $matches);
-	$choose_version = $matches[1];
+	preg_match("/Update-DB-".$version["value"]."_to_*.sql/", $_SESSION["mysqlscript"], $matches);
+	if (count($matches))
+		$choose_version = $matches[1];
 
 	if ($pearDB) {
 		$file_sql = file("./sql/".$_SESSION["mysqlscript"]);
@@ -78,14 +83,14 @@
 			print "<tr><td colspan='2' align='left'><span class='small'>$mysql_msg</span></td></tr>";
 		}
 		
-		if (file_exists("./php/update-ods-$choose_version.php"))
+		if (isset($choose_version) && file_exists("./php/update-ods-$choose_version.php"))
 			include("./php/update-ods-$choose_version.php");
 	} else {
 		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
 	    $return_false = 1;	?>
 		<tr>
 			<td colspan="2" align="left"><span class="small"><?php echo $mysql_msg; ?></span></td>
-		</tr><?	
+		</tr><?php	
 	}
 
 	aff_middle();

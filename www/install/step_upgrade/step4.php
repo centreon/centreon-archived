@@ -19,6 +19,9 @@
 	include_once("DB.php");
 	include_once("../DBconnect.php");
 
+	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
+	$version =& $DBRESULT->fetchRow();
+	
 	$debug = 0;
 	$dsn = array(
 	    'phptype'  => 'mysql',
@@ -50,8 +53,9 @@
 	print "<tr><td><b>Database &#146;".$conf_centreon['dbcstg']."&#146; : Upgrade</b></td>";
 
 	# get version...	
-	preg_match("/Update-CSTG-([a-zA-z0-9\-\.]*).sql/", $_SESSION["mysqlscript"], $matches);
-	$choose_version = $matches[1];
+	preg_match("/Update-CSTG-".$version["value"]."_to_*.sql/", $_SESSION["mysqlscript"], $matches);
+	if (count($matches))
+		$choose_version = $matches[1];
 
 	if ($pearDB) {
 		$file_sql = file("./sql/".$_SESSION["mysqlscript"]);
@@ -80,7 +84,7 @@
 			print "<tr><td colspan='2' align='left'><span class='small'>$mysql_msg</span></td></tr>";
 		}
 		
-		if (file_exists("./php/update-$choose_version.php"))
+		if (isset($choose_version) && file_exists("./php/update-$choose_version.php"))
 			include("./php/update-$choose_version.php");
 	} else {
 		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
