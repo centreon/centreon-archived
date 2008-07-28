@@ -35,7 +35,6 @@
 	 */ 
 	require_once 'DB.php';
 	include_once("@CENTREON_ETC@/centreon.conf.php");
-//	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
 	/*
@@ -62,8 +61,7 @@
 	
 	$sid = $_GET['sid'];
 	
-	$contact_id = check_session($sid,$pearDB);
-	
+	$contact_id = check_session($sid, $pearDB);
 	$is_admin = isUserAdmin($sid);
 		
 	if (!$is_admin)	{
@@ -103,7 +101,14 @@
 		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
 	}
 	
+	/*
+	 * Defined Default period
+	 */
 	$period = 86400;
+	
+	/*
+	 * Adjust default date picker.
+	 */
 	if ($auto_period > 0){
 		$period = $auto_period;
 		$start = time() - ($period);
@@ -111,8 +116,8 @@
 	}			
 
 	/*
- 	* set graph template list
- 	*/
+ 	 * set graph template list
+ 	 */
  
 	$graphTs = array( NULL => NULL );
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
@@ -153,7 +158,7 @@
 									&& isset($lca["LcaHost"][getMyHostName($host)]) 
 									&& isset($lca["LcaHost"][getMyHostName($host)]["svc"][$svc_name]))))	{
 								$oid = "HS_".$svc_id."_".$host;
-								array_push($tab_id,$oid);	
+								array_push($tab_id, $oid);	
 							}
 						}
 					}
@@ -201,24 +206,16 @@
 	$tab_id = array();
 	$tab_real_id = array();
 	
-	if (count($tab_tmp))
+	if (count($tab_tmp)){
 		foreach ($tab_tmp as $openid)	{
-			/*
-			$tab_opid = split("_", $openid2);
-			print_r($tab_opid);
-			
-			if (count($tab_opid) == 4){
-				$tab = split("_", $openid2);
-				$openid2 = $tab[0] ."_". $tab[1] ."_".$tab[2];
-				$tab_opid = split("_", $openid2);
-			}
-			
-			$id = $tab_opid[1];
-			$type = $tab_opid[0];
-			*/
-			$tab_real_id[substr($openid, 0, 8)] = $openid;
+			$tab = split("_", $openid);
+			if (isset($tab[2]) && $tab[2])
+				$tab_real_id[$tab[0] ."_". $tab[1]."_".$tab[2]] = $openid;
+			else
+				$tab_real_id[$tab[0] ."_". $tab[1]] = $openid;
 		}
-	
+	}
+
 	function returnType($type, $multi){
 		if ($multi && $type == 'HS')
 			$type = "SS";
@@ -231,25 +228,24 @@
 	
 	$tab_class = array("1" => "list_one", "0" => "list_two");
 
-	
-	
 	foreach ($tab_real_id as $key => $openid) {
-		print "|" . $type . "|";
-	
 		$bad_value = 0;	
 		$tab_tmp = split("_", $openid);
 		
-		$id = $tab_tmp[1];
+		if (isset($tab_tmp[2]) && $tab_tmp[2])
+			$id = $tab_tmp[1]."_".$tab_tmp[2];
+		else
+			$id = $tab_tmp[1];
+			
 		$type = $tab_tmp[0];
 		
 		$real_id = $tab_real_id[$key];
 		$type = returnType($type, $multi);
-		print "|" . $type . "|";
+		
 		/*
 		 * for one svc -> daily,weekly,monthly,yearly..
 		 */
 		if ($type == "HS" || $type == "MS"){
-			print "OK\n";
 			$msg_error 		= 0;
 			$elem 			= array();
 		
@@ -437,6 +433,7 @@
 			$elem = array();
 		
 			if ($type == "SS"){
+				print "|".$openid."|";
 				$tab_tmp = split("_", $openid);
 				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
 				if (PEAR::isError($DBRESULT2))
@@ -497,14 +494,15 @@
 				$counter++;
 			}
 				
-			# verify if metrics in parameter is for this index
+			/*
+			 *  verify if metrics in parameter is for this index
+			 */
 			$metrics_active =& $_GET["metric"];
 			$pass = 0;
 			if (isset($metrics_active))
 				foreach ($metrics_active as $key => $value)
 					if (isset($metrics[$key]))
 						$pass = 1;
-			# 
 			
 			if (isset($_GET["metric"]) && $pass){
 				$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$id."'");

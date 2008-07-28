@@ -140,6 +140,7 @@
 		tree.attachEvent("onDblClick",onDblClick)
 		//set function object to call on node select 		
 		tree.attachEvent("onCheck",onCheck)
+		
 		//see other available event handlers in API documentation 
 		tree.enableDragAndDrop(0);
 		tree.enableTreeLines(false);	

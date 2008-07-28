@@ -5,15 +5,13 @@
 <xsl:if test="host">
 	<div id="div1" class="cachediv" style="padding-bottom:10px;">
 		<form name="formu">
+			<xsl:if test="host">
 			<table class="ListTable">
 				<tr class="ListHeader">
 	            	<td class="FormHeader" ><xsl:value-of select="//lang/optionAdvanced"/></td>
 	            </tr>
 				<tr class="list_one">
-	            	<td>
-	               		<xsl:value-of select="//lang/period"/>
-						<xsl:text> </xsl:text>                		
-	            	</td>
+	            	<td><xsl:value-of select="//lang/period"/><xsl:text> </xsl:text></td>
 				</tr>
 				<tr class="list_lvl_1">
 					<td><xsl:value-of select="//lang/start"/>

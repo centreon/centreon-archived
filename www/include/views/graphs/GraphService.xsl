@@ -122,6 +122,7 @@
 		<form name="formu2">
     	    <table class="graph_options">
 				<tr>
+				<!--
 				<td>
 					<xsl:value-of select="//lang/giv_gg_tpl"/>
            		</td>
@@ -141,6 +142,7 @@
 
 					</xsl:element>
            		</td>
+           		-->
            		<td>
 					<xsl:element name='input'>
 						<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>'); return false;</xsl:attribute>
