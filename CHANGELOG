@@ -1,3 +1,19 @@
+## Centreon 2.0-b6
+
+=> Bugfix : #76 sudo configuration file problem solved during installation.
+=> Bugfix : #77 Disk space problem solved on installation.
+=> CSV Icons updated to use the same image file.
+=> New feature : Color and output added for intial state on event logs monitoring.
+=> Bugfix : colors fixed in reporting and timeline for services groups.
+=> Bugfix : Services Groups Reporting datas generation updated.
+=> Bugfix : Services Groups Reporting timeline updated.
+=> Bugfix : Services Groups Reporting forme updated.
+=> Bugfix : #79 CSV Export for a servicegroup fixed.
+=> Bugfix : #90 High CPU load resolved in event logs Monitoring.
+=> New feature : XML export on event logs Monitoring.
+=> New feature : Possibly to hide footer
+=> Bugfix : #82 Nagios 3 documentation added.
+
 ## Centreon 2.0-b5
 
 => Bugfix : #29 CentPlugins: snmp uptime problem
