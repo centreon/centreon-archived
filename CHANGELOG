@@ -1,17 +1,24 @@
 ## Centreon 2.0-b6
 
+=> Bugfix : remove error on Tacktical overview with admin and with ACL
+=> Bugfix : configuration : contact -> remove "Mail type" options 
+=> Feature : eventlog : add option "Hard only" 
+=> Feature : eventlog : add pagination in bottom
+=> Feature : #43 eventlog : add ServiceGrp filtering
+=> Bugfix : remove problem with ACL
+=> Bugfix : #60 remove sql injection in reporting
 => Bugfix : #76 sudo configuration file problem solved during installation.
 => Bugfix : #77 Disk space problem solved on installation.
-=> CSV Icons updated to use the same image file.
-=> New feature : Color and output added for intial state on event logs monitoring.
+=> Feature : CSV Icons updated to use the same image file.
+=> Feature : Color and output added for intial state on event logs monitoring.
 => Bugfix : colors fixed in reporting and timeline for services groups.
 => Bugfix : Services Groups Reporting datas generation updated.
 => Bugfix : Services Groups Reporting timeline updated.
 => Bugfix : Services Groups Reporting forme updated.
 => Bugfix : #79 CSV Export for a servicegroup fixed.
 => Bugfix : #90 High CPU load resolved in event logs Monitoring.
-=> New feature : XML export on event logs Monitoring.
-=> New feature : Possibly to hide footer
+=> Feature : XML export on event logs Monitoring.
+=> Feature : Possibly to hide footer
 => Bugfix : #82 Nagios 3 documentation added.
 
 ## Centreon 2.0-b5
