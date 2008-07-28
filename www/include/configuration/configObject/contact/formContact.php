@@ -274,7 +274,7 @@
 		$form->addRule('contact_oreon', _("Required Field"), 'required');
 		$form->addRule('contact_lang', _("Required Field"), 'required');
 		$form->addRule('contact_admin', _("Required Field"), 'required');
-		$form->addRule('contact_type_msg', _("Required Field"), 'required');
+		//$form->addRule('contact_type_msg', _("Required Field"), 'required');
 		$form->addRule('contact_auth_type', _("Required Field"), 'required');
 		$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
 		$form->addRule('contact_hostNotifCmds', _("Compulsory Command"), 'required');
