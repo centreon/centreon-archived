@@ -1620,7 +1620,7 @@ function check_group_nagios()
 			RC=0
 		fi
 		if [ "$RC" -eq 0 ] ; then
-			echo_info "`gettext \"Finding Nagios group\"` :" "$NAGIOS_GROUP"
+			echo_info "$(gettext "Finding Nagios group") :" "$NAGIOS_GROUP"
 			return 0
 		fi
 	fi
@@ -1699,9 +1699,9 @@ function check_httpd_directory()
 			DIR_APACHE="/usr/local/etc/apache22"
 			DIR_APACHE_CONF="/usr/local/etc/apache22/Includes"
 		else 
-			echo_passed "`gettext \"Apache config directoty not found\"`" "$critical"
-			answer_with_testdir "`gettext \"Where is your Apache etc directory\"`" "NO_DEFAULT" "DIR_APACHE"
-			answer_with_testdir "`gettext \"Where is your Apache conf.d directory\"`" "NO_DEFAULT" "DIR_APACHE_CONF"
+			echo_passed "$(gettext "Apache config directoty not found")" "$critical"
+			answer_with_testdir "$(gettext "Where is your Apache etc directory")" "NO_DEFAULT" "DIR_APACHE"
+			answer_with_testdir "$(gettext "Where is your Apache conf.d directory")" "NO_DEFAULT" "DIR_APACHE_CONF"
 		fi
 	fi
 	DIR_APACHE=${DIR_APACHE%/}
@@ -1721,8 +1721,8 @@ function check_httpd_directory()
 		elif [ -e $DIR_APACHE/httpd.conf ] ; then
 			APACHE_CONF="httpd.conf"
 		else
-			echo_passed "`gettext \"Apache config file not found\"`" "$critical"
-			answer_with_testfile "`gettext \"Where is your Apache config file \"`" "NO_DEFAULT" "APACHE_CONF"
+			echo_passed "$(gettext "Apache config file not found")" "$critical"
+			answer_with_testfile "$(gettext "Where is your Apache config file")" "NO_DEFAULT" "APACHE_CONF"
 		fi
 	fi
 	APACHE_CONF=${APACHE_CONF%/}
