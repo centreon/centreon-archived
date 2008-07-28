@@ -33,7 +33,7 @@
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/autocompletion.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved." />
-<meta name="robots" content="index, follow" />
+<meta name="robots" content="index, nofollow" />
 <link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
