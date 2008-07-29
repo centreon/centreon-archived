@@ -229,7 +229,7 @@ function answer_with_testdir() {
 	local res="not_define"
 	local first=0
 	while [ ! -d "$res" ] ; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "\$res is not a directory or does not exist.")" "$critical" 
+		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a directory or does not exist.")" "$critical" 
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
 		echo -en "> "
@@ -263,7 +263,7 @@ function answer_with_createdir() {
 	local res="not_define"
 	local first=0
 	while [ ! -d "$res" ] ; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "Directory \$res does not exists.")" "$critical"
+		[ $first -eq 1 ] && echo_passed "$(gettext "Directory $res does not exists.")" "$critical"
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
 		echo -en "> "
@@ -307,7 +307,7 @@ function answer_with_testfile() {
 	local res="not_define"
 	local first=0
 	while [ ! -f "$res" ] ; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "\$res is not a valid file.")" "$critical" 
+		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a valid file.")" "$critical" 
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
 		echo -en "> "
