@@ -64,7 +64,7 @@ if($opt_h) {
 }
 
 # Get conf Data
-my $sth = $dbh->prepare("SELECT archive_log, archive_retention, nagios_log_file  FROM config");
+my $sth = $dbh->prepare("SELECT `archive_log`, `archive_retention`, `nagios_log_file`  FROM `config`");
 if (!$sth->execute) {die "Error:" . $sth->errstr . "\n";}
 $data = $sth->fetchrow_hashref();
 
@@ -177,14 +177,14 @@ sub parseArchive($$) {
 
     my $archives;
     if ($localhost){
-	my $sth = $dbhoreon->prepare("SELECT log_archive_path FROM cfg_nagios WHERE nagios_server_id = '".$_[0]."'");
-	if (!$sth->execute()) {
-	    die "Error:" . $sth->errstr . "\n";
-	}
-	$data = $sth->fetchrow_hashref();
-	$archives = $data->{'log_archive_path'};
+		my $sth = $dbhoreon->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$_[0]."'");
+		if (!$sth->execute()) {
+		    die "Error:" . $sth->errstr . "\n";
+		}
+		$data = $sth->fetchrow_hashref();
+		$archives = $data->{'log_archive_path'};
     } else {
-	$archives = "@CENTREON_VARLIB@/log/$instance/archives/";
+		$archives = "@CENTREON_VARLIB@/log/$instance/archives/";
     }
 
     $archives .= "/" if (!($archives =~ /\/$/));
@@ -192,18 +192,18 @@ sub parseArchive($$) {
     my @log_files = split /\s/,`ls $archives`;
     my $last_log = time() - ($retention * 24 * 60 * 60);
     foreach (@log_files) {
-	$_ =~ /nagios\-([0-9\-]+).log/;
-	my @time = split /\-/, $1;
-	my $temp = $time[0]."/".$time[1]."/".$time[2];
-	$temp = `date -d $temp +%s`;
-	if ($temp > $last_log) {
-	    if(!(-r $archives.$_)) {
-		print "Error : cannot read file $archives$_\n";
-	    } else {
-		print $archives.$_."\n";
-		parseFile($archives.$_, $instance);
-	    }
-	}
+		$_ =~ /nagios\-([0-9\-]+).log/;
+		my @time = split /\-/, $1;
+		my $temp = $time[0]."/".$time[1]."/".$time[2];
+		$temp = `date -d $temp +%s`;
+		if ($temp > $last_log) {
+		    if (!(-r $archives.$_)) {
+				print "Error : cannot read file $archives$_\n";
+		    } else {
+				print $archives.$_."\n";
+				parseFile($archives.$_, $instance);
+		    }
+		}
     }
 }
 
@@ -214,7 +214,7 @@ sub parseLogFile($$) {
 
     my $LOG_FILE;
     if ($localhost){
-	my $sth = $dbhoreon->prepare("SELECT log_file FROM cfg_nagios, nagios_server WHERE nagios_server_id = '".$_[0]."' AND nagios_server.id = cfg_nagios.nagios_server_id AND nagios_server.ns_activate = 1");
+	my $sth = $dbhoreon->prepare("SELECT `log_file` FROM `cfg_nagios`, `nagios_server` WHERE `nagios_server_id` = '".$_[0]."' AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` AND `nagios_server`.`ns_activate` = 1");
 	if (!$sth->execute()) {die "Error:" . $sth->errstr . "\n";}
 		$data = $sth->fetchrow_hashref();
 		$LOG_FILE = $data->{'log_file'};
@@ -231,11 +231,11 @@ sub parseLogFile($$) {
 
     if ($hour eq 0 && $min eq 0){
 		$last_line_read = 0;
-		$sth = $dbh->prepare("UPDATE instance SET `log_flag` = '0'");
+		$sth = $dbh->prepare("UPDATE `instance` SET `log_flag` = '0'");
 		if (!$sth->execute()) {die "Error:" . $sth->errstr . "\n";}
     }
 
-    $sth = $dbh->prepare("SELECT log_flag FROM instance WHERE instance_id = '".$instance."'");
+    $sth = $dbh->prepare("SELECT `log_flag` FROM `instance` WHERE `instance_id` = '".$instance."'");
     if (!$sth->execute) {die "Error:" . $sth->errstr . "\n";}
     $data = $sth->fetchrow_hashref();
     $last_line_read = $data->{'log_flag'};
@@ -248,19 +248,19 @@ sub parseLogFile($$) {
 
     ##############################
     # Update statistics and flags
-    my $sth1 = $dbh->prepare("UPDATE `instance` SET `log_flag` = '".$cpt."'");
+    my $sth1 = $dbh->prepare("UPDATE `instance` SET `log_flag` = '".$cpt."' WHERE instance_id = '".$instance."'");
     if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
     ##############################
 }
 
 exit() if (!$data->{'archive_log'});
 
-my $sth2 = $dbhoreon->prepare("SELECT id,name,localhost FROM nagios_server WHERE ns_activate = 1");
+my $sth2 = $dbhoreon->prepare("SELECT `id`, `name`, `localhost` FROM `nagios_server` WHERE `ns_activate` = 1");
 if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
 } else { 
     while (my $ns_server = $sth2->fetchrow_hashref()){
-		my $sth1 = $dbh->prepare("SELECT instance_name FROM instance WHERE instance_id = '".$ns_server->{'id'}."' LIMIT 1");
+		my $sth1 = $dbh->prepare("SELECT `instance_name` FROM `instance` WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
 		if (!$sth1->execute) {
 		    die "Error:" . $sth1->errstr . "\n";
 		}
