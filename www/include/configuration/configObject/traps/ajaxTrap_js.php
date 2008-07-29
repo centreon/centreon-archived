@@ -16,11 +16,10 @@
  */
  
 	
-?>
-<script type="text/javascript">
+?><script type="text/javascript">
 
 function getXhrTrap(){
-	if(window.XMLHttpRequest) // Firefox et autres
+	if (window.XMLHttpRequest) // Firefox et autres
 	   var xhrT = new XMLHttpRequest();
 	else if(window.ActiveXObject){ // Internet Explorer
 	   try {
@@ -28,8 +27,7 @@ function getXhrTrap(){
             } catch (e) {
                 var xhrT = new ActiveXObject("Microsoft.XMLHTTP");
             }
-	}
-	else { // XMLHttpRequest non support2 par le navigateur
+	} else { // XMLHttpRequest non support2 par le navigateur
 	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
 	   var xhrT = false;
 	}
@@ -37,29 +35,23 @@ function getXhrTrap(){
 }
 
 function getTrap(mnftr_id) {
-
-
-	var arg = 'oreonPath=<?=$oreon->optGen["oreon_path"]?>&mnftr_id='+mnftr_id;
-
+	var arg = 'mnftr_id='+mnftr_id;
 	var xhrT = getXhrTrap();
 	 		  	
 	xhrT.open("POST","./include/configuration/configObject/traps/GetXMLTrapsForVendor.php",true);
 	xhrT.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	xhrT.send(arg);
 
-	
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrT.onreadystatechange = function()
 	{	
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
-		if(xhrT && xhrT.readyState == 4 && xhrT.status == 200 && xhrT.responseXML)
-		{		
+		if (xhrT && xhrT.readyState == 4 && xhrT.status == 200 && xhrT.responseXML){		
 			reponseT = xhrT.responseXML.documentElement;	
 			var _traps = reponseT.getElementsByTagName("trap");
 
-			var _selbox = document.getElementById("__service_traps");
-			while ( _selbox.options.length > 0 )
-			{
+			var _selbox = document.getElementById("service_traps-f");
+			while ( _selbox.options.length > 0 ){
 				_selbox.options[0] = null;
 			}
 
@@ -71,10 +63,8 @@ function getTrap(mnftr_id) {
 
 				new_elem = new Option(_name,_id);
 				_selbox.options[_selbox.length] = new_elem;
-
 			}
 		}
 	}
 }
-
 </SCRIPT>

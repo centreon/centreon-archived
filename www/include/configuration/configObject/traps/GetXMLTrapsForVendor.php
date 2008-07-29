@@ -15,72 +15,51 @@
  * For information : contact@centreon.com
  */
  
-
-	#
-	## pearDB init
-	#
-	require_once 'DB.php';
+	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once 'DB.php';
 	
+	$dsn = array('phptype'  => 'mysql',
+			     'username' => $conf_centreon['user'],
+			     'password' => $conf_centreon['password'],
+			     'hostspec' => $conf_centreon['hostCentreon'],
+			     'database' => $conf_centreon['db']);
+			     
+	$options = array('debug'       => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
+		
+	/* 
+	 * start init db
+	 */	
+	$pearDB =& DB::connect($dsn, $options);
+	if (PEAR::isError($pearDB)) 
+		die("Connecting probems with oreon database : " . $pearDB->getMessage());		
+	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+		
 	$buffer = null;
 	$buffer  = '<?xml version="1.0"?>';
 	$buffer .= '<traps>';
 
-
-	if(isset($_POST["mnftr_id"]) && isset($_POST["oreonPath"])){ 
-
-		/* start init db*/
-		$oreonPath = $_POST["oreonPath"];
-		include_once($oreonPath . "/www/centreon.conf.php");
-		$dsn = array(
-			     'phptype'  => 'mysql',
-			     'username' => $conf_centreon['user'],
-			     'password' => $conf_centreon['password'],
-			     'hostspec' => $conf_centreon['hostCentreon'],
-			     'database' => $conf_centreon['db'],
-			     );
-		$options = array(
-				 'debug'       => 2,
-				 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-				 );
-			
-		$pearDB =& DB::connect($dsn, $options);
-		if (PEAR::isError($pearDB)) 
-		  die("Connecting probems with oreon database : " . $pearDB->getMessage());		
-		$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-		/* end init db*/
-
-
+	if (isset($_POST["mnftr_id"])){ 
 		$traps = array();
-		if($_POST["mnftr_id"])
-		$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps WHERE manufacturer_id = " . $_POST["mnftr_id"]. " ORDER BY traps_name");
+		if ($_POST["mnftr_id"])
+			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps WHERE manufacturer_id = " . $_POST["mnftr_id"]. " ORDER BY traps_name");
 		else
-		$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
+			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
 		
-
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
-
-		while($DBRESULT->fetchInto($trap)){
+		while ($DBRESULT->fetchInto($trap)){
 				$buffer .= '<trap>';
 				$buffer .= '<id>'.$trap["traps_id"].'</id>';			
 				$buffer .= '<name>'.$trap["traps_name"].'</name>';			
 				$buffer .= '</trap>';
 		}
-		
-//			$traps[$trap["traps_id"]] = $trap["traps_name"];
 		$DBRESULT->free();
-
-
-
-	}
-	else{
+	} else{
 		$buffer .= '<error>mnftr_id not found</error>';
 	}
-
+	
 	$buffer .= '</traps>';
 	header('Content-Type: text/xml');
 	echo $buffer;
-
-
 ?>
