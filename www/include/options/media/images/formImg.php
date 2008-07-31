@@ -71,7 +71,7 @@
 	$form->addElement('select', 'directories', _("Directory"), $dirs);
 
 	if ($o == "c" || $o == "w")
-		$form->addElement('text', 'img_name', $lang['views_img_imgName'], $attrsText);
+		$form->addElement('text', 'img_name', _("Image Name"), $attrsText);
  	$file =& $form->addElement('file', 'filename', _("Image"));
 	$file1 =& $form->addElement('file', 'filename1', _("Image"));
 	$file2 =& $form->addElement('file', 'filename2', _("Image"));
