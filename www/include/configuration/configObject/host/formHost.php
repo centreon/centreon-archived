@@ -336,7 +336,7 @@
 	
 	# Nagios 2
 	if ($oreon->user->get_version() >= 2)	{
-	$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
+		$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
 
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Yes"), '1');
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("No"), '0');
