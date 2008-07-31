@@ -31,7 +31,7 @@
 	 */	
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB)) 
-		die("Connecting probems with oreon database : " . $pearDB->getMessage());		
+		die("Connecting probems with Centreon database : " . $pearDB->getMessage());		
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 		
 	$buffer = null;
