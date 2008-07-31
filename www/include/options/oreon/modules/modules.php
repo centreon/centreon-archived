@@ -14,6 +14,7 @@
  * 
  * For information : contact@centreon.com
  */
+	
 	if (!isset ($oreon))
 		exit ();
 	
@@ -29,12 +30,16 @@
 	isset($_POST["name"]) ? $nameP = $_POST["name"] : $nameP = NULL;
 	$nameG ? $name = $nameG : $name = $nameP;
 		
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the options dir
+	/*
+	 * Path to the options dir
+	 */	
 	$path = "./include/options/oreon/modules/";
 	
 	require_once "./include/common/common-Func.php";

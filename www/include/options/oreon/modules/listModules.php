@@ -14,19 +14,29 @@
  * 
  * For information : contact@centreon.com
  */
+ 
 	if (!isset($oreon))
 		exit();	
 	
+	/*
+	 * Test Modules Existence
+	 */
 	if ($id && $o == "d" && testModuleExistence($id))	{
 		$moduleinfo = getModuleInfoInDB(NULL, $id);
 		deleteModuleInDB($id);
 		if ($moduleinfo["is_removeable"])	{
-			#SQL deletion
+			
+			/*
+			 * SQL deletion
+			 */
 			$sql_file = "uninstall.sql";
 			$sql_file_path = "./modules/".$moduleinfo["name"]."/sql/";
 			if ($moduleinfo["sql_files"] && file_exists($sql_file_path.$sql_file))
 				execute_sql_file($sql_file, $sql_file_path);
-			#PHP deletion
+			
+			/*
+			 * PHP deletion
+			 */
 			$php_file = "uninstall.php";
 			$php_file_path = "./modules/".$moduleinfo["name"]."/php/";
 			if ($moduleinfo["php_files"] && file_exists($php_file_path.$php_file))
@@ -34,21 +44,22 @@
 		}
 	}
 	
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
 	/*
 	 * start header menu
 	 */
-	$tpl->assign("headerMenu_name", _("Name"));
-	$tpl->assign("headerMenu_rname", _("Real name"));
-	$tpl->assign("headerMenu_release", _("Release"));
-	$tpl->assign("headerMenu_author", _("Author"));
+	$tpl->assign("headerMenu_name", 	_("Name"));
+	$tpl->assign("headerMenu_rname", 	_("Real name"));
+	$tpl->assign("headerMenu_release", 	_("Release"));
+	$tpl->assign("headerMenu_author", 	_("Author"));
 	$tpl->assign("headerMenu_isinstalled", _("Installed"));
-	$tpl->assign("headerMenu_action", _("Actions"));
-	
-	$tpl->assign("confirm_removing", _("Do you confirm the deletion ?"));
+	$tpl->assign("headerMenu_action", 	_("Actions"));
+	$tpl->assign("confirm_removing", 	_("Do you confirm the deletion ?"));
 	
 	/*
 	 * Different style between each lines
@@ -59,15 +70,19 @@
 	 * Get Modules List
 	 */
 	$handle = opendir("./modules");
+	
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */	
-	
 	$elemArr = array();
+	$i = 0;
 	while (false !== ($filename = readdir($handle)))	{
 		if ($filename != "." && $filename != "..")	{
 			$moduleinfo = getModuleInfoInDB($filename, NULL);
-			# Package already installed
+			
+			/*
+			 * Package already installed
+			 */
 			if (isset($moduleinfo["rname"]))	{				
 				$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
 										"RowMenu_name"=>$moduleinfo["name"],
@@ -82,9 +97,13 @@
 				$style != "two" ? $style = "two" : $style = "one";
 				$i++;
 			} else {
-				# Valid package to install
+				
+				/*
+				 * Valid package to install
+				 */
 				if (is_file("./modules/".$filename."/conf.php")) {
 					include_once("./modules/".$filename."/conf.php");
+					
 					if (isset($module_conf[$filename]["name"]))	{							
 						$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
 												"RowMenu_name"=>$module_conf[$filename]["name"],
@@ -100,6 +119,7 @@
 						$i++;
 					}
 				} else {							
+					
 					/*
 					 * Non valid package
 					 */	
@@ -117,9 +137,13 @@
 		}
 	}
 	closedir($handle);
+	
+	/*
+	 * Init Template Var
+	 */
 	$tpl->assign("elemArr", $elemArr);
 	$tpl->assign("action_install", _("Install Module"));
-	$tpl->assign("action_delete", _("Uninstall Module"));
+	$tpl->assign("action_delete",  _("Uninstall Module"));
 	$tpl->assign("action_upgrade", _("Upgrade"));
 
 	/*
