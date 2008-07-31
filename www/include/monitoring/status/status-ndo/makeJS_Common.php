@@ -22,21 +22,21 @@
 		global $gopt,$pearDBndo;
 		$ndo_base_prefix = getNDOPrefix();
 		
-		$rq = "SELECT instance_id FROM ".$ndo_base_prefix."instances WHERE instance_name like '".$name_instance."'";
+		$rq = "SELECT `instance_id` FROM `".$ndo_base_prefix."instances` WHERE `instance_name` LIKE '".$name_instance."'";
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
 		$ndo =& $DBRESULT_NDO->fetchRow();
 		return $ndo["instance_id"];
 	}
 	
-	$DBRESULT =& $pearDB->query("SELECT cfg.instance_name as name FROM nagios_server ns, cfg_ndomod cfg WHERE cfg.ns_nagios_server = ns.id AND ns.ns_activate = 1");
+	$DBRESULT =& $pearDB->query("SELECT `cfg`.`instance_name` AS `name` FROM `nagios_server` `ns`, `cfg_ndomod` `cfg` WHERE `cfg`.`ns_nagios_server` = `ns`.`id` AND `ns`.`ns_activate` = 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 ?>
 function getXhrC(){
-	if(window.XMLHttpRequest) // Firefox et autres
+	if (window.XMLHttpRequest) // Firefox et autres
 	   var xhrC = new XMLHttpRequest();
-	else if(window.ActiveXObject){ // Internet Explorer
+	else if (window.ActiveXObject){ // Internet Explorer
 	   try {
                 var xhrC = new ActiveXObject("Msxml2.XMLHTTP");
             } catch (e) {
@@ -72,7 +72,7 @@ function advanced_options(id){
 }
 
 function construct_selecteList_ndo_instance(id){
-	if(!document.getElementById("select_instance")){
+	if (!document.getElementById("select_instance")){
 		var _select_instance = document.getElementById(id);
 		var _select = document.createElement("select");
 		_select.name = "select_instance";
@@ -147,7 +147,6 @@ function change_limit(l){
 	set_limit(l);
 }
 
-
 var _numRows = 0;
 
 function getVar (nomVariable){
@@ -208,8 +207,9 @@ function mk_pagination(resXML){
 
 function pagination_changed(){
 	viewDebugInfo('pagination_changed');
-	var page_max = 0;// Math.round( (_numRows / _limit) + 0.5);
-
+	
+	// compute Max Page
+	var page_max = 0;
 	if ((_numRows % _limit) == 0)	{
 		page_max =  Math.round( (_numRows / _limit));
 	} else{
@@ -230,54 +230,64 @@ function pagination_changed(){
 	var _numnext = _num + 1;
 	var _numprev = _num - 1;
 
-	var _img_previous = mk_img("./img/icones/16x16/arrow_left_blue.gif", "previous");
-	var _img_next = mk_img("./img/icones/16x16/arrow_right_blue.gif", "next");
-	var _img_first = mk_img("./img/icones/16x16/arrow_left_blue_double.gif", "first");
-	var _img_last = mk_img("./img/icones/16x16/arrow_right_blue_double.gif", "last");
+<?php	
+	for ($i = 1; $i <= 2; $i++) { ?>
+	var _img_previous<?php echo $i; ?> 	= mk_img("./img/icones/16x16/arrow_left_blue.gif", "previous");
+	var _img_next<?php echo $i; ?> 		= mk_img("./img/icones/16x16/arrow_right_blue.gif", "next");
+	var _img_first<?php echo $i; ?> 	= mk_img("./img/icones/16x16/arrow_left_blue_double.gif", "first");
+	var _img_last<?php echo $i; ?> 		= mk_img("./img/icones/16x16/arrow_right_blue_double.gif", "last");
 
-	var _linkaction_right = document.createElement("a");
-	_linkaction_right.href = '#' ;
-	_linkaction_right.indice = _numnext;
-	_linkaction_right.onclick=function(){change_page(this.indice)}
-	_linkaction_right.appendChild(_img_next);
-
-	var _linkaction_last = document.createElement("a");
-	_linkaction_last.href = '#' ;
-	_linkaction_last.indice = page_max - 1;
-	_linkaction_last.onclick=function(){change_page(this.indice)}
-	_linkaction_last.appendChild(_img_last);
-
-	var _linkaction_first = document.createElement("a");
-	_linkaction_first.href = '#' ;
-	_linkaction_first.indice = 0;
-	_linkaction_first.onclick=function(){change_page(this.indice)}
-	_linkaction_first.appendChild(_img_first);
-
-	var _linkaction_left = document.createElement("a");
-	_linkaction_left.href = '#' ;
-	_linkaction_left.indice = _numprev;
-	_linkaction_left.onclick=function(){change_page(this.indice)}
-	_linkaction_left.appendChild(_img_previous);
-
-	var _pagination1 = document.getElementById('pagination1');
-	var _pagination2 = document.getElementById('pagination2');
+	// ---- <?php echo $i; ?> ----
 	
-	_pagination1.innerHTML ='';
+	var _linkaction_right<?php echo $i; ?> = document.createElement("a");
+	_linkaction_right<?php echo $i; ?>.href = '#' ;
+	_linkaction_right<?php echo $i; ?>.indice = _numnext;
+	_linkaction_right<?php echo $i; ?>.onclick=function(){change_page(this.indice)}
+	_linkaction_right<?php echo $i; ?>.appendChild(_img_next<?php echo $i; ?>);
+
+	var _linkaction_last<?php echo $i; ?> = document.createElement("a");
+	_linkaction_last<?php echo $i; ?>.href = '#' ;
+	_linkaction_last<?php echo $i; ?>.indice = page_max - 1;
+	_linkaction_last<?php echo $i; ?>.onclick=function(){change_page(this.indice)}
+	_linkaction_last<?php echo $i; ?>.appendChild(_img_last<?php echo $i; ?>);
+
+	var _linkaction_first<?php echo $i; ?> = document.createElement("a");
+	_linkaction_first<?php echo $i; ?>.href = '#' ;
+	_linkaction_first<?php echo $i; ?>.indice = 0;
+	_linkaction_first<?php echo $i; ?>.onclick=function(){change_page(this.indice)}
+	_linkaction_first<?php echo $i; ?>.appendChild(_img_first<?php echo $i; ?>);
+
+	var _linkaction_left<?php echo $i; ?> = document.createElement("a");
+	_linkaction_left<?php echo $i; ?>.href = '#' ;
+	_linkaction_left<?php echo $i; ?>.indice = _numprev;
+	_linkaction_left<?php echo $i; ?>.onclick=function(){change_page(this.indice)}
+	_linkaction_left<?php echo $i; ?>.appendChild(_img_previous<?php echo $i; ?>);
+
+	var _pagination<?php echo $i; ?> = document.getElementById('pagination<?php echo $i; ?>');
+	
+	_pagination<?php echo $i; ?>.innerHTML ='';
 	if (_num > 0){
-		_pagination1.appendChild(_linkaction_first);
-		_pagination1.appendChild(_linkaction_left);
+		_pagination<?php echo $i; ?>.appendChild(_linkaction_first<?php echo $i; ?>);
+		_pagination<?php echo $i; ?>.appendChild(_linkaction_left<?php echo $i; ?>);
 	}
+<?php } 
+	
+	/*
+	 * Page Number
+	 */
 
-
+for ($i = 1; $i <= 2; $i++) { ?>
 	var istart = 0;
 	for (i = 5, istart = _num; istart && i > 0 && istart > 0; i--)
 		istart--;
+	
 	for (i2 = 0, iend = _num; ( iend <  (_numRows / _limit -1)) && ( i2 < (5 + i)); i2++)
 		iend++;
+	
 	for (i = istart; i <= iend && page_max > 1; i++){
 		var span_space = document.createElement("span");
 		span_space.innerHTML = '&nbsp;';
-		_pagination1.appendChild(span_space);
+		_pagination<?php echo $i; ?>.appendChild(span_space);
 
 		var _linkaction_num = document.createElement("a");
   		_linkaction_num.href = '#' ;
@@ -287,17 +297,20 @@ function pagination_changed(){
 		_linkaction_num.className = "otherPageNumber";
 		if (i == _num)
 			_linkaction_num.className = "currentPageNumber";
-		_pagination1.appendChild(_linkaction_num);
+		_pagination<?php echo $i; ?>.appendChild(_linkaction_num);
 
 		var span_space = document.createElement("span");
 		span_space.innerHTML = '&nbsp;';
-		_pagination1.appendChild(span_space);
+		_pagination<?php echo $i; ?>.appendChild(span_space);
 	}
 
 	if (_num < page_max - 1){
-		_pagination1.appendChild(_linkaction_right);
-		_pagination1.appendChild(_linkaction_last);
+		_pagination<?php echo $i; ?>.appendChild(_linkaction_right<?php echo $i; ?>);
+		_pagination<?php echo $i; ?>.appendChild(_linkaction_last<?php echo $i; ?>);
 	}
+<?php 
+} ?>
+	
 
 	var _sel1 = document.getElementById('sel1');
 	_sel1.innerHTML ='';
