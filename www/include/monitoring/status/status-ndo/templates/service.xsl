@@ -90,31 +90,36 @@
 					<xsl:attribute name="id">span_<xsl:value-of select="svc_id"/></xsl:attribute>
 				</xsl:element>
 			</xsl:element>
+		</td>
+		<td class="ListColRight">
 			<xsl:if test="pa = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+					  	<xsl:attribute name="title">Problem has been acknowleged</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+					  	<xsl:attribute name="title">This service is only passiv</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 0">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+					  	<xsl:attribute name="title">This service is neither activ nor passiv</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
-		</td>
-		<td class="ListColRight">
 			<xsl:if test="is = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/flapping.gif</xsl:attribute>
+					  	<xsl:attribute name="title">This Service is Flapping.</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ne = 0">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+					  	<xsl:attribute name="title">Notification is disable</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 		</td>
