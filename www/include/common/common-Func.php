@@ -315,17 +315,28 @@
 		}
 		return NULL;
 	}
+	
+	function getVersion(){
+		global $pearDB;
+		$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$row =& $DBRESULT->fetchRow();
+		return $row["value"];	
+	}
 
 	function getMyHostExtendedInfoField($host_id = NULL, $field)	{
 		if (!$host_id) return;
 		global $pearDB, $oreon;
-		if ($oreon->user->get_version() < 3) {
-			while(1)	{
+		
+		$version = getVersion();
+		
+		if ($version < 3) {
+			while (1)	{
 				$DBRESULT =& $pearDB->query("SELECT ehi.".$field.", h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' LIMIT 1");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				$row =& $DBRESULT->fetchRow();
-				//$field_result = $row[$field];
 				if (isset($row[$field]) && $row[$field])
 					return $row[$field];
 				else if ($row["host_template_model_htm_id"])
@@ -333,11 +344,10 @@
 				else
 					return NULL;
 			}
-		}
-		elseif ($oreon->user->get_version() >= 3) {			
-			$rq = "SELECT ehi.".$field." " .
-				"FROM extended_host_information ehi " .
-				"WHERE ehi.host_host_id = '".$host_id."' LIMIT 1";								
+		} else if ($version >= 3) {			
+			$rq = 	"SELECT ehi.".$field." " .
+					"FROM extended_host_information ehi " .
+					"WHERE ehi.host_host_id = '".$host_id."' LIMIT 1";								
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
