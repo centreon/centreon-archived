@@ -21,7 +21,7 @@
 		<td id="sel1" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>
-<div id="forAjax">Waiting XML data</div>
+<div id="forAjax"></div>
 <table class="Toolbar_TableBottom">
 	<tr>
 		<td class="Toolbar_TDSelectAction_Bottom">
