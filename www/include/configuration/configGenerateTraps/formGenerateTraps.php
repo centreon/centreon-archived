@@ -35,14 +35,14 @@
 	/*
 	 * Init Header for tables in template
 	 */
-	$form->addElement('header', 'title', _("Snmptrapd Configuration"));
+	$form->addElement('header', 'title', _("SNMP Traps Genaration"));
 	$form->addElement('header', 'opt', _("Export Options"));
 	$form->addElement('header', 'result', _("Actions"));	    
 	
 	/*
 	 * Add checkbox for enable restart
 	 */
-	$form->addElement('checkbox', 'restart', _("Generate configuration files for SNMPTT"));
+	$form->addElement('checkbox', 'restart', _("Generate configuration files for SNMP Traps"));
 
 	/*
 	 * Set checkbox checked.
@@ -58,7 +58,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub =& $form->addElement('submit', 'submit', _("Export"));
+	$sub =& $form->addElement('submit', 'submit', _("Generate"));
 	$msg = NULL;
 	$stdout = NULL;
 	if ($form->validate())	{
