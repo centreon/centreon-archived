@@ -183,12 +183,12 @@
 
 	# Host notif
 	$form->addElement('header', 'hostNotification', _("Host"));
- 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down');
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable');
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery');
-	if ($oreon->user->get_version() == 2)
-		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping');
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
+ 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down', array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable', array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery', array('id' => 'hRecovery', 'onClick' => 'uncheckAllH(this);'));
+	if ($oreon->user->get_version() >= 2)
+		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping', array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
 	$form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Hosts Notification Options"), '&nbsp;&nbsp;');
     $form->addElement('select', 'timeperiod_tp_id', _("Host Notification Period"), $notifTps);
 	if ($o == "mc")	{
@@ -206,13 +206,13 @@
 
 	# Service notif
 	$form->addElement('header', 'serviceNotification', _("Service"));
- 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning');
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown');
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical');
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery');
-	if ($oreon->user->get_version() == 2)
-		$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping');
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
+ 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning', array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown', array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical', array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery', array('id' => 'sRecovery', 'onClick' => 'uncheckAllS(this);'));
+	if ($oreon->user->get_version() >= 2)
+		$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping', array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
 	$form->addGroup($svNotifOpt, 'contact_svNotifOpts', _("Services Notification Options"), '&nbsp;&nbsp;');
     $form->addElement('select', 'timeperiod_tp_id2', _("Services Notification Period"), $notifTps);
  	if ($o == "mc")	{
@@ -362,3 +362,34 @@
 		$tpl->display("formContact.ihtml");
 	}
 ?>
+<script type="text/javascript">
+function uncheckAllH(object) {
+	if (object.id == "hNone" && object.checked) {		
+		document.getElementById('hDown').checked = false;
+		document.getElementById('hUnreachable').checked = false;
+		document.getElementById('hRecovery').checked = false;
+		if (document.getElementById('hFlapping')) {
+			document.getElementById('hFlapping').checked = false;
+		}		
+	}	
+	else {
+		document.getElementById('hNone').checked = false;
+	}
+}
+
+function uncheckAllS(object) {	
+	if (object.id == "sNone" && object.checked) {
+		document.getElementById('sWarning').checked = false;
+		document.getElementById('sUnknown').checked = false;
+		document.getElementById('sCritical').checked = false;
+		document.getElementById('sRecovery').checked = false;
+		if (document.getElementById('sFlapping')) {
+			document.getElementById('sFlapping').checked = false;
+		}
+	}
+	else {
+		document.getElementById('sNone').checked = false;
+	}
+}
+
+</script>
