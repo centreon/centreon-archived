@@ -1039,10 +1039,10 @@ function configureApache() {
 		if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
 			echo "$(gettext "Finding Apache Centreon configuration file")"
 			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
-			yes_no_default "$(gettext "Do you want to rewrite Apache configuration file ?")"
+			yes_no_default "$(gettext "Do you want to update Centreon Apache sub configuration file ?")"
 			[ "$?" -eq 0 ] && write_config="1"	
 		else 
-			yes_no_default "$(gettext "Do you want to write in Apache configuration file ?")"
+			yes_no_default "$(gettext "Do you want to add Centreon Apache sub configuration file ?")"
 			[ "$?" -eq 0 ] && write_config="1"
 		fi
 	else 
