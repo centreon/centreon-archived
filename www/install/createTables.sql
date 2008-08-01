@@ -2201,6 +2201,22 @@ ALTER TABLE `service`
   ADD CONSTRAINT `service_ibfk_5` FOREIGN KEY (`purge_policy_id`) REFERENCES `purge_policy` (`purge_policy_id`) ON DELETE SET NULL;
 
 --
+-- Contraintes pour la table `contact_host_relation`
+--
+
+ALTER TABLE `contact_host_relation`
+  ADD CONSTRAINT `contact_host_relation_ibfk_2` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `contact_host_relation_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `contact_service_relation`
+--
+
+ALTER TABLE `contact_service_relation`
+  ADD CONSTRAINT `contact_service_relation_ibfk_2` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `contact_service_relation_ibfk_1` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
+
+--
 -- Contraintes pour la table `servicegroup_relation`
 --
 ALTER TABLE `servicegroup_relation`
