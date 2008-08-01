@@ -2,22 +2,23 @@
 {$form.javascript}
 {$styleB}
 <div class="cachediv">
-<FORM id="datareport">
-	<INPUT type="hidden" name="hostID" value="{$hostID}"><br />
-	<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >
-	<INPUT type="hidden" name="color_UP" value="{$color.UP}">
-	<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
-	<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
-</FORM>
+	<form id="datareport">
+		<INPUT type="hidden" name="hostID" value="{$hostID}"><br />
+		<INPUT type="hidden" name="color_UP" value="{$color.UP}">
+		<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
+		<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
+		<INPUT type="hidden" name="color_UNDETERMINED" value="{$color.UNDETERMINED}" >
+	</form>
 </div>
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderLeft" style='white-space: nowrap;'>
 			<form {$formservicegroup.attributes} style="margin:0px;padding:0px;">
 				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">
-				<b>{$formservicegroup.servicegroup.label}:</b>&nbsp;&nbsp;{$formservicegroup.servicegroup.html}
-				{$formservicegroup.hidden}
-			&nbsp;&nbsp;&nbsp;{$period_name}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
+				<b>{$formservicegroup.servicegroup.label}:</b>&nbsp;&nbsp;{$formservicegroup.servicegroup.html}{$formservicegroup.hidden}
+			{if $date_start_select != 0}	
+			&nbsp;&nbsp;&nbsp;{$period_name}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}	
+			{/if}			
 			</form>	
 		</td>
 		<td>
@@ -63,7 +64,7 @@
 							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod.end.label} : </b>{$formPeriod.end.html}&nbsp;&nbsp;{$formPeriod.endD.html}</span></td>
 						</tr>
 						<tr class="list_one">
-							<td class="ListColHeaderCenter">{$formPeriod.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod.reset.html}{$formPeriod.hidden}</td>
+							<td class="ListColHeaderCenter">{$formPeriod.submit.html}{$formPeriod.hidden}</td>
 						</tr>
 					</table>
 					</form>
@@ -113,7 +114,7 @@
 							<td colspan=2 class="ListColHeaderCenter">{$CriticalTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$WarningTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$UnknownTitle}</td>
-							<td class="ListColHeaderCenter">{$UndeterminatedTitle}</td>
+							<td class="ListColHeaderCenter">{$UndeterminedTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$hostTitle}</td>
@@ -140,7 +141,7 @@
 							<td {$style_warning_alert} style="width:30px;">{$tb.WARNINGnbEvent}</td>
 							<td {$style_unknown}>{$tb.PtimeUNKNOWN}% ({$tb.PktimeUNREACHABLE}%)</td>
 							<td {$style_unknown_alert} style="width:30px;">{$tb.UNKNOWNnbEvent}</td>
-							<td {$style_undeterminated}>{$tb.PtimeUNDETERMINATED}%</td>
+							<td {$style_undetermined}>{$tb.PtimeUNDETERMINED}%</td>
 						</tr>
 						{/foreach}
 						<tr class="list_lvl_2">
@@ -153,7 +154,7 @@
 							<td class='ListColHeaderCenter'{$style_warning_alert}>{$tab_svc_list_average.PAW}</td>
 							<td class='ListColHeaderCenter'{$style_unknown}>{$tab_svc_list_average.PTU}% ({$tab_svc_average.PKTU}%)</td>
 							<td class='ListColHeaderCenter'{$style_unknown_alert}>{$tab_svc_list_average.PAU}</td>
-							<td class='ListColHeaderCenter'{$style_undeterminated}>{$tab_svc_list_average.PTN}%</td>
+							<td class='ListColHeaderCenter'{$style_undetermined}>{$tab_svc_list_average.PTN}%</td>
 						</tr>
 					</table>
 				</td>

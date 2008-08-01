@@ -21,7 +21,6 @@
 	if (!$is_admin)
 		$lca = getLcaHostByName($pearDB);	
 	
-
 	$day = date("d",time());
 	$year = date("Y",time());
 	$month = date("m",time());
@@ -45,7 +44,6 @@
 	require_once './include/common/common-Func.php';
 	require_once($centreon_path."www/include/reporting/dashboard/common-Func.php");
 	require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
-	
 	
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -151,18 +149,10 @@
 	#
 	## fourchette de temps
 	#
-	$periodList = array();
-	$periodList[""] = "";
-	$periodList["today"] = _("Today");
-	$periodList["yesterday"] = _("Yesterday");
-	$periodList["thisweek"] = _("This Week");
-	$periodList["last7days"] = _("Last 7 Days");
-	$periodList["thismonth"] = _("This Month");
-	$periodList["last30days"] = _("Last 30 Days");
-	$periodList["lastmonth"] = _("Last Month");
-	$periodList["thisyear"] = _("This Year");
-	$periodList["lastyear"] = _("Last Year");
-	$periodList["customized"] = _("Customized");
+	
+	# Getting period table list to make the form period selection (today, this week etc.)
+	$periodList = getPeriodList();
+	
 	$formPeriod = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p."&type_period=predefined");
 	$selHost = $formPeriod->addElement('select', 'period', _("Predefined:"), $periodList);
 
@@ -176,7 +166,6 @@
 	$formPeriod->addElement('text', 'end', _("End date"));
 	$formPeriod->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
 	$sub = $formPeriod->addElement('submit', 'submit', _("View"));
-	$res = $formPeriod->addElement('reset', 'reset', _("Reset"));
 
 	if ($period == "customized") {
 
@@ -219,14 +208,14 @@
 	$tpl->assign('style_warning' , "class='ListColCenter' style='background:".$oreon->optGen["color_warning"]."'");
 	$tpl->assign('style_critical' , "class='ListColCenter' style='background:".$oreon->optGen["color_critical"]."'");
 	$tpl->assign('style_unknown' , "class='ListColCenter' style='background:".$oreon->optGen["color_unknown"]."'");
-	$tpl->assign('style_pending' , "class='ListColCenter' style='background:".$oreon->optGen["color_pending"]."'");
+	$tpl->assign('style_undetermined' , "class='ListColCenter' style='background:".$oreon->optGen["color_undetermined"]."'");
 
-	$tpl->assign('serviceTilte', _("Service"));
+	$tpl->assign('serviceTitle', _("Service"));
 	$tpl->assign('OKTitle', _("OK"));
+	$tpl->assign('CriticalTitle', _("Critical"));
 	$tpl->assign('WarningTitle', _("Warning"));
 	$tpl->assign('UnknownTitle', _("Unknown"));
-	$tpl->assign('CriticalTitle', _("Critical"));
-	$tpl->assign('PendingTitle', _("Undetermined"));
+	$tpl->assign('UndeterminedTitle', _("Undetermined"));
 
 	$tpl->assign('StateTitle', _("Status"));
 	$tpl->assign('TimeTitle', _("Time"));
@@ -250,11 +239,11 @@
         
 	$tpl->assign('status', $status);		
 	$tpl->assign('hostID', getMyHostID($mhost));
-	$color = array();
-	$color["UNKNOWN"] =  substr($oreon->optGen["color_unknown"], 1);
-	$color["UP"] =  substr($oreon->optGen["color_up"], 1);
-	$color["DOWN"] =  substr($oreon->optGen["color_down"], 1);
-	$color["UNREACHABLE"] =  substr($oreon->optGen["color_unreachable"], 1);
+
+	$color = substr($oreon->optGen["color_ok"],1).':'.
+			substr($oreon->optGen["color_critical"],1).':'.
+			substr($oreon->optGen["color_warning"],1).':'.
+			substr($oreon->optGen["color_undetermined"],1);
 	$tpl->assign('color', $color);
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -271,7 +260,7 @@
 	$tab_resume[1]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'";
 	$tab_resume[2]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'";		
 	$tab_resume[3]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'";		
-	$tab_resume[4]["style"] =  "class='ListColCenter' style='background:#cccccc'";
+	$tab_resume[4]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'";
 
 	$tpl->assign("tab_resume", $tab_resume);
 	$tpl->assign("tab_log", $tab_log);
@@ -293,17 +282,17 @@
 		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?sid=".$sid."&host=".$mhost."&service=".$mservice.$var_url_export_csv);
 		$tpl->assign("link_csv_name", "Export CSV");
 		$color = substr($oreon->optGen["color_ok"],1) .':'.
-		 		 substr($oreon->optGen["color_warning"],1) .':'.
 		 		 substr($oreon->optGen["color_critical"],1) .':'.
-		 		 substr($oreon->optGen["color_pending"],1) .':';
-		 		 substr($oreon->optGen["color_unknown"],1);
+		 		 substr($oreon->optGen["color_warning"],1) .':'.
+		 		 substr($oreon->optGen["color_unknown"],1) .':'.
+		 		 substr($oreon->optGen["color_undetermined"],1);
 	
 		$today_var = '&serviceID='.$mservice.'&today_ok='.$today_ok . '&today_critical='.$today_critical.'&today_unknown='.$today_unknown. '&today_pending=' . $today_none. '&today_warning=' . $today_warning;
 		$today_var .= '&today_WARNINGnbEvent='.$today_WARNINGnbEvent.'&today_CRITICALnbEvent='.$today_CRITICALnbEvent.'&today_OKnbEvent='.$today_OKnbEvent.'&today_UNKNOWNnbEvent='.$today_UNKNOWNnbEvent;
 		$type = 'Service';
 		include('ajaxReporting_js.php');
 	} else {
-		?><script type="text/javascript">function initTimeline() {;}</SCRIPT><?php
+		?><script type="text/javascript">function initTimeline() {;}</script><?php
 	}	
 	
 	$tpl->display("template/viewServicesLog.ihtml");

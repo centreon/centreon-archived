@@ -14,7 +14,7 @@
 	<tr class='ListHeader'>
 		<td class="ListColHeaderLeft" style='white-space: nowrap;'>
 			<form {$formHostGroup.attributes} style="margin:0px;padding:0px;">
-				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$formHostGroup.host.label}&nbsp;&nbsp;{$formHostGroup.hostgroup.html}{$formHostGroup.hidden}
+				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$formHostGroup.hostgroup.label}:&nbsp;&nbsp;{$formHostGroup.hostgroup.html}{$formHostGroup.hidden}
 				{if $date_start_select != 0}
 				&nbsp;&nbsp;&nbsp;{$period_name}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
 				{/if}
@@ -64,7 +64,7 @@
 							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod.end.label} : </b>{$formPeriod.end.html}&nbsp;&nbsp;{$formPeriod.endD.html}</span></td>
 						</tr>
 						<tr class="list_one">
-							<td class="ListColHeaderCenter">{$formPeriod.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod.reset.html}{$formPeriod.hidden}</td>
+							<td class="ListColHeaderCenter">{$formPeriod.submit.html}{$formPeriod.hidden}</td>
 						</tr>
 					</table>
 					</form>
@@ -113,7 +113,7 @@
 							<td colspan=2 class="ListColHeaderCenter">{$UpTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$DownTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$UnreachableTitle}</td>
-							<td colspan=1 class="ListColHeaderCenter">{$UndeterminatedTitle}</td>
+							<td colspan=1 class="ListColHeaderCenter">{$UndeterminedTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter"></td>
@@ -134,23 +134,22 @@
 							<td {$style_down_alert} style="width:30px;">{$tb.DOWNnbEvent}</td>
 							<td {$style_unreachable}>{$tb.PtimeUNREACHABLE}% ({$tb.PktimeUNREACHABLE}%)</td>
 							<td {$style_unreachable_alert style="width:30px;"}>{$tb.UNREACHABLEnbEvent}</td>
-							<td {$style_undeterminated}>{$tb.PtimeUNDETERMINATED}% ({$tb.PktimeUNDETERMINATED}%)</td>
+							<td {$style_undetermined}>{$tb.PtimeUNDETERMINED}% ({$tb.PktimeUNDETERMINED}%)</td>
 						</tr>
 						{/foreach}
 						<tr class="list_lvl_2">
 							<td class="ListColHeaderCenter">{$averageTilte}</td>
-							<td class='ListColHeaderCenter'{$style_UP}>{$tab_host_average.PTUP}% ({$tab_host_average.PKTUP}%)</td>
-							<td class='ListColHeaderCenter'{$style_UP_alert}>{$tab_host_average.PAUP}</td>
+							<td class='ListColHeaderCenter'{$style_up}>{$tab_host_average.PTUP}% ({$tab_host_average.PKTUP}%)</td>
+							<td class='ListColHeaderCenter'{$style_up_alert}>{$tab_host_average.PAUP}</td>
 							<td class='ListColHeaderCenter'{$style_down}>{$tab_host_average.PTD}% ({$tab_host_average.PKTD}%)</td>
 							<td class='ListColHeaderCenter'{$style_down_alert}>{$tab_host_average.PAD}</td>
 							<td class='ListColHeaderCenter'{$style_unreachable}>{$tab_host_average.PTUR}% ({$tab_host_average.PKTUR}%)</td>
 							<td class='ListColHeaderCenter'{$style_unreachable_alert}>{$tab_host_average.PAUR}</td>
-							<td class='ListColHeaderCenter'{$style_undeterminated_alert}>{$tab_host_average.PTU}</td>
+							<td class='ListColHeaderCenter'{$style_undetermined_alert}>{$tab_host_average.PTU}% ({$tab_host_average.PKTUR}%)</td>
 						</tr>
 					</table>
 				</td>
 			</tr>
-
 			<tr>
 				<td colspan=2 style=' padding:5px;'>
 					<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>

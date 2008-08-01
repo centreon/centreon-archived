@@ -30,15 +30,13 @@
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;	
 
-	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 	require_once './class/other.class.php';
+	require_once './include/reporting/dashboard/common-Func.php';
 	require_once './include/common/common-Func.php';
-	require_once './include/common/common-Func-ACL.php';
-	
-	require_once("./include/reporting/dashboard/initReport.php");
-	
+	require_once './include/common/common-Func-ACL.php';	
+	require_once './include/reporting/dashboard/initReport.php';
 	require_once './include/reporting/dashboard/dataEngine/HostGroupLog.php';
 
 	$mhost = purgeVar($mhost);
@@ -123,7 +121,7 @@
 	if ($mservicegroup)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		if ($period == "customized") {
+		if ($period == "" && $_POST["end"] != NULL && $_POST["start"] != NULL) {
 			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
@@ -174,18 +172,9 @@
 	#
 	## Time select
 	#
-	$periodList = array();
-	$periodList[""] = "";
-	$periodList["today"] = _("Today");
-	$periodList["yesterday"] = _("Yesterday");
-	$periodList["thisweek"] = _("This Week");
-	$periodList["last7days"] = _("Last 7 Days");
-	$periodList["thismonth"] = _("This Month");
-	$periodList["last30days"] = _("Last 30 Days");
-	$periodList["lastmonth"] = _("Last Month");
-	$periodList["thisyear"] = _("This Year");
-	$periodList["lastyear"] = _("Last Year");
-	$periodList["customized"] = _("Customized");
+	
+	# Getting period table list to make the form period selection (today, this week etc.)
+	$periodList = getPeriodList();
 
 	$formPeriod = new HTML_QuickForm('FormPeriod', 'post', "?p=".$p);
 	$selHost =& $formPeriod->addElement('select', 'period', _("Predefined:"), $periodList);
@@ -200,7 +189,6 @@
 
 	$formPeriod->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
 	$sub =& $formPeriod->addElement('submit', 'submit', _("View"));
-	$res =& $formPeriod->addElement('reset', 'reset', _("Reset"));
 
 	if ($period == "customized") {
 		$formPeriod->setDefaults(array('start' => date("m/d/Y", $start_date_select)));
@@ -229,12 +217,11 @@
 		$today_ok = 0 + $sbase["average"]["today"]["Tok"];
 		$today_warning = 0 + $sbase["average"]["today"]["Twarning"];
 		$today_unknown = 0 + $sbase["average"]["today"]["Tunknown"];
-	
-		$today_OKnbEvent = 0 + $sbase["average"]["today"]["Tok"];
-		$today_UNKNOWNnbEvent = 0 + $sbase["average"]["today"]["Tunknown"];
-		$today_WARNINGnbEvent = 0 + $sbase["average"]["today"]["Twarning"];
-		$today_CRITICALnbEvent = 0 + $sbase["average"]["today"]["Tcritical"];
-
+		
+		$today_OKnbEvent = 0 + $sbase["average"]["today"]["OKnbEvent"];
+		$today_UNKNOWNnbEvent = 0 + $sbase["average"]["today"]["UNKNOWNnbEvent"];
+		$today_WARNINGnbEvent = 0 + $sbase["average"]["today"]["WARNINGnbEvent"];
+		$today_CRITICALnbEvent = 0 + $sbase["average"]["today"]["CRITICALnbEvent"];
 
 		$tab_log = array();
 		$day = date("d",time());
@@ -269,46 +256,65 @@
 		$tab_resume = array();
 		$tab = array();
 		$timeTOTAL = $end_date_select - $start_date_select;	
+		
 		$Tok = $sbase["average"]["Tok"];
 		$Twarning = $sbase["average"]["Twarning"];
-		$Tunreach = $sbase["average"]["Tunknown"];
 		$Tcritical = $sbase["average"]["Tcritical"];
-		$Tnone = $timeTOTAL - ($Tok + $Twarning + $Tunreach + $Tcritical);
+		$Tunknown = $sbase["average"]["Tunknown"];
+		$Tnone = $timeTOTAL - ($Tok + $Twarning + $Tunknown + $Tcritical);
+		
 		if	($Tnone <= 1)
 			$Tnone = 0;	
 		
-		$tab["state"] = _("Up");
+		# [OK] Service Group state
+		$tab["state"] = _("OK");
 		$tab["time"] = Duration::toString($Tok);
 		$tab["timestamp"] = $Tok;
 		$tab["pourcentTime"] = round($Tok/($timeTOTAL+1)*100,2) ;
 		$tab["pourcentkTime"] = round($Tok/($timeTOTAL-$Tnone+1)*100,2). "%";
 		$tab["nbAlert"] = $sbase["average"]["OKnbEvent"];
-		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
+		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'";
 		$tab_resume[0] = $tab;
-		$tab["state"] = _("Down");
+
+		# [WARNING] Service Group state
+		$tab["state"] = _("Warning");
 		$tab["time"] = Duration::toString($Twarning);
 		$tab["timestamp"] = $Twarning;
 		$tab["pourcentTime"] = round($Twarning/$timeTOTAL*100,2);
 		$tab["pourcentkTime"] = round($Twarning/($timeTOTAL-$Tnone+1)*100,2)."%";
 		$tab["nbAlert"] = $sbase["average"]["WARNINGnbEvent"];
-		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
+		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'";
 		$tab_resume[1] = $tab;
-		$tab["state"] = _("Unreachable");
-		$tab["time"] = Duration::toString($Tunreach);
-		$tab["timestamp"] = $Tunreach;
-		$tab["pourcentTime"] = round($Tunreach/$timeTOTAL*100,2);
-		$tab["pourcentkTime"] = round($Tunreach/($timeTOTAL-$Tnone+1)*100,2)."%";
-		$tab["nbAlert"] = $sbase["average"]["UNKNOWNnbEvent"];
-		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";
+		
+		# [CRITICAL] Service Group state		
+		$tab["state"] = _("Critical");
+		$tab["time"] = Duration::toString($Tcritical);
+		$tab["timestamp"] = $Tcritical;
+		$tab["pourcentTime"] = round($Tcritical/$timeTOTAL*100,2);
+		$tab["pourcentkTime"] = round($Tcritical/($timeTOTAL-$Tnone+1)*100,2)."%";
+		$tab["nbAlert"] = $sbase["average"]["CRITICALnbEvent"];
+		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'";
 		$tab_resume[2] = $tab;
+
+		# [UNKNOWN] Service Group state			
+		$tab["state"] = _("Unknown");
+		$tab["time"] = Duration::toString($Tunknown);
+		$tab["timestamp"] = $Tunknown;
+		$tab["pourcentTime"] = round($Tunknown/$timeTOTAL*100,2);
+		$tab["pourcentkTime"] = round($Tunknown/($timeTOTAL-$Tnone+1)*100,2)."%";
+		$tab["nbAlert"] = $sbase["average"]["UNKNOWNnbEvent"];
+		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'";
+		$tab_resume[3] = $tab;
+
+		# [UNDETERMINED] Service Group state				
 		$tab["state"] = _("Undetermined");
 		$tab["time"] = Duration::toString($Tnone);
 		$tab["timestamp"] = $Tnone;
 		$tab["pourcentTime"] = round($Tnone/$timeTOTAL*100,2);
 		$tab["pourcentkTime"] = null;
 		$tab["nbAlert"] = "";
-		$tab["style"] = "class='ListColCenter' style='background:#cccccc'";
-		$tab_resume[3] = $tab;
+		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'";
+		$tab_resume[4] = $tab;
 
 		/*
 		 * Calculate table list
@@ -327,9 +333,9 @@
 				$tab_tmp["PtimeWARNING"] = round( $tab["Twarning"]/ $tt *100,2);
 				$tab_tmp["PtimeUNKNOWN"] = round( $tab["Tunknown"]/ $tt *100,2);
 				$tab_tmp["PtimeCRITICAL"] = round( $tab["Tcritical"]/ $tt *100,2);
-				$tab_tmp["PtimeUNDETERMINATED"] = round( ( $tt - ($tab["Tok"] + $tab["Twarning"] + $tab["Tunknown"] + $tab["Tcritical"] ))  / $tt *100,2);
-
+				$tab_tmp["PtimeUNDETERMINED"] = round( ( $tt - ($tab["Tok"] + $tab["Twarning"] + $tab["Tunknown"] + $tab["Tcritical"] ))  / $tt *100,2);
 				$tmp_none = $tt - ($tab["Tok"] + $tab["Twarning"] + $tab["Tunknown"]);
+				
 				$tab_tmp["OKnbEvent"] = isset($tab["TokNBAlert"]) ? $tab["TokNBAlert"] : 0;
 				$tab_tmp["WARNINGnbEvent"] = isset($tab["WARNINGnbEvent"]) ? $tab["WARNINGnbEvent"] : 0;
 				$tab_tmp["UNKNOWNnbEvent"] = isset($tab["UNKNOWNnbEvent"]) ? $tab["UNKNOWNnbEvent"] : 0;
@@ -352,9 +358,8 @@
 				$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 1, '.', '');
 				$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 1, '.', '');
 				$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 1, '.', '');
-
-				$tab_tmp["PtimeUNDETERMINATED"] = number_format($tab_tmp["PtimeUNDETERMINATED"], 1, '.', '');
-				$tab_tmp["PtimeUNDETERMINATED"] = ($tab_tmp["PtimeUNDETERMINATED"] < 0.1) ? 0.0 : $tab_tmp["PtimeUNDETERMINATED"];
+				$tab_tmp["PtimeUNDETERMINED"] = number_format($tab_tmp["PtimeUNDETERMINED"], 1, '.', '');
+				$tab_tmp["PtimeUNDETERMINED"] = ($tab_tmp["PtimeUNDETERMINED"] < 0.1) ? 0.0 : $tab_tmp["PtimeUNDETERMINED"];
 
 				$tab_tmp["PktimeOK"] = number_format($tab_tmp["PktimeOK"], 1, '.', '');
 				$tab_tmp["PktimeWARNING"] = number_format($tab_tmp["PktimeWARNING"], 1, '.', '');
@@ -372,7 +377,7 @@
 				$tab_svc_list_average["PAU"] += $tab_tmp["UNKNOWNnbEvent"];
 				$tab_svc_list_average["PTC"] += $tab_tmp["PtimeCRITICAL"];
 				$tab_svc_list_average["PAC"] += $tab_tmp["CRITICALnbEvent"];
-				$tab_svc_list_average["PTN"] += $tab_tmp["PtimeUNDETERMINATED"];
+				$tab_svc_list_average["PTN"] += $tab_tmp["PtimeUNDETERMINED"];
 				$tab_svc_list_average["PKTOK"] += $tab_tmp["PktimeOK"];
 				$tab_svc_list_average["PKTW"]+= $tab_tmp["PktimeWARNING"];
 				$tab_svc_list_average["PKTU"]+= $tab_tmp["PktimeUNKNOWN"];
@@ -383,9 +388,8 @@
 			}
 		}
 
-		#
+
 		## calculate svc average
-		#
 		# Alert
 		if ($tab_svc_list_average["PAOK"] > 0)
 			$tab_svc_list_average["PAOK"] = number_format($tab_svc_list_average["PAOK"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
@@ -442,18 +446,18 @@
 		$tpl->assign('status', $status);
 		$tpl->assign("tab_resume", $tab_resume);
 		$tpl->assign("tab_svc_list_average", $tab_svc_list_average);
-		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));
+		$tpl->assign('period_name', _(" From "));		
 		$tpl->assign('date_start_select', $start_date_select);
-		$tpl->assign('date_end_select', $end_date_select);
 		$tpl->assign('to', _(" to "));
+		$tpl->assign('date_end_select', $end_date_select);
+		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));
 	}
 	
 	if (isset($tab_svc))
 		$tpl->assign("tab_svc", $tab_svc);
 
-	$tpl->assign("tab_log", $tab_log);
+	$tpl->assign('tab_log', $tab_log);
 	$tpl->assign('actualTitle', _(" Actual "));
-	$tpl->assign('period_name', _(" From "));
 	$tpl->assign('style_ok', "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
 	$tpl->assign('style_ok_alert', "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_ok"]."'");
 	$tpl->assign('style_critical', "class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'");
@@ -462,19 +466,18 @@
 	$tpl->assign('style_warning_alert' , "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_warning"]."'");
 	$tpl->assign('style_unknown' , "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'");
 	$tpl->assign('style_unknown_alert' , "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_unknown"]."'");
-	$tpl->assign('style_undeterminated' , "class='ListColCenter' style='background:#ccccc'");
-	$tpl->assign('style_undeterminated_alert' , "class='ListColCenter' style='width: 25px; background:#cccccc'");
+	$tpl->assign('style_undetermined' , "class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'");
+	$tpl->assign('style_undetermined_alert' , "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_undetermined"]."'");
 	$tpl->assign('hostTitle', _("Host"));
 	$tpl->assign('serviceTilte', _("Service"));
-	$tpl->assign("allTilte",  _("All"));
-	$tpl->assign("averageTilte",  _("Average"));
+	$tpl->assign('allTilte',  _("All"));
+	$tpl->assign('averageTilte',  _("Average"));
 
 	$tpl->assign('OKTitle', _("OK"));
 	$tpl->assign('WarningTitle', _("Warning"));
 	$tpl->assign('UnknownTitle', _("Unknown"));
 	$tpl->assign('CriticalTitle', _("Critical"));
-	$tpl->assign('UndeterminatedTitle', _("Undetermined"));
-
+	$tpl->assign('UndeterminedTitle', _("Undetermined"));
 
 	$tpl->assign('StateTitle', _("Status"));
 	$tpl->assign('TimeTitle', _("Time"));
@@ -485,22 +488,17 @@
 	$tpl->assign('EventTitle', _("Event"));
 	$tpl->assign('InformationsTitle', _("Info"));
 	$tpl->assign('periodTitle', _("Period Selection"));
-	$tpl->assign('resumeTitle', _("Host state"));
+	$tpl->assign('resumeTitle', _("Service Group state"));
 	$tpl->assign('logTitle', _("Today's Host log"));
 	$tpl->assign('svcTitle', _("State Breakdowns For Host Services"));
 
 	$formPeriod->setDefaults(array('period' => $period));
 
-
 	$tpl->assign('hostID', getMyHostID($mservicegroup));
-	$color = array();
-	$color["CRITICAL"] =  substr($oreon->optGen["color_critical"], 1);
-	$color["OK"] =  substr($oreon->optGen["color_ok"], 1);
-	$color["WARNING"] =  substr($oreon->optGen["color_warning"], 1);
-	$color["UNKNOWN"] =  substr($oreon->optGen["color_unknown"], 1);
-	$tpl->assign('color', $color);
+	
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod->accept($renderer);
+	
 	$tpl->assign('formPeriod', $renderer->toArray());
 
 	#Apply a template definition
@@ -524,23 +522,28 @@
 	$today_unknown = ($today_unknown <= 0) ? 0 : round($today_unknown / $tt *100,2);
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 
-
 	if ($mservicegroup)	{
+		
 		$color = substr($oreon->optGen["color_ok"],1) .':'.
 		 		 substr($oreon->optGen["color_warning"],1) .':'.
 		 		 substr($oreon->optGen["color_critical"],1) .':'. 
-		 		 substr($oreon->optGen["color_unknown"],1).':CCCCCC';
+		 		 substr($oreon->optGen["color_unknown"],1).':'.
+		 		 substr($oreon->optGen["color_undetermined"],1);
+
 		$today_var = '&svc_group_id='.$servicegroup_id.'&today_ok='.$today_ok . '&today_critical='.$today_critical . '&today_warning='.$today_warning.'&today_unknown='.$today_unknown. '&today_pending=' . $today_pending;
 		$today_var .= '&today_OKnbEvent='.$today_OKnbEvent.'&today_UNKNOWNnbEvent='.$today_UNKNOWNnbEvent.'&today_WARNINGnbEvent='.$today_WARNINGnbEvent.'&today_CRITICALnbEvent='.$today_CRITICALnbEvent;
 		$type = 'ServiceGroup';
 		$host_id = $servicegroup_id;
+
 		include('ajaxReporting_js.php');
+		
 	} else {
 		?>
 		<script type="text/javascript">
 		function initTimeline() {;}
-		</SCRIPT>
+		</script>
 		<?php
 	}
+	
 	$tpl->display("template/viewServicesGroupLog.ihtml");
 ?>

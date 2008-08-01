@@ -17,7 +17,9 @@
 
 	if (!isset($oreon))
 		exit;
-		
+
+	require_once './include/reporting/dashboard/common-Func.php';		
+	
 	$debug = 0;
 	
 	/*
@@ -45,8 +47,8 @@
 	$tpl->assign('style_critical_alert' , "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_critical"]."'");
 	$tpl->assign('style_unknown' , "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'");
 	$tpl->assign('style_unknown_alert' , "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_unknown"]."'");
-	$tpl->assign('style_pending' , "class='ListColCenter' style='background:#cccccc'");
-	$tpl->assign('style_pending_alert' , "class='ListColCenter' style='width: 25px; background:#cccccc'");
+	$tpl->assign('style_pending' , "class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'");
+	$tpl->assign('style_pending_alert' , "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_undetermined"]."'");
 
 	$tpl->assign('actualTitle', _(" Actual "));
 
@@ -80,18 +82,8 @@
 	 * Init Timeperiod List
 	 */
 	
-	$periodList = array();
-	$periodList[""] = "";
-	$periodList["today"] = _("Today");
-	$periodList["yesterday"] = _("Yesterday");
-	$periodList["thisweek"] = _("This Week");
-	$periodList["last7days"] = _("Last 7 Days");
-	$periodList["thismonth"] = _("This Month");
-	$periodList["last30days"] = _("Last 30 Days");
-	$periodList["lastmonth"] = _("Last Month");
-	$periodList["thisyear"] = _("This Year");
-	$periodList["lastyear"] = _("Last Year");
-	$periodList["customized"] = _("Customized");
+	# Getting period table list to make the form period selection (today, this week etc.)
+	$periodList = getPeriodList();
 
 	$color = array();
 	$color["UNKNOWN"] =  substr($oreon->optGen["color_unknown"], 1);

@@ -32,7 +32,7 @@
 			if (!isset($oreon->optGen["color_".strtolower($key)])) {
 				$color[] = $oreon->optGen["color_unknown"];
 				$data[] = $val;
-				$legend[] = "Undeterminated";
+				$legend[] = "Undetermined";
 			} else {
 				$color[] = $oreon->optGen["color_".strtolower($key)];		
 				$data[] = $val;

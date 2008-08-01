@@ -61,7 +61,7 @@
 	$FillArray->addColor($oreon->optGen["color_warning"] . '@0.2', 'Warning');
 	$FillArray->addColor($oreon->optGen["color_critical"] . '@0.2', 'Critical');
 	$FillArray->addColor($oreon->optGen["color_unknown"] . '@0.2', 'Unknown');
-	$FillArray->addColor('#cccccc', 'Undeterminated');
+	$FillArray->addColor($oreon->optGen["color_undetermined"] . '@0.2', 'Undetermined');
 	$Plot->setFillStyle($FillArray);
 	$Plot->setBackgroundColor('#F2F2F2');
 	

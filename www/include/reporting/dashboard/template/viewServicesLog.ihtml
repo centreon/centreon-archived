@@ -3,11 +3,12 @@
 {$styleB}
 <div class="cachediv">
 <FORM id="datareport">
-	<INPUT type="hidden" name="hostID" value="{$hostID}"><br />
-	<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >	        
-	<INPUT type="hidden" name="color_UP" value="{$color.UP}">
-	<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
-	<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
+	<INPUT type="hidden" name="hostID" value="{$hostID}"><br />        
+	<INPUT type="hidden" name="color_OK" value="{$color.OK}">
+	<INPUT type="hidden" name="color_WARNING" value="{$color.WARNING}">
+	<INPUT type="hidden" name="color_CRITICAL" value="{$color.CRITICAL}" >
+	<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >	
+	<INPUT type="hidden" name="color_UNDETERMINED" value="{$color.UNDETERMINED}" >
 </FORM>
 </div>
 <table style='width:100%;' class="ListTable">
@@ -61,7 +62,7 @@
 							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod.end.label} : </b>{$formPeriod.end.html}&nbsp;&nbsp;{$formPeriod.endD.html}</span></td>
 						</tr>
 						<tr class="list_one">
-							<td class="ListColHeaderCenter">{$formPeriod.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod.reset.html}{$formPeriod.hidden}</td>
+							<td class="ListColHeaderCenter">{$formPeriod.submit.html}{$formPeriod.hidden}</td>
 						</tr>
 					</table>
 					</form>

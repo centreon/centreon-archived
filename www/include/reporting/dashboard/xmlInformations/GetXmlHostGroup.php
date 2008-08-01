@@ -17,6 +17,7 @@
 
 	require_once 'DB.php';
 	require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
 	require_once $centreon_path.'www/class/other.class.php';
 	
 	$buffer = null;
@@ -24,7 +25,6 @@
 	$buffer .= '<data>';
 
 	if (isset($_GET["hostID"]) && isset($_GET["color"]) && isset($_GET["today_up"])&& isset($_GET["today_down"])&& isset($_GET["today_unreachable"])&& isset($_GET["today_pending"])){
-
 		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNKNOWN)= split (":", $_GET["color"], 4);
 
 		$dsn = array(
@@ -60,29 +60,8 @@
 			
 		$pearDBO =& DB::connect($dsn, $options);
 		if (PEAR::isError($pearDB)) 
-		  	die("Connecting probems with oreon database : " . $pearDB->getMessage());		
+		  	die("Connecting probems with centreon database : " . $pearDB->getMessage());		
 		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
-
-		function create_date_timeline_format($time_unix)
-		{
-			$tab_month = array(
-			"01" => "Jan",
-			"02" => "Feb",
-			"03"=> "Mar",
-			"04"=> "Apr",
-			"05" => "May",
-			"06"=> "Jun",
-			"07"=> "Jul",
-			"08"=> "Aug",
-			"09"=> "Sep",
-			"10"=> "Oct",
-			"11"=> "Nov",
-			"12"=> "Dec"
-			);
-			$date = date('m', $time_unix);
-			$date = $tab_month[$date] .  date(" d Y G:i:s", $time_unix);
-			return $date;
-		}
 		
 		$str = "";
 		$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" . $_GET["hostID"] ."'";
@@ -95,10 +74,10 @@
 		unset($hg);
 		unset($DBRESULT);
 		
-		$rq = 'SELECT date_start, date_end, avg( `UPTimeScheduled` ) as "UPTimeScheduled", ' .
-				'avg( `UPnbEvent` ) as "UPnbEvent", avg( `DOWNTimeScheduled` ) as "DOWNTimeScheduled", ' .
-				'avg( `DOWNnbEvent` ) as "DOWNnbEvent", avg( `UNREACHABLETimeScheduled` ) as "UNREACHABLETimeScheduled", ' .
-				'avg( `UNREACHABLEnbEvent` ) as "UNREACHABLEnbEvent" ' .
+		$rq = 'SELECT date_start, date_end, UPnbEvent, DOWNnbEvent, UNREACHABLEnbEvent, ' .
+				'avg( `UPTimeScheduled` ) as "UPTimeScheduled", '.
+				'avg( `DOWNTimeScheduled` ) as "DOWNTimeScheduled", ' .
+				'avg( `UNREACHABLETimeScheduled` ) as "UNREACHABLETimeScheduled" ' .
 				'FROM `log_archive_host` WHERE `host_id` IN ('.$str.') GROUP BY date_end, date_start ORDER BY date_start desc';
 		$res = & $pearDBO->query($rq);
 
@@ -119,15 +98,13 @@
 			$t = round(($t - ($t * 0.11574074074)),2);
 			$start = $h["date_start"] + 5000;
 
-			#
-			## make bubul
-			#
+			# Popup generation for customized period
 			$bulleDashtab = '{table class=bulleDashtab}';
 			$bulleDashtab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
-			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bulleDash}'. Duration::toString($uptime) .'{/td}{td class=bulleDash}'.(($pup > 0) ? $pup : "0").'%{/td}{td class=bulleDash}'.number_format($h["UPnbEvent"], 1,'.','').'{/td}{/tr}';
-			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bulleDash}'.Duration::toString($downtime).'{/td}{td class=bulleDash}'.(($pdown > 0) ? $pdown : "0").'%{/td}{td class=bulleDash}'.number_format($h["DOWNnbEvent"], 1,'.','').'{/td}{/tr}';
-			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bulleDash}'.Duration::toString($unreachalbetime).'{/td}{td class=bulleDash}'.(($punreach > 0) ? $punreach : "0").'%{/td}{td class=bulleDash}'.number_format($h["UNREACHABLEnbEvent"], 1,'.','').'{/td}{/tr}';
-			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bulleDash}'.Duration::toString($undeterminatetime).'{/td}{td class=bulleDash}'.(($pundet > 0) ? $pundet : "0").'%{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bulleDash}'. Duration::toString($uptime) .'{/td}{td class=bulleDash}'.(($pup > 0) ? $pup : "0").'%{/td}{td class=bulleDash}'.$h["UPnbEvent"].'{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bulleDash}'.Duration::toString($downtime).'{/td}{td class=bulleDash}'.(($pdown > 0) ? $pdown : "0").'%{/td}{td class=bulleDash}'.$h["DOWNnbEvent"].'{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bulleDash}'.Duration::toString($unreachalbetime).'{/td}{td class=bulleDash}'.(($punreach > 0) ? $punreach : "0").'%{/td}{td class=bulleDash}'.$h["UNREACHABLEnbEvent"].'{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNDETERMINED.';" }Undetermined:{/td}{td class=bulleDash}'.Duration::toString($undeterminatetime).'{/td}{td class=bulleDash}'.(($pundet > 0) ? $pundet : "0").'%{/td}{/tr}';
 			$bulleDashtab .= '{/table}';
 			
 			$tp = round(($pundet * $t / 100 ),2);
@@ -199,21 +176,16 @@
 		$start = $today_start + 5000;
 
 		$NbAlert = "Unknown";
-	
 
-		/*
-		 * Today stats
-		 */
 
-		/*
-		 * Create Bull XML
-		 */
+
+		# Popup generation for "today"
 		$bulleDashtab = '{table class=bulleDashtab}';
 		$bulleDashtab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
 		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bulleDash}'. Duration::toString($_GET["today_up"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_up"].'%{/td}{td class=bulleDash}'.$_GET["today_UPnbEvent"].'{/td}{/tr}';
 		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_down"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_down"].'%{/td}{td class=bulleDash}'.$_GET["today_DOWNnbEvent"].'{/td}{/tr}';
-		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bulleDash}'.Duration::toString(0+$_GET["today_unreachable"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_unreachable"].'%{/td}{td class=bulleDash}'.$_GET["today_UNREACHABLEnbEvent"].'{/td}{/tr}';
-		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_pending"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_pending"].'%{/td}{/tr}';
+		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_unreachable"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_unreachable"].'%{/td}{td class=bulleDash}'.$_GET["today_UNREACHABLEnbEvent"].'{/td}{/tr}';
+		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNDETERMINED.';" }Undetermined:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_pending"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_pending"].'%{/td}{/tr}';
 		$bulleDashtab .= '{/table}';
 	
 		$t = round(($t - ($t * 0.11574074074)),2);

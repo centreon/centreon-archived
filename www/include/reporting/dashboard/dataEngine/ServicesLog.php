@@ -60,7 +60,7 @@
 		$end_date_select = 0;
 		$start_date_select= 0;
 		
-		if ($period == "customized") {
+		if ($period == "" && $_POST["end"] != NULL && $_POST["start"] != NULL) {
 			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
@@ -97,20 +97,9 @@
 	/*
 	 * fourchette de temps
 	 */
-
-	$periodList = array();
-	$periodList[""] = "";
-	$periodList["today"] = _("Today");
-	$periodList["yesterday"] = _("Yesterday");
-	$periodList["thisweek"] = _("This Week");
-	$periodList["last7days"] = _("Last 7 Days");
-	$periodList["thismonth"] = _("This Month");
-	$periodList["last30days"] = _("Last 30 Days");
-	$periodList["lastmonth"] = _("Last Month");
-	$periodList["thisyear"] = _("This Year");
-	$periodList["lastyear"] = _("Last Year");
-	$periodList["customized"] = _("Customized");
-
+	 
+	# Getting period table list to make the form period selection (today, this week etc.)
+	$periodList = getPeriodList();
 	
 	if ($mhost){
 		$tab_log = array();
@@ -158,21 +147,7 @@
 			$tab_svc["PktimeUNKNOWN"] = round(0,3);
 			$tab_svc["PktimeCRITICAL"] = round(0,3);
 		}			
-		# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
-		/*
-		$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 1, '.', '');
-		$tab_svc["PtimeWARNING"] = number_format($tab_svc["PtimeWARNING"], 1, '.', '');
-		$tab_svc["PtimeUNKNOWN"] = number_format($tab_svc["PtimeUNKNOWN"], 1, '.', '');
-		$tab_svc["PtimeCRITICAL"] = number_format($tab_svc["PtimeCRITICAL"], 1, '.', '');
-		$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 1, '.', '');	
-		$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? "0.0" : $tab_svc["PtimeNONE"];
-		#
-		$tab_svc["PktimeOK"] = number_format($tab_svc["PktimeOK"], 1, '.', '');
-		$tab_svc["PktimeWARNING"] = number_format($tab_svc["PktimeWARNING"], 1, '.', '');
-		$tab_svc["PktimeUNKNOWN"] = number_format($tab_svc["PktimeUNKNOWN"], 1, '.', '');
-		$tab_svc["PktimeCRITICAL"] = number_format($tab_svc["PktimeCRITICAL"], 1, '.', '');
-		*/
-		#end
+
 	}	
 
 	## calculate service  resume

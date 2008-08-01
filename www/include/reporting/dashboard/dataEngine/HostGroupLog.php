@@ -51,16 +51,6 @@
 	if($mhostgroup)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		if($period == "customized") {
-			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
-			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
-			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
-			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
-			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
-		}
-		else {
-			getDateSelect_predefined($end_date_select, $start_date_select, $period);
-		}
 		$hostgroup_id = getMyHostGroupID($mhostgroup);
 		$sd = $start_date_select;
 		$ed = $end_date_select;
@@ -176,22 +166,26 @@
 				$tab_tmp = array();
 				$tab_tmp["hostName"] = getMyHostName($host_id);
 				$tt = $end_date_select - $start_date_select;
+				
 				$tab_tmp["PtimeUP"] = round($tab["Tup"] / $tt *100,2);
 				$tab_tmp["PtimeDOWN"] = round( $tab["Tdown"]/ $tt *100,2);
 				$tab_tmp["PtimeUNREACHABLE"] = round( $tab["Tunreachable"]/ $tt *100,2);
-				$tab_tmp["PtimeUNDETERMINATED"] = round( ( $tt - ($tab["Tup"] + $tab["Tdown"] + $tab["Tunreachable"])													 )  / $tt *100,2);
+				$tab_tmp["PtimeUNDETERMINED"] = round( ( $tt - ($tab["Tup"] + $tab["Tdown"] + $tab["Tunreachable"])													 )  / $tt *100,2);
+				
 				$tmp_none = $tt - ($tab["Tup"] + $tab["Tdown"] + $tab["Tunreachable"]);
+				
 				$tab_tmp["UPnbEvent"] = isset($tab["TupNBAlert"]) ? $tab["TupNBAlert"] : 0;
 				$tab_tmp["DOWNnbEvent"] = isset($tab["TdownNBAlert"]) ? $tab["TdownNBAlert"] : 0;
 				$tab_tmp["UNREACHABLEnbEvent"] = isset($tab["TunreachableNBAlert"]) ? $tab["TunreachableNBAlert"] : 0;
+				
 				$tab_tmp["PktimeUP"] = $tab["Tup"] ? round($tab["Tup"] / ($tt - $tmp_none) *100,2): 0;
 				$tab_tmp["PktimeDOWN"] = $tab["Tdown"] ? round( $tab["Tdown"]/ ($tt - $tmp_none) *100,2):0;
 				$tab_tmp["PktimeUNREACHABLE"] =  $tab["Tunreachable"] ? round( $tab["Tunreachable"]/ ($tt - $tmp_none) *100,2):0;
 				$tab_tmp["PtimeUP"] = number_format($tab_tmp["PtimeUP"], 1, '.', '');
 				$tab_tmp["PtimeDOWN"] = number_format($tab_tmp["PtimeDOWN"], 1, '.', '');
 				$tab_tmp["PtimeUNREACHABLE"] = number_format($tab_tmp["PtimeUNREACHABLE"], 1, '.', '');
-				$tab_tmp["PtimeUNDETERMINATED"] = number_format($tab_tmp["PtimeUNDETERMINATED"], 1, '.', '');
-				$tab_tmp["PtimeUNDETERMINATED"] = ($tab_tmp["PtimeUNDETERMINATED"] < 0.1) ? 0.0 : $tab_tmp["PtimeUNDETERMINATED"];
+				$tab_tmp["PtimeUNDETERMINED"] = number_format($tab_tmp["PtimeUNDETERMINED"], 1, '.', '');
+				$tab_tmp["PtimeUNDETERMINED"] = ($tab_tmp["PtimeUNDETERMINED"] < 0.1) ? 0.0 : $tab_tmp["PtimeUNDETERMINED"];
 				$tab_tmp["PktimeUP"] = number_format($tab_tmp["PktimeUP"], 1, '.', '');
 				$tab_tmp["PktimeDOWN"] = number_format($tab_tmp["PktimeDOWN"], 1, '.', '');
 				$tab_tmp["PktimeUNREACHABLE"] = number_format($tab_tmp["PktimeUNREACHABLE"], 1, '.', '');
@@ -205,7 +199,7 @@
 				$tab_host_list_average["PAD"] += $tab_tmp["DOWNnbEvent"];
 				$tab_host_list_average["PTUR"] += $tab_tmp["PtimeUNREACHABLE"];
 				$tab_host_list_average["PAUR"] += $tab_tmp["UNREACHABLEnbEvent"];
-				$tab_host_list_average["PTU"] += $tab_tmp["PtimeUNDETERMINATED"];
+				$tab_host_list_average["PTU"] += $tab_tmp["PtimeUNDETERMINED"];
 				$tab_host_list_average["PKTup"] += $tab_tmp["PktimeUP"];
 				$tab_host_list_average["PKTd"] += $tab_tmp["PktimeDOWN"];
 				$tab_host_list_average["PKTu"] += $tab_tmp["PktimeUNREACHABLE"];
@@ -291,7 +285,6 @@
 	$today_unreachable = ($today_unreachable <= 0) ? 0 : round($today_unreachable / $tt *100,2);
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 
-
 	$str = NULL;
 	if ($mhostgroup){
 			
@@ -302,16 +295,15 @@
 				$str .= ', ';
 			$str .= $h["host_host_id"];
 		}
+		
 	if ($str == NULL)
 		$str = 'NULL';
+		
 		$rq = "SELECT " .
-				"date_start, date_end, " .
+				"date_start, date_end, UPnbEvent, DOWNnbEvent, UNREACHABLEnbEvent, " .
 				"avg( `UPTimeScheduled` ) as 'UPTimeScheduled', " .
-				"avg( `UPnbEvent` ) as 'UPnbEvent', " .
-				"avg( `DOWNTimeScheduled` ) as 'DOWNTimeScheduled', " .
-				"avg( `DOWNnbEvent` ) as 'DOWNnbEvent', " .
-				"avg( `UNREACHABLETimeScheduled` ) as 'UNREACHABLETimeScheduled', " .
-				"avg( `UNREACHABLEnbEvent` ) as 'UNREACHABLEnbEvent' " .
+				"avg( `DOWNTimeScheduled` ) as 'DOWNTimeScheduled', " . 
+				"avg( `UNREACHABLETimeScheduled` ) as 'UNREACHABLETimeScheduled' " .
 				"FROM `log_archive_host` WHERE `date_start` >= " . $sd . " AND `date_end` <= " . $ed .
 				" AND `host_id` IN ($str) group by date_end, date_start order by date_start desc";
 
@@ -342,10 +334,10 @@
 			$pundet = 0 +round(($undeterminatetime / $tt * 100),2);
 			else
 			$pundet = "0.00";
+			
 			$t = 0 + ($h["date_end"] - $h["date_start"]);
 			$t = round(($t - ($t * 0.11574074074)),2);
 			$start = $h["date_start"] + 5000;
-
 
 			$tab_tmp = array();
 			$tab_tmp ["duration"] = Duration::toString($tt) ? Duration::toString($tt) : 0;

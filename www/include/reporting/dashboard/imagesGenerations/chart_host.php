@@ -61,7 +61,7 @@
 	$FillArray->addColor($oreon->optGen["color_up"] . ' @0.2', 'Up');
 	$FillArray->addColor($oreon->optGen["color_down"] . '@0.2', 'Down');
 	$FillArray->addColor($oreon->optGen["color_unreachable"] . '@0.2', 'Unreachable');
-	$FillArray->addColor('#cccccc', 'Undeterminated');
+	$FillArray->addColor($oreon->optGen["color_undetermined"] . '@0.2', 'Undetermined');
 	$Plot->setFillStyle($FillArray);
 	
 	$Plot->setBackgroundColor('#F2F2F2');

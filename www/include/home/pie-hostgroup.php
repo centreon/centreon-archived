@@ -24,7 +24,7 @@
 	$oreonPath = '/usr/local/centreon/';
 
 	require_once("DB.php");
-	include_once("/etc/centreon/centreon.conf.php");
+	require_once("@CENTREON_ETC@/centreon.conf.php");
 		
 	/* Connect to oreon DB */
 	$dsn = array('phptype'  => 'mysql',

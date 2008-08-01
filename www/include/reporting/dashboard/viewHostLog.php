@@ -27,10 +27,10 @@
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
 
-	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 	require_once './class/other.class.php';
+	require_once './include/reporting/dashboard/common-Func.php';
 	require_once './include/common/common-Func.php';
 	require_once './include/common/common-Func-ACL.php';
 	
@@ -81,7 +81,6 @@
 	## Selection de l'host
 	#
 	$formHost = new HTML_QuickForm('formHost', 'post', "?p=".$p);
-
 	$var_url_export_csv = "";
 	
 	#
@@ -114,34 +113,34 @@
 	$formPeriod->addElement('text', 'end', _("End date"));
 	$formPeriod->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
 	$sub =& $formPeriod->addElement('submit', 'submit', _("View"));
-	$res =& $formPeriod->addElement('reset', 'reset', _("Reset"));
 
 	$mhost = purgeVar($mhost);
 
 	if ($mhost){
 		$i=0;
+		
 		/*
 		 * Get Datas
 		 */
+		 
 		require_once './include/reporting/dashboard/dataEngine/HostLog.php';
-	
+		global $host_name;
+		global $status;
+					
 		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($end_date_select - $start_date_select));
 		$tpl->assign('host_name', $mhost);
-		global $host_name;
 		$host_name = $mhost;
-	
 		$tpl->assign('totalAlert', $totalAlert);
 		$tpl->assign('totalTime', Duration::toString($totalTime));
 		$tpl->assign('totalpTime', $totalpTime);
 		$tpl->assign('totalpkTime', $totalpkTime);
 	
-		global $status;
 		$tpl->assign('status', $status);
 		
 		$tab_resume[0]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
 		$tab_resume[1]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
 		$tab_resume[2]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";		
-		$tab_resume[3]["style"] =  "class='ListColCenter' style='background:#cccccc'";
+		$tab_resume[3]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'";	
 		
 		$tpl->assign("tab_resume", $tab_resume);
 		if (isset($tab_svc))
@@ -150,12 +149,11 @@
 	
 		$tt = 0 + ($ed - $sd);
 	
-		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));
-
-		$tpl->assign('date_start_select', $start_date_select);
-		$tpl->assign('date_end_select', $end_date_select);
-		$tpl->assign('to', _(" to "));
 		$tpl->assign('period_name', _(" From "));
+		$tpl->assign('date_start_select', $start_date_select);
+		$tpl->assign('to', _(" to "));
+		$tpl->assign('date_end_select', $end_date_select);
+		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));
 //		$tpl->assign('period', $var_url_export_csv);
 	
 		$formPeriod->setDefaults(array('period' => $period));
@@ -197,7 +195,7 @@
 		/*
 		 * Colors
 		 */
-		$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_unknown"],1);
+		$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_undetermined"],1);
 	
 		$today_var  = '&today_up='.$today_up . '&today_down='.$today_down.'&today_unreachable='.$today_unreachable. '&today_pending=' . $today_pending;
 		$today_var .= '&today_UPnbEvent='.$today_UPnbEvent.'&today_UNREACHABLEnbEvent='.$today_UNREACHABLEnbEvent.'&today_DOWNnbEvent='.$today_DOWNnbEvent;
@@ -205,7 +203,7 @@
 		$type = 'Host';
 		include("./include/reporting/dashboard/ajaxReporting_js.php");
 	} else {
-		?><script type="text/javascript"> function initTimeline() {;} </SCRIPT> <?php
+		?><script type="text/javascript"> function initTimeline() {;} </script> <?php
 	}
 	$tpl->display("template/viewHostLog.ihtml");
 ?>

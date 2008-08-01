@@ -17,8 +17,8 @@
  
 header('Content-Type: text/xml');
 header('Cache-Control: no-cache');
-require_once("/etc/centreon/centreon.conf.php");
-require_once ("/usr/local/centreon/www/DBconnect.php");
+require_once("@CENTREON_ETC@/centreon.conf.php");
+require_once ($centreon_path."/www/DBconnect.php");
 
 echo "<?xml version=\"1.0\"?>\n";
 

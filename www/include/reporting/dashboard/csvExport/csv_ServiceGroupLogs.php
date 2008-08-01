@@ -71,7 +71,7 @@
 							  ";".$tab["PtimeWARNING"]. "%;".$tab["WARNINGnbEvent"].
 							  ";".$tab["PtimeCRITICAL"]. "%;".$tab["CRITICALnbEvent"]. 
 							  ";".$tab["PtimeUNKNOWN"]. "%;".$tab["UNKNOWNnbEvent"].
-							  ";".$tab["PtimeUNDETERMINATED"]. "%;;\n";
+							  ";".$tab["PtimeUNDETERMINED"]. "%;;\n";
 	}
 	echo "\n\n";
 

@@ -18,9 +18,11 @@
 	if (!isset($oreon))
 		exit;
 */
-	#
-	## init
-	#
+
+	require_once($centreon_path."www/include/reporting/dashboard/common-Func.php");
+	require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
+
+	# init
 	$totalAlert = 0;
 	$day = date("d",time());
 	$year = date("Y",time());
@@ -30,9 +32,6 @@
 	$tt = 0;
 	$start_date_select = 0;
 	$end_date_select = 0;
-
-require_once($centreon_path."www/include/reporting/dashboard/common-Func.php");
-require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 
 	#
 	## Selectioned ?
@@ -49,16 +48,6 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 	if($mservicegroup)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		if($period == "customized") {
-			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
-			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
-			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
-			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
-			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
-		}
-		else {
-			getDateSelect_predefined($end_date_select, $start_date_select, $period);
-		}
 		$servicegroup_id = getMyservicegroupID($mservicegroup);
 		$sd = $start_date_select;
 		$ed = $end_date_select;
@@ -98,14 +87,13 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 		$today_UNKNOWNnbEvent = 0 + $sbase["average"]["today"]["Tunknown"];
 		$today_WARNINGnbEvent = 0 + $sbase["average"]["today"]["Twarning"];
 		$today_CRITICALnbEvent = 0 + $sbase["average"]["today"]["Tcritical"];
-
-
+		
 		$tab_log = array();
 		$day = date("d",time());
 		$year = date("Y",time());
 		$month = date("m",time());
 		$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year);
-		$tab_svc_list_average = array();
+		
 		$tab_svc_list_average = array();
 		$tab_svc_list_average["PTOK"] = 0;
 		$tab_svc_list_average["PAOK"] = 0;
@@ -127,9 +115,8 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 		$day_current_end = time() + 1;
 		$time = time();
 
-		#
 		## calculate resume
-		#
+
 		$tab_resume = array();
 		$tab = array();
 		$timeTOTAL = $end_date_select - $start_date_select;	
@@ -138,8 +125,10 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 		$Tunreach = $sbase["average"]["Tunknown"];
 		$Tcritical = $sbase["average"]["Tcritical"];
 		$Tnone = $timeTOTAL - ($Tok + $Twarning + $Tunreach + $Tcritical);
+		
 		if($Tnone <= 1)
 		$Tnone = 0;	
+		
 		$tab["state"] = _("Up");
 		$tab["time"] = Duration::toString($Tok);
 		$tab["timestamp"] = $Tok;
@@ -147,6 +136,7 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 		$tab["pourcentkTime"] = round($Tok/($timeTOTAL-$Tnone+1)*100,2). "%";
 		$tab["nbAlert"] = $sbase["average"]["OKnbEvent"];
 		$tab_resume[0] = $tab;
+		
 		$tab["state"] = _("Critical");
 		$tab["time"] = Duration::toString($Tcritical);
 		$tab["timestamp"] = $Tcritical;
@@ -155,12 +145,14 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 		$tab["nbAlert"] = $sbase["average"]["CRITICALnbEvent"];
 		$tab_resume[1] = $tab;
 		$tab["state"] = _("Down");
+		
 		$tab["time"] = Duration::toString($Twarning);
 		$tab["timestamp"] = $Twarning;
 		$tab["pourcentTime"] = round($Twarning/$timeTOTAL*100,2);
 		$tab["pourcentkTime"] = round($Twarning/($timeTOTAL-$Tnone+1)*100,2)."%";
 		$tab["nbAlert"] = $sbase["average"]["WARNINGnbEvent"];
 		$tab_resume[2] = $tab;
+		
 		$tab["state"] = _("Unreachable");
 		$tab["time"] = Duration::toString($Tunreach);
 		$tab["timestamp"] = $Tunreach;
@@ -168,6 +160,7 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 		$tab["pourcentkTime"] = round($Tunreach/($timeTOTAL-$Tnone+1)*100,2)."%";
 		$tab["nbAlert"] = $sbase["average"]["UNKNOWNnbEvent"];
 		$tab_resume[3] = $tab;
+		
 		$tab["state"] = _("Undetermined");
 		$tab["time"] = Duration::toString($Tnone);
 		$tab["timestamp"] = $Tnone;
@@ -193,7 +186,7 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 				$tab_tmp["PtimeWARNING"] = round( $tab["Twarning"]/ $tt *100,2);
 				$tab_tmp["PtimeUNKNOWN"] = round( $tab["Tunknown"]/ $tt *100,2);
 				$tab_tmp["PtimeCRITICAL"] = round( $tab["Tcritical"]/ $tt *100,2);
-				$tab_tmp["PtimeUNDETERMINATED"] = round( ( $tt - ($tab["Tok"] + $tab["Twarning"] + $tab["Tunknown"] + $tab["Tcritical"] ))  / $tt *100,2);
+				$tab_tmp["PtimeUNDETERMINED"] = round( ( $tt - ($tab["Tok"] + $tab["Twarning"] + $tab["Tunknown"] + $tab["Tcritical"] ))  / $tt *100,2);
 
 				$tmp_none = $tt - ($tab["Tok"] + $tab["Twarning"] + $tab["Tunknown"]);
 				$tab_tmp["OKnbEvent"] = isset($tab["TokNBAlert"]) ? $tab["TokNBAlert"] : 0;
@@ -220,8 +213,8 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 				$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 1, '.', '');
 				$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 1, '.', '');
 
-				$tab_tmp["PtimeUNDETERMINATED"] = number_format($tab_tmp["PtimeUNDETERMINATED"], 1, '.', '');
-				$tab_tmp["PtimeUNDETERMINATED"] = ($tab_tmp["PtimeUNDETERMINATED"] < 0.1) ? 0.0 : $tab_tmp["PtimeUNDETERMINATED"];
+				$tab_tmp["PtimeUNDETERMINED"] = number_format($tab_tmp["PtimeUNDETERMINED"], 1, '.', '');
+				$tab_tmp["PtimeUNDETERMINED"] = ($tab_tmp["PtimeUNDETERMINED"] < 0.1) ? 0.0 : $tab_tmp["PtimeUNDETERMINED"];
 
 				$tab_tmp["PktimeOK"] = number_format($tab_tmp["PktimeOK"], 1, '.', '');
 				$tab_tmp["PktimeWARNING"] = number_format($tab_tmp["PktimeWARNING"], 1, '.', '');
@@ -239,7 +232,7 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 				$tab_svc_list_average["PAU"] += $tab_tmp["UNKNOWNnbEvent"];
 				$tab_svc_list_average["PTC"] += $tab_tmp["PtimeCRITICAL"];
 				$tab_svc_list_average["PAC"] += $tab_tmp["CRITICALnbEvent"];
-				$tab_svc_list_average["PTN"] += $tab_tmp["PtimeUNDETERMINATED"];
+				$tab_svc_list_average["PTN"] += $tab_tmp["PtimeUNDETERMINED"];
 				$tab_svc_list_average["PKTOK"] += $tab_tmp["PktimeOK"];
 				$tab_svc_list_average["PKTW"]+= $tab_tmp["PktimeWARNING"];
 				$tab_svc_list_average["PKTU"]+= $tab_tmp["PktimeUNKNOWN"];
@@ -306,9 +299,9 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);
 
-	$tab_report = array();
 	$today_none = $tt - ($today_warning + $today_ok + $today_unknown + $today_critical);
 
+	$tab_report = array();
 	$tab_report[date("d/m/Y", $today_start)]["duration"] = Duration::toString($tt);
 	$tab_report[date("d/m/Y", $today_start)]["oktime"] = Duration::toString($today_ok);
 	$tab_report[date("d/m/Y", $today_start)]["warningtime"] = Duration::toString($today_warning);
@@ -331,29 +324,23 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 	$tab_report[date("d/m/Y", $today_start)]["WARNINGnbEvent"] = $today_WARNINGnbEvent;
 	$tab_report[date("d/m/Y", $today_start)]["CRITICALnbEvent"] = $today_CRITICALnbEvent;
 
-
 	/* historical daily report*/
-
 	$rq = "SELECT " .
-			"date_start, date_end, " .
+			"date_start, date_end, OKnbEvent, WARNINGnbEvent, UNKNOWNnbEvent, CRITICALnbEvent, " .
 			"avg( `OKTimeScheduled` ) as 'OKTimeScheduled', " .
-			"avg( `OKnbEvent` ) as 'OKnbEvent', " .
 			"avg( `WARNINGTimeScheduled` ) as 'WARNINGTimeScheduled', " .
-			"avg( `WARNINGnbEvent` ) as 'WARNINGnbEvent', " .
 			"avg( `UNKNOWNTimeScheduled` ) as 'UNKNOWNTimeScheduled', " .
-			"avg( `UNKNOWNnbEvent` ) as 'UNKNOWNnbEvent', " .
 			"avg( `CRITICALTimeScheduled` ) as 'CRITICALTimeScheduled', " .
-			"avg( `CRITICALnbEvent` ) as 'CRITICALnbEvent' " .
 			"FROM ".$conf_centreon['dbcstg'].".`log_archive_service` WHERE `date_start` >= " . $sd . " AND `date_end` <= " . $ed .
 			" AND `service_id` IN (" .
 			"SELECT `service_service_id` FROM ".$conf_centreon['db'].".`servicegroup_relation` WHERE `servicegroup_sg_id` = '" . $servicegroup_id ."') group by date_end, date_start order by date_start desc";
+
 	$res = & $pearDB->query($rq);
 	while ($h =& $res->fetchRow()) {
 		$oktime = $h["OKTimeScheduled"];
 		$criticaltime = $h["CRITICALTimeScheduled"];
 		$warningtime = $h["WARNINGTimeScheduled"];
 		$unknowntime = $h["UNKNOWNTimeScheduled"];
-
 
 		$tt = 0 + ($h["date_end"] - $h["date_start"]);
 		if(($oktime + $criticaltime + $warningtime + $unknowntime) < $tt)
@@ -384,6 +371,7 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 		$t = 0 + ($h["date_end"] - $h["date_start"]);
 		$t = round(($t - ($t * 0.11574074074)),2);
 		$start = $h["date_start"] + 5000;			
+		
 		$tab_tmp = array();
 		$tab_tmp ["duration"] = Duration::toString($tt) ? Duration::toString($tt) : 0;
 		$tab_tmp ["oktime"] = Duration::toString($oktime) ? Duration::toString($oktime) : 0;
@@ -399,9 +387,7 @@ require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 		$tab_tmp ["ppending"] = Duration::toString($ppending) ? Duration::toString($ppending) : 0;
 		$tab_tmp ["unknowntime"] = Duration::toString($unknowntime) ? Duration::toString($unknowntime) : 0;
 		$tab_tmp ["punknown"] = Duration::toString($punknown) ? Duration::toString($punknown) : 0;
-
 		$tab_report[date("d/m/Y", $start)] = $tab_tmp;
-
-		  }
+		}
 
 ?>

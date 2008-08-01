@@ -17,6 +17,7 @@
 
 	require_once 'DB.php';
 	require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
 	require_once $centreon_path.'www/class/other.class.php';
 	
 	$buffer = null;
@@ -25,7 +26,7 @@
 
 	if (isset($_GET["hostID"]) && isset($_GET["serviceID"]) && isset($_GET["color"]) && isset($_GET["today_ok"])&& isset($_GET["today_critical"]) && isset($_GET["today_unknown"])&& isset($_GET["today_pending"])){
 
-		list($colorOK, $colorWARNING, $colorCRITICAL, $colorPENDING, $colorUNKNOWN)= split (":", $_GET["color"], 5);
+		list($colorOK, $colorCRITICAL, $colorWARNING, $colorUNKNOWN, $colorUNDETERMINED)= split (":", $_GET["color"], 5);
 
 		$dsn = array(
 			     'phptype'  => 'mysql',
@@ -57,26 +58,6 @@
 		if (PEAR::isError($pearDB)) 
 		  die("Connecting probems with centstorage database : " . $pearDBO->getMessage());		
 		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
-
-		function create_date_timeline_format($time_unix)
-		{
-			$tab_month = array(
-			"01" => "Jan",
-			"02" => "Feb",
-			"03"=> "Mar",
-			"04"=> "Apr",
-			"05" => "May",
-			"06"=> "Jun",
-			"07"=> "Jul",
-			"08"=> "Aug",
-			"09"=> "Sep",
-			"10"=> "Oct",
-			"11"=> "Nov",
-			"12"=> "Dec"
-			);
-			$date = $tab_month[date('m', $time_unix)].date(" d Y G:i:s", $time_unix);
-			return $date;
-		}
 			
 		$request = "SELECT  * FROM `log_archive_service` WHERE host_id = '".$_GET["hostID"]."' AND service_id = ".$_GET["serviceID"]." ORDER BY date_start DESC";
 		$DBRESULT =& $pearDBO->query($request);
@@ -96,29 +77,18 @@
 			($unknowntime > 0) ? $punknown = 0 +round(($unknowntime / $tt * 100),2) : $punknown = "0.00";
 			($pendingtime > 0) ? $ppending = 0 +round(($pendingtime / $tt * 100),2) : $ppending = "0.00";
 
-			$sortTab = array();
-			$ntab = array();
-			$sortTab["#" . $colorOK] = $pok;
-			$sortTab["#" . $colorCRITICAL] = $pcritical;
-			$sortTab["#" . $colorWARNING] = $pwarning;
-			$sortTab["#" . $colorUNKNOWN] = $punknown;
-			$sortTab["#" . $colorPENDING] = $ppending;
-
 			$t = 0 + ($h["date_end"] - $h["date_start"]);
-			
 			$t = round(($t - ($t * 0.11574074074)),2);
 			$start = $h["date_start"] + 5000;			
 
-			/*
-			 * create bull for all days
-			 */
+			# Popup Generation for customized period
 			$bulleDashtab = '{table class=bulleDashtab}';
 			$bulleDashtab .= '{tr}{td class=bulleDashleft colspan=3}'. date("d/m/Y", $start) .' - Duration: '.Duration::toString($tt).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
 			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorOK.';"  }OK:{/td}{td class=bulleDash}'. Duration::toString($oktime) .'{/td}{td class=bulleDash}'.(($pok > 0) ? $pok : "0").'%{/td}{td class=bulleDash}'.$h["OKnbEvent"].'{/td}{/tr}';
 			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorCRITICAL.';"  }Critical:{/td}{td class=bulleDash}'. Duration::toString($criticaltime) .'{/td}{td class=bulleDash}'.(($pcritical > 0) ? $pcritical : "0").'%{/td}{td class=bulleDash}'.$h["CRITICALnbEvent"].'{/td}{/tr}';
 			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorWARNING.';"  }Warning:{/td}{td class=bulleDash}'. Duration::toString($warningtime) .'{/td}{td class=bulleDash}'.(($pwarning > 0) ? $pwarning : "0").'%{/td}{td class=bulleDash}'.$h["WARNINGnbEvent"].'{/td}{/tr}';
-			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNKNOWN.';"  }Unknown:{/td}{td class=bulleDash}'. Duration::toString($pendingtime) .'{/td}{td class=bulleDash}'.(($ppending > 0) ? $ppending : "0").'%{/td}{td class=bulleDash}-{/td}{/tr}';
-			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorPENDING.';"  }Undeterminated:{/td}{td class=bulleDash}'. Duration::toString($unknowntime) .'{/td}{td class=bulleDash}'.(($punknown > 0) ? $punknown : "0").'%{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNKNOWN.';"  }Unknown:{/td}{td class=bulleDash}'. Duration::toString($unknowntime) .'{/td}{td class=bulleDash}'.(($punknown > 0) ? $punknown : "0").'%{/td}{td class=bulleDash}-{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNDETERMINED.';"  }Undetermined:{/td}{td class=bulleDash}'. Duration::toString($pendingtime) .'{/td}{td class=bulleDash}'.(($ppending > 0) ? $ppending : "0").'%{/td}{/tr}';
 			$bulleDashtab .= '{/table}';
 			
 			$tp = round(($punknown * $t / 100 ),2);
@@ -140,7 +110,7 @@
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-				$buffer .= ' color="#' . $colorPENDING . '"';
+				$buffer .= ' color="#' . $colorUNDETERMINED . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($ppending > 0) ? $ppending : "0") . '%" >' ;
 				$buffer .= $bulleDashtab;
@@ -200,16 +170,14 @@
 		$t = $today_end - $today_start;
 		$start = $today_start + 5000;
 	
-		/*
-		 * Create bull for today
-		 */
+		# Popup Generation for "today"
 		$bulleDashtab = '{table class=bulleDashtab}';
 		$bulleDashtab .= '{tr}{td class=bulleDashleft colspan=3}'. date("d/m/Y", $start) .' -- Duration: '.Duration::toString($t).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
 		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorOK.';"  }OK:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_ok"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_ok"] > 0) ? $_GET["today_ok"] : "0").'%{/td}{td class=bulleDash}'.$_GET["today_OKnbEvent"].'{/td}{/tr}';
 		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorCRITICAL.';"  }Critical:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_critical"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_critical"] > 0) ? $_GET["today_critical"] : "0").'%{/td}{td class=bulleDash}'.$_GET["today_CRITICALnbEvent"].'{/td}{/tr}';
 		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorWARNING.';"  }Warning:{/td}{td class=bulleDash}'. Duration::toString($_GET["today_warning"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_warning"] > 0) ? $_GET["today_warning"] : "0").'%{/td}{td class=bulleDash}'.$_GET["today_WARNINGnbEvent"].'{/td}{/tr}';
 		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNKNOWN.';"  }Unknown:{/td}{td class=bulleDash}'. Duration::toString($_GET["today_unknown"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_unknown"] > 0) ? $_GET["today_unknown"] : "0").'%{/td}{td class=bulleDash}'.$_GET["today_UNKNOWNnbEvent"].'{/td}{/tr}';
-		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#cccccc;"  }Undeterminated:{/td}{td class=bulleDash}'.  Duration::toString($_GET["today_pending"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_pending"] > 0) ? $_GET["today_pending"] : "0").'%{/td}{/tr}';
+		$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNDETERMINED.';"  }Undetermined:{/td}{td class=bulleDash}'.  Duration::toString($_GET["today_pending"] * $t / 100) .'{/td}{td class=bulleDash}'.(($_GET["today_pending"] > 0) ? $_GET["today_pending"] : "0").'%{/td}{/tr}';
 		$bulleDashtab .= '{/table}';
 	
 		$t = round(($t - ($t * 0.11574074074)),2);
@@ -220,7 +188,7 @@
 			$buffer .= '<event ';
 			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#cccccc"';
+			$buffer .= ' color="#' . $colorUNDETERMINED . '"';
 			$buffer .= ' isDuration="true" ';
 			$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
 			$buffer .= $bulleDashtab;

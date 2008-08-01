@@ -1086,6 +1086,7 @@ CREATE TABLE IF NOT EXISTS `general_opt` (
   `color_critical` varchar(50) default NULL,
   `color_pending` varchar(50) default NULL,
   `color_unknown` varchar(50) default NULL,
+  `color_undetermined` varchar(50) default NULL,
   `session_expire` int(11) default NULL,
   `perfparse_installed` enum('0','1') default NULL,
   `graph_preferencies` int(11) default '0',

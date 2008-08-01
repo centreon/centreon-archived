@@ -30,15 +30,13 @@
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
 
-	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 	require_once './class/other.class.php';
+	require_once './include/reporting/dashboard/common-Func.php';
 	require_once './include/common/common-Func.php';
 	require_once './include/common/common-Func-ACL.php';
-	
-	require_once("./include/reporting/dashboard/initReport.php");
-	
+	require_once './include/reporting/dashboard/initReport.php';
 	require_once './include/reporting/dashboard/dataEngine/HostGroupLog.php';
 		
 	$mhost = purgeVar($mhost);	
@@ -142,7 +140,7 @@
 		$end_date_select = 0;
 		$start_date_select= 0;
 
-		if ($period == "customized") {
+		if ($period == "" && $_POST["end"] != NULL && $_POST["start"] != NULL) {
 			/*
 			 * Get customized values
 			 */
@@ -173,6 +171,7 @@
 		$Tdown = NULL;
 		$Tunreach = NULL;
 		$Tnone = NULL;
+	
 		getLogInDbForHostGroup($hbase, $pearDB, $pearDBO, $hostgroup_id, $start_date_select, $end_date_select, $today_start, $today_end);
 	}
 
@@ -189,7 +188,7 @@
 	while ($hg =& $res->fetchRow())
 		$hostgroup[$hg["hg_name"]] = $hg["hg_name"];
 
-	$selHost =& $formHostGroup->addElement('select', 'hostgroup', _("Host"), $hostgroup, array("onChange" =>"this.form.submit();"));
+	$selHost =& $formHostGroup->addElement('select', 'hostgroup', _("Host Group"), $hostgroup, array("onChange" =>"this.form.submit();"));
 	if (isset($_POST["hostgroup"])){
 		$formHostGroup->setDefaults(array('hostgroup' => $_POST["hostgroup"]));
 	} else if (isset($_GET["hostgroup"])) {
@@ -199,18 +198,9 @@
 	#
 	## Time select
 	#
-	$periodList = array();
-	$periodList[""] = "";
-	$periodList["today"] = _("Today");
-	$periodList["yesterday"] = _("Yesterday");
-	$periodList["thisweek"] = _("This Week");
-	$periodList["last7days"] = _("Last 7 Days");
-	$periodList["thismonth"] = _("This Month");
-	$periodList["last30days"] = _("Last 30 Days");
-	$periodList["lastmonth"] = _("Last Month");
-	$periodList["thisyear"] = _("This Year");
-	$periodList["lastyear"] = _("Last Year");
-	$periodList["customized"] = _("Customized");
+	
+	# Getting period table list to make the form period selection (today, this week etc.)
+	$periodList = getPeriodList();
 
 	$formPeriod = new HTML_QuickForm('FormPeriod', 'post', "?p=".$p);
 	$selHost =& $formPeriod->addElement('select', 'period', _("Predefined:"), $periodList);
@@ -225,7 +215,6 @@
 	$formPeriod->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
 
 	$sub =& $formPeriod->addElement('submit', 'submit', _("View"));
-	$res =& $formPeriod->addElement('reset', 'reset', _("Reset"));
 
 	if ($period == "customized") {
 		$formPeriod->setDefaults(array('start' => date("m/d/Y", $start_date_select)));
@@ -261,12 +250,22 @@
 		$day = date("d",time());
 		$year = date("Y",time());
 		$month = date("m",time());
-	
 		$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year, -1);
-	
-		$tab_host_list_average = array("PTUP" => 0, "PAUP" => 0, "PTD" => 0, "PAD" => 0, "PTUR" => 0, "PAUR" => 0, "PTU" => 0, "PKTup" => 0, "PKTd" => 0, "PKTu" => 0, "nb_host" => 0);	
-		$tab_hosts = array();	
-	
+		
+		$tab_host_list_average = array();
+		$tab_host_list_average["PTUP"] = 0;
+		$tab_host_list_average["PAUP"] = 0;
+		$tab_host_list_average["PTD"] = 0;
+		$tab_host_list_average["PAD"] = 0;
+		$tab_host_list_average["PTUR"] = 0;
+		$tab_host_list_average["PAUR"] = 0;
+		$tab_host_list_average["PTU"] = 0;
+		$tab_host_list_average["PKTup"] = 0;
+		$tab_host_list_average["PKTd"] = 0;
+		$tab_host_list_average["PKTu"] = 0;
+		$tab_host_list_average["nb_host"] = 0;	
+		
+		$tab_hosts = array();
 		$day_current_start = 0;
 		$day_current_end = time() + 1;
 		$time = time();
@@ -285,27 +284,12 @@
 	
 		if ($Tnone <= 1)
 			$Tnone = 0;	
-	
-		function formatData($state, $time, $timeTOTAL, $time_none, $nb_alert, $color){
-			$tab = array();
-			$tab["state"] = _($state);
-			$tab["time"] = Duration::toString($time);
-			$tab["timestamp"] = $time;
-			$tab["pourcentTime"] = round($time/($timeTOTAL+1)*100,2) ;
-			if ($state != "Undetermined")
-				$tab["pourcentkTime"] = round($time/($timeTOTAL-$time_none+1)*100,2). "%";
-			else
-				$tab["pourcentkTime"] = NULL;
-			$tab["nbAlert"] = $nb_alert;
-			$tab["style"] = "class='ListColCenter' style='background:" . $color."'";	
-			return $tab;
-		}
 		
 		$tab_resume[0] = formatData("Up", $Tup, $timeTOTAL, $Tnone, $hbase["average"]["TupNBAlert"], $oreon->optGen["color_up"]);
 		$tab_resume[1] = formatData("Down", $Tdown, $timeTOTAL, $Tnone, $hbase["average"]["TdownNBAlert"], $oreon->optGen["color_down"]);
 		$tab_resume[2] = formatData("Unreachable", $Tunreach, $timeTOTAL, $Tnone, $hbase["average"]["TunreachableNBAlert"], $oreon->optGen["color_unreachable"]);
-		$tab_resume[3] = formatData("Undetermined", $Tnone, $timeTOTAL , $Tnone, "", "#cccccc");
-		
+		$tab_resume[3] = formatData("Undetermined", $Tnone, $timeTOTAL , $Tnone, $hbase["average"]["TundeterminedNBAlert"], $oreon->optGen["color_undetermined"]);
+
 		/*
 		 * calculate tablist
 		 */
@@ -318,7 +302,7 @@
 				$tab_tmp["PtimeUP"] = round($tab["Tup"] / $tt *100,2);
 				$tab_tmp["PtimeDOWN"] = round( $tab["Tdown"]/ $tt *100,2);
 				$tab_tmp["PtimeUNREACHABLE"] = round( $tab["Tunreachable"]/ $tt *100,2);
-				$tab_tmp["PtimeUNDETERMINATED"] = round( ( $tt - ($tab["Tup"] + $tab["Tdown"] + $tab["Tunreachable"])													 )  / $tt *100,2);
+				$tab_tmp["PtimeUNDETERMINED"] = round( ( $tt - ($tab["Tup"] + $tab["Tdown"] + $tab["Tunreachable"])													 )  / $tt *100,2);
 				$tmp_none = $tt - ($tab["Tup"] + $tab["Tdown"] + $tab["Tunreachable"]);
 				$tab_tmp["UPnbEvent"] = isset($tab["TupNBAlert"]) ? $tab["TupNBAlert"] : 0;
 				$tab_tmp["DOWNnbEvent"] = isset($tab["TdownNBAlert"]) ? $tab["TdownNBAlert"] : 0;
@@ -329,8 +313,8 @@
 				$tab_tmp["PtimeUP"] = number_format($tab_tmp["PtimeUP"], 1, '.', '');
 				$tab_tmp["PtimeDOWN"] = number_format($tab_tmp["PtimeDOWN"], 1, '.', '');
 				$tab_tmp["PtimeUNREACHABLE"] = number_format($tab_tmp["PtimeUNREACHABLE"], 1, '.', '');
-				$tab_tmp["PtimeUNDETERMINATED"] = number_format($tab_tmp["PtimeUNDETERMINATED"], 1, '.', '');
-				$tab_tmp["PtimeUNDETERMINATED"] = ($tab_tmp["PtimeUNDETERMINATED"] < 0.1) ? 0.0 : $tab_tmp["PtimeUNDETERMINATED"];
+				$tab_tmp["PtimeUNDETERMINED"] = number_format($tab_tmp["PtimeUNDETERMINED"], 1, '.', '');
+				$tab_tmp["PtimeUNDETERMINED"] = ($tab_tmp["PtimeUNDETERMINED"] < 0.1) ? 0.0 : $tab_tmp["PtimeUNDETERMINED"];
 				$tab_tmp["PktimeUP"] = number_format($tab_tmp["PktimeUP"], 1, '.', '');
 				$tab_tmp["PktimeDOWN"] = number_format($tab_tmp["PktimeDOWN"], 1, '.', '');
 				$tab_tmp["PktimeUNREACHABLE"] = number_format($tab_tmp["PktimeUNREACHABLE"], 1, '.', '');
@@ -344,7 +328,7 @@
 				$tab_host_list_average["PAD"] += $tab_tmp["DOWNnbEvent"];
 				$tab_host_list_average["PTUR"] += $tab_tmp["PtimeUNREACHABLE"];
 				$tab_host_list_average["PAUR"] += $tab_tmp["UNREACHABLEnbEvent"];
-				$tab_host_list_average["PTU"] += $tab_tmp["PtimeUNDETERMINATED"];
+				$tab_host_list_average["PTU"] += $tab_tmp["PtimeUNDETERMINED"];
 				$tab_host_list_average["PKTup"] += $tab_tmp["PktimeUP"];
 				$tab_host_list_average["PKTd"] += $tab_tmp["PktimeDOWN"];
 				$tab_host_list_average["PKTu"] += $tab_tmp["PktimeUNREACHABLE"];
@@ -405,11 +389,10 @@
 		$tpl->assign('totalpkTime', $totalpkTime);
 		$tpl->assign('status', $status);
 		
-		
 		$tab_resume[0]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
 		$tab_resume[1]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
 		$tab_resume[2]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";		
-		$tab_resume[3]["style"] =  "class='ListColCenter' style='background:#cccccc'";
+		$tab_resume[3]["style"] =  "class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'";
 		
 		$tpl->assign("tab_resume", $tab_resume);
 		$tpl->assign("tab_host_average", $tab_host_list_average);
@@ -420,29 +403,31 @@
 		$tpl->assign("tab_host", $tab_host);
 
 	$tpl->assign('o', $o);
-	
-	$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));
 	$tpl->assign("tab_log", $tab_log);
 	$tpl->assign('actualTitle', _(" Actual "));
-	$tpl->assign('date_start_select', $start_date_select);
-	$tpl->assign('date_end_select', $end_date_select);
+
 	$tpl->assign('to', _(" to "));
 	$tpl->assign('period_name', _(" From "));
-	$tpl->assign('style_up', "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
-	$tpl->assign('style_up_alert', "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_ok"]."'");
+	$tpl->assign('date_start_select', $start_date_select);
+	$tpl->assign('to', _(" to "));
+	$tpl->assign('date_end_select', $end_date_select);
+	$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));
+			
+	$tpl->assign('style_up', "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'");
+	$tpl->assign('style_up_alert', "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_up"]."'");
 	$tpl->assign('style_down' , "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'");
 	$tpl->assign('style_down_alert' , "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_down"]."'");
 	$tpl->assign('style_unreachable' , "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'");
 	$tpl->assign('style_unreachable_alert' , "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_unreachable"]."'");
-	$tpl->assign('style_undeterminated' , "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'");
-	$tpl->assign('style_undeterminated_alert' , "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_unknown"]."'");
+	$tpl->assign('style_undetermined' , "class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'");
+	$tpl->assign('style_undetermined_alert' , "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_undetermined"]."'");
 	$tpl->assign('serviceTilte', _("Service"));
 	$tpl->assign("allTilte",  _("All"));
 	$tpl->assign("averageTilte",  _("Average"));
 	$tpl->assign('UpTitle', _("Up"));
 	$tpl->assign('DownTitle', _("Down"));
 	$tpl->assign('UnreachableTitle', _("Unreachable"));
-	$tpl->assign('UndeterminatedTitle', _("Undetermined"));
+	$tpl->assign('UndeterminedTitle', _("Undetermined"));
 	$tpl->assign('StateTitle', _("Status"));
 	$tpl->assign('TimeTitle', _("Time"));
 	$tpl->assign('TimeTotalTitle', _("Total Time"));
@@ -453,7 +438,7 @@
 	$tpl->assign('HostTitle', _("Host"));
 	$tpl->assign('InformationsTitle', _("Info"));
 	$tpl->assign('periodTitle', _("Period Selection"));
-	$tpl->assign('resumeTitle', _("Host state"));
+	$tpl->assign('resumeTitle', _("Host Groupe state"));
 	$tpl->assign('logTitle', _("Today's Host log"));
 
 	if ($mhostgroup){
@@ -464,7 +449,7 @@
 	$formPeriod->setDefaults(array('period' => $period));
 	$tpl->assign('hostID', getMyHostID($mhostgroup));
 
-	$color = array("UNREACHABLE" =>  substr($oreon->optGen["color_unknown"], 1), "UP" => substr($oreon->optGen["color_up"], 1), "DOWN" => substr($oreon->optGen["color_down"], 1), "UNREACHABLE" => substr($oreon->optGen["color_unreachable"], 1));
+	$color = array("UP" => substr($oreon->optGen["color_up"], 1), "DOWN" => substr($oreon->optGen["color_down"], 1), "UNREACHABLE" => substr($oreon->optGen["color_unreachable"], 1));
 
 	$tpl->assign('color', $color);
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -493,14 +478,17 @@
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 
 	if ($mhostgroup)	{
+		
 		$color = substr($oreon->optGen["color_up"],1) .':'.
 		 		 substr($oreon->optGen["color_down"],1) .':'.
 		 		 substr($oreon->optGen["color_unreachable"],1) .':'. 
 		 		 substr($oreon->optGen["color_unknown"],1);
+ 
 		$today_var = '&today_up='.$today_up . '&today_down='.$today_down.'&today_unreachable='.$today_unreachable. '&today_pending=' . $today_pending;
 		$today_var .= '&today_UPnbEvent='.$today_UPnbEvent.'&today_UNREACHABLEnbEvent='.$today_UNREACHABLEnbEvent.'&today_DOWNnbEvent='.$today_DOWNnbEvent;
 		$type = 'HostGroup';
 		$host_id = $hostgroup_id;
+
 		include('ajaxReporting_js.php');
 	}	else {
 		?><script type="text/javascript">function initTimeline() {;}</SCRIPT><?php

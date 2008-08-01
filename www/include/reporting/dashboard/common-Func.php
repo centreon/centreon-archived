@@ -70,4 +70,54 @@
 		$tab["img"] = $tab_img[$status];
 		return $tab ;
 	}
+	
+	function getPeriodList(){
+	
+	$periodList = array();
+	$periodList[""] = "";
+	$periodList["today"] = _("Today");
+	$periodList["yesterday"] = _("Yesterday");
+	$periodList["thisweek"] = _("This Week");
+	$periodList["last7days"] = _("Last 7 Days");
+	$periodList["thismonth"] = _("This Month");
+	$periodList["last30days"] = _("Last 30 Days");
+	$periodList["lastmonth"] = _("Last Month");
+	$periodList["thisyear"] = _("This Year");
+	$periodList["lastyear"] = _("Last Year");
+	
+	return $periodList;
+	}
+	
+	function create_date_timeline_format($time_unix){
+		$tab_month = array(
+		"01" => "Jan",
+		"02" => "Feb",
+		"03"=> "Mar",
+		"04"=> "Apr",
+		"05" => "May",
+		"06"=> "Jun",
+		"07"=> "Jul",
+		"08"=> "Aug",
+		"09"=> "Sep",
+		"10"=> "Oct",
+		"11"=> "Nov",
+		"12"=> "Dec");
+		$date = $tab_month[date('m', $time_unix)].date(" d Y G:i:s", $time_unix);
+		return $date;
+	}
+
+	function formatData($state, $time, $timeTOTAL, $time_none, $nb_alert, $color){
+		$tab = array();
+		$tab["state"] = _($state);
+		$tab["time"] = Duration::toString($time);
+		$tab["timestamp"] = $time;
+		$tab["pourcentTime"] = round($time/($timeTOTAL+1)*100,2) ;
+		if ($state != "Undetermined")
+			$tab["pourcentkTime"] = round($time/($timeTOTAL-$time_none+1)*100,2). "%";
+		else
+			$tab["pourcentkTime"] = NULL;
+		$tab["nbAlert"] = $nb_alert;
+		$tab["style"] = "class='ListColCenter' style='background:" . $color."'";	
+		return $tab;
+	}
 ?>

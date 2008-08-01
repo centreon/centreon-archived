@@ -216,6 +216,7 @@
 		$hbase["average"]["today"]["Tnone"] = 0;
 		$i = 0;
 		$hosts_id = getMyHostGroupHosts($hostgroup_id);
+		
 		foreach($hosts_id as $h) {
 			$htmp = array();
 			getLogInDbForHost($htmp, $pearDB, $h, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end);
@@ -239,7 +240,7 @@
 			## ods data for TODAY log
 			#
 			$tab_tmp = array();
-			if($end_date_select > $today_start){
+			//if($end_date_select > $today_start){
 				getTodayLogForHost(getMyHostName($h), $tab_tmp, $pearDBO, $today_start, $today_end);
 				$hbase["average"]["today"]["Tup"] +=  $tab_tmp["Tup"];
 				$hbase["average"]["today"]["TupNBAlert"] += $htmp["TupNBAlert"];
@@ -249,25 +250,33 @@
 				$hbase["average"]["today"]["TunreachableNBAlert"] +=  $tab_tmp["TunreachableNBAlert"];
 				$hbase["average"]["today"]["Tnone"] +=  $tab_tmp["Tnone"];	
 				$hbase[$h]["today"] = $tab_tmp;
-			}
+			//}
 			$i++;			
 		}
+		
+		# [CUSTOMIZED PERIOD] Average Time for all status (Up,Down,Unreachable)
 		$hbase["average"]["Tup"] > 0 ? $hbase["average"]["Tup"] /= $i: 0;
-		$hbase["average"]["TupNBAlert"] > 0 ? $hbase["average"]["TupNBAlert"] /= $i: 0;
 		$hbase["average"]["Tdown"] > 0 ? $hbase["average"]["Tdown"] /= $i: 0;
-		$hbase["average"]["TdownNBAlert"] > 0 ? $hbase["average"]["TdownNBAlert"] /= $i: 0;
 		$hbase["average"]["Tunreachable"] > 0 ? $hbase["average"]["Tunreachable"] /= $i: 0;
-		$hbase["average"]["TunreachableNBAlert"] > 0 ? $hbase["average"]["TunreachableNBAlert"] /= $i: 0;
 		$hbase["average"]["Tnone"] > 0 ? $hbase["average"]["Tnone"] /= $i: 0;
-		if ($end_date_select > $today_start){
-			$hbase["average"]["today"]["Tup"] > 0 ? $hbase["average"]["today"]["Tup"] /= $i: 0;
-			$hbase["average"]["today"]["TupNBAlert"] > 0 ? $hbase["average"]["today"]["TupNBAlert"] /= $i: 0;
-			$hbase["average"]["today"]["Tdown"] > 0 ? $hbase["average"]["today"]["Tdown"] /= $i: 0;
-			$hbase["average"]["today"]["TdownNBAlert"] > 0 ? $hbase["average"]["today"]["TdownNBAlert"] /= $i: 0;
-			$hbase["average"]["today"]["Tunreachable"] > 0 ? $hbase["average"]["today"]["Tunreachable"] /= $i: 0;
-			$hbase["average"]["today"]["TunreachableNBAlert"] > 0 ? $hbase["average"]["today"]["TunreachableNBAlert"] /= $i: 0;
-			$hbase["average"]["today"]["Tnone"] > 0 ? $hbase["average"]["today"]["Tnone"] /= $i: 0;
-		}
+						
+		# [CUSTOMIZED PERIOD] Number Alert for all status (Up,Down,Unreachable)
+		$hbase["average"]["TupNBAlert"] > 0 ? $hbase["average"]["TupNBAlert"] = $i: 0;
+		$hbase["average"]["TdownNBAlert"] > 0 ? $hbase["average"]["TdownNBAlert"] = $i: 0;
+		$hbase["average"]["TunreachableNBAlert"] > 0 ? $hbase["average"]["TunreachableNBAlert"] = $i: 0;
+
+	//if ($end_date_select > $today_start){
+		# [TODAY] Average Time for all status (Up,Down,Unreachable)
+		$hbase["average"]["today"]["Tup"] > 0 ? $hbase["average"]["today"]["Tup"] /= $i: 0;
+		$hbase["average"]["today"]["Tdown"] > 0 ? $hbase["average"]["today"]["Tdown"] /= $i: 0;
+		$hbase["average"]["today"]["Tunreachable"] > 0 ? $hbase["average"]["today"]["Tunreachable"] /= $i: 0;
+		$hbase["average"]["today"]["Tnone"] > 0 ? $hbase["average"]["today"]["Tnone"] /= $i: 0;
+		
+		# [TODAY] Number Alert for all status (Up,Down,Unreachable)
+		$hbase["average"]["today"]["TupNBAlert"] > 0 ? $hbase["average"]["today"]["TupNBAlert"] = $i: 0;						
+		$hbase["average"]["today"]["TdownNBAlert"] > 0 ? $hbase["average"]["today"]["TdownNBAlert"] = $i: 0;
+		$hbase["average"]["today"]["TunreachableNBAlert"] > 0 ? $hbase["average"]["today"]["TunreachableNBAlert"] = $i: 0;
+	//}
 	}
 
 	function getLogInDbForServicesGroup(&$sbase, $pearDB, $pearDBO, $servicegroup_id, $start_date_select, $end_date_select, $today_start, $today_end){
@@ -338,23 +347,33 @@
 			}
 			$i++;
 		}
+		
+		# [TODAY] Average time for all status (OK, Critical, Warning, Unknown)
 		$sbase["average"]["today"]["Tok"] > 0 ?  $sbase["average"]["today"]["Tok"] /= $i : 0;
+		$sbase["average"]["today"]["Tcritical"] > 0 ? $sbase["average"]["today"]["Tcritical"] /= $i : 0;
 		$sbase["average"]["today"]["Twarning"] > 0 ? $sbase["average"]["today"]["Twarning"] /= $i : 0;
 		$sbase["average"]["today"]["Tunknown"] > 0 ? $sbase["average"]["today"]["Tunknown"] /= $i : 0;
-		$sbase["average"]["today"]["Tcritical"] > 0 ? $sbase["average"]["today"]["Tcritical"] /= $i : 0;
-		$sbase["average"]["today"]["OKnbEvent"] > 0 ? $sbase["average"]["today"]["OKnbEvent"] /= $i : 0;
-		$sbase["average"]["today"]["WARNINGnbEvent"] > 0 ? $sbase["average"]["today"]["WARNINGnbEvent"] /= $i : 0;
-		$sbase["average"]["today"]["UNKNOWNnbEvent"] > 0 ? $sbase["average"]["today"]["UNKNOWNnbEvent"] /= $i : 0;
-		$sbase["average"]["today"]["CRITICALnbEvent"] > 0 ? $sbase["average"]["today"]["CRITICALnbEvent"] /= $i : 0;
 
+		
+		# [TODAY] Number alert for all status (OK, Critical, Warning, Unknown)
+		$sbase["average"]["today"]["OKnbEvent"] > 0 ? $sbase["average"]["today"]["OKnbEvent"] = $i : 0;
+		$sbase["average"]["today"]["CRITICALnbEvent"] > 0 ? $sbase["average"]["today"]["CRITICALnbEvent"] = $i : 0;
+		$sbase["average"]["today"]["WARNINGnbEvent"] > 0 ? $sbase["average"]["today"]["WARNINGnbEvent"] = $i : 0;
+		$sbase["average"]["today"]["UNKNOWNnbEvent"] > 0 ? $sbase["average"]["today"]["UNKNOWNnbEvent"] = $i : 0;
+
+
+		# [CUSTOMIZED PERIOD] Average time for all status (OK, Critical, Warning, Unknown)
 		$sbase["average"]["Tok"] > 0 ?  $sbase["average"]["Tok"] /= $i : 0;
+		$sbase["average"]["Tcritical"] > 0 ? $sbase["average"]["Tcritical"] /= $i : 0;
 		$sbase["average"]["Twarning"] > 0 ? $sbase["average"]["Twarning"] /= $i : 0;
 		$sbase["average"]["Tunknown"] > 0 ? $sbase["average"]["Tunknown"] /= $i : 0;
-		$sbase["average"]["Tcritical"] > 0 ? $sbase["average"]["Tcritical"] /= $i : 0;
-		$sbase["average"]["OKnbEvent"] > 0 ? $sbase["average"]["OKnbEvent"] /= $i : 0;
-		$sbase["average"]["WARNINGnbEvent"] > 0 ? $sbase["average"]["WARNINGnbEvent"] /= $i : 0;
-		$sbase["average"]["UNKNOWNnbEvent"] > 0 ? $sbase["average"]["UNKNOWNnbEvent"] /= $i : 0;
-		$sbase["average"]["CRITICALnbEvent"] > 0 ? $sbase["average"]["CRITICALnbEvent"] /= $i : 0;
+
+		
+		# [CUSTOMIZED PERIOD] Number alert for all status (OK, Critical, Warning, Unknown)		
+		$sbase["average"]["OKnbEvent"] > 0 ? $sbase["average"]["OKnbEvent"] = $i : 0;
+		$sbase["average"]["CRITICALnbEvent"] > 0 ? $sbase["average"]["CRITICALnbEvent"] = $i : 0;
+		$sbase["average"]["WARNINGnbEvent"] > 0 ? $sbase["average"]["WARNINGnbEvent"] = $i : 0;
+		$sbase["average"]["UNKNOWNnbEvent"] > 0 ? $sbase["average"]["UNKNOWNnbEvent"] = $i : 0;
 
 	}
 

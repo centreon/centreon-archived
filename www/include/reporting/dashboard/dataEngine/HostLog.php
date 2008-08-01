@@ -44,14 +44,10 @@
 	if ($mhost)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		if ($period == "customized") {
-			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
-			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
-			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
-			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
+		if ($period == "" && $_POST["end"] != NULL && $_POST["start"] != NULL) {
 			$start_var = $start;
 			$end_var = $end;
-			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
+			getDateSelect_customized($end_date_select, $start_date_select, $_POST["start"],$_POST["end"]);
 		} else {
 			getDateSelect_predefined($end_date_select, $start_date_select, $period);
 		}
@@ -282,7 +278,6 @@
 		$tab["nbAlert"] = "";	
 		$tab_resume[3] = $tab;
 	
-	
 		$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
 		$end_date_select_save_timestamp =  $end_date_select;
 		$end_date_select =  date("d/m/Y (G:i:s)", $end_date_select);
@@ -303,15 +298,13 @@
 	
 	}
 	## end of period requirement
-	
-	
-	
+		
+	# Time line generation for "today" if host has been selected
 	if (isset($host_id)) {
 		$tab_report = array();
 	
 		$tab_report[date("d/m/Y", $today_start)]["duration"] = $tt;
 	
-		# For today in timeline
 		$tt = 0 + ($today_end - $today_start);
 		$tab_report[date("d/m/Y", $today_start)]["duration"] = Duration::toString($tt);
 		$tab_report[date("d/m/Y", $today_start)]["uptime"] = Duration::toString($today_up);
@@ -344,10 +337,10 @@
 	
 			$tt = 0 + ($h["date_end"] - $h["date_start"]);
 			($uptime + $downtime + $unreachalbetime) < $tt ? $undeterminatetime = 0 + $tt - ($uptime + $downtime + $unreachalbetime) : $undeterminatetime = 0;
-			$unreachalbetime > 0 ? $punreach = 0 +round(($unreachalbetime / $tt * 100),2) : $punreach = "0.00";
-			$uptime > 0 ? $pup = 0 +round(($uptime / $tt * 100),2) : $pup = "0.00";
-			$downtime > 0 ? $pdown = 0 +round(($downtime / $tt * 100),2) : $pdown = "0.00";
-			$undeterminatetime > 0 ? $pundet = 0 +round(($undeterminatetime / $tt * 100),2) : $pundet = "0.00";
+			$unreachalbetime > 0 ? $punreach = 0 +round(($unreachalbetime / $tt * 100),2) : $punreach = 0;
+			$uptime > 0 ? $pup = 0 +round(($uptime / $tt * 100),2) : $pup = 0;
+			$downtime > 0 ? $pdown = 0 +round(($downtime / $tt * 100),2) : $pdown = 0;
+			$undeterminatetime > 0 ? $pundet = 0 +round(($undeterminatetime / $tt * 100),2) : $pundet = 0;
 	
 			$t = 0 + ($h["date_end"] - $h["date_start"]);
 			$t = round(($t - ($t * 0.11574074074)),2);

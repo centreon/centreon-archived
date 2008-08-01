@@ -20,6 +20,7 @@
 	#
 	require_once 'DB.php';
 	require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
 	require_once $centreon_path.'www/class/other.class.php';
 	
 	$buffer = null;
@@ -27,7 +28,7 @@
 	$buffer .= '<data>';
 
 	if (isset($_GET["hostID"]) && isset($_GET["color"]) && isset($_GET["today_up"])&& isset($_GET["today_down"])&& isset($_GET["today_unreachable"])&& isset($_GET["today_pending"])){
-		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNKNOWN)= split (":", $_GET["color"], 4);
+		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNDETERMINED)= split (":", $_GET["color"], 4);
 
 		$dsn = array(
 			     'phptype'  => 'mysql',
@@ -59,26 +60,6 @@
 		if (PEAR::isError($pearDB)) 
 		  die("Connecting probems with oreon database : " . $pearDBO->getMessage());		
 		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
-
-		function create_date_timeline_format($time_unix)	{
-			$tab_month = array(
-			"01" => "Jan",
-			"02" => "Feb",
-			"03"=> "Mar",
-			"04"=> "Apr",
-			"05" => "May",
-			"06"=> "Jun",
-			"07"=> "Jul",
-			"08"=> "Aug",
-			"09"=> "Sep",
-			"10"=> "Oct",
-			"11"=> "Nov",
-			"12"=> "Dec"
-			);
-			$date = date('m', $time_unix);
-			$date = $tab_month[$date] .  date(" d Y G:i:s", $time_unix);
-			return $date;
-		}
 			
 		$rq = 'SELECT  * FROM `log_archive_host` WHERE host_id = ' . $_GET["hostID"] . ' order by date_start desc';			
 		$res = & $pearDBO->query($rq);
@@ -89,6 +70,7 @@
 			$unreachalbetime = $h["UNREACHABLETimeScheduled"];
 
 			$tt = 0 + ($h["date_end"] - $h["date_start"]);
+			
 			if (($uptime + $downtime + $unreachalbetime) < $tt)
 				$undeterminatetime = 0 + $tt - ($uptime + $downtime + $unreachalbetime);
 			else
@@ -97,66 +79,53 @@
 			if ($unreachalbetime > 0)
 				$punreach = 0 +round(($unreachalbetime / $tt * 100),2);
 			else
-				$punreach = "0.00";
+				$punreach = 0;
 
 			if ($uptime > 0)
 				$pup = 0 +round(($uptime / $tt * 100),2);
 			else
-				$pup = "0.00";
+				$pup = 0;
 			
 			if ($downtime > 0)
 				$pdown = 0 +round(($downtime / $tt * 100),2);
 			else
-			 	$pdown = "0.00";
+			 	$pdown = 0;
 			
 			if ($undeterminatetime > 0)
 				$pundet = 0 +round(($undeterminatetime / $tt * 100),2);
 			else
-				$pundet = "0.00";
+				$pundet = 0;
 
 			$t = 0 + ($h["date_end"] - $h["date_start"]);
 			$t = round(($t - ($t * 0.11574074074)),2);
 			$start = $h["date_start"] + 5000;
 
-			#
-			## make bubul
-			#
+			# Popup generation for other period
 			$bubultab = '{table class=bulleDashtab}';
-			$bubultab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $h["date_start"]) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
 			$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bulleDash}'. Duration::toString($uptime) .'{/td}{td class=bulleDash}'.(($pup > 0) ? $pup : "0").'%{/td}{td class=bulleDash}'.$h["UPnbEvent"].'{/td}{/tr}';
 			$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bulleDash}'.Duration::toString($downtime).'{/td}{td class=bulleDash}'.(($pdown > 0) ? $pdown : "0").'%{/td}{td class=bulleDash}'.$h["DOWNnbEvent"].'{/td}{/tr}';
 			$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bulleDash}'.Duration::toString($unreachalbetime).'{/td}{td class=bulleDash}'.(($punreach > 0) ? $punreach : "0").'%{/td}{td class=bulleDash}'.$h["UNREACHABLEnbEvent"].'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bulleDashleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bulleDash}'.Duration::toString($undeterminatetime).'{/td}{td class=bulleDash}'.(($pundet > 0) ? $pundet : "0").'%{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNDETERMINED.';" }Undetermined:{/td}{td class=bulleDash}'.Duration::toString($undeterminatetime).'{/td}{td class=bulleDash}'.(($pundet > 0) ? $pundet : "0").'%{/td}{/tr}';
 			$bubultab .= '{/table}';
 			
-			$tp = round(($pundet * $t / 100 ),2);
-			if ($pundet > 0){
+			$tp = round(($pup * $t / 100 ),2);
+			if ($pup > 0){
+				# '$end' variable used to design the timeline bar for the up status.
 				$end = $h["date_start"] + $tp + 5000;
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-				$buffer .= ' color="#cccccc"';
+				$buffer .= ' color="#' . $colorUP . '"';
 				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") . '%" >' ;
+				$buffer .= ' title= "' . (($pup > 0) ? $pup : "0") .'%" >' ;
 				$buffer .= $bubultab;
-				$buffer .= '</event>';
+				$buffer .= '</event>';	
 			}
-
-			$tp = round(($punreach * $t / 100 ),2);
-			if ($punreach > 0){
-				$end = $h["date_start"] + $tp + 5000;
-				$buffer .= '<event ';
-				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-				$buffer .= ' color="#' . $colorUNREACHABLE . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "' . (($punreach > 0) ? $punreach : "0") . '%" >' ;
-				$buffer .= $bubultab;
-				$buffer .= '</event>';
-			}
-
+	
 			$tp = round(($pdown * $t / 100 ),2);
 			if ($pdown > 0){
+				# '$end' variable used to design the timeline bar for the down status.
 				$end = $h["date_start"] + $tp + 5000;
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
@@ -168,19 +137,34 @@
 				$buffer .= '</event>';
 			}
 
-
-			$tp = round(($pup * $t / 100 ),2);
-			if ($pup > 0){
+			$tp = round(($punreach * $t / 100 ),2);
+			if ($punreach > 0){		
+				# '$end' variable used to design the timeline bar for the unreachable status.
 				$end = $h["date_start"] + $tp + 5000;
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-				$buffer .= ' color="#' . $colorUP . '"';
+				$buffer .= ' color="#' . $colorUNREACHABLE . '"';
 				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "' . (($pup > 0) ? $pup : "0") .   '%" >' ;
+				$buffer .= ' title= "' . (($punreach > 0) ? $punreach : "0") . '%" >' ;
 				$buffer .= $bubultab;
-				$buffer .= '</event>';	
+				$buffer .= '</event>';
 			}
+
+			$tp = round(($pundet * $t / 100 ),2);
+			if ($pundet > 0){		
+				# '$end' variable used to design the timeline bar for the undetermined status.
+				$end = $h["date_start"] + $tp + 5000;
+				$buffer .= '<event ';
+				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+				$buffer .= ' color="#' . $colorUNDETERMINED . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") .'%" >' ;
+				$buffer .= $bubultab;
+				$buffer .= '</event>';
+			}
+
 		  }
 		 
 		#
@@ -198,15 +182,13 @@
 	
 		$NbAlert = "Unknown";
 	
-		#
-		## make bubul
-		#
+		# Popup generation for "today""
 		$bubultab  = '{table class=bulleDashtab}';
 		$bubultab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
 		$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bulleDash}'. Duration::toString($_GET["today_up"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_up"].'%{/td}{td class=bulleDash}'.$_GET["today_UPnbEvent"].'{/td}{/tr}';
 		$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_down"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_down"].'%{/td}{td class=bulleDash}'.$_GET["today_DOWNnbEvent"].'{/td}{/tr}';
 		$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bulleDash}'.Duration::toString(0+$_GET["today_unreachable"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_unreachable"].'%{/td}{td class=bulleDash}'.$_GET["today_UNREACHABLEnbEvent"].'{/td}{/tr}';
-		$bubultab .= '{tr}{td class=bulleDashleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_pending"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_pending"].'%{/td}{/tr}';
+		$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNDETERMINED.';" }Undetermined:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_pending"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_pending"].'%{/td}{/tr}';
 		$bubultab .= '{/table}';
 	
 		$t = round(($t - ($t * 0.11574074074)),2);
@@ -217,7 +199,7 @@
 			$buffer .= '<event ';
 			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#cccccc"';
+			$buffer .= ' color="#' . $colorUNDETERMINED . '"';
 			$buffer .= ' isDuration="true" ';
 			$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
 			$buffer .= $bubultab;

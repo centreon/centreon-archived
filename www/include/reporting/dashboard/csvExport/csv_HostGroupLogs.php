@@ -39,7 +39,6 @@
 	require_once $centreon_path . "www/include/common/common-Func.php";
 	require_once $centreon_path . "www/include/common/common-Func-ACL.php";
 
-
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 

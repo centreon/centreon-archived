@@ -16,6 +16,7 @@
  */
 	
 	require_once("@CENTREON_ETC@/centreon.conf.php");
+
 ?>
 <script type="text/javascript">
 
@@ -29,7 +30,7 @@ function initTimeline() {
 			width:          "70%", 
 			intervalUnit:   Timeline.DateTime.DAY, 
 			intervalPixels: 300
-	    }),
+	    }), 
 		Timeline.createBandInfo({
 	    	showEventText:  false,
 	   		eventSource:    eventSource,
@@ -46,8 +47,8 @@ function initTimeline() {
 	var arg = 'hostID=<?php echo $host_id ?>&color=<?php echo $color.$today_var ?>';
 	 		  	
 	tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
-	
+
 	Timeline.loadXML('./include/reporting/dashboard/xmlInformations/GetXml<?php echo $type ?>.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });
 }
 
-</SCRIPT>
+</script>
