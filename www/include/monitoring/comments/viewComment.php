@@ -41,7 +41,7 @@
 	/*
 	 * Hosts Comments
 	 */
-	$rq2 =	" SELECT cmt.comment_id, cmt.entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+	$rq2 =	" SELECT cmt.internal_comment_id, cmt.entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 			" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS  NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.entry_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
@@ -61,7 +61,7 @@
 	/*
 	 * Service Comments
 	 */
-	$rq2 =	" SELECT cmt.comment_id, cmt.entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+	$rq2 =	" SELECT cmt.internal_comment_id, cmt.entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 			" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS NOT NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.entry_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
