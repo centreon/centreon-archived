@@ -88,15 +88,9 @@
 	/* Get Host status */
 	$rq1 = "SELECT " .
 			" DISTINCT no.name1 as host_name," .
-			" nhs.current_state," .
-			" nhs.problem_has_been_acknowledged, " .
-			" nhs.passive_checks_enabled," .
-			" nhs.active_checks_enabled," .
-			" no.object_id," .
-			" nh.action_url," .
-			" nh.notes_url," .
-			" nh.notes," .
-			" nh.address" .
+			" nhs.current_state, nhs.problem_has_been_acknowledged, " .
+			" nhs.passive_checks_enabled, nhs.active_checks_enabled, no.object_id, nh.action_url," .
+			" nh.notes_url, nh.notes, nh.address" .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
 			" WHERE no.object_id = nhs.host_object_id " .
 			" AND nh.host_object_id = no.object_id " .
@@ -219,9 +213,7 @@
 	$buffer .= '<nc>'.$nc.'</nc>';
 	$buffer .= '<o>'.$o.'</o>';
 	$buffer .= '</i>';
-	/* 
-	 * End Pagination Rows 
-	 */
+	
 
 	$host_prev = "";
 	$class = "list_one";
@@ -285,7 +277,6 @@
 			$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
 			
 			$buffer .= '<svc_index>'.getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO).'</svc_index>';
-			$buffer .= '<sid>'.$sid.'</sid>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
 			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
 			$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';
@@ -306,13 +297,16 @@
 			$buffer .= '</l>';
 		}
 	}
-	/* end */
+	/* 
+	 * end 
+	 */
 
 	if (!$ct){
 		$buffer .= '<infos>';
 		$buffer .= 'none';
 		$buffer .= '</infos>';
 	}
+	$buffer .= '<sid>'.$sid.'</sid>';
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
