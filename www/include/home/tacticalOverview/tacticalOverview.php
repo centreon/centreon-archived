@@ -96,7 +96,7 @@
 		$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);
 		
 		/*
-		 * Get the  id's of problem hosts
+		 * Get the id's of problem hosts
 		*/
 		if (!$is_admin)
 					$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state ".
@@ -133,7 +133,7 @@
 		 * Get Host Ack  UP(0), DOWN(1),  UNREACHABLE(2)
 		 */
 		if (!$is_admin)
-			$rq1 = 	" SELECT count(".$ndo_base_prefix."acknowledgements.state), ".$ndo_base_prefix."acknowledgements.state" .
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."acknowledgements.state), ".$ndo_base_prefix."acknowledgements.state" .
 					" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."hoststatus" .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."acknowledgements.object_id" .
 					" AND ".$ndo_base_prefix."acknowledgements.object_id = ".$ndo_base_prefix."hoststatus.host_object_id" .
@@ -145,7 +145,7 @@
 					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
 					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
 		else
-			$rq1 = 	" SELECT count(".$ndo_base_prefix."acknowledgements.state), ".$ndo_base_prefix."acknowledgements.state" .
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."acknowledgements.state), ".$ndo_base_prefix."acknowledgements.state" .
 					" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."hoststatus" .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."acknowledgements.object_id" .
 					" AND ".$ndo_base_prefix."acknowledgements.object_id = ".$ndo_base_prefix."hoststatus.host_object_id" .
@@ -162,7 +162,7 @@
 		
 		$hostAck = array(0=>0, 1=>0, 2=>0);
 		while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
-			$hostAck[$ndo["state"]] = $ndo["count(".$ndo_base_prefix."acknowledgements.state)"];
+			$hostAck[$ndo["state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."acknowledgements.state)"];
 			$hostUnhand[$ndo["state"]] -= $hostAck[$ndo["state"]];
 		}
 		 
@@ -394,7 +394,7 @@
 		while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 			$is_unhandled = 1;	
 
-			for($i=0; $i<$pbCount && $is_unhandled; $i++){
+			for ($i=0; $i<$pbCount && $is_unhandled; $i++){
 				if (isSet($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
 					$is_unhandled = 0;
 			}
@@ -445,7 +445,7 @@
 		
 		/*
 		 * URL
-		*/
+		 */
 		$tpl->assign("url_hostPb", "main.php?p=20103&o=hpb");
 		$tpl->assign("url_ok", "main.php?p=2020101&o=svc_ok");
 		$tpl->assign("url_critical", "main.php?p=2020202&o=svc_critical");
@@ -495,6 +495,9 @@
 		$tpl->assign("str_actions", _("Actions"));
 		$tpl->assign("str_ip", _("IP Address"));
 		
+		/*
+		 * Display tactical
+		 */
 		$tpl->display("tacticalOverview.ihtml");	
 	}
  ?>
