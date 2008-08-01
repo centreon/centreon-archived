@@ -13,3 +13,9 @@ UPDATE `topology` SET `topology_order` = '15' WHERE `topology`.`topology_page` =
 UPDATE `topology` SET `topology_order` = '16' WHERE `topology`.`topology_page` = 506 LIMIT 1 ;
 
 UPDATE `topology` SET `topology_icone` = './img/icones/16x16/text_code.gif' WHERE `topology`.`topology_page` = 20301 LIMIT 1 ;
+
+-- 
+-- Update Centreon version
+-- 
+
+UPDATE `informations` SET `value` = '2.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-b6' LIMIT 1;
