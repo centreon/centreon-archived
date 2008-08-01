@@ -228,6 +228,24 @@
 			$DBRESULT2->free();
 			if ($strTMPTemp) $strTMP .= print_line("contact_groups", $strTMPTemp);
 			unset($contactGroup);
+			
+			# Contact Relation for Nagios 3
+			if ($oreon->user->get_version() >= 3) {
+				$contact = array();
+				$strTMPTemp = NULL;
+				$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id ORDER BY `contact_name`");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";				
+				while ($DBRESULT2->fetchInto($contact))	{
+					$BP = false;
+					array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : NULL;					
+					if ($BP)
+						$strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
+				}
+				$DBRESULT2->free();
+				if ($strTMPTemp) $strTMP .= print_line("contacts", $strTMPTemp);
+				unset($contact);
+			}
 			#
 			if ($service["service_stalking_options"]) $strTMP .= print_line("stalking_options", $service["service_stalking_options"]);
 			if (!$service["service_register"]) $strTMP .= print_line("register", "0");

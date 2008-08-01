@@ -380,9 +380,11 @@ a.infobulle:hover td	{padding:1px;}
 
 
 .search_input_active{
-	background-color:red;
+	background-color:#F778A1;
 }
-
+.search_input_found{
+	background-color:#99C68E;
+}
 
 .log_option{
 	margin-top:0px;

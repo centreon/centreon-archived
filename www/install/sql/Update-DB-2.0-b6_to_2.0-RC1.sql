@@ -14,8 +14,26 @@ UPDATE `topology` SET `topology_order` = '16' WHERE `topology`.`topology_page` =
 
 UPDATE `topology` SET `topology_icone` = './img/icones/16x16/text_code.gif' WHERE `topology`.`topology_page` = 20301 LIMIT 1 ;
 
+CREATE TABLE IF NOT EXISTS `contact_host_relation` (
+  `chr_id` int(11) NOT NULL auto_increment,
+  `host_host_id` int(11) default NULL,
+  `contact_id` int(11) default NULL,
+  PRIMARY KEY  (`chr_id`),
+  KEY `host_index` (`host_host_id`),
+  KEY `contact_id` (`contact_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `contact_service_relation` (
+  `csr_id` int(11) NOT NULL auto_increment,
+  `service_service_id` int(11) default NULL,
+  `contact_id` int(11) default NULL,
+  PRIMARY KEY  (`csr_id`),
+  KEY `service_index` (`service_service_id`),
+  KEY `contact_id` (`contact_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 -- 
 -- Update Centreon version
 -- 
 
 UPDATE `informations` SET `value` = '2.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-b6' LIMIT 1;
+

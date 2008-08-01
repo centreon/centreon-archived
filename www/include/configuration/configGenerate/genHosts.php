@@ -222,7 +222,28 @@
 					if ($strTemp) $str .= print_line("contact_groups", $strTemp);
 					unset($strTemp);
 				}
-				//
+				
+				//Nagios V3 : contacts relation
+				if ($oreon->user->get_version() >= 3)	{
+					$contact = array();
+					$strTemp = NULL;
+					$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_host_relation chr, contact c WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contact_id = c.contact_id ORDER BY `contact_name`");
+					if (PEAR::isError($DBRESULT2))
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";					
+					while($contact = $DBRESULT2->fetchRow())	{				
+						$BP = false;
+						
+						array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : NULL;
+				
+						if ($BP)
+							$strTemp != NULL ? $strTemp .= ", ".$contact["contact_name"] : $strTemp = $contact["contact_name"];
+					}
+					$DBRESULT2->free();
+					unset($contact);
+					if ($strTemp) $str .= print_line("contacts", $strTemp);
+					unset($strTemp);
+				}
+				
 				if ($host["host_notification_interval"] != NULL) $str .= print_line("notification_interval", $host["host_notification_interval"]);
 				// Timeperiod name
 				$timePeriod = array();

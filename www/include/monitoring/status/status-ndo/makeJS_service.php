@@ -236,8 +236,9 @@ function goM(_time_reload,_sid,_o){
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 
-
 	_lock = 0;
+
+
 
 	viewDebugInfo('--end--');
 
@@ -245,8 +246,7 @@ function goM(_time_reload,_sid,_o){
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
-
-
+	
 	set_header_title();
 }
 

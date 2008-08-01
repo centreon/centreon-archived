@@ -614,6 +614,17 @@
 						}
 						unset ($tmpConf[$key]);
 						break;
+					
+					case "contacts" :
+						$tmpConf["host_cs"] = explode(",", $tmpConf[$key]);
+						foreach ($tmpConf["host_cs"] as $key2=>$value2)	{
+							$tmpConf["host_cs"][$key2] = getMyContactID(trim($value2));
+							if (!$tmpConf["host_cs"][$key2])
+								unset($tmpConf["host_cs"][$key2]);
+						}
+						unset ($tmpConf[$key]);
+						break;
+						
 					case "hostgroups" :
 						$tmpConf["host_hgs"] = explode(",", $tmpConf[$key]);
 						foreach ($tmpConf["host_hgs"] as $key2=>$value2)	{
@@ -1035,6 +1046,15 @@
 					}
 					unset ($tmpConf[$key]);
 					break;
+				case "contacts" :
+					$tmpConf["service_cs"] = explode(",", $tmpConf[$key]);
+					foreach ($tmpConf["service_cs"] as $key2=>$value2)	{
+						$tmpConf["service_cs"][$key2] = getMyContactID(trim($value2));
+						if (!$tmpConf["service_cs"][$key2])
+							unset($tmpConf["service_cs"][$key2]);
+					}
+					unset ($tmpConf[$key]);
+					break;	
 				case "host_name" :
 					$tmpConf["service_hPars"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["service_hPars"] as $key2=>$value2)	{

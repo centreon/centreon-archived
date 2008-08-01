@@ -118,8 +118,11 @@
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				}
 			$DBRESULT =& $pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
-			$DBRESULT =& $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '".$key."'");
-			$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '".$key."'");
+			if ($oreon->user->get_version() >= 3) {
+				$DBRESULT =& $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '".$key."'");
+				$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '".$key."'");
+				$DBRESULT =& $pearDB->query("DELETE FROM contact_host_relation WHERE host_host_id = '".$key."'");
+			}
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
@@ -339,12 +342,18 @@
 		# 1 - MC with deletion of existing cg
 		# 2 - MC with addition of new cg
 		# 3 - Normal update
-		if (isset($ret["mc_mod_hcg"]["mc_mod_hcg"]) && $ret["mc_mod_hcg"]["mc_mod_hcg"])
+		if (isset($ret["mc_mod_hcg"]["mc_mod_hcg"]) && $ret["mc_mod_hcg"]["mc_mod_hcg"]) {
 			updateHostContactGroup($host_id);
-		else if (isset($ret["mc_mod_hcg"]["mc_mod_hcg"]) && !$ret["mc_mod_hcg"]["mc_mod_hcg"])
+			updateHostContact($host_id);
+		}
+		else if (isset($ret["mc_mod_hcg"]["mc_mod_hcg"]) && !$ret["mc_mod_hcg"]["mc_mod_hcg"]) {
 			updateHostContactGroup_MC($host_id);
-		else
+			updateHostContact_MC($host_id);
+		}
+		else {
 			updateHostContactGroup($host_id);
+			updateHostContact($host_id);
+		}
 		# Function for updating host hg
 		# 1 - MC with deletion of existing hg
 		# 2 - MC with addition of new hg
@@ -393,6 +402,7 @@
 		updateHostHostParent($host_id, $ret);
 		updateHostHostChild($host_id, $ret);
 		updateHostContactGroup($host_id, $ret);
+		updateHostContact($host_id, $ret);
 		updateHostHostGroup($host_id, $ret);
 		updateHostTemplateService($host_id, $ret);
 		updateNagiosServerRelation($host_id, $ret);
@@ -1241,6 +1251,29 @@
 		}
 	}
 	
+	/*
+	 *  Only for Nagios 3
+	 */
+	function updateHostContact($host_id, $ret = array())	{
+		if (!$host_id) return;
+		global $form, $pearDB;
+		$rq = "DELETE FROM contact_host_relation ";
+		$rq .= "WHERE host_host_id = '".$host_id."'";
+		$DBRESULT = $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		isset($ret["host_cs"]) ? $ret = $ret["host_cs"] : $ret = $form->getSubmitValue("host_cs");
+		for($i = 0; $i < count($ret); $i++)	{
+			$rq = "INSERT INTO contact_host_relation ";
+			$rq .= "(host_host_id, contact_id) ";
+			$rq .= "VALUES ";
+			$rq .= "('".$host_id."', '".$ret[$i]."')";
+			$DBRESULT = $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		}
+	}
+	
 	# For massive change. We just add the new list if the elem doesn't exist yet
 	function updateHostContactGroup_MC($host_id, $ret = array())	{
 		if (!$host_id) return;
@@ -1266,6 +1299,33 @@
 			}
 		}
 	}
+	
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateHostContact_MC($host_id, $ret = array())	{
+		if (!$host_id) return;
+		global $form, $pearDB;
+		$rq = "SELECT * FROM contact_host_relation ";
+		$rq .= "WHERE host_host_id = '".$host_id."'";
+		$DBRESULT = $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$cs = array();
+		while($DBRESULT->fetchInto($arr))
+			$cs[$arr["contact_id"]] = $arr["contact_id"];
+		$ret = $form->getSubmitValue("host_cs");
+		for($i = 0; $i < count($ret); $i++)	{
+			if (!isset($cs[$ret[$i]]))	{
+				$rq = "INSERT INTO contact_host_relation ";
+				$rq .= "(host_host_id, contact_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$host_id."', '".$ret[$i]."')";
+				$DBRESULT = $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			}
+		}
+	}
+	
 	
 	function updateHostHostGroup($host_id, $ret = array())	{
 		if (!$host_id) return;

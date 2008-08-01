@@ -131,7 +131,10 @@
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			}
 			$DBRESULT =& $pearDB->query("DELETE FROM service WHERE service_id = '".$key."'");
-			$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
+			if ($oreon->user->get_version() >= 3) {
+				$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
+				$DBRESULT =& $pearDB->query("DELETE FROM contact_service_relation WHERE service_service_id = '".$key."'");
+			}
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$files = glob($oreon->optGen["oreon_rrdbase_path"]."*_".$key.".rrd");
@@ -321,12 +324,18 @@
 		# 1 - MC with deletion of existing cg
 		# 2 - MC with addition of new cg
 		# 3 - Normal update
-		if (isset($ret["mc_mod_cgs"]["mc_mod_cgs"]) && $ret["mc_mod_cgs"]["mc_mod_cgs"])
+		if (isset($ret["mc_mod_cgs"]["mc_mod_cgs"]) && $ret["mc_mod_cgs"]["mc_mod_cgs"]) {			
 			updateServiceContactGroup($service_id);
-		else if (isset($ret["mc_mod_cgs"]["mc_mod_cgs"]) && !$ret["mc_mod_cgs"]["mc_mod_cgs"])
-			updateServiceContactGroup_MC($service_id);	
-		else
-			updateServiceContactGroup($service_id);	
+			updateServiceContact($service_id);
+		}
+		else if (isset($ret["mc_mod_cgs"]["mc_mod_cgs"]) && !$ret["mc_mod_cgs"]["mc_mod_cgs"]) {
+			updateServiceContactGroup_MC($service_id);
+			updateServiceContact_MC($service_id);
+		}
+		else {			
+			updateServiceContactGroup($service_id);
+			updateServiceContact($service_id);
+		}	
 
 		# Function for updating host/hg parent
 		# 1 - MC with deletion of existing host/hg parent
@@ -379,6 +388,7 @@
 	function insertServiceInDB ($ret = array())	{
 		$service_id = insertService($ret);
 		updateServiceContactGroup($service_id, $ret);
+		updateServiceContact($service_id, $ret);
 		updateServiceHost($service_id, $ret);
 		updateServiceServiceGroup($service_id, $ret);
 		insertServiceExtInfos($service_id, $ret);
@@ -773,10 +783,35 @@
 	 			}	 			
 	 		}
 		}
-		
-		
 	}
-		
+	
+	/*
+	 *  For Nagios 3
+	 */
+	function updateServiceContact($service_id = null, $ret = array())	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		$rq = "DELETE FROM contact_service_relation ";
+		$rq .= "WHERE service_service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		if (isset($ret["service_cs"]))
+			$ret = $ret["service_cs"];
+		else
+			$ret = $form->getSubmitValue("service_cs");
+		for($i = 0; $i < count($ret); $i++)	{
+			$rq = "INSERT INTO contact_service_relation ";
+			$rq .= "(contact_id, service_service_id) ";
+			$rq .= "VALUES ";
+			$rq .= "('".$ret[$i]."', '".$service_id."')";
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		}
+	}
+	
 	function updateServiceContactGroup($service_id = null, $ret = array())	{
 		if (!$service_id) return;
 		global $form;
@@ -789,8 +824,8 @@
 		if (isset($ret["service_cgs"]))
 			$ret = $ret["service_cgs"];
 		else
-			$ret = $form->getSubmitValue("service_cgs");
-		for($i = 0; $i < count($ret); $i++)	{
+			$ret = $form->getSubmitValue("service_cgs");		
+		for($i = 0; $i < count($ret); $i++)	{			
 			$rq = "INSERT INTO contactgroup_service_relation ";
 			$rq .= "(contactgroup_cg_id, service_service_id) ";
 			$rq .= "VALUES ";
@@ -819,6 +854,33 @@
 			if (!isset($cgs[$ret[$i]]))	{
 				$rq = "INSERT INTO contactgroup_service_relation ";
 				$rq .= "(contactgroup_cg_id, service_service_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$ret[$i]."', '".$service_id."')";
+				$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			}
+		}
+	}
+	
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateServiceContact_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		$rq = "SELECT * FROM contact_service_relation ";
+		$rq .= "WHERE service_service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$cgs = array();
+		while($DBRESULT->fetchInto($arr))
+			$cs[$arr["contact_id"]] = $arr["contact_id"];
+		$ret = $form->getSubmitValue("service_cs");
+		for($i = 0; $i < count($ret); $i++)	{
+			if (!isset($cs[$ret[$i]]))	{
+				$rq = "INSERT INTO contact_service_relation ";
+				$rq .= "(contact_id, service_service_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$ret[$i]."', '".$service_id."')";
 				$DBRESULT =& $pearDB->query($rq);

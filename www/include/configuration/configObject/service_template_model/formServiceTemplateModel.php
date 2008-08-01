@@ -59,6 +59,15 @@
 		for($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
 			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
+		
+		# Set Contact Group
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '".$service_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++)
+			$service["service_cs"][$i] = $notifC["contact_id"];
+		$DBRESULT->free();
+		
 		# Set Service Group Parents
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
@@ -153,6 +162,16 @@
 	while($notifCg = $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
+	
+	# Contact comes from DB -> Store in $notifCcts Array
+	$notifCs = array();
+	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while ($notifC = $DBRESULT->fetchRow())
+		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
+	$DBRESULT->free();
+	
 	# Service Groups comes from DB -> Store in $hgs Array
 	$sgs = array();
 	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
@@ -311,6 +330,19 @@
 		$form->addGroup($mc_mod_cgs, 'mc_mod_cgs', _("Update options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cgs'=>'0'));
 	}
+	
+	/*
+	 *  Contacts
+	 */
+	$ams3 =& $form->addElement('advmultiselect', 'service_cs', _("Implied Contacts"), $notifCs, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setElementTemplate($template);
+	echo $ams3->getElementJs(false);
+	
+	/*
+	 *  Contact groups
+	 */
     $ams3 =& $form->addElement('advmultiselect', 'service_cgs', _("Implied ContactGroups"), $notifCgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));

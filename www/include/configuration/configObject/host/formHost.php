@@ -60,6 +60,14 @@
 		$DBRESULT->free();
 		
 		/*
+		 * Set Contacts
+		 */
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '".$host_id."'");
+		for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++)
+			$host["host_cs"][$i] = $notifC["contact_id"];
+		$DBRESULT->free();
+		
+		/*
 		 * Set Host Parents
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
@@ -145,6 +153,16 @@
 	while($notifCg = $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
+	
+	/*
+	 * Contacts come from DB -> Store in $notifCs Array
+	 */
+	$notifCs = array();
+	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
+	while($notifC = $DBRESULT->fetchRow())
+		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
+	$DBRESULT->free();
+	
 	
 	/*
 	 * Contact Nagios Server comes from DB -> Store in $nsServer Array
@@ -375,6 +393,19 @@
 			$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', _("Update options"), '&nbsp;');
 			$form->setDefaults(array('mc_mod_hcg'=>'0'));
 		}
+		
+		/*
+		 *  Contacts
+		 */
+		$ams3 =& $form->addElement('advmultiselect', 'host_cs', _("Linked Contacts"), $notifCs, $attrsAdvSelect);
+		$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+		$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+		$ams3->setElementTemplate($template);
+		echo $ams3->getElementJs(false);
+		
+		/*
+		 *  Contact groups
+		 */
 	    $ams3 =& $form->addElement('advmultiselect', 'host_cgs', _("Linked ContactGroups"), $notifCgs, $attrsAdvSelect);
 		$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 		$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
