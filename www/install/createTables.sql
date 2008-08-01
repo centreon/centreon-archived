@@ -2116,8 +2116,8 @@ ALTER TABLE `host_service_relation`
 --
 -- Contraintes pour la table `host_template_relation`
 --
-ALTER TABLE `host_template_relation` ADD FOREIGN KEY ( `host_host_id` ) REFERENCES `centreon`.`host` (`host_id`) ON DELETE CASCADE ;
-ALTER TABLE `host_template_relation` ADD FOREIGN KEY ( `host_tpl_id` ) REFERENCES `centreon`.`host` (`host_id`) ON DELETE CASCADE ;
+ALTER TABLE `host_template_relation` ADD FOREIGN KEY ( `host_host_id` ) REFERENCES `host` (`host_id`) ON DELETE CASCADE ;
+ALTER TABLE `host_template_relation` ADD FOREIGN KEY ( `host_tpl_id` ) REFERENCES `host` (`host_id`) ON DELETE CASCADE ;
 
 --
 -- Contraintes pour la table `meta_contactgroup_relation`
