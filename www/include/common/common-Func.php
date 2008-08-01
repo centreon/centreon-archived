@@ -318,11 +318,11 @@
 	
 	function getVersion(){
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT `nagios_version` FROM `general_opt` LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$row =& $DBRESULT->fetchRow();
-		return $row["value"];	
+		return $row["nagios_version"];	
 	}
 
 	function getMyHostExtendedInfoField($host_id = NULL, $field)	{
