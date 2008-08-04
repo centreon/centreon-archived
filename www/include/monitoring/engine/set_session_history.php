@@ -26,7 +26,7 @@
 		
 		chdir($path);
 		
-		require_once("class/Oreon.class.php");
+		require_once("../../../class/Oreon.class.php");
 		session_id($sid);
 		
 		spl_autoload('Oreon');
