@@ -328,6 +328,10 @@
 				$tab_tmp["hostName"] = getMyHostName($tab["host_id"]);
 				$tab_tmp["serviceName"] = getMyServiceName($tab["svc_id"]);
 				$tab_tmp["svc_id"] = $tab["svc_id"];
+				if ($is_admin || (isset($lcaHostByID["LcaHost"][$tab["host_id"]]) && $lcaHostByID["LcaHost"][$tab["host_id"]]))					
+					$tab_tmp["lcaHost"] = 1;	
+				else
+					$tab_tmp["lcaHost"] = 0;
 				$tt = $end_date_select - $start_date_select;
 
 				$tab_tmp["PtimeOK"] = round($tab["Tok"] / $tt *100,2);

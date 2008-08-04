@@ -29,12 +29,12 @@
 	require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 
 	# LCA
-	if (isset($is_admin) && !$is_admin){
+	if (isset($is_admin) && !$is_admin){		
 		$lcaHostByName = getLcaHostByName($pearDB);
 		$lcaHostByID = getLcaHostByID($pearDB);
 		$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
 		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
-	}
+	}	
 	#
 	## period selection
 	#
@@ -175,7 +175,17 @@
 				$tab_tmp["PktimeWARNING"] = number_format($tab_tmp["PktimeWARNING"], 1, '.', '');
 				$tab_tmp["PktimeUNKNOWN"] = number_format($tab_tmp["PktimeUNKNOWN"], 1, '.', '');
 				$tab_tmp["PktimeCRITICAL"] = number_format($tab_tmp["PktimeCRITICAL"], 1, '.', '');
-		
+						
+				if ($is_admin)
+					$tab_tmp["lcaSVC"] = 1;
+				else {
+					$tmp = getAuthorizedServicesHost($host_id, $lcaHoststr);					
+					if ((isset($tmp[$svc_name]) && $tmp[$svc_name] == $svc_id)) {						
+						$tab_tmp["lcaSVC"] = 1;
+					}
+					else
+						$tab_tmp["lcaSVC"] = 0;
+				}	
 				//end
 		
 				#
