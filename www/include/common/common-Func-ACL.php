@@ -250,7 +250,7 @@
 		$DBRESULT =& $pearDB->query("SELECT sc_id " .
 									"FROM acl_resources_sc_relations, acl_res_group_relations " .
 									"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-									"AND acl_res_group_relations.acl_group_id = '".$groupstr."'");
+									"AND acl_res_group_relations.acl_group_id IN ('".$groupstr."')");
 		while ($res =& $DBRESULT->fetchRow())
 			$tab_categories[$res["sc_id"]] = $res["sc_id"];
 	  	unset($res);
