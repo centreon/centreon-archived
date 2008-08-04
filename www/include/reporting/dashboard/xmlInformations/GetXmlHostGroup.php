@@ -24,8 +24,10 @@
 	$buffer  = '<?xml version="1.0"?>';
 	$buffer .= '<data>';
 
-	if (isset($_GET["hostID"]) && isset($_GET["color"]) && isset($_GET["today_up"])&& isset($_GET["today_down"])&& isset($_GET["today_unreachable"])&& isset($_GET["today_pending"])){
+	if (isset($_GET["hostID"]) && isset($_GET["color"]) && isset($_GET["today_up"]) && isset($_GET["today_down"]) && isset($_GET["today_unreachable"]) && isset($_GET["today_pending"])){
 		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNKNOWN)= split (":", $_GET["color"], 4);
+
+		$colorUNDETERMINED = "#F0F0F0";
 
 		$dsn = array(
 			     'phptype'  => 'mysql',
@@ -81,8 +83,7 @@
 				'FROM `log_archive_host` WHERE `host_id` IN ('.$str.') GROUP BY date_end, date_start ORDER BY date_start desc';
 		$res = & $pearDBO->query($rq);
 
-		while ($h =& $res->fetchRow()) 
-		{
+		while ($h =& $res->fetchRow()) {
 			$uptime 			= $h["UPTimeScheduled"];
 			$downtime 			= $h["DOWNTimeScheduled"];
 			$unreachalbetime	= $h["UNREACHABLETimeScheduled"];

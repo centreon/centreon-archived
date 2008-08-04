@@ -38,6 +38,8 @@
 	/*
 	 * Translations and styles
 	 */
+	 
+	$oreon->optGen["color_undetermined"] = "#F0F0F0";
 
 	$tpl->assign('style_ok', "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
 	$tpl->assign('style_ok_alert', "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_ok"]."'");
