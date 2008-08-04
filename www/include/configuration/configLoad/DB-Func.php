@@ -1101,8 +1101,8 @@
 				
 		$tmpConf["service_activate"]["service_activate"] = "1";
 		$tmpConf["service_comment"] = date("d/m/Y - H:i:s", time());
-		//if (isset($tmpConf["service_description"]) && testServiceExistence($tmpConf["service_description"], $tmpConf["service_hPars"], $tmpConf["service_hgPars"]))	{
-		if (isset($tmpConf["service_description"]) /*&& !serviceExists($tmpConf["service_description"]) */)	{
+		if (isset($tmpConf["service_description"]) && testServiceTemplateExistence($tmpConf["service_description"]) && testServiceExistence($tmpConf["service_description"], $tmpConf["service_hPars"], $tmpConf["service_hgPars"]))	{
+		//if (isset($tmpConf["service_description"]) /*&& !serviceExists($tmpConf["service_description"]) */)	{
 			if ((count($tmpConf["service_hgPars"]) || count($tmpConf["service_hPars"])) || !$tmpConf["service_register"]["service_register"])	{
 				if ($debug_nagios_import == 1)
 					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceCFG : ". $tmpConf["service_description"] ." \n", 3, $debug_path."cfgimport.log");
