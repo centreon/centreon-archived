@@ -64,10 +64,12 @@
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+		$lcaSG = getLCASG($pearDB);
+		$lcaSGStr = getLCASGStrByName($lcaSG);
 	}
 
 	function get_services($host_name){
-		global $pearDBndo,$ndo_base_prefix;
+		global $pearDBndo,$ndo_base_prefix, $lcaSGStr;
 		global $general_opt;
 		global $o;
 
@@ -148,16 +150,19 @@
 			" AND sgm.servicegroup_id = sg.servicegroup_id" .
 			" AND no.is_active = 1 AND no.objecttype_id = 2";
 
+		if (!$is_admin && $lcaSGStr != "")
+			$rq1 .= " AND sg.alias IN ($lcaSGStr) ";
+
 /*
 	if(!$is_admin)
 		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
 */
 
-	if($instance != "ALL")
+	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
 
-	if($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
+	if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
 		$rq1 .= " AND ss.current_state != 0" ;
 /*
 		$rq1 .= " AND no.name1 IN (" .
