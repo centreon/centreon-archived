@@ -184,10 +184,14 @@ find "$NAGIOS_ETC" -type f -print | \
 
 ### Step 4: Copy final stuff in system directoy
 echo_info "$(gettext "Copy CentWeb in system directory")"
+$INSTALL_DIR/cinstall $cinstall \
+	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 \
+	$INSTALL_DIR_CENTREON/www >> "$LOG_FILE" 2>&1
+
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
 	-p $TMPDIR/final/www \
-	$TMPDIR/final/www $INSTALL_DIR_CENTREON/www >> "$LOG_FILE" 2>&1
+	$TMPDIR/final/www/* $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
 
 [ ! -d "$INSTALL_DIR_CENTREON/www/modules" ] && \
 	$INSTALL_DIR/cinstall $cinstall_opts \
