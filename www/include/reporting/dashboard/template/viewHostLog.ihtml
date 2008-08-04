@@ -132,6 +132,7 @@
 							<td class="ListColHeaderCenter">%</td>
 						</tr>
 						{foreach item=tb from=$tab_svc}
+						{if $tb.lcaSVC}
 						<tr class={cycle values="list_two, list_one"}>
 							<td class="ListColHeaderLeft"><a href="main.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
 							<td class="ListColHeaderCenter"><img onmouseout="hiddenIMG('22');" onmouseover="displayIMG('809','993e01f4fe1dbc6b680be85e6ba427dc','22');" src="./img/icones/16x16/column-chart.gif"></td>
@@ -145,6 +146,7 @@
 							<td {$style_unknown_alert} style="width:30px;">{$tb.UNKNOWNnbEvent}</td>
 							<td {$style_pending}>{$tb.PtimeNONE}%</td>
 						</tr>
+						{/if}
 						{/foreach}
 						<tr class="list_lvl_2">
 							<td class="ListColHeaderCenter" colspan="2">{$averageTilte}</td>
