@@ -26,6 +26,8 @@
 		$groups = getGroupListofUser($pearDB);
 		$str 	= groupsListStr($groups);
 		
+		$lcaServiceGroup = array();
+		
 		$str_topo = "";
 		$condition = "";
 		if ($str != "")
@@ -159,11 +161,14 @@
 	
 	function groupsListStr($groups){
 		$str = '';
-		foreach ($groups as $group_id){
-			if ($str != "")
-				$str .= ", ";
-			$str .= $group_id;
-		}
+		if (count($groups))
+			foreach ($groups as $group_id){
+				if ($str != "")
+					$str .= ", ";
+				$str .= $group_id;
+			}
+		else
+			$str = "'-1'";
 		return $str;	
 	}
 	
