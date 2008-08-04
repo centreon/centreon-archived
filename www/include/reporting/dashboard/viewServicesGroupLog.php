@@ -154,12 +154,13 @@
 	#
 	## Select form part 2
 	#
-	
+	$lcaSG = getLCASG($pearDB);	
 	$servicegroup = array();
 	$servicegroup[""] = "";
-	$res =& $pearDB->query("SELECT DISTINCT sg_name FROM servicegroup sg, servicegroup_relation sg_r WHERE sg.sg_activate = '1' and sg.sg_id = sg_r.servicegroup_sg_id ORDER BY sg_name;");
+	$res =& $pearDB->query("SELECT DISTINCT sg_name, sg_id FROM servicegroup sg, servicegroup_relation sg_r WHERE sg.sg_activate = '1' and sg.sg_id = sg_r.servicegroup_sg_id ORDER BY sg_name;");
 	while ($res->fetchInto($sg)){
-			$servicegroup[$sg["sg_name"]] = $sg["sg_name"];
+			if ($is_admin || isset($lcaSG[$sg['sg_id']]))			
+				$servicegroup[$sg["sg_name"]] = $sg["sg_name"];
 	}
 	
 	$selHost =& $formservicegroup->addElement('select', 'servicegroup', _("Service Group"), $servicegroup, array("onChange" =>"this.form.submit();"));
