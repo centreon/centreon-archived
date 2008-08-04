@@ -28,7 +28,11 @@
 	$tpl->assign('o', $o);
 
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
+	if (isset($mhost))
+	 	$_POST["host"] = $mhost;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
+
+
 
 	require_once 'HTML/QuickForm.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
