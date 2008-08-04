@@ -59,21 +59,21 @@
 		}
 	}
 	
-	function multipleLCAInDB ($lcas = array(), $nbrDup = array())	{
+	function multipleLCAInDB ($lcas = array(), $nbrDup = array())	{		
 		foreach($lcas as $key=>$value)	{
-			global $pearDB;
+			global $pearDB;		
 			$DBRESULT =& $pearDB->query("SELECT * FROM `acl_resources` WHERE acl_res_id = '".$key."' LIMIT 1");
 			$row =& $DBRESULT->fetchRow();
 			$row["acl_res_id"] = '';
-			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
+			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{				
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
-					$key2 == "acl_res_name" ? ($acl_name = $value2 = $value2."_".$i) : null;
+					$key2 == "acl_res_name" ? ($acl_name = $value2 = $value2."_".$i) : null;					
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
-				$val .= ", '".time()."'";
+				//$val .= ", '".time()."'";				
 				if (testExistence($acl_name))	{
-					$val ? $rq = "INSERT INTO acl_resources VALUES (".$val.")" : $rq = null;
+					$val ? $rq = "INSERT INTO acl_resources VALUES (".$val.")" : $rq = null;					
 					$pearDB->query($rq);
 					$DBRESULT =& $pearDB->query("SELECT MAX(acl_res_id) FROM acl_resources");
 					$maxId =& $DBRESULT->fetchRow();

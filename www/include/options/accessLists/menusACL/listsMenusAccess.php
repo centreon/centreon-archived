@@ -21,7 +21,7 @@
 	
 	$SearchStr = "";
 	if (isset($search))
-		$SearchStr = "WHERE (acl_topo_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_topo_alias LIKE '".htmlentities($search, ENT_QUOTES)."')";
+		$SearchStr = " WHERE (acl_topo_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_topo_alias LIKE '".htmlentities($search, ENT_QUOTES)."')";
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM acl_topology" . $SearchStr);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -30,7 +30,7 @@
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
-	$advanced_search = 1;
+	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 

@@ -21,7 +21,7 @@
 	
 	$SearchStr = "";
 	if (isset($search))
-		$SearchStr = "WHERE (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_res_alias LIKE '".htmlentities($search, ENT_QUOTES)."')";
+		$SearchStr = " WHERE (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_res_alias LIKE '".htmlentities($search, ENT_QUOTES)."')";
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM acl_resources" . $SearchStr);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -30,7 +30,7 @@
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
-	$advanced_search = 1;
+	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 
@@ -51,7 +51,7 @@
 	$SearchStr = "";
 	if ($search)
 		$SearchStr = "WHERE (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_res_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";	
-	$rq = "SELECT acl_res_id, acl_res_name, acl_res_alias, acl_res_activate FROM acl_resources $SearchStr ORDER BY acl_res_name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT acl_res_id, acl_res_name, acl_res_alias, acl_res_activate FROM acl_resources ". $SearchStr ." ORDER BY acl_res_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
