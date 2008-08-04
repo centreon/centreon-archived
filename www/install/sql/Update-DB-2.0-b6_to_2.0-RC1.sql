@@ -38,6 +38,10 @@ ALTER TABLE `contact_host_relation` ADD FOREIGN KEY ( `contact_id` ) REFERENCES 
 ALTER TABLE `contact_service_relation` ADD FOREIGN KEY ( `service_service_id` ) REFERENCES `service` (`service_id`) ON DELETE CASCADE ;
 ALTER TABLE `contact_service_relation` ADD FOREIGN KEY ( `contact_id` ) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE ;
 
+UPDATE `topology` SET `topology_name` = 'Acknowledged' WHERE `topology_name` = 'mon_acknowloedge';
+UPDATE `topology` SET `topology_name` = 'Not Acknowledged' WHERE `topology_name` = 'mon_not_acknowloedge';
+UPDATE `topology` SET `topology_name` = 'Problems' WHERE `topology_name` = 'mon_problems';
+
 -- 
 -- Update Centreon version
 -- 
