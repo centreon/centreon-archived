@@ -300,10 +300,8 @@
 	}
 	
 	function getLCASGForHost($pearDB, $host_id = NULL){
-		if (!$pearDB || $host_id)
+		if (!$pearDB || !isset($host_id))
 			return ;
-		
-		print $host_id;
 		
 		$groups = getGroupListofUser($pearDB);
 		$str 	= groupsListStr($groups);
@@ -319,11 +317,11 @@
 			$condition = " WHERE acl_group_id IN (".$str.")";		
 		$DBRESULT =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
 		while ($res =& $DBRESULT->fetchRow()){
-
 			$DBRESULT2 =& $pearDB->query(	"SELECT service_service_id " .
 											"FROM servicegroup, acl_resources_sg_relations, servicegroup_relation " .
 											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
-													"AND acl_resources_sg_relations.sg_id = servicegroup.sg_id" .
+													"AND acl_resources_sg_relations.sg_id = servicegroup.sg_id " .
+													"AND servicegroup_relation.servicegroup_sg_id = servicegroup.sg_id " .
 													"AND servicegroup_relation.host_host_id = '".$host_id."'");	
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
@@ -342,12 +340,12 @@
 		/*
 		 * Get categories
 		 */
-		$tab_cat    = getAuthorizedCategories($groupstr); 
+		$tab_cat    = getAuthorizedCategories($groupstr);
 		/*
 		 * Get Service Groups
 		 */
 		$svc_SG 	= getLCASGForHost($pearDB, $host_id);
-			
+		
 		$tab_services = array();		
 		if (count($tab_cat) || count($svc_SG)){
 			if ($tab_svc)
