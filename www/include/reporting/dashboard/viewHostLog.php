@@ -18,6 +18,9 @@
 	if (!isset($oreon))
 		exit;
 
+	if (!$is_admin)
+		$lca = getLcaHostByName($pearDB);	
+
 	# Smarty template Init
 	$path = "./include/reporting/dashboard";
 	$tpl = new Smarty();
