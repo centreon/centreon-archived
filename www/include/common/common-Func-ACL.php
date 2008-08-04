@@ -246,6 +246,9 @@
 	function getAuthorizedCategories($groupstr){
 		global $pearDB;
 		
+		if (strlen($groupstr) == 0)
+			return array();
+			
 		$tab_categories = array();
 		$DBRESULT =& $pearDB->query("SELECT sc_id " .
 									"FROM acl_resources_sc_relations, acl_res_group_relations " .
@@ -296,18 +299,57 @@
 		return $tab;
 	}
 	
+	function getLCASGForHost($pearDB, $host_id = NULL){
+		if (!$pearDB || $host_id)
+			return ;
+		
+		print $host_id;
+		
+		$groups = getGroupListofUser($pearDB);
+		$str 	= groupsListStr($groups);
+		
+		/*
+		 * Init Table
+		 */
+		$svc = array();
+		
+		$str_topo = "";
+		$condition = "";
+		if ($str != "")
+			$condition = " WHERE acl_group_id IN (".$str.")";		
+		$DBRESULT =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
+		while ($res =& $DBRESULT->fetchRow()){
+
+			$DBRESULT2 =& $pearDB->query(	"SELECT service_service_id " .
+											"FROM servicegroup, acl_resources_sg_relations, servicegroup_relation " .
+											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
+													"AND acl_resources_sg_relations.sg_id = servicegroup.sg_id" .
+													"AND servicegroup_relation.host_host_id = '".$host_id."'");	
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			while ($service =& $DBRESULT2->fetchRow())
+				$svc[getMyServiceName($service["service_service_id"])] = $service["service_service_id"];
+			$DBRESULT2->free();
+		}
+		$DBRESULT->free();
+		return $svc;
+	}
+	
 	function getAuthorizedServicesHost($host_id, $groupstr){
 		global $pearDB;
 		
 		$tab_svc 	= getMyHostServicesByName($host_id);
+		/*
+		 * Get categories
+		 */
 		$tab_cat    = getAuthorizedCategories($groupstr); 
-		
-		$nb = 0;
-		foreach ($tab_cat as $i)
-			$nb++;
+		/*
+		 * Get Service Groups
+		 */
+		$svc_SG 	= getLCASGForHost($pearDB, $host_id);
 			
 		$tab_services = array();		
-		if ($nb){
+		if (count($tab_cat) || count($svc_SG)){
 			if ($tab_svc)
 				foreach ($tab_svc as $svc_descr => $svc_id){
 					$tmp = getServiceTemplateList2($svc_id);
@@ -317,6 +359,9 @@
 							$tab_services[$svc_descr] = $svc_id;
 					}
 				}
+			if ($svc_SG)
+				foreach ($svc_SG as $key => $value)
+					$tab_services[$key] = $value;
 		} else {
 			$tab_services = $tab_svc;	
 		}
@@ -338,6 +383,29 @@
 			$host["svc"] = getAuthorizedServicesHost($value, $groupstr);
 			$lca["LcaHost"][$key] =	$host;	
 		}
+		$SG = getLCASG($pearDB);
+		
+		$str = "";
+		foreach ($SG as $key => $value){
+			if (strlen($str))
+				$str .= ", ";
+			$str .= "'".$key."'";
+		}
+		if (strlen($str)){
+			$DBRESULT =& $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id IN ($str) ");
+			if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				while ($service =& $DBRESULT->fetchRow()){
+					//print "TEST : ".getMyHostName($service["host_host_id"]). " _> " .getMyServiceName($service["service_service_id"])."\n"; 
+					if (isset($lca["LcaHost"][getMyHostName($service["host_host_id"])])){
+						$lca["LcaHost"][getMyHostName($service["host_host_id"])]["svc"][getMyServiceName($service["service_service_id"])] = $service["service_service_id"];
+					} else {
+						$lca["LcaHost"][getMyHostName($service["host_host_id"])] = array();
+						$lca["LcaHost"][getMyHostName($service["host_host_id"])]["id"] = $service["host_host_id"];
+						$lca["LcaHost"][getMyHostName($service["host_host_id"])]["svc"][getMyServiceName($service["service_service_id"])] = $service["service_service_id"];
+					}
+				}
+			}
 		return $lca;
 	}
 	
