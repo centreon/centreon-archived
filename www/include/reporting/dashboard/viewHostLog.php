@@ -21,18 +21,19 @@
 	if (!$is_admin)
 		$lca = getLcaHostByName($pearDB);	
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$path = "./include/reporting/dashboard";
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "");
 	$tpl->assign('o', $o);
 
-	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
+	$mhost = "";
+	isset($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	if (isset($mhost))
 	 	$_POST["host"] = $mhost;
-	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
-
-
+	isset($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
 
 	require_once 'HTML/QuickForm.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
