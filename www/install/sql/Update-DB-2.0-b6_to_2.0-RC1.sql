@@ -42,6 +42,9 @@ UPDATE `topology` SET `topology_name` = 'Acknowledged' WHERE `topology_name` = '
 UPDATE `topology` SET `topology_name` = 'Not Acknowledged' WHERE `topology_name` = 'mon_not_acknowloedge';
 UPDATE `topology` SET `topology_name` = 'Problems' WHERE `topology_name` = 'mon_problems';
 
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL, 30703, NULL, './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL, 30704, NULL, './include/common/javascript/datePicker.js', '');
+
 -- 
 -- Update Centreon version
 -- 
