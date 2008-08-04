@@ -113,7 +113,6 @@
 		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		print_r($ret);
 		$rq = "INSERT INTO `acl_topology` (acl_topo_name, acl_topo_alias, acl_topo_activate) ";
 		$rq .= "VALUES ('".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_topo_activate"]["acl_topo_activate"], ENT_QUOTES)."')";
 		$DBRESULT =& $pearDB->query($rq);
