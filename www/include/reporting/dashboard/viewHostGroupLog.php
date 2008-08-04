@@ -288,7 +288,7 @@
 		$tab_resume[0] = formatData("Up", $Tup, $timeTOTAL, $Tnone, $hbase["average"]["TupNBAlert"], $oreon->optGen["color_up"]);
 		$tab_resume[1] = formatData("Down", $Tdown, $timeTOTAL, $Tnone, $hbase["average"]["TdownNBAlert"], $oreon->optGen["color_down"]);
 		$tab_resume[2] = formatData("Unreachable", $Tunreach, $timeTOTAL, $Tnone, $hbase["average"]["TunreachableNBAlert"], $oreon->optGen["color_unreachable"]);
-		$tab_resume[3] = formatData("Undetermined", $Tnone, $timeTOTAL , $Tnone, $hbase["average"]["TundeterminedNBAlert"], $oreon->optGen["color_undetermined"]);
+		$tab_resume[3] = formatData("Undetermined", $Tnone, $timeTOTAL , $Tnone, 100 - $hbase["average"]["TupNBAlert"] - $hbase["average"]["TdownNBAlert"] - $hbase["average"]["TunreachableNBAlert"], $oreon->optGen["color_undetermined"]);
 
 		/*
 		 * calculate tablist

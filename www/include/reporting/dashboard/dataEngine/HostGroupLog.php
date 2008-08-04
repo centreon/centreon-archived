@@ -36,27 +36,37 @@
 	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
 	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
 
-	#
-	## Selectioned ?
-	#		
+	/*
+	 * Selectioned ?
+	 */	
 	isset ($_GET["hostgroup"]) ? $mhostgroup = $_GET["hostgroup"] : $mhostgroup = NULL;
 	isset ($_POST["hostgroup"]) ? $mhostgroup = $_POST["hostgroup"] : $mhostgroup = $mhostgroup;
 
-	#
-	## period selection
-	#
+	/*
+	 * period selection
+	 */
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 
-	if($mhostgroup)	{
+	if ($mhostgroup)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
+		
+		if ($period == "" && $_POST["end"] != NULL && $_POST["start"] != NULL) {
+			$start_var = $start;
+			$end_var = $end;
+			getDateSelect_customized($end_date_select, $start_date_select, $_POST["start"],$_POST["end"]);
+		} else {
+			getDateSelect_predefined($end_date_select, $start_date_select, $period);
+		}
+		
 		$hostgroup_id = getMyHostGroupID($mhostgroup);
 		$sd = $start_date_select;
 		$ed = $end_date_select;
-		#
-		## database log
-		#
+		
+		/*
+		 * database log
+		 */
 		$hbase = array();
 		$Tup = NULL;
 		$Tdown = NULL;
@@ -65,9 +75,9 @@
 		getLogInDbForHostGroup($hbase, $pearDB, $pearDBO, $hostgroup_id, $start_date_select, $end_date_select, $today_start, $today_end);
 	}
 	
-	#
-	## ressource selected
-	#
+	/*
+	 * ressource selected
+	 */
 	$today_up = 0;
 	$today_down = 0;
 	$today_unreachable = 0;
@@ -76,9 +86,9 @@
 	$today_DOWNnbEvent = 0;
 	
 	if ($mhostgroup){
-		#
-		## today log for xml timeline
-		#
+		/*
+		 * today log for xml timeline
+		 */
 		$today_up = 0 + $hbase["average"]["today"]["Tup"];
 		$today_down = 0 + $hbase["average"]["today"]["Tdown"];
 		$today_unreachable = 0 + $hbase["average"]["today"]["Tunreachable"];
@@ -115,12 +125,13 @@
 		$tab_resume = array();
 		$tab = array();
 		$timeTOTAL = $end_date_select - $start_date_select;	
+
 		$Tup = $hbase["average"]["Tup"];
 		$Tdown = $hbase["average"]["Tdown"];
 		$Tunreach = $hbase["average"]["Tunreachable"];
 		$Tnone = $hbase["average"]["Tnone"];
 		$Tnone = $timeTOTAL - ($Tup + $Tdown + $Tunreach);
-		if($Tnone <= 1)
+		if ($Tnone <= 1)
 		$Tnone = 0;	
 		$tab["state"] = _("Up");
 		$tab["time"] = Duration::toString($Tup);
@@ -160,9 +171,8 @@
 		## calculate tablist
 		#
 		$i=0;
-		foreach($hbase as $host_id => $tab)
-		{
-			if($host_id != "average"){
+		foreach ($hbase as $host_id => $tab){
+			if ($host_id != "average"){
 				$tab_tmp = array();
 				$tab_tmp["hostName"] = getMyHostName($host_id);
 				$tt = $end_date_select - $start_date_select;
@@ -213,27 +223,27 @@
 		#
 		# Alert
 		if($tab_host_list_average["PAUP"] > 0)
-		$tab_host_list_average["PAUP"] = number_format($tab_host_list_average["PAUP"] / $tab_host_list_average["nb_host"], 1, '.', '');
+			$tab_host_list_average["PAUP"] = number_format($tab_host_list_average["PAUP"] / $tab_host_list_average["nb_host"], 1, '.', '');
 		if($tab_host_list_average["PAD"] > 0)
-		$tab_host_list_average["PAD"] = number_format($tab_host_list_average["PAD"] / $tab_host_list_average["nb_host"], 1, '.', '');
+			$tab_host_list_average["PAD"] = number_format($tab_host_list_average["PAD"] / $tab_host_list_average["nb_host"], 1, '.', '');
 		if($tab_host_list_average["PAUR"] > 0)
-		$tab_host_list_average["PAUR"] = number_format($tab_host_list_average["PAUR"] / $tab_host_list_average["nb_host"], 1, '.', '');
+			$tab_host_list_average["PAUR"] = number_format($tab_host_list_average["PAUR"] / $tab_host_list_average["nb_host"], 1, '.', '');
 		# Time
 		if($tab_host_list_average["PTUP"] > 0)
-		$tab_host_list_average["PTUP"] = number_format($tab_host_list_average["PTUP"] / $tab_host_list_average["nb_host"], 3, '.', '');
+			$tab_host_list_average["PTUP"] = number_format($tab_host_list_average["PTUP"] / $tab_host_list_average["nb_host"], 3, '.', '');
 		if($tab_host_list_average["PTD"] > 0)
-		$tab_host_list_average["PTD"] = number_format($tab_host_list_average["PTD"] / $tab_host_list_average["nb_host"], 3, '.', '');
+			$tab_host_list_average["PTD"] = number_format($tab_host_list_average["PTD"] / $tab_host_list_average["nb_host"], 3, '.', '');
 		if($tab_host_list_average["PTUR"] > 0)
-		$tab_host_list_average["PTUR"] = number_format($tab_host_list_average["PTUR"] / $tab_host_list_average["nb_host"], 3, '.', '');
+			$tab_host_list_average["PTUR"] = number_format($tab_host_list_average["PTUR"] / $tab_host_list_average["nb_host"], 3, '.', '');
 		if($tab_host_list_average["PTU"] > 0)
-		$tab_host_list_average["PTU"] = number_format($tab_host_list_average["PTU"] / $tab_host_list_average["nb_host"], 3, '.', '');
+			$tab_host_list_average["PTU"] = number_format($tab_host_list_average["PTU"] / $tab_host_list_average["nb_host"], 3, '.', '');
 		# %
 		if($tab_host_list_average["PKTup"] > 0)
-		$tab_host_list_average["PKTup"] = number_format($tab_host_list_average["PKTup"] / $tab_host_list_average["nb_host"], 3, '.', '');
+			$tab_host_list_average["PKTup"] = number_format($tab_host_list_average["PKTup"] / $tab_host_list_average["nb_host"], 3, '.', '');
 		if($tab_host_list_average["PKTd"] > 0)
-		$tab_host_list_average["PKTd"] = number_format($tab_host_list_average["PKTd"] / $tab_host_list_average["nb_host"], 3, '.', '');
+			$tab_host_list_average["PKTd"] = number_format($tab_host_list_average["PKTd"] / $tab_host_list_average["nb_host"], 3, '.', '');
 		if($tab_host_list_average["PKTu"] > 0)
-		$tab_host_list_average["PKTu"] = number_format($tab_host_list_average["PKTu"] / $tab_host_list_average["nb_host"], 3, '.', '');
+			$tab_host_list_average["PKTu"] = number_format($tab_host_list_average["PKTu"] / $tab_host_list_average["nb_host"], 3, '.', '');
 
 		$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
 		$end_date_select_save_timestamp =  $end_date_select;
@@ -277,7 +287,6 @@
 	$tab_report[date("d/m/Y", $today_start)]["DOWNnbEvent"] = $today_DOWNnbEvent;
 	$tab_report[date("d/m/Y", $today_start)]["UNREACHABLEnbEvent"] = $today_UNREACHABLEnbEvent;
 
-
 	$today_pending = $tt - ($today_down + $today_up + $today_unreachable);
 	$today_pending = round(($today_pending/$tt *100),2);
 	$today_up = ($today_up <= 0) ? 0 : round($today_up / $tt *100,2);
@@ -287,7 +296,6 @@
 
 	$str = NULL;
 	if ($mhostgroup){
-			
 		$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" . $hostgroup_id ."'";
 		$res = & $pearDB->query($request);
 		while ($h =& $res->fetchRow()) {

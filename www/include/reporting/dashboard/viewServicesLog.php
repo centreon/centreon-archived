@@ -18,6 +18,8 @@
 	if (!isset($oreon))
 		exit;
 
+	$oreon->optGen["color_undetermined"] = "#F0F0F0";
+
 	if (!$is_admin)
 		$lca = getLcaHostByName($pearDB);	
 	
