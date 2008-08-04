@@ -58,6 +58,18 @@
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
 	}
+	
+	/*
+	 * invert HG Name and Alias
+	 */
+
+	$tabAliasName = array();
+	$row = array();
+	$DBRESULT_PAGINATION =& $pearDB->query("SELECT hg_name, hg_alias FROM hostgroup");
+	if (PEAR::isError($DBRESULT_PAGINATION))
+		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
+	while ($row &= $DBRESULT_PAGINATION->numRows())
+		$tabAliasName[$row["hg_name"]] = $row["hg_alias"];
 
 	/*
 	 * Get Acl Group list
@@ -83,22 +95,18 @@
 
 	$rq1 = 			" SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
 					" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no";
-	if (!$is_admin && $groupnumber)
-		$rq1 .= ", centreon_acl";
-			$rq1 .= " WHERE hs.host_object_id = hgm.host_object_id".
+	
+	$rq1 .= 		" WHERE hs.host_object_id = hgm.host_object_id".
 					" AND no.object_id = hgm.host_object_id" .
 					" AND hgm.hostgroup_id = hg.hostgroup_id".
-					" AND no.name1 not like 'OSL_Module'";
+					" AND no.name1 not like 'OSL_Module'" .
 					" AND no.name1 not like 'Meta_Module'";
+	if (!$is_admin && $groupnumber)
+			$rq1 .= " AND hg.alias IN ($lcaSTR_HG)";
 
 	if ($instance != "ALL")
 		$rq1 .= 	" AND no.instance_id = ".$instance;
 	
-	/*if ($o == "svcSumHG"){
-		$rq1 .= 	" AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
-	}*/
 	if ($o == "svcSumHG_ack_0") {
 		$rq1 .= 	" AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
@@ -113,12 +121,13 @@
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 		
-	if (!$is_admin && $groupnumber)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).")";
-	
 	$rq_pagination = $rq1;
+
 	
-	/* Get Pagination Rows */
+	/* 
+	 * Get Pagination Rows
+	 */
+	 
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
@@ -136,33 +145,30 @@
 	$o == "svcOVHG" ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
 	$buffer .= '</i>';
 
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
+	$DBRESULT_NDO =& $pearDBndo->query($rq1);
+	if (PEAR::isError($DBRESULT_NDO))
+		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
 
 	$tab_final = array();
-	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
-		if (isset($lca["LcaHostGroup"][$ndo["alias"]]) || !isset($lca["LcaHostGroup"])){
+	while ($ndo =& $DBRESULT_NDO->fetchRow())	{
+		if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0")
+			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0 + get_services_status($ndo["host_name"], 0);
+		else
+			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
 			
-			if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0")
-				$tab_final[$ndo["host_name"]]["nb_service_k"] = 0 + get_services_status($ndo["host_name"], 0);
-			else
-				$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
-				
-			$tab_final[$ndo["host_name"]]["nb_service_w"] = 0 + get_services_status($ndo["host_name"], 1);
-			$tab_final[$ndo["host_name"]]["nb_service_c"] = 0 + get_services_status($ndo["host_name"], 2);
-			$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + get_services_status($ndo["host_name"], 3);
-			$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + get_services_status($ndo["host_name"], 4);
-			
-			$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
-			$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
-			if ($tab_final[$ndo["host_name"]]["nb_service_w"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_k"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_c"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_u"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_p"] == 0)
-				unset($tab_final[$ndo["host_name"]]);
-		}
+		$tab_final[$ndo["host_name"]]["nb_service_w"] = 0 + get_services_status($ndo["host_name"], 1);
+		$tab_final[$ndo["host_name"]]["nb_service_c"] = 0 + get_services_status($ndo["host_name"], 2);
+		$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + get_services_status($ndo["host_name"], 3);
+		$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + get_services_status($ndo["host_name"], 4);
+		
+		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
+		$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
+		//if ($tab_final[$ndo["host_name"]]["nb_service_w"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_k"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_c"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_u"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_p"] == 0)
+		//	unset($tab_final[$ndo["host_name"]]);
 	}
 
 	$hg = "";
