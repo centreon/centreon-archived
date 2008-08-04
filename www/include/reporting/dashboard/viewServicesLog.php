@@ -141,10 +141,16 @@
 	#
 	## Select form part 2
 	#
+	$grouplist = getGroupListofUser($pearDB);
+	$grouplistStr = groupsListStr($grouplist);
 	$formService->addElement('hidden', 'timeline', "1");
 	$formService->addElement('hidden', 'host', $mhost);
 	$serviceList = array();
-	$serviceList = getMyHostActiveServices(getMyHostID($mhost));
+	$svcList = array();
+	$svcList = getAuthorizedServicesHost($host_id, $grouplistStr);
+	foreach ($svcList as $val)
+		$serviceList[$val] = getMyServiceName($val);	
+	//$serviceList = getMyHostActiveServices(getMyHostID($mhost));
 	$selService =& $formService->addElement('select', 'service', _(" Service "), $serviceList, array("onChange" =>"this.form.submit();"));
 	$formService->setDefaults(array('service' => $mservice));
 
