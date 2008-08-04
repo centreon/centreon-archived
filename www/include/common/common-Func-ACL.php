@@ -35,11 +35,11 @@
 		$DBRESULT =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
 		while ($res =& $DBRESULT->fetchRow()){
 
-			$DBRESULT2 =& $pearDB->query("SELECT acl_resources_sg_relations.sg_id, sg_name FROM servicegroup, acl_resources_sg_relations WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_sg_relations.sg_id = servicegroup.sg_id");	
+			$DBRESULT2 =& $pearDB->query("SELECT acl_resources_sg_relations.sg_id, sg_alias FROM servicegroup, acl_resources_sg_relations WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_sg_relations.sg_id = servicegroup.sg_id");	
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($serviceGroup =& $DBRESULT2->fetchRow())
-				$lcaServiceGroup[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];
+				$lcaServiceGroup[$serviceGroup["sg_id"]] = $serviceGroup["sg_alias"];
 			$DBRESULT2->free();
 		
 		}
@@ -394,6 +394,18 @@
 	  		if ($lcaSGStr) 
 	  			$lcaSGStr .= ", ";
 	  		$lcaSGStr .= "'".$key."'";
+	  	}
+	  	if (!$lcaSGStr) 
+	  		$lcaSGStr = '\'\'';
+		return $lcaSGStr;
+	}
+	
+	function getLCASGStrByName($lcaServiceGroup){
+		$lcaSGStr = "";
+	  	foreach ($lcaServiceGroup as $key => $value){
+	  		if ($lcaSGStr) 
+	  			$lcaSGStr .= ", ";
+	  		$lcaSGStr .= "'".$value."'";
 	  	}
 	  	if (!$lcaSGStr) 
 	  		$lcaSGStr = '\'\'';
