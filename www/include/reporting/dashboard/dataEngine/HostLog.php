@@ -34,6 +34,8 @@
 		$lcaHostByID = getLcaHostByID($pearDB);
 		$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
 		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
+		$grouplist = getGroupListofUser($pearDB);
+		$grouplistStr = groupsListStr($grouplist);
 	}	
 	#
 	## period selection
@@ -179,7 +181,7 @@
 				if ($is_admin)
 					$tab_tmp["lcaSVC"] = 1;
 				else {
-					$tmp = getAuthorizedServicesHost($host_id, $lcaHoststr);					
+					$tmp = getAuthorizedServicesHost($host_id, $grouplistStr);					
 					if ((isset($tmp[$svc_name]) && $tmp[$svc_name] == $svc_id)) {						
 						$tab_tmp["lcaSVC"] = 1;
 					}
