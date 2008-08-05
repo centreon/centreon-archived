@@ -5,6 +5,12 @@
 => Bugfix : ACL problems fixed on Reporting > Dashboard
 => Bugfix : Multiple templates work properly
 => Bugfix : It is now possible to load services/Hostgroup with services.cfg
+=> Bugfix : remove compute errors in reporting
+=> Bugfix : remove errors in SQL install
+=> Bugfix : remove errors in PHP install
+=> Bugfix : remove problem with SHELL install : chmod on module directory
+=> Feature : Add possibilty to link host/service with contactgroups and contacts.
+=> Bugfix : optimize XML for EventLogs
 
 ## Centreon 2.0-b6
 
