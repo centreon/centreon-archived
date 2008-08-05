@@ -227,9 +227,9 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		}
 	}
 	if (!$return_false){
-		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Insert Basic Configuration</b></td>';
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Topology Insertion</b></td>';
 		$mysql_msg = '';
-		$file_sql = file("./insertBaseConf.sql");
+		$file_sql = file("./insertTopology.sql");
 	    $str = NULL;
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
@@ -253,9 +253,9 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		}
 	}
 	if (!$return_false){
-		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Topology Insertion</b></td>';
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Insert Basic Configuration</b></td>';
 		$mysql_msg = '';
-		$file_sql = file("./insertTopology.sql");
+		$file_sql = file("./insertBaseConf.sql");
 	    $str = NULL;
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
