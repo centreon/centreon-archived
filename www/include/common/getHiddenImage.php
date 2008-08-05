@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
 
-	require_once ("../../centreon.conf.php");
+	require_once ("@CENTREON_ETC@/centreon.conf.php");
 	require_once ("../../DBconnect.php");
 	require_once ("../../$classdir/Session.class.php");
 	require_once ("../../$classdir/Oreon.class.php");
