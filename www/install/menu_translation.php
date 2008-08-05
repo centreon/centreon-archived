@@ -83,4 +83,5 @@ echo _("Hosts Problems");;
 echo _("Downtime");;
 echo _("Comments");;
 echo _("Overview");;
+echo _("Unknown");;
 ?>
