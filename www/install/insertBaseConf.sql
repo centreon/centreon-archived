@@ -580,7 +580,7 @@ INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps
 -- Contenu de la table `acl_groups`
 --
 
-INSERT INTO `acl_groups` (`acl_group_id`, `acl_group_name`, `acl_group_alias`, `acl_group_activate`) VALUES(14, 'Guest', 'Guest', '0');
+INSERT INTO `acl_groups` (`acl_group_id`, `acl_group_name`, `acl_group_alias`, `acl_group_activate`) VALUES(14, 'Guest', 'Guest', '1');
 
 --
 -- Contenu de la table `acl_topology`
@@ -589,8 +589,8 @@ INSERT INTO `acl_groups` (`acl_group_id`, `acl_group_name`, `acl_group_alias`, `
 INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(4, 'Home page', 'Only access on home page', '1');
 INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(5, 'Monitoring page', 'Only access on monitoring pages', '1');
 INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(6, 'Personal option pages ', 'Only access on Option pages', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(11, 'Configuration pages', 'Only access on all configuration pages', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(13, 'Graphic pages', 'Only access on graphic pages', '0');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(11, 'Configuration pages', 'Only access on all configuration pages', '0');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(13, 'Graphic pages', 'Only access on graphic pages', '1');
 
 --
 -- Contenu de la table `acl_resources`
@@ -602,11 +602,7 @@ INSERT INTO `acl_resources` (`acl_res_id`, `acl_res_name`, `acl_res_alias`, `acl
 -- Contenu de la table `acl_group_topology_relations`
 --
 
-INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(2, 14, 5);
-INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(7, 14, 6);
-INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(14, 14, 4);
-INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(15, 14, 11);
-
+INSERT INTO `acl_group_topology_relations` VALUES (25,14,4),(26,14,5),(28,14,6),(29,14,13);
 
 --
 -- Contenu de la table `acl_resources_hg_relations`
@@ -643,91 +639,9 @@ INSERT INTO `acl_group_contacts_relations` (`agcr_id`, `contact_contact_id`, `ac
 -- Contenu de la table `acl_topology_relations`
 --
 
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1279, 2, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1280, 23, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1281, 25, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1282, 31, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1283, 32, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1284, 33, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1285, 24, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1286, 34, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1287, 39, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1288, 62, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1289, 63, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1290, 64, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1291, 38, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1292, 59, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1293, 60, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1294, 61, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1295, 35, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1296, 50, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1297, 51, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1298, 52, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1299, 40, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1300, 65, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1301, 66, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1302, 67, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1303, 26, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1304, 41, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1305, 42, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1306, 43, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1307, 36, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1308, 53, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1309, 54, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1310, 55, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1311, 27, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1312, 44, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1313, 45, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1314, 46, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1315, 28, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1316, 47, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1317, 48, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1318, 49, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1319, 37, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1320, 56, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1321, 57, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1322, 58, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1323, 29, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1324, 30, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1325, 19, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1326, 22, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1327, 20, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1328, 21, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1329, 68, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1330, 75, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1331, 420, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1332, 76, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1333, 77, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1334, 78, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1335, 79, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1336, 80, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1337, 81, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1338, 82, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1339, 73, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1340, 74, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1368, 5, 6);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1369, 128, 6);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1370, 147, 6);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1382, 4, 13);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1383, 165, 13);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1384, 168, 13);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1385, 167, 13);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1390, 1, 4);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1391, 417, 4);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1392, 434, 4);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1393, 6, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1394, 83, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1395, 89, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1396, 90, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1397, 91, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1398, 84, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1399, 93, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1400, 94, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1401, 95, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1402, 98, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1403, 96, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1404, 100, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1405, 101, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1406, 102, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1407, 335, 11);
-
+INSERT INTO `acl_topology_relations` VALUES (192,1,4),(193,185,4),(194,197,4),(195,186,4),(196,2,5),(197,21,5),(198,23,5),(199,29,5),(200,30,5),(201,31,5),(20
+2,22,5),(203,32,5),(204,37,5),(205,60,5),(206,61,5),(207,62,5),(208,36,5),(209,57,5),(210,58,5),(211,59,5),(212,33,5),(213,48,5),(214,49,5),(215,50,5),(216,38
+,5),(217,63,5),(218,64,5),(219,65,5),(220,24,5),(221,39,5),(222,40,5),(223,41,5),(224,34,5),(225,51,5),(226,52,5),(227,53,5),(228,25,5),(229,42,5),(230,43,5),
+(231,44,5),(232,26,5),(233,45,5),(234,46,5),(235,47,5),(236,35,5),(237,54,5),(238,55,5),(239,56,5),(240,27,5),(241,28,5),(242,17,5),(243,20,5),(244,18,5),(245
+,19,5),(266,5,6),(267,109,6),(268,128,6),(269,120,6),(270,121,6),(271,122,6),(272,123,6),(273,124,6),(274,125,6),(275,126,6),(276,127,6),(277,4,13),(278,146,1
+3),(279,149,13),(280,148,13);
