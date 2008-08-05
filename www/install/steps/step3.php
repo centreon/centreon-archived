@@ -41,8 +41,8 @@ In order for your Centreon installation to function properly, please complete th
     	<td style="padding-left:50px ">Nagios Version</td>
 		<td>
 		<select name="nagios_version">
-			<option value="2" <?php if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "2") print "selected"; else if (!isset($_SESSION["nagios_version"])) print "selected"; ?>>2.x</option>
-    		<option value="3" <?php if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "3") print "selected"; ?>>3.x</option>
+			<option value="2" <?php if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "2") print "selected"; ?>>2.x</option>
+    		<option value="3" <?php if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "3") print "selected"; else if (!isset($_SESSION["nagios_version"])) print "selected"; ?>>3.x</option>
     	</select>
 		</td>
   	</tr>
