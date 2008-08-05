@@ -82,4 +82,5 @@ echo _("Scheduling Queue");;
 echo _("Hosts Problems");;
 echo _("Downtime");;
 echo _("Comments");;
+echo _("Overview");;
 ?>

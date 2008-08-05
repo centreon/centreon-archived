@@ -50,3 +50,5 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 -- 
 
 UPDATE `informations` SET `value` = '2.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-b6' LIMIT 1;
+
+UPDATE `topology` SET `topology_name` = 'Overview' WHERE `topology`.`topology_name` = 'Resume' ;
