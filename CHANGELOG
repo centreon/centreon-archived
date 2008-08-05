@@ -1,3 +1,11 @@
+## Centreon 2.0-RC1
+
+=> Bugfix : Solved a few PHP errors
+=> Bugfix : Fixed a few spelling & grammar mistakes
+=> Bugfix : ACL problems fixed on Reporting > Dashboard
+=> Bugfix : Multiple templates work properly
+=> Bugfix : It is now possible to load services/Hostgroup with services.cfg
+
 ## Centreon 2.0-b6
 
 => Bugfix : remove error on Tacktical overview with admin and with ACL
