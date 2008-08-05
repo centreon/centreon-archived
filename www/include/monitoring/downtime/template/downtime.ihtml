@@ -67,7 +67,7 @@
 		{/foreach}
 		<tr>
 			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="ds"><input type="submit" name="{$delete}" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgs.delConfirm}')"></td>
-			<td class="ListColFooterCenter" colspan="7">&nbsp;</td>
+			<td class="ListColFooterCenter" colspan="6">&nbsp;</td>
 			<td class="ListColFooterRight" align="right"><a href="{$msgs.addL}">{$msgs.addT}</a></td>
 		</tr>	
 	</table>

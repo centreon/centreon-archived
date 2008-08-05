@@ -33,6 +33,7 @@
 	{/if}
 	{$form.hidden}
 	</form>
+	<br><br>
 	<table class="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$cmt_service_comment}</td>{if !$nb_comments_svc}<td align='right'><a href="{$msgs.addL}">{$msgs.addT}</a></td>{/if}</tr></table><br />
 	{if $nb_comments_svc} 
 	<form action="" method='GET'>
