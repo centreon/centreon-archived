@@ -303,7 +303,8 @@
 	
 	function updateHostInDB ($host_id = NULL, $from_MC = false)	{
 		if (!$host_id) return;
-		global $form;		
+		global $form;
+		global $oreon;		
 		$ret = $form->getSubmitValues();
 	
 		/*
@@ -374,8 +375,12 @@
 			updateHostTemplateService_MC($host_id);
 		else
 			updateHostTemplateService($host_id);
-		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
-			createHostTemplateService($host_id, $ret["host_template_model_htm_id"]);
+		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
+			if (isset($ret["host_template_model_htm_id"]))
+				createHostTemplateService($host_id, $ret["host_template_model_htm_id"]);
+			else if($oreon->user->get_version())
+				createHostTemplateService($host_id);
+		}
 		if ($from_MC)
 			updateHostExtInfos_MC($host_id);
 		else
@@ -995,7 +1000,8 @@
 	 		for ($i=0;$i <= $_POST['nbOfSelect']; $i++)
 	 		{
 	 			$tpSelect = "tpSelect_" . $i;
-	 			$newTp[$_POST[$tpSelect]] = $_POST[$tpSelect];
+	 			if (isset($_POST[$tpSelect]))
+	 				$newTp[$_POST[$tpSelect]] = $_POST[$tpSelect];
 	 		}
 	 		foreach ($oldTp as $val)
 	 		{
@@ -1012,7 +1018,7 @@
 	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
 	 		{ 			
 	 			$tpSelect = "tpSelect_" . $i; 		
-	 			if (!isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
+	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
 		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
