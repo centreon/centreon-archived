@@ -236,7 +236,7 @@
 		 * Get on pb host
 		*/
 		if (!$is_admin && $groupnumber)
-			$rq2 = 	" SELECT nss.current_state,". $ndo_base_prefix ."services.host_object_id".
+			$rq2 = 	" SELECT nss.current_state, " . $ndo_base_prefix ."services.host_object_id".
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl, " . $ndo_base_prefix."services" .
 					" WHERE no.object_id = nss.service_object_id".
 					" AND nss.service_object_id = ".$ndo_base_prefix."services.service_object_id".
@@ -247,9 +247,9 @@
 					" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
 					" AND no.is_active = 1" .
 					" AND nss.problem_has_been_acknowledged = 0" .
-					" AND nss.current_state > 0";
+					" AND nss.current_state > 0 GROUP BY nss.service_object_id";
 		else
-			$rq2 = 	" SELECT nss.current_state,". $ndo_base_prefix ."services.host_object_id".
+			$rq2 = 	" SELECT nss.current_state, ". $ndo_base_prefix ."services.host_object_id".
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, " . $ndo_base_prefix."services" .
 					" WHERE no.object_id = nss.service_object_id".
 					" AND nss.service_object_id = ".$ndo_base_prefix."services.service_object_id".
@@ -257,18 +257,17 @@
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.is_active = 1" .
 					" AND nss.problem_has_been_acknowledged = 0" .
-					" AND nss.current_state > 0";
+					" AND nss.current_state > 0 GROUP BY nss.service_object_id";
 		
 		$onPbHost = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO1))
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
-		
-		while($ndo =& $DBRESULT_NDO1->fetchRow())	{
+		while($ndo =& $DBRESULT_NDO1->fetchRow())	{			
 			if ($ndo["current_state"] != 0)
-				for($i=0; $i<=$pbCount; $i++)
-					if (isSet($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
+				for($i=0; $i < $pbCount; $i++)
+					if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
 						$onPbHost[$ndo["current_state"]]++;
 		}
 	
@@ -343,8 +342,9 @@
 		 */
 		$svcUnhandled = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		
-		for ($i=0; $i<=4; $i++)
-			$svcUnhandled[$i] = $SvcStat[$i] - $svcAck[$i] - $svcInactive[$i] - $onPbHost[$i];
+		for ($i=0; $i<=4; $i++){
+			$svcUnhandled[$i] = $SvcStat[$i] - $svcAck[$i] - $svcInactive[$i] - $onPbHost[$i];			
+		}
 		 
 		 
 		/*
@@ -395,7 +395,7 @@
 			$is_unhandled = 1;	
 
 			for ($i=0; $i<$pbCount && $is_unhandled; $i++){
-				if (isSet($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
+				if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
 					$is_unhandled = 0;
 			}
 
