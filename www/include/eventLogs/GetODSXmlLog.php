@@ -37,7 +37,7 @@
 	 */ 
 	require_once 'DB.php';
 	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
@@ -208,7 +208,7 @@
 	if ($warning == 'true')
 		array_push ($msg_status_set, "'WARNING'");
 	if ($critical == 'true')
-		array_push ($msg_status_set, "'CRITRICAL'");
+		array_push ($msg_status_set, "'CRITICAL'");
 	if ($unknown == 'true')
 		array_push ($msg_status_set, "'UNKNOWN'");
 	
@@ -381,6 +381,8 @@
 	/*
 	 * calculate size before limit for pagination 
 	 */
+	 
+	print $req;
 	 
 	$lstart = 0;
 	$DBRESULT =& $pearDBO->query($req);
