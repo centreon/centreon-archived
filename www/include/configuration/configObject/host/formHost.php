@@ -664,6 +664,28 @@
 			$form->addRule('host_notifOpts', _("Compulsory Option"), 'required');
 	
 		}
+		else if ($oreon->user->get_version() >= 3 && isset($_POST['nbOfSelect'])) {
+			$z = 0;
+			$ok_flag = 0;
+			while ($z < $_POST['nbOfSelect']) {
+				$tpSelect = "tpSelect_" . $z;
+				if ($_POST[$tpSelect]) {
+					$ok_flag = 1;
+					break;
+				}
+				$z++;
+			}
+			if (!$ok_flag) {
+				$form->addRule('host_alias', _("Compulsory Alias"), 'required');
+				$form->addRule('host_address', _("Compulsory Address"), 'required');
+				$form->addRule('host_max_check_attempts', _("Required Field"), 'required');				
+				$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
+				$form->addRule('host_cgs', _("Compulsory Contact Group"), 'required');				
+				$form->addRule('host_notification_interval', _("Required Field"), 'required');
+				$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
+				$form->addRule('host_notifOpts', _("Compulsory Option"), 'required');		
+			}
+		}
 	}
 	else if ($o == "mc")	{
 		if ($form->getSubmitValue("submitMC"))
@@ -763,7 +785,7 @@
 		$tpl->display("formHost.ihtml");
 	}
 
-if ($oreon->user->get_version() == 3 && !$action["action"]["action"]) {
+if ($oreon->user->get_version() == 3 && !$action["action"]["action"] || isset($ok_flag) && !$ok_flag) {
 ?>
 
 <script type="text/javascript">
