@@ -88,7 +88,16 @@ input[type="submit"],input[type="button"],input[type="reset"]{
  
 .inputclassic{
     border: 1px solid gray;
+    width:150;
+    padding:2px 2px 3px 18px;
+    background: #FFFFFF url("../../img/icones/16x16/user1.gif") no-repeat scroll 1px 1px;
 }
+
+.inputclassicPass{
+    border: 1px solid gray;
+    width:150;
+}
+
 
 input[type="submit"],input[type="reset"]{
     background: url("./Images/bg_input_orange.gif") ;

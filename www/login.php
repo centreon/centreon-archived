@@ -65,7 +65,7 @@
 					</tr>
 					<tr>
 						<td><label for="password">Password:</label></td>
-						<td><input type="password" name="password" value="" class="inputclassic" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
+						<td><input type="password" name="password" value="" class="inputclassicPass" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
 					</tr>
 					<tr>
 						<td  colspan="2" id="sublogin">
