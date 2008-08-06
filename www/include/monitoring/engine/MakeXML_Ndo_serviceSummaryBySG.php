@@ -15,11 +15,17 @@
  * For information : contact@centreon.com
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	/*
+	 *    if debug == 0 => Normal, 
+	 *       debug == 1 => get use, 
+	 *       debug == 2 => log in file (log.xml)
+	 */
+
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	//include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBNDOConnect.php");
@@ -27,7 +33,14 @@
 	include_once($centreon_path."www/include/common/common-Func-ACL.php");
 	include_once($centreon_path."www/include/common/common-Func.php");
 
+	/*
+	 * Get NDO Prefix
+	 */
 	$ndo_base_prefix = getNDOPrefix();
+	
+	/*
+	 * Get Color Options
+	 */
 	$general_opt = getStatusColor($pearDB);
 	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
@@ -39,7 +52,9 @@
 	} else
 		get_error('need session identifiant !');
 
-	/* requisit */
+	/* 
+	 * requisit 
+	 */
 	(isset($_GET["instance"]) && !check_injection($_GET["instance"])) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
 	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
@@ -47,7 +62,6 @@
 	/* 
 	 * options
 	 */
-
 	(isset($_GET["search"]) && !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
 	(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "host_name";
 	(isset($_GET["order"]) && !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $order = "ASC";
@@ -55,10 +69,14 @@
 	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
-	// check is admin
+	/*
+	 * check is admin
+	 */
 	$is_admin = isUserAdmin($sid);
 
-	// if is admin -> lca
+	/*
+	 * if is admin -> lca
+	 */
 	if (!$is_admin){
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);
@@ -68,24 +86,24 @@
 	}
 
 	function get_services($host_name){
-		global $pearDBndo, $general_opt, $o, $lcaSGStr;
+		global $pearDBndo, $general_opt, $o, $lcaSGStr, $ndo_base_prefix;
 
-		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
-				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
+		$rq = 	"SELECT no.name1, no.name2 as service_name, nss.current_state" .
+			 	" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
 				" WHERE no.object_id = nss.service_object_id" ;
-			" AND no.name1 not like 'OSL_Module'";
+					" AND no.name1 not like 'OSL_Module'";
 
 		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb")
-			$rq .= " AND nss.current_state != 0" ;
+			$rq .= 	" AND nss.current_state != 0" ;
 
 		if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0" || $o == "svcSumSG_ack_0")
-			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
+			$rq .= 	" AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
 
 		if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1"|| $o == "svcSumSG_ack_1")
-			$rq .= " AND nss.problem_has_been_acknowledged = 1" ;
+			$rq .= 	" AND nss.problem_has_been_acknowledged = 1" ;
 
 
-		$rq .= " AND no.object_id IN (SELECT nno.object_id FROM ndo_objects nno  WHERE nno.objecttype_id = '2' AND nno.name1 = '".$host_name."')";
+		$rq .= 		" AND no.object_id IN (SELECT nno.object_id FROM ndo_objects nno WHERE nno.objecttype_id = '2' AND nno.name1 = '".$host_name."')";
 
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -121,7 +139,6 @@
 
 	/* Get Host status */
 
-
 	$rq1 = "SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
 			" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
 			" WHERE sg.config_type = 1 " .
@@ -140,31 +157,33 @@
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
 
-	if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0"|| $o == "svcSumSG_ack_0")
+	if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0" || $o == "svcSumSG_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
 
-	if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1"|| $o == "svcSumSG_ack_1")
+	if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1" || $o == "svcSumSG_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
 				")";
-	if ($search != ""){
+				
+	/*
+	 * Search condition
+	 */			
+	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-	}
-//	$rq1 .= " GROUP BY no.name1";
-
 
 	$rq_pagination = $rq1;
-	/* Get Pagination Rows */
+	
+	/* 
+	 * Get Pagination Rows 
+	 */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
-	/* End Pagination Rows */
-
 
 	$rq1 .= " ORDER BY sg.alias ASC, no.name1 " . $order;
 
@@ -176,11 +195,8 @@
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
 	$buffer .= '<p>'.$p.'</p>';
-
 	($o == "svcOVSG") ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
-
 	$buffer .= '</i>';
-
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
@@ -209,12 +225,11 @@
 				$buffer .= '</h></sg>';
 			}
 			$sg = $tab["alias"];
-			$buffer .= '<sg >';
+			$buffer .= '<sg>';
 			$buffer .= '<sgn><![CDATA['. $tab["alias"]  .']]></sgn>';
 			$buffer .= '<o>'. $ct . '</o>';
 		}
 		$ct++;
-
 
 		if ($h != $tab["host_name"]){
 			if ($h != "" && $flag){
@@ -235,24 +250,15 @@
 			$nb_service[4] = 0;
 
 			$h = $tab["host_name"];
-			$hs = get_Host_Status($tab["host_name"],$pearDBndo,$general_opt);
+			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
 			$buffer .= '<h class="'.$class.'">';
 			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
 			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
 			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
-
 		}
 		$nb_service[$tab["current_state"]] += 1;
-
-
-/*
-		$buffer .= '<svc>';
-		$buffer .= '<sn>'. $tab["service_description"] . '</sn>';
-		$buffer .= '<sc>'. $tab_color_service[$tab["current_state"]] . '</sc>';
-		$buffer .= '</svc>';
-*/
-
 	}
+	
 	if ($sg != ""){
 		$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
 		$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
@@ -261,12 +267,7 @@
 		$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
 		$buffer .= '</h></sg>';
 	}
-/*
-		$buffer .= '<infos>';
-		$buffer .= 'none';
-		$buffer .= '</infos>';
-	}
-*/
+
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
