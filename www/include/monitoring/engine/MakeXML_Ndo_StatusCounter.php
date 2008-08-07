@@ -26,8 +26,7 @@
 
 	include_once 'DB.php';
 
-	//include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once("/etc/centreon/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");	
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	
@@ -80,7 +79,7 @@
 	if (!$is_admin){
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+		$lcaSTR = getLCAHostStr($lca["LcaHost"]);		
 	}
 	 
 	/*
