@@ -20,15 +20,18 @@
 		
 	include("./include/common/autoNumLimit.php");
 	
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
+
 	$rq = "SELECT COUNT(*) FROM dependency dep";
 	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_serviceChild_relation dscr WHERE dscr.dependency_dep_id = dep.dep_id) > 0 ";
 	$rq .= " AND (SELECT DISTINCT COUNT(*) FROM dependency_serviceParent_relation dspr WHERE dspr.dependency_dep_id = dep.dep_id) > 0 ";
+
 	if (isset($search))
 		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$DBRESULT =& $pearDB->query($rq);
@@ -40,18 +43,23 @@
 	
 	include("./include/common/checkPagination.php");
 	
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_description", _("Description"));
 	$tpl->assign("headerMenu_options", _("Options"));
-	# end header menu
 	
-	#Dependency list
+	/*
+	 * Dependency list
+	 */
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
 	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_serviceChild_relation dscr WHERE dscr.dependency_dep_id = dep.dep_id) > 0 ";
 	$rq .= " AND (SELECT DISTINCT COUNT(*) FROM dependency_serviceParent_relation dspr WHERE dspr.dependency_dep_id = dep.dep_id) > 0 ";
@@ -65,9 +73,15 @@
 	$search = tidySearchKey($search, $advanced_search);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	#Different style between each lines
+	
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();
 	for ($i = 0; $dep =& $DBRESULT->fetchRow(); $i++) {		
 		$moptions = "";
@@ -81,12 +95,15 @@
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
-	#Different messages we put in the template
+	
+	/*
+	 * Different messages we put in the template
+	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	
-	#
-	##Toolbar select
-	#
+	/*
+	 * Toolbar select
+	 */
 	?>
 	<script type="text/javascript">
 	function setO(_i) {
@@ -128,9 +145,9 @@
 	
 	$tpl->assign('limit', $limit);
 	
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
