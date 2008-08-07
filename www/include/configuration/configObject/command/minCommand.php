@@ -47,7 +47,7 @@
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($notifCmd))
+	while($notifCmd =& $DBRESULT->fetchRow())
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$DBRESULT->free();
 	# Check commands comes from DB -> Store in $checkCmds Array
@@ -55,7 +55,7 @@
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($checkCmd))
+	while($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 

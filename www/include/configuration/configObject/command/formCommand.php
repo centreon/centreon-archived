@@ -59,7 +59,7 @@
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($graphTpl))
+	while($graphTpl =& $DBRESULT->fetchRow())
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
 	
@@ -68,7 +68,7 @@
 	$DBRESULT =& $pearDB->query("SELECT macro_name FROM nagios_macro ORDER BY macro_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($row))
+	while($row =& $DBRESULT->fetchRow())
 		$macros[$row["macro_name"]] = $row["macro_name"];
 	$DBRESULT->free();
 	#

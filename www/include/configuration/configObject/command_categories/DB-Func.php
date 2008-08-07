@@ -26,7 +26,7 @@
 		$DBRESULT =& $pearDB->query("SELECT `category_name`, `cmd_category_id` FROM `command_categories` WHERE `category_name` = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$DBRESULT->fetchInto($cat);
+		$cat =& $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $cat["cmd_category_id"] == $id)
 			return true;
 		else if ($DBRESULT->numRows() >= 1 && $cat["cmd_category_id"] != $id)
