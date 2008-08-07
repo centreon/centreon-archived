@@ -24,16 +24,20 @@
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
+		
 		# Set Notification Failure Criteria
 		$dep["notification_failure_criteria"] =& explode(',', $dep["notification_failure_criteria"]);
 		foreach ($dep["notification_failure_criteria"] as $key => $value)
 			$dep["notification_failure_criteria"][trim($value)] = 1;
+		
 		# Set Execution Failure Criteria
 		$dep["execution_failure_criteria"] =& explode(',', $dep["execution_failure_criteria"]);
 		foreach ($dep["execution_failure_criteria"] as $key => $value)
 			$dep["execution_failure_criteria"][trim($value)] = 1;
+		
 		# Set Host Parents
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
@@ -41,6 +45,7 @@
 		for($i = 0; $hostP =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hostParents"][$i] = $hostP["host_host_id"];
 		$DBRESULT->free();
+		
 		# Set Host Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
@@ -49,12 +54,16 @@
 			$dep["dep_hostChilds"][$i] = $hostC["host_host_id"];
 		$DBRESULT->free();
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# Host comes from DB -> Store in $hosts Array
+	
+	/*
+	 *  Database retrieve information for differents elements list we need on the page
+	 */
+	
+	/* 
+	 * Host comes from DB -> Store in $hosts Array
+	 */
 	$hosts = array();
-	if ($oreon->user->admin || !HadUserLca($pearDB))
+	if ($is_admin)
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
@@ -63,21 +72,19 @@
 	while($host =& $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
+	
+	/*
+	 * Var information to format the element
+	 */
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"10");
 	$attrsAdvSelect = array("style" => "width: 250px; height: 150px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Dependency"));
@@ -86,13 +93,13 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View a Dependency"));
 
-	#
-	## Dependency basic information
-	#
+	/*
+	 * Dependency basic information
+	 */
 	$form->addElement('header', 'information', _("Information"));
 	$form->addElement('text', 'dep_name', _("Name"), $attrsText);
 	$form->addElement('text', 'dep_description', _("Description"), $attrsText);
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() >= 2)	{
 		$tab = array();
 		$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
 		$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
@@ -102,13 +109,13 @@
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok/Up');
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down');
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable');
-	if ($oreon->user->get_version() == 2)
+	if ($oreon->user->get_version() >= 2)
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending');
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
 	$form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() >= 2)	{
 		$tab = array();
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok/Up');
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Up');
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down');
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable');
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending');
@@ -140,27 +147,28 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-	#
-	## Form Rules
-	#
+	/*
+	 * Form Rules
+	 */
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('dep_name', _("Compulsory Name"), 'required');
 	$form->addRule('dep_description', _("Required Field"), 'required');
 	$form->addRule('dep_hostParents', _("Required Field"), 'required');
 	$form->addRule('dep_hostChilds', _("Required Field"), 'required');
+	
 	if ($oreon->user->get_version() == 1)
 		$form->addRule('notification_failure_criteria', _("Required Field"), 'required');
+	
 	$form->registerRule('cycle', 'callback', 'testHostDependencyCycle');
 	$form->addRule('dep_hostChilds', _("Circular Definition"), 'cycle');
 	$form->registerRule('exist', 'callback', 'testHostDependencyExistence');
 	$form->addRule('dep_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
-	#
-	##End of form definition
-	#
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
@@ -199,7 +207,9 @@
 	if ($valid && $action["action"]["action"])
 		require_once("listHostDependency.php");
 	else	{
-		#Apply a template definition
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
