@@ -39,7 +39,7 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$checkCmds = array(NULL=>NULL);
-	while($DBRESULT->fetchInto($checkCmd))
+	while($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 	
