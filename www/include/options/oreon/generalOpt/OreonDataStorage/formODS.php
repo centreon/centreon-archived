@@ -17,31 +17,29 @@
 
 	if (!isset($oreon))
 		exit();
-
-	require_once("./DBOdsConnect.php");
 	
 	if (isset($_POST["o"]) && $_POST["o"])
 		$o = $_POST["o"];
 
-	$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
+	$DBRESULT =& $pearDBO->query("SELECT * FROM `config` LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			
-	# Set base value
+	/*
+	 * Set base value
+	 */
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-
+	/*
+	 * Format of text input
+	 */
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
 	$attrsAdvSelect = null;
 
-	## Form begin
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Modify General Options"));
 
@@ -51,8 +49,20 @@
 
 	$form->setDefaults($gopt);
 	
-	## Oreon information
-	$form->addElement('header', 'oreon', _("Centreon information"));
+	/*
+	 * Header information
+	 */
+	$form->addElement('header', 'folder', _("Storage folders"));
+	$form->addElement('header', 'retention', _("Retention durations"));
+	$form->addElement('header', 'Purge', _("Purge options"));
+	$form->addElement('header', 'Input', _("Input treatment options"));
+	$form->addElement('header', 'coreOptions', _("Censtorage Core Options"));
+	$form->addElement('header', 'Drop', _("Drop posibility after paring performance data"));
+	$form->addElement('header', 'logs', _("Logs Integration Properties"));
+	
+	/*
+	 * inputs declaration
+	 */
 	$form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database For Metrics"), $attrsText);
 	$form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database For Status"), $attrsText);
 	$form->addElement('text', 'RRDdatabase_nagios_stats_path', _("Path to RRDTool Database For Nagios Statistics"), $attrsText);
@@ -74,17 +84,22 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
-	## Form Rules
+	/*
+	 * Form Rules
+	 */
 	function slash($elem = NULL)	{
 		if ($elem)
 			return rtrim($elem, "/")."/";
 	}
+	
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('RRDdatabase_path', 'slash');
+	$form->applyFilter('RRDdatabase_status_path', 'slash');
+	$form->applyFilter('RRDdatabase_nagios_stats_path', 'slash');
 	
-	##End of form definition
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path.'OreonDataStorage/', $tpl);
 	$form->setDefaults($gopt);
@@ -95,15 +110,16 @@
     
 	if ($form->validate())	{
 		
-		# Update in DB
+		/*
+		 * Update in DB
+		 */
 		updateODSConfigData();
-		# Update in Oreon Object
 		
 		$oreon->optGen = array();
 		$DBRESULT2 =& $pearDBO->query("SELECT * FROM `config` LIMIT 1");
 		if (PEAR::isError($DBRESULT2))
 			print ("DB error : ".$DBRESULT2->getDebugInfo());
-		$oreon->optGen =& $DBRESULT2->fetchRow($oreon->optGen);
+		$oreon->optGen =& $DBRESULT2->fetchRow();
 
 		$o = NULL;
    		$valid = true;
@@ -114,11 +130,14 @@
 
 	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ods'"));
 
-	## Apply a template definition
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
+	
 	$tpl->assign("genOpt_ODS_config", _("Centstorage Configuration"));
 	$tpl->assign("ods_log_retention_unit", _("days"));
 	$tpl->assign("ods_sleep_time_expl", _("in seconds - Must be higher than 10"));
