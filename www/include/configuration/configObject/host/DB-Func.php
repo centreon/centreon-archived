@@ -111,7 +111,7 @@
 			$DBRESULT = & $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			while ($DBRESULT->fetchInto($row))
+			while ($row =& $DBRESULT->fetchRow())
 				if ($row["nbr"] == 1)	{
 					$DBRESULT2 =& $pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
 					if (PEAR::isError($DBRESULT2))
@@ -175,7 +175,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($host)){
+						while($host =& $DBRESULT->fetchRow()){
 							$DBRESULT1 =& $pearDB->query("INSERT INTO host_hostparent_relation VALUES ('', '".$host["host_parent_hp_id"]."', '".$maxId["MAX(host_id)"]."')");	
 							if (PEAR::isError($DBRESULT1))
 								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
@@ -192,7 +192,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($service))	{
+						while($service =& $DBRESULT->fetchRow())	{
 							# If the Service is link with several Host, we keep this property and don't duplicate it, just create a new relation with the new Host
 							$DBRESULT2 =& $pearDB->query("SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '".$service["service_service_id"]."'");
 							if (PEAR::isError($DBRESULT2))
@@ -216,7 +216,7 @@
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'");
 							if (PEAR::isError($DBRESULT))
 								print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-							while($DBRESULT->fetchInto($svs)){
+							while($svs =& $DBRESULT->fetchRow()){
 								$DBRESULT1 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$maxId["MAX(host_id)"]."', NULL, '".$svs["service_service_id"]."')");
 								if (PEAR::isError($DBRESULT1))
 									print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
@@ -225,7 +225,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($Cg)){
+						while($Cg =& $DBRESULT->fetchRow()){
 							$DBRESULT1 =& $pearDB->query("INSERT INTO contactgroup_host_relation VALUES ('', '".$maxId["MAX(host_id)"]."', '".$Cg["contactgroup_cg_id"]."')");
 							if (PEAR::isError($DBRESULT1))
 								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
@@ -233,7 +233,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($Hg)){
+						while($Hg =& $DBRESULT->fetchRow()){
 							$DBRESULT1 =& $pearDB->query("INSERT INTO hostgroup_relation VALUES ('', '".$Hg["hostgroup_hg_id"]."', '".$maxId["MAX(host_id)"]."')");
 							if (PEAR::isError($DBRESULT1))
 								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
@@ -241,7 +241,7 @@
 						$DBRESULT =& $pearDB->query("SELECT * FROM extended_host_information WHERE host_host_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($ehi))	{
+						while($ehi =& $DBRESULT->fetchRow())	{
 							$val = null;
 							$ehi["host_host_id"] = $maxId["MAX(host_id)"];
 							$ehi["ehi_id"] = NULL;
@@ -255,7 +255,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT nagios_server_id FROM ns_host_relation WHERE host_host_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($Hg)){
+						while($Hg =& $DBRESULT->fetchRow()){
 							$DBRESULT1 =& $pearDB->query("INSERT INTO ns_host_relation VALUES ('".$Hg["nagios_server_id"]."', '".$maxId["MAX(host_id)"]."')");
 							if (PEAR::isError($DBRESULT1))
 								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
@@ -1108,7 +1108,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hpars = array();
-		while($DBRESULT->fetchInto($arr))
+		while($arr =& $DBRESULT->fetchRow())
 			$hpars[$arr["host_parent_hp_id"]] = $arr["host_parent_hp_id"];
 		$ret = $form->getSubmitValue("host_parents");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -1155,7 +1155,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hchs = array();
-		while($DBRESULT->fetchInto($arr))
+		while($arr =& $DBRESULT->fetchRow())
 			$hchs[$arr["host_host_id"]] = $arr["host_host_id"];
 		$ret = $form->getSubmitValue("host_childs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -1290,7 +1290,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cgs = array();
-		while($DBRESULT->fetchInto($arr))
+		while($arr =& $DBRESULT->fetchRow())
 			$cgs[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
 		$ret = $form->getSubmitValue("host_cgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -1316,7 +1316,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cs = array();
-		while($DBRESULT->fetchInto($arr))
+		while($arr =& $DBRESULT->fetchRow())
 			$cs[$arr["contact_id"]] = $arr["contact_id"];
 		$ret = $form->getSubmitValue("host_cs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -1345,7 +1345,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hgsOLD = array();
-		while ($DBRESULT->fetchInto($hg))
+		while ($hg =& $DBRESULT->fetchRow())
 			$hgsOLD[$hg["hostgroup_hg_id"]] = $hg["hostgroup_hg_id"];
 		# Get service lists linked to hostgroup
 		$hgSVS = array();
@@ -1355,7 +1355,7 @@
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			while ($DBRESULT->fetchInto($sv))
+			while ($sv =& $DBRESULT->fetchRow())
 				$hgSVS[$hg][$sv["service_service_id"]] = $sv["service_service_id"];
 		}
 		#
@@ -1421,7 +1421,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hgs = array();
-		while($DBRESULT->fetchInto($arr))
+		while($arr =& $DBRESULT->fetchRow())
 			$hgs[$arr["hostgroup_hg_id"]] = $arr["hostgroup_hg_id"];
 		$ret = $form->getSubmitValue("host_hgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -1484,7 +1484,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 		if ($oreon->user->get_version() < 3) {
 			if ($htm_id)	{
 				$DBRESULT =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
-				while ($DBRESULT->fetchInto($row))	{
+				while ($row =& $DBRESULT->fetchRow())	{
 					$alias =& getMyServiceAlias($row["service_service_id"]);
 					if (testServiceExistence ($alias, array(0=>$host_id)))	{
 						$service = array("service_template_model_stm_id" => $row["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
@@ -1507,7 +1507,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 					$htm_id = getMyHostTemplateModel($htm_id);
 				if ($htm_id)	{
 					$DBRESULT =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
-					while ($DBRESULT->fetchInto($row))	{
+					while ($row =& $DBRESULT->fetchRow())	{
 						//$desc =& getMyServiceName($row["service_service_id"]);
 						$alias =& getMyServiceAlias($row["service_service_id"]);
 						if (testServiceExistence ($alias, array(0=>$host_id)))	{
@@ -1588,7 +1588,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$svtpls = array();
-			while($DBRESULT2->fetchInto($arr))
+			while($arr =& $DBRESULT2->fetchRow())
 				$svtpls [$arr["service_service_id"]] = $arr["service_service_id"];
 			$ret = $form->getSubmitValue("host_svTpls");
 			for($i = 0; $i < count($ret); $i++)	{
@@ -1650,7 +1650,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cgs = array();
-		while($DBRESULT->fetchInto($arr))
+		while($arr =& $DBRESULT->fetchRow())
 			$cgs[$arr["nagios_server_id"]] = $arr["nagios_server_id"];
 		$ret = $form->getSubmitValue("host_ns");
 		for($i = 0; $i < count($ret); $i++)	{

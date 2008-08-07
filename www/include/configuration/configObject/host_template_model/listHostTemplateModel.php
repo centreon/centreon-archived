@@ -78,7 +78,7 @@
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($host); $i++) {		
+	for ($i = 0; $host =& $DBRESULT->fetchRow(); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$host['host_id']."]");	
 		$moptions = "";
 		if ($host["host_activate"])

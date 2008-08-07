@@ -33,14 +33,14 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($hosts); $i++)
+		for($i = 0; $hosts =& $DBRESULT->fetchRow(); $i++)
 			$hg["hg_hosts"][$i] = $hosts["host_host_id"];
 		$DBRESULT->free();
 		# Nagios 1 - Set Contact Group Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($cgs); $i++)
+		for($i = 0; $cgs =& $DBRESULT->fetchRow(); $i++)
 			$hg["hg_cgs"][$i] = $cgs["contactgroup_cg_id"];
 		$DBRESULT->free();
 	}
@@ -55,7 +55,7 @@
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($host))
+	while($host =& $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $cgs Array
@@ -63,7 +63,7 @@
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($cg))
+	while($cg =& $DBRESULT->fetchRow())
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$DBRESULT->free();
 	#

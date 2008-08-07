@@ -38,14 +38,14 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($hgP); $i++)
+		for($i = 0; $hgP =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hgParents"][$i] = $hgP["hostgroup_hg_id"];
 		$DBRESULT->free();
 		# Set HostGroup Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($hgC); $i++)
+		for($i = 0; $hgC =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hgChilds"][$i] = $hgC["hostgroup_hg_id"];
 		$DBRESULT->free();
 	}
@@ -60,7 +60,7 @@
 		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($hg))
+	while($hg =& $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
 	#

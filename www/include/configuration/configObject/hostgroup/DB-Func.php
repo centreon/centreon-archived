@@ -67,7 +67,7 @@
 		foreach($hostGroups as $key=>$value)	{
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$key."'";
 			$DBRESULT =& $pearDB->query($rq);
-			while ($DBRESULT->fetchInto($row))
+			while ($row =& $DBRESULT->fetchRow())
 				if ($row["nbr"] == 1)	{
 					$DBRESULT2 =& $pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
 					if (PEAR::isError($DBRESULT2))
@@ -120,7 +120,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($host)){
+						while($host =& $DBRESULT->fetchRow()){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO hostgroup_relation VALUES ('', '".$maxId["MAX(hg_id)"]."', '".$host["host_host_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
@@ -128,7 +128,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT cghgr.contactgroup_cg_id FROM contactgroup_hostgroup_relation cghgr WHERE cghgr.hostgroup_hg_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($cg)){
+						while($cg =& $DBRESULT->fetchRow()){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contactgroup_hostgroup_relation VALUES ('', '".$cg["contactgroup_cg_id"]."', '".$maxId["MAX(hg_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
@@ -226,7 +226,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hostsOLD = array();
-		while ($DBRESULT->fetchInto($host))
+		while ($host =& $DBRESULT->fetchRow())
 			$hostsOLD[$host["host_host_id"]] = $host["host_host_id"];
 		# Get service lists linked to hostgroup
 		$rq = "SELECT service_service_id FROM host_service_relation ";
@@ -235,7 +235,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hgSVS = array();
-		while ($DBRESULT->fetchInto($sv))
+		while ($sv =& $DBRESULT->fetchRow())
 			$hgSVS[$sv["service_service_id"]] = $sv["service_service_id"];
 		#
 		$rq = "DELETE FROM hostgroup_relation ";
