@@ -78,7 +78,7 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($service); $i++) {
+	for ($i = 0; $service =& $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");	
 		if ($service["service_activate"])

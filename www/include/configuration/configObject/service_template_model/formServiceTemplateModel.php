@@ -200,7 +200,7 @@
 	$DBRESULT =& $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($service_categorie))
+	while($service_categorie =& $DBRESULT->fetchRow())
 		$service_categories[$service_categorie["sc_id"]] = $service_categorie["sc_name"];
 	$DBRESULT->free();
 	
@@ -423,7 +423,7 @@
 	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($rmnftr))
+	while($rmnftr =& $DBRESULT->fetchRow())
 		$mnftr[$rmnftr["id"]] = html_entity_decode($rmnftr["alias"], ENT_QUOTES);
 	$mnftr[""] = "_"._("ALL")."_";
 	$DBRESULT->free();

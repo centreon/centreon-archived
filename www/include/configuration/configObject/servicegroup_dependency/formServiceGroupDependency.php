@@ -38,14 +38,14 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($sgP); $i++)
+		for($i = 0; $sgP =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_sgParents"][$i] = $sgP["servicegroup_sg_id"];
 		$DBRESULT->free();
 		# Set ServiceGroup Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($sgC); $i++)
+		for($i = 0; $sgC =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_sgChilds"][$i] = $sgC["servicegroup_sg_id"];
 		$DBRESULT->free();
 	}
@@ -60,7 +60,7 @@
 		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($sg))
+	while($sg =& $DBRESULT->fetchRow())
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$DBRESULT->free();
 	#

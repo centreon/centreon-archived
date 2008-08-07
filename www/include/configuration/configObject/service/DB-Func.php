@@ -125,7 +125,7 @@
 			$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_template_model_stm_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			while ($DBRESULT->fetchInto($row))	{
+			while ($row =& $DBRESULT->fetchRow())	{
 				$DBRESULT2 =& $pearDB->query("UPDATE service SET service_template_model_stm_id = NULL WHERE service_id = '".$row["service_id"]."'");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
@@ -154,7 +154,7 @@
 			$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation WHERE service_service_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			while ($DBRESULT->fetchInto($relation))	{
+			while ($relation =& $DBRESULT->fetchRow())	{
 				if ($relation["hostgroup_hg_id"])	{
 					if ($lap)	{
 						$sv_id = NULL;
@@ -239,7 +239,7 @@
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id FROM host_service_relation WHERE service_service_id = '".$key."'");
 							if (PEAR::isError($DBRESULT))
 								print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-							while($DBRESULT->fetchInto($service))	{
+							while($service =& $DBRESULT->fetchRow())	{
 								if ($service["host_host_id"])				
 									$DBRESULT2 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$service["host_host_id"]."', NULL, '".$maxId["MAX(service_id)"]."')");
 								else if ($service["hostgroup_hg_id"])	
@@ -251,7 +251,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($Cg)){
+						while($Cg =& $DBRESULT->fetchRow()){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contactgroup_service_relation VALUES ('', '".$Cg["contactgroup_cg_id"]."', '".$maxId["MAX(service_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
@@ -259,7 +259,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id, servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($Sg)){
+						while($Sg =& $DBRESULT->fetchRow()){
 							$Sg["host_host_id"] ? $host_id = "'".$Sg["host_host_id"]."'" : $host_id = "NULL";
 							$Sg["hostgroup_hg_id"] ? $hg_id = "'".$Sg["hostgroup_hg_id"]."'" : $hg_id = "NULL";
 							$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$host_id.", ".$hg_id.", '".$maxId["MAX(service_id)"]."', '".$Sg["servicegroup_sg_id"]."')");
@@ -269,7 +269,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($traps)){
+						while($traps =& $DBRESULT->fetchRow()){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO traps_service_relation VALUES ('', '".$traps["traps_id"]."', '".$maxId["MAX(service_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
@@ -277,7 +277,7 @@
 						$DBRESULT =& $pearDB->query("SELECT * FROM extended_service_information WHERE service_service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($esi))	{
+						while($esi =& $DBRESULT->fetchRow())	{
 							$val = null;
 							$esi["service_service_id"] = $maxId["MAX(service_id)"];
 							$esi["esi_id"] = NULL;
@@ -847,7 +847,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cgs = array();
-		while($DBRESULT->fetchInto($arr))
+		while($arr =& $DBRESULT->fetchRow())
 			$cgs[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
 		$ret = $form->getSubmitValue("service_cgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -874,7 +874,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cgs = array();
-		while($DBRESULT->fetchInto($arr))
+		while($arr =& $DBRESULT->fetchRow())
 			$cs[$arr["contact_id"]] = $arr["contact_id"];
 		$ret = $form->getSubmitValue("service_cs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -948,7 +948,7 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hsgs = array();
 		$hgsgs = array();
-		while($DBRESULT->fetchInto($arr))	{
+		while($arr =& $DBRESULT->fetchRow())	{
 			if ($arr["host_host_id"])
 				$hsgs[$arr["host_host_id"]] = $arr["host_host_id"];
 			if ($arr["hostgroup_hg_id"])
@@ -1021,7 +1021,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$traps = array();
-		while($DBRESULT->fetchInto($arr))
+		while($arr =& $DBRESULT->fetchRow())
 			$traps[$arr["traps_id"]] = $arr["traps_id"];
 		$ret = $form->getSubmitValue("service_traps");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -1089,7 +1089,7 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hsvs = array();
 		$hgsvs = array();
-		while($DBRESULT->fetchInto($arr))	{
+		while($arr =& $DBRESULT->fetchRow())	{
 			if ($arr["host_host_id"])
 				$hsvs[$arr["host_host_id"]] = $arr["host_host_id"];
 			if ($arr["hostgroup_hg_id"])

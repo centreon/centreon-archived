@@ -108,7 +108,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 								print $DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($service))	{
+						while($service =& $DBRESULT->fetchRow())	{
 							$val = null;
 							foreach ($service as $key2=>$value2)
 								$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");

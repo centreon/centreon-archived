@@ -30,7 +30,7 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	# Set base value
-	while($DBRESULT->fetchInto($rmnftr)){
+	while($rmnftr =& $DBRESULT->fetchRow()){
 		$mnftr[$rmnftr["id"]] = $rmnftr["alias"];
 	}
 	$DBRESULT->free();

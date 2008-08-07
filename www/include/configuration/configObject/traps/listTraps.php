@@ -72,7 +72,7 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($trap); $i++) {
+	for ($i = 0; $trap =& $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$trap['traps_id']."]");
 		$moptions .= "&nbsp;&nbsp;&nbsp;";
@@ -80,7 +80,7 @@
 		$DBRESULT2 =& $pearDB->query("select alias from traps_vendor where id='".$trap['manufacturer_id']."' LIMIT 1");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-		$DBRESULT2->fetchInto($mnftr);
+		$mnftr =& $DBRESULT2->fetchRow();
 		$DBRESULT2->free();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),

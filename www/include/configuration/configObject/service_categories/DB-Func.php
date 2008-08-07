@@ -26,7 +26,7 @@
 		$DBRESULT =& $pearDB->query("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$DBRESULT->fetchInto($sc);
+		$sc =& $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $sc["sc_id"] == $id)
 			return true;
 		else if ($DBRESULT->numRows() >= 1 && $sc["sc_id"] != $id)

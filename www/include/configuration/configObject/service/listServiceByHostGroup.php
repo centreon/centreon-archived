@@ -56,7 +56,7 @@
 			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") AND sv.service_description LIKE '%$search%'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($service)){
+		while ($service &= $DBRESULT->fetchRow()){
 			$rows++;
 			$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
 		}

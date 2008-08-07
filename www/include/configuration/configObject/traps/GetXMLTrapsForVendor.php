@@ -48,7 +48,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
-		while ($DBRESULT->fetchInto($trap)){
+		while ($trap =& $DBRESULT->fetchRow()){
 				$buffer .= '<trap>';
 				$buffer .= '<id>'.$trap["traps_id"].'</id>';			
 				$buffer .= '<name>'.$trap["traps_name"].'</name>';			

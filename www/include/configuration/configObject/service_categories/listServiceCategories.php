@@ -75,10 +75,10 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($sc); $i++) {
+	for ($i = 0; $sc =& $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$DBRESULT2 =& $pearDB->query("SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '".$sc['sc_id']."'");
-		$DBRESULT2->fetchInto($nb_svc);
+		$nb_svc =& $DBRESULT2->fetchRow();
 		
 		$selectedElements =& $form->addElement('checkbox', "select[".$sc['sc_id']."]");
 		
