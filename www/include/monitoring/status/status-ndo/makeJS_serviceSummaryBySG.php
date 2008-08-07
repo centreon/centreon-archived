@@ -26,10 +26,11 @@
 	$time = time();
 
 	$obis = $o;
-	if(isset($_GET["problem"]))
-	$obis .= '_pb';
-	if(isset($_GET["acknowledge"]))
-	$obis .= '_ack_' . $_GET["acknowledge"];
+	if	(isset($_GET["problem"]))
+		$obis .= '_pb';
+	
+	if	(isset($_GET["acknowledge"]))
+		$obis .= '_ack_' . $_GET["acknowledge"];
 		
 ?>
 <script type="text/javascript">

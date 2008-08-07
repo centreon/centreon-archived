@@ -20,10 +20,12 @@
 	
 	function get_ndo_instance_id($name_instance){
 		global $gopt,$pearDBndo;
+		/*
+		 * Get NDO table prefix
+		 */
 		$ndo_base_prefix = getNDOPrefix();
 		
-		$rq = "SELECT `instance_id` FROM `".$ndo_base_prefix."instances` WHERE `instance_name` LIKE '".$name_instance."'";
-		$DBRESULT_NDO =& $pearDBndo->query($rq);
+		$DBRESULT_NDO =& $pearDBndo->query("SELECT `instance_id` FROM `".$ndo_base_prefix."instances` WHERE `instance_name` LIKE '".$name_instance."'");
 		$ndo =& $DBRESULT_NDO->fetchRow();
 		return $ndo["instance_id"];
 	}
@@ -237,8 +239,6 @@ function pagination_changed(){
 	var _img_first<?php echo $i; ?> 	= mk_img("./img/icones/16x16/arrow_left_blue_double.gif", "first");
 	var _img_last<?php echo $i; ?> 		= mk_img("./img/icones/16x16/arrow_right_blue_double.gif", "last");
 
-	// ---- <?php echo $i; ?> ----
-	
 	var _linkaction_right<?php echo $i; ?> = document.createElement("a");
 	_linkaction_right<?php echo $i; ?>.href = '#' ;
 	_linkaction_right<?php echo $i; ?>.indice = _numnext;
