@@ -82,7 +82,7 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($nagios); $i++) {		
+	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++) {		
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$nagios['nagios_id']."]");	
 		if ($nagios["nagios_activate"])
