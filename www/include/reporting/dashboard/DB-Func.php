@@ -407,7 +407,7 @@
 		$DBres =& $pearDBO->query($rq);
 		if (PEAR::isError($DBres))
 			print "DB Error : ".$DBres->getDebugInfo()."<br />";
-		while ($DBres->fetchInto($s)){
+		while ($s =& $DBres->fetchRow()){
 			$tab_log[$s["service_id"]] = $s;
 		}
 
@@ -459,7 +459,7 @@
 		if (PEAR::isError($DBres))
 			print "DB Error : ".$DBres->getDebugInfo()."<br />";
 		$log = array();
-		while ($DBres->fetchInto($log)){
+		while ($log =& $DBres->fetchRow()){
 			if($log["status"] == "OK"){
 				$tab_tmp["Tok"] += $log["ctime"] - $tab_tmp["time"];
 				$tab_tmp["OKnbEvent"] += 1;

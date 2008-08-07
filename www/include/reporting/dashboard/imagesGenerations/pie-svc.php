@@ -62,7 +62,7 @@
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	$data = array();
 	$color = array();
-	while($DBRESULT_NDO1->fetchInto($ndo)){
+	while($ndo =& $DBRESULT_NDO1->fetchRow()){
 		$data[] = $ndo["cnt"];
 		$legend[] = $statistic[$ndo["current_state"]];
 		$color[] = $oreon->optGen["color_".strtolower($statistic[$ndo["current_state"]])];		

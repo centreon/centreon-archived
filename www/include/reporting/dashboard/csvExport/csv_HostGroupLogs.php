@@ -24,7 +24,7 @@
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
+		if($session =& $res->fetchRow()){
 			$_POST["sid"] = $sid;
 		} else
 			get_error('bad session id');
