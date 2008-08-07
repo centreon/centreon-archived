@@ -746,7 +746,7 @@
 			$already_stored = array();
 			$already_stored_in_db = array();
 			
-			$rq = "SELECT svc_macro_name FROM `on_demand_macro_service` WHERE `host_host_id`=" . $service_id;
+			$rq = "SELECT svc_macro_name FROM `on_demand_macro_service` WHERE `svc_svc_id`=" . $service_id;
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
