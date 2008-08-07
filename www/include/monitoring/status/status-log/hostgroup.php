@@ -41,7 +41,7 @@
 			print "Mysql Error : ".$DBRESULT1->getMessage();
 		$cpt_host = 0;
 				
-		while ($DBRESULT1->fetchInto($r_h)){
+		while ($r_h =& $DBRESULT1->fetchRow()){
 			if (isset($tab_host_service[$r_h["host_name"]])) {
 				$status_hg_h[$host_status[$r_h["host_name"]]["current_state"]]++;
 				foreach ($tab_host_service[$r_h["host_name"]] as $key => $value)

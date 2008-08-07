@@ -53,7 +53,7 @@
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if ($res->fetchInto($session)){
+		if ($session =& $res->fetchRow()){
 			;
 		}else
 			get_error('bad session id');
@@ -188,7 +188,7 @@
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";	
-	$DBRESULT_OPT->fetchInto($general_opt);
+	$general_opt =& $DBRESULT_OPT->fetchRow();
 	
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
@@ -219,7 +219,7 @@
 	$host_stat[1] = 0;
 	$host_stat[2] = 0;
 	$host_stat[3] = 0;
-	while($DBRESULT_NDO1->fetchInto($ndo))
+	while($ndo =& $DBRESULT_NDO1->fetchRow())
 		$host_stat[$ndo["current_state"]] = $ndo["cnt"];
 	/* end */
 
@@ -243,7 +243,7 @@
 	$svc_stat[2] = 0;
 	$svc_stat[3] = 0;
 	$svc_stat[4] = 0;
-	while($DBRESULT_NDO2->fetchInto($ndo))
+	while($ndo =& $DBRESULT_NDO2->fetchRow())
 		$svc_stat[$ndo["current_state"]] = $ndo["cnt"];
 
 	/* end */	

@@ -23,7 +23,7 @@ For information : contact@centreon.com
 	$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
-	$DBRESULT->fetchInto($data);
+	$data =& $DBRESULT->fetchRow();
 	$skin = "./Themes/".$data["template"]."/";
 	
 	$tab_file_css = array();
@@ -43,7 +43,7 @@ For information : contact@centreon.com
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	$tab_css = array();
-	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++){
+	for($i = 0; $DBRESULT->numRows() && $elem =& $DBRESULT->fetchRow();$i++){
 		$tab_css[$elem["menu_nb"]] = $elem;
 		if(isset($_GET["css_color_".$elem["id_css_color_menu"]])){
 			$name = $_GET["css_color_".$elem["id_css_color_menu"]];			
@@ -60,7 +60,7 @@ For information : contact@centreon.com
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	$tab_menu = array();
-	for(; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);)
+	for(; $DBRESULT->numRows() && $elem =& $DBRESULT->fetchRow();)
 		$tab_menu[$elem["topology_page"]] = $elem;
 
 	## insert new menu in table css_color_menu
@@ -87,7 +87,7 @@ For information : contact@centreon.com
 	#Different style between each lines
 	$style = "one";
 	
-	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
+	for($i = 0; $DBRESULT->numRows() && $elem =& $DBRESULT->fetchRow();$i++)
 	{
 		$select_list =	'<select name="css_color_'. $elem["id_css_color_menu"] .'">';
 		for($j=0;isset($tab_file_css[$j]);$j++){

@@ -37,7 +37,7 @@
 		$DBRESULT =& $pearDB->query("SELECT host_address FROM host WHERE host_name = '".$name."'");
 		if (PEAR::isError($DBRESULT)) 
 			print "Mysql Error : ".$DBRESULT->getMessage();
-		$DBRESULT->fetchInto($host);
+		$host =& $DBRESULT->fetchRow();
 		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$name]))){			
 			$host_status[$name]["address"] = $host["host_address"];
 			$host_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($h["current_state"])];

@@ -33,7 +33,7 @@
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT)) 
 		print "Mysql Error : ".$DBRESULT->getMessage();
-	while ($DBRESULT->fetchInto($r)){
+	while ($r =& $DBRESULT->fetchRow()){
 		if ($oreon->user->admin || !hadUserLca($pearDB) || (hadUserLca($pearDB) && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){		
 			$DBRESULT1 =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
 										"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
@@ -42,7 +42,7 @@
 				print "Mysql Error : ".$DBRESULT1->getMessage();
 			$cpt_host = 0;
 			$counter_host = 0;	
-			while ($DBRESULT1->fetchInto($r_h)){
+			while ($r_h =& $DBRESULT1->fetchRow()){
 				$status_hg = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);
 				$status_hg_ack = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);
 				$service_data_str = NULL;

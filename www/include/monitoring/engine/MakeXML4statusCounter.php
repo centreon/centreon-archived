@@ -79,9 +79,9 @@
 		$debug_session = $sid;
 		$time = time();
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if(($res->fetchInto($session) && (($time - $session["last_reload"]) > $session_expire))  || isset($session["s_nbServicesOk"]) ){
+		if(($session =& $res->fetchRow() && (($time - $session["last_reload"]) > $session_expire))  || isset($session["s_nbServicesOk"]) ){
 			$flag_reset = 1;
-		} else if($res->fetchInto($session) && isset($session["s_nbServicesOk"]) && $session["s_nbServicesOk"] && (($time - $session["last_reload"]) <= $session_expire)){
+		} else if($session =& $res->fetchRow() && isset($session["s_nbServicesOk"]) && $session["s_nbServicesOk"] && (($time - $session["last_reload"]) <= $session_expire)){
 			$flag_reset = 0;
 		} else {
 			$flag_reset = 0;

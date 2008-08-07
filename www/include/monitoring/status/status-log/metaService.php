@@ -21,7 +21,7 @@
 	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
-	while ($DBRESULT->fetchInto($meta)){
+	while ($meta =& $DBRESULT->fetchRow()){
 		$metaService_status_bis["meta_" . $meta["meta_id"]]["real_name"] = $meta["meta_name"]; 
 		$metaService_status_bis["meta_" . $meta["meta_id"]]["id"] = $meta["meta_id"]; 
 	}

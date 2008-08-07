@@ -35,12 +35,12 @@
 	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name, sg_alias FROM servicegroup WHERE sg_activate = '1' ORDER BY sg_name");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
-	while ($DBRESULT->fetchInto($r)){
+	while ($r =& $DBRESULT->fetchRow()){
 		$servicegroup[$r["sg_name"]] = $r["sg_alias"];
 		$DBRESULT_relation =& $pearDB->query("SELECT * FROM servicegroup_relation WHERE servicegroup_sg_id = '".$r["sg_id"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT_relation->getMessage();
-		while ($DBRESULT_relation->fetchInto($sg_relation)){
+		while ($sg_relation =& $DBRESULT_relation->fetchRow()){
 			if ($sg_relation["host_host_id"]){
 				# Get Host_name
 				$host_name = getMyHostName($sg_relation["host_host_id"]);
@@ -75,7 +75,7 @@
 				$DBRESULT_host =& $pearDB->query("SELECT hostgroup_relation.host_host_id, host.host_name FROM hostgroup_relation, host WHERE  hostgroup_relation.hostgroup_hg_id = '".$sg_relation["hostgroup_hg_id"]."' AND hostgroup_relation.host_host_id = host.host_id ORDER BY host.host_name");
 				if (PEAR::isError($DBRESULT_host))
 					print "Mysql Error : ".$DBRESULT_host->getMessage();
-				while ($DBRESULT_host->fetchInto($host_list)){
+				while ($host_list =& $DBRESULT_host->fetchRow()){
 					$host_name =  $host_list["host_name"];
 					if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$host_name]))){
 						# Get Servicce description

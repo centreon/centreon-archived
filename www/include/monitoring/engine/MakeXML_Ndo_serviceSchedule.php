@@ -122,7 +122,7 @@
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
-	while($DBRESULT_NDO1->fetchInto($ndo))
+	while($ndo =& $DBRESULT_NDO1->fetchRow())
 		$host_status[$ndo["host_name"]] = $ndo;
 	
 	/* 
@@ -225,7 +225,7 @@
 	$color_en = array("1" => "#00ff00", "0" => "#ff0000");
 	$color_en_label = array("1" => $enable, "0" => $disable);
 
-	while($DBRESULT_NDO->fetchInto($ndo)){
+	while($ndo =& $DBRESULT_NDO->fetchRow()){
 		if (isset($host_status[$ndo["host_name"]]) ){
 			$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
 			$color_service = $tab_color_service[$ndo["current_state"]];

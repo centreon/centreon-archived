@@ -110,7 +110,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
-		while ($DBRESULT->fetchInto($svc)){
+		while ($svc =& $DBRESULT->fetchRow()){
 			$tab[$svc["service_name"]] = $svc["current_state"];
 		}
 		return($tab);

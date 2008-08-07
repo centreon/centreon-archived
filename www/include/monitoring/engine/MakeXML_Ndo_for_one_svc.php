@@ -61,10 +61,10 @@
 	/* LCA */
 	// check is admin
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$res1->fetchInto($user);
+	$user =& $res1->fetchRow();
 	$user_id = $user["user_id"];
 	$res2 =& $pearDB->query("SELECT contact_admin,contact_lang FROM contact WHERE contact_id = '".$user_id."'");
-	$res2->fetchInto($admin);
+	$admin =& $res2->fetchRow();
 	$is_admin = 0;
 	$is_admin = $admin["contact_admin"];
 
@@ -87,7 +87,7 @@
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
-	$DBRESULT_OPT->fetchInto($general_opt);
+	$general_opt =& $DBRESULT_OPT->fetchRow();
 
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
@@ -149,7 +149,7 @@
 	$c = array("1" => "#00ff00", "0" => "#ff0000");
 	$en = array("0" => _("No"), "1" => _("Yes"));
 
-	if($DBRESULT_NDO1->fetchInto($ndo)){
+	if($ndo =& $DBRESULT_NDO1->fetchRow()){
 		$buffer .= '<svc_name><![CDATA['. $ndo["service_description"]  . ']]></svc_name>';
 		$duration = "";
 		if($ndo["last_state_change"] > 0)

@@ -255,7 +255,7 @@
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
-	while($DBRESULT_NDO1->fetchInto($ndo))
+	while($ndo =& $DBRESULT_NDO1->fetchRow())
 	{
 		$color_host = $tab_color_host[$ndo["current_state"]]; //"#FF0000";
 		$passive = 0;
