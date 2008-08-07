@@ -29,7 +29,7 @@
 	$timePeriod = array();
 	$i = 1;
 	$str = NULL;
-	while($DBRESULT->fetchInto($timePeriod))	{
+	while($timePeriod =& $DBRESULT->fetchRow())	{
 		$ret["comment"] ? ($str .= "# '" . $timePeriod["tp_name"] . "' timeperiod definition " . $i . "\n") : NULL;
 		$str .= "define timeperiod{\n";
 		if ($timePeriod["tp_name"]) $str .= print_line("timeperiod_name", $timePeriod["tp_name"]);

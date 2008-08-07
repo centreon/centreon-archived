@@ -22,7 +22,7 @@
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation : ".$DBRESULT->getMessage()."<br />";
-	while($DBRESULT->fetchInto($service))	{
+	while($service =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($service["meta_service_meta_id"], $gbArr[7]) ? $BP = true : NULL;
@@ -35,7 +35,7 @@
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : SELECT esc.* FROM escalation esc, escalation_meta_service_relation emsr.. : ".$DBRESULT2->getMessage()."<br />";
 			$escalation = array();
-			while($DBRESULT2->fetchInto($escalation))	{
+			while($escalation =& $DBRESULT2->fetchRow())	{
 				$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
 				if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
 					$comment = array();
@@ -51,7 +51,7 @@
 				$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
 				if (PEAR::isError($DBRESULT3))
 					print "DB Error : SELECT DISTINCT cg.cg_id, cg.cg_name.. : ".$DBRESULT3->getMessage()."<br />";
-				while($DBRESULT3->fetchInto($cg))	{
+				while($cg =& $DBRESULT3->fetchRow())	{
 					$BP = false;				
 					if ($ret["level"]["level"] == 1)
 						array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;

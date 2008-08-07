@@ -29,7 +29,7 @@
 	$contactGroup = array();
 	$i = 1;
 	$str = NULL;
-	while($DBRESULT->fetchInto($contactGroup))	{
+	while($contactGroup =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
 		if ($BP)	{
@@ -48,7 +48,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT cct.contact_id, cct.contact_name FROM contactgroup_contact_relation ccr, contact cct WHERE ccr.contactgroup_cg_id = '".$contactGroup["cg_id"]."' AND ccr.contact_contact_id = cct.contact_id ORDER BY `contact_name`");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while($DBRESULT2->fetchInto($contact))	{
+			while($contact =& $DBRESULT2->fetchRow())	{
 				$BP = false;				
 				array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : $BP = false;
 				if ($BP)

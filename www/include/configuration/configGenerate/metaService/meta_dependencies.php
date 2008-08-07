@@ -26,13 +26,13 @@
 	$dependency = array();
 	$i = 1;
 	$str = NULL;
-	while($DBRESULT->fetchInto($dependency))	{
+	while($dependency =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation.. : ".$DBRESULT2->getMessage()."<br />";
 		$metaPar = NULL;
-		while ($DBRESULT2->fetchInto($metaPar))	{
+		while ($metaPar =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($metaPar["meta_service_meta_id"], $gbArr[7]) ? $BP = true : NULL;
@@ -45,7 +45,7 @@
 				if (PEAR::isError($DBRESULT3))
 					print "DB Error : SELECT meta_service_meta_id FROM dependency_metaserviceChild_relation.. : ".$DBRESULT3->getMessage()."<br />";
 				$metaCh = NULL;
-				while ($DBRESULT3->fetchInto($metaCh))	{					
+				while ($metaCh =& $DBRESULT3->fetchRow())	{					
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
 						array_key_exists($metaCh["meta_service_meta_id"], $gbArr[7]) ? $BP = true : NULL;

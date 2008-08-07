@@ -35,14 +35,14 @@
 	$dependency = array();
 	$i = 1;
 	$str = "";
-	while($DBRESULT->fetchInto($dependency))	{
+	while($dependency =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostParent_relation dhpr, host, ns_host_relation nhr WHERE host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab["id"]."' AND dhpr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhpr.host_host_id");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$host = array();
 		$strTemp1 = "";
-		while ($DBRESULT2->fetchInto($host))	{
+		while ($host =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : "";
 			if ($BP)	
@@ -53,7 +53,7 @@
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$host = array();
 		$strTemp2 = "";
-		while ($DBRESULT2->fetchInto($host))	{
+		while ($host =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : "";
 			if ($BP)	
@@ -92,7 +92,7 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$dependency = array();
-	while($DBRESULT->fetchInto($dependency))	{
+	while($dependency =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		$generated = 0;
 		$generated2 = 0;
@@ -102,7 +102,7 @@
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$hg = array();
 		$strTemp1 = "";
-		while ($DBRESULT2->fetchInto($hg))	{
+		while ($hg =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : "";
 			
@@ -117,7 +117,7 @@
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$hg = array();
 		$strTemp2 = "";
-		while ($DBRESULT2->fetchInto($hg))	{
+		while ($hg =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : "";
 			
@@ -160,7 +160,7 @@
 	$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr, dependency WHERE dependency.dep_id = dspr.dependency_dep_id");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($DBRESULT->fetchInto($svPar))	{
+	while ($svPar =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		array_key_exists($svPar["service_service_id"], $gbArr[4]) ? $BP = true : "";
 		
@@ -175,7 +175,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$svPar["dependency_dep_id"]."'");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while ($DBRESULT2->fetchInto($svCh))	{
+			while ($svCh =& $DBRESULT2->fetchRow())	{
 				$BP = false;
 				array_key_exists($svCh["service_service_id"], $gbArr[4]) ? $BP = true : "";
 				
@@ -224,14 +224,14 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$dependency = array();
-	while($DBRESULT->fetchInto($dependency))	{
+	while($dependency =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name FROM dependency_servicegroupParent_relation dsgpr, servicegroup WHERE dsgpr.dependency_dep_id = '".$dependency["dep_id"]."' AND servicegroup.sg_id = dsgpr.servicegroup_sg_id");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$sg = array();
 		$strTemp1 = "";
-		while ($DBRESULT2->fetchInto($sg))	{
+		while ($sg =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : "";
 			
@@ -244,7 +244,7 @@
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$sg= array();
 		$strTemp2 = "";
-		while ($DBRESULT2->fetchInto($sg))	{
+		while ($sg =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : "";
 			if ($BP)	

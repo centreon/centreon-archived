@@ -25,7 +25,7 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$str = NULL;
-	while ($DBRESULT->fetchInto($DBRESULTource))	{
+	while ($DBRESULTource =& $DBRESULT->fetchRow())	{
 		$ret["comment"] ? ($str .= "# '".$DBRESULTource["resource_name"]."'\n") : NULL;
 		if ($ret["comment"] && $DBRESULTource["resource_comment"])	{
 			$comment = array();

@@ -29,7 +29,7 @@
 	$escalation = array();
 	$i = 1;
 	$str = NULL;
-	while($DBRESULT->fetchInto($escalation)){
+	while($escalation =& $DBRESULT->fetchRow()){
 		$BP = false;
 		$strDef = "";
 		$linkedToHost = 0;
@@ -38,7 +38,7 @@
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$host = array();
 		$strTemp = NULL;
-		while ($DBRESULT2->fetchInto($host))	{
+		while ($host =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
 			
@@ -64,7 +64,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while($DBRESULT2->fetchInto($cg))	{
+			while($cg =& $DBRESULT2->fetchRow())	{
 				$BP = false;				
 				array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
 				
@@ -103,14 +103,14 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$escalation = array();
-	while($DBRESULT->fetchInto($escalation))	{
+	while($escalation =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM escalation_hostgroup_relation ehgr, hostgroup hg WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."' AND hg.hg_id = ehgr.hostgroup_hg_id");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$hg = array();
 		$strTemp = NULL;
-		while ($DBRESULT2->fetchInto($hg))	{
+		while ($hg =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : NULL;
 			
@@ -134,7 +134,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while($DBRESULT2->fetchInto($cg))	{
+			while($cg =& $DBRESULT2->fetchRow())	{
 				$BP = false;				
 				array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
 				
@@ -170,14 +170,14 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$escalation = array();
-	while($DBRESULT->fetchInto($escalation))	{
+	while($escalation =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$sg = array();
 		$strTemp = NULL;
-		while ($DBRESULT2->fetchInto($sg))	{
+		while ($sg =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : NULL;
 			
@@ -200,7 +200,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while($DBRESULT2->fetchInto($cg))	{
+			while($cg =& $DBRESULT2->fetchRow())	{
 				$BP = false;				
 				array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
 				
@@ -231,7 +231,7 @@
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT service.service_activate, service.service_description, esr.service_service_id FROM service, escalation_service_relation esr WHERE esr.service_service_id = service.service_id ORDER BY service.service_description");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($service))	{
+	while($service =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		$generated = 0;
 		array_key_exists($service["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
@@ -241,7 +241,7 @@
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$escalation = array();
-			while($DBRESULT2->fetchInto($escalation))	{
+			while($escalation =& $DBRESULT2->fetchRow())	{
 				$host = array();
 				$BP = false;
 				$strDef = "";
@@ -268,7 +268,7 @@
 					$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
 					if (PEAR::isError($DBRESULT3))
 						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-					while($DBRESULT3->fetchInto($cg))	{
+					while($cg =& $DBRESULT3->fetchRow())	{
 						$BP = false;				
 						array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
 						

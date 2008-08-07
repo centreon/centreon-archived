@@ -64,7 +64,7 @@
 									"AND  servicegroup_relation.host_host_id IS NOT NULL");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while($DBRESULT2->fetchInto($service)){
+			while($service =& $DBRESULT2->fetchRow()){
 				isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
 				
 				if ($BP)	{				
@@ -93,7 +93,7 @@
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL ");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while($DBRESULT2->fetchInto($service)){
+			while($service =& $DBRESULT2->fetchRow()){
 				isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
 				
 				if ($BP)	{				
@@ -105,7 +105,7 @@
 							$DBRESULT3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
 							if (PEAR::isError($DBRESULT3)) 
 								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-							while($DBRESULT3->fetchInto($host))	{
+							while($host =& $DBRESULT3->fetchRow())	{
 								$BP = false;
 								isset($gbArr[2][$host["host_host_id"]]) ? $BP = true : NULL;
 								

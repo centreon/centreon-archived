@@ -21,7 +21,7 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : SELECT * FROM meta_service WHERE meta_activate = '1' : ".$DBRESULT->getMessage()."<br />";
 	# Write Virtual Services For meta 
-	while ($DBRESULT->fetchInto($meta))	{
+	while ($meta =& $DBRESULT->fetchRow())	{
 		$strEval = NULL;
 		$strEval .= "define service{\n";
 		$strEval .= print_line("service_description", "meta_".$meta["meta_id"]);
@@ -59,7 +59,7 @@
 		$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr, contactgroup cg WHERE mcgr.meta_id = '".$meta["meta_id"]."' AND mcgr.cg_cg_id = cg.cg_id ORDER BY `cg_name`");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr,.. : ".$DBRESULT2->getMessage()."<br />";
-		while ($DBRESULT2->fetchInto($contactGroup))	{				
+		while ($contactGroup =& $DBRESULT2->fetchRow())	{				
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;

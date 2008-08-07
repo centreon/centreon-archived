@@ -34,7 +34,7 @@
 	$hostGroup = array();
 	$i = 1;
 	$str = NULL;
-	while ($DBRESULT->fetchInto($hostGroup))	{
+	while ($hostGroup =& $DBRESULT->fetchRow())	{
 		$BP = false;
 		$strDef = NULL;
 		$HGLinkedToHost = 0;
@@ -64,7 +64,7 @@
 		$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM hostgroup_relation hgr, host WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND hgr.host_host_id = host.host_id ORDER BY `host_name`");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-		while($DBRESULT2->fetchInto($host))	{
+		while($host =& $DBRESULT2->fetchRow())	{
 			$BP = false;
 			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
 			
@@ -88,7 +88,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT cg.cg_name, cg.cg_id FROM contactgroup_hostgroup_relation cghgr, contactgroup cg WHERE cghgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND cghgr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while($DBRESULT2->fetchInto($contactGroup))	{
+			while($contactGroup =& $DBRESULT2->fetchRow())	{
 				$BP = false;
 				array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
 				
