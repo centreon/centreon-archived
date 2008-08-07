@@ -51,7 +51,7 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
-	while($DBRESULT->fetchInto($host))
+	while($host =& $DBRESULT->fetchRow())
 		//if ($is_admin || (!$is_admin && isset($lcaHostByName["LcaHost"][$host["host_name"]])))
 			$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
@@ -65,7 +65,7 @@
 			$DBRESULT =& $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name FROM metrics m, index_data i WHERE i.host_name = '".getMyHostName($host_id)."' AND i.service_description = '".$value."' and i.id=m.index_id ORDER BY metric_name, unit_name");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			while ($DBRESULT->fetchInto($metricSV))	{
+			while ($metricSV =& $DBRESULT->fetchRow())	{
 				$services1[$key] = $value;
 				$services2[$key][$metricSV["metric_id"]] = $metricSV["metric_name"]."  (".$metricSV["unit_name"].")";
 			}

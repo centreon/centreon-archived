@@ -34,7 +34,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
+		for($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 			$ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
 		$DBRESULT->free();
 	}
@@ -47,14 +47,14 @@
 	$DBRESULT =& $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($metric))
+	while($metric =& $DBRESULT->fetchRow())
 		$metrics[$metric["metric_name"]] = $metric["metric_name"];
 	$DBRESULT->free();
 	# Timeperiods comes from DB -> Store in $tps Array
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($tp))
+	while($tp =& $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
 	# Check commands comes from DB -> Store in $checkCmds Array
@@ -62,7 +62,7 @@
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($checkCmd))
+	while($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $notifCcts Array
@@ -70,7 +70,7 @@
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($notifCg))
+	while($notifCg =& $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
 	# Escalations comes from DB -> Store in $escs Array
@@ -78,7 +78,7 @@
 	$DBRESULT =& $pearDB->query("SELECT esc_id, esc_name FROM escalation ORDER BY esc_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($esc))
+	while($esc =& $DBRESULT->fetchRow())
 		$escs[$esc["esc_id"]] = $esc["esc_name"];
 	$DBRESULT->free();
 	# Meta Service Dependencies comes from DB -> Store in $deps Array
@@ -86,7 +86,7 @@
 	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service WHERE meta_id != '".$meta_id."' ORDER BY meta_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($dep))
+	while($dep =& $DBRESULT->fetchRow())
 		$deps[$dep["meta_id"]] = $dep["meta_name"];
 	$DBRESULT->free();
 	# Calc Type
@@ -97,7 +97,7 @@
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($graphTpl))
+	while($graphTpl =& $DBRESULT->fetchRow())
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
 

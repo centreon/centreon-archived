@@ -77,7 +77,7 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($ms); $i++) {
+	for ($i = 0; $ms =& $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$ms['meta_id']."]");	
 		if ($ms["meta_select_mode"] == 1)

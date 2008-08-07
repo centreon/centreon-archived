@@ -119,7 +119,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($Cg))	{
+						while($Cg =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO meta_contactgroup_relation VALUES ('', '".$maxId["MAX(meta_id)"]."', '".$Cg["cg_cg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
@@ -127,7 +127,7 @@
 						$DBRESULT =& $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($metric))	{
+						while($metric =& $DBRESULT->fetchRow())	{
 							$val = null;
 							$metric["msr_id"] = '';
 							foreach ($metric as $key2=>$value2)	{

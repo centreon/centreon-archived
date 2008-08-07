@@ -70,7 +70,7 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr1 = array();
-	for ($i = 0; $DBRESULT->fetchInto($metric); $i++) {
+	for ($i = 0; $metric =& $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$metric['msr_id']."]");	
 		if ($metric["activate"])

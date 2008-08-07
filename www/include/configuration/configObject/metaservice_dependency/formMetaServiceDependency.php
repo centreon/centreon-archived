@@ -38,14 +38,14 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($msP); $i++)
+		for($i = 0; $msP =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_msParents"][$i] = $msP["meta_service_meta_id"];
 		$DBRESULT->free();
 		# Set Meta Service Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($msC); $i++)
+		for($i = 0; $msC =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_msChilds"][$i] = $msC["meta_service_meta_id"];
 		$DBRESULT->free();
 	}
@@ -57,7 +57,7 @@
 	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($meta))
+	while($meta =& $DBRESULT->fetchRow())
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
 	$DBRESULT->free();
 	#

@@ -90,7 +90,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($ms))	{
+						while($ms =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_metaserviceParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$ms["meta_service_meta_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
@@ -99,7 +99,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($ms)){
+						while($ms =& $DBRESULT->fetchRow()){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_metaserviceChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$ms["meta_service_meta_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
