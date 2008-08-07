@@ -490,9 +490,11 @@
 		$admin2 =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
-		if (isset($admin["contact_admin"]) || !$admin2["count(*)"])
-			return 0;
-		return 1;
+		if ($admin["contact_admin"])
+			return 1 ;
+		else if (!$admin2["count(*)"])
+			return 1;
+		return 0;
 	}
 	
 	function getUserIdFromSID($sid = NULL){
