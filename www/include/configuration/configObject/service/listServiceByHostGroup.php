@@ -50,7 +50,7 @@
 	if (isset($search))	{
 		$search = str_replace('/', "#S#", $search);
 		$search = str_replace('\\', "#BS#", $search);
-		if ($oreon->user->admin || !$isRestreint)
+		if ($is_admin)
 			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND sv.service_description LIKE '%$search%'");
 		else
 			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") AND sv.service_description LIKE '%$search%'");
@@ -61,7 +61,7 @@
 			$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
 		}
 	} else	{
-		if ($oreon->user->admin || !$isRestreint)
+		if ($is_admin)
 			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		else
 			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
@@ -92,7 +92,7 @@
 	/*
 	 * HostGroup/service list
 	 */
-	$oreon->user->admin || !$isRestreint ? $strLca = "" : $strLca = " AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") ";
+	$is_admin ? $strLca = "" : $strLca = " AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") ";
 	if ($search)
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $strLca ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else

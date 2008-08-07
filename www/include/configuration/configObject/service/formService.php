@@ -106,10 +106,10 @@
 	#
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
-	if ($is_admin)
+	//if ($is_admin)
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	else
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHostStr.") AND host_register = '1' ORDER BY host_name");		
+	//else
+	//	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHostStr.") AND host_register = '1' ORDER BY host_name");		
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($host = $DBRESULT->fetchRow())
@@ -134,10 +134,7 @@
 	
 	# HostGroups comes from DB -> Store in $hgs Array
 	$hgs = array();
-	$lcaSTR = "";
-	if (!$is_admin)
-		$lcaSTR = " WHERE hg_id IN (".$lcaHGStr.") ";
-	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $lcaSTR ORDER BY hg_name");
+	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($hg = $DBRESULT->fetchRow())
