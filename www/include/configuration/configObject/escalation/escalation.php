@@ -18,10 +18,14 @@
 	if (!isset ($oreon))
 		exit ();
 
-	$lcaHost = getLcaHostByID($pearDB);
-	$lcaHoststr = getLCAHostStr($lcaHost["LcaHost"]);
-	$lcaHostGroupstr = getLcaHGStr($lcaHost["LcaHostGroup"]);
-	
+	if (!$is_admin){
+		$lcaHost 		= getLcaHostByID($pearDB);
+		$lcaHoststr 	= getLCAHostStr($lcaHost["LcaHost"]);
+		$lcaHostGroupstr = getLcaHGStr($lcaHost["LcaHostGroup"]);
+		$lcaSGStr 		= getLCASGStr(getLCASG($pearDB));
+		$lcaHGStr 		= getLCAHGStr($lcaHost["LcaHostGroup"]);
+	}
+		
 	isset($_GET["esc_id"]) ? $cG = $_GET["esc_id"] : $cG = NULL;
 	isset($_POST["esc_id"]) ? $cP = $_POST["esc_id"] : $cP = NULL;
 	$cG ? $esc_id = $cG : $esc_id = $cP;
@@ -34,25 +38,44 @@
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/configuration/configObject/escalation/";
 	
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	
 	switch ($o)	{
-		case "a" : require_once($path."formEscalation.php"); break; #Add a Escalation
-		case "w" : require_once($path."formEscalation.php"); break; #Watch a Escalation
-		case "c" : require_once($path."formEscalation.php"); break; #Modify a Escalation
-		case "m" : multipleEscalationInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listEscalation.php"); break; #Duplicate n Escalations
-		case "d" : deleteEscalationInDB(isset($select) ? $select : array()); require_once($path."listEscalation.php"); break; #Delete n Escalation
-		default : require_once($path."listEscalation.php"); break;
+		case "a" : 
+			require_once($path."formEscalation.php"); 
+			break; #Add a Escalation
+		case "w" : 
+			require_once($path."formEscalation.php"); 
+			break; #Watch a Escalation
+		case "c" : 
+			require_once($path."formEscalation.php"); 
+			break; #Modify a Escalation
+		case "m" : 
+			multipleEscalationInDB(isset($select) ? $select : array(), $dupNbr); 
+			require_once($path."listEscalation.php"); 
+			break; #Duplicate n Escalations
+		case "d" : 
+			deleteEscalationInDB(isset($select) ? $select : array()); 
+			require_once($path."listEscalation.php"); 
+			break; #Delete n Escalation
+		default : 
+			require_once($path."listEscalation.php"); 
+			break;
 	}
 ?>

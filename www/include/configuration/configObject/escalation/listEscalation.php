@@ -31,21 +31,27 @@
 	
 	$rq = "SELECT COUNT(*) FROM escalation esc";	
 	if ($list && $list == "h"){
-		$oreon->user->admin || !HadUserLca($pearDB) ? $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id) > 0" : $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id AND ehr.host_host_id IN (".$lcaHoststr.")) > 0";
+		if ($is_admin)
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id) > 0";
+		else
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id AND ehr.host_host_id IN (".$lcaHoststr.")) > 0";
 	} else if ($list && $list == "sv") {
-		$oreon->user->admin || !HadUserLca($pearDB) ? $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0" : $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0";
+		if ($is_admin) 
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0";
+		else
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0";
 	} else if ($list && $list == "hg") {
-		if ($oreon->user->admin || !HadUserLca($pearDB))		
+		if ($is_admin)		
 			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id) > 0";
 		else
-			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id AND ehgr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id AND ehgr.hostgroup_hg_id IN (".$lcaHGStr.")) > 0";
 	} else if ($list && $list == "sg") {
-		if ($oreon->user->admin || !HadUserLca($pearDB))		
+		if ($is_admin)		
 			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_servicegroup_relation esgr WHERE esgr.escalation_esc_id = esc.esc_id) > 0";
 		else
-			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_servicegroup_relation esgr WHERE esgr.escalation_esc_id = esc.esc_id AND esgr.servicegroup_sg_id IN (".$lcaServiceGroupstr.")) > 0";
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_servicegroup_relation esgr WHERE esgr.escalation_esc_id = esc.esc_id AND esgr.servicegroup_sg_id IN (".$lcaSGStr.")) > 0";
 	} else if ($list && $list == "ms"){
-		if ($oreon->user->admin || !HadUserLca($pearDB))		
+		if ($is_admin)		
 			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = esc.esc_id) > 0";
 		else
 			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = esc.esc_id) > 0";
@@ -82,20 +88,38 @@
 	 */
 	$rq = "SELECT esc_id, esc_name, esc_alias FROM escalation esc";
 	if ($list && $list == "h")
-		$oreon->user->admin || !HadUserLca($pearDB)	? $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id) > 0" : $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id AND ehr.host_host_id IN (".$lcaHoststr.")) > 0";
+		if ($is_admin)  
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id) > 0";
+		else 
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id AND ehr.host_host_id IN (".$lcaHoststr.")) > 0";
 	else if ($list && $list == "sv")
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0";
 	else if ($list && $list == "hg")
-		$oreon->user->admin || !HadUserLca($pearDB)	? $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id) > 0" :  $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id AND ehgr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
+		if ($is_admin)
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id) > 0";
+		else
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id AND ehgr.hostgroup_hg_id IN (".$lcaHGStr.")) > 0";
 	else if ($list && $list == "sg")
-		$oreon->user->admin || !HadUserLca($pearDB)	? $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_servicegroup_relation esgr WHERE esgr.escalation_esc_id = esc.esc_id) > 0" :  $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE esgr.escalation_esc_id = esc.esc_id AND esgr.servicegroup_sg_id IN (".$lcaServiceGroupstr.")) > 0";
+		if ($is_admin)
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_servicegroup_relation esgr WHERE esgr.escalation_esc_id = esc.esc_id) > 0";
+		else
+			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_servicegroup_relation esgr WHERE esgr.escalation_esc_id = esc.esc_id AND esgr.servicegroup_sg_id IN (".$lcaSGStr.")) > 0";
 	else if ($list && $list == "ms")
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = esc.esc_id) > 0";
+	
+	/*
+	 * Check if $search is init
+	 */
 	if ($search && $list)
 		$rq .= " AND (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
 	else if ($search)
 		$rq .= " WHERE (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
+	
+	/*
+	 * Set Order and limits
+	 */
 	$rq .= " ORDER BY esc_name LIMIT ".$num * $limit.", ".$limit;
+	
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -103,9 +127,15 @@
 	$search = tidySearchKey($search, $advanced_search);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	#Different style between each lines
+	
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();
 	for ($i = 0; $esc =& $DBRESULT->fetchRow(); $i++) {		
 		$moptions = "";
@@ -119,6 +149,7 @@
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
+	
 	/*
 	 * Different messages we put in the template
 	 */
