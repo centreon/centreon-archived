@@ -26,7 +26,8 @@
 
 	include_once 'DB.php';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	//include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	
@@ -128,7 +129,7 @@
 		include_once($centreon_path . "www/DBNDOConnect.php");
 
 		/* Get HostNDO status */
-		if (!$is_admin)
+		if (!$is_admin && $groupnumber)
 			$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
 					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
