@@ -38,7 +38,7 @@
 	$average = 0;
 	$variance = 0;
 	$tab = array();
-    	while ($DBRESULT->fetchInto($data)){
+    	while ($data =& $DBRESULT->fetchRow()){
 		if ($data["value"] > $max)
 			$max = $data["value"];
 		if ($data["value"] < $min)
