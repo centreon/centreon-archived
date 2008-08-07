@@ -20,14 +20,15 @@
 		
 	include("./include/common/autoNumLimit.php");
 
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 		
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 
-	if ($oreon->user->admin || !$isRestreint){
+	if ($is_admin){
 		$rq = "SELECT COUNT(*) FROM dependency dep";
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0";
 	}  else  {
@@ -46,18 +47,25 @@
 	
 	include("./include/common/checkPagination.php");
 	
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# start header menu
+	/*
+	 *  start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_description", _("Alias"));
 	$tpl->assign("headerMenu_options", _("Options"));
-	# end header menu
-	#Dependcy list
-	if ($oreon->user->admin || !$isRestreint){
+	
+	
+	/*
+	 * List dependancies
+	 */
+	if ($is_admin){
 		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0";
 	} else {
@@ -74,8 +82,10 @@
 	$search = tidySearchKey($search, $advanced_search);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+	
 	#Different style between each lines
 	$style = "one";
+	
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
 	for ($i = 0; $dep =& $DBRESULT->fetchRow(); $i++) {		
@@ -90,12 +100,13 @@
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
+	
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
-	#
-	##Toolbar select 
-	#
+	/*
+	 * Toolbar
+	 */
 	?>
 	<script type="text/javascript">
 	function setO(_i) {
@@ -137,9 +148,9 @@
 	
 	$tpl->assign('limit', $limit);
 
-	#
-	##Apply a template definition
-	#	
+	/*
+	 * Apply a template definition
+	 */		
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
