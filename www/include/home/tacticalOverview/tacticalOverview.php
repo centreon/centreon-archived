@@ -276,37 +276,32 @@
 		 * Get ServiceAck  OK(0), WARNING(1),  CRITICAL(2), UNKNOWN(3)
 		 */
 		if (!$is_admin)
-			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), ".$ndo_base_prefix."acknowledgements.state" .
-					" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus, centreon_acl" .
-					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."acknowledgements.object_id" .
-					" AND ".$ndo_base_prefix."acknowledgements.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), " . $ndo_base_prefix."current_state" .
+					" FROM ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus, centreon_acl" .
+					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .					
 					" AND ".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 " .
 					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-					" AND ".$ndo_base_prefix."acknowledgements.acknowledgement_type = 1 " .	
 					" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name ".
 					" AND ".$ndo_base_prefix."objects.name2 = centreon_acl.service_description " .
 					" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
-					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
-					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
-					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module'" .
+					" GROUP BY ".$ndo_base_prefix."servicestatus.current_state";								
 		else
-			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), ".$ndo_base_prefix."acknowledgements.state, name1, name2" .
-					" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus" .
-					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."acknowledgements.object_id" .
-					" AND ".$ndo_base_prefix."acknowledgements.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), " . $ndo_base_prefix."servicestatus.current_state" .
+					" FROM ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus" .
+					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
 					" AND ".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 " .
 					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-					" AND ".$ndo_base_prefix."acknowledgements.acknowledgement_type = 1 " .
-					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
-					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
-					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module'" .
+					" GROUP BY ".$ndo_base_prefix."servicestatus.current_state";									
+		
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
 		$svcAck = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		while ($ndo =& $DBRESULT_NDO1->fetchRow())
-			$svcAck[$ndo["state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.object_id)"];
+			$svcAck[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.object_id)"];
 		
 		/*
 		 * Get Services Inactive objects
