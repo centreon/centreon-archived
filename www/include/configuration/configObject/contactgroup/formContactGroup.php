@@ -30,7 +30,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_contact_id FROM contactgroup_contact_relation WHERE contactgroup_cg_id = '".$cg_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($contacts); $i++)
+		for($i = 0; $contacts =& $DBRESULT->fetchRow(); $i++)
 			$cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
 		$DBRESULT->free();
 	}
@@ -42,7 +42,7 @@
 	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($contact))
+	while($contact =& $DBRESULT->fetchRow())
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
 	$DBRESULT->free();

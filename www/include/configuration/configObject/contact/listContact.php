@@ -39,7 +39,7 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
-	$DBRESULT->fetchInto($ldap_auth);
+	$ldap_auth =& $DBRESULT->fetchRow();
 	$DBRESULT->free();
 
 	include("./include/common/checkPagination.php");
@@ -74,7 +74,7 @@
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($contact); $i++) {
+	for ($i = 0; $contact =& $DBRESULT->fetchRow(); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$contact['contact_id']."]");
 		$moptions = "<!--<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='"._("Modify")."'></a>&nbsp;&nbsp;";

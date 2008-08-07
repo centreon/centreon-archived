@@ -90,7 +90,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT cgcr.contact_contact_id FROM contactgroup_contact_relation cgcr WHERE cgcr.contactgroup_cg_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($cct))	{
+						while($cct =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contactgroup_contact_relation VALUES ('', '".$cct["contact_contact_id"]."', '".$maxId["MAX(cg_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
