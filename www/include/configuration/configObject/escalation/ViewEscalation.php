@@ -36,7 +36,7 @@ if (!isset($oreon))
 	$DBRESULT = $pearDB->query($cmd);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($hostgroup))
+	while($hostgroup =& $DBRESULT->fetchRow())
 		$hostgroup_ary[$hostgroup["hg_id"]] = $hostgroup["hg_name"];
 	$DBRESULT->free();
 	
@@ -50,7 +50,7 @@ if (!isset($oreon))
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
-		while($res->fetchInto($hg))
+		while($hg =& $res->fetchRow())
 			$hgs[$hg["host_id"]] = $hg["host_name"];
 		$res->free();
 	}
@@ -59,7 +59,7 @@ if (!isset($oreon))
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
-		while($res->fetchInto($hg))
+		while($hg =& $res->fetchRow())
 			$hgs[$hg["host_id"]] = $hg["host_name"];
 		$res->free();
 	}

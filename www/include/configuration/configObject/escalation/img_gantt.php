@@ -63,7 +63,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	$res_max->fetchInto($nb_max);
+	$nb_max =& $res_max->fetchRow();
 	$nb_max["nb_firstmin_service"] != NULL ? $min_notif = $nb_max["nb_firstmin_service"] : $min_notif = 1;
 	$nb_max["nb_firstmax_service"] != NULL ? $max_min_notif = $nb_max["nb_firstmax_service"] : $max_min_notif = 1;
 	$min_max_notif = $nb_max["nb_min_lastservice"];
@@ -120,7 +120,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	$res_svc_max->fetchInto($cg_contactgroup_svc_max);
+	$cg_contactgroup_svc_max =& $res_svc_max->fetchRow();
 	$max_contact_length = $cg_contactgroup_svc_max["max_length"];
 
 }else if (isset($_GET["host_id"]) && $_GET["host_id"] != NULL){
@@ -134,7 +134,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	$res_max->fetchInto($nb_max);
+	$nb_max =& $res_max->fetchRow();
 	$nb_max["nb_firstmax_host"] != NULL ? $max_min_notif = $nb_max["nb_firstmax_host"] : $max_min_notif = 1;
 	$nb_max["nb_firstmin_host"] != NULL ? $min_notif = $nb_max["nb_firstmin_host"] : $min_notif = 1;
 	$min_max_notif = $nb_max["nb_min_lasthost"];
@@ -188,7 +188,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	"WHERE chr.host_host_id = ".$_GET["host_id"]." ".
 	"AND chr.contactgroup_cg_id = cg.cg_id";
 	$res_length_contact =& $pearDB->query($cg_max_length);
-	$res_length_contact->fetchInto($cg_contactgroup_host_max);
+	$cg_contactgroup_host_max =& $res_length_contact->fetchRow();
 	$max_contact_length = $cg_contactgroup_host_max["max_length"];
 }
 else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
@@ -202,7 +202,7 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	$res_max->fetchInto($nb_max);
+	$nb_max =& $res_max->fetchRow();
 	$nb_max["nb_firstmin_hostgroup"] != NULL ? $min_notif = $nb_max["nb_firstmin_hostgroup"] : $min_notif = 1;
 	$nb_max["nb_firstmax_hostgroup"] != NULL ? $max_min_notif = $nb_max["nb_firstmax_hostgroup"] : $max_min_notif = 1;
 	$min_max_notif = $nb_max["nb_min_lasthostgroup"];
@@ -256,7 +256,7 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	$res_svc_max->fetchInto($cg_contactgroup_svc_max);
+	$cg_contactgroup_svc_max =& $res_svc_max->fetchRow();
 	$max_contact_length = $cg_contactgroup_svc_max["max_length"];
 }
 # init IMAGE
@@ -314,7 +314,7 @@ function trace_bat($x1, $y1, $x2, $y2, $esc_name)
 if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	#show contactgroup link with the service
 	$pas_tmp_svc = ($max_contact_service * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact_service > 0 ? $max_contact_service : 1) : 20);
-	for ($cnt = 0, $i = 0; $res_cg_service->fetchInto($contactgroup_service); $cnt++){
+	for ($cnt = 0, $i = 0; $contactgroup_service =& $res_cg_service->fetchRow(); $cnt++){
 			($cnt == 0) ? $i += 15 : $i += $pas_tmp_svc;
 			imagestring($image, 3, 10, $hauteur - $marge_bottom - $i, $contactgroup_service["cg_name"], $rouge);
 			ImageFilledRectangle ($image, $marge_left, $hauteur - $marge_bottom - $i, $marge_left + ($pas_graduation_x), $hauteur - $marge_bottom - $i, $rouge);
@@ -326,7 +326,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	$res_cg_service->free();
 	ImageLine ($image, $largeur - 10, $hauteur - $marge_bottom - 5, $largeur- 10, $hauteur - $marge_bottom + 5, $noir);
 	imagestring($image, 2, $largeur - 10, $hauteur - $marge_bottom + 10, 'x', $noir);
-	for ($i = 0, $tmp_x = 0, $flag = 0; $res_esc_svc->fetchInto($esc_svc_data);)
+	for ($i = 0, $tmp_x = 0, $flag = 0; $esc_svc_data =& $res_esc_svc->fetchRow();)
 	{
 		# retrieve contactgroup associated with the escalation service
 		$cmd_contactgroup = "SELECT cg.cg_name ".
@@ -339,7 +339,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 		}
 		$max_contact = $res_cg->numRows();
 		$pas_tmp = ($max_contact * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1) : 20);
-		for ($cnt = 0; $res_cg->fetchInto($contactgroup); $cnt++){#show contactgroup link with the escalation of the service
+		for ($cnt = 0; $contactgroup =& $res_cg->fetchRow(); $cnt++){#show contactgroup link with the escalation of the service
 			($cnt == 0) ? $i += $pas_graduation_y / 2 : $i += $pas_tmp;
 			ImageLine ($image, $marge_left, $hauteur - $marge_bottom - $i, $marge_left + 5, $hauteur - $marge_bottom - $i, $noir);
 			imagestring($image, 3, 10, $hauteur - $marge_bottom - $i, $contactgroup["cg_name"], $noir);
@@ -364,7 +364,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 else if (isset($_GET["host_id"]) && $_GET["host_id"] != NULL){
 	#show contactgroup link with the host
 	$pas_tmp_host = ($max_contact_service * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact_service > 0 ? $max_contact_service : 1) : 20);
-	for ($cnt = 0, $i = 0; $res_cg_host->fetchInto($contactgroup_host); $cnt++){
+	for ($cnt = 0, $i = 0; $contactgroup_host =& $res_cg_host->fetchRow(); $cnt++){
 			($cnt == 0) ? $i += 15 : $i += $pas_tmp_host;
 			imagestring($image, 3, 10, $hauteur - $marge_bottom - $i, $contactgroup_host["cg_name"], $rouge);
 			ImageFilledRectangle ($image, $marge_left, $hauteur - $marge_bottom - $i, $marge_left + ($pas_graduation_x), $hauteur - $marge_bottom - $i, $rouge);
@@ -376,7 +376,7 @@ else if (isset($_GET["host_id"]) && $_GET["host_id"] != NULL){
 	$res_cg_host->free();
 	ImageLine ($image, $largeur - 10, $hauteur - $marge_bottom - 5, $largeur- 10, $hauteur - $marge_bottom + 5, $noir);
 	imagestring($image, 2, $largeur - 10, $hauteur - $marge_bottom + 10, 'x', $noir);
-	for ($i = 0; $res_esc_host->fetchInto($esc_host_data);)
+	for ($i = 0; $esc_host_data =& $res_esc_host->fetchRow();)
 	{
 		# retrieve contactgroup associated with the escalation host
 		$cmd_contactgroup = "SELECT cg.cg_name ".
@@ -389,7 +389,7 @@ else if (isset($_GET["host_id"]) && $_GET["host_id"] != NULL){
 		}
 		$max_contact = $res_cg->numRows();
 		$pas_tmp = ($max_contact * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1) : 20);
-		for ($cnt = 0; $res_cg->fetchInto($contactgroup); $cnt++){#show contactgroup link with the escalation of the host
+		for ($cnt = 0; $contactgroup =& $res_cg->fetchRow(); $cnt++){#show contactgroup link with the escalation of the host
 			($cnt == 0) ? $i += $pas_graduation_y / 2 : $i += $pas_tmp;
 			ImageLine ($image, $marge_left, $hauteur - $marge_bottom - $i, $marge_left + 5, $hauteur - $marge_bottom - $i, $noir);
 			imagestring($image, 3, 10, $hauteur - $marge_bottom - $i, $contactgroup["cg_name"], $noir);
@@ -414,7 +414,7 @@ else if (isset($_GET["host_id"]) && $_GET["host_id"] != NULL){
 else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 	ImageLine ($image, $largeur - 10, $hauteur - $marge_bottom - 5, $largeur- 10, $hauteur - $marge_bottom + 5, $noir);
 	imagestring($image, 2, $largeur - 10, $hauteur - $marge_bottom + 10, 'x', $noir);
-	for ($i = 0, $tmp_x = 0; $res_esc_hostgroup->fetchInto($esc_hostgroup_data);)
+	for ($i = 0, $tmp_x = 0; $esc_hostgroup_data =& $res_esc_hostgroup->fetchRow();)
 	{
 		# retrieve contactgroup associated with the escalation hostgroup
 		$cmd_contactgroup = "SELECT cg.cg_name ".
@@ -427,7 +427,7 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 		}
 		$max_contact = $res_cg->numRows();
 		$pas_tmp = ($max_contact * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1) : 20);
-		for ($cnt = 0; $res_cg->fetchInto($contactgroup); $cnt++){#show contactgroup link with the escalation of the hostgroup
+		for ($cnt = 0; $contactgroup =& $res_cg->fetchRow(); $cnt++){#show contactgroup link with the escalation of the hostgroup
 			($cnt == 0) ? $i += $pas_graduation_y / 2 : $i += $pas_tmp;
 			ImageLine ($image, $marge_left, $hauteur - $marge_bottom - $i, $marge_left + 5, $hauteur - $marge_bottom - $i, $noir);
 			imagestring($image, 3, 10, $hauteur - $marge_bottom - $i, $contactgroup["cg_name"], $noir);
