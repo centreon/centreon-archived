@@ -276,7 +276,7 @@
 		 * Get ServiceAck  OK(0), WARNING(1),  CRITICAL(2), UNKNOWN(3)
 		 */
 		if (!$is_admin)
-			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), " . $ndo_base_prefix."current_state" .
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), " . $ndo_base_prefix."servicestatus.current_state" .
 					" FROM ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus, centreon_acl" .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .					
 					" AND ".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 " .
