@@ -290,7 +290,7 @@
 					" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
 					" ORDER by ".$ndo_base_prefix."acknowledgements.state";
 		else
-			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), ".$ndo_base_prefix."acknowledgements.state" .
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), ".$ndo_base_prefix."acknowledgements.state, name1, name2" .
 					" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus" .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."acknowledgements.object_id" .
 					" AND ".$ndo_base_prefix."acknowledgements.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
@@ -309,7 +309,7 @@
 			$svcAck[$ndo["state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.object_id)"];
 		
 		/*
-		 * Get Services  Inactive objects
+		 * Get Services Inactive objects
 		 */
 		if (!$is_admin && $groupnumber)
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .

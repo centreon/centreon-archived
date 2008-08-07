@@ -1,5 +1,5 @@
 <META HTTP-EQUIV="Refresh" CONTENT="{$refresh_interval}">
-
+<!--
 <div id="actions">
 	<table>
 		<tr>
@@ -8,8 +8,7 @@
 			</td>
 		</tr>
 	</table>
-</div>
-
+</div>-->
 <div id="hostStats">
 	<table>
 		<tr>
@@ -197,7 +196,6 @@
 		</tr>
 	</table>
 </div>
-
 <div id='unhandledproblems'>
 	<table>
 		<tr>
