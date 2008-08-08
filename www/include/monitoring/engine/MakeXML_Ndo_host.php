@@ -15,13 +15,19 @@
  * For information : contact@centreon.com
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	/*
+	 * if debug == 0 => Normal, 
+	 * debug == 1 => get use, 
+	 * debug == 2 => log in file (log.xml)
+	 */
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	// include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");
+	include_once($centreon_path . "www/class/other.class.php");
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	
@@ -37,128 +43,39 @@
 	} else
 		get_error('need session identifiant !');
 
-	/* requisit */
-	if (isset($_GET["instance"]) && !check_injection($_GET["instance"]))
-		$instance = htmlentities($_GET["instance"]);
-	else
-		$instance = "ALL";
-		
-	if (isset($_GET["num"]) && !check_injection($_GET["num"]))
-		$num = htmlentities($_GET["num"]);
-	else
-		get_error('num unknown');
+	/* 
+	 * requisit 
+	 */
+	(isset($_GET["instance"]) && !check_injection($_GET["instance"])) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
+	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
+	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	
-	if (isset($_GET["limit"]) && !check_injection($_GET["limit"]))
-		$limit = htmlentities($_GET["limit"]);
-	else
-		get_error('limit unknown');
+	/*
+	 *  options 
+	 */
+	(isset($_GET["search"]) && !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
+	(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]):$sort_type = "host_name";
+	(isset($_GET["order"]) && !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
+	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
+	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
+	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
 
-	/* options */
-	if (isset($_GET["search"]) && !check_injection($_GET["search"]))
-		$search = htmlentities($_GET["search"]);
-	else
-		$search = "";
-
-	if (isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"]))
-		$sort_type = htmlentities($_GET["sort_type"]);
-	else
-		$sort_type = "host_name";
-
-	if (isset($_GET["order"]) && !check_injection($_GET["order"]))
-		$order = htmlentities($_GET["order"]);
-	else
-		$oreder = "ASC";
-
-	if (isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"]))
-		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
-	else
-		$date_time_format_status = "d/m/Y H:i:s";
-
-	if (isset($_GET["o"]) && !check_injection($_GET["o"]))
-		$o = htmlentities($_GET["o"]);
-	else
-		$o = "h";
-		
-	if (isset($_GET["p"]) && !check_injection($_GET["p"]))
-		$p = htmlentities($_GET["p"]);
-	else
-		$p = "2";
-
-	/* security end*/
-
-	# class init
-	class Duration
-	{
-		function toString ($duration, $periods = null)
-	    {
-	        if (!is_array($duration)) {
-	            $duration = Duration::int2array($duration, $periods);
-	        }
-	        return Duration::array2string($duration);
-	    }
-	    function int2array ($seconds, $periods = null)
-	    {
-	        // Define time periods
-	        if (!is_array($periods)) {
-	            $periods = array (
-	                    'y'	=> 31556926,
-	                    'M' => 2629743,
-	                    'w' => 604800,
-	                    'd' => 86400,
-	                    'h' => 3600,
-	                    'm' => 60,
-	                    's' => 1
-	                    );
-	        }
-	        // Loop
-	        $seconds = (int) $seconds;
-	        foreach ($periods as $period => $value) {
-	            $count = floor($seconds / $value);
-	            if ($count == 0) {
-	                continue;
-	            }
-	            $values[$period] = $count;
-	            $seconds = $seconds % $value;
-	        }
-	        // Return
-	        if (empty($values)) {
-	            $values = null;
-	        }
-	        return $values;
-	    }
-
-	    function array2string ($duration)
-	    {
-	        if (!is_array($duration)) {
-	            return false;
-	        }
-	        foreach ($duration as $key => $value) {
-	            $segment = $value . '' . $key;
-	            $array[] = $segment;
-	        }
-	        $str = implode(' ', $array);
-	        return $str;
-	    }
-	}
-
-	/* LCA */
-	// check is admin
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$user =& $res1->fetchRow();
-	$user_id = $user["user_id"];
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$admin =& $res2->fetchRow();
-	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
+	/* 
+	 * LCA 
+	 */
+	
+	$is_admin =  isUserAdmin($sid);
 
 	// if is admin -> lca
-	if(!$is_admin){
+	if (!$is_admin){
 		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+		
+		$grouplist = getGroupListofUser($pearDB); 
+		$groupnumber = count($grouplist);
+		$grouplistStr = groupsListStr($grouplist);
+		
 	}
-
 
 	$service = array();
 	$host_status = array();
@@ -183,7 +100,7 @@
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
 	/* Get Host status */
-	$rq1 = 	" SELECT nhs.current_state," .
+	$rq1 = 	" SELECT DISTINCT no.name1, nhs.current_state," .
 			" nhs.problem_has_been_acknowledged, " .
 			" nhs.passive_checks_enabled," .
 			" nhs.active_checks_enabled," .
@@ -197,24 +114,27 @@
 			" nh.notes_url," .
 			" nh.icon_image," .
 			" nh.icon_image_alt" .
-			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh" .
-			" WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
+			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh";
+	if (!$is_admin)	
+		$rq1 .= ", centreon_acl ";
+		 
+	$rq1 .= " WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.name1 not like 'OSL_Module'".
 			" AND no.is_active = 1 AND no.objecttype_id = 1 AND nh.config_type = 1" .
 			" AND no.name1 NOT LIKE 'Meta_Module'";
 
-		if(!$is_admin)
-			$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
+	if (!$is_admin)
+		$rq1 .= " AND no.name1 = centreon_acl.host_name" .
+				" AND centreon_acl.group_id IN (".$grouplistStr.")";
 
 
-	if($search != ""){
+	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-	}
 
-	if($o == "hpb")
+	if ($o == "hpb")
 		$rq1 .= " AND nhs.current_state != 0 ";
 
-	if($instance != "ALL")
+	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
 
@@ -231,13 +151,13 @@
 
 	$rq_pagination = $rq1;
 
-	/* Get Pagination Rows */
+	/* 
+	 * Get Pagination Rows 
+	 */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
-	/* End Pagination Rows */
-
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
@@ -255,8 +175,7 @@
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
-	while($ndo =& $DBRESULT_NDO1->fetchRow())
-	{
+	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 		$color_host = $tab_color_host[$ndo["current_state"]]; //"#FF0000";
 		$passive = 0;
 		$active = 1;
