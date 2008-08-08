@@ -21,21 +21,21 @@
 	require_once("@CENTREON_ETC@/centreon.conf.php");
 	require_once("$centreon_path/www/DBOdsConnect.php");
 
-	$title	 = array(	"active_host_check" => "Verifications d'hotes", 
-						"active_host_last" => "Hotes Actifs",
-						"host_latency" => "Latence des verifications d'hotes",
-						"active_host_check" => "Verifications des services", 
-						"active_service_last" => "Services Actifs", 
-						"service_latency" => "Latences des verifications des services", 
-						"cmd_buffer" => "Commandes en buffer", 
-						"host_states" => "Etats des hotes", 
-						"service_states" => "Etats des Services");
+	$title	 = array(	"active_host_check" => _("Host checks"), 
+						"active_host_last" => _("Active hosts"),
+						"host_latency" => _("Host check latency"),
+						"active_service_check" => _("Service checks"), 
+						"active_service_last" => _("Active services"), 
+						"service_latency" => _("Service check latency"), 
+						"cmd_buffer" => _("Commands in buffer"), 
+						"host_states" => _("Host status"), 
+						"service_states" => _("Services status"));
 
 
 	$options = array(	"active_host_check" => "nagios_active_host_execution.rrd", 
 						"active_host_last" => "nagios_active_host_last.rrd",
 						"host_latency" => "nagios_active_host_latency.rrd",
-						"active_host_check" => "nagios_active_service_execution.rrd", 
+						"active_service_check" => "nagios_active_service_execution.rrd", 
 						"active_service_last" => "nagios_active_service_last.rrd", 
 						"service_latency" => "nagios_active_service_latency.rrd", 
 						"cmd_buffer" => "nagios_cmd_buffer.rrd", 
@@ -57,10 +57,17 @@
 	 * Verify if start and end date
 	 */	
 
-	if (!isset($_GET["start"]))
-		$start = time() - (60*60*96);
-	else
-		$start = $_GET["start"];
+	if (!isset($_GET["start"])) {		
+		$start = time() - (60*60*96);		
+	}
+	else {				
+		switch ($_GET["start"]) {
+			case "today" : $start = time() - (60*60*24); break;
+			case "yesterday" : $start = time() - (60*60*48); break;
+			case "last4days" : $start = time() - (60*60*96); break;
+			case "lastweek" : $start = time() - (60*60*168); break;
+		}
+	}
 	
 	if (!isset($_GET["end"]))
 		$end = time();
@@ -74,7 +81,7 @@
 	 * get all template infos
 	 */
 	 
-	$command_line .= " --interlaced --imgformat PNG --width=500 --height=120 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  ";
+	$command_line .= " --interlaced --imgformat PNG --width=400 --height=100 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  ";
 	$command_line .= "--rigid --alt-autoscale-max ";
 			
 	/*

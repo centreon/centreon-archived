@@ -1,3 +1,4 @@
+<form {$form.attributes}>
 <div>
 	<ul id="mainnav">
 	{assign var='cpt' value=0}
@@ -14,17 +15,20 @@
 <div id='tab{$cpt}' class='tab'>
  	<table class="ListTable">
 	 	<tr class="ListHeader">
-	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
+	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.start.label}&nbsp;&nbsp;{$form.start.html}</td>
 	 	</tr>
 		{assign var='counter' value=0}
- 		{foreach from=$options key=keyOptions item=itemOptions}
-	 	<tr>
-	 		<td align='center'>
+		<tr><td align="center">
+ 		{foreach from=$options key=keyOptions item=itemOptions} 		
+	 		{if $startPeriod}
+	 		<img src="./include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}&start={$startPeriod}">
+	 		{else}
 	 		<img src="./include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}">
-	 		</td>
-	 	</tr>
+	 		{/if}	 	
  		{assign var='counter' value=$counter+1}
 	 	{/foreach}
+	 	</td></tr>	 	
 	 </table>
 </div>
-{/foreach} 	
+{/foreach}
+</form> 	

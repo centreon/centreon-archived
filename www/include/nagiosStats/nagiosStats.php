@@ -20,8 +20,26 @@
 	
 	include_once("./include/monitoring/common-Func.php");
 
+	require_once 'HTML/QuickForm.php';
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+
 	unset($tpl);
-	unset($path);					
+	unset($path);
+
+
+	# Time period select	
+	$form = new HTML_QuickForm('form', 'post', "?p=".$p);	
+	$time_period = array("today" =>_("Today"),
+						"yesterday" => _("Yesterday"),
+						"last4days" =>_("Last 4 days"),
+						"lastweek" =>_("Last week"));
+	$selTP =& $form->addElement('select', 'start', _("Select time period :"), $time_period, array("onChange" =>"this.form.submit();"));	
+	if (isset($_POST["start"])) {		
+		$form->setDefaults(array('start' => $_POST["start"]));
+	}
+	else {
+		$form->setDefaults(array('start' => "last4days"));
+	}
 
 	# Get Poller List
 	$tab_nagios_server = array();
@@ -59,12 +77,18 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./");	
 	
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$form->accept($renderer);
+	$tpl->assign('form', $renderer->toArray());
+	$tpl->assign("p", $p);
+	if (isset($_POST["start"]))
+		$tpl->assign('startPeriod', $_POST["start"]);		
 	if (isset($host_list) && $host_list)
 		$tpl->assign('host_list', $host_list);
 		
 	if (isset($tab_server) && $tab_server)
 		$tpl->assign('tab_server', $tab_server);	
-	
+		
 	$tpl->assign("options", $options);
 	$tpl->assign("session", session_id());
 	$tpl->display("nagiosStats.ihtml");
