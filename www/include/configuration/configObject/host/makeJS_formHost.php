@@ -63,15 +63,13 @@ function displaySelectedTp(){
 		    
 		    selectElem.id = 'tpSelect_' + globalk;
 			selectElem.name = 'tpSelect_' + globalk;
-			selectElem.value = 'tpSelect_' + globalk;
+			selectElem.value = 'tpSelect_' + globalk;			
 			for(i=0; i<host_entry.length;i++)
 			{
 			   	id = tp_id.item(i).firstChild.data;  	
 			   	alias = tp_alias.item(i).firstChild.data;
 			   	var optionElem = document.createElement('option');    	
-			   	if (tab[globalk] == id) {
-					optionElem.selected = true;
-			  	}
+			   	
 			    optionElem.value = id;
 			    if (i == 0) {
 			    	optionElem.text = " ";
@@ -84,7 +82,10 @@ function displaySelectedTp(){
 			    }
 			    else {
 			    	selectElem.appendChild(optionElem);
-			    }			    
+			    }
+			    if (tab[globalk] == id) {
+					optionElem.selected = true;
+			  	}			    
 			}			
 			
 			tabElem.className = "ListTableMultiTp";		
@@ -104,12 +105,12 @@ function displaySelectedTp(){
 					}
 					else {
 						document.getElementById('trElem_' + this.id).innerHTML = "";
-					}					
+					}
 				}
 			}
 			tdElem.appendChild(imgElem);
 			trElem.appendChild(tdElem);
-			tbodyElem.appendChild(trElem);	
+			tbodyElem.appendChild(trElem);
 		}			
 		tabElem.appendChild(tbodyElem)
 		var divElem = document.getElementById("parallelTemplate");		
