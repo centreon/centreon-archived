@@ -20,10 +20,9 @@ For information : contact@centreon.com
 * {margin:0; padding:0}
 
 
-#topright {			float: right;}
-#bottomright {		float: right;}
-
-#bottommiddle {		float: right; background-color: Blue;}
+#topright 		{float: right;}
+#bottomright 	{float: right;}
+#bottommiddle 	{float: right; background-color: Blue;}
 
 #topleft, #topright, #bottomleft, #bottomright {		
 	padding:0px;	
@@ -32,34 +31,31 @@ For information : contact@centreon.com
 	background-repeat: no-repeat;	
 	font-size:10px; /* correction d'un bug IE */}
 
-#bottomright{
-	background-color: blue;
-} 
-#bottomleft{
-	background-color: green;
-} 
+#bottomright	{background-color: blue;} 
+#bottomleft		{background-color: green;} 
  
-#contenu {	background: url(Images/line.gif) right repeat-y; padding-left: 2px;}
-#topline{			background:  url(Images/line.gif) top right repeat-x;}
-#bottomline{		background:  url(Images/line.gif) bottom right repeat-x;}
+#contenu 		{background: #ffffff url(Images/line.gif) right repeat-y; padding-left: 2px;}
+#topline		{background: #ffffff url(Images/line.gif) top right repeat-x;}
+#bottomline		{background: #ffffff url(Images/line.gif) bottom right repeat-x;}
 
+#menu_3			{padding:0px;}
+#menu3_bgcolor {background : #FFFFFF;}
 
-#menu_3{padding:0px;}
-
-.Tmenu3 				{border-collapse: collapse; background-color: white;}
-.Tmenu3 td 				{padding: 0px; }
+.Tmenu3 				{border-collapse: collapse; background-color: #ffffff;}
+.Tmenu3 td 				{padding: 0px;background-color: #ffffff; }
+.Tmenu3 td .left		{padding: 0px;background-color: #ffffff; }
 .Tmenu3 .top .left, .Tmenu3 .top .right, .Tmenu3 .bottom .left, .Tmenu3 .bottom .right {height: 9px;	width: 10px; }
 .Tmenu3 .top .left		{width:10px;padding-left:10px;}
 .Tmenu3 .top .right		{width:10px;padding-left:10px;}
 .Tmenu3 .right			{width:10px;}
 .Tmenu3 .left			{width:10px;}
 .Tmenu3 .center			{width:100%;}
-.Tmenu3 .top .left 		{background-image: url(Images/topleft2.gif);}
-.Tmenu3 .top .right 	{background-image: url(Images/topright2.gif);}
-.Tmenu3 .bottom .left 	{background-image: url(Images/bottomleft2.gif); }
-.Tmenu3 .bottom .right 	{background-image: url(Images/bottomright2.gif); }
-.Tmenu3 .bottom .center	{background: url(Images/line.gif) bottom right repeat-x; }
-.Tmenu3 .top .center	{background: url(Images/line.gif) top right repeat-x; }
-.Tmenu3 .middle .left	{background: url(Images/line.gif) left repeat-y; }
-.Tmenu3 .middle .right	{background: url(Images/line.gif) right repeat-y; }
+.Tmenu3 .top .left 		{background: #ffffff url(Images/topleft2.gif);}
+.Tmenu3 .top .right 	{background: #ffffff url(Images/topright2.gif);}
+.Tmenu3 .bottom .left 	{background: #ffffff url(Images/bottomleft2.gif); }
+.Tmenu3 .bottom .right 	{background: #ffffff url(Images/bottomright2.gif); }
+.Tmenu3 .bottom .center	{background: #ffffff url(Images/line.gif) bottom right repeat-x; }
+.Tmenu3 .top .center	{background: #ffffff url(Images/line.gif) top right repeat-x; }
+.Tmenu3 .middle .left	{background: #ffffff url(Images/line.gif) left repeat-y; }
+.Tmenu3 .middle .right	{background: #ffffff url(Images/line.gif) right repeat-y; }
 .help					{position:absolute;right:15px;top:15px;}

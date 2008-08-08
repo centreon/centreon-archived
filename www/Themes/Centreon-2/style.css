@@ -101,7 +101,7 @@ hr	{
 #menu_3 {    		padding-bottom:5px;padding-left:50px;}
 
 #menu_3.div{
-	background-color: #FEF7DB;
+	background-color: #ffffff ;
 	border: 1px #FDC11E solid;
 	-moz-border-radius: 4px;
 }
@@ -339,9 +339,7 @@ a.infobulle:hover span	{display:block;position:absolute;top:2em;left:2em;text-al
 a.infobulle:hover table	{border: 1px gray solid;}
 a.infobulle:hover td	{padding:1px;}
 
-.ColPopup{
-	white-space:nowrap;
-}
+.ColPopup{white-space:nowrap;}
 
 .bulleDashtab	{width:100%;border-collapse:separate;}
 .bulleDashtab td{background-color:#e0e0ea;border-collapse:separate;border: 0.5px solid white;}
