@@ -1,5 +1,19 @@
 ## Centreon 2.0-RC2
 
+=> Bugfix : remove problem with ACL When a user a no acl
+=> Bugfix : remove problem in service by hostgroup page with ACL
+=> Bugfix : remove problem in escalations page with ACL
+=> Bugfix : remove problem in all dependancies page with ACL
+=> Bugfix : remove problem in host monitoring page with ACL
+=> Bugfix : remove problem in service minotirng page with ACL
+=> Bugfix : remove problem with upgrade (multiple update : ie => beta 5 to RC2)
+=> Bugfix : remove problem in centstorage when a metric name contain / or \
+=> Bugfix : remove use of fetchInto
+=> Bugfix : add critical in event log view
+=> Feature : improve Centstorage options display
+=> Bugfix : set ACL for svc-pie.php (JL Gregoire)  
+
+
 ## Centreon 2.0-RC1
 
 => Bugfix : Solved a few PHP errors
