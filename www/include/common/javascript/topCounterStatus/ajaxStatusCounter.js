@@ -18,17 +18,16 @@
 
 function getXhrC(){
 	if (window.XMLHttpRequest) // Firefox and others
-	   var xhrC = new XMLHttpRequest();
+	   	var xhrC = new XMLHttpRequest();
 	else if(window.ActiveXObject){ // Internet Explorer
-	   try {
-                var xhrC = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
+	   	try {
+            	var xhrC = new ActiveXObject("Msxml2.XMLHTTP");
+           	} catch (e) {
                 var xhrC = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-	}
-	else { // XMLHttpRequest non support2 par le navigateur
-	   alert("Your Browser doesn't support XMLHTTPRequest object...");
-	   var xhrC = false;
+           	}
+	} else { // XMLHttpRequest non support2 par le navigateur
+		alert("Your Browser doesn't support XMLHTTPRequest object...");
+	   	var xhrC = false;
 	}
 	return xhrC;
 }
@@ -50,18 +49,18 @@ function reloadStatusCounter(_relaod_time,_sid){
 			reponseC = xhrC.responseXML.documentElement;
 			
 			// ici je recupere les statistiques
-			var stats = reponseC.getElementsByTagName("stats");
+			var stats = reponseC.getElementsByTagName("s");
 			for (var i = 0 ; i < stats.length ; i++) {
 				var stat = stats[i];
-				var _statistic_service_ok = stat.getElementsByTagName("statistic_service_ok")[0].firstChild.nodeValue;
-				var _statistic_service_warning = stat.getElementsByTagName("statistic_service_warning")[0].firstChild.nodeValue;
-				var _statistic_service_critical = stat.getElementsByTagName("statistic_service_critical")[0].firstChild.nodeValue;
-				var _statistic_service_unknown = stat.getElementsByTagName("statistic_service_unknown")[0].firstChild.nodeValue;
-				var _statistic_service_pending = stat.getElementsByTagName("statistic_service_pending")[0].firstChild.nodeValue;
-				var _statistic_host_up = stat.getElementsByTagName("statistic_host_up")[0].firstChild.nodeValue;
-				var _statistic_host_down = stat.getElementsByTagName("statistic_host_down")[0].firstChild.nodeValue;
-				var _statistic_host_unreachable = stat.getElementsByTagName("statistic_host_unreachable")[0].firstChild.nodeValue;
-				var _statistic_host_pending = stat.getElementsByTagName("statistic_host_pending")[0].firstChild.nodeValue;
+				var _statistic_service_ok = stat.getElementsByTagName("o")[0].firstChild.nodeValue;
+				var _statistic_service_warning = stat.getElementsByTagName("w")[0].firstChild.nodeValue;
+				var _statistic_service_critical = stat.getElementsByTagName("c")[0].firstChild.nodeValue;
+				var _statistic_service_unknown = stat.getElementsByTagName("un1")[0].firstChild.nodeValue;
+				var _statistic_service_pending = stat.getElementsByTagName("p1")[0].firstChild.nodeValue;
+				var _statistic_host_up = stat.getElementsByTagName("up")[0].firstChild.nodeValue;
+				var _statistic_host_down = stat.getElementsByTagName("d")[0].firstChild.nodeValue;
+				var _statistic_host_unreachable = stat.getElementsByTagName("un2")[0].firstChild.nodeValue;
+				var _statistic_host_pending = stat.getElementsByTagName("p2")[0].firstChild.nodeValue;
 
 				/*
 				 * host
@@ -97,6 +96,7 @@ function reloadStatusCounter(_relaod_time,_sid){
 				/* 
 				 * svc
 				 */
+				
 				// Ok service Stats
 				document.getElementById('service_ok').innerHTML = '';
 				var _text_service_ok = document.createTextNode(_statistic_service_ok);
@@ -104,6 +104,7 @@ function reloadStatusCounter(_relaod_time,_sid){
 			  	_linkservice_ok.href = 'main.php?p=20201&o=svc_ok';
 				_linkservice_ok.appendChild(_text_service_ok);
 				document.getElementById('service_ok').appendChild(_linkservice_ok);
+				
 				// Warning service stats
 				document.getElementById('service_warning').innerHTML = '';
 				var _text_service_warning = document.createTextNode(_statistic_service_warning);
@@ -111,6 +112,7 @@ function reloadStatusCounter(_relaod_time,_sid){
 			  	_linkservice_warning.href = 'main.php?p=20202&o=svc_warning';
 				_linkservice_warning.appendChild(_text_service_warning);
 				document.getElementById('service_warning').appendChild(_linkservice_warning);
+				
 				// Critcal Service Stats
 				document.getElementById('service_critical').innerHTML = '';
 				var _text_service_critical = document.createTextNode(_statistic_service_critical);
@@ -118,6 +120,7 @@ function reloadStatusCounter(_relaod_time,_sid){
 			  	_linkservice_critical.href = 'main.php?p=20202&o=svc_critical';
 				_linkservice_critical.appendChild(_text_service_critical);
 				document.getElementById('service_critical').appendChild(_linkservice_critical);
+				
 				// Unknwon Service Stats
 				document.getElementById('service_unknown').innerHTML = '';
 				var _text_service_unknown = document.createTextNode(_statistic_service_unknown);
@@ -125,6 +128,7 @@ function reloadStatusCounter(_relaod_time,_sid){
 			  	_linkservice_unknown.href = 'main.php?p=20202&o=svc_unknown';
 				_linkservice_unknown.appendChild(_text_service_unknown);
 				document.getElementById('service_unknown').appendChild(_linkservice_unknown);
+				
 				// Pending Services Stats
 				document.getElementById('service_pending').innerHTML = '';
 				var _text_service_pending = document.createTextNode(_statistic_service_pending);
@@ -138,7 +142,6 @@ function reloadStatusCounter(_relaod_time,_sid){
 
 	xhrC.open("POST",_adrrsearchC,true);
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhrC.send("sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&session_expire="+(_relaod_time/1000));
-	
+	xhrC.send("sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&session_expire="+(_relaod_time/1000));
 	setTimeout('reloadStatusCounter("'+ _relaod_time +'","'+ _sid +'")', _relaod_time);
 }

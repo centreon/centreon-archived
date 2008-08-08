@@ -26,7 +26,8 @@
 
 	include_once 'DB.php';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");	
+	//include_once("@CENTREON_ETC@/centreon.conf.php");	
+	include_once("/etc/centreon/centreon.conf.php");	
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	
@@ -68,26 +69,20 @@
 	$user =& $res1->fetchRow();
 	$user_id = $user["user_id"];
 
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$admin =& $res2->fetchRow();
-	
 	global $is_admin;
 	
-	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
+	$is_admin =  isUserAdmin($sid);	
 	
 	if (!$is_admin){
-		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);		
+		/*
+		 * Get Acl Group list
+		 */
+		$grouplist = getGroupListofUser($pearDB); 
+		$groupnumber = count($grouplist);
+		$grouplistStr = groupsListStr($grouplist);
 	}
-	 
-	/*
-	 * Get Acl Group list
-	 */
 	
-	$grouplist = getGroupListofUser($pearDB); 
-	$groupnumber = count($grouplist);
+	
 	 
 	function restore_session($statistic_service = 'null', $statistic_host = 'null'){
 		global $pearDB;
@@ -109,14 +104,17 @@
 		}
 	}
 
-	function read($sid, $lcaSTR){
-		global $pearDB, $flag,$centreon_path, $ndo_base_prefix, $is_admin, $groupnumber, $grouplist;
+	function read($sid){
+		global $pearDB, $flag,$centreon_path, $ndo_base_prefix, $is_admin, $groupnumber, $grouplistStr;
+		
 		$oreon = "";
 		$search = "";
 		$search_type_service = 0;
 		$search_type_host = 0;
 
-		## calcul stat for resume
+		/*
+		 * Init stat for resume
+		 */
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 
@@ -124,15 +122,22 @@
 		if (PEAR::isError($DBRESULT_OPT))
 			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 		$general_opt =& $DBRESULT_OPT->fetchRow();
-
+	
+		/*
+		 * Connect to NDO
+		 */
 		include_once($centreon_path . "www/DBNDOConnect.php");
 
-		/* Get HostNDO status */
+		/* 
+		 * Get Host NDO status 
+		 */
+		
 		if (!$is_admin && $groupnumber)
-			$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
-					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects, centreon_acl " .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
-					" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR)" .
+					" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name " .
+					" AND centreon_acl.group_id IN (".$grouplistStr.")".
 					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 		else
@@ -141,17 +146,19 @@
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
 					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-					
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
-		$host_stat = array(0=>0, 1=>0, 2=>0, 3=>0);
+		$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
 
 		while ($ndo =& $DBRESULT_NDO1->fetchRow())
-			$host_stat[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
-
-		/* Get ServiceNDO status */
+			$host_stat[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
+		$DBRESULT_NDO1->free();
+		
+		/* 
+		 * Get Service NDO status 
+		 */
 		if (!$is_admin && $groupnumber)
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
@@ -160,7 +167,7 @@
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
-					" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") ".
+					" AND centreon_acl.group_id IN (".$grouplistStr.") ".
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 		else
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
@@ -176,30 +183,40 @@
 		$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		while ($ndo =& $DBRESULT_NDO2->fetchRow())
 			$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
-
+		$DBRESULT_NDO2->free();
+		
 		restore_session($statistic_service, $statistic_host);
 
+		/*
+		 * Create Buffer
+		 */
 		$buffer  = '<?phpxml version="1.0"?>';
 		$buffer .= '<reponse>';
 		$buffer .= '<infos>';
 		$buffer .= '<filetime>'.time().'</filetime>';
 		$buffer .= '</infos>';
-		$buffer .= '<stats>';
-		$buffer .= '<statistic_service_ok>'.$svc_stat["0"].'</statistic_service_ok>';
-		$buffer .= '<statistic_service_warning>'.$svc_stat["1"].'</statistic_service_warning>';
-		$buffer .= '<statistic_service_critical>'.$svc_stat["2"].'</statistic_service_critical>';
-		$buffer .= '<statistic_service_unknown>'.$svc_stat["3"].'</statistic_service_unknown>';
-		$buffer .= '<statistic_service_pending>'.$svc_stat["4"].'</statistic_service_pending>';
-		$buffer .= '<statistic_host_up>'.$host_stat["0"].'</statistic_host_up>';
-		$buffer .= '<statistic_host_down>'.$host_stat["1"].'</statistic_host_down>';
-		$buffer .= '<statistic_host_unreachable>'.$host_stat["2"].'</statistic_host_unreachable>';
-		$buffer .= '<statistic_host_pending>'.$host_stat["3"].'</statistic_host_pending>';
-		$buffer .= '</stats>';
+		$buffer .= '<s>';
+		$buffer .= '<o>'.$svc_stat["0"].'</o>';
+		$buffer .= '<w>'.$svc_stat["1"].'</w>';
+		$buffer .= '<c>'.$svc_stat["2"].'</c>';
+		$buffer .= '<un1>'.$svc_stat["3"].'</un1>';
+		$buffer .= '<p1>'.$svc_stat["4"].'</p1>';
+		$buffer .= '<up>'.$host_stat["0"].'</up>';
+		$buffer .= '<d>'.$host_stat["1"].'</d>';
+		$buffer .= '<un2>'.$host_stat["2"].'</un2>';
+		$buffer .= '<p2>'.$host_stat["3"].'</p2>';
+		$buffer .= '</s>';
 		$buffer .= '</reponse>';
+		
+		/*
+		 * send Header
+		 */
 		header('Content-Type: text/xml');
+		/*
+		 * Display Buffer
+		 */
 		echo $buffer;
 	}
-	if (!isset($lcaSTR))
-		$lcaSTR = array();
-	read($sid, $lcaSTR);
+	
+	read($sid);
 ?>
