@@ -12,7 +12,8 @@
 => Bugfix : add critical in event log view
 => Feature : improve Centstorage options display
 => Bugfix : set ACL for svc-pie.php (JL Gregoire)  
-
+=> Enhancement : better display on Nagiostats' part, a timeperiod selection is also available
+=> Enhancement : Javascripted checkboxes added to "Dependency pages"
 
 ## Centreon 2.0-RC1
 
