@@ -459,6 +459,7 @@ sub replaceMetricSpecialChar($){
 sub createRRDDatabase($$$$$$){
 	my ($ERR, $RRDdatabase_path, $metric_id, $begin, $metric_name, $interval, $my_len_storage_rrd);
 	($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd) = @_;
+	$metric_name = replaceMetricSpecialChar($metric_name);
 	RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric_name, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".$my_len_storage_rrd);
 	$ERR = RRDs::error;
 	if ($ERR) {writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");}
@@ -468,6 +469,7 @@ sub createRRDDatabase($$$$$$){
 sub tuneRRDDatabase($$$$){
 	my ($ERR, $RRDdatabase_path, $metric_id ,$metric_name, $interval_hb);
 	($RRDdatabase_path, $metric_id ,$metric_name, $interval_hb) = @_;
+	$metric_name = replaceMetricSpecialChar($metric_name);
 	RRDs::tune($RRDdatabase_path.$metric_id.".rrd", "-h", substr($metric_name, 0, 19).":".$interval_hb);
 	$ERR = RRDs::error;
 	if ($ERR){writeLogFile("ERROR while tunning operation on ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");}
