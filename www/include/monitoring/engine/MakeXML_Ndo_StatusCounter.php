@@ -26,8 +26,7 @@
 
 	include_once 'DB.php';
 
-	//include_once("@CENTREON_ETC@/centreon.conf.php");	
-	include_once("/etc/centreon/centreon.conf.php");	
+	include_once("@CENTREON_ETC@/centreon.conf.php");	
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	
@@ -141,7 +140,7 @@
 					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 		else
-			$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state) , ".$ndo_base_prefix."hoststatus.current_state" .
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) , ".$ndo_base_prefix."hoststatus.current_state" .
 					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
 					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
 					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
