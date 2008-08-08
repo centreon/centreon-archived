@@ -59,7 +59,10 @@
 					<xsl:element name="a">
 					  	<xsl:attribute name="classe">infobulle</xsl:attribute>
 					  	<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
-						www
+							<xsl:element name="img">
+							  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+							  	<xsl:attribute name="title">HTTP Link : <xsl:value-of select="hnu"/></xsl:attribute>
+							</xsl:element>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="ha = 1">
