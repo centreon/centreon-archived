@@ -32,7 +32,10 @@
 	$time_period = array("today" =>_("Today"),
 						"yesterday" => _("Yesterday"),
 						"last4days" =>_("Last 4 days"),
-						"lastweek" =>_("Last week"));
+						"lastweek" =>_("Last week"),
+						"lastmonth" =>_("Last month"),
+						"last6month" =>_("Last 6 months"),
+						"lastyear" =>_("Last year"));
 	$selTP =& $form->addElement('select', 'start', _("Select time period :"), $time_period, array("onChange" =>"this.form.submit();"));	
 	if (isset($_POST["start"])) {		
 		$form->setDefaults(array('start' => $_POST["start"]));

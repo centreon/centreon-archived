@@ -66,6 +66,9 @@
 			case "yesterday" : $start = time() - (60*60*48); break;
 			case "last4days" : $start = time() - (60*60*96); break;
 			case "lastweek" : $start = time() - (60*60*168); break;
+			case "lastmonth" : $start = time() - (60*60*24*30); break;
+			case "last6month" : $start = time() - (60*60*24*30*6); break;
+			case "lastyear" : $start = time() - (60*60*24*30*12); break;
 		}
 	}
 	
