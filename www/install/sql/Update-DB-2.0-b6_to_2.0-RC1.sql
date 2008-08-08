@@ -45,11 +45,8 @@ UPDATE `topology` SET `topology_name` = 'Problems' WHERE `topology_name` = 'mon_
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL, 30703, NULL, './include/common/javascript/datePicker.js', '');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL, 30704, NULL, './include/common/javascript/datePicker.js', '');
 
--- 
--- Update Centreon version
--- 
+UPDATE `topology` SET `topology_name` = 'Overview' WHERE `topology`.`topology_name` = 'Resume' ;
+UPDATE `topology` SET `topology_name` = 'Unknown' WHERE `topology`.`topology_name` = 'Unknonwn' ;
 
 UPDATE `informations` SET `value` = '2.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-b6' LIMIT 1;
 
-UPDATE `topology` SET `topology_name` = 'Overview' WHERE `topology`.`topology_name` = 'Resume' ;
-UPDATE `topology` SET `topology_name` = 'Unknown' WHERE `topology`.`topology_name` = 'Unknonwn' ;
