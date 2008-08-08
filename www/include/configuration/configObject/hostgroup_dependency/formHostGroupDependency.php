@@ -105,12 +105,12 @@
 		$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
 	}
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Up');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable');
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok/Up', array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down', array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable', array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
 	if ($oreon->user->get_version() >= 2)
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending', array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);'));
 	$form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 	if ($oreon->user->get_version() >= 2)	{
 		$tab = array();
@@ -217,3 +217,19 @@
 		$tpl->display("formHostGroupDependency.ihtml");
 	}
 ?>
+<script type="text/javascript">
+function uncheckAllH(object) {
+	if (object.id == "hNone" && object.checked) {		
+		document.getElementById('hUp').checked = false;
+		document.getElementById('hDown').checked = false;
+		document.getElementById('hUnreachable').checked = false;
+		document.getElementById('hPending').checked = false;
+		if (document.getElementById('hFlapping')) {
+			document.getElementById('hFlapping').checked = false;
+		}		
+	}	
+	else {
+		document.getElementById('hNone').checked = false;
+	}
+}
+</script>

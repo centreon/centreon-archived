@@ -112,24 +112,24 @@
 		$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
 	}
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical');
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok', array('id' => 'sOk', 'onClick' => 'uncheckAllS(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning', array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown', array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical', array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);'));
 
 	if ($oreon->user->get_version() >= 2)
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending', array('id' => 'sPending', 'onClick' => 'uncheckAllS(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
 	$form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical');
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok', array('id' => 'sOk2', 'onClick' => 'uncheckAllS2(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning', array('id' => 'sWarning2', 'onClick' => 'uncheckAllS2(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown', array('id' => 'sUnknown2', 'onClick' => 'uncheckAllS2(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical', array('id' => 'sCritical2', 'onClick' => 'uncheckAllS2(this);'));
 
 	if ($oreon->user->get_version() >= 2)
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending');
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending', array('id' => 'sPending2', 'onClick' => 'uncheckAllS2(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'sNone2', 'onClick' => 'uncheckAllS2(this);'));
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
 	$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
@@ -230,3 +230,29 @@
 		$tpl->display("formServiceDependency.ihtml");
 	}
 ?>
+<script type="text/javascript">
+function uncheckAllS(object) {	
+	if (object.id == "sNone" && object.checked) {
+		document.getElementById('sOk').checked = false;	
+		document.getElementById('sWarning').checked = false;
+		document.getElementById('sUnknown').checked = false;
+		document.getElementById('sCritical').checked = false;		
+		document.getElementById('sPending').checked = false;
+	}
+	else {
+		document.getElementById('sNone').checked = false;
+	}
+}
+function uncheckAllS2(object) {	
+	if (object.id == "sNone2" && object.checked) {
+		document.getElementById('sOk2').checked = false;	
+		document.getElementById('sWarning2').checked = false;
+		document.getElementById('sUnknown2').checked = false;
+		document.getElementById('sCritical2').checked = false;		
+		document.getElementById('sPending2').checked = false;		
+	}
+	else {
+		document.getElementById('sNone2').checked = false;
+	}
+}
+</script>
