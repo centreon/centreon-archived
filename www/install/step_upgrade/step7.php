@@ -16,8 +16,8 @@
  */
 
 	include_once ("@CENTREON_ETC@/centreon.conf.php");
-	include_once("DB.php");
-	include_once("../DBconnect.php");
+	include_once ("DB.php");
+	include_once ("$centreon_path/www/DBconnect.php");
 	
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 	$version =& $DBRESULT->fetchRow();
@@ -26,11 +26,13 @@
 	 * Check if other update are available after last upgrade
 	 */
 	
+	chdir('sql');
+	
 	if (count(glob("Update-DB-".$version["value"]."_to_*.sql"))) {
 		/*
 		 * An upgrade is available for this version
 		 */
-		require_once("./step_upgrade/step3.php");
+		require_once("$centreon_path/www/install/step_upgrade/step3.php");
 		
 	} else {
 		

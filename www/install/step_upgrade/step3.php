@@ -17,7 +17,7 @@
  	
 	include_once ("@CENTREON_ETC@/centreon.conf.php");
 	include_once ("DB.php");
-	include_once ("../DBconnect.php");
+	include_once ("$centreon_path/www/DBconnect.php");
 	
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 	$version =& $DBRESULT->fetchRow();
