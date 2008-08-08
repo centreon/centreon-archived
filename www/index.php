@@ -258,6 +258,9 @@
 <head>
 <title>Centreon, Revisited Experience Of Nagios</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="robots" content="index, nofollow" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved." />
 <link href="<?php echo $skin; ?>login.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="./img/iconOreon.ico">
 </head>
