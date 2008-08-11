@@ -105,18 +105,19 @@
 	$i = 1;
 	$str = NULL;
 
-	$DBRESULT =& $pearDB->query("SELECT service_id FROM service,extended_service_information WHERE service_service_id = service_id AND service_register = '1' AND `esi_notes` IS NOT NULL AND `esi_notes_url` IS NOT NULL AND `esi_action_url` IS NOT NULL AND `esi_icon_image` IS NOT NULL AND `esi_icon_image_alt`IS NOT NULL");
+	//$DBRESULT =& $pearDB->query("SELECT service_id FROM service,extended_service_information WHERE service_service_id = service_id AND service_register = '1' AND `esi_notes` IS NOT NULL AND `esi_notes_url` IS NOT NULL AND `esi_action_url` IS NOT NULL AND `esi_icon_image` IS NOT NULL AND `esi_icon_image_alt` IS NOT NULL");
+	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt FROM service,extended_service_information WHERE service_service_id = service_id AND service_register = '1'");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($esi =& $DBRESULT->fetchRow())	{
-		if (isset($esi["service_id"][$gbArr[4]]))	{
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
+	while ($esi =& $DBRESULT->fetchRow())	{	
+		if (isset($esi["service_id"][$gbArr[4]]) && ($esi["esi_notes"] || $esi["esi_notes_url"] || $esi["esi_action_url"] || $esi["esi_icon_image"] || $esi["esi_icon_image_alt"]))	{			
 			$hosts = getMyServiceHosts($esi["service_id"]);
-			foreach ($hosts as $key=>$value)	{
+			foreach ($hosts as $key=>$value)	{				
 				$BP = false;
-				array_key_exists($value, $gbArr[2]) ? $BP = true : NULL;				
-				if ($BP && isAHostTpl($value))	{
+				array_key_exists($value, $gbArr[2]) ? $BP = true : NULL;
+				if ($BP && isAHostTpl($value))	{										
 					$host_name = getMyHostName($value);
-					if (isHostOnThisInstance(getMyHostID($host_name), $tab['id'])) {
+					if (isHostOnThisInstance(getMyHostID($host_name), $tab['id'])) {						
 						$flag = 0;
 						$strTMP = "";
 						$service_description = getMyServiceName($esi["service_id"]);
