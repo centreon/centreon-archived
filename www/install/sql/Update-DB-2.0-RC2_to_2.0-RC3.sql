@@ -31,3 +31,9 @@ UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonito
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 20212;
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 2021201;
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 2021202;
+
+UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 201;
+UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 20102;
+UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 20103;
+UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 20104;
+
