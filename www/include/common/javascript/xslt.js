@@ -298,7 +298,7 @@ document.all[target].innerHTML = '';
                         xmlDoc = document.all[xmlID].XMLDocument;
                         xsltDoc = document.all[xsltID].XMLDocument;
                         callback(t);
-
+mk_pagination(xmlDoc);
                        document.all[target].innerHTML = document.all[xmlID].transformNode(document.all[xsltID].XMLDocument);
 //                        document.all[target].innerHTML = document.all[xmlID].transformNode(document.all[xsltID].XMLDocument);
 						set_header_title();
@@ -321,6 +321,7 @@ document.all[target].innerHTML = '';
 
             document.body.insertBefore(xm);
             document.body.insertBefore(xs);
+            
         }
         else {
 			/* tradition
@@ -378,7 +379,7 @@ document.all[target].innerHTML = '';
                     transformed = true;
                 }
             }
-
+           	
             xmlRequest.open("GET", xml, true);
             xmlRequest.onreadystatechange = change;
             xmlRequest.send(null);
