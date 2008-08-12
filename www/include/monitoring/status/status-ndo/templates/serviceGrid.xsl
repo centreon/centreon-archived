@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE toto[
-  <!ENTITY nbsp "&#160;" >
-]>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="/">
 <table class="ListTable">
@@ -41,29 +38,28 @@
 				  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
 				</xsl:element>
 			</xsl:element>
-			</span>
+			</span>		
 		</td>
 		<xsl:if test="//i/s = 1">
 		<td class="ListColCenter">
-			<xsl:attribute name="style">
+		<xsl:attribute name="style">
 				background-color:<xsl:value-of select="hc"/>;
-			</xsl:attribute>
+		</xsl:attribute>
 			<xsl:value-of select="hs"/>
 		</td>
 		</xsl:if>
 		<td class="ListColLeft">
-			<xsl:for-each select="svc">
+		<xsl:for-each select="svc">
 			<span>
 				<xsl:attribute name="style">
 					background-color:<xsl:value-of select="sc"/>;
 				</xsl:attribute>
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hn"/>&amp;service_description=<xsl:value-of select="sn"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sn"/></xsl:attribute>
 					<xsl:value-of select="sn"/>
 				</xsl:element>
-			</span>
-			&nbsp;						
-			</xsl:for-each>
+			</span>&#160;
+		</xsl:for-each>
 		</td>
 	</tr>
 </xsl:for-each>

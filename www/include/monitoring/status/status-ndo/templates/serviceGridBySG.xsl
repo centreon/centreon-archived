@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE toto[
-  <!ENTITY nbsp "&#160;" >
-]>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 <xsl:template match="/">
@@ -84,7 +81,7 @@
 					</xsl:element>
 
 						</span>
-						&nbsp;						
+						&#160;						
 					</xsl:for-each>
 				</td>
 	</tr>

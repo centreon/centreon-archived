@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE toto[
-  <!ENTITY nbsp "&#160;" >
-]>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 <xsl:template match="/">
@@ -69,7 +66,7 @@
 				  	<xsl:attribute name="href">main.php?o=svc_ok&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:value-of select="sk"/>OK
 					</xsl:element>
-				</span>&nbsp;
+				</span>&#160;
 				</xsl:if>
 				<xsl:if test="sw >= 1">
 				<span>
@@ -80,7 +77,7 @@
 					  	<xsl:attribute name="href">main.php?o=svc_warning&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:value-of select="sw"/>WARNING
 					</xsl:element>
-				</span>&nbsp;
+				</span>&#160;
 				</xsl:if>
 				<xsl:if test="sc >= 1">
 				<span>
@@ -91,7 +88,7 @@
 					  	<xsl:attribute name="href">main.php?o=svc_critical&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 					<xsl:value-of select="sc"/>CRITICAL
 				</xsl:element>
-				</span>&nbsp;
+				</span>&#160;
 				</xsl:if>
 				<xsl:if test="su >= 1">
 				<span>
@@ -102,7 +99,7 @@
 					  	<xsl:attribute name="href">main.php?o=svc_unknown&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:value-of select="su"/>UNKNOWN
 					</xsl:element>
-				</span>&nbsp;
+				</span>&#160;
 				</xsl:if>
 				<xsl:if test="sp >= 1">
 				<span>
