@@ -78,9 +78,9 @@
 			if ($escalation["last_notification"] != NULL) $strDef .= print_line("last_notification", $escalation["last_notification"]);
 			if ($escalation["notification_interval"]!= NULL) $strDef .= print_line("notification_interval", $escalation["notification_interval"]);
 			
-			// Nagios 2
+			// Nagios 2 & 3
 			
-			if ($oreon->user->get_version() == 2)	{
+			if ($oreon->user->get_version() >= 2)	{
 				$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
@@ -151,7 +151,7 @@
 			 *  Nagios 2
 			 */
 			
-			if ($oreon->user->get_version() == 2)	{
+			if ($oreon->user->get_version() >= 2)	{
 				$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
@@ -228,12 +228,12 @@
 	unset($escalation);
 	$DBRESULT->free();	
 	
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT service.service_activate, service.service_description, esr.service_service_id FROM service, escalation_service_relation esr WHERE esr.service_service_id = service.service_id ORDER BY service.service_description");
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT service.service_activate, service.service_description, esr.service_service_id FROM service, escalation_service_relation esr WHERE esr.service_service_id = service.service_id ORDER BY esr.service_service_id");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	$generated = 0;
 	while($service =& $DBRESULT->fetchRow())	{
-		$BP = false;
-		$generated = 0;
+		$BP = false;		
 		array_key_exists($service["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
 		
 		if ($BP)	{
@@ -248,7 +248,7 @@
 				array_key_exists($escalation["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
 				
 				$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
-				$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
+				$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);				
 				if ($BP)	{
 					$ret["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
 					if ($ret["comment"] && $escalation["esc_comment"])	{
@@ -258,8 +258,8 @@
 							$strDef .= "# ".$cmt."\n";
 					}
 					$strDef .= "define serviceescalation{\n";			
-					$strDef .= print_line("host_name", getMyHostName($escalation["host_host_id"]));
-					if (isHostOnThisInstance($escalation["host_host_id"], $tab['id'])){
+					$strDef .= print_line("host_name", getMyHostName($escalation["host_host_id"]));										
+					if (isHostOnThisInstance($escalation["host_host_id"], $tab['id'])){						
 						$generated++;
 					}
 					$strDef .= print_line("service_description", $service["service_description"]);
@@ -280,8 +280,8 @@
 					if ($escalation["first_notification"] != NULL) $strDef .= print_line("first_notification", $escalation["first_notification"]);
 					if ($escalation["last_notification"] != NULL) $strDef .= print_line("last_notification", $escalation["last_notification"]);
 					if ($escalation["notification_interval"] != NULL) $strDef .= print_line("notification_interval", $escalation["notification_interval"]);
-					// Nagios 2
-					if ($oreon->user->get_version() == 2)	{
+					// Nagios 2 & 3
+					if ($oreon->user->get_version() >= 2)	{
 						$DBRESULT4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
 						if (PEAR::isError($DBRESULT4))
 							print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
@@ -290,21 +290,20 @@
 						if ($tp["tp_name"]) $strDef .= print_line("escalation_period", $tp["tp_name"]);
 						if ($escalation["escalation_options2"]) $strDef .= print_line("escalation_options", $escalation["escalation_options2"]);
 					}
-					$strDef .= "}\n\n";
-					$i++;
+					$strDef .= "}\n\n";					
+					$i++;					
 				}
-			}
-			if ($generated){
-				$str .= $strDef;
-				$strDef = "";
-			}
+				if ($generated){					
+					$str .= $strDef;
+					$strDef = "";
+				}				
+			}	
 			unset($escalation);
-			$DBRESULT2->free();
+			$DBRESULT2->free();		
 		}
-	}
+	}		
 	unset($service);
-	$DBRESULT->free();
-	
+	$DBRESULT->free();	
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/escalations.cfg");
 	fclose($handle);
 	unset($str);
