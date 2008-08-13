@@ -30,7 +30,6 @@
 		$type_str = " command_type = '".$type."'";
 	else
 		$type_str = "";
-
 	if (isset($search) && $search){
 		if ($type_str)
 			$type_str = " AND " . $type_str;
@@ -67,7 +66,7 @@
 	/*
 	 * List of elements - Depends on different criteria
 	 */
-	if ($search)
+	if (isset($search) && $search)
 		$rq = "SELECT command_id, command_name, command_line, command_type FROM command WHERE command_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' $type_str ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
 	else if ($type)
 		$rq = "SELECT command_id, command_name, command_line, command_type FROM command WHERE command_type = '".$type."' ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
@@ -188,7 +187,7 @@
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"");
+				"this.form.elements['o1'].selectedIndex = 0");
 	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 		
@@ -200,7 +199,7 @@
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"");
+				"this.form.elements['o2'].selectedIndex = 0");
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 

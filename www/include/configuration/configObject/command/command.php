@@ -56,6 +56,13 @@
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 
+	if (isset($_POST["o1"]) && isset($_POST["o2"])){
+		if ($_POST["o1"] != "")
+			$o = $_POST["o1"];
+		if ($_POST["o2"] != "")
+			$o = $_POST["o2"];
+	}
+
 	if ($min)
 		switch ($o)	{
 			case "h" 	: require_once($path."minHelpCommand.php"); break; #Show Help Command	# Wistof
