@@ -124,8 +124,7 @@
 		$time = time();
 		
 		$i=0;
-		foreach($serviceList as $svc_id => $svc_name)
-		{
+		foreach ($serviceList as $svc_id => $svc_name){
 			$tab_tmp = array();
 			$tab_tmp["svcName"] = $svc_name;
 			$tab_tmp["service_id"] = $svc_id;
@@ -137,7 +136,7 @@
 			$tab_tmp["PtimeCRITICAL"] = 0;
 			$tab_tmp["PtimeNONE"] = $tt;
 	
-			if(isset($tab_svc_bdd[$svc_id]) && $tab_svc_bdd[$svc_id]){
+			if (isset($tab_svc_bdd[$svc_id]) && $tab_svc_bdd[$svc_id]) {
 				$tab_tmp["PtimeOK"] = round($tab_svc_bdd[$svc_id]["Tok"] / $tt *100,2);
 				$tab_tmp["PtimeWARNING"] = round( $tab_svc_bdd[$svc_id]["Twarn"]/ $tt *100,2);
 				$tab_tmp["PtimeUNKNOWN"] = round( $tab_svc_bdd[$svc_id]["Tunknown"]/ $tt *100,2);
@@ -152,12 +151,12 @@
 				$tab_tmp["CRITICALnbEvent"] = isset($tab_svc_bdd[$svc_id]["CRITICALnbEvent"]) ? $tab_svc_bdd[$svc_id]["CRITICALnbEvent"] : 0;
 	
 	
-				if( ($tt - $tmp_none) > 0){
+				if (($tt - $tmp_none) > 0) {
 					$tab_tmp["PktimeOK"] = round($tab_svc_bdd[$svc_id]["Tok"] / ($tt - $tmp_none) *100,2);
 					$tab_tmp["PktimeWARNING"] = round( $tab_svc_bdd[$svc_id]["Twarn"]/ ($tt - $tmp_none) *100,2);
 					$tab_tmp["PktimeUNKNOWN"] = round( $tab_svc_bdd[$svc_id]["Tunknown"]/ ($tt - $tmp_none) *100,2);
 					$tab_tmp["PktimeCRITICAL"] = round( $tab_svc_bdd[$svc_id]["Tcri"]/ ($tt - $tmp_none) *100,2);
-				}else{
+				} else {
 					$tab_tmp["PktimeOK"] = 0;
 					$tab_tmp["PktimeWARNING"] = 0;
 					$tab_tmp["PktimeUNKNOWN"] = 0;
@@ -216,33 +215,33 @@
 		## calculate svc average
 		#
 		if($tab_svc_average["PAOK"] > 0)
-		$tab_svc_average["PAOK"] = number_format($tab_svc_average["PAOK"] / $tab_svc_average["nb_svc"], 1, '.', '');
+			$tab_svc_average["PAOK"] = number_format($tab_svc_average["PAOK"] / $tab_svc_average["nb_svc"], 1, '.', '');
 		if($tab_svc_average["PAW"] > 0)
-		$tab_svc_average["PAW"] = number_format($tab_svc_average["PAW"] / $tab_svc_average["nb_svc"], 1, '.', '');
+			$tab_svc_average["PAW"] = number_format($tab_svc_average["PAW"] / $tab_svc_average["nb_svc"], 1, '.', '');
 		if($tab_svc_average["PAU"] > 0)
-		$tab_svc_average["PAU"] = number_format($tab_svc_average["PAU"] / $tab_svc_average["nb_svc"], 1, '.', '');
+			$tab_svc_average["PAU"] = number_format($tab_svc_average["PAU"] / $tab_svc_average["nb_svc"], 1, '.', '');
 		if($tab_svc_average["PAC"] > 0)
-		$tab_svc_average["PAC"] = number_format($tab_svc_average["PAC"] / $tab_svc_average["nb_svc"], 1, '.', '');
+			$tab_svc_average["PAC"] = number_format($tab_svc_average["PAC"] / $tab_svc_average["nb_svc"], 1, '.', '');
 	
 	
 		if($tab_svc_average["PTOK"] > 0)
-		$tab_svc_average["PTOK"] = number_format($tab_svc_average["PTOK"] / $tab_svc_average["nb_svc"], 3, '.', '');
+			$tab_svc_average["PTOK"] = number_format($tab_svc_average["PTOK"] / $tab_svc_average["nb_svc"], 3, '.', '');
 		if($tab_svc_average["PTW"] > 0)
-		$tab_svc_average["PTW"] = number_format($tab_svc_average["PTW"] / $tab_svc_average["nb_svc"], 3, '.', '');
+			$tab_svc_average["PTW"] = number_format($tab_svc_average["PTW"] / $tab_svc_average["nb_svc"], 3, '.', '');
 		if($tab_svc_average["PTU"] > 0)
-		$tab_svc_average["PTU"] = number_format($tab_svc_average["PTU"] / $tab_svc_average["nb_svc"], 3, '.', '');
+			$tab_svc_average["PTU"] = number_format($tab_svc_average["PTU"] / $tab_svc_average["nb_svc"], 3, '.', '');
 		if($tab_svc_average["PTC"] > 0)
-		$tab_svc_average["PTC"] = number_format($tab_svc_average["PTC"] / $tab_svc_average["nb_svc"], 3, '.', '');
+			$tab_svc_average["PTC"] = number_format($tab_svc_average["PTC"] / $tab_svc_average["nb_svc"], 3, '.', '');
 		if($tab_svc_average["PTN"] > 0)
-		$tab_svc_average["PTN"] = number_format($tab_svc_average["PTN"] / $tab_svc_average["nb_svc"], 3, '.', '');
+			$tab_svc_average["PTN"] = number_format($tab_svc_average["PTN"] / $tab_svc_average["nb_svc"], 3, '.', '');
 		if($tab_svc_average["PKTOK"] > 0)
-		$tab_svc_average["PKTOK"] = number_format($tab_svc_average["PKTOK"] / $tab_svc_average["nb_svc"], 3, '.', '');
+			$tab_svc_average["PKTOK"] = number_format($tab_svc_average["PKTOK"] / $tab_svc_average["nb_svc"], 3, '.', '');
 		if($tab_svc_average["PKTW"] > 0)
-		$tab_svc_average["PKTW"] = number_format($tab_svc_average["PKTW"] / $tab_svc_average["nb_svc"], 3, '.', '');
+			$tab_svc_average["PKTW"] = number_format($tab_svc_average["PKTW"] / $tab_svc_average["nb_svc"], 3, '.', '');
 		if($tab_svc_average["PKTU"] > 0)
-		$tab_svc_average["PKTU"] = number_format($tab_svc_average["PKTU"] / $tab_svc_average["nb_svc"], 3, '.', '');
+			$tab_svc_average["PKTU"] = number_format($tab_svc_average["PKTU"] / $tab_svc_average["nb_svc"], 3, '.', '');
 		if($tab_svc_average["PKTC"] > 0)
-		$tab_svc_average["PKTC"] = number_format($tab_svc_average["PKTC"] / $tab_svc_average["nb_svc"], 3, '.', '');
+			$tab_svc_average["PKTC"] = number_format($tab_svc_average["PKTC"] / $tab_svc_average["nb_svc"], 3, '.', '');
 	
 	
 		#
@@ -299,7 +298,8 @@
 		$totalpTime = 0;
 		$totalpkTime = 0;
 		foreach ($tab_resume  as $tb){
-			if($tb["pourcentTime"] >= 0)
+			$tb["pourcentTime"] = str_replace(",", ".", $tb["pourcentTime"]); 
+			if ($tb["pourcentTime"] >= 0)
 				$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
 			$totalTime += $tb["timestamp"];
 			$totalpTime += $tb["pourcentTime"];
@@ -341,8 +341,7 @@
 	
 		$rq = "SELECT * FROM `log_archive_host` WHERE host_id = '" . $host_id . "' AND date_start >= '" . $sd . "' AND date_end <= '" . $ed . "'";			
 		$res = & $pearDBO->query($rq);
-		while ($h =& $res->fetchRow()) 
-		{
+		while ($h =& $res->fetchRow()) {
 			$uptime = $h["UPTimeScheduled"];
 			$downtime = $h["DOWNTimeScheduled"];
 			$unreachalbetime = $h["UNREACHABLETimeScheduled"];

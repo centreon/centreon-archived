@@ -222,27 +222,27 @@
 		## calculate svc average
 		#
 		# Alert
-		if($tab_host_list_average["PAUP"] > 0)
+		if ($tab_host_list_average["PAUP"] > 0)
 			$tab_host_list_average["PAUP"] = number_format($tab_host_list_average["PAUP"] / $tab_host_list_average["nb_host"], 1, '.', '');
-		if($tab_host_list_average["PAD"] > 0)
+		if ($tab_host_list_average["PAD"] > 0)
 			$tab_host_list_average["PAD"] = number_format($tab_host_list_average["PAD"] / $tab_host_list_average["nb_host"], 1, '.', '');
-		if($tab_host_list_average["PAUR"] > 0)
+		if ($tab_host_list_average["PAUR"] > 0)
 			$tab_host_list_average["PAUR"] = number_format($tab_host_list_average["PAUR"] / $tab_host_list_average["nb_host"], 1, '.', '');
 		# Time
-		if($tab_host_list_average["PTUP"] > 0)
+		if ($tab_host_list_average["PTUP"] > 0)
 			$tab_host_list_average["PTUP"] = number_format($tab_host_list_average["PTUP"] / $tab_host_list_average["nb_host"], 3, '.', '');
-		if($tab_host_list_average["PTD"] > 0)
+		if ($tab_host_list_average["PTD"] > 0)
 			$tab_host_list_average["PTD"] = number_format($tab_host_list_average["PTD"] / $tab_host_list_average["nb_host"], 3, '.', '');
-		if($tab_host_list_average["PTUR"] > 0)
+		if ($tab_host_list_average["PTUR"] > 0)
 			$tab_host_list_average["PTUR"] = number_format($tab_host_list_average["PTUR"] / $tab_host_list_average["nb_host"], 3, '.', '');
-		if($tab_host_list_average["PTU"] > 0)
+		if ($tab_host_list_average["PTU"] > 0)
 			$tab_host_list_average["PTU"] = number_format($tab_host_list_average["PTU"] / $tab_host_list_average["nb_host"], 3, '.', '');
 		# %
-		if($tab_host_list_average["PKTup"] > 0)
+		if ($tab_host_list_average["PKTup"] > 0)
 			$tab_host_list_average["PKTup"] = number_format($tab_host_list_average["PKTup"] / $tab_host_list_average["nb_host"], 3, '.', '');
-		if($tab_host_list_average["PKTd"] > 0)
+		if ($tab_host_list_average["PKTd"] > 0)
 			$tab_host_list_average["PKTd"] = number_format($tab_host_list_average["PKTd"] / $tab_host_list_average["nb_host"], 3, '.', '');
-		if($tab_host_list_average["PKTu"] > 0)
+		if ($tab_host_list_average["PKTu"] > 0)
 			$tab_host_list_average["PKTu"] = number_format($tab_host_list_average["PKTu"] / $tab_host_list_average["nb_host"], 3, '.', '');
 
 		$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
@@ -254,7 +254,8 @@
 		$totalpkTime = 0;
 	
 		foreach ($tab_resume  as $tb){
-			if($tb["pourcentTime"] >= 0)
+			$tb["pourcentTime"] = str_replace(",", ".", $tb["pourcentTime"]); 
+			if ($tb["pourcentTime"] >= 0)
 				$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
 			$totalTime += $tb["timestamp"];
 			$totalpTime += $tb["pourcentTime"];

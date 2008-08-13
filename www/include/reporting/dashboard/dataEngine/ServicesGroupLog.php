@@ -45,7 +45,7 @@
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 
-	if($mservicegroup)	{
+	if ($mservicegroup)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
 		$servicegroup_id = getMyservicegroupID($mservicegroup);
@@ -75,7 +75,7 @@
 	$today_WARNINGnbEvent = 0;
 	$today_CRITICALnbEvent = 0;
 	
-	if($mservicegroup){
+	if ($mservicegroup){
 		#
 		## today log for xml timeline
 		#
@@ -126,8 +126,8 @@
 		$Tcritical = $sbase["average"]["Tcritical"];
 		$Tnone = $timeTOTAL - ($Tok + $Twarning + $Tunreach + $Tcritical);
 		
-		if($Tnone <= 1)
-		$Tnone = 0;	
+		if ($Tnone <= 1)
+			$Tnone = 0;	
 		
 		$tab["state"] = _("Up");
 		$tab["time"] = Duration::toString($Tok);
@@ -173,9 +173,8 @@
 		## calculate tablist
 		#
 		$i=0;
-		foreach($sbase as $svc_name => $tab)
-		{
-			if($svc_name != "average"){
+		foreach ($sbase as $svc_name => $tab){
+			if ($svc_name != "average"){
 				$tab_tmp = array();
 				$tab_tmp["hostName"] = getMyHostName($tab["host_id"]);
 				$tab_tmp["serviceName"] = getMyServiceName($tab["svc_id"]);
@@ -195,13 +194,12 @@
 				$tab_tmp["CRITICALnbEvent"] = isset($tab["TcriticalNBAlert"]) ? $tab["TcriticalNBAlert"] : 0;
 
 				$kt = $tt - $tmp_none;
-				if($kt > 0){
+				if ($kt > 0) {
 					$tab_tmp["PktimeOK"] = $tab["Tok"] ? round($tab["Tok"] / ($kt) *100,2): 0;
 					$tab_tmp["PktimeWARNING"] = $tab["Twarning"] ? round( $tab["Twarning"]/ ($kt) *100,2):0;
 					$tab_tmp["PktimeUNKNOWN"] =  $tab["Tunknown"] ? round( $tab["Tunknown"]/ ($kt) *100,2):0;
 					$tab_tmp["PktimeCRITICAL"] =  $tab["Tcritical"] ? round( $tab["Tcritical"]/ ($kt) *100,2):0;
-				}
-				else{
+				} else {
 					$tab_tmp["PktimeOK"] = 0;
 					$tab_tmp["PktimeWARNING"] = 0;
 					$tab_tmp["PktimeUNKNOWN"] = 0;
@@ -249,34 +247,34 @@
 		#
 		# Alert
 		if($tab_svc_list_average["PAOK"] > 0)
-		$tab_svc_list_average["PAOK"] = number_format($tab_svc_list_average["PAOK"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
+			$tab_svc_list_average["PAOK"] = number_format($tab_svc_list_average["PAOK"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
 		if($tab_svc_list_average["PAW"] > 0)
-		$tab_svc_list_average["PAW"] = number_format($tab_svc_list_average["PAW"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
+			$tab_svc_list_average["PAW"] = number_format($tab_svc_list_average["PAW"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
 		if($tab_svc_list_average["PAU"] > 0)
-		$tab_svc_list_average["PAU"] = number_format($tab_svc_list_average["PAU"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
+			$tab_svc_list_average["PAU"] = number_format($tab_svc_list_average["PAU"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
 		if($tab_svc_list_average["PAC"] > 0)
-		$tab_svc_list_average["PAC"] = number_format($tab_svc_list_average["PAC"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
+			$tab_svc_list_average["PAC"] = number_format($tab_svc_list_average["PAC"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
 		# Time
 		if($tab_svc_list_average["PTOK"] > 0)
-		$tab_svc_list_average["PTOK"] = number_format($tab_svc_list_average["PTOK"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+			$tab_svc_list_average["PTOK"] = number_format($tab_svc_list_average["PTOK"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 		if($tab_svc_list_average["PTW"] > 0)
-		$tab_svc_list_average["PTW"] = number_format($tab_svc_list_average["PTW"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+			$tab_svc_list_average["PTW"] = number_format($tab_svc_list_average["PTW"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 		if($tab_svc_list_average["PTC"] > 0)
-		$tab_svc_list_average["PTC"] = number_format($tab_svc_list_average["PTC"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+			$tab_svc_list_average["PTC"] = number_format($tab_svc_list_average["PTC"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 		if($tab_svc_list_average["PTU"] > 0)
-		$tab_svc_list_average["PTU"] = number_format($tab_svc_list_average["PTU"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+			$tab_svc_list_average["PTU"] = number_format($tab_svc_list_average["PTU"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 		if($tab_svc_list_average["PTN"] > 0)
-		$tab_svc_list_average["PTN"] = number_format($tab_svc_list_average["PTN"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+			$tab_svc_list_average["PTN"] = number_format($tab_svc_list_average["PTN"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 
 		# %
 		if($tab_svc_list_average["PKTOK"] > 0)
-		$tab_svc_list_average["PKTOK"] = number_format($tab_svc_list_average["PKTOK"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+			$tab_svc_list_average["PKTOK"] = number_format($tab_svc_list_average["PKTOK"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 		if($tab_svc_list_average["PKTW"] > 0)
-		$tab_svc_list_average["PKTW"] = number_format($tab_svc_list_average["PKTW"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+			$tab_svc_list_average["PKTW"] = number_format($tab_svc_list_average["PKTW"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 		if($tab_svc_list_average["PKTC"] > 0)
-		$tab_svc_list_average["PKTC"] = number_format($tab_svc_list_average["PKTC"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+			$tab_svc_list_average["PKTC"] = number_format($tab_svc_list_average["PKTC"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 		if($tab_svc_list_average["PKTU"] > 0)
-		$tab_svc_list_average["PKTU"] = number_format($tab_svc_list_average["PKTU"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+			$tab_svc_list_average["PKTU"] = number_format($tab_svc_list_average["PKTU"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 
 		$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
 		$end_date_select_save_timestamp =  $end_date_select;
@@ -287,7 +285,8 @@
 		$totalpkTime = 0;
 	
 		foreach ($tab_resume  as $tb){
-			if($tb["pourcentTime"] >= 0)
+			$tb["pourcentTime"] = str_replace(",", ".", $tb["pourcentTime"]); 
+			if ($tb["pourcentTime"] >= 0)
 				$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
 			$totalTime += $tb["timestamp"];
 			$totalpTime += $tb["pourcentTime"];
@@ -343,27 +342,27 @@
 		$unknowntime = $h["UNKNOWNTimeScheduled"];
 
 		$tt = 0 + ($h["date_end"] - $h["date_start"]);
-		if(($oktime + $criticaltime + $warningtime + $unknowntime) < $tt)
+		if (($oktime + $criticaltime + $warningtime + $unknowntime) < $tt)
 			$pendingtime = 	$tt - ($oktime + $criticaltime + $warningtime + $unknowntime);
 		else
 			$pendingtime = 0;
-		if($oktime > 0)
+		if ($oktime > 0)
 			$pok = 0 +round(($oktime / $tt * 100),2);
 		else
 			$pok = "0.00";					
-		if($criticaltime > 0)
+		if ($criticaltime > 0)
 			$pcritical = 0 +round(($criticaltime / $tt * 100),2);
 		else
 			$pcritical = "0.00";
-		if($warningtime > 0)
+		if ($warningtime > 0)
 			$pwarning = 0 +round(($warningtime / $tt * 100),2);
 		else
 			$pwarning = "0.00";
-		if($unknowntime > 0)
+		if ($unknowntime > 0)
 			$punknown = 0 +round(($unknowntime / $tt * 100),2);
 		else
 			$punknown = "0.00";
-		if($pendingtime > 0)
+		if ($pendingtime > 0)
 			$ppending = 0 +round(($pendingtime / $tt * 100),2);
 		else
 			$ppending = "0.00";
@@ -373,21 +372,20 @@
 		$start = $h["date_start"] + 5000;			
 		
 		$tab_tmp = array();
-		$tab_tmp ["duration"] = Duration::toString($tt) ? Duration::toString($tt) : 0;
-		$tab_tmp ["oktime"] = Duration::toString($oktime) ? Duration::toString($oktime) : 0;
-		$tab_tmp ["pok"] = Duration::toString($pok) ? Duration::toString($pok) : 0;
+		$tab_tmp ["duration"] = Duration::toString($tt) 			? Duration::toString($tt) : 0;
+		$tab_tmp ["oktime"] = Duration::toString($oktime) 			? Duration::toString($oktime) : 0;
+		$tab_tmp ["pok"] = Duration::toString($pok) 				? Duration::toString($pok) : 0;
 		$tab_tmp ["OKnbEvent"] = Duration::toString($h["OKnbEvent"]) ? Duration::toString($h["OKnbEvent"]) : 0;
 		$tab_tmp ["criticaltime"] = Duration::toString($criticaltime) ? Duration::toString($criticaltime) : 0;
-		$tab_tmp ["pcritical"] = Duration::toString($pcritical) ? Duration::toString($pcritical) : 0;
+		$tab_tmp ["pcritical"] = Duration::toString($pcritical) 	? Duration::toString($pcritical) : 0;
 		$tab_tmp ["CRITICALnbEvent"] = Duration::toString($h["CRITICALnbEvent"]) ? Duration::toString($h["CRITICALnbEvent"]) : 0;
 		$tab_tmp ["warningtime"] = Duration::toString($warningtime) ? Duration::toString($warningtime) : 0;
-		$tab_tmp ["pwarning"] = Duration::toString($pwarning) ? Duration::toString($pwarning) : 0;
+		$tab_tmp ["pwarning"] = Duration::toString($pwarning) 		? Duration::toString($pwarning) : 0;
 		$tab_tmp ["WARNINGnbEvent"] = Duration::toString($h["WARNINGnbEvent"]) ? Duration::toString($h["WARNINGnbEvent"]) : 0;
 		$tab_tmp ["pendingtime"] = Duration::toString($pendingtime) ? Duration::toString($pendingtime) : 0;
-		$tab_tmp ["ppending"] = Duration::toString($ppending) ? Duration::toString($ppending) : 0;
+		$tab_tmp ["ppending"] = Duration::toString($ppending) 		? Duration::toString($ppending) : 0;
 		$tab_tmp ["unknowntime"] = Duration::toString($unknowntime) ? Duration::toString($unknowntime) : 0;
-		$tab_tmp ["punknown"] = Duration::toString($punknown) ? Duration::toString($punknown) : 0;
+		$tab_tmp ["punknown"] = Duration::toString($punknown) 		? Duration::toString($punknown) : 0;
 		$tab_report[date("d/m/Y", $start)] = $tab_tmp;
-		}
-
+	}
 ?>

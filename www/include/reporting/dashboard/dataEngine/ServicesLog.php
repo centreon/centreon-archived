@@ -218,9 +218,11 @@
 	$totalAlert = $tab_svc["OKnbEvent"] + $tab_svc["CRITICALnbEvent"] + $tab_svc["WARNINGnbEvent"] + $tab_svc["UNKNOWNnbEvent"]  ;
 
 	$status = "";
-	foreach ($tab_resume  as $tb)
+	foreach ($tab_resume  as $tb){
+		$tb["pourcentTime"] = str_replace(",", ".", $tb["pourcentTime"]); 
 		if ($tb["pourcentTime"] >= 0)
 			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];  
+	}
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);
 
