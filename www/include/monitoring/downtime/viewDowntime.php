@@ -14,21 +14,28 @@
  * 
  * For information : contact@centreon.com
  */
+	
 	if (!isset($oreon))
 		exit();
 
-	# LCA
+	/*
+	 * ACL
+	 */
 	if (!$is_admin)
 		$lcaHostByName = getLcaHostByName($pearDB);
 	
 	$ndo_base_prefix = getNDOPrefix();
 	include_once("./DBNDOConnect.php");
 	
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "template/");
 
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -41,7 +48,7 @@
 	/*
 	 * Hosts Comments
 	 */
-	$rq2 =	" SELECT dtm.downtimehistory_id, dtm.entry_time,dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
+	$rq2 =	" SELECT dtm.internal_downtime_id, dtm.entry_time,dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
 			" FROM ".$ndo_base_prefix."downtimehistory dtm, ".$ndo_base_prefix."objects obj " .
 			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS  NULL AND obj.object_id = dtm.object_id ORDER BY dtm.actual_start_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
@@ -54,38 +61,35 @@
 
 	
 	$en = array("0" => _("No"), "1" => _("Yes"));
-	foreach ($tab_downtime_host as $key => $value){
+	foreach ($tab_downtime_host as $key => $value)
 		$tab_downtime_host[$key]["is_fixed"] = $en[$tab_downtime_host[$key]["is_fixed"]];
-	}
 	
 	/*
 	 * Service Comments
 	 */
-	$rq2 =	" SELECT dtm.downtimehistory_id, dtm.entry_time,dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
+	$rq2 =	" SELECT dtm.internal_downtime_id, dtm.entry_time,dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
 			" FROM ".$ndo_base_prefix."downtimehistory dtm, ".$ndo_base_prefix."objects obj " .
 			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS NOT NULL AND obj.object_id = dtm.object_id ORDER BY dtm.actual_start_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
+	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++)
 		$tab_downtime_svc[$i] = $data;
-	}
 	unset($data);	
 
 	$en = array("0" => _("No"), "1" => _("Yes"));
-	foreach ($tab_downtime_svc as $key => $value){
+	foreach ($tab_downtime_svc as $key => $value)
 		$tab_downtime_svc[$key]["is_fixed"] = $en[$tab_downtime_svc[$key]["is_fixed"]];
-	}
 
 	if (!$is_admin){
 		$tab_downtime_host2 = array();
 		for ($n=0,$i=0; $i < count($tab_downtime_host); $i++) {
-			if(isset($lcaHostByName["LcaHost"][$tab_downtime_host[$i]["host_name"]]))
+			if (isset($lcaHostByName["LcaHost"][$tab_downtime_host[$i]["host_name"]]))
 				$tab_downtime_host2[$n++] = $tab_downtime_host[$i];
 		}
 		$tab_downtime_svc2 = array();
 		for ($n=0,$i=0; $i < count($tab_downtime_svc); $i++) {
-			if(isset($lcaHostByName["LcaHost"][$tab_downtime_svc[$i]["host_name"]]))
+			if (isset($lcaHostByName["LcaHost"][$tab_downtime_svc[$i]["host_name"]]))
 				$tab_downtime_svc2[$n++] = $tab_downtime_svc[$i];
 		}
 
