@@ -116,9 +116,9 @@
 			else if ($key == "service_inter_check_delay_method" && $value == 2);
 			else if ($key == "host_inter_check_delay_method" && $value == 2);
 			
-			else if ($key == "downtime_file" && $oreon->user->get_version() == 2);
-			else if ($key == "comment_file" && $oreon->user->get_version() == 2);
-			else if ($key == "state_retention_file" && $oreon->user->get_version() == 2);
+			else if ($key == "downtime_file" && $oreon->user->get_version() >= 2);
+			else if ($key == "comment_file" && $oreon->user->get_version() >= 2);
+			else if ($key == "state_retention_file" && $oreon->user->get_version() >= 2);
 			
 			else if ($key == "global_host_event_handler" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");

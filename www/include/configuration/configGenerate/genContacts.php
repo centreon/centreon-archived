@@ -44,7 +44,7 @@
 			if ($contact["contact_name"]) $str .= print_line("contact_name", $contact["contact_name"]);
 			if ($contact["contact_alias"]) $str .= print_line("alias", $contact["contact_alias"]);
 			// Nagios 2 : Contact Groups in Contact
-			if ($oreon->user->get_version() == 2)	{
+			if ($oreon->user->get_version() >= 2)	{
 				$contactGroup = array();
 				$strTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_name, cg.cg_id FROM contactgroup_contact_relation ccr, contactgroup cg WHERE ccr.contact_contact_id = '".$contact["contact_id"]."' AND ccr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");

@@ -66,7 +66,7 @@
 						$str .= print_line("dependent_service_description", "meta_".$metaCh["meta_service_meta_id"]);
 						$str .= print_line("host_name", "Meta_Module");
 						$str .= print_line("service_description", "meta_".$metaPar["meta_service_meta_id"]);
-						if ($oreon->user->get_version() == 2)
+						if ($oreon->user->get_version() >= 2)
 							if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != NULL) $str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
 						if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != NULL) $str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 						if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != NULL) $str .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);

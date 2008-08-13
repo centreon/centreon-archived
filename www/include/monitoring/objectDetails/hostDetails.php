@@ -153,7 +153,7 @@
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl($path, $tpl, "./template/");
 
-		if ($oreon->user->get_version() == 2){
+		if ($oreon->user->get_version() >= 2){
 			
 			if (!file_exists($oreon->Nagioscfg["comment_file"]))
 				print ("downtime file not found");

@@ -71,7 +71,7 @@
 			$str .= "define hostdependency{\n";
 			$str .= print_line("dependent_host_name", $strTemp2);
 			$str .= print_line("host_name", $strTemp1);
-			if ($oreon->user->get_version() == 2)	{
+			if ($oreon->user->get_version() >= 2)	{
 				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") $str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
 				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") $str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 			}
@@ -138,7 +138,7 @@
 			$strDef .= "define hostdependency{\n";
 			$strDef .= print_line("dependent_hostgroup_name", $strTemp2);
 			$strDef .= print_line("hostgroup_name", $strTemp1);
-			if ($oreon->user->get_version() == 2)	{
+			if ($oreon->user->get_version() >= 2)	{
 				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") $strDef .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
 				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") $strDef .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 			}
@@ -262,7 +262,7 @@
 			$str .= "define servicedependency{\n";
 			$str .= print_line("dependent_servicegroup_name", $strTemp2);
 			$str .= print_line("servicegroup_name", $strTemp1);
-			if ($oreon->user->get_version() == 2)	{
+			if ($oreon->user->get_version() >= 2)	{
 				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") $str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
 				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") $str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 			}
