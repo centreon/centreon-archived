@@ -206,11 +206,11 @@
 					if (isset($svPar["notification_failure_criteria"]) && $svPar["notification_failure_criteria"] != "") $str .= print_line("notification_failure_criteria", $svPar["notification_failure_criteria"]);
 					$str .= "}\n\n";
 					$i++;
-					unset($hCh);
-					unset($hPar);
-				}
+					unset($hCh);					
+				}				
 			}
-			$DBRESULT2->free();		
+			$DBRESULT2->free();
+			unset($hPar);
 		}		
 	}
 	$DBRESULT->free();
