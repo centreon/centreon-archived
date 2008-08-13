@@ -32,7 +32,9 @@
 	
 	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) 
 		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
-	else {
+	else {		
+		if ($err_msg = table_not_exists("centreon_acl")) 
+			print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
 		/*
 		 * Pear library
 		 */

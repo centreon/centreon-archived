@@ -20,19 +20,22 @@
 		exit(); 
 	
 	include_once("./include/monitoring/common-Func.php");
-
+	include_once("./DBNDOConnect.php");
+	
 	unset($tpl);
 	unset($path);					
 
 	$path = "./include/home/";
+	
+	if ($err_msg = table_not_exists("centreon_acl")) 
+		print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
 		
 	/*
 	 * Smarty template Init
 	 */
 	 
 	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl, "./");	
-		
+	$tpl = initSmartyTpl($path, $tpl, "./");			
 	$tpl->assign("session", session_id());
 	$tpl->display("home.ihtml");
 	

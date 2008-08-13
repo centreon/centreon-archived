@@ -18,6 +18,17 @@
 	if (file_exists("./include/common/common-Func-ACL.php"))
 		include_once("./include/common/common-Func-ACL.php");
 
+
+	function table_not_exists($table_name) {
+		global $pearDBndo;
+		
+		$DBRESULT =& $pearDBndo->query("SELECT * FROM `".$table_name."` LIMIT 1");
+		if (PEAR::isERROR($DBRESULT)) {
+			return ("[" . $table_name . "] -- " . $DBRESULT->getMessage());
+		}
+		return 0;
+	}
+
 	function myDecode($arg)	{
 		return html_entity_decode($arg, ENT_QUOTES);
 	}
