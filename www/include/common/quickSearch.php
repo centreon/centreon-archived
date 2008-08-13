@@ -59,9 +59,8 @@
 			$p == 20213 || $p == 2021301 ||$p == 2021302 ||$p == 2021303
 			) {
 		$form_search->addElement('advcheckbox', 'search_type_host', 'host', '', 'class=mini_checkbox');
-		$form_search->addElement('advcheckbox', 'search_type_service', 'service', '', 'class=mini_checkbox');
-	}
-
+		$form_search->addElement('advcheckbox', 'search_type_service', 'service', '', 'class=mini_checkbox');		
+	}	
 	$form_search->setDefaults($tab);
 	
 	/*
