@@ -14,21 +14,27 @@
  * 
  * For information : contact@centreon.com
  */
+ 
 	if (!isset ($oreon))
 		exit ();
 	
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the option dir
+	/*
+	 * Path to the option dir
+	 */
 	$path = "./include/configuration/configGenerate/";
-	$nagiosCFGPath = "../filesGeneration/nagiosCFG/";
-	$XMLConfigPath = "../filesGeneration/osm/";
+	$nagiosCFGPath = "@CENTREON_GENDIR@/filesGeneration/nagiosCFG/";
 	$DebugPath = "filesGeneration/nagiosCFG/";
 	
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	
