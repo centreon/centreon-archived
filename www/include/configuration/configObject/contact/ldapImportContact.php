@@ -15,6 +15,8 @@
  * For information : contact@centreon.com
  */
  
+	if (!isset($oreon))
+		exit();
 
 	$DBRESULT =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable, ldap_search_user, ldap_search_user_pwd, ldap_search_filter, ldap_search_timeout, ldap_search_limit FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
@@ -24,15 +26,15 @@
 	$attrsText 	= array("size"=>"80");
 	$attrsText2	= array("size"=>"5");
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p );
 	$form->addElement('header', 'title',_("Search Options"));
 
-	#
-	## Command information
-	#
+	/*
+	 * Command information
+	 */
 	$form->addElement('header', 'options', _("Search Options"));
 	$form->addElement('text', 'ldap_search_filter', _("Search Filter"), $attrsText );
 	$form->addElement('text', 'ldap_base_dn', _("LDAP Base DN"), $attrsText);
@@ -54,15 +56,19 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
 	$tpl->assign('ldap_search_filter_help', _("Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br />Lotus Domino : (&(objectClass=person)(cn=*))<br />OpenLDAP : (&(objectClass=person)(cn=*))"));
 	$tpl->assign('ldap_search_filter_help_title', _("Filter Examples"));
-	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/ajaxLdapSearch.js"></script>');
+	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/ContactAjaxLDAP/ajaxLdapSearch.js"></script>');
 
-	# Just watch a contact information
+	/*
+	 * Just watch a contact information
+	 */
 	if ($o == "li")	{
 		$subA =& $form->addElement('submit', 'submitA', _("Import"));
 		$form->setDefaults($ldap_auth);
@@ -73,15 +79,19 @@
 		if (isset($_POST["contact_select"]["select"]) ) {
 			if ($form->getSubmitValue("submitA"))
 				insertLdapContactInDB($_POST["contact_select"]);
-			}
+		}
 		$form->freeze();
 		$valid = true;
 	}
+	
 	$action = $form->getSubmitValue("action");
+	
 	if ($valid && $action["action"]["action"])
 		require_once($path."listContact.php");
 	else	{
-		#Apply a template definition
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
