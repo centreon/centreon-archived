@@ -200,7 +200,7 @@
 					$str .= print_line("host_name", $hPar);
 					$str .= print_line("dependent_service_description", getMyServiceName($svCh["service_service_id"]));
 					$str .= print_line("service_description", getMyServiceName($svPar["service_service_id"]));
-					if ($oreon->user->get_version() == 2)
+					if ($oreon->user->get_version() >= 2)
 						if (isset($svPar["inherits_parent"]["inherits_parent"]) && $svPar["inherits_parent"]["inherits_parent"] != "") $str .= print_line("inherits_parent", $svPar["inherits_parent"]["inherits_parent"]);
 					if (isset($svPar["execution_failure_criteria"]) && $svPar["execution_failure_criteria"] != "") $str .= print_line("execution_failure_criteria", $svPar["execution_failure_criteria"]);
 					if (isset($svPar["notification_failure_criteria"]) && $svPar["notification_failure_criteria"] != "") $str .= print_line("notification_failure_criteria", $svPar["notification_failure_criteria"]);
