@@ -18,9 +18,8 @@
 	if (!isset($oreon))
 		exit();
 	
-	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+	if (!is_dir($nagiosCFGPath.$tab['id']."/"))
 		mkdir($nagiosCFGPath.$tab['id']."/");
-	}
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/dependencies.cfg", $oreon->user->get_name());
 	
@@ -139,8 +138,10 @@
 			$strDef .= print_line("dependent_hostgroup_name", $strTemp2);
 			$strDef .= print_line("hostgroup_name", $strTemp1);
 			if ($oreon->user->get_version() >= 2)	{
-				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") $strDef .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
-				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") $strDef .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
+				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") 
+					$strDef .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
+				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") 
+					$strDef .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 			}
 			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != "") $strDef .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
 			$strDef .= "}\n\n";
@@ -201,9 +202,12 @@
 					$str .= print_line("dependent_service_description", getMyServiceName($svCh["service_service_id"]));
 					$str .= print_line("service_description", getMyServiceName($svPar["service_service_id"]));
 					if ($oreon->user->get_version() >= 2)
-						if (isset($svPar["inherits_parent"]["inherits_parent"]) && $svPar["inherits_parent"]["inherits_parent"] != "") $str .= print_line("inherits_parent", $svPar["inherits_parent"]["inherits_parent"]);
-					if (isset($svPar["execution_failure_criteria"]) && $svPar["execution_failure_criteria"] != "") $str .= print_line("execution_failure_criteria", $svPar["execution_failure_criteria"]);
-					if (isset($svPar["notification_failure_criteria"]) && $svPar["notification_failure_criteria"] != "") $str .= print_line("notification_failure_criteria", $svPar["notification_failure_criteria"]);
+						if (isset($svPar["inherits_parent"]["inherits_parent"]) && $svPar["inherits_parent"]["inherits_parent"] != "") 
+							$str .= print_line("inherits_parent", $svPar["inherits_parent"]["inherits_parent"]);
+					if (isset($svPar["execution_failure_criteria"]) && $svPar["execution_failure_criteria"] != "") 
+						$str .= print_line("execution_failure_criteria", $svPar["execution_failure_criteria"]);
+					if (isset($svPar["notification_failure_criteria"]) && $svPar["notification_failure_criteria"] != "") 
+						$str .= print_line("notification_failure_criteria", $svPar["notification_failure_criteria"]);
 					$str .= "}\n\n";
 					$i++;
 					unset($hCh);					
@@ -242,7 +246,7 @@
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name FROM dependency_servicegroupChild_relation dsgcr, servicegroup WHERE dsgcr.dependency_dep_id = '".$dependency["dep_id"]."' AND servicegroup.sg_id = dsgcr.servicegroup_sg_id");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-		$sg= array();
+		$sg = array();
 		$strTemp2 = "";
 		while ($sg =& $DBRESULT2->fetchRow())	{
 			$BP = false;
@@ -263,10 +267,13 @@
 			$str .= print_line("dependent_servicegroup_name", $strTemp2);
 			$str .= print_line("servicegroup_name", $strTemp1);
 			if ($oreon->user->get_version() >= 2)	{
-				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") $str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
-				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") $str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
+				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") 
+					$str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
+				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") 
+					$str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 			}
-			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != "") $str .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
+			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != "") 
+				$str .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
 			$str .= "}\n\n";
 			$i++;
 		}
