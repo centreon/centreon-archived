@@ -321,6 +321,41 @@ function answer_with_testfile() {
 	return 0
 }
 
+#----
+## Test if file exist
+## @param	file
+## @param	variable to reset
+## @return 0 	file exist
+## @return 1 	file does not exist
+#----
+function testfile_clean() {
+	local file="$1"
+	local var="$2"
+	if [ ! -e "$file" -o -z "$file" ] ; then
+		eval $var=""
+		return 1
+	else 
+		return 0
+	fi
+}
+
+#----
+## Test if directory exist
+## @param	directory
+## @param	variable to reset
+## @return 0 directory exist
+## @return 1 directory does not exist
+#----
+function testdir_clean() {
+	local dir="$1"
+	local var="$2"
+	if [ ! -d "$dir" -o -z "$dir" ] ; then
+		eval $var=""
+		return 1
+	else
+		return 0
+	fi
+}
 
 function test_answer() {
 	if [ ! -z $2 ] ; then
@@ -372,9 +407,10 @@ function select_in_array() {
 ## @Globals	INSTALL_DIR_NAGIOS, DEFAULT_INSTALL_DIR_NAGIOS
 #----
 function locate_nagios_installdir() {
+	testdir_clean "$INSTALL_DIR_NAGIOS" "INSTALL_DIR_NAGIOS" 
 	if [ -z "$INSTALL_DIR_NAGIOS" ] ; then
 		answer_with_testdir "$(gettext "Where is installed Nagios ?")" "$DEFAULT_INSTALL_DIR_NAGIOS" "INSTALL_DIR_NAGIOS"
-		echo_success "$(gettext "Path" ) $INSTALL_DIR_NAGIOS" "$ok"
+		echo_success "$(gettext "Path") $INSTALL_DIR_NAGIOS" "$ok"
 	fi
 	INSTALL_DIR_NAGIOS=${INSTALL_DIR_NAGIOS%/}
 	export INSTALL_DIR_NAGIOS
@@ -386,6 +422,7 @@ function locate_nagios_installdir() {
 ## @Globals	NAGIOS_ETC, DEFAULT_NAGIOS_ETC
 #----
 function locate_nagios_etcdir() {
+	testdir_clean "$NAGIOS_ETC" "NAGIOS_ETC"
 	if [ -z "$NAGIOS_ETC" ] ; then
 		answer_with_testdir "$(gettext "Where is your nagios config directory")" "$DEFAULT_NAGIOS_ETC" "NAGIOS_ETC"
 		echo_success "$(gettext "Path") $NAGIOS_ETC" "$ok"
@@ -400,6 +437,7 @@ function locate_nagios_etcdir() {
 ## @Globals	NAGIOS_VAR, DEFAULT_NAGIOS_VAR
 #----
 function locate_nagios_vardir() {
+	testdir_clean "$NAGIOS_VAR" "NAGIOS_VAR"
 	if [ -z "$NAGIOS_VAR" ] ; then
 		answer_with_testdir "$(gettext "Where is your Nagios var directory ?")" "$DEFAULT_NAGIOS_VAR" "NAGIOS_VAR"
 		echo_success "$(gettext "Path" ) $NAGIOS_VAR" "$ok"
@@ -415,6 +453,7 @@ function locate_nagios_vardir() {
 ## @Globals	NAGIOS_PLUGIN, DEFAULT_NAGIOS_PLUGIN
 #----
 function locate_nagios_plugindir() {
+	testdir_clean "$NAGIOS_PLUGIN" "NAGIOS_PLUGIN"
 	if [ -z "$NAGIOS_PLUGIN" ] ; then
 		answer_with_testdir "$(gettext "Where is your Nagios plugins (libexec) directory ?")" "$DEFAULT_NAGIOS_PLUGIN" "NAGIOS_PLUGIN"
 		echo_success "$(gettext "Path" ) $NAGIOS_PLUGIN" "$ok"
@@ -430,6 +469,7 @@ function locate_nagios_plugindir() {
 ## @Globals	NAGIOS_BINARY, DEFAULT_NAGIOS_BINARY
 #----
 function locate_nagios_binary() {
+	testfile_clean "$NAGIOS_BINARY" "NAGIOS_BINARY"
 	if [ -z "$NAGIOS_BINARY" ] ; then
 		nagios_binaries="nagios nagios2 nagios3"
 		for binary in $nagios_binaries ; do
@@ -455,6 +495,7 @@ function locate_nagios_binary() {
 ## @Globals	NAGIOSTATS_BINARY, DEFAULT_NAGIOSTATS_BINARY
 #----
 function locate_nagiostats_binary() {
+	testfile_clean "$NAGIOSTATS_BINARY" "NAGIOSTATS_BINARY"
 	if [ -z "$NAGIOSTATS_BINARY" ] ; then
 		nagiostats_binaries="nagiostats nagios2stats nagios3stats"
 		for binary in $nagiostats_binaries ; do
@@ -483,6 +524,7 @@ function locate_nagiostats_binary() {
 ## @Globals	NAGIOS_P1_FILE
 #----
 function locate_nagios_p1_file() {
+	testfile_clean "$NAGIOS_P1_FILE" "NAGIOS_P1_FILE"
 	local nagios_etc="$1"
 	if [ -z "$NAGIOS_P1_FILE" ] ; then 
 		NAGIOS_P1_FILE=$(${GREP} -r "^p1_file" $nagios_etc | ${GREP} -v -i "sample" | cut -d= -f2 | uniq )
@@ -509,6 +551,7 @@ function locate_nagios_p1_file() {
 ## @Globals NAGIOS_IMG, $DEFAULT_NAGIOS_IMG
 #----
 function locate_nagios_imgdir() {
+	testdir_clean "$NAGIOS_IMG" "NAGIOS_IMG"
 	if [ -z "$NAGIOS_IMG" ] ; then
 		answer_with_testdir "$(gettext "Where is your Nagios image directory ?")" "$DEFAULT_NAGIOS_IMG" "NAGIOS_IMG"
 		echo_success "$(gettext "Path" ) $NAGIOS_IMG" "$ok"
@@ -524,6 +567,7 @@ function locate_nagios_imgdir() {
 ## @Globals	NDO2DB_BINARY, DEFAULT_NDO2DB_BINARY
 #----
 function locate_ndo2db_binary() {
+	testfile_clean "$NDO2DB_BINARY" "NDO2DB_BINARY"
 	if [ -z "$NDO2DB_BINARY" ] ; then
 		ndo2db_binaries="ndo2db ndo2db-2x ndo2db-3x"
 		for binary in $ndo2db_binaries ; do
@@ -549,6 +593,7 @@ function locate_ndo2db_binary() {
 ## @Globals	NDOMOD_BINARY, DEFAULT_NDOMOD_BINARY
 #----
 function locate_ndomod_binary() {
+	testfile_clean "$NDOMOD_BINARY" "NDOMOD_BINARY"
 	if [ -z "$NDOMOD_BINARY" ] ; then
 		ndomod_binaries="ndomod ndomod.o ndomod-2x ndomod-2x.o ndomod-3x ndomod-3x.o"
 		for binary in $ndomod_binaries ; do
@@ -577,6 +622,7 @@ function locate_ndomod_binary() {
 ## @Globals	INIT.D, DEFAULT_INIT_D 
 #----
 function locate_init_d() {
+	testdir_clean "$INIT_D" "INIT_D" 
 	if [ -z "$INIT_D" ] ; then
 		if [ -d "/etc/init.d" ] ; then
 			INIT_D="/etc/init.d"
@@ -598,6 +644,7 @@ function locate_init_d() {
 ## @Globals	CENTREON_LOG, DEFAULT_CENTREON_LOG
 #----
 function locate_centreon_logdir() {
+	testdir_clean "$CENTREON_LOG" "CENTREON_LOG"
 	if [ -z "$CENTREON_LOG" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon log directory")" "$DEFAULT_CENTREON_LOG" "CENTREON_LOG"
 		echo_success "$(gettext "Path" ) $CENTREON_LOG" "$ok"
@@ -615,6 +662,7 @@ function locate_centreon_logdir() {
 ## @Globals	CENTREON_ETC, DEFAULT_CENTREON_ETC
 #----
 function locate_centreon_etcdir() {
+	testdir "$CENTREON_ETC" "CENTREON_ETC"
 	if [ -z "$CENTREON_ETC" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon etc directory")" "$DEFAULT_CENTREON_ETC" "CENTREON_ETC"
 		echo_success "$(gettext "Path" ) $CENTREON_ETC" "$ok"
@@ -632,6 +680,7 @@ function locate_centreon_etcdir() {
 ## @Globals	INSTALL_DIR_CENTREON, DEFAULT_INSTALL_DIR_CENTREON
 #----
 function locate_centreon_installdir() {
+	testdir_clean "$INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
 	if [ -z "$INSTALL_DIR_CENTREON" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon directory?")" "$DEFAULT_INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
 		echo_success "$(gettext "Path" ) $INSTALL_DIR_CENTREON" "$ok"
@@ -651,6 +700,7 @@ function locate_centreon_installdir() {
 ## @Globals	CENTREON_GENDIR, DEFAULT_CENTREON_GENDIR
 #----
 function locate_centreon_generationdir() {
+	testdir_clean "$CENTREON_GENDIR" "CENTREON_GENDIR"
 	if [ -z "$CENTREON_GENDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon generation_files directory?")" "$DEFAULT_CENTREON_GENDIR" "CENTREON_GENDIR"
 		echo_success "$(gettext "Path" ) $CENTREON_GENDIR" "$ok"
@@ -668,6 +718,7 @@ function locate_centreon_generationdir() {
 ## @Globals	CENTREON_RUNDIR, DEFAULT_CENTREON_RUNDIR
 #----
 function locate_centreon_rundir() {
+	testdir_clean "$CENTREON_RUNDIR" "CENTREON_RUNDIR"
 	if [ -z "$CENTREON_RUNDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon Run Dir directory?")" "$DEFAULT_CENTREON_RUNDIR" "CENTREON_RUNDIR"
 		echo_success "$(gettext "Path" ) $CENTREON_RUNDIR" "$ok"
@@ -685,6 +736,7 @@ function locate_centreon_rundir() {
 ## @Globals	CENTREON_VARLIB, DEFAULT_CENTREON_VARLIB
 #----
 function locate_centreon_varlib() {
+	testdir_clean "$CENTREON_VARLIB" "CENTREON_VARLIB"
 	if [ -z "$CENTREON_VARLIB" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon variable library directory?")" "$DEFAULT_CENTREON_VARLIB" "CENTREON_VARLIB"
 		echo_success "$(gettext "Path" ) $CENTREON_VARLIB" "$ok"
@@ -702,6 +754,7 @@ function locate_centreon_varlib() {
 ## @Globals	CENTSTORAGE_RRD, DEFAULT_CENTSTORAGE_RRD
 #----
 function locate_centstorage_rrddir() {
+	testdir_clean "$CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
 	if [ -z "$CENTSTORAGE_RRD" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage RRD directory")" "$DEFAULT_CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_RRD" "$ok"
@@ -719,6 +772,7 @@ function locate_centstorage_rrddir() {
 ## @Globals	CENTSTORAGE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTSTORAGE_BINDIR
 #----
 function locate_centstorage_bindir() {
+	testfile_clean "$CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
 	if [ -z "$CENTSTORAGE_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_BINDIR" "$ok"
@@ -736,6 +790,7 @@ function locate_centstorage_bindir() {
 ## @Globals	CENTSTORAGE_LIBDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTSTORAGE_LIBDIR
 #----
 function locate_centstorage_libdir() {
+	testdir_clean "$CENTSTORAGE_LIBDIR" "CENTSTORAGE_LIBDIR"
 	if [ -z "$CENTSTORAGE_LIBDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage library directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_LIBDIR" "CENTSTORAGE_LIBDIR"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_LIBDIR" "$ok"
@@ -753,6 +808,7 @@ function locate_centstorage_libdir() {
 ## @Globals	CENTCORE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTCORE_BINDIR
 #----
 function locate_centcore_bindir() {
+	testdir_clean "$CENTCORE_BINDIR" "CENTCORE_BINDIR"
 	if [ -z "$CENTCORE_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentCore binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTCORE_BINDIR" "$ok"
@@ -770,6 +826,7 @@ function locate_centcore_bindir() {
 ## @Globals	CENTPLUGINS_TMP, DEFAULT_CENTPLUGINS_TMP
 #----
 function locate_centplugins_tmpdir() {
+	testdir_clean "$CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
 	if [ -z "$CENTPLUGINS_TMP" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentPlugins lib directory")" "$DEFAULT_CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
 		echo_success "$(gettext "Path" ) $CENTPLUGINS_TMP" "$ok"
@@ -787,6 +844,7 @@ function locate_centplugins_tmpdir() {
 ## @Globals	CENTPLUGINSTRAPS_BINDIR, DEFAULT_CENTPLUGINSTRAPS_BINDIR
 #----
 function locate_centpluginstraps_bindir() {
+	testdir_clean "$CENTPLUGINSTRAPS_BINDIR" "CENTPLUGINSTRAPS_BINDIR"
 	if [ -z "$CENTPLUGINSTRAPS_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentPlugins Traps binary")" "$DEFAULT_CENTPLUGINSTRAPS_BINDIR" "CENTPLUGINSTRAPS_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTPLUGINSTRAPS_BINDIR" "$ok"
@@ -804,6 +862,7 @@ function locate_centpluginstraps_bindir() {
 ## @Globals	SNMP_ETC, DEFAULT_SNMP_ETC
 #----
 function locate_snmp_etcdir() {
+	testdir_clean "$SNMP_ETC" "SNMP_ETC"
 	if [ -z "$SNMP_ETC" ] ; then
 		answer_with_testdir "$(gettext "Where is your SNMP configuration directory")" "$DEFAULT_SNMP_ETC" "SNMP_ETC"
 		echo_success "$SNMP_ETC" "$ok"
@@ -818,6 +877,7 @@ function locate_snmp_etcdir() {
 ## @Globals	SNMPTT_BINDIR, DEFAULT_SNMPTT_BINDIR
 #----
 function locate_snmptt_bindir() {
+	testdir_clean "$SNMPTT_BINDIR" "SNMPTT_BINDIR"
 	if [ -z "$SNMPTT_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your SNMPTT binaries directory")" "$DEFAULT_SNMPTT_BINDIR" "SNMPTT_BINDIR"
 		echo_success "$SNMPTT_BINDIR" "$ok"
@@ -832,6 +892,7 @@ function locate_snmptt_bindir() {
 ## @Globals	SUDO_FILE, DEFAULT_SUDO_FILE
 #----
 function locate_sudo() {
+	testfile_clean "$SUDO_FILE" "SUDO_FILE"
 	if [ -z "$SUDO_FILE" ] ; then
 		answer_with_testfile "$(gettext "Where is sudo configuration file")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
 		echo_success "$SUDO_FILE" "$ok"
@@ -846,6 +907,7 @@ function locate_sudo() {
 ## @Globals	RRD_PERL, DEFAULT_RRD_PERL
 #----
 function locate_rrd_perldir() {
+	testdir_clean "$RRD_PERL" "RRD_PERL"
 	if [ -z "$RRD_PERL" ] ; then
 		answer_with_testfile "$(gettext "Where is the RRD perl module installed [RRDs.pm]")" "$DEFAULT_RRD_PERL/RRDs.pm" "RRD_PERL"
 		RRD_PERL=$(dirname $RRD_PERL)
@@ -862,6 +924,7 @@ function locate_rrd_perldir() {
 ## @Globals	BIN_RRDTOOL, DEFAULT_BIN_RRDTOOL
 #----
 function locate_rrdtool() {
+	testfile_clean "$BIN_RRDTOOL" "BIN_RRDTOOL"
 	if [ -z "$BIN_RRDTOOL" ] ; then 
 		pathfind_ret "rrdtool" "BIN_RRDTOOL"
 		if [ "$?" -ne 0 ] ; then 
@@ -882,6 +945,7 @@ function locate_rrdtool() {
 ## @Globals	BIN_MAIL, DEFAULT_BIN_MAIL
 #----
 function locate_mail() {
+	testfile_clean "$BIN_MAIL" "BIN_MAIL"
 	if [ -z "$BIN_MAIL" ] ; then 
 		pathfind_ret "mail" "BIN_MAIL"
 		if [ "$?" -ne 0 ] ; then 
@@ -902,6 +966,7 @@ function locate_mail() {
 ## @Globals	BIN_SSH, DEFAULT_BIN_SSH
 #----
 function locate_ssh() {
+	testfile_clean "$BIN_SSH" "BIN_SSH"
 	if [ -z "$BIN_SSH" ] ; then 
 		pathfind_ret "ssh" "BIN_SSH"
 		if [ "$?" -ne 0 ] ; then 
@@ -922,6 +987,7 @@ function locate_ssh() {
 ## @Globals	BIN_SCP, DEFAULT_BIN_SCP
 #----
 function locate_scp() {
+	testfile_clean "$BIN_SCP" "BIN_SCP"
 	if [ -z "$BIN_SCP" ] ; then 
 		pathfind_ret "scp" "BIN_SCP"
 		if [ "$?" -ne 0 ] ; then 
@@ -942,6 +1008,7 @@ function locate_scp() {
 ## @Globals	PHP_BIN, DEFAULT_PHP_BIN
 #----
 function locate_php_bin() {
+	testfile_clean "$PHP_BIN" "PHP_BIN"
 	if [ -z "$PHP_BIN" ] ; then
 		php_binaries="php php5"
 		for binary in $php_binaries ; do
@@ -966,6 +1033,7 @@ function locate_php_bin() {
 ## @Globals	PEAR_PATH, DEFAULT_PEAR_PATH
 #----
 function locate_pear() {
+	testdir_clean "$PEAR_PATH" "PEAR_PATH"
 	if [ -z "$PEAR_PATH" ] ; then
 		answer_with_testfile "$(gettext "Where is PEAR [PEAR.php] ")" "$DEFAULT_PEAR_PATH/PEAR.php" "PEAR_PATH"
 		PEAR_PATH=$(dirname $PEAR_PATH)
@@ -981,6 +1049,7 @@ function locate_pear() {
 ## @Globals	CRON_D, DEFAULT_CRON_D
 #----
 function locate_cron_d() {
+	testdir_clean "$CRON_D" "CRON_D"
 	if [ -z "$CRON_D" ] ; then
 		if [ -d "/etc/cron.d" ] ; then
 			CRON_D="/etc/cron.d"
