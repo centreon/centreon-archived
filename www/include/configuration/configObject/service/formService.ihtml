@@ -166,7 +166,7 @@
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.nagios}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.esi_notes_url.label}</td><td class="FormRowValue">{$form.esi_notes_url.html}</td></tr>
-	 	{if $msg.nagios == 2}
+	 	{if $msg.nagios >= 2}
 		<tr class="list_two"><td class="FormRowField">{$form.esi_notes.label}</td><td class="FormRowValue">{$form.esi_notes.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.esi_action_url.label}</td><td class="FormRowValue">{$form.esi_action_url.html}</td></tr>
 	 	{/if}
@@ -178,28 +178,22 @@
 		<tr class="list_two"><td class="FormRowField">{$form.service_comment.label}</td><td class="FormRowValue">{$form.service_comment.html}</td></tr>
 	 </table>
 </div>
-
 {if $msg.nagios >= 3}
 <div id='tab5' class='tab'>
 <table class="ListTable">
 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title5}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear_new.gif'>&nbsp;&nbsp;{$form.header.macro}</td></tr>		
-	<tr><td><input type="hidden" name="nbOfMacro" id="hiddenMacInput"></td></tr>
-	<tr>
-		<td>
-			<table id="macroTable" class="ListTableSmall">
-				<tr class="ListHeader">
-					<td class="ListColLeft">{$form.macroName.label}</td>
-					<td class="ListColCenter">{$form.macroValue.label}</td>
-					<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBlankInput();"></td>
-				</tr>
-			</table>
+	<tr class="list_one"><td class="FormRowField" colspan="2"><table id="macroTable" class="ListTableMedium">
+			<tr class="ListHeader">
+				<td class="ListColLeft">{$form.macroName.label}</td>
+				<td class="ListColCenter">{$form.macroValue.label}</td>
+				<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBlankInput();"></td>
+			</tr></table>
 		</td>
 	</tr>
 </table>
 </div>
 {/if}
-
 <div id="validForm">
 {if $o == "a" || $o == "c" || $o == "mc"}
 	<p>{$form.action.html}</p>

@@ -93,7 +93,9 @@ function displayExistingMacroSvc(max){
 		var imgElem = document.createElement('img');	
 		var tabElem = document.getElementById('macroTable');
 		var trElem = document.createElement('tr');
+		
 		var tbodyElem = document.createElement('tbody');
+		tbodyElem.setAttribute("style", "padding:0px;");
 		
 		trElem.id = "trElem_" + globalj;
 		if (trMacroClassFlag) {
@@ -148,9 +150,10 @@ function displayExistingMacroSvc(max){
 }
 
 /*
-** Global variables
-*/
-var globalj=0;
+ * Global variables
+ */
+ 
+var globalj = 0;
 var trMacroClassFlag = 1;
 var globalMacroTabId = new Array();
 var globalMacroTabName = new Array();
