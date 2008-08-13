@@ -411,6 +411,7 @@
 		updateHostHostGroup($host_id, $ret);
 		updateHostTemplateService($host_id, $ret);
 		updateNagiosServerRelation($host_id, $ret);
+		updateACL();
 		global $form;
 		$ret = $form->getSubmitValues();		
 		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"] && $ret["host_template_model_htm_id"] && $oreon->user->get_version() < 3)
@@ -1664,6 +1665,14 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
+	}
+	
+	function updateACL(){
+		global $pearDB;
+
+		$DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 ?>

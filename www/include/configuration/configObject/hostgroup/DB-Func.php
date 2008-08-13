@@ -143,14 +143,17 @@
 		$hg_id = insertHostGroup($ret);
 		updateHostGroupHosts($hg_id, $ret);
 		updateHostGroupContactGroups($hg_id, $ret);
+		updateACL();
 		return $hg_id;
 	}
 	
 	function updateHostGroupInDB ($hg_id = NULL)	{
-		if (!$hg_id) return;
+		if (!$hg_id) 
+			return;
 		updateHostGroup($hg_id);
 		updateHostGroupHosts($hg_id);
 		updateHostGroupContactGroups($hg_id);
+		updateACL();
 	}
 		
 	function insertHostGroup($ret = array())	{
@@ -307,4 +310,13 @@
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
+
+	function updateACL(){
+		global $pearDB;
+
+		$DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	}
+
 ?>

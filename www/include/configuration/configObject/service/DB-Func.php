@@ -394,12 +394,13 @@
 		insertServiceExtInfos($service_id, $ret);
 		updateServiceTrap($service_id, $ret);
 		updateServiceCategories($service_id, $ret);
+		updateACL();
 		return ($service_id);
 	}
 	
 	function insertService($ret = array())	{
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
+		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
@@ -1200,8 +1201,10 @@
 	}
 	
 	function updateServiceCategories_MC($service_id = null, $ret = array())	{
-		if (!$service_id) return;
+		if (!$service_id) 
+			return;
 	}
+	
 	function updateServiceCategories($service_id = null, $ret = array())	{
 		if (!$service_id) return;
 		global $form, $pearDB;
@@ -1223,4 +1226,13 @@
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
+	
+	function updateACL(){
+		global $pearDB;
+
+		$DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	}
+	
 ?>
