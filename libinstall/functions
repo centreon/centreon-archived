@@ -331,7 +331,8 @@ function answer_with_testfile() {
 function testfile_clean() {
 	local file="$1"
 	local var="$2"
-	if [ ! -e "$file" -o -z "$file" ] ; then
+	[ -z "$file" ] && return 1
+	if [ ! -e "$file" ] ; then
 		eval $var=""
 		return 1
 	else 
@@ -349,7 +350,8 @@ function testfile_clean() {
 function testdir_clean() {
 	local dir="$1"
 	local var="$2"
-	if [ ! -d "$dir" -o -z "$dir" ] ; then
+	[ -z "$dir" ] && return 1
+	if [ ! -d "$dir" ] ; then
 		eval $var=""
 		return 1
 	else
