@@ -146,13 +146,13 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 	       	$uid = @posix_getpwuid (fileowner($_SESSION['nagios_conf']));
 			$gid = @posix_getgrgid (filegroup($_SESSION['nagios_conf']));
 	       	$perms = substr(sprintf('%o', fileperms($_SESSION['nagios_conf'])), -3) ;
-			if (!(strcmp($perms,'775'))  && !strcmp($_SESSION['nagios_user'], $uid['name']) && !strcmp($_SESSION['apache_group'], $gid['name'])){
+			if (!(strcmp($perms,'775'))  && !strcmp("root", $uid['name']) && !strcmp($_SESSION['apache_group'], $gid['name'])){
 	          	echo '<b><span class="go">OK</font></b>';
 	          	 $msg =  '';
 			} else {
 	            echo '<b><span class="stop">Critical: Not Writeable</font></b>';
 	          	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b></span>' ;
-	          	$msg .=  '<br />Should be '.$_SESSION['nagios_user'].':'.$_SESSION['apache_group'].' (775)';
+	          	$msg .=  '<br />Should be root:'.$_SESSION['apache_group'].' (775)';
 			   	echo $msg;
 			    $return_false = 1;
 	       	}
