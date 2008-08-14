@@ -37,7 +37,20 @@
 	}
 	
 	require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once("$centreon_path/www/DBconnect.php");
 	require_once("$centreon_path/www/DBOdsConnect.php");
+
+	/*
+	 * Get RRDTool binary Path 
+	 */
+	 
+	$DBRESULT =& $pearDB->query("SELECT `rrdtool_path_bin` FROM `general_opt`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	$options =& $DBRESULT->fetchRow();
+	$rrdtoolPath = $options["rrdtool_path_bin"];
+	unset($options);
+	$DBRESULT->free();
 
 	$title	 = array(	"active_host_check" => _("Host checks"), 
 						"active_host_last" => _("Active hosts"),
@@ -148,7 +161,7 @@
 		$cpt++;
 	}
 
-	$command_line = "/usr/bin/rrdtool ".$command_line." 2>&1";
+	$command_line = "$rrdtoolPath ".$command_line." 2>&1";
 	$command_line = escape_command("$command_line");
 
 	//print $command_line;
