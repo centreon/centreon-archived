@@ -21,7 +21,7 @@
 	/*
 	 * Debug Flag
 	 */
-	$debug = 1;
+	$debug = 0;
 	
 	/*
 	 * Database retrieve information for Manufacturer
