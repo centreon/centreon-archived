@@ -155,9 +155,9 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 	$SNMPTT_BINDIR/snmpttconvertmib >> $LOG_FILE 2>&1
 
 # Create traps directory in nagios pluginsdir
-$INSTALL_DIR/cinstall $cinstall_opts -d 664 \
-	-g $WEB_GROUP \
-	$NAGIOS_PLUGIN/traps
+#$INSTALL_DIR/cinstall $cinstall_opts -d 664 \
+#	-g $WEB_GROUP \
+#	$NAGIOS_PLUGIN/traps
 
 echo_success "$(gettext "Install SNMPTT")" "$ok"
 ## TODO : comment ^^ , log and echo_*

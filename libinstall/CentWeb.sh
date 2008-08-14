@@ -9,6 +9,8 @@
 #################################
 # SVN: $Id$
 
+#set -x 
+
 echo "$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo "$line"
@@ -143,19 +145,19 @@ cp $TMPDIR/work/www/install/insertBaseConf.sql \
 
 ## use this step to change macros on php file...
 echo_info "$(gettext "Change macros for php file")"
-macros="@CENTREON_ETC@"
-file_php_temp=$(mktemp $TMPDIR/file_php_temp.XXXXXX)
+macros="@CENTREON_ETC@,@CENTREON_GENDIR@"
+find_macros_in_dir "$macros" "$TMPDIR/src/" "www" "*.php" "file_php_temp"
 
-# define all file where I apply a sed for $macros
-for macro in $macros ; do
-	log "INFO" "$(gettext "Search file for macro") : $macro"
-	( cd $TMPDIR/src/ ;
-	find www -mindepth 1 -type f -name "*.php" | \
-		xargs ${GREP} "$macro" | \
-		cut -d: -f1 | \
-		uniq >> "$file_php_temp" 2>>"$LOG_FILE";
-	)
-done
+## define all file where I apply a sed for $macros
+#for macro in $macros ; do
+#	log "INFO" "$(gettext "Search file for macro") : $macro"
+#	( cd $TMPDIR/src/ ;
+#	find www -mindepth 1 -type f -name "*.php" | \
+#		xargs ${GREP} "$macro" | \
+#		cut -d: -f1 | \
+#		uniq >> "$file_php_temp" 2>>"$LOG_FILE";
+#	)
+#done
 
 log "INFO" "$(gettext "Apply macros")"
 
@@ -164,6 +166,7 @@ ${CAT} "$file_php_temp" | while read file ; do
 	[ ! -d $(dirname $TMPDIR/work/$file) ] && \
 		mkdir -p  $(dirname $TMPDIR/work/$file) >> $LOG_FILE 2>&1
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
 		$TMPDIR/src/$file > $TMPDIR/work/$file
 	log "MACRO" "$(gettext "Copy in final dir") : $file"
 	cp -f $TMPDIR/work/$file $TMPDIR/final/$file >> $LOG_FILE 2>&1 

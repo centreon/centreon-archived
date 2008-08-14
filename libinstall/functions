@@ -646,7 +646,6 @@ function locate_init_d() {
 ## @Globals	CENTREON_LOG, DEFAULT_CENTREON_LOG
 #----
 function locate_centreon_logdir() {
-	testdir_clean "$CENTREON_LOG" "CENTREON_LOG"
 	if [ -z "$CENTREON_LOG" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon log directory")" "$DEFAULT_CENTREON_LOG" "CENTREON_LOG"
 		echo_success "$(gettext "Path" ) $CENTREON_LOG" "$ok"
@@ -664,7 +663,6 @@ function locate_centreon_logdir() {
 ## @Globals	CENTREON_ETC, DEFAULT_CENTREON_ETC
 #----
 function locate_centreon_etcdir() {
-	testdir "$CENTREON_ETC" "CENTREON_ETC"
 	if [ -z "$CENTREON_ETC" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon etc directory")" "$DEFAULT_CENTREON_ETC" "CENTREON_ETC"
 		echo_success "$(gettext "Path" ) $CENTREON_ETC" "$ok"
@@ -682,7 +680,6 @@ function locate_centreon_etcdir() {
 ## @Globals	INSTALL_DIR_CENTREON, DEFAULT_INSTALL_DIR_CENTREON
 #----
 function locate_centreon_installdir() {
-	testdir_clean "$INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
 	if [ -z "$INSTALL_DIR_CENTREON" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon directory?")" "$DEFAULT_INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
 		echo_success "$(gettext "Path" ) $INSTALL_DIR_CENTREON" "$ok"
@@ -702,7 +699,6 @@ function locate_centreon_installdir() {
 ## @Globals	CENTREON_GENDIR, DEFAULT_CENTREON_GENDIR
 #----
 function locate_centreon_generationdir() {
-	testdir_clean "$CENTREON_GENDIR" "CENTREON_GENDIR"
 	if [ -z "$CENTREON_GENDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon generation_files directory?")" "$DEFAULT_CENTREON_GENDIR" "CENTREON_GENDIR"
 		echo_success "$(gettext "Path" ) $CENTREON_GENDIR" "$ok"
@@ -720,7 +716,6 @@ function locate_centreon_generationdir() {
 ## @Globals	CENTREON_RUNDIR, DEFAULT_CENTREON_RUNDIR
 #----
 function locate_centreon_rundir() {
-	testdir_clean "$CENTREON_RUNDIR" "CENTREON_RUNDIR"
 	if [ -z "$CENTREON_RUNDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon Run Dir directory?")" "$DEFAULT_CENTREON_RUNDIR" "CENTREON_RUNDIR"
 		echo_success "$(gettext "Path" ) $CENTREON_RUNDIR" "$ok"
@@ -738,7 +733,6 @@ function locate_centreon_rundir() {
 ## @Globals	CENTREON_VARLIB, DEFAULT_CENTREON_VARLIB
 #----
 function locate_centreon_varlib() {
-	testdir_clean "$CENTREON_VARLIB" "CENTREON_VARLIB"
 	if [ -z "$CENTREON_VARLIB" ] ; then
 		answer_with_createdir "$(gettext "Where is your Centreon variable library directory?")" "$DEFAULT_CENTREON_VARLIB" "CENTREON_VARLIB"
 		echo_success "$(gettext "Path" ) $CENTREON_VARLIB" "$ok"
@@ -756,7 +750,6 @@ function locate_centreon_varlib() {
 ## @Globals	CENTSTORAGE_RRD, DEFAULT_CENTSTORAGE_RRD
 #----
 function locate_centstorage_rrddir() {
-	testdir_clean "$CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
 	if [ -z "$CENTSTORAGE_RRD" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage RRD directory")" "$DEFAULT_CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_RRD" "$ok"
@@ -774,7 +767,6 @@ function locate_centstorage_rrddir() {
 ## @Globals	CENTSTORAGE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTSTORAGE_BINDIR
 #----
 function locate_centstorage_bindir() {
-	testfile_clean "$CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
 	if [ -z "$CENTSTORAGE_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_BINDIR" "$ok"
@@ -792,7 +784,6 @@ function locate_centstorage_bindir() {
 ## @Globals	CENTSTORAGE_LIBDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTSTORAGE_LIBDIR
 #----
 function locate_centstorage_libdir() {
-	testdir_clean "$CENTSTORAGE_LIBDIR" "CENTSTORAGE_LIBDIR"
 	if [ -z "$CENTSTORAGE_LIBDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage library directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_LIBDIR" "CENTSTORAGE_LIBDIR"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_LIBDIR" "$ok"
@@ -810,7 +801,6 @@ function locate_centstorage_libdir() {
 ## @Globals	CENTCORE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTCORE_BINDIR
 #----
 function locate_centcore_bindir() {
-	testdir_clean "$CENTCORE_BINDIR" "CENTCORE_BINDIR"
 	if [ -z "$CENTCORE_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentCore binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTCORE_BINDIR" "$ok"
@@ -828,7 +818,6 @@ function locate_centcore_bindir() {
 ## @Globals	CENTPLUGINS_TMP, DEFAULT_CENTPLUGINS_TMP
 #----
 function locate_centplugins_tmpdir() {
-	testdir_clean "$CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
 	if [ -z "$CENTPLUGINS_TMP" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentPlugins lib directory")" "$DEFAULT_CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
 		echo_success "$(gettext "Path" ) $CENTPLUGINS_TMP" "$ok"
@@ -846,7 +835,6 @@ function locate_centplugins_tmpdir() {
 ## @Globals	CENTPLUGINSTRAPS_BINDIR, DEFAULT_CENTPLUGINSTRAPS_BINDIR
 #----
 function locate_centpluginstraps_bindir() {
-	testdir_clean "$CENTPLUGINSTRAPS_BINDIR" "CENTPLUGINSTRAPS_BINDIR"
 	if [ -z "$CENTPLUGINSTRAPS_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentPlugins Traps binary")" "$DEFAULT_CENTPLUGINSTRAPS_BINDIR" "CENTPLUGINSTRAPS_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTPLUGINSTRAPS_BINDIR" "$ok"
@@ -879,7 +867,6 @@ function locate_snmp_etcdir() {
 ## @Globals	SNMPTT_BINDIR, DEFAULT_SNMPTT_BINDIR
 #----
 function locate_snmptt_bindir() {
-	testdir_clean "$SNMPTT_BINDIR" "SNMPTT_BINDIR"
 	if [ -z "$SNMPTT_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your SNMPTT binaries directory")" "$DEFAULT_SNMPTT_BINDIR" "SNMPTT_BINDIR"
 		echo_success "$SNMPTT_BINDIR" "$ok"
@@ -2147,6 +2134,38 @@ function clean_sudo() {
 		${CAT} $sudo_clean > $sudo_old 2>$LOG_FILE
 		return 0
 	fi
+	return 0
+}
+
+#----
+## Find file with macro in directory.
+## @param	macro (separate with comma)
+## @param 	directoty where to find
+## @param	sub directory to find
+## @param	file to search (possible to use pattern)
+## @param	variable where define a list of file (temporaty file)
+## @Globals	LOG_FILE, TMP_DIR
+#----
+function find_macros_in_dir() {
+	local macro="$1"
+	local src_dir="$2"
+	local sub_dir="$3"
+	local file="$4"
+	local var_ref="$5"
+	local file_out_tmp=""
+	file_out_tmp=$(mktemp $TMP_DIR/file_out_tmp.XXXXXX)
+	
+	for mac in ${macro//,/ } ; do
+		log "INFO" "$(gettext "Search file for macro") : $mac"
+		( cd $src_dir ;
+			find $sub_dir -mindepth 1 -type f -name "$file" | \
+				xargs ${GREP} "$mac" | \
+				cut -d: -f1 | \
+				uniq >> "$file_out_tmp" 2>>"$LOG_FILE";
+		)
+	done
+
+	eval $var_ref=$file_out_tmp
 	return 0
 }
 
