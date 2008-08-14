@@ -176,6 +176,7 @@
 
 	$rq_pagination = $rq1;
 	
+	
 	/* 
 	 * Get Pagination Rows 
 	 */
@@ -184,9 +185,7 @@
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 
-	$rq1 .= " ORDER BY sg.alias ASC, no.name1 " . $order;
-
-	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+	$rq1 .= " ORDER BY sg.alias ASC, no.name1 ".$order." LIMIT ".($num * $limit).",".$limit;
 
 	$buffer .= '<reponse>';
 	$buffer .= '<i>';
@@ -194,6 +193,11 @@
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
 	$buffer .= '<p>'.$p.'</p>';
+	$buffer .= '<sk>'.$tab_color_service[0].'</sk>';
+	$buffer .= '<sw>'.$tab_color_service[1].'</sw>';
+	$buffer .= '<sc>'.$tab_color_service[2].'</sc>';
+	$buffer .= '<su>'.$tab_color_service[3].'</su>';
+	$buffer .= '<sp>'.$tab_color_service[4].'</sp>';
 	($o == "svcOVSG") ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
 	$buffer .= '</i>';
 
@@ -201,63 +205,81 @@
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	$class = "list_one";
-	$ct = 0;
 	$flag = 0;
 
 	$sg = "";
-	$h = "";
+	$h = NULL;
 	$flag = 0;
+	$ct = 0;
 	$nb_service = array();
 
 	while ($tab =& $DBRESULT_NDO1->fetchRow()){
-
 		($class == "list_one") ? $class = "list_two" : $class = "list_one";
-
+				
 		if ($sg != $tab["alias"]){
-			$flag = 0;
-			if ($sg != ""){
-				$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
-				$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
-				$buffer .= '<sc color="'.$tab_color_service[2].'">'.$nb_service[2].'</sc>';
-				$buffer .= '<su color="'.$tab_color_service[3].'">'.$nb_service[3].'</su>';
-				$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
-				$buffer .= '</h></sg>';
-			}
+			if ($flag)
+				$buffer .= '</sg>';
 			$sg = $tab["alias"];
 			$buffer .= '<sg>';
 			$buffer .= '<sgn><![CDATA['. $tab["alias"]  .']]></sgn>';
 			$buffer .= '<o>'. $ct . '</o>';
+			$flag = 1;
 		}
 		$ct++;
-
-		if ($h != $tab["host_name"]){
-			if ($h != "" && $flag){
-				$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
-				$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
-				$buffer .= '<sc color="'.$tab_color_service[2].'">'.$nb_service[2].'</sc>';
-				$buffer .= '<su color="'.$tab_color_service[3].'">'.$nb_service[3].'</su>';
-				$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
-				$buffer .= '</h>';
-			}
-			$flag = 1;
-			$h = $tab["host_name"];
-			$nb_service = array();
-			$nb_service[0] = 0;
-			$nb_service[1] = 0;
-			$nb_service[2] = 0;
-			$nb_service[3] = 0;
-			$nb_service[4] = 0;
-
-			$h = $tab["host_name"];
+		//$buffer .= "<h>".$tab["host_name"] . " - ".$h."</h>";
+		if ($h == $tab["host_name"] || !isset($h)){
+			$nb_service = array(0=>0,1=>0,2=>0,3=>0,4=>0);
+			$nb_service[$tab["current_state"]] += 1;
+			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
+		} else {
+			$nb_service[$tab["current_state"]] += 1;
+			$buffer .= '<h class="'.$class.'">';
+			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
+			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
+			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
+			$buffer .= '<sk>'.$nb_service[0].'</sk>';
+			$buffer .= '<sw>'.$nb_service[1].'</sw>';
+			$buffer .= '<sc>'.$nb_service[2].'</sc>';
+			$buffer .= '<su>'.$nb_service[3].'</su>';
+			$buffer .= '<sp>'.$nb_service[4].'</sp>';
+			$buffer .= '</h>';
+		}
+		/*
+		if ($h != $tab["host_name"] || $h){
+			$buffer .= $buffer_tmp;
 			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
 			$buffer .= '<h class="'.$class.'">';
 			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
 			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
 			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
+			
+			$buffer .= '<sk>'.$nb_service[0].'</sk>';
+			$buffer .= '<sw>'.$nb_service[1].'</sw>';
+			$buffer .= '<sc>'.$nb_service[2].'</sc>';
+			$buffer .= '<su>'.$nb_service[3].'</su>';
+			$buffer .= '<sp>'.$nb_service[4].'</sp>';
+			
+			$flag = 1;
+			$h = $tab["host_name"];
+			$nb_service = array(0=>0,1=>0,2=>0,3=>0,4=>0);
+
+			
 		}
 		$nb_service[$tab["current_state"]] += 1;
+		*/
+		$sg = $tab["alias"];
+		$h = $tab["host_name"];
 	}
+	$buffer .= "</sg>";
 	
+	$buffer .= '</reponse>';
+	header('Content-Type: text/xml');
+	echo $buffer;
+
+
+
+
+	/*
 	if ($sg != ""){
 		$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
 		$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
@@ -266,8 +288,7 @@
 		$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
 		$buffer .= '</h></sg>';
 	}
+	*/
 
-	$buffer .= '</reponse>';
-	header('Content-Type: text/xml');
-	echo $buffer;
+
 ?>
