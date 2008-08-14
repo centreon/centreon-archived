@@ -1225,14 +1225,5 @@
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
-	}
-	
-	function updateACL(){
-		global $pearDB;
-
-		$DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	}
-	
+	}	
 ?>
