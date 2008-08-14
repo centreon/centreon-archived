@@ -22,7 +22,7 @@ require_once ($centreon_path."/www/DBconnect.php");
 
 echo "<?xml version=\"1.0\"?>\n";
 
-$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register='0' ORDER BY host_id");
+$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register='0' ORDER BY host_name");
 if (PEAR::isError($DBRESULT))
 	print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
