@@ -971,7 +971,7 @@
 		# For loading template link
 		$cpt_tpl = 0;
 		$tab_link_tpl = array();
-	
+		
 		foreach ($tmpConf as $key => $value){
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
@@ -1076,18 +1076,12 @@
 					unset ($tmpConf[$key]);
 					break;
 				case "#TEMPLATE-HOST-LINK" : 
-					$cpt_tpl = 0;
-					foreach ($value as $key => $val){
-						$tab_link_tpl[$cpt_tpl] = $val;
-						$cpt_tpl++;
-					}
+					$tab_link_tpl[$cpt_tpl] = $value;
+					$cpt_tpl++;
 					break;
 				case ";TEMPLATE-HOST-LINK" : 
-					$cpt_tpl = 0;
-					foreach ($value as $key => $val){
-						$tab_link_tpl[$cpt_tpl] = $val;
-						$cpt_tpl++;
-					}
+					$tab_link_tpl[$cpt_tpl] = $value;
+					$cpt_tpl++;
 					break;
 			}
 		}
