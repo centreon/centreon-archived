@@ -15,9 +15,27 @@
  * For information : contact@centreon.com
  */
 	
+	
+	function filter_get($str){
+		if (preg_match("/([a-zA-Z0-9\_\-\%\ ]*)/", $str, $matches))
+			return $matches[1];
+		return NULL;	
+	}
+	
+	foreach ($_GET as $key => $get){
+		$tab = split(';', $_GET[$key]);
+		$_GET[$key] = $tab[0];
+		if (function_exists("filter_var")){
+			$_GET[$key] = filter_var($_GET[$key], FILTER_SANITIZE_SPECIAL_CHARS);
+		} else {
+			$_GET[$key] = filter_get($_GET[$key]);
+		}
+	}
+		
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
+	
 	require_once("@CENTREON_ETC@/centreon.conf.php");
 	require_once("$centreon_path/www/DBOdsConnect.php");
 
@@ -59,16 +77,29 @@
 
 	if (!isset($_GET["start"])) {		
 		$start = time() - (60*60*96);		
-	}
-	else {				
+	} else {				
 		switch ($_GET["start"]) {
-			case "today" : $start = time() - (60*60*24); break;
-			case "yesterday" : $start = time() - (60*60*48); break;
-			case "last4days" : $start = time() - (60*60*96); break;
-			case "lastweek" : $start = time() - (60*60*168); break;
-			case "lastmonth" : $start = time() - (60*60*24*30); break;
-			case "last6month" : $start = time() - (60*60*24*30*6); break;
-			case "lastyear" : $start = time() - (60*60*24*30*12); break;
+			case "today" : 
+				$start = time() - (60*60*24); 
+				break;
+			case "yesterday" : 
+				$start = time() - (60*60*48); 
+				break;
+			case "last4days" : 
+				$start = time() - (60*60*96);
+				break;
+			case "lastweek" : 
+				$start = time() - (60*60*168); 
+				break;
+			case "lastmonth" : 
+				$start = time() - (60*60*24*30); 
+				break;
+			case "last6month" : 
+				$start = time() - (60*60*24*30*6); 
+				break;
+			case "lastyear" : 
+				$start = time() - (60*60*24*30*12); 
+				break;
 		}
 	}
 	
@@ -107,12 +138,10 @@
 	}
 	$command_line .= " COMMENT:\" \\l\" ";
 	
-	
 	# Create Legende
 	$cpt = 1;
 
 	foreach ($metrics as $key => $tm){
-		//$command_line .= " AREA:v".($cpt).$colors[$cpt]."3c ";
 		$command_line .= " LINE1:v".($cpt);
 		$command_line .= $colors[$cpt].":\"";
 		$command_line .= $tm."\"";
