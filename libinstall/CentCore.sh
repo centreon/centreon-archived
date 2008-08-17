@@ -133,20 +133,31 @@ echo_success "$(gettext "Replace CentCore init script Macro")" "$ok"
 cp $TMPDIR/work/centcore.init.d $TMPDIR/final/centcore.init.d
 cp $TMPDIR/final/centcore.init.d $INSTALL_DIR_CENTREON/examples/centcore.init.d
 
-yes_no_default "$(gettext "Do you want me to install CentCore init script ?")"
-if [ $? -eq 0 ] ; then 
+RC="1"
+if [ "${CENTCORE_INSTALL_INIT:-0}" -eq 1 ] ; then
+	RC="0"
+else
+	yes_no_default "$(gettext "Do you want me to install CentCore init script ?")"
+	RC="$?"
+fi
+if [ "$RC" -eq "0" ] ; then 
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMPDIR/final/centcore.init.d $INIT_D/centcore >> $LOG_FILE 2>&1
 	log "INFO" "$(gettext "CentCore init script installed")"
-
-	yes_no_default "$(gettext "Do you want me to install CentCore run level ?")"
-		if [ $? -eq 0 ] ; then
-			install_init_service "centcore"
-			log "INFO" "$(gettext "CentCore run level installed")"
-		else
-			echo_passed "$(gettext "CentCore run level not installed")" "$passed"
-			log "INFO" "$(gettext "CentCore run level not installed")"
-		fi
+	RC="1"
+	if [ "${CENTCORE_INSTALL_RUNLVL:-0}" -eq 1 ] ; then
+		RC="0"
+	else
+		yes_no_default "$(gettext "Do you want me to install CentCore run level ?")"
+		RC="$?"
+	fi
+	if [ "$RC" -eq "0" ] ; then
+		install_init_service "centcore"
+		log "INFO" "$(gettext "CentCore run level installed")"
+	else
+		echo_passed "$(gettext "CentCore run level not installed")" "$passed"
+		log "INFO" "$(gettext "CentCore run level not installed")"
+	fi
 else
 	echo_passed "$(gettext "CentCore init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centcore.init.d" "$passed"
 	log "INFO" "$(gettext "CentCore init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centcore.init.d"

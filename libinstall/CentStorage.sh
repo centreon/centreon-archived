@@ -145,16 +145,33 @@ echo_success "$(gettext "Change macros for centstorage init script")" "$ok"
 cp $TMPDIR/work/centstorage.init.d $TMPDIR/final/centstorage.init.d
 cp $TMPDIR/final/centstorage.init.d $INSTALL_DIR_CENTREON/examples/centstorage.init.d
 
-yes_no_default "$(gettext "Do you want me to install CentStorage init script ?")"
-if [ $? -eq 0 ] ; then 
+RC="1"
+if [ "${CENTSTORAGE_INSTALL_INIT:-0}" -eq 1 ] ; then 
+	RC="0"	
+else
+	yes_no_default "$(gettext "Do you want me to install CentStorage init script ?")"
+	RC="$?"
+fi
+if [ "$RC" -eq "0" ] ; then 
 	log "INFO" "$(gettext "CentStorage init script installed")"
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMPDIR/final/centstorage.init.d \
 		$INIT_D/centstorage >> $LOG_FILE 2>&1
-	yes_no_default "$(gettext "Do you want me to install CentStorage run level ?")"
-		if [ $? -eq 0 ] ; then
-			install_init_service "centstorage" | tee -a $LOG_FILE
-		fi
+	RC="1"
+	if [ "${CENTSTORAGE_INSTALL_LVLRUN:-0}" -eq 1 ] ; then
+		RC="1"
+	else
+		yes_no_default "$(gettext "Do you want me to install CentStorage run level ?")"
+		RC="$?"
+	fi
+	if [ "$RC" -eq "0" ] ; then
+		install_init_service "centstorage" | tee -a $LOG_FILE
+		log "INFO" "$(gettext "CentStorage run level installed")"
+	else
+		echo_passed "$(gettext "CentStorage run level not installed")" "$passed"
+		log "INFO" "$(gettext "CentStorage run level not installed")"
+	fi
+i
 else
 	echo_passed "$(gettext "CentStorage init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centstorage.init.d" "$passed"
 	log "INFO" "$(gettext "CentStorage init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centstorage.init.d"

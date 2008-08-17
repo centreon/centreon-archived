@@ -74,8 +74,18 @@ CENTREON_VARLIB="/var/lib/centreon"
 ## Some plugins require temporary datas to process output.
 ## These temp datas are store in the CENTPLUGINS_TMP path.
 CENTPLUGINS_TMP="/var/lib/centreon/centplugins"
+## path to centpluginsTraps binaries
+CENTPLUGINSTRAPS_BINDIR="/usr/sbin"
 ## path for snmptt installation
 SNMPTT_BINDIR="/opt/snmptt"
+## force install init script (install in init.d)
+## Set to "1" to enable
+#CENTCORE_INSTALL_INIT=0
+#CENTSTORAGE_INSTALL_INIT=0
+## force install run level for init script (add all link on rcX.d)
+## Set to "1" to enable
+#CENTCORE_INSTALL_RUNLVL=0
+#CENTSTORAGE_INSTALL_RUNLVL=0
 #####################################################################
 ## End: Centreon preferences
 #####################################################################
@@ -129,6 +139,8 @@ NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
 WEB_USER="www-data"
 ## Apache group (optional)
 WEB_GROUP="www-data"
+## Force apache reload (optional): set APACHE_RELOAD to 1
+#APACHE_RELOAD=0
 #####################################################################
 ## End: Apache preferences
 #####################################################################

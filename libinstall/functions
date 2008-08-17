@@ -1112,8 +1112,10 @@ function configureApache() {
 		echo_success "$(gettext "Configuring Apache")" "$ok"
 		# After finishing the configuration -> 
 		# reload apache ! (if admin wants :p)
-		yes_no_default "$(gettext "Do you want to reload your Apache ?")"
-		if [ $? -eq 0 ] ; then 
+		if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then 
+			yes_no_default "$(gettext "Do you want to reload your Apache ?")"
+			[ $? -eq 0 ] && reload_service_apache
+		elif [ "${APACHE_RELOAD:-0}" -eq 1 ] ; then
 			reload_service_apache
 		fi
 	else

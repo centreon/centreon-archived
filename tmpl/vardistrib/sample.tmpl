@@ -20,7 +20,7 @@ PROCESS_CENTCORE=1
 ## CentPlugins: Centreon Plugins for nagios
 PROCESS_CENTREON_PLUGINS=1
 ## CentTraps: Centreon Snmp traps process for nagios
-PROCESS_CENTREON_SNMP_TRAPS=0
+PROCESS_CENTREON_SNMP_TRAPS=1
 #####################################################################
 ## End: Install modules
 #####################################################################
@@ -73,8 +73,18 @@ CENTREON_VARLIB="/var/lib/centreon"
 ## Some plugins require temporary datas to process output.
 ## These temp datas are store in the CENTPLUGINS_TMP path.
 CENTPLUGINS_TMP="/var/lib/centreon/centplugins"
+## path to centpluginsTraps binaries
+CENTPLUGINSTRAPS_BINDIR="/srv/centreon/bin"
 ## path for snmptt installation
 SNMPTT_BINDIR="/opt/snmptt"
+## force install init script (install in init.d)
+## Set to "1" to enable
+#CENTCORE_INSTALL_INIT=0
+#CENTSTORAGE_INSTALL_INIT=0
+## force install run level for init script (add all link on rcX.d)
+## Set to "1" to enable
+#CENTCORE_INSTALL_RUNLVL=0
+#CENTSTORAGE_INSTALL_RUNLVL=0
 #####################################################################
 ## End: Centreon preferences
 #####################################################################
@@ -128,6 +138,8 @@ NAGIOS_VAR="/var/log/nagios"
 WEB_USER="www-data"
 ## Apache group (optional)
 WEB_GROUP="www-data"
+## Force apache reload (optional): set APACHE_RELOAD to 1
+#APACHE_RELOAD=0
 #####################################################################
 ## End: Apache preferences
 #####################################################################
@@ -167,6 +179,10 @@ WEB_GROUP="www-data"
 RRD_PERL="/usr/lib/perl5"
 ## Path to sudoers file (optional)
 #SUDO_FILE="/etc/sudoers"
+## Apache user (optional)
+#WEB_USER="apache"
+## Apache group (optional)
+#WEB_GROUP="apache"
 ## init script directory (optional)
 #INIT_D="/etc/init.d"
 ## cron config script directory (optional)

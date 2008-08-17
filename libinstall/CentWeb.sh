@@ -60,11 +60,14 @@ check_user_nagios
 check_group_nagios
 
 ## NDO binary
-yes_no_default "$(gettext "Do you want to use NDO ?")" "$no"
-if [ "$?" -eq 0 ] ; then
-	log "INFO" "$(gettext "NDO use...")"
-	locate_ndomod_binary
-fi
+locate_ndomod_binary
+## For a moment, Centreon2 does not support when NDO not use.
+## by default, I prefert force NDO usage.
+#yes_no_default "$(gettext "Do you want to use NDO ?")" "$no"
+#if [ "$?" -eq 0 ] ; then
+#	log "INFO" "$(gettext "NDO use...")"
+#	locate_ndomod_binary
+#fi
 
 
 ## Config Sudo
@@ -147,17 +150,6 @@ cp $TMPDIR/work/www/install/insertBaseConf.sql \
 echo_info "$(gettext "Change macros for php file")"
 macros="@CENTREON_ETC@,@CENTREON_GENDIR@"
 find_macros_in_dir "$macros" "$TMPDIR/src/" "www" "*.php" "file_php_temp"
-
-## define all file where I apply a sed for $macros
-#for macro in $macros ; do
-#	log "INFO" "$(gettext "Search file for macro") : $macro"
-#	( cd $TMPDIR/src/ ;
-#	find www -mindepth 1 -type f -name "*.php" | \
-#		xargs ${GREP} "$macro" | \
-#		cut -d: -f1 | \
-#		uniq >> "$file_php_temp" 2>>"$LOG_FILE";
-#	)
-#done
 
 log "INFO" "$(gettext "Apply macros")"
 
