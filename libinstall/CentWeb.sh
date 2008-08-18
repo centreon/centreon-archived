@@ -60,9 +60,14 @@ check_user_nagios
 check_group_nagios
 
 ## NDO binary
-locate_ndomod_binary
+if [ "${FORCE_NOT_USE_NDO:-0}" -eq 1 ] ; then 
+	NDOMOD_BINARY="NOT_USE_PLEASE_DISABLE_IN_CENTWEB"
+else 
+	locate_ndomod_binary
+fi
 ## For a moment, Centreon2 does not support when NDO not use.
-## by default, I prefert force NDO usage.
+## by default, I prefert force NDO usage. But you can use 
+## FORCE_NOT_USE_NDO
 #yes_no_default "$(gettext "Do you want to use NDO ?")" "$no"
 #if [ "$?" -eq 0 ] ; then
 #	log "INFO" "$(gettext "NDO use...")"
