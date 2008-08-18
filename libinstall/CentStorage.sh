@@ -50,7 +50,8 @@ mkdir -p $TMPDIR/final/www/install
 mkdir -p $TMPDIR/work/www/install
 mkdir -p $TMPDIR/final/bin
 mkdir -p $TMPDIR/work/bin
-[ ! -d $INSTALL_DIR_CENTREON/examples ] && mkdir -p $INSTALL_DIR_CENTREON/examples
+[ ! -d $INSTALL_DIR_CENTREON/examples ] && \
+	mkdir -p $INSTALL_DIR_CENTREON/examples
 cp -f $BASE_DIR/tmpl/install/centstorage.init.d $TMPDIR/src
 cp -rf $TMPDIR/src/lib $TMPDIR/final
 
@@ -60,11 +61,13 @@ cp -rf $TMPDIR/src/lib $TMPDIR/final
 log "INFO" "$(gettext "Change macros for createTablesCentstorage.sql")"
 ${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 	-e 's|@CENTSTORAGE_RRD@|'"$CENTSTORAGE_RRD"'|g' \
-	$TMPDIR/src/www/install/createTablesCentstorage.sql > $TMPDIR/work/www/install/createTablesCentstorage.sql
+	$TMPDIR/src/www/install/createTablesCentstorage.sql \
+	> $TMPDIR/work/www/install/createTablesCentstorage.sql
 
 ## Copy in final dir
 log "INFO" "$(gettext "Copying www/install/createTablesCentstorage.sql in final directory")"
-cp $TMPDIR/work/www/install/createTablesCentstorage.sql $TMPDIR/final/www/install/createTablesCentstorage.sql >> $LOG_FILE 2>&1
+cp $TMPDIR/work/www/install/createTablesCentstorage.sql \
+	$TMPDIR/final/www/install/createTablesCentstorage.sql >> $LOG_FILE 2>&1
 
 ## Copy CreateTablesCentStorage.sql in INSTALL_DIR_CENTREON
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -142,8 +145,10 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	$TMPDIR/src/centstorage.init.d > $TMPDIR/work/centstorage.init.d
 
 echo_success "$(gettext "Change macros for centstorage init script")" "$ok"
-cp $TMPDIR/work/centstorage.init.d $TMPDIR/final/centstorage.init.d
-cp $TMPDIR/final/centstorage.init.d $INSTALL_DIR_CENTREON/examples/centstorage.init.d
+cp $TMPDIR/work/centstorage.init.d \
+	$TMPDIR/final/centstorage.init.d
+cp $TMPDIR/final/centstorage.init.d \
+	$INSTALL_DIR_CENTREON/examples/centstorage.init.d
 
 RC="1"
 if [ "${CENTSTORAGE_INSTALL_INIT:-0}" -eq 1 ] ; then 
@@ -200,6 +205,8 @@ echo_success "$(gettext "Set logAnalyser properties")" "$ok"
 log "INFO" "$(gettext "Change macros for nagiosPerfTrace")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTSTORAGE_LIB@|'"$CENTSTORAGE_RRD"'|g' \
+	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
+	-e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
 	$TMPDIR/src/bin/nagiosPerfTrace > $TMPDIR/work/bin/nagiosPerfTrace
 
 cp $TMPDIR/work/bin/nagiosPerfTrace $TMPDIR/final/bin/nagiosPerfTrace >> $LOG_FILE 2>&1
