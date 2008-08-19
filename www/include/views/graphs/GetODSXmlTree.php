@@ -20,13 +20,13 @@
 
 	require_once 'DB.php';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once $centreon_path . "www/DBconnect.php";
+	include_once $centreon_path . "www/DBOdsConnect.php";
 	
 	/* PHP functions */
-	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
-	include_once($centreon_path . "www/include/common/common-Func.php");
+	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
+	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) { 	
 		header("Content-type: application/xhtml+xml"); 
@@ -40,7 +40,7 @@
 		if (!$host_id)
 			return NULL;
 		$tab_svc = array();
-		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."'");
+		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' WHERE `hidden` = '0' AND `trashed` = '0'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($row =& $DBRESULT->fetchRow())
