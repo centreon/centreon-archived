@@ -77,7 +77,7 @@ sub updateMetricInformation($$$$$){
 	my ($id, $warn, $crit, $min, $max) = @_;
 	if ($warn ne "" || $crit ne "" || $min ne "" || $max ne ""){
 		my $str = "";
-		$str .= "`warn` = '".$warn."'" if ($warn);
+		$str .= "`warn` = '".$warn."'" if ($warn ne "");
 	  	if ($crit ne ""){
 	   		$str .= ", " if ($str ne "");
 		   	$str .= "`crit` = '".$crit."' ";
