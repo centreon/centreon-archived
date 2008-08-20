@@ -15,12 +15,12 @@
  * For information : contact@centreon.com
  */
 
+	global $search;
+	
 	if (!isset($oreon))
 		exit();
 		
 	$form_search = new HTML_QuickForm('quickSearchForm', 'GET', "?p=".$p."&o=".$o);
-	global $search;
-	
 	if (isset($_GET["search"]))
 		$search = $_GET["search"];
 	else if (isset($oreon->historySearch[$url]))
@@ -44,28 +44,24 @@
 	$form_search->addElement('hidden', 'list');
 	$form_search->addElement('hidden', 'o', $o);
 
+	$tabQuickSearch = array(602, 60201, 20201, 20202, 20207, 2020201, 2020202, 2020203, 202,
+							2, 2020101, 20203, 2020301, 2020302, 2020303, 20204, 2020401, 
+							2020402, 2020403, 20205, 2020501, 2020502, 2020503, 20208,
+							2020801, 2020802, 2020803, 20209, 2020901, 2020902, 2020903, 
+							20210, 2021001, 2021002, 2021003, 20211, 2021101, 2021102, 
+							2021103, 20212, 2021201, 2021202, 2021203, 20213, 2021301, 
+							2021302, 2021303);
 
-	if (	$p == 602 || $p == 60201 || $p == 20201 || $p == 20202 || 
-			$p == 20207 || $p == 2020201 ||$p == 2020202 ||$p == 2020203 ||	
-			$p == 202 || $p == 2 || $p == 2020101 || 
-			$p == 20203 || $p == 2020301 ||$p == 2020302 ||$p == 2020303 ||
-			$p == 20204 || $p == 2020401 ||$p == 2020402 ||$p == 2020403 ||
-			$p == 20205 || $p == 2020501 ||$p == 2020502 ||$p == 2020503 || 
-			$p == 20208 || $p == 2020801 ||$p == 2020802 ||$p == 2020803 ||
-			$p == 20209 || $p == 2020901 ||$p == 2020902 ||$p == 2020903 ||
-			$p == 20210 || $p == 2021001 ||$p == 2021002 ||$p == 2021003 ||
-			$p == 20211 || $p == 2021101 ||$p == 2021102 ||$p == 2021103 ||
-			$p == 20212 || $p == 2021201 ||$p == 2021202 ||$p == 2021203 ||
-			$p == 20213 || $p == 2021301 ||$p == 2021302 ||$p == 2021303
-			) {
-		$form_search->addElement('advcheckbox', 'search_type_host', 'host', '', 'class=mini_checkbox');
-		$form_search->addElement('advcheckbox', 'search_type_service', 'service', '', 'class=mini_checkbox');		
+	if (isset($tabQuickSearch[$p])) {
+		$form_search->addElement('advcheckbox', 'search_type_host', 	'host', 	'', 'class=mini_checkbox');
+		$form_search->addElement('advcheckbox', 'search_type_service', 	'service', 	'', 'class=mini_checkbox');		
 	}	
 	$form_search->setDefaults($tab);
 	
 	/*
 	 * Render with a smarty template
 	 */
+
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./include/common/", $tpl);
 	
@@ -73,7 +69,6 @@
 	$form_search->accept($renderer);	
 	$tpl->assign('form_search', $renderer->toArray());
 	$tpl->assign('p', $p);
-	//$tpl->assign("num", 1);	
+
 	$tpl->display("quickSearch.ihtml");
-	
 ?>
