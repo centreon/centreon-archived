@@ -47,8 +47,11 @@
 	 * Lang file
 	 */
 	function getMyHostIDService($svc_id = NULL)	{
-		if (!$svc_id) return;
 		global $pearDB;
+		
+		if (!$svc_id) 
+			return;
+		
 		$DBRESULT =& $pearDB->query("SELECT host_id FROM host h, host_service_relation hs WHERE h.host_id = hs.host_host_id AND hs.service_service_id = '".$svc_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -120,7 +123,7 @@
  	 */
  
 	$graphTs = array( NULL => NULL );
-	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+	$DBRESULT =& $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while ($graphT =& $DBRESULT->fetchRow())
@@ -141,12 +144,17 @@
 		echo "<opid>".$openid."</opid>";
 		$tab_tmp = split(",", $openid);
 	
+		print_r($tab_tmp);
+	
 		foreach ($tab_tmp as $openid) {
 			$tab_tmp = split("_", $openid);
 			$id = $tab_tmp[1];
 			$type = $tab_tmp[0];
+			
+			print "|$type|";
 		
 			if ($type == 'HG')	{
+				
 				$hosts = getMyHostGroupHosts($id);
 				foreach ($hosts as $host)	{
 					if (host_has_one_or_more_GraphService($host) && (($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($host)])))){
@@ -165,6 +173,7 @@
 				}
 				
 			} else if ($type == 'HH')	{
+				
 				$services = getMyHostServices($id);
 				foreach ($services as $svc_id => $svc_name)	{
 					if (service_has_graph($id, $svc_id) 
@@ -176,7 +185,9 @@
 						array_push($tab_id, $oid);	
 					}
 				}
+				
 			} else if ($type == 'ST')	{
+				
 				$services = getMyServiceGroupServices($id);
 				foreach ($services as $svc_id => $svc_name)	{ 
 					$tab_tmp = split("_", $svc_id);
@@ -185,17 +196,17 @@
 						array_push($tab_id, $oid);	
 					}
 				}
+				
 			} else if ($type == 'MS')	{
-				array_push($tab_id,$openid);
+				array_push($tab_id, $openid);
 			} else	{
-				$hosts = getMyServiceHosts($id);
-				if ($hosts)	{
-					$host_id = array_pop($hosts);
-					if (service_has_graph($host_id, $id) && (($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($id)]) && isset($lca["LcaHost"][getMyHostName($id)]["svc"][getMyServiceName($id)]))))
-						array_push($tab_id, $openid);
+				if (service_has_graph($tab_tmp[2], $tab_tmp[1]) 
+					&& (($is_admin) || 
+						(!$is_admin && isset($lca["LcaHost"][getMyHostName($tab_tmp[2])]) 
+						&& isset($lca["LcaHost"][getMyHostName($tab_tmp[2])]["svc"][getMyServiceName($tab_tmp[1])])))){
+					array_push($tab_id, $openid);
 				}
 			} 
-			
 		}
 	}
 
@@ -205,7 +216,7 @@
 	$tab_tmp = $tab_id;
 	$tab_id = array();
 	$tab_real_id = array();
-	
+
 	if (count($tab_tmp)){
 		foreach ($tab_tmp as $openid)	{
 			$tab = split("_", $openid);
@@ -227,7 +238,7 @@
 	}
 	
 	$tab_class = array("1" => "list_one", "0" => "list_two");
-
+	
 	foreach ($tab_real_id as $key => $openid) {
 		$bad_value = 0;	
 		$tab_tmp = split("_", $openid);
@@ -433,7 +444,6 @@
 			$elem = array();
 		
 			if ($type == "SS"){
-				print "|".$openid."|";
 				$tab_tmp = split("_", $openid);
 				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
 				if (PEAR::isError($DBRESULT2))

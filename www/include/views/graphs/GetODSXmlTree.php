@@ -142,7 +142,7 @@
 			/*
 			 * get services for host
 			 */
-			$services = getMyHostServices($id);
+			$services = getMyHostActiveServices($id);
 			$graphList = getMyHostGraphs($id);
 		    $host_name = getMyHostName($id);
 		        
