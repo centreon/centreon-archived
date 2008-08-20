@@ -1,3 +1,8 @@
+<script type="text/javascript">
+	function setO(_i) {
+		document.forms['form'].elements['o'].value = _i;
+	}
+</script>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form' method='POST'>
 	<table class="Toolbar_TableTop">
@@ -7,9 +12,8 @@
 				&nbsp;&nbsp;&nbsp;
 				{if $ldap == "1" }<a href="{$msg.ldap_importL}">{$msg.ldap_importT}</a>&nbsp;-&nbsp;{/if}
 				<a href="{$msg.addL}">{$msg.addT}</a>
+				<input name="p" value="{$p}" type="hidden">
 			</td>
-
-			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -32,7 +36,6 @@
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
 		{/section}
-
 	</table>
 	<table class="Toolbar_TableBottom">
 		<tr>
@@ -41,8 +44,8 @@
 				&nbsp;&nbsp;&nbsp;
 				{if $ldap == "1" }<a href="{$msg.ldap_importL}">{$msg.ldap_importT}</a>&nbsp;-&nbsp;{/if}
 				<a href="{$msg.addL}">{$msg.addT}</a>
+				<input name="p" value="{$p}" type="hidden">
 			</td>
-			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}

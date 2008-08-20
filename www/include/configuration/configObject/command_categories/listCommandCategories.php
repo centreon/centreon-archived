@@ -18,18 +18,18 @@
 	if (!isset($oreon))
 		exit();
 		
-	include("./include/common/autoNumLimit.php");
+	include_once "./include/common/autoNumLimit.php";
 
 	/*
 	 * start quickSearch form
 	 */
 	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
+	include_once "./include/common/quickSearch.php";
 		
 	$SearchTool = NULL;
 	if (isset($search) && $search)
-		$SearchTool = "WHERE (category_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR category_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
-	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM command_categories $SearchTool");
+		$SearchTool = "WHERE (`category_name` LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR `category_alias` LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
+	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `command_categories` $SearchTool");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
@@ -37,7 +37,7 @@
 	$DBRESULT->free();
 	$rows = $tmp["COUNT(*)"];
 
-	include("./include/common/checkPagination.php");
+	include_once "./include/common/checkPagination.php";
 	
 	/*
 	 * Smarty template Init
@@ -57,7 +57,7 @@
 	 * Services Categories Lists
 	 */ 
 	
-	$DBRESULT =& $pearDB->query("SELECT * FROM command_categories $SearchTool ORDER BY category_order, category_name LIMIT ".$num * $limit.", ".$limit);
+	$DBRESULT =& $pearDB->query("SELECT * FROM `command_categories` $SearchTool ORDER BY `category_order`, `category_name` LIMIT ".$num * $limit.", ".$limit);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
@@ -76,22 +76,25 @@
 	$elemArr = array();
 	for ($i = 0; $cc =& $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
-		/*$DBRESULT2 =& $pearDB->query("SELECT COUNT(*) FROM `command_categories_relation` WHERE `cmd_category_id` = '".$cc['cmd_category_id']."'");
-		$nb_svc =& $DBRESULT2->fetchRow();
-		*/
+		
+		/*
+		 * $DBRESULT2 =& $pearDB->query("SELECT COUNT(*) FROM `command_categories_relation` WHERE `cmd_category_id` = '".$cc['cmd_category_id']."'");$nb_svc =& $DBRESULT2->fetchRow();
+		 */
+		
 		$selectedElements =& $form->addElement('checkbox', "select[".$cc['cmd_category_id']."]");
 		$moptions .= "&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$cc['cmd_category_id']."]'></input>";
 				
-		$elemArr[$i] = array("MenuClass"=>"list_".$style,
-							"RowMenu_select"=>$selectedElements->toHtml(),
-							"category_name"=>$cc["category_name"],
-							"category_link"=>"?p=".$p."&o=c&cc_id=".$cc['cmd_category_id'],
-							"category_alias"=>$cc["category_alias"],
-							/*"cmd_linked"=>$nb_svc["COUNT(*)"],*/
-							"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	
+		$elemArr[$i] = array(	"MenuClass"=>"list_".$style,
+								"RowMenu_select"=>$selectedElements->toHtml(),
+								"category_name"=>$cc["category_name"],
+								"category_link"=>"?p=".$p."&o=c&cc_id=".$cc['cmd_category_id'],
+								"category_alias"=>$cc["category_alias"],
+								"RowMenu_options"=>$moptions);
+			$style != "two" ? $style = "two" : $style = "one";	
 	}
+	$DBRESULT->free();
+
 	$tpl->assign("elemArr", $elemArr);
 	
 	/*
@@ -99,13 +102,6 @@
 	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add")));
 	
-	?>
-	<script type="text/javascript">
-	function setO(_i) {
-		document.forms['form'].elements['o'].value = _i;
-	}
-	</SCRIPT>
-	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
@@ -146,5 +142,6 @@
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
+	
 	$tpl->display("listCommandCategories.ihtml");
 ?>

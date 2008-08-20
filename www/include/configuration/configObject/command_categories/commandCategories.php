@@ -30,33 +30,47 @@
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	#Pear library
-	require_once "HTML/QuickForm.php";
+	/*
+	 * Pear library
+	 */
+	require_once 'HTML/QuickForm.php';
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#Path to the configuration dir
+	/*
+	 * 	Path to the configuration dir
+	 */
 	$path = "./include/configuration/configObject/command_categories/";
 
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
-	require_once "./include/common/common-Func.php";
+	require_once './include/common/common-Func.php';
 
 	switch ($o)	{
-		case "mc" : require_once($path."formCommandCategories.php"); break;
-		case "a" : require_once($path."formCommandCategories.php"); break;
-		case "w" : require_once($path."formCommandCategories.php"); break;
-		case "c" : require_once($path."formCommandCategories.php"); break;
-		/*
-		case "s" : enableCommandCategorieInDB(cc_id); require_once($path."listCommandCategories.php"); break; #Activate a CommandCategories
-		case "ms" : enableCommandCategorieInDB(NULL, isset($select) ? $select : array()); require_once($path."listCommandCategories.php"); break;
-		
-		case "u" : disableCommandCategorieInDB(cc_id); require_once($path."listCommandCategories.php"); break; #Desactivate a contact
-		case "mu" : disableCommandCategorieInDB(NULL, isset($select) ? $select : array()); require_once($path."listCommandCategories.php"); break;
-		*/
-		case "m" : multipleCommandCategorieInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listCommandCategories.php"); break;
-		
-		case "d" : deleteCommandCategorieInDB(isset($select) ? $select : array()); require_once($path."listCommandCategories.php"); break;
-		default : require_once($path."listCommandCategories.php"); break;
+		case "mc" : 
+			require_once($path."formCommandCategories.php"); 
+			break;
+		case "a" : 
+			require_once($path."formCommandCategories.php"); 
+			break;
+		case "w" : 
+			require_once($path."formCommandCategories.php"); 
+			break;
+		case "c" : 
+			require_once($path."formCommandCategories.php"); 
+			break;
+		case "m" : 
+			multipleCommandCategorieInDB(isset($select) ? $select : array(), $dupNbr); 
+			require_once($path."listCommandCategories.php"); 
+			break;
+		case "d" : 
+			deleteCommandCategorieInDB(isset($select) ? $select : array()); 
+			require_once($path."listCommandCategories.php"); 
+			break;
+		default : 
+			require_once($path."listCommandCategories.php"); 
+			break;
 	}
 ?>

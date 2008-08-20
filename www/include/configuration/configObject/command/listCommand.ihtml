@@ -1,3 +1,8 @@
+<script type="text/javascript">
+	function setO(_i) {
+		document.forms['form'].elements['o'].value = _i;
+	}
+</script>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form' method='POST'>
 	<table class="Toolbar_TableTop">
@@ -6,8 +11,8 @@
 				{$msg.options} {$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}">{$msg.addT}</a>
+				<input name="p" value="{$p}" type="hidden">
 			</td>
-			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -53,14 +58,14 @@
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}">{$msg.addT}</a>
+				<input name="p" value="{$p}" type="hidden">
 			</td>
-			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
 		</tr>
 	</table>
-<input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+	<input type='hidden' name='o' id='o' value='42'>
+	<input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>

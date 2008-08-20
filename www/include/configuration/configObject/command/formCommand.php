@@ -15,10 +15,20 @@
  * For information : contact@centreon.com
  */
  
-	#
-	## Database retrieve information for Command
-	#	
-	function myDecodeCommand($arg)	{
+ 	/*
+	 * Form Rules
+	 */
+	
+	function myReplace()	{
+		global $form;
+		$ret = $form->getSubmitValues();
+		return (str_replace(" ", "_", $ret["command_name"]));
+	}
+	
+	/*
+	 * Database retrieve information for Command
+	 */
+	function myDecodeCommand($arg) {
 		$arg = html_entity_decode($arg, ENT_QUOTES);
 		$arg = str_replace('#BR#', "\\n", $arg);
 		$arg = str_replace('#T#', "\\t", $arg);
@@ -31,18 +41,19 @@
 	$plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
 	$cmd = array();
 	if (($o == "c" || $o == "w") && $command_id)	{		
-		$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# Resource Macro
+	
+	/*
+	 * Resource Macro
+	 */
+
 	$resource = array();
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT resource_name, resource_comment FROM cfg_resource ORDER BY resource_line");
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($row = $DBRESULT->fetchRow()){
@@ -56,33 +67,30 @@
 	 * Graphs Template comes from DB -> Store in $graphTpls Array
 	 */
 	$graphTpls = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+	$DBRESULT =& $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($graphTpl =& $DBRESULT->fetchRow())
+	while ($graphTpl =& $DBRESULT->fetchRow())
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
 	
-	# Nagios Macro
+	/*
+	 * Nagios Macro
+	 */
 	$macros = array();
-	$DBRESULT =& $pearDB->query("SELECT macro_name FROM nagios_macro ORDER BY macro_name");
+	$DBRESULT =& $pearDB->query("SELECT `macro_name` FROM `nagios_macro` ORDER BY `macro_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($row =& $DBRESULT->fetchRow())
+	while ($row =& $DBRESULT->fetchRow())
 		$macros[$row["macro_name"]] = $row["macro_name"];
 	$DBRESULT->free();
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
+	
 	$attrsText 		= array("size"=>"35");
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65");
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Command"));
@@ -91,9 +99,9 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View a Command"));
 
-	#
-	## Command information
-	#
+	/*
+	 * Command information
+	 */
 	if ($type == "1")
 		$form->addElement('header', 'information', _("Notification"));
 	else if ($type == "2")
@@ -102,9 +110,11 @@
 		$form->addElement('header', 'information', _("Check"));
 	else
 		$form->addElement('header', 'information', _("Information"));
+	
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
+	
 	$form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 	$form->setDefaults(array('command_type' => '2'));
 	$form->addElement('text', 'command_name', _("Command Name"), $attrsText);
@@ -125,23 +135,15 @@
 	ksort($plugins_list);
 	$form->addElement('select', 'plugins', null, $plugins_list);
 	
-	#
-	## Further informations
-	#
+	/*
+	 * Further informations
+	 */
 	$form->addElement('hidden', 'command_id');
 	$redirectType = $form->addElement('hidden', 'type');
 	$redirectType->setValue($type);
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-
-	#
-	## Form Rules
-	#
-	function myReplace()	{
-		global $form;
-		$ret = $form->getSubmitValues();
-		return (str_replace(" ", "_", $ret["command_name"]));
-	}
+	
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('command_name', 'myReplace');
 	$form->applyFilter('__ALL__', 'myTrim');
@@ -151,80 +153,38 @@
 	$form->addRule('command_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
-	#
-	##End of form definition
-	#
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch a Command information
+	/*
+	 * Just watch a Command information
+	 */
 	if ($o == "w")	{
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$command_id."&type=".$type."'"));
 	    $form->setDefaults($cmd);
 		$form->freeze();
-	}
-	# Modify a Command information
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
+		/*
+		 * Modify a Command information
+		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cmd);
-	}
-	# Add a Command information
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
+		/*
+		 * Add a Command information
+		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
+	
 	$tpl->assign('msg', array ("comment"=>_("Commands definitions can contain Macros but they have to be valid.")));
 	$tpl->assign('cmd_help',_("Plugin Help"));
 	$tpl->assign('cmd_play',_("Test the plugin"));
-	$tpl->assign("insertValueQuery","
-	<script type='text/javascript'>
-	<!--
-	function insertValueQuery(elem) {
-    var myQuery = document.Form.command_line;
-	if(elem == 1)	{
-		var myListBox = document.Form.resource;
-	}
-	else if (elem == 2)	{
-		var myListBox = document.Form.plugins;
-	}
-	else if (elem == 3)	{
-		var myListBox = document.Form.macros;
-	}
-    if(myListBox.options.length > 0) {
-        var chaineAj = '';
-        var NbSelect = 0;
-        for(var i=0; i<myListBox.options.length; i++) {
-            if (myListBox.options[i].selected){
-                NbSelect++;
-                if (NbSelect > 1)
-                    chaineAj += ', ';
-                chaineAj += myListBox.options[i].value;
-            }
-        }
-        //IE support
-        if (document.selection) {
-            myQuery.focus();
-            sel = document.selection.createRange();
-            sel.text = chaineAj;
-            document.Form.insert.focus();
-        }
-        //MOZILLA/NETSCAPE support
-        else if (document.Form.command_line.selectionStart || document.Form.command_line.selectionStart == '0') {
-            var startPos = document.Form.command_line.selectionStart;
-            var endPos = document.Form.command_line.selectionEnd;
-            var chaineSql = document.Form.command_line.value;
-
-            myQuery.value = chaineSql.substring(0, startPos) + chaineAj + chaineSql.substring(endPos, chaineSql.length);
-        } else {
-            myQuery.value += chaineAj;
-        }
-    }
-}
-	//-->
-	</script>");
+	
 	$valid = false;
 	if ($form->validate())	{
 		$cmdObj =& $form->getElement('command_id');
@@ -238,11 +198,14 @@
 		$form->freeze();
 		$valid = true;
 	}
+	
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once($path."listCommand.php");
 	else	{
-		##Apply a template definition
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

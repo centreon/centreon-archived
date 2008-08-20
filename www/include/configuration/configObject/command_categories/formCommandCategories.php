@@ -15,13 +15,13 @@
  * For information : contact@centreon.com
  */
  
-
 	if (!isset($oreon))
 		exit();
 
 	/*
 	 * Database retrieve information for Categories
 	 */
+	 
 	$ccdata = array();
 	if (($o == "c" || $o == "w") && $cc_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM `command_categories` WHERE `cmd_category_id` = '".$cc_id."' LIMIT 1");
@@ -43,6 +43,7 @@
 	/*
 	 * Form begin
 	 */
+	
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Command Category"));
@@ -56,7 +57,9 @@
 	 */
 	$form->addElement('header', 'information', _("Information"));
 
-	# No possibility to change name and alias, because there's no interest
+	/*
+	 * No possibility to change name and alias, because there's no interest
+	 */
 	$form->addElement('text', 'category_name', _("Category Name"), $attrsText2);
 	$form->addElement('text', 'category_alias', _("Alias / Description"), $attrsText2);
 	$form->addElement('text', 'category_order', _("Order"), $attrsText);
@@ -95,24 +98,30 @@
 	
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
-	# End of form definition
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch a command_categories information
+	/*
+	 * Just watch a command_categories information
+	 */
 	if ($o == "w")	{
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
 	    $form->setDefaults($ccdata);
 		$form->freeze();
 	} else if ($o == "c")	{
-		# Modify a command_categories information
+		/*
+		 * Modify a command_categories information
+		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($ccdata);
 	} else if ($o == "a")	{
-		# Add a command_categories information
+		/*
+		 * Add a command_categories information
+		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -120,10 +129,12 @@
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
 		$cctObj =& $form->getElement('cmd_category_id');
+		
 		if ($form->getSubmitValue("submitA"))
 			$cctObj->setValue(insertCommandCategorieInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateCommandCategorieInDB($cctObj->getValue());
+		
 		$o = NULL;
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$cctObj->getValue()."'"));
 		$form->freeze();
@@ -132,9 +143,11 @@
 	
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
-		require_once($path."listCommandCategories.php");
+		require_once $path."listCommandCategories.php";
 	else	{
-		#Apply a template definition
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -143,6 +156,7 @@
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('p', $p);
+		
 		$tpl->display("formCommandCategories.ihtml");
 	}
 ?>

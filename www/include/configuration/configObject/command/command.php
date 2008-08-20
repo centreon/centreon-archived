@@ -63,19 +63,61 @@
 			$o = $_POST["o2"];
 	}
 
-	if ($min)
+	if ($min) {
 		switch ($o)	{
-			case "h" 	: require_once($path."minHelpCommand.php"); break; #Show Help Command	# Wistof
-			case "p" 	: require_once($path."minPlayCommand.php"); break; #Test the plugin
-			default 	: require_once($path."minCommand.php"); break;
+			case "h" 	:
+				/*
+				 * Show Help Command
+				 */ 
+				require_once($path."minHelpCommand.php"); 
+				break; 
+			case "p" 	: 
+				/*
+				 * Test the plugin
+				 */
+				require_once($path."minPlayCommand.php"); 
+				break; 
+			default 	: 
+				require_once($path."minCommand.php"); 
+				break;
 		}
-	else
+	} else {
 		switch ($o)	{
-			case "a" 	: require_once($path."formCommand.php"); break; #Add a Command
-			case "w" 	: require_once($path."formCommand.php"); break; #Watch a Command
-			case "c" 	: require_once($path."formCommand.php"); break; #Modify a Command
-			case "m" 	: multipleCommandInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listCommand.php"); break; #Duplicate n Commands
-			case "d" 	: deleteCommandInDB(isset($select) ? $select : array()); require_once($path."listCommand.php"); break; #Delete n Commands
-			default 	: require_once($path."listCommand.php"); break;
+			case "a" 	: 
+				/*
+				 * Add a Command
+				 */
+				require_once($path."formCommand.php"); 
+				break;
+			case "w" 	: 
+				/*
+				 * Watch a Command
+				 */
+				require_once($path."formCommand.php"); 
+				break;
+			case "c" 	:
+				/*
+				 * Modify a Command
+				 */ 
+				require_once($path."formCommand.php"); 
+				break; 
+			case "m" 	:
+				/*
+				 * Duplicate n Commands
+				 */ 
+				multipleCommandInDB(isset($select) ? $select : array(), $dupNbr); 
+				require_once($path."listCommand.php"); 
+				break; 
+			case "d" 	:
+				/*
+				 * Delete n Commands
+				 */ 
+				deleteCommandInDB(isset($select) ? $select : array()); 
+				require_once($path."listCommand.php"); 
+				break;
+			default 	: 
+				require_once($path."listCommand.php"); 
+				break;
 		}
+	}
 ?>

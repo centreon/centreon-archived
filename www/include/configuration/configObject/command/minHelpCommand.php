@@ -30,7 +30,10 @@
 		$command_name = NULL;
 
 	if ($command_id != NULL){
-		$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
+		/*
+		 * Get command informations
+		 */
+		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cmd = $DBRESULT->fetchRow();
@@ -41,18 +44,26 @@
 		$resource_info = $cmd_array[0];
 		$resource_def = str_replace('$', '@DOLLAR@', $resource_info);
 
-		# Match if the first part of the path is a MACRO		
+		/*
+		 * Match if the first part of the path is a MACRO
+		 */
 		if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches))	{			
-			$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
+			/*
+			 * Select Resource line
+			 */
+			$DBRESULT =& $pearDB->query("SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = '\$USER".$matches[1]."\$' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+
 			$resource =& $DBRESULT->fetchRow();
 			unset($DBRESULT);
+
 			$resource_path = $resource["resource_line"];			
 			unset($cmd_array[0]);
 			$command = rtrim($resource_path, "/")."#S#".implode("#S#", $cmd_array);
-		} else
+		} else {
 			$command = $full_line;
+		}
 	} else {
 		$command = $oreon->optGen["nagios_path_plugins"] . $command_name;
 	}
@@ -77,9 +88,6 @@
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	$tpl->assign('command_line', $command." --help");
-	if (isset($msg) && $msg)
-		$tpl->assign('msg', $msg);
 
 	/*
 	 * Apply a template definition
@@ -88,5 +96,9 @@
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
+	$tpl->assign('command_line', $command." --help");
+	if (isset($msg) && $msg)
+		$tpl->assign('msg', $msg);
+
 	$tpl->display("minHelpCommand.ihtml");
 ?>

@@ -31,26 +31,76 @@
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 	
-	#Pear library
-	require_once "HTML/QuickForm.php";
+	/*
+	 * Pear library
+	 */
+	require_once 'HTML/QuickForm.php';
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/configuration/configObject/contactgroup/";
 	
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	
 	switch ($o)	{
-		case "a" : require_once($path."formContactGroup.php"); break; #Add a contactgroup
-		case "w" : require_once($path."formContactGroup.php"); break; #Watch a contactgroup
-		case "c" : require_once($path."formContactGroup.php"); break; #Modify a contactgroup
-		case "s" : enableContactGroupInDB($cg_id); require_once($path."listContactGroup.php"); break; #Activate a contactgroup
-		case "u" : disableContactGroupInDB($cg_id); require_once($path."listContactGroup.php"); break; #Desactivate a contactgroup
-		case "m" : multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listContactGroup.php"); break; #Duplicate n contact grou
-		case "d" : deleteContactGroupInDB(isset($select) ? $select : array()); require_once($path."listContactGroup.php"); break; #Delete n contact group
-		default : require_once($path."listContactGroup.php"); break;
+		case "a" : 
+			/*
+			 * Add a contactgroup
+			 */
+			require_once($path."formContactGroup.php"); 
+			break; 
+		case "w" : 
+			/*
+			 * Watch a contactgroup
+			 */
+			require_once($path."formContactGroup.php"); 
+			break;
+		case "c" : 
+			/*
+			 * Modify a contactgroup
+			 */
+			require_once($path."formContactGroup.php"); 
+			break;
+		case "s" : 
+			/*
+			 * Activate a contactgroup
+			 */
+			enableContactGroupInDB($cg_id); 
+			require_once($path."listContactGroup.php"); 
+			break;
+		case "u" : 
+			/*
+			 * Desactivate a contactgroup
+			 */
+			disableContactGroupInDB($cg_id); 
+			require_once($path."listContactGroup.php"); 
+			break;
+		case "m" : 
+			/*
+			 * Duplicate n contact group
+			 */
+			multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr); 
+			require_once($path."listContactGroup.php"); 
+			break;
+		case "d" : 
+			/*
+			 * 
+			 */
+			deleteContactGroupInDB(isset($select) ? $select : array()); 
+			require_once($path."listContactGroup.php"); 
+			break;
+		default : 
+			/*
+			 * Delete n contact group
+			 */
+			require_once($path."listContactGroup.php"); 
+			break;
 	}
 ?>

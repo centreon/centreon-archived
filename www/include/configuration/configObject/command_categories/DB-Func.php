@@ -21,12 +21,15 @@
 	function testCommandCategorieExistence ($name = NULL)	{
 		global $pearDB, $form;
 		$id = NULL;
+		
 		if (isset($form))
 			$id = $form->getSubmitValue('cmd_category_id');
+		
 		$DBRESULT =& $pearDB->query("SELECT `category_name`, `cmd_category_id` FROM `command_categories` WHERE `category_name` = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cat =& $DBRESULT->fetchRow();
+		
 		if ($DBRESULT->numRows() >= 1 && $cat["cmd_category_id"] == $id)
 			return true;
 		else if ($DBRESULT->numRows() >= 1 && $cat["cmd_category_id"] != $id)
@@ -36,13 +39,16 @@
 	}
 
 	function multipleCommandCategorieInDB ($sc = array(), $nbrDup = array())	{
-		foreach($sc as $key => $value)	{
-			global $pearDB;
+		global $pearDB;
+			
+		foreach ($sc as $key => $value)	{
+			
 			$DBRESULT =& $pearDB->query("SELECT * FROM `command_categories` WHERE `cmd_category_id` = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$row = $DBRESULT->fetchRow();
+			$row =& $DBRESULT->fetchRow();
 			$row["cmd_category_id"] = '';
+			
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2 => $value2)	{
@@ -55,6 +61,7 @@
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					
 					$DBRESULT =& $pearDB->query("SELECT MAX(cmd_category_id) FROM `command_categories`");
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -66,6 +73,7 @@
 	
 	function insertCommandCategorieInDB(){
 		global $pearDB;
+		
 		if (testCommandCategorieExistence($_POST["category_name"])){
 			$DBRESULT =& $pearDB->query("INSERT INTO `command_categories` (`category_name` , `category_alias`, `category_order`) VALUES ('".$_POST["category_name"]."', '".$_POST["category_alias"]."', '1')");
 			if (PEAR::isError($DBRESULT))
@@ -75,6 +83,7 @@
 	
 	function updateCommandCategorieInDB(){
 		global $pearDB;
+		
 		$DBRESULT =& $pearDB->query("UPDATE `command_categories` SET `category_name` = '".$_POST["category_name"]."' , `category_alias` = '".$_POST["category_alias"]."' , `category_order` = '".$_POST["category_order"]."' WHERE `cmd_category_id` = '".$_POST["cmd_category_id"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";

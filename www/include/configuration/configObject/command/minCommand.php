@@ -23,6 +23,7 @@
 		$command_id = $_POST["command_id2"];
 
 	if ($o == "w" && $command_id)	{
+
 		function myDecodeCommand($arg)	{
 			$arg = html_entity_decode($arg, ENT_QUOTES);
 			$arg = str_replace('#BR#', "\\n", $arg);
@@ -32,32 +33,37 @@
 			$arg = str_replace('#BS#', "\\", $arg);
 			return($arg);
 		}
-		$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
+
+		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		# Set base value
 		if ($DBRESULT->numRows())
 			$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# Notification commands comes from DB -> Store in $notifCmds Array
+
+	/*
+	 * Notification commands comes from DB -> Store in $notifCmds Array
+	 */
 	$notifCmds = array(null=>null);
-	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
+	$DBRESULT =& $pearDB->query("SELECT `command_id`, `command_name` FROM `command` WHERE `command_type` = '1' ORDER BY `command_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($notifCmd =& $DBRESULT->fetchRow())
+	while ($notifCmd =& $DBRESULT->fetchRow())
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$DBRESULT->free();
-	# Check commands comes from DB -> Store in $checkCmds Array
+	
+	/*
+	 * Check commands comes from DB -> Store in $checkCmds Array
+	 */
+	
 	$checkCmds = array(null=>null);
-	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+	$DBRESULT =& $pearDB->query("SELECT `command_id`, `command_name` FROM `command` WHERE `command_type` = '2' ORDER BY `command_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($checkCmd =& $DBRESULT->fetchRow())
+	while ($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
+
 
 	$attrsText 		= array("size"=>"35");
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"80");
@@ -65,36 +71,41 @@
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("View a Command"));
 
-	#
-	## Command information
-	#
+	/*
+	 * Command information
+	 */
 	if ($cmd["command_type"] == "1")
 		$form->addElement('header', 'information', _("Notification"));
 	else if ($cmd["command_type"] == "2")
 		$form->addElement('header', 'information', _("Check"));
 	else
 		$form->addElement('header', 'information', _("Information"));
+	
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
+	
 	$v1 =& $form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 	$v1->freeze();
+	
 	$v2 =& $form->addElement('text', 'command_name', _("Command Name"), $attrsText);
 	$v2->freeze();
+	
 	$v3 =& $form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
 	$v3->freeze();
-	#
-	## Command Select
-	#
+	
+	/*
+	 * Command Select
+	 */
     $form->addElement('select', 'command_id1', _("Check"), $checkCmds, array("onChange"=>"this.form.submit()"));
     $form->addElement('select', 'command_id2', _("Notif"), $notifCmds, array("onChange"=>"this.form.submit()"));
-    
 	$form->setConstants(array("command_name"=>$cmd["command_name"], "command_line"=>$cmd["command_line"], "command_type"=>$cmd["command_type"]["command_type"]));
-  // print_r($cmd);
-	#
-	## Further informations
-	#	
+  	
+  	/*
+  	 * Further informations
+  	 */
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+	
 	$min =& $form->addElement('hidden', 'min');
 	$min->setValue(1);
 	
@@ -103,16 +114,19 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	#
-	##Apply a template definition
-	#	
+	/*
+	 * Apply a template definition
+	 */	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+
 	$form->accept($renderer);
+
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign('command_id', $command_id);
 	$tpl->assign('command_name', $cmd["command_name"]);
+
 	$tpl->display("minCommand.ihtml");
 ?>
