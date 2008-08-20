@@ -19,7 +19,13 @@
 	
 	if (!isset($oreon))
 		exit();
+	
+	/*
+	 * Init Flag
+	 */
 		
+	$displayHSOptions = 0;
+	
 	$form_search = new HTML_QuickForm('quickSearchForm', 'GET', "?p=".$p."&o=".$o);
 	if (isset($_GET["search"]))
 		$search = $_GET["search"];
@@ -55,6 +61,7 @@
 	if (isset($tabQuickSearch[$p])) {
 		$form_search->addElement('advcheckbox', 'search_type_host', 	'host', 	'', 'class=mini_checkbox');
 		$form_search->addElement('advcheckbox', 'search_type_service', 	'service', 	'', 'class=mini_checkbox');		
+		$displayHSOptions = 1;
 	}	
 	$form_search->setDefaults($tab);
 	
@@ -69,6 +76,7 @@
 	$form_search->accept($renderer);	
 	$tpl->assign('form_search', $renderer->toArray());
 	$tpl->assign('p', $p);
+	$tpl->assign("displayHSOptions", $displayHSOptions);
 
 	$tpl->display("quickSearch.ihtml");
 ?>

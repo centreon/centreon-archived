@@ -1,13 +1,13 @@
 <div id="QuickSearch">
-<form {$form_search_attributes}>
+<form {$form_search_attributes} name='search'>
 	<span class="quick_search2">
 		{$form_search.search.label}&nbsp;&nbsp;{$form_search.search.html}		
-		&nbsp;&nbsp;<img src="./img/icones/14x14/undo.gif" onClick="javascript:document.getElementById('input_search').value='';">		
+		&nbsp;<img src="./img/icones/14x14/undo.gif" onClick="javascript:document.getElementById('input_search').value='';document.search.input_search.focus();">
 	</span>
-	{if $p == 602 || $p == 60201 || $p == 20201 || $p == 20202 || $p == 20207 || $p == 2020201 ||$p == 2020202 ||$p == 2020203 ||$p == 202|| $p == 2}
+	{if $displayHSOptions == 1}
 	<span class="quick_search2">
-		&nbsp;&nbsp;{$form_search.search_type_host.html}&nbsp;&nbsp;{$form_search.search_type_host.label}
-		&nbsp;&nbsp;{$form_search.search_type_service.html}&nbsp;&nbsp;{$form_search.search_type_service.label}		
+		&nbsp;{$form_search.search_type_host.html}&nbsp;&nbsp;{$form_search.search_type_host.label}
+		&nbsp;{$form_search.search_type_service.html}&nbsp;&nbsp;{$form_search.search_type_service.label}		
 	</span>
 	{/if}
 	{$form_search.hidden}
