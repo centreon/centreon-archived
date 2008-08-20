@@ -20,9 +20,10 @@
 
 	require_once 'DB.php';
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path . "www/DBconnect.php";
-	include_once $centreon_path . "www/DBOdsConnect.php";
+
+	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once($centreon_path . "www/DBconnect.php");
+	include_once($centreon_path . "www/DBOdsConnect.php");
 	
 	/* PHP functions */
 	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
@@ -37,15 +38,30 @@
 
 	function getMyHostGraphs($host_id = NULL)	{
 		global $pearDBO;
-		if (!$host_id)
+		if (!isset($host_id))
 			return NULL;
 		$tab_svc = array();
-		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' WHERE `hidden` = '0' AND `trashed` = '0'");
+
+		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `hidden` = '0' AND `trashed` = '0'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($row =& $DBRESULT->fetchRow())
 			$tab_svc[$row["service_id"]] = 1;
 		return $tab_svc;
+	}
+	
+	function checkIfServiceSgIsEn($host_id = NULL, $service_id = NULL)	{
+		global $pearDBO;
+		if (!isset($host_id) || !isset($service_id))
+			return NULL;
+		$tab_svc = array();
+
+		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."' AND `hidden` = '0' AND `trashed` = '0'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$num_row =& $DBRESULT->numRows();
+		$DBRESULT->free();
+		return $num_row;
 	}
 
 	/* 
@@ -114,12 +130,13 @@
 				$tab_value = split("_", $key);
 				$host_name = getMyHostName($tab_value[0]);
 				$service_description = getMyServiceName($tab_value[1], $tab_value[0]);
-				if ($is_admin) {
-					print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
-				} else {
-					//if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_alias"]]))
-			    	print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
-				}
+				if (checkIfServiceSgIsEn($tab_value[0], $tab_value[1]))
+					if ($is_admin) {
+						print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
+					} else {
+						//if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_alias"]]))
+				    	print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
+					}
 			}
 		} else if ($type == "HH") {
 			/*
