@@ -15,12 +15,11 @@
  * For information : contact@centreon.com
  */
  
-
 	if (!isset($oreon))
 		exit(); 
 	
-	include_once("./include/monitoring/common-Func.php");
-	include_once("./DBNDOConnect.php");
+	include_once "./include/monitoring/common-Func.php";
+	include_once "./DBNDOConnect.php";
 	
 	unset($tpl);
 	unset($path);					
