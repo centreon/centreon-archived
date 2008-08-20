@@ -18,16 +18,20 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	/* pearDB init */
+	/* 
+	 * pearDB init 
+	 */
 	require_once 'DB.php';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once $centreon_path . "www/DBconnect.php";
+	include_once $centreon_path . "www/DBOdsConnect.php";
 
-	/* PHP functions */
-	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
-	include_once($centreon_path . "www/include/common/common-Func.php");
+	/* 
+	 * PHP functions 
+	 */
+	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
+	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) { 	
 		header("Content-type: application/xhtml+xml"); 
@@ -41,19 +45,6 @@
 	 * debug == 2 => log in file (log.xml) 
 	 */
 	
-	/* Connect to oreon DB */
-	$dsn = array('phptype'  => 'mysql',
-			     'username' => $conf_centreon['user'],
-			     'password' => $conf_centreon['password'],
-			     'hostspec' => $conf_centreon['hostCentreon'],
-			     'database' => $conf_centreon['db']);
-	$options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
-	
-	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) 
-		die("Connecting problems with oreon database : " . $pearDB->getMessage());
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-
 	global $is_admin, $user_id;
 
 	$is_admin = isUserAdmin($_GET["sid"]);
