@@ -1,4 +1,9 @@
-UPDATE `informations` SET `value` = '2.0-RC3' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-RC2' LIMIT 1;
+UPDATE `informations` SET `value` = '2.0-RC4' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-RC3' LIMIT 1;
+
+CREATE TABLE `151_centreon`.`options` (
+	`key` VARCHAR( 255 ) NULL ,
+	`value` VARCHAR( 255 ) NULL
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci 
 
 
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 20203;
