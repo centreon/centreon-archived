@@ -37,6 +37,7 @@
 	require_once $centreon_path . "www/include/common/common-Func-ACL.php";
 	
 	// save of the XML flow in $flux
+	$csv_flag = 1; //setting the csv_flag variable to change limit in SQL request of getODSXmlLog.php when CSV exporting
 	ob_start();
 	require_once $centreon_path."www/include/eventLogs/GetODSXmlLog.php";
 	$flux = ob_get_contents();

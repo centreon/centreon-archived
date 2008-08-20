@@ -462,7 +462,11 @@
 	/*
 	 * Full Request
 	 */
-	$req .= " ORDER BY ctime DESC,log_id DESC LIMIT $lstart,$limit";
+    if(isset($csv_flag) && ($csv_flag == 1))
+    $req .= " ORDER BY ctime DESC,log_id DESC LIMIT 0,64000"; //limit a little less than 2^16 which is excel maximum number of lines
+    else
+    $req .= " ORDER BY ctime DESC,log_id DESC LIMIT $lstart,$limit";
+
 
 	$DBRESULT =& $pearDBO->query($req);
 	if (PEAR::isError($DBRESULT))
