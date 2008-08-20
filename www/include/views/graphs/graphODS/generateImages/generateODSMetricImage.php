@@ -216,7 +216,7 @@
 		
 		$rrd_time  = addslashes(date("Y\/m\/d G:i", $_GET["start"]));
 		$rrd_time = str_replace(":", "\:", $rrd_time);
-		$rrd_time2 = addslashes(date("Y\/m\/d", $_GET["end"])) ;
+		$rrd_time2 = addslashes(date("Y\/m\/d G:i", $_GET["end"])) ;
 		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
 		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
 		
