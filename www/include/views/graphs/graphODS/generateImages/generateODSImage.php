@@ -21,7 +21,7 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 
-	include("@CENTREON_ETC@/centreon.conf.php");
+	include("/etc/centreon/centreon.conf.php");
 	
 	require_once ('DB.php');
 	require_once ('./DB-Func.php');
@@ -246,7 +246,18 @@
 			//$command_line .= " CDEF:v".$cpt."N=v".$cpt.",".$tm["warn"].",GT,0,v".$cpt.",IF ";
 			$cpt++;
 		}
-		$command_line .= " COMMENT:\" \\l\" ";
+		
+		/*
+		 * Display Start and end time on graph
+		 */
+		
+		$rrd_time  = addslashes(date("Y\/m\/d G:i", $start));
+		$rrd_time = str_replace(":", "\:", $rrd_time);
+		$rrd_time2 = addslashes(date("Y\/m\/d", $end)) ;
+		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
+		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
+		
+		
 		# Create Legende
 		$cpt = 0;
 		foreach ($metrics as $key => $tm){

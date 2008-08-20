@@ -30,7 +30,7 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 	
-	include("@CENTREON_ETC@/centreon.conf.php");
+	include("/etc/centreon/centreon.conf.php");
 	require_once ('DB.php');
 	require_once ('./DB-Func.php');
 	require_once ($centreon_path."www/class/Session.class.php");
@@ -223,12 +223,24 @@
 			$cpt++;
 		}
 
+		/*
+		 * Display Start and end time on graph
+		 */
+		
+		$rrd_time  = addslashes(date("Y\/m\/d G:i", $_GET["start"]));
+		$rrd_time = str_replace(":", "\:", $rrd_time);
+		$rrd_time2 = addslashes(date("Y\/m\/d", $_GET["end"])) ;
+		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
+		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
+
 		# Create Legende
 		$i = 0;
 		$cpt = 1;
 		foreach ($metrics as $key => $tm){
+			
 			if ($metrics[$key]["ds_filled"])
 				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"].$tm["ds_transparency"]." ";
+			
 			$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt-1);
 			$command_line .= $tm["ds_color_line"].":\"";
 			$command_line .= $metrics[$key]["legend"];

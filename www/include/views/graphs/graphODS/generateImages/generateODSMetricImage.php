@@ -21,7 +21,7 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 	
-	include("@CENTREON_ETC@/centreon.conf.php");
+	include("/etc/centreon/centreon.conf.php");
 	
 	require_once ('DB.php');
 	require_once ('./DB-Func.php');
@@ -209,6 +209,17 @@
 				$longer = $tm["legend_len"];
 			$cpt++;
 		}
+
+		/*
+		 * Display Start and end time on graph
+		 */
+		
+		$rrd_time  = addslashes(date("Y\/m\/d G:i", $_GET["start"]));
+		$rrd_time = str_replace(":", "\:", $rrd_time);
+		$rrd_time2 = addslashes(date("Y\/m\/d", $_GET["end"])) ;
+		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
+		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
+		
 
 		# Create Legende
 		$cpt = 1;
