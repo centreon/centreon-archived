@@ -16,6 +16,17 @@
  */
 	
 	
+	/*
+	 * Filter get parameters
+	 *
+	 * <code>
+	 * $_GET["o"] = filter_get($_GET["o"]);
+	 * </code>
+	 *
+	 * @param{TAB}string{TAB}$str{TAB}a get string
+	 * @return{TAB}string{TAB}return get string
+	 */
+		
 	function filter_get($str){
 		if (preg_match("/([a-zA-Z0-9\_\-\%\ ]*)/", $str, $matches))
 			return $matches[1];
@@ -31,6 +42,17 @@
 			$_GET[$key] = filter_get($_GET[$key]);
 		}
 	}
+
+	/*
+	 * escape special char for commands
+	 *
+	 * <code>
+	 * $string = escape_command($string);
+	 * </code>
+	 *
+	 * @param{TAB}string{TAB}$command{TAB}command line
+	 * @return{TAB}string{TAB}command line
+	 */
 		
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
@@ -52,36 +74,38 @@
 	unset($options);
 	$DBRESULT->free();
 
-	$title	 = array(	"active_host_check" => _("Host checks"), 
-						"active_host_last" => _("Active hosts"),
-						"host_latency" => _("Host check latency"),
-						"active_service_check" => _("Service checks"), 
-						"active_service_last" => _("Active services"), 
-						"service_latency" => _("Service check latency"), 
-						"cmd_buffer" => _("Commands in buffer"), 
-						"host_states" => _("Host status"), 
-						"service_states" => _("Services status"));
+	$title	 = array(	
+				"active_host_check" => _("Host checks"), 
+				"active_host_last" => _("Active hosts"),
+				"host_latency" => _("Host check latency"),
+				"active_service_check" => _("Service checks"), 
+				"active_service_last" => _("Active services"), 
+				"service_latency" => _("Service check latency"), 
+				"cmd_buffer" => _("Commands in buffer"), 
+				"host_states" => _("Host status"), 
+				"service_states" => _("Services status"));
 
+	$options = array(	
+				"active_host_check" => "nagios_active_host_execution.rrd", 
+				"active_host_last" => "nagios_active_host_last.rrd",
+				"host_latency" => "nagios_active_host_latency.rrd",
+				"active_service_check" => "nagios_active_service_execution.rrd", 
+				"active_service_last" => "nagios_active_service_last.rrd", 
+				"service_latency" => "nagios_active_service_latency.rrd", 
+				"cmd_buffer" => "nagios_cmd_buffer.rrd", 
+				"host_states" => "nagios_hosts_states.rrd", 
+				"service_states" => "nagios_services_states.rrd");
 
-	$options = array(	"active_host_check" => "nagios_active_host_execution.rrd", 
-						"active_host_last" => "nagios_active_host_last.rrd",
-						"host_latency" => "nagios_active_host_latency.rrd",
-						"active_service_check" => "nagios_active_service_execution.rrd", 
-						"active_service_last" => "nagios_active_service_last.rrd", 
-						"service_latency" => "nagios_active_service_latency.rrd", 
-						"cmd_buffer" => "nagios_cmd_buffer.rrd", 
-						"host_states" => "nagios_hosts_states.rrd", 
-						"service_states" => "nagios_services_states.rrd");
-	
-	$differentStats = array(	"nagios_active_host_execution.rrd" => array("Used", "High", "Total"), 
-								"nagios_active_host_last.rrd" => array("T1", "T5", "T15", "T60"), 
-								"nagios_active_host_latency.rrd" => array("Used", "High", "Total"), 
-								"nagios_active_service_execution.rrd" => array("Used", "High", "Total"), 
-								"nagios_active_service_last.rrd" => array("T1", "T5", "T15", "T60"), 
-								"nagios_active_service_latency.rrd" => array("Used", "High", "Total"), 
-								"nagios_cmd_buffer.rrd" => array("Used", "High", "Total"), 
-								"nagios_hosts_states.rrd" => array("Up", "Down", "Unreach"), 
-								"nagios_services_states.rrd" => array("Ok", "Warn", "Crit", "Unk"));
+	$differentStats = array(	
+				"nagios_active_host_execution.rrd" => array("Used", "High", "Total"), 
+				"nagios_active_host_last.rrd" => array("T1", "T5", "T15", "T60"), 
+				"nagios_active_host_latency.rrd" => array("Used", "High", "Total"), 
+				"nagios_active_service_execution.rrd" => array("Used", "High", "Total"), 
+				"nagios_active_service_last.rrd" => array("T1", "T5", "T15", "T60"), 
+				"nagios_active_service_latency.rrd" => array("Used", "High", "Total"), 
+				"nagios_cmd_buffer.rrd" => array("Used", "High", "Total"), 
+				"nagios_hosts_states.rrd" => array("Up", "Down", "Unreach"), 
+				"nagios_services_states.rrd" => array("Ok", "Warn", "Crit", "Unk"));
 
 
 	/*
@@ -116,12 +140,17 @@
 		}
 	}
 	
+	/*
+	 * Get end values
+	 */
 	if (!isset($_GET["end"]))
 		$end = time();
 	else
 		$end = $_GET["end"];
 
-		 
+	/*
+	 * Begin Command Line
+	 */
 	$command_line = " graph - --start=".$start." --end=".$end;
 
 	/*
@@ -136,7 +165,6 @@
 	 */
 	
 	$colors = array("1"=>"#19EE11", "2"=>"#82CFD8", "3"=>"#F8C706", "4"=>"#F8C706");
-	//$metrics = array("Used" => 1, "High" => 2, "Total" => 3);
 	
 	$metrics = $differentStats[$options[$_GET["key"]]];
 	$cpt = 1;
@@ -145,13 +173,16 @@
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($nagios_stats =& $DBRESULT->fetchRow())
 		$nagios_stats_path = $nagios_stats['RRDdatabase_nagios_stats_path'];
+
 	foreach ($metrics as $key => $value){
 		$command_line .= " DEF:v".$cpt."=".$nagios_stats_path."perfmon-".$_GET["ns_id"]."/".$options[$_GET["key"]].":".$value.":AVERAGE ";
 		$cpt++;
 	}
 	$command_line .= " COMMENT:\" \\l\" ";
 	
-	# Create Legende
+	/*
+	 * Create Legende
+	 */
 	$cpt = 1;
 
 	foreach ($metrics as $key => $tm){

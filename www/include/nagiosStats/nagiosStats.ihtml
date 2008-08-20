@@ -18,16 +18,18 @@
 	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.start.label}&nbsp;&nbsp;{$form.start.html}</td>
 	 	</tr>
 		{assign var='counter' value=0}
-		<tr><td align="center">
- 		{foreach from=$options key=keyOptions item=itemOptions} 		
-	 		{if $startPeriod}
-	 		<img src="./include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}&start={$startPeriod}">
-	 		{else}
-	 		<img src="./include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}">
-	 		{/if}	 	
- 		{assign var='counter' value=$counter+1}
-	 	{/foreach}
-	 	</td></tr>	 	
+		<tr>
+			<td align="center">
+	 		{foreach from=$options key=keyOptions item=itemOptions} 		
+		 		{if $startPeriod}
+		 		<img src="./include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}&start={$startPeriod}">
+		 		{else}
+		 		<img src="./include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}">
+		 		{/if}	 	
+	 		{assign var='counter' value=$counter+1}
+		 	{/foreach}
+	 		</td>
+	 	</tr>	 	
 	 </table>
 </div>
 {/foreach}

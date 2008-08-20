@@ -18,7 +18,7 @@
 	if (!isset($oreon))
 		exit(); 
 	
-	include_once("./include/monitoring/common-Func.php");
+	require_once "./include/monitoring/common-Func.php";
 
 	require_once 'HTML/QuickForm.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -27,7 +27,9 @@
 	unset($path);
 
 
-	# Time period select	
+	/*
+	 * Time period select
+	 */	
 	$form = new HTML_QuickForm('form', 'post', "?p=".$p);	
 	$time_period = array("today" =>_("Today"),
 						"yesterday" => _("Yesterday"),
@@ -36,15 +38,17 @@
 						"lastmonth" =>_("Last month"),
 						"last6month" =>_("Last 6 months"),
 						"lastyear" =>_("Last year"));
+	
 	$selTP =& $form->addElement('select', 'start', _("Select time period :"), $time_period, array("onChange" =>"this.form.submit();"));	
 	if (isset($_POST["start"])) {		
 		$form->setDefaults(array('start' => $_POST["start"]));
-	}
-	else {
+	} else {
 		$form->setDefaults(array('start' => "last4days"));
 	}
 
-	# Get Poller List
+	/*
+	 * Get Poller List
+	 */
 	$tab_nagios_server = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `localhost` DESC");
 	if (PEAR::isError($DBRESULT))
@@ -82,16 +86,23 @@
 	
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
+	
+	/*
+	 * Assign values
+	 */
+	 
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign("p", $p);
+	
 	if (isset($_POST["start"]))
 		$tpl->assign('startPeriod', $_POST["start"]);		
+	
 	if (isset($host_list) && $host_list)
 		$tpl->assign('host_list', $host_list);
 		
 	if (isset($tab_server) && $tab_server)
 		$tpl->assign('tab_server', $tab_server);	
 		
+	$tpl->assign("p", $p);
 	$tpl->assign("options", $options);
 	$tpl->assign("session", session_id());
 	$tpl->display("nagiosStats.ihtml");
