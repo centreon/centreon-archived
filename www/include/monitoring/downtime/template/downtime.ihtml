@@ -37,6 +37,7 @@
 	<center><b>{$no_host_dtm}</b></center>
 	{/if}
 	</form>
+	<br>
 	<table class="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$dtm_service_downtime}</td>{if !$nb_downtime_svc}<td align='right'><a href="{$msgs.addL}">{$msgs.addT}</a></td>{/if}</tr></table><br />
 	{if $nb_downtime_svc}
 	<form action="" method='GET'>
@@ -56,13 +57,13 @@
 		<tr class={cycle values="list_two, list_one"}>
 			<td class="ListColPicker"><input type="checkbox" name='select[{$tds.host_name};{$tds.internal_downtime_id}]'></td>
 			<td class="ListColLeft">{$tds.host_name}</td>
-			<td class="ListColLeft">{$tds.svc_name}</td>
+			<td class="ListColLeft">{$tds.service_description}</td>
 			<td class="ListColRight">{$tds.scheduled_start_time}</td>
 			<td class="ListColRight">{$tds.scheduled_end_time}</td>
 			<td class="ListColRight">{$tds.duration}</td>
-			<td class="ListColCenter">{$tds.author}</td>
-			<td class="ListColLeft">{$tds.comment}</td>
-			<td class="ListColLeft">{$tds.persistent}</td>
+			<td class="ListColCenter">{$tds.author_name}</td>
+			<td class="ListColLeft">{$tds.comment_data}</td>
+			<td class="ListColLeft">{$tds.is_fixed}</td>
 		</tr>
 		{/foreach}
 		<tr>

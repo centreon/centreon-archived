@@ -50,7 +50,7 @@
 	 */
 	$rq2 =	" SELECT dtm.internal_downtime_id, dtm.entry_time,dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
 			" FROM ".$ndo_base_prefix."downtimehistory dtm, ".$ndo_base_prefix."objects obj " .
-			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS  NULL AND obj.object_id = dtm.object_id ORDER BY dtm.actual_start_time";
+			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS  NULL AND obj.object_id = dtm.object_id AND dtm.was_cancelled = '0' ORDER BY dtm.actual_start_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
@@ -67,9 +67,9 @@
 	/*
 	 * Service Comments
 	 */
-	$rq2 =	" SELECT dtm.internal_downtime_id, dtm.entry_time,dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
+	$rq2 =	" SELECT dtm.internal_downtime_id, dtm.entry_time, dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
 			" FROM ".$ndo_base_prefix."downtimehistory dtm, ".$ndo_base_prefix."objects obj " .
-			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS NOT NULL AND obj.object_id = dtm.object_id ORDER BY dtm.actual_start_time";
+			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS NOT NULL AND obj.object_id = dtm.object_id AND dtm.was_cancelled = '0' ORDER BY dtm.actual_start_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
