@@ -116,6 +116,8 @@ CREATE TABLE IF NOT EXISTS `index_data` (
   `service_id` int(11) default NULL,
   `check_interval` int(11) default NULL,
   `special` enum('0','1') default '0',
+  `hidden` enum('0','1') default '0',
+  `locked` enum('0','1') default '0',
   `trashed` enum('0','1') default '0',
   `must_be_rebuild` enum('0','1','2') default '0',
   `storage_type` enum('0','1','2') default '2',
