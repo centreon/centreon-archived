@@ -30,7 +30,9 @@
 	$DEBUG = 0;
 	$msg = NULL;
 	$return_false = NULL;
-
+   
+    if (isset($_POST["step"]) && $_POST["step"] == 2 && isset($_POST["Restart"]))
+         $_POST["step"] = NULL;
 	if (isset($_POST["step"]) && $_POST["step"] == 4 && isset($_POST["Recheck"]))
 		 $_POST["step"] = 3;
 	if (isset($_POST["step"]) && $_POST["step"] == 5 && isset($_POST["Recheck"]))
@@ -39,12 +41,6 @@
 		 $_POST["step"] = 6;
 	if (isset($_POST["step"]) && $_POST["step"] == 10 && isset($_POST["Recheck"]))
 		 $_POST["step"] = 9;
-/*	if (isset($_POST["install_missing_pear_module"]) && isset($_POST["pear_module"]) && $_POST["step"] == 5) {
-/		 $_POST["step"] = 4;
-
-		exec('sudo pear install '. $pear_module["$package_file"]);
-
-	}*/
 
 	if (isset($_POST["goto"]) && !strcmp($_POST["goto"], "Back"))
 		 $_POST["step"] -= 2;

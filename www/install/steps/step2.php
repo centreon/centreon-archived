@@ -15,7 +15,17 @@
  * For information : contact@centreon.com
  */
 
-	
+ 	// Testing the Cookie in order to determined if cookie are authorized by the browser
+	if($_COOKIE['COOKIE'] != "COOKIE-TEST")
+	{
+	aff_header("Centreon Setup Wizard", "Cookies are disabled", 2);
+	print "<font color='red'>You have to enable Cookies to proceed with the installation!</font>";
+    aff_middle();
+    print "<input class='button' type='submit' name='Restart' value='Restart' />";
+    aff_footer();
+	}
+	else{
+	// If the cookies are authorized, we can perform the installation	
 	aff_header("Centreon Setup Wizard", "Licence", 2);
 	$license_file_name = "./LICENSE.txt";
 	$fh = fopen( $license_file_name, 'r' ) or die( "License file not found!" );
@@ -36,5 +46,5 @@
 	aff_middle();
 	print "<input class='button' type='submit' name='goto' value='Next' id='button_next' disabled='disabled' />";
 	aff_footer();
-
+	}
 ?>

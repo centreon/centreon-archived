@@ -14,7 +14,10 @@
  * 
  * For information : contact@centreon.com
  */
-
+ 
+ 	// Creating a Cookie to test the cookie activation of the browser
+	setcookie('COOKIE','COOKIE-TEST',time()+3600);
+	
 	aff_header("Centreon Setup Wizard", "Welcome to Centreon Setup", 1);
 	print "<p>This installer creates the Centreon database tables and sets the configuration variables that you need to start. The entire process should take about ten minutes.</p>";
 	aff_middle();
