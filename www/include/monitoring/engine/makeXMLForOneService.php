@@ -19,12 +19,12 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/class/other.class.php");
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBNDOConnect.php");
-	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
-	include_once($centreon_path . "www/include/common/common-Func.php");
+	include_once "/etc/cen/centreon.conf.php";
+	include_once $centreon_path . "www/class/other.class.php";
+	include_once $centreon_path . "www/DBconnect.php";
+	include_once $centreon_path . "www/DBNDOConnect.php";
+	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
+	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	$ndo_base_prefix = getNDOPrefix();
 
@@ -38,13 +38,6 @@
 	} else
 		get_error('need session identifiant !');
 		
-	/*
-	 * Get Acl Group list
-	 */
-	
-	$grouplist = getGroupListofUser($pearDB); 
-	$groupnumber = count($grouplist);	
-	
 	(isset($_GET["svc_id"]) && !check_injection($_GET["svc_id"])) ? $svc_id = htmlentities($_GET["svc_id"]) : $svc_id = "0";
 	(isset($_GET["enable"]) && !check_injection($_GET["enable"])) ? $enable = htmlentities($_GET["enable"]) : $enable = "enable";
 	(isset($_GET["disable"]) && !check_injection($_GET["disable"])) ? $disable = htmlentities($_GET["disable"]) : $disable = "disable";
