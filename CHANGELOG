@@ -1,3 +1,10 @@
+## Centreon 2.0-RC3
+
+=> Bugfix : remove problem with documentation links in hosts/hostgroups/services/templates interface configuration.
+=> Bugfix : better display in service groups monitoring on each status.
+=> Bugfix : Solved a few PHP errors on reporting by service groups.
+=> Enhancement : Test added during the first step of the installation. Now, the browser must authorize cookies to proceed with the installation. 
+
 ## Centreon 2.0-RC2
 
 => Bugfix : remove problem with ACL When a user a no acl
