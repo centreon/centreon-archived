@@ -15,23 +15,21 @@
  * For information : contact@centreon.com
  */
  
- 	require_once("/etc/centreon/centreon.conf.php");
+ 	require_once("@CENTREON_ETC@/centreon.conf.php");
 
 	if (isset($_POST["sid"])){
-		$sid = $_POST["sid"];
 
 		$path = "$centreon_path/www";
 		
-		//set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+		require_once("$path/class/Oreon.class.php");
+		require_once("$path/class/Session.class.php");
 		
-		chdir($path);
+		session_id($_POST["sid"]);
 		
-		require_once("./class/Oreon.class.php");
-		session_id($sid);
+		Session::start();
 		
-		spl_autoload('Oreon');
-		//$oreon = $_SESSION['oreon'];
-		/*
+		$oreon = $_SESSION['oreon'];
+		
 		if (isset($_POST["limit"]) && isset($_POST["url"]))
 			$oreon->historyLimit[$_POST["url"]] = $_POST["limit"];
 	
@@ -39,8 +37,8 @@
 			$oreon->historyPage[$_POST["url"]] = $_POST["page"];
 	
 		if (isset($_POST["search"]) && isset($_POST["url"]))
-			$oreon->historySearch[$_POST["url"]] = $_POST["search"];
-		*/
+			$oreon->historySearch[$_POST["url"]] = $_POST["search"];	
+		
 	} else {
 		echo "Can't find SID !";
 	}
