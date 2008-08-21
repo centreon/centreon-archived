@@ -113,7 +113,7 @@
 	 */	
 
 	if (!isset($_GET["start"])) {		
-		$start = time() - (60*60*96);		
+		$start = time() - (60*60*24);		
 	} else {				
 		switch ($_GET["start"]) {
 			case "today" : 
@@ -205,5 +205,4 @@
 		}
 		print $str;
 	}
-	
 ?>

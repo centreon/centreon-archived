@@ -1,4 +1,10 @@
 <form {$form.attributes}>
+<table class="ListTable">	
+	<tr class="ListHeader">
+	 	<td class="FormHeader">&nbsp;&nbsp;{$form.start.label}&nbsp;&nbsp;{$form.start.html}</td>
+	 </tr>
+</table>
+<br>
 <div>
 	<ul id="mainnav">
 	{assign var='cpt' value=0}
@@ -15,7 +21,7 @@
 <div id='tab{$cpt}' class='tab'>
  	<table class="ListTable">
 	 	<tr class="ListHeader">
-	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.start.label}&nbsp;&nbsp;{$form.start.html}</td>
+	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;</td>
 	 	</tr>
 		{assign var='counter' value=0}
 		<tr>
