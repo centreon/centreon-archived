@@ -1,48 +1,47 @@
-/**
-Oreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@centreon.com
+ */
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@centreon.com
-*/
-
-body	{	background-color:#FFFFFF;
-			font-family: Verdana;
-			font-size: 11px;
-			margin: 0; 
-			text-align: center; 
-}
+body {margin: 0;}
 
 /* General */ 
 
-img 		{border:0;}
-table		{empty-cells: show; border-spacing:0px; border-collapse:collapse;}
-input		{font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal; border-style: none; padding:2px;}
-textarea	{font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal;}
-checkbox	{font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal; padding: 2px;}
-select		{font-family: Verdana, Arial, sans-serif; font-size: 10px; font-weight: normal; border-style: none;}
-option		{font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal;}
-td			{padding:1px; color: #525252; font-family: Verdana, Arial, sans-serif; font-size: 9px;	white-space: nowrap;}
-tr			{}
+/* Link */
 a			{text-decoration: none;}
 a:hover		{text-decoration: underline;}
- 
-input[type="submit"],input[type="button"],input[type="reset"]{
-    background-position:0px 0px;
-    color:#000000;
-    font-family:Verdana, Tahoma;
-    font-size:11px;
+
+body, .msg, #sublogin, #LoginInvitcpy a,  #LoginInvitcpy {text-align:center;}
+
+table {empty-cells:show; border-spacing:0px; border-collapse:collapse;}
+
+body, input, textarea, checkbox, select, option, td, .msg, input[type="submit"], input[type="button"], input[type="reset"] {font-family: Verdana, Arial, sans-serif;font-weight: normal;}
+
+input, textarea, checkbox, select, option	{font-size: 10px;}
+input[type="submit"], input[type="button"], input[type="reset"], body	{font-size: 11px;}
+td 											{font-size:9px;}
+.msg 										{font-size:12px;}
+
+img 		{border:0;}
+input		{border-style: none; padding:2px;}
+checkbox	{padding: 2px;}
+select		{border-style: none;}
+td			{padding:1px; color:#525252;white-space: nowrap;}
+
+
+input[type="submit"], input[type="reset"] {background: url("./Images/bg_input_orange.gif");background-position:0px 0px;color:#000000;}
+input[type="submit"], input[type="button"], input[type="reset"]{
     width:86px;
     height:22px;
     border: 0.5px solid gray;
@@ -58,59 +57,26 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 	text-align: center;
 }
 
-#logintab1 	{width:253px;}
-
-#logintab2 	{
-	width:100%;
-	border:1px solid gray;
-    border-top: 2px solid gray;
-    border-bottom: 2px solid gray;
-}
-
-#logintab2 td{
-	border:1px;
-	padding:5px;
-	background-color:#eaeaee;
-}
-
-#sublogin{
-	width:200px;
-	text-align:center;
-}
+#logintab1 		{width:253px;}
+#logintab2 		{width:100%;}
+#logintab2 td	{border:1px;padding:5px;background-color:#eaeaee;}
+#sublogin		{width:200px;}
 
 .LoginInvitVersion	{text-align:left;}
 .LoginInvitDate		{text-align:right;}
 
-#LoginInvitcpy a,  #LoginInvitcpy {
-	 color:gray;
-	 text-align:center;
-}
+#LoginInvitcpy a,  #LoginInvitcpy {color:gray;}
  
-.inputclassic{
-    border: 1px solid gray;
-    width:150;
-    padding:2px 2px 3px 18px;
-    background: #FFFFFF url("../../img/icones/16x16/user1.gif") no-repeat scroll 1px 1px;
-}
+/* Input */
 
-.inputclassicPass{
-    border: 1px solid gray;
-    width:150;
-}
-
-
-input[type="submit"],input[type="reset"]{
-    background: url("./Images/bg_input_orange.gif") ;
-}
-
-.msg	{
-	font-family: Verdana, Arial, sans-serif; 
-	font-size: 12px; 
-	font-weight: normal; 
-	border: 4px solid white; 
-	padding:3px; 
-	text-align: center; 
-	background-color:red; 
-	color:white; 
-	margin:5px;
+.inputclassic, .inputclassicPass, #logintab2 	{border:1px solid gray;}
+#logintab2 		{border-top: 2px solid gray;border-bottom: 2px solid gray;}
+.inputclassic, .inputclassicPass 				{width:150;}
+.inputclassic	{padding:2px 2px 3px 18px;background: #FFFFFF url("../../img/icones/16x16/user1.gif") no-repeat scroll 1px 1px;}
+.msg, body 	{color:#FFFFFF;}
+.msg		{border: 4px solid white; 
+			padding:3px; 
+			text-align:center; 
+			background-color:red; 
+			margin:5px;
 }
