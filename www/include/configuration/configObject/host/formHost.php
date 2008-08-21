@@ -329,15 +329,7 @@
 	## Check information
 	#
 	$form->addElement('header', 'check', _("Host Check Properties"));
-	#Nagios 1
-	if ($oreon->user->get_version() == 1)	{
-		$hostCE[] = &HTML_QuickForm::createElement('radio', 'host_checks_enabled', null, _("Yes"), '1');
-		$hostCE[] = &HTML_QuickForm::createElement('radio', 'host_checks_enabled', null, _("No"), '0');
-		$hostCE[] = &HTML_QuickForm::createElement('radio', 'host_checks_enabled', null, _("Default"), '2');
-		$form->addGroup($hostCE, 'host_checks_enabled', _("Checks Enabled"), '&nbsp;');
-		if ($o != "mc")
-			$form->setDefaults(array('host_checks_enabled' => '2'));
-	}
+	
 	$form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
 	$form->addElement('text', 'command_command_id_arg1', _("Args"), $attrsText);
 	
