@@ -265,6 +265,18 @@
 <link rel="shortcut icon" href="./img/iconOreon.ico">
 </head>
 <body OnLoad="document.login.useralias.focus();">
-<?php include_once("./login.php"); ?>
+<?php 
+	/*
+	 * Check PHP version 
+	 * 
+	 *  Centreon 2.x doesn't support PHP < 5
+	 * 
+	 */
+	if (version_compare(phpversion(), '5.0') < 0){
+ 		echo "<div class='msg'> PHP version is < 5.0. Please Upgrade PHP</div>";		
+ 	} else {
+		include_once("./login.php"); 
+	}
+?>
 </body>
 </html>

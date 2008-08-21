@@ -41,23 +41,16 @@
 	/*
 	 * Include
 	 */
-	require_once ("@CENTREON_ETC@/centreon.conf.php");
-	require_once ("./DBconnect.php");
-	require_once ("./DBOdsConnect.php");
-	require_once ("$classdir/Session.class.php");
-	require_once ("$classdir/Oreon.class.php");
-	require_once (SMARTY_DIR."Smarty.class.php");
+	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once "./DBconnect.php";
+	require_once "./DBOdsConnect.php";
+	require_once "$classdir/Session.class.php";
+	require_once "$classdir/Oreon.class.php";
+	require_once SMARTY_DIR."Smarty.class.php";
 
 	ini_set("session.gc_maxlifetime", "31536000");
 
 	Session::start();
-	if (version_compare(phpversion(), '5.0') < 0) {
-	    eval('
-	    function clone($object) {
-	      return $object;
-	    }
-	    ');
-	}
 
 	/*
 	 * Delete Session Expired
