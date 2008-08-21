@@ -55,3 +55,7 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES( NULL, 40201, NULL, './include/common/javascript/codebase/dhtmlxcommon.js', NULL);
 
 DELETE FROM `topology` WHERE `topology_page` = 40210 LIMIT 1;
+
+ALTER TABLE `contact` ADD `contact_acl_group_list` VARCHAR( 255 ) NULL ;
+ALTER TABLE `contact` ADD `contact_autologin_key` VARCHAR( 255 ) NULL ;
+
