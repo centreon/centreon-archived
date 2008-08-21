@@ -34,7 +34,7 @@
 	 		<td class="ListColLeft">{$d.service_description}</td>
 	 		<td class="ListColCenter">{$d.metrics_name}</td>
 	 		<td class="ListColCenter">{$d.must_be_rebuild}</td>
-	 		<td class="ListColCenter">{$d.trashed}</td>
+	 		<td class="ListColCenter">{$d.hidden}</td>
 	 		<td class="ListColCenter">{$d.locked}</td>
 	 		<td class="ListColCenter">{$d.storage_type}</td>
 	 		<!--<td class="ListColRight"><a href='./main.php?p={$p}&o=d&id={$d.id}'><img src='./img/icones/16x16/delete.gif' alt='{$d.delete}'></a> &nbsp;&nbsp;<a href='./main.php?p={$p}&o=rb&id={$d.id}'><img src='./img/icones/16x16/gear.gif' alt='{$d.rebuild}'></a></td>-->

@@ -78,14 +78,14 @@
 		} else if ($_POST["o"] == "hg"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".$key."'");
+				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";		
 			}
 		} else if ($_POST["o"] == "nhg"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `trashed` = '0' WHERE id = '".$key."'");
+				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";		
 			}
@@ -162,6 +162,7 @@
 		$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
 		$index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
 		$index_data["trashed"] = $yesOrNo[$index_data["trashed"]];
+		$index_data["hidden"] = $yesOrNo[$index_data["hidden"]];
 		if (isset($index_data["locked"]))
 			$index_data["locked"] = $yesOrNo[$index_data["locked"]];	
 		else
