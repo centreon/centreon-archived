@@ -27,43 +27,22 @@
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
-	# Set base value
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-
-	$ndo = $gopt["ndo_activate"];
-
-
-	if ($ndo)
-		$path = "./include/monitoring/status/status-ndo/";
-	else{
-		$path = "./include/monitoring/status/status-log/";
-	}
+	$path = "./include/monitoring/status/status-ndo/";
 
 	$pathDetails = "./include/monitoring/objectDetails/";
 
-	if ($ndo){
-		include_once("./DBNDOConnect.php");
-	
-		if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
-			print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
-		else {
-			if ($err_msg = table_not_exists("centreon_acl")) 
-					print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
-			switch ($o)	{
-				case "hg" 	: require_once($path."hostGroup.php"); break;
-				case "hgpb" : require_once($path."hostGroup.php"); break;
-				case "hgd" 	: require_once($pathDetails."hostgroupDetails.php"); break;
-				default 	: require_once($path."hostGroup.php"); break;
-			}
-		}
-	} else {
-		include("./include/monitoring/status/resume.php");
+	include_once("./DBNDOConnect.php");
+
+	if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
+		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
+	else {
+		if ($err_msg = table_not_exists("centreon_acl")) 
+				print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
 		switch ($o)	{
-			case "hg" 	: require_once($path."hostgroup.php"); break;
-			case "hgpb" : require_once($path."hostgroup_problem.php"); break;
+			case "hg" 	: require_once($path."hostGroup.php"); break;
+			case "hgpb" : require_once($path."hostGroup.php"); break;
 			case "hgd" 	: require_once($pathDetails."hostgroupDetails.php"); break;
-			default 	: require_once($path."hostgroup.php"); break;
+			default 	: require_once($path."hostGroup.php"); break;
 		}
 	}
 ?>
