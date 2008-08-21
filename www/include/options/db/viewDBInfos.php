@@ -17,70 +17,85 @@
 	if (!isset($oreon))
 		exit();
 	
-	if ($res =& $pearDB->query("SELECT VERSION() AS mysql_version")){
-		$row =& $res->fetchRow();
-		$version = $row['mysql_version'];
-		if(preg_match("/^(3\.23|4\.|5\.)/", $version)){
-			$db = $conf_centreon["db"];
-			$db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", $version) ) ? "`$db`" : $db;
-			$sql = "SHOW TABLE STATUS FROM `".$conf_centreon["db"]."`";
-			if($res =& $pearDB->query($sql))
-			{
-				$dbsize = 0;
-				$rows = 0;
-				$datafree = 0;
-				while ($tabledata_ary =& $res->fetchRow()){
-					$dbsize += $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
-					$rows += $tabledata_ary['Rows'];
-					$datafree += $tabledata_ary['Data_free'];
+	require_once './DBNDOConnect.php';
+	
+	/*
+	 * return database Properties
+	 *
+	 * <code>
+	 * $dataCentreon 		= returnProperties($pearDB, $conf_centreon["db"]);
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$pearDB{TAB}Database connexion
+	 * @param{TAB}string{TAB}$base{TAB}db name
+	 * @return{TAB}array{TAB}dbsize, numberOfRow, freeSize
+	 */
+	
+	function returnProperties($pearDB, $base){		
+		/*
+		 * Get Version
+		 */
+		if ($res =& $pearDB->query("SELECT VERSION() AS mysql_version")){
+			$row =& $res->fetchRow();
+			$version = $row['mysql_version'];
+			if (preg_match("/^(3\.23|4\.|5\.)/", $version)){
+				$db_name = (preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", $version) ) ? "`$base`" : $base;
+				if ($DBRESULT =& $pearDB->query("SHOW TABLE STATUS FROM `$base`")){
+					$dbsize = 0;
+					$rows = 0;
+					$datafree = 0;
+					while ($tabledata_ary =& $DBRESULT->fetchRow()) {
+						$dbsize 	+= $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
+						$rows 		+= $tabledata_ary['Rows'];
+						$datafree	+= $tabledata_ary['Data_free'];  
+					}
+					$DBRESULT->free();
 				}
+			} else {
+				$dbsize = NULL;
+				$rows = NULL;
+				$datafree = NULL;
 			}
-		} else {
-			$dbsize = NULL;
-			$rows = NULL;
-			$datafree = NULL;
 		}
+		return array($dbsize / 1024 / 1024 , $rows, $datafree);
 	}
 	
-	if ($res =& $pearDBO->query("SELECT VERSION() AS mysql_version")){
-		$row =& $res->fetchRow();
-		$version = $row['mysql_version'];
-		if (preg_match("/^(3\.23|4\.|5\.)/", $version)){
-			$db = $conf_centreon["dbcstg"];
-			$db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", $version) ) ? "`$db`" : $db;
-			$sql = "SHOW TABLE STATUS FROM `".$conf_centreon["dbcstg"]."`";
-			if($res =& $pearDB->query($sql))
-			{
-				$dbsizeods = 0;
-				$rowsods = 0;
-				$datafreeods = 0;
-				while ($tabledata_ary =& $res->fetchRow()){
-					$dbsizeods += $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
-					$rowsods += $tabledata_ary['Rows'];
-					$datafreeods += $tabledata_ary['Data_free'];
-				}
-			}
-		} else {
-			$dbsizeods = NULL;
-			$rowsods = NULL;
-			$datafreeods = NULL;
-		}
-	}
+	/*
+	 * Get NDO Properties
+	 */
+	
+	$ndoInformations = getNDOInformations();
+	
+	/*
+	 * Get Properties
+	 */
+	 
+	$dataCentreon 		= returnProperties($pearDB, $conf_centreon["db"]);
+	$dataCentstorage 	= returnProperties($pearDBO, $conf_centreon["dbcstg"]);
+	$dataNDOutils 		= returnProperties($pearDBndo, $ndoInformations["db_name"]);
+	
 ?>
 <table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;Centreon&nbsp;<?php print _("DataBase Statistics"); ?></td></tr>
- 	<tr class="list_one"><td class="FormRowField"><?php print _("Length") ; ?></td><td class="FormRowValue"><?php $dbsize /= 1024; print round($dbsize, 2); ?>Ko</td></tr>
-	<tr class="list_two"><td class="FormRowField"><?php print _("Number of entries") ; ?></td><td class="FormRowValue"><?php print $rows; ?></td></tr>
-</table>
-<br />
-<table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;CentStorage&nbsp;<?php print _("DataBase Statistics"); ?></td></tr>
- 	<tr class="list_one"><td class="FormRowField"><?php print _("Length") ; ?></td><td class="FormRowValue"><?php $dbsizeods /= 1024; print round($dbsizeods, 2); ?>Ko</td></tr>
-	<tr class="list_two"><td class="FormRowField"><?php print _("Number of entries") ; ?></td><td class="FormRowValue"><?php print $rowsods; ?></td></tr>
-</table>
-<br />
-<table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;NDO&nbsp;<?php print _("DataBase Statistics"); ?></td></tr>
- 	<tr class="list_one"><td class="FormRowField"><?php print _("Length") ; ?></td><td class="FormRowValue"><?php $dbsize /= 1024; print round($dbsize, 2); ?>Ko</td></tr>
-	<tr class="list_two"><td class="FormRowField"><?php print _("Number of entries") ; ?></td><td class="FormRowValue"><?php print $rows; ?></td></tr>
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="5"><img src='./img/icones/16x16/server_network.gif'>&nbsp;Centreon&nbsp;<?php print _("DataBase Statistics"); ?></td></tr>
+	<tr class="list_lvl_1">
+		<td class="ListColLvl1_name">&nbsp;</td>
+		<td class="ListColLvl1_name"><?php echo $conf_centreon["db"]; ?></td>
+		<td class="ListColLvl1_name"><?php echo $conf_centreon["dbcstg"]; ?></td>
+		<td class="ListColLvl1_name"><?php echo $ndoInformations["db_name"]; ?></td>
+		<td class="ListColLvl1_name">&nbsp;</td>
+	</tr>	
+ 	<tr class="list_one">
+ 		<td class="FormRowField"><?php print _("Length") ; ?></td>
+ 		<td class="FormRowValue"><?php print round($dataCentreon[0], 2); ?> Mo</td>
+ 		<td class="FormRowValue"><?php print round($dataCentstorage[0], 2); ?> Mo</td>
+ 		<td class="FormRowValue"><?php print round($dataNDOutils[0], 2); ?> Mo</td>
+ 		<td class="ListColLvl1_name">&nbsp;</td>
+ 	</tr>
+	<tr class="list_two">
+		<td class="FormRowField"><?php print _("Number of entries") ; ?></td>
+ 		<td class="FormRowValue"><?php print $dataCentreon[1]; ?></td>
+ 		<td class="FormRowValue"><?php print $dataCentstorage[1]; ?></td>
+ 		<td class="FormRowValue"><?php print $dataNDOutils[1]; ?></td>
+		<td class="ListColLvl1_name">&nbsp;</td>
+	</tr>
 </table>
