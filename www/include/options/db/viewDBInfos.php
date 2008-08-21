@@ -42,7 +42,7 @@
 		}
 	}
 	
-	if($res =& $pearDBO->query("SELECT VERSION() AS mysql_version")){
+	if ($res =& $pearDBO->query("SELECT VERSION() AS mysql_version")){
 		$row =& $res->fetchRow();
 		$version = $row['mysql_version'];
 		if (preg_match("/^(3\.23|4\.|5\.)/", $version)){
@@ -78,11 +78,9 @@
  	<tr class="list_one"><td class="FormRowField"><?php print _("Length") ; ?></td><td class="FormRowValue"><?php $dbsizeods /= 1024; print round($dbsizeods, 2); ?>Ko</td></tr>
 	<tr class="list_two"><td class="FormRowField"><?php print _("Number of entries") ; ?></td><td class="FormRowValue"><?php print $rowsods; ?></td></tr>
 </table>
-<?php if ($oreon->optGen["ndo_activate"]) {?>
 <br />
 <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;NDO&nbsp;<?php print _("DataBase Statistics"); ?></td></tr>
  	<tr class="list_one"><td class="FormRowField"><?php print _("Length") ; ?></td><td class="FormRowValue"><?php $dbsize /= 1024; print round($dbsize, 2); ?>Ko</td></tr>
 	<tr class="list_two"><td class="FormRowField"><?php print _("Number of entries") ; ?></td><td class="FormRowValue"><?php print $rows; ?></td></tr>
 </table>
-<?php } ?>
