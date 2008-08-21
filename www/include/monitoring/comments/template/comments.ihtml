@@ -7,10 +7,10 @@
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderCenter">{$cmt_host_name}</td>
-			<td class="ListColHeaderCenter" width="150">{$cmt_entry_time}</td>
+			<td class="ListColHeaderCenter" width="120">{$cmt_entry_time}</td>
 			<td class="ListColHeaderCenter">{$cmt_author}</td>
 			<td class="ListColHeaderCenter">{$cmt_comment}</td>
-			<td class="ListColHeaderCenter">{$cmt_persistent}</td>
+			<td class="ListColHeaderCenter" width="60">{$cmt_persistent}</td>
 		</tr>
 		{foreach item=tch from=$tab_comments_host}
 		<tr class={cycle values="list_two, list_one"}>
@@ -19,7 +19,7 @@
 			<td class="ListColRight">{$tch.entry_time}</td>
 			<td class="ListColCenter">{$tch.author_name}</td>
 			<td class="ListColNoWrap">{$tch.comment_data}</td>
-			<td class="ListColLeft">{$tch.is_persistent}</td>
+			<td class="ListColCenter">{$tch.is_persistent}</td>
 		</tr>
 		{/foreach}
 		<tr>
@@ -42,10 +42,10 @@
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderCenter">{$cmt_host_name}</td>
 			<td class="ListColHeaderCenter">{$cmt_service_descr}</td>
-			<td class="ListColHeaderCenter">{$cmt_entry_time}</td>
+			<td class="ListColHeaderCenter" width="120">{$cmt_entry_time}</td>
 			<td class="ListColHeaderCenter">{$cmt_author}</td>
 			<td class="ListColHeaderCenter">{$cmt_comment}</td>
-			<td class="ListColHeaderCenter">{$cmt_persistent}</td>
+			<td class="ListColHeaderCenter" width="60">{$cmt_persistent}</td>
 		</tr>
 		{foreach item=tcs from=$tab_comments_svc}
 		<tr class={cycle values="list_two, list_one"}>
