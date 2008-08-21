@@ -23,7 +23,7 @@
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 	
-	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".session_id()."'");
+	$session =& $pearDB->query("SELECT * FROM `session` WHERE `session_id` = '".session_id()."'");
 	if (!$session->numRows())
 		exit;
 	
