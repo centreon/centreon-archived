@@ -146,5 +146,5 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('valid', $valid);
 	$tpl->assign('o', $o);
-	$tpl->display("formODS.ihtml");
+	$tpl->display("form.ihtml");
 ?>
