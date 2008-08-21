@@ -101,7 +101,7 @@
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path.'OreonDataStorage/', $tpl);
+	$tpl = initSmartyTpl($path.'centStorage/', $tpl);
 	$form->setDefaults($gopt);
 	
 	$subC =& $form->addElement('submit', 'submitC', _("Save"));

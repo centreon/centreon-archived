@@ -54,6 +54,9 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES( NULL, 40201, NULL, './include/common/javascript/codebase/dhtmlxtree.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES( NULL, 40201, NULL, './include/common/javascript/codebase/dhtmlxcommon.js', NULL);
 
+UPDATE `topology` SET `topology_url` = './include/options/centStorage/manageData.php' WHERE `topology`.`topology_page` = 5010602 LIMIT 1 ;
+
+
 DELETE FROM `topology` WHERE `topology_page` = 40210 LIMIT 1;
 
 ALTER TABLE `contact` ADD `contact_acl_group_list` VARCHAR( 255 ) NULL ;

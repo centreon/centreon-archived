@@ -35,7 +35,7 @@
 	
 
 	#Path to the option dir
-	$path = "./include/options/ods/";
+	$path = "./include/options/centStorage/";
 	
 	#PHP functions
 	require_once("./include/options/oreon/generalOpt/DB-Func.php");
