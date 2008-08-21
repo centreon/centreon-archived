@@ -30,34 +30,26 @@
 <head>
 <title>Centreon, Revisited Experience Of Nagios</title>
 <link rel="shortcut icon" href="./img/iconOreon.ico"/>
-<link rel="stylesheet" type="text/css" href="./include/common/javascript/autocompletion.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved." />
 <meta name="robots" content="index, nofollow" />
 <link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
-<link href="<?php echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
-<link href="<?php echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?><?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
 <script src="./include/common/javascript/scriptaculous/prototype.js" type="text/javascript"></script>
 <script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <?php
 	if ($min != 1){
 
-		$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
-		# Set base value
-		$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-	
-		$ndo = $gopt["ndo_activate"];
-	
-		if (isset($ndo) && !$ndo)
-			print "<script type=\"text/javascript\"> var _adrrsearchC = \"./include/monitoring/engine/MakeXML4statusCounter.php\";</script>\n";
-		else
-			print "<script type=\"text/javascript\"> var _adrrsearchC = \"./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php\";</script>\n";
-		
+		/*
+		 * Add Javascript for NDO status Counter
+		 */		
+		print "<script type=\"text/javascript\"> var _adrrsearchC = \"./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php\";</script>\n";
 		print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
 	}
 
-	# Add Template CSS for sysInfos Pages
+	/*
+	 * Add Template CSS for sysInfos Pages
+	 */
 	if (isset($p) && !strcmp($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
 		echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
 
@@ -69,18 +61,13 @@
 	/*
 	 * include javascript
 	 */
-
-	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
-	# Set base value
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-	$ndo = $gopt["ndo_activate"];
-
+	 
 	$res = null;
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 	if (PEAR::isError($DBRESULT))
 		print $DBRESULT->getDebugInfo()."<br />";
 	while ($topology_js =& $DBRESULT->fetchRow()){
-		if (!$ndo || ($ndo && $topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js" && $topology_js['PathName_js'] != "./include/common/javascript/codebase/dhtmlxtree.js"))
+		if ($topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js" && $topology_js['PathName_js'] != "./include/common/javascript/codebase/dhtmlxtree.js")
 			echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script>\n";
 	}
 	
@@ -116,9 +103,6 @@
 	?>
     	};
     </script>
-<?php
-	if ($ndo)
-		print '<script src="./include/common/javascript/xslt.js" type="text/javascript"></script>';?>
-		
+	<script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
 </head>
 <body>
