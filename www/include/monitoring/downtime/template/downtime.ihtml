@@ -18,12 +18,12 @@
 		<tr class={cycle values="list_two, list_one"}>
 			<td class="ListColPicker"><input type="checkbox" name='select[{$tdh.host_name};{$tdh.internal_downtime_id}]'></td>
 			<td class="ListColLeft">{$tdh.host_name}</td>
-			<td class="ListColRight">{$tdh.scheduled_start_time}</td>
-			<td class="ListColRight">{$tdh.scheduled_end_time}</td>
-			<td class="ListColRight">{$tdh.duration}</td>
+			<td class="ListColRight" width="120">{$tdh.scheduled_start_time}</td>
+			<td class="ListColRight" width="120">{$tdh.scheduled_end_time}</td>
+			<td class="ListColRight" width="60">{$tdh.duration}</td>
 			<td class="ListColCenter">{$tdh.author_name}</td>
 			<td class="ListColLeft">{$tdh.comment_data}</td>
-			<td class="ListColLeft">{$tdh.is_fixed}</td>
+			<td class="ListColCenter" width="50">{$tdh.is_fixed}</td>
 		</tr>
 		{/foreach}
 		<tr>
@@ -58,12 +58,12 @@
 			<td class="ListColPicker"><input type="checkbox" name='select[{$tds.host_name};{$tds.internal_downtime_id}]'></td>
 			<td class="ListColLeft">{$tds.host_name}</td>
 			<td class="ListColLeft">{$tds.service_description}</td>
-			<td class="ListColRight">{$tds.scheduled_start_time}</td>
-			<td class="ListColRight">{$tds.scheduled_end_time}</td>
+			<td class="ListColRight" width="120">{$tds.scheduled_start_time}</td>
+			<td class="ListColRight" width="120">{$tds.scheduled_end_time}</td>
 			<td class="ListColRight">{$tds.duration}</td>
 			<td class="ListColCenter">{$tds.author_name}</td>
 			<td class="ListColLeft">{$tds.comment_data}</td>
-			<td class="ListColLeft">{$tds.is_fixed}</td>
+			<td class="ListColCenter" width="50">{$tds.is_fixed}</td>
 		</tr>
 		{/foreach}
 		<tr>
