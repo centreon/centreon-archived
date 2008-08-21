@@ -33,16 +33,16 @@
 	var _debug = 0;
 	
 	var _search = '<?php echo $search; ?>';
-	var _sid='<?php echo $sid?>';
-	var _search_type_host='<?php echo $search_type_host?>';
-	var _search_type_service='<?php echo $search_type_service?>';
-	var _num='<?php echo $num?>';
-	var _limit='<?php echo $limit?>';
-	var _sort_type='<?php echo $sort_type?>';
-	var _order='<?php echo $order?>';
-	var _date_time_format_status='<?php echo _("d/m/Y H:i:s")?>';
-	var _o='<?php echo $o?>';
-	var _p='<?php echo $p?>';
+	var _sid='<?php echo $sid ?>';
+	var _search_type_host='<?php echo $search_type_host ?>';
+	var _search_type_service='<?php echo $search_type_service ?>';
+	var _num='<?php echo $num ?>';
+	var _limit='<?php echo $limit ?>';
+	var _sort_type='<?php echo $sort_type ?>';
+	var _order='<?php echo $order ?>';
+	var _date_time_format_status='<?php echo _("d/m/Y H:i:s") ?>';
+	var _o='<?php echo $o ?>';
+	var _p='<?php echo $p ?>';
 	
 	var _addrXSL = "./include/monitoring/status/status-ndo/templates/service.xsl";
 	var _timeoutID = 0;
@@ -58,13 +58,12 @@
 	var _instance = 'ALL';
 	var _default_instance = '0';
 	var _nc = 0;
-<?php
-include_once("makeJS_Common.php");
-?>
+	
+<?php include_once"makeJS_Common.php"; ?>
 
 // linkBar to log/reporting/graph/ID_card
-	function getCheckedList(_input_name)
-	{
+
+	function getCheckedList(_input_name){
 		var mesinputs = document.getElementsByTagName("input" );
 		var tab = new Array();
 		var nb = 0;
@@ -80,17 +79,13 @@ include_once("makeJS_Common.php");
 		return tab;
 	}
 
-	if(document.getElementById('linkBar'))
-	{
+	if (document.getElementById('linkBar'))	{
 		var _linkBar = document.getElementById('linkBar')
 		var _divBar = document.createElement("div");
 		
 		_divBar.appendChild(create_graph_link('select','svc_id'));
 		_divBar.appendChild(create_log_link('select','svc_id'));
-//		_divBar.appendChild(create_report_link('select','svc_id'));
-//		_divBar.appendChild(create_IDCard_link('select','svc_id'));
-
-		_divBar.setAttribute('style','float:right; margin-right:110px;' );
+		_divBar.setAttribute('style','float:right; margin-right:10px;' );
 		_linkBar.appendChild(_divBar);
 	}
 //end for linkBar
@@ -100,8 +95,7 @@ include_once("makeJS_Common.php");
 var tempX = 0;
 var tempY = 0;
 
-function position(e)
-{
+function position(e){
 	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
 	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
 }
@@ -170,8 +164,6 @@ function set_header_title(){
 	}
 }
 
-
-
 function monitoring_refresh()	{
 	_tmp_on = _on;
 	_time_live = _time_reload;
@@ -237,12 +229,8 @@ function goM(_time_reload,_sid,_o){
 	proc.transform("forAjax");
 
 	_lock = 0;
-
-
-
 	viewDebugInfo('--end--');
-
-
+	
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
@@ -253,15 +241,19 @@ function goM(_time_reload,_sid,_o){
 function displayPOPUP(id){
 	var span = document.getElementById('span_'+id);
 	var proc_popup = new Transformation();
-	var _addrXMLSpan = "./include/monitoring/engine/MakeXML_Ndo_for_one_host.php?"+'&sid='+_sid+'&host_id='+id;
-	var _addrXSLSpan = "./include/monitoring/status/status-ndo/templates/host_popup.xsl";
+	var _addrXMLSpan = "./include/monitoring/engine/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
+	var _addrXSLSpan = "./include/monitoring/status/status-ndo/templates/popupForHost.xsl";
 	proc_popup.setXml(_addrXMLSpan);
 	proc_popup.setXslt(_addrXSLSpan);
 	proc_popup.transform('span_'+id);
 
-	var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
-	var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
-	if(h - tempY < span.offsetHeight){
+	//calcul auto de la largeur de l'ecran client
+	var l = screen.availWidth;
+	
+	//calcul auto de la hauteur de l'ecran client
+	var h = screen.availHeight;
+	
+	if (h - tempY < span.offsetHeight){
 		span.style.top = '-'+ span.offsetHeight +'px';
 	}
 }
@@ -269,16 +261,19 @@ function displayPOPUP(id){
 function displayPOPUP_svc(id){
 	var span = document.getElementById('span_'+id);
 	var proc_popup = new Transformation();
-	var _addrXMLSpan = "./include/monitoring/engine/MakeXML_Ndo_for_one_svc.php?"+'&sid='+_sid+'&svc_id='+id;
-	var _addrXSLSpan = "./include/monitoring/status/status-ndo/templates/svc_popup.xsl";
+	var _addrXMLSpan = "./include/monitoring/engine/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
+	var _addrXSLSpan = "./include/monitoring/status/status-ndo/templates/popupForService.xsl";
 	proc_popup.setXml(_addrXMLSpan);
 	proc_popup.setXslt(_addrXSLSpan);
 	proc_popup.transform('span_'+id);
 
-	var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
-	var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
+	// calcul auto de la largeur de l'ecran client
+	var l = screen.availWidth;
+	
+	//calcul auto de la hauteur de l'ecran client
+	var h = screen.availHeight;
 
-	if(h - tempY < span.offsetHeight){
+	if (h - tempY < span.offsetHeight){
 		span.style.top = '-'+ span.offsetHeight +'px';
 	}
 }
@@ -289,7 +284,7 @@ function hiddenPOPUP(id){
 }
 
 function displayIMG(index, s_id, id)	{
-	// Pour les navigateurs récents
+	// Pour les navigateurs recents
     if ( document.getElementById && document.getElementById( 'div_img' ) ){
         Pdiv = document.getElementById( 'div_img' );
         PcH = true;
@@ -298,29 +293,29 @@ function displayIMG(index, s_id, id)	{
         Pdiv = document.all[ 'div_img' ];
         PcH = true;
     } else if ( document.layers && document.layers[ 'div_img' ] ){
-    // Pour les très veilles versions
+    	// Pour les tres veilles versions
         Pdiv = document.layers[ 'div_img' ];
         PcH = true;
     } else {
         PcH = false;
     }
     if ( PcH ){
-			_img = mk_img('include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index);
-			Pdiv.appendChild(_img);
-			var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
-			var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
-			var posy = tempY + 10;
-			if(h - tempY < 420){
-				posy = tempY-310;
-			}
-			Pdiv.style.display = "block";
-			Pdiv.style.left = tempX +'px';
-			Pdiv.style.top = posy +'px';
+		_img = mk_img('include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index);
+		Pdiv.appendChild(_img);
+		var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
+		var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
+		var posy = tempY + 10;
+		if(h - tempY < 420){
+			posy = tempY-310;
+		}
+		Pdiv.style.display = "block";
+		Pdiv.style.left = tempX +'px';
+		Pdiv.style.top = posy +'px';
     }
 }
 
 function hiddenIMG(id){
-	   // Pour les navigateurs récents
+	// Pour les navigateurs récents
     if ( document.getElementById && document.getElementById( 'div_img' ) ){
         Pdiv = document.getElementById( 'div_img' );
         PcH = true;
