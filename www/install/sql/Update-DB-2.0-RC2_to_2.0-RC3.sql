@@ -47,3 +47,11 @@ UPDATE `topology` SET `topology_url_opt` = NULL WHERE `topology`.`topology_page`
 UPDATE `topology` SET `topology_show` = '0' WHERE `topology`.`topology_page` = 50606 LIMIT 1 ;
 UPDATE `topology` SET `topology_url` = 'http://www.merethis.com' WHERE `topology`.`topology_page` = 50607 LIMIT 1 ;
 
+
+DELETE FROM `topology` WHERE `topology_page` = 40211 LIMIT 1;
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'All Graphs', './img/icones/16x16/column-chart.gif', 402, 40201, 10, 40, './include/views/graphs/graphODS.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES( NULL, 40201, NULL, './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES( NULL, 40201, NULL, './include/common/javascript/codebase/dhtmlxtree.js', NULL);
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES( NULL, 40201, NULL, './include/common/javascript/codebase/dhtmlxcommon.js', NULL);
+
+DELETE FROM `topology` WHERE `topology_page` = 40210 LIMIT 1;
