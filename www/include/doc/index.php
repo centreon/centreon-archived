@@ -15,19 +15,22 @@
  * For information : contact@centreon.com
  */
 
-        if (!isset($oreon))
+	if (!isset($oreon))
 		exit(); 
 
+	/*
+	 * Filter Args
+	 */
+	 
 	if (function_exists("filter_var")) {
 		$page = filter_var($_GET["page"], FILTER_SANITIZE_SPECIAL_CHARS);
 		$page = filter_var($page, INPUT_GET);
-	}
-	else if (function_exists("filter_get")) {
+	} else if (function_exists("filter_get")) {
 		$page = filter_get($_GET["page"]);
-	}
-	else
+	} else {
 		$page = $_GET["page"];
-
+	}
+	
 	$tab_pages = split("/", $page);
 	foreach ($tab_pages as $value)
 		$page = $value;
@@ -38,9 +41,8 @@
 		$lang = $oreon->user->get_lang();
 
 		
-	$lang = $oreon->user->get_lang();
 	if (preg_match("/png/i", $page)) {
-		print "<img src=\"./include/doc/get_image.php?lang=".$lang."&version=".$oreon->user->get_version()."&img=images/".$page."\" />" ;
+		print "<img src=\"./include/doc/getImage.php?lang=".$oreon->user->get_lang()."&version=".$oreon->user->get_version()."&img=images/".$page."\" />" ;
 		exit ;
 	}
 
