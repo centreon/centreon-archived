@@ -37,6 +37,7 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
+	
 	/*
 	 * PHP functions
 	 */
@@ -144,15 +145,12 @@
 		echo "<opid>".$openid."</opid>";
 		$tab_tmp = split(",", $openid);
 	
-		print_r($tab_tmp);
-	
 		foreach ($tab_tmp as $openid) {
 			$tab_tmp = split("_", $openid);
-			$id = $tab_tmp[1];
+			if (isset($tab_tmp[1]))
+				$id = $tab_tmp[1];
 			$type = $tab_tmp[0];
 			
-			print "|$type|";
-		
 			if ($type == 'HG')	{
 				
 				$hosts = getMyHostGroupHosts($id);
@@ -200,7 +198,7 @@
 			} else if ($type == 'MS')	{
 				array_push($tab_id, $openid);
 			} else	{
-				if (service_has_graph($tab_tmp[2], $tab_tmp[1]) 
+				if (isset($tab_tmp[2]) && service_has_graph($tab_tmp[2], $tab_tmp[1]) 
 					&& (($is_admin) || 
 						(!$is_admin && isset($lca["LcaHost"][getMyHostName($tab_tmp[2])]) 
 						&& isset($lca["LcaHost"][getMyHostName($tab_tmp[2])]["svc"][getMyServiceName($tab_tmp[1])])))){

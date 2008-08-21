@@ -18,19 +18,27 @@
 	if (!isset($oreon))
 		exit();
 
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/views/graphs/";
 
-	# Smarty template Init
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
-
-	#Pear library
+	/*
+	 * Include Pear Lib
+	 */
+	 
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
+	/*
+	 * Smarty template Init
+	 */
+	$tpl = new Smarty();
+	$tpl = initSmartyTpl($path, $tpl);
+
 	$openid = '0';
 	$open_id_sub = '0';
+
 	if (isset($_GET["openid"])){
 		$openid = $_GET["openid"];
 		$open_id_type = substr($openid, 0, 2);
@@ -40,27 +48,29 @@
 	(isset($_GET["host_id"]) && $open_id_type == "HH") ? $_GET["host_id"] = $open_id_sub : $_GET["host_id"] = null;
 
 	$id = 1;
-	if (isset($_GET["id"]))
-		$id = $_GET["id"];
-	if (isset($_POST["id"]))
-		$id = $_POST["id"];
 
-	if (isset($_POST["svc_id"]) && $_POST["svc_id"]){
-		$id = "";
-		$id_svc = $_POST["svc_id"];
-		$tab_svcs = explode(",", $id_svc);
-		foreach($tab_svcs as $svc){
-			$tmp = explode(";", $svc);
-			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
-		}
+	function getGetPostValue($str){
+		$value = NULL;
+		if (isset($_GET[$str]) && $_GET[$str])
+			$value = $_GET[$str];
+		if (isset($_POST[$str]) && $_POST[$str])
+			$value = $_POST[$str];		
+		return $value;
 	}
-	if (isset($_GET["svc_id"]) && $_GET["svc_id"]){
+
+	$id = getGetPostValue("id");
+	$id_svc = getGetPostValue("svc_id");
+
+	if (isset($id_svc) && $id_svc){
 		$id = "";
-		$id_svc = $_GET["svc_id"];
 		$tab_svcs = explode(",", $id_svc);
 		foreach($tab_svcs as $svc){
 			$tmp = explode(";", $svc);
-			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
+			if (!isset($tmp[1])) {
+				$id .= "HH_" . getMyHostID($tmp[0]).",";
+			} else {
+				$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
+			}
 		}
 	}
 	
@@ -123,9 +133,9 @@
 	    headID.appendChild(cssNode);
 
 		var multi = <?php echo $multi; ?>;
-	  	var _menu_div = document.getElementById("menu_40211");
+	  	var _menu_div = document.getElementById("menu_40201");
 
-  		tree = new dhtmlXTreeObject("menu_40211","100%","100%","1");
+  		tree = new dhtmlXTreeObject("menu_40201","100%","100%","1");
         tree.setImagePath("./img/icones/csh_vista/");
         //link tree to xml
         tree.setXMLAutoLoading("./include/views/graphs/GetODSXmlTree.php");

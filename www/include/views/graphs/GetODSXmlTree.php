@@ -20,7 +20,6 @@
 
 	require_once 'DB.php';
 
-
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
@@ -227,7 +226,6 @@
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($host =& $DBRESULT2->fetchRow()){
-				print_r($lca);
 				$i++;
 				if ($is_admin){
 		           	$cpt++;
@@ -292,7 +290,7 @@
 			$id_full = split('_', $id);
 			$id = $id_full[0];
 			echo "<idfull>";
-			print_r($id_full);
+			//print_r($id_full);
 			echo "</idfull>";
 			
 			if ($type == "HH") {
