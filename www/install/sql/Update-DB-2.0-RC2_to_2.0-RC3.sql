@@ -43,3 +43,7 @@ UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonito
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 20104;
 
 UPDATE `topology` SET `topology_url_opt` = NULL WHERE `topology`.`topology_page` = 203 LIMIT 1 ;
+
+UPDATE `topology` SET `topology_show` = '0' WHERE `topology`.`topology_page` = 50606 LIMIT 1 ;
+UPDATE `topology` SET `topology_url` = 'http://www.merethis.com' WHERE `topology`.`topology_page` = 50607 LIMIT 1 ;
+
