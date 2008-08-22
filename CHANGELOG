@@ -1,5 +1,6 @@
 ## Centreon 2.0-RC3
 
+=> Enhancement : Notification Options "Flapping" added for Nagios 2, "Downtime Scheduled" added for Nagios 2 and 3.
 => Bugfix : Generation file problem resolv with escalations.
 => Bugfix : CSV and XML export updated on eventlog interface. The engine export did use the pagination.
 => Bugfix : remove problem with documentation links in hosts/hostgroups/services/templates interface configuration.
