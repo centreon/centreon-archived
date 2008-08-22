@@ -1,9 +1,6 @@
 
 ALTER TABLE `index_data` ADD `hidden` ENUM( '0', '1' ) NOT NULL DEFAULT '0' AFTER `special` , ADD `locked` ENUM( '0', '1' ) NOT NULL DEFAULT '0' AFTER `hidden` ;
 
---
--- 22-08-2008 Reporting
---
 CREATE TABLE `log_archive_last_status` (
   `id` int(11) NOT NULL,
   `host_name` varchar(255) default NULL,

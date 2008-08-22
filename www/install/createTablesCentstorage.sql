@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `config` (
   `nagios_log_file` varchar(255) default NULL,
   `last_line_read` int(11) default '31',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `data_stats_daily` (
   `day_time` int(11) default NULL,
   PRIMARY KEY  (`data_stats_daily_id`),
   KEY `metric_id` (`metric_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `data_stats_monthly` (
   `month_time` int(11) default NULL,
   PRIMARY KEY  (`data_stats_monthly_id`),
   KEY `metric_id` (`metric_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `data_stats_yearly` (
   `year_time` int(11) default NULL,
   PRIMARY KEY  (`data_stats_yearly_id`),
   KEY `metric_id` (`metric_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `index_data` (
   KEY `service_id` (`service_id`),
   KEY `must_be_rebuild` (`must_be_rebuild`),
   KEY `trashed` (`trashed`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `instance` (
   `log_md5` varchar(255) default NULL,
   PRIMARY KEY  (`instance_id`),
   UNIQUE KEY `instance_name` (`instance_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   KEY `status` (`status`),
   KEY `instance` (`instance`),
   KEY `ctime` (`ctime`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `log_archive_file_name` (
   `file_name` varchar(200) default NULL,
   `date` int(11) default NULL,
   PRIMARY KEY  (`id_log_file`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -215,7 +215,8 @@ CREATE TABLE `log_archive_host` (
   KEY `host_index` (`host_id`),
   KEY `date_end_index` (`date_end`),
   KEY `date_start_index` (`date_start`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=95 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
 -- --------------------------------------------------------
 
 -- 
@@ -250,7 +251,8 @@ CREATE TABLE `log_archive_service` (
   KEY `service_index` (`service_id`),
   KEY `date_end_index` (`date_end`),
   KEY `date_start_index` (`date_start`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=63 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
 -- --------------------------------------------------------
 
 -- 
@@ -264,6 +266,7 @@ CREATE TABLE `log_archive_last_status` (
   `status` varchar(255) default NULL,
   `ctime` int(11) default NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 -- --------------------------------------------------------
 
 --
@@ -277,7 +280,7 @@ CREATE TABLE IF NOT EXISTS `log_snmptt` (
   `trap_community` varchar(50) default NULL,
   `trap_infos` text,
   PRIMARY KEY  (`trap_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -298,7 +301,7 @@ CREATE TABLE IF NOT EXISTS `metrics` (
   `locked` enum('0','1') default NULL,
   PRIMARY KEY  (`metric_id`),
   KEY `index` (`index_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -318,8 +321,7 @@ CREATE TABLE IF NOT EXISTS `statistics` (
   `last_restart` int(11) default NULL,
   `average` int(11) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Data 

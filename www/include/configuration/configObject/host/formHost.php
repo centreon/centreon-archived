@@ -344,9 +344,7 @@
 	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 	
-	# Nagios 2
-	if ($oreon->user->get_version() >= 2)	{
-		$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
+	$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
 
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Yes"), '1');
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("No"), '0');
@@ -363,7 +361,6 @@
 		$form->setDefaults(array('host_passive_checks_enabled' => '2'));
 
 	$form->addElement('select', 'timeperiod_tp_id', _("Check Period"), $tps);
-	}
 
 	##
 	## Notification informations
@@ -376,34 +373,33 @@
 	if ($o != "mc")
 		$form->setDefaults(array('host_notifications_enabled' => '2'));
 	
-	#Nagios 2
-	if ($oreon->user->get_version() >= 2)	{
-		if ($o == "mc")	{
-			$mc_mod_hcg = array();
-			$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');
-			$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Replacement"), '1');
-			$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', _("Update options"), '&nbsp;');
-			$form->setDefaults(array('mc_mod_hcg'=>'0'));
-		}
-		
-		/*
-		 *  Contacts
-		 */
-		$ams3 =& $form->addElement('advmultiselect', 'host_cs', _("Linked Contacts"), $notifCs, $attrsAdvSelect);
-		$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-		$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
-		$ams3->setElementTemplate($template);
-		echo $ams3->getElementJs(false);
-		
-		/*
-		 *  Contact groups
-		 */
-	    $ams3 =& $form->addElement('advmultiselect', 'host_cgs', _("Linked ContactGroups"), $notifCgs, $attrsAdvSelect);
-		$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-		$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
-		$ams3->setElementTemplate($template);
-		echo $ams3->getElementJs(false);
+	$form->addElement('text', 'host_first_notification_interval', _("First notification interval"), $attrsText2);
+	
+	if ($o == "mc")	{
+		$mc_mod_hcg = array();
+		$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');
+		$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', _("Update options"), '&nbsp;');
+		$form->setDefaults(array('mc_mod_hcg'=>'0'));
 	}
+		
+	/*
+	 *  Contacts
+	 */
+	$ams3 =& $form->addElement('advmultiselect', 'host_cs', _("Linked Contacts"), $notifCs, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setElementTemplate($template);
+	echo $ams3->getElementJs(false);
+	
+	/*
+	 *  Contact groups
+	 */
+    $ams3 =& $form->addElement('advmultiselect', 'host_cgs', _("Linked ContactGroups"), $notifCgs, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setElementTemplate($template);
+	echo $ams3->getElementJs(false);
 
 	$form->addElement('text', 'host_notification_interval', _("Notification Interval"), $attrsText2);
 	$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
@@ -411,12 +407,9 @@
  	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down');
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable');
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery');
-	
-	if ($oreon->user->get_version() >= 2) {
-		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping');
-		if ($oreon->user->get_version() >= 3) {		
-			$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled');
-		}
+	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping');
+	if ($oreon->user->get_version() >= 3) {		
+		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled');
 	}
 	
 	$form->addGroup($hostNotifOpt, 'host_notifOpts', _("Notification Options"), '&nbsp;&nbsp;');
