@@ -24,31 +24,34 @@
 
 	function getTopologyParent($p)	{
 		global $pearDB;
-		$rqPath = "SELECT topology_url, topology_url_opt, topology_parent, topology_name, topology_page FROM topology WHERE topology_page = '".$p."' ORDER BY topology_page";
+		$rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
 		$DBRESULT =& $pearDB->query($rqPath);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$redirectPath =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
 		return $redirectPath;
 	}
 	
 	function getTopologyDataPage($p)	{
 		global $pearDB;
-		$rqPath = "SELECT topology_url, topology_url_opt, topology_parent, topology_name, topology_page FROM topology WHERE topology_page = '".$p."' ORDER BY topology_page";
+		$rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
 		$DBRESULT =& $pearDB->query($rqPath);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$redirectPath =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
 		return $redirectPath;
 	}
 	
 	function getTopologyParentPage($p)	{
 		global $pearDB;
-		$rqPath = "SELECT topology_parent FROM topology WHERE topology_page = '".$p."'";
+		$rqPath = "SELECT `topology_parent` FROM `topology` WHERE `topology_page` = '".$p."'";
 		$DBRESULT =& $pearDB->query($rqPath);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$redirectPath =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
 		return $redirectPath["topology_parent"];
 	}
 	
@@ -64,7 +67,7 @@
 	$tabPath[$tab["topology_page"]]["page"] = $tab["topology_page"];
 	$tabPath[$tab["topology_page"]]["url"] = $tab["topology_url"];
 
-	while($tab["topology_parent"]){
+	while ($tab["topology_parent"]){
 		$tab = getTopologyParent($tab["topology_parent"]);
 		$tabPath[$tab["topology_page"]] = array();
 		$tabPath[$tab["topology_page"]]["name"] = _($tab["topology_name"]);
@@ -83,13 +86,13 @@
 	$page = $p;
 	if (isset($tabPath[$p]) && !$tabPath[$p]["url"])
 		while (1){
-			$req = "SELECT * FROM topology WHERE topology_page LIKE '".$page."%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC";
-			$DBRESULT =& $pearDB->query($req);
+			$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_page LIKE '".$page."%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC");
 			if (!$DBRESULT->numRows())
 				break;
 			$new_url =& $DBRESULT->fetchRow();
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$DBRESULT->free();
 			$tabPath[$new_url["topology_page"]] = array();
 			$tabPath[$new_url["topology_page"]]["name"] = _($tab["topology_name"]);
 			$tabPath[$new_url["topology_page"]]["opt"] = $new_url["topology_url_opt"];
@@ -111,15 +114,15 @@
 	$tabPath = $tmp;
 
 	if (isset($oreon->user->lcaTopo[$p])){	
-		$flag = '<img src="./img/icones/8x14/pathWayBlueStart.gif" alt="" class="imgPathWay">&nbsp;';
+		$flag = '<img src="./img/icones/8x14/pathWayBlueStart.gif" class="imgPathWay">&nbsp;';
 		foreach ($tabPath as $cle => $valeur){
 			echo $flag;
 			?><a href="main.php?p=<?php echo $cle.$valeur["opt"]; ?>" class="pathWay" ><?php print $valeur["name"]; ?></a><?php
-			$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
+			$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" class="imgPathWay">&nbsp;';
 		}
 	
-		if(isset($_GET["host_id"]))	{
-			echo '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
+		if (isset($_GET["host_id"]))	{
+			echo '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" class="imgPathWay">&nbsp;';
 			echo getMyHostName($_GET["host_id"]);
 		}
 	}
