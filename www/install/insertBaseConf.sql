@@ -50,6 +50,22 @@ INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `c
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(17, 1, 1, 'Guest', 'guest', NULL, 'en_US', 'n', 'n', 'guest@localhost', NULL, NULL, '0', '0', 'txt', '1', 'local', NULL);
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(18, 1, 1, 'User', 'user', '21496cd6c19f4bf6dcfd3ae2ec5f397e', 'en_US', 'n', 'n', 'user@localhost', NULL, NULL, '1', '0', 'txt', '1', 'local', NULL);
 
+
+--
+-- Contenu de la table `contact_param`
+--
+INSERT INTO `contact_param` (`id`, `cp_key`, `cp_value`, `cp_contact_id`) VALUES (NULL, 'report_hour_start', '0', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_minute_start', '0', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_hour_end', '24', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_minute_end', '0', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Monday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Tuesday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Wednesday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Thursday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Friday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Saturday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Sunday', '1', NULL);
+
 --
 -- Contenu de la table `contactgroup`
 --
