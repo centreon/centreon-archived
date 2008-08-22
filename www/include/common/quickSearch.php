@@ -35,9 +35,9 @@
 		$search = NULL; 
 	
 	if (isset($search) && $search)
-		$attrsText = array("size"=>"25", "id"=>"input_search", "class"=>"search_input_active");
+		$attrsText = array("size"=>"25", "id"=>"input_search", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;");
 	else
-		$attrsText = array("size"=>"25", "id"=>"input_search", "class"=>"search_input");
+		$attrsText = array("size"=>"25", "id"=>"input_search", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;");
 	
 	if (!isset($limit))
 		$limit = 20;
