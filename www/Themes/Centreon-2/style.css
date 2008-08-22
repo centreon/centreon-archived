@@ -49,7 +49,7 @@ form		{padding-bottom:10px;}
 option 		{padding-left:1px;padding-right:1px;}
 
 #header 	{background:url("Images/bg_banner.gif") top repeat-x;height:83px;padding-left:20px;}
-#logo 		{padding-top:15px;}
+#logo 		{position:absolute;left:15px;top:15px;}
 
 #logli,#logOut,#date {color:#525252;font-weight:700;position:absolute;} 
 
@@ -105,7 +105,7 @@ div.pagination 		{margin-left:40%;}
 .otherPageNumber 	{color:#5050FF;}
 .currentPageNumber 	{color:#ff0a0a;}
 .page_limit 		{background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-left:25px;width:80px;}
-.mini_checkbox 		{height:12px;width:12px;}
+.mini_checkbox 		{height:12px;width:12px;top:-5px;}
 #QuickSearch 		{position:absolute;right:10px;top:86px;}
 
 #mainnav 			{list-style-type:none;position:absolute;z-index:2;}
