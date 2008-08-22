@@ -3,7 +3,7 @@
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <div id="div1">
 <form name="formu">
-	<table class="period">
+	<table class="ajaxOption">
         <tr>
         	<td><input type="radio" name="period_choice" value="auto">&nbsp;&nbsp;<b>{$form.period.label}</b>&nbsp;&nbsp;{$form.period.html}</td>
 			<td>

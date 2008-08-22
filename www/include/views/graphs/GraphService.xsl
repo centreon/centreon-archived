@@ -52,7 +52,7 @@
 <xsl:if test="svc">
 	<div id="div2"   valign="top" align='left'>
 		<form name="formu2">
-    	    <table class="graph_options">
+    	    <table class="ajaxOption">
 				<tr>
            		<td>
 					<xsl:element name='input'>
@@ -120,7 +120,7 @@
 <xsl:if test="svc_zoom">
 	    <div id="div2"   valign="top" align='left'>
 		<form name="formu2">
-    	    <table class="graph_options">
+    	    <table class="ajaxOption">
 				<tr>
 				<!--
 				<td>
@@ -238,7 +238,7 @@
 <xsl:if test="//multi_svc">
 	<div id="div2"   valign="top" align='left'>
 		<form name="formu2">
-    	    <table class="graph_options">
+    	    <table class="ajaxOption">
 				<tr>
 	           		<td>
 						<xsl:element name='input'>

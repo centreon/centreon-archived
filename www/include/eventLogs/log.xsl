@@ -4,9 +4,9 @@
 <div>
 	<div id="div2"   valign="top" align='left' >	
 		<form name="formu2">
-		    <table class="log_option" >
+		    <table class="ajaxOption" >
 	            <tr>
-	            	<td><b><xsl:value-of select="//lang/ty"/></b>
+	            	<td style="vertical-align:top;"><b><xsl:value-of select="//lang/ty"/></b>
 	            	</td>
 					<td>
 						<table>
@@ -50,7 +50,7 @@
 			               	</tr>
 						</table>
 					</td>
-			        <td><b><xsl:value-of select="//lang/h"/></b>
+			        <td style="vertical-align:top;"><b><xsl:value-of select="//lang/h"/></b>
 			        </td>
 					<td>
 						<table style="">
@@ -94,7 +94,7 @@
 			               	</tr>
 						</table>
 					</td>
-               		<td><b><xsl:value-of select="//lang/s"/></b></td>
+               		<td style="vertical-align:top;"><b><xsl:value-of select="//lang/s"/></b></td>
 					<td>
 						<table style="">
 			               	<tr>			               	
@@ -147,7 +147,7 @@
 			               	</tr>
 						</table>
 					</td>
-					<td><b><xsl:value-of select="//lang/T"/></b></td>
+					<td style="vertical-align:top;"><b><xsl:value-of select="//lang/T"/></b></td>
 					<td>
 						<table>
 			               	<tr>			               	
@@ -250,7 +250,7 @@
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/d"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/t"/></td>
 			<td class="ListColHeaderLeft" colspan="2"><xsl:value-of select="//lang/h"/></td>
-			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/s"/></td>
+			<td class="ListColHeaderCenter" style='width:50px;'><xsl:value-of select="//lang/s"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/T"/></td>
 			<td class="ListColHeaderCenter">R</td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/o"/></td>
@@ -262,14 +262,14 @@
 			<xsl:attribute name="class"><xsl:value-of select="class"/></xsl:attribute>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="date"/></td>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="time"/></td>
-	   		<td style="padding-left:5px;" ><xsl:value-of select="host_name"/></td>
-	   		<td style="padding-left:5px;" ><xsl:value-of select="service_description"/></td>
+	   		<td style="padding-left:5px;"><xsl:value-of select="host_name"/></td>
+	   		<td style="padding-left:5px;"><xsl:value-of select="service_description"/></td>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:attribute name="style">background-color:<xsl:value-of select="status/@color"/>;</xsl:attribute><xsl:value-of select="status"/></td>
 	   		<td style="padding-left:5px;padding-right:5px;" class="ListColCenter"><xsl:value-of select="type"/></td>
 	   		<td style="padding-left:5px;padding-right:5px;" class="ListColCenter"><xsl:value-of select="retry"/></td>
-	   		<td style="padding-left:5px;white-space:nowrap;" ><xsl:value-of select="output"/></td>
-	   		<td style="padding-left:5px;" ><xsl:value-of select="contact"/></td>
-	   		<td style="padding-left:5px;White-Space: Nowrap;"><xsl:value-of select="contact_cmd"/></td>
+	   		<td style="padding-left:5px;"><xsl:value-of select="output"/></td>
+	   		<td style="padding-left:5px;"><xsl:value-of select="contact"/></td>
+	   		<td style="padding-left:5px;"><xsl:value-of select="contact_cmd"/></td>
 		</tr>
 		</xsl:for-each>
 	</table>
