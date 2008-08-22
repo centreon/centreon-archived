@@ -29,6 +29,9 @@ body,input,option,select,tab,div,td,a,textarea {
 	padding:0;
 }
 
+.link a,.FormHeader 	{font-size:12px;}
+
+
 /* Set Basic objects properties */
 a 		{text-decoration:none;}
 a:hover {text-decoration:underline;}
@@ -41,6 +44,7 @@ img 		{margin:0 0 -4px;padding:0;}
 checkbox 	{padding:2px;}
 select 		{border-style:none;padding-left:1px;padding-right:1px;}
 hr 			{background-color:#CCC;height:1px;margin-bottom:10px;margin-top:3px;}
+form		{padding-bottom:10px;}
 
 option 		{padding-left:1px;padding-right:1px;}
 
@@ -94,7 +98,7 @@ a.infobulle:hover 	{z-index:25;}
 div.menuLeft 	{margin:0px;padding:3px;background-color:#FFFFFF;border:1px #CDCDCD solid;white-space:nowrap;margin-bottom:6px;margin-botom:50px;}
 #menu_3 a:hover {color:#E8AB5C;}
 #menu_3 li 		{list-style-type:none;padding-left:1px;}
-
+#menu3_bgcolor 	{background:#FFF;}
 
 /* Pagination */
 div.pagination 		{margin-left:40%;}
@@ -107,6 +111,10 @@ div.pagination 		{margin-left:40%;}
 #mainnav 			{list-style-type:none;position:absolute;z-index:2;}
 #mainnav li 		{float:left;padding:3px;z-index:2;}
 
+#resume_light, #tactical_light 				{position:absolute;right:10px;top:10px;}
+.Resume_light_table, .tactical_light_table 	{color:#454545;font-size:8px;padding:1px 3px;}
+.Resume_light_header						{background-image: url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x;}
+.Resume_light_table td 						{border:1px SOLID #AEAEAE;}
 
 /* Warning */ 
 .msg 			{background-color:red;border:1px solid #000;color:#FFF;font-weight:400;margin:5px;padding:3px;text-align:center;}
@@ -143,9 +151,33 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .search_input_found 	{background-color:#99C68E;}
 
 /* Log Options */
-.log_option,.period,.graph_options 	{-moz-border-radius:8px;background-color:#aeaeee;border:2px #aeaeee solid;border-collapse:separate;empty-cells:show;margin-bottom:-5px;margin-top:0;padding-bottom:0;}
-.log_option table td 				{background-color:#ceceee;}
-.log_option input,.graph_options input {margin-right:5px;}
+
+.ajaxOption{
+	margin-top:0px;
+	margin-bottom:-5px;
+	padding-bottom:0px;
+	border-collapse:separate;
+	empty-cells: show; 
+	background-color:#aeaeee;
+	border: 2px #aeaeee solid;
+	-moz-border-radius: 8px;
+}
+
+.ajaxOption td{
+	padding-top:2px;
+	padding-bottom:2px;
+	padding-left:4px;
+	padding-right:4px;
+}
+
+.ajaxOption table td{
+	background-color:#ceceee;
+
+}
+
+.ajaxOption input{
+	margin-right:5px;
+}
 
 /* Taktical Overview */
 .SubTableTactical table {margin:3px;}
@@ -159,6 +191,56 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 #hostStats 										{margin-top:10px;}
 #hostStats,#serviceStats,#unhandledproblems 	{border:1px #CCC solid;margin-bottom:20px;}
 .tacticakDiv 									{border:1px #CCC solid;}
+
+.FormHeader .td {padding-left:2px;}
+
+
+/* IE BUG ONLY */
+.FormRowField 	{padding-left:40px;vertical-align:top;white-space:normal;}
+.FormRowValue 	{padding-left:5px;}
+
+
+/* Line alternate */
+.tab table .ListHeader td {border-top-width:0;}
+.list_one td,.list_two td,.list_three td,.list_four td,.list_lvl_2 td,.list_lvl_1 td,.list_up td,.list_down td,.tab .list_one td,.tab .list_two td,.tab .list_three td,.tab .list_four td,.tab .list_up td,.tab .list_down td,.tab .list_lvl_2 td,.tab .list_lvl_1 td {border-left-style:solid;border-top-style:solid;border-width:0.5px 0 0 0.5px;}
+
+.limitPage 	{background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-left:4px;padding-top:1px;text-align:left;width:160px;}
+.pageNumber {background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-right:3px;padding-top:4px;text-align:right;width:80px;}
+
+.ListHeader 			{font-weight:700;vertical-align:top;}
+.ListHeader td 			{border-left-style:solid;border-left-width:0.1px;border-top-style:solid;border-top-width:0.1px;font-weight:700;height:20px;padding-top:5px;}
+.ListColHeaderPicker 	{padding-left:3px;text-align:center; padding-right:3px;width:10px;}
+.ListColHeaderCenter 	{padding-left:3px;text-align:center;}
+.ListColHeaderLeft 		{padding-left:3px;text-align:left;}
+.ListColHeaderRight		{padding-left:3px;text-align:right;padding-right:3px;}
+.ListColHeaderWrap 		{padding-left:3px;text-align:left;white-space:normal;}
+#ListColHeaderLeft div 	{padding-left:0;}
+
+.ListColFooterRight,.ListColFooterLeft,.ListColFooterCenter {border-top-style:solid;border-top-width:0.1px;}
+
+.ListColNoWrap 						{white-space:normal;}
+.ListColFooter1 					{padding:3px;}
+.ListColFooterLeft,	.ListColLeft 	{text-align:left;}
+.ListColCenter,.ListColLeft,.ListColRight,.ListColNoWrap {padding-left:3px;}
+.ListColRight 						{padding-right:3px;}
+
+* html #ListTable td,#ListTableMedium td,#ListTableSmall td,.ListTable td,.ListTableMedium td,.ListTableSmall td {margin:0;padding:0 3px;}
+.ListTableSmall a,.ListTable a,.ListTableMedium a,.ListTableSmall a {color:#666;z-index:1;}
+.ListTableMedium 		{width:60%;}
+.ListTableSmall 		{width:40%;}
+.ListTableMultiTp 		{border-width:0;width:100%;}
+.ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
+.ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
+.ListTable td,.ListTableMedium td,.ListTableSmall td {padding-bottom:2px;padding-top:2px;}
+
+.tab .ListTable,.tab .ListTableMedium,.tab .ListTableSmall {margin-top:21px;}
+
+.TableFooter {margin-bottom:4px;margin-top:8px;width:100%;z-index:1;}
+
+.list_lvl_1, .list_lvl_2 {font-size:12px;font-weight:700;vertical-align:middle;}
+
+.ListColLvl2_name {padding-left:15px;}
+
 
 
 /* End Valide */
@@ -242,75 +324,6 @@ border:solid 0 red;
 
 /* END Info Bulles */
 
-.Resume_light_table td {
-border:1px SOLID #AEAEAE;
-}
-
-
-.period td,.graph_options td {
-padding:1px 8px;
-}
-
-
-
-
-#menu3_bgcolor 	{background:#FFF;}
-.FormHeader .td {padding-left:2px;}
-
-
-/* IE BUG ONLY */
-
-.FormRowField 	{padding-left:40px;vertical-align:top;white-space:normal;}
-.FormRowValue 	{padding-left:5px;}
-
-
-/* Line alternate */
-.tab table .ListHeader td {border-top-width:0;}
-.list_one td,.list_two td,.list_three td,.list_four td,.list_lvl_2 td,.list_lvl_1 td,.list_up td,.list_down td,.tab .list_one td,.tab .list_two td,.tab .list_three td,.tab .list_four td,.tab .list_up td,.tab .list_down td,.tab .list_lvl_2 td,.tab .list_lvl_1 td {border-left-style:solid;border-top-style:solid;border-width:0.5px 0 0 0.5px;}
-
-.limitPage 	{background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-left:4px;padding-top:1px;text-align:left;width:160px;}
-.pageNumber {background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-right:3px;padding-top:4px;text-align:right;width:80px;}
-
-
-.ListHeader 			{font-weight:700;vertical-align:top;}
-.ListHeader td 			{border-left-style:solid;border-left-width:0.1px;border-top-style:solid;border-top-width:0.1px;font-weight:700;height:20px;padding-top:5px;}
-.ListColHeaderPicker 	{padding-left:3px;text-align:center; padding-right:3px;width:10px;}
-.ListColHeaderCenter 	{padding-left:3px;text-align:center;}
-.ListColHeaderLeft 		{padding-left:3px;text-align:left;}
-.ListColHeaderRight		{padding-left:3px;text-align:right;padding-right:3px;}
-.ListColHeaderWrap 		{padding-left:3px;text-align:left;white-space:normal;}
-#ListColHeaderLeft div 	{padding-left:0;}
-
-.ListColFooterRight,.ListColFooterLeft,.ListColFooterCenter {border-top-style:solid;border-top-width:0.1px;}
-
-.ListColNoWrap 						{white-space:normal;}
-.ListColFooter1 					{padding:3px;}
-.ListColFooterLeft,	.ListColLeft 	{text-align:left;}
-.ListColCenter,.ListColLeft,.ListColRight,.ListColNoWrap {padding-left:3px;}
-.ListColRight 						{padding-right:3px;}
-
-* html #ListTable td,#ListTableMedium td,#ListTableSmall td,.ListTable td,.ListTableMedium td,.ListTableSmall td {margin:0;padding:0 3px;}
-.ListTableSmall a,.ListTable a,.ListTableMedium a,.ListTableSmall a {color:#666;z-index:1;}
-.ListTableMedium 		{width:60%;}
-.ListTableSmall 		{width:40%;}
-.ListTableMultiTp 		{border-width:0;width:100%;}
-.ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
-.ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
-.ListTable td,.ListTableMedium td,.ListTableSmall td {padding-bottom:2px;padding-top:2px;}
-
-.tab .ListTable,.tab .ListTableMedium,.tab .ListTableSmall {margin-top:21px;}
-
-.TableFooter {margin-bottom:4px;margin-top:8px;width:100%;z-index:1;}
-
-.list_lvl_1, .list_lvl_2 {font-size:12px;font-weight:700;vertical-align:middle;}
-
-.ListColLvl2_name {padding-left:15px;}
-
-
-
-
-
-
 
 .tab {
 display:none;
@@ -355,130 +368,32 @@ margin-left:5px;
 margin-top:0;
 }
 
-#validForm input {
-font-size:11px;
-font-weight:400;
-margin-top:5px;
-}
+#validForm input 	{font-size:11px;font-weight:400;margin-top:5px;}
+#validForm 			{float:right;padding:10px;text-align:center;width:98%;}
+#validFormTop 		{position:absolute;right:6px;top:155px;z-index:10;}
 
-#validForm {
-float:right;
-padding:10px;
-text-align:center;
-width:98%;
-}
+.cachediv 			{display:none;}
+.consol_button 		{float:left;margin-top:3px;}
 
-#validFormTop {
-position:absolute;
-right:6px;
-top:155px;
-z-index:10;
-}
+.Toolbar_TableTop 	{margin-bottom:5px;width:100%;}
+.Toolbar_TR_Top 	{margin-left:10px;padding-left:10px;}
+.Toolbar_TableBottom{margin-top:5px;width:100%;}
 
-.cachediv {
-display:none;
-}
+input,select,option,input,textarea,checkbox,.list_one a,.list_two a {font-weight:400;}
+input,checkbox,a.infobulle:hover table 								{border:1px gray solid;}
 
-.consol_button {
-float:left;
-margin-top:3px;
-}
+td,a.infobulle:hover td {padding:1px;}
 
-.Toolbar_TableTop {
-margin-bottom:5px;
-width:100%;
-}
+#menu_3 a,#footer a,#logli a,#logOut a {color:#666;}
 
-.Toolbar_TR_Top {
-margin-left:10px;
-padding-left:10px;
-}
+#Tcontener,#Tmainpage,#tabLegend,div.tab,.Tmenu3 .center,.ListTable {width:100%;}
 
-.Toolbar_TableBottom {
-margin-top:5px;
-width:100%;
-}
+.Small,.pagination,.ListColPicker,.ListColFooterCenter,.ListColCenter,.ListCol1,#page a,#page {text-align:center;}
 
-.link a,.FormHeader {
-font-size:12px;
-}
+a.infobulle span,.img_volante 		{display:none;position:absolute;z-index:500;}
 
-input,select,option,input,textarea,checkbox,.list_one a,.list_two a {
-font-weight:400;
-}
+#validForm label {padding:2px 4px;}
 
-input,checkbox,a.infobulle:hover table {
-border:1px gray solid;
-}
-
-td,a.infobulle:hover td {
-padding:1px;
-}
-
-#menu_3 a,#footer a,#logli a,#logOut a {
-color:#666;
-}
-
-#Tcontener,#Tmainpage,#tabLegend,div.tab,.Tmenu3 .center,.ListTable {
-width:100%;
-}
-
-.Small,.pagination,.ListColPicker,.ListColFooterCenter,.ListColCenter,.ListCol1,#page a,#page {
-text-align:center;
-}
-
-a.infobulle span,.img_volante {
-display:none;
-position:absolute;
-z-index:500;
-}
-
-#resume_light, #tactical_light {
-position:absolute;
-right:10px;
-top:10px;
-}
-
-.Resume_light_table, .tactical_light_table {
-color:#454545;
-font-size:8px;
-padding:1px 3px;
-}
-
-.Resume_light_header{
-	background-image: url("./Images/bg_header_bluegray.gif");
-	background-position:top left;
-	background-repeat:repeat-x;
-}
-
-.log_option td,#validForm label {
-padding:2px 4px;
-}
-
-.Tmenu3 td,.Tmenu3 td .left {
-background-color:#fff;
-padding:0;
-}
-
-.Tmenu3 .right,.Tmenu3 .left {
-width:10px;
-}
-
-.FormFooter,.ListColFooter5,.ListColFooter5 a,.ListColFooterCenter,.ListColFooterLeft,.ListColFooterRight {
-font-size:12px;
-font-weight:700;
-padding-right:10px;
-}
-
-.ListColFooterRight,.ListColRight,.Toolbar_pagelimit {
-text-align:right;
-}
-
-//.ListCol3,.ListCol4,.ListColLvl1_name {
-padding-left:10px;
-}
-
-.list_one,.list_two,.list_three,.list_four {
-font-weight:400;
-vertical-align:middle;
-}
+.FormFooter,.ListColFooter5,.ListColFooter5 a,.ListColFooterCenter,.ListColFooterLeft,.ListColFooterRight 	{font-size:12px;font-weight:700;padding-right:10px;}
+.ListColFooterRight,.ListColRight,.Toolbar_pagelimit {text-align:right;}
+.list_one,.list_two,.list_three,.list_four 		{font-weight:400;vertical-align:middle;}
