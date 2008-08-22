@@ -463,9 +463,7 @@
 		$mnftr[$rmnftr["id"]] =  html_entity_decode($rmnftr["alias"], ENT_QUOTES);
 	$mnftr[""] = "_"._("ALL")."_";
 	$DBRESULT->free();
-	$attrs2 = array(
-		'onchange'=>"javascript: " .
-				" 	getTrap(this.form.elements['mnftr'].value); return false; ");
+	$attrs2 = array('onchange'=>"javascript:getTrap(this.form.elements['mnftr'].value); return false;");
 	$form->addElement('select', 'mnftr', _("Vendor Name"), $mnftr, $attrs2);
 	include("./include/configuration/configObject/traps/ajaxTrap_js.php");
 	
