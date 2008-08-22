@@ -18,7 +18,7 @@
 	if (!isset($oreon))
 		exit();
 
-	$ndo_base_prefix = "nagios";
+	$ndo_base_prefix = getNDOPrefix();
 
 	if (isset($_GET["host_name"]) && $_GET["host_name"])
 		$host_name = $_GET["host_name"];
@@ -31,96 +31,94 @@
 
 	$tab_status = array();
 
-	if (isset($ndo) && $ndo){
-		include_once("./DBNDOConnect.php");
-		/* start ndo svc info */
-		$rq ="SELECT " .
-				"nss.current_state," .
-				" nss.output as plugin_output," .
-				" nss.current_check_attempt as current_attempt," .
-				" nss.status_update_time as status_update_time," .
-				" unix_timestamp(nss.last_state_change) as last_state_change," .
-				" unix_timestamp(nss.last_check) as last_check," .
-				" nss.notifications_enabled," .
-				" unix_timestamp(nss.next_check) as next_check," .
-				" nss.problem_has_been_acknowledged," .
-				" nss.passive_checks_enabled," .
-				" nss.active_checks_enabled," .
-				" nss.event_handler_enabled," .
-				" nss.is_flapping," .
-				" nss.latency as check_latency," .
-				" nss.execution_time as check_execution_time," .
-				" nss.flap_detection_enabled," .
-				" unix_timestamp(nss.last_notification) as last_notification," .
-				" no.name1 as host_name," .
-				" no.name2 as service_description" .
-				" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
-				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
+	include_once("./DBNDOConnect.php");
+	/* start ndo svc info */
+	$rq ="SELECT " .
+			"nss.current_state," .
+			" nss.output as plugin_output," .
+			" nss.current_check_attempt as current_attempt," .
+			" nss.status_update_time as status_update_time," .
+			" unix_timestamp(nss.last_state_change) as last_state_change," .
+			" unix_timestamp(nss.last_check) as last_check," .
+			" nss.notifications_enabled," .
+			" unix_timestamp(nss.next_check) as next_check," .
+			" nss.problem_has_been_acknowledged," .
+			" nss.passive_checks_enabled," .
+			" nss.active_checks_enabled," .
+			" nss.event_handler_enabled," .
+			" nss.is_flapping," .
+			" nss.latency as check_latency," .
+			" nss.execution_time as check_execution_time," .
+			" nss.flap_detection_enabled," .
+			" unix_timestamp(nss.last_notification) as last_notification," .
+			" no.name1 as host_name," .
+			" no.name2 as service_description" .
+			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
+			" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
 
-		$DBRESULT_NDO =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
+	$DBRESULT_NDO =& $pearDBndo->query($rq);
+	if (PEAR::isError($DBRESULT_NDO))
+		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 
-		$tab_status_service = array();
-		$tab_status_service[0] = "OK";
-		$tab_status_service[1] = "WARNING";
-		$tab_status_service[2] = "CRITICAL";
-		$tab_status_service[3] = "UNKNOWN";
-		$tab_status_service[4] = "PENDING";
+	$tab_status_service = array();
+	$tab_status_service[0] = "OK";
+	$tab_status_service[1] = "WARNING";
+	$tab_status_service[2] = "CRITICAL";
+	$tab_status_service[3] = "UNKNOWN";
+	$tab_status_service[4] = "PENDING";
 
-		while ($ndo =& $DBRESULT_NDO->fetchRow())	{
-			if (!isset($tab_status[$ndo["current_state"]]))
-				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
-			$tab_status[$tab_status_service[$ndo["current_state"]]]++;
-		}
-
-		/* end ndo service info */
-
-		/* start ndo host detail */
-		$tab_host_status[0] = "UP";
-		$tab_host_status[1] = "DOWN";
-		$tab_host_status[2] = "UNREACHABLE";
-
-		$rq2 = "SELECT nhs.current_state," .
-			" nhs.problem_has_been_acknowledged, " .
-			" nhs.passive_checks_enabled," .
-			" nhs.active_checks_enabled," .
-			" nhs.notifications_enabled," .
-			" nhs.state_type," .
-			" nhs.execution_time as check_execution_time," .
-			" nhs.latency as check_latency," .
-			" nhs.perfdata as performance_data," .
-			" nhs.current_check_attempt as current_attempt," .
-			" nhs.state_type," .
-			" nhs.check_type," .
-			" unix_timestamp(nhs.last_notification) as last_notification," .
-			" unix_timestamp(nhs.next_notification) as next_notification," .
-			" nhs.is_flapping," .
-			" nhs.flap_detection_enabled," .
-			" nhs.event_handler_enabled," .
-			" nhs.obsess_over_host,".
-			" nhs.current_notification_number," .
-			" nhs.percent_state_change," .
-			" nhs.scheduled_downtime_depth," .
-			" unix_timestamp(nhs.last_state_change) as last_state_change," .
-			" nhs.output as plugin_output," .
-			" unix_timestamp(nhs.last_check) as last_check," .
-			" unix_timestamp(nhs.last_notification) as last_notification," .
-			" unix_timestamp(nhs.next_check) as next_check," .
-			" nh.address," .
-			" no.name1 as host_name" .
-			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no, ".$ndo_base_prefix."_hosts nh " .
-			" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
-
-		$DBRESULT_NDO =& $pearDBndo->query($rq2);
-		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-		$ndo2 =& $DBRESULT_NDO->fetchRow();
-
-		$host_status[$host_name] = $ndo2;
-		$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
-		/* end ndo host detail */
+	while ($ndo =& $DBRESULT_NDO->fetchRow())	{
+		if (!isset($tab_status[$ndo["current_state"]]))
+			$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
+		$tab_status[$tab_status_service[$ndo["current_state"]]]++;
 	}
+
+	/* end ndo service info */
+
+	/* start ndo host detail */
+	$tab_host_status[0] = "UP";
+	$tab_host_status[1] = "DOWN";
+	$tab_host_status[2] = "UNREACHABLE";
+
+	$rq2 = "SELECT nhs.current_state," .
+		" nhs.problem_has_been_acknowledged, " .
+		" nhs.passive_checks_enabled," .
+		" nhs.active_checks_enabled," .
+		" nhs.notifications_enabled," .
+		" nhs.state_type," .
+		" nhs.execution_time as check_execution_time," .
+		" nhs.latency as check_latency," .
+		" nhs.perfdata as performance_data," .
+		" nhs.current_check_attempt as current_attempt," .
+		" nhs.state_type," .
+		" nhs.check_type," .
+		" unix_timestamp(nhs.last_notification) as last_notification," .
+		" unix_timestamp(nhs.next_notification) as next_notification," .
+		" nhs.is_flapping," .
+		" nhs.flap_detection_enabled," .
+		" nhs.event_handler_enabled," .
+		" nhs.obsess_over_host,".
+		" nhs.current_notification_number," .
+		" nhs.percent_state_change," .
+		" nhs.scheduled_downtime_depth," .
+		" unix_timestamp(nhs.last_state_change) as last_state_change," .
+		" nhs.output as plugin_output," .
+		" unix_timestamp(nhs.last_check) as last_check," .
+		" unix_timestamp(nhs.last_notification) as last_notification," .
+		" unix_timestamp(nhs.next_check) as next_check," .
+		" nh.address," .
+		" no.name1 as host_name" .
+		" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
+		" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
+
+	$DBRESULT_NDO =& $pearDBndo->query($rq2);
+	if (PEAR::isError($DBRESULT_NDO))
+		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
+	$ndo2 =& $DBRESULT_NDO->fetchRow();
+
+	$host_status[$host_name] = $ndo2;
+	$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
+	/* end ndo host detail */
 
 	isset($lcaHost["LcaHost"][$host_name]) || $is_admin  ? $key = true : $key = NULL;
 	if ($key == NULL){
@@ -132,19 +130,6 @@
 		$hostDB =& $res->fetchRow();
 		$current_attempts = getMyHostField($hostDB["host_id"], "host_max_check_attempts");
 		
-		/*
-		$res =& $pearDB->query("SELECT COUNT(table_name) as table_number FROM user_tables WHERE table_name = 'inventory_index' GROUP BY table_name");
-		$nb_table =& $res->fetchRow();
-		if ($nb_table["table_number"]){
-			$res =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '".$hostDB["host_name"]."'");
-			$inventory =& $res->fetchRow();
-		}
-		if (isset($inventory) && $inventory["type_ressources"] == 0){
-			$url_id = "p=7&o=t&host_id=" . $key;
-		} else if (isset($inventory) &&  $inventory["type_ressources"] != 0 && $inventory["type_ressources"] != NULL){
-			$url_id = "p=7&o=o&host_id=" . $key;
-		} else
-		*/
 		$url_id = NULL;
 
 		$path = "./include/monitoring/objectDetails/";
@@ -153,36 +138,7 @@
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl($path, $tpl, "./template/");
 
-		if ($oreon->user->get_version() >= 2){
-			
-			if (!file_exists($oreon->Nagioscfg["comment_file"]))
-				print ("downtime file not found");
-			else	{
-				$log = fopen($oreon->Nagioscfg["comment_file"], "r");
-				$tab_comments_host = array();
-				$i = 0;
-				while ($str = fgets($log))	{
-					$res = preg_split("/;/", $str);
-					if (preg_match("/^\[([0-9]*)\] HOST_COMMENT;/", $str, $matches)){
-						if (!strcmp($res[2], $host_name)){
-							$tab_comments_host[$i] = array();
-							$tab_comments_host[$i]["id"] = $res[1];
-							$tab_comments_host[$i]["host_name"] = $res[2];
-							$tab_comments_host[$i]["time"] = date("d-m-Y G:i:s", $matches[1]);
-							$tab_comments_host[$i]["author"] = $res[4];
-							$tab_comments_host[$i]["comment"] = $res[5];
-							$tab_comments_host[$i]["persistent"] = $res[3];
-						}
-					}
-					$i++;
-				}
-			}
-		} else {
-			/*
-			 * Read Comments
-			 */
-				
-		}
+		$tab_comments_host = array();
 
 		$en = array("0" => _("No"), "1" => _("Yes"));
 
@@ -197,7 +153,6 @@
 
 		$img_en = array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
 
-
 		$host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
 		$host_status[$host_name]["last_check"] = date(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
 		$host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? date(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
@@ -211,7 +166,6 @@
 
 		$host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
 
-		if (isset($ndo) && $ndo)
 		if (isset($tab_host_service[$host_name]) && count($tab_host_service[$host_name]))
 			foreach ($tab_host_service[$host_name] as $key_name => $s){
 				if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
