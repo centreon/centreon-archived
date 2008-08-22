@@ -184,7 +184,7 @@
 		_divBar.appendChild(create_monitoring_link(tree,'id'));
 	//	_divBar.appendChild(create_report_link(tree,'id'));
 	//	_divBar.appendChild(create_IDCard_link(tree,'id'));
-		_divBar.setAttribute('style','float:right; margin-right:110px;' );
+		_divBar.setAttribute('style','float:right; margin-right:10px;' );
 		_menu_2.appendChild(_divBar);
 	}
 	//end for linkBar
