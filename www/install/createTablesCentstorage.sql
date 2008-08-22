@@ -188,11 +188,11 @@ CREATE TABLE IF NOT EXISTS `log_archive_file_name` (
 
 -- --------------------------------------------------------
 
---
+-- 
 -- Structure de la table `log_archive_host`
---
+-- 
 
-CREATE TABLE IF NOT EXISTS `log_archive_host` (
+CREATE TABLE `log_archive_host` (
   `log_id` int(11) NOT NULL auto_increment,
   `host_id` int(11) default NULL,
   `UPTimeScheduled` int(11) default NULL,
@@ -207,6 +207,7 @@ CREATE TABLE IF NOT EXISTS `log_archive_host` (
   `UNREACHABLEnbEvent` int(11) default NULL,
   `UNREACHABLETimeAverageAck` int(11) NOT NULL,
   `UNREACHABLETimeAverageRecovery` int(11) NOT NULL,
+  `UNDETERMINEDTimeScheduled` int(11) default NULL,
   `date_end` int(11) default NULL,
   `date_start` int(11) default NULL,
   PRIMARY KEY  (`log_id`),
@@ -214,15 +215,14 @@ CREATE TABLE IF NOT EXISTS `log_archive_host` (
   KEY `host_index` (`host_id`),
   KEY `date_end_index` (`date_end`),
   KEY `date_start_index` (`date_start`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=95 ;
 -- --------------------------------------------------------
 
---
+-- 
 -- Structure de la table `log_archive_service`
---
+-- 
 
-CREATE TABLE IF NOT EXISTS `log_archive_service` (
+CREATE TABLE `log_archive_service` (
   `log_id` int(11) NOT NULL auto_increment,
   `host_id` int(11) NOT NULL default '0',
   `service_id` int(11) NOT NULL default '0',
@@ -242,8 +242,7 @@ CREATE TABLE IF NOT EXISTS `log_archive_service` (
   `CRITICALnbEvent` int(11) NOT NULL default '0',
   `CRITICALTimeAverageAck` int(11) NOT NULL,
   `CRITICALTimeAverageRecovery` int(11) NOT NULL,
-  `UNDETERMINATETimeScheduled` int(11) NOT NULL default '0',
-  `UNDETERMINATETimeUnScheduled` int(11) NOT NULL default '0',
+  `UNDETERMINEDTimeScheduled` int(11) NOT NULL default '0',
   `date_start` int(11) default NULL,
   `date_end` int(11) default NULL,
   PRIMARY KEY  (`log_id`),
@@ -251,8 +250,20 @@ CREATE TABLE IF NOT EXISTS `log_archive_service` (
   KEY `service_index` (`service_id`),
   KEY `date_end_index` (`date_end`),
   KEY `date_start_index` (`date_start`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=63 ;
+-- --------------------------------------------------------
 
+-- 
+-- Structure de la table `log_archive_last_status`
+-- 
+
+CREATE TABLE `log_archive_last_status` (
+  `id` int(11) NOT NULL,
+  `host_name` varchar(255) default NULL,
+  `service_description` varchar(255) default NULL,
+  `status` varchar(255) default NULL,
+  `ctime` int(11) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 -- --------------------------------------------------------
 
 --
