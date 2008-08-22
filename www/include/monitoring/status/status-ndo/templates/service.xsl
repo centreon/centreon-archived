@@ -5,7 +5,7 @@
 <table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
+		<td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
 		<td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
