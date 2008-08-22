@@ -189,7 +189,9 @@
 	
 	if ($oreon->user->get_version() >= 2) {
 		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping', array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
-		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled', array('id' => 'hScheduled', 'onClick' => 'uncheckAllS(this);'));
+		if ($oreon->user->get_version() >= 3) {
+			$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled', array('id' => 'hScheduled', 'onClick' => 'uncheckAllS(this);'));
+		}
 	}
 	
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
@@ -219,7 +221,9 @@
 	
 	if ($oreon->user->get_version() >= 2) {
 		$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping', array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);'));
-		$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled', array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);'));
+			if ($oreon->user->get_version() >= 3) {
+				$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled', array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);'));
+			}
 	}
 	
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
@@ -378,10 +382,12 @@ function uncheckAllH(object) {
 		document.getElementById('hDown').checked = false;
 		document.getElementById('hUnreachable').checked = false;
 		document.getElementById('hRecovery').checked = false;
-		if (document.getElementById('hFlapping') && document.getElementById('hScheduled')) {
+		if (document.getElementById('hFlapping')) {
 			document.getElementById('hFlapping').checked = false;
-			document.getElementById('hScheduled').checked = false;
 		}		
+		if(document.getElementById('hScheduled')) {
+			document.getElementById('hScheduled').checked = false;
+		}
 	}	
 	else {
 		document.getElementById('hNone').checked = false;
@@ -394,9 +400,11 @@ function uncheckAllS(object) {
 		document.getElementById('sUnknown').checked = false;
 		document.getElementById('sCritical').checked = false;
 		document.getElementById('sRecovery').checked = false;
-		if (document.getElementById('sFlapping') && document.getElementById('sScheduled')) {
+		if (document.getElementById('sFlapping')) {
 			document.getElementById('sFlapping').checked = false;
-			document.getElementById('sScheduled').checked = false;
+		}
+		if(document.getElementById('sScheduled')) {
+			document.getElementById('sScheduled').checked = false;		
 		}
 	}
 	else {
