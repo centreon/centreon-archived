@@ -47,14 +47,14 @@ function goToLog(_input_name, _id){
 
 function goToGraph(_input_name, _id){
 	var tab = getCheckedList(_input_name, _id);
-//	document.location.href='main.php?p=40211&mode=0&'+_id+'=' +tab;  	
+//	document.location.href='main.php?p=40201&mode=0&'+_id+'=' +tab;  	
 	myHeader = document.getElementById("header");
 
 	var _form = document.createElement("form");
 	_form.setAttribute('id', 'goToGraphByPost');
 	_form.setAttribute('name', 'goToGraphByPost');
 	_form.setAttribute('method', 'POST');
-	_form.setAttribute('action', 'main.php?p=40211&mode=0');
+	_form.setAttribute('action', 'main.php?p=40201&mode=0');
 	var _idValue = document.createElement("input");
 	_idValue.type ='text';
 	_idValue.value = tab;
