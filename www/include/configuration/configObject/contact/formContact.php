@@ -186,11 +186,16 @@
  	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down', array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable', array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery', array('id' => 'hRecovery', 'onClick' => 'uncheckAllH(this);'));
-	if ($oreon->user->get_version() >= 2)
+	
+	if ($oreon->user->get_version() >= 2) {
 		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping', array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
+		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled', array('id' => 'hScheduled', 'onClick' => 'uncheckAllS(this);'));
+	}
+	
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
 	$form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Hosts Notification Options"), '&nbsp;&nbsp;');
     $form->addElement('select', 'timeperiod_tp_id', _("Host Notification Period"), $notifTps);
+	
 	if ($o == "mc")	{
 		$mc_mod_hcmds = array();
 		$mc_mod_hcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, _("Incremental"), '0');
@@ -198,6 +203,7 @@
 		$form->addGroup($mc_mod_hcmds, 'mc_mod_hcmds', _("Update options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hcmds'=>'0'));
 	}
+	
     $ams1 =& $form->addElement('advmultiselect', 'contact_hostNotifCmds', _("Host Notification Commands"), $notifCmds, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
@@ -210,8 +216,12 @@
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown', array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);'));
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical', array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);'));
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery', array('id' => 'sRecovery', 'onClick' => 'uncheckAllS(this);'));
-	if ($oreon->user->get_version() >= 2)
+	
+	if ($oreon->user->get_version() >= 2) {
 		$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping', array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);'));
+		$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled', array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);'));
+	}
+	
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
 	$form->addGroup($svNotifOpt, 'contact_svNotifOpts', _("Services Notification Options"), '&nbsp;&nbsp;');
     $form->addElement('select', 'timeperiod_tp_id2', _("Services Notification Period"), $notifTps);
@@ -368,8 +378,9 @@ function uncheckAllH(object) {
 		document.getElementById('hDown').checked = false;
 		document.getElementById('hUnreachable').checked = false;
 		document.getElementById('hRecovery').checked = false;
-		if (document.getElementById('hFlapping')) {
+		if (document.getElementById('hFlapping') && document.getElementById('hScheduled')) {
 			document.getElementById('hFlapping').checked = false;
+			document.getElementById('hScheduled').checked = false;
 		}		
 	}	
 	else {
@@ -383,8 +394,9 @@ function uncheckAllS(object) {
 		document.getElementById('sUnknown').checked = false;
 		document.getElementById('sCritical').checked = false;
 		document.getElementById('sRecovery').checked = false;
-		if (document.getElementById('sFlapping')) {
+		if (document.getElementById('sFlapping') && document.getElementById('sScheduled')) {
 			document.getElementById('sFlapping').checked = false;
+			document.getElementById('sScheduled').checked = false;
 		}
 	}
 	else {
