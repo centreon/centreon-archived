@@ -15,18 +15,42 @@
  * For information : contact@centreon.com
  */
 
-	if (file_exists("./include/common/common-Func-ACL.php"))
-		include_once("./include/common/common-Func-ACL.php");
+/*
+ * This file contains all globals functions using by Centreon. 
+ *
+ * PHP version 5
+ *
+ * @package common-Func.php
+ * @author Julien Mathis
+ * @author Damien Duponchelle
+ * @version $Id: $
+ * @copyright (c) 2007-2008 Centreon
+ * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ */
 
+	if (file_exists("./include/common/common-Func-ACL.php") == true) {
+		include_once './include/common/common-Func-ACL.php';
+	}
 
+	/* 
+	 * function table_not_exists()
+	 * - This function test if a table exist in database.
+	 *
+	 * @param	string	$table_name (the name of the table to test)
+	 * @return	int		0 			(return 0 if the table exists)
+	 */
 	function table_not_exists($table_name) {
 		global $pearDBndo;
+
+		$DBRESULT =& $pearDBndo->query("SHOW TABLES LIKE '".$table_name."'");
 		
-		$DBRESULT =& $pearDBndo->query("SELECT * FROM `".$table_name."` LIMIT 1");
 		if (PEAR::isERROR($DBRESULT)) {
 			return ("[" . $table_name . "] -- " . $DBRESULT->getMessage());
 		}
+				
+		if ($DBRESULT->numRows() > 0) {
 		return 0;
+		}
 	}
 
 	function myDecode($arg)	{
@@ -1363,19 +1387,26 @@
 			return $conf_ndo;		
 		}
 	}
-		
+
+	/* 
+	 * function getNDOPrefix()
+	 * - This function return NDOPrefix tables.
+	 *
+	 * @return	string	$conf_ndo["db_prefix"]	(string contains prefix like "nagios_")
+	 */		
 	function getNDOPrefix(){
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1;");
-		if (PEAR::isError($DBRESULT))
+		
+		$DBRESULT =& $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
+		if(PEAR::isError($DBRESULT)) {
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		}
 		$conf_ndo =& $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		return $conf_ndo["db_prefix"];		
 	}
 	
 	/* Ajax tests */
-	
 	function get_error($motif){
 		$buffer = null;
 		$buffer .= '<reponse>';

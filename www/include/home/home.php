@@ -14,29 +14,40 @@
  * 
  * For information : contact@centreon.com
  */
- 
-	if (!isset($oreon))
-		exit(); 
+
+/*
+ * This script drawing pie charts with hosts and services statistics on home page.
+ *
+ * PHP version 5
+ *
+ * @package home.php
+ * @author Damien Duponchelle
+ * @version $Id: $
+ * @copyright (c) 2007-2008 Centreon
+ * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ */
+ 	
+	// Variables $oreon must exist. it contains all personnals datas (Id, Name etc.) using by user to navigate on the interface.
+	if (!isset($oreon)) {
+		exit();
+	}
 	
+	// Including files and dependences 
 	include_once "./include/monitoring/common-Func.php";
 	include_once "./DBNDOConnect.php";
+		
+	// The user must install the ndo table with the 'centreon_acl'
+	if ($err_msg = table_not_exists("centreon_acl")) {
+		print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
+	}
 	
-	unset($tpl);
-	unset($path);					
-
+	// Directory of Home pages
 	$path = "./include/home/";
 	
-	if ($err_msg = table_not_exists("centreon_acl")) 
-		print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
-		
-	/*
-	 * Smarty template Init
-	 */
-	 
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl, "./");			
-	$tpl->assign("session", session_id());
-	$tpl->display("home.ihtml");
-	
+	// Displaying a Smarty Template
+	$template = new Smarty();
+	$template = initSmartyTpl($path, $template, "./");			
+	$template -> assign("session", session_id());
+	$template -> display("home.ihtml");
 ?>
 

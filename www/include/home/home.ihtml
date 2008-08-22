@@ -1,22 +1,22 @@
 <div align="center" style="padding-bottom: 20px;margin:1px;">
-<table>
-	<tr>
-		<td>
-			<table class="ListTable">
-				<tr>
-					<td>{php}
-							include_once './lib/ofc-library/open_flash_chart_object.php';
-							open_flash_chart_object( 350, 220, './include/home/pie-host.php?sid='.session_id());
-						{/php}
-					</td>
-					<td>{php}
-							include_once './lib/ofc-library/open_flash_chart_object.php';
-							open_flash_chart_object( 350, 220, './include/home/pie-svc.php?sid='.session_id());
-						{/php}
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
+	<table>
+		<tr>
+			<td>
+				<table class="ListTable">
+					<tr>
+						<td>{php}
+								include_once './lib/ofc-library/open_flash_chart_object.php';
+								open_flash_chart_object( 350, 220, './include/home/pie-host.php?sid='.session_id());
+							{/php}
+						</td>
+						<td>{php}
+								include_once './lib/ofc-library/open_flash_chart_object.php';
+								open_flash_chart_object( 350, 220, './include/home/pie-svc.php?sid='.session_id());
+							{/php}
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 </div>
