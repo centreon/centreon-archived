@@ -62,3 +62,28 @@ DELETE FROM `topology` WHERE `topology_page` = 40210 LIMIT 1;
 ALTER TABLE `contact` ADD `contact_acl_group_list` VARCHAR( 255 ) NULL ;
 ALTER TABLE `contact` ADD `contact_autologin_key` VARCHAR( 255 ) NULL ;
 
+--
+-- 22-08-2008 Reporting
+--
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'menu_reporting', './img/icones/16x16/nagios.gif', 50101, 5010110, 100, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=reporting', '0', '0', '1');
+
+INSERT INTO `contact_param` (`id`, `cp_key`, `cp_value`, `cp_contact_id`) VALUES (NULL, 'report_hour_start', '0', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_minute_start', '0', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_hour_end', '24', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_minute_end', '0', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Monday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Tuesday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Wednesday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Thursday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Friday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Saturday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Sunday', '1', NULL);
+
+CREATE TABLE `log_archive_last_status` (
+  `id` int(11) NOT NULL,
+  `host_name` varchar(255) default NULL,
+  `service_description` varchar(255) default NULL,
+  `status` varchar(255) default NULL,
+  `ctime` int(11) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
