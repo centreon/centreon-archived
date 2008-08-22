@@ -76,22 +76,46 @@
 	 */
 	$elemArr = array();	
 	for ($i = 0; $resource =& $DBRESULT->fetchRow(); $i++) {
+		preg_match("\$USER([0-9]*)\$", $resource["resource_name"], $tabResources);
 		$selectedElements =& $form->addElement('checkbox', "select[".$resource['resource_id']."]");	
-		$moptions = "";
+		$moptions  = "";
 		if ($resource["resource_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&resource_id=".$resource['resource_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
 			$moptions .= "<a href='main.php?p=".$p."&resource_id=".$resource['resource_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$resource['resource_id']."]'></input>";
-		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$resource["resource_name"],
-						"RowMenu_link"=>"?p=".$p."&o=c&resource_id=".$resource['resource_id'],
-						"RowMenu_desc"=>substr($resource["resource_line"], 0, 40),
-						"RowMenu_status"=>$resource["resource_activate"] ? _("Enabled") :  _("Disabled"),
-						"RowMenu_options"=>$moptions);
+		$elemArr[$i] = array(	"order" => $tabResources[1],
+								"MenuClass"=>"list_".$style, 
+								"RowMenu_select"=>$selectedElements->toHtml(),
+								"RowMenu_name"=>$resource["resource_name"],
+								"RowMenu_link"=>"?p=".$p."&o=c&resource_id=".$resource['resource_id'],
+								"RowMenu_desc"=>substr($resource["resource_line"], 0, 40),
+								"RowMenu_status"=>$resource["resource_activate"] ? _("Enabled") :  _("Disabled"),
+								"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	
 	}
+	
+	$flag = 1;
+	while ($flag){
+		$flag = 0;
+		foreach ($elemArr as $key => $value){ 
+			$key1 = $key+1;
+			if (isset($elemArr[$key+1]) && $value["order"] > $elemArr[$key+1]["order"]){
+				$swmapTab = $elemArr[$key+1];
+				$elemArr[$key+1] = $elemArr[$key];
+				$elemArr[$key] = $swmapTab;
+				$flag = 1;
+			} elseif (!isset($elemArr[$key+1]) && isset($elemArr[$key-1]["order"])){
+				if ($value["order"] < $elemArr[$key-1]["order"]){
+					$swmapTab = $elemArr[$key-1];
+					$elemArr[$key-1] = $elemArr[$key];
+					$elemArr[$key] = $swmapTab;
+					$flag = 1;
+				}
+			}
+		}
+	}
+		 
 	$tpl->assign("elemArr", $elemArr);
 	/*
 	 * Different messages we put in the template

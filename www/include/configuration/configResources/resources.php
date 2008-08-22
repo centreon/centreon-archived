@@ -30,25 +30,72 @@
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 		
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/configuration/configResources/";
 	
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 
 	switch ($o)	{
-		case "a" : require_once($path."formResources.php"); break; #Add a Resource
-		case "w" : require_once($path."formResources.php"); break; #Watch a Resource
-		case "c" : require_once($path."formResources.php"); break; #Modify a Resource
-		case "s" : enableResourceInDB($resource_id); require_once($path."listResources.php"); break; #Activate a Resource
-		case "u" : disableResourceInDB($resource_id); require_once($path."listResources.php"); break; #Desactivate a Resource
-		case "m" : multipleResourceInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listResources.php"); break; #Duplicate n Resources
-		case "d" : deleteResourceInDB(isset($select) ? $select : array()); require_once($path."listResources.php"); break; #Delete n Resources
-		default : require_once($path."listResources.php"); break;
+		case "a" :
+			/*
+			 * Add a Resource
+			 */ 
+			require_once($path."formResources.php"); 
+			break;
+		case "w" :
+			/*
+			 * Watch a Resource
+			 */ 
+			require_once($path."formResources.php"); 
+			break;
+		case "c" :
+			/*
+			 * Modify a Resource
+			 */ 
+			require_once($path."formResources.php"); 
+			break;
+		case "s" :
+			/*
+			 * Activate a Resource
+			 */ 
+			enableResourceInDB($resource_id); 
+			require_once($path."listResources.php"); 
+			break;
+		case "u" : 
+			/*
+			 * Desactivate a Resource
+			 */
+			disableResourceInDB($resource_id); 
+			require_once($path."listResources.php"); 
+			break; 
+		case "m" :
+			/*
+			 * Duplicate n Resources
+			 */ 
+			multipleResourceInDB(isset($select) ? $select : array(), $dupNbr); 
+			require_once($path."listResources.php"); 
+			break;
+		case "d" :
+			/*
+			 * Delete n Resources
+			 */ 
+			deleteResourceInDB(isset($select) ? $select : array()); 
+			require_once($path."listResources.php"); 
+			break;
+		default : 
+			require_once($path."listResources.php");
+			break;
 	}
 ?>
