@@ -22,24 +22,23 @@
 	if (!isset($oreon))
 		exit;
 ?>
-		<div>
-			<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
-				<tr><td id="footerline1"></td></tr>
-				<tr><td id="footerline2"></td></tr>
+	<div>
+		<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
+			<tr><td id="footerline1"></td></tr>
+			<tr><td id="footerline2"></td></tr>
+		</table>
+		<div id="footer">
+			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
+				<tr>
+					<td align='center' class='copyRight'>
+						<?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . _(" seconds "); ?><br />
+						Copyright &copy; 1999-2008 Nagios - <a href="http://www.nagios.org/contact/">Ethan Galstad</a> | Copyright &copy; 2004-2008 <a href="mailto:infos@centreon.com">Centreon</a><br />All Rights Reserved<br />
+					</td>
+				</tr>
 			</table>
-			<div id="footer">
-				<table cellpadding='0' cellspacing='0' width='100%' border='0'>
-					<tr>
-						<td align='center' class='copyRight'>
-							<?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . _(" seconds "); ?><br />
-							Copyright &copy; 1999-2008 Nagios - <a href="http://www.nagios.org/contact/">Ethan Galstad</a> | Copyright &copy; 2004-2008 <a href="mailto:infos@centreon.com">Centreon</a><br />
-							All Rights Reserved<br />
-						</td>
-					</tr>
-				</table>
-			</div>
-			<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('footer')" style="position:absolute;left:15px;" alt="hide_or_show_menu" />
 		</div>
+		<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('footer')" style="position:absolute;left:5px;" alt="hide_or_show_menu" />
+	</div>
 <?php
 if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 ?>
@@ -60,6 +59,4 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 		$pearDB->disconnect();
 	if (isset($pearDBO) && is_object($pearDBO))
 		$pearDBO->disconnect();
-	//if (isset($pearDBndo) && is_object($pearDBndo) && strcmp($pearDBndo, "DB Error: connect failed"))
-	///	$pearDBndo->disconnect();
 ?>
