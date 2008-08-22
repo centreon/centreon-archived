@@ -178,6 +178,21 @@ function mk_img(_src, _alt)	{
 	return _img;
 }
 
+function mk_imgOrder(_src, _alt)	{
+	var _img = document.createElement("img");
+  	_img.src = _src;
+  	_img.alt = _alt;
+  	_img.title = _alt;
+  	_img.style.paddingLeft = '10px';
+  	_img.style.marginBottom = '0.5px';
+  	if (_img.complete){
+  		_img.alt = _alt;	
+  	} else {
+  		_img.alt = "Image could not be loaded (" +_alt + ")."; 
+  	}
+	return _img;
+}
+
 function mk_pagination(resXML){
 	viewDebugInfo('mk pagination');
 
