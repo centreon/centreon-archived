@@ -77,9 +77,7 @@
 	</div>
 	<span id="linkBar"></span>
 	<span id="logli">
-		<img src='./img/icones/16x16/text_code.gif' alt="icon_link_doc" />&nbsp;<a href='./main.php?p={$p}&amp;doc=1&amp;page=toc.html' title='{$Documentation}'>{$Documentation}</a>&nbsp;&nbsp;
-
-		<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif" alt="icon_logout"/></a>&nbsp;<a href="{$LogOutUrl}">{$Logout}</a>&nbsp;
+		<img src='./img/icones/16x16/text_code.gif' alt="icon_link_doc" />&nbsp;<a href='./main.php?p={$p}&amp;doc=1&amp;page=toc.html' title='{$Documentation}'>{$Documentation}</a>&nbsp;&nbsp;<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif" alt="icon_logout"/></a>&nbsp;<a href="{$LogOutUrl}">{$Logout}</a>&nbsp;
 	</span>
 	<div id="date">{$Date}</div>
 </div>
