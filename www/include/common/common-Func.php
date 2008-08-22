@@ -775,9 +775,13 @@
 				" AND service_id = hsr.service_service_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($elem =& $DBRESULT->fetchRow())
+		while ($elem =& $DBRESULT->fetchRow()){
+			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
+			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
 			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
+		}
 		$DBRESULT->free();
+		asort($hSvs);
 		return $hSvs;
 	}
 	
