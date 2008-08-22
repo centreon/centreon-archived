@@ -21,8 +21,7 @@
  */ 
 	if (!isset($oreon))
 		exit;
-?>
-	<div>
+	?><div>
 		<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
 			<tr><td id="footerline1"></td></tr>
 			<tr><td id="footerline2"></td></tr>
@@ -37,7 +36,7 @@
 				</tr>
 			</table>
 		</div>
-		<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('footer')" style="position:absolute;left:5px;" alt="hide_or_show_menu" />
+		<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('footer')" style="position:absolute;left:5px;" title="<?php echo _("Hidde Footer"); ?>" />
 	</div>
 <?php
 if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
