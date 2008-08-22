@@ -45,6 +45,7 @@
 		case "ods" : require_once($path."centStorage/form.php"); break;
 		case "ndo" : require_once($path."ndo/formNDO.php"); break;
 		case "cas" : require_once($path."CAS/formCAS.php"); break;
+		case "reporting" : require_once($path."reporting/reporting.php"); break;
 		default : require_once($path."general/formGeneralOpt.php"); break;
 	}
 ?>
