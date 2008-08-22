@@ -209,7 +209,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 
 .ListHeader 			{font-weight:700;vertical-align:top;}
 .ListHeader td 			{border-left-style:solid;border-left-width:0.1px;border-top-style:solid;border-top-width:0.1px;font-weight:700;height:20px;padding-top:5px;}
-.ListColHeaderPicker 	{padding-left:3px;text-align:center; padding-right:3px;width:10px;}
+.ListColHeaderPicker 	{padding-left:3px;text-align:center;padding-right:3px;padding-top:1px;padding-bottom:1px;width:10px;}
 .ListColHeaderCenter 	{padding-left:3px;text-align:center;}
 .ListColHeaderLeft 		{padding-left:3px;text-align:left;}
 .ListColHeaderRight		{padding-left:3px;text-align:right;padding-right:3px;}
