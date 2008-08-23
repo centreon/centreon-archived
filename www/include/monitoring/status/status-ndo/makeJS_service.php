@@ -105,66 +105,69 @@ if (navigator.appName.substring(0,3) == "Net")
 document.onmousemove = position;
 
 function set_header_title(){
-	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "<?php echo _("Sort results (ascendant)"); ?>");
+
+	var _img_asc  = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "<?php echo _("Sort results (ascendant)"); ?>");
 	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "<?php echo _("Sort results (descendant)"); ?>");
 
 	if (document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
+
 		h.innerHTML = '<?php echo _("Hosts"); ?>';
 	  	h.indice = 'host_name';
-	  	h.title = '<?php echo _("Host Name sort"); ?>';
+	  	h.title = '<?php echo _("Sort by host name"); ?>';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('service_description');
 		h.innerHTML = '<?php echo _("Services"); ?>';
 	  	h.indice = 'service_description';
-	  	h.title = '<?php echo _("Service description sort"); ?>';
+	  	h.title = '<?php echo _("Sort by service description"); ?>';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('current_state');
 		h.innerHTML = '<?php echo _("Status"); ?>';
 	  	h.indice = 'current_state';
-	  	h.title = '<?php echo _("Status sort"); ?>';
+	  	h.title = '<?php echo _("Sort by status"); ?>';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-
 
 		var h = document.getElementById('last_state_change');
 		h.innerHTML = '<?php echo _("Duration"); ?>';
 	  	h.indice = 'last_state_change';
-	  	h.title = '<?php echo _("Last change date sort"); ?>';
+	  	h.title = '<?php echo _("Sort by last change date"); ?>';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('last_check');
 		h.innerHTML = '<?php echo _("Last Check"); ?>';
 	  	h.indice = 'last_check';
-	  	h.title = '<?php echo _("Last check sort"); ?>';
+	  	h.title = '<?php echo _("Sort by last check"); ?>';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('current_attempt');
 		h.innerHTML = '<?php echo _("Tries"); ?>';
 	  	h.indice = 'current_attempt';
-	  	h.title = '<?php echo _("Retries number sort"); ?>';
+	  	h.title = '<?php echo _("Sort by retries number"); ?>';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('plugin_output');
 		h.innerHTML = '<?php echo _("Status information"); ?>';
 	  	h.indice = 'plugin_output';
-	  	h.title = '<?php echo _("Plugin output sort"); ?>';
+	  	h.title = '<?php echo _("Sort by plugin output"); ?>';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
-		if(_order == 'ASC')
+
+		if (_order == 'ASC')
 			_linkaction_asc.appendChild(_img_asc);
 		else
 			_linkaction_asc.appendChild(_img_desc);
+		
 		_linkaction_asc.href = '#' ;
 		_linkaction_asc.onclick=function(){change_order()};
 		h.appendChild(_linkaction_asc);
@@ -215,14 +218,13 @@ function initM(_time_reload,_sid,_o){
 		_header.appendChild(_divdebug);
 	}
 
-	if(_first){
+	if (_first){
 		viewDebugInfo('--loop--');
-
 		mainLoop();
 		_first = 0;
 	}
 	_time=<?php echo $time; ?>;
-	if(_on)
+	if (_on)
 		goM(_time_reload,_sid,_o);
 }
 
