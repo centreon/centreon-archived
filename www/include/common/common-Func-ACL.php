@@ -15,6 +15,15 @@
  * For information : contact@centreon.com
  */
 	
+	/*
+	 * Set flag for updating ACL to true
+	 *
+	 * <code>
+	 * updateACL();
+	 * </code>
+	 *
+	 */
+	
 	function updateACL(){
 		global $pearDB;
 
@@ -25,26 +34,35 @@
 	
 	
 	/*
-	 * LCA Generation
+	 * get Service group list in array
+	 *
+	 * <code>
+	 * $aclSG = getLCASG($pearDB) 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$pearDB{TAB}pear DB connector
+	 * @return{TAB}array{TAB}list SG
 	 */
 	
 	function getLCASG($pearDB){
 		if (!$pearDB)
 			return ;
-			
+		
+		/*
+		 * Get Groups List
+		 */	
 		$groups = getGroupListofUser($pearDB);
 		$str 	= groupsListStr($groups);
-		
-		$lcaServiceGroup = array();
-		
-		$str_topo = "";
+				
 		$condition = "";
 		if ($str != "")
-			$condition = " WHERE acl_group_id IN (".$str.")";		
-		$DBRESULT =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
+			$condition = " WHERE `acl_group_id` IN (".$str.")";		
+
+		$DBRESULT =& $pearDB->query("SELECT `acl_res_id` FROM `acl_res_group_relations` $condition");
+		$lcaServiceGroup = array();
 		while ($res =& $DBRESULT->fetchRow()){
 
-			$DBRESULT2 =& $pearDB->query("SELECT acl_resources_sg_relations.sg_id, sg_alias FROM servicegroup, acl_resources_sg_relations WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_sg_relations.sg_id = servicegroup.sg_id");	
+			$DBRESULT2 =& $pearDB->query("SELECT `acl_resources_sg_relations`.`sg_id`, `sg_alias` FROM `servicegroup`, `acl_resources_sg_relations` WHERE `acl_res_id` = '".$res["acl_res_id"]."' AND `acl_resources_sg_relations`.`sg_id` = `servicegroup`.`sg_id`");	
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($serviceGroup =& $DBRESULT2->fetchRow())
@@ -56,9 +74,18 @@
 		return $lcaServiceGroup;
 	}
 	
+	
 	/*
-	 * Return the table of host and hostgroups that user as access 
+	 * Get list by name of host authorized by ACL  
+	 *
+	 * <code>
+	 * $aclHostByName = getLCAHostByName($pearDB);
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$pearDB{TAB}Pear DB connector
+	 * @return{TAB}array{TAB}List of hosts
 	 */
+	
 	function getLCAHostByName($pearDB){
 		if (!$pearDB)
 			return ;
@@ -68,7 +95,6 @@
 		$groups = getGroupListofUser($pearDB);
 		$str 	= groupsListStr($groups);
 		
-		$str_topo = "";
 		$condition = "";
 		if ($str != "")
 			$condition = " WHERE acl_group_id IN (".$str.")";		
@@ -117,10 +143,18 @@
 		isset($lcaHostGroup) ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"] = array();
 		return $LcaHHG;
 	}
-	
+		
 	/*
-	 * Return the list of groups that user is attached
+	 * Get Group list of an user
+	 *
+	 * <code>
+	 * $grouplist = getGroupListofUser($pearDB)
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$pearDB{TAB}pear db connector
+	 * @return{TAB}array{TAB}group list
 	 */
+	
 	function getGroupListofUser($pearDB){
 		if (!$pearDB)
 			return ;
@@ -161,12 +195,35 @@
 		return $groups;
 	}
 
+	/*
+	 * return group list in str list separated by ","
+	 *
+	 * <code>
+	 * $grouplist = getGroupListStrofUser($pearDB);
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$pearDB{TAB}pear db connector
+	 * @return{TAB}str{TAB}group list
+	 */
+	
+
 	function getGroupListStrofUser($pearDB){
 		if (!$pearDB)
 			return ;
 		getGroupListStrofUser($pearDB);
 		return groupsListStr($groups);
 	}
+	
+	/*
+	 * return a group list in array to a group list in str
+	 *
+	 * <code>
+	 * $grouplistStr = groupsListStr($groups)
+	 * </code>
+	 *
+	 * @param{TAB}array{TAB}$group{TAB}group list array
+	 * @return{TAB}str{TAB}group list
+	 */
 	
 	function groupsListStr($groups){
 		$str = '';
@@ -180,6 +237,18 @@
 			$str = "'-1'";
 		return $str;	
 	}
+	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
 	
 	function getLCAHostByID($pearDB){
 		if (!$pearDB)
@@ -252,6 +321,18 @@
 		return $LcaHHG;
 	}
 	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
+	
 	function getAuthorizedCategories($groupstr){
 		global $pearDB;
 		
@@ -269,6 +350,18 @@
 	  	unset($DBRESULT);
 	  	return $tab_categories;
 	}
+	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
 	
 	function getServiceTemplateList2($service_id = NULL)	{
 		if (!$service_id) 
@@ -296,6 +389,18 @@
 		}
 	}
 	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
+	
 	function getServicesCategories($str){
 		global $pearDB;
 		
@@ -307,6 +412,18 @@
 		unset($DBRESULT);
 		return $tab;
 	}
+	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
 	
 	function getLCASGForHost($pearDB, $host_id = NULL){
 		if (!$pearDB || !isset($host_id))
@@ -342,6 +459,18 @@
 		return $svc;
 	}
 	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
+	
 	function getAuthorizedServicesHost($host_id, $groupstr){
 		global $pearDB;
 		
@@ -374,6 +503,18 @@
 		}
 	  	return $tab_services;
 	}
+	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
 	
 	function getLCASVC($lca = NULL){
 		global $pearDB;
@@ -416,6 +557,18 @@
 		return $lca;
 	}
 	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
+	
 	function getLCASVCStr($lca = NULL){
 		global $pearDB;
 		
@@ -439,6 +592,18 @@
 		return $str;
 	}
 	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
+	
 	function getLCAHostStr($lcaHost){
 		$lcaHStr = "";
 	  	foreach ($lcaHost as $key => $value){
@@ -450,6 +615,18 @@
 	  		$lcaHStr = '\'\'';
   	  	return $lcaHStr;
 	}
+	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
 		
 	function getLCAHGStr($lcaHostGroup){
 		$lcaHGStr = "";
@@ -462,6 +639,18 @@
 	  		$lcaHGStr = '\'\'';
 	  	return $lcaHGStr;
 	}
+	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
 		
 	function getLCASGStr($lcaServiceGroup){
 		$lcaSGStr = "";
@@ -475,6 +664,18 @@
 		return $lcaSGStr;
 	}
 	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
+	
 	function getLCASGStrByName($lcaServiceGroup){
 		$lcaSGStr = "";
 	  	foreach ($lcaServiceGroup as $key => $value){
@@ -486,6 +687,18 @@
 	  		$lcaSGStr = '\'\'';
 		return $lcaSGStr;
 	}
+	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
 	
 	function isUserAdmin($sid = NULL){
 		if (!isset($sid))
@@ -506,6 +719,18 @@
 		return 0;
 	}
 	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
+	
 	function getUserIdFromSID($sid = NULL){
 		if (!isset($sid))
 			return ;
@@ -517,6 +742,18 @@
 			return $admin["contact_id"];
 		return 0;
 	}
+	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
 	
 	function getResourceACLList($group_list){
 		if (!isset($group_list))
@@ -538,5 +775,4 @@
 			return $tab_res;
 		return array();
 	}
-	
 ?>
