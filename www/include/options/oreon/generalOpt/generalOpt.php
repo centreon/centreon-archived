@@ -14,6 +14,7 @@
  * 
  * For information : contact@centreon.com
  */
+ 
 	if (!isset ($oreon))
 		exit ();
 	
@@ -21,31 +22,63 @@
 	isset($_POST["lca_id"]) ? $cP = $_POST["gopt_id"] : $cP = NULL;
 	$cG ? $gopt_id = $cG : $gopt_id = $cP;
 		
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the option dir
+	/*
+	 * Path to the option dir
+	 */
 	$path = "./include/options/oreon/generalOpt/";
 	
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 
 	switch ($o)	{
-		case "nagios" : require_once($path."nagios/formNagios.php"); break;
-		case "colors" : require_once($path."colors/formColors.php"); break;
-		case "snmp" : require_once($path."snmp/formSNMP.php"); break;
-		case "rrdtool" : require_once($path."rrdtool/formRRDTool.php"); break;
-		case "ldap" : require_once($path."ldap/formLDAP.php"); break;
-		case "debug" : require_once($path."debug/formDebug.php"); break;
-		case "general" : require_once($path."general/formGeneralOpt.php"); break;
-		case "css" : require_once($path."css/formCss.php"); break;
-		case "ods" : require_once($path."centStorage/form.php"); break;
-		case "ndo" : require_once($path."ndo/formNDO.php"); break;
-		case "cas" : require_once($path."CAS/formCAS.php"); break;
-		case "reporting" : require_once($path."reporting/form_reporting.php"); break;
-		default : require_once($path."general/formGeneralOpt.php"); break;
+		case "nagios" : 
+			require_once($path."nagios/formNagios.php"); 
+			break;
+		case "colors" : 
+			require_once($path."colors/formColors.php"); 
+			break;
+		case "snmp" : 
+			require_once($path."snmp/formSNMP.php"); 
+			break;
+		case "rrdtool" : 
+			require_once($path."rrdtool/formRRDTool.php"); 
+			break;
+		case "ldap" : 
+			require_once($path."ldap/formLDAP.php"); 
+			break;
+		case "debug" : 
+			require_once($path."debug/formDebug.php"); 
+			break;
+		case "general" : 
+			require_once($path."general/formGeneralOpt.php"); 
+			break;
+		case "css" : 
+			require_once($path."css/formCss.php"); 
+			break;
+		case "ods" : 
+			require_once($path."centStorage/form.php"); 
+			break;
+		case "ndo" : 
+			require_once($path."ndo/formNDO.php"); 
+			break;
+		case "cas" : 
+			require_once($path."CAS/formCAS.php"); 
+			break;
+		case "reporting" : 
+			require_once($path."reporting/form_reporting.php"); 
+			break;
+		default : 
+			require_once($path."general/formGeneralOpt.php"); 
+			break;
 	}
 ?>
