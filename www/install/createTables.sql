@@ -1242,7 +1242,7 @@ CREATE TABLE IF NOT EXISTS `host` (
   KEY `tp1_index` (`timeperiod_tp_id`),
   KEY `tp2_index` (`timeperiod_tp_id2`),
   KEY `name_index` (`host_name`),
-  KEY `alias_index` (`host_alias`),
+  KEY `alias_index` (`host_alias`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
