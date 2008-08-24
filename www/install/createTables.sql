@@ -521,6 +521,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
   `contact_ldap_dn` varchar(255) default NULL,
   `contact_acl_group_list` varchar(255) default NULL,
   `contact_autologin_key` varchar(255) default NULL,
+  `contact_charset` varchar(255) default NULL,
   PRIMARY KEY  (`contact_id`),
   KEY `name_index` (`contact_name`),
   KEY `alias_index` (`contact_alias`),
