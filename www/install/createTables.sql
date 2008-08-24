@@ -1202,7 +1202,6 @@ CREATE TABLE IF NOT EXISTS `host` (
   `command_command_id_arg1` text,
   `timeperiod_tp_id` int(11) default NULL,
   `timeperiod_tp_id2` int(11) default NULL,
-  `purge_policy_id` int(11) default NULL,
   `command_command_id2` int(11) default NULL,
   `command_command_id_arg2` text,
   `host_name` varchar(200) default NULL,
@@ -1244,7 +1243,6 @@ CREATE TABLE IF NOT EXISTS `host` (
   KEY `tp2_index` (`timeperiod_tp_id2`),
   KEY `name_index` (`host_name`),
   KEY `alias_index` (`host_alias`),
-  KEY `purge_index` (`purge_policy_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1543,7 +1541,6 @@ CREATE TABLE IF NOT EXISTS `service` (
   `timeperiod_tp_id` int(11) default NULL,
   `command_command_id2` int(11) default NULL,
   `timeperiod_tp_id2` int(11) default NULL,
-  `purge_policy_id` int(11) default NULL,
   `service_description` varchar(200) default NULL,
   `service_alias` varchar(255) default NULL,
   `display_name` varchar(255) default NULL,
@@ -1581,8 +1578,7 @@ CREATE TABLE IF NOT EXISTS `service` (
   KEY `cmd2_index` (`command_command_id2`),
   KEY `tp1_index` (`timeperiod_tp_id`),
   KEY `tp2_index` (`timeperiod_tp_id2`),
-  KEY `description_index` (`service_description`),
-  KEY `purge_index` (`purge_policy_id`)
+  KEY `description_index` (`service_description`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -2131,8 +2127,7 @@ ALTER TABLE `host`
   ADD CONSTRAINT `host_ibfk_1` FOREIGN KEY (`command_command_id`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `host_ibfk_2` FOREIGN KEY (`command_command_id2`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `host_ibfk_3` FOREIGN KEY (`timeperiod_tp_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `host_ibfk_4` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `host_ibfk_5` FOREIGN KEY (`purge_policy_id`) REFERENCES `purge_policy` (`purge_policy_id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `host_ibfk_4` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL;
 
 --
 -- Contraintes pour la table `hostgroup_relation`
@@ -2213,8 +2208,7 @@ ALTER TABLE `service`
   ADD CONSTRAINT `service_ibfk_1` FOREIGN KEY (`command_command_id`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `service_ibfk_2` FOREIGN KEY (`command_command_id2`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `service_ibfk_3` FOREIGN KEY (`timeperiod_tp_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `service_ibfk_4` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `service_ibfk_5` FOREIGN KEY (`purge_policy_id`) REFERENCES `purge_policy` (`purge_policy_id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `service_ibfk_4` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL;
 
 --
 -- Contraintes pour la table `contact_host_relation`
