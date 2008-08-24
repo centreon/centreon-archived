@@ -1509,10 +1509,10 @@ CREATE TABLE IF NOT EXISTS `on_demand_macro_host` (
 -- Structure de la table `options`
 --
 
-CREATE TABLE `151_centreon`.`options` (
+CREATE TABLE `options` (
    `key` VARCHAR ( 255 ) NULL ,
    `value` VARCHAR ( 255 ) NULL
-) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci 
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;
 
 -- --------------------------------------------------------
 
