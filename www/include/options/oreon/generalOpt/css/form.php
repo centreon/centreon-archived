@@ -121,5 +121,5 @@
 	$tpl->assign("CSS_File", _("CSS File"));
 	$tpl->assign("Menu", _("Menu"));
 	$tpl->assign('p', $p);
-	$tpl->display("formCss.ihtml");	
+	$tpl->display("form.ihtml");	
 ?>

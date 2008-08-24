@@ -160,5 +160,5 @@
 	$tpl->assign('o', $o);
 	$tpl->assign("genOpt_debug_options", _("Debug Properties"));
 	$tpl->assign('valid', $valid);
-	$tpl->display("formDebug.ihtml");
+	$tpl->display("form.ihtml");
 ?>

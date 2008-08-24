@@ -33,6 +33,7 @@
 	##########################################################
 	# Var information to format the element
 	#
+
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
 	$attrsAdvSelect = null;
@@ -43,17 +44,37 @@
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Modify General Options"));
 
-	#
-	## SNMP information
-	#
-	$form->addElement('header', 'snmp', _("SNMP information"));
-	$form->addElement('text', 'snmp_community', _("Global Community"), $attrsText);
-	$form->addElement('select', 'snmp_version', _("Version"), array("0"=>"1", "1"=>"2", "2"=>"2c", "3"=>"3"), $attrsAdvSelect);
-	$form->addElement('text', 'snmp_trapd_path_conf', _("Directory of traps configuration files"), $attrsText);
-	$form->addElement('text', 'snmpttconvertmib_path_bin', _("snmpttconvertmib Directory + Binary"), $attrsText);
-	$form->addElement('text', 'snmptt_unknowntrap_log_file', _("SNMPTT log file"), $attrsText);
-	$form->addElement('text', 'perl_library_path', _("Perl library directory"), $attrsText);
-	
+	$TabColorNameAndLang = array("color_up"=>_("Host UP Color"),
+                                    	"color_down"=>_("Host DOWN Color"),
+                                    	"color_unreachable"=>_("Host UNREACHABLE Color"),
+                                    	"color_ok"=>_("Service OK Color"),
+                                    	"color_warning"=>_("Service WARNING Color"),
+                                    	"color_critical"=>_("Service CRITICAL Color"),
+                                    	"color_pending"=>_("Service PENDING Color"),
+                                    	"color_unknown"=>_("Service UNKNOWN Color"),
+					);
+
+	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
+		$nameLang = $val;
+		$codeColor = $gopt[$nameColor];
+		$title = _("Pick a color");
+		$attrsText3 	= array("value"=>$nameColor,"size"=>"8","maxlength"=>"7");
+		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
+		if ($form->validate())	{
+			$colorColor = $form->exportValue($nameColor);
+		}
+		$attrsText4 	= array("style"=>"width:50px; height:18px; background: ".$codeColor." url() left repeat-x 0px; border-color:".$codeColor.";");
+		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
+		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
+		if (!$form->validate())	{
+			$form->addElement('button', $nameColor.'_modify', _("Modify"), $attrsText5);
+		}
+	}
+
+	$form->addElement('hidden', 'gopt_id');
+	$redirect =& $form->addElement('hidden', 'o');
+	$redirect->setValue($o);
+
 	#
 	## Form Rules
 	#
@@ -62,34 +83,43 @@
 			return rtrim($elem, "/")."/";
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
-	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
-	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
-	$form->addRule('snmp_trapd_path_conf', _("Can't write in directory"), 'is_writable_path');
-	$form->addRule('snmp_trapd_path_conf', _("Required Field"), 'required');
-	$form->addRule('snmpttconvertmib_path_bin', _("Can't execute binary"), 'is_executable_binary');
-	$form->addRule('perl_library_path', _("Can't read in directory"), 'is_readable_path');
+	
 	#
 	##End of form definition
 	#
 
-	$form->addElement('hidden', 'gopt_id');
-	$redirect =& $form->addElement('hidden', 'o');
-	$redirect->setValue($o);
-
 	# Smarty template Init
 	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path."snmp/", $tpl);
+	$tpl = initSmartyTpl($path.'/colors', $tpl);
 
 	$form->setDefaults($gopt);
 
 	$subC =& $form->addElement('submit', 'submitC', _("Save"));
 	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
 
+	#
+	##Picker Color JS
+	#
+	$tpl->assign('colorJS',"
+	<script type='text/javascript'>
+		function popup_color_picker(t,name,title)
+		{
+			var width = 400;
+			var height = 300;
+			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name+'&title='+title, 'cp', 'resizable=no, location=no, width='
+						+width+', height='+height+', menubar=no, status=yes, scrollbars=no, menubar=no');
+		}
+	</script>
+    "
+    );
+	#
+	##End of Picker Color
+	#
+
     $valid = false;
 	if ($form->validate())	{
 		# Update in DB
-		updateSNMPConfigData($form->getSubmitValue("gopt_id"));
+		updateColorsConfigData($form->getSubmitValue("gopt_id"));
 		# Update in Oreon Object
 		$oreon->optGen = array();
 		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
@@ -98,10 +128,10 @@
    		$valid = true;
 		$form->freeze();
 	}
-	if (!$form->validate() && isset($_POST["gopt_id"]))	
+	if (!$form->validate() && isset($_POST["gopt_id"]))
 	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 
-	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=snmp'"));
+	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=colors'"));
 
 	#
 	##Apply a template definition
@@ -112,6 +142,8 @@
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
+	$tpl->assign("genOpt_colors_properties", _("Status Color Properties"));
+	
 	$tpl->assign('valid', $valid);
-	$tpl->display("formSNMP.ihtml");
+	$tpl->display("form.ihtml");
 ?>

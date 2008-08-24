@@ -42,43 +42,43 @@
 
 	switch ($o)	{
 		case "nagios" : 
-			require_once($path."nagios/formNagios.php"); 
+			require_once($path."nagios/form.php"); 
 			break;
 		case "colors" : 
-			require_once($path."colors/formColors.php"); 
+			require_once($path."colors/form.php"); 
 			break;
 		case "snmp" : 
-			require_once($path."snmp/formSNMP.php"); 
+			require_once($path."snmp/form.php"); 
 			break;
 		case "rrdtool" : 
-			require_once($path."rrdtool/formRRDTool.php"); 
+			require_once($path."rrdtool/form.php"); 
 			break;
 		case "ldap" : 
-			require_once($path."ldap/formLDAP.php"); 
+			require_once($path."ldap/form.php"); 
 			break;
 		case "debug" : 
-			require_once($path."debug/formDebug.php"); 
+			require_once($path."debug/form.php"); 
 			break;
 		case "general" : 
-			require_once($path."general/formGeneralOpt.php"); 
+			require_once($path."general/form.php"); 
 			break;
 		case "css" : 
-			require_once($path."css/formCss.php"); 
+			require_once($path."css/form.php"); 
 			break;
 		case "ods" : 
-			require_once($path."centStorage/form.php"); 
+			require_once($path."centstorage/form.php"); 
 			break;
 		case "ndo" : 
-			require_once($path."ndo/formNDO.php"); 
+			require_once($path."ndo/form.php"); 
 			break;
 		case "cas" : 
-			require_once($path."CAS/formCAS.php"); 
+			require_once($path."CAS/form.php"); 
 			break;
 		case "reporting" : 
-			require_once($path."reporting/form_reporting.php"); 
+			require_once($path."reporting/form.php"); 
 			break;
 		default : 
-			require_once($path."general/formGeneralOpt.php"); 
+			require_once($path."general/form.php"); 
 			break;
 	}
 ?>

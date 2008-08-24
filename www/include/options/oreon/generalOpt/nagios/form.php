@@ -18,39 +18,57 @@
 	if (!isset($oreon))
 		exit();
 
-	#
-	## Database retrieve information
-	#
+	/*
+	 * Database retrieve information
+	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
 	# Set base value
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
+	
+	/*
+	 * Database retrieve information for differents elements list we need on the page
+	 */
+	
 	#
 	# End of "database-retrieved" information
 	##########################################################
 	##########################################################
 	# Var information to format the element
 	#
+
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
 	$attrsAdvSelect = null;
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Modify General Options"));
-	
-	#
-	## Various information
-	#
-	$form->addElement('text', 'rrdtool_path_bin', _("Directory + RRDTOOL Binary"), $attrsText);
-	$form->addElement('text', 'rrdtool_version', _("RRDTool Version"), $attrsText2);
 
-	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, _("Graphs Plugins"), '1');
-	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, _("Simple Graphs Renderer"), '0');
+	/*
+	 * Nagios information
+	 */
+	$form->addElement('header', 'nagios', _("Nagios information"));
+	$form->addElement('text', 'nagios_path', _("Directory"), $attrsText);
+	$form->addElement('text', 'nagios_path_bin', _("Directory + Binary"), $attrsText);
+	$form->addElement('text', 'nagios_init_script', _("Init Script"), $attrsText);
+	$form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
+	$form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
+	$form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
+	
+	$form->addElement('select', 'nagios_version', _("Nagios Release"), array(2=>"2", 3=>"3"));
+	
+	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, _("Yes"), '1');
+	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, _("No"), '0');
+
+	#
+	## ndo
+	#
+	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, _("Yes"), '1');
+	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, _("No"), '0');
+	$form->addGroup($ndo_activate, 'ndo_activate', _("NDO activate"), '&nbsp;');
+
 	
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
@@ -65,29 +83,20 @@
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('nagios_path', 'slash');
-	//$form->applyFilter('nagios_path_bin', 'slash');
 	$form->applyFilter('nagios_path_img', 'slash');
 	$form->applyFilter('nagios_path_plugins', 'slash');
-	$form->applyFilter('oreon_path', 'slash');
-	$form->applyFilter('oreon_web_path', 'slash');
-	$form->applyFilter('oreon_rrdbase_path', 'slash');
-	$form->applyFilter('debug_path', 'slash');
+	
 	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
 	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
 	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
-	$form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
-	$form->addRule('nagios_path_plugins', _("Can't write directory"), 'is_writable_path');
-	$form->addRule('nagios_path_img', _("Can't write directory"), 'is_writable_path');
+	
+	//$form->addRule('nagios_path_plugins', ("Can't write in directory"), 'is_writable_path');
+	$form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path');
 	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
-	$form->addRule('nagios_path_bin', _("Can't execute binary"), 'is_executable_binary');
-	$form->addRule('mailer_path_bin', _("Can't execute binary"), 'is_executable_binary');
-	$form->addRule('rrdtool_path_bin', _("Can't execute binary"), 'is_executable_binary');
-	$form->addRule('oreon_rrdbase_path', _("Can't write in directory"), 'is_writable_path');
-	$form->addRule('debug_path', _("Can't write in directory"), 'is_writable_path');
-	$form->addRule('snmp_trapd_path_conf', _("Can't write in file"), 'is_writable_file_if_exist');
+	//$form->addRule('nagios_path_bin', _("Can't execute binary"), 'is_executable_binary');
 
 	#
 	##End of form definition
@@ -95,18 +104,17 @@
 
 	# Smarty template Init
 	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path.'rrdtool/', $tpl);
+	$tpl = initSmartyTpl($path."/nagios", $tpl);
 
 	$form->setDefaults($gopt);
 
 	$subC =& $form->addElement('submit', 'submitC', _("Save"));
 	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
 
-
     $valid = false;
 	if ($form->validate())	{
 		# Update in DB
-		updateRRDToolConfigData($form->getSubmitValue("gopt_id"));
+		updateNagiosConfigData($form->getSubmitValue("gopt_id"));
 		# Update in Oreon Object
 		$oreon->optGen = array();
 		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
@@ -115,10 +123,11 @@
    		$valid = true;
 		$form->freeze();
 	}
-	if (!$form->validate() && isset($_POST["gopt_id"]))
-	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
+	if (!$form->validate() && isset($_POST["gopt_id"]))	{
+	    print("<div class='msg' align='center'>"._("impossible to validate, one or more field is incorrect")."</div>");
+	}
 
-	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=rrdtool'"));
+	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'"));
 
 	#
 	##Apply a template definition
@@ -129,8 +138,13 @@
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
-	$tpl->assign("genOpt_rrdtool_properties", _("RRDTool Properties"));
-	$tpl->assign("genOpt_rrdtool_configurations", _("RRDTool Configuration"));
+	$tpl->assign("genOpt_nagios_properties", _("Nagios Properties"));
+	$tpl->assign("genOpt_nagios_version", _("Nagios version"));
+	$tpl->assign("genOpt_nagios_init_script", _("Initialization Script "));
+	$tpl->assign("genOpt_nagios_direstory", _("Nagios Directories"));
+	$tpl->assign("genOpt_mailer_path", _("Mailer path"));
+	$tpl->assign("genOpt_ndo_configuration", _("NDO Configuration"));
+	
 	$tpl->assign('valid', $valid);
-	$tpl->display("formRRDTool.ihtml");
+	$tpl->display("form.ihtml");
 ?>
