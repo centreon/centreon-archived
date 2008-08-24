@@ -30,40 +30,12 @@
 		(isset($ret["dayList"]["report_Saturday"])) ? $ret["dayList"]["report_Saturday"] = 1  : $ret["dayList"]["report_Saturday"] = 0;
 		(isset($ret["dayList"]["report_Sunday"])) ? $ret["dayList"]["report_Sunday"] = 1  : $ret["dayList"]["report_Sunday"] = 0;
 		
-		$query = "UPDATE `contact_param` SET cp_value = '".$ret["dayList"]["report_Monday"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_Monday'";
-		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		
-		$query = "UPDATE `contact_param` SET cp_value = '".$ret["dayList"]["report_Tuesday"]."' WHERE cp_contact_id  IS NULL AND cp_key = 'report_Tuesday'";
-		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		
-		$query = "UPDATE `contact_param` SET cp_value =' ".$ret["dayList"]["report_Wednesday"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_Wednesday'";
-		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		
-		$query = "UPDATE `contact_param` SET cp_value = '".$ret["dayList"]["report_Thursday"]."' WHERE cp_contact_id  IS NULL AND cp_key = 'report_Thursday'";
-		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		
-		$query = "UPDATE `contact_param` SET cp_value = '".$ret["dayList"]["report_Friday"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_Friday'";
-		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		
-		$query = "UPDATE `contact_param` SET cp_value = '".$ret["dayList"]["report_Saturday"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_Saturday'";
-		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		
-		$query = "UPDATE `contact_param` SET cp_value = '".$ret["dayList"]["report_Sunday"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_Sunday'";
-		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		foreach ($ret["dayList"] as $key => $value){ 	
+			$query = "UPDATE `contact_param` SET `cp_value` = '".$ret["dayList"][$key]."' WHERE `cp_contact_id` IS NULL AND `cp_key` = '$key'";
+			$DBRESULT =& $pearDB->query($query);
+			if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		}
 		
 		$query = "UPDATE `contact_param` SET cp_value = '".$ret["report_hour_start"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_hour_start'";
 		$DBRESULT =& $pearDB->query($query);

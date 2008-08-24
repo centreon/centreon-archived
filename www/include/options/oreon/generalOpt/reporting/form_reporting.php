@@ -23,7 +23,7 @@
 	/*
 	 * Database retrieve information
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `contact_param` WHERE cp_contact_id IS NULL");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `contact_param` WHERE `cp_contact_id` IS NULL");
 
 	$params = array();
 	$params["dayList"] = array();
@@ -59,10 +59,10 @@
 	 */
 	$form->addElement('header', 'title', _("Reporting time period"));
 
-	$form->addElement('text', 'report_hour_start', _("Start Hour"), $attrsText);
-	$form->addElement('text', 'report_minute_start', _("Start Minute"), $attrsText);
-	$form->addElement('text', 'report_hour_end', _("End Hour"), $attrsText);
-	$form->addElement('text', 'report_minute_end', _("End Minute"), $attrsText);
+	$form->addElement('text', 'report_hour_start', 		_("Start Hour"), $attrsText);
+	$form->addElement('text', 'report_minute_start', 	_("Start Minute"), $attrsText);
+	$form->addElement('text', 'report_hour_end', 		_("End Hour"), $attrsText);
+	$form->addElement('text', 'report_minute_end', 		_("End Minute"), $attrsText);
 
 	$Opt = array();
  	$Opt[] = &HTML_QuickForm::createElement('checkbox', 'report_Monday', 	'&nbsp;', _("Monday"));
