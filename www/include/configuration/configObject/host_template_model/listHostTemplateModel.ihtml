@@ -39,7 +39,7 @@
 			{/if}
 			<tr class="{$elemArr[elem].MenuClass}">
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
-				<td class="ListCol2Left">
+				<td class="ListColLeft">
 					{if $elemArr[elem].pattern}&nbsp;&nbsp;&nbsp;&nbsp;{/if}
 					<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
 				</td>
