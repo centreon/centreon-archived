@@ -111,7 +111,6 @@
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($host = $DBRESULT->fetchRow())	{				
-				print_r($host);
 				if ($oreon->user->get_version() >= 3) {
 					$DBRESULT_TP =& $pearDB->query("SELECT htr.host_tpl_id, host.host_id FROM host_template_relation htr, host WHERE host.host_id = htr.host_host_id AND htr.host_host_id = ". $host["host_id"]);
 					if (PEAR::isError($DBRESULT_TP))
