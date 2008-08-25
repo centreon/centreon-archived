@@ -7,6 +7,16 @@
 => Bugfix : better display in service groups monitoring on each status.
 => Bugfix : Solved a few PHP errors on reporting by service groups.
 => Enhancement : Test added during the first step of the installation. Now, the browser must authorize cookies to proceed with the installation. 
+=> Improve CSS
+=> Bugfix : remove error with downtime
+=> Bugfix : improve alphanumerical sort
+=> Enhancement : Add timeperiod in graphs like cacti
+=> Add template for Unix / Linux environment
+=> add timeperiod in nagios perftrace page
+=> check all montoring pages and improve functions
+=> Bugfix : reduce generate time for popup
+=> Bugix : remove multiple error for IE
+=> Bugfix : remove hardcoded path for filegenerations 
 
 ## Centreon 2.0-RC2
 
