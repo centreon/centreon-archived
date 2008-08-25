@@ -209,6 +209,11 @@
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
+	?><script type="text/javascript">
+	function setO(_i) {
+		document.forms['form'].elements['o'].value = _i;
+	}
+	</script><?php
 
 	/*
 	 * Apply a template definition

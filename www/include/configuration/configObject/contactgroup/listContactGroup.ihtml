@@ -1,9 +1,4 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<script type="text/javascript">
-	function setO(_i) {
-		document.forms['form'].elements['o'].value = _i;
-	}
-</script>
 <form name='form' method='POST'>
 	<table class="Toolbar_TableTop">
 		<tr class="Toolbar_TR_Top">

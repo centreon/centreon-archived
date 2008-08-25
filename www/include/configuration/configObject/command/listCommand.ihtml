@@ -1,8 +1,3 @@
-<script type="text/javascript">
-	function setO(_i) {
-		document.forms['form'].elements['o'].value = _i;
-	}
-</script>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form' method='POST'>
 	<table class="Toolbar_TableTop">
