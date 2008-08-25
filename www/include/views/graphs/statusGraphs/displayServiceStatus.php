@@ -18,14 +18,12 @@
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
-	
-	//	ini_set("display_error", "On");
-	
-	require_once ('DB.php');
-	require_once("@CENTREON_ETC@/centreon.conf.php");
+		
+	require_once 'DB.php';
+	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path."www/DBconnect.php";
-	require_once ($centreon_path."www/class/Session.class.php");
-	require_once ($centreon_path."www/class/Oreon.class.php");
+	require_once $centreon_path."www/class/Session.class.php";
+	require_once $centreon_path."www/class/Oreon.class.php";
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
@@ -83,11 +81,13 @@
 			$_GET["service_description"] = str_replace("/", "#S#", $_GET["service_description"]);
 			$_GET["service_description"] = str_replace("\\", "#BS#", $_GET["service_description"]);
 		}
+
 		if (!isset($_GET["host_name"]) && !isset($_GET["service_description"])){
 			$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$_GET["index"]."' LIMIT 1");
 		} else {
 			$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND `service_description` = '".$_GET["service_description"]."' LIMIT 1");
 		}
+
 		$index_data_ODS =& $DBRESULT->fetchRow();
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
 			$host_id = getMyHostID($index_data_ODS["host_name"]);
@@ -123,15 +123,13 @@
 		
 		$base = "";
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
-			$base = "-b ".$GraphTemplate["base"];
-		
+			$base = "-b ".$GraphTemplate["base"];		
 		if (!isset($GraphTemplate["width"]) || $GraphTemplate["width"] == "")
 			$GraphTemplate["width"] = 600;
 		if (!isset($GraphTemplate["height"]) || $GraphTemplate["height"] == "")
 			$GraphTemplate["height"] = 200;
 		if (!isset($GraphTemplate["vertical_label"]) || $GraphTemplate["vertical_label"] == "")
 			$GraphTemplate["vertical_label"] = "sds";		
-		
 		
 		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 ";
 		$command_line .= "--title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='Status' ";
@@ -141,7 +139,6 @@
 		 */
 		if (isset($GraphTemplate["bg_grid_color"]) && $GraphTemplate["bg_grid_color"])
 			$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
-
 		if (isset($GraphTemplate["police_color"]) && $GraphTemplate["police_color"])
 			$command_line .= "--color FONT".$GraphTemplate["police_color"]." ";
 		if (isset($GraphTemplate["grid_main_color"]) && $GraphTemplate["grid_main_color"])
