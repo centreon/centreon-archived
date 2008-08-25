@@ -426,7 +426,7 @@
 			$ret["service_alias"] = str_replace('\\', "#BS#", $ret["service_alias"]);
 		}
 		$rq = "INSERT INTO service " .
-				"(service_template_model_stm_id, command_command_id, timeperiod_tp_id, command_command_id2, timeperiod_tp_id2, purge_policy_id, " .
+				"(service_template_model_stm_id, command_command_id, timeperiod_tp_id, command_command_id2, timeperiod_tp_id2, " .
 				"service_description, service_alias, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, " .
 				"service_passive_checks_enabled, service_parallelize_check, service_obsess_over_service, service_check_freshness, service_freshness_threshold, " .
 				"service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
@@ -438,7 +438,6 @@
 				isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
 				isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
 				isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
-				isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL ? $rq .= "'".$ret["purge_policy_id"]."', ": $rq .= "NULL, ";
 				isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 				isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 				isset($ret["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
@@ -575,8 +574,6 @@
 		isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
 		$rq .= "timeperiod_tp_id2 = ";
 		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
-		$rq .= "purge_policy_id = ";
-		isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL ? $rq .= "'".$ret["purge_policy_id"]."', ": $rq .= "NULL, ";
 		# If we are doing a MC, we don't have to set name and alias field
 		if (!$from_MC)	{
 			$rq .= "service_description = ";
@@ -703,7 +700,6 @@
 		if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL) $rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
 		if (isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL) $rq .= "command_command_id2 = '".$ret["command_command_id2"]."', ";
 		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) $rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
-		if (isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL) $rq .= "purge_policy_id = '".$ret["purge_policy_id"]."', ";
 		if (isset($ret["service_alias"]) && $ret["service_alias"] != NULL) $rq .= "service_alias = '".$ret["service_alias"]."', ";
 		if (isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2) $rq .= "service_is_volatile = '".$ret["service_is_volatile"]["service_is_volatile"]."', ";
 		if (isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != NULL) $rq .= "service_max_check_attempts = '".$ret["service_max_check_attempts"]."', ";

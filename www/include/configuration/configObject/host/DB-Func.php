@@ -454,7 +454,7 @@
 		}
 		
 		$rq = "INSERT INTO host " .
-			"(host_template_model_htm_id, command_command_id, command_command_id_arg1, timeperiod_tp_id, timeperiod_tp_id2, purge_policy_id, command_command_id2, command_command_id_arg2," .
+			"(host_template_model_htm_id, command_command_id, command_command_id_arg1, timeperiod_tp_id, timeperiod_tp_id2, command_command_id2, command_command_id_arg2," .
 			"host_name, host_alias, host_address, host_max_check_attempts, host_check_interval, host_active_checks_enabled, " .
 			"host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host, host_check_freshness, host_freshness_threshold, " .
 			"host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
@@ -467,7 +467,6 @@
 			isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL ? $rq .= "'".$ret["command_command_id_arg1"]."', ": $rq .= "NULL, ";
 			isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
 			isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
-			isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL ? $rq .= "'".$ret["purge_policy_id"]."', ": $rq .= "NULL, ";
 			isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
 			isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".$ret["command_command_id_arg2"]."', ": $rq .= "NULL, ";
 			isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".htmlentities($ret["host_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
@@ -777,8 +776,6 @@
 		isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
 		$rq .= "timeperiod_tp_id2 = ";
 		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
-		$rq .= "purge_policy_id = ";
-		isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL ? $rq .= "'".$ret["purge_policy_id"]."', ": $rq .= "NULL, ";
 		$rq .= "command_command_id2 = ";
 		isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
 		$rq .= "command_command_id_arg2 = ";		
@@ -952,7 +949,6 @@
 		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL) $rq .= "command_command_id_arg1 = '".$ret["command_command_id_arg1"]."', ";
 		if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL) $rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
 		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) $rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
-		if (isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL) $rq .= "purge_policy_id = '".$ret["purge_policy_id"]."', ";
 		if (isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL) $rq .= "command_command_id2 = '".$ret["command_command_id2"]."', ";
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL) $rq .= "command_command_id_arg2 = '".$ret["command_command_id_arg2"]."', ";
 		if (isset($ret["host_address"]) && $ret["host_address"] != NULL) $rq .= "host_address = '".htmlentities($ret["host_address"], ENT_QUOTES)."', ";
@@ -1467,7 +1463,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 			if (testServiceExistence ($alias, array(0=>$hID))) {				
 				$service = array("service_template_model_stm_id" => $hTpl2["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
 				$service_id = insertServiceInDB($service);
-				$rq3 = "_service_relation (hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) VALUES (NULL, '".$hID."', NULL, '".$service_id."')";
+				$rq3 = "INSERT INTO host_service_relation (hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) VALUES (NULL, '".$hID."', NULL, '".$service_id."')";
 				$DBRESULT3 =& $pearDB->query($rq3);
 				if (PEAR::isError($DBRESULT3))
 					print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
