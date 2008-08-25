@@ -60,4 +60,4 @@ ALTER TABLE `contact` ADD `contact_acl_group_list` VARCHAR( 255 ) NULL ;
 ALTER TABLE `contact` ADD `contact_autologin_key` VARCHAR( 255 ) NULL ;
 
 ALTER TABLE `host` ADD `host_first_notification_delay` INT NULL AFTER `host_notifications_enabled` ;
-ALTER TABLE `host` ADD `service_first_notification_delay` INT NULL AFTER `service_notifications_enabled` ;
+ALTER TABLE `service` ADD `service_first_notification_delay` INT NULL AFTER `service_notifications_enabled` ;
