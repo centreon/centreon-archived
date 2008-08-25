@@ -36,7 +36,6 @@ UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonito
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 20212;
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 2021201;
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 2021202;
-
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 201;
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 20102;
 UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/ajaxMonitoring.js' WHERE id_page = 20103;
@@ -46,7 +45,6 @@ UPDATE `topology` SET `topology_url_opt` = NULL WHERE `topology`.`topology_page`
 
 UPDATE `topology` SET `topology_show` = '0' WHERE `topology`.`topology_page` = 50606 LIMIT 1 ;
 UPDATE `topology` SET `topology_url` = 'http://www.merethis.com' WHERE `topology`.`topology_page` = 50607 LIMIT 1 ;
-
 
 DELETE FROM `topology` WHERE `topology_page` = 40211 LIMIT 1;
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'All Graphs', './img/icones/16x16/column-chart.gif', 402, 40201, 10, 40, './include/views/graphs/graphs.php', NULL, '0', '0', '1', NULL, NULL, NULL);
@@ -60,20 +58,6 @@ DELETE FROM `topology` WHERE `topology_page` = 40210 LIMIT 1;
 
 ALTER TABLE `contact` ADD `contact_acl_group_list` VARCHAR( 255 ) NULL ;
 ALTER TABLE `contact` ADD `contact_autologin_key` VARCHAR( 255 ) NULL ;
-
--- INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'menu_reporting', './img/icones/16x16/nagios.gif', 50101, 5010110, 100, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=reporting', '0', '0', '1');
-
-INSERT INTO `contact_param` (`id`, `cp_key`, `cp_value`, `cp_contact_id`) VALUES (NULL, 'report_hour_start', '0', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_minute_start', '0', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_hour_end', '24', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_minute_end', '0', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Monday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Tuesday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Wednesday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Thursday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Friday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Saturday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Sunday', '1', NULL);
 
 ALTER TABLE `host` ADD `host_first_notification_delay` INT NULL AFTER `host_notifications_enabled` ;
 ALTER TABLE `host` ADD `service_first_notification_delay` INT NULL AFTER `service_notifications_enabled` ;
