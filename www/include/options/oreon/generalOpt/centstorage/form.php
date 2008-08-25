@@ -101,7 +101,7 @@
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path.'centStorage/', $tpl);
+	$tpl = initSmartyTpl($path.'centstorage/', $tpl);
 	$form->setDefaults($gopt);
 	
 	$subC =& $form->addElement('submit', 'submitC', _("Save"));

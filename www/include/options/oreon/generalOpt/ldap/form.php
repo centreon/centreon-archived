@@ -125,5 +125,5 @@
 	$tpl->assign('o', $o);
 	$tpl->assign("optGen_ldap_properties", _("LDAP Properties"));
 	$tpl->assign('valid', $valid);
-	$tpl->display("formLDAP.ihtml");
+	$tpl->display("form.ihtml");
 ?>
