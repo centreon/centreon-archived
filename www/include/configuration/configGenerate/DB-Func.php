@@ -110,9 +110,9 @@
 				$DBRESULT =& $pearDB->query("SELECT host.host_id FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");				
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			while($host = $DBRESULT->fetchRow())	{				
+			while ($host = $DBRESULT->fetchRow())	{				
+				print_r($host);
 				if ($oreon->user->get_version() >= 3) {
-					$gotTP = 0;					
 					$DBRESULT_TP =& $pearDB->query("SELECT htr.host_tpl_id, host.host_id FROM host_template_relation htr, host WHERE host.host_id = htr.host_host_id AND htr.host_host_id = ". $host["host_id"]);
 					if (PEAR::isError($DBRESULT_TP))
 						print "DB Error : ".$DBRESULT_TP->getDebugInfo()."<br />";			
@@ -120,14 +120,11 @@
 				}
 				# If the Host is link to a Template, we think that the dependencies are manage in the template
 				if (isset($host["host_template_model_htm_id"]) && $host["host_template_model_htm_id"])	{										
-					if (array_key_exists($host["host_template_model_htm_id"], $hostEnb))					
+					if (isset($host["host_template_model_htm_id"]) && isset($host["host_template_model_htm_id"][$hostEnb]))					
 						$hostEnb[$host["host_id"]] = 1;											
-				}
-				else if ($oreon->user->get_version() >= 3 && $gotTP) {					
-					if (array_key_exists($host["host_tpl_id"], $hostEnb))					
+				} else if ($oreon->user->get_version() >= 3 && $gotTP) {										
 						$hostEnb[$host["host_id"]] = 1;
-				}
-				else	{										
+				} else {										
 					$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cghr.contactgroup_cg_id FROM contactgroup_host_relation cghr WHERE cghr.host_host_id = '".$host["host_id"]."'");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
