@@ -112,8 +112,8 @@ div.pagination 		{margin-left:40%;}
 
 #resume_light, #tactical_light 				{position:absolute;right:10px;top:10px;}
 .Resume_light_table, .tactical_light_table 	{color:#454545;font-size:8px;padding:1px 3px;}
-.Resume_light_header						{background-image: url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x;}
-.Resume_light_table td 						{border:1px SOLID #AEAEAE;}
+.Resume_light_header						{background-image: url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x;text-align:center;}
+.Resume_light_table td 						{border:1px SOLID #AEAEAE;padding:2px;}
 
 /* Warning */ 
 .msg 			{background-color:red;border:1px solid #000;color:#FFF;font-weight:400;margin:5px;padding:3px;text-align:center;}
