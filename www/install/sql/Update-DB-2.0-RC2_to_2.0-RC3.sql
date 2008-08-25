@@ -1,4 +1,4 @@
-UPDATE `informations` SET `value` = '2.0-RC4' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-RC3' LIMIT 1;
+UPDATE `informations` SET `value` = '2.0-RC3' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-RC2' LIMIT 1;
 
 CREATE TABLE `options` (
 	`key` VARCHAR( 255 ) NULL ,
