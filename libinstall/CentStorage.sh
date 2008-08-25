@@ -163,7 +163,7 @@ if [ "$RC" -eq "0" ] ; then
 		$TMPDIR/final/centstorage.init.d \
 		$INIT_D/centstorage >> $LOG_FILE 2>&1
 	RC="1"
-	if [ "${CENTSTORAGE_INSTALL_LVLRUN:-0}" -eq 1 ] ; then
+	if [ "${CENTSTORAGE_INSTALL_RUNLVL:-0}" -eq 1 ] ; then
 		RC="1"
 	else
 		yes_no_default "$(gettext "Do you want me to install CentStorage run level ?")"

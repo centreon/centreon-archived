@@ -1282,7 +1282,7 @@ function configureSUDO(){
 	echo -e "$line"
 	echo -e "\t$(gettext "Configure Sudo")"
 	echo -e "$line\n\n"
-    
+    	local no_force_sudo="0"
 	local dir_conf="$1"
 	# Generate a sudo config in directory
 	prepare_sudo_config "$dir_conf"
@@ -1291,8 +1291,13 @@ function configureSUDO(){
 	sudo=`${GREP} -e "[CO][ER][NE][TO][RN]" $SUDO_FILE > /dev/null 2>&1 ; echo $?`
 	if [ $sudo -eq 1 ]; then
     		echo_info "$(gettext "Your sudo is not configured")"
-
-		yes_no_default "$(gettext "Do you want me to configure your sudo ? (WARNING) ")"
+		
+		if [ "${FORCE_SUDO_CONF:-0}" -eq 1 ] ; then
+			no_force_sudo="0"
+		else
+			yes_no_default "$(gettext "Do you want me to configure your sudo ? (WARNING) ")"
+			no_force_sudo="$?"
+		fi
 		if [ $? -eq 0 ] ; then 
 			${CAT} $dir_conf/centreon.sudo >> $SUDO_FILE
 			echo_success "$(gettext "Configuring Sudo")" "$ok"
