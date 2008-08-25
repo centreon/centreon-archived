@@ -108,7 +108,7 @@ div.pagination 		{margin-left:40%;}
 #QuickSearch 		{position:absolute;right:10px;top:86px;}
 
 #mainnav 			{list-style-type:none;position:absolute;z-index:2;}
-#mainnav li 		{float:left;padding:3px;z-index:2;}
+#mainnav li 		{float:left;padding:3px;}
 
 #resume_light, #tactical_light 				{position:absolute;right:10px;top:10px;}
 .Resume_light_table, .tactical_light_table 	{color:#454545;font-size:8px;padding:1px 3px;}
