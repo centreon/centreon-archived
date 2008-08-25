@@ -1298,7 +1298,7 @@ function configureSUDO(){
 			yes_no_default "$(gettext "Do you want me to configure your sudo ? (WARNING) ")"
 			no_force_sudo="$?"
 		fi
-		if [ $? -eq 0 ] ; then 
+		if [ $no_force_sudo -eq 0 ] ; then 
 			${CAT} $dir_conf/centreon.sudo >> $SUDO_FILE
 			echo_success "$(gettext "Configuring Sudo")" "$ok"
 		else
