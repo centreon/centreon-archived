@@ -51,7 +51,7 @@
 			}
 
 			// Check ACL and generate ACL restrictions
-			if (isset($is_admin) == false)	{
+			if (!$is_admin)	{
 				$lca = getLcaHostByName($pearDB);
 				$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 		    }
@@ -69,7 +69,7 @@
 			$groupnumber = count($grouplist); // Getting group id of the previous group
 
 			// Get Status Globals for hosts
-			if (isset($is_admin) == false) {
+			if (!isset($is_admin)) {
 				$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
 						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
 						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id".
@@ -100,7 +100,7 @@
 			/*
 			 * Get the id's of problem hosts
 			*/
-			if (isset($is_admin) == false) {
+			if (!isset($is_admin)) {
 						$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state ".
 								" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
 								" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
