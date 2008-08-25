@@ -455,11 +455,12 @@
 		
 		$rq = "INSERT INTO host " .
 			"(host_template_model_htm_id, command_command_id, command_command_id_arg1, timeperiod_tp_id, timeperiod_tp_id2, purge_policy_id, command_command_id2, command_command_id_arg2," .
-			"host_name, host_alias, host_address, `display_name`, host_max_check_attempts, host_check_interval, host_active_checks_enabled, " .
+			"host_name, host_alias, host_address, host_max_check_attempts, host_check_interval, host_active_checks_enabled, " .
 			"host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host, host_check_freshness, host_freshness_threshold, " .
 			"host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
 			"host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, " .
-			"host_notification_options, host_notifications_enabled, host_first_notification_delay, host_stalking_options, host_snmp_community, host_snmp_version, host_comment, host_register, host_activate) " .
+			"host_notification_options, host_notifications_enabled, host_first_notification_delay, host_stalking_options, host_snmp_community, " .
+			"host_snmp_version, host_comment, host_register, host_activate) " .
 			"VALUES ( ";
 			isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != NULL ? $rq .= "'".$ret["host_template_model_htm_id"]."', ": $rq .= "NULL, ";
 			isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";
