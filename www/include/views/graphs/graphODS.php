@@ -123,212 +123,212 @@
 <script type="text/javascript" src='./include/common/javascript/tool.js'></script>
 <script type="text/javascript">
 
-		var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
-	    var headID = document.getElementsByTagName("head")[0];  
-	    var cssNode = document.createElement('link');
-	    cssNode.type = 'text/css';
-	    cssNode.rel = 'stylesheet';
-	    cssNode.href = css_file;
-	    cssNode.media = 'screen';
-	    headID.appendChild(cssNode);
+	var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
+    var headID = document.getElementsByTagName("head")[0];  
+    var cssNode = document.createElement('link');
+    cssNode.type = 'text/css';
+    cssNode.rel = 'stylesheet';
+    cssNode.href = css_file;
+    cssNode.media = 'screen';
+    headID.appendChild(cssNode);
 
-		var multi = <?php echo $multi; ?>;
-	  	var _menu_div = document.getElementById("menu_40201");
+	var multi = <?php echo $multi; ?>;
+  	var _menu_div = document.getElementById("menu_40201");
 
-  		tree = new dhtmlXTreeObject("menu_40201","100%","100%","1");
-        tree.setImagePath("./img/icones/csh_vista/");
-        //link tree to xml
-        tree.setXMLAutoLoading("./include/views/graphs/GetODSXmlTree.php");
-            
-        //load first level of tree
-        tree.loadXML("./include/views/graphs/GetODSXmlTree.php?&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
+	tree = new dhtmlXTreeObject("menu_40201","100%","100%","1");
+    tree.setImagePath("./img/icones/csh_vista/");
+    //link tree to xml
+    tree.setXMLAutoLoading("./include/views/graphs/GetODSXmlTree.php");
+        
+    //load first level of tree
+    tree.loadXML("./include/views/graphs/GetODSXmlTree.php?&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
 
-		// system to reload page after link with new url
-		//set function object to call on node select 
-		tree.attachEvent("onClick",onNodeSelect)
-		//set function object to call on node select 
-		tree.attachEvent("onDblClick",onDblClick)
-		//set function object to call on node select 		
-		tree.attachEvent("onCheck",onCheck)
-		
-		//see other available event handlers in API documentation 
-		tree.enableDragAndDrop(0);
-		tree.enableTreeLines(false);	
-		tree.enableCheckBoxes(true);
-		tree.enableThreeStateCheckboxes(true);
-
-		// linkBar to log/reporting/graph/ID_card		
-		function getCheckedList(tree){
-			return tree.getAllChecked();
-		}
-		
-		if (document.getElementById('linkBar')){
-			var _menu_2 = document.getElementById('linkBar')
-			var _divBar = document.createElement("div");
-		
-			_divBar.appendChild(create_log_link(tree,'id'));
-			_divBar.appendChild(create_monitoring_link(tree,'id'));
-			_divBar.setAttribute('style','float:right; margin-right:110px;' );
-			_menu_2.appendChild(_divBar);
-		}
-
-		function onDblClick(nodeId){
-			tree.openAllItems(nodeId);
-			return(false);
-		}
-		
-		function onCheck(nodeId){
-			multi = 1;
-			if (document.getElementById('openid'))
-				document.getElementById('openid').innerHTML = tree.getAllChecked();
-			graph_4_host(tree.getAllChecked(),1);
-		}
-		
-		function onNodeSelect(nodeId){
-			multi = 0;
-
-			tree.openItem(nodeId);
-			if (nodeId.substring(0,2) == 'HS' || nodeId.substring(0,2) == 'MS'){
-				var graphView4xml = document.getElementById('graphView4xml');
-				graphView4xml.innerHTML="..graph.." + nodeId;
-				graph_4_host(nodeId);
-			}
-		}
-		
-		// it's fake methode for using ajax system by default
-		function mk_pagination(){;}
-		function set_header_title(){;}
-
-		function apply_period()	{
-			var openid = document.getElementById('openid').innerHTML;
-			graph_4_host(openid, multi);
-		}
-
-		// Period
-		var currentTime = new Date();
-		var period ='';
-
-		var _zero_hour = '';
-		var _zero_min = '';
-		var StartDate='';
-		var EndDate='';
-		var StartTime='';
-		var EndTime='';
-
-		if(document.formu && !document.formu.period_choice[1].checked)	{
-			period = document.formu.period.value;
-		} else {
-			if(currentTime.getMinutes() <= 9){
-				_zero_min = '0';
-			}
-
-			if (currentTime.getHours() >= 12){
-				StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
-				EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
-
-				if((currentTime.getHours()- 12) <= 9){
-					_zero_hour = '0';					
-				} else{
-					_zero_hour = '';											
-				}
-				StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
-				if(currentTime.getHours() <= 9){
-					_zero_hour = '0';					
-				} else{
-					_zero_hour = '';											
-				}	
-				EndTime   = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-			} else {
-				StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
-				EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
-
-				StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
-
-				if(currentTime.getHours() <= 9){
-					_zero_hour = '0';					
-				} else {
-					_zero_hour = '';											
-				}
-				
-				EndTime = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-			}
-		}
-
-		if (document.formu){
-			document.formu.StartDate.value = StartDate;
-			document.formu.EndDate.value = EndDate;
-			document.formu.StartTime.value = StartTime;
-			document.formu.EndTime.value = EndTime;
-		}
-
-
-		function graph_4_host(id, multi)	{
-			if (!multi)
-				multi = 0;
-			
-			if (document.formu && !document.formu.period_choice[1].checked){
-				period = document.formu.period.value;
-			} else if(document.formu) {
-				period = '';
-				StartDate = document.formu.StartDate.value;
-				EndDate = document.formu.EndDate.value;
-				StartTime = document.formu.StartTime.value;
-				EndTime = document.formu.EndTime.value;
-			}
-
-			// Metrics
-			var _metrics ="";
-			var _checked = "0";
-			if (document.formu2 && document.formu2.elements["metric"]){
-				for (i=0; i < document.formu2.elements["metric"].length; i++) {
-					_checked = "0";
-					if(document.formu2.elements["metric"][i].checked)	{
-						_checked = "1";
-					}
-					_metrics += '&metric['+document.formu2.elements["metric"][i].value+']='+_checked ;
-				}
-			}
-
-			// Templates
-			var _tpl_id = 1;
-			if (document.formu2 && document.formu2.template_select && document.formu2.template_select.value != ""){
-				_tpl_id = document.formu2.template_select.value;
-			}
-			
-			// Split metric
-			var _split = 0;
-			if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
-				_split = 1
-			}
-
-			var _status = 0;
-			if (document.formu2 && document.formu2.status && document.formu2.status.checked)	{
-				_status = 1
-			}
-			
-			var _warning = 0;
-			if (document.formu2 && document.formu2.warning && document.formu2.warning.checked)	{
-				_warning = 1
-			}
-			
-			var _critical = 0;
-			if (document.formu2 && document.formu2.critical && document.formu2.critical.checked)	{
-				_critical = 1
-			}
-			
-			tree.selectItem(id);
-			var proc = new Transformation();
-			var _addrXSL = "./include/views/graphs/GraphService.xsl";
-			var _addrXML = './include/views/graphs/GetODSXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
-
-			proc.setXml(_addrXML)
-			proc.setXslt(_addrXSL)
-			proc.transform("graphView4xml");
-		}
+	// system to reload page after link with new url
+	//set function object to call on node select 
+	tree.attachEvent("onClick",onNodeSelect)
+	//set function object to call on node select 
+	tree.attachEvent("onDblClick",onDblClick)
+	//set function object to call on node select 		
+	tree.attachEvent("onCheck",onCheck)
 	
-		// Let's save the existing assignment, if any
-    	var nowOnload = window.onload;
-    	window.onload = function () {
+	//see other available event handlers in API documentation 
+	tree.enableDragAndDrop(0);
+	tree.enableTreeLines(false);	
+	tree.enableCheckBoxes(true);
+	tree.enableThreeStateCheckboxes(true);
+
+	// linkBar to log/reporting/graph/ID_card		
+	function getCheckedList(tree){
+		return tree.getAllChecked();
+	}
+	
+	if (document.getElementById('linkBar')){
+		var _menu_2 = document.getElementById('linkBar')
+		var _divBar = document.createElement("div");
+	
+		_divBar.appendChild(create_log_link(tree,'id'));
+		_divBar.appendChild(create_monitoring_link(tree,'id'));
+		_divBar.setAttribute('style','float:right; margin-right:110px;' );
+		_menu_2.appendChild(_divBar);
+	}
+
+	function onDblClick(nodeId){
+		tree.openAllItems(nodeId);
+		return(false);
+	}
+	
+	function onCheck(nodeId){
+		multi = 1;
+		if (document.getElementById('openid'))
+			document.getElementById('openid').innerHTML = tree.getAllChecked();
+		graph_4_host(tree.getAllChecked(),1);
+	}
+	
+	function onNodeSelect(nodeId){
+		multi = 0;
+
+		tree.openItem(nodeId);
+		if (nodeId.substring(0,2) == 'HS' || nodeId.substring(0,2) == 'MS'){
+			var graphView4xml = document.getElementById('graphView4xml');
+			graphView4xml.innerHTML="..graph.." + nodeId;
+			graph_4_host(nodeId);
+		}
+	}
+	
+	// it's fake methode for using ajax system by default
+	function mk_pagination(){;}
+	function set_header_title(){;}
+
+	function apply_period()	{
+		var openid = document.getElementById('openid').innerHTML;
+		graph_4_host(openid, multi);
+	}
+
+	// Period
+	var currentTime = new Date();
+	var period ='';
+
+	var _zero_hour = '';
+	var _zero_min = '';
+	var StartDate='';
+	var EndDate='';
+	var StartTime='';
+	var EndTime='';
+
+	if(document.formu && !document.formu.period_choice[1].checked)	{
+		period = document.formu.period.value;
+	} else {
+		if(currentTime.getMinutes() <= 9){
+			_zero_min = '0';
+		}
+
+		if (currentTime.getHours() >= 12){
+			StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
+			EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
+
+			if((currentTime.getHours()- 12) <= 9){
+				_zero_hour = '0';					
+			} else{
+				_zero_hour = '';											
+			}
+			StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
+			if(currentTime.getHours() <= 9){
+				_zero_hour = '0';					
+			} else{
+				_zero_hour = '';											
+			}	
+			EndTime   = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+		} else {
+			StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
+			EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
+
+			StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
+
+			if(currentTime.getHours() <= 9){
+				_zero_hour = '0';					
+			} else {
+				_zero_hour = '';											
+			}
+			
+			EndTime = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+		}
+	}
+
+	if (document.formu){
+		document.formu.StartDate.value = StartDate;
+		document.formu.EndDate.value = EndDate;
+		document.formu.StartTime.value = StartTime;
+		document.formu.EndTime.value = EndTime;
+	}
+
+
+	function graph_4_host(id, multi)	{
+		if (!multi)
+			multi = 0;
+		
+		if (document.formu && !document.formu.period_choice[1].checked){
+			period = document.formu.period.value;
+		} else if(document.formu) {
+			period = '';
+			StartDate = document.formu.StartDate.value;
+			EndDate = document.formu.EndDate.value;
+			StartTime = document.formu.StartTime.value;
+			EndTime = document.formu.EndTime.value;
+		}
+
+		// Metrics
+		var _metrics ="";
+		var _checked = "0";
+		if (document.formu2 && document.formu2.elements["metric"]){
+			for (i=0; i < document.formu2.elements["metric"].length; i++) {
+				_checked = "0";
+				if (document.formu2.elements["metric"][i].checked)	{
+					_checked = "1";
+				}
+				_metrics += '&metric['+document.formu2.elements["metric"][i].value+']='+_checked ;
+			}
+		}
+
+		// Templates
+		var _tpl_id = 1;
+		if (document.formu2 && document.formu2.template_select && document.formu2.template_select.value != ""){
+			_tpl_id = document.formu2.template_select.value;
+		}
+		
+		// Split metric
+		var _split = 0;
+		if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
+			_split = 1
+		}
+
+		var _status = 0;
+		if (document.formu2 && document.formu2.status && document.formu2.status.checked)	{
+			_status = 1
+		}
+		
+		var _warning = 0;
+		if (document.formu2 && document.formu2.warning && document.formu2.warning.checked)	{
+			_warning = 1
+		}
+		
+		var _critical = 0;
+		if (document.formu2 && document.formu2.critical && document.formu2.critical.checked)	{
+			_critical = 1
+		}
+		
+		tree.selectItem(id);
+		var proc = new Transformation();
+		var _addrXSL = "./include/views/graphs/GraphService.xsl";
+		var _addrXML = './include/views/graphs/GetODSXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+
+		proc.setXml(_addrXML)
+		proc.setXslt(_addrXSL)
+		proc.transform("graphView4xml");
+	}
+
+	// Let's save the existing assignment, if any
+	var nowOnload = window.onload;
+	window.onload = function () {
         // Here is your precious function
         // You can call as many functions as you want here;
         myOnloadFunction1();

@@ -5,7 +5,7 @@
 <form name="formu">
 	<table class="period">
         <tr>
-        	<td><input type="radio" name="period_choice" value="auto" />&nbsp;&nbsp;<b>{$form.period.label}</b>&nbsp;{$form.period.html}</td>
+        	<td><input type="radio" name="period_choice" value="auto" style="padding-left:100px;" />&nbsp;&nbsp;<b>{$form.period.label}</b>&nbsp;{$form.period.html}</td>
 			<td>
 				<input type="radio" name="period_choice" value="custom" checked="checked" />&nbsp;&nbsp;<b>{$from}</b>&nbsp;<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="8" />
 				&nbsp;<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="5" />&nbsp;<b>{$to}</b>
