@@ -35,12 +35,12 @@ body,input,option,select,tab,div,td,a,textarea {
 a 		{text-decoration:none;}
 a:hover {text-decoration:underline;}
 
-img,hr {border:0;}
+img,hr {border:0;padding:}
 
 table {border-collapse:collapse;empty-cells:show;border-spacing:0;}
 
 img 		{margin:0 0 -4px;padding:0;}
-checkbox 	{padding:2px;border:0;margin:0;}
+checkbox 	{border:0;margin:0;}
 select 		{border-style:none;padding-left:1px;padding-right:1px;}
 hr 			{background-color:#CCC;height:1px;margin-bottom:10px;margin-top:3px;}
 form		{padding-bottom:10px;}
@@ -381,7 +381,7 @@ margin-top:0;
 input,select,option,input,textarea,checkbox,.list_one a,.list_two a {font-weight:400;}
 input,checkbox,a.infobulle:hover table 								{border:1px gray solid;}
 
-td,a.infobulle:hover td {padding:1px;}
+td,a.infobulle:hover td {padding:0px;}
 
 #menu_3 a,#footer a,#logli a,#logOut a {color:#666;}
 
