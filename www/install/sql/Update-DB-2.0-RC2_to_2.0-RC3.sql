@@ -1,6 +1,6 @@
 UPDATE `informations` SET `value` = '2.0-RC3' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-RC2' LIMIT 1;
 
-CREATE TABLE `options` (
+REATE TABLE IF NOT EXISTS `options` (
 	`key` VARCHAR( 255 ) NULL ,
 	`value` VARCHAR( 255 ) NULL
 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;
