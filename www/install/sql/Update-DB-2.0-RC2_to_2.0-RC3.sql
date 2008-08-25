@@ -61,3 +61,5 @@ ALTER TABLE `contact` ADD `contact_autologin_key` VARCHAR( 255 ) NULL ;
 
 ALTER TABLE `host` ADD `host_first_notification_delay` INT NULL AFTER `host_notifications_enabled` ;
 ALTER TABLE `service` ADD `service_first_notification_delay` INT NULL AFTER `service_notifications_enabled` ;
+
+DELETE FROM `topology` WHERE `topology_page` = '7';
