@@ -1,3 +1,8 @@
+## Centreon 2.0-RC4
+
+=> Bugfix : enable Massiv change for host poller when editing a host 
+=> Bugfix : CSS interface configuration, selection problem solved with ie.
+
 ## Centreon 2.0-RC3
 
 => Enhancement : Notification Options "Flapping" added for Nagios 2, "Downtime Scheduled" added for Nagios 2 and 3.
