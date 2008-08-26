@@ -199,6 +199,49 @@
 		$valid = true;
 	}
 	
+	?><script type='text/javascript'>
+	<!--
+	function insertValueQuery(elem) {
+	    var myQuery = document.Form.command_line;
+		if(elem == 1)	{
+			var myListBox = document.Form.resource;
+		} else if (elem == 2)	{
+			var myListBox = document.Form.plugins;
+		} else if (elem == 3)	{
+			var myListBox = document.Form.macros;
+		}
+	    if (myListBox.options.length > 0) {
+	        var chaineAj = '';
+	        var NbSelect = 0;
+	        for(var i=0; i<myListBox.options.length; i++) {
+	            if (myListBox.options[i].selected){
+	                NbSelect++;
+	                if (NbSelect > 1)
+	                    chaineAj += ', ';
+	                chaineAj += myListBox.options[i].value;
+	            }
+	        }
+	
+	        if (document.selection) {
+	        	// IE support
+	            myQuery.focus();
+	            sel = document.selection.createRange();
+	            sel.text = chaineAj;
+	            document.Form.insert.focus();
+	        } else if (document.Form.command_line.selectionStart || document.Form.command_line.selectionStart == '0') {
+	        	// MOZILLA/NETSCAPE support
+	            var startPos = document.Form.command_line.selectionStart;
+	            var endPos = document.Form.command_line.selectionEnd;
+	            var chaineSql = document.Form.command_line.value;
+	            myQuery.value = chaineSql.substring(0, startPos) + chaineAj + chaineSql.substring(endPos, chaineSql.length);
+	        } else {
+	            myQuery.value += chaineAj;
+	        }
+	    }
+	}
+	//-->
+	</script><?php
+	
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once($path."listCommand.php");
