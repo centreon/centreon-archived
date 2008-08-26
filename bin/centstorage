@@ -338,7 +338,8 @@ sub checkAndUpdate($){
 sub getModulesInterval($){
 	my $service_description = $_[0];
 	my $interval;
-	if ($1 eq "Meta"){
+	$service_description =~ /([a-zA-Z0-9]*)_[0-9]*/;
+	if ($1 eq "meta"){
 		my $service_description =~ /meta_([0-9]*)/; 
 		my $sth_interval = $con_oreon->prepare("SELECT normal_check_interval FROM meta_service WHERE meta_id = '".$1."'");
 		if (!$sth_interval->execute) {writeLogFile("Error when getting metrics interval for Meta : " . $sth_interval->errstr . "\n");}
@@ -350,7 +351,7 @@ sub getModulesInterval($){
 		}
 		undef($meta_conf);
 		undef($sth_interval);
-	} elsif ($1 eq "OSL") {
+	} elsif ($1 eq "osl") {
 		$service_description =~ /osl_([0-9]*)/; 
 		my $sth_interval = $con_oreon->prepare("SELECT normal_check_interval FROM osl WHERE osl_id = '".$1."'");
 		if (!$sth_interval->execute) {writeLogFile("Error when getting metrics interval for osl : " . $sth_interval->errstr . "\n");}
