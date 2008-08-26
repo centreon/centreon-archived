@@ -59,6 +59,7 @@
 			switch ($o)	{
 				case "h" 	: require_once($path."host.php"); 					break;
 				case "hpb" 	: require_once($path."host.php"); 					break;
+				case "h_unhandled" 	: require_once($path."host.php"); 					break;
 				case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
 				case "hak" 	: require_once($pathRoot."acknowlegement/hostAcknowledge.php"); 	break;
 				default 	: require_once($path."host.php"); 					break;

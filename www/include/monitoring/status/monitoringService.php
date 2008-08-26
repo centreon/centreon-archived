@@ -46,7 +46,6 @@
 
 	$metaservicepath = "metaService.php";
 	
-	$problem = "";
 	$path = "./include/monitoring/status/status-ndo/";
 	$metaservicepath = $path."service.php";
 
@@ -66,11 +65,12 @@
 			/*
 			 * View of Service
 			 */
-			case "svcpb" 		: require_once($path."service".$problem.".php");		break;
-			case "svc_warning" 	: require_once($path."service".$problem.".php");		break;
-			case "svc_critical" : require_once($path."service".$problem.".php");		break;
-			case "svc_unknown" 	: require_once($path."service".$problem.".php");		break;
-			case "svc_ok" 		: require_once($path."service".$problem.".php");		break;
+			case "svcpb" 		: require_once($path."service.php");		break;
+			case "svc_warning" 	: require_once($path."service.php");		break;
+			case "svc_critical" : require_once($path."service.php");		break;
+			case "svc_unknown" 	: require_once($path."service.php");		break;
+			case "svc_ok" 		: require_once($path."service.php");		break;
+			case "svc_unhandled" 		: require_once($path."service.php");		break;			
 			/*
 			 * Special Views 
 			 */

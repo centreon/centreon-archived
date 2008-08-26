@@ -173,7 +173,12 @@
 		$rq .= " AND nss.current_state = 2 ";
 	if ($o == "svc_unknown")
 		$rq .= " AND nss.current_state = 3 ";
-
+	if ($o == "svc_unhandled") {
+		$rq .= " AND nss.current_state != 0";
+		$rq .= " AND nss.problem_has_been_acknowledged = 0";
+		$rq .= " AND nss.scheduled_downtime_depth = 0";
+	}
+		
 	$rq_pagination = $rq;
 
 	switch ($sort_type){
