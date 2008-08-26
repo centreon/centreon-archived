@@ -26,12 +26,15 @@
 	include_once("./include/common/quickSearch.php");
 	
 	$SearchTool = NULL;
-	if (isset($search) && $search)
-		$SearchTool = " WHERE name LIKE '%".$search."%'";
+	if (isset($search) && $search) {
+		$SearchTool = " WHERE name LIKE '%".$search."%'";		
+	}
 	
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM giv_components_template".$SearchTool);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo();
+	if (PEAR::isError($DBRESULT)) {
+		print "DB Error : ".$DBRESULT->getDebugInfo();	
+	}
+	
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
@@ -53,11 +56,11 @@
 	$tpl->assign("headerMenu_tickness", _("Thickness"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
-
 	$rq = "SELECT compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, ds_tickness, ds_transparency FROM giv_components_template gc $SearchTool ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
+	if (PEAR::isError($DBRESULT)) {
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
+	}
 		
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	
@@ -86,7 +89,7 @@
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);
-	
+
 	/*
 	 * Different messages we put in the template
 	 */
@@ -100,7 +103,7 @@
 	function setO(_i) {
 		document.forms['form'].elements['o'].value = _i;
 	}
-	</SCRIPT>
+	</script>
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
@@ -110,8 +113,9 @@
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"");	  
-    $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
+				"");
+					  
+    $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "e"=>_("Export")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
@@ -125,7 +129,7 @@
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
+    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "e"=>_("Export")), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o2 =& $form->getElement('o2');
