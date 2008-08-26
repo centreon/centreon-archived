@@ -36,7 +36,7 @@
 			</td>
 			<td class="ListColLeft" style="width:37px;">
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?o=svc&amp;p=20201&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?o=svc&amp;p=20201&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/16x16/view.gif</xsl:attribute>
 						</xsl:element>
