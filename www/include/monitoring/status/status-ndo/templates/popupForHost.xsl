@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="//reponse">
-	<table style="padding:5px;margin:5px;">
+	<table style="padding:5px;margin:5px;z-index:15;">
 		<tr class="ListHeaderPopup">
 			<td class="ColPopup"><xsl:value-of select="hostname"/></td>
 			<td class="ColPopup" style="width:100%;text-aling:right;"><xsl:value-of select="address"/></td>
