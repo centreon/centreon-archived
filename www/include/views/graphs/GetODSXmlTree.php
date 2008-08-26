@@ -20,9 +20,9 @@
 
 	require_once 'DB.php';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once $centreon_path . "www/DBconnect.php";
+	include_once $centreon_path . "www/DBOdsConnect.php";
 	
 	/* PHP functions */
 	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
@@ -47,6 +47,17 @@
 		while ($row =& $DBRESULT->fetchRow())
 			$tab_svc[$row["service_id"]] = 1;
 		return $tab_svc;
+	}
+	
+	function getHostGraphedList()	{
+		global $pearDBO;
+		$tab = array();
+		$DBRESULT =& $pearDBO->query("SELECT `host_id` FROM `index_data` WHERE `hidden` = '0' AND `trashed` = '0'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($row =& $DBRESULT->fetchRow())
+			$tab[$row["host_id"]] = 1;
+		return $tab;
 	}
 	
 	function checkIfServiceSgIsEn($host_id = NULL, $service_id = NULL)	{
@@ -222,18 +233,22 @@
 			 */
 			$cpt = 0;
 			$str = "";
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
+			$hostWithGraph = getHostGraphedList();
+			print_r($hostWithGraph);
+			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' ORDER BY host_name");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
-				if ($is_admin){
-		           	$cpt++;
-		           	$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";
-				} else {
-					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]])){
-						$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";	
-						$cpt++;
+				if (isset($hostWithGraph[$host["host_id"]])){
+					if ($is_admin){
+			           	$cpt++;
+			           	$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";
+					} else {
+						if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]])){
+							$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";	
+							$cpt++;
+						}
 					}
 				}
 			}
