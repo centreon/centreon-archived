@@ -95,10 +95,9 @@
 		 * Set Host and Nagios Server Relation
 		 */
 		$DBRESULT =& $pearDB->query("SELECT `nagios_server_id` FROM `ns_host_relation` WHERE `host_host_id` = '".$host_id."'");
-		for ($i = 0; $ns = $DBRESULT->fetchRow(); $i++)
+		for (($o != "mc") ? $i = 0 : $i = 1; $ns = $DBRESULT->fetchRow(); $i++)
 			$host["nagios_server_id"][$i] = $ns["nagios_server_id"];
 		$DBRESULT->free();
-		//$host["nagios_server_id"] = $ns["nagios_server_id"];
 		unset($ns);
 	}
 
@@ -167,7 +166,10 @@
 	/*
 	 * Contact Nagios Server comes from DB -> Store in $nsServer Array
 	 */
+	
 	$nsServers = array();
+	if ($o == "mc")
+		$nsServers[NULL] = NULL;
 	$DBRESULT =& $pearDB->query("SELECT id, name FROM nagios_server ORDER BY name");
 	while ($nsServer = $DBRESULT->fetchRow())
 		$nsServers[$nsServer["id"]] = $nsServer["name"];
@@ -216,8 +218,7 @@
 	$mTp = array();
 	$k = 0;
 	$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
-	while($multiTp = $DBRESULT->fetchRow())
-	{
+	while($multiTp = $DBRESULT->fetchRow()){
 		$mTp[$k] = $multiTp["host_tpl_id"];
 		$k++;
 	}
@@ -228,8 +229,7 @@
 	 */
 	$j = 0;		
 	$DBRESULT =& $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
-	while($od_macro = $DBRESULT->fetchRow())
-	{
+	while ($od_macro = $DBRESULT->fetchRow()){
 		$od_macro_id[$j] = $od_macro["host_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
 		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);

@@ -18,8 +18,7 @@
 	if (!isset ($oreon))
 		exit ();
 		
-	function hostExists($name = NULL)
-	{
+	function hostExists($name = NULL){
 		global $pearDB;
 		
 		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM ns_host_relation WHERE host_host_id = '".getMyHostID(trim($name))."'");
@@ -81,8 +80,11 @@
 	}
 	
 	function enableHostInDB ($host_id = null, $host_arr = array())	{
-		if (!$host_id && !count($host_arr)) return;
 		global $pearDB;
+		
+		if (!$host_id && !count($host_arr)) 
+			return;
+		
 		if ($host_id)
 			$host_arr = array($host_id=>"1");
 		foreach($host_arr as $key=>$value)	{
@@ -93,8 +95,10 @@
 	}
 	
 	function disableHostInDB ($host_id = null, $host_arr = array())	{
-		if (!$host_id && !count($host_arr)) return;
 		global $pearDB;
+		if (!$host_id && !count($host_arr)) 
+			return;
+		
 		if ($host_id)
 			$host_arr = array($host_id=>"1");
 		foreach($host_arr as $key=>$value)	{
@@ -106,7 +110,8 @@
 	
 	function deleteHostInDB ($hosts = array())	{
 		global $pearDB, $oreon;
-		foreach($hosts as $key=>$value)	{
+		
+		foreach ($hosts as $key=>$value)	{
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr, host WHERE hsr.host_host_id = '".$key."' AND host.host_id = hsr.host_host_id AND host.host_register = '1'";
 			$DBRESULT = & $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
@@ -302,9 +307,10 @@
 	}
 	
 	function updateHostInDB ($host_id = NULL, $from_MC = false)	{
-		if (!$host_id) return;
-		global $form;
-		global $oreon;		
+		global $form, $oreon;		
+		if (!$host_id) 
+			return;
+			
 		$ret = $form->getSubmitValues();
 	
 		/*
@@ -329,6 +335,7 @@
 			updateHostHostParent_MC($host_id);
 		else
 			updateHostHostParent($host_id);
+			
 		# Function for updating host childs
 		# 1 - MC with deletion of existing childs
 		# 2 - MC with addition of new childs
@@ -339,6 +346,7 @@
 			updateHostHostChild_MC($host_id);
 		else
 			updateHostHostChild($host_id);
+			
 		# Function for updating host cg
 		# 1 - MC with deletion of existing cg
 		# 2 - MC with addition of new cg
@@ -346,12 +354,10 @@
 		if (isset($ret["mc_mod_hcg"]["mc_mod_hcg"]) && $ret["mc_mod_hcg"]["mc_mod_hcg"]) {
 			updateHostContactGroup($host_id);
 			updateHostContact($host_id);
-		}
-		else if (isset($ret["mc_mod_hcg"]["mc_mod_hcg"]) && !$ret["mc_mod_hcg"]["mc_mod_hcg"]) {
+		} else if (isset($ret["mc_mod_hcg"]["mc_mod_hcg"]) && !$ret["mc_mod_hcg"]["mc_mod_hcg"]) {
 			updateHostContactGroup_MC($host_id);
 			updateHostContact_MC($host_id);
-		}
-		else {
+		} else {
 			updateHostContactGroup($host_id);
 			updateHostContact($host_id);
 		}
@@ -365,6 +371,7 @@
 			updateHostHostGroup_MC($host_id);
 		else
 			updateHostHostGroup($host_id);
+	
 		# Function for updating host template
 		# 1 - MC with deletion of existing template
 		# 2 - MC with addition of new template
@@ -381,6 +388,7 @@
 			else if($oreon->user->get_version())
 				createHostTemplateService($host_id);
 		}
+		
 		if ($from_MC)
 			updateHostExtInfos_MC($host_id);
 		else
@@ -390,14 +398,7 @@
 		# 1 - MC with deletion of existing hg
 		# 2 - MC with addition of new hg
 		# 3 - Normal update
-		if (isset($ret["mc_mod_nsid"]["mc_mod_nsid"]) && $ret["mc_mod_nsid"]["mc_mod_nsid"])
-			updateNagiosServerRelation($host_id);
-		else if (isset($ret["mc_mod_nsid"]["mc_mod_nsid"]) && !$ret["mc_mod_nsid"]["mc_mod_nsid"])
-			updateNagiosServerRelation_MC($host_id);
-		else
-			updateNagiosServerRelation($host_id);
-			
-		
+		updateNagiosServerRelation($host_id);
 	}	
 	
 	function insertHostInDB ($ret = array())	{
@@ -523,8 +524,7 @@
 					$already_stored[$tplId] = 1;
 	 			}
 	 		}
- 		} 		
- 		elseif (isset($_POST['nbOfSelect']) || $oreon->user->get_version() >= 3) { 	 		
+ 		} elseif (isset($_POST['nbOfSelect']) || $oreon->user->get_version() >= 3) { 	 		
 	 		$already_stored = array();
 	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
 	 		{ 			
@@ -622,13 +622,11 @@
 	/*
 	 * Get list of host templates recursively 
 	 */
-	 function getHostListInUse ($hst_list, $hst)
-	 {
+	 function getHostListInUse ($hst_list, $hst) {
 	 	global $pearDB;
 	 		 	
 	 	$str = $hst_list;
-	 	$rq = "SELECT `host_tpl_id` FROM `host_template_relation` WHERE host_host_id ='".$hst."'";
-	 	$DBRESULT =& $pearDB->query($rq);
+	 	$DBRESULT =& $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE host_host_id ='".$hst."'");
 	 	if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 	while ($result =& $DBRESULT->fetchRow()) {
@@ -998,14 +996,13 @@
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 		while ($hst =& $DBRESULT->fetchRow())
 	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];			
-	 		for ($i=0;$i <= $_POST['nbOfSelect']; $i++)
-	 		{
+	 		for ($i=0;$i <= $_POST['nbOfSelect']; $i++){
 	 			$tpSelect = "tpSelect_" . $i;
 	 			if (isset($_POST[$tpSelect]))
 	 				$newTp[$_POST[$tpSelect]] = $_POST[$tpSelect];
 	 		}
-	 		foreach ($oldTp as $val)
-	 		{
+	 		
+	 		foreach ($oldTp as $val){
 	 			/*
   	 			 * if not set, then that means a template was removed
 	 			 * we will have to remove the services that were linked to that host template as well  
@@ -1622,11 +1619,11 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 	}
 	
 	function updateNagiosServerRelation($host_id, $ret = array())	{
-		if (!$host_id) return;
 		global $form, $pearDB;
-		$rq = "DELETE FROM `ns_host_relation` ";
-		$rq .= "WHERE `host_host_id` = '".$host_id."'";
-		$DBRESULT = $pearDB->query($rq);
+		if (!$host_id) 
+			return;
+			
+		$DBRESULT = $pearDB->query("DELETE FROM `ns_host_relation` WHERE `host_host_id` = '".$host_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		isset($ret["nagios_server_id"]) ? $ret = $ret["nagios_server_id"] : $ret = $form->getSubmitValue("nagios_server_id");
