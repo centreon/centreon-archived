@@ -130,7 +130,8 @@
 		"max_eventhandlers_age"=>'44640',
 		"activate"=>'1'));
 	} else {
-		$form->setDefaults($cfg_ndo2db);
+		if (isset($cfg_ndo2db))
+			$form->setDefaults($cfg_ndo2db);
 	}	
 	$form->addElement('hidden', 'id');
 	$redirect =& $form->addElement('hidden', 'o');

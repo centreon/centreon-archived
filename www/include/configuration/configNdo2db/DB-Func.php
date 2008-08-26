@@ -50,12 +50,11 @@
 	
 	function deleteNdo2dbInDB ($ndo2db = array())	{
 		global $pearDB;
-		foreach($ndo2db as $key => $value)	{
+		foreach ($ndo2db as $key => $value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM `cfg_ndo2db` WHERE id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
-		$DBRESULT->free();
 	}
 	
 	function multipleNdo2dbInDB ($ndo2db = array(), $nbrDup = array())	{
@@ -100,7 +99,7 @@
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `cfg_ndo2db` (" .
 				"`description` , `ns_nagios_server` , `socket_type` , `socket_name` , `tcp_port` , `ndo2db_user` , `ndo2db_group` ," .
-				"`db_type` , `db_host`, `db_name`, `db_port` , `db_prefix` , `db_user` , `db_pass` , " .
+				"`db_servertype` , `db_host`, `db_name`, `db_port` , `db_prefix` , `db_user` , `db_pass` , " .
 				"`max_timedevents_age` , `max_systemcommands_age` , `max_servicechecks_age` , `max_hostchecks_age` , " .
 				"`max_eventhandlers_age` , `activate`) ";
 		$rq .= "VALUES (";
