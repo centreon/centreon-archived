@@ -253,23 +253,19 @@
 	<br />
 	<table class="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderCenter"><input type="checkbox" disabled checked></td>
 			<td class="ListColHeaderCenter">{$cmt_host_name}</td>
-			<td class="ListColHeaderCenter">{$cmt_entry_time}</td>
-			<td class="ListColHeaderCenter">{$cmt_author}</td>
+			<td class="ListColHeaderCenter" width="120">{$cmt_entry_time}</td>
+			<td class="ListColHeaderCenter" width="120">{$cmt_author}</td>
 			<td class="ListColHeaderCenter">{$cmt_comment}</td>
-			<td class="ListColHeaderCenter">{$cmt_persistent}</td>
-			<td class="ListColHeaderCenter">{$cmt_actions}</td>
+			<td class="ListColHeaderCenter" width="50">{$cmt_persistent}</td>
 		</tr>
 		{foreach item=tch from=$tab_comments_host}
 		<tr class={cycle values="list_two, list_one"}>
-			<td class="ListColHeaderCenter"><input type="checkbox" name='select[{$tcs.id}]'></td>
 			<td class="ListColLeft">{$tch.host_name}</td>
-			<td class="ListColRight">{$tch.time}</td>
-			<td class="ListColCenter">{$tch.author}</td>
-			<td class="ListColLeft">{$tch.comment}</td>
-			<td class="ListColLeft">{$tch.persistent}</td>
-			<td class="ListColCenter"><a href='./main.php?p={$p}&o=dh&id={$tch.id}'><img src='./img/icones/16x16/delete.gif'></a></td>
+			<td class="ListColRight">{$tch.entry_time}</td>
+			<td class="ListColCenter">{$tch.author_name}</td>
+			<td class="ListColLeft">{$tch.comment_data}</td>
+			<td class="ListColCenter">{$tch.is_persistent}</td>
 		</tr>
 		{/foreach}
 	</table>

@@ -134,13 +134,32 @@
 
 		$path = "./include/monitoring/objectDetails/";
 
-		# Smarty template Init
+		$en = array("0" => _("No"), "1" => _("Yes"));
+		
+		/*
+		 * Smarty template Init
+		 */
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl($path, $tpl, "./template/");
 
-		$tab_comments_host = array();
-
-		$en = array("0" => _("No"), "1" => _("Yes"));
+		/*
+		 * Get comments for hosts
+		 */
+		$tabCommentHosts = array();
+		$rq2 =	" SELECT cmt.comment_id, cmt.entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name" .
+				" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+				" WHERE obj.name1 = '".$host_name."' AND obj.name2 IS NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.entry_time";
+		$DBRESULT_NDO =& $pearDBndo->query($rq2);
+		if (PEAR::isError($DBRESULT_NDO))
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
+		for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
+			$tabCommentHosts[$i] = $data;
+			$tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
+		}
+		unset($data);	
+		
+		
+		
 
 		$en_acknowledge_text = array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge = array("1" => "0", "0" => "1");
@@ -251,8 +270,10 @@
 		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
 		$tpl->assign("h", $hostDB);
 		$tpl->assign("url_id", $url_id);
-		if (isset($tab_comments_host))
-			$tpl->assign("tab_comments_host", $tab_comments_host);
+		
+		if (isset($tabCommentHosts))
+			$tpl->assign("tab_comments_host", $tabCommentHosts);
+		
 		$tpl->assign("host_data", $host_status[$host_name]);
 
 		# Ext informations

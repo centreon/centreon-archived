@@ -127,22 +127,25 @@
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl($path, $tpl, "./template/");
 
-		$tab_comments_svc = array();
+		$en = array("0" => _("No"), "1" => _("Yes"));
+		
+		/*
+		 * Get comments for service
+		 */
+		$tabCommentServices = array();
 		$rq2 =	" SELECT cmt.comment_id, cmt.entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 				" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 				" WHERE obj.name1 = '".$host_name."' AND obj.name2 = '".$svc_description."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.entry_time";
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO))
 			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-		for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++)
-			$tab_comments_svc[$i] = $data;
+		for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
+			$tabCommentServices[$i] = $data;
+			$tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
+		}
 		unset($data);	
 
-		
-		$en = array("0" => _("No"), "1" => _("Yes"));
-		foreach ($tab_comments_svc as $key => $value)
-			$tab_comments_svc[$key]["is_persistent"] = $en[$tab_comments_svc[$key]["is_persistent"]];
-		
+
 		$en_acknowledge_text = array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge = array("1" => "0", "0" => "1");
 
@@ -247,8 +250,8 @@
 		$tpl->assign("status", $status);
 		$tpl->assign("h", $host);
 		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
-		$tpl->assign("count_comments_svc", count($tab_comments_svc));
-		$tpl->assign("tab_comments_svc", $tab_comments_svc);
+		$tpl->assign("count_comments_svc", count($tabCommentServices));
+		$tpl->assign("tab_comments_svc", $tabCommentServices);
 		$tpl->assign("service_id", getMyServiceID($svc_description, $host["host_id"]));
 		$tpl->assign("host_data", $host_status[$host_name]);
 		$tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
