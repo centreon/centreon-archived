@@ -11,3 +11,6 @@ INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id`) VALU
 INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id`) VALUES (NULL, 'report_Friday', '1', NULL);
 INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id`) VALUES (NULL, 'report_Saturday', '1', NULL);
 INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id`) VALUES (NULL, 'report_Sunday', '1', NULL);
+
+
+UPDATE `informations` SET `value` = '2.0-RC4' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-RC3' LIMIT 1;
