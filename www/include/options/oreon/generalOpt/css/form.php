@@ -91,8 +91,14 @@
 		for ($i = 0; $elem =& $DBRESULT->fetchRow();$i++)	{
 				$select_list =	'<select name="css_color_'. $elem["id_css_color_menu"] .'">';
 				for ($j=0 ; isset($tab_file_css[$j]) ; $j++){
-					$selected = ($elem["css_name"] == $tab_file_css[$j]) ? "selected=selected": "";
-					$select_list .= '<option value="'.$tab_file_css[$j].'"   "' . $selected . '">'.$tab_file_css[$j].'</option>';
+					
+					if($elem["css_name"] == $tab_file_css[$j]) {
+						$selected = "selected";
+					} else {
+						$selected = "";	
+					}
+					
+					$select_list .= '<option value="'.$tab_file_css[$j].'" ' . $selected . '>'.$tab_file_css[$j].'</option>';
 				}
 				$select_list .= '</select>';
 				$elemArr[$i] = array("MenuClass"=>"list_".$style,
