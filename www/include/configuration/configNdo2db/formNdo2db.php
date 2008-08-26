@@ -70,11 +70,11 @@
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', _("Add a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("Add a ndo2db Configuration File"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("Modify a ndo2db Configuration File"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', _("View a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("View a ndo2db Configuration File"));
 
 	#
 	## Nagios Configuration basic information

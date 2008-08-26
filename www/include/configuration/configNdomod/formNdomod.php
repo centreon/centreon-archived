@@ -58,11 +58,11 @@
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', _("Add a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("Add a ndomod Configuration File"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("Modify a ndomod Configuration File"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', _("View a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("View a ndomod Configuration File"));
 
 	#
 	## Nagios Configuration basic information

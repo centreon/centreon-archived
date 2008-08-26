@@ -58,11 +58,11 @@
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', _("Add a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("Add a poller"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("Modify a poller Configuration"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', _("View a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("View a poller Configuration"));
 
 	#
 	## Nagios Configuration basic information
