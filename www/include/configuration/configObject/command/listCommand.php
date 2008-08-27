@@ -34,7 +34,7 @@
 	if (isset($search) && $search){
 		if ($type_str)
 			$type_str = " AND " . $type_str;
-		$req = "SELECT COUNT(*) FROM `command` WHERE `command_namev LIKE '%".htmlentities($search, ENT_QUOTES)."%' $type_str";
+		$req = "SELECT COUNT(*) FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES)."%' $type_str";
 	} else if ($type) {
 		$req = "SELECT COUNT(*) FROM `command` WHERE $type_str";
 	} else {
