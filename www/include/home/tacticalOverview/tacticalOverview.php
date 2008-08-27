@@ -392,7 +392,7 @@
 			while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 				$is_unhandled = 1;	
 	
-				for ($i=0; $i<$pbCount && $is_unhandled; $i++){
+				for ($i=0; $i < $pbCount && $is_unhandled; $i++){
 					if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
 						$is_unhandled = 0;
 				}

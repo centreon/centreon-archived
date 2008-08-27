@@ -219,17 +219,17 @@
 					{assign var="class" value="list_one"}
 					{foreach from=$tb_hostname key=k item=hostname}
 					<tr class="{$class}">
-						<td class="ListColLeft" style="white-space:nowrap;"><a href={$url_hostdetail}{$tb_hostname[$k]}>{$tb_hostname[$k]}</a></td>
+						<td class="ListColLeft" style="white-space:nowrap;"><a href="{$url_hostdetail}{$tb_hostname[$k]}">{$tb_hostname[$k]}</a></td>
 						{if $tb_state[$k] == 3}
-						<td class="ListColLeft" style="white-space:nowrap;"><a href={$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}>{$tb_svcname[$k]}</a></td>
+						<td class="ListColLeft" style="white-space:nowrap;"><a href="{$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}">{$tb_svcname[$k]}</a></td>
 						<td class="ListColCenter" style="background-color:{$color.color_unknown};font-weight:bold;white-space:nowrap;" align=center>{$str_unknown}</td>
 						{/if}
 						{if $tb_state[$k] == 2}
-						<td class="ListColLeft" style="background-color:#ee9572;white-space:nowrap;"><a href={$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}>{$tb_svcname[$k]}</a></td>
+						<td class="ListColLeft" style="background-color:#ee9572;white-space:nowrap;"><a href="{$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}">{$tb_svcname[$k]}</a></td>
 						<td class="ListColCenter" style="background-color:{$color.color_critical};font-weight:bold;white-space:nowrap;" align=center>{$str_critical}</td>
 						{/if}
 						{if $tb_state[$k] == 1}
-						<td class="ListColLeft" style="background-color:#ffcc66;white-space:nowrap;"><a href={$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}>{$tb_svcname[$k]}</a></td>
+						<td class="ListColLeft" style="background-color:#ffcc66;white-space:nowrap;"><a href="{$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}">{$tb_svcname[$k]}</a></td>
 						<td class="ListColCenter" style="background-color:{$color.color_warning};font-weight:bold;white-space:nowrap;" align=center>{$str_warning}</td>
 						{/if}
 						<td class="ListColCenter" align=center style="white-space:nowrap;">{$tb_ip[$k]}</td>
