@@ -68,10 +68,12 @@
 	$tpl->assign("headerMenu_desc", _("Description"));
 	$tpl->assign("headerMenu_address", _("IP Address / DNS"));
 	$tpl->assign("headerMenu_poller", _("Poller"));
+	
 	if ($oreon->user->get_version() < 3)
 		$tpl->assign("headerMenu_parent", _("Parent Template"));
 	else
 		$tpl->assign("headerMenu_parent", _("Templates"));
+	
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
