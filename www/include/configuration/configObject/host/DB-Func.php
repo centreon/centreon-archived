@@ -1622,18 +1622,22 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 	
 	function updateNagiosServerRelation($host_id, $ret = array())	{
 		global $form, $pearDB;
+		
 		if (!$host_id) 
 			return;
 			
-		$DBRESULT = $pearDB->query("DELETE FROM `ns_host_relation` WHERE `host_host_id` = '".$host_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		isset($ret["nagios_server_id"]) ? $ret = $ret["nagios_server_id"] : $ret = $form->getSubmitValue("nagios_server_id");
-		for ($i = 0; $i < count($ret); $i++)	{
+		
+		if (isset($ret) && $ret != "" && $ret != 0){
+			$DBRESULT = $pearDB->query("DELETE FROM `ns_host_relation` WHERE `host_host_id` = '".$host_id."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
 			$rq = "INSERT INTO `ns_host_relation` ";
 			$rq .= "(`host_host_id`, `nagios_server_id`) ";
 			$rq .= "VALUES ";
-			$rq .= "('".$host_id."', '".$ret[$i]."')";
+			$rq .= "('".$host_id."', '".$ret."')";
+			
 			$DBRESULT = $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -1642,27 +1646,28 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 	
 	# For massive change. We just add the new list if the elem doesn't exist yet
 	function updateNagiosServerRelation_MC($host_id, $ret = array())	{
-		if (!$host_id) return;
 		global $form, $pearDB;
-		$rq = "SELECT * FROM ns_host_relation ";
-		$rq .= "WHERE host_host_id = '".$host_id."'";
-		$DBRESULT = $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
+		if (!$host_id) 
+			return;
+			
 		$cgs = array();
-		while($arr =& $DBRESULT->fetchRow())
+		while ($arr =& $DBRESULT->fetchRow())
 			$cgs[$arr["nagios_server_id"]] = $arr["nagios_server_id"];
-		$ret = $form->getSubmitValue("host_ns");
-		for($i = 0; $i < count($ret); $i++)	{
-			if (!isset($cgs[$ret[$i]]))	{
-				$rq = "INSERT INTO ns_host_relation ";
-				$rq .= "(host_host_id, nagios_server_id) ";
-				$rq .= "VALUES ";
-				$rq .= "('".$host_id."', '".$ret[$i]."')";
-				$DBRESULT = $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			}
+		
+		$ret = $form->getSubmitValue("nagios_server_id");
+		if (isset($ret) && $ret != "" && $ret != 0){
+			$DBRESULT = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$host_id."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
+			$rq = "INSERT INTO `ns_host_relation` ";
+			$rq .= "(`host_host_id`, `nagios_server_id`) ";
+			$rq .= "VALUES ";
+			$rq .= "('".$host_id."', '".$ret."')";
+			$DBRESULT = $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}	
 ?>
