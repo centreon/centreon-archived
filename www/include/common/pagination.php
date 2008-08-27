@@ -20,14 +20,17 @@
 	if (!isset($oreon))
 		exit();
 
-	global $num, $limit, $search, $url, $pearDB;
-	global $search_type_service, $search_type_host, $host_name;
-	global $rows, $p, $gopt, $pagination;
+	global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host, $host_name, $rows, $p, $gopt, $pagination;
 	
-	isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
+	isset($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
+	isset($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
 	
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
+	if (isset($_GET["num"]))
+		$num = $_GET["num"];
+	else if (!isset($_GET["num"]) && isset($oreon->historyPage[$url]) && $oreon->historyPage[$url])
+		$num = $oreon->historyPage[$url];
+	else
+		$num = 0;
 	
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 	
 
@@ -66,8 +69,10 @@
 		$url_var .= "&sort_types=".$_GET["sort_types"];
 		$sort_type = $_GET["sort_types"];
 	}
-
-	# Smarty template Init
+	
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./include/common/");
 
@@ -81,9 +86,9 @@
 		$istart--;
 	for ($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
 		$iend++;
-	for ($i = $istart; $i <= $iend; $i++){
+	for ($i = $istart; $i <= $iend; $i++)
 		$pageArr[$i] = array("url_page"=>"./main.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o . $url_var, "label_page"=>"<b>".($i +1)."</b>","num"=> $i);
-	}
+	
 	if ($i > 1)							
 		$tpl->assign("pageArr", $pageArr);
 
@@ -102,18 +107,19 @@
 	else
 		$tpl->assign('pageNumber', ($num)."/".ceil($rows / $limit));
 
-	#Select field to change the number of row on the page
-
+	
+	/*
+	 * Select field to change the number of row on the page
+	 */
 	for ($i = 10; $i <= 100; $i = $i +10)
 		$select[$i]=$i;
 	if (isset($gopt[$pagination]) && $gopt[$pagination])
-		$select[$gopt[$pagination]]=$gopt[$pagination];
+		$select[$gopt[$pagination]] = $gopt[$pagination];
 	if (isset($rows) && $rows)
-		$select[$rows]=$rows;
+		$select[$rows] = $rows;
 	ksort($select);
 	
-	?>
-	<script type="text/javascript">
+	?><script type="text/javascript">
 	function setL(_this){
 		var _l = document.getElementsByName('l');
 		document.forms['form'].elements['limit'].value = _this;
@@ -126,7 +132,9 @@
 	$selLim =& $form->addElement('select', 'l', _("number per page"), $select, array("onChange" => "setL(this.value);  this.form.submit()"));
 	$selLim->setSelected($limit);
 	
-	#Element we need when we reload the page
+	/*
+	 * Element we need when we reload the page
+	 */
 	$form->addElement('hidden', 'p');
 	$form->addElement('hidden', 'search');
 	$form->addElement('hidden', 'num');
@@ -136,7 +144,9 @@
 	$tab = array ("p" => $p, "search" => $search, "num"=>$num);
 	$form->setDefaults($tab);
 
-	# Init QuickForm
+	/*
+	 * Init QuickForm
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 
