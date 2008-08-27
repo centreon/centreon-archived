@@ -73,12 +73,6 @@
 			deleteComponentTemplateInDB(isset($select) ? $select : array()); 
 			require_once $path."listComponentTemplates.php"; 
 			break; #Delete n Component Templates
-		case "e" : 
-			print "<script language='JavaScript'>window.open('$path/exportCurves.php"; 
-			if(isset($select)) print "?id=".serialize(array_keys($select)).""; 
-			print "');</script>"; 
-			require_once($path."listComponentTemplates.php"); 
-			break; #Export x Graph Templates
 		default : 
 			require_once $path."listComponentTemplates.php"; 
 			break;
