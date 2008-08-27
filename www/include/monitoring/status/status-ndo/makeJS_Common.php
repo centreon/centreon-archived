@@ -143,7 +143,7 @@ function change_limit(l){
 	pagination_changed();
 	monitoring_refresh();
 	var _sel1 = document.getElementById('l1');
-	for(i=0;_sel1[i] && _sel1[i].value != l;i++)
+	for(i=0 ; _sel1[i] && _sel1[i].value != l ; i++)
 		;
 	_sel1.selectedIndex = i;
 	set_limit(l);
@@ -310,6 +310,7 @@ for ($i = 1; $i <= 2; $i++) { ?>
   		_linkaction_num.onclick=function(){change_page(this.indice)};
 		_linkaction_num.innerHTML = parseInt(i + 1);
 		_linkaction_num.className = "otherPageNumber";
+		
 		if (i == _num)
 			_linkaction_num.className = "currentPageNumber";
 		_pagination<?php echo $i; ?>.appendChild(_linkaction_num);
@@ -326,14 +327,21 @@ for ($i = 1; $i <= 2; $i++) { ?>
 <?php 
 } ?>
 	
-
 	var _sel1 = document.getElementById('sel1');
 	_sel1.innerHTML ='';
 
-	var sel = document.createElement('select');
-	sel.name = 'l';
-	sel.id = 'l1';
-	sel.onchange = function() { change_limit(this.value) };
+	var _sel2 = document.getElementById('sel2');
+	_sel2.innerHTML ='';
+
+	var sel1 = document.createElement('select');
+	sel1.name = 'l';
+	sel1.id = 'l1';
+	sel1.onchange = function() { change_limit(this.value) };
+	
+	var sel2 = document.createElement('select');
+	sel2.name = 'l';
+	sel2.id = 'l1';
+	sel2.onchange = function() { change_limit(this.value) };
 
 	var _index = 0;
 	for (i = 10; i <= 100 ;i += 10){
@@ -341,12 +349,24 @@ for ($i = 1; $i <= 2; $i++) { ?>
 			_index++;
 		var k = document.createElement('option');
 		k.value= i;
-		sel.appendChild(k);
+		sel1.appendChild(k);
 		var l = document.createTextNode(i);
 		k.appendChild(l);
 	}
-	sel.selectedIndex = _index;
-	_sel1.appendChild(sel);
+	var _index = 0;
+	for (i = 10; i <= 100 ;i += 10){
+		if (i < _limit)
+			_index++;
+		var k = document.createElement('option');
+		k.value= i;
+		sel2.appendChild(k);
+		var l = document.createTextNode(i);
+		k.appendChild(l);
+	}
+	sel1.selectedIndex = _index;
+	_sel1.appendChild(sel1);
+	sel2.selectedIndex = _index;
+	_sel2.appendChild(sel2);
 }
 
 function escapeURI(La){

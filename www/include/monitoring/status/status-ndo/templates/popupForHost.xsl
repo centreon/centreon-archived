@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="//reponse">
-	<table style="padding:5px;margin:5px;z-index:15;">
+	<table style="padding:5px;margin:5px;">
 		<tr class="ListHeaderPopup">
 			<td class="ColPopup"><xsl:value-of select="hostname"/></td>
 			<td class="ColPopup" style="width:100%;text-aling:right;"><xsl:value-of select="address"/></td>
@@ -18,9 +18,7 @@
 		</tr>
 		</xsl:comment>
 		<xsl:comment>
-		<tr class='list_separator'>
-			<td class="separator" colspan="2">Status</td>
-		</tr>
+		<tr class='list_separator'><td class="separator" colspan="2">Status</td></tr>
 		</xsl:comment>
 		<tr class='list_two'>
 		<xsl:comment>

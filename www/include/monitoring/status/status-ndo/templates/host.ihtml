@@ -11,12 +11,9 @@
 			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
 			<span class="consol_button" id="instance_selected"></span>
-			<div style="text-align:left;padding-top:5px;">&nbsp;{$form.o1.html}</div>
-			{if $pgr_nagios_stat.created != 0}
-				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
-			{/if}
+			<span class="consol_button">{$form.o1.html}</span>
+			<input name="p" value="{$p}" type="hidden">
 		</td>
-		<input name="p" value="{$p}" type="hidden">
 		<td id="pagination1" class="Toolbar_pagination"></td>
 		<td id="sel1" class="Toolbar_pagelimit"></td>
 	</tr>
@@ -24,11 +21,7 @@
 <div id="forAjax">...</div>
 <table class="Toolbar_TableBottom">
 	<tr>
-		<td class="Toolbar_TDSelectAction_Bottom">
-			<div style="text-align:left;padding-top:5px;">{$form.o2.html}</div>
-			{if $pgr_nagios_stat.created != 0}<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>{/if}
-		</td>
-		<input name="p" value="{$p}" type="hidden">
+		<td class="Toolbar_TDSelectAction_Bottom"><span class="consol_button">{$form.o2.html}</span><input name="p" value="{$p}" type="hidden"></td>
 		<td id="pagination2" class="Toolbar_pagination"></td>
 		<td id="sel2" class="Toolbar_pagelimit"></td>
 	</tr>
