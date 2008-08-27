@@ -659,16 +659,18 @@
 		 		$hst_list = getHostListInUse($hst_list, $val);
 	 		}
 	 	}
-	 	$rq = "SELECT service_id " .
-	 			"FROM service svc, host_service_relation hsr " .
-	 			"WHERE hsr.service_service_id = svc.service_template_model_stm_id " .
-	 			"AND hsr.service_service_id = '". $svc_id ."' " .
-	 			"AND hsr.host_host_id IN (". $hst_list .")";
-	 	$DBRESULT =& $pearDB->query($rq);
-	 	if (PEAR::isError($DBRESULT))
+	 	if ($hst_list == "")
+	 		$hst_list = "NULL";
+		 $rq = "SELECT service_id " .
+		 		"FROM service svc, host_service_relation hsr " .
+		 		"WHERE hsr.service_service_id = svc.service_template_model_stm_id " .
+		 		"AND hsr.service_service_id = '". $svc_id ."' " .
+		 		"AND hsr.host_host_id IN (". $hst_list .")";
+		 $DBRESULT =& $pearDB->query($rq);
+		 if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	 	if ($DBRESULT->numRows() >= 1)
-	 		return true;
+		if ($DBRESULT->numRows() >= 1)
+			return true;	 	
 	 	return false;
 	}
 	
@@ -836,7 +838,7 @@
 		$rq .= "host_register = ";
 		isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL ? $rq .= "'".$ret["host_register"]["host_register"]."', " : $rq .= "NULL, ";
 		$rq .= "host_activate = ";
-		isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."'" : $rq .= "NULL ";
+		isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."' " : $rq .= "NULL ";
 		$rq .= "WHERE host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
