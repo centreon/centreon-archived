@@ -84,7 +84,7 @@
 	$istart = 0;
 	for ($i = 5, $istart = $num; $istart && $i > 0; $i--)
 		$istart--;
-	for ($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
+	for ($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit - 1)) && ( $i2 < (5 + $i)); $i2++)
 		$iend++;
 	for ($i = $istart; $i <= $iend; $i++)
 		$pageArr[$i] = array("url_page"=>"./main.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o . $url_var, "label_page"=>"<b>".($i +1)."</b>","num"=> $i);
@@ -93,20 +93,27 @@
 		$tpl->assign("pageArr", $pageArr);
 
 	$tpl->assign("num", $num);
-	$tpl->assign("previous", _("previous"));
-	$tpl->assign("next", _("next"));
-
+	$tpl->assign("first", _("First page"));
+	$tpl->assign("previous", _("Previous page"));
+	$tpl->assign("next", _("Next page"));
+	$tpl->assign("last", _("Last page"));
+	
 	if (($prev = $num - 1) >= 0)
 		$tpl->assign('pagePrev', ("./main.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
 	
 	if (($next = $num + 1) < ($rows/$limit))
 		$tpl->assign('pageNext', ("./main.php?p=".$p."&num=$next&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
 	
+	$pageNumber = ceil($rows / $limit);
 	if (($rows / $limit) > 0)
-		$tpl->assign('pageNumber', ($num +1)."/".ceil($rows / $limit));
+		$tpl->assign('pageNumber', ($num +1)."/".$pageNumber);
 	else
-		$tpl->assign('pageNumber', ($num)."/".ceil($rows / $limit));
-
+		$tpl->assign('pageNumber', ($num)."/".$pageNumber);
+	
+	if ($page_max > 5 && $num != 0)
+		$tpl->assign('firstPage', ("./main.php?p=".$p."&num=0&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
+	if ($page_max > 5 && $num != ($pageNumber-1))
+		$tpl->assign('lastPage', ("./main.php?p=".$p."&num=".($pageNumber-1)."&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
 	
 	/*
 	 * Select field to change the number of row on the page
