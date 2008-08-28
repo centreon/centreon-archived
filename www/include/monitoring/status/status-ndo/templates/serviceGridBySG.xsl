@@ -60,7 +60,7 @@
 				</td>
 
 			<xsl:if test="//i/s = 1">
-				<td class="ListColLeft">
+				<td class="ListColCenter">
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="hc"/>;
     						</xsl:attribute>
