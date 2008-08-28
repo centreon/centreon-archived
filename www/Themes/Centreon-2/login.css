@@ -24,9 +24,9 @@ a:hover		{text-decoration: underline;}
 
 body, .msg, #sublogin, #LoginInvitcpy a,  #LoginInvitcpy {text-align:center;}
 
-table {empty-cells:show; border-spacing:0px; border-collapse:collapse;}
+table {empty-cells:show; border-spacing:0px; border-collapse:collapse;font-family:'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';}
 
-body, input, textarea, checkbox, select, option, td, .msg, input[type="submit"], input[type="button"], input[type="reset"] {font-family: Verdana, Arial, sans-serif;font-weight: normal;}
+body, input, textarea, checkbox, select, option, td, .msg, input[type="submit"], input[type="button"], input[type="reset"], label, table {font-family:'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';font-weight: normal;}
 
 input, textarea, checkbox, select, option	{font-size: 10px;}
 input[type="submit"], input[type="button"], input[type="reset"], body	{font-size: 11px;}
@@ -70,14 +70,9 @@ input[type="submit"], input[type="button"], input[type="reset"]{
 /* Input */
 
 .inputclassic, .inputclassicPass, #logintab2 	{border:1px solid gray;}
-#logintab2 		{border-top: 2px solid gray;border-bottom: 2px solid gray;}
+#logintab2 										{border-top: 2px solid gray;border-bottom: 2px solid gray;}
 .inputclassic, .inputclassicPass 				{width:150;}
-.inputclassic		{padding:2px 2px 3px 18px;background: #FFFFFF url("../../img/icones/16x16/user1.gif") no-repeat scroll 1px 1px;}
-.inputclassicPass	{padding:2px 2px 3px 18px;background: #FFFFFF url("../../img/icones/16x16/key1.gif") no-repeat scroll 1px 1px;}
-.msg, body 	{color:#FFFFFF;}
-.msg		{border: 4px solid white; 
-			padding:3px; 
-			text-align:center; 
-			background-color:red; 
-			margin:5px;
-}
+.inputclassic									{padding:2px 2px 3px 18px;background: #FFFFFF url("../../img/icones/16x16/user1.gif") no-repeat scroll 1px 1px;}
+.inputclassicPass								{padding:2px 2px 3px 18px;background: #FFFFFF url("../../img/icones/16x16/key1.gif") no-repeat scroll 1px 1px;}
+.msg, body 										{color:#FFFFFF;}
+.msg											{border: 4px solid white;padding:3px;text-align:center;background-color:red;margin:5px;}
