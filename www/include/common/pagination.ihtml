@@ -1,4 +1,4 @@
-<td class="Toolbar_pagination">
+<td class="ToolbarPagination">
 	{if $firstPage}&nbsp;<a href="{$firstPage}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icones/16x16/arrow_left_blue_double.gif" title='{$first}'></a>{/if}
 	{if $pagePrev}&nbsp;<a href="{$pagePrev}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icones/16x16/arrow_left_blue.gif" title='{$previous}'></a>{/if}
 	{foreach key=key item=item from=$pageArr }

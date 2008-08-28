@@ -1,8 +1,8 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form' method='POST'>
 	<input name="o" type="hidden">
-	<table class="Toolbar_TableTop">
-		<tr class="Toolbar_TR_Top">
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
 			<td class="Toolbar_TDSelectAction_Top">
 				{$msg.options} {$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
@@ -42,7 +42,7 @@
 	 	{assign var='host_name' value=$d.host_name}	
 		{/foreach}
 	</table>
-	<table class="Toolbar_TableBottom">
+	<table class="ToolbarTable">
 		<tr>
 			<td class="Toolbar_TDSelectAction_Bottom">
 				{$msg.options} {$form.o2.html}

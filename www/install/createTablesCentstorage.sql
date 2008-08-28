@@ -44,8 +44,7 @@ CREATE TABLE IF NOT EXISTS `data_bin` (
   `ctime` int(11) default NULL,
   `value` float default NULL,
   `status` enum('0','1','2','3','4') default NULL,
-  KEY `index_metric` (`id_metric`),
-  KEY `ctime` (`ctime`)
+  KEY `index_metric` (`id_metric`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

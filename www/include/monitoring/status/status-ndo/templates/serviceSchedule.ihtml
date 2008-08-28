@@ -2,7 +2,7 @@
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
-<table class="Toolbar_TableTop">
+<table class="ToolbarTable">
 	<tr>
 		<td>
 		<a href="#" onclick="advanced_options('advanced_options');" id="advanced_1">Advanced Options</a>
@@ -12,7 +12,7 @@
 		<br />
 		</fieldset>
 	</td></tr>
-	<tr class="Toolbar_TR_Top">
+	<tr class="ToolbarTR">
 		<td class="Toolbar_TDSelectAction_Top">
 			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>
 			<span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' alt='Play' title='Play'></a></span>
@@ -22,15 +22,15 @@
 			<span class="consol_button">{$form.o1.html}</span>
 			<input name="p" value="{$p}" type="hidden">
 		</td>
-		<td id="pagination1" class="Toolbar_pagination"></td>
+		<td id="pagination1" class="ToolbarPagination"></td>
 		<td id="sel1" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>
 <div id="forAjax">...</div>
-<table class="Toolbar_TableBottom">
+<table class="ToolbarTable">
 	<tr>
 		<td class="Toolbar_TDSelectAction_Bottom"><span class="consol_button">{$form.o2.html}</span><input name="p" value="{$p}" type="hidden"></td>
-		<td id="pagination2" class="Toolbar_pagination"></td>
+		<td id="pagination2" class="ToolbarPagination"></td>
 		<td id="sel2" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>

@@ -43,7 +43,7 @@
 	/*
 	 * Launch Request
 	 */	
-	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE $SearchTool $LCATool host_register = '1'");
+	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h WHERE $SearchTool $LCATool host_register = '1'");
 	
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	

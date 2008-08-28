@@ -22,27 +22,30 @@
 	$command = $_GET["command_line"];
 	$example = $_GET["command_example"];		
 	$args = split("!", $example);
-
+	
+	for ($i = 0; $i < count($args); $i++)
+	    $args[$i] = escapeshellarg ($args[$i]);
 	$resource_def = str_replace('$', '@DOLLAR@', $command);
+	$resource_def = escapeshellcmd($resource_def);
 
 	while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
-			$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");			
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$resource = $DBRESULT->fetchRow();
-			if (!isset($resource["resource_line"])){
-				$error_msg .= "\$USER".$matches[1]."\$";				
-			} else {
-				$resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
-			}
+		$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");			
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$resource = $DBRESULT->fetchRow();
+		if (!isset($resource["resource_line"])){
+			$error_msg .= "\$USER".$matches[1]."\$";				
+		} else {
+			$resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
+		}
 	}		
 
 	while (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{			
-			if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "") {
-				$resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
-			} else {
-				$error_msg .= "\$HOSTADDRESS\$";
-			}
+		if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "") {
+			$resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
+		} else {
+			$error_msg .= "\$HOSTADDRESS\$";
+		}
 	}
 
 	while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
@@ -96,9 +99,8 @@
 		$pathMatch = str_replace('/', '\/', $user1Path);
 		
 		if (preg_match("/^$pathMatch/", $command)){					
-			exec($command, $stdout, $status);	
-			$msg = join(" ",$stdout);
-			$msg = str_replace("\n", "<br />", $msg);
+			$msg = exec($command, $stdout, $status);
+			$msg = join("<br/>",$stdout);
 		
 			if ($status == 1)
 				$status = _("WARNING");
@@ -140,8 +142,10 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign('command_line', $command);
+	
 	if (isset($msg) && $msg)
 		$tpl->assign('msg', $msg);
+	
 	if (isset($status))
 		$tpl->assign('status', $status);
 	
