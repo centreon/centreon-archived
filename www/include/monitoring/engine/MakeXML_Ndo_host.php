@@ -23,7 +23,7 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");
 	include_once($centreon_path . "www/class/other.class.php");
@@ -132,6 +132,7 @@
 
 	if ($o == "hpb")
 		$rq1 .= " AND nhs.current_state != 0 ";
+	
 	if ($o == "h_unhandled") {
 		$rq1 .= " AND nhs.current_state != 0 ";
 		$rq1 .= " AND nhs.problem_has_been_acknowledged = 0";
@@ -185,18 +186,11 @@
 		$active = 1;
 		$last_check = " ";
 		$duration = " ";
-		if($ndo["last_state_change"] > 0)
+		
+		if ($ndo["last_state_change"] > 0)
 			$duration = Duration::toString(time() - $ndo["last_state_change"]);
 		
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
-		
-		if ($host_status[$ndo["current_state"]] == "DOWN"){
-				$ndo["problem_has_been_acknowledged"] == 1 ? $class = "list_four" : $class = "list_down";
-			} else {
-				if ($ndo["problem_has_been_acknowledged"] == 1)
-					$class = "list_four";
-			}
-			
 			
 		$host_status[$ndo["host_name"]] = $ndo;
 		$buffer .= '<l class="'.$class.'">';
@@ -220,7 +214,7 @@
 	}
 	/* end */
 
-	if(!$ct){
+	if (!$ct){
 		$buffer .= '<infos>';
 		$buffer .= 'none';
 		$buffer .= '</infos>';
