@@ -3,17 +3,8 @@
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
 <table class="ToolbarTable">
-	<tr>
-		<td>
-		<a href="#" onclick="advanced_options('advanced_options');" id="advanced_1">Advanced Options</a>
-		<fieldset id="advanced_options" STYLE = "padding:3px;-moz-border-radius : 5px 5px;">
-		<legend><a href="#" onclick="advanced_options('advanced_options');" >Advanced Options</a></legend>
-		next check:<input type="checkbox" name="next_check_case" onclick="addORdelTab('next_check_case');">
-		<br />
-		</fieldset>
-	</td></tr>
 	<tr class="ToolbarTR">
-		<td class="Toolbar_TDSelectAction_Top">
+		<td class="Toolbar_TDSelectAction_Top" width="330">
 			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>
 			<span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' alt='Play' title='Play'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
@@ -29,7 +20,7 @@
 <div id="forAjax">...</div>
 <table class="ToolbarTable">
 	<tr>
-		<td class="Toolbar_TDSelectAction_Bottom"><span class="consol_button">{$form.o2.html}</span><input name="p" value="{$p}" type="hidden"></td>
+		<td class="Toolbar_TDSelectAction_Top" width="330"><span class="consol_button">{$form.o2.html}</span><input name="p" value="{$p}" type="hidden"></td>
 		<td id="pagination2" class="ToolbarPagination"></td>
 		<td id="sel2" class="Toolbar_pagelimit"></td>
 	</tr>
