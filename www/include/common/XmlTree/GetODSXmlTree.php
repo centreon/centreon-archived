@@ -106,11 +106,9 @@
 			 * get services for host
 			 */
 			$services = getMyHostServices($id);
-			foreach($services as $svc_id => $svc_name){
+			foreach ($services as $svc_id => $svc_name){
 				$host_name = getMyHostName($id);
-		        if ($is_admin || 	(!$is_admin 
-		        						&& isset($lca["LcaHost"][$host_name]) 
-		        						&& isset($lca["LcaHost"][$host_name]["svc"][getMyServiceName($svc_id)])))
+		        if ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][getMyServiceName($svc_id)])))
 			        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
 			}
 		} else if ($type == "HS") {	
@@ -121,7 +119,12 @@
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
-		        print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/clients.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+				if ($is_admin){
+					$hostaloneSTR2 .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>\n";
+				} else {
+					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))
+					 	$hostaloneSTR2 .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>\n";	
+				}
 			}
 		} else if ($type == "RS") {
 			/*
@@ -147,7 +150,6 @@
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-			$is_admin = isUserAdmin($_GET["sid"]);
 			while ($HG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin){
@@ -163,19 +165,21 @@
 			/*
 			 * Hosts Alone
 			 */
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
+			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' order by host_name");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			$cpt = 0;
 			$hostaloneSTR2 = "";
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
-				$cpt++;
 				if ($is_admin){
 		           	$hostaloneSTR2 .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>\n";
+					$cpt++;
 				} else {
-					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))
-					   	$hostaloneSTR2 .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>\n";	
+					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]])){
+						$hostaloneSTR2 .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>\n";	
+						$cpt++;
+					}
 				}
 			}
 			if ($cpt){
