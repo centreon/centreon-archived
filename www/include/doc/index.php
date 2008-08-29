@@ -21,16 +21,15 @@
 	/*
 	 * Filter Args
 	 */
-	 
+		 
 	if (function_exists("filter_var")) {
 		$page = filter_var($_GET["page"], FILTER_SANITIZE_SPECIAL_CHARS);
-		$page = filter_var($page, INPUT_GET);
 	} else if (function_exists("filter_get")) {
 		$page = filter_get($_GET["page"]);
 	} else {
 		$page = $_GET["page"];
 	}
-	
+
 	$tab_pages = split("/", $page);
 	foreach ($tab_pages as $value)
 		$page = $value;
@@ -39,7 +38,6 @@
 		$lang = "en_US";
 	else 
 		$lang = $oreon->user->get_lang();
-
 		
 	if (preg_match("/png/i", $page)) {
 		print "<img src=\"./include/doc/getImage.php?lang=".$oreon->user->get_lang()."&version=".$oreon->user->get_version()."&img=images/".$page."\" />" ;
@@ -51,7 +49,9 @@
 
 	$path = "./include/doc/";
 		
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./");	
 	
@@ -79,4 +79,3 @@
 	}
 	print "</div>";
 ?>
-
