@@ -425,13 +425,14 @@
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
-	function getLCASGForHost($pearDB, $host_id = NULL){
+	function getLCASGForHost($pearDB, $host_id = NULL, $groupstr = NULL){
 		if (!$pearDB || !isset($host_id))
 			return ;
-		
-		$groups = getGroupListofUser($pearDB);
-		$str 	= groupsListStr($groups);
-		
+
+		if ($groupstr == NULL){
+			$groups = getGroupListofUser($pearDB);
+			$groupstr = groupsListStr($groups);
+		}		
 		/*
 		 * Init Table
 		 */
@@ -439,8 +440,8 @@
 		
 		$str_topo = "";
 		$condition = "";
-		if ($str != "")
-			$condition = " WHERE acl_group_id IN (".$str.")";		
+		if ($groupstr != "")
+			$condition = " WHERE acl_group_id IN (".$groupstr.")";		
 		$DBRESULT =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
 		while ($res =& $DBRESULT->fetchRow()){
 			$DBRESULT2 =& $pearDB->query(	"SELECT service_service_id " .
@@ -482,9 +483,9 @@
 		/*
 		 * Get Service Groups
 		 */
-		$svc_SG 	= getLCASGForHost($pearDB, $host_id);
+		$svc_SG 	= getLCASGForHost($pearDB, $host_id, $groupstr);
 		
-		$tab_services = array();		
+		$tab_services = array();
 		if (count($tab_cat) || count($svc_SG)){
 			if ($tab_svc)
 				foreach ($tab_svc as $svc_descr => $svc_id){
