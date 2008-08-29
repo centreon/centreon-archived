@@ -178,19 +178,18 @@
 			/*
 			 * Send Service Group list
 			 */
+			$lcaSG = getLCASG($pearDB);
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($SG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin){
-					if (SGIsNotEmpty($SG["sg_id"])){
+					if (SGIsNotEmpty($SG["sg_id"]))
 			        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
-					}					
 				} else {
-					if (SGIsNotEmpty($SG["sg_id"]) /*&& isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_alias"]])*/){
+					if (SGIsNotEmpty($SG["sg_id"]) && isset($lcaSG) && isset($lcaSG[$SG["sg_id"]]))
 			        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
-					}					
 				}
 			}
 			$DBRESULT->free();
