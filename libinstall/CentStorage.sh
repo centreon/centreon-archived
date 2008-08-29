@@ -27,6 +27,7 @@ locate_centreon_logdir
 locate_centreon_etcdir
 locate_centreon_rundir
 locate_centreon_generationdir
+locate_centreon_varlib
 
 ## Config pre-require
 locate_rrd_perldir
