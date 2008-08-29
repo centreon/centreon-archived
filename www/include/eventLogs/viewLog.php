@@ -157,10 +157,10 @@
     tree.setImagePath("./img/icones/csh_vista/");
     
     //link tree to xml
-    tree.setXMLAutoLoading("./include/common/XmlTree/GetODSXmlTree.php"); 
+    tree.setXMLAutoLoading("./include/common/XmlTree/GetXmlTree.php"); 
             
     //load first level of tree
-    tree.loadXML("./include/common/XmlTree/GetODSXmlTree.php?sid=<?php print session_id(); ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
+    tree.loadXML("./include/common/XmlTree/GetXmlTree.php?sid=<?php print session_id(); ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 	// system to reload page after link with new url
 	tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
@@ -352,12 +352,12 @@
 		var _addrXSL = "./include/eventLogs/log.xsl";
 
 		if (!type){		
-			var _addr = './include/eventLogs/GetODSXmlLog.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+			var _addr = './include/eventLogs/GetXmlLog.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 			proc.setXml(_addr)
 			proc.setXslt(_addrXSL)
 			proc.transform("logView4xml");
 		} else{
-			var _addr = './include/eventLogs/GetODS'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+			var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 			document.location.href = _addr;
 		}
 	}
