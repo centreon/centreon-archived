@@ -61,22 +61,15 @@
 	
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, _("Yes"), '1');
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, _("No"), '0');
-
-	#
-	## ndo
-	#
-	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, _("Yes"), '1');
-	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, _("No"), '0');
-	$form->addGroup($ndo_activate, 'ndo_activate', _("NDO activate"), '&nbsp;');
-
 	
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+	
+	/*
+	 * Form Rules
+	 */
 
-	#
-	## Form Rules
-	#
 	function slash($elem = NULL)	{
 		if ($elem)
 			return rtrim($elem, "/")."/";

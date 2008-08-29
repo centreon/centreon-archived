@@ -80,9 +80,7 @@
 		$rq .= "nagios_version = ";
 		isset($ret["nagios_version"]) && $ret["nagios_version"] != NULL ? $rq .= "'".$ret["nagios_version"]."', ": $rq .= "NULL, ";
 		$rq .= "mailer_path_bin = ";
-		isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["mailer_path_bin"], ENT_QUOTES)."', ": $rq .= "NULL ";
-		$rq .= "ndo_activate = ";
-		isset($ret["ndo_activate"]["ndo_activate"]) && $ret["ndo_activate"]["ndo_activate"] != NULL ? $rq .= "'".htmlentities($ret["ndo_activate"]["ndo_activate"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["mailer_path_bin"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
