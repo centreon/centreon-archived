@@ -141,14 +141,14 @@
 			" nss.passive_checks_enabled," .
 			" nss.active_checks_enabled," .
 			" nss.event_handler_enabled," .
-			" nss. is_flapping," .
+			" nss.is_flapping," .
 			" nss.flap_detection_enabled," .
 			" no.name1 as host_name," .
 			" no.name2 as service_description" .
 			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 1 AND objecttype_id = 2";
+			" AND no.is_active = '1' AND objecttype_id = '2' AND `nss`.`active_checks_enabled` = '1'";
 
 	if (!$is_admin)
 		$rq .= " AND no.name1 IN (".$lcaSTR." )";
