@@ -15,38 +15,38 @@
  * For information : contact@centreon.com
  */
  
-header('Content-Type: text/xml');
-header('Cache-Control: no-cache');
-require_once("@CENTREON_ETC@/centreon.conf.php");
-require_once ($centreon_path."/www/DBconnect.php");
-
-echo "<?xml version=\"1.0\"?>\n";
-
-$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register='0' ORDER BY host_name");
-if (PEAR::isError($DBRESULT))
-	print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-
+	header('Content-Type: text/xml');
+	header('Cache-Control: no-cache');
 	
-/*
- *  The first element of the select is empty
- */
-echo "<template_data>\n";
-echo "<template>";
-echo "<tp_id>0</tp_id>\n";	
-echo "<tp_alias>empty</tp_alias>\n";	
-echo "</template>\n";
-
-/*
- *  Now we fill out the select with templates id and names
- */
-while ($h = $DBRESULT->fetchRow())
-{
-	if ($h['host_id'] != $_GET['host_id']) {
-		echo "<template>";
-		echo "<tp_id>".$h['host_id']."</tp_id>\n";	
-		echo "<tp_alias>".$h['host_name']."</tp_alias>\n";	
-		echo "</template>\n";
+	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once $centreon_path."/www/DBconnect.php";
+	
+	echo "<?xml version=\"1.0\"?>\n";
+	
+	$DBRESULT =& $pearDB->query("SELECT `host_id`, `host_name` FROM `host` WHERE `host_register` = '0' ORDER BY `host_name`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	
+	/*
+	 *  The first element of the select is empty
+	 */
+	echo "<template_data>\n";
+	echo "<template>";
+	echo "<tp_id>0</tp_id>\n";	
+	echo "<tp_alias>empty</tp_alias>\n";	
+	echo "</template>\n";
+	
+	/*
+	 *  Now we fill out the select with templates id and names
+	 */
+	while ($h =& $DBRESULT->fetchRow()){
+		if ($h['host_id'] != $_GET['host_id']) {
+			echo "<template>";
+			echo "<tp_id>".$h['host_id']."</tp_id>\n";	
+			echo "<tp_alias><![CDATA[".html_entity_decode($h['host_name'])."]]></tp_alias>\n";	
+			echo "</template>\n";
+		}
 	}
-}
-echo "</template_data>\n";
+	$DBRESULT->free();
+	echo "</template_data>\n";
 ?>
