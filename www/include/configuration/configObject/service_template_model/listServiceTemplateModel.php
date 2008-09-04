@@ -26,13 +26,17 @@
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
 	
-	
-	if (isset($search))
+	if (isset($search)) {
+		$search = str_replace('/', "#S#", $search);
+		$search = str_replace('\\', "#BS#", $search);	
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sv.service_register = '0'");
-	else
+	} else {
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
-	if (PEAR::isError($DBRESULT))
+	}
+	
+	if (PEAR::isError($DBRESULT)) {
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	}
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -78,6 +82,10 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
+	
+	$search = str_replace('#S#', "/", $search);
+	$search = str_replace('#BS#', "\\", $search);
+	
 	for ($i = 0; $service =& $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");	

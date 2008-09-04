@@ -25,12 +25,6 @@
 	 */
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
-	
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
 
 	if (isset($search))
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND host_register = '0'");

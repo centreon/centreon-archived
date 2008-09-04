@@ -172,6 +172,9 @@
 	
 	$time_min = $oreon->Nagioscfg['interval_length'] / 60;
 	
+	$search = str_replace('#S#', "/", $search);
+    $search = str_replace('#BS#', "\\", $search);
+	
 	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 		
 		/*

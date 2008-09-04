@@ -32,6 +32,9 @@
 		$type_str = "";
 
 	if (isset($search) && $search){
+		$search = str_replace('#S#', "/", $search);
+		$search = str_replace('#BS#', "\\", $search);		
+
 		if ($type_str)
 			$type_str = " AND " . $type_str;
 		$req = "SELECT COUNT(*) FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES)."%' $type_str";
