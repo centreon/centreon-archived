@@ -51,6 +51,8 @@ locate_cron_d
 locate_init_d
 locate_php_bin
 
+locate_centpluginstraps_bindir
+
 ## Config apache
 check_httpd_directory
 check_group_apache
@@ -153,7 +155,7 @@ cp $TMPDIR/work/www/install/insertBaseConf.sql \
 
 ## use this step to change macros on php file...
 echo_info "$(gettext "Change macros for php file")"
-macros="@CENTREON_ETC@,@CENTREON_GENDIR@"
+macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@"
 find_macros_in_dir "$macros" "$TMPDIR/src/" "www" "*.php" "file_php_temp"
 
 log "INFO" "$(gettext "Apply macros")"
@@ -164,6 +166,7 @@ ${CAT} "$file_php_temp" | while read file ; do
 		mkdir -p  $(dirname $TMPDIR/work/$file) >> $LOG_FILE 2>&1
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
 		$TMPDIR/src/$file > $TMPDIR/work/$file
 	log "MACRO" "$(gettext "Copy in final dir") : $file"
 	cp -f $TMPDIR/work/$file $TMPDIR/final/$file >> $LOG_FILE 2>&1 
