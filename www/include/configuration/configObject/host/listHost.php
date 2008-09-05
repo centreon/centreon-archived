@@ -37,9 +37,11 @@
 	 * Search active
 	 */	
 	$SearchTool = "";
-	if (isset($search) && $search)
+	if (isset($search) && $search) {
+		$search = str_replace('_', "\_", $search);
 		$SearchTool = "(host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_address LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND ";
-		
+	}
+	
 	/*
 	 * Launch Request
 	 */	
@@ -121,6 +123,7 @@
 	 */
 	 
 	$elemArr = array();
+	$search = str_replace('\_', "_", $search);
 	for ($i = 0; $host =& $DBRESULT->fetchRow(); $i++) {
 
 		$selectedElements =& $form->addElement('checkbox', "select[".$host['host_id']."]");	
