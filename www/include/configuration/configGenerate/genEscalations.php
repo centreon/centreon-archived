@@ -70,7 +70,7 @@
 			$BP = false;
 			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
 			
-			if($BP && isHostOnThisInstance($host["host_id"], $tab['id'])) {
+			if ($BP && isHostOnThisInstance($host["host_id"], $tab['id'])) {
 				$linkedToHost++;
 				$strTemp != NULL ? $strTemp .= ", ".$host["host_name"] : $strTemp = $host["host_name"];
 			}
@@ -319,68 +319,70 @@
 			}
 			
 			$escalation = array();
-			while($escalation =& $DBRESULT2->fetchRow()) {
-				$host = array();
-				$BP = false;
-				$strDef = "";
-				array_key_exists($escalation["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
-				
-				$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
-				$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
-								
-				if($BP) {
-					$ret["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
+			while ($escalation =& $DBRESULT2->fetchRow()) {
+				if (isHostOnThisInstance($escalation["host_host_id"], $tab['id'])){
+					$host = array();
+					$BP = false;
+					$strDef = "";
+					array_key_exists($escalation["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
 					
-					if(isset($ret["comment"]) == true && isset($escalation["esc_comment"]) == true)	{
-						$comment = array();
-						$comment = explode("\n", $escalation["esc_comment"]);
+					$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
+					$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
+									
+					if ($BP) {
+						$ret["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
 						
-						foreach ($comment as $cmt) {
-							$strDef .= "# ".$cmt."\n";
+						if (isset($ret["comment"]) == true && isset($escalation["esc_comment"]) == true)	{
+							$comment = array();
+							$comment = explode("\n", $escalation["esc_comment"]);
+							
+							foreach ($comment as $cmt) {
+								$strDef .= "# ".$cmt."\n";
+							}
 						}
-					}
-					
-					$strDef .= "define serviceescalation{\n";			
-					$strDef .= print_line("host_name", getMyHostName($escalation["host_host_id"]));										
-					if (isHostOnThisInstance($escalation["host_host_id"], $tab['id'])){						
-						$generated++;
-					}
-					
-					$strDef .= print_line("service_description", $service["service_description"]);
-					$cg = array();
-					$strTemp = NULL;
-					
-					$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
-					if (PEAR::isError($DBRESULT3)) {
-						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-					}
-					
-					while($cg =& $DBRESULT3->fetchRow()) {
-						$BP = false;				
-						array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
 						
-						if ($BP) {
-							$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
+						$strDef .= "define serviceescalation{\n";			
+						$strDef .= print_line("host_name", getMyHostName($escalation["host_host_id"]));										
+						if (isHostOnThisInstance($escalation["host_host_id"], $tab['id'])){						
+							$generated++;
 						}
-					}
-					$DBRESULT3->free();
-
-					if (isset($strTemp) == true) $strDef .= print_line("contact_groups", $strTemp);			
-					if (isset($escalation["first_notification"]) == true) $strDef .= print_line("first_notification", $escalation["first_notification"]);
-					if (isset($escalation["last_notification"]) == true) $strDef .= print_line("last_notification", $escalation["last_notification"]);
-					if (isset($escalation["notification_interval"]) == true) $strDef .= print_line("notification_interval", $escalation["notification_interval"]);
-
-					$DBRESULT4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
-					if (PEAR::isError($DBRESULT4)) {
-						print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
-					}
-					$tp =& $DBRESULT4->fetchRow();
-					$DBRESULT4->free();		
-					if (isset($tp["tp_name"]) == true) $strDef .= print_line("escalation_period", $tp["tp_name"]);
-					if (isset($escalation["escalation_options2"]) == true) $strDef .= print_line("escalation_options", $escalation["escalation_options2"]);
-
-					$strDef .= "}\n\n";					
-					$i++;					
+						
+						$strDef .= print_line("service_description", $service["service_description"]);
+						$cg = array();
+						$strTemp = NULL;
+						
+						$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
+						if (PEAR::isError($DBRESULT3)) {
+							print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+						}
+						
+						while($cg =& $DBRESULT3->fetchRow()) {
+							$BP = false;				
+							array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
+							
+							if ($BP) {
+								$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
+							}
+						}
+						$DBRESULT3->free();
+	
+						if (isset($strTemp) == true) $strDef .= print_line("contact_groups", $strTemp);			
+						if (isset($escalation["first_notification"]) == true) $strDef .= print_line("first_notification", $escalation["first_notification"]);
+						if (isset($escalation["last_notification"]) == true) $strDef .= print_line("last_notification", $escalation["last_notification"]);
+						if (isset($escalation["notification_interval"]) == true) $strDef .= print_line("notification_interval", $escalation["notification_interval"]);
+	
+						$DBRESULT4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
+						if (PEAR::isError($DBRESULT4)) {
+							print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
+						}
+						$tp =& $DBRESULT4->fetchRow();
+						$DBRESULT4->free();		
+						if (isset($tp["tp_name"]) == true) $strDef .= print_line("escalation_period", $tp["tp_name"]);
+						if (isset($escalation["escalation_options2"]) == true) $strDef .= print_line("escalation_options", $escalation["escalation_options2"]);
+	
+						$strDef .= "}\n\n";					
+						$i++;
+					}					
 				}
 				if ($generated){	
 					$str .= $strDef;
