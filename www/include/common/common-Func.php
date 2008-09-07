@@ -830,6 +830,7 @@
 		while ($elem =& $DBRESULT->fetchRow())
 			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
 		$DBRESULT->free();
+		asort($hSvs);
 		return $hSvs;
 	}
 
