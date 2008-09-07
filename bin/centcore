@@ -261,7 +261,7 @@ sub getNagiosInformation($){
 
 sub GetPerfData($){
     # init Values
-    my $debug = 1;
+    my $debug = 0;
     my $id = $_[0];
 
     # Get Server Infos
@@ -342,7 +342,7 @@ sub GetLogFile($){
 		    if ($ls){
 				# Get log file
 				my $ret = `scp -q $distantconnexion:$distantlogfile $locallogfile`;
-				writeLogFile("Cannot get log file or log file doesn't exists on poller $id") if (!$ret);
+				writeLogFile("Cannot get log file or log file doesn't exists on poller $id") if ($ret);
 		    }
 		}
 	} else {
