@@ -112,14 +112,15 @@
 		$nbrhostDeact = $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$hg["hg_name"],
+						"RowMenu_name"=>htmlentities($hg["hg_name"]),
 						"RowMenu_link"=>"?p=".$p."&o=c&hg_id=".$hg['hg_id'],
-						"RowMenu_desc"=>$hg["hg_alias"],
+						"RowMenu_desc"=>htmlentities($hg["hg_alias"]),
 						"RowMenu_status"=>$hg["hg_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_hostAct"=>$nbrhostAct["nbr"],
 						"RowMenu_hostDeact"=>$nbrhostDeact["nbr"],
 						"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$style != "two" ? $style = "two" : $style = "one";	
+	}
 	$tpl->assign("elemArr", $elemArr);
 	/*
 	 * Different messages we put in the template

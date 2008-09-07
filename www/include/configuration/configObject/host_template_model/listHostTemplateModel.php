@@ -89,23 +89,19 @@
 		$tplStr = NULL;
 		if ($oreon->user->get_version() < 3){
 			$tplArr = getMyHostTemplateModels($host["host_template_model_htm_id"]);
-			if (count($tplArr))
-			{ 
+			if (count($tplArr))	{ 
 				foreach($tplArr as $key =>$value)
 					$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
 			}
-		}
-		else {
+		} else {
 			$tplArr = getMyHostMultipleTemplateModels($host['host_id']);
-			if (count($tplArr))
-			{ 
+			if (count($tplArr)) { 
 				$firstTpl = 1;
 				foreach($tplArr as $key =>$value) {
 					if ($firstTpl) {
 						$tplStr .= "<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
 						$firstTpl = 0;
-					}
-					else
+					} else
 						$tplStr .= "&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
 				}
 			}
@@ -116,9 +112,9 @@
 		$svArr = getMyHostServices($host['host_id']);
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$host["host_name"],
+						"RowMenu_name"=>htmlentities($host["host_name"]),
 						"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
-						"RowMenu_desc"=>$host["host_alias"],
+						"RowMenu_desc"=>htmlentities($host["host_alias"]),
 						"RowMenu_svChilds"=>count($svArr),
 						"RowMenu_parent"=>$tplStr,
 						"RowMenu_status"=>$host["host_activate"] ? _("Enabled") : _("Disabled"),

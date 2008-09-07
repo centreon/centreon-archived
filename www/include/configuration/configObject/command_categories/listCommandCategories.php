@@ -87,9 +87,9 @@
 				
 		$elemArr[$i] = array(	"MenuClass"=>"list_".$style,
 								"RowMenu_select"=>$selectedElements->toHtml(),
-								"category_name"=>$cc["category_name"],
+								"category_name"=>htmlentities($cc["category_name"]),
 								"category_link"=>"?p=".$p."&o=c&cc_id=".$cc['cmd_category_id'],
-								"category_alias"=>$cc["category_alias"],
+								"category_alias"=>htmlentities($cc["category_alias"]),
 								"RowMenu_options"=>$moptions);
 			$style != "two" ? $style = "two" : $style = "one";	
 	}

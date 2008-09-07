@@ -91,9 +91,9 @@
 				
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 							"RowMenu_select"=>$selectedElements->toHtml(),
-							"sc_name"=>$sc["sc_name"],
+							"sc_name"=>htmlentities($sc["sc_name"]),
 							"sc_link"=>"?p=".$p."&o=c&sc_id=".$sc['sc_id'],
-							"sc_description"=>$sc["sc_description"],
+							"sc_description"=>htmlentities($sc["sc_description"]),
 							"svc_linked"=>$nb_svc["COUNT(*)"],
 							"sc_activated"=>$sc["sc_activate"] ? _("Enabled") : _("Disabled"),
 							"RowMenu_options"=>$moptions);

@@ -182,8 +182,8 @@
 						"RowMenu_name"=>$host["host_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
 						"RowMenu_desc"=>$host["host_alias"],
-						"RowMenu_address"=>$host["host_address"],
-						"RowMenu_poller"=>$tab_relation[$host["host_id"]],
+						"RowMenu_address"=>htmlentities($host["host_address"]),
+						"RowMenu_poller"=>htmlentities($tab_relation[$host["host_id"]]),
 						"RowMenu_parent"=>$tplStr,
 						"RowMenu_status"=>$host["host_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);

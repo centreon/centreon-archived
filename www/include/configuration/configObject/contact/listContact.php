@@ -99,9 +99,9 @@
 		$svTp = $DBRESULT2->fetchRow();		
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$contact["contact_name"],
+						"RowMenu_name"=>htmlentities($contact["contact_name"]),
 						"RowMenu_link"=>"?p=".$p."&o=c&contact_id=".$contact['contact_id'],
-						"RowMenu_desc"=>$contact["contact_alias"],
+						"RowMenu_desc"=>htmlentities($contact["contact_alias"]),
 						"RowMenu_email"=>$contact["contact_email"],
 						"RowMenu_hostNotif"=>html_entity_decode($hostTp["tp_name"], ENT_QUOTES)." (".$contact["contact_host_notification_options"].")",
 						"RowMenu_svNotif"=>html_entity_decode($svTp["tp_name"], ENT_QUOTES)." (".$contact["contact_service_notification_options"].")",

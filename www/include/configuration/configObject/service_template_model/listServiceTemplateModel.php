@@ -128,8 +128,8 @@
 
 			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_desc"=>$service["service_description"],
-						"RowMenu_alias"=>$service["service_alias"],
+						"RowMenu_desc"=>htmlentities($service["service_description"]),
+						"RowMenu_alias"=>htmlentities($service["service_alias"]),
 						"RowMenu_parent"=>$tplStr,
 						"RowMenu_link"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
 						"RowMenu_status"=>$service["service_activate"] ? _("Enabled") : _("Disabled"),
