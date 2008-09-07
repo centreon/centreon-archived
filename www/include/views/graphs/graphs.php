@@ -85,7 +85,9 @@
 		$id = 1;
 	}
 
-	## Form begin
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
 	$form->addElement('header', 'title', _("Choose the source to graph"));
 
@@ -147,8 +149,10 @@
 	// system to reload page after link with new url
 	//set function object to call on node select 
 	tree.attachEvent("onClick",onNodeSelect)
+	
 	//set function object to call on node select 
 	tree.attachEvent("onDblClick",onDblClick)
+	
 	//set function object to call on node select 		
 	tree.attachEvent("onCheck",onCheck)
 	
@@ -210,10 +214,10 @@
 
 	var _zero_hour = '';
 	var _zero_min = '';
-	var StartDate='';
-	var EndDate='';
-	var StartTime='';
-	var EndTime='';
+	var StartDate = '';
+	var EndDate = '';
+	var StartTime = '';
+	var EndTime = '';
 
 	if (document.formu && !document.formu.period_choice[1].checked)	{
 		period = document.formu.period.value;
@@ -296,22 +300,22 @@
 		// Split metric
 		var _split = 0;
 		if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
-			_split = 1
+			_split = 1;
 		}
 
 		var _status = 0;
 		if (document.formu2 && document.formu2.status && document.formu2.status.checked)	{
-			_status = 1
+			_status = 1;
 		}
 		
 		var _warning = 0;
 		if (document.formu2 && document.formu2.warning && document.formu2.warning.checked)	{
-			_warning = 1
+			_warning = 1;
 		}
 		
 		var _critical = 0;
 		if (document.formu2 && document.formu2.critical && document.formu2.critical.checked)	{
-			_critical = 1
+			_critical = 1;
 		}
 		
 		tree.selectItem(id);
