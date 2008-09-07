@@ -97,7 +97,7 @@
 			$msg .= "<br />Moving traps in DataBase...";	
 			
 			if ($debug) 
-				print("/usr/local/centreon/bin/centFillTrapDB -f /tmp/".$values["name"].".conf -m ".htmlentities($ret["mnftr"], ENT_QUOTES)." 2>&1");
+				print("@CENTPLUGINSTRAPS_BINDIR@/centFillTrapDB -f /tmp/".$values["name"].".conf -m ".htmlentities($ret["mnftr"], ENT_QUOTES)." 2>&1");
 			
 			$stdout = shell_exec("@CENTPLUGINSTRAPS_BINDIR@/centFillTrapDB -f /tmp/".$values["name"].".conf -m ".htmlentities($ret["mnftr"], ENT_QUOTES)." 2>&1");
 			shell_exec("rm /tmp/".$values["name"].".conf /tmp/".$values["name"]);
