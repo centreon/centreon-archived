@@ -107,7 +107,7 @@
 
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
-	$form->addElement('header', 'title', _("Choose the source to graph"));
+	$form->addElement('header', 'title', _("Choose the source"));
 
 	$periods = array(	""=>"",
 						"10800"=>_("Last 3 Hours"),
@@ -126,18 +126,16 @@
 						"15552000"=>_("Last 6 Months"),
 						"31104000"=>_("Last Year"));
 
-	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods);
+	$sel =& $form->addElement('select', 'period', _("Select Period"), $periods);
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
-
 	$tpl->assign('From', _("From"));
 	$tpl->assign('To', _("To"));
 	$tpl->display("viewLog.ihtml");
 
-?>
-<link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
+?><link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
