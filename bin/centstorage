@@ -452,6 +452,7 @@ sub updateServiceState($$$$){ # Host name, sercvice desc, ctime, index
 sub replaceMetricSpecialChar($){
 	my $metric_name = $_[0];
 	$metric_name =~ s/\//slash\_/g;
+	$metric_name =~ s/\\/bslash\_/g;
 	$metric_name =~ s/\#S\#/slash\_/g;
 	$metric_name =~ s/\#BS\#/bslash\_/g;
 	return $metric_name;
@@ -463,7 +464,9 @@ sub createRRDDatabase($$$$$$){
 	$metric_name = replaceMetricSpecialChar($metric_name);
 	RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric_name, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".$my_len_storage_rrd);
 	$ERR = RRDs::error;
-	if ($ERR) {writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");}
+	if ($ERR) {
+		writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");
+	}
 	undef($ERR);
 }
 
@@ -473,7 +476,9 @@ sub tuneRRDDatabase($$$$){
 	$metric_name = replaceMetricSpecialChar($metric_name);
 	RRDs::tune($RRDdatabase_path.$metric_id.".rrd", "-h", substr($metric_name, 0, 19).":".$interval_hb);
 	$ERR = RRDs::error;
-	if ($ERR){writeLogFile("ERROR while tunning operation on ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");}
+	if ($ERR){
+		writeLogFile("ERROR while tunning operation on ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");
+	}
 	undef($ERR);
 }
 
@@ -492,7 +497,9 @@ sub updateRRDDatabase($$$$$){
 	$metric_name = replaceMetricSpecialChar($metric_name);
 	RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr($metric_name, 0, 19), $ctime.":".sprintf("%e", $value));
 	$ERR = RRDs::error;
-	if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric_id.".rrd at ".$ctime." -> ".$value." : $ERR\n");}
+	if ($ERR){
+		writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric_id.".rrd at ".$ctime." -> ".$value." : $ERR\n");
+	}
 	undef($ERR);
 }
 
