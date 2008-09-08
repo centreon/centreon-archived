@@ -286,99 +286,24 @@
 		/* 
 		 * direct to ressource (ex: pre-selected by GET)
 		 */
-		$hgs_selected = array();
-		$hosts_selected = array();
-		$svcs_selected = array();
-	
-		$hgs_open = array();
-		$hosts_open = array();
+		$selected = array();
 		
-		print("<tree id='1' >");
-		$tab_id = split(",",$url_var);
+		$tab_id = split(",", $url_var);
 		foreach ($tab_id as $openid) {
-			$type = substr($openid, 0, 2);
-			$id = substr($openid, 3, strlen($openid));
-	
-			echo "<id>".$id."</id>";
-	
-			$id_full = split('_', $id);
-			$id = $id_full[0];
-			echo "<idfull>";
-			//print_r($id_full);
-			echo "</idfull>";
-			
-			if ($type == "HH") {
-				/*
-				 * host + hg_parent
-				 */	
-				$hosts_selected[$id] = getMyHostName($id);
-				$hosts_open[$id] = getMyHostName($id);	
-				/* + all svc*/
-				$services = getMyHostServices($id);
-				foreach($services as $svc_id => $svc_name)
-					$svcs_selected[$svc_id] = $svc_name;
-				// 	hg_parent
-				if (isset($id_full[2]))
-					$hgs_open[$id_full[2]] = getMyHostGroupName($id_full[2]);
-				else {
-					$hgs = getMyHostGroups($id);
-					foreach($hgs as $hg_id => $hg_name)
-						$hgs_open[$hg_id] = $hg_name;
-				}				
-			} else if($type == "HS"){ // svc + host_parent + hg_parent
-				/*
-				 * svc
-				 */
-				$svcs_selected[$id] = getMyServiceName($id);
-				$svcs_selected[$id] = getMyServiceName($id);
-	
-				/*
-				 * host_parent
-				 */
-				if (isset($id_full[1])) {
-					$host_id = $id_full[1];
-					$hosts_open[$host_id] = getMyHostName($host_id);
-				} else {
-					$host_id = getMyHostServiceID($id);
-					$hosts_open[$host_id] = getMyHostName($host_id);				
-				}
-
-				/*
-				 * hg_parent
-				 */
-				if (isset($id_full[2]))
-					$hgs_open[$id_full[2]] = getMyHostGroupName($id_full[2]);
-				else {
-					$hgs = getMyHostGroups($host_id);
-					foreach($hgs as $hg_id => $hg_name)
-						$hgs_open[$hg_id] = $hg_name;
-				}			
-			} else if($type == "HG"){ // HG + hostS_child + svcS_child
-				
-				$hgs_selected[$id] = getMyHostGroupName($id);
-				$hgs_open[$id] = getMyHostGroupName($id);
-	
-				$hosts = getMyHostGroupHosts($id);
-				foreach($hosts as $host_id) {
-					$host_name = getMyHostName($host_id);
-					$hosts_open[$host_id] = $host_name;
-					$hosts_selected[$host_id] = $host_name;
-	
-					/* 
-					 * + all svc
-					 */
-					$services = getMyHostServices($host_id);
-					foreach($services as $svc_id => $svc_name)
-						$svcs_selected[$svc_id] = $svc_name;
-				}
+			$tabTMP = split("_", $openid);
+			if (count($tabTMP) == 3){
+				$type = $tabTMP[0];
+				$selected[$tabTMP[1]."_".$tabTMP[2]] = 1;
 			}
 		}
-	
-		$hostgroups = getAllHostgroups();
-		foreach($hostgroups as $hg_id => $hg_name){
-			/*
-			 * Hostgroups
-			 */
+		
+		print("<tree id='1'>");
+		print("<item nocheckbox='1' call='0' open='1' select='1' child='0' id='RR_0' text='HostGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif'>");
+	   	
+	   	$hostgroups = getAllHostgroups();
+	   	$i = 0;
+		foreach ($hostgroups as $hg_id => $hg_name){
+			$i++;
 			if (HG_has_one_or_more_host($hg_id)){
 	
 				$hg_open = $hg_checked = "";
@@ -386,41 +311,101 @@
 					$hg_checked = " checked='1' ";
 				if (isset($hgs_open[$hg_id]))
 					$hg_open = " open='1' ";
-	    		print("<item ".$hg_open." ".$hg_checked." child='1' id='HG_".$hg_id."' text='".$hg_name."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
-	
-				/*
-				 * Hosts
-				 */
-				if ($hg_open){
+	    		if (HG_has_one_or_more_host($hg_id) && ($is_admin || isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$hg_name]))){
+		    		print("<item child='1' $hg_open $hg_checked id='HG_".$hg_id."_$i' text='".$hg_name."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 					$hosts = getMyHostGroupHosts($hg_id);
 					foreach ($hosts as $host_id => $host_name){
-						$host_checked = "";
-						$host_open = "";
-						if (isset($hosts_selected[$host_id]))
-							$host_checked = " checked='1' ";
-						if (isset($hosts_open[$host_id]))
-							$host_open = " open='1' ";
-		        		print("<item  ".$host_open." ".$host_checked." child='1' id='HH_".$host_id."_".$hg_id."' text='".getMyHostName($host_id)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
-	
-						/*
-						 * Services
-						 */
-						if($host_open){
-							$services = getMyHostServices($host_id);
-							foreach ($services as $svc_id => $svc_name)	{
-								$svc_checked = "";
-								if (isset($svcs_selected[$svc_id]))
-									$svc_checked = " checked='1' ";
-					        	print("<item ".$svc_checked." child='0' id='HS_".$svc_id."_".$host_id."_".$hg_id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
+						$i++;
+						$services = getMyHostActiveServices($host_id);
+						$graphList = getMyHostGraphs($host_id);
+						$host_name = getMyHostName($host_id);
+						if (($is_admin &&  host_has_one_or_more_GraphService($host_id)) || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host_name]) && host_has_one_or_more_GraphService($host_id))) {
+							print("<item child='1' call='0' id='HH_".$host_id."_$i' text='$host_name' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");	
+						    foreach ($services as $svc_id => $svc_name){
+								if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]]))){
+							    	$checked = "";
+									if (isset($selected[$svc_id."_".$host_id]))
+										$checked = " open='1' checked='1' ";
+									if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]])))
+								        print("<item child='0' $checked call='0' id='HS_".$svc_id."_".$host_id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
+								}
 							}
+							print("</item>");
 						}
-						print("</item>");
 					}
-				}
+	    		}
 				print("</item>");
 			}
 		}
-		print("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
+		/*
+		 * Hosts Alone
+		 */
+		$cpt = 0;
+		$str = "";
+		$hostWithGraph = getHostGraphedList();
+		print_r($hostWithGraph);
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' ORDER BY host_name");
+		if (PEAR::isError($DBRESULT2))
+			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+		while ($host =& $DBRESULT2->fetchRow()){
+			$i++;
+			if (isset($hostWithGraph[$host["host_id"]])){
+				if ($is_admin){
+		           	$cpt++;
+		           	$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";
+				} else {
+					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]])){
+						$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";	
+						$cpt++;
+					}
+				}
+			}
+		}
+		$DBRESULT2->free();
+		if ($cpt){
+			print ("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
+			print $str ;
+			print("</item>");	
+		}
+		/*
+		 * Meta Services
+		 */
+		$cpt = 0;
+		$str = 0;
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		while ($MS =& $DBRESULT->fetchRow()){
+			$i++;
+			$cpt++;
+		}
+		if ($cpt && $is_admin){
+			print("<item child='1' id='MT_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
+			print $str ;
+			print("</item>");
+		}
+		print("</item>");
+		print("<item nocheckbox='1' open='1' call='0' select='1' child='0' id='RS_0' text='ServiceGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+		/*
+		 * Send Service Group list
+		 */
+		$lcaSG = getLCASG($pearDB);
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		while ($SG =& $DBRESULT->fetchRow()){
+		    $i++;
+			if ($is_admin){
+				if (SGIsNotEmpty($SG["sg_id"]))
+		        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
+			} else {
+				if (SGIsNotEmpty($SG["sg_id"]) && isset($lcaSG) && isset($lcaSG[$SG["sg_id"]]))
+		        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
+			}
+		}
+		$DBRESULT->free();
+		
+		print("<itemtext>label</itemtext>");
 		print("</item>");
 	}
 	print("</tree>");
