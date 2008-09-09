@@ -6,7 +6,7 @@
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
 	require_once 'DB.php';
-	require_once("@CENTREON_PATH@/centreon.conf.php");
+	require_once("@CENTREON_ETC@/centreon.conf.php");
 	 /*
 	  * returns a connection to centstorage database
 	  */

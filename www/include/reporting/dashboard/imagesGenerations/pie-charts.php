@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
 
-	include_once("@CENTREON_PATH@/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");
 	$centreon_path = "/usr/local/centreon/";
 	require_once ($centreon_path."www/class/Session.class.php");
 	require_once ($centreon_path."www/class/Oreon.class.php");
