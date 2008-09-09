@@ -46,7 +46,7 @@
 	$tab_downtime_svc = array();
 
 	/*
-	 * Hosts Comments
+	 * Hosts Downtimes
 	 */
 	$rq2 =	" SELECT dtm.internal_downtime_id, dtm.entry_time, dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
 			" FROM ".$ndo_base_prefix."downtimehistory dtm, ".$ndo_base_prefix."objects obj " .
@@ -66,7 +66,7 @@
 		$tab_downtime_host[$key]["is_fixed"] = $en[$tab_downtime_host[$key]["is_fixed"]];
 	
 	/*
-	 * Service Comments
+	 * Service Downtimes
 	 */
 	$rq2 =	" SELECT dtm.internal_downtime_id, dtm.entry_time, dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
 			" FROM ".$ndo_base_prefix."downtimehistory dtm, ".$ndo_base_prefix."objects obj " .
