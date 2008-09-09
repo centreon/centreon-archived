@@ -170,7 +170,7 @@
 	putenv("LANG=$locale");
 	setlocale(LC_ALL, $locale);
 	bindtextdomain("messages", "./locale/");
-	bind_textdomain_codeset("messages", "ISO-8859-1"); 
+	bind_textdomain_codeset("messages", "UTF-8"); 
 	textdomain("messages");
     $mlang = $oreon->user->get_lang();
 ?>
