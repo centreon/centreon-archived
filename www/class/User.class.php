@@ -80,11 +80,14 @@ class User	{
 				$str .= $group["acl_group_id"];
 			}
 		}
+	  	
 	  	$str_topo = "";
+	  	
 	  	if ($this->admin || $i == 0){
 			$this->lcaTopo = $this->getAllTopology($pearDB);
 	  	} else {  		
-			$DBRESULT =& $pearDB->query(	"SELECT acl_topology_id " .
+			
+			$DBRESULT =& $pearDB->query(	"SELECT DISTINCT acl_topology_id " .
 											"FROM `acl_group_topology_relations`, `acl_topology`, `acl_topology_relations` " .
 											"WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id " .
 											"AND acl_group_topology_relations.acl_group_id IN ($str) " .
@@ -92,12 +95,14 @@ class User	{
 			if (PEAR::isError($DBRESULT)) 
 				print "[Create ACL] DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			if (!$DBRESULT->numRows()){
+				
 				$DBRESULT2 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
 				for ($str_topo = ""; $topo = $DBRESULT2->fetchRow(); )
 					if (isset($topo["topology_page"]))
 						$this->lcaTopo[$topo["topology_page"]] = 1;
 				unset($str_topo);
 				$DBRESULT2->free();
+				
 			} else {
 				while ($topo_group = $DBRESULT->fetchRow()){
 					$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
@@ -128,6 +133,7 @@ class User	{
 					$this->lcaTopo[$topo_page["topology_page"]] = 1;
 				unset($topo_page);
 				$DBRESULT->free();
+				
 			}
 			unset($DBRESULT);
 	  	}
@@ -143,6 +149,8 @@ class User	{
 	  	unset($key);
 	  	if (!$this->lcaTStr) 
 	  		$this->lcaTStr = '\'\'';	
+	  	
+	  	
   	}
   
   // Get
