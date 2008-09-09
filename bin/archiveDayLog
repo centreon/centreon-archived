@@ -4,7 +4,7 @@
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
-# Developped by : Sugumaran Mat
+# Developped by : Julien Mathis - Romain Le Merlus, Sugumaran Mat
 #
 ###################################################################
 # This program is free software; you can redistribute it and/or
@@ -22,23 +22,23 @@
 
 use strict;
 
-##########################################################################################################################################
-# WHAT DO DO BEFORE LAUNCHING THIS PROGRAM : 
-# CREATE THE "log_archive_last_status" TABLE AND ADD UNDETERMINEDTimeScheduled FIELD IN "log_archive_host" AND "log_archive_service"
-##########################################################################################################################################
+####################################################################
+# WHAT TO DO BEFORE LAUNCHING THIS PROGRAM : CREATE THE 
+# "log_archive_last_status" TABLE AND ADD UNDETERMINEDTimeScheduled 
+# FIELD IN "log_archive_host" AND "log_archive_service"
+####################################################################
 
-
-##########################################################################################################################################
+##################################################################### 
 # Required libs
-##########################################################################################################################################
+####################################################################
+
 use DBI;
 use POSIX;
 use Getopt::Long;
 
-
-##########################################################################################################################################
+####################################################################
 # Global Variables
-##########################################################################################################################################
+####################################################################
 
 # Include Centreon DB Configuration Variables
 use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
@@ -58,23 +58,24 @@ my (%hosts, %services);
 # DB Connection instance
 my $dbh;
 
-##########################################################################################################################################
+####################################################################
 #FUNCTIONS
-##########################################################################################################################################
+####################################################################
 
-#################################
+####################################################################
 # Program execution help function
-#################################
+####################################################################
 sub print_help {
 	print "usage : ".$0." [-r|--rebuild] [-d|--debug] [l|--log <file>]\n";
 }
 
-################################################################
+####################################################################
 # If the given parameters concern an host status information,
 # this function is called in function get_hosts_services_stats()
 # $start => log fetching begin date
 # $row => sql data row
-################################################################
+####################################################################
+
 sub analyse_host_row($$) {
 	my ($start,$row) = (shift, shift);
 	if (!defined($hosts{$row->{"host_name"}})) {
@@ -102,12 +103,13 @@ sub analyse_host_row($$) {
 		}
 }
 
-################################################################
+####################################################################
 # If the given parameters concern a service status information,
 # this function is called in function get_hosts_services_stats()
 # $start => log fetching begin date
 # $row => sql data row
-################################################################
+####################################################################
+
 sub analyse_service_row($$) {
 	my ($start,$row) = (shift, shift);
 	my $svc = $row->{"host_name"}."_".$row->{"service_description"};
@@ -138,9 +140,11 @@ sub analyse_service_row($$) {
 		}
 }
 
-##################################################################################
-# This function gets stats on hosts and services availability for the given period
-##################################################################################
+####################################################################
+# This function gets stats on hosts and services availability 
+# for the given period
+####################################################################
+
 sub get_hosts_services_stats ($$) { 
 	my ($start, $end) = (shift, shift);
 	my $query = " SELECT * FROM `log` ".
@@ -166,12 +170,13 @@ sub get_hosts_services_stats ($$) {
 	$sth->finish();
 }
 
-########################################################################
+####################################################################
 # This function gets last host and services status
 # in the time ignored in the time period
 # example : if the time period is 09h00-19h00 and $start_time is 09h00
 # the function gets the last status between 19h00 and $start_time (9h00)
-########################################################################
+####################################################################
+
 sub get_last_status_in_ignored_time($$) {
 	my ($start_time, $last_day_end) = (shift, shift);
 	my $query = "SELECT * FROM `log` ".
@@ -231,10 +236,11 @@ sub get_last_status_in_ignored_time($$) {
 	$sth->finish;
 }
 
-###################################################################
+####################################################################
 # This function gets last hosts and services status
 # that were stored in the table `last_status_log` of centstorage DB
-###################################################################
+####################################################################
+
 sub get_last_status ($$) {
 	my ($start_time, $last_day_end) = (shift, shift);
 	my $sth = $dbh->prepare(" SELECT * FROM `log_archive_last_status`");
@@ -286,9 +292,10 @@ sub get_last_status ($$) {
 	}
 }
 
-#################
+####################################################################
 # Debug functions
-#################
+####################################################################
+
 sub display_host_stats {
 	while (my ($key, $value) = each (%hosts)) {
 		my $log_entry = $value;
@@ -296,6 +303,7 @@ sub display_host_stats {
 				$log_entry->{"DOWN_A"}."-".$log_entry->{"UNREACHABLE_D"}."-".$log_entry->{"UNREACHABLE_A"}."-".$log_entry->{"UNDETERMINED_D"}."\n";
 	}
 }
+
 sub display_services_stats {
 	while (my ($key, $value) = each (%services)) {
 		my $log_entry = $value;
@@ -305,9 +313,11 @@ sub display_services_stats {
 	}
 }
 
-##########################################################################
-# Insertion of hosts stats in ""log_archive_host"" table of centstorage DB
-##########################################################################
+####################################################################
+# Insertion of hosts stats in ""log_archive_host"" table 
+# of centstorage DB
+####################################################################
+
 sub insert_hosts_stats_in_db ($$) {
 	my ($date_start, $date_end) = (shift, shift); 
 	
@@ -365,9 +375,11 @@ sub insert_hosts_stats_in_db ($$) {
 	
 }
 
-################################################################################
-# Insertion of services stats in ""log_archive_service"" table of centstorage DB
-################################################################################
+####################################################################
+# Insertion of services stats in "log_archive_service"
+# table of centstorage DB
+####################################################################
+
 sub insert_services_stats_in_db ($$) {
 	my ($date_start, $date_end) = (shift, shift);
 	
@@ -429,10 +441,11 @@ sub insert_services_stats_in_db ($$) {
 	}
 }
 
-#####################################################
+####################################################################
 # function to call to archive last past day log
 # when the program is called by a cron or a scheduler
-#####################################################
+####################################################################
+
 sub archive_day_log ($$) {
 	#Getting last day start and end timestamps
 	my ($start_time, $end_time) = (shift, shift);
@@ -445,15 +458,18 @@ sub archive_day_log ($$) {
 }
 
 
-############################################################################################################
+####################################################################
 # Main function parse parameters 
-# and select to build archive for one day log or to rebuild all archives
-# The table contact_param from Centreon DB contains infos that allows to filter days of week and time period
-# to archive stats between two given hours and specific days of week    
-#############################################################################################################
+# and select to build archive for one day log or to rebuild all 
+# archives
+# The table contact_param from Centreon DB contains infos that allows 
+# to filter days of week and time period to archive stats between 
+# two given hours and specific days of week    
+####################################################################
+
 sub main {
 	
-	#Getting options
+	# Getting options
 	my %options;
 	Getopt::Long::Configure('bundling');
 	GetOptions ("h|help" 	=> \$options{"help"},
@@ -560,7 +576,8 @@ sub rebuild_archives($) {
 	}
 }
 
-##########################################################################################################################################
+####################################################################
 # MAIN EXECUTION																														 #
-##########################################################################################################################################
+####################################################################
+
 main;
