@@ -83,6 +83,8 @@
 	 */
 	$elemArr = array();
 	
+	$time_min = $oreon->Nagioscfg['interval_length'] / 60;
+	
 	$search = str_replace('#S#', "/", $search);
 	$search = str_replace('#BS#', "\\", $search);
 	
@@ -125,12 +127,17 @@
 			$service["service_alias"] = str_replace("#R#", "\r", $service["service_alias"]);
 			$service["service_alias"] = str_replace("#S#", '/', $service["service_alias"]);
 			$service["service_alias"] = str_replace("#BS#", '\\', $service["service_alias"]);			
-
+			
+			$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") / $time_min;
+			$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") / $time_min;
+		
 			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_desc"=>htmlentities($service["service_description"]),
 						"RowMenu_alias"=>htmlentities($service["service_alias"]),
 						"RowMenu_parent"=>$tplStr,
+						"RowMenu_retry"		=> $normal_check_interval . " min / ".$retry_check_interval." min",
+						"RowMenu_attempts"	=> getMyServiceField($service['service_id'], "service_max_check_attempts"),
 						"RowMenu_link"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
 						"RowMenu_status"=>$service["service_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);

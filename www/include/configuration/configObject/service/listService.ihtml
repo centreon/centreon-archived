@@ -16,12 +16,12 @@
 	<table class="ListTable">
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-			<td class="ListColHeaderLeft">&nbsp;{$headerMenu_name}</td>
-			<td class="ListColHeaderLeft">&nbsp;{$headerMenu_desc}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_retry}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_parent}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_status}</td>
-			<td class="ListColHeaderRight">&nbsp;{$headerMenu_options}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_retry}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_parent}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
+			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
 		{section name=elem loop=$elemArr}
 		<tr class={$elemArr[elem].MenuClass}>
