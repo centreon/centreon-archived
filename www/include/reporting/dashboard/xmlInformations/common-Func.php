@@ -82,7 +82,7 @@
 			$tp = round(($statTab[$value."_MP"] * $t / 100 ),2);
 			if ($statTab[$value."_MP"] > 0){
 				# '$end' variable used to design the timeline bar for the up status.
-				$end = $date_start + $tp + 5000;
+				$end = $date_start + $tp;
 				$buffer .= '<event ';
 				$buffer .= '	start="' .create_date_timeline_format($start) . ' GMT"';
 				$buffer .= '	end="' . create_date_timeline_format($end). ' GMT"';

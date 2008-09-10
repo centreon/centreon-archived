@@ -30,21 +30,15 @@
 	/*
 	 * FORMS
 	 */
-	if (!isset($lca))
-		$lca =  array(); 
-	
 	/* servicegroup Selection */
-	$items = getAllServicesgroupsForReporting($lca, $is_admin);
+	$items = getAllServicesgroupsForReporting();
 	$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	$form->addElement('select', 'item', _("Services Group"), $items, array("onChange" =>"this.form.submit();"));
-	$form->addElement('hidden', 'period', $get_period);
-	if (isset($get_date_start))	
-		$formHost->addElement('hidden', 'start', $get_date_start);
-	if (isset($get_date_end))
-		$formHost->addElement('hidden', 'end', $get_date_end);
-		
+	$form->addElement('hidden', 'period', $period);
+	$form->addElement('hidden', 'start', $get_date_start);
+	$form->addElement('hidden', 'end', $get_date_end);
 	if (isset($id))
 		$form->setDefaults(array('item' => $id));
 	/* Set servicegroup id with period selection form */	
@@ -59,59 +53,41 @@
 	 * Stats Display for selected services group
 	 */
 	if (isset($id) && $id != "NULL"){
-		/* 
-		 * Getting periods values 
-		 */
-		$dates = getPeriodToReport();
-		$start_date = $dates[0];
-		$end_date = $dates[1];
-	
-		/* 
-		 * Getting hostgroup and his hosts stats
-		 */
-		$servicesgroupStats = array();
-		$servicesgroupStats = getLogInDbForServicesGroup($id, $start_date, $end_date, $reportingTimePeriod) ;
-	
-		/* 
-		 * Flash chart datas 
-		 */
-		 
-		$pie_chart_get_str =  "&value[ok]=".$servicesgroupStats["average"]["OK_TP"]."&value[warning]=".
-					$servicesgroupStats["average"]["WARNING_TP"]."&value[critical]=".$servicesgroupStats["average"]["CRITICAL_TP"].
-					"&value[unknown]=".$servicesgroupStats["average"]["UNKNOWN_TP"]."&value[undetermined]=".$servicesgroupStats["average"]["UNDETERMINED_TP"];
-		/* 
-		 * Exporting variables for ihtml 
-		 */
-
-		$tpl->assign('name', $items[$id]);
-		$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
-		$tpl->assign('totalAlert', $servicesgroupStats["average"]["TOTAL_ALERTS"]);
-		$tpl->assign('summary',  $servicesgroupStats["average"]);
-		$servicesgroupFinalStats = array();
-		
-		/* 
-		 * Removing average infos from table 
-		 */
-		foreach ($servicesgroupStats as $key => $value)
-			if ($key != "average")
-				$servicesgroupFinalStats[$key] = $value;
-		
-		$tpl->assign("components", $servicesgroupFinalStats);
-		$tpl->assign('period_name', _(" From "));
-		$tpl->assign('date_start', date("d/m/Y H:i",$start_date));
-		$tpl->assign('to', _(" To "));
-		$tpl->assign('date_end', date("d/m/Y H:i",$end_date));
-		if (isset($period))
+			/* Getting periods values */
+			$dates = getPeriodToReport();
+			$start_date = $dates[0];
+			$end_date = $dates[1];
+			/* Getting hostgroup and his hosts stats */
+			$servicesgroupStats = array();
+			$servicesgroupStats = getLogInDbForServicesGroup($id, $start_date, $end_date, $reportingTimePeriod) ;
+			/* Flash chart datas */
+			$pie_chart_get_str =  "&value[ok]=".$servicesgroupStats["average"]["OK_TP"]."&value[warning]=".
+						$servicesgroupStats["average"]["WARNING_TP"]."&value[critical]=".$servicesgroupStats["average"]["CRITICAL_TP"].
+						"&value[unknown]=".$servicesgroupStats["average"]["UNKNOWN_TP"]."&value[undetermined]=".$servicesgroupStats["average"]["UNDETERMINED_TP"];
+			/* Exporting variables for ihtml */
+			$tpl->assign('name', $items[$id]);
+			$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
+			$tpl->assign('totalAlert', $servicesgroupStats["average"]["TOTAL_ALERTS"]);
+			$tpl->assign('summary',  $servicesgroupStats["average"]);
+			$servicesgroupFinalStats = array();
+			/* Removing average infos from table */
+			foreach ($servicesgroupStats as $key => $value)
+				if ($key != "average")
+					$servicesgroupFinalStats[$key] = $value;
+			
+			$tpl->assign("components", $servicesgroupFinalStats);
+			$tpl->assign('period_name', _(" From "));
+			$tpl->assign('date_start', date("d/m/Y H:i",$start_date));
+			$tpl->assign('to', _(" To "));
+			$tpl->assign('date_end', date("d/m/Y H:i",$end_date));
 			$tpl->assign('period', $period);
-		$tpl->assign('start', $start_date);
-		$tpl->assign('end', $end_date);
-		
-		if (isset($period))
+			$tpl->assign('start', $start_date);
+			$tpl->assign('end', $end_date);
+	//		$tpl->assign('period', $var_url_export_csv);
 			$formPeriod->setDefaults(array('period' => $period));
-		$tpl->assign('id', $id);
+			$tpl->assign('id', $id);
 	}
 	$tpl->assign('p', $p);
-	
 	/*
 	 * Rendering forms
 	 */
@@ -121,7 +97,6 @@
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('formItem', $renderer->toArray());
-	
 	/*
 	 * Ajax timeline and CSV export initialization
 	 */

@@ -31,8 +31,6 @@
 		if ($period == "" && $start_date != "") {
 			$interval = getDateSelect_customized($start_date, $end_date);
 		}else {
-			if ($period == "")
-				$period = "yesterday";
 			$interval = getDateSelect_predefined($period);
 		}
 		$start_date = $interval[0];
@@ -45,7 +43,7 @@
 	 */
 	function getHostStatsValueName() {
 		return (array("UP_T", "UP_A", "DOWN_T", "DOWN_A", "UNREACHABLE_T", "UNREACHABLE_A", "UNDETERMINED_T",
-						"UP_P", "DOWN_P", "UNREACHABLE_P", "UNDETERMINED_P"));
+						"UP_TP", "DOWN_TP", "UNREACHABLE_TP", "UNDETERMINED_TP"));
 	}
 	
 	/*
@@ -53,7 +51,7 @@
 	 */
 	function getServicesStatsValueName() {
 		return (array("OK_T", "OK_A", "WARNING_T", "WARNING_A", "CRITICAL_T", "CRITICAL_A", "UNKNOWN_T", "UNKNOWN_A", "UNDETERMINED_T",
-					"OK_P", "WARNING_P", "CRITICAL_P", "UNKNOWN_P", "UNDETERMINED_P"));
+					"OK_TP", "WARNING_TP", "CRITICAL_TP", "UNKNOWN_TP", "UNDETERMINED_TP"));
 	}
 	/*
 	 * return start and end date to report in timestamp 

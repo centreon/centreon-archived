@@ -143,17 +143,17 @@
 	/* 
 	 * setting variables for link with services
 	 */
-	$get_period = (isset($_POST["period"])) ? $_POST["period"] : ""; 
-	$get_period = (isset($_GET["period"])) ? $_GET["period"] : $get_period;
-	$get_start = (isset($_POST["start"])) ? $_POST["start"] : "";
-	$get_start = (isset($_GET["start"])) ? $_GET["start"] : $get_start;
-	$get_end = (isset($_POST["end"])) ? $_POST["end"] : "";
-	$get_end = (isset($_GET["end"])) ? $_GET["end"] : $get_end;
-	if ($get_start == "" && $get_end == "" && $get_period == "")
-		$get_period = "yesterday";
-	$tpl->assign("get_date_start", $get_start);
-	$tpl->assign("get_date_end", $get_end);
-	$tpl->assign("get_period", $get_period);
+	$period = (isset($_POST["period"])) ? $_POST["period"] : ""; 
+	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
+	$get_date_start = (isset($_POST["start"])) ? $_POST["start"] : "";
+	$get_date_start = (isset($_GET["start"])) ? $_GET["start"] : $get_date_start;
+	$get_date_end = (isset($_POST["end"])) ? $_POST["end"] : "";
+	$get_date_end = (isset($_GET["end"])) ? $_GET["end"] : $get_date_end;
+	if ($get_date_start == "" && $get_date_end == "" && $period == "")
+		$period = "yesterday";
+	$tpl->assign("get_date_start", $get_date_start);
+	$tpl->assign("get_date_end", $get_date_end);
+	$tpl->assign("get_period", $period);
 	/*
 	 * Period Selection form
 	 */
@@ -166,5 +166,5 @@
 	$formPeriod->addElement('text', 'end', _("End date"));
 	$formPeriod->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
 	$formPeriod->addElement('submit', 'submit', _("View"));
-	$formPeriod->setDefaults(array('period' => $get_period, "start" => $get_start, "end" => $get_end));
+	$formPeriod->setDefaults(array('period' => $period, "start" => $get_date_start, "end" => $get_date_end));
 ?>
