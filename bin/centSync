@@ -45,9 +45,15 @@ if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
 } else { 
 	while (my $ns_server = $sth2->fetchrow_hashref()) {
-		my $ls = `ssh -q $ns_server->{'ns_ip_address'} ls -l /usr/local/nagios/var/archives/ 2>> /dev/null | wc -l`;
-		    if ($ls > 1){
-			`$rsyncPath -c $ns_server->{'ns_ip_address'}:/usr/local/nagios/var/archives/* /var/lib/centreon/log/$ns_server->{'id'}/archives/`;
+		my $sth = $dbhoreon->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$ns_server->{'id'}."'");
+		if (!$sth->execute) {
+		    die "Error:" . $sth->errstr . "\n";
+		} else {
+			my $archiveData = $sth->fetchrow_hashref();
+			my $ls = `ssh -q $ns_server->{'ns_ip_address'} ls -l $archiveData->{'log_archive_path'}/ 2>> /dev/null | wc -l`;
+			    if ($ls > 1){
+				`$rsyncPath -c $ns_server->{'ns_ip_address'}:$archiveData->{'log_archive_path'}/* /var/lib/centreon/log/$ns_server->{'id'}/archives/`;
+			}
 		}
 	}
 }
