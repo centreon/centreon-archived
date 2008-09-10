@@ -57,7 +57,6 @@
 			$end_date = $dates[1];
 			$formPeriod->setDefaults(array('period' => $period));
 			/* Getting host and his services stats */
-			echo $start_date." ".$end_date."---<br>";
 			$hostStats = array();
 			$hostStats = getLogInDbForHost($id, $start_date, $end_date, $reportingTimePeriod) ;
 			$hostServicesStats = array();

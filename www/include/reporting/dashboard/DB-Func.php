@@ -70,7 +70,6 @@
 			  "WHERE `host_id` = ".$host_id." AND `date_start` >=  ".$start_date." AND `date_end` <= ".$end_date." ".
 			  		"AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
 			  "GROUP BY `host_id`";
-		echo $rq."<br>";
 		$DBRESULT = & $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))
 		  die("DB ERROR : ".$DBRESULT->getDebugInfo()."<br />");
@@ -80,7 +79,6 @@
 		#If there where no log in several days for this host, there is no entry in log_archive_host for these days
 		# So the following instructions count these missing days as undetermined time
 		$timeTab = getTotalTimeFromInterval($start_date, $end_date, $reportTimePeriod);
-		echo $timeTab["reportTime"]." ".$timeTab["totalTime"]."<br>";
 		if ($timeTab["reportTime"] > 0) {
 			$hostStats["UNDETERMINED_T"] += $timeTab["reportTime"] - ($hostStats["UP_T"] + $hostStats["DOWN_T"]
 															+ $hostStats["UNREACHABLE_T"] + $hostStats["UNDETERMINED_T"]);

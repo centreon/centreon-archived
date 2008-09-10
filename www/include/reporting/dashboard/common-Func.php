@@ -112,7 +112,6 @@
 			$end = mktime(24, 0, 0, $m, $d, $y);
 			if ($end < $end_time)
 				$end_time = $end;
-				print "here\n";
 		}
 		list($m,$d,$y) = split('/',$start);
 		$start_time = mktime(0, 0, 0, $m, $d, $y);

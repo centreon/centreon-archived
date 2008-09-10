@@ -34,7 +34,6 @@
 	/* service Selection */
 	$host_name = getHostNameFromId($host_id);
 	$items  = getHostServices($host_id);
-	echo $p."<br>";
 	$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
 	$form->addElement('hidden', 'p', $p);
 	$redirect =& $form->addElement('hidden', 'o');
