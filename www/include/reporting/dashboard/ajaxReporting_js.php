@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
 	
-	require_once("@CENTREON_PATH@/centreon.conf.php");
+	require_once("@CENTREON_ETC@/centreon.conf.php");
 	$arg = "";
 	if ($type == "Service") {
 		$arg = "id=".$service_id."&host_id=".$host_id;
