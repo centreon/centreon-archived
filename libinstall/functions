@@ -929,6 +929,27 @@ function locate_rrdtool() {
 }
 
 #----
+## Define where is perl binary
+## find perl in PATH
+## @Globals	BIN_PERL, DEFAULT_BIN_PERL
+#----
+function locate_perl() {
+	testfile_clean "$BIN_PERL" "BIN_PERL"
+	if [ -z "$BIN_PERL" ] ; then 
+		pathfind_ret "perl" "BIN_PERL"
+		if [ "$?" -ne 0 ] ; then 
+			answer_with_testfile "$(gettext "Where is perl")" "$DEFAULT_BIN_PERL" "BIN_PERL"
+		else 
+			BIN_PERL="$BIN_PERL/perl"
+		fi
+		echo_success "$BIN_PERL" "$ok"
+	fi
+	BIN_PERL=${BIN_PERL%/}
+	export BIN_PERL
+	log "INFO" "BIN_PERL: $BIN_PERL"
+}
+
+#----
 ## Define where is mail binary
 ## find mail in PATH
 ## @Globals	BIN_MAIL, DEFAULT_BIN_MAIL

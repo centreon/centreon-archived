@@ -50,6 +50,7 @@ locate_nagios_p1_file $NAGIOS_ETC
 locate_cron_d
 locate_init_d
 locate_php_bin
+locate_perl
 
 locate_centpluginstraps_bindir
 
@@ -228,6 +229,7 @@ echo_success "$(gettext "CentWeb file installation")" "$ok"
 ## need to add stuff for Unix system... (freeBSD...)
 log "INFO" "$(gettext "Change macros for centreon.cron")"
 ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
+	-e 's|@PERL_BIN@|'"$PERL_BIN"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CRONUSER@|'"$NAGIOS_USER"'|g' \
@@ -242,13 +244,13 @@ echo_success "$(gettext "Install Centreon cron")" "$ok"
 
 ## cron binary
 cp -R $TMPDIR/src/cron/ $TMPDIR/final/
-log "INFO" "$(gettext "Change macros for ArchiveLogInDB.php")"
+log "INFO" "$(gettext "Change macros for archiveDayLog")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	$TMPDIR/src/cron/reporting/ArchiveLogInDB.php > \
-	$TMPDIR/work/cron/reporting/ArchiveLogInDB.php
+	$TMPDIR/src/cron/archiveDayLog > \
+	$TMPDIR/work/cron/archiveDayLog
 
-cp -f $TMPDIR/work/cron/reporting/ArchiveLogInDB.php \
-	$TMPDIR/final/cron/reporting/ArchiveLogInDB.php
+cp -f $TMPDIR/work/cron/archiveDayLog \
+	$TMPDIR/final/cron/archiveDayLog
 
 log "INFO" "$(gettext "Change macros for centAcl.php")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
