@@ -321,7 +321,9 @@
 	$form->addGroup($hostNE, 'host_notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('host_notifications_enabled' => '2'));
-	#Nagios 2
+	
+	$form->addElement('text', 'host_first_notification_interval', _("First notification interval"), $attrsText2);
+
 	if ($oreon->user->get_version() >= 2)	{
 		if ($o == "mc")	{
 			$mc_mod_hcg = array();
