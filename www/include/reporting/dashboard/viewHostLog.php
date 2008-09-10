@@ -21,6 +21,7 @@
 	 * Required files
 	 */
 	require_once './include/reporting/dashboard/initReport.php';
+	
 	/*
 	 *  Getting host to report 
 	 */
@@ -30,19 +31,22 @@
 	/*
 	 * Forms
 	 */
-	/* Host Selection */
 	$formHost = new HTML_QuickForm('formHost', 'post', "?p=".$p);
 	$redirect =& $formHost->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	$hosts = getAllHostsForReporting($is_admin, $lcaHoststr);
 	$selHost =& $formHost->addElement('select', 'host', _("Host"), $hosts, array("onChange" =>"this.form.submit();"));
 	$formHost->addElement('hidden', 'period', $get_period);
-	$formHost->addElement('hidden', 'start', $get_date_start);
-	$formHost->addElement('hidden', 'end', $get_date_end);
+	if (isset($get_date_start))	
+		$formHost->addElement('hidden', 'start', $get_date_start);
+	if (isset($get_date_end))
+		$formHost->addElement('hidden', 'end', $get_date_end);
+	
 	if (isset($id))
 		$formHost->setDefaults(array('host' => $id));
+	
 	/* Set host id with period selection form */
-	if ($host_id != "NULL")
+	if (isset($host_id) && $host_id != "NULL")
 		$formPeriod->addElement('hidden', 'host', $id);
 	/*
 	 * END OF FORMS
@@ -51,36 +55,48 @@
 	 * Stats Display for selected host
 	 */
 	if (isset($id) && $id != "NULL"){
-			/* Getting periods values */
-			$dates = getPeriodToReport();
-			$start_date = $dates[0];
-			$end_date = $dates[1];
+		/* 
+		 * Getting periods values 
+		 */
+		$dates = getPeriodToReport();
+		$start_date = $dates[0];
+		$end_date = $dates[1];
+		
+		if (isset($period))	
 			$formPeriod->setDefaults(array('period' => $period));
-			/* Getting host and his services stats */
-			$hostStats = array();
-			$hostStats = getLogInDbForHost($id, $start_date, $end_date, $reportingTimePeriod) ;
-			$hostServicesStats = array();
-			$hostServicesStats =  getLogInDbForHostSVC($id, $start_date, $end_date, $reportingTimePeriod);
-			/* Flash chart datas */
-			$pie_chart_get_str =  "&value[down]=".$hostStats["DOWN_TP"]."&value[up]=".
-						$hostStats["UP_TP"]."&value[unreachable]=".$hostStats["UNREACHABLE_TP"]."&value[undetermined]=".$hostStats["UNDETERMINED_TP"];
-			/* Exporting variables for ihtml */
-			$tpl->assign('name', $hosts[$id]);
-			$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
-			$tpl->assign('totalAlert', $hostStats["TOTAL_ALERTS"]);
-			$tpl->assign('totalTime',  $hostStats["TOTAL_TIME_F"]);
-			$tpl->assign('summary',  $hostStats);
-			$tpl->assign("components_avg", array_pop($hostServicesStats));
-			$tpl->assign("components", $hostServicesStats);
-			$tpl->assign('period_name', _(" From "));
-			$tpl->assign('date_start', date("d/m/Y H:i",$start_date));
-			$tpl->assign('to', _(" To "));
-			$tpl->assign('date_end', date("d/m/Y H:i",$end_date));
-			$tpl->assign('period', $period);
-			$tpl->assign('start', $start_date);
-			$tpl->assign('end', $end_date);
-			$tpl->assign('host_id', $id);
-	//		$tpl->assign('period', $var_url_export_csv);
+		
+		/* 
+		 * Getting host and his services stats 
+		 */
+		$hostStats = array();
+		$hostStats = getLogInDbForHost($id, $start_date, $end_date, $reportingTimePeriod) ;
+		$hostServicesStats = array();
+		$hostServicesStats =  getLogInDbForHostSVC($id, $start_date, $end_date, $reportingTimePeriod);
+		
+		/* 
+		 * Flash chart datas 
+		 */
+		$pie_chart_get_str =  "&value[down]=".$hostStats["DOWN_TP"]."&value[up]=".
+					$hostStats["UP_TP"]."&value[unreachable]=".$hostStats["UNREACHABLE_TP"]."&value[undetermined]=".$hostStats["UNDETERMINED_TP"];
+		
+		/* 
+		 * Exporting variables for ihtml 
+		 */
+		$tpl->assign('name', $hosts[$id]);
+		$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
+		$tpl->assign('totalAlert', $hostStats["TOTAL_ALERTS"]);
+		$tpl->assign('totalTime',  $hostStats["TOTAL_TIME_F"]);
+		$tpl->assign('summary',  $hostStats);
+		$tpl->assign("components_avg", array_pop($hostServicesStats));
+		$tpl->assign("components", $hostServicesStats);
+		$tpl->assign('period_name', _(" From "));
+		$tpl->assign('date_start', date("d/m/Y H:i",$start_date));
+		$tpl->assign('to', _(" To "));
+		$tpl->assign('date_end', date("d/m/Y H:i",$end_date));
+		$tpl->assign('period', $period);
+		$tpl->assign('start', $start_date);
+		$tpl->assign('end', $end_date);
+		$tpl->assign('host_id', $id);
 	}
 	/*
 	 * Rendering Forms

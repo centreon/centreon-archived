@@ -37,8 +37,11 @@
 	$redirect->setValue($o);
 	$select =& $form->addElement('select', 'item', _("Hosts Group"), $items, array("onChange" =>"this.form.submit();"));
 	$form->addElement('hidden', 'period', $get_period);
-	$form->addElement('hidden', 'start', $get_date_start);
-	$form->addElement('hidden', 'end', $get_date_end);
+	if (isset($get_date_start))	
+		$formHost->addElement('hidden', 'start', $get_date_start);
+	if (isset($get_date_end))
+		$formHost->addElement('hidden', 'end', $get_date_end);
+		
 	if (isset($id))
 		$form->setDefaults(array('item' => $id));
 	/* Set hostgroup id with period selection form */
@@ -53,38 +56,53 @@
 	 * Stats Display for selected hostgroup
 	 */
 	if (isset($id) && $id != "NULL"){
-			/* Getting periods values */
-			$dates = getPeriodToReport();
-			$start_date = $dates[0];
-			$end_date = $dates[1];
-			/* Getting hostgroup and his hosts stats */
-			$hostgroupStats = array();
-			$hostgroupStats = getLogInDbForHostGroup($id, $start_date, $end_date, $reportingTimePeriod) ;
-			/* Flash chart datas */
-			$pie_chart_get_str =  "&value[down]=".$hostgroupStats["average"]["DOWN_TP"]."&value[up]=".
-						$hostgroupStats["average"]["UP_TP"]."&value[unreachable]=".$hostgroupStats["average"]["UNREACHABLE_TP"]."&value[undetermined]=".$hostgroupStats["average"]["UNDETERMINED_TP"];
-			/* Exporting variables for ihtml */
-			$tpl->assign('name', $items[$id]);
-			$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
-			$tpl->assign('totalAlert', $hostgroupStats["average"]["TOTAL_ALERTS"]);
-			$tpl->assign('summary',  $hostgroupStats["average"]);
-			/* removing average infos from table */
-			$hostgroupFinalStats = array();
-			foreach ($hostgroupStats as $key => $value)
-				if ($key != "average")
-					$hostgroupFinalStats[$key] = $value;
-					
-			$tpl->assign("components", $hostgroupFinalStats);
-			$tpl->assign('period_name', _(" From "));
-			$tpl->assign('date_start', date("d/m/Y H:i",$start_date));
-			$tpl->assign('to', _(" To "));
-			$tpl->assign('date_end', date("d/m/Y H:i", $end_date));
-			$tpl->assign('start', $start_date);
-			$tpl->assign('end', $end_date);
+		/* 
+		 * Getting periods values 
+		 */
+		$dates = getPeriodToReport();
+		$start_date = $dates[0];
+		$end_date = $dates[1];
+
+		/* 
+		 * Getting hostgroup and his hosts stats 
+		 */
+		$hostgroupStats = array();
+		$hostgroupStats = getLogInDbForHostGroup($id, $start_date, $end_date, $reportingTimePeriod) ;
+		/* 
+		 * Flash chart datas 
+		 */
+		
+		$pie_chart_get_str =  "&value[down]=".$hostgroupStats["average"]["DOWN_TP"]."&value[up]=".
+					$hostgroupStats["average"]["UP_TP"]."&value[unreachable]=".$hostgroupStats["average"]["UNREACHABLE_TP"]."&value[undetermined]=".$hostgroupStats["average"]["UNDETERMINED_TP"];
+		/* 
+		 * Exporting variables for ihtml 
+		 */
+		$tpl->assign('name', $items[$id]);
+		$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
+		$tpl->assign('totalAlert', $hostgroupStats["average"]["TOTAL_ALERTS"]);
+		$tpl->assign('summary',  $hostgroupStats["average"]);
+		
+		/* 
+		 * removing average infos from table 
+		 */
+		$hostgroupFinalStats = array();
+		foreach ($hostgroupStats as $key => $value)
+			if ($key != "average")
+				$hostgroupFinalStats[$key] = $value;
+				
+		$tpl->assign("components", $hostgroupFinalStats);
+		$tpl->assign('period_name', _(" From "));
+		$tpl->assign('date_start', date("d/m/Y H:i",$start_date));
+		$tpl->assign('to', _(" To "));
+		$tpl->assign('date_end', date("d/m/Y H:i", $end_date));
+		$tpl->assign('start', $start_date);
+		$tpl->assign('end', $end_date);
+		if (isset($period))
 			$tpl->assign('period', $period);
-	//		$tpl->assign('period', $var_url_export_csv);
+			
+		if (isset($period))
 			$formPeriod->setDefaults(array('period' => $period));
-			$tpl->assign('id', $id);
+		$tpl->assign('id', $id);
 	}
 
 	/*

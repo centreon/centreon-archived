@@ -21,6 +21,7 @@
 	 * Required files
 	 */
 	require_once './include/reporting/dashboard/initReport.php';
+	
 	/*
 	 *  Getting service to report 
 	 */
@@ -39,52 +40,66 @@
 	$redirect->setValue($o);
 	$select =& $form->addElement('select', 'item', _("Service"), $items, array("onChange" =>"this.form.submit();"));
 	$form->addElement('hidden', 'period', $get_period);
-	$form->addElement('hidden', 'start', $get_date_start);
-	$form->addElement('hidden', 'end', $get_date_end);
-	/* Set service id with period selection form */	
+	if (isset($get_date_start))	
+		$formHost->addElement('hidden', 'start', $get_date_start);
+	if (isset($get_date_end))
+		$formHost->addElement('hidden', 'end', $get_date_end);
+		
+	/* 
+	 * Set service id with period selection form 
+	 */	
 	if ($service_id != "NULL" && $host_id != "NULL") {
 		$formPeriod->addElement('hidden', 'item', $service_id);
 		$formPeriod->addElement('hidden', 'host_id', $host_id);
 		$form->setDefaults(array('item' => $service_id));
 	}
 	
-	/* page id */
-	$tpl->assign('p', $p);
-	/*
-	 * END OF FORMS
+	/* 
+	 * page id 
 	 */
-	 
+	$tpl->assign('p', $p);
+	
 	/*
 	 * Stats Display for selected service
 	 */
 	if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL"){
-			/*
-			 * Getting periods values
-			 */
-			$dates = getPeriodToReport();
-			$start_date = $dates[0];
-			$end_date = $dates[1];
-			/* Getting hostgroup and his hosts stats */
-			$serviceStats = array();
-			$serviceStats = getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportingTimePeriod) ;
-			/* Flash chart datas */
-			$pie_chart_get_str =  "&value[ok]=".$serviceStats["OK_TP"]."&value[warning]=".
-						$serviceStats["WARNING_TP"]."&value[critical]=".$serviceStats["CRITICAL_TP"].
-						"&value[unknown]=".$serviceStats["UNKNOWN_TP"]."&value[undetermined]=".$serviceStats["UNDETERMINED_TP"];
-			/* Exporting variables for ihtml */
-			$tpl->assign('host_name', $host_name);
-			$tpl->assign('name', $items[$service_id]);
-			$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
-			$tpl->assign('totalAlert', $serviceStats["TOTAL_ALERTS"]);
-			$tpl->assign('totalTime',  $serviceStats["TOTAL_TIME_F"]);
-			$tpl->assign('summary',  $serviceStats);
-			$tpl->assign('from', _(" From "));
-			$tpl->assign('date_start', date("d/m/Y H:i", $start_date));
-			$tpl->assign('to', _(" to "));
-			$tpl->assign('date_end', date("d/m/Y H:i", $end_date));
-	//		$tpl->assign('period', $var_url_export_csv);
+		/*
+		 * Getting periods values
+		 */
+		$dates = getPeriodToReport();
+		$start_date = $dates[0];
+		$end_date = $dates[1];
+		
+		/* 
+		 * Getting hostgroup and his hosts stats 
+		 */
+		$serviceStats = array();
+		$serviceStats = getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportingTimePeriod) ;
+		
+		/* 
+		 * Flash chart datas 
+		 */
+		$pie_chart_get_str =  "&value[ok]=".$serviceStats["OK_TP"]."&value[warning]=".
+					$serviceStats["WARNING_TP"]."&value[critical]=".$serviceStats["CRITICAL_TP"].
+					"&value[unknown]=".$serviceStats["UNKNOWN_TP"]."&value[undetermined]=".$serviceStats["UNDETERMINED_TP"];
+		
+		/* 
+		 * Exporting variables for ihtml 
+		 */
+		$tpl->assign('host_name', $host_name);
+		$tpl->assign('name', $items[$service_id]);
+		$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
+		$tpl->assign('totalAlert', $serviceStats["TOTAL_ALERTS"]);
+		$tpl->assign('totalTime',  $serviceStats["TOTAL_TIME_F"]);
+		$tpl->assign('summary',  $serviceStats);
+		$tpl->assign('from', _(" From "));
+		$tpl->assign('date_start', date("d/m/Y H:i", $start_date));
+		$tpl->assign('to', _(" to "));
+		$tpl->assign('date_end', date("d/m/Y H:i", $end_date));
+		
+		if (isset($period))
 			$formPeriod->setDefaults(array('period' => $period));
-			$tpl->assign('id', $id);
+		$tpl->assign('id', $id);
 	}
 	/*
 	 * Rendering forms
@@ -98,12 +113,19 @@
 	/*
 	 * Ajax timeline and CSV export initialization
 	 */
+	
 	if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL"){
-		/* CSV Export */
+		/* 
+		 * CSV Export 
+		 */
 		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?sid=".$sid."&host=".$host_id."&service=".$service_id);
 		$tpl->assign("link_csv_name", _("Export in CSV format"));
-		/* status colors */
+		
+		/* 
+		 * status colors 
+		 */
 		$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_undetermined"],1);
+		
 		/* Ajax timeline */
 		$type = 'Service';
 		include("./include/reporting/dashboard/ajaxReporting_js.php");
