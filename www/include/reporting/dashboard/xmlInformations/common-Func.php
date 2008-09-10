@@ -51,14 +51,24 @@
 		$totalTime = 0;
 		$sumTime = 0;
 		foreach($statesTab as $key => $value) {
-			$statTab[$value."_T"] = $row[$value."TimeScheduled"];
-			$statTab[$value."_A"] = $row[$value."nbEvent"];
-			$totalTime += $statTab[$value."_T"];
+			if (isset($row[$value."TimeScheduled"])) {
+				$statTab[$value."_T"] = $row[$value."TimeScheduled"];
+				$totalTime += $row[$value."TimeScheduled"];
+			}else
+				$statTab[$value."_T"] = 0;
+			if (isset($row[$value."nbEvent"]))
+				$statTab[$value."_A"] = $row[$value."nbEvent"];
+			else
+				$statTab[$value."_A"] = 0;
+			
 		}
 		$date_start = $row["date_start"];
 		$date_end = $row["date_end"];
 		foreach($statesTab as $key => $value) {
-			$statTab[$value."_MP"] = round(($statTab[$value."_T"] / $totalTime * 100),2);
+			if ($totalTime)
+				$statTab[$value."_MP"] = round(($statTab[$value."_T"] / ($totalTime) * 100),2);
+			else
+				$statTab[$value."_MP"] = 0;
 		}
 		/*
 		 * Popup generation for each day
@@ -77,12 +87,15 @@
 	
 		$t = $totalTime;
 		$t = round(($t - ($t * 0.11574074074)),2);
-		$start = ($date_start - ($date_start % (60 * 60 * 24)));
+		
 		foreach($statesTab as $key => $value) {
-			$tp = round(($statTab[$value."_MP"] * $t / 100 ),2);
 			if ($statTab[$value."_MP"] > 0){
-				# '$end' variable used to design the timeline bar for the up status.
-				$end = $date_start + $tp;
+				$day = date("d", $date_start);
+				$year = date("Y", $date_start);
+				$month = date("m", $date_start);
+				$start = mktime(0, 0, 0, $month, $day, $year);
+				$start += ($statTab[$value."_T"]/100*2);
+				$end = $start + ($statTab[$value."_T"]/100*96);
 				$buffer .= '<event ';
 				$buffer .= '	start="' .create_date_timeline_format($start) . ' GMT"';
 				$buffer .= '	end="' . create_date_timeline_format($end). ' GMT"';
