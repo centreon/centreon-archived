@@ -40,10 +40,15 @@
 		mkdir($nagiosCFGPath.$tab['id']."/");
 	}
 
-	// Creating handle to write the file configuration
+	/*
+	 * Creating handle to write the file configuration
+	 */
+	 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/escalations.cfg", $oreon->user->get_name());
 
-	// PART 1 - Escalations for all Hosts
+	/*
+	 * PART 1 - Escalations for all Hosts
+	 */
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_host_relation ehr, escalation esc WHERE ehr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
 	if (PEAR::isError($DBRESULT)){
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";		
@@ -137,7 +142,10 @@
 	unset($escalation);
 	$DBRESULT->free();
 
-	// PART 2 - Escalations for all HostGroups	
+	/*
+	 * PART 2 - Escalations for all HostGroups
+	 */
+	 	
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_hostgroup_relation ehgr, escalation esc WHERE ehgr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
 	if (PEAR::isError($DBRESULT)) {
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -218,7 +226,9 @@
 	unset($escalation);
 	$DBRESULT->free();	
 
-	// PART 3 - Escalations for all ServiceGroups	
+	/*
+	 * PART 3 - Escalations for all ServiceGroups	
+	 */
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_servicegroup_relation esgr, escalation esc WHERE esgr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
 	if (PEAR::isError($DBRESULT)) {
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -301,7 +311,10 @@
 	unset($escalation);
 	$DBRESULT->free();	
 
-	// PART 4 -Escalation for all Services	
+	/*
+	 * PART 4 -Escalation for all Services	
+	 */
+	 
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT service.service_activate, service.service_description, esr.service_service_id FROM service, escalation_service_relation esr WHERE esr.service_service_id = service.service_id ORDER BY esr.service_service_id");
 	if (PEAR::isError($DBRESULT)) {
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -396,7 +409,10 @@
 	unset($service);
 	$DBRESULT->free();
 	
-	// PART 5 - Generating final file configuration escalations.cfg		
+	/*
+	 * PART 5 - Generating final file configuration escalations.cfg		
+	 */
+	 
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/escalations.cfg");
 	fclose($handle);
 	unset($str);

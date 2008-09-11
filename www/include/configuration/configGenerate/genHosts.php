@@ -79,11 +79,10 @@
 					if ($DBRESULT2->numRows())
 						$str .= print_line("use", $tpl_str);
 					$DBRESULT2->free();
-				}
-				/*
-				 *  For Nagios 1 & 2
-				 */
-				elseif ($host["host_template_model_htm_id"]) {			
+				} else if ($host["host_template_model_htm_id"]) {			
+					/*
+					 *  For Nagios 1 & 2
+					 */
 					$hostTemplate = array();
 					$DBRESULT2 =& $pearDB->query("SELECT host.host_name FROM host WHERE host.host_id = '".$host["host_template_model_htm_id"]."'");
 					if (PEAR::isError($DBRESULT2))
@@ -154,18 +153,23 @@
 				
 				$host["command_command_id_arg2"] = removeSpecialChar($host["command_command_id_arg2"]);
 				
-				while($command = $DBRESULT2->fetchRow())
+				while ($command = $DBRESULT2->fetchRow())
 					$str .= print_line("check_command", $command["command_name"].$host["command_command_id_arg1"]);
 				$DBRESULT2->free();
 				unset($command);
-				//
-				if ($host["host_max_check_attempts"] != NULL) $str .= print_line("max_check_attempts", $host["host_max_check_attempts"]);
-				if ($host["host_check_interval"] != NULL) $str .= print_line("check_interval", $host["host_check_interval"]);
+				
+				if ($host["host_max_check_attempts"] != NULL) 	
+					$str .= print_line("max_check_attempts", $host["host_max_check_attempts"]);
+				if ($host["host_check_interval"] != NULL) 
+					$str .= print_line("check_interval", $host["host_check_interval"]);
 				if ($oreon->user->get_version() == 1)
-					if ($host["host_checks_enabled"] != 2) $str .= print_line("checks_enabled", $host["host_checks_enabled"] == 1 ? "1" : "0");
+					if ($host["host_checks_enabled"] != 2) 
+						$str .= print_line("checks_enabled", $host["host_checks_enabled"] == 1 ? "1" : "0");
 				if ($oreon->user->get_version() >= 2)	{
-					if ($host["host_active_checks_enabled"] != 2) $str .= print_line("active_checks_enabled", $host["host_active_checks_enabled"] == 1 ? "1": "0");
-					if ($host["host_passive_checks_enabled"] != 2) $str .= print_line("passive_checks_enabled", $host["host_passive_checks_enabled"] == 1 ? "1": "0");
+					if ($host["host_active_checks_enabled"] != 2) 
+						$str .= print_line("active_checks_enabled", $host["host_active_checks_enabled"] == 1 ? "1": "0");
+					if ($host["host_passive_checks_enabled"] != 2) 
+						$str .= print_line("passive_checks_enabled", $host["host_passive_checks_enabled"] == 1 ? "1": "0");
 					//Check Period
 					$timePeriod = array();
 					$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id"]."' LIMIT 1");
@@ -175,10 +179,13 @@
 						$str .= print_line("check_period", $timePeriod["tp_name"]);
 					$DBRESULT2->free();
 					unset($timePeriod);
-					//
-					if ($host["host_obsess_over_host"] != 2) $str .= print_line("obsess_over_host", $host["host_obsess_over_host"] == 1 ? "1": "0");
-					if ($host["host_check_freshness"] != 2) $str .= print_line("check_freshness", $host["host_check_freshness"] == 1 ? "1": "0");
-					if ($host["host_freshness_threshold"]) $str .= print_line("freshness_threshold", $host["host_freshness_threshold"]);
+
+					if ($host["host_obsess_over_host"] != 2) 
+						$str .= print_line("obsess_over_host", $host["host_obsess_over_host"] == 1 ? "1": "0");
+					if ($host["host_check_freshness"] != 2) 
+						$str .= print_line("check_freshness", $host["host_check_freshness"] == 1 ? "1": "0");
+					if ($host["host_freshness_threshold"]) 
+						$str .= print_line("freshness_threshold", $host["host_freshness_threshold"]);
 				}
 				//Event_handler
 				$command = array();
@@ -191,84 +198,99 @@
 				$host["command_command_id_arg2"] = str_replace('#S#', "/", $host["command_command_id_arg2"]);
 				$host["command_command_id_arg2"] = str_replace('#BS#', "\\", $host["command_command_id_arg2"]);
 					
-				while($command = $DBRESULT2->fetchRow())
+				while ($command = $DBRESULT2->fetchRow())
 					$str .= print_line("event_handler", $command["command_name"].$host["command_command_id_arg2"]);
 				$DBRESULT2->free();
 				unset($command);
 				//
-				if ($host["host_event_handler_enabled"] != 2) $str .= print_line("event_handler_enabled", $host["host_event_handler_enabled"] == 1 ? "1": "0");
-				if ($host["host_low_flap_threshold"]) $str .= print_line("low_flap_threshold", $host["host_low_flap_threshold"]);
-				if ($host["host_high_flap_threshold"]) $str .= print_line("high_flap_threshold", $host["host_high_flap_threshold"]);
-				if ($host["host_flap_detection_enabled"] != 2) $str .= print_line("flap_detection_enabled", $host["host_flap_detection_enabled"] == 1 ? "1": "0");
-				if ($host["host_process_perf_data"] != 2) $str .= print_line("process_perf_data", $host["host_process_perf_data"] == 1 ? "1": "0");
-				if ($host["host_retain_status_information"] != 2) $str .= print_line("retain_status_information", $host["host_retain_status_information"] == 1 ? "1": "0");
-				if ($host["host_retain_nonstatus_information"] != 2) $str .= print_line("retain_nonstatus_information", $host["host_retain_nonstatus_information"] == 1 ? "1": "0");
-				//Nagios V2 : contactGroups relation
+				if ($host["host_event_handler_enabled"] != 2) 
+					$str .= print_line("event_handler_enabled", $host["host_event_handler_enabled"] == 1 ? "1": "0");
+				if ($host["host_low_flap_threshold"]) 
+					$str .= print_line("low_flap_threshold", $host["host_low_flap_threshold"]);
+				if ($host["host_high_flap_threshold"]) 
+					$str .= print_line("high_flap_threshold", $host["host_high_flap_threshold"]);
+				if ($host["host_flap_detection_enabled"] != 2) 
+					$str .= print_line("flap_detection_enabled", $host["host_flap_detection_enabled"] == 1 ? "1": "0");
+				if ($host["host_process_perf_data"] != 2) 
+					$str .= print_line("process_perf_data", $host["host_process_perf_data"] == 1 ? "1": "0");
+				if ($host["host_retain_status_information"] != 2) 
+					$str .= print_line("retain_status_information", $host["host_retain_status_information"] == 1 ? "1": "0");
+				if ($host["host_retain_nonstatus_information"] != 2) 
+					$str .= print_line("retain_nonstatus_information", $host["host_retain_nonstatus_information"] == 1 ? "1": "0");
+				
+				/*
+				 * Nagios V2 : contactGroups relation
+				 */
 				if ($oreon->user->get_version() >= 2)	{
 					$contactGroup = array();
 					$strTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-					while($contactGroup = $DBRESULT2->fetchRow())	{				
-						$BP = false;
-						array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-				
-						if ($BP)
+					while ($contactGroup =& $DBRESULT2->fetchRow())	{				
+						if (isset($gbArr[1][$contactGroup["cg_id"]]))
 							$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
 					}
 					$DBRESULT2->free();
 					unset($contactGroup);
-					if ($strTemp) $str .= print_line("contact_groups", $strTemp);
+					if ($strTemp) 
+						$str .= print_line("contact_groups", $strTemp);
 					unset($strTemp);
 				}
 				
-				//Nagios V3 : contacts relation
+				/*
+				 * Nagios V3 : contacts relation
+				 */
 				if ($oreon->user->get_version() >= 3)	{
 					$contact = array();
 					$strTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_host_relation chr, contact c WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contact_id = c.contact_id ORDER BY `contact_name`");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";					
-					while($contact = $DBRESULT2->fetchRow())	{				
-						$BP = false;
-						
-						array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : NULL;
-				
-						if ($BP)
+					while ($contact =& $DBRESULT2->fetchRow())	{				
+						if (isset($gbArr[0][$contact["contact_id"]]))
 							$strTemp != NULL ? $strTemp .= ", ".$contact["contact_name"] : $strTemp = $contact["contact_name"];
 					}
 					$DBRESULT2->free();
 					unset($contact);
-					if ($strTemp) $str .= print_line("contacts", $strTemp);
+					if ($strTemp) 
+						$str .= print_line("contacts", $strTemp);
 					unset($strTemp);
 				}
 				
-				if ($host["host_notification_interval"] != NULL) $str .= print_line("notification_interval", $host["host_notification_interval"]);
-				// Timeperiod name
+				if ($host["host_notification_interval"] != NULL) 
+					$str .= print_line("notification_interval", $host["host_notification_interval"]);
+				
+				/*
+				 * Timeperiod name
+				 */
 				$timePeriod = array();
 				$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id2"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-				while($timePeriod = $DBRESULT2->fetchRow())
+				while ($timePeriod =& $DBRESULT2->fetchRow())
 					$str .= print_line("notification_period", $timePeriod["tp_name"]);
 				$DBRESULT2->free();
 				unset($timePeriod);
-				//
-				if ($host["host_notification_options"]) $str .= print_line("notification_options", $host["host_notification_options"]);
-				if ($host["host_notifications_enabled"] != 2) $str .= print_line("notifications_enabled", $host["host_notifications_enabled"] == 1 ? "1": "0");
-				if ($host["host_stalking_options"]) $str .= print_line("stalking_options", $host["host_stalking_options"]);
-				if (!$host["host_register"]) $str .= print_line("register", "0");
+				
+				if ($host["host_notification_options"]) 
+					$str .= print_line("notification_options", $host["host_notification_options"]);
+				if ($host["host_notifications_enabled"] != 2) 
+					$str .= print_line("notifications_enabled", $host["host_notifications_enabled"] == 1 ? "1": "0");
+				if ($host["host_stalking_options"]) 
+					$str .= print_line("stalking_options", $host["host_stalking_options"]);
+				if (!$host["host_register"]) 
+					$str .= print_line("register", "0");
 				
 				/*
 				 * On-demand macros
 				 */
 				if ($oreon->user->get_version() >= 3) {
-					$rq = "SELECT host_macro_name, host_macro_value FROM on_demand_macro_host WHERE `host_host_id`=" . $host['host_id'];
+					$rq = "SELECT `host_macro_name`, `host_macro_value` FROM `on_demand_macro_host` WHERE `host_host_id` = '" . $host['host_id']."'";
 					$DBRESULT3 =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT3))
 						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-					while($od_macro = $DBRESULT3->fetchRow()) {
+					while ($od_macro =& $DBRESULT3->fetchRow()) {
 						$mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);
 						$mac_name = str_replace("\$", "", $mac_name);
 						$mac_value = $od_macro['host_macro_value'];
