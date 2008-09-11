@@ -40,6 +40,8 @@ my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
 # Init MySQL Connexion
 my $dbhoreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 
+# Plugins
+
 my $sth2 = $dbhoreon->prepare("SELECT `id`, `ns_ip_address` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
 if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
@@ -52,7 +54,22 @@ if (!$sth2->execute) {
 			my $archiveData = $sth->fetchrow_hashref();
 			my $ls = `ssh -q $ns_server->{'ns_ip_address'} ls -l $archiveData->{'log_archive_path'}/ 2>> /dev/null | wc -l`;
 			    if ($ls > 1){
-				`$rsyncPath -c $ns_server->{'ns_ip_address'}:$archiveData->{'log_archive_path'}/* /var/lib/centreon/log/$ns_server->{'id'}/archives/`;
+					`$rsyncPath -c $ns_server->{'ns_ip_address'}:$archiveData->{'log_archive_path'}/* /var/lib/centreon/log/$ns_server->{'id'}/archives/`;
+				}
+			}
+		}
+	}
+}
+
+# SnmpTT configurations files
+my $sth2 = $dbhoreon->prepare("SELECT `id`, `ns_ip_address` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
+if (!$sth2->execute) {
+    die "Error:" . $sth2->errstr . "\n";
+} else { 
+	while (my $ns_server = $sth2->fetchrow_hashref()) {
+		my $ls = `ssh -q $ns_server->{'ns_ip_address'} ls -l $archiveData->{'log_archive_path'}/ 2>> /dev/null | wc -l`;
+		    if ($ls > 1){
+				`$rsyncPath -c /etc/snmp/centreon_traps/* $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
 			}
 		}
 	}
