@@ -15,8 +15,7 @@
  * For information : contact@centreon.com
  */
  
-
-	function testTrapExistence ($oid = NULL)	{
+	function testTrapExistence($oid = NULL)	{
 		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
@@ -35,7 +34,7 @@
 			return true;
 	}
 
-	function deleteTrapInDB ($traps = array())	{
+	function deleteTrapInDB($traps = array())	{
 		global $pearDB;
 		foreach($traps as $key=>$value)		{
 			$DBRESULT =& $pearDB->query("DELETE FROM traps WHERE traps_id = '".$key."'");
@@ -44,9 +43,9 @@
 		}
 	}
 	
-	function multipleTrapInDB ($traps = array(), $nbrDup = array())	{
+	function multipleTrapInDB($traps = array(), $nbrDup = array())	{
 		global $pearDB;
-		foreach($traps as $key=>$value)	{
+		foreach ($traps as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -54,8 +53,8 @@
 			$row["traps_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
-				foreach ($row as $key2=>$value2)	{
-					$key2 == "traps_oid" ? ($traps_oid = $value2 = $value2."_".$i) : null;
+				foreach ($row as $key2 => $value2)	{
+					$key2 == "traps_name" ? ($traps_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
 				if (testTrapExistence($traps_oid))	{
@@ -75,7 +74,10 @@
 	
 	function updateTrap($traps_id = null)	{
 		global $form, $pearDB;
-		if (!$traps_id) return;
+		
+		if (!$traps_id) 
+			return;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if (!isset($ret["traps_reschedule_svc_enable"]) || !$ret["traps_reschedule_svc_enable"])
@@ -84,6 +86,7 @@
 			$ret["traps_submit_result_enable"] = 0;
 		if (!isset($ret["traps_execution_command_enable"])|| !$ret["traps_execution_command_enable"])
 			$ret["traps_execution_command_enable"] = 0;
+		
 		$rq = "UPDATE traps ";
 		$rq .= "SET `traps_name` = '".htmlentities($ret["traps_name"], ENT_QUOTES)."', ";
 		$rq .= "`traps_oid` = '".htmlentities($ret["traps_oid"], ENT_QUOTES)."', ";
@@ -108,6 +111,7 @@
 	
 	function insertTrap($ret = array())	{
 		global $form, $pearDB;
+		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO traps ";
