@@ -7,25 +7,22 @@
    <br />
    {network}
   </td>
-
-  <td width="50%" valign="top">
+  <td width="1%">&nbsp;</td>
+  <td valign="top">
    {hardware}
   </td>
  </tr>
-
  <tr>
-  <td colspan="2">
+  <td colspan="3">
    {memory}
   </td>
  </tr>
-
  <tr>
-  <td colspan="2">
+  <td colspan="3">
    {filesystems}
   </td>
  </tr>
 </table>
-
 <table width="100%">
  <tr>
   <td width="55%" valign="top">
