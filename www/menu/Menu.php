@@ -37,7 +37,7 @@
 	$version = $oreon->user->get_version();
 
 	$fileStatus = $oreon->Nagioscfg["status_file"];
-	$fileOreonConf = $oreon->optGen["oreon_path"];
+	$fileCentreonConf = $oreon->optGen["oreon_path"];
 
 	$color = array();
 
@@ -70,7 +70,7 @@
 	$tpl->assign("color", $color);
 	$tpl->assign("version", $version);
 	$tpl->assign("fileStatus", $fileStatus);
-	$tpl->assign("fileOreonConf", $fileOreonConf);
+	$tpl->assign("fileOreonConf", $fileCentreonConf);
 	$tpl->assign("date_time_format_status", _("d/m/Y H:i:s"));
 
 	/*
