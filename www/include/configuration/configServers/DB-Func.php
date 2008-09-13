@@ -14,6 +14,7 @@
  * 
  * For information : contact@centreon.com
  */
+
 	if (!isset($oreon))
 		exit();
 	
@@ -35,8 +36,10 @@
 	}	
 	
 	function enableServerInDB ($id = null)	{
-		if (!$id) return;
 		global $pearDB;
+		
+		if (!$id) 
+			return;
 		$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = '".$id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -58,8 +61,9 @@
 	}
 	
 	function multipleServerInDB ($server = array(), $nbrDup = array())	{
+		global $pearDB;
+		
 		foreach($server as $key => $value)	{
-			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -85,7 +89,8 @@
 	}
 	
 	function updateServerInDB ($id = NULL)	{
-		if (!$id) return;
+		if (!$id) 
+			return;
 		updateServer($id);
 	}	
 	
@@ -120,8 +125,9 @@
 	}
 	
 	function updateServer($id = null)	{
-		if (!$id) return;
 		global $form, $pearDB;
+		if (!$id) 
+			return;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if ($ret["localhost"]["localhost"] == 1){
