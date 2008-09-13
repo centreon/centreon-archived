@@ -66,6 +66,7 @@
 			$row = $DBRESULT->fetchRow();
 			$row["id"] = '';
 			$row["ns_activate"] = '0';
+			$row["localhost"] = '0';
 			$DBRESULT->free();
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
