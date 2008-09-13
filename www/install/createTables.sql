@@ -404,7 +404,7 @@ CREATE TABLE IF NOT EXISTS `cfg_ndo2db` (
   `activate` enum('0','1') collate latin1_general_ci default NULL,
   PRIMARY KEY  (`id`),
   KEY `ns_nagios_server` (`ns_nagios_server`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='configuration base for ndo daemon' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='configuration base for ndo daemon' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -433,7 +433,7 @@ CREATE TABLE IF NOT EXISTS `cfg_ndomod` (
   `activate` enum('0','1') collate latin1_general_ci default NULL,
   PRIMARY KEY  (`id`),
   KEY `ns_nagios_server` (`ns_nagios_server`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='ndomog table config' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ndomog table config' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -479,7 +479,7 @@ CREATE TABLE IF NOT EXISTS `command_categories` (
   `category_alias` varchar(255) NOT NULL,
   `category_order` int(11) NOT NULL,
   PRIMARY KEY  (`cmd_category_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -492,7 +492,7 @@ CREATE TABLE IF NOT EXISTS `command_categories_relation` (
   `category_id` int(11) default NULL,
   `command_command_id` int(11) default NULL,
   PRIMARY KEY  (`cmd_cat_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1470,7 +1470,7 @@ CREATE TABLE IF NOT EXISTS `ns_host_relation` (
   PRIMARY KEY  (`nagios_server_id`,`host_host_id`),
   KEY `host_host_id` (`host_host_id`),
   KEY `nagios_server_id` (`nagios_server_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Relation Table For centreon Servers and hosts ';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relation Table For centreon Servers and hosts ';
 
 -- --------------------------------------------------------
 
@@ -1630,7 +1630,7 @@ CREATE TABLE IF NOT EXISTS `service_categories` (
   `sc_description` varchar(255) default NULL,
   `sc_activate` enum('0','1') default NULL,
   PRIMARY KEY  (`sc_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Services Catygories For best Reporting' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Services Catygories For best Reporting' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1645,7 +1645,7 @@ CREATE TABLE IF NOT EXISTS `service_categories_relation` (
   PRIMARY KEY  (`scr_id`),
   KEY `service_service_id` (`service_service_id`),
   KEY `sc_id` (`sc_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 

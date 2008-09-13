@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `data_bin` (
   `value` float default NULL,
   `status` enum('0','1','2','3','4') default NULL,
   KEY `index_metric` (`id_metric`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `index_data` (
   KEY `service_id` (`service_id`),
   KEY `must_be_rebuild` (`must_be_rebuild`),
   KEY `trashed` (`trashed`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `instance` (
   `log_md5` varchar(255) default NULL,
   PRIMARY KEY  (`instance_id`),
   UNIQUE KEY `instance_name` (`instance_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -170,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   KEY `status` (`status`),
   KEY `instance` (`instance`),
   KEY `ctime` (`ctime`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -264,7 +264,7 @@ CREATE TABLE `log_archive_last_status` (
   `service_description` varchar(255) default NULL,
   `status` varchar(255) default NULL,
   `ctime` int(11) default NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -279,7 +279,7 @@ CREATE TABLE IF NOT EXISTS `log_snmptt` (
   `trap_community` varchar(50) default NULL,
   `trap_infos` text,
   PRIMARY KEY  (`trap_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -300,7 +300,7 @@ CREATE TABLE IF NOT EXISTS `metrics` (
   `locked` enum('0','1') default NULL,
   PRIMARY KEY  (`metric_id`),
   KEY `index` (`index_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
