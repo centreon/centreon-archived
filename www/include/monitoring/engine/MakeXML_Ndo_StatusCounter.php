@@ -26,7 +26,8 @@
 
 	include_once 'DB.php';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");	
+	//include_once("@CENTREON_ETC@/centreon.conf.php");	
+	include_once("/etc/centreon/centreon.conf.php");	
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	
@@ -35,16 +36,21 @@
 	$dsn = array('phptype'=> 'mysql','username' => $conf_centreon['user'],'password' => $conf_centreon['password'],'hostspec' => $conf_centreon['hostCentreon'],'database' => $conf_centreon['db']);
 
 	$pearDB =& DB::connect($dsn, array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE));
-	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
+	if (PEAR::isError($pearDB)) 
+		die("<data>Connecting problems with oreon database : " . $pearDB->getMessage()."</data>");
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-
+	
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
 	
-	# Session...
+	/*
+	 * Session...
+	 */
 	$debug_session = 'KO';
 
-	# sessionID check and refresh
+	/*
+	 * sessionID check and refresh
+	 */
 	$sid = isset($_POST["sid"]) ? $_POST["sid"] : 0;
 	$sid = isset($_GET["sid"]) ? $_GET["sid"] : $sid;
 
@@ -112,6 +118,15 @@
 		$search_type_host = 0;
 
 		/*
+		 * Connect to NDO
+		 */
+		include_once($centreon_path . "www/DBNDOConnect.php");
+		if (!$pearDBNdo) {
+			print "<data>Can't connect to ndo Database</data>";
+			exit();
+		}
+
+		/*
 		 * Init stat for resume
 		 */
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
@@ -122,11 +137,6 @@
 			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 		$general_opt =& $DBRESULT_OPT->fetchRow();
 	
-		/*
-		 * Connect to NDO
-		 */
-		include_once($centreon_path . "www/DBNDOConnect.php");
-
 		/* 
 		 * Get Host NDO status 
 		 */
