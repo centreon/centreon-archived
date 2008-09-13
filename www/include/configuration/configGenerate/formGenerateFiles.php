@@ -27,11 +27,14 @@
 	}
 
 	# Get Poller List
-	$tab_nagios_server = array("0" => _("All Nagios Servers"));
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `localhost` DESC");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($nagios =& $DBRESULT->fetchRow())
+	if ($DBRESULT->numRows() > 1) {
+		$tab_nagios_server = array(NULL => "");
+		$tab_nagios_server[0] = _("All Nagios Servers");
+	}
+	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++)
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 	
 	/*
@@ -40,14 +43,15 @@
 	$attrSelect = array("style" => "width: 220px;");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', _("Nagios Configuration Files Export"));
-	$form->addElement('header', 'infos', _("Implied Server"));
-	$form->addElement('header', 'opt', _("Export Options"));
-	$form->addElement('header', 'result', _("Actions"));	
+	$form->addElement('header', 'title', 	_("Nagios Configuration Files Export"));
+	$form->addElement('header', 'infos', 	_("Implied Server"));
+	$form->addElement('header', 'opt', 		_("Export Options"));
+	$form->addElement('header', 'result', 	_("Actions"));	
     
-    $form->addElement('select', 'host', _("Nagios Server"), $tab_nagios_server, $attrSelect);
+    $form->addElement('select', 'host', 	_("Nagios Server"), $tab_nagios_server, $attrSelect);
 	
 	$form->addElement('checkbox', 'comment', _("Include Comments"));
+
 	$form->addElement('checkbox', 'debug', _("Run Nagios debug (-v)"));
 	$form->setDefaults(array('debug' => '1'));	
 	
@@ -74,7 +78,6 @@
 	$stdout = NULL;
 	if ($form->validate())	{
 		$ret = $form->getSubmitValues();
-		$gbArr = manageDependencies();
 		
 		if (!isset($ret["comment"]))
 			$ret["comment"] = 0;
@@ -84,7 +87,11 @@
 			if ($key && ($res["host"] == 0 || $res["host"] == $key))
 				$host_list[$key] = $value;
 
-		if (isset($ret["gen"]) && $ret["gen"]){
+		if (isset($ret["gen"]) && $ret["gen"] && $ret["host"]){
+			/*
+			 * Check dependancies
+			 */
+			$gbArr = manageDependencies();
 			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
 			if (PEAR::isError($DBRESULT_Servers))
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
