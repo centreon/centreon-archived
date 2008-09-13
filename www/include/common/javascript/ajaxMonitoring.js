@@ -542,7 +542,7 @@ function goM(_time_reload,_sid,_o){
 	_formBasic=document.getElementById('AjaxBankBasic');
 	_version=_formBasic.version.value;
 	_fileStatus=_formBasic.fileStatus.value;
-	_fileOreonConf=_formBasic.fileOreonConf.value;
+	_fileCentreonConf=_formBasic.fileCentreonConf.value;
 	_date_time_format_status = _formBasic.date_time_format_status.value;
 	_form=document.getElementById('fsave');
 	_form.len.value = parseInt(_form.len.value) + 1;
@@ -553,7 +553,7 @@ function goM(_time_reload,_sid,_o){
 	_type=_form.type.value;
 	_version=_formBasic.version.value;
 	_fileStatus=_formBasic.fileStatus.value;
-	_fileOreonConf=_formBasic.fileOreonConf.value;
+	_fileCentreonConf=_formBasic.fileCentreonConf.value;
 	_limit=_form.limit.value;
 	if(_form.search && _form.search.value)
 		_search=_form.search.value;
@@ -607,7 +607,7 @@ function goM(_time_reload,_sid,_o){
 	var xhrM = getXhrM();
 	xhrM.open("POST",_addrSearchM,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	_var = "hg_name="+_hg_name+"&host_name="+_host_name+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
+	_var = "hg_name="+_hg_name+"&host_name="+_host_name+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileCentreonConf="+_fileCentreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
 	xhrM.send(_var);
 //	document.getElementById('header').innerHTML = "-->"+_var;
 	// On defini ce qu'on va faire quand on aura la reponse
