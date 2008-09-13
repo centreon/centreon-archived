@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 ###################################################################
-# Oreon is developped with GPL Licence 2.0 
+# Centreon is developped with GPL Licence 2.0 
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
@@ -41,8 +41,24 @@ sub get_hostinfos($$$){
     while (my $temp = $sth->fetchrow_array()) {
 		$host[scalar(@host)] = $temp;
     }
-    $sth -> finish;
+    $sth->finish();
     return @host;
+}
+
+##################################
+## GET nagios server id for a host
+#
+
+sub get_hostNagiosServerID($$){
+    my $sth = $_[0]->prepare("SELECT id FROM host, `ns_host_relation`, nagios_server WHERE host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id AND host.host_name = '".$_[1]."'");
+    $sth->execute();
+    if ($sth->rows()){
+ 		my $temp = $sth->fetchrow_array();
+		$sth->finish();
+    	return $temp->{'localhost'};
+    } else {
+    	return 0;
+    }
 }
 
 #####################################################################
@@ -53,11 +69,11 @@ sub getServicesIncludeTemplate($$$$) {
     my ($dbh, $sth_st, $host_id, $trap_id) = @_;
     my @service;
     $sth_st->execute();
-    while (my @temp = $sth_st -> fetchrow_array()) {
+    while (my @temp = $sth_st->fetchrow_array()) {
 		my $tr_query = "SELECT `traps_id` FROM `traps_service_relation` WHERE `service_id` = '".$temp[0]."' AND `traps_id` = '".$trap_id."'";
 		my $sth_st3 = $dbh->prepare($tr_query);
 		$sth_st3->execute();
-		my @trap = $sth_st3 -> fetchrow_array();
+		my @trap = $sth_st3->fetchrow_array();
 		if (defined($trap[0])) {
 		    $service[scalar(@service)] = $temp[1];
 		} else {
@@ -143,8 +159,9 @@ sub getTrapsInfos($$$$){
     my $hostname = shift;
     my $oid = shift;
     my $arguments_line = shift;
+    my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
     
-    my $dbh = DBI->connect("dbi:mysql:$mysql_database_oreon", $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
+    my $dbh = DBI->connect("dbi:mysql:$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
     my @host = get_hostinfos($dbh, $ip, $hostname);
     foreach(@host) {
 		my $this_host = $_;
@@ -159,11 +176,13 @@ sub getTrapsInfos($$$$){
 	    	my @conf = $sth->fetchrow_array();
 	    	$sth->finish();
 	    	if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1){ 
-			    my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
+				my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
+				undef($submit);
 			}
 			if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1){
 				my $time_now = time();
-			    my $submit = `/bin/echo "[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$time_now" >> $conf[0]`;	
+				my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$time_now" >> $cmdFile`;	
+				undef($submit);
 				undef($time_now);
 			} 
 			if (defined($traps_execution_command_enable) && $traps_execution_command_enable){
