@@ -18,14 +18,6 @@
 	if (!isset($oreon))
 		exit();
 
-	function display_copying_file($filename = NULL, $status){
-		if (!isset($filename))
-			return ;
-		$str = "<tr><td>- ".$filename."</td>";
-		$str .= "<td>".$status."</td></tr>";
-		return $str;
-	}
-
 	/*
 	 * Form begin
 	 */
@@ -47,7 +39,7 @@
 	/*
 	 * Set checkbox checked.
 	 */
-	$form->setDefaults(array('restart' => '1'));
+	$form->setDefaults(array('restart' => '1', 'opt' => '1'));
 	
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -76,7 +68,6 @@
 	/*
 	 * Apply a template definition
 	 */
-	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
