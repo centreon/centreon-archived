@@ -1,3 +1,17 @@
+## Centreon 2.0-RC5
+
+=> bugfix : remove bug in escalation generation 
+=> bugfix : add alert message on some page when ndo db is not available
+=> bugfix : improve acl construction
+=> bugfix : remove error in sql installation
+=> bugfix : add security in sql request in search
+=> bugfix : add possibility to duplicate traps definition
+=> bugfix : add possibility to search traps by OID
+=> bugfix : improve plugin option for check_centreon_snmp_process
+=> bugfix : add new reporting engine
+=> bugfix : remove all reporting problems
+=> bugfix : remove problem with i18n
+
 ## Centreon 2.0-RC4
 
 => Bugfix : remove passive check in scheduling queue page
