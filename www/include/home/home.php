@@ -35,19 +35,24 @@
 	// Including files and dependences 
 	include_once "./include/monitoring/common-Func.php";
 	include_once "./DBNDOConnect.php";
+	
+	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
+		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
+	} else {
+			
+		// The user must install the ndo table with the 'centreon_acl'
+		if ($err_msg = table_not_exists("centreon_acl")) {
+			print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
+		}
 		
-	// The user must install the ndo table with the 'centreon_acl'
-	if ($err_msg = table_not_exists("centreon_acl")) {
-		print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
+		// Directory of Home pages
+		$path = "./include/home/";
+		
+		// Displaying a Smarty Template
+		$template = new Smarty();
+		$template = initSmartyTpl($path, $template, "./");			
+		$template -> assign("session", session_id());
+		$template -> display("home.ihtml");
 	}
-	
-	// Directory of Home pages
-	$path = "./include/home/";
-	
-	// Displaying a Smarty Template
-	$template = new Smarty();
-	$template = initSmartyTpl($path, $template, "./");			
-	$template -> assign("session", session_id());
-	$template -> display("home.ihtml");
 ?>
 

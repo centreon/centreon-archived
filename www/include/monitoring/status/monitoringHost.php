@@ -48,21 +48,24 @@
 			default : require_once($pathTools."tools.php"); break;
 		}
 	} else {
-	
 		include_once("./DBNDOConnect.php");
-
-		if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
-			print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";			
-		else {
-			if ($err_msg = table_not_exists("centreon_acl")) 
-				print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
-			switch ($o)	{
-				case "h" 	: require_once($path."host.php"); 					break;
-				case "hpb" 	: require_once($path."host.php"); 					break;
-				case "h_unhandled" 	: require_once($path."host.php"); 					break;
-				case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
-				case "hak" 	: require_once($pathRoot."acknowlegement/hostAcknowledge.php"); 	break;
-				default 	: require_once($path."host.php"); 					break;
+		if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
+			print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
+		} else {
+	
+			if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
+				print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";			
+			else {
+				if ($err_msg = table_not_exists("centreon_acl")) 
+					print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
+				switch ($o)	{
+					case "h" 	: require_once($path."host.php"); 					break;
+					case "hpb" 	: require_once($path."host.php"); 					break;
+					case "h_unhandled" 	: require_once($path."host.php"); 					break;
+					case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
+					case "hak" 	: require_once($pathRoot."acknowlegement/hostAcknowledge.php"); 	break;
+					default 	: require_once($path."host.php"); 					break;
+				}
 			}
 		}
 	}
