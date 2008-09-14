@@ -60,8 +60,7 @@
 
         global $is_admin;
 
-        $is_admin = 0;
-        $is_admin = $admin["contact_admin"];
+        $is_admin = isUserAdmin($_GET["sid"]);
 
         if (!$is_admin){
                 $_POST["sid"] = $_GET["sid"];

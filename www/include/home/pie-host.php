@@ -41,9 +41,6 @@
 
 	$ndo_base_prefix = getNDOPrefix();
 	
-	## calcul stat for resume
-	$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
-
 	include_once($centreon_path . "www/DBNDOConnect.php");
 
 	## calcul stat for resume
@@ -61,8 +58,7 @@
 	
 	global $is_admin;
 	
-	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
+	$is_admin = isUserAdmin($_GET["sid"]);;
 	
 	if (!$is_admin){
 		$_POST["sid"] = $_GET["sid"];
