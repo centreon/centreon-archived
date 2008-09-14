@@ -29,26 +29,52 @@
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 	
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/configuration/configNdomod/";
 	
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	
 	switch ($o)	{
-		case "a" : require_once($path."formNdomod.php"); break; #Add Ndomod.cfg
-		case "w" : require_once($path."formNdomod.php"); break; #Watch Ndomod.cfg
-		case "c" : require_once($path."formNdomod.php"); break; #Modify Ndomod.cfg
-		case "s" : enableNdomodInDB($id); require_once($path."listNdomod.php"); break; #Activate a Ndomod CFG
-		case "u" : disableNdomodInDB($id); require_once($path."listNdomod.php"); break; #Desactivate a Ndomod CFG
-		case "m" : multipleNdomodInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listNdomod.php"); break; #Duplicate n Ndomod CFGs
-		case "d" : deleteNdomodInDB(isset($select) ? $select : array()); require_once($path."listNdomod.php"); break; #Delete n Ndomod CFG
-		default : require_once($path."listNdomod.php"); break;
+		case "a" : 
+			require_once($path."formNdomod.php"); 
+			break; #Add Ndomod.cfg
+		case "w" : 
+			require_once($path."formNdomod.php"); 
+			break; #Watch Ndomod.cfg
+		case "c" : 
+			require_once($path."formNdomod.php"); 
+			break; #Modify Ndomod.cfg
+		case "s" : 
+			enableNdomodInDB($id); 
+			require_once($path."listNdomod.php"); 
+			break; #Activate a Ndomod CFG
+		case "u" : 
+			disableNdomodInDB($id); 
+			require_once($path."listNdomod.php"); 
+			break; #Desactivate a Ndomod CFG
+		case "m" : 
+			multipleNdomodInDB(isset($select) ? $select : array(), $dupNbr); 
+			require_once($path."listNdomod.php"); 
+			break; #Duplicate n Ndomod CFGs
+		case "d" : 
+			deleteNdomodInDB(isset($select) ? $select : array()); 
+			require_once($path."listNdomod.php"); 
+			break; #Delete n Ndomod CFG
+		default : 
+			require_once($path."listNdomod.php"); 
+			break;
 	}
 ?>
