@@ -32,6 +32,8 @@
 	else
 		$num = 0;
 	
+	$num = mysql_real_escape_string($num);
+	
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 	
 
 	if (isset($_GET["search_type_service"])){

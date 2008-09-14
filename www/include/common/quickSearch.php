@@ -34,6 +34,8 @@
 	else
 		$search = NULL; 
 	
+	$search = mysql_real_escape_string($search);
+	
 	if (isset($search) && $search)
 		$attrsText = array("size"=>"25", "id"=>"input_search", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;");
 	else
