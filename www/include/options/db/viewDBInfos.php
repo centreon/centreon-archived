@@ -72,8 +72,11 @@
 	 
 	$dataCentreon 		= returnProperties($pearDB, $conf_centreon["db"]);
 	$dataCentstorage 	= returnProperties($pearDBO, $conf_centreon["dbcstg"]);
-	$dataNDOutils 		= returnProperties($pearDBndo, $ndoInformations["db_name"]);
-	
+	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
+		$dataNDOutils = array(0 => '-', 1 => '-');
+	} else {
+		$dataNDOutils 		= returnProperties($pearDBndo, $ndoInformations["db_name"]);
+	}
 ?>
 <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="5"><img src='./img/icones/16x16/server_network.gif'>&nbsp;Centreon&nbsp;<?php print _("DataBase Statistics"); ?></td></tr>
