@@ -51,9 +51,6 @@
 	$o = getParameters("o");
 	$min = getParameters("min");
 	
-	if (isset($_GET["AutoLogin"]) && $_GET["AutoLogin"])
-		print $_GET["AutoLogin"];
-
 	/*
 	 * Include all func
 	 */
