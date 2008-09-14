@@ -55,9 +55,9 @@
 	 * Include all func
 	 */
 	
-	require_once ("./basic-functions.php");
-	require_once ("./include/common/common-Func.php");
-	require_once ("./header.php");
+	include_once ("./basic-functions.php");
+	include_once ("./include/common/common-Func.php");
+	include_once ("./header.php");
 
 	/*
 	 * LCA Init Common Var
@@ -75,7 +75,7 @@
 	if (!$is_admin){
 		if (!count(!$oreon->user->lcaTopo) || !isset($oreon->user->lcaTopo[$p])){
 			$nb_page = 0;
-			require_once("./alt_error.php");
+			include_once "./alt_error.php";
 		} else
 			$nb_page = 1;
 	} else
@@ -161,31 +161,31 @@
 	/*
 	 *  Header HTML
 	 */
-	require_once ("./htmlHeader.php");
+	include_once "./htmlHeader.php";
 
 	/*
 	 * Display Menu
 	 */
 	if (!$min)
-		require_once ("menu/Menu.php");
+		include_once "menu/Menu.php";
 
 	/*
 	 * Display PathWay
 	 */
 	if ($min != 1)
-		include("pathWay.php");
+		include_once "pathWay.php";
 
 	/*
 	 * Go on our page
 	 */
 	if (isset($url) && $url)
-    	require_once($url);
+    	include_once $url;
 
 	if (!isset($oreon->historyPage))
 		$oreon->createHistory();
 	
 	/*
-	 * Keep in memory all informations about pagination, key work for search... 
+	 * Keep in memory all informations about pagination, keyword for search... 
 	 */
 	if (isset($url) && $url){
 		if (isset($_GET["num"]))
@@ -209,5 +209,5 @@
 	 * Display Footer
 	 */
 	if (!$min)
-		require_once("footer.php");
+		include_once "footer.php";
 ?>
