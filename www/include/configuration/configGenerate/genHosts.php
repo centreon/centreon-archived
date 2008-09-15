@@ -23,7 +23,7 @@
 	}
 	
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hosts.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT * FROM host ORDER BY `host_register`, `host_name`");
+	$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_activate = '1' ORDER BY `host_register`, `host_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$host = array();
