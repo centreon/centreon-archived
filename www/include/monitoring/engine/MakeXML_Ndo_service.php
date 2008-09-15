@@ -288,8 +288,8 @@
 			$buffer .= '<ca>'. $ndo["current_attempt"] . '</ca>';
 			$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
 			$buffer .= '<pa>'. $ndo["problem_has_been_acknowledged"] . '</pa>';
-			$buffer .= '<pc>'. $passive . '</pc>';
-			$buffer .= '<ac>'. $active . '</ac>';
+			$buffer .= '<pc>'. $ndo["passive_checks_enabled"] . '</pc>';
+			$buffer .= '<ac>'. $ndo["active_checks_enabled"] . '</ac>';
 			$buffer .= '<eh>'. $ndo["event_handler_enabled"] . '</eh>';
 			$buffer .= '<is>'. $ndo["is_flapping"] . '</is>';
 			$buffer .= '<fd>'. $ndo["flap_detection_enabled"] . '</fd>';
