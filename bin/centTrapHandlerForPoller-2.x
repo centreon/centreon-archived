@@ -175,7 +175,6 @@ sub getTrapsInfos($$$$){
     my $hostname = shift;
     my $oid = shift;
     my $arguments_line = shift;
-    my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
     
     my $dbh = DBI->connect("dbi:mysql:$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
     my @host = get_hostinfos($dbh, $ip, $hostname);
@@ -192,31 +191,11 @@ sub getTrapsInfos($$$$){
 	    	my @conf = $sth->fetchrow_array();
 	    	$sth->finish();
 	    	if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1){ 
-			    my $address = get_hostlocation($dbh, $this_host);
-			    if ($address != 0){
-				    my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
-				} else {
-				    my $id = get_hostNagiosServerID(($dbh, $this_host));
-					if (defined($id) && $id != 0){
-						my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
-						undef($id);
-					}
-				}
-				undef($address);
+				my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
 			}
 			if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1){
 				my $time_now = time();
-			    my $address = get_hostlocation($dbh, $this_host);
-			    if ($address != 0){
-					my $submit = `/bin/echo "[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$time_now" >> $conf[0]`;	
-				} else {
-				    my $id = get_hostNagiosServerID(($dbh, $this_host));
-					if (defined($id) && $id != 0){
-						my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$time_now" >> $cmdFile`;	
-						undef($id);
-					}
-				}
-				undef($address);
+			    my $submit = `/bin/echo "[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$time_now" >> $conf[0]`;	
 				undef($time_now);
 			} 
 			if (defined($traps_execution_command_enable) && $traps_execution_command_enable){
