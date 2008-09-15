@@ -33,6 +33,7 @@ locate_ssh
 locate_scp
 
 ## Config Nagios
+locate_nagios_etcdir
 check_group_nagios
 check_user_nagios
 
