@@ -120,10 +120,10 @@
 		 * Connect to NDO
 		 */
 		include_once($centreon_path . "www/DBNDOConnect.php");
-		if (!$pearDBNdo) {
+		if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
 			print "<data>Can't connect to ndo Database</data>";
 			exit();
-		}
+		} 
 
 		/*
 		 * Init stat for resume
