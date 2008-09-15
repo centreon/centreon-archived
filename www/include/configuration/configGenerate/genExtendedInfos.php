@@ -106,7 +106,7 @@
 	$str = NULL;
 
 	//$DBRESULT =& $pearDB->query("SELECT service_id FROM service,extended_service_information WHERE service_service_id = service_id AND service_register = '1' AND `esi_notes` IS NOT NULL AND `esi_notes_url` IS NOT NULL AND `esi_action_url` IS NOT NULL AND `esi_icon_image` IS NOT NULL AND `esi_icon_image_alt` IS NOT NULL");
-	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt FROM service,extended_service_information WHERE service_service_id = service_id AND service_register = '1'");
+	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt FROM service, extended_service_information WHERE service_service_id = service_id AND service_register = '1' AND service_activate = '1'");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	while ($esi =& $DBRESULT->fetchRow())	{	
