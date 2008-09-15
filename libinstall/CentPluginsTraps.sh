@@ -49,6 +49,7 @@ for FILE in  $TMPDIR/src/bin/centFillTrapDB \
 	$TMPDIR/src/bin/centTrapHandler-2.x ; do
 
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+		-e 's|@CENTREON_VARLIB@|'"!CENTREON_VARLIB"'|g' \
 		"$FILE" > "$TMPDIR/work/bin/`basename $FILE`"
 done
 
