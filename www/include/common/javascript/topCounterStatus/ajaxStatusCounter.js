@@ -37,7 +37,7 @@ function reloadStatusCounter(_relaod_time,_sid){
 	_form=document.getElementById('AjaxBankBasic');		       
 	_version=_form.version.value;
 	_fileStatus=_form.fileStatus.value;
-	_fileOreonConf=_form.fileOreonConf.value;
+	_fileCentreonConf=_form.fileCentreonConf.value;
 
 	var xhrC = getXhrC();
 	// On defini ce qu'on va faire quand on aura la reponse
