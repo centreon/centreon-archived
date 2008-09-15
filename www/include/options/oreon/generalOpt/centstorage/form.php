@@ -57,7 +57,7 @@
 	$form->addElement('header', 'Purge', _("Purge options"));
 	$form->addElement('header', 'Input', _("Input treatment options"));
 	$form->addElement('header', 'coreOptions', _("Censtorage Core Options"));
-	$form->addElement('header', 'Drop', _("Drop posibility after paring performance data"));
+	$form->addElement('header', 'Drop', _("Drop posibility after parsing performance data"));
 	$form->addElement('header', 'logs', _("Logs Integration Properties"));
 	
 	/*
