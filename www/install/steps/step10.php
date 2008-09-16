@@ -91,7 +91,7 @@ aff_header("Centreon Setup Wizard", "Centreon Configuration File", 10);	?>
 			$file[29] = "?>";
 			
 			if ($fd = fopen($conf_centreon["centreon_etc"]."centreon.conf.php", "w"))	{
-				for ($i = 0; $i <= 28; $i++)
+				for ($i = 0; $i <= 29; $i++)
 					fwrite ($fd, $file[$i]);
 				fclose ($fd);
 				echo '<b><span class="go">OK</b>';
