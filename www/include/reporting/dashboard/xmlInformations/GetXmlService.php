@@ -16,7 +16,7 @@
  */
 
 	require_once 'DB.php';
-	require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
 	require_once $centreon_path.'www/class/other.class.php';
 	require_once $centreon_path.'www/include/reporting/dashboard/xmlInformations/common-Func.php';
@@ -36,9 +36,10 @@
 	if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])){
 		$color = array();
 		$get_color = $_GET["color"];
-		foreach ($get_color as $key => $value) {
+
+		foreach ($get_color as $key => $value)
 			$color[$key] = $value;
-		}
+
 		$pearDBO = getCentStorageConnection();
 		$request = "SELECT  * FROM `log_archive_service` WHERE host_id = '".$_GET["host_id"]."' AND service_id = ".$_GET["id"]." ORDER BY `date_start` DESC";
 		$DBRESULT =& $pearDBO->query($request);

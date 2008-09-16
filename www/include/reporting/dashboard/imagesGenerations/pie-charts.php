@@ -15,10 +15,9 @@
  * For information : contact@centreon.com
  */
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	$centreon_path = "/usr/local/centreon/";
-	require_once ($centreon_path."www/class/Session.class.php");
-	require_once ($centreon_path."www/class/Oreon.class.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once $centreon_path."www/class/Session.class.php";
+	require_once $centreon_path."www/class/Oreon.class.php";
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
@@ -39,6 +38,7 @@
 			}
 	}
 	include_once($centreon_path . '/www/lib/ofc-library/open-flash-chart.php' );
+
 	$g = new graph();
 	$g->bg_colour = '#F3F6F6';
 	//

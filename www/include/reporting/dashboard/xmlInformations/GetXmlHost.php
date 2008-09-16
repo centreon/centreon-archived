@@ -16,7 +16,7 @@
  */
 	
 	require_once 'DB.php';
-	require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once "@CENTREON_ETC@/centreon.conf.php";
 	
 	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
 	require_once $centreon_path.'www/class/other.class.php';
@@ -25,6 +25,7 @@
 	$buffer = null;
 	$buffer  = '<?xml version="1.0"?>';
 	$buffer .= '<data>';
+
 	/*
 	 * Definition of status
 	 */
@@ -32,14 +33,18 @@
 	$state["DOWN"] = _("DOWN");
 	$state["UNREACHABLE"] = _("UNREACHABLE");
 	$state["UNDETERMINED"] = _("UNDETERMINED");
+
 	if (isset($_GET["id"]) && isset($_GET["color"])){
 		$color = array();
 		$get_color = $_GET["color"];
-		foreach ($get_color as $key => $value) {
+
+		foreach ($get_color as $key => $value)
 			$color[$key] = $value;
-		}
+
 		$pearDBO = getCentStorageConnection();
+
 		$pearDB = getCentreonConnection();
+
 		$rq = 'SELECT  * FROM `log_archive_host` WHERE host_id = ' . $_GET["id"] . ' order by date_start desc';			
 		$DBRESULT = & $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))

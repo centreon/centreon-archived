@@ -16,7 +16,9 @@
  */
 
 	require_once 'DB.php';
-	require_once("@CENTREON_ETC@/centreon.conf.php");
+	
+	require_once "@CENTREON_ETC@/centreon.conf.php";
+	
 	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
 	require_once $centreon_path.'www/class/other.class.php';
 	require_once $centreon_path.'www/include/reporting/dashboard/xmlInformations/common-Func.php';
@@ -34,9 +36,8 @@
 	if (isset($_GET["id"]) && isset($_GET["color"])){
 		$color = array();
 		$get_color = $_GET["color"];
-		foreach ($get_color as $key => $value) {
+		foreach ($get_color as $key => $value)
 			$color[$key] = $value;
-		}
 
 		$pearDBO = getCentStorageConnection();
 		$pearDB = getCentreonConnection();
