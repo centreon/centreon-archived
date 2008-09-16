@@ -36,12 +36,6 @@
 									"AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id " .
 									"AND (acl_groups.acl_group_activate = '1' ".			
 									"OR acl_resources.changed = '1')");
-	print "SELECT DISTINCT acl_groups.acl_group_id, acl_resources.acl_res_id " .
-									"FROM acl_res_group_relations, `acl_groups`, `acl_resources` " .
-									"WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id " .
-									"AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id " .
-									"AND (acl_groups.acl_group_activate = '1' ".			
-									"OR acl_resources.changed = '1')";
 	while ($result =& $DBRESULT1->fetchRow())
 		$tabGroups[$result["acl_group_id"]] = 1;
 	
