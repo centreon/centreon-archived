@@ -34,6 +34,7 @@
 									"FROM acl_res_group_relations, `acl_groups`, `acl_resources` " .
 									"WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id " .
 									"AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id " .
+									"AND `acl_resources`.`acl_res_activate` = '1' " .
 									"AND (acl_groups.acl_group_activate = '1' ".			
 									"OR acl_resources.changed = '1')");
 	while ($result =& $DBRESULT1->fetchRow())
@@ -75,7 +76,7 @@
 		  	/*
 		  	 * Get all host in hostgroups
 		  	 */
-			$DBRESULT3 =& $pearDB->query("SELECT hg_id FROM `hostgroup`, `acl_resources_hg_relations` WHERE acl_res_id = '".$res2["acl_res_id"]."' AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
+			$DBRESULT3 =& $pearDB->query("SELECT `hg_id` FROM `hostgroup`, `acl_resources_hg_relations` WHERE acl_res_id = '".$res2["acl_res_id"]."' AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
 	  		while ($hostgroup = $DBRESULT3->fetchRow()){
 				$DBRESULT4 =& $pearDB->query("SELECT host_host_id, host_name FROM `hostgroup_relation`, `host` WHERE hostgroup_hg_id = '".$hostgroup["hg_id"]."' AND host.host_id = hostgroup_relation.host_host_id");
 	  			while ($host_hostgroup = $DBRESULT4->fetchRow())
@@ -86,7 +87,7 @@
 	  		/*
 	  		 * Get All exclude Hosts
 	  		 */
-	  		$DBRESULT3 =& $pearDB->query("SELECT host_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res2["acl_res_id"]."' AND acl_resources_hostex_relations.host_host_id = host.host_id");
+	  		$DBRESULT3 =& $pearDB->query("SELECT `host_id` FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res2["acl_res_id"]."' AND acl_resources_hostex_relations.host_host_id = host.host_id");
 			if ($DBRESULT3->numRows())
 		  		while ($h =& $DBRESULT3->fetchRow())
 					if (isset($Host[$h["host_id"]]))
@@ -96,7 +97,7 @@
 			$str = "";
 	
 			foreach ($Host as $key => $value){
-				$tab = getAuthorizedServicesHost($key, $acl_group_id);
+				$tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"]);
 				foreach ($tab as $desc => $id){
 					if (!isset($tabElem[$value]))
 						$tabElem[$value] = array();
