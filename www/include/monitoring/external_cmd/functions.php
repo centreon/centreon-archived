@@ -223,11 +223,11 @@
 	# Monitoring Quick Actions
 	#############################################################################
 	
-	/* Aknowledge */
+	/* Acknowledge */
 	
 	function autoAcknowledgeServiceStart($key){
 		global $pearDB,$tab,$oreon;
-		$comment = "Service Auto Aknowledge by ".$oreon->user->alias."\n";
+		$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
 		$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$ressource[0].";".$ressource[1].";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, $ressource[0]));
 		return _("Your command has been sent");
@@ -235,7 +235,7 @@
 	
 	function autoAcknowledgeServiceStop($key){
 		global $pearDB,$tab,$oreon;
-		$comment = "Service Auto Aknowledge by ".$oreon->user->alias."\n";
+		$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
 		$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
 		return _("Your command has been sent");
@@ -243,7 +243,7 @@
 	
 	function autoAcknowledgeHostStart($key){
 		global $pearDB,$tab,$oreon;
-		$comment = "Host Auto Aknowledge by ".$oreon->user->alias."\n";
+		$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
 		$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$ressource[0].";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, $ressource[0]));
 		return _("Your command has been sent");
@@ -251,7 +251,7 @@
 	
 	function autoAcknowledgeHostStop($key){
 		global $pearDB,$tab,$oreon;
-		$comment = "Host Auto Aknowledge by ".$oreon->user->alias."\n";
+		$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
 		$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
 		return _("Your command has been sent");
