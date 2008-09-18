@@ -333,17 +333,26 @@
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
-	function getAuthorizedCategories($groupstr){
+	function getAuthorizedCategories($groupstr, $res_id = NULL){
 		global $pearDB;
 		
 		if (strlen($groupstr) == 0)
 			return array();
 			
 		$tab_categories = array();
-		$DBRESULT =& $pearDB->query("SELECT sc_id " .
-									"FROM acl_resources_sc_relations, acl_res_group_relations " .
-									"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-									"AND acl_res_group_relations.acl_group_id IN (".$groupstr.")");
+		if ($res_id == NULL)
+			$request = "SELECT sc_id " .
+						"FROM acl_resources_sc_relations, acl_res_group_relations " .
+						"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
+						"AND acl_res_group_relations.acl_group_id IN (".$groupstr.")";
+		else
+			$request = "SELECT sc_id " .
+						"FROM acl_resources_sc_relations, acl_res_group_relations " .
+						"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
+						"AND acl_res_group_relations.acl_group_id IN (".$groupstr.") " .
+						"AND acl_resources_sc_relations.acl_res_id = '$res_id'";
+					
+		$DBRESULT =& $pearDB->query($request);
 		while ($res =& $DBRESULT->fetchRow())
 			$tab_categories[$res["sc_id"]] = $res["sc_id"];
 	  	unset($res);
@@ -472,14 +481,19 @@
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
-	function getAuthorizedServicesHost($host_id, $groupstr){
+	function getAuthorizedServicesHost($host_id, $groupstr, $res_id = NULL){
 		global $pearDB;
 		
 		$tab_svc 	= getMyHostServicesByName($host_id);
 		/*
 		 * Get categories
 		 */
-		$tab_cat    = getAuthorizedCategories($groupstr);
+		if ($res_id == NULL){ 
+			$tab_cat    = getAuthorizedCategories($groupstr);
+		} else {
+			$tab_cat    = getAuthorizedCategories($groupstr, $res_id);
+		}
+
 		/*
 		 * Get Service Groups
 		 */
