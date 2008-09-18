@@ -104,7 +104,7 @@
 		<tr class="list_two"><td class="FormRowField">{$form.cached_host_check_horizon.label}</td><td class="FormRowValue">{$form.cached_host_check_horizon.html}&nbsp;{$Seconds}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.cached_service_check_horizon.label}</td><td class="FormRowValue">{$form.cached_service_check_horizon.html}&nbsp;{$Seconds}</td></tr>
 		{/if}
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Options Divers</td></tr>	
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Misc Options</td></tr>	
 		<tr class="list_one"><td class="FormRowField">{$form.enable_notifications.label}</td><td class="FormRowValue">{$form.enable_notifications.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.execute_service_checks.label}</td><td class="FormRowValue">{$form.execute_service_checks.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.accept_passive_service_checks.label}</td><td class="FormRowValue">{$form.accept_passive_service_checks.html}</td></tr>

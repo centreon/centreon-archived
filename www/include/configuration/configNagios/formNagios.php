@@ -15,9 +15,10 @@
  * For information : contact@centreon.com
  */
 
-	#
-	## Database retrieve information for Nagios
-	#
+	/*
+	 * Database retrieve information for Nagios
+	 */
+	
 	$nagios = array();
 	if (($o == "c" || $o == "w") && $nagios_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
@@ -27,10 +28,13 @@
 		$nagios = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# Check commands comes from DB -> Store in $checkCmds Array
+
+	/*
+	 * Database retrieve information for differents elements list we need on the page
+	 * 
+	 * Check commands comes from DB -> Store in $checkCmds Array
+	 * 
+	 */
 	$checkCmds = array();
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
@@ -40,7 +44,9 @@
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 	
-	# Get all nagios servers
+	/*
+	 * Get all nagios servers
+	 */
 	$nagios_server = array(NULL => "");
 	$DBRESULT =& $pearDB->query("SELECT `name`, `id` FROM `nagios_server`");
 	for ($i = 0; $ns = $DBRESULT->fetchRow(); $i++)
@@ -48,21 +54,15 @@
 	$DBRESULT->free();
 	unset($ns);
 	
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
 	$attrsText		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"50");
 	$attrsText3 	= array("size"=>"10");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Nagios Configuration File"));
@@ -71,9 +71,9 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View a Nagios Configuration File"));
 
-	#
-	## Nagios Configuration basic information
-	#
+	/*
+	 * Nagios Configuration basic information
+	 */
 	$form->addElement('header', 'information', _("Information"));
 	$form->addElement('text', 'nagios_name', _("Configuration Name"), $attrsText);
 	$form->addElement('textarea', 'nagios_comment', _("Comments"), $attrsTextarea);
@@ -84,14 +84,18 @@
 	
 	$form->addElement('select', 'nagios_server_id', _("Server Nagios configured"), $nagios_server);
 	
-	## Part 1
+	/*
+	 * Part 1
+	 */
 	$form->addElement('text', 'log_file', _("Log file"), $attrsText2);
 	$form->addElement('text', 'cfg_dir', _("Object Configuration Directory"), $attrsText2);
 	$form->addElement('text', 'object_cache_file', _("Object Cache File"), $attrsText2);
 	$form->addElement('text', 'temp_file', _("Temp File"), $attrsText2);
 	$form->addElement('text', 'p1_file', _("P1 File"), $attrsText2);
 	
-	## Part 2
+	/*
+	 * Part 2
+	 */
 	$form->addElement('text', 'status_file', _("Status File"), $attrsText2);
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'aggregate_status_updates', null, _("Yes"), '1');
@@ -100,11 +104,15 @@
 	$form->addGroup($nagTab, 'aggregate_status_updates', _("Aggregated Status Updates Option"), '&nbsp;');
 	$form->addElement('text', 'status_update_interval', _("Aggregated Status Data Update Interval"), $attrsText3);
 	
-	## Part 3
+	/*
+	 * Part 3
+	 */
 	$form->addElement('text', 'nagios_user', _("Nagios User"), $attrsText);
 	$form->addElement('text', 'nagios_group', _("Nagios Group"), $attrsText);
 	
-	## Part 4
+	/*
+	 * Part 4
+	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_notifications', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_notifications', null, _("No"), '0');
@@ -130,14 +138,15 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'accept_passive_host_checks', _("Passive Host Check Acceptance Option"), '&nbsp;');
-
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'enable_event_handlers', _("Event Handler Option"), '&nbsp;');
 	
-	## Part 5
+	/*
+	 * Part 5
+	 */
 	$nagTab = array();
  	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'n', 'n');
  	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'h', 'h');
@@ -147,7 +156,9 @@
 	$form->addGroup($nagTab, 'log_rotation_method', _("Log Rotation Method"), '&nbsp;&nbsp;');
 	$form->addElement('text', 'log_archive_path', _("Log Archive Path"), $attrsText2);
 	
-	## Part 6	
+	/*
+	 * Part 6
+	 */	
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_external_commands', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_external_commands', null, _("No"), '0');
@@ -156,12 +167,16 @@
 	$form->addElement('text', 'command_check_interval', _("External Command Check Interval"), $attrsText3);
 	$form->addElement('text', 'command_file', _("External Command File"), $attrsText2);
 	
-	## Part 7
+	/*
+	 * Part 7
+	 */
 	$form->addElement('text', 'downtime_file', _("Downtime File"), $attrsText2);
 	$form->addElement('text', 'comment_file', _("Comment File"), $attrsText2);
 	$form->addElement('text', 'lock_file', _("Lock File"), $attrsText2);
 	
-	## Part 8
+	/*
+	 * Part 8
+	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'retain_state_information', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'retain_state_information', null, _("No"), '0');
@@ -180,7 +195,9 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'use_retained_scheduling_info', _("Use Retained Scheduling Info Option"), '&nbsp;');
 	
-	## Part 9
+	/*
+	 * Part 9
+	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_syslog', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_syslog', null, _("No"), '0');
@@ -222,12 +239,15 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'log_passive_checks', _("Passive Check Logging Option"), '&nbsp;');
 
-	
-	## Part 10
+	/*
+	 * Part 10
+	 */
 	$form->addElement('select', 'global_host_event_handler', _("Global Host Event Handler"), $checkCmds);
 	$form->addElement('select', 'global_service_event_handler', _("Global Service Event Handler"), $checkCmds);
 	
-	## Part 11
+	/*
+	 * Part 11
+	 */
 	$form->addElement('text', 'sleep_time', _("Inter-Check Sleep Time"), $attrsText3);
 	$form->addElement('text', 'service_inter_check_delay_method', _("Service Inter-Check Delay Method"), $attrsText3);
 	$form->addElement('text', 'max_service_check_spread', _("Maximum Service Check Spread"), $attrsText3);
@@ -246,15 +266,18 @@
 	$form->addElement('text', 'auto_rescheduling_interval', _("Auto-Rescheduling Interval"), $attrsText3);
 	$form->addElement('text', 'auto_rescheduling_window', _("Auto-Rescheduling Window"), $attrsText3);
 
-	
-	## Part 12
+	/*
+	 * Part 12
+	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_agressive_host_checking', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_agressive_host_checking', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_agressive_host_checking', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'use_agressive_host_checking', _("Agressive Host Checks"), '&nbsp;');
 	
-	## Part 13
+	/*
+	 * Part 13
+	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_flap_detection', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_flap_detection', null, _("No"), '0');
@@ -265,14 +288,18 @@
 	$form->addElement('text', 'low_host_flap_threshold', _("Low Host Flap Threshold"), $attrsText3);
 	$form->addElement('text', 'high_host_flap_threshold', _("High Host Flap Threshold"), $attrsText3);
 	
-	## Part 14
+	/*
+	 * Part 14
+	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'soft_state_dependencies', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'soft_state_dependencies', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'soft_state_dependencies', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'soft_state_dependencies', _("Soft Service Dependencies Option"), '&nbsp;');
 	
-	## Part 15
+	/*
+	 * Part 15
+	 */
 	$form->addElement('text', 'service_check_timeout', _("Service Check Timeout"), $attrsText3);
 	$form->addElement('text', 'host_check_timeout', _("Host Check Timeout"), $attrsText3);
 	$form->addElement('text', 'event_handler_timeout', _("Event Handler Timeout"), $attrsText3);
@@ -281,7 +308,9 @@
 	$form->addElement('text', 'ochp_timeout', _("Obsessive Compulsive Host Processor Timeout"), $attrsText3);
 	$form->addElement('text', 'perfdata_timeout', _("Performance Data Processor Command Timeout"), $attrsText3);
 	
-	## Part 16
+	/*
+	 * Part 16
+	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'obsess_over_services', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'obsess_over_services', null, _("No"), '0');
@@ -295,8 +324,9 @@
 	$form->addGroup($nagTab, 'obsess_over_hosts', _("Obsess Over Hosts Option"), '&nbsp;');
 	$form->addElement('select', 'ochp_command', _("Obsessive Compulsive Host Processor Command"), $checkCmds);
 
-	
-	## Part 17
+	/*
+	 * Part 17
+	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'process_performance_data', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'process_performance_data', null, _("No"), '0');
@@ -324,7 +354,6 @@
 	$form->addElement('select', 'host_perfdata_file_processing_command', _("Host Performance Data File Processing Command"), $checkCmds);
 	$form->addElement('select', 'service_perfdata_file_processing_command', _("Service Performance Data File Processing Command"), $checkCmds);		
 
-	
 	## Part 18
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_for_orphaned_services', null, _("Yes"), '1');
@@ -374,9 +403,7 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	
-	
-	if ($oreon->user->get_version() == 3)
-	{
+	if ($oreon->user->get_version() == 3) {
 		## Part 23
 		$nagTab = array();
 		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Yes"), '1');
@@ -543,29 +570,25 @@
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>"._(" Required fields"));
-	
-	# 
-	##End of form definition
-	#
-	
-	# Smarty template Init
+		
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	# Just watch a nagios information
 	if ($o == "w")	{
+		# Just watch a nagios information
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&nagios_id=".$nagios_id."'"));
 	    $form->setDefaults($nagios);
 		$form->freeze();
-	}
-	# Modify a nagios information
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
+		# Modify a nagios information
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($nagios);
-	}
-	# Add a nagios information
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
+		# Add a nagios information
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -594,13 +617,13 @@
 		$form->accept($renderer);	
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);		
-		$tpl->assign('sort1', "Files");		
-		$tpl->assign('sort2', "Checks Options");		
-		$tpl->assign('sort3', "Logs Options");
-		$tpl->assign('sort4', "Data");		
-		$tpl->assign('sort5', "Tunning");		
-		$tpl->assign('sort6', "Admin");
-		$tpl->assign('sort7', "Debug");
+		$tpl->assign('sort1', _("Files"));		
+		$tpl->assign('sort2', _("Checks Options"));		
+		$tpl->assign('sort3', _("Logs Options"));
+		$tpl->assign('sort4', _("Data"));		
+		$tpl->assign('sort5', _("Tuning"));		
+		$tpl->assign('sort6', _("Admin"));
+		$tpl->assign('sort7', _("Debug"));
 		$tpl->assign("Seconds", _("Seconds"));
 		$tpl->assign("Minutes", _("Minutes"));
 		$tpl->assign("Bytes", _("Bytes"));
