@@ -143,7 +143,8 @@
 		if (!$is_admin && $groupnumber)
 			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
 					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects, centreon_acl " .
-					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
+					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
+					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 					" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name " .
 					" AND centreon_acl.group_id IN (".$grouplistStr.")".
 					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
