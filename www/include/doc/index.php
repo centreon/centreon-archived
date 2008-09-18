@@ -68,7 +68,7 @@
 			$line = preg_replace("/\<li\>/", "<li style=\"padding-left:30px;\">", $line);
 			$line = preg_replace("/\<strong\>/", "<strong style=\"padding-left:20px;\">", $line);
 			$line = preg_replace("/\<p\>/", "<p style=\"text-align:justify;padding-left:20px;padding-right:10px;padding-top:5px;padding-bottom:10px;\">", $line);
-			$line = preg_replace("/\<img src\=\"images\//", "<img src=\"./include/doc/get_image.php?lang=".$oreon->user->get_lang()."&version=".$oreon->user->get_version()."&img=", $line);
+			$line = preg_replace("/\<img src\=\"images\//", "<img src=\"./include/doc/getImage.php?lang=".$oreon->user->get_lang()."&version=".$oreon->user->get_version()."&img=", $line);
 			$line = preg_replace("/\<table border\=\"0\"/", "<table border=\"1\"", $line);
 			print $line;
 		}
