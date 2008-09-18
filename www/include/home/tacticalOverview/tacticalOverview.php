@@ -136,36 +136,34 @@
 			 * Get Host Ack  UP(0), DOWN(1),  UNREACHABLE(2)
 			 */
 			if (!$is_admin)
-				$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."acknowledgements.state), ".$ndo_base_prefix."acknowledgements.state" .
-						" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."hoststatus" .
-						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."acknowledgements.object_id" .
-						" AND ".$ndo_base_prefix."acknowledgements.object_id = ".$ndo_base_prefix."hoststatus.host_object_id" .
-						" AND ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 " .
-						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-						" AND ".$ndo_base_prefix."acknowledgements.acknowledgement_type = 0 " .	
-						" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR)" .
-						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
-						" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
-						" ORDER by ".$ndo_base_prefix."acknowledgements.state";
+				$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects, centreon_acl " .
+						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
+						" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name " .
+						" AND centreon_acl.group_id IN (".$grouplistStr.")".
+						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 			else
-				$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."acknowledgements.state), ".$ndo_base_prefix."acknowledgements.state" .
-						" FROM ".$ndo_base_prefix."acknowledgements, ".$ndo_base_prefix."objects, ".$ndo_base_prefix."hoststatus" .
-						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."acknowledgements.object_id" .
-						" AND ".$ndo_base_prefix."acknowledgements.object_id = ".$ndo_base_prefix."hoststatus.host_object_id" .
-						" AND ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 " .
-						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-						" AND ".$ndo_base_prefix."acknowledgements.acknowledgement_type = 0 " .
-						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
-						" GROUP BY ".$ndo_base_prefix."acknowledgements.state " .
-						" ORDER by ".$ndo_base_prefix."acknowledgements.state";
-						
+				$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
+						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
+						" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name " .
+						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";						
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 			if (PEAR::isError($DBRESULT_NDO1))
 				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 			
+			$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
+
+			while ($ndo =& $DBRESULT_NDO1->fetchRow())
+				$host_stat[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
+			$DBRESULT_NDO1->free();
+			
+			
 			$hostAck = array(0=>0, 1=>0, 2=>0);
 			while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
-				$hostAck[$ndo["state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."acknowledgements.state)"];
+				$hostAck[$ndo["state"]] = $ndo["count(".$ndo_base_prefix."acknowledgements.state)"];
 				$hostUnhand[$ndo["state"]] -= $hostAck[$ndo["state"]];
 			}
 			 
