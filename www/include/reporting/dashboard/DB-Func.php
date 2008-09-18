@@ -606,9 +606,11 @@
 		$DBRESULT->free();
 		return $sg;
 	}
+
 	/*
 	 * Functions to get objects names from their ID
 	 */
+
 	function getHostNameFromId($host_id) {
 		global $pearDB;
 		$req = "SELECT  `host_name` FROM `host` WHERE `host_id` = ".$host_id;
@@ -619,6 +621,7 @@
 			return ($row["host_name"]);
 		return "undefined";	
 	}
+
 	function getHostgroupNameFromId($hostgroup_id) {
 		global $pearDB;
 		$req = "SELECT  `hg_name` FROM `hostgroup` WHERE `hg_id` = ".$hostgroup_id;
@@ -629,6 +632,7 @@
 			return ($row["hg_name"]);
 		return "undefined";	
 	}
+
 	function getServiceDescriptionFromId($service_id) {
 		global $pearDB;
 		$req = "SELECT  `service_description` FROM `service` WHERE `service_id` = ".$service_id;
@@ -639,20 +643,24 @@
 			return ($row["service_description"]);
 		return "undefined";	
 	}
+
 	function getServiceGroupNameFromId($sg_id) {
 		global $pearDB;
 		$req = "SELECT  `sg_name` FROM `servicegroup` WHERE `sg_id` = ".$sg_id;
 		$DBRESULT =& $pearDB->query($req);
+		unset($req);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		if ($row = $DBRESULT->fetchRow())
+		if ($row =& $DBRESULT->fetchRow())
 			return ($row["sg_name"]);
+		$DBRESULT->free();
 		return "undefined";	
 	}
+	
 	function getHostServices($host_id = NULL)	{
-		if (!$host_id) return;
-		global $pearDB;
-		global $is_admin;
+		global $pearDB, $is_admin;
+		if (!$host_id) 
+			return;
 		
 		$hSvs = array();
 		$svcStr = "";
@@ -670,7 +678,7 @@
 				$lcaStr = " AND `service_id` IN (".$svcStr.") ";
 			}
 		}
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' ".$lcaStr." AND hsr.service_service_id = service_id");
+		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' ".$lcaStr." AND hsr.service_service_id = service_id AND service_activate = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())	{
@@ -681,9 +689,9 @@
 		$DBRESULT->free();
 		return $hSvs;
 	}
+	
 	function getHostsFromHostgroup($hg_id) {
-		global $pearDB;
-		global $is_admin;
+		global $pearDB, $is_admin;
 		
 		$hosts = array();
 		$DBRESULT =& $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation`".
