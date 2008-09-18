@@ -146,7 +146,7 @@ sub rrd_process {
     }
 }
 
-sub check_dir()	{
+sub check_dir($)	{
     my ($nagios_id) = @_;
     my $str;
 
@@ -167,7 +167,7 @@ sub check_dir()	{
     $global_hosts_states = $tmp_prefix . "/nagios_hosts_states.rrd";
 }
 
-sub get_poller	{
+sub get_poller()	{
     use vars qw ($mysql_host $mysql_user $mysql_passwd $mysql_database_oreon $mysql_database_ods);
     require("@CENTREON_ETC@/conf.pm");
 
