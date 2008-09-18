@@ -27,9 +27,9 @@
 	/*
 	 * Init Header for tables in template
 	 */
-	$form->addElement('header', 'title', _("SNMP Traps Genaration"));
-	$form->addElement('header', 'opt', _("Export Options"));
-	$form->addElement('header', 'result', _("Actions"));	    
+	$form->addElement('header', 'title', 	_("SNMP Traps Genaration"));
+	$form->addElement('header', 'opt', 		_("Export Options"));
+	$form->addElement('header', 'result', 	_("Actions"));	    
 	
 	/*
 	 * Add checkbox for enable restart
