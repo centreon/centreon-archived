@@ -24,16 +24,19 @@
 	require_once("DB.php");
 	include_once("@CENTREON_ETC@/centreon.conf.php");	
 		
-	/* Connect to oreon DB */
+	/* 
+	 * Connect to oreon DB
+	 */
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_centreon['user'],
 			     'password' => $conf_centreon['password'],
 			     'hostspec' => $conf_centreon['hostCentreon'],
-			     'database' => $conf_centreon['db'],);	
+			     'database' => $conf_centreon['db']);	
 	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);	
 
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
+	if (PEAR::isError($pearDB)) 
+		die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
@@ -43,70 +46,71 @@
 	
 	include_once($centreon_path . "www/DBNDOConnect.php");
 
-	## calcul stat for resume
+	/*
+	 *  calcul stat for resume
+	 */
 	$statistic = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN", 4 => "PENDING");
 	
-        /*
-         * LCA
-         */
+    /*
+	 * LCA
+	 */
+	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
+	$user =& $res1->fetchRow();
+	$user_id = $user["user_id"];
 
-        $sid = session_id();
-        $res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '$sid'");
-        $user = $res1->fetchRow();
-        $user_id = $user["user_id"];
-
-        $res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-        $admin = $res2->fetchrow();
-
-        global $is_admin;
-
-        $is_admin = isUserAdmin($_GET["sid"]);
-
-        if (!$is_admin){
-                $_POST["sid"] = $_GET["sid"];
-        }
-
-	/* Get ServiceNDO status */
-	if(!$is_admin){
-
-	$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '$user_id'");
-        $DBRESULT_1 = $DBRESULT->fetchRow();
-        $acl_group_id = $DBRESULT_1["acl_group_id"];
-
-	$DBRESULT =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations, acl_groups WHERE acl_res_group_relations.acl_group_id = '$acl_group_id' AND acl_groups.acl_group_activate = '1'");
-        $DBRESULT_1 = $DBRESULT->fetchRow();
-        $acl_res_id = $DBRESULT_1["acl_res_id"];
-
-        $DBRESULT =& $pearDB->query("SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = '$acl_res_id'");
-        while($DBRESULT_1 = $DBRESULT->fetchRow()){
-                $host_host_id = $DBRESULT_1["host_host_id"];
-		$DBRESULT_2 =& $pearDB->query("SELECT host_name from host WHERE host_id = '$host_host_id'");
-		$DBRESULT_3 = $DBRESULT_2->fetchRow();
-		$host_name = $DBRESULT_3["host_name"];
-
-			$rq1 = "SELECT count(nss.current_state) as cnt, nss.current_state" .
-							" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-							" WHERE no.object_id = nss.service_object_id".
-							" AND no.name1 not like 'OSL_Module'".
-							" AND no.name1 = '$host_name'".
-							" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
+	global $is_admin;
+	
+	$is_admin =  isUserAdmin($sid);	
+	
+	if (!$is_admin){
+		/*
+		 * Get Acl Group list
+		 */
+		$grouplist = getGroupListofUser($pearDB); 
+		$groupnumber = count($grouplist);
+		$grouplistStr = groupsListStr($grouplist);
 	}
-	}
+	
+	/* 
+	 * Get Service NDO status 
+	 */
+	if (!$is_admin && $groupnumber)
+		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
+				" WHERE no.object_id = nss.service_object_id".
+				" AND no.name1 not like 'OSL_Module' ".
+				" AND no.name1 not like 'Meta_Module' ".
+				" AND no.name1 = centreon_acl.host_name ".
+				" AND no.name2 = centreon_acl.service_description " .
+				" AND centreon_acl.group_id IN (".$grouplistStr.") ".
+				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 	else
-	{
-	$rq1 = "SELECT count(nss.current_state) as cnt, nss.current_state" .
-			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-			" WHERE no.object_id = nss.service_object_id".
-			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
-	}
+		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
+				" WHERE no.object_id = nss.service_object_id".
+				" AND no.name1 not like 'OSL_Module' ".
+				" AND no.name1 not like 'Meta_Module' ".
+				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";			
+	$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
+	if (PEAR::isError($DBRESULT_NDO2))
+		print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
 
+	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+	while ($ndo =& $DBRESULT_NDO2->fetchRow()){
+		$data[] = $ndo["count(nss.current_state)"];
+		$legend[] = $statistic[$ndo["current_state"]];
+		$color[] = $oreon->optGen["color_".strtolower($statistic[$ndo["current_state"]])];
+		//$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
+	}
+	$DBRESULT_NDO2->free();
+	/*
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	$data = array();
 	$color = array();
 	$counter = 0;
+	
 	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 		$data[] = $ndo["cnt"];
 		$legend[] = $statistic[$ndo["current_state"]];
@@ -117,8 +121,7 @@
 	
 	foreach ($data as $key => $value)
 		$data[$key] = round($value / $counter * 100, 2);
-	
-	
+	*/
 	/*
 	 *  create the dataset
 	 */
@@ -147,5 +150,4 @@
 	$g->set_tool_tip( '#val#%' );
 	$g->title( _('Services'), '{font-size:18px; color: #424242}' );
 	echo $g->render();
-
 ?>

@@ -43,43 +43,47 @@
 	
 	include_once($centreon_path . "www/DBNDOConnect.php");
 
-	## calcul stat for resume
+	/*
+	 * calcul stat for resume
+	 */
 	$statistic_host = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE",3 => "PENDING");
 	
-	/*
+    /*
 	 * LCA
 	 */
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$_GET["sid"]."'");
+	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
 	$user =& $res1->fetchRow();
 	$user_id = $user["user_id"];
 
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$admin =& $res2->fetchRow();
-	
 	global $is_admin;
 	
-	$is_admin = isUserAdmin($_GET["sid"]);;
+	$is_admin =  isUserAdmin($sid);	
 	
 	if (!$is_admin){
-		$_POST["sid"] = $_GET["sid"];
-		$lca =  getLCAHostByName($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+		/*
+		 * Get Acl Group list
+		 */
+		$grouplist = getGroupListofUser($pearDB); 
+		$groupnumber = count($grouplist);
+		$grouplistStr = groupsListStr($grouplist);
 	}
 	
 	/* Get HostNDO status */
-	if ($is_admin)
-		$rq1 = 	" SELECT count(nhs.current_state) as cnt, nhs.current_state" .
-				" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
-				" WHERE no.object_id = nhs.host_object_id AND no.is_active = 1 " .
-				" GROUP BY nhs.current_state " .
-				" ORDER by nhs.current_state";
+	if (!$is_admin && isset($groupnumber) && $groupnumber)
+		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects, centreon_acl " .
+				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
+				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+				" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name " .
+				" AND centreon_acl.group_id IN (".$grouplistStr.")".
+				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 	else
-		$rq1 = 	" SELECT count(nhs.current_state) as cnt, nhs.current_state" .
-				" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
-				" WHERE no.object_id = nhs.host_object_id AND no.is_active = 1 " .
-				" AND no.name1 IN ($lcaSTR)" .
-				" GROUP BY nhs.current_state " .
-				" ORDER by nhs.current_state";
+		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) , ".$ndo_base_prefix."hoststatus.current_state" .
+				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
+				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
+				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
