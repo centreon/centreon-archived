@@ -501,12 +501,14 @@ sub main {
 										- mktime(0, 0, 0, 0, 0, 100);
 	}
 
-
+	
 	if ($options{"rebuild"}) {
+		#rebuiling all archives from log table
 		rebuild_archives(\%time_period);
 	}else {
+		#building archive for last past dat
 	    my ($day,$month,$year) = (localtime(time))[3,4,5];
-	    my $yesterday_real_start =  timelocal(0,0,0,$day,$month,$year);
+	    my $yesterday_real_start =  timelocal(0,0,0,$day,$month,$year) - (60 * 60 * 24);
 	    archive_day_log($yesterday_real_start + $time_period{"day_start_time"}, $yesterday_real_start + $time_period{"day_end_time"});
 	}
 	if ($options{"debug"}) {
