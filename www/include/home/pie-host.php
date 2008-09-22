@@ -22,7 +22,7 @@
 	$oreon =& $_SESSION["oreon"];
 	
 	require_once("DB.php");
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 		
 	/* Connect to oreon DB */
 	$dsn = array('phptype'  => 'mysql',
@@ -51,7 +51,7 @@
     /*
 	 * LCA
 	 */
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
+	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$_GET["sid"]."'");
 	$user =& $res1->fetchRow();
 	$user_id = $user["user_id"];
 
@@ -70,7 +70,7 @@
 	
 	/* Get HostNDO status */
 	if (!$is_admin && isset($groupnumber) && $groupnumber)
-		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state" .
 				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects, centreon_acl " .
 				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
 				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
@@ -79,10 +79,9 @@
 				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 	else
-		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) , ".$ndo_base_prefix."hoststatus.current_state" .
+		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt , ".$ndo_base_prefix."hoststatus.current_state" .
 				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
-				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
-				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
 				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 	
