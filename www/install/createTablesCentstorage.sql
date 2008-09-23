@@ -174,19 +174,6 @@ CREATE TABLE IF NOT EXISTS `log` (
 
 -- --------------------------------------------------------
 
---
--- Structure de la table `log_archive_file_name`
---
-
-CREATE TABLE IF NOT EXISTS `log_archive_file_name` (
-  `id_log_file` int(11) NOT NULL auto_increment,
-  `file_name` varchar(200) default NULL,
-  `date` int(11) default NULL,
-  PRIMARY KEY  (`id_log_file`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
-
--- --------------------------------------------------------
-
 -- 
 -- Structure de la table `log_archive_host`
 -- 
