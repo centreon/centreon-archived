@@ -18,7 +18,7 @@
 	if (!isset($oreon))
 		exit();
 
-	require_once $path."/reporting/DB-Func.php";
+	require_once $path."/DB-Func.php";
 	
 	/*
 	 * Database retrieve information
