@@ -255,7 +255,7 @@
 	$attrsTextURL 			= array("size"=>"50");
 	$attrsAdvSelect_small 	= array("style" => "width: 200px; height: 70px;");
 	$attrsAdvSelect 		= array("style" => "width: 200px; height: 100px;");
-	$attrsAdvSelect2 		= array("style" => "width: 200px; height: 200px;");
+	$attrsAdvSelect_big 		= array("style" => "width: 200px; height: 200px;");
 	$attrsTextarea 			= array("rows"=>"5", "cols"=>"40");
 	$template 				= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
@@ -418,7 +418,7 @@
 		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'service_hPars', _("Linked with Hosts"), $hosts, $attrsAdvSelect);
+    $ams3 =& $form->addElement('advmultiselect', 'service_hPars', _("Linked with Hosts"), $hosts, $attrsAdvSelect_big);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -453,7 +453,7 @@
 		$form->addGroup($mc_mod_traps, 'mc_mod_traps', _("Update options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_traps'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'service_traps', _("Service Trap Relation"), $traps, $attrsAdvSelect2);
+    $ams3 =& $form->addElement('advmultiselect', 'service_traps', _("Service Trap Relation"), $traps, $attrsAdvSelect_big);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);

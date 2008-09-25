@@ -234,6 +234,7 @@
 	$attrsText2		= array("size"=>"6");
 	$attrsAdvSelect_small = array("style" => "width: 200px; height: 70px;");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
+	$attrsAdvSelect_big = array("style" => "width: 200px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
@@ -263,7 +264,7 @@
 	$form->addElement('select', 'service_template_model_stm_id', _("Template Service Model"), $svTpls);
 	$form->addElement('static', 'tplText', _("Using a Template Model allows you to have multi-level Template connections"));
 
-    $ams3 =& $form->addElement('advmultiselect', 'service_hPars', _("Linked to host templates "), $hosts, $attrsAdvSelect);
+    $ams3 =& $form->addElement('advmultiselect', 'service_hPars', _("Linked to host templates "), $hosts, $attrsAdvSelect_big);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -356,7 +357,7 @@
 	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown');
 	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical');
 	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery');
-	if ($oreon->user->get_version() == 2)
+	if ($oreon->user->get_version() >= 2)
 		$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping');
 	$form->addGroup($serviceNotifOpt, 'service_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
@@ -399,7 +400,7 @@
 		$form->setDefaults(array('mc_mod_traps'=>'0'));
 	}
 	$form->addElement('header', 'traps', _("SNMP Traps"));
-    $ams3 =& $form->addElement('advmultiselect', 'service_traps', _("Service Trap Relation"), $traps, $attrsAdvSelect);
+    $ams3 =& $form->addElement('advmultiselect', 'service_traps', _("Service Trap Relation"), $traps, $attrsAdvSelect_big);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -412,7 +413,7 @@
 		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	} 
-	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', _("Linked to host templates "), $hosts, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', _("Linked to host templates "), $hosts, $attrsAdvSelect_big);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -514,10 +515,10 @@
 		$form->addElement('header', 'title2', _("Massive Change"));
 
 	$form->addElement('header', 'nagios', _("Nagios"));
-	if ($oreon->user->get_version() == 2)
+	if ($oreon->user->get_version() >= 2)
 		$form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'esi_notes_url', _("URL"), $attrsText);
-	if ($oreon->user->get_version() == 2)
+	if ($oreon->user->get_version() >= 2)
 		$form->addElement('text', 'esi_action_url', _("Action URL"), $attrsText);
 	$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('esi_icon_image',this.form.elements['esi_icon_image'].value)"));
 	$form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
