@@ -38,10 +38,10 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
     	<th style="text-align: right;">Status</th>
   	</tr>
   	<tr>
-   		<td><b>PHP Version 4.2.x or 5.x</b></td>
+   		<td><b>PHP Version 5.x</b></td>
     	<td align="right"><?php
 			$php_version = phpversion();
-	       	if(str_replace(".", "", $php_version) < "420" ){
+	       	if(str_replace(".", "", $php_version) < "500" ){
 	         	echo "<b><span class=stop>Invalid version ($php_version) Installed</span></b>";
 			  	$return_false = 1;
 	       	} else {
