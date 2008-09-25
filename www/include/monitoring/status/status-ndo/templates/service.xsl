@@ -30,11 +30,6 @@
 			</xsl:element>
 		</td>
 		<td class="ListColLeft" style="white-space:nowrap;">
-			<xsl:comment>
-				<xsl:attribute name="style">
-					background-color:<xsl:value-of select="hc"/>;
-				</xsl:attribute>
-			</xsl:comment>
 			<xsl:if test="hn/@none = 0">
 				<xsl:element name="span">
 					<xsl:if test="hs != 0">

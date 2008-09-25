@@ -16,19 +16,15 @@
 		<xsl:attribute name="id">trStatus</xsl:attribute>
   		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
 		<td class="ListColPicker">
-		<xsl:element name="input">
+			<xsl:element name="input">
 				<xsl:attribute name="type">checkbox</xsl:attribute>
 				<xsl:attribute name="value">1</xsl:attribute>
 				<xsl:attribute name="name">
 					select[<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>]
 				</xsl:attribute>
-		</xsl:element>
+			</xsl:element>
 		</td>
 		<td class="ListColLeft">
-				<xsl:attribute name="style">
-					background-color:<xsl:value-of select="hc"/>;
-				</xsl:attribute>
-
 			<xsl:if test="hn/@none = 0">
 				<xsl:element name="a">
 				  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
