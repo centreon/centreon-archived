@@ -65,43 +65,85 @@
 			/*
 			 * View of Service
 			 */
-			case "svcpb" 		: require_once($path."service.php");		break;
-			case "svc_warning" 	: require_once($path."service.php");		break;
-			case "svc_critical" : require_once($path."service.php");		break;
-			case "svc_unknown" 	: require_once($path."service.php");		break;
-			case "svc_ok" 		: require_once($path."service.php");		break;
-			case "svc_unhandled" 		: require_once($path."service.php");		break;			
+			case "svcpb" 		: 
+				require_once($path."service.php");		
+				break;
+			case "svc_warning" 	: 
+				require_once($path."service.php");		
+				break;
+			case "svc_critical" : 
+				require_once($path."service.php");		
+				break;
+			case "svc_unknown" 	: 
+				require_once($path."service.php");		
+				break;
+			case "svc_ok" 		: 
+				require_once($path."service.php");		
+				break;
+			case "svc_unhandled": 
+				require_once($path."service.php");		
+				break;			
 			/*
 			 * Special Views 
 			 */
-			case "svcd" 		: require_once($pathDetails."serviceDetails.php"); 		break;
-			case "svcak" 		: require_once("./include/monitoring/acknowlegement/serviceAcknowledge.php"); break;
-			case "svcpc" 		: require_once("./include/monitoring/submitPassivResults/servicePassiveCheck.php");break;
+			case "svcd" 		: 
+				require_once($pathDetails."serviceDetails.php"); 		
+				break;
+			case "svcak" 		: 
+				require_once("./include/monitoring/acknowlegement/serviceAcknowledge.php"); 
+				break;
+			case "svcpc" 		: 
+				require_once("./include/monitoring/submitPassivResults/servicePassiveCheck.php");
+				break;
 			/*
 			 * View Bu hosts groups
 			 */
-			case "svcgrid" 		: require_once($path."serviceGrid.php"); 				break;
-			case "svcOV" 		: require_once($path."serviceGrid.php");	 			break;
-			case "svcSum" 		: require_once($path."serviceSummary.php"); 			break;
+			case "svcgrid" 		: 
+				require_once($path."serviceGrid.php"); 				
+				break;
+			case "svcOV" 		: 
+				require_once($path."serviceGrid.php");
+				break;
+			case "svcSum" 		: 
+				require_once($path."serviceSummary.php");
+				break;
 			/*
 			 * View by Service Groups
 			 */
-			case "svcgridSG" 	: require_once($path."serviceGridBySG.php"); 			break;
-			case "svcOVSG" 		: require_once($path."serviceGridBySG.php"); 		break;
-			case "svcSumSG" 	: require_once($path."serviceSummaryBySG.php"); 		break;
+			case "svcgridSG" 	: 
+				require_once($path."serviceGridBySG.php");
+				break;
+			case "svcOVSG" 		: 
+				require_once($path."serviceGridBySG.php");
+				break;
+			case "svcSumSG" 	: 
+				require_once($path."serviceSummaryBySG.php");
+				break;
 			
-			case "svcgridHG" 	: require_once($path."serviceGridByHG.php"); 			break;
-			case "svcOVHG" 		: require_once($path."serviceGridByHG.php"); 		break;
-			case "svcSumHG" 	: require_once($path."serviceSummaryByHG.php"); 		break;
+			case "svcgridHG" 	: 
+				require_once($path."serviceGridByHG.php");
+				break;
+			case "svcOVHG" 		: 
+				require_once($path."serviceGridByHG.php");
+				break;
+			case "svcSumHG" 	: 
+				require_once($path."serviceSummaryByHG.php");
+				break;
 			/*
 			 * Meta Services
 			 */
-			case "meta" 		: require_once($metaservicepath); 				break;
+			case "meta" 		: 
+				require_once($metaservicepath);
+				break;
 			/*
 			 * Scheduling Queue
 			 */
-			case "svcSch" 		: require_once($path."serviceSchedule.php"); 			break;
-			default 			: require_once($path."service.php"); 					break;
+			case "svcSch" 		: 
+				require_once($path."serviceSchedule.php");
+				break;
+			default 			: 
+				require_once($path."service.php"); 					
+				break;
 		}
 	}
 ?>
