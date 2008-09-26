@@ -20,7 +20,9 @@
  * SVN: $Id$
  */ 
 	
-	# function 
+	/*
+	 * Functions
+	 */
 	function get_path($abs_path){
 		$len = strlen($abs_path);
 		for ($i = 0, $flag = 0; $i < $len; $i++){
@@ -71,6 +73,15 @@
 		if ($DBRESULT->numRows())
 			$root_menu =& $DBRESULT->fetchRow();
 		return $root_menu;
+	}
+	
+	function getSkin($pearDB) {
+		$DBRESULT =& $pearDB->query("SELECT `template` FROM `general_opt` LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
+		$data =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
+		return "./Themes/".$data["template"]."/";
 	}
 	
 ?>

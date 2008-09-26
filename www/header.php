@@ -41,7 +41,8 @@
 	/*
 	 * Include
 	 */
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	//require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once "/etc/centreon/centreon.conf.php";
 	require_once "./DBconnect.php";
 	require_once "./DBOdsConnect.php";
 	require_once "$classdir/Session.class.php";
@@ -128,11 +129,7 @@
 	/*
 	 * Skin path
 	 */
-	$DBRESULT =& $pearDB->query("SELECT `template` FROM `general_opt` LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
-	$data = $DBRESULT->fetchRow();
-	$skin = "./Themes/".$data["template"]."/";
+	$skin = getSkin($pearDB);
 
 	$tab_file_css = array();
 	$i = 0;
