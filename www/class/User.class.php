@@ -27,8 +27,9 @@ class User	{
 	var $admin;
 	var $limit;
 	var $num;
+	var $gmt;
 	  
-	## User LCA
+	# User LCA
 	# Array with elements ID for loop test
 	var $lcaTopo;
 	
@@ -45,6 +46,7 @@ class User	{
 		$this->admin = $user["contact_admin"];
 		$this->version = $nagios_version;
 	  	$this->lcaTopo = array();
+	  	$this->gmt = $user["contact_location"];
   	}
   
   	function getAllTopology($pearDB){
@@ -213,5 +215,8 @@ class User	{
   	$this->version = $version;
   }
   
+  function getMyGMT(){
+  	return $this->gmt;
+  }
 } /* end class User */
 ?>

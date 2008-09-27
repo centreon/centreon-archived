@@ -16,6 +16,7 @@
  */
 
 require_once("User.class.php");
+require_once("centreonGMT.class.php");
 
 class Oreon	{
 		
@@ -32,6 +33,7 @@ class Oreon	{
 	var $historyLimit;
   	var $search_type_service;
 	var $search_type_host;
+	var $CentreonGMT;
   
 	function Oreon($user = NULL, $pages = array())	{
 		global $pearDB;
@@ -55,11 +57,19 @@ class Oreon	{
 		 * Grab Modules
 		 */
 		$this->creatModuleList($pearDB);
+	
+		/*
+		 * Create GMT object
+		 */
+		$this->CentreonGMT = new CentreonGMT();
+	
 	}
+	
+	
 	
 	function creatModuleList($pearDB){
 		$this->modules = array();
-		$DBRESULT =& $pearDB->query("SELECT `name`,`sql_files`,`lang_files`,`php_files` FROM `modules_informations`");
+		$DBRESULT =& $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
 		while ($result =& $DBRESULT->fetchRow()){
 			$this->modules[$result["name"]] = array("name"=>$result["name"], "gen"=>false, "sql"=>$result["sql_files"], "lang"=>$result["lang_files"]);
 			if (is_dir("./modules/".$result["name"]."/generate_files/"))
@@ -77,7 +87,8 @@ class Oreon	{
   	}
 	
 	function initNagiosCFG($pearDB = NULL)	{
-		if (!$pearDB)	return;
+		if (!$pearDB)	
+			return;
 		$this->Nagioscfg = array();
 		$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
 		$this->Nagioscfg = $DBRESULT->fetchRow();
@@ -85,7 +96,8 @@ class Oreon	{
 	}
 	
 	function initOptGen($pearDB = NULL)	{
-		if (!$pearDB)	return;
+		if (!$pearDB)	
+			return;
 		$this->optGen = array();
 		$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
 		$this->optGen = $DBRESULT->fetchRow();
