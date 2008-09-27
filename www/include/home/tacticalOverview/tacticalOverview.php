@@ -346,7 +346,7 @@
 			 * Get problem table
 			*/
 			if (!$is_admin && $groupnumber)
-				$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
+				$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
 						" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht" .
 						" WHERE obj.object_id = stat.service_object_id" .
 						" AND stat.service_object_id = svc.service_object_id" .
@@ -361,7 +361,7 @@
 						" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
 						" ORDER by stat.current_state DESC, obj.name1";
 			else
-				$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
+				$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
 						" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht" .
 						" WHERE obj.object_id = stat.service_object_id" .
 						" AND stat.service_object_id = svc.service_object_id" .
@@ -389,7 +389,7 @@
 			while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 				$is_unhandled = 1;	
 	
-				for ($i=0; $i < $pbCount && $is_unhandled; $i++){
+				for ($i = 0; $i < $pbCount && $is_unhandled; $i++){
 					if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
 						$is_unhandled = 0;
 				}
@@ -398,12 +398,12 @@
 					$tab_hostname[$j] = $ndo["name1"];
 					$tab_svcname[$j] = $ndo["name2"];
 					$tab_state[$j] = $ndo["current_state"];
-					$tab_last[$j] = $ndo["last_check"];
+					$tab_last[$j] = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $oreon->user->getMyGMT());
 					$tab_ip[$j] = $ndo["address"];
 		
 					if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
 						$tab_duration[$j] = Duration::toString(time() - $ndo["last_state_change"]);
-					else if($ndo["last_state_change"] > 0)
+					else if ($ndo["last_state_change"] > 0)
 						$tab_duration[$j] = " - ";
 					$tab_output[$j] = $ndo["output"];
 					$j++;
@@ -413,7 +413,9 @@
 			 
 			$path = "./include/home/tacticalOverview/";
 		
-			# Smarty template Init
+			/*
+			 * Smaty template Init
+			 */
 			$tpl = new Smarty();
 			$tpl = initSmartyTpl($path, $tpl);
 			
