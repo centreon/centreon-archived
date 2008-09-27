@@ -15,7 +15,13 @@
  * For information : contact@centreon.com
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	/*
+	 * if debug == 0 => Normal, 
+	 * debug == 1 => get use, 
+	 * debug == 2 => log in file (log.xml)
+	 * 
+	 */	
+	 
 	$debugXML = 0;
 	$buffer = '';
 
@@ -29,7 +35,6 @@
 	/*
 	 * Start XML document root
 	 */
- 
 	echo "<root>";
 	
 	/*
@@ -37,12 +42,13 @@
 	 */ 
 	require_once 'DB.php';
 	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBOdsConnect.php");
-	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
-	include_once($centreon_path . "www/include/common/common-Func.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once $centreon_path . "www/include/eventLogs/common-Func.php";
+	include_once $centreon_path . "www/DBconnect.php";
+	include_once $centreon_path . "www/DBOdsConnect.php";
+	include_once $centreon_path . "www/class/centreonGMT.class.php";
+	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
+	include_once $centreon_path . "www/include/common/common-Func.php";
 	
 	/*
 	 * Lang file
@@ -60,6 +66,14 @@
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	}
+	
+	/*
+	 * Init GMT class
+	 */
+	
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession($sid);
+	
 	
 	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
 	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : $limit = "30";
@@ -506,8 +520,8 @@
 		echo "<service_description>".$log["service_description"]."</service_description>";
 		echo "<host_name>".$log["host_name"]."</host_name>";
 		echo "<class>".$tab_class[$cpts % 2]."</class>";
-		echo "<date>".date(_("Y/m/d"), $log["ctime"])."</date>";
-		echo "<time>".date(_("H:i:s"), $log["ctime"])."</time>";
+		echo "<date>".$centreonGMT->getDate(_("Y/m/d"), $log["ctime"])."</date>";
+		echo "<time>".$centreonGMT->getDate(_("H:i:s"), $log["ctime"])."</time>";
 		echo "<output><![CDATA[".$log["output"]."]]></output>";
 		echo "<contact><![CDATA[".$log["notification_contact"]."]]></contact>";
 		echo "<contact_cmd><![CDATA[".$log["notification_cmd"]."]]></contact_cmd>";
