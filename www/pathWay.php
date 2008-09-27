@@ -17,7 +17,7 @@
 
 /*
  * SVN: $URL: http://svn.centreon.com/trunk/centreon/www/pathWay.php $
- * SVN: $Id$
+ * SVN: $Id: pathWay.php 6274 2008-08-22 10:10:06Z jmathis $
  */ 
 	if (!isset($oreon))
 		exit();

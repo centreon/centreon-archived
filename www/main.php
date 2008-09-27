@@ -16,7 +16,7 @@
  */
 	
 /*
- * SVN: $URL$
+ * SVN: $URL: http://svn.centreon.com/trunk/centreon/www/main.php $
  * SVN: $Id: main.php 5223 2008-05-21 12:44:13Z jmathis $
  */
 	
