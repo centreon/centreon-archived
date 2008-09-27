@@ -23,12 +23,13 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBNDOConnect.php");
-	include_once($centreon_path . "www/class/other.class.php");
-	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
-	include_once($centreon_path . "www/include/common/common-Func.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once $centreon_path . "www/DBconnect.php";
+	include_once $centreon_path . "www/DBNDOConnect.php";
+	include_once $centreon_path . "www/class/other.class.php";
+	include_once $centreon_path . "www/class/centreonGMT.class.php";
+	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
+	include_once $centreon_path . "www/include/common/common-Func.php";
 	
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
@@ -75,6 +76,14 @@
 		$grouplistStr = groupsListStr($grouplist);
 		
 	}
+
+	/*
+	 * Init GMT class
+	 */
+	
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession($sid);
+	
 
 	$service = array();
 	$host_status = array();
@@ -200,7 +209,7 @@
 		$buffer .= '<hn><![CDATA['. $ndo["host_name"]  . ']]></hn>';
 		$buffer .= '<a><![CDATA['. $ndo["address"]  . ']]></a>';
 		$buffer .= '<ou><![CDATA['. $ndo["output"]  . ']]></ou>';
-		$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"])  . '</lc>';
+		$buffer .= '<lc>'. $centreonGMT->getDate($date_time_format_status, $ndo["last_check"])  . '</lc>';
 		$buffer .= '<cs>'. $tab_status_host[$ndo["current_state"]] . '</cs>';
         $buffer .= '<pha>'. $ndo["problem_has_been_acknowledged"] .'</pha>';
         $buffer .= '<pce>'.$ndo["passive_checks_enabled"] .'</pce>';
@@ -212,16 +221,11 @@
 		$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
 		$buffer .= '</l>';
 	}
-	/* end */
 
-	if (!$ct){
-		$buffer .= '<infos>';
-		$buffer .= 'none';
-		$buffer .= '</infos>';
-	}
+	if (!$ct)
+		$buffer .= '<infos>none</infos>';
 
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
-
 ?>

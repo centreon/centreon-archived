@@ -15,20 +15,23 @@
  * For information : contact@centreon.com
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	/*
+	 * if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	 */
 	$debugXML = 0;
 	$buffer = '';
 
-	include("DB.php");
+	include_once "DB.php";
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path."www/class/other.class.php");
-	include_once($centreon_path."www/DBconnect.php");
-	include_once($centreon_path."www/DBOdsConnect.php");
-	include_once($centreon_path."www/DBNDOConnect.php");	
-	include_once($centreon_path."www/include/monitoring/engine/common-Func.php");
-	include_once($centreon_path."www/include/common/common-Func-ACL.php");
-	include_once($centreon_path."www/include/common/common-Func.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once $centreon_path."www/class/other.class.php";
+	include_once $centreon_path."www/class/centreonGMT.class.php";
+	include_once $centreon_path."www/DBconnect.php";
+	include_once $centreon_path."www/DBOdsConnect.php";
+	include_once $centreon_path."www/DBNDOConnect.php";
+	include_once $centreon_path."www/include/monitoring/engine/common-Func.php";
+	include_once $centreon_path."www/include/common/common-Func-ACL.php";
+	include_once $centreon_path."www/include/common/common-Func.php";
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
@@ -66,7 +69,16 @@
 	(isset($_GET["p"]) 			&& !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 	(isset($_GET["nc"]) 		&& !check_injection($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";
 
-	// check is admin
+	/*
+	 * Init GMT class
+	 */
+	
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession($sid);
+	
+	/*
+	 * check is admin
+	 */
 	$is_admin = isUserAdmin($sid);
 
 	if (!$is_admin)
@@ -85,7 +97,9 @@
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
-	/* Get Host status */
+	/* 
+	 * Get Host status 
+	 */
 	$rq1 = "SELECT " .
 			" DISTINCT no.name1 as host_name," .
 			" nhs.current_state, nhs.problem_has_been_acknowledged, " .
@@ -111,7 +125,6 @@
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	while ($ndo =& $DBRESULT_NDO1->fetchRow())
 		$host_status[$ndo["host_name"]] = $ndo;
-	/* end */
 
 	/* Get Service status */
 	$rq =		" SELECT " .
@@ -135,17 +148,17 @@
 				" no.name2 as service_description" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
 				
-				if (!$is_admin)
-					$rq .= ", centreon_acl ";
-					
-		$rq .= 	" WHERE no.object_id = nss.service_object_id".
-				" AND no.name1 not like 'OSL_Module'" .
-				" AND no.is_active = 1" .
-			  	" AND objecttype_id = 2";
+	if (!$is_admin)
+		$rq .= ", centreon_acl ";
+		
+	$rq .= 	" WHERE no.object_id = nss.service_object_id".
+			" AND no.name1 not like 'OSL_Module'" .
+			" AND no.is_active = 1" .
+		  	" AND objecttype_id = 2";
 
-	if (!$is_admin && $groupnumber){
+	if (!$is_admin && $groupnumber)
 		$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr($grouplist).")";
-	}
+
 
 	($o == "meta") ? $rq .= " AND no.name1 = 'Meta_Module'" : $rq .= " AND no.name1 != 'Meta_Module'";
 
@@ -164,7 +177,7 @@
 	}
 	
 	if ($o == "svcpb")
-		$rq .= " AND nss.current_state != 0";//  AND nss.current_state != 3 ";
+		$rq .= " AND nss.current_state != 0";
 	if ($o == "svc_ok")
 		$rq .= " AND nss.current_state = 0 ";
 	if ($o == "svc_warning")
@@ -173,6 +186,7 @@
 		$rq .= " AND nss.current_state = 2 ";
 	if ($o == "svc_unknown")
 		$rq .= " AND nss.current_state = 3 ";
+	
 	if ($o == "svc_unhandled") {
 		$rq .= " AND nss.current_state != 0";
 		$rq .= " AND nss.problem_has_been_acknowledged = 0";
@@ -296,21 +310,16 @@
 	        $buffer .= '<ha>'. $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';
 	        $buffer .= '<hae>'. $host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';
 	        $buffer .= '<hpe>'. $host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';
-			$buffer .= '<nc>'. date($date_time_format_status, $ndo["next_check"]) . '</nc>';
-			$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"]) . '</lc>';
+			$buffer .= '<nc>'. $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]) . '</nc>';
+			$buffer .= '<lc>'. $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]) . '</lc>';
 			$buffer .= '<d>'. $duration . '</d>';
 			$buffer .= '</l>';
 		}
 	}
-	/* 
-	 * end 
-	 */
 
-	if (!$ct){
-		$buffer .= '<infos>';
-		$buffer .= 'none';
-		$buffer .= '</infos>';
-	}
+	if (!$ct)
+		$buffer .= '<infos>none</infos>';
+		
 	$buffer .= '<sid>'.$sid.'</sid>';
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
