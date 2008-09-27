@@ -14,76 +14,101 @@
  * 
  * For information : contact@centreon.com
  */
- 
+	
+	if (!isset($oreon))
+		exit(); 
 
-	#
-	## Database retrieve information for Contact
-	#
 	$cct = array();
 	if (($o == "c" || $o == "w") && $contact_id)	{
+		/*
+		 * Init Tables informations
+		 */
 		$cct["contact_hostNotifCmds"] = array();
 		$cct["contact_svNotifCmds"] = array();
 		$cct["contact_cgNotif"] = array();
+		
 		$DBRESULT =& $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$contact_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		# Set base value
 		$cct = array_map("myDecode", $DBRESULT->fetchRow());
 		$cct["contact_passwd"] = NULL;
-		# Set Host Notification Options
+		
+		/*
+		 * Set Host Notification Options
+		 */
 		$tmp = explode(',', $cct["contact_host_notification_options"]);
 		foreach ($tmp as $key => $value)
 			$cct["contact_hostNotifOpts"][trim($value)] = 1;
-		# Set Service Notification Options
+		/*
+		 * Set Service Notification Options
+		 */
 		$tmp = explode(',', $cct["contact_service_notification_options"]);
 		foreach ($tmp as $key => $value)
 			$cct["contact_svNotifOpts"][trim($value)] = 1;
 		$DBRESULT->free();
-		# Set Contact Group Parents
+		
+		/*
+		 * Set Contact Group Parents
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$contact_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 			$cct["contact_cgNotif"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
-		# Set Host Notification Commands
+		
+		/*
+		 * Set Host Notification Commands
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$contact_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++)
 			$cct["contact_hostNotifCmds"][$i] = $notifCmd["command_command_id"];
 		$DBRESULT->free();
-		# Set Service Notification Commands
+		
+		/*
+		 * Set Service Notification Commands
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$contact_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++)
 			$cct["contact_svNotifCmds"][$i] = $notifCmd["command_command_id"];
 		$DBRESULT->free();
+		
+		/*
+		 * Get DLAP auth informations
+		 */
 		$DBRESULT =& $pearDB->query("SELECT ldap_auth_enable FROM general_opt LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ldap_auth =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 	}
-
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# Langs -> $langs Array
+	
+	/*
+	 * Get Langs
+	 */
 	$langs = array();
 	$langs = getLangs();
 	
-	# Timeperiods comes from DB -> Store in $notifsTps Array
-	# When we make a massive change, give the possibility to not crush value
-	$notifTps = array(NULL=>NULL);
+	/*
+	 * Timeperiods comes from DB -> Store in $notifsTps Array
+	 * When we make a massive change, give the possibility to not crush value
+	 */
+	
+	$notifTps = array(NULL => NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($notifTp =& $DBRESULT->fetchRow())
 		$notifTps[$notifTp["tp_id"]] = $notifTp["tp_name"];
 	$DBRESULT->free();
-	# Notification commands comes from DB -> Store in $notifsCmds Array
+
+	/*
+	 * Notification commands comes from DB -> Store in $notifsCmds Array
+	 */
 	$notifCmds = array();
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
@@ -91,7 +116,10 @@
 	while($notifCmd =& $DBRESULT->fetchRow())
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$DBRESULT->free();
-	# Contact Groups comes from DB -> Store in $notifCcts Array
+
+	/*
+	 * Contact Groups comes from DB -> Store in $notifCcts Array
+	 */
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
@@ -99,14 +127,13 @@
 	while($notifCg =& $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
+
+	/*
+	 * Template / Style for Quickform input
+	 */
+
 	$attrsText 		= array("size"=>"30");
-	$attrsText2 		= array("size"=>"60");
+	$attrsText2 	= array("size"=>"60");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
@@ -124,17 +151,29 @@
 	else if ($o == "mc")
 		$form->addElement('header', 'title', _("Massive Change"));
 
-	#
-	## Contact basic information
-	#
+	/*
+	 * Contact basic information
+	 */
 	$form->addElement('header', 'information', _("General Information"));
-	# No possibility to change name and alias, because there's no interest
+	
+	/*
+	 * No possibility to change name and alias, because there's no interest
+	 */
+	
+	/*
+	 * Don't change contact name and alias in massif change'
+	 */
 	if ($o != "mc")	{
 		$form->addElement('text', 'contact_name', _("Full Name"), $attrsText);
 		$form->addElement('text', 'contact_alias', _("Alias/Login"), $attrsText);
 	}
+	
 	$form->addElement('text', 'contact_email', _("Email"), $attrsText);
 	$form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
+
+	/*
+	 * Contact Groups Field
+	 */	
 	if ($o == "mc")	{
 		$mc_mod_cg = array();
 		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
@@ -148,10 +187,9 @@
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
-
-	#
-	## Contact Oreon information
-	#
+	/*
+	 * Contact Oreon information
+	 */
 	$form->addElement('header', 'oreon', _("Centreon"));
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_oreon', null, _("Yes"), '1');
@@ -165,23 +203,38 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("Yes"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
 	$form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
-
-   $auth_type = array();
-   $auth_type["local"] = "local";
+	
+	/*
+	 * Include GMT Class
+	 */
+	require_once $centreon_path."www/class/centreonGMT.class.php";
+	
+	
+	$GMTList = $CentreonGMT->getGMTList();
+	$form->addElement('select', 'contact_location', _("GMT / Location"), $GMTList);
+	$form->setDefaults(array('contact_location' => '0'));
+	if (isset($cct["contact_location"]))
+		$cct["contact_location"] = 0;
+	unset($GMTList);
+	unset($CentreonGMT);
+	
+   	$auth_type = array();
+   	$auth_type["local"] = "local";
 	if ($oreon->optGen['ldap_auth_enable'] == 1) {
 		$auth_type["ldap"] = "ldap";
 		$form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
 	}
 	$form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0'));
-   	
    	$form->addElement('select', 'contact_auth_type', _("Authentification Type"), $auth_type);
-
-	##
-	## Notification informations
-	##
+	
+	/*
+	 * Notification informations
+	 */
 	$form->addElement('header', 'notification', _("Notification Type"));
 
-	# Host notif
+	/*
+	 * Host notifications
+	 */
 	$form->addElement('header', 'hostNotification', _("Host"));
  	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down', array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable', array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
@@ -212,7 +265,9 @@
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	# Service notif
+	/*
+	 * Service notifications
+	 */
 	$form->addElement('header', 'serviceNotification', _("Service"));
  	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning', array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);'));
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown', array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);'));
@@ -242,9 +297,9 @@
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 
-	#
-	## Further informations
-	#
+	/*
+	 * Further informations
+	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$cctActivation[] = &HTML_QuickForm::createElement('radio', 'contact_activate', null, _("Enabled"), '1');
 	$cctActivation[] = &HTML_QuickForm::createElement('radio', 'contact_activate', null, _("Disabled"), '0');
@@ -269,9 +324,9 @@
 		$select_pear->setValue($select_str);
 	}
 	
-	#
-	## Form Rules
-	#
+	/*
+	 * Form Rules
+	 */
 	function myReplace()	{
 		global $form;
 		$ret = $form->getSubmitValues();
@@ -288,7 +343,6 @@
 		$form->addRule('contact_oreon', _("Required Field"), 'required');
 		$form->addRule('contact_lang', _("Required Field"), 'required');
 		$form->addRule('contact_admin', _("Required Field"), 'required');
-		//$form->addRule('contact_type_msg', _("Required Field"), 'required');
 		$form->addRule('contact_auth_type', _("Required Field"), 'required');
 		$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
 		$form->addRule('contact_hostNotifCmds', _("Compulsory Command"), 'required');
@@ -302,8 +356,7 @@
 		$form->addRule('contact_alias', "<font style='color: red;'>*</font>" . _(" Required fields"), 'existAlias');
 		$form->registerRule('keepOneContactAtLeast', 'callback', 'keepOneContactAtLeast');
 		$form->addRule('contact_alias', _("You have to keep at least one contact to access to Centreon"), 'keepOneContactAtLeast');
-	}
-	else if ($o == "mc")	{
+	} else if ($o == "mc")	{
 		if ($form->getSubmitValue("submitMC"))
 			$from_list_menu = false;
 		else
@@ -311,33 +364,29 @@
 	}
 	$form->setRequiredNote("<font style='color: red;'>*</font>" . _(" Required fields"));
 
-	#
-	##End of form definition
-	#
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch a contact information
 	if ($o == "w")	{
+		# Just watch a contact information
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&contact_id=".$contact_id."'"));
 	    $form->setDefaults($cct);
 		$form->freeze();
-	}
-	# Modify a contact information
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
+		# Modify a contact information
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cct);
-	}
-	# Add a contact information
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
+		# Add a contact information	
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
-	}
-	# Massive Change
-	else if ($o == "mc")	{
+	} else if ($o == "mc")	{
+		# Massive Change
 		$subMC =& $form->addElement('submit', 'submitMC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -364,7 +413,7 @@
 	if ($valid && $action["action"]["action"])
 		require_once($path."listContact.php");
 	else	{
-		#Apply a template definition
+		# Apply a template definition
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -385,11 +434,10 @@ function uncheckAllH(object) {
 		if (document.getElementById('hFlapping')) {
 			document.getElementById('hFlapping').checked = false;
 		}		
-		if(document.getElementById('hScheduled')) {
+		if (document.getElementById('hScheduled')) {
 			document.getElementById('hScheduled').checked = false;
 		}
-	}	
-	else {
+	} else {
 		document.getElementById('hNone').checked = false;
 	}
 }
@@ -406,8 +454,7 @@ function uncheckAllS(object) {
 		if(document.getElementById('sScheduled')) {
 			document.getElementById('sScheduled').checked = false;		
 		}
-	}
-	else {
+	} else {
 		document.getElementById('sNone').checked = false;
 	}
 }
