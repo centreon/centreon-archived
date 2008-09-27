@@ -18,22 +18,32 @@
 	if (!isset($oreon))
 		exit();
 
-	# Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./menu/";
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Var init
+	/*
+	 * Var init
+	 */
 	$sep = NULL;
 	$elemArr = array(1 => array(), 2 => array(), 3 => array(), 4 => array());
 
-	# Special Case
-	# Put the authentification in the URL
+	/*
+	 * Special Case
+	 * Put the authentification in the URL
+	 */
 	$auth = NULL;
 
-	# block headerHTML
+	/*
+	 * block headerHTML
+	 */
 	$version = $oreon->user->get_version();
 
 	$fileStatus = $oreon->Nagioscfg["status_file"];
@@ -82,7 +92,9 @@
 		$lcaSTR = "AND topology_page IN (".$oreon->user->lcaTStr.")";
 	
 
-	# Grab elements for level 1
+	/*
+	 * Grab elements for level 1
+	 */
 	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
@@ -97,7 +109,8 @@
 	$DBRESULT->free();
 	
 	$userUrl = "main.php?p=50104&o=c";
-    $logDate = date(_("Y/m/d G:i"));
+	
+	$logDate = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $oreon->user->getMyGMT());
     $logOut = _("Logout");
     $logOutUrl = "index.php?disconnect=1";
 
