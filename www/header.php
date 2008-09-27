@@ -41,8 +41,8 @@
 	/*
 	 * Include
 	 */
-	//require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once "/etc/centreon/centreon.conf.php";
+	
+	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once "./DBconnect.php";
 	require_once "./DBOdsConnect.php";
 	require_once "$classdir/Session.class.php";
@@ -80,11 +80,11 @@
 		header("Location: index.php?disconnect=1");
 
 	/*
-	 * Define Oreon var alias
+	 * Define Centreon var alias
 	 */
 	$oreon =& $_SESSION["oreon"];
 	if (!is_object($oreon))
-		exit();
+		exit(); 
 
 	/*
 	 * Init differents elements we need in a lot of pages
@@ -96,8 +96,8 @@
 	$oreon->initNagiosCFG($pearDB);
 	unset($oreon->optGen);
 	$oreon->initOptGen($pearDB);
-
-	if (!$p){
+	
+	if (!$p) {
 		$root_menu = get_my_first_allowed_root_menu($oreon->user->lcaTStr);
 		if (isset($root_menu["topology_page"])) 
 			$p = $root_menu["topology_page"]; 
