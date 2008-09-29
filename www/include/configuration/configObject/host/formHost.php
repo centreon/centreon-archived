@@ -284,6 +284,20 @@
 	$form->addElement('select', 'host_snmp_version', _("Version"), array(0=>null, 1=>"1", 2=>"2c", 3=>"3"));
 	$form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
 	
+	/*
+	 * Include GMT Class
+	 */
+	require_once $centreon_path."www/class/centreonGMT.class.php";
+	
+	$GMTList = $CentreonGMT->getGMTList();
+	$form->addElement('select', 'host_location', _("GMT / Location"), $GMTList);
+	$form->setDefaults(array('host_location' => '0'));
+	if (isset($host["host_location"]))
+		$host["host_location"] = 0;
+	unset($GMTList);
+	unset($CentreonGMT);
+
+
 	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);	

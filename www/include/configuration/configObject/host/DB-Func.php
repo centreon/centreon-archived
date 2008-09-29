@@ -34,6 +34,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');;
+
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -56,6 +57,7 @@
 	
 	function testHostTplExistence ($name = NULL)	{
 		global $pearDB, $form;
+
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');;
@@ -87,7 +89,7 @@
 		
 		if ($host_id)
 			$host_arr = array($host_id=>"1");
-		foreach($host_arr as $key=>$value)	{
+		foreach ($host_arr as $key => $value)	{
 			$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '1' WHERE host_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -101,7 +103,7 @@
 		
 		if ($host_id)
 			$host_arr = array($host_id=>"1");
-		foreach($host_arr as $key=>$value)	{
+		foreach ($host_arr as $key => $value)	{
 			$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '0' WHERE host_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -111,7 +113,7 @@
 	function deleteHostInDB ($hosts = array())	{
 		global $pearDB, $oreon;
 		
-		foreach ($hosts as $key=>$value)	{
+		foreach ($hosts as $key => $value)	{
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr, host WHERE hsr.host_host_id = '".$key."' AND host.host_id = hsr.host_host_id AND host.host_register = '1'";
 			$DBRESULT = & $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
@@ -137,8 +139,9 @@
 	 *  This function is called for duplicating a host
 	 */
 	function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
-		foreach($hosts as $key=>$value)	{
-			global $pearDB, $path, $oreon, $is_admin;
+		global $pearDB, $path, $oreon, $is_admin;
+		
+		foreach ($hosts as $key => $value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -461,7 +464,7 @@
 			"host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
 			"host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, " .
 			"host_notification_options, host_notifications_enabled, host_first_notification_delay, host_stalking_options, host_snmp_community, " .
-			"host_snmp_version, host_comment, host_register, host_activate) " .
+			"host_snmp_version, host_location, host_comment, host_register, host_activate) " .
 			"VALUES ( ";
 			isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != NULL ? $rq .= "'".$ret["host_template_model_htm_id"]."', ": $rq .= "NULL, ";
 			isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";
@@ -495,6 +498,7 @@
 			isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_stalOpts"]))."', " : $rq .= "NULL, ";
 			isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_community"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 			isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_version"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+			isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".htmlentities($ret["host_location"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 			isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".htmlentities($ret["host_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 			isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL ? $rq .= "'".$ret["host_register"]["host_register"]."', " : $rq .= "NULL, ";
 			isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."'" : $rq .= "NULL";
@@ -833,6 +837,8 @@
 		isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_community"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		$rq .= "host_snmp_version = ";
 		isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_version"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$rq .= "host_location = ";
+		isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".htmlentities($ret["host_location"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		$rq .= "host_comment = ";
 		isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".htmlentities($ret["host_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		$rq .= "host_register = ";
