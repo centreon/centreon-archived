@@ -15,10 +15,9 @@
  * For information : contact@centreon.com
  */
  
-	#
-	## Database retrieve information for Service
-	#
-
+ 	if (!isset($oreon))
+ 		exit();
+	
 	$ms = array();
 	if (($o == "c" || $o == "w") && $meta_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
@@ -26,22 +25,26 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$ms = array_map("myDecode", $DBRESULT->fetchRow());
+		
 		# Set Service Notification Options
 		$tmp = explode(',', $ms["notification_options"]);
 		foreach ($tmp as $key => $value)
 			$ms["ms_notifOpts"][trim($value)] = 1;
-		# Set Contact Group
+		
+		/*
+		 * Set Contact Group
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 			$ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
 		$DBRESULT->free();
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# Perfparse Metric comes from DB -> Store in $metrics Array
+	
+	/*
+	 * Perfparse Metric comes from DB -> Store in $metrics Array
+	 */
 	require_once("./DBOdsConnect.php");
 	$metrics = array(NULL=>NULL);
 	$DBRESULT =& $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
@@ -50,14 +53,20 @@
 	while($metric =& $DBRESULT->fetchRow())
 		$metrics[$metric["metric_name"]] = $metric["metric_name"];
 	$DBRESULT->free();
-	# Timeperiods comes from DB -> Store in $tps Array
+
+	/*
+	 * Timeperiods comes from DB -> Store in $tps Array
+	 */
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($tp =& $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
-	# Check commands comes from DB -> Store in $checkCmds Array
+	
+	/*
+	 * Check commands comes from DB -> Store in $checkCmds Array
+	 */
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
@@ -65,7 +74,10 @@
 	while($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
-	# Contact Groups comes from DB -> Store in $notifCcts Array
+	
+	/*
+	 * Contact Groups comes from DB -> Store in $notifCcts Array
+	 */
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
@@ -73,7 +85,10 @@
 	while($notifCg =& $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
-	# Escalations comes from DB -> Store in $escs Array
+	
+	/*
+	 * Escalations comes from DB -> Store in $escs Array
+	 */
 	$escs = array();
 	$DBRESULT =& $pearDB->query("SELECT esc_id, esc_name FROM escalation ORDER BY esc_name");
 	if (PEAR::isError($DBRESULT))
@@ -81,7 +96,10 @@
 	while($esc =& $DBRESULT->fetchRow())
 		$escs[$esc["esc_id"]] = $esc["esc_name"];
 	$DBRESULT->free();
-	# Meta Service Dependencies comes from DB -> Store in $deps Array
+
+	/*
+	 * Meta Service Dependencies comes from DB -> Store in $deps Array
+	 */
 	$deps = array();
 	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service WHERE meta_id != '".$meta_id."' ORDER BY meta_name");
 	if (PEAR::isError($DBRESULT))
@@ -89,10 +107,15 @@
 	while($dep =& $DBRESULT->fetchRow())
 		$deps[$dep["meta_id"]] = $dep["meta_name"];
 	$DBRESULT->free();
-	# Calc Type
+	
+	/*
+	 * Calc Type
+	 */
 	$calType = array("AVE"=>_("Average"), "SOM"=>_("Sum"), "MIN"=>_("Min"), "MAX"=>_("Max"));
 	
-	# Graphs Template comes from DB -> Store in $graphTpls Array
+	/*
+	 * Graphs Template comes from DB -> Store in $graphTpls Array
+	 */
 	$graphTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
@@ -101,12 +124,9 @@
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
 
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
+	/*
+	 * Init Styles
+	 */
 	$attrsText 		= array("size"=>"30");
 	$attrsText2		= array("size"=>"6");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
@@ -124,10 +144,9 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View a Meta Service"));
 
-	# Sort 1
-	#
-	## Service basic information
-	#
+	/*
+	 * Service basic information
+	 */	
 	$form->addElement('header', 'information', _("General Information"));
 
 	$form->addElement('text', 'meta_name', _("Meta Service Name"), $attrsText);
@@ -145,19 +164,18 @@
 	$form->addElement('text', 'regexp_str', _("SQL matching"), $attrsText);
 	$form->addElement('select', 'metric', _("Metric"), $metrics);
 
-	#
-	## Check information
-	#
+	/*
+	 * Check information
+	 */
 	$form->addElement('header', 'check', _("Meta Service State"));
-
 	$form->addElement('select', 'check_period', _("Check Period"), $tps);
 	$form->addElement('text', 'max_check_attempts', _("Max Check Attempts"), $attrsText2);
 	$form->addElement('text', 'normal_check_interval', _("Normal Check Interval"), $attrsText2);
 	$form->addElement('text', 'retry_check_interval', _("Retry Check Interval"), $attrsText2);
 
-	##
-	## Notification informations
-	##
+	/*
+	 * Notification informations
+	 */
 	$form->addElement('header', 'notification', _("Notification"));
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("Yes"), '1');
@@ -183,9 +201,9 @@
 		$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping');
 	$form->addGroup($msNotifOpt, 'ms_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
-	#
-	## Further informations
-	#
+	/*
+	 * Further informations
+	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);
 	$msActivation[] = &HTML_QuickForm::createElement('radio', 'meta_activate', null, _("Enabled"), '1');
@@ -204,9 +222,9 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-	#
-	## Form Rules
-	#
+	/*
+	 * Form Rules
+	 */
 	function myReplace()	{
 		global $form;
 		return (str_replace(" ", "_", $form->getSubmitValue("meta_name")));
@@ -217,8 +235,8 @@
 	$form->addRule('max_check_attempts', _("Required Field"), 'required');
 	$form->addRule('calcul_type', _("Required Field"), 'required');
 	$form->addRule('meta_select_mode', _("Required Field"), 'required');
-	$form->addRule('warning', _("Required Field"), 'required');
-	$form->addRule('critical', _("Required Field"), 'required');
+	//$form->addRule('warning', _("Required Field"), 'required');
+	//$form->addRule('critical', _("Required Field"), 'required');
 	$form->addRule('normal_check_interval', _("Required Field"), 'required');
 	$form->addRule('retry_check_interval', _("Required Field"), 'required');
 	$form->addRule('check_period', _("Compulsory Period"), 'required');
@@ -232,29 +250,31 @@
 	$form->addRule('meta_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
-	#
-	##End of form definition
-	#
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch a host information
 	if ($o == "w")	{
+		/*
+		 * Just watch a host information
+		 */
 		if (!$min)
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&meta_id=".$meta_id."'"));
 	    $form->setDefaults($ms);
 		$form->freeze();
-	}
-	# Modify a service information
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
+		/*
+		 * Modify a service information
+		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($ms);
-	}
-	# Add a service information
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
+		/*
+		 * Add a service information
+		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -278,7 +298,9 @@
 	if ($valid && $action["action"]["action"])
 		require_once($path."listMetaService.php");
 	else	{
-		#Apply a template definition
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
