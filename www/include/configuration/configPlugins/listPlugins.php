@@ -22,7 +22,6 @@
 
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 	
 	if (isset($_GET["plugin_dir"]) && $_GET["plugin_dir"])
 		$dir = $_GET["plugin_dir"];
@@ -32,7 +31,7 @@
 	if (isset($_GET["create"]) && $_GET["create"])
 		mkdir(str_replace("//", "/", $oreon->optGen["nagios_path_plugins"].$dir.$_GET["new_dir"]));
 	
-	$plugin_list = return_plugin_list($dir);
+	$plugin_list = return_plugin_list($dir, $search);
 	$plugin_dir = return_plugin_dir("");
 	
 	$rows = count($plugin_list);
@@ -49,40 +48,42 @@
 	$tpl->assign("headerMenu_path", _("Path"));
 	$tpl->assign("headerMenu_size", _("Size"));
 	$tpl->assign("headerMenu_options", _("Options"));
-	# end header menu
 
-	#List of elements - Depends on different criteria
+	# List of elements - Depends on different criteria
 	
 	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
-	#Different style between each lines
+	# Different style between each lines
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	
+	# Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
 	$i = 0;
 	$i_real = 0;
 	$begin = $num * $limit;
 	$end = ($num + 1 ) * $limit;
 	foreach ($plugin_list as $name => $path) {
-		if ($i >= $begin && $i < $end){
-			$cmd["command_id"] = 1;
-			$selectedElements =& $form->addElement('checkbox', "select[".$cmd['command_id']."]");	
-			$moptions = "<a href='main.php?p=".$p."&command_id=".$cmd['command_id']."&o=d&select[".$cmd['command_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>";
-			$path = str_replace('#BR#', "\\n", $path);
-			$path = str_replace('#T#', "\\t", $path);
-			$path = str_replace('#R#', "\\r", $path);
-			$path = str_replace('#S#', "/", $path);
-			$path = str_replace('#BS#', "\\", $path);
-			$elemArr[$i_real] = array("MenuClass"=>"list_".$style, 
-							"RowMenu_select"=>$selectedElements->toHtml(),
-							"RowMenu_name" => substr($name, 1),
-							"RowMenu_num" => $i,
-							"RowMenu_size" => round(filesize($oreon->optGen["nagios_path_plugins"].$dir.$path) / 1024,2),
-							"RowMenu_path" => str_replace("//", "/", $dir.$path),
-							"RowMenu_options"=>$moptions);
-			$style != "two" ? $style = "two" : $style = "one";
-			$i_real++;
+		if (!$search || ($search && stristr($name, $search))) {
+			if ($i >= $begin && $i < $end){
+				$cmd["command_id"] = 1;
+				$selectedElements =& $form->addElement('checkbox', "select[".$cmd['command_id']."]");	
+				$moptions = "<a href='main.php?p=".$p."&command_id=".$cmd['command_id']."&o=d&select[".$cmd['command_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>";
+				$path = str_replace('#BR#', "\\n", $path);
+				$path = str_replace('#T#', "\\t", $path);
+				$path = str_replace('#R#', "\\r", $path);
+				$path = str_replace('#S#', "/", $path);
+				$path = str_replace('#BS#', "\\", $path);
+				$elemArr[$i_real] = array("MenuClass"=>"list_".$style, 
+								"RowMenu_select"=>$selectedElements->toHtml(),
+								"RowMenu_name" => substr($name, 1),
+								"RowMenu_num" => $i,
+								"RowMenu_size" => round(filesize($oreon->optGen["nagios_path_plugins"].$dir.$path) / 1024,2),
+								"RowMenu_path" => str_replace("//", "/", $dir.$path),
+								"RowMenu_options"=>$moptions);
+				$style != "two" ? $style = "two" : $style = "one";
+				$i_real++;
+			}
+			$i++;
 		}
-		$i++;
 	}
 	$tpl->assign("elemArr", $elemArr);
 	

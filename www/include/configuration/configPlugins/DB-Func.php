@@ -18,7 +18,7 @@
 	if (!isset($oreon))
 		exit();
 		
-	function return_plugin_list($rep){
+	function return_plugin_list($rep, $search = NULL){
 		global $oreon;
 		$plugins = array();
 		$is_not_a_plugin = array("."=>".", ".."=>"..", "oreon.conf"=>"oreon.conf", "oreon.pm"=>"oreon.pm", "utils.pm"=>"utils.pm", "negate"=>"negate");
@@ -27,8 +27,10 @@
 		$handle = opendir($oreon->optGen["nagios_path_plugins"].$rep);
 		while (false !== ($filename = readdir($handle))){
 			if (!is_dir($oreon->optGen["nagios_path_plugins"].$rep."/".$filename) && !array_key_exists($filename, $is_not_a_plugin) && substr($filename, -1)!= "~"){
-				$key = substr($oreon->optGen["nagios_path_plugins"].$rep."/".$filename, strlen($oreon->optGen["nagios_path_plugins"].$rep));
-				$plugins[$key] = $key;
+				if (!$search || $search == "" || ($search && stristr($filename, $search))) {
+					$key = substr($oreon->optGen["nagios_path_plugins"].$rep."/".$filename, strlen($oreon->optGen["nagios_path_plugins"].$rep));
+					$plugins[$key] = $key;
+				}
 			}
 		}
 		ksort($plugins);
