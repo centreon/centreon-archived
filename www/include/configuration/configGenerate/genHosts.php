@@ -22,6 +22,32 @@
 		mkdir($nagiosCFGPath.$tab['id']."/");
 	}
 	
+	/*
+	 * Get commands
+	 */
+	$commands = array();
+	$DBRESULT2 =& $pearDB->query("SELECT command_id, command_name FROM command");
+	if (PEAR::isError($DBRESULT2))
+		print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+	while ($command = $DBRESULT2->fetchRow())
+		$commands[$command["command_id"]] = $command["command_name"] ;
+	$DBRESULT2->free();
+	
+	/*
+	 * Get timeperiods
+	 */
+	$timeperiods = array();
+	$DBRESULT2 =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
+	if (PEAR::isError($DBRESULT2))
+		print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+	while ($timeperiod =& $DBRESULT2->fetchRow())
+		$timeperiods[$timeperiod["tp_id"]] = $timeperiod["tp_name"];
+	$DBRESULT2->free();
+	
+	/*
+	 * Get Host List
+	 */
+	
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hosts.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_activate = '1' ORDER BY `host_register`, `host_name`");
 	if (PEAR::isError($DBRESULT))
@@ -29,10 +55,11 @@
 	$host = array();
 	$i = 1;
 	$str = NULL;
-	while($host = $DBRESULT->fetchRow())	{
+	
+	while ($host =& $DBRESULT->fetchRow())	{
 		if (isHostOnThisInstance($host["host_id"], $tab['id']) || $host["host_register"] == 0) {			
-			$BP = false;			
-			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;			
+			$BP = false;
+			isset($gbArr[2][$host["host_id"]]) ? $BP = true : NULL;			
 			if (!$host["host_register"])
 				$BP = true;				
 			if ($BP)	{								
@@ -62,17 +89,16 @@
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					$tpl_str = "";
 					$first_on_list = 1;
-					while ($tpl_id = $DBRESULT2->fetchRow()) {
+					while ($tpl_id =& $DBRESULT2->fetchRow()) {
 						$rq = "SELECT host_name FROM `host` WHERE host_id=" . $tpl_id["host_tpl_id"];
 						$DBRESULT3 =& $pearDB->query($rq);
 						if (PEAR::isError($DBRESULT3))
 							print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-						while ($tpl_name = $DBRESULT3->fetchRow()) { 
+						while ($tpl_name =& $DBRESULT3->fetchRow()) { 
 							if ($first_on_list) {
 								$first_on_list = 0;
 								$tpl_str .= $tpl_name["host_name"];
-							}
-							else
+							} else
 								$tpl_str .= "," . $tpl_name["host_name"];							
 						}	
 					}
@@ -93,13 +119,18 @@
 					unset($hostTemplate);		
 				}
 				
-				if ($host["host_alias"]) 			$str .= print_line("alias", $host["host_alias"]);
-				if ($host["host_address"]) 			$str .= print_line("address", $host["host_address"]);
+				if ($host["host_alias"])
+					$str .= print_line("alias", $host["host_alias"]);
+				if ($host["host_address"])	
+					$str .= print_line("address", $host["host_address"]);
 				
-				if ($oreon->user->get_version() > 2)	{
-					if ($host["host_snmp_community"]) 	$str .= print_line("_SNMPCOMMUNITY", $host["host_snmp_community"]);
-					if ($host["host_snmp_version"])		$str .= print_line("_SNMPVERSION", $host["host_snmp_version"]);
-				}
+				if ($host["host_register"] == 1)
+					$str .= print_line("#location", $host["host_location"]);
+				
+				if ($host["host_snmp_community"])
+					$str .= print_line("_SNMPCOMMUNITY", $host["host_snmp_community"]);
+				if ($host["host_snmp_version"])
+					$str .= print_line("_SNMPVERSION", $host["host_snmp_version"]);
 				
 				/* 
 				 * Get Parents List for this host
@@ -118,11 +149,15 @@
 						$strTemp != NULL ? $strTemp .= ", ".$hostParent["host_name"] : $strTemp = $hostParent["host_name"];
 				}
 				$DBRESULT2->free();
-				if ($strTemp) $str .= print_line("parents", $strTemp);
+				
+				if ($strTemp) 
+					$str .= print_line("parents", $strTemp);
 				unset($hostParent);
 				unset($strTemp);
 
-				// Nagios V2 : Hostgroups relation
+				/*
+				 * Hostgroups relation
+				 */
 				if ($oreon->user->get_version() >= 2)	{
 					$hostGroup = array();
 					$strTemp = NULL;
@@ -138,71 +173,51 @@
 					}
 					$DBRESULT2->free();
 					unset($hostGroup);
-					if ($strTemp) $str .= print_line("hostgroups", $strTemp);
+					if ($strTemp) 
+						$str .= print_line("hostgroups", $strTemp);
 					unset($strTemp);
 				}
 				
 				/*
 				 * Check Command
 				 */
-				 
-				$command = array();
-				$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$host["command_command_id"]."' LIMIT 1");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-				
-				$host["command_command_id_arg2"] = removeSpecialChar($host["command_command_id_arg2"]);
-				
-				while ($command = $DBRESULT2->fetchRow())
-					$str .= print_line("check_command", $command["command_name"].$host["command_command_id_arg1"]);
-				$DBRESULT2->free();
-				unset($command);
-				
+				if (isset($host["command_command_id1"]) && strlen($host["command_command_id1"])) {
+					$host["command_command_id_arg1"] = removeSpecialChar($host["command_command_id_arg1"]);
+					$str .= print_line("check_command", $commands[$host["command_command_id1"]].$host["command_command_id_arg1"]);
+				}
+								
 				if ($host["host_max_check_attempts"] != NULL) 	
 					$str .= print_line("max_check_attempts", $host["host_max_check_attempts"]);
 				if ($host["host_check_interval"] != NULL) 
 					$str .= print_line("check_interval", $host["host_check_interval"]);
-				if ($oreon->user->get_version() == 1)
-					if ($host["host_checks_enabled"] != 2) 
-						$str .= print_line("checks_enabled", $host["host_checks_enabled"] == 1 ? "1" : "0");
-				if ($oreon->user->get_version() >= 2)	{
-					if ($host["host_active_checks_enabled"] != 2) 
-						$str .= print_line("active_checks_enabled", $host["host_active_checks_enabled"] == 1 ? "1": "0");
-					if ($host["host_passive_checks_enabled"] != 2) 
-						$str .= print_line("passive_checks_enabled", $host["host_passive_checks_enabled"] == 1 ? "1": "0");
-					//Check Period
-					$timePeriod = array();
-					$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id"]."' LIMIT 1");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-					while($timePeriod = $DBRESULT2->fetchRow())
-						$str .= print_line("check_period", $timePeriod["tp_name"]);
-					$DBRESULT2->free();
-					unset($timePeriod);
+				if ($host["host_active_checks_enabled"] != 2) 
+					$str .= print_line("active_checks_enabled", $host["host_active_checks_enabled"] == 1 ? "1": "0");
+				if ($host["host_passive_checks_enabled"] != 2) 
+					$str .= print_line("passive_checks_enabled", $host["host_passive_checks_enabled"] == 1 ? "1": "0");
+				
+				/*
+				 * Check Period
+				 */
+				if ($host["host_register"] == 1 && (!$host["timeperiod_tp_id1"] || $host["host_location"] != 0))
+					$host["timeperiod_tp_id"] = getMyHostField($host["host_id"], "timeperiod_tp_id");
+				if ($host["timeperiod_tp_id"])
+					$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]."_GMT".$host["host_location"]);
 
-					if ($host["host_obsess_over_host"] != 2) 
-						$str .= print_line("obsess_over_host", $host["host_obsess_over_host"] == 1 ? "1": "0");
-					if ($host["host_check_freshness"] != 2) 
-						$str .= print_line("check_freshness", $host["host_check_freshness"] == 1 ? "1": "0");
-					if ($host["host_freshness_threshold"]) 
-						$str .= print_line("freshness_threshold", $host["host_freshness_threshold"]);
-				}
-				//Event_handler
-				$command = array();
-				$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$host["command_command_id2"]."' LIMIT 1");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-				$host["command_command_id_arg2"] = str_replace('#BR#', "\\n", $host["command_command_id_arg2"]);
-				$host["command_command_id_arg2"] = str_replace('#T#', "\\t", $host["command_command_id_arg2"]);
-				$host["command_command_id_arg2"] = str_replace('#R#', "\\r", $host["command_command_id_arg2"]);
-				$host["command_command_id_arg2"] = str_replace('#S#', "/", $host["command_command_id_arg2"]);
-				$host["command_command_id_arg2"] = str_replace('#BS#', "\\", $host["command_command_id_arg2"]);
-					
-				while ($command = $DBRESULT2->fetchRow())
-					$str .= print_line("event_handler", $command["command_name"].$host["command_command_id_arg2"]);
-				$DBRESULT2->free();
-				unset($command);
-				//
+				if ($host["host_obsess_over_host"] != 2) 
+					$str .= print_line("obsess_over_host", $host["host_obsess_over_host"] == 1 ? "1": "0");
+				if ($host["host_check_freshness"] != 2) 
+					$str .= print_line("check_freshness", $host["host_check_freshness"] == 1 ? "1": "0");
+				if ($host["host_freshness_threshold"]) 
+					$str .= print_line("freshness_threshold", $host["host_freshness_threshold"]);
+
+				/*
+				 * Event_handler
+				 */
+				$host["command_command_id_arg2"] = removeSpecialChar($host["command_command_id_arg2"]);
+				if ($host["command_command_id2"])
+					$str .= print_line("event_handler", $commands[$host["command_command_id2"]].$host["command_command_id_arg2"]);
+
+				
 				if ($host["host_event_handler_enabled"] != 2) 
 					$str .= print_line("event_handler_enabled", $host["host_event_handler_enabled"] == 1 ? "1": "0");
 				if ($host["host_low_flap_threshold"]) 
@@ -221,22 +236,21 @@
 				/*
 				 * Nagios V2 : contactGroups relation
 				 */
-				if ($oreon->user->get_version() >= 2)	{
-					$contactGroup = array();
-					$strTemp = NULL;
-					$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-					while ($contactGroup =& $DBRESULT2->fetchRow())	{				
-						if (isset($gbArr[1][$contactGroup["cg_id"]]))
-							$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
-					}
-					$DBRESULT2->free();
-					unset($contactGroup);
-					if ($strTemp) 
-						$str .= print_line("contact_groups", $strTemp);
-					unset($strTemp);
+				
+				$contactGroup = array();
+				$strTemp = NULL;
+				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+				while ($contactGroup =& $DBRESULT2->fetchRow())	{				
+					if (isset($gbArr[1][$contactGroup["cg_id"]]))
+						$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
 				}
+				$DBRESULT2->free();
+				unset($contactGroup);
+				if ($strTemp) 
+					$str .= print_line("contact_groups", $strTemp);
+				unset($strTemp);
 				
 				/*
 				 * Nagios V3 : contacts relation
@@ -264,14 +278,10 @@
 				/*
 				 * Timeperiod name
 				 */
-				$timePeriod = array();
-				$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id2"]."' LIMIT 1");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-				while ($timePeriod =& $DBRESULT2->fetchRow())
-					$str .= print_line("notification_period", $timePeriod["tp_name"]);
-				$DBRESULT2->free();
-				unset($timePeriod);
+				if ($host["host_register"] == 1 && (!$host["timeperiod_tp_id2"] || $host["host_location"] != 0))
+					$host["timeperiod_tp_id2"] = getMyHostField($host["host_id"], "timeperiod_tp_id2");
+				if ($host["timeperiod_tp_id2"])
+					$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]]."_GMT".$host["host_location"]);
 				
 				if ($host["host_notification_options"]) 
 					$str .= print_line("notification_options", $host["host_notification_options"]);
