@@ -17,6 +17,7 @@
 
 require_once("User.class.php");
 require_once("centreonGMT.class.php");
+require_once("centreonLogAction.class.php");
 
 class Oreon	{
 		
@@ -34,6 +35,7 @@ class Oreon	{
   	var $search_type_service;
 	var $search_type_host;
 	var $CentreonGMT;
+	var $CentreonLogAction;
   
 	function Oreon($user = NULL, $pages = array())	{
 		global $pearDB;
@@ -63,6 +65,10 @@ class Oreon	{
 		 */
 		$this->CentreonGMT = new CentreonGMT();
 	
+		/*
+		 * Create LogAction object
+		 */
+		$this->CentreonLogAction = new CentreonLogAction($user);
 	}
 	
 	
@@ -103,5 +109,6 @@ class Oreon	{
 		$this->optGen = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 	}
+	
 }
 ?>

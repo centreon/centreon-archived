@@ -44,17 +44,22 @@
 	}
 
 	function deleteCommandInDB ($commands = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		
 		foreach ($commands as $key => $value)	{
+			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE `command_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
 			$DBRESULT =& $pearDB->query("DELETE FROM `command` WHERE `command_id` = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$oreon->CentreonLogAction->insertLog("command", $key, $row['command_name'], "d");
 		}
 	}
 	
 	function multipleCommandInDB ($commands = array(), $nbrDup = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 			
 		foreach($commands as $key => $value)	{
 			
@@ -69,8 +74,10 @@
 				$val = null;
 
 				foreach ($row as $key2=>$value2)	{
-					$key2 == "`command_name`" ? ($command_name = $value2 = $value2."_".$i) : null;
+					$key2 == "command_name" ? ($command_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2 != NULL?(", '".$value2."'"):", NULL") : $val .= ($value2 != NULL?("'".$value2."'"):"NULL");
+					$fields[$key2] = $value2;
+					$fields["command_name"] = $command_name;
 				}
 
 				if (testCmdExistence($command_name))	{
@@ -78,6 +85,14 @@
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					/*
+		 			* Get Max ID
+		 			*/
+					$DBRESULT =& $pearDB->query("SELECT MAX(command_id) FROM `command`");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					$cmd_id = $DBRESULT->fetchRow();	
+					$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $command_name, "a", $fields);
 				}
 			}
 		}
@@ -89,7 +104,7 @@
 	}
 	
 	function updateCommand($cmd_id = null)	{
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon;
 		
 		if (!$cmd_id) 
 			return;
@@ -120,6 +135,13 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			
+		$fields["command_name"] = htmlentities($ret["command_name"], ENT_QUOTES);
+		$fields["command_line"] = htmlentities($ret["command_line"], ENT_QUOTES);
+		$fields["command_example"] = htmlentities($ret["command_example"], ENT_QUOTES);
+		$fields["command_type"] = $ret["command_type"]["command_type"];
+		$fields["graph_id"] = $ret["graph_id"];
+		$oreon->CentreonLogAction->insertLog("command", $cmd_id, htmlentities($ret["command_name"], ENT_QUOTES), "c", $fields);
 	}
 	
 	function insertCommandInDB ($ret = array())	{
@@ -128,7 +150,7 @@
 	}
 	
 	function insertCommand($ret = array())	{
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		set_magic_quotes_runtime(1);
@@ -153,6 +175,11 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$fields["command_name"] = htmlentities($ret["command_name"], ENT_QUOTES);
+		$fields["command_line"] = htmlentities($ret["command_line"], ENT_QUOTES);
+		$fields["command_example"] = htmlentities($ret["command_example"], ENT_QUOTES);
+		$fields["command_type"] = $ret["command_type"]["command_type"];
+		$fields["graph_id"] = $ret["graph_id"];
 		
 		/*
 		 * Get Max ID
@@ -162,6 +189,7 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cmd_id = $DBRESULT->fetchRow();
 		
+		$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], htmlentities($ret["command_name"], ENT_QUOTES), "a", $fields);
 		return ($cmd_id["MAX(command_id)"]);
 	}
 	

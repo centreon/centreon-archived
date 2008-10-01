@@ -46,35 +46,51 @@
 	}
 
 	function enableContactGroupInDB ($cg_id = null)	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		if (!$cg_id) 
 			return;
 		$DBRESULT =& $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '1' WHERE `cg_id` = '".$cg_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT2 =& $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+		$row = $DBRESULT2->fetchRow();
+		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "enable");
 	}
 	
 	function disableContactGroupInDB ($cg_id = null)	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		if (!$cg_id) 
 			return;
 		$DBRESULT =& $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '0' WHERE `cg_id` = '".$cg_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT2 =& $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+		$row = $DBRESULT2->fetchRow();
+		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "disable");
 	}
 	
 	function deleteContactGroupInDB ($contactGroups = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		
 		foreach($contactGroups as $key => $value)	{
+			$DBRESULT2 =& $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
+			
 			$DBRESULT =& $pearDB->query("DELETE FROM `contactgroup` WHERE `cg_id` = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$oreon->CentreonLogAction->insertLog("contactgroup", $key, $row['cg_name'], "d");
 		}
 	}
 	
 	function multipleContactGroupInDB ($contactGroups = array(), $nbrDup = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		
 		foreach ($contactGroups as $key=>$value)	{
 
@@ -87,8 +103,11 @@
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2) {
-					$key2 == "`cg_name`" ? ($cg_name = $value2 = $value2."_".$i) : null;
+					$key2 == "cg_name" ? ($cg_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ", '".$value2."'" : $val .= "'".$value2."'";
+					if ($key2 != "cg_id")
+						$fields[$key2] = $value2;
+					$fields["cg_name"] = $cg_name;
 				}
 				if (testContactGroupExistence($cg_name))	{
 					$val ? $rq = "INSERT INTO `contactgroup` VALUES (".$val.")" : $rq = null;
@@ -102,15 +121,14 @@
 					$maxId =& $DBRESULT->fetchRow();
 					
 					if (isset($maxId["MAX(cg_id)"])) {
+						$oreon->CentreonLogAction->insertLog("contactgroup", $maxId["MAX(cg_id)"], $cg_name, "a", $fields);
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT `cgcr`.`contact_contact_id` FROM `contactgroup_contact_relation` `cgcr` WHERE `cgcr`.`contactgroup_cg_id` = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($cct =& $DBRESULT->fetchRow())	{
-				
 							$DBRESULT2 =& $pearDB->query("INSERT INTO `contactgroup_contact_relation` VALUES ('', '".$cct["contact_contact_id"]."', '".$maxId["MAX(cg_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-				
 						}
 					}
 				}
@@ -125,7 +143,7 @@
 	}
 	
 	function insertContactGroup($ret)	{
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon;
 		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
@@ -140,6 +158,11 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cg_id = $DBRESULT->fetchRow();
+		$fields["cg_name"] = htmlentities($ret["cg_name"], ENT_QUOTES);
+		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES);
+		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES);
+		$fields["cg_activate"] = $ret["cg_activate"]["cg_activate"];
+		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id["MAX(cg_id)"], htmlentities($ret["cg_name"], ENT_QUOTES), "a", $fields);
 		return ($cg_id["MAX(cg_id)"]);
 	}
 	
@@ -151,7 +174,7 @@
 	}
 	
 	function updateContactGroup($cg_id = null)	{
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon;
 		if (!$cg_id) 
 			return;
 		$ret = array();
@@ -165,6 +188,11 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$fields["cg_name"] = htmlentities($ret["cg_name"], ENT_QUOTES);
+		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES);
+		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES);
+		$fields["cg_activate"] = $ret["cg_activate"]["cg_activate"];
+		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, htmlentities($ret["cg_name"], ENT_QUOTES), "c", $fields);
 	}
 	
 	function updateContactGroupContacts($cg_id, $ret = array())	{
