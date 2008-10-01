@@ -41,7 +41,7 @@
 
 		## Form begin
 		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-		$form->addElement('header', 'title', 'Acknoledge a Service');
+		$form->addElement('header', 'title', 'Acknowledge a Service');
 
 		$tpl->assign('hostlabel', _("Host Name"));
 		$tpl->assign('hostname', $host_name);
