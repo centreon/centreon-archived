@@ -157,31 +157,40 @@
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(contact_id)"]))	{
-						$oreon->CentreonLogAction->insertLog("contact", $maxId["MAX(contact_id)"], $contact_name, "a", $fields);						
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["contact_hostNotifCmds"] = "";
 						while($hostCmd =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contact_hostcommands_relation VALUES ('', '".$maxId["MAX(contact_id)"]."', '".$hostCmd["command_command_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["contact_hostNotifCmds"] .= $hostCmd["command_command_id"] . ",";
 						}
+						$fields["contact_hostNotifCmds"] = trim($fields["contact_hostNotifCmds"], ",");
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["contact_svNotifCmds"] = "";
 						while($serviceCmd =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contact_servicecommands_relation VALUES ('', '".$maxId["MAX(contact_id)"]."', '".$serviceCmd["command_command_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["contact_svNotifCmds"] .= $serviceCmd["command_command_id"] . ",";
 						}
+						$fields["contact_svNotifCmds"] = trim($fields["contact_svNotifCmds"], ",");
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["contact_cgNotif"] = "";
 						while($Cg =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contactgroup_contact_relation VALUES ('', '".$maxId["MAX(contact_id)"]."', '".$Cg["contactgroup_cg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["contact_cgNotif"] .= $Cg["contactgroup_cg_id"] . ",";
 						}
+						$fields["contact_cgNotif"] = trim($fields["contact_cgNotif"], ",");
+						$oreon->CentreonLogAction->insertLog("contact", $maxId["MAX(contact_id)"], $contact_name, "a", $fields);
 					}
 				}
 			}
@@ -296,6 +305,9 @@
 		$fields["contact_auth_type"] = $ret["contact_auth_type"];
 		$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
 		$fields["contact_location"] = $ret["contact_location"];
+		$fields["contact_hostNotifCmds"] = implode(",", $ret["contact_hostNotifCmds"]);
+		$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
+		$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
 		$oreon->CentreonLogAction->insertLog("contact", $contact_id["MAX(contact_id)"], $ret["contact_name"], "a", $fields);
 		
 		return ($contact_id["MAX(contact_id)"]);
@@ -372,6 +384,9 @@
 		$fields["contact_auth_type"] = $ret["contact_auth_type"];
 		$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
 		$fields["contact_location"] = $ret["contact_location"];
+		$fields["contact_hostNotifCmds"] = implode(",", $ret["contact_hostNotifCmds"]);
+		$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
+		$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
 		$oreon->CentreonLogAction->insertLog("contact", $contact_id, $ret["contact_name"], "c", $fields);
 	}
 

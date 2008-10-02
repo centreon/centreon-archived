@@ -120,16 +120,19 @@
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					
-					if (isset($maxId["MAX(cg_id)"])) {
-						$oreon->CentreonLogAction->insertLog("contactgroup", $maxId["MAX(cg_id)"], $cg_name, "a", $fields);
+					if (isset($maxId["MAX(cg_id)"])) {						
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT `cgcr`.`contact_contact_id` FROM `contactgroup_contact_relation` `cgcr` WHERE `cgcr`.`contactgroup_cg_id` = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["cg_contacts"] = "";
 						while($cct =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO `contactgroup_contact_relation` VALUES ('', '".$cct["contact_contact_id"]."', '".$maxId["MAX(cg_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["cg_contacts"] .= $cct["contact_contact_id"] . ",";
 						}
+						$fields["cg_contacts"] = trim($fields["cg_contacts"], ",");
+						$oreon->CentreonLogAction->insertLog("contactgroup", $maxId["MAX(cg_id)"], $cg_name, "a", $fields);
 					}
 				}
 			}
@@ -162,6 +165,7 @@
 		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES);
 		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES);
 		$fields["cg_activate"] = $ret["cg_activate"]["cg_activate"];
+		$fields["cg_contacts"] = implode(",", $ret["cg_contacts"]);
 		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id["MAX(cg_id)"], htmlentities($ret["cg_name"], ENT_QUOTES), "a", $fields);
 		return ($cg_id["MAX(cg_id)"]);
 	}
@@ -192,6 +196,7 @@
 		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES);
 		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES);
 		$fields["cg_activate"] = $ret["cg_activate"]["cg_activate"];
+		$fields["cg_contacts"] = implode(",", $ret["cg_contacts"]);
 		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, htmlentities($ret["cg_name"], ENT_QUOTES), "c", $fields);
 	}
 	

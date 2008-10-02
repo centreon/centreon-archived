@@ -41,26 +41,42 @@
 
 	function enableServiceGroupInDB ($sg_id = null)	{
 		if (!$sg_id) return;
-		global $pearDB;
+		global $pearDB, $oreon;
 		$DBRESULT =& $pearDB->query("UPDATE servicegroup SET sg_activate = '1' WHERE sg_id = '".$sg_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT2 =& $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$sg_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+		$row = $DBRESULT2->fetchRow();
+		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, $row['sg_name'], "enable");
 	}
 	
 	function disableServiceGroupInDB ($sg_id = null)	{
 		if (!$sg_id) return;
-		global $pearDB;
+		global $pearDB, $oreon;
 		$DBRESULT =& $pearDB->query("UPDATE servicegroup SET sg_activate = '0' WHERE sg_id = '".$sg_id."'");
 		if (PEAR::isError($DBRESULT))
 			print $DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT2 =& $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$sg_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+		$row = $DBRESULT2->fetchRow();
+		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, $row['sg_name'], "disable");
 	}
 	
 	function deleteServiceGroupInDB ($serviceGroups = array())	{
-		global $pearDB;
-		foreach($serviceGroups as $key=>$value)
+		global $pearDB, $oreon;
+		foreach($serviceGroups as $key=>$value) {
+			$DBRESULT2 =& $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
 			$DBRESULT =& $pearDB->query("DELETE FROM servicegroup WHERE sg_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print $DBRESULT->getDebugInfo()."<br />";
+			$oreon->CentreonLogAction->insertLog("servicegroup", $key, $row['sg_name'], "d");
+		}
 	}
 	
 	function multipleServiceGroupInDB ($serviceGroups = array(), $nbrDup = array())	{
@@ -77,6 +93,9 @@
 				foreach ($row as $key2=>$value2)	{
 					$key2 == "sg_name" ? ($sg_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					if ($key2 != "sg_id")
+						$fields[$key2] = $value2;
+					$fields["sg_name"] = $sg_name;
 				}
 				if (testServiceGroupExistence($sg_name))	{
 					$val ? $rq = "INSERT INTO servicegroup VALUES (".$val.")" : $rq = null;
@@ -108,6 +127,7 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 								print $DBRESULT->getDebugInfo()."<br />";
+						$fields["sg_hgServices"] = "";
 						while($service =& $DBRESULT->fetchRow())	{
 							$val = null;
 							foreach ($service as $key2=>$value2)
@@ -115,7 +135,10 @@
 							$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$val.", '".$maxId["MAX(sg_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print $DBRESULT2->getDebugInfo()."<br />";
-						}						
+							$fields["sg_hgServices"] .= $service["service_service_id"] . ",";
+						}
+						$fields["sg_hgServices"] = trim($fields["sg_hgServices"], ",");
+						$oreon->CentreonLogAction->insertLog("servicegroup", $maxId["MAX(sg_id)"], $sg_name, "a", $fields);						
 					}
 				}
 			}
@@ -154,6 +177,13 @@
 			print $DBRESULT->getDebugInfo()."<br />";
 		$sg_id = $DBRESULT->fetchRow();
 		
+		$fields["sg_name"] = htmlentities($ret["sg_name"], ENT_QUOTES);
+		$fields["sg_alias"] = htmlentities($ret["sg_alias"], ENT_QUOTES);
+		$fields["sg_comment"] = htmlentities($ret["sg_comment"], ENT_QUOTES);
+		$fields["sg_activate"] = $ret["sg_activate"]["sg_activate"];
+		$fields["sg_hgServices"] = implode(",", $ret["sg_hgServices"]);
+		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id["MAX(sg_id)"], htmlentities($ret["sg_name"], ENT_QUOTES), "a", $fields);
+		
 		/*
 		 *  Update LCA
 		 */
@@ -177,7 +207,7 @@
 	function updateServiceGroup($sg_id)	{
 		if (!$sg_id) return;
 		global $form;
-		global $pearDB;
+		global $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE servicegroup SET ";
@@ -189,6 +219,13 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print $DBRESULT->getDebugInfo()."<br />";
+			
+		$fields["sg_name"] = htmlentities($ret["sg_name"], ENT_QUOTES);
+		$fields["sg_alias"] = htmlentities($ret["sg_alias"], ENT_QUOTES);
+		$fields["sg_comment"] = htmlentities($ret["sg_comment"], ENT_QUOTES);
+		$fields["sg_activate"] = $ret["sg_activate"]["sg_activate"];
+		$fields["sg_hgServices"] = implode(",", $ret["sg_hgServices"]);
+		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, htmlentities($ret["sg_name"], ENT_QUOTES), "c", $fields);
 	}
 	
 	function updateServiceGroupServices($sg_id, $ret = array())	{

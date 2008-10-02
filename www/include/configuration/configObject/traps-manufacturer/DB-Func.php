@@ -37,17 +37,23 @@
 	}
 
 	function deleteMnftrInDB ($mnftr = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		foreach($mnftr as $key=>$value)		{
+			$DBRESULT2 =& $pearDB->query("SELECT name FROM `traps_vendor` WHERE `id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
+			
 			$DBRESULT =& $pearDB->query("DELETE FROM traps_vendor WHERE id = '".htmlentities($key, ENT_QUOTES)."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$oreon->CentreonLogAction->insertLog("manufacturer", $key, $row['name'], "d");
 		}
 	}
 	
 	function multipleMnftrInDB ($mnftr = array(), $nbrDup = array())	{
 		foreach($mnftr as $key=>$value)	{
-			global $pearDB;
+			global $pearDB, $oreon;
 			$DBRESULT =& $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".htmlentities($key, ENT_QUOTES)."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -58,12 +64,16 @@
 				foreach ($row as $key2=>$value2)	{
 					$key2 == "name" ? ($name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					if ($key2 != "id")
+						$fields[$key2] = $value2;
+					$fields["name"] = $name;
 				}
 				if (testMnftrExistence($name)) {
 					$val ? $rq = "INSERT INTO traps_vendor VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					$oreon->CentreonLogAction->insertLog("manufacturer", htmlentities($key, ENT_QUOTES), $name, "a", $fields);
 				}
 			}
 		}
@@ -77,7 +87,7 @@
 	function updateMnftr($id = null)	{
 		if (!$id) return;
 		global $form;
-		global $pearDB;
+		global $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE traps_vendor ";
@@ -88,6 +98,10 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$fields["name"] = htmlentities($ret["name"], ENT_QUOTES);
+		$fields["alias"] = htmlentities($ret["alias"], ENT_QUOTES);
+		$fields["description"] = htmlentities($ret["description"], ENT_QUOTES);
+		$oreon->CentreonLogAction->insertLog("manufacturer", $id, $fields["name"], "c", $fields);
 	}
 	
 	function insertMnftrInDB ($ret = array())	{
@@ -111,6 +125,12 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM traps_vendor");
 		$mnftr_id = $DBRESULT->fetchRow();
+		
+		$fields["name"] = htmlentities($ret["name"], ENT_QUOTES);
+		$fields["alias"] = htmlentities($ret["alias"], ENT_QUOTES);
+		$fields["description"] = htmlentities($ret["description"], ENT_QUOTES);
+		$oreon->CentreonLogAction->insertLog("manufacturer", $mnftr_id["MAX(id)"], $fields["name"], "a", $fields);
+		
 		return ($mnftr_id["MAX(id)"]);
 	}
 ?>

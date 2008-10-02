@@ -35,16 +35,22 @@
 	}
 
 	function deleteTrapInDB($traps = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		foreach($traps as $key=>$value)		{
+			$DBRESULT2 =& $pearDB->query("SELECT traps_name FROM `traps` WHERE `traps_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
+			
 			$DBRESULT =& $pearDB->query("DELETE FROM traps WHERE traps_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$oreon->CentreonLogAction->insertLog("traps", $key, $row['traps_name'], "d");
 		}
 	}
 	
 	function multipleTrapInDB($traps = array(), $nbrDup = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		foreach ($traps as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
@@ -56,12 +62,18 @@
 				foreach ($row as $key2 => $value2)	{
 					$key2 == "traps_name" ? ($traps_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					if ($key2 != "traps_id")
+						$fields[$key2] = $value2;
+					$fields["traps_name"] = $traps_name;
 				}
 				if (testTrapExistence($traps_oid))	{
 					$val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					$DBRESULT2 =& $pearDB->query("SELECT MAX(traps_id) FROM traps");
+					$maxId = $DBRESULT2->fetchRow();
+					$oreon->CentreonLogAction->insertLog("traps", $maxId["MAX(traps_id)"], $traps_name, "a", $fields);
 				}
 			}
 		}
@@ -73,7 +85,7 @@
 	}
 	
 	function updateTrap($traps_id = null)	{
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon;
 		
 		if (!$traps_id) 
 			return;
@@ -102,6 +114,16 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$fields["traps_name"] = htmlentities($ret["traps_name"], ENT_QUOTES);
+		$fields["traps_args"] = htmlentities($ret["traps_args"], ENT_QUOTES);
+		$fields["traps_status"] = htmlentities($ret["traps_status"], ENT_QUOTES);
+		$fields["traps_submit_result_enable"] = $ret["traps_submit_result_enable"];
+		$fields["traps_reschedule_svc_enable"] = $ret["traps_reschedule_svc_enable"];
+		$fields["traps_execution_command"] = htmlentities($ret["traps_execution_command"], ENT_QUOTES);
+		$fields["traps_execution_command_enable"] = $ret["traps_execution_command_enable"];
+		$fields["traps_comments"] = htmlentities($ret["traps_comments"], ENT_QUOTES);
+		$fields["manufacturer_id"] = htmlentities($ret["manufacturer_id"], ENT_QUOTES);
+		$oreon->CentreonLogAction->insertLog("traps", $traps_id, $fields["traps_name"], "c", $fields);
 	}
 	
 	function insertTrapInDB ($ret = array())	{
@@ -110,7 +132,7 @@
 	}
 	
 	function insertTrap($ret = array())	{
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon;
 		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
@@ -132,6 +154,18 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(traps_id) FROM traps");
 		$traps_id = $DBRESULT->fetchRow();
+		
+		$fields["traps_name"] = htmlentities($ret["traps_name"], ENT_QUOTES);
+		$fields["traps_args"] = htmlentities($ret["traps_args"], ENT_QUOTES);
+		$fields["traps_status"] = htmlentities($ret["traps_status"], ENT_QUOTES);
+		$fields["traps_submit_result_enable"] = $ret["traps_submit_result_enable"];
+		$fields["traps_reschedule_svc_enable"] = $ret["traps_reschedule_svc_enable"];
+		$fields["traps_execution_command"] = htmlentities($ret["traps_execution_command"], ENT_QUOTES);
+		$fields["traps_execution_command_enable"] = $ret["traps_execution_command_enable"];
+		$fields["traps_comments"] = htmlentities($ret["traps_comments"], ENT_QUOTES);
+		$fields["manufacturer_id"] = htmlentities($ret["manufacturer_id"], ENT_QUOTES);
+		$oreon->CentreonLogAction->insertLog("traps", $traps_id["MAX(traps_id)"], $fields["traps_name"], "a", $fields);
+		
 		return ($traps_id["MAX(traps_id)"]);
 	}
 ?>

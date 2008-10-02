@@ -39,17 +39,23 @@
 	}
 		
 	function deleteEscalationInDB ($escalations = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		foreach($escalations as $key=>$value)	{
+			$DBRESULT2 =& $pearDB->query("SELECT esc_name FROM `escalation` WHERE `esc_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
+			
 			$DBRESULT =& $pearDB->query("DELETE FROM escalation WHERE esc_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$oreon->CentreonLogAction->insertLog("escalation", $key, $row['esc_name'], "d");
 		}
 	}
 	
 	function multipleEscalationInDB ($escalations = array(), $nbrDup = array())	{
 		foreach($escalations as $key=>$value)	{
-			global $pearDB;
+			global $pearDB, $oreon;
 			$DBRESULT =& $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -60,6 +66,9 @@
 				foreach ($row as $key2=>$value2)	{
 					$key2 == "esc_name" ? ($esc_name = $value2 = $value2." ".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					if ($key2 != "esc_id")
+						$fields[$key2] = $value2;
+					$fields["esc_name"] = $esc_name;
 				}
 				if (testExistence($esc_name))	{
 					$val ? $rq = "INSERT INTO escalation VALUES (".$val.")" : $rq = null;
@@ -74,51 +83,70 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["esc_cgs"] = "";
 						while($cg =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_contactgroup_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$cg["contactgroup_cg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["esc_cgs"] .= $cg["contactgroup_cg_id"] . ",";
 						}
+						$fields["esc_cgs"] = trim($fields["esc_cgs"], ",");
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["esc_hosts"] = "";
 						while($host =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_host_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$host["host_host_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["esc_hosts"] .= $host["host_host_id"] . ",";
 						}
+						$fields["esc_hosts"] = trim($fields["esc_hosts"], ",");
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["esc_hgs"] = "";
 						while($hg =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_hostgroup_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$hg["hostgroup_hg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["esc_hgs"] .= $hg["hostgroup_hg_id"] . ",";
 						}
+						$fields["esc_hgs"] = trim($fields["esc_hgs"], ",");
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM escalation_servicegroup_relation WHERE escalation_esc_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["esc_sgs"] = "";
 						while($sg =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_servicegroup_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$sg["servicegroup_sg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["esc_sgs"] .= $sg["servicegroup_sg_id"] . ",";
 						}
+						$fields["esc_sgs"] = trim($fields["esc_sgs"], ",");
 						$DBRESULT =& $pearDB->query("SELECT * FROM escalation_service_relation WHERE escalation_esc_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["esc_hServices"] = "";
 						while($sv =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_service_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$sv["service_service_id"]."', '".$sv["host_host_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["esc_hServices"] .= $sv["service_service_id"] . ",";
 						}
+						$fields["esc_hServices"] = trim($fields["esc_hServices"], ",");
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation WHERE escalation_esc_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["esc_metas"] = "";
 						while($sv =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_meta_service_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$sv["meta_service_meta_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["esc_metas"] .= $sv["meta_service_meta_id"]  . ",";
 						}
+						$fields["esc_metas"] = trim($fields["esc_metas"], ",");
+						$oreon->CentreonLogAction->insertLog("escalation", $maxId["MAX(esc_id)"], $esc_name, "a");
 					}
 				}
 			}
@@ -149,7 +177,7 @@
 	
 	function insertEscalation()	{
 		global $form;
-		global $pearDB;
+		global $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO escalation ";
@@ -172,13 +200,41 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$esc_id = $DBRESULT->fetchRow();
+		$fields["esc_name"] = htmlentities($ret["esc_name"], ENT_QUOTES);
+		$fields["esc_alias"] = htmlentities($ret["esc_alias"], ENT_QUOTES);
+		$fields["first_notification"] = htmlentities($ret["first_notification"], ENT_QUOTES);
+		$fields["last_notification"] = htmlentities($ret["last_notification"], ENT_QUOTES);
+		$fields["notification_interval"] = htmlentities($ret["notification_interval"], ENT_QUOTES);
+		$fields["escalation_period"] = htmlentities($ret["escalation_period"], ENT_QUOTES);
+		$fields["escalation_options1"] = implode(",", array_keys($ret["escalation_options1"]));
+		$fields["escalation_options2"] = implode(",", array_keys($ret["escalation_options2"]));
+		$fields["esc_comment"] = htmlentities($ret["esc_comment"], ENT_QUOTES);
+		$fields["esc_cgs"] = "";
+		if (isset($ret["esc_cgs"]))
+			$fields["esc_cgs"] = implode(",", $ret["esc_cgs"]);
+		$fields["esc_hosts"] = "";
+		if (isset($ret["esc_hosts"]))
+			$fields["esc_hosts"] = implode(",", $ret["esc_hosts"]);
+		$fields["esc_hgs"] = "";
+		if (isset($ret["esc_hgs"]))
+			$fields["esc_hgs"] = implode(",", $ret["esc_hgs"]);
+		$fields["esc_sgs"] = "";
+		if (isset($ret["esc_sgs"]))
+			$fields["esc_sgs"] = implode(",", $ret["esc_sgs"]);
+		$fields["esc_hServices"] = "";
+		if (isset($ret["esc_hServices"]))
+			$fields["esc_hServices"] = implode(",", $ret["esc_hServices"]);
+		$fields["esc_metas"] = "";
+		if (isset($ret["esc_metas"]))
+			$fields["esc_metas"] = implode(",", $ret["esc_metas"]);
+		$oreon->CentreonLogAction->insertLog("escalation", $esc_id["MAX(esc_id)"], htmlentities($ret["esc_name"], ENT_QUOTES), "a", $fields);
 		return ($esc_id["MAX(esc_id)"]);
 	}
 	
 	function updateEscalation($esc_id = null)	{
 		if (!$esc_id) exit();
 		global $form;
-		global $pearDB;
+		global $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE escalation SET ";
@@ -204,6 +260,34 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$fields["esc_name"] = htmlentities($ret["esc_name"], ENT_QUOTES);
+		$fields["esc_alias"] = htmlentities($ret["esc_alias"], ENT_QUOTES);
+		$fields["first_notification"] = htmlentities($ret["first_notification"], ENT_QUOTES);
+		$fields["last_notification"] = htmlentities($ret["last_notification"], ENT_QUOTES);
+		$fields["notification_interval"] = htmlentities($ret["notification_interval"], ENT_QUOTES);
+		$fields["escalation_period"] = htmlentities($ret["escalation_period"], ENT_QUOTES);
+		$fields["escalation_options1"] = implode(",", array_keys($ret["escalation_options1"]));
+		$fields["escalation_options2"] = implode(",", array_keys($ret["escalation_options2"]));
+		$fields["esc_comment"] = htmlentities($ret["esc_comment"], ENT_QUOTES);
+		$fields["esc_cgs"] = "";
+		if (isset($ret["esc_cgs"]))
+			$fields["esc_cgs"] = implode(",", $ret["esc_cgs"]);
+		$fields["esc_hosts"] = "";
+		if (isset($ret["esc_hosts"]))
+			$fields["esc_hosts"] = implode(",", $ret["esc_hosts"]);
+		$fields["esc_hgs"] = "";
+		if (isset($ret["esc_hgs"]))
+			$fields["esc_hgs"] = implode(",", $ret["esc_hgs"]);
+		$fields["esc_sgs"] = "";
+		if (isset($ret["esc_sgs"]))
+			$fields["esc_sgs"] = implode(",", $ret["esc_sgs"]);
+		$fields["esc_hServices"] = "";
+		if (isset($ret["esc_hServices"]))
+			$fields["esc_hServices"] = implode(",", $ret["esc_hServices"]);
+		$fields["esc_metas"] = "";
+		if (isset($ret["esc_metas"]))
+			$fields["esc_metas"] = implode(",", $ret["esc_metas"]);
+		$oreon->CentreonLogAction->insertLog("escalation", $esc_id["MAX(esc_id)"], htmlentities($ret["esc_name"], ENT_QUOTES), "c", $fields);
 	}
 	
 	function updateEscalationContactGroups($esc_id = null)	{

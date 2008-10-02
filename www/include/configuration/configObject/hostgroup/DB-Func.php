@@ -123,7 +123,6 @@
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(hg_id)"]))	{
-						$oreon->CentreonLogAction->insertLog("hostgroup", $maxId["MAX(hg_id)"], $hg_name, "a", $fields);
 						if (!$is_admin){
 							$group_list = getGroupListofUser($pearDB);
 							$resource_list = getResourceACLList($group_list);
@@ -140,11 +139,14 @@
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["hg_hosts"] = "";
 						while($host =& $DBRESULT->fetchRow()){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO hostgroup_relation VALUES ('', '".$maxId["MAX(hg_id)"]."', '".$host["host_host_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["hg_hosts"] .= $host["host_host_id"] . ",";
 						}
+						$fields["hg_hosts"] = trim($fields["hg_hosts"], ",");
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT cghgr.contactgroup_cg_id FROM contactgroup_hostgroup_relation cghgr WHERE cghgr.hostgroup_hg_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -153,6 +155,7 @@
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
+						$oreon->CentreonLogAction->insertLog("hostgroup", $maxId["MAX(hg_id)"], $hg_name, "a", $fields);
 					}
 				}
 			}
@@ -203,6 +206,7 @@
 		$fields["hg_snmp_community"] = htmlentities($ret["hg_snmp_community"], ENT_QUOTES);
 		$fields["hg_comment"] = htmlentities($ret["hg_comment"], ENT_QUOTES);
 		$fields["hg_activate"] = $ret["hg_activate"]["hg_activate"];
+		$fields["hg_hosts"] = implode(",", $ret["hg_hosts"]);
 		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id["MAX(hg_id)"], htmlentities($ret["hg_name"], ENT_QUOTES), "a", $fields);
 		
 		if (!$is_admin){
@@ -249,6 +253,7 @@
 		$fields["hg_snmp_community"] = htmlentities($ret["hg_snmp_community"], ENT_QUOTES);
 		$fields["hg_comment"] = htmlentities($ret["hg_comment"], ENT_QUOTES);
 		$fields["hg_activate"] = $ret["hg_activate"]["hg_activate"];
+		$fields["hg_hosts"] = implode(",", $ret["hg_hosts"]);
 		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id, htmlentities($ret["hg_name"], ENT_QUOTES), "c", $fields);
 	}
 	
