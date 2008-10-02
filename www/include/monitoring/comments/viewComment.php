@@ -17,6 +17,21 @@
 	if (!isset($oreon))
 		exit();
 
+	/*
+	 * ACL Actions
+	 */
+	$GroupListofUser = array();
+	$GroupListofUser =  getGroupListofUser($pearDB);
+	
+	$allActions = false;
+	if(count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+	$authorized_actions = array();
+	$authorized_actions = getActionsACLList($GroupListofUser);
+	}
+	else {
+		$allActions = true;
+	}
+
 	# LCA
 	if (!$is_admin)
 		$lcaHostByName = getLcaHostByName($pearDB);
@@ -98,9 +113,17 @@
 	$form->addElement('hidden', 'p');
 	$tab = array ("p" => $p);
 	$form->setDefaults($tab);
-
-	$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+	
+	if(isset($authorized_actions) && $allActions == false){		
+		foreach($authorized_actions as $action_name) {
+			if($action_name == "host_comment") $tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+			if($action_name == "service_comment") $tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+		}
+	} else {
+		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+		$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));		
+	}
+	
 	$tpl->assign("p", $p);
 	$tpl->assign("tab_comments_host", $tab_comments_host);
 	$tpl->assign("tab_comments_svc", $tab_comments_svc);
