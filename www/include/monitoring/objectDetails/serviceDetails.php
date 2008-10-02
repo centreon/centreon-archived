@@ -109,7 +109,7 @@
 
 	$lcaHost = getLcaHostByName($pearDB);
 
-	isset($lcaHost["LcaHost"][$host_name]) || $oreon->user->admin || !$isRestreint ? $key = true : $key = NULL;
+	isset($lcaHost["LcaHost"][$host_name]) || $is_admin ? $key = true : $key = NULL;
 	if ($key == NULL){
 		include_once("alt_error.php");
 	} else {
