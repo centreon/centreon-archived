@@ -246,7 +246,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -329,7 +329,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -368,7 +368,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -406,7 +406,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -430,7 +430,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -477,7 +477,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -527,7 +527,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -580,7 +580,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -615,7 +615,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -639,7 +639,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 		
@@ -663,7 +663,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 		
@@ -687,7 +687,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -711,7 +711,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -742,7 +742,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -766,7 +766,7 @@
 	 * </code>
 	 *
 	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
-	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxiï¿½me argument
 	 * @return{TAB}int{TAB}Ma valeur de retour
 	 */
 	
@@ -789,5 +789,130 @@
 		if (count($tab_res))
 			return $tab_res;
 		return array();
+	}
+	
+/*
+ * function getActionsACLList
+ * This function is designed to return a list of actions allowed for an user
+ *
+ * <code>
+ *		$authorized_actions = array();
+ *		$authorized_actions = getActionsACLList($GroupListofUser);
+ * </code>
+ *
+ * Input is a list of ACL groups of user
+ * @param	array ( [0] => Group1 [1] => Groupx ) 
+ * 
+ * Output is a list of actions allowed for a user like:
+ * @return array ( [0] => service_notifications [1] => service_schedule_check [2] => service_schedule_downtime [3] => ... )
+ */
+	function getActionsACLList($GroupListofUser){	
+		global $pearDB;		
+		
+		$i = 0;
+		$idsRequest = ""; 
+		# Formating a variable in order to include on the request
+		foreach($GroupListofUser as $id) {
+			$idsRequest .= "`acl_group_id` = ".$id."";
+			if($i < count($GroupListofUser)-1) {
+				$idsRequest .= " OR ";
+			}
+		$i++;
+		}
+		
+		if($idsRequest != "")
+		{
+			# Request in order to list the 'acl_action_id' linked with groups of user
+			$request = "SELECT acl_action_id FROM `acl_group_actions_relations` WHERE ".$idsRequest;
+			$DBRESULT =& $pearDB->query($request);
+			if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			
+			$idsActions = array();
+			while ($rule =& $DBRESULT->fetchRow()){
+				$idsActions[] =  $rule["acl_action_id"];
+			}
+		
+			$i = 0;
+			$idsRequest = "";
+			# Formating a variable in order to include on the request
+			foreach($idsActions as $id) {
+				$idsRequest .= "`acl_action_id` = ".$id."";
+				if($i <= count($GroupListofUser)) {
+					$idsRequest .= " OR ";
+				}
+			$i++;
+			}
+			unset($idsActions);
+			
+			# Request in order to list Actions Access enabled
+			$request = "SELECT acl_action_id FROM `acl_actions` WHERE acl_action_activate = '1' AND ($idsRequest)";
+			$DBRESULT =& $pearDB->query($request);
+			if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$idsActions = array();
+			while ($rule =& $DBRESULT->fetchRow()){
+				$idsActions[] =  $rule["acl_action_id"];
+			}
+			
+			$i = 0;
+			$idsRequest = "";
+			# Formating a variable in order to include on the request
+			foreach($idsActions as $id) {
+				$idsRequest .= "`acl_action_rule_id` = ".$id."";
+				if($i < count($idsActions)-1) {
+					$idsRequest .= " OR ";
+				}
+			$i++;
+			}
+	
+			if(isset($idsRequest) && $idsRequest != "") {
+				# Request in order to list the 'acl_action_name' linked with rules of user		
+				$request = "SELECT acl_action_name FROM `acl_actions_rules` WHERE $idsRequest";
+				$DBRESULT =& $pearDB->query($request);
+				if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
+				$authorized_actions = array();
+				while ($actions =& $DBRESULT->fetchRow()){
+					$authorized_actions[] = $actions["acl_action_name"];
+				}
+				return $authorized_actions;	
+			}
+		}
+	return NULL;
+	}
+	
+/*
+ * function verifyActionsACLofUser
+ * This function is designed to verify if user is allowed to perform an action
+ *
+ * <code>
+ * 		// Un exemple with the action "host_comment"
+ *		$authorized_actions = false;
+ *		$authorized_actions = getActionsACLList("host_comment");
+ *		print $authorized_actions; // (print true or false if user is allowed or not)
+ * </code>
+ *
+ * Input is the name of the action, names are in the "DB-Func.php" of the "Actions Access" configuration interface (function listActions()).
+ * @param	string "service_checks" 
+ * 
+ * Output is true or false
+ * @return string true/false
+ */
+	function verifyActionsACLofUser($action_name){
+		global $pearDB;	
+		$GroupListofUser = array();
+		$authorized_actions = array();
+		$authorisation = false;
+		
+		$GroupListofUser =  getGroupListofUser($pearDB);
+		$authorized_actions = getActionsACLList($GroupListofUser);
+		if(count($authorized_actions) == 0) $actions = true;
+		
+		if(isset($authorized_actions)) {
+			foreach($authorized_actions as $list) {
+				if($list == $action_name) $authorisation = true; 
+			}
+		}
+
+		return $authorisation;
 	}
 ?>
