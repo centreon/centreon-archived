@@ -18,6 +18,23 @@
 	if (!isset($oreon))
 		exit();
 
+	/*
+	 * ACL Actions
+	 */
+	$GroupListofUser = array();
+	$GroupListofUser =  getGroupListofUser($pearDB);
+	
+	$allActions = false;
+	// Get list of actions allowed for user
+	if(count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+	$authorized_actions = array();
+	$authorized_actions = getActionsACLList($GroupListofUser);
+	}
+	else {
+	 	// if user is admin, or without ACL, he cans perform all actions
+		$allActions = true;
+	}
+
 	$pagination = "maxViewMonitoring";
 	include("./include/common/autoNumLimit.php");
 
@@ -82,26 +99,35 @@
 	</SCRIPT>
 	<?php
 
+	$action_list = array();
+	$action_list[]	=	_("More actions...");
+	// Showing actions allowed for current user
+	if(isset($authorized_actions) && $allActions == false){		
+		foreach($authorized_actions as $action_name) {
+			if($action_name == "host_acknowledgement" || $allActions == true) $action_list[72] = _("Hosts : Acknowledge");
+			if($action_name == "host_acknowledgement" || $allActions == true) $action_list[73] = _("Hosts : Disacknowledge");
+			if($action_name == "host_notifications" || $allActions == true) $action_list[82] = _("Hosts : Enable Notification");
+			if($action_name == "host_notifications" || $allActions == true) $action_list[83] = _("Hosts : Disable Notification");
+			if($action_name == "host_checks" || $allActions == true) $action_list[92] = _("Hosts : Enable Check");
+			if($action_name == "host_checks" || $allActions == true) $action_list[93] = _("Hosts : Disable Check");		
+		}
+	} else {
+			$action_list[72] = _("Hosts : Acknowledge");
+			$action_list[73] = _("Hosts : Disacknowledge");
+			$action_list[82] = _("Hosts : Enable Notification");
+			$action_list[83] = _("Hosts : Disable Notification");
+			$action_list[92] = _("Hosts : Enable Check");
+			$action_list[93] = _("Hosts : Disable Check");
+	}
+
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
-    $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."), 
-													"72" 	=> 	_("Hosts : Acknowledge"),
-													"73" 	=> 	_("Hosts : Disacknowledge"), 
-													"82" 	=> 	_("Hosts : Enable Notification"),
-													"83" 	=> 	_("Hosts : Disable Notification"),
-													"92" 	=> 	_("Hosts : Enable Check"),
-													"93" 	=> 	_("Hosts : Disable Check")), $attrs);
+    $form->addElement('select', 'o1', NULL, $action_list, $attrs);
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
 
 	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();");
-    $form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."), 
-													"72" 	=> 	_("Hosts : Acknowledge"),
-													"73" 	=> 	_("Hosts : Disacknowledge"), 
-													"82" 	=> 	_("Hosts : Enable Notification"),
-													"83" 	=> 	_("Hosts : Disable Notification"),
-													"92" 	=> 	_("Hosts : Enable Check"),
-													"93" 	=> 	_("Hosts : Disable Check")), $attrs);
+    $form->addElement('select', 'o2', NULL, $action_list, $attrs);
 	$form->setDefaults(array('o2' => NULL));
 	$o2 =& $form->getElement('o2');
 	$o2->setValue(NULL);
