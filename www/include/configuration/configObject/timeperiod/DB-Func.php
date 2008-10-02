@@ -40,15 +40,22 @@
 	}
 
 	function deleteTimeperiodInDB ($timeperiods = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		foreach($timeperiods as $key=>$value)	{
+			$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM `timeperiod` WHERE `tp_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
 			$DBRESULT =& $pearDB->query("DELETE FROM timeperiod WHERE tp_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$oreon->CentreonLogAction->insertLog("timeperiod", $key, $row['tp_name'], "d");
 		}
 	}
 	
 	function multipleTimeperiodInDB ($timeperiods = array(), $nbrDup = array())	{
+		global $oreon;
+		
 		foreach($timeperiods as $key=>$value)	{
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$key."' LIMIT 1");
@@ -61,11 +68,22 @@
 				foreach ($row as $key2=>$value2)	{
 					$key2 == "tp_name" ? ($tp_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					if ($key2 != "tp_id")
+						$fields[$key2] = $value2;
+					$fields["tp_name"] = $tp_name;
 				}
 				if (testTPExistence($tp_name))	{	
 					$DBRESULT =& $pearDB->query($val ? $rq = "INSERT INTO timeperiod VALUES (".$val.")" : $rq = null);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					/*
+		 			* Get Max ID
+		 			*/
+					$DBRESULT =& $pearDB->query("SELECT MAX(tp_id) FROM `timeperiod`");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					$tp_id = $DBRESULT->fetchRow();	
+					$oreon->CentreonLogAction->insertLog("timeperiod", $tp_id["MAX(tp_id)"], $tp_name, "a", $fields);
 				}
 			}
 		}
@@ -79,7 +97,7 @@
 	function updateTimeperiod($tp_id)	{
 		if (!$tp_id) return;
 		global $form;
-		global $pearDB;
+		global $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE timeperiod ";
@@ -96,6 +114,17 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			
+		$fields["tp_name"] = htmlentities($ret["tp_name"], ENT_QUOTES);
+		$fields["tp_alias"] = htmlentities($ret["tp_alias"], ENT_QUOTES);
+		$fields["tp_sunday"] = htmlentities($ret["tp_sunday"], ENT_QUOTES);
+		$fields["tp_monday"] = htmlentities($ret["tp_monday"], ENT_QUOTES);
+		$fields["tp_tuesday"] = htmlentities($ret["tp_tuesday"], ENT_QUOTES);
+		$fields["tp_wednesday"] = htmlentities($ret["tp_wednesday"], ENT_QUOTES);
+		$fields["tp_thursday"] = htmlentities($ret["tp_thursday"], ENT_QUOTES);
+		$fields["tp_friday"] = htmlentities($ret["tp_friday"], ENT_QUOTES);
+		$fields["tp_saturday"] = htmlentities($ret["tp_saturday"], ENT_QUOTES);
+		$oreon->CentreonLogAction->insertLog("timeperiod", $tp_id, htmlentities($ret["tp_name"], ENT_QUOTES), "c", $fields);
 	}
 	
 	function insertTimeperiodInDB ($ret = array())	{
@@ -105,7 +134,7 @@
 	
 	function insertTimeperiod($ret = array())	{
 		global $form;
-		global $pearDB;
+		global $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO timeperiod ";
@@ -128,6 +157,18 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tp_id = $DBRESULT->fetchRow();
+		
+		$fields["tp_name"] = htmlentities($ret["tp_name"], ENT_QUOTES);
+		$fields["tp_alias"] = htmlentities($ret["tp_alias"], ENT_QUOTES);
+		$fields["tp_sunday"] = htmlentities($ret["tp_sunday"], ENT_QUOTES);
+		$fields["tp_monday"] = htmlentities($ret["tp_monday"], ENT_QUOTES);
+		$fields["tp_tuesday"] = htmlentities($ret["tp_tuesday"], ENT_QUOTES);
+		$fields["tp_wednesday"] = htmlentities($ret["tp_wednesday"], ENT_QUOTES);
+		$fields["tp_thursday"] = htmlentities($ret["tp_thursday"], ENT_QUOTES);
+		$fields["tp_friday"] = htmlentities($ret["tp_friday"], ENT_QUOTES);
+		$fields["tp_saturday"] = htmlentities($ret["tp_saturday"], ENT_QUOTES);
+		$oreon->CentreonLogAction->insertLog("timeperiod", $tp_id["MAX(tp_id)"], htmlentities($ret["tp_name"], ENT_QUOTES), "a", $fields);
+		
 		return ($tp_id["MAX(tp_id)"]);
 	}
 ?>

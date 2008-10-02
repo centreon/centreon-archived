@@ -76,7 +76,7 @@
 	}
 
 	function enableContactInDB ($contact_id = null, $contact_arr = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		
 		if (!$contact_id && !count($contact_arr)) 
 			return;
@@ -86,12 +86,17 @@
 			$DBRESULT =& $pearDB->query("UPDATE contact SET contact_activate = '1' WHERE contact_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$DBRESULT2 =& $pearDB->query("SELECT contact_name FROM `contact` WHERE `contact_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
+			$oreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "enable");
 		}
 	}
 
 	function disableContactInDB ($contact_id = null, $contact_arr = array())	{
 		if (!$contact_id && !count($contact_arr)) return;
-		global $pearDB;
+		global $pearDB, $oreon;
 		if ($contact_id)
 			$contact_arr = array($contact_id=>"1");
 		foreach($contact_arr as $key=>$value)	{
@@ -99,21 +104,32 @@
 				$DBRESULT =& $pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$DBRESULT2 =& $pearDB->query("SELECT contact_name FROM `contact` WHERE `contact_id` = '".$key."' LIMIT 1");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+				$row = $DBRESULT2->fetchRow();
+				$oreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "disable");
 			}
 		}
 	}
 
 	function deleteContactInDB ($contacts = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		foreach($contacts as $key=>$value)	{
+			$DBRESULT2 =& $pearDB->query("SELECT contact_name FROM `contact` WHERE `contact_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
+			
 			$DBRESULT =& $pearDB->query("DELETE FROM contact WHERE contact_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$oreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "d");
 		}
 	}
 
 	function multipleContactInDB ($contacts = array(), $nbrDup = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		foreach ($contacts as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
@@ -126,6 +142,10 @@
 					$key2 == "contact_name" ? ($contact_name = $value2 = $value2."_".$i) : null;
 					$key2 == "contact_alias" ? ($contact_alias = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2 != NULL?("'".$value2."'"):"NULL");
+					if ($key2 != "contact_id")
+						$fields[$key2] = $value2;
+					$fields["contact_name"] = $contact_name;
+					$fields["contact_alias"] = $contact_alias;
 				}
 				if (testContactExistence($contact_name) && testAliasExistence($contact_alias))	{
 					$val ? $rq = "INSERT INTO contact VALUES (".$val.")" : $rq = null;
@@ -137,6 +157,7 @@
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(contact_id)"]))	{
+						$oreon->CentreonLogAction->insertLog("contact", $maxId["MAX(contact_id)"], $contact_name, "a", $fields);						
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -218,7 +239,7 @@
 	}
 
 	function insertContact($ret = array())	{
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `contact` ( " .
@@ -256,6 +277,27 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$contact_id = $DBRESULT->fetchRow();
+		
+		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
+		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
+		$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES);
+		$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES);
+		$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+		$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES);
+		$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
+		$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
+		$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES);
+		$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES);
+		$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
+		$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
+		$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
+		$fields["contact_type_msg"] = $ret["contact_type_msg"];
+		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
+		$fields["contact_auth_type"] = $ret["contact_auth_type"];
+		$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
+		$fields["contact_location"] = $ret["contact_location"];
+		$oreon->CentreonLogAction->insertLog("contact", $contact_id["MAX(contact_id)"], $ret["contact_name"], "a", $fields);
+		
 		return ($contact_id["MAX(contact_id)"]);
 	}
 
@@ -312,31 +354,98 @@
 		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL && $contact_id == $oreon->user->get_id()) {
 			$oreon->user->set_lang($ret["contact_lang"]);
 		}
+		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
+		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
+		$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES);
+		$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES);
+		$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+		$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES);
+		$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
+		$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
+		$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES);
+		$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES);
+		$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
+		$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
+		$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
+		$fields["contact_type_msg"] = $ret["contact_type_msg"];
+		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
+		$fields["contact_auth_type"] = $ret["contact_auth_type"];
+		$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
+		$fields["contact_location"] = $ret["contact_location"];
+		$oreon->CentreonLogAction->insertLog("contact", $contact_id, $ret["contact_name"], "c", $fields);
 	}
 
 	function updateContact_MC($contact_id = null)	{
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon;
 		if (!$contact_id) 
 			return;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE contact SET ";
-		if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL) $rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
-		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) $rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
-		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) $rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
-		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL) $rq .= "contact_lang = '".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ";
-		if (isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != NULL) $rq .= "contact_host_notification_options = '".implode(",", array_keys($ret["contact_hostNotifOpts"]))."', ";
-		if (isset($ret["contact_svNotifOpts"]) && $ret["contact_svNotifOpts"] != NULL) $rq .= "contact_service_notification_options = '".implode(",", array_keys($ret["contact_svNotifOpts"]))."', ";
-		if (isset($ret["contact_email"]) && $ret["contact_email"] != NULL) $rq .= "contact_email = '".htmlentities($ret["contact_email"], ENT_QUOTES)."', ";
-		if (isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL) $rq .= "contact_pager = '".htmlentities($ret["contact_pager"], ENT_QUOTES)."', ";
-		if (isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL) $rq .= "contact_comment = '".htmlentities($ret["contact_comment"], ENT_QUOTES)."', ";
-		if (isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != NULL) $rq .= "contact_oreon = '".$ret["contact_oreon"]["contact_oreon"]."', "; 
-		if (isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != NULL) $rq .= "contact_admin = '".$ret["contact_admin"]["contact_admin"]."', ";
-		if (isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL) $rq .= "contact_type_msg = '".$ret["contact_type_msg"]."', ";
-		if (isset($ret["contact_activate"]["contact_activate"]) && $ret["contact_activate"]["contact_activate"] != NULL) $rq .= "contact_activate = '".$ret["contact_activate"]["contact_activate"]."', ";
-		if (isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL) $rq .= "contact_auth_type = '".$ret["contact_auth_type"]."', ";
-		if (isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL) $rq .= "contact_ldap_dn = '".$ret["contact_ldap_dn"]."', ";
-		if (isset($ret["contact_location"]) && $ret["contact_location"] != NULL) $rq .= "contact_location = '".$ret["contact_location"]."', ";
+		if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL) {
+			$rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
+			$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
+		}
+		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) {
+			$rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
+			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];	
+		}
+		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) { 
+			$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
+			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+		}
+		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL) {
+			$rq .= "contact_lang = '".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ";
+			$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES);
+		}
+		if (isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != NULL) {
+			$rq .= "contact_host_notification_options = '".implode(",", array_keys($ret["contact_hostNotifOpts"]))."', ";
+			$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
+		}
+		if (isset($ret["contact_svNotifOpts"]) && $ret["contact_svNotifOpts"] != NULL) {
+			$rq .= "contact_service_notification_options = '".implode(",", array_keys($ret["contact_svNotifOpts"]))."', ";
+			$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
+		}
+		if (isset($ret["contact_email"]) && $ret["contact_email"] != NULL) {
+			$rq .= "contact_email = '".htmlentities($ret["contact_email"], ENT_QUOTES)."', ";
+			$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES);
+		}
+		if (isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL) {
+			$rq .= "contact_pager = '".htmlentities($ret["contact_pager"], ENT_QUOTES)."', ";
+			$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES);
+		}
+		if (isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL) {
+			$rq .= "contact_comment = '".htmlentities($ret["contact_comment"], ENT_QUOTES)."', ";	
+			$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
+		}
+		if (isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != NULL) {
+			$rq .= "contact_oreon = '".$ret["contact_oreon"]["contact_oreon"]."', ";
+			$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];	
+		} 
+		if (isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != NULL) {
+			$rq .= "contact_admin = '".$ret["contact_admin"]["contact_admin"]."', ";
+			$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
+		}
+		if (isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL) {
+			$rq .= "contact_type_msg = '".$ret["contact_type_msg"]."', ";
+			$fields["contact_type_msg"] = $ret["contact_type_msg"];
+		}
+		if (isset($ret["contact_activate"]["contact_activate"]) && $ret["contact_activate"]["contact_activate"] != NULL) {
+			$rq .= "contact_activate = '".$ret["contact_activate"]["contact_activate"]."', ";
+			$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
+		}
+		if (isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL) {
+			$rq .= "contact_auth_type = '".$ret["contact_auth_type"]."', ";
+			$fields["contact_auth_type"] = $ret["contact_auth_type"];
+		}
+		if (isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL) {
+			$rq .= "contact_ldap_dn = '".$ret["contact_ldap_dn"]."', ";
+			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
+		}
+		if (isset($ret["contact_location"]) && $ret["contact_location"] != NULL) {
+			$rq .= "contact_location = '".$ret["contact_location"]."', ";
+			$fields["contact_location"] = $ret["contact_location"];
+		}
 		if (strcmp("UPDATE contact SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";
@@ -344,6 +453,12 @@
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			
+			$DBRESULT2 =& $pearDB->query("SELECT contact_name FROM `contact` WHERE contact_id='".$contact_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
+			$oreon->CentreonLogAction->insertLog("contact", $contact_id, $row["contact_name"], "mc", $fields);
 		}
 	}
 

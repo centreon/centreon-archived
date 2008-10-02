@@ -40,30 +40,40 @@
 
 	function enableHostGroupInDB ($hg_id = NULL, $hg_arr = array())	{
 		if (!$hg_id && !count($hg_arr)) return;
-		global $pearDB;
+		global $pearDB, $oreon;
 		if ($hg_id)
 			$hg_arr = array($hg_id=>"1");
 		foreach($hg_arr as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE hostgroup SET hg_activate = '1' WHERE hg_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$DBRESULT2 =& $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
+			$oreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "enable");
 		}
 	}
 	
 	function disableHostGroupInDB ($hg_id = NULL, $hg_arr = array())	{
 		if (!$hg_id && !count($hg_arr)) return;
-		global $pearDB;
+		global $pearDB, $oreon;
 		if ($hg_id)
 			$hg_arr = array($hg_id=>"1");
 		foreach($hg_arr as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE hostgroup SET hg_activate = '0' WHERE hg_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$DBRESULT2 =& $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow();
+			$oreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "disable");
 		}
 	}
 	
 	function deleteHostGroupInDB ($hostGroups = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		foreach($hostGroups as $key=>$value)	{
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$key."'";
 			$DBRESULT =& $pearDB->query($rq);
@@ -73,9 +83,15 @@
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				}
+			$DBRESULT3 =& $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT3))
+				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+			$row = $DBRESULT3->fetchRow();
+			
 			$DBRESULT =& $pearDB->query("DELETE FROM hostgroup WHERE hg_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$oreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "d");
 		}
 	}
 	
@@ -93,6 +109,9 @@
 				foreach ($row as $key2=>$value2)	{
 					$key2 == "hg_name" ? ($hg_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					if ($key2 != "hg_id")
+						$fields[$key2] = $value2;
+					$fields["hg_name"] = $hg_name;
 				}
 				if (testHostGroupExistence($hg_name))	{
 					$val ? $rq = "INSERT INTO hostgroup VALUES (".$val.")" : $rq = null;
@@ -104,6 +123,7 @@
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(hg_id)"]))	{
+						$oreon->CentreonLogAction->insertLog("hostgroup", $maxId["MAX(hg_id)"], $hg_name, "a", $fields);
 						if (!$is_admin){
 							$group_list = getGroupListofUser($pearDB);
 							$resource_list = getResourceACLList($group_list);
@@ -178,6 +198,13 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hg_id = $DBRESULT->fetchRow();
 		
+		$fields["hg_name"] = htmlentities($ret["hg_name"], ENT_QUOTES);
+		$fields["hg_alias"] = htmlentities($ret["hg_alias"], ENT_QUOTES);
+		$fields["hg_snmp_community"] = htmlentities($ret["hg_snmp_community"], ENT_QUOTES);
+		$fields["hg_comment"] = htmlentities($ret["hg_comment"], ENT_QUOTES);
+		$fields["hg_activate"] = $ret["hg_activate"]["hg_activate"];
+		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id["MAX(hg_id)"], htmlentities($ret["hg_name"], ENT_QUOTES), "a", $fields);
+		
 		if (!$is_admin){
 			$group_list = getGroupListofUser($pearDB);
 			$resource_list = getResourceACLList($group_list);
@@ -196,7 +223,7 @@
 	
 	function updateHostGroup($hg_id)	{
 		if (!$hg_id) return;
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE hostgroup SET ";
@@ -216,6 +243,13 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			
+		$fields["hg_name"] = htmlentities($ret["hg_name"], ENT_QUOTES);
+		$fields["hg_alias"] = htmlentities($ret["hg_alias"], ENT_QUOTES);
+		$fields["hg_snmp_community"] = htmlentities($ret["hg_snmp_community"], ENT_QUOTES);
+		$fields["hg_comment"] = htmlentities($ret["hg_comment"], ENT_QUOTES);
+		$fields["hg_activate"] = $ret["hg_activate"]["hg_activate"];
+		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id, htmlentities($ret["hg_name"], ENT_QUOTES), "c", $fields);
 	}
 	
 	function updateHostGroupHosts($hg_id, $ret = array())	{

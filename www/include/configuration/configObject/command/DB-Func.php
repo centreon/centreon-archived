@@ -76,7 +76,8 @@
 				foreach ($row as $key2=>$value2)	{
 					$key2 == "command_name" ? ($command_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2 != NULL?(", '".$value2."'"):", NULL") : $val .= ($value2 != NULL?("'".$value2."'"):"NULL");
-					$fields[$key2] = $value2;
+					if ($key2 != "command_id")
+						$fields[$key2] = $value2;
 					$fields["command_name"] = $command_name;
 				}
 
