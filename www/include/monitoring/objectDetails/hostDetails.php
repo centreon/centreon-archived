@@ -176,6 +176,7 @@
 		$host_status[$host_name]["last_check"] = date(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
 		$host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? date(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
 		!$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = date(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_notification"]);
+		!$host_status[$host_name]["next_notification"] ? $host_status[$host_name]["next_notification"] = "": $host_status[$host_name]["next_notification"] = date(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_notification"]);
 		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["duration"] = "" : $host_status[$host_name]["duration"] = Duration::toString(time() - $host_status[$host_name]["last_state_change"]);
 		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = date(_("Y/m/d - H:i:s"),$host_status[$host_name]["last_state_change"]);
 		$host_status[$host_name]["last_update"] = date(_("Y/m/d - H:i:s"), time());

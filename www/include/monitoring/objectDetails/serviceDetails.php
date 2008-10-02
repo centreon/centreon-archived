@@ -166,12 +166,12 @@
 		!$service_status[$host_name."_".$svc_description]["check_latency"] ? $service_status[$host_name."_".$svc_description]["check_latency"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_latency"] = $service_status[$host_name."_".$svc_description]["check_latency"] . " seconds";
 		!$service_status[$host_name."_".$svc_description]["check_execution_time"] ? $service_status[$host_name."_".$svc_description]["check_execution_time"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_execution_time"] = $service_status[$host_name."_".$svc_description]["check_execution_time"] . " seconds";
 		!$service_status[$host_name."_".$svc_description]["last_notification"] ? $service_status[$host_name."_".$svc_description]["notification"] = "": $service_status[$host_name."_".$svc_description]["last_notification"] = date(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_notification"]);
+		!$service_status[$host_name."_".$svc_description]["next_notification"] ? $service_status[$host_name."_".$svc_description]["next_notification"] = "": $service_status[$host_name."_".$svc_description]["next_notification"] = date(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"]);
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = Duration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = Duration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = date(_("Y/m/d - H:i:s"),$service_status[$host_name."_".$svc_description]["last_state_change"]);
 		 $service_status[$host_name."_".$svc_description]["last_update"] = date(_("Y/m/d - H:i:s"), time());
 		!$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = date(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["is_flapping"]);
 
-//		$tab_status = array();
 		if (isset($ndo) && $ndo)
 			foreach ($tab_host_service[$host_name] as $key_name => $s){
 				if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
