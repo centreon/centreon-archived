@@ -18,6 +18,24 @@
 	if (!isset($oreon))
 		exit();
 
+	/*
+	 * ACL Actions
+	 */
+	$GroupListofUser = array();
+	$GroupListofUser =  getGroupListofUser($pearDB);
+	
+	$allActions = false;
+	// Get list of actions allowed for user
+	if(count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+	$authorized_actions = array();
+	$authorized_actions = getActionsACLList($GroupListofUser);
+		if(count($authorized_actions) == 0) $allActions = false;
+	}
+	else {
+	 	// if user is admin, or without ACL, he cans perform all actions
+		$allActions = true;
+	}
+
 	$ndo_base_prefix = getNDOPrefix();
 
 	if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
@@ -232,6 +250,14 @@
 		$tpl->assign("cmt_author", _("Author"));
 		$tpl->assign("cmt_comment", _("Comments"));
 		$tpl->assign("cmt_persistent", _("Persistent"));
+
+		// if user is admin, allActions is true, else, we introduce all actions allowed for user
+		$tpl->assign("acl_allActions", $allActions);
+		if(isset($authorized_actions)){
+			foreach($authorized_actions as $actions) {
+				$tpl->assign($actions, $actions);			
+			}
+		}
 		
 		$tpl->assign("p", $p);
 		$tpl->assign("o", $o);

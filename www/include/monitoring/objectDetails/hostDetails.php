@@ -18,6 +18,26 @@
 	if (!isset($oreon))
 		exit();
 
+	/*
+	 * ACL Actions
+	 */
+	$GroupListofUser = array();
+	$GroupListofUser =  getGroupListofUser($pearDB);
+	
+	$allActions = false;
+	if(count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+	$authorized_actions = array();
+	$authorized_actions = getActionsACLList($GroupListofUser);
+		if(count($authorized_actions) == 0) $allActions = false;
+	}
+	else {
+	 	// if user is admin, or without ACL, he cans perform all actions
+		$allActions = true;
+	}
+
+	/*
+	 * ACL
+	 */
 	$ndo_base_prefix = getNDOPrefix();
 
 	if (isset($_GET["host_name"]) && $_GET["host_name"])
@@ -254,7 +274,15 @@
 		$tpl->assign("m_mon_ed_event_handler", _("Event handler for this host"));
 		$tpl->assign("m_mon_ed_flapping_detect", _("Flap detection for this host"));
 		$tpl->assign("m_mon_acknowledge", _("Acknowledge this host"));
-		
+
+		// if user is admin, allActions is true, else, we introduce all actions allowed for user
+		$tpl->assign("acl_allActions", $allActions);
+		if (isset($authorized_actions) && $allActions == false){		
+			foreach ($authorized_actions as $actions) {
+				$tpl->assign($actions, $actions);	
+			}
+		}
+			
 		$tpl->assign("p", $p);
 		$tpl->assign("en", $en);
 		$tpl->assign("en_inv", $en_inv);
