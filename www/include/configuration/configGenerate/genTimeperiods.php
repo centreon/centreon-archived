@@ -56,62 +56,8 @@
 		$str .= "}\n\n";
 		$i++;
 		unset($timePeriod);
-	}
-	
-	/*
-	 * Generate custom Timeperiod for GMT
-	 */
-	function AdjustToGmt($value, $gmt) {
-		$value += $gmt;
-		if ($value <= 0)
-			$value = "00";
-		if ($value >= 24)
-			$value = "24";
-		return $value;
-	} 
-	
-	/*
-	 * Compute values for time range
-	 */
-	
-	function ComputeGMTTime($day, $daybefore, $dayafter, $gmt, $conf) {
-		global $PeriodBefore, $PeriodAfter, $Period;
-		$tabPeriod = split(";", $conf);
-		foreach ($tabPeriod as $period) {
-			/*
-			 * Match hours
-			 */
-			preg_match("/([0-9]*)\:([0-9]*)\-([0-9]*):([0-9]*)/", $period, $tabValue);
-
-			if ($gmt < 0) {
-				$tabValue[1] += $gmt;
-				$tabValue[3] += $gmt;
-				
-				if ($tabValue[1] < 0 && $tabValue[3] < 0) {				
-					$PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".$tabValue[2]."-".(24 + $tabValue[3]).":".$tabValue[4].";";
-				} else if ($tabValue[1] < 0 && $tabValue[3] > 0) {
-					$Period[$day] .= "00:00-".((24 + $tabValue[3]) % 24).":".$tabValue[4].";";
-					$PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".$tabValue[2]."-24:00;";
-				} else {
-					$Period[$day] .= ($tabValue[1] < 0 ? 24 + $tabValue[1] : $tabValue[1]).":".$tabValue[2]."-".($tabValue[3] <= 0 ? 24 + $tabValue[3] : $tabValue[3]).":".$tabValue[4].";";					
-				}
-			} else if ($gmt > 0) {
-				$tabValue[1] += $gmt;
-				$tabValue[3] += $gmt;
-				if ($tabValue[1] > 24 && $tabValue[3] > 24) {				
-					$PeriodAfter[$dayafter] .= ($tabValue[1] % 24).":".$tabValue[2]."-".($tabValue[3] % 24).":".$tabValue[4].";";
-				} else if ($tabValue[1] < 24 && $tabValue[3] > 24) {
-					$Period[$day] .= $tabValue[1].":".$tabValue[2]."-"."24:00;";
-					$PeriodAfter[$dayafter] .= "00:00-".($tabValue[3] % 24).":".$tabValue[4].";";
-				} else {
-					$Period[$day] .= $tabValue[1].":".$tabValue[2]."-".$tabValue[3].":".$tabValue[4].";";					
-				}
-			} else if ($gmt == 0) {
-				$Period[$day] .= $tabValue[1].":".$tabValue[2]."-".$tabValue[3].":".$tabValue[4].";";
-			}		
-		}
-	}
-	
+	}	
+		
 	$GMTList = $oreon->CentreonGMT->listGTM;
 	foreach ($GMTList as $gmt => $value) {
 		$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
