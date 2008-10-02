@@ -172,13 +172,13 @@
 			
 		$elemArr[$i] = array("MenuClass"=>"list_".($service["nbr"]>1 ? "three" : $style),
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>htmlentities($service["hg_name"]),
+						"RowMenu_name"=>$service["hg_name"],
 						"RowMenu_link"=>"?p=60102&o=c&hg_id=".$service['hg_id'],
 						"RowMenu_link2"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
 						"RowMenu_parent"=>$tplStr,
 						"RowMenu_retry"=> $normal_check_interval . " min / ".$retry_check_interval." min",
 						"RowMenu_attempts"=>getMyServiceField($service['service_id'], "service_max_check_attempts"),
-						"RowMenu_desc"=>htmlentities($service["service_description"]),
+						"RowMenu_desc"=>$service["service_description"],
 						"RowMenu_status"=>$service["service_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);
 		$fgHostgroup["print"] ? NULL : $elemArr[$i]["RowMenu_name"] = NULL;

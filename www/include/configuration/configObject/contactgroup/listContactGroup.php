@@ -90,9 +90,9 @@
 		$ctNbr = $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 							"RowMenu_select"=>$selectedElements->toHtml(),
-							"RowMenu_name"=>htmlentities($cg["cg_name"]),
+							"RowMenu_name"=>$cg["cg_name"],
 							"RowMenu_link"=>"?p=".$p."&o=c&cg_id=".$cg['cg_id'],
-							"RowMenu_desc"=>htmlentities($cg["cg_alias"]),
+							"RowMenu_desc"=>$cg["cg_alias"],
 							"RowMenu_contacts"=>$ctNbr["nbr"],
 							"RowMenu_status"=>$cg["cg_activate"] ? _("Enabled") : _("Disabled"),
 							"RowMenu_options"=>$moptions);

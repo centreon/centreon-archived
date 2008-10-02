@@ -133,8 +133,8 @@
 		
 			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_desc"=>htmlentities($service["service_description"]),
-						"RowMenu_alias"=>htmlentities($service["service_alias"]),
+						"RowMenu_desc"=>$service["service_description"],
+						"RowMenu_alias"=>$service["service_alias"],
 						"RowMenu_parent"=>$tplStr,
 						"RowMenu_retry"		=> $normal_check_interval . " min / ".$retry_check_interval." min",
 						"RowMenu_attempts"	=> getMyServiceField($service['service_id'], "service_max_check_attempts"),

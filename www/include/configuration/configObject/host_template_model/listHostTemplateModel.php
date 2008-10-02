@@ -112,9 +112,9 @@
 		$svArr = getMyHostServices($host['host_id']);
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>htmlentities($host["host_name"]),
+						"RowMenu_name"=>$host["host_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
-						"RowMenu_desc"=>htmlentities($host["host_alias"]),
+						"RowMenu_desc"=>$host["host_alias"],
 						"RowMenu_svChilds"=>count($svArr),
 						"RowMenu_parent"=>$tplStr,
 						"RowMenu_status"=>$host["host_activate"] ? _("Enabled") : _("Disabled"),

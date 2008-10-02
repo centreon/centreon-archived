@@ -118,7 +118,7 @@
 
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 							"RowMenu_select"=>$selectedElements->toHtml(),
-							"RowMenu_name"=>htmlentities($cmd["command_name"]),
+							"RowMenu_name"=>$cmd["command_name"],
 							"RowMenu_link"=>"?p=".$p."&o=c&command_id=".$cmd['command_id']."&type=".$cmd['command_type'],
 							"RowMenu_desc"=>substr($cmd["command_line"], 0, 50)."...",
 							"RowMenu_type"=>$command_type,

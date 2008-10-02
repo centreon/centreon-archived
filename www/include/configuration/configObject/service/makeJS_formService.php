@@ -16,16 +16,15 @@
  */
 	if (!isset($oreon))
 		exit();
-?>
-
-<script type="text/javascript">
+?><script type="text/javascript">
 
 var _o='<?php echo $o;?>';
 var _p='<?php echo $p;?>';
 
 /*
-**  This block is the javascript code for the multi macro creation 
-*/
+ *  This block is the javascript code for the multi macro creation 
+ */
+
 function addBlankInput() {
 	var tabElem = document.getElementById('macroTable');
 	var keyElem = document.createElement('input');
@@ -37,8 +36,7 @@ function addBlankInput() {
 	if (trMacroClassFlag) {
 		trElem.className = "list_one";
 		trMacroClassFlag = 0;
-	}
-	else {
+	} else {
 		trElem.className = "list_two";
 		trMacroClassFlag = 1;
 	}
@@ -66,8 +64,7 @@ function addBlankInput() {
 		if (response){			
 			if (navigator.appName == "Microsoft Internet Explorer") {
 				document.getElementById('trMacroInput_' + this.id).innerText = "";
-			}
-			else {
+			} else {
 				document.getElementById('trMacroInput_' + this.id).innerHTML = "";
 			}
 		}
@@ -83,8 +80,8 @@ function addBlankInput() {
 }
 
 /*
-** Function for displaying existing macro
-*/
+ * Function for displaying existing macro
+ */
 
 function displayExistingMacroSvc(max){
 	for (var i=0; i < max; i++) {
@@ -93,16 +90,13 @@ function displayExistingMacroSvc(max){
 		var imgElem = document.createElement('img');	
 		var tabElem = document.getElementById('macroTable');
 		var trElem = document.createElement('tr');
-		
 		var tbodyElem = document.createElement('tbody');
-		tbodyElem.setAttribute("style", "padding:0px;");
 		
 		trElem.id = "trElem_" + globalj;
 		if (trMacroClassFlag) {
 			trElem.className = "list_one";
 			trMacroClassFlag = 0;
-		}
-		else {
+		} else {
 			trElem.className = "list_two";
 			trMacroClassFlag = 1;
 		}		
@@ -132,8 +126,7 @@ function displayExistingMacroSvc(max){
 			if (response){
 				if (navigator.appName == "Microsoft Internet Explorer") {
 					document.getElementById('trMacroInput_' + this.id).innerText = "";
-				}
-				else {
+				} else {
 					document.getElementById('trMacroInput_' + this.id).innerHTML = "";
 				}
 			}
@@ -152,7 +145,6 @@ function displayExistingMacroSvc(max){
 /*
  * Global variables
  */
- 
 var globalj = 0;
 var trMacroClassFlag = 1;
 var globalMacroTabId = new Array();
