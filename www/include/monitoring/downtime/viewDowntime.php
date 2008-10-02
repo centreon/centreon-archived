@@ -19,6 +19,21 @@
 		exit();
 
 	/*
+	 * ACL Actions
+	 */
+	$GroupListofUser = array();
+	$GroupListofUser =  getGroupListofUser($pearDB);
+	
+	$allActions = false;
+	if(count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+		$authorized_actions = array();
+		$authorized_actions = getActionsACLList($GroupListofUser);
+	}
+	else {
+		$allActions = true;
+	}
+
+	/*
 	 * ACL
 	 */
 	if (!$is_admin)
@@ -103,8 +118,16 @@
 	$tab = array ("p" => $p);
 	$form->setDefaults($tab);
 
+	if(isset($authorized_actions) && $allActions == false){		
+		foreach($authorized_actions as $action_name) {
+			if($action_name == "host_schedule_downtime") $tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+			if($action_name == "service_schedule_downtime") $tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+		}
+	} else {
 	$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+	}
+	
 	$tpl->assign("p", $p);
 	
 	$tpl->assign("tab_downtime_host", $tab_downtime_host);
