@@ -55,4 +55,3 @@
 		$template -> display("home.ihtml");
 	}
 ?>
-
