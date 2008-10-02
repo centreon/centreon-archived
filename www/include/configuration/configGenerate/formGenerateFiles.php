@@ -26,16 +26,29 @@
 		return $str;
 	}
 
-	# Get Poller List
+	/*
+	 *  Get Poller List
+	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	if ($DBRESULT->numRows() > 1) {
+	$n = $DBRESULT->numRows();
+	/*
+	 * Display null option
+	 */
+	if ($n > 1)
 		$tab_nagios_server = array(NULL => "");
-		$tab_nagios_server[0] = _("All Nagios Servers");
-	}
+	/*
+	 * Display all servers list
+	 */
 	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++)
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
+	$DBRESULT->free();
+	/*
+	 * Display all server options
+	 */
+	if ($n > 1) {
+		$tab_nagios_server[0] = _("All Nagios Servers");
 	
 	/*
 	 * Form begin
@@ -87,7 +100,7 @@
 			if ($key && ($res["host"] == 0 || $res["host"] == $key))
 				$host_list[$key] = $value;
 
-		if (isset($ret["gen"]) && $ret["gen"] && $ret["host"]){
+		if (isset($ret["gen"]) && $ret["gen"] && ($ret["host"] == 0 || $ret["host"])){
 			/*
 			 * Check dependancies
 			 */
@@ -96,35 +109,37 @@
 			if (PEAR::isError($DBRESULT_Servers))
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
-				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){	
+				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){
 					unset($DBRESULT2);
-					require($path."genCGICFG.php");
-					require($path."genNagiosCFG.php");
-					require($path."genNdomod.php");
-					require($path."genNdo2db.php");
-					require($path."genNagiosCFG-DEBUG.php");
-					require($path."genResourceCFG.php");
-					require($path."genTimeperiods.php");
-					require($path."genCommands.php");
-					require($path."genContacts.php");
-					require($path."genContactGroups.php");
-					require($path."genHosts.php");
-					require($path."genExtendedInfos.php");
-					require($path."genHostGroups.php");
-					require($path."genServices.php");
-					require($path."genServiceGroups.php");
-					require($path."genEscalations.php");
-					require($path."genDependencies.php");
-					require($path."centreon_pm.php");
+					require $path."genCGICFG.php";
+					require $path."genNagiosCFG.php";
+					require $path."genNdomod.php";
+					require $path."genNdo2db.php";
+					require $path."genNagiosCFG-DEBUG.php";
+					require $path."genResourceCFG.php";
+					require $path."genTimeperiods.php";
+					require $path."genCommands.php";
+					require $path."genContacts.php";
+					require $path."genContactGroups.php";
+					require $path."genHosts.php";
+					require $path."genExtendedInfos.php";
+					require $path."genHostGroups.php";
+					require $path."genServices.php";
+					require $path."genServiceGroups.php";
+					require $path."genEscalations.php";
+					require $path."genDependencies.php";
+					require $path."centreon_pm.php";
 				}
 				unset($generatedHG);
 				unset($generatedSG);
 				unset($generatedS);
 			}
-		}			
+		}
+					
 		/*
 		 * Meta Module Generator engine
 		 */
+		 
 		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `localhost` DESC");
 		if (PEAR::isError($DBRESULT_Servers))
 			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
@@ -211,7 +226,7 @@
 						$msg_copy[$host["id"]] = "<br>"._("Centreon : All configuration files copied with success.");
 					}
 				} else {
-					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> @CENTREON_VARLIB@/centcore.cmd", $return);
+					passthru("echo 'SENDCFGFILE:".$host['id']."' >> @CENTREON_VARLIB@/centcore.cmd", $return);
 				}
 		}
 		
