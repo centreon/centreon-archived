@@ -47,7 +47,7 @@
 	/*
 	 * Display all server options
 	 */
-	if ($n > 1) {
+	if ($n > 1)
 		$tab_nagios_server[0] = _("All Nagios Servers");
 	
 	/*
