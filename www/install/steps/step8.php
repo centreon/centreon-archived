@@ -44,6 +44,10 @@ if (isset($passwd_error) && $passwd_error)
     <td><b>Administrator lastname</b></td>
     <td align="right"><input type="text" name="oreonlastname" value="<?php if (isset($_SESSION["oreonlastname"])) print $_SESSION["oreonlastname"]; ?>"></td>
   </tr>
+  <tr>
+    <td><b>Administrator email</b></td>
+    <td align="right"><input type="text" name="oreonemail" value="<?php if (isset($_SESSION["oreonemail"])) print $_SESSION["oreonemail"]; ?>"></td>
+  </tr>
 </table>
 <?php
 aff_middle();

@@ -21,6 +21,7 @@ if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
 	$_SESSION["oreonpasswd"] = $_POST["oreonpasswd"];
 	$_SESSION["oreonfirstname"] = $_POST["oreonfirstname"];
 	$_SESSION["oreonlastname"] = $_POST["oreonlastname"];
+	$_SESSION["oreonemail"] = $_POST["oreonemail"];
 }
 aff_header("Centreon Setup Wizard", "LDAP Authentification", 9);   ?>
 If you want to enable LDAP authentification, please complete the following fields. If you don't, leave them blank.<br /><br />
