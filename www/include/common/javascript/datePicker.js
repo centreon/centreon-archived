@@ -107,40 +107,42 @@ displayBelowThisObject parameter was false), and update the StartDate field with
 the chosen value of the datepicker using a date format of dd.mm.yyyy
 */
 
-function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)
-{
+function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)	{
 	if (document.getElementsByName (timeFieldName).item(1))
-	  var targetDateField = document.getElementsByName (timeFieldName).item(1);
+	  	var targetDateField = document.getElementsByName (timeFieldName).item(1);
 	else
-	  var targetDateField = document.getElementsByName (timeFieldName).item(0);
+	  	var targetDateField = document.getElementsByName (timeFieldName).item(0);
 
 
-  var x = displayBelowThisObject.offsetLeft;
-  var y = displayBelowThisObject.offsetTop + displayBelowThisObject.offsetHeight ;
+ 	var x = displayBelowThisObject.offsetLeft;
+  	var y = displayBelowThisObject.offsetTop + displayBelowThisObject.offsetHeight ;
  
-  // deal with elements inside tables and such
-  var parent = displayBelowThisObject;
-  while (parent.offsetParent) {
-    parent = parent.offsetParent;
-    x += parent.offsetLeft;
-    y += parent.offsetTop ;
-  }
-drawTimePicker(timeFieldName, targetDateField, x, y);
+  	// deal with elements inside tables and such
+  	var parent = displayBelowThisObject;
+  	while (parent.offsetParent) {
+    	parent = parent.offsetParent;
+    	x += parent.offsetLeft;
+    	y += parent.offsetTop ;
+  	}
+	drawTimePicker(timeFieldName, targetDateField, x, y);
 }
 
-function drawTimePicker(timeFieldName, targetTimeField, x, y)
-{
+function drawTimePicker(timeFieldName, targetTimeField, x, y) {
  	var timePickerDivID = timeFieldName + "_timePickerDivID";
  	
  	// Check if the listbox is already open, if yes then close it 	
- 	if(document.getElementById(timePickerDivID) && document.getElementById(timePickerDivID+"_close")){
+ 	if (document.getElementById(timePickerDivID) 
+ 		&& document.getElementById(timePickerDivID+"_close")){
+ 		
  		var pickerDiv = document.getElementById(timePickerDivID); 	
  		pickerDiv.style.visibility = "hidden";
  		pickerDiv.value = '';
  		pickerDiv.innerHTML = '';
+ 		
  		var pickerDiv_close = document.getElementById(timePickerDivID+"_close");
  		pickerDiv_close.style.visibility = "hidden"; 		
  		pickerDiv_close.value = ''; 		
+ 		
  		document.body.removeChild(pickerDiv); 		
  		document.body.removeChild(pickerDiv_close); 		
  		return false;
