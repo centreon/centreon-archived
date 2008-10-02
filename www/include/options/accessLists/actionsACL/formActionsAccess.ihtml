@@ -1,0 +1,62 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
+	 <table class="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>	 	
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.acl_action_name.label}</td><td class="FormRowValue">{$form.acl_action_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.acl_action_description.label}</td><td class="FormRowValue">{$form.acl_action_description.html}</td></tr>
+
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/businessmen.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.acl_groups.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.acl_groups.html}</p></td></tr>
+	 	
+	 	<!-- Services -->
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.service_actions}</td></tr>		 	
+		<tr class="list_one"><td class="FormRowField">{$form.service_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_checks.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_notifications.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_acknowledgement.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_check.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_downtime.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_comment.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_comment.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_event_handler.html}</p></td></tr>		
+		<tr class="list_one"><td class="FormRowField">{$form.service_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_flap_detection.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_passive_checks.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_submit_result.html}</p></td></tr>
+		 
+		<!-- Hosts -->
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.host_actions}</td></tr>		
+		<tr class="list_one"><td class="FormRowField">{$form.host_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks.html}</p></td></tr>	
+		<tr class="list_one"><td class="FormRowField">{$form.host_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications.html}</p></td></tr>	
+		<tr class="list_one"><td class="FormRowField">{$form.host_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_acknowledgement.html}</p></td></tr>	
+		<tr class="list_one"><td class="FormRowField">{$form.host_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_check.html}</p></td></tr>	
+		<tr class="list_one"><td class="FormRowField">{$form.host_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_downtime.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_comment.html}</p></td></tr>	
+		<tr class="list_one"><td class="FormRowField">{$form.host_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_event_handler.html}</p></td></tr>				
+		<tr class="list_one"><td class="FormRowField">{$form.host_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_flap_detection.html}</p></td></tr>	
+		<tr class="list_one"><td class="FormRowField">{$form.host_checks_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks_for_services.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.host_notifications_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications_for_services.html}</p></td></tr>
+										 	
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.acl_action_activate.label}</td><td class="FormRowValue">{$form.acl_action_activate.html}</td></tr>
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p>{$form.action.html}</p>
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
