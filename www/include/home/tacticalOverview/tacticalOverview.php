@@ -101,26 +101,25 @@
 			 * Get the id's of problem hosts
 			*/
 			if (!$is_admin) {
-						$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state ".
-								" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
-								" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
-								" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
-								" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
-								" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-								" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR) ".
-								" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
-								" GROUP BY ".$ndo_base_prefix."services.host_object_id";
+				$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state ".
+						" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
+						" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
+						" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
+						" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
+						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+						" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR) ".
+						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
+						" GROUP BY ".$ndo_base_prefix."services.host_object_id";
 			} else {
-						$rq1 = 	" SELECT ".$ndo_base_prefix."services.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state" . 
-								" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
-								" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
-								" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
-								" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
-								" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-								" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
-								" GROUP BY ".$ndo_base_prefix."services.host_object_id";
+				$rq1 = 	" SELECT ".$ndo_base_prefix."services.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state" . 
+						" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
+						" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
+						" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
+						" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
+						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'OSL_Module' " .
+						" GROUP BY ".$ndo_base_prefix."services.host_object_id";
 			}
-						
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 			if (PEAR::isError($DBRESULT_NDO1))
 				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
@@ -135,6 +134,7 @@
 			/*
 			 * Get Host Ack  UP(0), DOWN(1),  UNREACHABLE(2)
 			 */
+			/*
 			if (!$is_admin)
 				$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
 						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects, centreon_acl " .
@@ -149,23 +149,44 @@
 						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
 						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";						
+			
+			print $rq1;
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 			if (PEAR::isError($DBRESULT_NDO1))
 				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 			
 			$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
-
+			
 			while ($ndo =& $DBRESULT_NDO1->fetchRow())
 				$host_stat[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
 			$DBRESULT_NDO1->free();
-			
+			*/
+			if (!$is_admin)
+				$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects, centreon_acl " .
+						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
+								" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+								" AND ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 " .
+								" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name " .
+								" AND centreon_acl.group_id IN (".$grouplistStr.")".
+						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+			else
+				$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
+						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id" .
+								" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+								" AND ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 " .
+						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";						
 			
 			$hostAck = array(0=>0, 1=>0, 2=>0);
-			while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
-				$hostAck[$ndo["state"]] = $ndo["count(".$ndo_base_prefix."acknowledgements.state)"];
-				$hostUnhand[$ndo["state"]] -= $hostAck[$ndo["state"]];
-			}
-			 
+			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+			if (PEAR::isError($DBRESULT_NDO1))
+				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
+			while ($ndo =& $DBRESULT_NDO1->fetchRow())
+				$hostAck[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
+
 			/*
 			 * Get Host inactive objects
 			 */
@@ -266,7 +287,7 @@
 				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 			while($ndo =& $DBRESULT_NDO1->fetchRow())	{			
 				if ($ndo["current_state"] != 0)
-					for($i=0; $i < $pbCount; $i++)
+					for ($i = 0; $i < $pbCount; $i++)
 						if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
 							$onPbHost[$ndo["current_state"]]++;
 			}
@@ -335,12 +356,10 @@
 			/*
 			 * Get Undandled Services
 			 */
-			$svcUnhandled = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 			
-			for ($i=0; $i<=4; $i++){
+			$svcUnhandled = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+			for ($i=0; $i<=4; $i++)
 				$svcUnhandled[$i] = $SvcStat[$i] - $svcAck[$i] - $svcInactive[$i] - $onPbHost[$i];			
-			}
-			 
 			 
 			/*
 			 * Get problem table

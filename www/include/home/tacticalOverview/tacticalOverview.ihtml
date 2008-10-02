@@ -1,14 +1,4 @@
 <META HTTP-EQUIV="Refresh" CONTENT="{$refresh_interval}">
-<!--
-<div id="actions">
-	<table>
-		<tr>
-			<td>
-				<a href="javascript:this.location.reload();" style="color: #000000; font-weight: normal"><img src="img/icones/16x16/refresh.gif"></a>
-			</td>
-		</tr>
-	</table>
-</div>-->
 <div id="hostStats">
 	<table>
 		<tr>
