@@ -39,6 +39,8 @@
 	require_once "./include/common/common-Func.php";
 	
 	switch ($o)	{
-		default : require_once($path."formGenerateFiles.php"); break;
+		default : 
+			require_once($path."formGenerateFiles.php"); 
+			break;
 	}
 ?>

@@ -37,7 +37,7 @@
 	 * Display null option
 	 */
 	if ($n > 1)
-		$tab_nagios_server = array(NULL => "");
+		$tab_nagios_server = array(-1 => "");
 	/*
 	 * Display all servers list
 	 */
@@ -102,6 +102,28 @@
 
 		if (isset($ret["gen"]) && $ret["gen"] && ($ret["host"] == 0 || $ret["host"])){
 			/*
+			 * Get commands
+			 */
+			$commands = array();
+			$DBRESULT2 =& $pearDB->query("SELECT command_id, command_name FROM command");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			while ($command = $DBRESULT2->fetchRow())
+				$commands[$command["command_id"]] = $command["command_name"] ;
+			$DBRESULT2->free();
+			
+			/*
+			 * Get timeperiods
+			 */
+			$timeperiods = array();
+			$DBRESULT2 =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			while ($timeperiod =& $DBRESULT2->fetchRow())
+				$timeperiods[$timeperiod["tp_id"]] = $timeperiod["tp_name"];
+			$DBRESULT2->free();
+			
+			/*
 			 * Check dependancies
 			 */
 			$gbArr = manageDependencies();
@@ -109,7 +131,15 @@
 			if (PEAR::isError($DBRESULT_Servers))
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
-				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){
+				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
+					/*
+					 * Check temporary files access
+					 */
+					if (!is_dir($nagiosCFGPath.$tab['id']."/"))
+						mkdir($nagiosCFGPath.$tab['id']."/");
+					
+					print "<br>=================== Generation de ".$tab['id']."==================<br>";
+				
 					unset($DBRESULT2);
 					require $path."genCGICFG.php";
 					require $path."genNagiosCFG.php";

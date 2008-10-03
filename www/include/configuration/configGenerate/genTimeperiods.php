@@ -57,55 +57,57 @@
 		$i++;
 		unset($timePeriod);
 	}	
-		
-	$GMTList = $oreon->CentreonGMT->listGTM;
-	foreach ($GMTList as $gmt => $value) {
-		$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($timePeriod =& $DBRESULT->fetchRow())	{
-			$PeriodBefore 	= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");
-			$Period 		= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");
-			$PeriodAfter 	= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");
-			
-			$ret["comment"] ? ($str .= "# '" . $timePeriod["tp_name"]."_GMT".$gmt . "' timeperiod definition " . $i . "\n") : NULL;
-			$str .= "define timeperiod{\n";
-			if ($timePeriod["tp_name"]) 
-				$str .= print_line("timeperiod_name", $timePeriod["tp_name"]."_GMT".$gmt);
-
-			if ($timePeriod["tp_alias"]) 
-				$str .= print_line("alias", $timePeriod["tp_alias"]);
-
-			if ($timePeriod["tp_sunday"])
-				ComputeGMTTime("sunday", "saturday", "monday", $gmt, $timePeriod["tp_sunday"]);
-			
-			if ($timePeriod["tp_monday"]) 
-				ComputeGMTTime("monday", "sunday", "tuesday", $gmt, $timePeriod["tp_monday"]);
-			
-			if ($timePeriod["tp_tuesday"]) 
-				ComputeGMTTime("tuesday", "monday", "wednesday", $gmt, $timePeriod["tp_tuesday"]);
-			
-			if ($timePeriod["tp_wednesday"])
-				ComputeGMTTime("wednesday", "tuesday", "thursday", $gmt, $timePeriod["tp_wednesday"]);
-			
-			if ($timePeriod["tp_thursday"]) 
-				ComputeGMTTime("thursday", "wednesday", "friday", $gmt, $timePeriod["tp_thursday"]);
-			
-			if ($timePeriod["tp_friday"]) 
-				ComputeGMTTime("friday", "thursday", "saturday", $gmt, $timePeriod["tp_friday"]);
-			
-			if ($timePeriod["tp_saturday"]) 
-				ComputeGMTTime("saturday", "friday", "sunday", $gmt, $timePeriod["tp_saturday"]);
-			
-			$i++;
-			unset($timePeriod);
-			foreach ($Period as $day => $value){
-				if (strlen($PeriodAfter[$day].$Period[$day].$PeriodBefore[$day]))
-					$str .= print_line($day, $PeriodAfter[$day].$Period[$day].$PeriodBefore[$day]);
+	
+	if ($oreon->CentreonGMT->used() == 1) {
+		$GMTList = $oreon->CentreonGMT->listGTM;
+		foreach ($GMTList as $gmt => $value) {
+			$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			while ($timePeriod =& $DBRESULT->fetchRow())	{
+				$PeriodBefore 	= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");
+				$Period 		= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");
+				$PeriodAfter 	= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");
+				
+				$ret["comment"] ? ($str .= "# '" . $timePeriod["tp_name"]."_GMT".$gmt . "' timeperiod definition " . $i . "\n") : NULL;
+				$str .= "define timeperiod{\n";
+				if ($timePeriod["tp_name"]) 
+					$str .= print_line("timeperiod_name", $timePeriod["tp_name"]."_GMT".$gmt);
+	
+				if ($timePeriod["tp_alias"]) 
+					$str .= print_line("alias", $timePeriod["tp_alias"]);
+	
+				if ($timePeriod["tp_sunday"])
+					ComputeGMTTime("sunday", "saturday", "monday", $gmt, $timePeriod["tp_sunday"]);
+				
+				if ($timePeriod["tp_monday"]) 
+					ComputeGMTTime("monday", "sunday", "tuesday", $gmt, $timePeriod["tp_monday"]);
+				
+				if ($timePeriod["tp_tuesday"]) 
+					ComputeGMTTime("tuesday", "monday", "wednesday", $gmt, $timePeriod["tp_tuesday"]);
+				
+				if ($timePeriod["tp_wednesday"])
+					ComputeGMTTime("wednesday", "tuesday", "thursday", $gmt, $timePeriod["tp_wednesday"]);
+				
+				if ($timePeriod["tp_thursday"]) 
+					ComputeGMTTime("thursday", "wednesday", "friday", $gmt, $timePeriod["tp_thursday"]);
+				
+				if ($timePeriod["tp_friday"]) 
+					ComputeGMTTime("friday", "thursday", "saturday", $gmt, $timePeriod["tp_friday"]);
+				
+				if ($timePeriod["tp_saturday"]) 
+					ComputeGMTTime("saturday", "friday", "sunday", $gmt, $timePeriod["tp_saturday"]);
+				
+				$i++;
+				unset($timePeriod);
+				foreach ($Period as $day => $value){
+					if (strlen($PeriodAfter[$day].$Period[$day].$PeriodBefore[$day]))
+						$str .= print_line($day, $PeriodAfter[$day].$Period[$day].$PeriodBefore[$day]);
+				}
+				$str .= "}\n\n";
 			}
-			$str .= "}\n\n";
+			
 		}
-		
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/timeperiods.cfg");
 	fclose($handle);

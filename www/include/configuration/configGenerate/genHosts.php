@@ -17,33 +17,7 @@
 
 	if (!isset($oreon))
 		exit();
-
-	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
-		mkdir($nagiosCFGPath.$tab['id']."/");
-	}
-	
-	/*
-	 * Get commands
-	 */
-	$commands = array();
-	$DBRESULT2 =& $pearDB->query("SELECT command_id, command_name FROM command");
-	if (PEAR::isError($DBRESULT2))
-		print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-	while ($command = $DBRESULT2->fetchRow())
-		$commands[$command["command_id"]] = $command["command_name"] ;
-	$DBRESULT2->free();
-	
-	/*
-	 * Get timeperiods
-	 */
-	$timeperiods = array();
-	$DBRESULT2 =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
-	if (PEAR::isError($DBRESULT2))
-		print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-	while ($timeperiod =& $DBRESULT2->fetchRow())
-		$timeperiods[$timeperiod["tp_id"]] = $timeperiod["tp_name"];
-	$DBRESULT2->free();
-	
+			
 	/*
 	 * Get Host List
 	 */
@@ -201,7 +175,7 @@
 				if ($host["host_register"] == 1 && (!$host["timeperiod_tp_id1"] || $host["host_location"] != 0))
 					$host["timeperiod_tp_id"] = getMyHostField($host["host_id"], "timeperiod_tp_id");
 				if ($host["timeperiod_tp_id"])
-					$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]."_GMT".$host["host_location"]);
+					$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location"] : ""));
 
 				if ($host["host_obsess_over_host"] != 2) 
 					$str .= print_line("obsess_over_host", $host["host_obsess_over_host"] == 1 ? "1": "0");
@@ -281,8 +255,8 @@
 				if ($host["host_register"] == 1 && (!$host["timeperiod_tp_id2"] || $host["host_location"] != 0))
 					$host["timeperiod_tp_id2"] = getMyHostField($host["host_id"], "timeperiod_tp_id2");
 				if ($host["timeperiod_tp_id2"])
-					$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]]."_GMT".$host["host_location"]);
-				
+					$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location"] : ""));
+			
 				if ($host["host_notification_options"]) 
 					$str .= print_line("notification_options", $host["host_notification_options"]);
 				if ($host["host_notifications_enabled"] != 2) 

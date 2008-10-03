@@ -14,7 +14,39 @@
  * 
  * For information : contact@centreon.com
  */
+ 
+ 	/*
+ 	 * Get Contact Group
+ 	 */
 
+
+	/*
+	 * Get contact List
+	 */
+	 
+	
+	/*
+	 * Convert Service Spécial Char for generation
+	 */ 
+
+	function convertServiceSpecialChar($str) {
+		$str = str_replace('#S#', "/", $str);
+		$str = str_replace('#BS#', "\\", $str);
+		return $str;
+	}
+
+	/*
+	 * Purge Args for commands
+	 */
+
+	function convertServiceSpecialCharInCmd($str) {
+		$str = str_replace('#BR#', "\\n", $str);
+		$str = str_replace('#T#', "\\t", $str);
+		$str = str_replace('#R#', "\\r", $str);
+		$str = str_replace('#S#', "/", $str);
+		$str = str_replace('#BS#', "\\", $str);
+		return $str;
+	}
 	/*
 	 * Compute values for time range
 	 */
@@ -60,7 +92,6 @@
 
 	function isHostOnThisInstance($host_id, $instance_id){
 		global $pearDB;
-		
 		$DBRESULT_relation =& $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$host_id."' AND nagios_server_id = '".$instance_id."'");
 		if (PEAR::isError($DBRESULT_relation))
 			print "DB Error : ".$DBRESULT_relation->getDebugInfo()."<br />";
