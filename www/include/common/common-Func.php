@@ -304,12 +304,11 @@
 	function getMyHostField($host_id = NULL, $field)	{
 		if (!$host_id) return;
 		global $pearDB;
-		while(1)	{
+		while (1)	{
 			$DBRESULT =& $pearDB->query("SELECT ".$field.", host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row =& $DBRESULT->fetchRow();
-			//$field_result = $row[$field];
 			if (isset($row[$field]) && $row[$field])
 				return $row[$field];
 			else if ($row["host_template_model_htm_id"])
@@ -317,6 +316,22 @@
 			else
 				break;
 		}
+	}
+
+	function getMyHostFieldOnHost($host_id = NULL, $field)	{
+		global $pearDB;
+		
+		if (!$host_id) 
+			return;
+		
+		$DBRESULT =& $pearDB->query("SELECT ".$field.", host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$row =& $DBRESULT->fetchRow();
+		if (isset($row[$field]) && $row[$field])
+			return $row[$field];
+		else
+			return 0;
 	}
 
 	/*
@@ -530,22 +545,26 @@
 	}
 
 	function getMyHostGroupHosts($hg_id = NULL)	{
-		if (!$hg_id) return;
 		global $pearDB;
+		
+		if (!$hg_id) 
+			return;
 		$hosts = array();
-//		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
 		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr, host h WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ORDER by h.host_name");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())
 			$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 		$DBRESULT->free();
+		unset($elem);
 		return $hosts;
 	}
 
 	function getMyHostGroupCommunity($hg_id = NULL)	{
-		if (!$hg_id) return;
 		global $pearDB;
+		
+		if (!$hg_id) 
+			return;
 		$DBRESULT =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -556,8 +575,10 @@
 	}
 
 	function getMyHostGroupVersion($hg_id = NULL)	{
-		if (!$hg_id) return;
 		global $pearDB;
+		
+		if (!$hg_id) 
+			return;
 		$DBRESULT =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
