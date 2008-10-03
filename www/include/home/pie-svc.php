@@ -21,8 +21,8 @@
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-	require_once("DB.php");
-	include_once("@CENTREON_ETC@/centreon.conf.php");	
+	require_once "DB.php" ;
+	include_once "@CENTREON_ETC@/centreon.conf.php";	
 		
 	/* 
 	 * Connect to oreon DB
@@ -39,12 +39,12 @@
 		die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
-	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
-	include_once($centreon_path . "www/include/common/common-Func.php");
+	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
+	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	$ndo_base_prefix = getNDOPrefix();
 	
-	include_once($centreon_path . "www/DBNDOConnect.php");
+	include_once $centreon_path . "www/DBNDOConnect.php";
 
 	/*
 	 *  calcul stat for resume
@@ -100,31 +100,16 @@
 		$data[] = $ndo["count(nss.current_state)"];
 		$legend[] = $statistic[$ndo["current_state"]];
 		$color[] = $oreon->optGen["color_".strtolower($statistic[$ndo["current_state"]])];
-		//$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
+		$counter += $ndo["count(nss.current_state)"];
 	}
 	$DBRESULT_NDO2->free();
-	/*
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
-	$data = array();
-	$color = array();
-	$counter = 0;
 	
-	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
-		$data[] = $ndo["cnt"];
-		$legend[] = $statistic[$ndo["current_state"]];
-		$color[] = $oreon->optGen["color_".strtolower($statistic[$ndo["current_state"]])];		
-		$counter += $ndo["cnt"];
-	}
-	$DBRESULT_NDO1->free();
-	
-	foreach ($data as $key => $value)
-		$data[$key] = round($value / $counter * 100, 2);
-	*/
 	/*
 	 *  create the dataset
 	 */
+	
+	foreach ($data as $key => $value)
+		$data[$key] = round($value / $counter * 100, 2);
 	
 	include_once($centreon_path.'/www/lib/ofc-library/open-flash-chart.php' );
 	$g = new graph();
