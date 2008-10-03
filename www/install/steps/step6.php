@@ -45,11 +45,11 @@ if (isset($passwd_error) && $passwd_error)
     <td align="right"><input type="password" name="pwdOreonDB2" value="<?php if (isset($_SESSION["pwdOreonDB2"])) print $_SESSION["pwdOreonDB2"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Database location (localhost if blank)</b></td>
+    <td><b>Database location</b> (it's MySQL Server IP address. localhost if blank)</td>
     <td align="right"><input type="text" name="dbLocation" value="<?php if (isset($_SESSION["dbLocation"])) print $_SESSION["dbLocation"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Nagios location (localhost if blank)</b></td>
+    <td><b>Centreon Web Interface location</b> (localhost if blank)</td>
     <td align="right"><input type="text" name="nagiosLocation" value="<?php if (isset($_SESSION["nagiosLocation"])) print $_SESSION["nagiosLocation"]; ?>"></td>
   </tr>
   <tr>
@@ -65,7 +65,6 @@ if (isset($passwd_error) && $passwd_error)
     	</select>
    	</td>
   </tr>
-  <!--<input type="hidden" name="mysqlVersion" value="3">-->
 </table>
 <?php
 aff_middle();
