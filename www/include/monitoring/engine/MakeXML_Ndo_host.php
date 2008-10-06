@@ -209,12 +209,12 @@
 		$buffer .= '<hn><![CDATA['. $ndo["host_name"]  . ']]></hn>';
 		$buffer .= '<a><![CDATA['. $ndo["address"]  . ']]></a>';
 		$buffer .= '<ou><![CDATA['. $ndo["output"]  . ']]></ou>';
-		$buffer .= '<lc>'. $centreonGMT->getDate($date_time_format_status, $ndo["last_check"])  . '</lc>';
+		$buffer .= '<lc>'. (($ndo["last_check"] != 0) ? $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]) : "N/A") . '</lc>';
 		$buffer .= '<cs>'. $tab_status_host[$ndo["current_state"]] . '</cs>';
         $buffer .= '<pha>'. $ndo["problem_has_been_acknowledged"] .'</pha>';
         $buffer .= '<pce>'.$ndo["passive_checks_enabled"] .'</pce>';
         $buffer .= '<ace>'.$ndo["active_checks_enabled"] .'</ace>';
-        $buffer .= '<lsc>'.$duration.'</lsc>';
+        $buffer .= '<lsc>'.($duration ? $duration : "N/A") .'</lsc>';
         $buffer .= '<ha>'.$ndo["problem_has_been_acknowledged"]  .'</ha>';///
         $buffer .= '<hae>'.$ndo["active_checks_enabled"] .'</hae>';///
         $buffer .= '<hpe>'.$ndo["passive_checks_enabled"]  .'</hpe>';///
