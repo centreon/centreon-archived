@@ -138,8 +138,6 @@
 					if (!is_dir($nagiosCFGPath.$tab['id']."/"))
 						mkdir($nagiosCFGPath.$tab['id']."/");
 					
-					print "<br>=================== Generation de ".$tab['id']."==================<br>";
-				
 					unset($DBRESULT2);
 					require $path."genCGICFG.php";
 					require $path."genNagiosCFG.php";

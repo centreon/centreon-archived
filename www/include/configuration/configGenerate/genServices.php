@@ -214,10 +214,10 @@
 								 * Check Period
 								 */
 								
-								if (!$service["timeperiod_tp_id"]) {
+								if (!$service["timeperiod_tp_id"]) 
 									$service["timeperiod_tp_id"] = getMyServiceField($service["service_id"], "timeperiod_tp_id");	
-									$strTMP .= print_line("check_period", $timeperiods[$service["timeperiod_tp_id"]]."_GMT".$gmt);
-								}
+								$strTMP .= print_line("check_period", $timeperiods[$service["timeperiod_tp_id"]]."_GMT".$gmt);
+
 								if ($service["service_parallelize_check"] != 2) 
 									$strTMP .= print_line("parallelize_check", $service["service_parallelize_check"] == 1 ? "1": "0");
 								if ($service["service_obsess_over_service"] != 2)
@@ -252,10 +252,10 @@
 								/*
 								 * Notifications
 								 */
-								if (!$service["timeperiod_tp_id2"]) {
-									$service["timeperiod_tp_id2"] = $service["timeperiod_tp_id"] = getMyServiceField($service["service_id"], "timeperiod_tp_id");	
-									$strTMP .= print_line("notification_period", $timeperiods[$service["timeperiod_tp_id2"]]."_GMT".$gmt);
-								}
+								if (!$service["timeperiod_tp_id2"])
+									$service["timeperiod_tp_id2"] = $service["timeperiod_tp_id"] = getMyServiceField($service["service_id"], "timeperiod_tp_id");
+								$strTMP .= print_line("notification_period", $timeperiods[$service["timeperiod_tp_id2"]]."_GMT".$gmt);
+
 								if ($service["service_notification_interval"] != NULL) 
 									$strTMP .= print_line("notification_interval", $service["service_notification_interval"]);
 								if ($service["service_notification_options"]) 
