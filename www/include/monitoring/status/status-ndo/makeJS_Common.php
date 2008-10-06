@@ -194,6 +194,7 @@ function mk_imgOrder(_src, _alt)	{
 }
 
 function mk_pagination(resXML){
+	
 	viewDebugInfo('mk pagination');
 
 	var flag = 0;
@@ -223,7 +224,7 @@ function mk_pagination(resXML){
 }
 
 function pagination_changed(){
-	viewDebugInfo('pagination_changed');
+	viewDebugInfo('begin : pagination_changed');
 	
 	// compute Max Page
 	var page_max = 0;
@@ -324,6 +325,7 @@ for ($i = 1; $i <= 2; $i++) { ?>
 		_pagination<?php echo $i; ?>.appendChild(_linkaction_right<?php echo $i; ?>);
 		_pagination<?php echo $i; ?>.appendChild(_linkaction_last<?php echo $i; ?>);
 	}
+	
 <?php 
 } ?>
 	
@@ -367,6 +369,7 @@ for ($i = 1; $i <= 2; $i++) { ?>
 	_sel1.appendChild(sel1);
 	sel2.selectedIndex = _index;
 	_sel2.appendChild(sel2);
+	viewDebugInfo('End : pagination_changed');
 }
 
 function escapeURI(La){
