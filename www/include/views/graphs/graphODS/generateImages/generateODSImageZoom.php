@@ -73,7 +73,7 @@
 		/*
 	 	 * Get GMT for current user
 	 	 */
-	 	$gmt = $CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
+	 	$CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
 		
 		/*
 		 * Connect to ods
@@ -178,7 +178,7 @@
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 0;
 		$metrics = array();		
-		while ($metric =& $DBRESULT->fetchrow()){
+		while ($metric =& $DBRESULT->fetchrow()) {
 			if (!isset($_GET["metric"]) || (isset($_GET["metric"]) && isset($_GET["metric"][$metric["metric_id"]])) || isset($_GET["index_id"]) || $pass){
 				$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 				$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
@@ -277,11 +277,21 @@
 		}
 
 		$command_line = $oreon->optGen["rrdtool_path_bin"].$command_line." 2>&1";
+		
+		/*
+		 * Add Timezone for current user.
+		 */
+		 
+		$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+	
+		/*
+		 * Escape Special Chars
+		 */
 		$command_line = escape_command("$command_line");
+		
 		if ( $oreon->optGen["debug_rrdtool"] == "1" )
 			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $oreon->optGen["debug_path"]."rrdtool.log");
 
-		//print $command_line;
 		$fp = popen($command_line  , 'r');
 		if (isset($fp) && $fp ) {
 			$str ='';

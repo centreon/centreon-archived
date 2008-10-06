@@ -300,6 +300,13 @@
 		}
 
 		$command_line = $oreon->optGen["rrdtool_path_bin"].$command_line." 2>&1";
+	
+		/*
+		 * Add Timezone for current user.
+		 */
+		 
+		$command_line = "export TZ='UTC".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+	
 		$command_line = escape_command("$command_line");
 		if ($oreon->optGen["debug_rrdtool"] == "1")
 			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $oreon->optGen["debug_path"]."rrdtool.log");

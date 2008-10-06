@@ -23,13 +23,15 @@
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path."www/DBconnect.php";
 	require_once $centreon_path."www/class/Session.class.php";
+	require_once $centreon_path."/www/class/centreonGMT.class.php";
 	require_once $centreon_path."www/class/Oreon.class.php";
+	require_once $centreon_path."www/include/common/common-Func.php";
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 	
-	require_once $centreon_path."www/include/common/common-Func.php";
-
+	$CentreonGMT = new CentreonGMT();
+	
 	function getStatusDBDir($pearDBO){
 		$data =& $pearDBO->query("SELECT `RRDdatabase_status_path` FROM `config` LIMIT 1");
 		$dir =& $data->fetchRow();
@@ -40,7 +42,7 @@
 	 * Verify if start and end date
 	 */	
 
-	(!isset($_GET["start"])) ? $start = time() - (60*60*48):$start = $_GET["start"];
+	(!isset($_GET["start"])) ? $start = time() - (60*60*24): $start = $_GET["start"];
 	(!isset($_GET["end"])) ? $end = time() : $end = $_GET["end"];
 
 	$len = $end - $start;
@@ -59,6 +61,12 @@
 
 		exit;
 	} else {
+		
+		/*
+	 	 * Get GMT for current user
+	 	 */
+	 	$CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
+	 
 		/*
 		 * Get Values
 		 */
@@ -168,7 +176,19 @@
 		$command_line .= " AREA:warn#F8C706 ";
 		$command_line .= " AREA:ok#19EE11 ";
 		$command_line .= " AREA:unk#FFFFFF ";
-		$command_line .= " COMMENT:\" \\l\" ";
+	
+		/*
+		 * Add comment start and end time inf graph footer.
+		 */
+		
+		$rrd_time  = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $start));
+		$rrd_time  = str_replace(":", "\:", $rrd_time);
+		$rrd_time2 = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $end)) ;
+		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
+		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
+		
+		$command_line = $oreon->optGen["rrdtool_path_bin"].$command_line." 2>&1";
+		
 		$command_line .= " LINE1:ok#19EE11:\"Ok\" ";
 		$command_line .= " LINE1:warn#F8C706:\"Warning\" ";
 		$command_line .= " LINE1:crit#F91E05:\"Critical\" ";
@@ -180,11 +200,19 @@
 		$command_line .= " GPRINT:v1:MAX:\"Max\:%7.2lf%s\"";
 		$command_line .= " GPRINT:v1:AVERAGE:\"Average\:%7.2lf%s\\l\"";
 		
-		$command_line = $oreon->optGen["rrdtool_path_bin"].$command_line." 2>&1";
+		/*
+		 * Add Timezone for current user.
+		 */
+		$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+	
+		/*
+		 * Escale special char
+		 */
 		$command_line = escape_command("$command_line");
+		
 		if ($oreon->optGen["debug_rrdtool"] == "1")
 			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $oreon->optGen["debug_path"]."rrdtool.log");
-		//print $command_line;
+		
 		$fp = popen($command_line  , 'r');
 		if (isset($fp) && $fp ) {
 			$str ='';
