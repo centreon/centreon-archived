@@ -74,9 +74,7 @@
 			}
 			while ($field =& $DBRESULT2->fetchRow()) {
 				if (($row["action_type"] == "a" || $row["action_type"] == "c") && (!$first_ref_flag || $first_ref_flag == $field["action_log_id"])) {
-					$ref[$j]["action_log_id"] = $field["action_log_id"];
-					$ref[$j]["field_name"] = $field["field_name"];
-					$ref[$j]["field_value"] = $field["field_value"];
+					$ref[$field["field_name"]] = $field["field_value"];
 					$first_ref_flag = $field["action_log_id"];
 					
 					$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
@@ -87,12 +85,19 @@
 				}
 				else {
 					foreach ($ref as $key => $value) {
-						if (($field["field_name"] == $value["field_name"]) && ($field["field_value"] != $value["field_value"])) {
-							$list_modifications[$i]["field_value_before"] = $value["field_value"];
+						if (!isset($ref[$field["field_name"]])) {
+							$list_modifications[$i]["field_value_before"] = "";
 							$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
 							$list_modifications[$i]["field_name"] = $field["field_name"];
 							$list_modifications[$i]["field_value_after"] = $field["field_value"];
-							$ref[$key]["field_value"] = $field["field_value"];
+							$ref[$field["field_name"]] = $field["field_value"];
+						}
+						else if (($field["field_name"] == $key) && ($field["field_value"] != $value)) {
+							$list_modifications[$i]["field_value_before"] = $value;
+							$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
+							$list_modifications[$i]["field_name"] = $field["field_name"];
+							$list_modifications[$i]["field_value_after"] = $field["field_value"];
+							$ref[$key] = $field["field_value"];
 						}
 					}
 				}

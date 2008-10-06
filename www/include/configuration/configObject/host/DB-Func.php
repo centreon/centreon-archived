@@ -664,12 +664,12 @@
 		$fields["host_notification_interval"] = $ret["host_notification_interval"];
 		$fields["host_notifOpts"] = "";
 		if (isset($ret["host_notifOpts"]))
-			$fields["host_notifOpts"] = implode(",", $ret["host_notifOpts"]);
+			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));
 		$fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
 		$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
 		$fields["host_stalOpts"] = "";
 		if (isset($ret["host_stalOpts"]))
-			$fields["host_stalOpts"] = implode(",", $ret["host_stalOpts"]);
+			$fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
 		$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES);
 		$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES);
 		$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES);
@@ -1075,12 +1075,12 @@
 		$fields["host_notification_interval"] = $ret["host_notification_interval"];
 		$fields["host_notifOpts"] = "";
 		if (isset($ret["host_notifOpts"]))
-			$fields["host_notifOpts"] = implode(",", $ret["host_notifOpts"]);
+			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));
 		$fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
 		$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
 		$fields["host_stalOpts"] = "";
 		if (isset($ret["host_stalOpts"]))
-			$fields["host_stalOpts"] = implode(",", $ret["host_stalOpts"]);
+			$fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
 		$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES);
 		$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES);
 		$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES);
@@ -1248,7 +1248,7 @@
 		}
 		if (isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL) {
 			$rq .= "host_notification_options = '".implode(",", array_keys($ret["host_notifOpts"]))."', ";
-			$fields["host_notification_options"] = implode(",", array_keys($ret["host_notifOpts"]));
+			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));
 		}
 		if (isset($ret["host_notifications_enabled"]["host_notifications_enabled"])) {
 			$rq .= "host_notifications_enabled = '".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', ";

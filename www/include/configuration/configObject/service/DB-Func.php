@@ -592,11 +592,11 @@
 		$fields["service_notification_interval"] = $ret["service_notification_interval"];
 		$fields["service_notifOpts"] = "";
 		if (isset($ret["service_notifOpts"]))
-			$fields["service_notifOpts"] = implode(",", $ret["service_notifOpts"]);
+			$fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
 		$fields["service_notifications_enabled"] = $fields["service_notifications_enabled"]["service_notifications_enabled"];
 		$fields["service_stalOpts"] = "";
 		if (isset($ret["service_stalOpts"]))
-			$fields["service_stalOpts"] = implode(",", $ret["service_stalOpts"]);
+			$fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
 		$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES);
 		$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES);
 		$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES);
@@ -821,11 +821,11 @@
 		$fields["service_notification_interval"] = $ret["service_notification_interval"];
 		$fields["service_notifOpts"] = "";
 		if (isset($ret["service_notifOpts"]))
-			$fields["service_notifOpts"] = implode(",", $ret["service_notifOpts"]);
+			$fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
 		$fields["service_notifications_enabled"] = $fields["service_notifications_enabled"]["service_notifications_enabled"];
 		$fields["service_stalOpts"] = "";
 		if (isset($ret["service_stalOpts"]))
-			$fields["service_stalOpts"] = implode(",", $ret["service_stalOpts"]);
+			$fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
 		$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES);
 		$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES);
 		$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES);
@@ -988,7 +988,7 @@
 		}
 		if (isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL) {
 			$rq .= "service_notification_options = '".implode(",", array_keys($ret["service_notifOpts"]))."', ";
-			$fields["service_notifOpts"] = implode(",", $ret["service_notifOpts"]);
+			$fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
 		}
 		if (isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) {
 			$rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
@@ -996,7 +996,7 @@
 		}
 		if (isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL) {
 			$rq .= "service_stalking_options = '".implode(",", array_keys($ret["service_stalOpts"]))."', ";
-			$fields["service_stalOpts"] = implode(",", $ret["service_stalOpts"]);
+			$fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
 		}
 		if (isset($ret["service_comment"]) && $ret["service_comment"] != NULL) {
 			$rq .= "service_comment = '".htmlentities($ret["service_comment"], ENT_QUOTES)."', ";

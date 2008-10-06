@@ -55,7 +55,7 @@
 	$tpl->assign("field_value", _("Field Value"));
 	$tpl->assign("before", _("Before"));
 	$tpl->assign("after", _("After"));
-	$tpl->assign("logs", _("Logs"));
+	$tpl->assign("logs", _("Logs for "));
 	$tpl->assign("objTypeLabel", _("Object type:"));
 	$tpl->assign("objNameLabel", _("Object name:"));
 	$tpl->assign("noModifLabel", _("No modification was made."));
@@ -79,7 +79,7 @@
 	$object_type_tab[7] = "service";
 	$object_type_tab[8] = "servicegroup";
 	$object_type_tab[9] = "snmp traps";
-	$object_type_tab[10] = "escalations";
+	$object_type_tab[10] = "escalation";
 	$object_type_tab[11] = "host dependency";
 	$object_type_tab[12] = "hostgroup dependency";
 	$object_type_tab[13] = "service dependency";
