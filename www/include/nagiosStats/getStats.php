@@ -58,17 +58,19 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 	
-	require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once "$centreon_path/www/class/centreonGMT.class.php";
 	require_once "$centreon_path/www/DBconnect.php";
 	require_once "$centreon_path/www/DBOdsConnect.php";
 
+	/*
+	 * Init GMT Class
+	 */
 	$CentreonGMT = new CentreonGMT();
 	
 	/*
-	 * Get RRDTool binary Path 
-	 */
-	 
+	 * Check Session activity 
+	 */	 
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
 	if (!$session->numRows()){
 		;
@@ -79,14 +81,17 @@
 	 	 */
 	 	$gmt = $CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
 	 
+		/*
+		 * Get RRDTool binary Path 
+		 */
 		$DBRESULT =& $pearDB->query("SELECT `rrdtool_path_bin` FROM `general_opt`");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$options =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
 		$rrdtoolPath = $options["rrdtool_path_bin"];
 		unset($options);
-		$DBRESULT->free();
-	
+		
 		$title	 = array(	
 					"active_host_check" => _("Host checks"), 
 					"active_host_last" => _("Active hosts"),
@@ -119,7 +124,6 @@
 					"nagios_cmd_buffer.rrd" => array("Used", "High", "Total"), 
 					"nagios_hosts_states.rrd" => array("Up", "Down", "Unreach"), 
 					"nagios_services_states.rrd" => array("Ok", "Warn", "Crit", "Unk"));
-	
 	
 		/*
 		 * Verify if start and end date
@@ -179,13 +183,13 @@
 		$colors = array("1"=>"#19EE11", "2"=>"#82CFD8", "3"=>"#F8C706", "4"=>"#F8C706");
 		
 		$metrics = $differentStats[$options[$_GET["key"]]];
-		$cpt = 1;
 		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_nagios_stats_path FROM config");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$nagios_stats =& $DBRESULT->fetchRow();
 		$nagios_stats_path = $nagios_stats['RRDdatabase_nagios_stats_path'];
 	
+		$cpt = 1;
 		foreach ($metrics as $key => $value){
 			$command_line .= " DEF:v".$cpt."=".$nagios_stats_path."perfmon-".$_GET["ns_id"]."/".$options[$_GET["key"]].":".$value.":AVERAGE ";
 			$cpt++;
@@ -205,11 +209,8 @@
 		 * Create Legende
 		 */
 		$cpt = 1;
-	
 		foreach ($metrics as $key => $tm){
-			$command_line .= " LINE1:v".($cpt);
-			$command_line .= $colors[$cpt].":\"";
-			$command_line .= $tm."\"";
+			$command_line .= " LINE1:v".$cpt.$colors[$cpt].":\"".$tm."\"";
 			$cpt++;
 		}
 		
@@ -222,6 +223,7 @@
 		$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
 	
 		$command_line = escape_command("$command_line");
+
 		/*
 		 * Debug
 		 */
