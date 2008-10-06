@@ -58,8 +58,7 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 	
-	//require_once("@CENTREON_ETC@/centreon.conf.php");
-	require_once "/etc/centreon/centreon.conf.php";
+	require_once("@CENTREON_ETC@/centreon.conf.php");
 	require_once "$centreon_path/www/class/centreonGMT.class.php";
 	require_once "$centreon_path/www/DBconnect.php";
 	require_once "$centreon_path/www/DBOdsConnect.php";
@@ -195,6 +194,7 @@
 		/*
 		 * Add comment start and end time inf graph footer.
 		 */
+		
 		$rrd_time  = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $start, $gmt));
 		$rrd_time = str_replace(":", "\:", $rrd_time);
 		$rrd_time2 = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $end, $gmt)) ;
@@ -219,7 +219,7 @@
 		 * Add Timezone for current user.
 		 */
 		 
-		$command_line = "export TZ='CMT-6' ; ".$command_line;
+		$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
 	
 		$command_line = escape_command("$command_line");
 		/*
