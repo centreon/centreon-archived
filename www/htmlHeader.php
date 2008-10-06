@@ -23,9 +23,9 @@
 	if (!isset($oreon))
 		exit();
 		
-	print "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+?><?xml version=\"1.0\" encoding=\"iso-8859-1\"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $mlang; ?>">
 <head>
 <title>Centreon, Revisited Experience Of Nagios</title>
@@ -79,23 +79,21 @@
 
 	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;	
 	
 	?>
 	<script type='text/javascript'>
 	    window.onload = function () {
-	
 	<?php
-	
 	if ($min != 1)
-		print "setTimeout('reloadStatusCounter($tS, \"$sid\")', $tFS);\n";
+		print "setTimeout('reloadStatusCounter($tS, \"$sid\")', 0);\n";
 
 	$res = null;
-	$DBRESULT =& $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-	if (PEAR::isError($DBRESULT)) print $DBRESULT->getDebugInfo()."<br />";
+	$DBRESULT =& $pearDB->query("SELECT `PathName_js`, `init` FROM `topology_JS` WHERE `id_page` = '".$p."' AND (`o` = '" . $o . "' OR `o` IS NULL)");
+	if (PEAR::isError($DBRESULT)) 
+		print $DBRESULT->getDebugInfo()."<br />";
 	while ($topology_js =& $DBRESULT->fetchRow()){
 		if ($topology_js['init'] == "initM")	{
-			?>setTimeout('initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o;?>")', 0);<?php
+			?>setTimeout('initM(<?php echo $tM; ?>,"<?php echo $sid ; ?>", "<?php echo $o;?>")', 0);<?php
 		} else if ($topology_js['init']){
 			echo $topology_js['init'] ."();";
 		}
