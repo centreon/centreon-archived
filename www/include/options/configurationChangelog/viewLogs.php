@@ -30,15 +30,14 @@
 	$path = "./include/options/configurationChangelog/";
 	
 	#PHP functions 
-	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	require_once("./DBOdsConnect.php");
 	
 	if ($cmd2) {
 		$listAction = array();
-		$listAction = listAction($cmd2);
+		$listAction = $oreon->CentreonLogAction->listAction($cmd2);
 		$listModification = array();
-		$listModification = listmodification($cmd2);
+		$listModification = $oreon->CentreonLogAction->listmodification($cmd2);
 	}
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -66,26 +65,8 @@
 	isset($cmd2) && $cmd2 ? $display_flag = 1 : $display_flag = 0;
 	$tpl->assign("display_flag", $display_flag);
 
-	$objects_list = array();
-	$objects_List = listObjecttype();
-
-	$object_type_tab[0] = _("Please select an object");
-	$object_type_tab[1] = "command";
-	$object_type_tab[2] = "timeperiod";
-	$object_type_tab[3] = "contact";
-	$object_type_tab[4] = "contactgroup";
-	$object_type_tab[5] = "host";
-	$object_type_tab[6] = "hostgroup";
-	$object_type_tab[7] = "service";
-	$object_type_tab[8] = "servicegroup";
-	$object_type_tab[9] = "snmp traps";
-	$object_type_tab[10] = "escalation";
-	$object_type_tab[11] = "host dependency";
-	$object_type_tab[12] = "hostgroup dependency";
-	$object_type_tab[13] = "service dependency";
-	$object_type_tab[14] = "servicegroup dependency";
-
-	//$objects_list[] = _("Hosts : Disable Check");
+	$objects_type_tab = array();
+	$objects_type_tab = $oreon->CentreonLogAction->listObjecttype();
 	
 	?>
 	<script type="text/javascript">
@@ -97,14 +78,13 @@
 	
 	function setO2(_i) {
 		document.forms['form'].elements['cmd2'].value = _i;
-		//document.forms['form'].elements['o2'].selectedIndex = _i;
 	}
 	
 	</script>
 	<?php
 	
 	if ($cmd) {
-		$DBRESULT = $pearDBO->query("SELECT DISTINCT object_name, object_id FROM log_action WHERE object_type='".$object_type_tab[$cmd]."' ORDER BY object_id");
+		$DBRESULT = $pearDBO->query("SELECT DISTINCT object_name, object_id FROM log_action WHERE object_type='".$objects_type_tab[$cmd]."' ORDER BY object_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$objNameTab[0] = _("Please select an object name");
@@ -121,13 +101,11 @@
 		$tpl->assign("objName", $objNameTab[$cmd2]);
 	
 	$attrs = array(	'onchange'=>"javascript: setO1(this.form.elements['o1'].value); submit();");
-    $form->addElement('select', 'o1', NULL, $object_type_tab, $attrs);
+    $form->addElement('select', 'o1', NULL, $objects_type_tab, $attrs);
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
 
-	$objects = array();
-	$objects = listObjectname(NULL);
 	$attrs = array(	'onchange'=>"javascript: setO2(this.form.elements['o2'].value); submit();");
     $form->addElement('select', 'o2', NULL, $objNameTab, $attrs);
 	$form->setDefaults(array('o2' => NULL));

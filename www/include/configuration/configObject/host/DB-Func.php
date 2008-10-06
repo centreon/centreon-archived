@@ -346,7 +346,7 @@
 						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
 						 		if (PEAR::isError($DBRESULT4))
 									print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
-								$fields["_".$macName."_"] = $hst['host_macro_value'];
+								$fields["_".strtoupper($macName)."_"] = $hst['host_macro_value'];
 							}
 						 }
 						 $oreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
@@ -612,7 +612,7 @@
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-					$fields["_".$_POST[$macInput]."_"] = $_POST[$macValue];	
+					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];	
 					$already_stored[$_POST[$macInput]] = 1;
 	 			}			
 	 		}
@@ -1039,7 +1039,7 @@
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-					$fields["_".$_POST[$macInput]."_"] = $_POST[$macValue];	
+					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];	
 					$already_stored[$_POST[$macInput]] = 1;
 	 			}			
 	 		}
@@ -1378,7 +1378,7 @@
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
 					$already_stored[$_POST[$macInput]] = 1;
 	 			}
-	 			$fields["_".$$_POST[$macInput]."_"] = $_POST[$macValue];
+	 			$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
 	 		}
 		}
 		
