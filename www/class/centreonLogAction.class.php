@@ -142,8 +142,7 @@ class CentreonLogAction {
 							$list_modifications[$i]["field_name"] = $field["field_name"];
 							$list_modifications[$i]["field_value_after"] = $field["field_value"];
 							$ref[$field["field_name"]] = $field["field_value"];
-						}
-						else if (($field["field_name"] == $key) && ($field["field_value"] != $value)) {
+						} else if (($field["field_name"] == $key) && ($field["field_value"] != $value)) {
 							$list_modifications[$i]["field_value_before"] = $value;
 							$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
 							$list_modifications[$i]["field_name"] = $field["field_name"];
@@ -171,7 +170,7 @@ class CentreonLogAction {
 		$actionList["enable"] = "Enable";
 		$actionList["mc"] = "Massive change";	
 		
-		foreach($actionList as $key => $value) {
+		foreach ($actionList as $key => $value) {
 			if ($action == $key) {
 				$action = $value;
 			}
