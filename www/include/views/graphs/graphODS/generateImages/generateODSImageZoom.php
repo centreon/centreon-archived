@@ -31,13 +31,17 @@
 	}
 	
 	include("@CENTREON_ETC@/centreon.conf.php");
-	require_once ('DB.php');
-	require_once ('./DB-Func.php');
-	require_once ($centreon_path."www/class/Session.class.php");
-	require_once ($centreon_path."www/class/Oreon.class.php");
+	
+	require_once 'DB.php';
+	require_once './DB-Func.php';
+	require_once $centreon_path."www/class/Session.class.php";
+	require_once $centreon_path."www/class/Oreon.class.php";
+	require_once "$centreon_path/www/class/centreonGMT.class.php";
 	
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
+
+	$CentreonGMT = new CentreonGMT();
 
 	require_once $centreon_path."www/include/common/common-Func.php";
 
@@ -65,6 +69,12 @@
 		exit;
 	} else {
 		$session->free();
+		
+		/*
+	 	 * Get GMT for current user
+	 	 */
+	 	$gmt = $CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
+		
 		/*
 		 * Connect to ods
 		 */
@@ -227,9 +237,9 @@
 		 * Display Start and end time on graph
 		 */
 		
-		$rrd_time  = addslashes(date("Y\/m\/d G:i", $_GET["start"]));
+		$rrd_time  = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $_GET["start"]));
 		$rrd_time = str_replace(":", "\:", $rrd_time);
-		$rrd_time2 = addslashes(date("Y\/m\/d G:i", $_GET["end"])) ;
+		$rrd_time2 = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $_GET["end"])) ;
 		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
 		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
 

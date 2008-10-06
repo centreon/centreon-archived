@@ -58,151 +58,182 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 	
-	require_once("@CENTREON_ETC@/centreon.conf.php");
-	require_once("$centreon_path/www/DBconnect.php");
-	require_once("$centreon_path/www/DBOdsConnect.php");
+	//require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once "/etc/centreon/centreon.conf.php";
+	require_once "$centreon_path/www/class/centreonGMT.class.php";
+	require_once "$centreon_path/www/DBconnect.php";
+	require_once "$centreon_path/www/DBOdsConnect.php";
 
+	$CentreonGMT = new CentreonGMT();
+	
 	/*
 	 * Get RRDTool binary Path 
 	 */
 	 
-	$DBRESULT =& $pearDB->query("SELECT `rrdtool_path_bin` FROM `general_opt`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	$options =& $DBRESULT->fetchRow();
-	$rrdtoolPath = $options["rrdtool_path_bin"];
-	unset($options);
-	$DBRESULT->free();
-
-	$title	 = array(	
-				"active_host_check" => _("Host checks"), 
-				"active_host_last" => _("Active hosts"),
-				"host_latency" => _("Host check latency"),
-				"active_service_check" => _("Service checks"), 
-				"active_service_last" => _("Active services"), 
-				"service_latency" => _("Service check latency"), 
-				"cmd_buffer" => _("Commands in buffer"), 
-				"host_states" => _("Host status"), 
-				"service_states" => _("Services status"));
-
-	$options = array(	
-				"active_host_check" => "nagios_active_host_execution.rrd", 
-				"active_host_last" => "nagios_active_host_last.rrd",
-				"host_latency" => "nagios_active_host_latency.rrd",
-				"active_service_check" => "nagios_active_service_execution.rrd", 
-				"active_service_last" => "nagios_active_service_last.rrd", 
-				"service_latency" => "nagios_active_service_latency.rrd", 
-				"cmd_buffer" => "nagios_cmd_buffer.rrd", 
-				"host_states" => "nagios_hosts_states.rrd", 
-				"service_states" => "nagios_services_states.rrd");
-
-	$differentStats = array(	
-				"nagios_active_host_execution.rrd" => array("Used", "High", "Total"), 
-				"nagios_active_host_last.rrd" => array("T1", "T5", "T15", "T60"), 
-				"nagios_active_host_latency.rrd" => array("Used", "High", "Total"), 
-				"nagios_active_service_execution.rrd" => array("Used", "High", "Total"), 
-				"nagios_active_service_last.rrd" => array("T1", "T5", "T15", "T60"), 
-				"nagios_active_service_latency.rrd" => array("Used", "High", "Total"), 
-				"nagios_cmd_buffer.rrd" => array("Used", "High", "Total"), 
-				"nagios_hosts_states.rrd" => array("Up", "Down", "Unreach"), 
-				"nagios_services_states.rrd" => array("Ok", "Warn", "Crit", "Unk"));
-
-
-	/*
-	 * Verify if start and end date
-	 */	
-
-	if (!isset($_GET["start"])) {		
-		$start = time() - (60*60*24);		
-	} else {				
-		switch ($_GET["start"]) {
-			case "today" : 
-				$start = time() - (60*60*24); 
-				break;
-			case "yesterday" : 
-				$start = time() - (60*60*48); 
-				break;
-			case "last4days" : 
-				$start = time() - (60*60*96);
-				break;
-			case "lastweek" : 
-				$start = time() - (60*60*168); 
-				break;
-			case "lastmonth" : 
-				$start = time() - (60*60*24*30); 
-				break;
-			case "last6month" : 
-				$start = time() - (60*60*24*30*6); 
-				break;
-			case "lastyear" : 
-				$start = time() - (60*60*24*30*12); 
-				break;
-		}
-	}
-	
-	/*
-	 * Get end values
-	 */
-	if (!isset($_GET["end"]))
-		$end = time();
-	else
-		$end = $_GET["end"];
-
-	/*
-	 * Begin Command Line
-	 */
-	$command_line = " graph - --start=".$start." --end=".$end;
-
-	/*
-	 * get all template infos
-	 */
+	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+	if (!$session->numRows()){
+		;
+	} else {
 	 
-	$command_line .= " --interlaced --imgformat PNG --width=400 --height=100 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  ";
-	$command_line .= "--rigid --alt-autoscale-max ";
-			
-	/*
-	 * Init DS template For each curv
-	 */
+	 	/*
+	 	 * Get GMT for current user
+	 	 */
+	 	$gmt = $CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
+	 
+		$DBRESULT =& $pearDB->query("SELECT `rrdtool_path_bin` FROM `general_opt`");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$options =& $DBRESULT->fetchRow();
+		$rrdtoolPath = $options["rrdtool_path_bin"];
+		unset($options);
+		$DBRESULT->free();
 	
-	$colors = array("1"=>"#19EE11", "2"=>"#82CFD8", "3"=>"#F8C706", "4"=>"#F8C706");
+		$title	 = array(	
+					"active_host_check" => _("Host checks"), 
+					"active_host_last" => _("Active hosts"),
+					"host_latency" => _("Host check latency"),
+					"active_service_check" => _("Service checks"), 
+					"active_service_last" => _("Active services"), 
+					"service_latency" => _("Service check latency"), 
+					"cmd_buffer" => _("Commands in buffer"), 
+					"host_states" => _("Host status"), 
+					"service_states" => _("Services status"));
 	
-	$metrics = $differentStats[$options[$_GET["key"]]];
-	$cpt = 1;
-	$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_nagios_stats_path FROM config");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($nagios_stats =& $DBRESULT->fetchRow())
-		$nagios_stats_path = $nagios_stats['RRDdatabase_nagios_stats_path'];
-
-	foreach ($metrics as $key => $value){
-		$command_line .= " DEF:v".$cpt."=".$nagios_stats_path."perfmon-".$_GET["ns_id"]."/".$options[$_GET["key"]].":".$value.":AVERAGE ";
-		$cpt++;
-	}
-	$command_line .= " COMMENT:\" \\l\" ";
+		$options = array(	
+					"active_host_check" => "nagios_active_host_execution.rrd", 
+					"active_host_last" => "nagios_active_host_last.rrd",
+					"host_latency" => "nagios_active_host_latency.rrd",
+					"active_service_check" => "nagios_active_service_execution.rrd", 
+					"active_service_last" => "nagios_active_service_last.rrd", 
+					"service_latency" => "nagios_active_service_latency.rrd", 
+					"cmd_buffer" => "nagios_cmd_buffer.rrd", 
+					"host_states" => "nagios_hosts_states.rrd", 
+					"service_states" => "nagios_services_states.rrd");
 	
-	/*
-	 * Create Legende
-	 */
-	$cpt = 1;
-
-	foreach ($metrics as $key => $tm){
-		$command_line .= " LINE1:v".($cpt);
-		$command_line .= $colors[$cpt].":\"";
-		$command_line .= $tm."\"";
-		$cpt++;
-	}
-
-	$command_line = "$rrdtoolPath ".$command_line." 2>&1";
-	$command_line = escape_command("$command_line");
-
-	//print $command_line;
-	$fp = popen($command_line  , 'r');
-	if (isset($fp) && $fp ) {
-		$str ='';
-		while (!feof ($fp)) {
-	  		$buffer = fgets($fp, 4096);
-	 		$str = $str . $buffer ;
+		$differentStats = array(	
+					"nagios_active_host_execution.rrd" => array("Used", "High", "Total"), 
+					"nagios_active_host_last.rrd" => array("T1", "T5", "T15", "T60"), 
+					"nagios_active_host_latency.rrd" => array("Used", "High", "Total"), 
+					"nagios_active_service_execution.rrd" => array("Used", "High", "Total"), 
+					"nagios_active_service_last.rrd" => array("T1", "T5", "T15", "T60"), 
+					"nagios_active_service_latency.rrd" => array("Used", "High", "Total"), 
+					"nagios_cmd_buffer.rrd" => array("Used", "High", "Total"), 
+					"nagios_hosts_states.rrd" => array("Up", "Down", "Unreach"), 
+					"nagios_services_states.rrd" => array("Ok", "Warn", "Crit", "Unk"));
+	
+	
+		/*
+		 * Verify if start and end date
+		 */	
+	
+		if (!isset($_GET["start"])) {		
+			$start = time() - (60*60*24);		
+		} else {				
+			switch ($_GET["start"]) {
+				case "today" : 
+					$start = time() - (60*60*24); 
+					break;
+				case "yesterday" : 
+					$start = time() - (60*60*48); 
+					break;
+				case "last4days" : 
+					$start = time() - (60*60*96);
+					break;
+				case "lastweek" : 
+					$start = time() - (60*60*168); 
+					break;
+				case "lastmonth" : 
+					$start = time() - (60*60*24*30); 
+					break;
+				case "last6month" : 
+					$start = time() - (60*60*24*30*6); 
+					break;
+				case "lastyear" : 
+					$start = time() - (60*60*24*30*12); 
+					break;
+			}
 		}
-		print $str;
+		
+		/*
+		 * Get end values
+		 */
+		if (!isset($_GET["end"]))
+			$end = time();
+		else
+			$end = $_GET["end"];
+			
+		/*
+		 * Begin Command Line
+		 */
+		$command_line = " graph - --start=".$start." --end=".$end;
+	
+		/*
+		 * get all template infos
+		 */
+		 
+		$command_line .= " --interlaced --imgformat PNG --width=400 --height=100 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  --rigid --alt-autoscale-max ";
+				
+		/*
+		 * Init DS template For each curv
+		 */
+		
+		$colors = array("1"=>"#19EE11", "2"=>"#82CFD8", "3"=>"#F8C706", "4"=>"#F8C706");
+		
+		$metrics = $differentStats[$options[$_GET["key"]]];
+		$cpt = 1;
+		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_nagios_stats_path FROM config");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$nagios_stats =& $DBRESULT->fetchRow();
+		$nagios_stats_path = $nagios_stats['RRDdatabase_nagios_stats_path'];
+	
+		foreach ($metrics as $key => $value){
+			$command_line .= " DEF:v".$cpt."=".$nagios_stats_path."perfmon-".$_GET["ns_id"]."/".$options[$_GET["key"]].":".$value.":AVERAGE ";
+			$cpt++;
+		}
+		
+		/*
+		 * Add comment start and end time inf graph footer.
+		 */
+		$rrd_time  = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $start, $gmt));
+		$rrd_time = str_replace(":", "\:", $rrd_time);
+		$rrd_time2 = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $end, $gmt)) ;
+		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
+		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
+		
+		/*
+		 * Create Legende
+		 */
+		$cpt = 1;
+	
+		foreach ($metrics as $key => $tm){
+			$command_line .= " LINE1:v".($cpt);
+			$command_line .= $colors[$cpt].":\"";
+			$command_line .= $tm."\"";
+			$cpt++;
+		}
+		
+		$command_line = "$rrdtoolPath ".$command_line." 2>&1";
+	
+		/*
+		 * Add Timezone for current user.
+		 */
+		 
+		$command_line = "export TZ='CMT-6' ; ".$command_line;
+	
+		$command_line = escape_command("$command_line");
+		/*
+		 * Debug
+		 */
+		//print $command_line;
+		$fp = popen($command_line  , 'r');
+		if (isset($fp) && $fp ) {
+			$str ='';
+			while (!feof ($fp)) {
+		  		$buffer = fgets($fp, 4096);
+		 		$str = $str . $buffer ;
+			}
+			print $str;
+		}
 	}
 ?>

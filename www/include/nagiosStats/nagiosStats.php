@@ -103,6 +103,6 @@
 		
 	$tpl->assign("p", $p);
 	$tpl->assign("options", $options);
-	$tpl->assign("session", session_id());
+	$tpl->assign("session_id", session_id());
 	$tpl->display("nagiosStats.ihtml");
 ?>

@@ -28,9 +28,9 @@
 			<td align="center">
 	 		{foreach from=$options key=keyOptions item=itemOptions} 		
 		 		{if $startPeriod}
-		 		<img src="./include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}&start={$startPeriod}">
+		 		<img src="./include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}&start={$startPeriod}&session_id={$session_id}">
 		 		{else}
-		 		<img src="./include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}">
+		 		<img src="./include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}&session_id={$session_id}">
 		 		{/if}	 	
 	 		{assign var='counter' value=$counter+1}
 		 	{/foreach}
@@ -39,4 +39,4 @@
 	 </table>
 </div>
 {/foreach}
-</form> 	
+</form>
