@@ -109,8 +109,11 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$objNameTab[0] = _("Please select an object name");
 		while ($res =& $DBRESULT->fetchRow()) {
-			if ($res['object_id'])
+			if ($res['object_id']) {
+				$res['object_name'] = str_replace('#S#', "/", $res["object_name"]);
+				$res['object_name'] = str_replace('#BS#', "\\", $res["object_name"]);
 				$objNameTab[$res['object_id']] = $res['object_name']." (id:".$res['object_id'].")";
+			}
 		}
 	}
 	
