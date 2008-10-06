@@ -18,6 +18,24 @@
 	if (!isset ($oreon))
 		exit ();
 
+	function getHostServiceCombo($service_id = NULL, $service_description = NULL) {
+		global $pearDB;
+		if ($service_id == NULL || $service_description == NULL)
+			return;
+		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM `host_service_relation` WHERE service_service_id='".$service_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$row =& $DBRESULT->fetchRow();
+		$DBRESULT2 =& $pearDB->query("SELECT host_name FROM `host` WHERE host_id='".$row['host_host_id']."'");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+		$row2 =& $DBRESULT2->fetchRow();
+		if ($DBRESULT->numRows() > 1)
+			$combo = "-/" . $service_description;
+		$combo = $row2["host_name"] . "/" . $service_description;
+		return $combo;
+	}
+
 	function serviceExists ($name = NULL)	{
 		global $pearDB;
 		
@@ -97,25 +115,37 @@
 	
 	function enableServiceInDB ($service_id = null, $service_arr = array())	{
 		if (!$service_id && !count($service_arr)) return;
-		global $pearDB;
+		global $pearDB, $oreon;
 		if ($service_id)
 			$service_arr = array($service_id=>"1");
 		foreach($service_arr as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			
+			$DBRESULT2 =& $pearDB->query("SELECT service_description FROM `service` WHERE service_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow(); 
+			$oreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $row['service_description']), "enable");
 		}
 	}
 	
 	function disableServiceInDB ($service_id = null, $service_arr = array())	{
 		if (!$service_id && !count($service_arr)) return;
-		global $pearDB;
+		global $pearDB, $oreon;
 		if ($service_id)
 			$service_arr = array($service_id=>"1");
 		foreach($service_arr as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				
+			$DBRESULT2 =& $pearDB->query("SELECT service_description FROM `service` WHERE service_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row = $DBRESULT2->fetchRow(); 
+			$oreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $row['service_description']), "disable");
 		}
 	}
 	function deleteServiceInDB ($services = array())	{
@@ -130,7 +160,14 @@
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			}
+			
+			$DBRESULT3 =& $pearDB->query("SELECT service_description FROM `service` WHERE `service_id` = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT3))
+				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+			$svcname = $DBRESULT3->fetchRow();
+			$oreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $svcname['service_description']), "d");
 			$DBRESULT =& $pearDB->query("DELETE FROM service WHERE service_id = '".$key."'");
+			
 			if ($oreon->user->get_version() >= 3) {
 				$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
 				$DBRESULT =& $pearDB->query("DELETE FROM contact_service_relation WHERE service_service_id = '".$key."'");
@@ -214,6 +251,9 @@
 					else if ($key2 == "service_description")
 						$service_description = NULL;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					if ($key2 != "service_id")
+						$fields[$key2] = $value2;
+					$fields["service_description"] = $service_description;
 				}
 				if (!count($hPars))
 					$hPars = getMyServiceHosts($key);
@@ -239,41 +279,59 @@
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id FROM host_service_relation WHERE service_service_id = '".$key."'");
 							if (PEAR::isError($DBRESULT))
 								print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+							$fields["service_hPars"] = "";
+							$fields["service_hgPars"] = "";
 							while($service =& $DBRESULT->fetchRow())	{
-								if ($service["host_host_id"])				
+								if ($service["host_host_id"]) {				
 									$DBRESULT2 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$service["host_host_id"]."', NULL, '".$maxId["MAX(service_id)"]."')");
-								else if ($service["hostgroup_hg_id"])	
+									$fields["service_hPars"] .= $service["host_host_id"] . ",";
+								}
+								else if ($service["hostgroup_hg_id"]) {
 									$DBRESULT2 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$service["hostgroup_hg_id"]."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
+									$fields["service_hgPars"] .= $service["hostgroup_hg_id"] . ",";
+								}
 								if (PEAR::isError($DBRESULT2))
 									print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 							}
+							$fields["service_hPars"] = trim($fields["service_hPars"], ",");
+							$fields["service_hgPars"] = trim($fields["service_hgPars"], ",");
 						}
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["service_cgs"] = "";
 						while($Cg =& $DBRESULT->fetchRow()){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contactgroup_service_relation VALUES ('', '".$Cg["contactgroup_cg_id"]."', '".$maxId["MAX(service_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["service_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
 						}
+						$fields["service_cgs"] = trim($fields["service_cgs"], ",");
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id, servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["service_sgs"] = "";
 						while($Sg =& $DBRESULT->fetchRow()){
 							$Sg["host_host_id"] ? $host_id = "'".$Sg["host_host_id"]."'" : $host_id = "NULL";
 							$Sg["hostgroup_hg_id"] ? $hg_id = "'".$Sg["hostgroup_hg_id"]."'" : $hg_id = "NULL";
 							$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$host_id.", ".$hg_id.", '".$maxId["MAX(service_id)"]."', '".$Sg["servicegroup_sg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							if ($Sg["host_host_id"])
+								$fields["service_sgs"] .= $Sg["host_host_id"] . ",";
 						}
+						$fields["service_sgs"] = trim($fields["service_sgs"], ",");
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+						$fields["service_traps"] = "";
 						while($traps =& $DBRESULT->fetchRow()){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO traps_service_relation VALUES ('', '".$traps["traps_id"]."', '".$maxId["MAX(service_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							$fields["service_traps"] .= $traps["traps_id"] . ",";
 						}
+						$fields["service_traps"] = trim($fields["service_traps"], ",");
 						$DBRESULT =& $pearDB->query("SELECT * FROM extended_service_information WHERE service_service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -287,6 +345,8 @@
 							$DBRESULT2 =& $pearDB->query($rq);
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+							if ($key2 != "esi_id")
+								$fields[$key2] = $value2;
 						}
 						/*
 						 *  on demand macros
@@ -303,12 +363,14 @@
 						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
 						 		if (PEAR::isError($DBRESULT4))
 									print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
+								$fields["_".$macName."_"] = $sv['svc_macro_value'];
 							}
 						}
 					}
 				}
 			}
 		}
+		$oreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], getHostServiceCombo($maxId["MAX(service_id)"], $service_description), "a", $fields);
 		return ($maxId["MAX(service_id)"]);
 	}
 	
@@ -399,7 +461,7 @@
 	}
 	
 	function insertService($ret = array())	{
-		global $form, $pearDB;
+		global $form, $pearDB, $oreon;
 		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
@@ -496,11 +558,78 @@
 		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id["MAX(service_id)"] .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";		
+					$fields["_".$_POST[$macInput]."_"] = $_POST[$macValue];		
 					$already_stored[$_POST[$macInput]] = 1;
 	 			}			
 	 		}
 		}
+		
+		$fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
+		$fields["command_command_id"] = $ret["command_command_id"];
+		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
+		$fields["command_command_id2"] = $ret["command_command_id2"];
+		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
+		$fields["service_description"] = htmlentities($ret["service_description"], ENT_QUOTES);
+		$fields["service_alias"] = htmlentities($ret["service_alias"], ENT_QUOTES);
+		$fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
+		$fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
+		$fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
+		$fields["service_retry_check_interval"] = $ret["service_retry_check_interval"];
+		$fields["service_active_checks_enabled"] = $ret["service_active_checks_enabled"]["service_active_checks_enabled"];
+		$fields["service_passive_checks_enabled"] = $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"];
+		$fields["service_parallelize_check"] = $ret["service_parallelize_check"]["service_parallelize_check"];
+		$fields["service_obsess_over_service"] = $ret["service_obsess_over_service"]["service_obsess_over_service"];
+		$fields["service_check_freshness"] = $ret["service_check_freshness"]["service_check_freshness"];
+		$fields["service_freshness_threshold"] = $ret["service_freshness_threshold"];
+		$fields["service_event_handler_enabled"] = $ret["service_event_handler_enabled"]["service_event_handler_enabled"];
+		$fields["service_low_flap_threshold"] = $ret["service_low_flap_threshold"];
+		$fields["service_high_flap_threshold"] = $ret["service_high_flap_threshold"];
+		$fields["service_flap_detection_enabled"] = $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"];
+		$fields["service_process_perf_data"] = $ret["service_process_perf_data"]["service_process_perf_data"];
+		$fields["service_retain_status_information"] = $ret["service_retain_status_information"]["service_retain_status_information"];
+		$fields["service_retain_nonstatus_information"] = $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
+		$fields["service_notification_interval"] = $ret["service_notification_interval"];
+		$fields["service_notifOpts"] = "";
+		if (isset($ret["service_notifOpts"]))
+			$fields["service_notifOpts"] = implode(",", $ret["service_notifOpts"]);
+		$fields["service_notifications_enabled"] = $fields["service_notifications_enabled"]["service_notifications_enabled"];
+		$fields["service_stalOpts"] = "";
+		if (isset($ret["service_stalOpts"]))
+			$fields["service_stalOpts"] = implode(",", $ret["service_stalOpts"]);
+		$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES);
+		$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES);
+		$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES);
+		$fields["service_register"] = $ret["service_register"]["service_register"];
+		$fields["service_activate"] = $ret["service_activate"]["service_activate"];
+		$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES);
+		$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES);
+		$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES);
+		$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES);
+		$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES);
+		$fields["graph_id"] = $ret["graph_id"];
+		$fields["service_cs"] = "";
+		if (isset($ret["service_cs"]))
+			$fields["service_cs"] = implode(",", $ret["service_cs"]);
+		$fields["service_cgs"] = "";
+		if (isset($ret["service_cgs"]))
+			$fields["service_cgs"] = implode(",", $ret["service_cgs"]);
+		$fields["service_sgs"] = "";
+		if (isset($ret["service_sgs"]))
+			$fields["service_sgs"] = implode(",", $ret["service_sgs"]);
+		$fields["service_hPars"] = "";
+		if (isset($ret["service_hPars"]))
+			$fields["service_hPars"] = implode(",", $ret["service_hPars"]);
+		$fields["service_hgPars"] = "";
+		if (isset($ret["service_hgPars"]))
+			$fields["service_hgPars"] = implode(",", $ret["service_hgPars"]);
+		$fields["service_categories"] = "";
+		if (isset($ret["service_categories"]))
+			$fields["service_categories"] = implode(",", $ret["service_categories"]);
+		$fields["service_traps"] = "";
+		if (isset($ret["service_traps"]))
+			$fields["service_traps"] = implode(",", $ret["service_traps"]);
+		$oreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id["MAX(service_id)"], htmlentities($ret["service_description"], ENT_QUOTES)), "a", $fields);
 		return ($service_id["MAX(service_id)"]);
 	}
 	
@@ -538,7 +667,7 @@
 	function updateService($service_id = null, $from_MC = false)	{
 		if (!$service_id) return;
 		global $form;
-		global $pearDB;
+		global $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
@@ -659,17 +788,83 @@
 		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+					$fields["_".$_POST[$macInput]."_"] = $_POST[$macValue];	
 					$already_stored[$_POST[$macInput]] = 1;
 	 			}			
 	 		}
 		}
+		$fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
+		$fields["command_command_id"] = $ret["command_command_id"];
+		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
+		$fields["command_command_id2"] = $ret["command_command_id2"];
+		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
+		$fields["service_description"] = htmlentities($ret["service_description"], ENT_QUOTES);
+		$fields["service_alias"] = htmlentities($ret["service_alias"], ENT_QUOTES);
+		$fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
+		$fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
+		$fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
+		$fields["service_retry_check_interval"] = $ret["service_retry_check_interval"];
+		$fields["service_active_checks_enabled"] = $ret["service_active_checks_enabled"]["service_active_checks_enabled"];
+		$fields["service_passive_checks_enabled"] = $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"];
+		$fields["service_parallelize_check"] = $ret["service_parallelize_check"]["service_parallelize_check"];
+		$fields["service_obsess_over_service"] = $ret["service_obsess_over_service"]["service_obsess_over_service"];
+		$fields["service_check_freshness"] = $ret["service_check_freshness"]["service_check_freshness"];
+		$fields["service_freshness_threshold"] = $ret["service_freshness_threshold"];
+		$fields["service_event_handler_enabled"] = $ret["service_event_handler_enabled"]["service_event_handler_enabled"];
+		$fields["service_low_flap_threshold"] = $ret["service_low_flap_threshold"];
+		$fields["service_high_flap_threshold"] = $ret["service_high_flap_threshold"];
+		$fields["service_flap_detection_enabled"] = $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"];
+		$fields["service_process_perf_data"] = $ret["service_process_perf_data"]["service_process_perf_data"];
+		$fields["service_retain_status_information"] = $ret["service_retain_status_information"]["service_retain_status_information"];
+		$fields["service_retain_nonstatus_information"] = $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
+		$fields["service_notification_interval"] = $ret["service_notification_interval"];
+		$fields["service_notifOpts"] = "";
+		if (isset($ret["service_notifOpts"]))
+			$fields["service_notifOpts"] = implode(",", $ret["service_notifOpts"]);
+		$fields["service_notifications_enabled"] = $fields["service_notifications_enabled"]["service_notifications_enabled"];
+		$fields["service_stalOpts"] = "";
+		if (isset($ret["service_stalOpts"]))
+			$fields["service_stalOpts"] = implode(",", $ret["service_stalOpts"]);
+		$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES);
+		$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES);
+		$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES);
+		$fields["service_register"] = $ret["service_register"]["service_register"];
+		$fields["service_activate"] = $ret["service_activate"]["service_activate"];
+		$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES);
+		$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES);
+		$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES);
+		$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES);
+		$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES);
+		$fields["graph_id"] = $ret["graph_id"];
+		$fields["service_cs"] = "";
+		if (isset($ret["service_cs"]))
+			$fields["service_cs"] = implode(",", $ret["service_cs"]);
+		$fields["service_cgs"] = "";
+		if (isset($ret["service_cgs"]))
+			$fields["service_cgs"] = implode(",", $ret["service_cgs"]);
+		$fields["service_sgs"] = "";
+		if (isset($ret["service_sgs"]))
+			$fields["service_sgs"] = implode(",", $ret["service_sgs"]);
+		$fields["service_hPars"] = "";
+		if (isset($ret["service_hPars"]))
+			$fields["service_hPars"] = implode(",", $ret["service_hPars"]);
+		$fields["service_hgPars"] = "";
+		if (isset($ret["service_hgPars"]))
+			$fields["service_hgPars"] = implode(",", $ret["service_hgPars"]);
+		$fields["service_categories"] = "";
+		if (isset($ret["service_categories"]))
+			$fields["service_categories"] = implode(",", $ret["service_categories"]);
+		$fields["service_traps"] = "";
+		if (isset($ret["service_traps"]))
+			$fields["service_traps"] = implode(",", $ret["service_traps"]);
+		$oreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id, htmlentities($ret["service_description"], ENT_QUOTES)), "c", $fields);
 	}
 	
 	function updateService_MC($service_id = null)	{
 		if (!$service_id) return;
 		global $form;
-		global $pearDB;
+		global $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
@@ -695,38 +890,162 @@
 			$ret["service_alias"] = str_replace('\\', "#BS#", $ret["service_alias"]);
 		}
 		$rq = "UPDATE service SET ";
-		if (isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL) $rq .= "service_template_model_stm_id = '".$ret["service_template_model_stm_id"]."', ";
-		if (isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL) $rq .= "command_command_id = '".$ret["command_command_id"]."', ";
-		if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL) $rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
-		if (isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL) $rq .= "command_command_id2 = '".$ret["command_command_id2"]."', ";
-		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) $rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
-		if (isset($ret["service_alias"]) && $ret["service_alias"] != NULL) $rq .= "service_alias = '".$ret["service_alias"]."', ";
-		if (isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2) $rq .= "service_is_volatile = '".$ret["service_is_volatile"]["service_is_volatile"]."', ";
-		if (isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != NULL) $rq .= "service_max_check_attempts = '".$ret["service_max_check_attempts"]."', ";
-		if (isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != NULL) $rq .= "service_normal_check_interval = '".$ret["service_normal_check_interval"]."', ";
-		if (isset($ret["service_retry_check_interval"]) && $ret["service_retry_check_interval"] != NULL) $rq .= "service_retry_check_interval = '".$ret["service_retry_check_interval"]."', ";
-		if (isset($ret["service_active_checks_enabled"]["service_active_checks_enabled"])) $rq .= "service_active_checks_enabled = '".$ret["service_active_checks_enabled"]["service_active_checks_enabled"]."', ";
-		if (isset($ret["service_passive_checks_enabled"]["service_passive_checks_enabled"])) $rq .= "service_passive_checks_enabled = '".$ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]."', ";
-		if (isset($ret["service_parallelize_check"]["service_parallelize_check"])) $rq .= "service_parallelize_check = '".$ret["service_parallelize_check"]["service_parallelize_check"]."', ";
-		if (isset($ret["service_obsess_over_service"]["service_obsess_over_service"])) $rq .= "service_obsess_over_service = '".$ret["service_obsess_over_service"]["service_obsess_over_service"]."', ";
-		if (isset($ret["service_check_freshness"]["service_check_freshness"])) $rq .= "service_check_freshness = '".$ret["service_check_freshness"]["service_check_freshness"]."', ";
-		if (isset($ret["service_freshness_threshold"]) && $ret["service_freshness_threshold"] != NULL) $rq .= "service_freshness_threshold = '".$ret["service_freshness_threshold"]."', ";
-		if (isset($ret["service_event_handler_enabled"]["service_event_handler_enabled"])) $rq .= "service_event_handler_enabled = '".$ret["service_event_handler_enabled"]["service_event_handler_enabled"]."', ";
-		if (isset($ret["service_low_flap_threshold"]) && $ret["service_low_flap_threshold"] != NULL) $rq .= "service_low_flap_threshold = '".$ret["service_low_flap_threshold"]."', ";
-		if (isset($ret["service_high_flap_threshold"]) && $ret["service_high_flap_threshold"] != NULL) $rq .= "service_high_flap_threshold = '".$ret["service_high_flap_threshold"]."', ";
-		if (isset($ret["service_flap_detection_enabled"]["service_flap_detection_enabled"])) $rq .= "service_flap_detection_enabled = '".$ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]."', ";
-		if (isset($ret["service_process_perf_data"]["service_process_perf_data"])) $rq .= "service_process_perf_data = '".$ret["service_process_perf_data"]["service_process_perf_data"]."', ";
-		if (isset($ret["service_retain_status_information"]["service_retain_status_information"])) $rq .= "service_retain_status_information = '".$ret["service_retain_status_information"]["service_retain_status_information"]."', ";
-		if (isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"])) $rq .= "service_retain_nonstatus_information = '".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', ";
-		if (isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL) $rq .= "service_notification_interval = '".$ret["service_notification_interval"]."', ";
-		if (isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL) $rq .= "service_notification_options = '".implode(",", array_keys($ret["service_notifOpts"]))."', ";
-		if (isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) $rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
-		if (isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL) $rq .= "service_stalking_options = '".implode(",", array_keys($ret["service_stalOpts"]))."', ";
-		if (isset($ret["service_comment"]) && $ret["service_comment"] != NULL) $rq .= "service_comment = '".htmlentities($ret["service_comment"], ENT_QUOTES)."', ";
-		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL) $rq .= "command_command_id_arg = '".htmlentities($ret["command_command_id_arg"], ENT_QUOTES)."', ";
-		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL) $rq .= "command_command_id_arg2 = '".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES)."', ";
-		if (isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL) $rq .= "service_register = '".$ret["service_register"]["service_register"]."', ";
-		if (isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL) $rq .= "service_activate = '".$ret["service_activate"]["service_activate"]."', ";
+		if (isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL) {
+			$rq .= "service_template_model_stm_id = '".$ret["service_template_model_stm_id"]."', ";
+			$fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
+		}
+		if (isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL) {
+			$rq .= "command_command_id = '".$ret["command_command_id"]."', ";
+			$fields["command_command_id"] = $ret["command_command_id"];
+		}
+		if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL) {
+			$rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
+			$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
+		}
+		if (isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL) {
+			$rq .= "command_command_id2 = '".$ret["command_command_id2"]."', ";
+			$fields["command_command_id2"] = $ret["command_command_id2"];
+		}
+		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) {
+			$rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
+			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
+		}
+		if (isset($ret["service_alias"]) && $ret["service_alias"] != NULL) {
+			$rq .= "service_alias = '".$ret["service_alias"]."', ";
+			$fields["service_alias"] = $ret["service_alias"];
+		}
+		if (isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2) {
+			$rq .= "service_is_volatile = '".$ret["service_is_volatile"]["service_is_volatile"]."', ";
+			$fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
+		}
+		if (isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != NULL) {
+			$rq .= "service_max_check_attempts = '".$ret["service_max_check_attempts"]."', ";
+			$fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
+		}
+		if (isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != NULL) {
+			$rq .= "service_normal_check_interval = '".$ret["service_normal_check_interval"]."', ";
+			$fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
+		}
+		if (isset($ret["service_retry_check_interval"]) && $ret["service_retry_check_interval"] != NULL) {
+			$rq .= "service_retry_check_interval = '".$ret["service_retry_check_interval"]."', ";
+			$fields["service_retry_check_interval"] = $ret["service_retry_check_interval"];
+		}
+		if (isset($ret["service_active_checks_enabled"]["service_active_checks_enabled"])) {
+			$rq .= "service_active_checks_enabled = '".$ret["service_active_checks_enabled"]["service_active_checks_enabled"]."', ";
+			$fields["service_active_checks_enabled"] = $fields["service_active_checks_enabled"]["service_active_checks_enabled"];
+		}
+		if (isset($ret["service_passive_checks_enabled"]["service_passive_checks_enabled"])) {
+			$rq .= "service_passive_checks_enabled = '".$ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]."', ";
+			$fields["service_passive_checks_enabled"] = $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"];
+		}
+		if (isset($ret["service_parallelize_check"]["service_parallelize_check"])) {
+			$rq .= "service_parallelize_check = '".$ret["service_parallelize_check"]["service_parallelize_check"]."', ";
+			$fields["service_parallelize_check"] = $ret["service_parallelize_check"]["service_parallelize_check"];
+		}
+		if (isset($ret["service_obsess_over_service"]["service_obsess_over_service"])) {
+			$rq .= "service_obsess_over_service = '".$ret["service_obsess_over_service"]["service_obsess_over_service"]."', ";
+			$fields["service_obsess_over_service"] = $ret["service_obsess_over_service"]["service_obsess_over_service"];
+		}
+		if (isset($ret["service_check_freshness"]["service_check_freshness"])) {
+			$rq .= "service_check_freshness = '".$ret["service_check_freshness"]["service_check_freshness"]."', ";
+			$fields["service_check_freshness"] = $ret["service_check_freshness"]["service_check_freshness"];
+		}
+		if (isset($ret["service_freshness_threshold"]) && $ret["service_freshness_threshold"] != NULL) {
+			$rq .= "service_freshness_threshold = '".$ret["service_freshness_threshold"]."', ";
+			$fields["service_freshness_threshold"] = $ret["service_freshness_threshold"];
+		}
+		if (isset($ret["service_event_handler_enabled"]["service_event_handler_enabled"])) {
+			$rq .= "service_event_handler_enabled = '".$ret["service_event_handler_enabled"]["service_event_handler_enabled"]."', ";
+			$fields["service_event_handler_enabled"] = $ret["service_event_handler_enabled"]["service_event_handler_enabled"];
+		}
+		if (isset($ret["service_low_flap_threshold"]) && $ret["service_low_flap_threshold"] != NULL) {
+			$rq .= "service_low_flap_threshold = '".$ret["service_low_flap_threshold"]."', ";
+			$fields["service_low_flap_threshold"] = $ret["service_low_flap_threshold"];
+		}
+		if (isset($ret["service_high_flap_threshold"]) && $ret["service_high_flap_threshold"] != NULL) {
+			$rq .= "service_high_flap_threshold = '".$ret["service_high_flap_threshold"]."', ";
+			$fields["service_high_flap_threshold"] = $ret["service_high_flap_threshold"];
+		}
+		if (isset($ret["service_flap_detection_enabled"]["service_flap_detection_enabled"])) {
+			$rq .= "service_flap_detection_enabled = '".$ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]."', ";
+			$fields["service_flap_detection_enabled"] = $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"];
+		}
+		if (isset($ret["service_process_perf_data"]["service_process_perf_data"])) {
+			$rq .= "service_process_perf_data = '".$ret["service_process_perf_data"]["service_process_perf_data"]."', ";
+			$fields["service_process_perf_data"] = $ret["service_process_perf_data"]["service_process_perf_data"];
+		}
+		if (isset($ret["service_retain_status_information"]["service_retain_status_information"])) {
+			$rq .= "service_retain_status_information = '".$ret["service_retain_status_information"]["service_retain_status_information"]."', ";
+			$fields["service_retain_status_information"]["service_retain_status_information"];
+		}
+		if (isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"])) {
+			$rq .= "service_retain_nonstatus_information = '".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', ";
+			$fields["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
+		}
+		if (isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL) {
+			$rq .= "service_notification_interval = '".$ret["service_notification_interval"]."', ";
+			$fields["service_notification_interval"] = $ret["service_notification_interval"];
+		}
+		if (isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL) {
+			$rq .= "service_notification_options = '".implode(",", array_keys($ret["service_notifOpts"]))."', ";
+			$fields["service_notifOpts"] = implode(",", $ret["service_notifOpts"]);
+		}
+		if (isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) {
+			$rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
+			$fields["service_notifications_enabled"] = $ret["service_notifications_enabled"]["service_notifications_enabled"];
+		}
+		if (isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL) {
+			$rq .= "service_stalking_options = '".implode(",", array_keys($ret["service_stalOpts"]))."', ";
+			$fields["service_stalOpts"] = implode(",", $ret["service_stalOpts"]);
+		}
+		if (isset($ret["service_comment"]) && $ret["service_comment"] != NULL) {
+			$rq .= "service_comment = '".htmlentities($ret["service_comment"], ENT_QUOTES)."', ";
+			$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES);
+		}
+		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL) {
+			$rq .= "command_command_id_arg = '".htmlentities($ret["command_command_id_arg"], ENT_QUOTES)."', ";
+			$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES);
+		}
+		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL) {
+			$rq .= "command_command_id_arg2 = '".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES)."', ";
+			$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES);
+		}
+		if (isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL) {
+			$rq .= "service_register = '".$ret["service_register"]["service_register"]."', ";
+			$fields["service_register"] = $ret["service_register"]["service_register"];
+		}
+		if (isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL) {
+			$rq .= "service_activate = '".$ret["service_activate"]["service_activate"]."', ";
+			$fields["service_activate"] = $ret["service_activate"]["service_activate"];
+		}
+		
+		if (isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL)
+			$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES);
+		if (isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL)
+			$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES);
+		if (isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL)
+			$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES);
+		if (isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL)
+			$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES);
+		if (isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL)
+			$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES);
+		if (isset($ret["graph_id"]) && $ret["graph_id"] != NULL)
+			$fields["graph_id"] = $ret["graph_id"];
+		if (isset($ret["service_cs"]) && $ret["service_cs"] != NULL)
+			$fields["service_cs"] = implode(",", $ret["service_cs"]);
+		if (isset($ret["service_cgs"]) && $ret["service_cgs"] != NULL)
+			$fields["service_cgs"] = implode(",", $ret["service_cgs"]);
+		if (isset($ret["service_sgs"]) && $ret["service_sgs"] != NULL)
+			$fields["service_sgs"] = implode(",", $ret["service_sgs"]);
+		if (isset($ret["service_hPars"]) && $ret["service_hPars"] != NULL)
+			$fields["service_hPars"] = implode(",", $ret["service_hPars"]);
+		if (isset($ret["service_hgPars"]) && $ret["service_hgPars"] != NULL)
+			$fields["service_hgPars"] = implode(",", $ret["service_hgPars"]);
+		if (isset($ret["service_categories"]) && $ret["service_categories"] != NULL)
+			$fields["service_categories"] = implode(",", $ret["service_categories"]);
+		if (isset($ret["service_traps"]) && $ret["service_traps"] != NULL)
+			$fields["service_traps"] = implode(",", $ret["service_traps"]);
+		
 		if (strcmp("UPDATE service SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";
@@ -765,7 +1084,7 @@
 	 				$rq = "UPDATE on_demand_macro_host SET `host_macro_value`='". $_POST[$macValue] . "'".
 	 					  " WHERE `svc_svc_id`=" . $service_id .
 	 					  " AND `svc_macro_name`='\$_SERVICE" . $_POST[$macInput] . "\$'";
-			 		$DBRESULT =& $pearDB->query($rq);			 		
+			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 			}
@@ -777,9 +1096,11 @@
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
 					$already_stored[$_POST[$macInput]] = 1;
-	 			}	 			
+	 			}
+	 			$fields["_".$_POST[$macInput]."_"] = $_POST[$macValue];
 	 		}
 		}
+		$oreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, getMyServiceName($service_id), ENT_QUOTES), "mc", $fields);
 	}
 	
 	/*

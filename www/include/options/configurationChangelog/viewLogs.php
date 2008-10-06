@@ -19,8 +19,9 @@
 	if (!isset ($oreon))
 		exit ();
 		
-	isset($_POST["cmd"]) ? $cmd = $_POST["cmd"] : $cmd = NULL;
-	echo "HERE=>" . $cmd . "<br>";
+	isset($_POST["cmd"]) ? $cmd = $_POST["cmd"] : $cmd = 0;
+	isset($_POST["cmd2"]) ? $cmd2 = $_POST["cmd2"] : $cmd2 = 0;
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -61,7 +62,7 @@
 	$objects_list = array();
 	$objects_List = listObjecttype();
 
-	$object_type_tab[0] = "Select an object";
+	$object_type_tab[0] = _("Please select an object");
 	$object_type_tab[1] = "command";
 	$object_type_tab[2] = "timeperiod";
 	$object_type_tab[3] = "contact";
@@ -81,22 +82,27 @@
 	
 	?>
 	<script type="text/javascript">
-	function setO(_i) {
+	function setO1(_i) {
 		document.forms['form'].elements['cmd'].value = _i;
-		document.forms['form'].elements['o1'].selectedIndex = 0;
-		document.forms['form'].elements['o2'].selectedIndex = 0;
+		document.forms['form'].elements['o1'].selectedIndex = _i;
 	}
 	
-	function apply_logs()	{
-		var openid = document.getElementById('openid').innerHTML;
-		graph_4_host(openid, multi);
-	}	
+	function setO2(_i) {
+		document.forms['form'].elements['cmd2'].value = _i;
+		document.forms['form'].elements['o2'].selectedIndex = _i;
+	}
 	
 	</script>
 	<?php
-
 	
-	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
+	if ($cmd) {
+		$DBRESULT = $pearDB->query("SELECT DISTINCT object_name, object_id FROM log_action WHERE object_type='".$object_type_tab[$cmd]."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$res =& $DBRESULT->fetchRow();	
+	}
+	
+	$attrs = array(	'onchange'=>"javascript: setO1(this.form.elements['o1'].value); submit();");
     $form->addElement('select', 'o1', NULL, $object_type_tab, $attrs);
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
@@ -104,16 +110,14 @@
 
 	$objects = array();
 	$objects = listObjectname(NULL);
-	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();");
-    $form->addElement('select', 'o2', NULL, $objects, $attrs);
+	$attrs = array(	'onchange'=>"javascript: setO2(this.form.elements['o2'].value); submit();");
+    $form->addElement('select', 'o2', NULL, $res, $attrs);
 	$form->setDefaults(array('o2' => NULL));
 	$o1 =& $form->getElement('o2');
 	$o1->setValue(NULL);
 	
-	//print_r($listId);
-	//print_r($listModification);
-	//print_r($logs);
-	$form->addElement('hidden', 'cmd', $cmd);	
+	$form->addElement('hidden', 'cmd', $cmd);
+	$form->addElement('hidden', 'cmd2', $cmd2);	
 	/*
 	 * Apply a template definition
 	 */

@@ -55,7 +55,7 @@
 	}
 
 	function deleteHostGroupDependencyInDB ($dependencies = array())	{
-		global $pearDB;
+		global $pearDB, $oreon;
 		foreach($dependencies as $key=>$value)		{
 			$DBRESULT2 =& $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT2))
@@ -65,7 +65,7 @@
 			$DBRESULT =& $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$oreon->CentreonLogAction->insertLog("dependency", $key, $row['dep_name'], "d");
+			$oreon->CentreonLogAction->insertLog("hostgroup dependency", $key, $row['dep_name'], "d");
 		}
 	}
 	
@@ -104,7 +104,7 @@
 							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_hostgroupParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$hg["hostgroup_hg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-							$fields["dep_hgParents"] .= $hg["host_host_id"] . ",";
+							$fields["dep_hgParents"] .= $hg["hostgroup_hg_id"] . ",";
 						}
 						$fields["dep_hgParents"] = trim($fields["dep_hgParents"], ",");
 						$DBRESULT->free();
@@ -116,10 +116,11 @@
 							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_hostgroupChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$hg["hostgroup_hg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-							$fields["dep_hgChilds"] .= $hg["host_host_id"] . ",";
+							$fields["dep_hgChilds"] .= $hg["hostgroup_hg_id"] . ",";
 						}
 						$fields["dep_hgChilds"] = trim($fields["dep_hgChilds"], ",");
 						$DBRESULT->free();
+						$oreon->CentreonLogAction->insertLog("hostgroup dependency", $maxId["MAX(dep_id)"], $dep_name, "a", $fields);
 					}
 				}
 			}
@@ -174,7 +175,7 @@
 		$fields["dep_hgChilds"] = "";
 		if (isset($ret["dep_hgChilds"]))
 			$fields["dep_hgChilds"] = implode(",", $ret["dep_hgChilds"]);
-		$oreon->CentreonLogAction->insertLog("dependency", $dep_id["MAX(dep_id)"], htmlentities($ret["dep_name"], ENT_QUOTES), "a", $fields);
+		$oreon->CentreonLogAction->insertLog("hostgroup dependency", $dep_id["MAX(dep_id)"], htmlentities($ret["dep_name"], ENT_QUOTES), "a", $fields);
 		return ($dep_id["MAX(dep_id)"]);
 	}
 	
@@ -213,7 +214,7 @@
 		$fields["dep_hgChilds"] = "";
 		if (isset($ret["dep_hgChilds"]))
 			$fields["dep_hgChilds"] = implode(",", $ret["dep_hgChilds"]);
-		$oreon->CentreonLogAction->insertLog("dependency", $dep_id, htmlentities($ret["dep_name"], ENT_QUOTES), "c", $fields);
+		$oreon->CentreonLogAction->insertLog("hostgroup dependency", $dep_id, htmlentities($ret["dep_name"], ENT_QUOTES), "c", $fields);
 	}
 		
 	function updateHostGroupDependencyHostGroupParents($dep_id = null, $ret = array())	{

@@ -66,7 +66,7 @@
 			$DBRESULT =& $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$oreon->CentreonLogAction->insertLog("dependency", $key, $row['dep_name'], "d");
+			$oreon->CentreonLogAction->insertLog("host dependency", $key, $row['dep_name'], "d");
 		}
 	}
 	
@@ -121,7 +121,7 @@
 						}
 						$fields["dep_hostChilds"] = trim($fields["dep_hostChilds"], ",");
 						$DBRESULT->free();
-						$oreon->CentreonLogAction->insertLog("dependency", $maxId["MAX(dep_id)"], $dep_name, "a", $fields);
+						$oreon->CentreonLogAction->insertLog("host dependency", $maxId["MAX(dep_id)"], $dep_name, "a", $fields);
 					}
 				}
 			}
@@ -176,7 +176,7 @@
 		$fields["dep_hostChilds"] = "";
 		if (isset($ret["dep_hostChilds"]))
 			$fields["dep_hostChilds"] = implode(",", $ret["dep_hostChilds"]);
-		$oreon->CentreonLogAction->insertLog("dependency", $dep_id["MAX(dep_id)"], htmlentities($ret["dep_name"], ENT_QUOTES), "a", $fields);
+		$oreon->CentreonLogAction->insertLog("host dependency", $dep_id["MAX(dep_id)"], htmlentities($ret["dep_name"], ENT_QUOTES), "a", $fields);
 		return ($dep_id["MAX(dep_id)"]);
 	}
 	
@@ -215,7 +215,7 @@
 		$fields["dep_hostChilds"] = "";
 		if (isset($ret["dep_hostChilds"]))
 			$fields["dep_hostChilds"] = implode(",", $ret["dep_hostChilds"]);
-		$oreon->CentreonLogAction->insertLog("dependency", $dep_id, htmlentities($ret["dep_name"], ENT_QUOTES), "c", $fields);
+		$oreon->CentreonLogAction->insertLog("host dependency", $dep_id, htmlentities($ret["dep_name"], ENT_QUOTES), "c", $fields);
 	}
 		
 	function updateHostDependencyHostParents($dep_id = null, $ret = array())	{
