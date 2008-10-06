@@ -86,21 +86,21 @@
 		$tab_comments_svc[$i] = $data;
 	}
 	unset($data);	
-
 	
 	$en = array("0" => _("No"), "1" => _("Yes"));
 	foreach ($tab_comments_svc as $key => $value){
 		$tab_comments_svc[$key]["is_persistent"] = $en[$tab_comments_svc[$key]["is_persistent"]];
 	}
 
-	if (!$is_admin){
+	if (!$is_admin) {
 		$tab_comments_host2 = array();
-		for($n=0,$i=0; $i < count($tab_comments_host); $i++) {
+		for ($n = 0, $i = 0; $i < count($tab_comments_host); $i++) {
 			if(isset($lcaHostByName["LcaHost"][$tab_comments_host[$i]["host_name"]]))
 				$tab_comments_host2[$n++] = $tab_comments_host[$i];
 		}
+		
 		$tab_comments_svc2 = array();
-		for($n=0,$i=0; $i < count($tab_comments_svc); $i++) {
+		for($n = 0, $i = 0; $i < count($tab_comments_svc); $i++) {
 			if(isset($lcaHostByName["LcaHost"][$tab_comments_svc[$i]["host_name"]]))
 				$tab_comments_svc2[$n++] = $tab_comments_svc[$i];
 		}
