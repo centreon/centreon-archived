@@ -19,6 +19,7 @@ class CentreonGMT{
 
 	var $listGTM;
 	var $myGMT;
+	var $use;
 	
 	function CentreonGMT(){
 		/*
@@ -51,6 +52,15 @@ class CentreonGMT{
 		$this->listGTM['10'] = 10;
 		$this->listGTM['11'] = 11;
 		$this->listGTM['12'] = 12;
+		
+		/*
+		 * Flag activ / inactiv
+		 */
+		$this->use = 1;
+	}
+	
+	function used(){
+		return $this->use;
 	}
 	
 	function setMyGMT($value){
@@ -60,6 +70,17 @@ class CentreonGMT{
 	
 	function getGMTList() {
 		return $this->listGTM;
+	}
+	
+	function getMyGMT(){
+		return "+".$this->myGMT;
+	}
+
+	function getMyGMTForRRD(){
+		$gmt = (-1 * $this->myGMT);
+		if ($gmt > 0)
+			$gmt = "+$gmt";
+		return $gmt;
 	}
 	
 	function getDate($format, $date, $gmt = NULL) {
