@@ -292,42 +292,42 @@ function pagination_changed(){
 	 * Page Number
 	 */
 
-for ($i = 1; $i <= 2; $i++) { ?>
-	var istart = 0;
-	for (i = 5, istart = _num; istart && i > 0 && istart > 0; i--)
-		istart--;
-	
-	for (i2 = 0, iend = _num; ( iend <  (_numRows / _limit -1)) && ( i2 < (5 + i)); i2++)
-		iend++;
-	
-	for (i = istart; i <= iend && page_max > 1; i++){
-		var span_space = document.createElement("span");
-		span_space.innerHTML = '&nbsp;';
-		_pagination<?php echo $i; ?>.appendChild(span_space);
-
-		var _linkaction_num = document.createElement("a");
-  		_linkaction_num.href = '#' ;
-  		_linkaction_num.indice = i;
-  		_linkaction_num.onclick=function(){change_page(this.indice)};
-		_linkaction_num.innerHTML = parseInt(i + 1);
-		_linkaction_num.className = "otherPageNumber";
+	for ($i = 1; $i <= 2; $i++) { ?>
+		var istart = 0;
+		for (i = 5, istart = _num; istart && i > 0 && istart > 0; i--)
+			istart--;
 		
-		if (i == _num)
-			_linkaction_num.className = "currentPageNumber";
-		_pagination<?php echo $i; ?>.appendChild(_linkaction_num);
-
-		var span_space = document.createElement("span");
-		span_space.innerHTML = '&nbsp;';
-		_pagination<?php echo $i; ?>.appendChild(span_space);
-	}
-
-	if (_num < page_max - 1){
-		_pagination<?php echo $i; ?>.appendChild(_linkaction_right<?php echo $i; ?>);
-		_pagination<?php echo $i; ?>.appendChild(_linkaction_last<?php echo $i; ?>);
-	}
+		for (i2 = 0, iend = _num; ( iend <  (_numRows / _limit -1)) && ( i2 < (5 + i)); i2++)
+			iend++;
+		
+		for (i = istart; i <= iend && page_max > 1; i++){
+			var span_space = document.createElement("span");
+			span_space.innerHTML = '&nbsp;';
+			_pagination<?php echo $i; ?>.appendChild(span_space);
 	
-<?php 
-} ?>
+			var _linkaction_num = document.createElement("a");
+	  		_linkaction_num.href = '#' ;
+	  		_linkaction_num.indice = i;
+	  		_linkaction_num.onclick=function(){change_page(this.indice)};
+			_linkaction_num.innerHTML = parseInt(i + 1);
+			_linkaction_num.className = "otherPageNumber";
+			
+			if (i == _num)
+				_linkaction_num.className = "currentPageNumber";
+			_pagination<?php echo $i; ?>.appendChild(_linkaction_num);
+	
+			var span_space = document.createElement("span");
+			span_space.innerHTML = '&nbsp;';
+			_pagination<?php echo $i; ?>.appendChild(span_space);
+		}
+	
+		if (_num < page_max - 1){
+			_pagination<?php echo $i; ?>.appendChild(_linkaction_right<?php echo $i; ?>);
+			_pagination<?php echo $i; ?>.appendChild(_linkaction_last<?php echo $i; ?>);
+		}
+		
+	<?php 
+	} ?>
 	
 	var _sel1 = document.getElementById('sel1');
 	_sel1.innerHTML ='';
@@ -346,7 +346,12 @@ for ($i = 1; $i <= 2; $i++) { ?>
 	sel2.onchange = function() { change_limit(this.value) };
 
 	var _index = 0;
-	for (i = 10; i <= 100 ;i += 10){
+	var _i = 10;
+	for (i = 10; i <= 1000 ; i += _i){
+		if (i >= 100)
+			_i = 100;
+		if (i >= 1000)
+			_i = 1000;
 		if (i < _limit)
 			_index++;
 		var k = document.createElement('option');
@@ -356,7 +361,12 @@ for ($i = 1; $i <= 2; $i++) { ?>
 		k.appendChild(l);
 	}
 	var _index = 0;
-	for (i = 10; i <= 100 ;i += 10){
+	var _i = 10;
+	for (i = 10; i <= 1000 ;i += _i){
+		if (i >= 100)
+			_i = 100;
+		if (i >= 1000)
+			_i = 1000;
 		if (i < _limit)
 			_index++;
 		var k = document.createElement('option');
@@ -367,6 +377,7 @@ for ($i = 1; $i <= 2; $i++) { ?>
 	}
 	sel1.selectedIndex = _index;
 	_sel1.appendChild(sel1);
+	
 	sel2.selectedIndex = _index;
 	_sel2.appendChild(sel2);
 	viewDebugInfo('End : pagination_changed');

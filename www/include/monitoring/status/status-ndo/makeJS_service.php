@@ -63,31 +63,32 @@
 
 // linkBar to log/reporting/graph/ID_card
 
-	function getCheckedList(_input_name){
-		var mesinputs = document.getElementsByTagName("input" );
-		var tab = new Array();
-		var nb = 0;
-	
-		for (var i = 0; i < mesinputs.length; i++) {
-	  		if (mesinputs[i].type.toLowerCase() == 'checkbox' && mesinputs[i].checked && mesinputs[i].name.substr(0,6) == _input_name) {
-				var name = mesinputs[i].name;
-				var l = name.length;
-				tab[nb] = name.substr(7,l-8);
-				nb++;
-	  		}
-		}
-		return tab;
-	}
+function getCheckedList(_input_name){
+	var mesinputs = document.getElementsByTagName("input");
+	var tab = new Array();
+	var nb = 0;
 
-	if (document.getElementById('linkBar'))	{
-		var _linkBar = document.getElementById('linkBar')
-		var _divBar = document.createElement("div");
-		
-		_divBar.appendChild(create_graph_link('select','svc_id'));
-		_divBar.appendChild(create_log_link('select','svc_id'));
-		_divBar.setAttribute('style','float:right; margin-right:10px;' );
-		_linkBar.appendChild(_divBar);
+	for (var i = 0; i < mesinputs.length; i++) {
+  		if (mesinputs[i].type.toLowerCase() == 'checkbox' && mesinputs[i].checked && mesinputs[i].name.substr(0,6) == _input_name) {
+			var name = mesinputs[i].name;
+			var l = name.length;
+			tab[nb] = name.substr(7,l-8);
+			nb++;
+  		}
 	}
+	return tab;
+}
+
+if (document.getElementById('linkBar'))	{
+	var _linkBar = document.getElementById('linkBar')
+	var _divBar = document.createElement("div");
+	
+	_divBar.appendChild(create_graph_link('select','svc_id'));
+	_divBar.appendChild(create_log_link('select','svc_id'));
+	_divBar.setAttribute('style','float:right; margin-right:10px;' );
+	_linkBar.appendChild(_divBar);
+}
+
 //end for linkBar
 
 
@@ -228,8 +229,8 @@ function initM(_time_reload,_sid,_o){
 		goM(_time_reload,_sid,_o);
 }
 
-function goM(_time_reload,_sid,_o){
-
+function goM(_time_reload, _sid, _o){
+	//viewDebugInfo('--Begin--');
 	_lock = 1;
 	var proc = new Transformation();
 	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_service.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
@@ -238,7 +239,7 @@ function goM(_time_reload,_sid,_o){
 	proc.transform("forAjax");
 
 	_lock = 0;
-	viewDebugInfo('--end--');
+	//viewDebugInfo('--End--');
 	
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
@@ -247,7 +248,8 @@ function goM(_time_reload,_sid,_o){
 	set_header_title();
 }
 
-function displayPOPUP(id){
+function displayPOPUP(id) {
+	viewDebugInfo('Recup span_'+id);
 	var span = document.getElementById('span_'+id);
 	var proc_popup = new Transformation();
 	var _addrXMLSpan = "./include/monitoring/engine/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
@@ -265,9 +267,11 @@ function displayPOPUP(id){
 	if (h - tempY < span.offsetHeight){
 		span.style.top = '-'+ span.offsetHeight +'px';
 	}
+	viewDebugInfo('Display span_'+id);
 }
 
 function displayPOPUP_svc(id){
+	viewDebugInfo('Recup span_'+id);
 	var span = document.getElementById('span_'+id);
 	var proc_popup = new Transformation();
 	var _addrXMLSpan = "./include/monitoring/engine/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
@@ -285,16 +289,19 @@ function displayPOPUP_svc(id){
 	if (h - tempY < span.offsetHeight){
 		span.style.top = '-'+ span.offsetHeight +'px';
 	}
+	viewDebugInfo('Display span_'+id);
 }
 
 function hiddenPOPUP(id){
-		var span = document.getElementById('span_'+id);
-		span.innerHTML = '';
+	var span = document.getElementById('span_'+id);
+	span.innerHTML = '';
+	viewDebugInfo('Hidde span_'+id);
 }
 
-function displayIMG(index, s_id, id)	{
-	// Pour les navigateurs recents
+function displayIMG(index, s_id, id) {
+	viewDebugInfo('Display IMG');
     if ( document.getElementById && document.getElementById( 'div_img' ) ){
+    	// Pour les navigateurs recents
         Pdiv = document.getElementById( 'div_img' );
         PcH = true;
     } else if ( document.all && document.all[ 'div_img' ] ){
@@ -308,43 +315,43 @@ function displayIMG(index, s_id, id)	{
     } else {
         PcH = false;
     }
-    if ( PcH ){
+    if (PcH){
 		_img = mk_img('include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index);
 		Pdiv.appendChild(_img);
 		var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
 		var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
 		var posy = tempY + 10;
-		if(h - tempY < 420){
+		if (h - tempY < 420){
 			posy = tempY-310;
 		}
 		Pdiv.style.display = "block";
 		Pdiv.style.left = tempX +'px';
 		Pdiv.style.top = posy +'px';
     }
+    viewDebugInfo('End Display IMG');
 }
 
-function hiddenIMG(id){
-	// Pour les navigateurs récents
-    if ( document.getElementById && document.getElementById( 'div_img' ) ){
-        Pdiv = document.getElementById( 'div_img' );
+function hiddenIMG(id) {
+	viewDebugInfo('Hidde IMG');
+    if (document.getElementById && document.getElementById( 'div_img' ) ){
+		// Pour les navigateurs recents
+        Pdiv = document.getElementById('div_img');
         PcH = true;
-    }
-    // Pour les veilles versions
-    else if ( document.all && document.all[ 'div_img' ] ){
-        Pdiv = document.all[ 'div_img' ];
+    } else if (document.all && document.all['div_img']){
+    	// Pour les veilles versions
+        Pdiv = document.all['div_img'];
         PcH = true;
-    }
-    // Pour les très veilles versions
-    else if ( document.layers && document.layers[ 'div_img' ] ){
-        Pdiv = document.layers[ 'div_img' ];
+    } else if (document.layers && document.layers['div_img']){
+    	// Pour les tres veilles versions
+        Pdiv = document.layers['div_img'];
         PcH = true;
-    }
-    else{
+    } else {
         PcH = false;
     }
-    if ( PcH ){
+    if (PcH) {
 		Pdiv.style.display = "none";
 		Pdiv.innerHTML = '';
 	}
+	viewDebugInfo('End : Hidde IMG');
 }
 </SCRIPT>
