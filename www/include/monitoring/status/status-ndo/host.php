@@ -25,12 +25,14 @@
 	$GroupListofUser =  getGroupListofUser($pearDB);
 	
 	$allActions = false;
-	// Get list of actions allowed for user
+	
+	/*
+	 * Get list of actions allowed for user
+	 */
 	if(count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
 	$authorized_actions = array();
 	$authorized_actions = getActionsACLList($GroupListofUser);
-	}
-	else {
+	} else {
 	 	// if user is admin, or without ACL, he cans perform all actions
 		$allActions = true;
 	}
@@ -48,23 +50,20 @@
 	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
 
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-//	!isset($_GET["limit"]) ? $limit = 0 : $limit = $_GET["limit"];
 	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
 
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
-
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
-	
-	//include("./include/common/checkPagination.php");
 
 	include_once("makeJS_host.php");
 
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 
@@ -79,7 +78,6 @@
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
-
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
@@ -102,7 +100,7 @@
 	$action_list = array();
 	$action_list[]	=	_("More actions...");
 	// Showing actions allowed for current user
-	if(isset($authorized_actions) && $allActions == false){		
+	if (isset($authorized_actions) && $allActions == false){		
 		foreach($authorized_actions as $action_name) {
 			if($action_name == "host_acknowledgement" || $allActions == true) $action_list[72] = _("Hosts : Acknowledge");
 			if($action_name == "host_acknowledgement" || $allActions == true) $action_list[73] = _("Hosts : Disacknowledge");
