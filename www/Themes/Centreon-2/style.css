@@ -234,13 +234,9 @@ padding:3px;
 text-align:center;
 }
 
-
-
-
-
 #debug {
-height:70px;
-left:200px;
+height:170px;
+left:450px;
 overflow:auto;
 position:absolute;
 top:2px;
