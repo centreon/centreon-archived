@@ -161,9 +161,8 @@
 			$tabCommentServices[$i] = $data;
 			$tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
 		}
-		unset($data);	
-
-
+		unset($data);
+		
 		$en_acknowledge_text = array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge = array("1" => "0", "0" => "1");
 
@@ -183,8 +182,16 @@
 		 $service_status[$host_name."_".$svc_description]["next_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_check"], $oreon->user->getMyGMT());
 		!$service_status[$host_name."_".$svc_description]["check_latency"] ? $service_status[$host_name."_".$svc_description]["check_latency"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_latency"] = $service_status[$host_name."_".$svc_description]["check_latency"] . " seconds";
 		!$service_status[$host_name."_".$svc_description]["check_execution_time"] ? $service_status[$host_name."_".$svc_description]["check_execution_time"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_execution_time"] = $service_status[$host_name."_".$svc_description]["check_execution_time"] . " seconds";
+		
 		!$service_status[$host_name."_".$svc_description]["last_notification"] ? $service_status[$host_name."_".$svc_description]["notification"] = "": $service_status[$host_name."_".$svc_description]["last_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_notification"], $oreon->user->getMyGMT());
-		!$service_status[$host_name."_".$svc_description]["next_notification"] ? $service_status[$host_name."_".$svc_description]["next_notification"] = "": $service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"], $oreon->user->getMyGMT());
+		
+		if (isset($service_status[$host_name."_".$svc_description]["next_notification"]) && !$service_status[$host_name."_".$svc_description]["next_notification"]) 
+			$service_status[$host_name."_".$svc_description]["next_notification"] = "";
+		else if (!isset($service_status[$host_name."_".$svc_description]["next_notification"]))
+			$service_status[$host_name."_".$svc_description]["next_notification"] = "N/A";
+		else
+			$service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"], $oreon->user->getMyGMT());
+		
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = Duration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = Duration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$service_status[$host_name."_".$svc_description]["last_state_change"], $oreon->user->getMyGMT());
 		 $service_status[$host_name."_".$svc_description]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time(), $oreon->user->getMyGMT());
