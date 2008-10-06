@@ -18,6 +18,10 @@
 	if (!isset($oreon))
 		exit ();
 
+	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+	
+
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	isset($_GET["service_description"]) ? $service_description = $_GET["service_description"] : $service_description = NULL;
 	isset($_GET["cmd"]) ? $cmd = $_GET["cmd"] : $cmd = NULL;
@@ -25,20 +29,20 @@
 
 	$path = "./include/monitoring/acknowlegement/";
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, './templates/');
 	
 	if (!$is_admin)
 		$lcaHostByName = getLcaHostByName($pearDB);
 	
-	# HOST LCA
+	/*
+	 * HOST LCA
+	 */
 	if ($is_admin || (isset($lcaHostByName["LcaHost"][$host_name]) && !$is_admin)){
-
-		#Pear library
-		require_once "HTML/QuickForm.php";
-		require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
+	
 		## Form begin
 		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 		$form->addElement('header', 'title', 'Acknowledge a Service');
@@ -73,14 +77,14 @@
 		
 		$form->addElement('submit', 'submit', ($en == 1) ? _("Add") : _("Delete"));
 		$form->addElement('reset', 'reset', _("Reset"));
-		
-		
+				
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
+
 		$tpl->display("serviceAcknowledge.ihtml");
 	}
 ?>
