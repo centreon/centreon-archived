@@ -34,20 +34,16 @@
 		$lcaHGStr 	= getLCAHGStr($lcaHost["LcaHostGroup"]);
 	}
 
-	$SearchTool = 0;
-	if (isset($search) && $search)
-		$SearchTool = "sg_id IN (".$lcaSGStr.")";
-
 	if (isset($search)){
 		if ($is_admin)		
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 		else
-			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sg_id IN (".$lcaServiceGroupStr.")");
+			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sg_id IN (".$lcaSGStr.")");
 	} else {
 		if ($is_admin)		
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
 		else
-			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE $SearchTool");
+			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_id IN (".$lcaSGStr.")");
 	}
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
