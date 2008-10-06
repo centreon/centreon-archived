@@ -1,69 +1,68 @@
 <form name='form' method='POST'>
 <table>
 	<tr class="ToolbarTR">
-		<td class="Toolbar_TDSelectAction_Top" width="330"><span class="consol_button">{$form.o1.html}</span></td>
-		<td class="Toolbar_TDSelectAction_Top" width="330"><span class="consol_button">{$form.o2.html}</span></td>
-		<td>
-			<input type="button" name="logs" value="Apply" onClick="apply_logs();" />
-		</td>
+		<td class="Toolbar_TDSelectAction_Top" width="300"><span class="consol_button">{$objTypeLabel} {$form.o1.html}</span></td>
+		<td class="Toolbar_TDSelectAction_Top" width="300"><span class="consol_button">{$objNameLabel} {$form.o2.html}</span></td>
+		<td><input type="submit" name="logs" value="Apply" /></td>
 	</tr>
 </table>
-	<table class="ListTable">
-		<tr class="ListHeader">
-			<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$date}</td>
-			<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$contact_name}</td>
-			<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$type}</td>			
-			<!--<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$action}</td>-->
-			<!--<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$object_name}</td>-->
-			<!--<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$object_id}</td>-->
-			<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$logs}</td>			
-			<!--<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$field_name}</td>-->
-			<!--<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$before}</td>-->
-			<!--<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$after}</td>-->
-			<!--<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$options}</td>-->
-		</tr>
-		{foreach item=list from=$action}
-			<tr class="Logs">
-				<td class="ListColCenter">{$list.action_log_date}</td>
-				<!--<td class="ListColCenter">{$list.object_type}</td>-->
-				<!--<td class="ListColCenter">{$list.object_id}</td>-->
-				<td class="ListColCenter">{$list.log_contact_id}</td>
-				<td class="ListColCenter">{$list.action_type}</td>
-				<td class="ListColCenter">
-				{if $list.action_type != "Delete" && $list.action_type != "Disable" && $list.action_type != "Enable"}
-					<table class="ListTable"
-							<tr class="ListHeader">
-								<td class="ListColHeaderCenter" style="white-space:nowrap;">{$field_name}</td>
-								<td class="ListColHeaderCenter" style="white-space:nowrap;">{$before}</td>
-								<td class="ListColHeaderCenter" style="white-space:nowrap;">{$after}</td>
+{if $display_flag}
+<br>{$objName}
+<br>
+<table class="ListTable">
+	<tr class="ListHeader">
+		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$date}</td>
+		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$contact_name}</td>
+		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$type}</td>			
+		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$logs}</td>			
+	</tr>
+	{foreach item=list from=$action}
+		<tr class="Logs">
+			<td class="ListColCenter">{$list.action_log_date}</td>
+			<td class="ListColCenter">{$list.log_contact_id}</td>
+			<td class="ListColCenter">{$list.action_type}</td>
+			<td class="ListColCenter">
+			{if $list.action_type == "Create" || $list.action_type == "Change" || $list.action_type == "Massive change"}
+				<table class="ListTable"
+						<tr class="ListHeader">
+							<td class="ListColHeaderCenter" style="white-space:nowrap;">{$field_name}</td>
+							<td class="ListColHeaderCenter" style="white-space:nowrap;">{$before}</td>
+							<td class="ListColHeaderCenter" style="white-space:nowrap;">{$after}</td>
+						</tr>
+						{assign var='cpt' value=0}						
+						{foreach item=modif from=$modification}
+							{if $modif.action_log_id == $list.action_log_id}
+							<tr>
+								<td class="ListColCenter">
+									{if $modif.action_log_id == $list.action_log_id}
+										{$modif.field_name}
+									{/if}
+								</td>
+								<td class="ListColCenter">
+									{if $modif.action_log_id == $list.action_log_id}
+										{$modif.field_value_before}
+									{/if}
+								</td>
+								<td class="ListColCenter">
+									{if $modif.action_log_id == $list.action_log_id}
+										{$modif.field_value_after}
+									{/if}
+								</td>
 							</tr>
-							{assign var='cpt' value=0}						
-							{foreach item=modif from=$modification}
-								{if $modif.action_log_id == $list.action_log_id}
-								<tr>
-									<td class="ListColCenter">
-										{if $modif.action_log_id == $list.action_log_id}
-											{$modif.field_name}
-										{/if}
-									</td>
-									<td class="ListColCenter">
-										{if $modif.action_log_id == $list.action_log_id}
-											{$modif.field_value}
-										{/if}
-									</td>
-									<td class="ListColCenter">
-										{if $modif.action_log_id == $list.action_log_id}
-											{$modif.field_value}
-										{/if}
-									</td>
-								</tr>
-								{/if}
-							{/foreach}
-					</table>
-				{/if}				
-				</td>
-			</tr>
-		{/foreach}
-	</table>
+							{assign var='cpt' value=$cpt+1}
+							{/if}
+						{/foreach}
+						{if $cpt == 0}
+							<tr>
+								<td colspan="3">{$noModifLabel}</td>
+							</tr>
+						{/if}
+				</table>
+			{/if}				
+			</td>
+		</tr>
+	{/foreach}
+</table>
+{/if}
 {$form.hidden}
 </form>

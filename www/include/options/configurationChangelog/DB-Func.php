@@ -35,20 +35,15 @@
 		global $pearDBO;
 		$list_actions = array();
 		$i = 0;
-		$request = "";
 		
-		if ($id != NULL) {
-			$request = "WHERE action_log_id = '$id'";
-		}
-		
-		$DBRESULT =& $pearDBO->query("SELECT * FROM log_action $request");
+		$DBRESULT =& $pearDBO->query("SELECT * FROM log_action WHERE object_id ='".$id."' ORDER BY action_log_date DESC");
 		if (PEAR::isError($DBRESULT)) {
 			print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";		
 		}
 		
 		while ($data =& $DBRESULT->fetchRow()) {
 			$list_actions[$i]["action_log_id"] = $data["action_log_id"];
-			$list_actions[$i]["action_log_date"] = date("d/m/Y H:m:i",$data["action_log_date"]);
+			$list_actions[$i]["action_log_date"] = date("d/m/Y H:i",$data["action_log_date"]);
 			$list_actions[$i]["object_type"] = $data["object_type"];
 			$list_actions[$i]["object_id"] = $data["object_id"];
 			$list_actions[$i]["object_name"] = $data["object_name"];
@@ -62,25 +57,48 @@
 	
 	function listModification($id) {
 		global $pearDBO;
-		$i = 0;
 		$list_modifications = array();
-
-		if ($id != NULL) {
-			$request = "WHERE action_log_id = '$id'";
-		}
+		$ref = array();
+		$i = 0;
+		$j = 0;
+		$first_ref_flag = 0;
 		
-		$DBRESULT2 =& $pearDBO->query("SELECT action_log_id,field_name,field_value FROM `log_action_modification` $request");
+		$DBRESULT =& $pearDBO->query("SELECT action_log_id, action_log_date, action_type FROM log_action WHERE object_id ='".$id."' ORDER  BY action_log_date ASC");
 		if (PEAR::isError($DBRESULT)) {
 			print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";		
 		}
-		
-		while ($field =& $DBRESULT2->fetchRow()) {
-			$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
-			$list_modifications[$i]["field_name"] = $field["field_name"];
-			$list_modifications[$i]["field_value"] = $field["field_value"];
-			$i++;
+		while ($row =& $DBRESULT->fetchRow()) {
+			$DBRESULT2 =& $pearDBO->query("SELECT action_log_id,field_name,field_value FROM `log_action_modification` WHERE action_log_id='".$row['action_log_id']."'");
+			if (PEAR::isError($DBRESULT2)) {
+				print "DB Error : ".$DBRESULT2->postDebugInfo()."<br />";		
+			}
+			while ($field =& $DBRESULT2->fetchRow()) {
+				if (($row["action_type"] == "a" || $row["action_type"] == "c") && (!$first_ref_flag || $first_ref_flag == $field["action_log_id"])) {
+					$ref[$j]["action_log_id"] = $field["action_log_id"];
+					$ref[$j]["field_name"] = $field["field_name"];
+					$ref[$j]["field_value"] = $field["field_value"];
+					$first_ref_flag = $field["action_log_id"];
+					
+					$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
+					$list_modifications[$i]["field_name"] = $field["field_name"];
+					$list_modifications[$i]["field_value_before"] = $field["field_value"];
+					$list_modifications[$i]["field_value_after"] = $field["field_value"];
+					$j++;
+				}
+				else {
+					foreach ($ref as $key => $value) {
+						if (($field["field_name"] == $value["field_name"]) && ($field["field_value"] != $value["field_value"])) {
+							$list_modifications[$i]["field_value_before"] = $value["field_value"];
+							$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
+							$list_modifications[$i]["field_name"] = $field["field_name"];
+							$list_modifications[$i]["field_value_after"] = $field["field_value"];
+							$ref[$key]["field_value"] = $field["field_value"];
+						}
+					}
+				}
+				$i++;
+			}
 		}
-
 		return $list_modifications;
 	}
 	 

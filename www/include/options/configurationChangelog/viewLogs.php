@@ -34,10 +34,12 @@
 	require_once "./include/common/common-Func.php";
 	require_once("./DBOdsConnect.php");
 	
-	$listAction = array();
-	$listAction = listAction(NULL);
-	$listModification = array();
-	$listModification = listmodification(NULL);
+	if ($cmd2) {
+		$listAction = array();
+		$listAction = listAction($cmd2);
+		$listModification = array();
+		$listModification = listmodification($cmd2);
+	}
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	$tpl = new Smarty();
@@ -51,13 +53,18 @@
 	$tpl->assign("contact_name", _("Contact Name"));
 	$tpl->assign("field_name", _("Field Name"));
 	$tpl->assign("field_value", _("Field Value"));
-	$tpl->assign("field_value", _("Field Value"));
 	$tpl->assign("before", _("Before"));
 	$tpl->assign("after", _("After"));
 	$tpl->assign("logs", _("Logs"));
+	$tpl->assign("objTypeLabel", _("Object type:"));
+	$tpl->assign("objNameLabel", _("Object name:"));
+	$tpl->assign("noModifLabel", _("No modification was made."));
 		
 	$tpl->assign("action", $listAction);
 	$tpl->assign("modification", $listModification);
+	
+	isset($cmd2) && $cmd2 ? $display_flag = 1 : $display_flag = 0;
+	$tpl->assign("display_flag", $display_flag);
 
 	$objects_list = array();
 	$objects_List = listObjecttype();
@@ -85,22 +92,30 @@
 	function setO1(_i) {
 		document.forms['form'].elements['cmd'].value = _i;
 		document.forms['form'].elements['o1'].selectedIndex = _i;
+		document.forms['form'].elements['cmd2'].value = 0;
 	}
 	
 	function setO2(_i) {
 		document.forms['form'].elements['cmd2'].value = _i;
-		document.forms['form'].elements['o2'].selectedIndex = _i;
+		//document.forms['form'].elements['o2'].selectedIndex = _i;
 	}
 	
 	</script>
 	<?php
 	
 	if ($cmd) {
-		$DBRESULT = $pearDB->query("SELECT DISTINCT object_name, object_id FROM log_action WHERE object_type='".$object_type_tab[$cmd]."'");
+		$DBRESULT = $pearDBO->query("SELECT DISTINCT object_name, object_id FROM log_action WHERE object_type='".$object_type_tab[$cmd]."' ORDER BY object_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$res =& $DBRESULT->fetchRow();	
+		$objNameTab[0] = _("Please select an object name");
+		while ($res =& $DBRESULT->fetchRow()) {
+			if ($res['object_id'])
+				$objNameTab[$res['object_id']] = $res['object_name']." (id:".$res['object_id'].")";
+		}
 	}
+	
+	if (isset($cmd2) && $cmd2)
+		$tpl->assign("objName", $objNameTab[$cmd2]);
 	
 	$attrs = array(	'onchange'=>"javascript: setO1(this.form.elements['o1'].value); submit();");
     $form->addElement('select', 'o1', NULL, $object_type_tab, $attrs);
@@ -111,10 +126,10 @@
 	$objects = array();
 	$objects = listObjectname(NULL);
 	$attrs = array(	'onchange'=>"javascript: setO2(this.form.elements['o2'].value); submit();");
-    $form->addElement('select', 'o2', NULL, $res, $attrs);
+    $form->addElement('select', 'o2', NULL, $objNameTab, $attrs);
 	$form->setDefaults(array('o2' => NULL));
-	$o1 =& $form->getElement('o2');
-	$o1->setValue(NULL);
+	$o2 =& $form->getElement('o2');
+	$o2->setValue(NULL);
 	
 	$form->addElement('hidden', 'cmd', $cmd);
 	$form->addElement('hidden', 'cmd2', $cmd2);	
