@@ -213,7 +213,7 @@
 	$GMTList = $CentreonGMT->getGMTList();
 	$form->addElement('select', 'contact_location', _("GMT / Location"), $GMTList);
 	$form->setDefaults(array('contact_location' => '0'));
-	if (isset($cct["contact_location"]))
+	if (!isset($cct["contact_location"]))
 		$cct["contact_location"] = 0;
 	unset($GMTList);
 	unset($CentreonGMT);
