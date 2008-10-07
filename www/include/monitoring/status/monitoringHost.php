@@ -27,7 +27,7 @@
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	$path = "./include/monitoring/status/status-ndo/";
+	$path = "./include/monitoring/status/Hosts/";
 
 	$pathRoot = "./include/monitoring/";
 	$pathDetails = "./include/monitoring/objectDetails/";

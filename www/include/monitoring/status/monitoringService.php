@@ -23,6 +23,11 @@
 	include_once("./include/monitoring/external_cmd/cmd.php");
 
 	/*
+	 * DB Connect
+	 */
+	include_once("./DBNDOConnect.php");
+
+	/*
 	 * Pear library
 	 */
 	require_once "HTML/QuickForm.php";
@@ -46,16 +51,21 @@
 		$_GET["order"] = "sort_asc";
 	}
 
-	$metaservicepath = "metaService.php";
-	
-	$path = "./include/monitoring/status/status-ndo/";
+	$path = "./include/monitoring/status/";
 	$metaservicepath = $path."service.php";
 
 	$pathRoot 		= "./include/monitoring/";
 	$pathExternal 	= "./include/monitoring/external_cmd/";
 	$pathDetails	= "./include/monitoring/objectDetails/";
 	
-	include_once("./DBNDOConnect.php");
+	/*
+	 * Special Paths
+	 */
+	$svc_path = "$path/Services/";
+	$hg_path = "$path/HostGroups/";
+	$sg_path = "$path/ServiceGroups/";
+	$meta_path = "$path/Meta/";
+	
 	
 	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) 
 		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
@@ -63,27 +73,29 @@
 		if ($err_msg = table_not_exists("centreon_acl")) 
 			print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
 		switch ($o)	{
-			case "svc" 			: require_once($path."service.php"); 					break;
 			/*
 			 * View of Service
 			 */
+			case "svc" 			: 
+				require_once($svc_path."service.php"); 
+				break;
 			case "svcpb" 		: 
-				require_once($path."service.php");		
+				require_once($svc_path."service.php");		
 				break;
 			case "svc_warning" 	: 
-				require_once($path."service.php");		
+				require_once($svc_path."service.php");		
 				break;
 			case "svc_critical" : 
-				require_once($path."service.php");		
+				require_once($svc_path."service.php");		
 				break;
 			case "svc_unknown" 	: 
-				require_once($path."service.php");		
+				require_once($svc_path."service.php");		
 				break;
 			case "svc_ok" 		: 
-				require_once($path."service.php");		
+				require_once($svc_path."service.php");		
 				break;
 			case "svc_unhandled": 
-				require_once($path."service.php");		
+				require_once($svc_path."service.php");		
 				break;			
 			/*
 			 * Special Views 
@@ -97,45 +109,46 @@
 			case "svcpc" 		: 
 				require_once("./include/monitoring/submitPassivResults/servicePassiveCheck.php");
 				break;
-			/*
-			 * View Bu hosts groups
-			 */
+
 			case "svcgrid" 		: 
-				require_once($path."serviceGrid.php"); 				
+				require_once($svc_path."serviceGrid.php"); 				
 				break;
 			case "svcOV" 		: 
-				require_once($path."serviceGrid.php");
+				require_once($svc_path."serviceGrid.php");
 				break;
 			case "svcSum" 		: 
-				require_once($path."serviceSummary.php");
+				require_once($svc_path."serviceSummary.php");
 				break;
 			/*
 			 * View by Service Groups
 			 */
 			case "svcgridSG" 	: 
-				require_once($path."serviceGridBySG.php");
+				require_once($sg_path."serviceGridBySG.php");
 				break;
 			case "svcOVSG" 		: 
-				require_once($path."serviceGridBySG.php");
+				require_once($sg_path."serviceGridBySG.php");
 				break;
 			case "svcSumSG" 	: 
-				require_once($path."serviceSummaryBySG.php");
+				require_once($sg_path."serviceSummaryBySG.php");
 				break;
 			
+			/*
+			 * View By hosts groups
+			 */			
 			case "svcgridHG" 	: 
-				require_once($path."serviceGridByHG.php");
+				require_once($hg_path."serviceGridByHG.php");
 				break;
 			case "svcOVHG" 		: 
-				require_once($path."serviceGridByHG.php");
+				require_once($hg_path."serviceGridByHG.php");
 				break;
 			case "svcSumHG" 	: 
-				require_once($path."serviceSummaryByHG.php");
+				require_once($hg_path."serviceSummaryByHG.php");
 				break;
 			/*
 			 * Meta Services
 			 */
 			case "meta" 		: 
-				require_once($metaservicepath);
+				require_once($meta_path."/metaService.php");
 				break;
 			/*
 			 * Scheduling Queue
