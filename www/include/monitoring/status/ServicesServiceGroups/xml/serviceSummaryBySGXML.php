@@ -23,12 +23,12 @@
 
 	$debugXML = 0;
 	$buffer = '';
-	//@CENTREON_ETC@
-	include_once("/etc/centreon/centreon.conf.php");	
+	
+	include_once("@CENTREON_ETC@/centreon.conf.php");	
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBNDOConnect.php");
-	include_once($centreon_path."www/include/monitoring/engine/common-Func.php");
+	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
 	include_once($centreon_path."www/include/common/common-Func-ACL.php");
 	include_once($centreon_path."www/include/common/common-Func.php");
 
