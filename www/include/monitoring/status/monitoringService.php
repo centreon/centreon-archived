@@ -61,10 +61,10 @@
 	/*
 	 * Special Paths
 	 */
-	$svc_path = "$path/Services/";
-	$hg_path = "$path/HostGroups/";
-	$sg_path = "$path/ServiceGroups/";
-	$meta_path = "$path/Meta/";
+	$svc_path 	= $path."Services/";
+	$hg_path 	= $path."ServicesHostGroups/";
+	$sg_path 	= $path."ServicesServiceGroups/";
+	$meta_path 	= $path."Meta/";
 	
 	
 	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) 

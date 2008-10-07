@@ -28,7 +28,8 @@
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	$path = "./include/monitoring/status/Hosts/";
-
+	$path_hg = "./include/monitoring/status/HostGroups/";
+	
 	$pathRoot = "./include/monitoring/";
 	$pathDetails = "./include/monitoring/objectDetails/";
 	$pathTools = "./include/tools/";

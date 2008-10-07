@@ -27,7 +27,7 @@
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	$path = "./include/monitoring/status/status-ndo/";
+	$path_hg = "./include/monitoring/status/HostGroups/";
 
 	$pathDetails = "./include/monitoring/objectDetails/";
 
@@ -41,10 +41,10 @@
 			if ($err_msg = table_not_exists("centreon_acl")) 
 					print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
 			switch ($o)	{
-				case "hg" 	: require_once($path."hostGroup.php"); break;
-				case "hgpb" : require_once($path."hostGroup.php"); break;
+				case "hg" 	: require_once($path_hg."hostGroup.php"); break;
+				case "hgpb" : require_once($path_hg."hostGroup.php"); break;
 				case "hgd" 	: require_once($pathDetails."hostgroupDetails.php"); break;
-				default 	: require_once($path."hostGroup.php"); break;
+				default 	: require_once($path_hg."hostGroup.php"); break;
 			}
 		}
 	}
