@@ -15,12 +15,19 @@
  * For information : contact@centreon.com
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	/*
+	 * if debug == 0 => Normal, 
+	 * debug == 1 => get use, 
+	 * debug == 2 => log in file (log.xml)
+	 * 
+	 */
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	//include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/other.class.php");
+	include_once $centreon_path . "www/class/centreonGMT.class.php";
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
@@ -38,6 +45,12 @@
 	} else
 		get_error('need session identifiant !');
 
+	/*
+	 * Init GMT class
+	 */
+	
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession($sid);
 	
 	(isset($_GET["enable"]) && !check_injection($_GET["enable"])) ? $enable = urldecode($_GET["enable"]) : $enable = "enable";
 	(isset($_GET["disable"]) && !check_injection($_GET["disable"])) ? $disable = urldecode($_GET["disable"]) : $disable = "disable";
@@ -281,8 +294,8 @@
 	        $buffer .= '<ha>'.$host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';
 	        $buffer .= '<hae>'.$host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';
 	        $buffer .= '<hpe>'.$host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';
-			$buffer .= '<nc>'. date($date_time_format_status, $ndo["next_check"]) . '</nc>';
-			$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"]) . '</lc>';
+			$buffer .= '<nc>'. $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]) . '</nc>';
+			$buffer .= '<lc>'. $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]) . '</lc>';
 			$buffer .= '<d>'. $duration . '</d>';
 			$buffer .= '</l>';
 		}
