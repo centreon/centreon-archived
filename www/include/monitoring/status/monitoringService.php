@@ -65,7 +65,7 @@
 	$hg_path 	= $path."ServicesHostGroups/";
 	$sg_path 	= $path."ServicesServiceGroups/";
 	$meta_path 	= $path."Meta/";
-	
+	$path_sch 	= $path."Scheduling/";
 	
 	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) 
 		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
@@ -154,10 +154,10 @@
 			 * Scheduling Queue
 			 */
 			case "svcSch" 		: 
-				require_once($path."serviceSchedule.php");
+				require_once($path_sch."serviceSchedule.php");
 				break;
 			default 			: 
-				require_once($path."service.php"); 					
+				require_once($svc_path."service.php"); 					
 				break;
 		}
 	}
