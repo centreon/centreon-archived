@@ -1,8 +1,5 @@
--- --------------------------------------------------------
 
--- 
--- Structure de la table `log_action`
--- 
+ALTER TABLE `log` CHANGE `msg_type` `msg_type` INT NULL;
 
 CREATE TABLE IF NOT EXISTS `log_action` (
   `action_log_id` int(11) NOT NULL auto_increment,
@@ -16,11 +13,6 @@ CREATE TABLE IF NOT EXISTS `log_action` (
   KEY `log_contact_id` (`log_contact_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
--- 
--- Structure de la table `log_action_modification`
--- 
 
 CREATE TABLE IF NOT EXISTS `log_action_modification` (
   `modification_id` int(11) NOT NULL auto_increment,
