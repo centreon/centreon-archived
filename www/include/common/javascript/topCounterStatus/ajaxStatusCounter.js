@@ -16,6 +16,8 @@
 
 // JavaScript Document
 
+var _adrrsearchC = "./include/monitoring/status/TopCounter/statusCounter.php";
+
 function getXhrC(){
 	if (window.XMLHttpRequest) // Firefox and others
 	   	var xhrC = new XMLHttpRequest();

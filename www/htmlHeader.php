@@ -43,7 +43,6 @@
 		/*
 		 * Add Javascript for NDO status Counter
 		 */		
-		print "<script type=\"text/javascript\"> var _adrrsearchC = \"./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php\";</script>\n";
 		print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
 	}
 
