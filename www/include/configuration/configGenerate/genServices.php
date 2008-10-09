@@ -45,9 +45,7 @@
 		 */
 		$service["service_description"] = convertServiceSpecialChar($service["service_description"]);
 		$service["service_alias"] = convertServiceSpecialChar($service["service_alias"]);
-		
-//		print "---".$service["service_description"]." - ".$service["service_id"]."---<br>\n";
-		
+				
 		if ($BP) {
 			
 			/*
