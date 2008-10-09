@@ -38,8 +38,8 @@
 		/*
 		 * Delete selected images
 		 */
-		if (!$img_path && !$dir_alias)
-			foreach($imgs as $key=>$value)	{
+		if (!$img_path && !$dir_alias) {
+			foreach ($imgs as $key => $value)	{
 				$DBRESULT =& $pearDB->query("SELECT dir_alias, img_path FROM view_img, view_img_dir, view_img_dir_relation WHERE img_id = '".$key."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -52,10 +52,10 @@
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				}
 			}
-		/*
-		 * Delete single image by name
-		 */
-		else	{
+		} else {
+			/*
+			 * Delete single image by name
+			 */
 			$DBRESULT =& $pearDB->query("SELECT img_id FROM view_img, view_img_dir, view_img_dir_relation WHERE img_path = '".htmlentities($img_path, ENT_QUOTES)."' AND dir_alias = '".htmlentities($dir_alias, ENT_QUOTES)."' AND dir_id = dir_dir_parent_id AND img_id = img_img_id");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
