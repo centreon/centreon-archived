@@ -28,7 +28,8 @@ class User	{
 	var $limit;
 	var $num;
 	var $gmt;
-	  
+	var $is_admin;
+	
 	# User LCA
 	# Array with elements ID for loop test
 	var $lcaTopo;
@@ -47,6 +48,7 @@ class User	{
 		$this->version = $nagios_version;
 	  	$this->lcaTopo = array();
 	  	$this->gmt = $user["contact_location"];
+	  	$this->is_admin = NULL;
   	}
   
   	function getAllTopology($pearDB){
@@ -58,6 +60,29 @@ class User	{
 		$DBRESULT->free();
 		return $lcaTopo;
   	}
+  	
+  	/*
+  	 * Check if user is admin or had ACL
+  	 */
+  	
+  	function checkUserStatus($sid = NULL, $pearDB){
+		$DBRESULT =& $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
+		$admin =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
+		
+		$DBRESULT =& $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = '".$admin["contact_id"]."'");
+		$admin2 =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
+
+		if ($admin["contact_admin"]){
+			unset($admin);
+			$this->is_admin = 1 ;
+		} else if (!$admin2["count(*)"]) {
+			unset($admin2);
+			$this->is_admin = 1;			
+		}
+		$this->is_admin = 0;
+	}
   	
   	/*
   	 * Init topology restriction reference for centreon
@@ -150,9 +175,7 @@ class User	{
 	  	}
 	  	unset($key);
 	  	if (!$this->lcaTStr) 
-	  		$this->lcaTStr = '\'\'';	
-	  	
-	  	
+	  		$this->lcaTStr = "\'\'";  	
   	}
   
   // Get
@@ -189,6 +212,10 @@ class User	{
   	return $this->admin;
   }
    
+  function is_admin(){
+  	return $this->is_admin;
+  }
+
   // Set
   
   function set_id($id)	{
