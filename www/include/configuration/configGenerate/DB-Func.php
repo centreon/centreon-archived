@@ -187,7 +187,7 @@
 		 */
 		$host = array();
 		
-		if ($oreon->user->get_version() >= 2) {
+		if ($oreon->user->get_version() == 2) {
 			$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id, host_id FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");			
 		} else if ($oreon->user->get_version() >= 3) {
 			$DBRESULT =& $pearDB->query("SELECT host.host_id FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");				
