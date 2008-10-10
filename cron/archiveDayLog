@@ -76,8 +76,9 @@ sub print_help {
 # $start => log fetching begin date
 # $row => sql data row
 ################################################################
+
 sub analyse_host_row($$) {
-	my ($start,$row) = (shift, shift);
+	my ($start, $row) = (shift, shift);
 	if (!defined($hosts{$row->{"host_name"}})) {
 			my %log_entry = ("current_state" 		=> "UNDETERMINED",
 							"current_state_time" 	=> $start,
@@ -110,8 +111,12 @@ sub analyse_host_row($$) {
 # $row => sql data row
 ################################################################
 sub analyse_service_row($$) {
-	my ($start,$row) = (shift, shift);
-	my $svc = $row->{"host_name"}."_".$row->{"service_description"};
+	my ($start, $row) = (shift, shift);
+	
+	$row->{"service_description"} =~ s/\//#S#/g;
+	$row->{"service_description"} =~ s/\\/#BS#/g;
+	
+	my $svc = $row->{"host_name"}.";".$row->{"service_description"};
 	if (!defined($services{$svc})) {
 			my %log_entry = ("current_state" 		=> "UNDETERMINED",
 							"current_state_time" 	=> $start,
@@ -145,21 +150,22 @@ sub analyse_service_row($$) {
 sub get_hosts_services_stats ($$) { 
 	my ($start, $end) = (shift, shift);
 	my $query = " SELECT * FROM `log` ".
-							" WHERE `msg_type` IN ('".$msg_type{"host_alerts"}."','".$msg_type{"host_current_state"}."','".$msg_type{"host_init_state"}."', ".
-													"'".$msg_type{"svc_alerts"}."','".$msg_type{"svc_current_state"}."','".$msg_type{"svc_init_state"}."') ".
-									"AND `ctime` >= ".$start." AND `ctime` <= ".$end.
-									" AND `type` = 'HARD'".
-							" ORDER BY `ctime`";
+				" WHERE `msg_type` IN ('".$msg_type{"host_alerts"}."','".$msg_type{"host_current_state"}."','".$msg_type{"host_init_state"}."', ".
+										"'".$msg_type{"svc_alerts"}."','".$msg_type{"svc_current_state"}."','".$msg_type{"svc_init_state"}."') ".
+				" AND `ctime` >= ".$start." AND `ctime` <= ".$end.
+				" AND `type` = 'HARD'".
+				" ORDER BY `ctime`";
 	my $sth = $dbh->prepare($query);
 	die "Error : " . $dbh->errstr . "\n" if (!$sth);
-	$sth->execute;
+	$sth->execute();
 	die "Error : " . $dbh->errstr . "\n" if (!$sth);
 	while (my $row = $sth->fetchrow_hashref()) {
-
-		if ($row->{"msg_type"} == $msg_type{"host_alerts"} || $row->{"msg_type"} == $msg_type{"host_current_state"} 
-		|| $row->{"msg_type"} == $msg_type{"host_init_state"}) {
-			analyse_host_row($start, $row);
-		} elsif ($row->{"msg_type"} == $msg_type{"svc_alerts"} || $row->{"msg_type"} == $msg_type{"svc_current_state"} 
+		if ($row->{"msg_type"} == $msg_type{"host_alerts"} 
+			|| $row->{"msg_type"} == $msg_type{"host_current_state"} 
+			|| $row->{"msg_type"} == $msg_type{"host_init_state"}) {
+				analyse_host_row($start, $row);
+		} elsif ($row->{"msg_type"} == $msg_type{"svc_alerts"} 
+					|| $row->{"msg_type"} == $msg_type{"svc_current_state"} 
 					|| $row->{"msg_type"} == $msg_type{"svc_init_state"}){
 			analyse_service_row($start, $row);
 		}
@@ -175,44 +181,51 @@ sub get_hosts_services_stats ($$) {
 ########################################################################
 sub get_last_status_in_ignored_time($$) {
 	my ($start_time, $last_day_end) = (shift, shift);
-	my $query = "SELECT * FROM `log` ".
-				"WHERE `ctime` >= ".$last_day_end." AND `ctime` <= ".$start_time." ".
-				"		AND `msg_type` IN ('".$msg_type{"host_alerts"}."', '".$msg_type{"svc_alerts"}."', '".
-											$msg_type{"host_current_state"}."', '".$msg_type{"svc_current_state"}.
-											"', '".$msg_type{"host_init_state"}."', '".$msg_type{"svc_current_state"}."') ".
-				"		 AND `type` = 'HARD' ".
-				"ORDER BY `ctime`";
+	my $query = " SELECT * FROM `log` ".
+				" WHERE `ctime` >= ".$last_day_end." AND `ctime` <= ".$start_time." ".
+				" AND `msg_type` IN ('".$msg_type{"host_alerts"}."', '".$msg_type{"svc_alerts"}."', '".
+				$msg_type{"host_current_state"}."', '".$msg_type{"svc_current_state"}.
+				"', '".$msg_type{"host_init_state"}."', '".$msg_type{"svc_current_state"}."') ".
+				" AND `type` = 'HARD' ".
+				" ORDER BY `ctime`";	
 	my $sth = $dbh->prepare($query);
 	die "Error: " . $dbh->errstr . "\n" if (!$sth);
 	$sth->execute;
 	die "Error: " . $dbh->errstr . "\n" if (!$sth);
 	while (my $row = $sth->fetchrow_hashref()) {
+		
+		$row->{"host_name"} =~ s/\//#S#/g;
+		$row->{"host_name"} =~ s/\\/#BS#/g;
+		
 		if (!defined($row->{"service_description"})) {
 			if (defined($hosts{$row->{"host_name"}})) {
 				my $entry = $hosts{$row->{"host_name"}};
 				$entry->{"current_state"} = $row->{"status"};
 				$entry->{"current_state_time"} = $row->{"ctime"};
 				$hosts{$row->{"host_name"}} = $entry;
-			}else {
-				my %log_entry = ("current_state" 		=> $row->{"status"},
-							"current_state_time"	=>  $row->{"ctime"},
+			} else {
+				my %log_entry = ("current_state" 	=> $row->{"status"},
+							"current_state_time"	=> $row->{"ctime"},
 							"DOWN_D" 				=> 0,
 							"UP_D" 					=> 0,
 							"UNREACHABLE_D" 		=> 0,
 							"UNDETERMINED_D" 		=> 0,
 							"UP_A" 					=> 0,
 							"DOWN_A" 				=> 0,
-							"UNREACHABLE_A" 		=> 0
-							);
+							"UNREACHABLE_A" 		=> 0);
 				$hosts{$row->{"host_name"}} = \%log_entry;
 			}
-		}else {
-			if (defined($hosts{$row->{"host_name"}."_".$row->{"service_description"}})) {
-				my $entry = $hosts{$row->{"host_name"}."_".$row->{"service_description"}};
+		} else {
+			
+			$row->{"service_description"} =~ s/\//#S#/g;
+			$row->{"service_description"} =~ s/\\/#BS#/g;
+		
+			if (defined($hosts{$row->{"host_name"}.";".$row->{"service_description"}})) {
+				my $entry = $hosts{$row->{"host_name"}.";".$row->{"service_description"}};
 				$entry->{"current_state"} = $row->{"status"};
 				$entry->{"current_state_time"} = $row->{"ctime"};
-				$hosts{$row->{"host_name"}."_".$row->{"service_description"}} = $entry;
-			}else {
+				$hosts{$row->{"host_name"}.";".$row->{"service_description"}} = $entry;
+			} else {
 				my %log_entry = ("current_state" 	=> $row->{"status"},
 							"current_state_time"	=> $row->{"ctime"},
 							"CRITICAL_D" 			=> 0,
@@ -225,11 +238,11 @@ sub get_last_status_in_ignored_time($$) {
 							"UNKNOWN_A" 			=> 0,
 							"OK_A"					=> 0,
 							);
-				$services{$row->{"host_name"}."_".$row->{"service_description"}} = \%log_entry;
+				$services{$row->{"host_name"}.";".$row->{"service_description"}} = \%log_entry;
 			}
 		}
 	}
-	$sth->finish;
+	$sth->finish();
 }
 
 ###################################################################
@@ -240,12 +253,12 @@ sub get_last_status ($$) {
 	my ($start_time, $last_day_end) = (shift, shift);
 	my $sth = $dbh->prepare(" SELECT * FROM `log_archive_last_status`");
 	die "Error: " . $dbh->errstr . "\n" if (!$sth);
-	$sth->execute;
+	$sth->execute();
 	die "Error: " . $dbh->errstr . "\n" if (!$sth);
 	while (my $row = $sth->fetchrow_hashref()) {
 		if (!defined($row->{"service_description"})) {
 			my %log_entry = ("current_state" 		=> $row->{"status"},
-							"current_state_time"	=>  $row->{"ctime"},
+							"current_state_time"	=> $row->{"ctime"},
 							"DOWN_D" 				=> 0,
 							"UP_D" 					=> 0,
 							"UNREACHABLE_D" 		=> 0,
@@ -268,7 +281,7 @@ sub get_last_status ($$) {
 							"UNKNOWN_A" 			=> 0,
 							"OK_A"					=> 0,
 							);
-			$services{$row->{"host_name"}."_".$row->{"service_description"}} = \%log_entry;
+			$services{$row->{"host_name"}.";".$row->{"service_description"}} = \%log_entry;
 		} 
 	}
 	$sth->finish();
@@ -318,13 +331,17 @@ sub insert_hosts_stats_in_db ($$) {
 	my $status_delete_query = "";
 	while (my ($key, $value) = each (%hosts)) {
 		
-		#Adding last state duration
+		# Adding last state duration
 		$value->{$value->{"current_state"}."_D"} += $date_end - $value->{"current_state_time"};
 
-		#Fetching host_id from host_name for insertion in log_archive_host table
-		my $sth = $dbh->prepare("SELECT host_id FROM `".$mysql_database_oreon."`.`host` WHERE `host_name` = '".$key."'");
+		# Replace special chars
+		$key =~ s/\//#S#/g;
+		$key =~ s/\\/#BS#/g;
+		
+		# Fetching host_id from host_name for insertion in log_archive_host table
+		my $sth = $dbh->prepare("SELECT `host_id` FROM `".$mysql_database_oreon."`.`host` WHERE `host_name` = '".$key."'");
 		die "Error : " . $dbh->errstr . "\n" if (!$sth);
-		$sth->execute;
+		$sth->execute();
 		die "Error : " . $dbh->errstr . "\n" if (!$sth);
 		my $host_id = 0;
 		if (my $row = $sth->fetchrow_hashref()) {
@@ -345,11 +362,10 @@ sub insert_hosts_stats_in_db ($$) {
 	chop($archive_insert_query);
 	if ($archive_insert_query ne "") {
 		my $query = "INSERT INTO `log_archive_host` (`host_id`, `UPTimeScheduled`, `UPnbEvent`, `DOWNTimeScheduled`, `DOWNnbEvent`, ".
-													"`UNREACHABLETimeScheduled`, `UNREACHABLEnbEvent`, `UNDETERMINEDTimeScheduled`, `date_start`, `date_end`)".
-												" VALUES ".$archive_insert_query;
+					"`UNREACHABLETimeScheduled`, `UNREACHABLEnbEvent`, `UNDETERMINEDTimeScheduled`, `date_start`, `date_end`)".
+					" VALUES ".$archive_insert_query;
 		$dbh->do($query);
-	}
-	
+	}	
 	
 	# Deleting previous status inserted in DB for hosts
 	chop($status_delete_query);
@@ -357,14 +373,13 @@ sub insert_hosts_stats_in_db ($$) {
 		my $query = "DELETE FROM `log_archive_last_status` WHERE host_name IN (".$status_delete_query.") AND `service_description` is null";
 		$dbh->do($query);
 	}
-	#Inserting last status of day in DB to identify with which state this host starts the following day that will be archived 
+	# Inserting last status of day in DB to identify with which state this host starts the following day that will be archived 
 	chop($status_insert_query);
 	if ($status_insert_query ne "") {
-		my $query = "INSERT INTO `log_archive_last_status` (`host_name`, `status`, `ctime`)". 
-			 "						 VALUES ".$status_insert_query;
+		my $query = " INSERT INTO `log_archive_last_status` (`host_name`, `status`, `ctime`)". 
+			 		" VALUES ".$status_insert_query;
 		$dbh->do($query);
 	}
-	
 }
 
 ################################################################################
@@ -377,20 +392,28 @@ sub insert_services_stats_in_db ($$) {
 	my $status_insert_query = "";
 	my $archive_insert_query = "";
 	my $status_delete_query = "";
+	
 	while (my ($key, $value) = each (%services)) {
-		
-		#Adding last state duration
+		# Adding last state duration
 		$value->{$value->{"current_state"}."_D"} += $date_end - $value->{"current_state_time"};
 		
-		#Fetching host_id from host_name for insertion in log_archive_service table
-		my ($host_name, $svc_desc) = split ("_", $key);
+		# Fetching host_id from host_name for insertion in log_archive_service table
+		my ($host_name, $svc_desc) = split (";", $key);
+		
+		# Replace special chars
+		$host_name =~ s/\//#S#/g;
+		$host_name =~ s/\\/#BS#/g;
+		$svc_desc =~ s/\//#S#/g;
+		$svc_desc =~ s/\\/#BS#/g;
+		
 		my $id_query = 	" SELECT h.host_id, s.service_id ".
 						" FROM `".$mysql_database_oreon."`.`host` h, `".$mysql_database_oreon."`.`host_service_relation` r, `".$mysql_database_oreon."`.`service` s".
 						" WHERE h.`host_name` = '".$host_name."' AND s.service_description = '".$svc_desc."' ".
-						"		AND h.host_id = r.host_host_id AND s.service_id = r.service_service_id";
+						" AND h.host_id = r.host_host_id AND s.service_id = r.service_service_id";
+
 		my $sth = $dbh->prepare($id_query);
 		die "Error : " . $dbh->errstr . "\n" if (!$sth);
-		$sth->execute;
+		$sth->execute();
 		die "Error : " . $dbh->errstr . "\n" if (!$sth);
 		my ($host_id, $svc_id) = (0, 0);
 		if (my $row = $sth->fetchrow_hashref()) {
@@ -403,18 +426,19 @@ sub insert_services_stats_in_db ($$) {
 			$archive_insert_query .= "('".$host_id."', '".$svc_id."', '".$value->{"OK_D"}."', '".$value->{"OK_A"}."', '".$value->{"WARNING_D"}."', '".$value->{"WARNING_A"}."', ".
 									  "'".$value->{"CRITICAL_D"}."', '".$value->{"CRITICAL_A"}."', '".$value->{"UNKNOWN_D"}."', '".$value->{"UNKNOWN_A"}."', ".
 									  "'".$value->{"UNDETERMINED_D"}."', '".$date_start."', '".$date_end."'),";
-			#Inserting last status of day in DB to identify with which state this host starts the following day that will be archived 
+			# Inserting last status of day in DB to identify with which state this host starts the following day that will be archived 
 			$status_insert_query .= "('".$host_name."', '".$svc_desc."', '".$value->{"current_state"}."', '".$date_end."'),";
 			$status_delete_query .= "(host_name = '".$host_name."' AND service_description = '".$svc_desc."') OR ";
 		} 
 	}
 	# Inserting hosts stats
 	chop($archive_insert_query);
-	if($archive_insert_query ne "") {
-		my $query = "INSERT INTO `log_archive_service` 		(`host_id`, `service_id`, `OKTimeScheduled`, `OKnbEvent`, `WARNINGTimeScheduled`, `WARNINGnbEvent`, ".
-													" 	 	 `CRITICALTimeScheduled`, `CRITICALnbEvent`, `UNKNOWNTimeScheduled`, `UNKNOWNnbEvent`, ".
-													" 	 	 `UNDETERMINEDTimeScheduled`, `date_start`, `date_end`) ".
-													" VALUES ".$archive_insert_query;
+	if ($archive_insert_query ne "") {
+		my $query = "INSERT INTO `log_archive_service` (`host_id`, `service_id`, `OKTimeScheduled`, `OKnbEvent`, `WARNINGTimeScheduled`, `WARNINGnbEvent`, ".
+					" 	 	 `CRITICALTimeScheduled`, `CRITICALnbEvent`, `UNKNOWNTimeScheduled`, `UNKNOWNnbEvent`, ".
+					" 	 	 `UNDETERMINEDTimeScheduled`, `date_start`, `date_end`) ".
+					" VALUES ".$archive_insert_query;
+		$archive_insert_query = "";
 		$dbh->do($query);
 	}
 	# Deleting previous status inserted in DB for hosts
@@ -426,8 +450,9 @@ sub insert_services_stats_in_db ($$) {
 	#Inserting last status of day in DB to identify with which state this host starts the following day that will be archived 
 	chop($status_insert_query);
 	if ($status_insert_query ne ""){
-		my $query = "INSERT INTO `log_archive_last_status` (`host_name`, `service_description`, `status`, `ctime`)". 
-				 "						 VALUES ".$status_insert_query;
+		my $query = " INSERT INTO `log_archive_last_status` (`host_name`, `service_description`, `status`, `ctime`)". 
+				 	" VALUES ".$status_insert_query;
+		$status_insert_query = "";
 		$dbh->do($query);
 	}
 }
@@ -438,10 +463,12 @@ sub insert_services_stats_in_db ($$) {
 #####################################################
 
 sub archive_day_log ($$) {
-	#Getting last day start and end timestamps
+	# Getting last day start and end timestamps
 	my ($start_time, $end_time) = (shift, shift);
-	# getting last day end in $last_day_end
+
+	# Getting last day end in $last_day_end
 	my $last_day_end = $start_time - ((60 * 60 * 24) - ($end_time - $start_time));
+
 	get_last_status($start_time, $last_day_end);
 	get_hosts_services_stats($start_time, $end_time);
 	insert_hosts_stats_in_db($start_time, $end_time);
@@ -469,12 +496,13 @@ sub main {
 		print_help;
 	}
 	
-	#initializing MySQL DB connection
+	# Initializing MySQL DB connection
 	$dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd,
 						{'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	my $dbhoreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd,
 						{'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	#Getting time_period in which we must collect logs
+	
+	# Getting time_period in which we must collect logs
 	my $query = "SELECT * FROM `contact_param` WHERE `cp_contact_id` is null";
 	my $sth = $dbhoreon->prepare($query);
 	$sth->execute;
@@ -487,6 +515,7 @@ sub main {
 	}
 	$sth->finish;
 	$dbhoreon->disconnect();
+
 	# initialising each day time_period to 24 hours
 	$time_period{"day_start_time"} = 0;
 	$time_period{"day_end_time"} = 60 * 60 * 24;
@@ -500,13 +529,12 @@ sub main {
 		$time_period{"day_end_time"} = mktime(0, $time_period{"report_minute_end"}, $time_period{"report_hour_end"}, 0, 0, 100)
 										- mktime(0, 0, 0, 0, 0, 100);
 	}
-
 	
 	if ($options{"rebuild"}) {
-		#rebuiling all archives from log table
+		# rebuiling all archives from log table
 		rebuild_archives(\%time_period);
-	}else {
-		#building archive for last past dat
+	} else {
+		# building archive for last past dat
 	    my ($day,$month,$year) = (localtime(time))[3,4,5];
 	    my $yesterday_real_start =  timelocal(0,0,0,$day,$month,$year) - (60 * 60 * 24);
 	    archive_day_log($yesterday_real_start + $time_period{"day_start_time"}, $yesterday_real_start + $time_period{"day_end_time"});
@@ -527,7 +555,7 @@ sub rebuild_archives($) {
 	$dbh->do("TRUNCATE TABLE `log_archive_service`");
 	$dbh->do("TRUNCATE TABLE `log_archive_last_status`");
 	
-	#Getting first log and last log times
+	# Getting first log and last log times
 	my $query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `log` ORDER BY `ctime` ASC";
 	my $sth = $dbh->prepare($query);
 	$sth->execute;
@@ -542,7 +570,7 @@ sub rebuild_archives($) {
 		$end = $today_begin;
 	}
 	$sth->finish;
-	#getting list of days between the first log and last log
+	# Getting list of days between the first log and last log
 	my @days;
 	($day,$month,$year) = (localtime($start))[3,4,5];
 	$start =  timelocal(0,0,0,$day,$month,$year);
@@ -559,7 +587,7 @@ sub rebuild_archives($) {
 			push @days_in_order, $days[$i];
 		}
 	}
-	#archiving logs for each days
+	# archiving logs for each days
 	foreach(@days_in_order) {
 		archive_day_log($_->{"day_start"}, $_->{"day_end"});
 	}
@@ -568,4 +596,4 @@ sub rebuild_archives($) {
 #####################################################
 # MAIN EXECUTION 
 #####################################################
-main;
+main();
