@@ -22,7 +22,7 @@
 	$oreon =& $_SESSION["oreon"];
 	
 	require_once("DB.php");
-	include_once("/etc/centreon/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");
 		
 	/* Connect to oreon DB */
 	$dsn = array('phptype'  => 'mysql',
