@@ -2200,3 +2200,20 @@ function find_macros_in_dir() {
 	return 0
 }
 
+#----
+## Check result and print a message
+## @param	return code to check
+## @param	message to print
+#----
+function check_result() {
+	local code=$1
+	shift
+	local message=$@
+
+	if [ $code -eq 0 ] ; then
+		echo_success "$message" "$ok"
+	else
+		echo_failure "$message" "$fail"
+	fi
+	return 0
+}

@@ -76,6 +76,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$TMPDIR/final/www/install/createTablesCentstorage.sql \
 	$INSTALL_DIR_CENTREON/www/install/createTablesCentstorage.sql \
 	>> $LOG_FILE 2>&1
+check_result $?  "$(gettext "install") www/install/createTablesCentstorage.sql"
 
 ###### RRD directory
 #################################
@@ -85,7 +86,7 @@ if [ ! -d "$CENTSTORAGE_RRD/status" ] ; then
 	$INSTALL_DIR/cinstall $cinstall_opts \
 		-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -d 755 \
 		$CENTSTORAGE_RRD/status >> $LOG_FILE 2>&1
-	echo_success "$(gettext "Creating Centreon Directory") '$CENTSTORAGE_RRD/status'" "$ok"
+	check_result $? "$(gettext "Creating Centreon Directory") '$CENTSTORAGE_RRD/status'"
 else
 	echo_passed "$(gettext "CentStorage status Directory already exists")" "$passed"
 fi
@@ -95,7 +96,7 @@ if [ ! -d "$CENTSTORAGE_RRD/metrics" ] ; then
 	$INSTALL_DIR/cinstall $cinstall_opts \
 		-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -d 755 \
 		$CENTSTORAGE_RRD/metrics >> $LOG_FILE 2>&1
-	echo_success "$(gettext "Creating Centreon Directory") '$CENTSTORAGE_RRD/metrics'" "$ok"
+	check_result $? "$(gettext "Creating Centreon Directory") '$CENTSTORAGE_RRD/metrics'"
 else
 	echo_passed "$(gettext "CentStorage metrics Directory already exists")" "$passed"
 fi
@@ -111,27 +112,30 @@ ${SED} -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
 	 $TMPDIR/src/bin/centstorage > $TMPDIR/work/bin/centstorage
+check_result $? "$(gettext "Change macros for centstorage binary")"
 	 
-echo_success "$(gettext "Replace Centstorage Macro")" "$ok"
 log "INFO" "$(gettext "Copying CentStorage binary in final directory")"
 cp $TMPDIR/work/bin/centstorage $TMPDIR/final/bin/centstorage >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
 	$TMPDIR/final/bin/centstorage $CENTSTORAGE_BINDIR/centstorage \
 	>> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install CentStorage binary")"
 
-echo_success "$(gettext "Set CentStorage properties")" "$ok"
+#echo_success "$(gettext "Set CentStorage properties")" "$ok"
 
 ## Copy lib for CentStorage
 log "INFO" "$(gettext "Install library for centstorage")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-g "$NAGIOS_GROUP" -m 766 \
 	$TMPDIR/final/lib $INSTALL_DIR_CENTREON/lib >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install library for centstorage")"
 
 ## Change right on CENTREON_RUNDIR
 log "INFO" "$(gettext "Change right") : $CENTREON_RUNDIR"
 $INSTALL_DIR/cinstall $cinstall_opts -u "$NAGIOS_USER" -d 750 \
 	$CENTREON_RUNDIR >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Change right") : $CENTREON_RUNDIR"
 
 ###### CentStorate init
 #################################
@@ -144,8 +148,8 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
 	$TMPDIR/src/centstorage.init.d > $TMPDIR/work/centstorage.init.d
+check_result $? "$(gettext "Change macros for centstorage init script")"
 
-echo_success "$(gettext "Change macros for centstorage init script")" "$ok"
 cp $TMPDIR/work/centstorage.init.d \
 	$TMPDIR/final/centstorage.init.d
 cp $TMPDIR/final/centstorage.init.d \
@@ -163,6 +167,7 @@ if [ "$RC" -eq "0" ] ; then
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMPDIR/final/centstorage.init.d \
 		$INIT_D/centstorage >> $LOG_FILE 2>&1
+	check_result $? "$(gettext "CentStorage init script installed")"
 	RC="1"
 	if [ "${CENTSTORAGE_INSTALL_RUNLVL:-0}" -eq 1 ] ; then
 		RC="1"
@@ -172,6 +177,7 @@ if [ "$RC" -eq "0" ] ; then
 	fi
 	if [ "$RC" -eq "0" ] ; then
 		install_init_service "centstorage" | tee -a $LOG_FILE
+		check_result $? "$(gettext "CentStorage run level installed")"
 		log "INFO" "$(gettext "CentStorage run level installed")"
 	else
 		echo_passed "$(gettext "CentStorage run level not installed")" "$passed"
@@ -191,15 +197,17 @@ ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
         -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 	$TMPDIR/src/bin/logAnalyser > $TMPDIR/work/bin/logAnalyser
+check_result $? "$(gettext "Change macros for logAnalyser")"
 
 cp $TMPDIR/work/bin/logAnalyser $TMPDIR/final/bin/logAnalyser >> $LOG_FILE 2>&1
-log "INFO" "$(gettext "Install logAnalyser in centstorage bin dir")"
+log "INFO" "$(gettext "Install logAnalyser")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
 	$TMPDIR/final/bin/logAnalyser \
 	$CENTSTORAGE_BINDIR/logAnalyser >> $LOG_FILE 2>&1
+check_result $?  "$(gettext "Install logAnalyser")"
 
-echo_success "$(gettext "Set logAnalyser properties")" "$ok"
+#echo_success "$(gettext "Set logAnalyser properties")" "$ok"
 
 ## nagiosPerfTrace
 log "INFO" "$(gettext "Change macros for nagiosPerfTrace")"
@@ -208,15 +216,17 @@ ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
 	-e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
 	$TMPDIR/src/bin/nagiosPerfTrace > $TMPDIR/work/bin/nagiosPerfTrace
+check_result $? "$(gettext "Change macros for nagiosPerfTrace")"
 
 cp $TMPDIR/work/bin/nagiosPerfTrace $TMPDIR/final/bin/nagiosPerfTrace >> $LOG_FILE 2>&1
-log "INFO" "$(gettext "Install nagiosPerfTrace in centstorage bin dir")"
+log "INFO" "$(gettext "Install nagiosPerfTrace")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
 	$TMPDIR/final/bin/nagiosPerfTrace \
 	$CENTSTORAGE_BINDIR/nagiosPerfTrace >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install nagiosPerfTrace")"
 
-echo_success "$(gettext "Set nagiosPerfTrace properties")" "$ok"
+#echo_success "$(gettext "Set nagiosPerfTrace properties")" "$ok"
 
 ## cron file 
 log "INFO" "$(gettext "Change macros for centstorage.cron")"
@@ -225,13 +235,14 @@ ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CRONUSER@|'"$NAGIOS_USER"'|g' \
 	$BASE_DIR/tmpl/install/centstorage.cron > $TMPDIR/work/centstorage.cron
+check_result $? "$(gettext "Change macros for centstorage.cron")"
+
 cp $TMPDIR/work/centstorage.cron $TMPDIR/final/centstorage.cron >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install centstorage cron")"
 $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 	$TMPDIR/final/centstorage.cron \
 	$CRON_D/centstorage >> $LOG_FILE 2>&1
-
-echo_success "$(gettext "Install CentStorage cron")" "$ok"
+check_result $? "$(gettext "Install CentStorage cron")"
 
 ###### Post Install
 #################################

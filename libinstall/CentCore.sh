@@ -9,9 +9,9 @@
 #################################
 # SVN: $Id$
 
-echo "------------------------------------------------------------------------"
+echo "$line"
 echo -e "\t$(gettext "Start CentCore Installation")"
-echo "------------------------------------------------------------------------"
+echo "$line"
 
 ###### Check disk space
 check_tmp_disk_space
@@ -68,16 +68,16 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@BIN_SSH@|'"$BIN_SSH"'|g' \
 	-e 's|@BIN_SCP@|'"$BIN_SCP"'|g' \
 	$TMPDIR/src/bin/centcore > $TMPDIR/work/bin/centcore
+check_result $? "$(gettext "Change CentCore Macro")"
 
-echo_success "$(gettext "Replace CentCore Macro")" "$ok"
 log "INFO" "$(gettext "Copying CentCore binary in final directory")"
 cp $TMPDIR/work/bin/centcore $TMPDIR/final/bin/centcore 2>&1  >> $LOG_FILE
 
+log "INFO" "$(gettext "Copying CentCore in binary directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
 	$TMPDIR/final/bin/centcore $CENTCORE_BINDIR/centcore >> $LOG_FILE 2>&1
-echo_success "$(gettext "Copy CentCore in binary directory")" "$ok"
-log "INFO" "$(gettext "Copying CentCore in binary directory")"
+check_result $? "$(gettext "Copy CentCore in binary directory")"
 
 ## Change CentCore link in CentWeb
 ${SED} -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
@@ -113,11 +113,13 @@ $INSTALL_DIR/cinstall $cinstall_opts -f \
 log "INFO" "$(gettext "Change right") : $CENTREON_RUNDIR"
 $INSTALL_DIR/cinstall $cinstall_opts -u "$NAGIOS_USER" -d 750 \
 	$CENTREON_RUNDIR >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Change right") : $CENTREON_RUNDIR"
 
 ## Change tight on CENTREON_VARLIB
 log "INFO" "$(gettext "Change right") : $CENTREON_VARLIB"
 $INSTALL_DIR/cinstall $cinstall_opts -g "$NAGIOS_USER" -d 775 \
 	$CENTREON_VARLIB >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Change right") : $CENTREON_VARLIB"
 
 ###### CentCore init
 #################################
@@ -129,8 +131,8 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTCORE_BINDIR@|'"$CENTCORE_BINDIR"'|g' \
 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
 	$TMPDIR/src/centcore.init.d > $TMPDIR/work/centcore.init.d
+check_result $? "$(gettext "Replace CentCore init script Macro")"
 
-echo_success "$(gettext "Replace CentCore init script Macro")" "$ok"
 cp $TMPDIR/work/centcore.init.d $TMPDIR/final/centcore.init.d
 cp $TMPDIR/final/centcore.init.d $INSTALL_DIR_CENTREON/examples/centcore.init.d
 
@@ -144,6 +146,7 @@ fi
 if [ "$RC" -eq "0" ] ; then 
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMPDIR/final/centcore.init.d $INIT_D/centcore >> $LOG_FILE 2>&1
+	check_result $?"$(gettext "CentCore init script installed")"
 	log "INFO" "$(gettext "CentCore init script installed")"
 	RC="1"
 	if [ "${CENTCORE_INSTALL_RUNLVL:-0}" -eq 1 ] ; then
@@ -154,6 +157,7 @@ if [ "$RC" -eq "0" ] ; then
 	fi
 	if [ "$RC" -eq "0" ] ; then
 		install_init_service "centcore"
+		check_result $? "$(gettext "CentCore run level installed")"
 		log "INFO" "$(gettext "CentCore run level installed")"
 	else
 		echo_passed "$(gettext "CentCore run level not installed")" "$passed"
