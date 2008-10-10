@@ -45,6 +45,22 @@ sub get_hostinfos($$$){
     return @host;
 }
 
+###############################
+## GET host location
+#
+
+sub get_hostlocation($$){
+    my $sth = $_[0]->prepare("SELECT localhost FROM host, `ns_host_relation`, nagios_server WHERE host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id AND host.host_name = '".$_[1]."'");
+    $sth->execute();
+    if ($sth->rows()){
+ 		my $temp = $sth->fetchrow_array();
+		$sth->finish();
+    	return $temp->{'localhost'};
+    } else {
+    	return 0;
+    }
+}
+
 ##################################
 ## GET nagios server id for a host
 #
