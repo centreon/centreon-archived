@@ -14,10 +14,14 @@
  * 
  * For information : contact@centreon.com
  */
+
+	if (!isset($oreon))
+ 		exit();
+
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_host.cfg", $oreon->user->get_name());
 	$str = NULL;
 	
-	# Init 
+	# Init
 	
 	$nb = 0;
 	
@@ -32,17 +36,12 @@
 		$str .= print_line("address", "127.0.0.1");
 		$str .= print_line("check_command", "check_host_alive");
 		$str .= print_line("max_check_attempts", "3");
-		if ($oreon->user->get_version() >= 2)	{
-			$str .= print_line("check_interval", "1");
-			$str .= print_line("active_checks_enabled", "0");
-			$str .= print_line("passive_checks_enabled", "0");
-			$str .= print_line("check_period", "meta_timeperiod");
-		}
-		if ($oreon->user->get_version() == 1)
-			$str .= print_line("checks_enabled", "1");
+		$str .= print_line("check_interval", "1");
+		$str .= print_line("active_checks_enabled", "0");
+		$str .= print_line("passive_checks_enabled", "0");
+		$str .= print_line("check_period", "meta_timeperiod");
 		# Contact Group
-		if ($oreon->user->get_version() >= 2)
-			$str .= print_line("contact_groups", "meta_contactgroup");
+		$str .= print_line("contact_groups", "meta_contactgroup");
 		$str .= print_line("notification_interval", "60");
 		$str .= print_line("notification_period", "meta_timeperiod");
 		$str .= print_line("notification_options", "d");

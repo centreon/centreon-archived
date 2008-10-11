@@ -14,6 +14,10 @@
  * 
  * For information : contact@centreon.com
  */
+ 	
+ 	if (!isset($oreon))
+ 		exit();
+ 	
 	$str = NULL;
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_timeperiod.cfg", $oreon->user->get_name());
 	$str .= "define timeperiod{\n";

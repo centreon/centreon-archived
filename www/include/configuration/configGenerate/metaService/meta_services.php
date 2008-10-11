@@ -52,27 +52,23 @@
 		$DBRESULT2->free();
 	
 		$strEval .= print_line("notification_options", $meta["notification_options"]);
-		if ($meta["notifications_enabled"] != 2) print_line("notifications_enabled", $meta["notifications_enabled"] == 1 ? "1": "0");
+		if ($meta["notifications_enabled"] != 2) 
+			print_line("notifications_enabled", $meta["notifications_enabled"] == 1 ? "1": "0");
 		
 		$contactGroup = array();
 		$strTemp = NULL;
 		$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr, contactgroup cg WHERE mcgr.meta_id = '".$meta["meta_id"]."' AND mcgr.cg_cg_id = cg.cg_id ORDER BY `cg_name`");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr,.. : ".$DBRESULT2->getMessage()."<br />";
-		while ($contactGroup =& $DBRESULT2->fetchRow())	{				
-			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
-			if ($BP)
+		while ($contactGroup =& $DBRESULT2->fetchRow())	{
+			if (isset($gbArr[1][$contactGroup["cg_id"]]))
 				$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
 		}
 		$DBRESULT2->free();
 		unset($contactGroup);
-		if ($strTemp) $strEval .= print_line("contact_groups", $strTemp);
+		
+		if ($strTemp) 
+			$strEval .= print_line("contact_groups", $strTemp);
 		$strEval .= print_line("register", "1");
 		$strEval .= "\t}\n\n";
 		if ($strTemp)

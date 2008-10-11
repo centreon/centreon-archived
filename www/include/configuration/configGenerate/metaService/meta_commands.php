@@ -14,6 +14,9 @@
  * 
  * For information : contact@centreon.com
  */
+ 	if (!isset($oreon))
+ 		exit();
+ 	
 	$str = NULL;
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_commands.cfg", $oreon->user->get_name());
 	
@@ -24,7 +27,7 @@
 	
 	$str .= "define command{\n";
 	$str .= print_line("command_name", "meta_notify");
-	$cmd = "/usr/bin/printf \"%b\" \"***** Meta Service Oreon *****\\n\\nNotification Type: \$NOTIFICATIONTYPE\$\\n\\nService: \$SERVICEDESC\$\\nState: \$SERVICESTATE\$\\n\\nDate/Time: \$DATETIME\$\\n\\nAdditional Info:\\n\\n\$OUTPUT\$\" | \/bin\/mail -s \"** \$NOTIFICATIONTYPE\$ \$SERVICEDESC\$ is \$SERVICESTATE\$ **\" \$CONTACTEMAIL\$";
+	$cmd = "/usr/bin/printf \"%b\" \"***** Meta Service Centreon *****\\n\\nNotification Type: \$NOTIFICATIONTYPE\$\\n\\nService: \$SERVICEDESC\$\\nState: \$SERVICESTATE\$\\n\\nDate/Time: \$DATETIME\$\\n\\nAdditional Info:\\n\\n\$OUTPUT\$\" | \/bin\/mail -s \"** \$NOTIFICATIONTYPE\$ \$SERVICEDESC\$ is \$SERVICESTATE\$ **\" \$CONTACTEMAIL\$";
 	$str .= print_line("command_line", $cmd);
 	$str .= "}\n\n";
 	

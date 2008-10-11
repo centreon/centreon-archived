@@ -14,6 +14,8 @@
  * 
  * For information : contact@centreon.com
  */
+	if (!isset($oreon))
+ 		exit();
 
 	$str = NULL;
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_contact.cfg", $oreon->user->get_name());
@@ -26,16 +28,19 @@
 		$str .= "define contact{\n";
 		$str .= print_line("contact_name", "meta_contact");
 		$str .= print_line("alias", "meta_contact");
+		
 		# Nagios 2 : Contact Groups in Contact
-		if ($oreon->user->get_version() >= 2)
-			$str .= print_line("contactgroups", "meta_contactgroup");
+		$str .= print_line("contactgroups", "meta_contactgroup");
+		
 		$str .= print_line("host_notification_period", "meta_timeperiod");
 		$str .= print_line("service_notification_period", "meta_timeperiod");
 		$str .= print_line("host_notification_options", "n");
 		$str .= print_line("service_notification_options", "n");
+		
 		# Host & Service notification command
 		$str .= print_line("host_notification_commands", "meta_notify");
 		$str .= print_line("service_notification_commands", "meta_notify");
+		
 		# Misc
 		$str .= print_line("email", "meta_contact_email");
 		$str .= "}\n\n";

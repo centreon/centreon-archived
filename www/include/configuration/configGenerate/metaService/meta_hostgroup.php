@@ -14,8 +14,13 @@
  * 
  * For information : contact@centreon.com
  */
+
+	if (!isset($oreon))
+ 		exit();
+
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_hostgroup.cfg", $oreon->user->get_name());
 	$str = NULL;
+
 	# Host Creation
 	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
 	$nb = $DBRESULT->numRows();
@@ -24,9 +29,6 @@
 		$str .= "define hostgroup{\n";
 		$str .= print_line("hostgroup_name", "meta_hostgroup");
 		$str .= print_line("alias", "meta_hostgroup");
-		// Nagios V1 : Contactgroups
-		if ($oreon->user->get_version() == 1)
-			$str .= print_line("contact_groups", "meta_contactgroup");	
 		$str .= print_line("members", "Meta_Module");
 		$str .= "\t}\n\n";
 	}

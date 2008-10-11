@@ -14,6 +14,10 @@
  * 
  * For information : contact@centreon.com
  */
+ 
+	if (!isset($oreon))
+ 		exit();
+	
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_contactgroup.cfg", $oreon->user->get_name());
 	$str = NULL;
 	
