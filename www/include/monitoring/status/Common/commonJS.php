@@ -37,16 +37,16 @@
 ?>
 function getXhrC(){
 	if (window.XMLHttpRequest) // Firefox et autres
-	   var xhrC = new XMLHttpRequest();
+		var xhrC = new XMLHttpRequest();
 	else if (window.ActiveXObject){ // Internet Explorer
-	   try {
-                var xhrC = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
-                var xhrC = new ActiveXObject("Microsoft.XMLHTTP");
-            }
+		try {
+	   		var xhrC = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (e) {
+			var xhrC = new ActiveXObject("Microsoft.XMLHTTP");
+		}
 	} else { // XMLHttpRequest non support2 par le navigateur
-	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
-	   var xhrC = false;
+		alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+		var xhrC = false;
 	}
 	return xhrC;
 }
@@ -106,9 +106,11 @@ function construct_selecteList_ndo_instance(id){
 function viewDebugInfo(_str){
 	if (_debug)	{
 		_nb = _nb + 1;
-		var mytable=document.getElementById("debugtable")
-		var newrow=mytable.insertRow(0) //add new row to end of table
-		var newcell=newrow.insertCell(0) //insert new cell to row
+		var mytable = document.getElementById("debugtable")
+		//add new row to end of table
+		var newrow = mytable.insertRow(0) 
+		//insert new cell to row
+		var newcell = newrow.insertCell(0) 
 		newcell.innerHTML='<td>line:' + _nb + ' ' + _str + '</td>';
 	}
 }
@@ -129,7 +131,6 @@ function change_type_order(_type){
 }
 
 function change_order(_odr){
-
 	if (_order == 'ASC'){
 		_order = 'DESC';
 	} else
@@ -143,7 +144,7 @@ function change_limit(l){
 	pagination_changed();
 	monitoring_refresh();
 	var _sel1 = document.getElementById('l1');
-	for(i=0 ; _sel1[i] && _sel1[i].value != l ; i++)
+	for (i = 0 ; _sel1[i] && _sel1[i].value != l ;i++)
 		;
 	_sel1.selectedIndex = i;
 	set_limit(l);
@@ -396,7 +397,7 @@ function mainLoop(){
  	_currentInputField = document.getElementById('input_search');
   	_currentInputFieldValue = document.getElementById('input_search').value;
   	if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue!=_currentInputFieldValue){
-    	var valeur=escapeURI(_currentInputFieldValue);
+    	var valeur = escapeURI(_currentInputFieldValue);
 		_search = valeur;		
 		if (!_lock){
 			monitoring_refresh();
@@ -407,8 +408,8 @@ function mainLoop(){
 				_currentInputField.className = "search_input";
 		}
 	}
-	_oldInputFieldValue=_currentInputFieldValue;
-	setTimeout("mainLoop()",222);
+	_oldInputFieldValue = _currentInputFieldValue;
+	setTimeout("mainLoop()", 222);
 }
 
 function set_limit(limit)	{

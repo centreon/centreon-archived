@@ -25,12 +25,12 @@
 	$sid = session_id();
 	$time = time();
 
-	if($num < 0)
-		$num =0;
+	if ($num < 0)
+		$num = 0;
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
-	var _debug = 0;
+	var _debug = 1;
 	
 	var _search = '<?php echo $search; ?>';
 	var _sid='<?php echo $sid ?>';
@@ -47,8 +47,8 @@
 	var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 	var _timeoutID = 0;
 	var _on = 1;
-	var _time_reload = <?php echo $tM?>;
-	var _time_live = <?php echo $tFM?>;
+	var _time_reload = <?php echo $tM ?>;
+	var _time_live = <?php echo $tFM ?>;
 	var _nb = 0;
 	var _oldInputFieldValue = '<?php echo $search?>';
 	var _currentInputFieldValue=""; // valeur actuelle du champ texte
@@ -91,19 +91,19 @@ if (document.getElementById('linkBar'))	{
 
 //end for linkBar
 
-
-
 var tempX = 0;
 var tempY = 0;
 
+alert(navigator.appName);
+
 function position(e){
-	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
-	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
+	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x + document.body.scrollLeft;
+	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y + document.body.scrollTop;
 }
 
-if (navigator.appName.substring(0,3) == "Net")
-	document.captureEvents(Event.MOUSEMOVE);
-document.onmousemove = position;
+// if (navigator.appName.substring(0,3) == "Net")
+//	document.captureEvents(Event.MOUSEMOVE);
+//document.onmousemove = position;
 
 function set_header_title(){
 
@@ -249,53 +249,65 @@ function goM(_time_reload, _sid, _o){
 }
 
 function displayPOPUP(id) {
-	viewDebugInfo('Recup span_'+id);
-	var span = document.getElementById('span_'+id);
-	var proc_popup = new Transformation();
-	var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
-	var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
-	proc_popup.setXml(_addrXMLSpan);
-	proc_popup.setXslt(_addrXSLSpan);
-	proc_popup.transform('span_'+id);
-
-	//calcul auto de la largeur de l'ecran client
-	var l = screen.availWidth;
+	if (window.ActiveXObject) {
+		viewDebugInfo('Internet Explorer');
+	} else {
+		viewDebugInfo('Recup span_'+id);
+		var span = document.getElementById('span_'+id);
+		var proc_popup = new Transformation();
+		var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
+		var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
+		proc_popup.setXml(_addrXMLSpan);
+		proc_popup.setXslt(_addrXSLSpan);
+		proc_popup.transform('span_'+id);
 	
-	//calcul auto de la hauteur de l'ecran client
-	var h = screen.availHeight;
-	
-	if (h - tempY < span.offsetHeight){
-		span.style.top = '-'+ span.offsetHeight +'px';
+		//calcul auto de la largeur de l'ecran client
+		var l = screen.availWidth;
+		
+		//calcul auto de la hauteur de l'ecran client
+		var h = screen.availHeight;
+		
+		if (h - tempY < span.offsetHeight){
+			span.style.top = '-'+ span.offsetHeight +'px';
+		}
+		viewDebugInfo('Display span_'+id);
 	}
-	viewDebugInfo('Display span_'+id);
 }
 
 function displayPOPUP_svc(id){
-	viewDebugInfo('Recup span_'+id);
-	var span = document.getElementById('span_'+id);
-	var proc_popup = new Transformation();
-	var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
-	var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForService.xsl";
-	proc_popup.setXml(_addrXMLSpan);
-	proc_popup.setXslt(_addrXSLSpan);
-	proc_popup.transform('span_'+id);
-
-	// calcul auto de la largeur de l'ecran client
-	var l = screen.availWidth;
+	if (window.ActiveXObject) {
+		viewDebugInfo('Internet Explorer');
+	} else {
+		viewDebugInfo('Recup span_'+id);
+		var span = document.getElementById('span_'+id);
+		var proc_popup = new Transformation();
+		var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
+		var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForService.xsl";
+		proc_popup.setXml(_addrXMLSpan);
+		proc_popup.setXslt(_addrXSLSpan);
+		proc_popup.transform('span_'+id);
 	
-	//calcul auto de la hauteur de l'ecran client
-	var h = screen.availHeight;
-
-	if (h - tempY < span.offsetHeight){
-		span.style.top = '-'+ span.offsetHeight +'px';
+		// calcul auto de la largeur de l'ecran client
+		var l = screen.availWidth;
+		
+		//calcul auto de la hauteur de l'ecran client
+		var h = screen.availHeight;
+	
+		if (h - tempY < span.offsetHeight){
+			span.style.top = '-'+ span.offsetHeight +'px';
+		}
+		viewDebugInfo('Display span_'+id);
 	}
-	viewDebugInfo('Display span_'+id);
 }
 
 function hiddenPOPUP(id){
-	var span = document.getElementById('span_'+id);
-	span.innerHTML = '';
-	viewDebugInfo('Hidde span_'+id);
+	if (window.ActiveXObject) {
+		viewDebugInfo('Internet Explorer');
+	} else {	
+		var span = document.getElementById('span_'+id);
+		span.innerHTML = '';
+		viewDebugInfo('Hidde span_'+id);
+	}
 }
 
 function displayIMG(index, s_id, id) {
