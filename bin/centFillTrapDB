@@ -83,7 +83,7 @@ sub main($$) {
 				$last_oid = $oid;
 		    } else {
 				$val = getStatus($val,$type);
-				my $sth = $dbh->prepare("INSERT INTO `traps` (`traps_name`, `traps_oid`, `traps_status`, `manufacturer_id`) VALUES ('$name', '$oid', '$val', '$manuf')");
+				my $sth = $dbh->prepare("INSERT INTO `traps` (`traps_name`, `traps_oid`, `traps_status`, `manufacturer_id`, `traps_submit_result_enable`) VALUES ('$name', '$oid', '$val', '$manuf', '1')");
 				$sth->execute();
 				$sth->finish();
 				$last_oid = $oid;
