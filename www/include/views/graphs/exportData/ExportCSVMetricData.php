@@ -28,11 +28,9 @@
 		exit(0);
 	}
 
-	$oreon = 1;
-	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path."www/DBconnect.php");
-	include_once($centreon_path."www/DBOdsConnect.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once $centreon_path."www/DBconnect.php";
+	include_once $centreon_path."www/DBOdsConnect.php";
 	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];

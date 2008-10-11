@@ -28,10 +28,9 @@
 		exit(0);
 	}
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path."www/DBconnect.php");
-	//$oreon = 1;
-	include_once($centreon_path."www/DBOdsConnect.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once $centreon_path."www/DBconnect.php";
+	include_once $centreon_path."www/DBOdsConnect.php";
 
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
@@ -64,10 +63,14 @@
 	else
 		header("Content-disposition: filename=".$index.".csv");
 
-	$DBRESULT =& $pearDBO->query("SELECT metric_id FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index'");
+	$listMetric = array();
+	$datas = array();
+	$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index'");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while ($index_data =& $DBRESULT->fetchRow()){	
+		if (!isset($listMetric[$index_data["metric_name"]]))
+			$listMetric[$index_data["metric_name"]] = $index_data["metric_name"];
 		$DBRESULT2 =& $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".$_GET["start"]."' AND ctime < '".$_GET["end"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
@@ -77,6 +80,11 @@
 			$datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
 		}
 	}
+	
+	print "time";
+	foreach ($listMetric as $table)
+		print ";".$table;
+	print "\n";
 	foreach ($datas as $key => $tab){
 		print $key;
 		foreach($tab as $value)
