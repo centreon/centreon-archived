@@ -177,7 +177,7 @@ sub getTrapsInfos($$$$){
     my $arguments_line = shift;
     my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
     
-    my $dbh = DBI->connect("dbi:mysql:$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
+    my $dbh = DBI->connect("dbi:mysql:".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
     my @host = get_hostinfos($dbh, $ip, $hostname);
     foreach(@host) {
 		my $this_host = $_;
@@ -196,7 +196,7 @@ sub getTrapsInfos($$$$){
 			    if ($address != 0){
 				    my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
 				} else {
-				    my $id = get_hostNagiosServerID(($dbh, $this_host));
+				    my $id = get_hostNagiosServerID($dbh, $this_host);
 					if (defined($id) && $id != 0){
 						my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
 						undef($id);
@@ -210,7 +210,7 @@ sub getTrapsInfos($$$$){
 			    if ($address != 0){
 					my $submit = `/bin/echo "[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$time_now" >> $conf[0]`;	
 				} else {
-				    my $id = get_hostNagiosServerID(($dbh, $this_host));
+				    my $id = get_hostNagiosServerID($dbh, $this_host);
 					if (defined($id) && $id != 0){
 						my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$time_now" >> $cmdFile`;	
 						undef($id);
