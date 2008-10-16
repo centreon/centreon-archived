@@ -55,7 +55,7 @@ sub get_hostlocation($$){
     if ($sth->rows()){
  		my $temp = $sth->fetchrow_array();
 		$sth->finish();
-    	return $temp->{'localhost'};
+    	return $temp;
     } else {
     	return 0;
     }
