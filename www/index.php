@@ -202,7 +202,7 @@
 					$res->free();
 					//update password in mysql database to provide login even if there is LDAP connection
 					if (isset($_POST["submit"]) && $ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap" && $connect && !$fallback) {
-						$pearDB->query("UPDATE contact set contact_passwd = '".md5($password)."' WHERE contact_alias ='".$useralias."' ");
+						$pearDB->query("UPDATE contact set contact_passwd = '".md5(htmlentities($password, ENT_QUOTES))."' WHERE contact_alias ='".$useralias."' ");
 						if ($debug_auth == 1)
 							error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : Local password updated with LDAP password for $useralias \n", 3, $debug_path."auth.log");
 					}
