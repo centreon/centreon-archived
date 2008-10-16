@@ -27,12 +27,13 @@
 	function getParameters($str){
 		if (isset($_GET[$str]))
 			$var = $_GET[$str];
-		else if (isset($_POST[$str]))
+		if (isset($_POST[$str]))
 			$var = $_POST[$str];
-		else
+		if ($var == "")
 			$var = NULL;
 		return $var;
 	}
+
 	
  	/*
  	 * Purge Values 
