@@ -28,9 +28,8 @@
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
  */
 
-	if (file_exists("./include/common/common-Func-ACL.php") == true) {
+	if (file_exists("./include/common/common-Func-ACL.php"))
 		include_once './include/common/common-Func-ACL.php';
-	}
 
 	/* 
 	 * function table_not_exists()
