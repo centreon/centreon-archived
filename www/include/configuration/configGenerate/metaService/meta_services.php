@@ -71,8 +71,8 @@
 			$strEval .= print_line("contact_groups", $strTemp);
 		$strEval .= print_line("register", "1");
 		$strEval .= "\t}\n\n";
-		if ($strTemp)
-			$str .= $strEval;
+
+		$str .= $strEval;
 	}
 	
 	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_services.cfg");
