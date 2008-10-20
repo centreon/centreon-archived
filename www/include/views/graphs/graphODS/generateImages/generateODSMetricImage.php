@@ -160,12 +160,21 @@
 		$order = $order % $metricnumber;
 		$metrics = array();		
 		while ($metric =& $DBRESULT->fetchRow()){
-			$metric["metric_name"] = str_replace("#S#", "slash_", $metric["metric_name"]);
+			
+			/*
+			 * Construct metric name for detect metric graph template.
+			 */
+			$metricNameForGraph = $metric["metric_name"];
+			$metricNameForGraph = str_replace("#S#", "/", $metricNameForGraph);
+			$metricNameForGraph = str_replace("#BS#", "\\", $metricNameForGraph);
+				
+			$metric["metric_name"] = str_replace("#S#", "slash_", $metricNameForGraph);
 			$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 			$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
+			$metrics[$metric["metric_id"]]["metric"] = str_replace("#BS#", "bslash_", $metric["metric_name"]);
 			$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 			
-			$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metric["metric_name"]."'");
+			$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metricNameForGraph."'");
 			$ds_data =& $res_ds->fetchRow();
 			
 			if (!$ds_data){
