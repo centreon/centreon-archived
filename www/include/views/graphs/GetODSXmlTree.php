@@ -335,8 +335,8 @@
 							print("</item>");
 						}
 					}
+					print("</item>");
 	    		}
-				print("</item>");
 			}
 		}
 		/*

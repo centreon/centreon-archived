@@ -114,7 +114,7 @@
 			 * Hosts Groups Inclus
 			 */
 			$hostgroup =  array();
-			$DBRESULT3 =& $pearDB->query(	"SELECT hg_id, hg_alias " .
+			$DBRESULT3 =& $pearDB->query(	"SELECT hg_id, hg_name " .
 											"FROM `hostgroup`, `acl_resources_hg_relations` " .
 											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
 											"AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
@@ -122,7 +122,7 @@
 	  			$DBRESULT4 =& $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation` WHERE host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = '".$hostgroup["hg_id"]."'");
 	  			while ($host_hostgroup =& $DBRESULT4->fetchRow())
 					$lcaHost[$host_hostgroup["host_name"]] = $host_hostgroup["host_id"];
-				$lcaHostGroup[$hostgroup["hg_alias"]] = $hostgroup["hg_id"];	
+				$lcaHostGroup[$hostgroup["hg_name"]] = $hostgroup["hg_id"];	
 	  		}
 			/*
 			 * Hosts Exclus
@@ -279,7 +279,7 @@
 			 * Hosts Groups Inclus
 			 */
 			$hostgroup = array();
-			$DBRESULT3 =& $pearDB->query(	"SELECT hg_id, hg_alias " .
+			$DBRESULT3 =& $pearDB->query(	"SELECT hg_id, hg_name " .
 											"FROM `hostgroup`, `acl_resources_hg_relations` " .
 											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
 											"AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
