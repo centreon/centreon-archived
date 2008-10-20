@@ -23,9 +23,9 @@
 	if (!isset($oreon))
 		exit();
 		
-
-?><?xml version=\"1.0\" encoding=\"iso-8859-1\"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+	print "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
+	
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $mlang; ?>">
 <head>
 <title>Centreon, Revisited Experience Of Nagios</title>
@@ -38,8 +38,8 @@
 <script src="./include/common/javascript/scriptaculous/prototype.js" type="text/javascript"></script>
 <script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <?php
-	if ($min != 1){
 
+	if ($min != 1) {
 		/*
 		 * Add Javascript for NDO status Counter
 		 */		
