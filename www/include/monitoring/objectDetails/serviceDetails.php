@@ -285,6 +285,7 @@
 		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
 		$tpl->assign("count_comments_svc", count($tabCommentServices));
 		$tpl->assign("tab_comments_svc", $tabCommentServices);
+		$tpl->assign("flag_graph", service_has_graph($host["host_id"], getMyServiceID($svc_description, $host["host_id"])));
 		$tpl->assign("service_id", getMyServiceID($svc_description, $host["host_id"]));
 		$tpl->assign("host_data", $host_status[$host_name]);
 		$tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);

@@ -97,6 +97,7 @@
 					</tr>
 				</table>
 				<br />
+				{if $flag_graph}
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;Status</td>
@@ -105,6 +106,7 @@
 						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/statusGraphs/displayServiceStatus.php?{$options}"></td>
 					</tr>
 				</table>
+				{/if}
 			</td>
 			<td style='width:20px;'>&nbsp;</td>
 			<td style='vertical-align:top;'>
