@@ -812,72 +812,77 @@
 		$i = 0;
 		$idsRequest = ""; 
 		# Formating a variable in order to include on the request
-		foreach($GroupListofUser as $id) {
+		foreach ($GroupListofUser as $id) {
 			$idsRequest .= "`acl_group_id` = ".$id."";
-			if($i < count($GroupListofUser)-1) {
+			if ($i < count($GroupListofUser)-1) {
 				$idsRequest .= " OR ";
 			}
-		$i++;
+			$i++;
 		}
 		
-		if($idsRequest != "")
-		{
+		if ($idsRequest != "") {
 			# Request in order to list the 'acl_action_id' linked with groups of user
 			$request = "SELECT acl_action_id FROM `acl_group_actions_relations` WHERE ".$idsRequest;
 			$DBRESULT =& $pearDB->query($request);
-			if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			if (PEAR::isError($DBRESULT)) 
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			
 			$idsActions = array();
 			while ($rule =& $DBRESULT->fetchRow()){
-				$idsActions[] =  $rule["acl_action_id"];
+				$idsActions[] = $rule["acl_action_id"];
 			}
 		
 			$i = 0;
 			$idsRequest = "";
 			# Formating a variable in order to include on the request
-			foreach($idsActions as $id) {
+			foreach ($idsActions as $id) {
 				$idsRequest .= "`acl_action_id` = ".$id."";
-				if($i <= count($GroupListofUser)) {
+				if ($i <= count($GroupListofUser)) {
 					$idsRequest .= " OR ";
 				}
-			$i++;
+				$i++;
 			}
 			unset($idsActions);
 			
 			# Request in order to list Actions Access enabled
-			$request = "SELECT acl_action_id FROM `acl_actions` WHERE acl_action_activate = '1' AND ($idsRequest)";
-			$DBRESULT =& $pearDB->query($request);
-			if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$idsActions = array();
-			while ($rule =& $DBRESULT->fetchRow()){
-				$idsActions[] =  $rule["acl_action_id"];
+			if ($idsRequest != "") {
+				$request = "SELECT acl_action_id FROM `acl_actions` WHERE acl_action_activate = '1' AND ($idsRequest)";
+				$DBRESULT =& $pearDB->query($request);
+				if (PEAR::isError($DBRESULT)) 
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$idsActions = array();
+				while ($rule =& $DBRESULT->fetchRow()){
+					$idsActions[] =  $rule["acl_action_id"];
+				}
+			} else {
+				$idsActions = 0;	
 			}
-			
+						
 			$i = 0;
 			$idsRequest = "";
 			# Formating a variable in order to include on the request
-			foreach($idsActions as $id) {
+			foreach ($idsActions as $id) {
 				$idsRequest .= "`acl_action_rule_id` = ".$id."";
-				if($i < count($idsActions)-1) {
+				if ($i < count($idsActions)-1) {
 					$idsRequest .= " OR ";
 				}
-			$i++;
+				$i++;
 			}
 	
-			if(isset($idsRequest) && $idsRequest != "") {
+			if (isset($idsRequest) && $idsRequest != "") {
 				# Request in order to list the 'acl_action_name' linked with rules of user		
 				$request = "SELECT acl_action_name FROM `acl_actions_rules` WHERE $idsRequest";
 				$DBRESULT =& $pearDB->query($request);
-				if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				if (PEAR::isError($DBRESULT)) 
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 				$authorized_actions = array();
-				while ($actions =& $DBRESULT->fetchRow()){
+				while ($actions =& $DBRESULT->fetchRow())
 					$authorized_actions[] = $actions["acl_action_name"];
-				}
 				return $authorized_actions;	
 			}
 		}
-	return NULL;
+		return NULL;
 	}
 	
 /*
@@ -899,17 +904,20 @@
  */
 	function verifyActionsACLofUser($action_name){
 		global $pearDB;	
+		
 		$GroupListofUser = array();
 		$authorized_actions = array();
 		$authorisation = false;
 		
-		$GroupListofUser =  getGroupListofUser($pearDB);
+		$GroupListofUser = getGroupListofUser($pearDB);
 		$authorized_actions = getActionsACLList($GroupListofUser);
-		if(count($authorized_actions) == 0) $actions = true;
+		if (count($authorized_actions) == 0) 
+			$actions = true;
 		
-		if(isset($authorized_actions)) {
-			foreach($authorized_actions as $list) {
-				if($list == $action_name) $authorisation = true; 
+		if (isset($authorized_actions)) {
+			foreach ($authorized_actions as $list) {
+				if ($list == $action_name) 
+					$authorisation = true; 
 			}
 		}
 
