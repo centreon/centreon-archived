@@ -25,14 +25,21 @@
 	$GroupListofUser =  getGroupListofUser($pearDB);
 	
 	$allActions = false;
-	// Get list of actions allowed for user
-	if(count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
-	$authorized_actions = array();
-	$authorized_actions = getActionsACLList($GroupListofUser);
-		if(count($authorized_actions) == 0) $allActions = false;
-	}
-	else {
-	 	// if user is admin, or without ACL, he cans perform all actions
+	/*
+	 * Get list of actions allowed for user
+	 */
+	if (count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+		$authorized_actions = array();
+		$authorized_actions = getActionsACLList($GroupListofUser);
+		
+		if (count($authorized_actions) == 0) 
+			$allActions = true;
+			
+	} else {
+	 	/*
+	 	 * if user is admin, or without ACL, 
+	 	 * he cans perform all actions
+	 	 */
 		$allActions = true;
 	}
 

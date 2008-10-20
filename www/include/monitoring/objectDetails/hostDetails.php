@@ -25,13 +25,18 @@
 	$GroupListofUser =  getGroupListofUser($pearDB);
 	
 	$allActions = false;
-	if(count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
-	$authorized_actions = array();
-	$authorized_actions = getActionsACLList($GroupListofUser);
-		if(count($authorized_actions) == 0) $allActions = false;
-	}
-	else {
-	 	// if user is admin, or without ACL, he cans perform all actions
+	if (count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+		$authorized_actions = array();
+		$authorized_actions = getActionsACLList($GroupListofUser);
+		
+		if (count($authorized_actions) == 0) 
+			$allActions = true;
+			
+	} else {
+	 	/*
+	 	 * if user is admin, or without ACL, 
+	 	 * he cans perform all actions
+	 	 */
 		$allActions = true;
 	}
 
@@ -52,9 +57,12 @@
 	$tab_status = array();
 
 	include_once("./DBNDOConnect.php");
-	/* start ndo svc info */
+	
+	/* 
+	 * start ndo svc info 
+	 */
 	$rq ="SELECT " .
-			"nss.current_state," .
+			" nss.current_state," .
 			" nss.output as plugin_output," .
 			" nss.current_check_attempt as current_attempt," .
 			" nss.status_update_time as status_update_time," .
@@ -93,9 +101,9 @@
 		$tab_status[$tab_status_service[$ndo["current_state"]]]++;
 	}
 
-	/* end ndo service info */
-
-	/* start ndo host detail */
+	/* 
+	 * start ndo host detail
+	 */
 	$tab_host_status[0] = "UP";
 	$tab_host_status[1] = "DOWN";
 	$tab_host_status[2] = "UNREACHABLE";
@@ -138,7 +146,6 @@
 
 	$host_status[$host_name] = $ndo2;
 	$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
-	/* end ndo host detail */
 
 	isset($lcaHost["LcaHost"][$host_name]) || $is_admin  ? $key = true : $key = NULL;
 	if ($key == NULL){
