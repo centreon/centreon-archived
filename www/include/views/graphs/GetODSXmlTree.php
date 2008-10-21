@@ -135,7 +135,7 @@
 			/*
 			 * Send Service/host list for a SG 
 			 */
-			$data = getMyServiceGroupServices($id);
+			$data = getMyServiceGroupActivateServices($id);
 			foreach ($data as $key => $value){
 				$tab_value = split("_", $key);
 				$host_name = getMyHostName($tab_value[0]);
