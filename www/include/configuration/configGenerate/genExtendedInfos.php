@@ -110,7 +110,7 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	while ($esi =& $DBRESULT->fetchRow())	{	
-		if (isset($esi["service_id"][$gbArr[4]]) && ($esi["esi_notes"] || $esi["esi_notes_url"] || $esi["esi_action_url"] || $esi["esi_icon_image"] || $esi["esi_icon_image_alt"]))	{			
+		if (isset($esi["service_id"]) && ($esi["esi_notes"] || $esi["esi_notes_url"] || $esi["esi_action_url"] || $esi["esi_icon_image"] || $esi["esi_icon_image_alt"]))	{			
 			$hosts = getMyServiceHosts($esi["service_id"]);
 			foreach ($hosts as $key=>$value)	{				
 				$BP = false;
