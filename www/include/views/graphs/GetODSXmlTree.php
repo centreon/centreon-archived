@@ -233,7 +233,6 @@
 			$cpt = 0;
 			$str = "";
 			$hostWithGraph = getHostGraphedList();
-			print_r($hostWithGraph);
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' ORDER BY host_name");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
