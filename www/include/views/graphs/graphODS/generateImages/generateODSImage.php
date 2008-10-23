@@ -205,7 +205,7 @@
 				
 					$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 					$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
-					$metrics[$metric["metric_id"]]["metric"] = str_replace("#BS#", "bslash_", $metric["metric_name"]);
+					$metrics[$metric["metric_id"]]["metric"] = str_replace("#BS#", "bslash_", $metrics[$metric["metric_id"]]["metric"]);
 					$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 					$metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
 					$metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
