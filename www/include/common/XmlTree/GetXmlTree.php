@@ -40,6 +40,18 @@
 	} 
 	echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
 
+	function getServiceGroupCount()	{
+		global $pearDB;
+
+		$DBRESULT =& $pearDB->query("SELECT count(sg_id) FROM `servicegroup`");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$num_row =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
+		return $num_row["count(sg_id)"];
+	}
+
+
 	/* 
 	 * if debug == 0 => Normal, debug == 1 => get use, 
 	 * debug == 2 => log in file (log.xml) 
@@ -156,7 +168,7 @@
 			        	print("<item child='1' test='$is_admin' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
 					}					
 				} else {
-					if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_alias"]])){
+					if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_name"]])){
 			        	print("<item child='1' test='$is_admin' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
 					}					
 				}
@@ -205,12 +217,21 @@
 				print("</item>");
 			}
 		} else {
+			/*
+			 * Display HG
+			 */
 			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='HostGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 			print("<itemtext>label</itemtext>");
 			print("</item>");
-			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RS_0' text='ServiceGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
-			print("<itemtext>label</itemtext>");
-			print("</item>");
+			
+			/*
+			 * Display SG
+			 */
+			if (getServiceGroupCount()) {
+				print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RS_0' text='ServiceGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+				print("<itemtext>label</itemtext>");
+				print("</item>");
+			}
 		}
 	} else {
 		/* 
