@@ -220,11 +220,11 @@ sub get_last_status_in_ignored_time($$) {
 			$row->{"service_description"} =~ s/\//#S#/g;
 			$row->{"service_description"} =~ s/\\/#BS#/g;
 		
-			if (defined($hosts{$row->{"host_name"}.";".$row->{"service_description"}})) {
-				my $entry = $hosts{$row->{"host_name"}.";".$row->{"service_description"}};
+			if (defined($services{$row->{"host_name"}.";".$row->{"service_description"}})) {
+				my $entry = $services{$row->{"host_name"}.";".$row->{"service_description"}};
 				$entry->{"current_state"} = $row->{"status"};
 				$entry->{"current_state_time"} = $row->{"ctime"};
-				$hosts{$row->{"host_name"}.";".$row->{"service_description"}} = $entry;
+				$services{$row->{"host_name"}.";".$row->{"service_description"}} = $entry;
 			} else {
 				my %log_entry = ("current_state" 	=> $row->{"status"},
 							"current_state_time"	=> $row->{"ctime"},
