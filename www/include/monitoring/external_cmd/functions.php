@@ -48,10 +48,10 @@
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_checks_for_services");
 		
-		if($actions == true) {
-		$tab_forced = array("0" => "", "1" => "_FORCED");
-		$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_HOST_SVC_CHECKS;" . $arg . ";" . time(), GetMyHostPoller($pearDB, $arg));
-		return $flg;
+		if ($actions == true) {
+			$tab_forced = array("0" => "", "1" => "_FORCED");
+			$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_HOST_SVC_CHECKS;" . $arg . ";" . time(), GetMyHostPoller($pearDB, $arg));
+			return $flg;
 		}
 		
 		return NULL;
@@ -63,11 +63,11 @@
 		$actions = false;		
 		$actions = verifyActionsACLofUser("service_checks");
 		
-		if($actions == true) {
-		$tab_forced = array("0" => "", "1" => "_FORCED");
-		$tab_data = split(";", $arg);
-		$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_SVC_CHECK;". $tab_data[0] . ";" . $tab_data[1] . ";" . time(), GetMyHostPoller($pearDB, $tab_data[0]));
-		return _("Your command has been sent");
+		if ($actions == true) {
+			$tab_forced = array("0" => "", "1" => "_FORCED");
+			$tab_data = split(";", $arg);
+			$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_SVC_CHECK;". $tab_data[0] . ";" . $tab_data[1] . ";" . time(), GetMyHostPoller($pearDB, $tab_data[0]));
+			return _("Your command has been sent");
 		}
 		
 		return NULL;
@@ -79,9 +79,9 @@
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_checks");
 		
-		if($actions == true) {
-		$flg = write_command(" ". $tab[$type]."_HOST_CHECK;". $arg, GetMyHostPoller($pearDB, $arg));
-		return _("Your command has been sent");
+		if ($actions == true) {
+			$flg = write_command(" ". $tab[$type]."_HOST_CHECK;". $arg, GetMyHostPoller($pearDB, $arg));
+			return _("Your command has been sent");
 		}
 		
 		return NULL;
@@ -94,9 +94,9 @@
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_notifications");
 		
-		if($actions == true) {
-		$flg = write_command(" ".$tab[$type]."_HOST_NOTIFICATIONS;". $arg, GetMyHostPoller($pearDB, $arg));
-		return _("Your command has been sent");
+		if ($actions == true) {
+			$flg = write_command(" ".$tab[$type]."_HOST_NOTIFICATIONS;". $arg, GetMyHostPoller($pearDB, $arg));
+			return _("Your command has been sent");
 		}
 		
 		return NULL;
@@ -110,8 +110,8 @@
 		$actions = verifyActionsACLofUser("host_notifications_for_services");
 		
 		if ($actions == true) {
-		$flg = write_command(" " . $tab[$type] . "_HOST_SVC_NOTIFICATIONS;". $arg, GetMyHostPoller($pearDB, $arg));
-		return _("Your command has been sent");
+			$flg = write_command(" " . $tab[$type] . "_HOST_SVC_NOTIFICATIONS;". $arg, GetMyHostPoller($pearDB, $arg));
+			return _("Your command has been sent");
 		}
 		
 		return NULL;
@@ -253,9 +253,9 @@
 		$actions = verifyActionsACLofUser("host_acknowledgement");
 		
 		if ($actions == true) {
-		$key = $_GET["host_name"];
-		$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$_GET["host_name"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
-		return _("Your command has been sent");
+			$key = $_GET["host_name"];
+			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$_GET["host_name"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return _("Your command has been sent");
 		}
 		
 		return NULL;
@@ -267,8 +267,8 @@
 		$actions = verifyActionsACLofUser("host_acknowledgement");
 		
 		if ($actions == true) {
-		$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$_GET["host_name"], GetMyHostPoller($pearDB, $_GET["host_name"]));
-		return _("Your command has been sent");
+			$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$_GET["host_name"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return _("Your command has been sent");
 		}
 		
 		return NULL;
@@ -280,23 +280,23 @@
 		$actions = verifyActionsACLofUser("service_acknowledgement");
 		
 		if ($actions == true) {
-		$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$_GET["host_name"].";".$_GET["service_description"], GetMyHostPoller($pearDB, $_GET["host_name"]));
-		return _("Your command has been sent");
+			$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$_GET["host_name"].";".$_GET["service_description"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return _("Your command has been sent");
 		}
 		
 		return NULL;
 	}
 
 	function acknowledgeService(){
-		global $pearDB,$tab;
+		global $pearDB, $tab;
 		$actions = false;
 		$actions = verifyActionsACLofUser("service_acknowledgement");
 		
 		if ($actions == true) {
-		$_GET["comment"] = htmlentities($_GET["comment"]);
-		$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
-		$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$_GET["host_name"].";".$_GET["service_description"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
-		return _("Your command has been sent");
+			$_GET["comment"] = $_GET["comment"];
+			$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
+			$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$_GET["host_name"].";".$_GET["service_description"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return _("Your command has been sent");
 		}
 		
 		return NULL;
@@ -308,9 +308,9 @@
 		$actions = verifyActionsACLofUser("service_submit_result");
 		
 		if ($actions == true) {
-		$key = $_GET["host_name"];
-		$flg = write_command(" PROCESS_SERVICE_CHECK_RESULT;".$_GET["host_name"].";".$_GET["service_description"].";".$_GET["return_code"].";".$_GET["output"]."|".$_GET["dataPerform"], GetMyHostPoller($pearDB, $_GET["host_name"]));
-		return _("Your command has been sent");
+			$key = $_GET["host_name"];
+			$flg = write_command(" PROCESS_SERVICE_CHECK_RESULT;".$_GET["host_name"].";".$_GET["service_description"].";".$_GET["return_code"].";".$_GET["output"]."|".$_GET["dataPerform"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return _("Your command has been sent");
 		}
 		
 		return NULL;
