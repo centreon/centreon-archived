@@ -29,15 +29,21 @@
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 		
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/options/accessLists/actionsACL/";
 	
-	#PHP functions 
+	/*
+	 * PHP functions 
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	

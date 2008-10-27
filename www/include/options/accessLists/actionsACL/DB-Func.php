@@ -218,32 +218,32 @@
 	}
 	
 	function listActions() {
-	$actions = array();
-	
-	# Services Actions
-	$actions[] = "service_checks";
-	$actions[] = "service_notifications";
-	$actions[] = "service_acknowledgement";
-	$actions[] = "service_schedule_check";
-	$actions[] = "service_schedule_downtime";
-	$actions[] = "service_comment";
-	$actions[] = "service_event_handler";
-	$actions[] = "service_flap_detection";
-	$actions[] = "service_passive_checks";
-	$actions[] = "service_submit_result";
-	
-	# Hosts Actions
-	$actions[] = "host_checks";
-	$actions[] = "host_notifications";
-	$actions[] = "host_acknowledgement";
-	$actions[] = "host_schedule_check";
-	$actions[] = "host_schedule_downtime";
-	$actions[] = "host_comment";
-	$actions[] = "host_event_handler";
-	$actions[] = "host_flap_detection";
-	$actions[] = "host_checks_for_services";
-	$actions[] = "host_notifications_for_services";
-	
-	return $actions;
+		$actions = array();
+		
+		# Services Actions
+		$actions[] = "service_checks";
+		$actions[] = "service_notifications";
+		$actions[] = "service_acknowledgement";
+		$actions[] = "service_schedule_check";
+		$actions[] = "service_schedule_downtime";
+		$actions[] = "service_comment";
+		$actions[] = "service_event_handler";
+		$actions[] = "service_flap_detection";
+		$actions[] = "service_passive_checks";
+		$actions[] = "service_submit_result";
+		
+		# Hosts Actions
+		$actions[] = "host_checks";
+		$actions[] = "host_notifications";
+		$actions[] = "host_acknowledgement";
+		$actions[] = "host_schedule_check";
+		$actions[] = "host_schedule_downtime";
+		$actions[] = "host_comment";
+		$actions[] = "host_event_handler";
+		$actions[] = "host_flap_detection";
+		$actions[] = "host_checks_for_services";
+		$actions[] = "host_notifications_for_services";
+		
+		return $actions;
 	}
 ?>

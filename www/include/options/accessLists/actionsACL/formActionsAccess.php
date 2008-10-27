@@ -15,6 +15,9 @@
  * For information : contact@centreon.com
  */
  
+ 	if (!isset($oreon))
+ 		exit();
+ 		
 	#
 	## Database retrieve information for Modify a present "Action Access"
 	#
