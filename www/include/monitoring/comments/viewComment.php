@@ -24,11 +24,10 @@
 	$GroupListofUser =  getGroupListofUser($pearDB);
 	
 	$allActions = false;
-	if(count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
-	$authorized_actions = array();
-	$authorized_actions = getActionsACLList($GroupListofUser);
-	}
-	else {
+	if (count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+		$authorized_actions = array();
+		$authorized_actions = getActionsACLList($GroupListofUser);
+	} else {
 		$allActions = true;
 	}
 
@@ -88,7 +87,7 @@
 	unset($data);	
 	
 	$en = array("0" => _("No"), "1" => _("Yes"));
-	foreach ($tab_comments_svc as $key => $value){
+	foreach ($tab_comments_svc as $key => $value) {
 		$tab_comments_svc[$key]["is_persistent"] = $en[$tab_comments_svc[$key]["is_persistent"]];
 	}
 
@@ -116,8 +115,10 @@
 	
 	if(isset($authorized_actions) && $allActions == false){		
 		foreach($authorized_actions as $action_name) {
-			if($action_name == "host_comment") $tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-			if($action_name == "service_comment") $tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+			if ($action_name == "host_comment") 	
+				$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+			if ($action_name == "service_comment") 
+				$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 		}
 	} else {
 		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
