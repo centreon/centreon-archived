@@ -29,7 +29,7 @@
  * @package genEscalations.php
  * @author Damien Duponchelle dduponchelle@merethis.com
  * @version $Id: $
- * @copyright (c) 2007-2008 Centreon
+ * @copyright (c) 2004-2008 Centreon
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
@@ -345,76 +345,77 @@
 		}
 		$DBRESULT->free();
 		
-		foreach ($hosts as $gmt => $value) {
-			foreach ($value as $host){
-				if (isset($host) && count($host))
-					foreach ($host as $ids => $escalation) {
-						$tabHS = split("_", $ids);
-						if (isHostOnThisInstance($tabHS[0], $tab['id'])) {
-							$host = array();
-							$strDef = "";
-							$host_id = $tabHS[0];
-							$host_name = getMyHostName($tabHS[0]);
-							$service_description = getMyServiceName($tabHS[1]);				
-							if (isset($gbArr[2][$host_id])) {
-		
-								$ret["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' service in Service groups escalation definition ".$i."\n") : NULL;						
-								if (isset($ret["comment"]) && isset($escalation["esc_comment"]))	{
-									$comment = array();
-									$comment = explode("\n", $escalation["esc_comment"]);
-									foreach ($comment as $cmt)
-										$strDef .= "# ".$cmt."\n";
-								}
-								
-								$strDef .= "define serviceescalation{\n";			
-								$strDef .= print_line("host_name", $host_name);										
-								if (isHostOnThisInstance($host_id, $tab['id']))					
-									$generated++;
-								
-								$strDef .= print_line("service_description", $service_description);
-								$cg = array();
-								$strTemp = NULL;
-								
-								$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
-								if (PEAR::isError($DBRESULT3))
-									print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-								while ($cg =& $DBRESULT3->fetchRow()) {
-									if (isset($gbArr[1][$cg["cg_id"]]))
-										$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
-								}
-								$DBRESULT3->free();
+		if (isset($hosts))
+			foreach ($hosts as $gmt => $value) {
+				foreach ($value as $host){
+					if (isset($host) && count($host))
+						foreach ($host as $ids => $escalation) {
+							$tabHS = split("_", $ids);
+							if (isHostOnThisInstance($tabHS[0], $tab['id'])) {
+								$host = array();
+								$strDef = "";
+								$host_id = $tabHS[0];
+								$host_name = getMyHostName($tabHS[0]);
+								$service_description = getMyServiceName($tabHS[1]);				
+								if (isset($gbArr[2][$host_id])) {
 			
-								if (isset($strTemp)) 
-									$strDef .= print_line("contact_groups", $strTemp);			
-								if (isset($escalation["first_notification"])) 
-									$strDef .= print_line("first_notification", $escalation["first_notification"]);
-								if (isset($escalation["last_notification"])) 
-									$strDef .= print_line("last_notification", $escalation["last_notification"]);
-								if (isset($escalation["notification_interval"])) 
-									$strDef .= print_line("notification_interval", $escalation["notification_interval"]);
-			
-								$DBRESULT4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
-								if (PEAR::isError($DBRESULT4))
-									print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
-								$tp =& $DBRESULT4->fetchRow();
-								$DBRESULT4->free();		
-								if (isset($tp["tp_name"])) 
-									if ($oreon->CentreonGMT->used() == 1)
-										$strDef .= print_line("escalation_period", $tp["tp_name"]."_GMT".getMyHostFieldOnHost($host_id, "host_location"));
-									else
-										$strDef .= print_line("escalation_period", $tp["tp_name"]);
-								
-								if (isset($escalation["escalation_options2"])) 
-									$strDef .= print_line("escalation_options", $escalation["escalation_options2"]);
-								$strDef .= "}\n\n";					
-								$str .= $strDef;
-								$i++;
-								unset($escalation);
-							}		
+									$ret["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' service in Service groups escalation definition ".$i."\n") : NULL;						
+									if (isset($ret["comment"]) && isset($escalation["esc_comment"]))	{
+										$comment = array();
+										$comment = explode("\n", $escalation["esc_comment"]);
+										foreach ($comment as $cmt)
+											$strDef .= "# ".$cmt."\n";
+									}
+									
+									$strDef .= "define serviceescalation{\n";			
+									$strDef .= print_line("host_name", $host_name);										
+									if (isHostOnThisInstance($host_id, $tab['id']))					
+										$generated++;
+									
+									$strDef .= print_line("service_description", $service_description);
+									$cg = array();
+									$strTemp = NULL;
+									
+									$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
+									if (PEAR::isError($DBRESULT3))
+										print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+									while ($cg =& $DBRESULT3->fetchRow()) {
+										if (isset($gbArr[1][$cg["cg_id"]]))
+											$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
+									}
+									$DBRESULT3->free();
+				
+									if (isset($strTemp)) 
+										$strDef .= print_line("contact_groups", $strTemp);			
+									if (isset($escalation["first_notification"])) 
+										$strDef .= print_line("first_notification", $escalation["first_notification"]);
+									if (isset($escalation["last_notification"])) 
+										$strDef .= print_line("last_notification", $escalation["last_notification"]);
+									if (isset($escalation["notification_interval"])) 
+										$strDef .= print_line("notification_interval", $escalation["notification_interval"]);
+				
+									$DBRESULT4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
+									if (PEAR::isError($DBRESULT4))
+										print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
+									$tp =& $DBRESULT4->fetchRow();
+									$DBRESULT4->free();		
+									if (isset($tp["tp_name"])) 
+										if ($oreon->CentreonGMT->used() == 1)
+											$strDef .= print_line("escalation_period", $tp["tp_name"]."_GMT".getMyHostFieldOnHost($host_id, "host_location"));
+										else
+											$strDef .= print_line("escalation_period", $tp["tp_name"]);
+									
+									if (isset($escalation["escalation_options2"])) 
+										$strDef .= print_line("escalation_options", $escalation["escalation_options2"]);
+									$strDef .= "}\n\n";					
+									$str .= $strDef;
+									$i++;
+									unset($escalation);
+								}		
+						}
 					}
 				}
-			}
-		}	
+			}	
 		$DBRESULT->free();
 	} else {
 		while ($escalation =& $DBRESULT->fetchRow())	{
