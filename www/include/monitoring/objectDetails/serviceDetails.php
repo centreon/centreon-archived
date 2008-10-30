@@ -53,6 +53,23 @@
 		$svc_description = $tab_data[1];
 	}
 
+	/*
+	 * Host Group List
+	 */
+	$host_id = getMyHostID($host_name);
+
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
+	for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
+		$hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
+	$DBRESULT->free();
+
+	$service_id = getMyServiceID($_GET["service_description"], $host_id);
+
+	if (isset($service_id) && $service_id) {
+		$proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
+		$proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
+	}
+	
 	$tab_status = array();
 
 	include_once("./DBNDOConnect.php");
@@ -265,6 +282,7 @@
 		$tpl->assign("cmt_author", _("Author"));
 		$tpl->assign("cmt_comment", _("Comments"));
 		$tpl->assign("cmt_persistent", _("Persistent"));
+		$tpl->assign("m_mon_ticket", "Open Ticket");
 
 		/*
 		 * if user is admin, allActions is true, 
@@ -301,6 +319,20 @@
 		$tpl->assign("host_data", $host_status[$host_name]);
 		$tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
 		$tpl->assign("svc_description", $svc_description);
+
+		/*
+		 * Hostgroups Display
+		 */
+		$tpl->assign("hostgroups_label", _("Hosts Groups"));
+		$tpl->assign("hostgroups", $hostGroups);
+
+		/*
+		 * Macros
+		 */
+		if (isset($proc_warning) && $proc_warning)
+			$tpl->assign("proc_warning", $proc_warning);
+		if (isset($proc_critical) && $proc_critical)
+			$tpl->assign("proc_critical", $proc_critical);
 
 		/*
 		 * Ext informations

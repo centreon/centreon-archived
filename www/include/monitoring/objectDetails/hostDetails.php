@@ -56,6 +56,22 @@
 
 	$tab_status = array();
 
+	/*
+	 * Host Group List
+	 */
+	$host_id = getMyHostID($host_name);
+
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
+	for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
+		$hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
+	$DBRESULT->free();
+
+	if (isset($host_id)) {
+		$proc_warning = getMyHostMacro($host_id, "PROC_WARNING");
+		$proc_critical = getMyHostMacro($host_id, "PROC_CRITICAL");
+	}
+	
+
 	include_once("./DBNDOConnect.php");
 	
 	/* 
@@ -303,6 +319,21 @@
 		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
 		$tpl->assign("h", $hostDB);
 		$tpl->assign("url_id", $url_id);
+		
+		/*
+		 * Hostgroups Display
+		 */
+		$tpl->assign("hostgroups_label", _("Hosts Groups"));
+		$tpl->assign("hostgroups", $hostGroups);
+		
+		/*
+		 * Macros
+		 */
+		if (isset($proc_warning) && $proc_warning)
+			$tpl->assign("proc_warning", $proc_warning);
+		if (isset($proc_critical) && $proc_critical)
+			$tpl->assign("proc_critical", $proc_critical);
+		
 		
 		if (isset($tabCommentHosts))
 			$tpl->assign("tab_comments_host", $tabCommentHosts);

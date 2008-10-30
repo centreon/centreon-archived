@@ -224,6 +224,40 @@
 					</tr>
 				</table>
 				{/if}
+				<br>
+				<table class="ListTable">
+					<tr class='ListHeader'>
+						<td class="ListColHeaderCenter">{$hostgroups_label}</td>
+					</tr>
+					<tr class='list_one'>
+						<td class="ListColLeft">
+						{foreach item=hg from=$hostgroups}
+							-&nbsp;{$hg}<br>
+						{/foreach}
+						</td>
+					</tr>					
+				</table>
+				<br>
+				<table class="ListTable">
+					<tr class='ListHeader'>
+						<td class="ListColHeaderCenter">Procedure</td>
+					</tr>
+					<tr class='list_one'>
+						<td class="ListColLeft">
+						{if $proc_warning}
+						- <a href="{$proc_warning}" target="_blank">Warning Plan</a><br>
+						{/if}
+						{if $proc_critical}
+						- <a href="{$proc_critical}" target="_blank">Critical Plan</a>
+						{/if}
+						</td>
+					</tr>
+					{if $proc_warning || $proc_critical}
+					<tr class='list_two'>
+                        <td class="ListColLeft"><a onClick="window.open('main.php?p=2020190&o=ticket&type=1&min=1&host_id={$h.host_id}&host_name={$h.host_name}&status={$service_data.current_state}&service_name={$svc_description}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">{$m_mon_ticket}</a></td>
+                    </tr>
+                    {/if}
+				</table>
 			</td>
 		</tr>
 	</table><br />
