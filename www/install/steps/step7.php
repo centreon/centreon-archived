@@ -29,6 +29,7 @@ if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
 	if (isset($_POST["pwdroot"])) $_SESSION["pwdroot"] = $_POST["pwdroot"];
 	if (isset($_POST["nameOreonDB"])) $_SESSION["nameOreonDB"] = $_POST["nameOreonDB"];
 	if (isset($_POST["nameOdsDB"])) $_SESSION["nameOdsDB"] = $_POST["nameOdsDB"];
+	if (isset($_POST["nameStatusDB"])) $_SESSION["nameStatusDB"] = $_POST["nameStatusDB"];
 	if (isset($_POST["nagiosVersion"])) $_SESSION["nagiosVersion"] = $_POST["nagiosVersion"];
 	if (isset($_POST["mysqlVersion"])) $_SESSION["mysqlVersion"] = $_POST["mysqlVersion"];
 }

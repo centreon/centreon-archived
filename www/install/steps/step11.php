@@ -53,19 +53,49 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		else
 			print '<td align="right"><b><span class="go">OK</b></td></tr>';	
 	}
+	if (!$usedb){
+		print "<tr><td><b>Database &#146;".$_SESSION["nameStatusDB"]."&#146; : Creation</b></td>";
+		$requete = "CREATE DATABASE ". $_SESSION["nameStatusDB"] . ";";
+		if ($DEBUG) 
+			print $requete . "<br />";
+		@mysql_query($requete, $res['0']);
+		if ($res['1'])
+			print '<td align="right"><b><span class="go">CRITICAL</b></td></tr>';
+		else
+			print '<td align="right"><b><span class="go">OK</b></td></tr>';	
+	}
 	
 	# User management
 	if (!$usedb){
 		$mysql_msg = "";
 		print "<tr><td><b>Database &#146;".$_SESSION["nameOreonDB"]."&#146; : Users Management</b></td>";
+		/*
+		 * Centreon
+		 */
 		$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameOreonDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
-		if ($DEBUG) print $requete. "<br />";
-		mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
+		if ($DEBUG) 
+			print $requete. "<br />";
+		mysql_query($requete, $res['0']) or ( $mysql_msg = mysql_error());
 		$mysql_msg = $res['1'];
+
+		/*
+		 * Centstorage
+		 */
 		$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameOdsDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
-		if ($DEBUG) print $requete. "<br />";
-		mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
+		if ($DEBUG) 
+			print $requete. "<br />";
+		mysql_query($requete, $res['0']) or ( $mysql_msg = mysql_error());
 		$mysql_msg .= $res['1'];		
+		
+		/*
+		 * NDO
+		 */
+		$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameStatusDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
+		if ($DEBUG) 
+			print $requete. "<br />";
+		mysql_query($requete, $res['0']) or ( $mysql_msg = mysql_error());
+		$mysql_msg .= $res['1'];		
+		
 		if ($res['1'])
 			print '<td align="right"><b><span class="go">CRITICAL</b><br />$mysql_msg<br /></td></tr>';
 		else
@@ -79,7 +109,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$mysql_msg = $res['1'];
 	}
 	######################################################################################
-	#  Oreon Database creation
+	#  Centreon Database creation
 	######################################################################################
 	$usedb = mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
 	if (!$usedb){
@@ -139,6 +169,33 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		print '<tr><td><b>Database &#146;'.$_SESSION["nameOdsDB"].'&#146; : Schema Creation</b></td>';
 		$mysql_msg = '';
 		$file_sql = file("./createTablesCentstorage.sql");
+	    $str = NULL;
+	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
+	        $line = $file_sql[$i];
+	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
+	            $pos = strrpos($line, ";");
+	            if ($pos != false)      {
+	                $str .= $line;
+	                $str = chop ($str);
+	  				if ($DEBUG) print $str . "<br />";
+	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br /><span class='warning'>->" . mysql_error() ."</span><br />");
+	                $str = NULL;
+	            } else
+	            	$str .= $line;
+	        }
+	    }	
+		if ($res[1] == '') {
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		} else {
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
+		    $return_false = 1;
+		}
+	}
+	$usedb = mysql_select_db($_SESSION["nameStatusDB"], $res['0']) or ( $mysql_msg = mysql_error());
+	if (!$return_false){
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameStatusDB"].'&#146; : Schema Creation</b></td>';
+		$mysql_msg = '';
+		$file_sql = file("./createNDODB.sql");
 	    $str = NULL;
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];

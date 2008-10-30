@@ -37,6 +37,10 @@ if (isset($passwd_error) && $passwd_error)
     <td align="right"><input type="text" name="nameOdsDB" value="<?php if (isset($_SESSION["nameOdsDB"])) print $_SESSION["nameOdsDB"]; ?>"></td>
   </tr>
   <tr>
+    <td><b>NDO Database Name</b></td>
+    <td align="right"><input type="text" name="nameStatusDB" value="<?php if (isset($_SESSION["nameStatusDB"])) print $_SESSION["nameStatusDB"]; ?>"></td>
+  </tr>
+  <tr>
     <td><b>Database Password</b></td>
     <td align="right"><input type="password" name="pwdOreonDB" value="<?php if (isset($_SESSION["pwdOreonDB"])) print $_SESSION["pwdOreonDB"]; ?>"></td>
   </tr>
