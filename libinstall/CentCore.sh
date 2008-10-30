@@ -157,7 +157,7 @@ if [ "$RC" -eq "0" ] ; then
 	fi
 	if [ "$RC" -eq "0" ] ; then
 		install_init_service "centcore"
-		check_result $? "$(gettext "CentCore run level installed")"
+	#	check_result $? "$(gettext "CentCore run level installed")"
 		log "INFO" "$(gettext "CentCore run level installed")"
 	else
 		echo_passed "$(gettext "CentCore run level not installed")" "$passed"
