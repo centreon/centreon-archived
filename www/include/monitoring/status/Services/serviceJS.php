@@ -30,7 +30,7 @@
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
-	var _debug = 1;
+	var _debug = 0;
 	
 	var _search = '<?php echo $search; ?>';
 	var _sid='<?php echo $sid ?>';
@@ -94,16 +94,14 @@ if (document.getElementById('linkBar'))	{
 var tempX = 0;
 var tempY = 0;
 
-alert(navigator.appName);
-
 function position(e){
 	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x + document.body.scrollLeft;
 	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y + document.body.scrollTop;
 }
 
-// if (navigator.appName.substring(0,3) == "Net")
-//	document.captureEvents(Event.MOUSEMOVE);
-//document.onmousemove = position;
+ if (navigator.appName.substring(0,3) == "Net")
+	document.captureEvents(Event.MOUSEMOVE);
+document.onmousemove = position;
 
 function set_header_title(){
 
