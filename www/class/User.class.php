@@ -29,6 +29,8 @@ class User	{
 	var $num;
 	var $gmt;
 	var $is_admin;
+	var $groupList;
+	var $groupListStr;
 	
 	# User LCA
 	# Array with elements ID for loop test
