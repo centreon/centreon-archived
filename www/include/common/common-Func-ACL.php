@@ -811,17 +811,20 @@
 		
 		$i = 0;
 		$idsRequest = ""; 
-		# Formating a variable in order to include on the request
+		/*
+		 * Formating a variable in order to include on the request
+		 */
 		foreach ($GroupListofUser as $id) {
-			$idsRequest .= "`acl_group_id` = ".$id."";
-			if ($i < count($GroupListofUser)-1) {
+			if (strlen($idsRequest))
 				$idsRequest .= " OR ";
-			}
+			$idsRequest .= "`acl_group_id` = ".$id."";
 			$i++;
 		}
 		
 		if ($idsRequest != "") {
-			# Request in order to list the 'acl_action_id' linked with groups of user
+			/*
+			 * Request in order to list the 'acl_action_id' linked with groups of user
+			 */
 			$request = "SELECT acl_action_id FROM `acl_group_actions_relations` WHERE ".$idsRequest;
 			$DBRESULT =& $pearDB->query($request);
 			if (PEAR::isError($DBRESULT)) 
@@ -836,10 +839,9 @@
 			$idsRequest = "";
 			# Formating a variable in order to include on the request
 			foreach ($idsActions as $id) {
-				$idsRequest .= "`acl_action_id` = ".$id."";
-				if ($i <= count($GroupListofUser)) {
+				if (strlen($idsRequest))
 					$idsRequest .= " OR ";
-				}
+				$idsRequest .= "`acl_action_id` = ".$id."";
 				$i++;
 			}
 			unset($idsActions);
@@ -847,6 +849,7 @@
 			# Request in order to list Actions Access enabled
 			if ($idsRequest != "") {
 				$request = "SELECT acl_action_id FROM `acl_actions` WHERE acl_action_activate = '1' AND ($idsRequest)";
+				
 				$DBRESULT =& $pearDB->query($request);
 				if (PEAR::isError($DBRESULT)) 
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -862,10 +865,9 @@
 			$idsRequest = "";
 			# Formating a variable in order to include on the request
 			foreach ($idsActions as $id) {
-				$idsRequest .= "`acl_action_rule_id` = ".$id."";
-				if ($i < count($idsActions)-1) {
+				if (strlen($idsRequest))
 					$idsRequest .= " OR ";
-				}
+				$idsRequest .= "`acl_action_rule_id` = ".$id."";
 				$i++;
 			}
 	
