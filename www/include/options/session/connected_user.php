@@ -39,10 +39,11 @@
 			$session_data[$cpt]["class"] = "list_one";
 		else
 			$session_data[$cpt]["class"] = "list_two";
-		$resUser =& $pearDB->query("SELECT contact_name FROM contact WHERE contact_id = '".$r["user_id"]."'");
+		$resUser =& $pearDB->query("SELECT contact_name, contact_admin FROM contact WHERE contact_id = '".$r["user_id"]."'");
 		$rU =& $resUser->fetchRow();	
 		$session_data[$cpt]["user_id"] = $r["user_id"];
 		$session_data[$cpt]["user_alias"] = $rU["contact_name"];
+		$session_data[$cpt]["admin"] = $rU["contact_admin"];
 		$resCP =& $pearDB->query("SELECT topology_name, topology_icone, topology_page, topology_url_opt FROM topology WHERE topology_page = '".$r["current_page"]."'");
 		$rCP =& $resCP->fetchRow();
 		$session_data[$cpt]["ip_address"] = $r["ip_address"];
@@ -58,6 +59,7 @@
 	}
 	if (isset($msg))
 		$tpl->assign("msg", $msg);
+		
 	$tpl->assign("session_data", $session_data);
 	$tpl->assign("wi_user", _("Users"));
 	$tpl->assign("wi_where", _("Position"));
