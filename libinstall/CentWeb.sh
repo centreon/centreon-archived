@@ -110,6 +110,13 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	"$CENTREON_ETC" >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right on") $CENTREON_ETC"
 
+# change right on nagios images/logos
+log "INFO" "$(gettext "Change right on") $NAGIOS_IMG"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-u "$WEB_USER" -d 755 \
+	"$NAGIOS_IMG" >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right on") $NAGIOS_IMG"
+
 ## Copy Web Front Source in final
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
 cp -Rf $TMPDIR/src/www $TMPDIR/final
@@ -214,6 +221,11 @@ check_result $? "$(gettext "Install CentWeb (web front of centreon)")"
 	$INSTALL_DIR/cinstall $cinstall_opts \
 		-u "$WEB_USER" -g "$WEB_GROUP" -d 755 \
 		$INSTALL_DIR_CENTREON/www/modules >> "$LOG_FILE" 2>&1
+
+[ ! -d "$INSTALL_DIR_CENTREON/www/img/media" ] && \
+	$INSTALL_DIR/cinstall $cinstall_opts \
+		-u "$WEB_USER" -d 755 \
+		$INSTALL_DIR_CENTREON/www/img/media >> "$LOG_FILE" 2>&1
 
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$WEB_USER" -g "$WEB_GROUP" -d 775 \
