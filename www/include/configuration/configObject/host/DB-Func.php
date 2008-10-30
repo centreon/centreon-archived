@@ -180,7 +180,8 @@
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 					if ($key2 != "host_id")
 						$fields[$key2] = $value2;
-					$fields["host_name"] = $host_name;
+					if (isset($host_name))
+						$fields["host_name"] = $host_name;
 				}
 				if (testHostExistence($host_name))	{
 					$val ? $rq = "INSERT INTO host VALUES (".$val.")" : $rq = null;

@@ -253,7 +253,8 @@
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 					if ($key2 != "service_id")
 						$fields[$key2] = $value2;
-					$fields["service_description"] = $service_description;
+					if (isset($service_description))
+						$fields["service_description"] = $service_description;
 				}
 				if (!count($hPars))
 					$hPars = getMyServiceHosts($key);
