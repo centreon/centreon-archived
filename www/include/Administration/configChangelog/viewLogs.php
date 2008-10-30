@@ -30,7 +30,7 @@
 	/*
 	 * Path to the configuration dir
 	 */
-	$path = "./include/administration/configChangelog/";
+	$path = "./include/Administration/configChangelog/";
 	
 	/*
 	 * PHP functions
