@@ -23,10 +23,10 @@
 	 */
 	$GroupListofUser = array();
 	$GroupListofUser = getGroupListofUser($pearDB);
-	
+
 	$allActions = false;
 	// Get list of actions allowed for user
-	if (count($GroupListofUser) > 0 && $is_admin == 1) {
+	if (count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
 		$authorized_actions = getActionsACLList($GroupListofUser);
 	} else {
