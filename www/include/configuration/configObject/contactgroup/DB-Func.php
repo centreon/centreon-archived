@@ -165,7 +165,8 @@
 		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES);
 		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES);
 		$fields["cg_activate"] = $ret["cg_activate"]["cg_activate"];
-		$fields["cg_contacts"] = implode(",", $ret["cg_contacts"]);
+		if (isset($ret["cg_contacts"]))
+			$fields["cg_contacts"] = implode(",", $ret["cg_contacts"]);
 		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id["MAX(cg_id)"], htmlentities($ret["cg_name"], ENT_QUOTES), "a", $fields);
 		return ($cg_id["MAX(cg_id)"]);
 	}
@@ -196,7 +197,8 @@
 		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES);
 		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES);
 		$fields["cg_activate"] = $ret["cg_activate"]["cg_activate"];
-		$fields["cg_contacts"] = implode(",", $ret["cg_contacts"]);
+		if (isset($ret["cg_contacts"]))
+			$fields["cg_contacts"] = implode(",", $ret["cg_contacts"]);
 		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, htmlentities($ret["cg_name"], ENT_QUOTES), "c", $fields);
 	}
 	
