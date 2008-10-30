@@ -238,7 +238,6 @@ sub parseLogFile($$) {
 		}
 		$data = $sth->fetchrow_hashref();
 		$LOG_FILE = $data->{'log_file'};
-		print "log file : $LOG_FILE\n"; 
 		if (!(-r $LOG_FILE)) {
 		    print "Error : cannot open $LOG_FILE\n";
 		    exit(0);
@@ -246,7 +245,6 @@ sub parseLogFile($$) {
 		$sth->finish();
     } else {
 		$LOG_FILE = "@CENTREON_VARLIB@/log/$instance/nagios.log";
-    	print "log file : $LOG_FILE\n"; 
     }
 
     # Decide if we have to read the nagios.log from the begining 
