@@ -397,6 +397,22 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		    $return_false = 1;
 		}
 	}
+	if (!$return_false){
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set Ndo connexion properties</b></td>';
+		$mysql_msg = '';
+		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
+		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
+		$requete = "UPDATE `cfg_ndo2db` SET `db_name` = '".$_SESSION["nameStatusDB"]."', `db_user` = '".$_SESSION["nameOreonDB"]."', `db_pass` = '".$_SESSION["pwdOreonDB"]."';";
+		if ($DEBUG) 
+			print $requete . "<br />";
+		$result = @mysql_query($requete, $res['0']);
+		if ($res[1] == '') {
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		} else {
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
+		    $return_false = 1;
+		}
+	}
 	aff_middle();
 	$str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' ";
 	if ($return_false)
