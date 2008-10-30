@@ -168,8 +168,7 @@
 	$mTp = array();
 	$k = 0;
 	$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
-	while($multiTp = $DBRESULT->fetchRow())
-	{
+	while($multiTp = $DBRESULT->fetchRow()) {
 		$mTp[$k] = $multiTp["host_tpl_id"];
 		$k++;
 	}
@@ -644,6 +643,7 @@
 		$tpl->assign("Event_Handler", _("Event Handler"));
 		$tpl->assign("add_mtp_label", _("Add a template"));
 		$tpl->assign("seconds", _("seconds"));
+		$tpl->assign("tpl", 1);
 		
 		$tpl->display("formHost.ihtml");
 	}

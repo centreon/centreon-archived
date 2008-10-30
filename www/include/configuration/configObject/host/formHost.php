@@ -289,7 +289,10 @@
 	 */
 	require_once $centreon_path."www/class/centreonGMT.class.php";
 	
+	$CentreonGMT = new CentreonGMT();
+	
 	$GMTList = $CentreonGMT->getGMTList();
+	
 	$form->addElement('select', 'host_location', _("GMT / Location"), $GMTList);
 	$form->setDefaults(array('host_location' => '0'));
 	if (!isset($host["host_location"]))
@@ -787,6 +790,8 @@
 		$tpl->assign("hostID", $host_id);
 		$tpl->assign("add_mtp_label", _("Add a template"));
 		$tpl->assign("k", $k);
+		$tpl->assign("tpl", 0);
+		
 		$tpl->display("formHost.ihtml");
 	}
 
