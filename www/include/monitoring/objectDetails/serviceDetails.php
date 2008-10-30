@@ -28,13 +28,11 @@
 	/*
 	 * Get list of actions allowed for user
 	 */
-	if (count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+	if (count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
 		$authorized_actions = getActionsACLList($GroupListofUser);
-		
 		if (count($authorized_actions) == 0) 
 			$allActions = true;
-			
 	} else {
 	 	/*
 	 	 * if user is admin, or without ACL, 
@@ -111,9 +109,10 @@
 	}
 
 	$service_status[$host_name."_".$svc_description]["current_state"] = $tab_status_service[$service_status[$host_name."_".$svc_description]["current_state"]];
-	/* end ndo service info */
 
-	/* start ndo host detail */
+	/* 
+	 * start ndo host detail
+	 */
 	$tab_host_status[0] = "UP";
 	$tab_host_status[1] = "DOWN";
 	$tab_host_status[2] = "UNREACHABLE";
@@ -170,15 +169,15 @@
 		}
 		unset($data);
 		
-		$en_acknowledge_text = array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
-		$en_acknowledge = array("1" => "0", "0" => "1");
+		$en_acknowledge_text= array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
+		$en_acknowledge 	= array("1" => "0", "0" => "1");
 
-		$en_disable = array("1" => _("Enabled"), "0" => _("Disabled"));
-		$en_inv = array("1" => "0", "0" => "1");
-		$en_inv_text = array("1" => _("Disable"), "0" => _("Enable"));
-		$color_onoff = array("1" => "#00ff00", "0" => "#ff0000");
-		$color_onoff_inv = array("0" => "#00ff00", "1" => "#ff0000");
-		$img_en = array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
+		$en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
+		$en_inv	 			= array("1" => "0", "0" => "1");
+		$en_inv_text 		= array("1" => _("Disable"), "0" => _("Enable"));
+		$color_onoff 		= array("1" => "#00ff00", "0" => "#ff0000");
+		$color_onoff_inv 	= array("0" => "#00ff00", "1" => "#ff0000");
+		$img_en 			= array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
 
 		/*
 		 * Ajust data for beeing displayed in template
@@ -204,12 +203,14 @@
 		 $service_status[$host_name."_".$svc_description]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time(), $oreon->user->getMyGMT());
 		!$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["is_flapping"], $oreon->user->getMyGMT());
 
-		if (isset($ndo) && $ndo)
+		if (isset($ndo) && $ndo) {
 			foreach ($tab_host_service[$host_name] as $key_name => $s){
 				if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
 					$tab_status[$service_status[$host_name."_".$key_name]["current_state"]] = 0;
 				$tab_status[$service_status[$host_name."_".$key_name]["current_state"]]++;
 			}
+		}
+		
 		$status = NULL;
 		foreach ($tab_status as $key => $value)
 			$status .= "&value[".$key."]=".$value;
@@ -265,10 +266,13 @@
 		$tpl->assign("cmt_comment", _("Comments"));
 		$tpl->assign("cmt_persistent", _("Persistent"));
 
-		// if user is admin, allActions is true, else, we introduce all actions allowed for user
+		/*
+		 * if user is admin, allActions is true, 
+		 * else we introduce all actions allowed for user
+		 */
 		$tpl->assign("acl_allActions", $allActions);
-		if(isset($authorized_actions)){
-			foreach($authorized_actions as $actions) {
+		if (isset($authorized_actions)){
+			foreach ($authorized_actions as $actions) {
 				$tpl->assign($actions, $actions);			
 			}
 		}
@@ -298,13 +302,16 @@
 		$tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
 		$tpl->assign("svc_description", $svc_description);
 
-		# Ext informations
+		/*
+		 * Ext informations
+		 */
 		$tpl->assign("sv_ext_notes", getMyServiceExtendedInfoField($service_id, "esi_notes"));
 		$tpl->assign("sv_ext_notes_url", getMyServiceExtendedInfoField($service_id, "esi_notes_url"));
 		$tpl->assign("sv_ext_action_url_lang", _("Action URL"));
 		$tpl->assign("sv_ext_action_url", getMyServiceExtendedInfoField($service_id, "esi_action_url"));
 		$tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
 		$tpl->assign("options", $optionsURL);
+		
 		$tpl->display("serviceDetails.ihtml");
 	}
 ?>
