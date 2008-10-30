@@ -22,6 +22,16 @@
 	 * Get Host List
 	 */
 	
+	$DBRESULT =& $pearDB->query('SELECT command_id, command_name FROM `command` ORDER BY `command_type`,`command_name`');
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	$commands = array();
+	while ($command =& $DBRESULT->fetchRow())	{
+		$commands[$command["command_id"]] = $command["command_name"];
+	}
+	unset($command);
+	 
+	
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hosts.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_activate = '1' ORDER BY `host_register`, `host_name`");
 	if (PEAR::isError($DBRESULT))
@@ -155,9 +165,9 @@
 				/*
 				 * Check Command
 				 */
-				if (isset($host["command_command_id1"]) && strlen($host["command_command_id1"])) {
+				if (isset($host["command_command_id"]) && $host["command_command_id"]) {
 					$host["command_command_id_arg1"] = removeSpecialChar($host["command_command_id_arg1"]);
-					$str .= print_line("check_command", $commands[$host["command_command_id1"]].$host["command_command_id_arg1"]);
+					$str .= print_line("check_command", $commands[$host["command_command_id"]].$host["command_command_id_arg1"]);
 				}
 								
 				if ($host["host_max_check_attempts"] != NULL) 	
