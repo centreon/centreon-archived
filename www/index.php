@@ -116,7 +116,7 @@
 			else
 				$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
 	
-			if($res->numRows()) {
+			if ($res->numRows()) {
 				$contact = $res->fetchRow();
 					if ($contact["contact_oreon"]){
 						$res =& $pearDB->query("SELECT debug_path, debug_auth  FROM general_opt LIMIT 1");

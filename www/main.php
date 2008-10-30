@@ -25,6 +25,7 @@
 	 */
 
 	function getParameters($str){
+		$var = NULL;
 		if (isset($_GET[$str]))
 			$var = $_GET[$str];
 		if (isset($_POST[$str]))
