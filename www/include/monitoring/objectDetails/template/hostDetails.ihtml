@@ -296,7 +296,13 @@
 						{/if}
 						</td>
 					</tr>
+					{if $proc_warning || $proc_critical}
+					<tr class='list_two'>
+                        <td class="ListColLeft"><a onClick="window.open('main.php?p=2020190&o=ticket&type=1&min=1&host_id={$h.host_id}&host_name={$h.host_name}&status={$service_data.current_state}&service_name={$svc_description}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">{$m_mon_ticket}</a></td>
+                    </tr>
+                    {/if}
 				</table>
+				
 			</td>
 		</tr>
 	</table>

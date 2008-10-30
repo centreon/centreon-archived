@@ -319,6 +319,7 @@
 		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
 		$tpl->assign("h", $hostDB);
 		$tpl->assign("url_id", $url_id);
+		$tpl->assign("m_mon_ticket", "Open Ticket");
 		
 		/*
 		 * Hostgroups Display
