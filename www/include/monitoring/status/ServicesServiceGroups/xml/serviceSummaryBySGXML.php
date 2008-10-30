@@ -23,12 +23,12 @@
 
 	$debugXML = 0;
 	$buffer = '';
-	
+
 	include_once("@CENTREON_ETC@/centreon.conf.php");	
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBNDOConnect.php");
-	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
+	include_once($centreon_path."www/include/monitoring/engine/common-Func.php");
 	include_once($centreon_path."www/include/common/common-Func-ACL.php");
 	include_once($centreon_path."www/include/common/common-Func.php");
 
@@ -153,8 +153,7 @@
 	if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
-				")";
+					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
 
 	if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0" || $o == "svcSumSG_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
@@ -176,7 +175,6 @@
 
 	$rq_pagination = $rq1;
 	
-	
 	/* 
 	 * Get Pagination Rows 
 	 */
@@ -193,11 +191,11 @@
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
 	$buffer .= '<p>'.$p.'</p>';
-	$buffer .= '<sk>'.$tab_color_service[0].'</sk>';
-	$buffer .= '<sw>'.$tab_color_service[1].'</sw>';
-	$buffer .= '<sc>'.$tab_color_service[2].'</sc>';
-	$buffer .= '<su>'.$tab_color_service[3].'</su>';
-	$buffer .= '<sp>'.$tab_color_service[4].'</sp>';
+	$buffer .= '<sk><![CDATA['.$tab_color_service[0].']]></sk>';
+	$buffer .= '<sw><![CDATA['.$tab_color_service[1].']]></sw>';
+	$buffer .= '<sc><![CDATA['.$tab_color_service[2].']]></sc>';
+	$buffer .= '<su><![CDATA['.$tab_color_service[3].']]></su>';
+	$buffer .= '<sp><![CDATA['.$tab_color_service[4].']]></sp>';
 	($o == "svcOVSG") ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
 	$buffer .= '</i>';
 
@@ -208,14 +206,25 @@
 	$flag = 0;
 
 	$sg = "";
-	$h = NULL;
+	$h = "";
 	$flag = 0;
 	$ct = 0;
-	$nb_service = array();
+	$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 
 	while ($tab =& $DBRESULT_NDO1->fetchRow()){
 		($class == "list_one") ? $class = "list_two" : $class = "list_one";
-				
+		if ($h != $tab["host_name"] && $h != "") {
+			$buffer .= '<h class="'.$class.'">';
+			$buffer .= '<hn><![CDATA['. $h . ']]></hn>';
+			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
+			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
+			$buffer .= '<sk>'.$nb_service[0].'</sk>';
+			$buffer .= '<sw>'.$nb_service[1].'</sw>';
+			$buffer .= '<sc>'.$nb_service[2].'</sc>';
+			$buffer .= '<su>'.$nb_service[3].'</su>';
+			$buffer .= '<sp>'.$nb_service[4].'</sp>';
+			$buffer .= '</h>';
+		}
 		if ($sg != $tab["alias"]){
 			if ($flag)
 				$buffer .= '</sg>';
@@ -226,69 +235,30 @@
 			$flag = 1;
 		}
 		$ct++;
-		//$buffer .= "<h>".$tab["host_name"] . " - ".$h."</h>";
-		if ($h == $tab["host_name"] || !isset($h)){
-			$nb_service = array(0=>0,1=>0,2=>0,3=>0,4=>0);
-			$nb_service[$tab["current_state"]] += 1;
-			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
-		} else {
-			$nb_service[$tab["current_state"]] += 1;
-			$buffer .= '<h class="'.$class.'">';
-			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
-			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
-			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
-			$buffer .= '<sk>'.$nb_service[0].'</sk>';
-			$buffer .= '<sw>'.$nb_service[1].'</sw>';
-			$buffer .= '<sc>'.$nb_service[2].'</sc>';
-			$buffer .= '<su>'.$nb_service[3].'</su>';
-			$buffer .= '<sp>'.$nb_service[4].'</sp>';
-			$buffer .= '</h>';
-		}
-		/*
-		if ($h != $tab["host_name"] || $h){
-			$buffer .= $buffer_tmp;
-			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
-			$buffer .= '<h class="'.$class.'">';
-			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
-			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
-			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
-			
-			$buffer .= '<sk>'.$nb_service[0].'</sk>';
-			$buffer .= '<sw>'.$nb_service[1].'</sw>';
-			$buffer .= '<sc>'.$nb_service[2].'</sc>';
-			$buffer .= '<su>'.$nb_service[3].'</su>';
-			$buffer .= '<sp>'.$nb_service[4].'</sp>';
-			
-			$flag = 1;
-			$h = $tab["host_name"];
-			$nb_service = array(0=>0,1=>0,2=>0,3=>0,4=>0);
-
-			
-		}
-		$nb_service[$tab["current_state"]] += 1;
-		*/
-		$sg = $tab["alias"];
-		$h = $tab["host_name"];
-	}
-	$buffer .= "</sg>";
+		$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
 	
+		if ($h != $tab["host_name"] || $h == "") {
+			$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+			$h = $tab["host_name"];
+		}
+		
+		$nb_service[$tab["current_state"]]++;
+		$sg = $tab["alias"];
+	}
+
+	$buffer .= '<h class="'.$class.'">';
+	$buffer .= '<hn><![CDATA['. $h . ']]></hn>';
+	$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
+	$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
+	$buffer .= '<sk>'.$nb_service[0].'</sk>';
+	$buffer .= '<sw>'.$nb_service[1].'</sw>';
+	$buffer .= '<sc>'.$nb_service[2].'</sc>';
+	$buffer .= '<su>'.$nb_service[3].'</su>';
+	$buffer .= '<sp>'.$nb_service[4].'</sp>';
+	$buffer .= '</h>';
+
+	$buffer .= "</sg>";	
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
-
-
-
-
-	/*
-	if ($sg != ""){
-		$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
-		$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
-		$buffer .= '<sc color="'.$tab_color_service[2].'">'.$nb_service[2].'</sc>';
-		$buffer .= '<su color="'.$tab_color_service[3].'">'.$nb_service[3].'</su>';
-		$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
-		$buffer .= '</h></sg>';
-	}
-	*/
-
-
 ?>

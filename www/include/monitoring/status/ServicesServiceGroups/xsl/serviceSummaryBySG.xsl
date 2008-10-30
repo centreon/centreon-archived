@@ -4,16 +4,12 @@
 	<xsl:for-each select="//sg">
 	<table class="ListTable">
 		<tr class='list_lvl_1'>
-			<xsl:if test="//i/s = 1">
-				<td colspan="4">
-					<xsl:value-of select="sgn"/>
-				</td>
-			</xsl:if>
-			<xsl:if test="//i/s = 0">
-				<td colspan="3">
-					<xsl:value-of select="sgn"/>
-				</td>
-			</xsl:if>
+		<xsl:if test="//i/s = 1">
+			<td colspan="4"><xsl:value-of select="sgn"/></td>
+		</xsl:if>
+		<xsl:if test="//i/s = 0">
+			<td colspan="3"><xsl:value-of select="sgn"/></td>
+		</xsl:if>
 		</tr>
 		<tr class='ListHeader'>
 			<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"  width="200"></td>
@@ -33,7 +29,7 @@
 					<xsl:value-of select="hn"/>
 				</xsl:element>
 			</td>
-			<td class="ListColLeft">
+			<td class="ListColLeft" width="40">
 				<xsl:element name="a">
 				  	<xsl:attribute name="href">main.php?o=svc&amp;p=20201&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:element name="img">
@@ -49,68 +45,68 @@
 			</td>
 			<xsl:if test="//i/s = 1">
 			<td class="ListColLeft">
-						<xsl:attribute name="style">
-							background-color:<xsl:value-of select="hc"/>;
-						</xsl:attribute>
-					<xsl:value-of select="hs"/>
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="hc"/>;
+				</xsl:attribute>
+				<xsl:value-of select="hs"/>
 			</td>
 			</xsl:if>
 			<td class="ListColLeft">
-				<xsl:if test="sk >= 1">
-				<span>
-					<xsl:attribute name="style">
-						background-color:<xsl:value-of select="sk/@color" />
-					</xsl:attribute>
-					<xsl:element name="a">
-				  		<xsl:attribute name="href">main.php?o=svc_ok&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
-							<xsl:value-of select="sk"/> OK
-					</xsl:element>
-					</span>&#160;
-				</xsl:if>
-				<xsl:if test="sw >= 1">
-				<span>
-					<xsl:attribute name="style">
-						background-color:<xsl:value-of select="sw/@color" />
-					</xsl:attribute>
-					<xsl:element name="a">
-					  	<xsl:attribute name="href">main.php?o=svc_warning&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
-						<xsl:value-of select="sw"/> WARNING
-					</xsl:element>
+			<xsl:if test="sk >= 1">
+			<span>
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="//sk" />
+				</xsl:attribute>
+				<xsl:element name="a">
+			  		<xsl:attribute name="href">main.php?o=svc_ok&amp;p=2020202&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
+						<xsl:value-of select="sk"/> OK
+				</xsl:element>
 				</span>&#160;
-				</xsl:if>
-				<xsl:if test="sc >= 1">
-				<span>
-					<xsl:attribute name="style">
-						background-color:<xsl:value-of select="sc/@color" />
-					</xsl:attribute>
-					<xsl:element name="a">
-					  	<xsl:attribute name="href">main.php?o=svc_critical&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
-						<xsl:value-of select="sc"/> CRITICAL
-					</xsl:element>
-				</span>&#160;
-				</xsl:if>
-				<xsl:if test="su >= 1">
-				<span>
-					<xsl:attribute name="style">
-						background-color:<xsl:value-of select="su/@color" />
-					</xsl:attribute>
-					<xsl:element name="a">
-					  	<xsl:attribute name="href">main.php?o=svc_unknown&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
-						<xsl:value-of select="su"/> UNKNOWN
-					</xsl:element>
-				</span>&#160;
-				</xsl:if>
-				<xsl:if test="sp >= 1">
-				<span>
-					<xsl:attribute name="style">
-						background-color:<xsl:value-of select="sp/@color" />
-					</xsl:attribute>
-					<xsl:element name="a">
-					  	<xsl:attribute name="href">main.php?o=svc_pending&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
-						<xsl:value-of select="sp"/> PENDING
-					</xsl:element>
-				</span>
-				</xsl:if>
+			</xsl:if>
+			<xsl:if test="sw >= 1">
+			<span>
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="//sw" />
+				</xsl:attribute>
+				<xsl:element name="a">
+				  	<xsl:attribute name="href">main.php?o=svc_warning&amp;p=2020202&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
+					<xsl:value-of select="sw"/> WARNING
+				</xsl:element>
+			</span>&#160;
+			</xsl:if>
+			<xsl:if test="sc >= 1">
+			<span>
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="//sc" />
+				</xsl:attribute>
+				<xsl:element name="a">
+				  	<xsl:attribute name="href">main.php?o=svc_critical&amp;p=2020202&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
+					<xsl:value-of select="sc"/> CRITICAL
+				</xsl:element>
+			</span>&#160;
+			</xsl:if>
+			<xsl:if test="su >= 1">
+			<span>
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="//su" />
+				</xsl:attribute>
+				<xsl:element name="a">
+				  	<xsl:attribute name="href">main.php?o=svc_unknown&amp;p=2020202&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
+					<xsl:value-of select="su"/> UNKNOWN
+				</xsl:element>
+			</span>&#160;
+			</xsl:if>
+			<xsl:if test="sp >= 1">
+			<span>
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="//sp" />
+				</xsl:attribute>
+				<xsl:element name="a">
+				  	<xsl:attribute name="href">main.php?o=svc_pending&amp;p=2020202&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
+					<xsl:value-of select="sp"/> PENDING
+				</xsl:element>
+			</span>
+			</xsl:if>
 			</td>
 		</tr>
 	</xsl:for-each>

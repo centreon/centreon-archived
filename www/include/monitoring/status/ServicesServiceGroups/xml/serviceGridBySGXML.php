@@ -23,7 +23,7 @@
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBNDOConnect.php");
-	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
+	include_once($centreon_path."www/include/monitoring/engine/common-Func.php");
 	include_once($centreon_path."www/include/common/common-Func-ACL.php");
 	include_once($centreon_path."www/include/common/common-Func.php");
 
@@ -69,51 +69,41 @@
 	}
 
 	function get_services($host_name){
-		global $pearDBndo,$ndo_base_prefix, $lcaSGStr;
-		global $general_opt;
-		global $o;
+		global $pearDBndo,$ndo_base_prefix, $lcaSGStr, $instance;
+		global $general_opt, $o;
 
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
 				" WHERE no.object_id = nss.service_object_id" ;
+
 		if ($instance != "ALL")
 			$rq .= " AND no.instance_id = ".$instance;
 
-		if($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
+		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
 			$rq .= " AND nss.current_state != 0" ;
 
-		if($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0")
+		if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0")
 			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
 
-		if($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
+		if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
 			$rq .= " AND nss.problem_has_been_acknowledged = 1" ;
-
 
 		$rq .= " AND no.object_id" .
 				" IN (" .
-
 				" SELECT nno.object_id" .
 				" FROM ".$ndo_base_prefix."objects nno" .
 				" WHERE nno.objecttype_id =2" .
-				" AND nno.name1 = '".$host_name."'" ;
-/*
-	if($instance != "ALL")
-		$rq .= " AND nno.instance_id = ".$instance;
-*/
-
-				$rq .= " )";
+				" AND nno.name1 = '".$host_name."')";
 
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
-		while($svc =& $DBRESULT->fetchRow()){
+		while ($svc =& $DBRESULT->fetchRow()) {
 			$tab[$svc["service_name"]] = $svc["current_state"];
 		}
 		return($tab);
 	}
-
-
 
 	$service = array();
 	$host_status = array();
@@ -121,7 +111,6 @@
 	$host_services = array();
 	$metaService_status = array();
 	$tab_host_service = array();
-
 
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
@@ -139,9 +128,6 @@
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
-
-
-
 	$rq1 = "SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
 			" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
 			" WHERE sg.config_type = 1 " .
@@ -150,17 +136,11 @@
 			" AND sgm.servicegroup_id = sg.servicegroup_id" .
 			" AND no.is_active = 1 AND no.objecttype_id = 2";
 
-		if (!$is_admin && $lcaSGStr != "")
-			$rq1 .= " AND sg.alias IN ($lcaSGStr) ";
-
-/*
-	if(!$is_admin)
-		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
-*/
+	if (!$is_admin && $lcaSGStr != "")
+		$rq1 .= " AND sg.alias IN ($lcaSGStr) ";
 
 	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
-
 
 	if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
 		$rq1 .= " AND ss.current_state != 0" ;
@@ -170,7 +150,7 @@
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
 */
-	if($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0")
+	if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0")
 		$rq1 .= " AND ss.current_state != 0 AND ss.problem_has_been_acknowledged = 0" ;
 /*
 		$rq1 .= " AND no.name1 IN (" .
@@ -178,12 +158,12 @@
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
 */
-	if($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
+	if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
 				")";
-	if($search != ""){
+	if ($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
 
@@ -201,10 +181,10 @@
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-
-
+	/*
+	 * Init Buffer
+	 */
 	$buffer .= '<reponse>';
-
 	$buffer .= '<i>';
 	$buffer .= '<numrows>'.$numRows.'</numrows>';
 	$buffer .= '<num>'.$num.'</num>';
@@ -212,18 +192,9 @@
 	$buffer .= '<host_name>'._("Hosts").'</host_name>';
 	$buffer .= '<services>'._("Services").'</services>';
 	$buffer .= '<p>'.$p.'</p>';
-
-	if($o == "svcOVSG")
-		$buffer .= '<s>1</s>';
-	else
-		$buffer .= '<s>0</s>';
-
+	($o == "svcOVSG") ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
 	$buffer .= '</i>';
 
-
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
@@ -232,14 +203,15 @@
 	$h = "";
 	$flag = 0;
 
+	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+	if (PEAR::isError($DBRESULT_NDO1))
+		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	while ($tab =& $DBRESULT_NDO1->fetchRow()){
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
-
 		if ($sg != $tab["alias"]){
 			$flag = 0;
-			if($sg != "")
+			if ($sg != "")
 				$buffer .= '</h></sg>';
-
 			$sg = $tab["alias"];
 			$buffer .= '<sg>';
 			$buffer .= '<sgn><![CDATA['. $tab["alias"]  .']]></sgn>';
@@ -252,7 +224,7 @@
 				$buffer .= '</h>';
 			$flag = 1;
 			$h = $tab["host_name"];
-			$hs = get_Host_Status($tab["host_name"],$pearDBndo,$general_opt);
+			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
 			$buffer .= '<h class="'.$class.'">';
 			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
 			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
@@ -269,7 +241,7 @@
 		$buffer .= '</h></sg>';
 
 	$buffer .= '</reponse>';
+
 	header('Content-Type: text/xml');
 	echo $buffer;
-
 ?>
