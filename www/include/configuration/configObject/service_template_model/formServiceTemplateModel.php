@@ -15,7 +15,9 @@
  * For information : contact@centreon.com
  */
  
-	
+ 	if (!isset($oreon))
+ 		exit();
+ 	
 	function myDecodeSvTP($arg)	{
 		$arg = str_replace('#BR#', "\\n", $arg);
 		$arg = str_replace('#T#', "\\t", $arg);
@@ -33,11 +35,14 @@
 		# Set base value
 		$service_list =& $DBRESULT->fetchRow();
 		$service = array_map("myDecodeSvTP", $service_list);
-		# Grab hostgroup || host
+		
+		/*
+		 * Grab hostgroup || host
+		 */
 		$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($parent = $DBRESULT->fetchRow())	{
+		while ($parent =& $DBRESULT->fetchRow())	{
 			if ($parent["host_host_id"])
 				$service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
 			else if ($parent["hostgroup_hg_id"])
@@ -47,20 +52,28 @@
 		$tmp = explode(',', $service["service_notification_options"]);
 		foreach ($tmp as $key => $value)
 			$service["service_notifOpts"][trim($value)] = 1;
-		# Set Stalking Options
+		
+		/*
+		 * Set Stalking Options
+		 */
 		$tmp = explode(',', $service["service_stalking_options"]);
 		foreach ($tmp as $key => $value)
 			$service["service_stalOpts"][trim($value)] = 1;
 		$DBRESULT->free();
-		# Set Contact Group
+		
+		/*
+		 * Set Contact Group
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
 			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
 		
-		# Set Contact Group
+		/*
+		 * Set Contact Group
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -68,32 +81,39 @@
 			$service["service_cs"][$i] = $notifC["contact_id"];
 		$DBRESULT->free();
 		
-		# Set Service Group Parents
+		/*
+		 * Set Service Group Parents
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $sg = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++)
 			$service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
 		$DBRESULT->free();
-		# Set Traps
+		
+		/*
+		 * Set Traps
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $trap = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++)
 			$service["service_traps"][$i] = $trap["traps_id"];
 		$DBRESULT->free();
 		
-		# Set Categories
+		/*
+		 * Set Categories
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $service_category = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $service_category = $DBRESULT->fetchRow(); $i++)
 			$service["service_categories"][$i] = $service_category["sc_id"];
 		$DBRESULT->free();
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
+	/*
+	 * 	Database retrieve information for differents elements list we need on the page
+	 */
 	
 	/*
 	 * Host Templates comes from DB -> Store in $hosts Array
@@ -102,7 +122,7 @@
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($host = $DBRESULT->fetchRow()){
+	while ($host = $DBRESULT->fetchRow()){
 		$hosts[$host["host_id"]] = $host["host_name"];
 	}
 	$DBRESULT->free();
@@ -115,7 +135,7 @@
 		$DBRESULT =& $pearDB->query("SELECT service_description, service_id FROM service WHERE service_template_model_stm_id = '".$_GET["service_id"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while($service_tmpl_father = $DBRESULT->fetchRow())
+		while ($service_tmpl_father = $DBRESULT->fetchRow())
 			$svc_tmplt_who_use_me[$service_tmpl_father["service_id"]] = $service_tmpl_father["service_description"];
 		$DBRESULT->free();
 	}	
@@ -127,7 +147,7 @@
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($svTpl = $DBRESULT->fetchRow())	{
+	while ($svTpl = $DBRESULT->fetchRow())	{
 		if (!$svTpl["service_description"])
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
 		else	{
@@ -143,7 +163,7 @@
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($tp = $DBRESULT->fetchRow())
+	while ($tp = $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
 	# Check commands comes from DB -> Store in $checkCmds Array
@@ -151,7 +171,7 @@
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($checkCmd = $DBRESULT->fetchRow())
+	while ($checkCmd = $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $notifCcts Array
@@ -159,7 +179,7 @@
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($notifCg = $DBRESULT->fetchRow())
+	while ($notifCg = $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
 	
@@ -175,7 +195,7 @@
 	# Service Groups comes from DB -> Store in $hgs Array
 	$sgs = array();
 	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-	while($sg = $DBRESULT->fetchRow())
+	while ($sg = $DBRESULT->fetchRow())
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$DBRESULT->free();
 	# Graphs Template comes from DB -> Store in $graphTpls Array
@@ -183,7 +203,7 @@
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($graphTpl = $DBRESULT->fetchRow())
+	while ($graphTpl = $DBRESULT->fetchRow())
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
 	# Traps definition comes from DB -> Store in $traps Array
@@ -191,7 +211,7 @@
 	$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($trap = $DBRESULT->fetchRow())
+	while ($trap = $DBRESULT->fetchRow())
 		$traps[$trap["traps_id"]] = $trap["traps_name"];
 	$DBRESULT->free();
 		
@@ -200,7 +220,7 @@
 	$DBRESULT =& $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($service_categorie =& $DBRESULT->fetchRow())
+	while ($service_categorie =& $DBRESULT->fetchRow())
 		$service_categories[$service_categorie["sc_id"]] = $service_categorie["sc_name"];
 	$DBRESULT->free();
 	
@@ -209,7 +229,7 @@
 	 */
 	$j = 0;		
 	$DBRESULT =& $pearDB->query("SELECT svc_macro_id, svc_macro_name, svc_macro_value, svc_svc_id FROM on_demand_macro_service WHERE svc_svc_id = '". $service_id ."' ORDER BY `svc_macro_id`");
-	while($od_macro = $DBRESULT->fetchRow())
+	while ($od_macro = $DBRESULT->fetchRow())
 	{
 		$od_macro_id[$j] = $od_macro["svc_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_SERVICE", "", $od_macro["svc_macro_name"]);
@@ -232,6 +252,7 @@
 	#
 	$attrsText 		= array("size"=>"30");
 	$attrsText2		= array("size"=>"6");
+	$attrsTextLong 	= array("size"=>"60");
 	$attrsAdvSelect_small = array("style" => "width: 200px; height: 70px;");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsAdvSelect_big = array("style" => "width: 200px; height: 200px;");
@@ -257,9 +278,9 @@
 	$form->addElement('header', 'information', _("General Information"));
 
 	if ($o != "mc")
-		$form->addElement('text', 'service_description', _("Description"), $attrsText);
+		$form->addElement('text', 'service_description', _("Service Template Name"), $attrsText);
 	$form->addElement('text', 'service_alias', _("Alias"), $attrsText);
-	$form->addElement('header', 'service_alias_interest', _("Used for Service duplication"), $attrsText);
+	$form->addElement('header', 'service_alias_interest', _("Name Used for Service in auto-deploy by template"), $attrsText);
 
 	$form->addElement('select', 'service_template_model_stm_id', _("Template Service Model"), $svTpls);
 	$form->addElement('static', 'tplText', _("Using a Template Model allows you to have multi-level Template connections"));
@@ -283,7 +304,7 @@
 		$form->setDefaults(array('service_is_volatile' => '2'));
 
 	$form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
-	$form->addElement('text', 'command_command_id_arg', _("Args"), $attrsText);
+	$form->addElement('text', 'command_command_id_arg', _("Args"), $attrsTextLong);
 	$form->addElement('text', 'service_max_check_attempts', _("Max Check Attempts"), $attrsText2);
 	$form->addElement('text', 'service_normal_check_interval', _("Normal Check Interval"), $attrsText2);
 	$form->addElement('text', 'service_retry_check_interval', _("Retry Check Interval"), $attrsText2);
@@ -295,7 +316,7 @@
 	if ($o != "mc")
 		$form->setDefaults(array('service_event_handler_enabled' => '2'));
 	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id2","example2")');
-	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
+	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsTextLong);
 
 	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("Yes"), '1');
 	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("No"), '0');
@@ -424,7 +445,7 @@
 	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($rmnftr =& $DBRESULT->fetchRow())
+	while ($rmnftr =& $DBRESULT->fetchRow())
 		$mnftr[$rmnftr["id"]] = html_entity_decode($rmnftr["alias"], ENT_QUOTES);
 	$mnftr[""] = "_"._("ALL")."_";
 	$DBRESULT->free();
@@ -556,7 +577,7 @@
 		include_once("include/configuration/configObject/service/makeJS_formService.php");	
 		if ($o == "c" || $o == "a" || $o == "mc")
 		{			
-			for($k=0; isset($od_macro_id[$k]); $k++) {?>				
+			for ($k=0; isset($od_macro_id[$k]); $k++) {?>				
 				<script type="text/javascript">
 				globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
 				globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
@@ -698,6 +719,8 @@
 		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
 		$tpl->assign("History_Options", _("History Options"));
 		$tpl->assign("Event_Handler", _("Event Handler"));
+		$tpl->assign("topdoc", _("Documentation"));
+		$tpl->assign("seconds", _("seconds"));
 		
 		$tpl->display("formService.ihtml");
 	}

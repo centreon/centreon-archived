@@ -180,8 +180,7 @@
 	 */
 	$j = 0;		
 	$DBRESULT =& $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
-	while($od_macro = $DBRESULT->fetchRow())
-	{
+	while ($od_macro = $DBRESULT->fetchRow()){
 		$od_macro_id[$j] = $od_macro["host_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
 		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
@@ -229,7 +228,7 @@
 	$form->addElement('header', 'information', _("General Information"));
 	# No possibility to change name and alias, because there's no interest
 	if ($o != "mc")	{
-		$form->addElement('text', 'host_name', _("Host Name"), $attrsText);
+		$form->addElement('text', 'host_name', _("Host Template Name"), $attrsText);
 		$form->addElement('text', 'host_alias', _("Alias"), $attrsText);
 	}
 	$form->addElement('text', 'host_address', _("IP Address / DNS"), $attrsText);
@@ -644,6 +643,7 @@
 		$tpl->assign("History_Options", _("History Options"));
 		$tpl->assign("Event_Handler", _("Event Handler"));
 		$tpl->assign("add_mtp_label", _("Add a template"));
+		$tpl->assign("seconds", _("seconds"));
 		
 		$tpl->display("formHost.ihtml");
 	}
