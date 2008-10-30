@@ -176,7 +176,7 @@ sub getTrapsInfos($$$$){
     my $oid = shift;
     my $arguments_line = shift;
     
-    my $dbh = DBI->connect("dbi:mysql:$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
+    my $dbh = DBI->connect("dbi:mysql:".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
     my @host = get_hostinfos($dbh, $ip, $hostname);
     foreach(@host) {
 		my $this_host = $_;
