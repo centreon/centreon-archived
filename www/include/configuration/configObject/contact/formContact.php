@@ -209,6 +209,7 @@
 	 */
 	require_once $centreon_path."www/class/centreonGMT.class.php";
 	
+	$CentreonGMT = new CentreonGMT();
 	
 	$GMTList = $CentreonGMT->getGMTList();
 	$form->addElement('select', 'contact_location', _("GMT / Location"), $GMTList);

@@ -379,14 +379,16 @@
 		$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
 		$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
 		$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
-		$fields["contact_type_msg"] = $ret["contact_type_msg"];
+		//$fields["contact_type_msg"] = $ret["contact_type_msg"];
 		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
 		$fields["contact_auth_type"] = $ret["contact_auth_type"];
-		$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
+		if (isset($ret["contact_ldap_dn"]))
+			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
 		$fields["contact_location"] = $ret["contact_location"];
 		$fields["contact_hostNotifCmds"] = implode(",", $ret["contact_hostNotifCmds"]);
 		$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
-		$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
+		if (isset($ret["contact_cgNotif"]))
+			$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
 		$oreon->CentreonLogAction->insertLog("contact", $contact_id, $ret["contact_name"], "c", $fields);
 	}
 
