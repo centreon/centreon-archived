@@ -253,7 +253,9 @@
 		$fields["hg_snmp_community"] = htmlentities($ret["hg_snmp_community"], ENT_QUOTES);
 		$fields["hg_comment"] = htmlentities($ret["hg_comment"], ENT_QUOTES);
 		$fields["hg_activate"] = $ret["hg_activate"]["hg_activate"];
-		$fields["hg_hosts"] = implode(",", $ret["hg_hosts"]);
+		if (isset( $ret["hg_hosts"]))
+			$fields["hg_hosts"] = implode(",", $ret["hg_hosts"]);
+	
 		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id, htmlentities($ret["hg_name"], ENT_QUOTES), "c", $fields);
 	}
 	
