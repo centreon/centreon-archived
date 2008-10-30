@@ -23,7 +23,7 @@
 	include_once($centreon_path . "www/class/other.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");	
-	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";
+	include_once($centreon_path . "www/include/monitoring/engine/common-Func.php");
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 
@@ -41,25 +41,27 @@
 
 
 	/* requisit */
-	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
-	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
-	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
-	(isset($_GET["search"]) && !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
-	(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "host_name";
-	(isset($_GET["order"]) && !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
+	(isset($_GET["num"]) 			&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
+	(isset($_GET["limit"]) 			&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
+	(isset($_GET["instance"])		/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
+	(isset($_GET["search"]) 		&& !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
+	(isset($_GET["sort_type"]) 		&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "host_name";
+	(isset($_GET["order"]) 			&& !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
-	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
-	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
+	(isset($_GET["o"]) 				&& !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
+	(isset($_GET["p"]) 				&& !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
 	// check is admin
 	$is_admin = isUserAdmin($sid);
 
 	if (!$is_admin)	{
 		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
+		$lca =  getLCAHostByAlias($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
 	}
+	
+	//print_r($lca);
 	
 	/*
 	 * Get Acl Group list
@@ -146,7 +148,7 @@
 				" AND no.is_active = 1";
 	
 	if (!$is_admin && $groupnumber)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).")";
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).") AND hg.alias IN ($lcaSTR_HG)";
 	
 	if ($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 		$rq1 .= " AND no.name1 IN (" .
@@ -174,6 +176,7 @@
 
 	$rq_pagination = $rq1;
 
+	
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
@@ -202,44 +205,47 @@
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
-		
-	$tab_final = array();
-	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
-		if (isset($lca["LcaHostGroup"][$ndo["alias"]]) || !isset($lca["LcaHostGroup"])){
-			$tab_svc = get_services($ndo["host_name"]);
-			if (count($tab_svc)){
-				$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
-				$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
-				$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
+	$tab_final =  array();
+	while ($ndo =& $DBRESULT_NDO1->fetchRow()) {
+			
+		$tab_svc = get_services($ndo["host_name"]);
+		if (count($tab_svc)) {
+			if (!isset($tab_final[$ndo["alias"]]))
+				$tab_final[$ndo["alias"]] = array();
+			if (!isset($tab_final[$ndo["alias"]][$ndo["host_name"]]))
+				$tab_final[$ndo["alias"]][$ndo["host_name"]] = array("0"=>0,"1"=>0,"2"=>0,"3"=>0,"4"=>0);
+			
+			$tab_final[$ndo["alias"]][$ndo["host_name"]]["tab_svc"] = $tab_svc;
+			$tab_final[$ndo["alias"]][$ndo["host_name"]]["cs"] = $ndo["current_state"];
+		}
+	}
+	
+	$hg = "";
+	if (isset($tab_final))
+		foreach ($tab_final as $hg_name => $tab_host) {
+			foreach ($tab_host as $host_name => $tab) {
+				$class == "list_one" ? $class = "list_two" : $class = "list_one";
+				if (isset($hg_name) && $hg != $hg_name){
+					if ($hg != "")
+						$buffer .= '</hg>';
+					$hg = $hg_name;
+					$buffer .= '<hg>';
+					$buffer .= '<hgn><![CDATA['. $hg_name .']]></hgn>';
+				}
+				$buffer .= '<l class="'.$class.'">';
+				foreach ($tab["tab_svc"] as $svc => $state) {
+					$buffer .= '<svc>';
+					$buffer .= '<sn><![CDATA['. $svc . ']]></sn>';
+					$buffer .= '<sc><![CDATA['. $tab_color_service[$state] . ']]></sc>';
+					$buffer .= '</svc>';
+				}
+				$buffer .= '<o>'. $ct++ . '</o>';
+				$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';
+				$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["cs"]]  . ']]></hs>';
+				$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["cs"]]  . ']]></hc>';
+				$buffer .= '</l>';	
 			}
 		}
-		unset($ndo);
-	}
-
-	$hg = "";
-	foreach ($tab_final as $host_name => $tab){
-		$class == "list_one" ? $class = "list_two" : $class = "list_one";
-
-		if (isset($tab["hg_name"]) && $hg != $tab["hg_name"]){
-			if ($hg != "")
-				$buffer .= '</hg>';
-			$hg = $tab["hg_name"];
-			$buffer .= '<hg>';
-			$buffer .= '<hgn><![CDATA['. $tab["hg_name"]  .']]></hgn>';
-		}
-		$buffer .= '<l class="'.$class.'">';
-		foreach ($tab["tab_svc"] as $svc => $state) {
-			$buffer .= '<svc>';
-			$buffer .= '<sn><![CDATA['. $svc . ']]></sn>';
-			$buffer .= '<sc><![CDATA['. $tab_color_service[$state] . ']]></sc>';
-			$buffer .= '</svc>';
-		}
-		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';
-		$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["cs"]]  . ']]></hs>';
-		$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["cs"]]  . ']]></hc>';
-		$buffer .= '</l>';
-	}
 	$buffer .= '</hg>';
 	/* end */
 

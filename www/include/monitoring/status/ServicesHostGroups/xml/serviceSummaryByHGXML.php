@@ -23,7 +23,7 @@
 	include_once($centreon_path . "www/class/other.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");	
-	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
+	include_once($centreon_path . "www/include/monitoring/engine/common-Func.php");
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 
@@ -54,7 +54,7 @@
 
 	if (!$is_admin)	{
 		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
+		$lca =  getLCAHostByAlias($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
 	}
@@ -74,6 +74,54 @@
 	/*
 	 * Get Acl Group list
 	 */
+	 
+	function get_services($host_name){
+		
+		global $pearDBndo, $pearDB, $ndo_base_prefix, $general_opt, $o, $instance, $is_admin, $groupnumber, $grouplist;
+
+		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
+					" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no";
+				
+		if (!$is_admin && $groupnumber)
+			$rq .= ", centreon_acl ";
+					
+		$rq .= 		" WHERE no.object_id = nss.service_object_id" .
+					" AND no.name1 NOT LIKE 'OSL_Module'" .
+					" AND no.name1 NOT LIKE 'Meta_Module'";
+		
+		if (!$is_admin && $groupnumber)
+			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr($grouplist).")";
+
+		if	($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
+			$rq .= 	" AND nss.current_state != 0" ;
+
+		if ($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
+			$rq .= 	" AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
+
+		if ($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
+			$rq .= 	" AND nss.problem_has_been_acknowledged = 1" ;
+
+		$rq .= 		" AND no.object_id" .
+					" IN (" .
+					" SELECT nno.object_id" .
+					" FROM ".$ndo_base_prefix."objects nno" .
+					" WHERE nno.objecttype_id =2" .
+					" AND nno.name1 = '".$host_name."'" .
+					" AND nno.name1 not like 'OSL_Module'".
+					" )";
+		
+		if($instance != "ALL")
+			$rq .= " AND no.instance_id = ".$instance;
+
+		$DBRESULT =& $pearDBndo->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$tab = array();
+		while ($svc =& $DBRESULT->fetchRow()){
+			$tab[$svc["service_name"]] = $svc["current_state"];
+		}
+		return($tab);
+	}
 	
 	$grouplist = getGroupListofUser($pearDB); 
 	$groupnumber = count($grouplist);
@@ -93,17 +141,22 @@
 
 	/* Get Host status */
 
-	$rq1 = 			" SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
+	$rq1 = 			" SELECT DISTINCT no.name1 as host_name, hg.alias, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
 					" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no";
+	
+	if (!$is_admin && $groupnumber)
+		$rq1 .= ", centreon_acl ";
+	
 	
 	$rq1 .= 		" WHERE hs.host_object_id = hgm.host_object_id".
 					" AND no.object_id = hgm.host_object_id" .
 					" AND hgm.hostgroup_id = hg.hostgroup_id".
 					" AND no.name1 not like 'OSL_Module'" .
 					" AND no.name1 not like 'Meta_Module'";
+	
 	if (!$is_admin && $groupnumber)
-			$rq1 .= " AND hg.alias IN ($lcaSTR_HG)";
-
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).") AND hg.alias IN ($lcaSTR_HG)";
+	
 	if ($instance != "ALL")
 		$rq1 .= 	" AND no.instance_id = ".$instance;
 	
@@ -123,7 +176,6 @@
 		
 	$rq_pagination = $rq1;
 
-	
 	/* 
 	 * Get Pagination Rows
 	 */
@@ -154,57 +206,52 @@
 	$flag = 0;
 
 	$tab_final = array();
-	while ($ndo =& $DBRESULT_NDO->fetchRow())	{
-		if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0")
-			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0 + get_services_status($ndo["host_name"], 0);
-		else
-			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
+	while ($ndo =& $DBRESULT_NDO->fetchRow()) {
+		if (!isset($tab_final[$ndo["alias"]]))
+			$tab_final[$ndo["alias"]] = array();
+		if (!isset($tab_final[$ndo["alias"]][$ndo["host_name"]]))
+			$tab_final[$ndo["alias"]][$ndo["host_name"]] = array("0"=>0,"1"=>0,"2"=>0,"3"=>0,"4"=>0);
 			
-		$tab_final[$ndo["host_name"]]["nb_service_w"] = 0 + get_services_status($ndo["host_name"], 1);
-		$tab_final[$ndo["host_name"]]["nb_service_c"] = 0 + get_services_status($ndo["host_name"], 2);
-		$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + get_services_status($ndo["host_name"], 3);
-		$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + get_services_status($ndo["host_name"], 4);
-		
-		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
-		$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
-		//if ($tab_final[$ndo["host_name"]]["nb_service_w"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_k"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_c"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_u"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_p"] == 0)
-		//	unset($tab_final[$ndo["host_name"]]);
+		$tab_svc = get_services($ndo["host_name"]);
+		foreach ($tab_svc as $name => $status)
+			$tab_final[$ndo["alias"]][$ndo["host_name"]][$status]++;
+		$tab_final[$ndo["alias"]][$ndo["host_name"]]["cs"] = $ndo["current_state"];
 	}
 
 	$hg = "";
-	foreach ($tab_final as $host_name => $tab){
-		$class == "list_one" ? $class = "list_two" : $class = "list_one";
-		if (isset($tab["hg_name"]) && $hg != $tab["hg_name"]){
-			if ($hg != "")
-				$buffer .= '</hg>';
-			$hg = $tab["hg_name"];
-			$buffer .= '<hg>';
-			$buffer .= '<hgn><![CDATA['. $tab["hg_name"]  .']]></hgn>';
+	if (isset($tab_final))
+		foreach ($tab_final as $hg_name => $tab_host) {
+			foreach ($tab_host as $host_name => $tab) {
+				$class == "list_one" ? $class = "list_two" : $class = "list_one";
+				if (isset($hg_name) && $hg != $hg_name){
+					if ($hg != "")
+						$buffer .= '</hg>';
+					$hg = $hg_name;
+					$buffer .= '<hg>';
+					$buffer .= '<hgn><![CDATA['. $hg_name  .']]></hgn>';
+				}
+				$buffer .= '<l class="'.$class.'">';
+				$buffer .= '<sk><![CDATA['. $tab[0]  . ']]></sk>';
+				$buffer .= '<skc><![CDATA['. $tab_color_service[0]  . ']]></skc>';
+				$buffer .= '<sw><![CDATA['. $tab[1]  . ']]></sw>';
+				$buffer .= '<swc><![CDATA['. $tab_color_service[1]  . ']]></swc>';
+				$buffer .= '<sc><![CDATA['. $tab[2]  . ']]></sc>';
+				$buffer .= '<scc><![CDATA['. $tab_color_service[2]  . ']]></scc>';
+				$buffer .= '<su><![CDATA['. $tab[3]  . ']]></su>';
+				$buffer .= '<suc><![CDATA['. $tab_color_service[3]  . ']]></suc>';
+				$buffer .= '<sp><![CDATA['. $tab[4]  . ']]></sp>';
+				$buffer .= '<spc><![CDATA['. $tab_color_service[4]  . ']]></spc>';
+				$buffer .= '<o>'. $ct++ . '</o>';
+				$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';
+				$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["cs"]]  . ']]></hs>';
+				$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["cs"]]  . ']]></hc>';
+				$buffer .= '</l>';
+			}
 		}
-		$buffer .= '<l class="'.$class.'">';
-		$buffer .= '<sk><![CDATA['. $tab["nb_service_k"]  . ']]></sk>';
-		$buffer .= '<skc><![CDATA['. $tab_color_service[0]  . ']]></skc>';
-		$buffer .= '<sw><![CDATA['. $tab["nb_service_w"]  . ']]></sw>';
-		$buffer .= '<swc><![CDATA['. $tab_color_service[1]  . ']]></swc>';
-		$buffer .= '<sc><![CDATA['. $tab["nb_service_c"]  . ']]></sc>';
-		$buffer .= '<scc><![CDATA['. $tab_color_service[2]  . ']]></scc>';
-		$buffer .= '<su><![CDATA['. $tab["nb_service_u"]  . ']]></su>';
-		$buffer .= '<suc><![CDATA['. $tab_color_service[3]  . ']]></suc>';
-		$buffer .= '<sp><![CDATA['. $tab["nb_service_p"]  . ']]></sp>';
-		$buffer .= '<spc><![CDATA['. $tab_color_service[4]  . ']]></spc>';
-		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';
-		$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["cs"]]  . ']]></hs>';
-		$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["cs"]]  . ']]></hc>';
-		$buffer .= '</l>';
-	}
 	$buffer .= '</hg>';
 
-	if (!$ct){
-		$buffer .= '<infos>';
-		$buffer .= 'none';
-		$buffer .= '</infos>';
-	}
+	if (!$ct)
+		$buffer .= '<infos>none</infos>';
 
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
