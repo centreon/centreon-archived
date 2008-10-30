@@ -1061,7 +1061,8 @@
 		$fields["host_check_interval"] = $ret["host_check_interval"];
 		$fields["host_active_checks_enabled"] = $ret["host_active_checks_enabled"]["host_active_checks_enabled"];
 		$fields["host_passive_checks_enabled"] = $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"];
-		$fields["host_checks_enabled"] = $ret["host_checks_enabled"]["host_checks_enabled"];
+		if (isset($ret["host_checks_enabled"]))
+			$fields["host_checks_enabled"] = $ret["host_checks_enabled"]["host_checks_enabled"];
 		$fields["host_obsess_over_host"] = $ret["host_obsess_over_host"]["host_obsess_over_host"];
 		$fields["host_check_freshness"] = $ret["host_check_freshness"]["host_check_freshness"];
 		$fields["host_freshness_threshold"] = $ret["host_freshness_threshold"];
@@ -1077,13 +1078,15 @@
 		if (isset($ret["host_notifOpts"]))
 			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));
 		$fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
-		$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
+		if (isset($ret["host_first_notification_delay"]))
+			$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
 		$fields["host_stalOpts"] = "";
 		if (isset($ret["host_stalOpts"]))
 			$fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
 		$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES);
 		$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES);
-		$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES);
+		if (isset($ret["host_location"]))
+			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES);
 		$fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES);
 		$fields["host_register"] = $ret["host_register"]["host_register"];
 		$fields["host_activate"] = $ret["host_activate"]["host_activate"];
