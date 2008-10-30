@@ -6,6 +6,34 @@
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `acl_actions`
+--
+
+CREATE TABLE `acl_actions` (
+  `acl_action_id` int(11) NOT NULL auto_increment,
+  `acl_action_name` varchar(255) default NULL,
+  `acl_action_description` varchar(255) default NULL,
+  `acl_action_activate` enum('0','1','2') default NULL,
+  PRIMARY KEY  (`acl_action_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `acl_actions_rules`
+--
+
+CREATE TABLE `acl_actions_rules` (
+  `aar_id` int(11) NOT NULL auto_increment,
+  `acl_action_rule_id` int(11) default NULL,
+  `acl_action_name` varchar(255) default NULL,
+  PRIMARY KEY  (`aar_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `acl_groups`
 --
 
@@ -16,6 +44,21 @@ CREATE TABLE IF NOT EXISTS `acl_groups` (
   `acl_group_activate` enum('0','1','2') default NULL,
   PRIMARY KEY  (`acl_group_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `acl_group_actions_relations`
+--
+
+CREATE TABLE `acl_group_actions_relations` (
+  `agar_id` int(11) NOT NULL auto_increment,
+  `acl_action_id` int(11) default NULL,
+  `acl_group_id` int(11) default NULL,
+  PRIMARY KEY  (`agar_id`),
+  KEY `acl_action_id` (`acl_action_id`),
+  KEY `acl_group_id` (`acl_group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -555,6 +598,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
   `contact_email` varchar(200) default NULL,
   `contact_pager` varchar(200) default NULL,
   `contact_comment` text,
+  `contact_location` INT default '0',
   `contact_oreon` enum('0','1') default NULL,
   `contact_admin` enum('0','1') default '0',
   `contact_type_msg` enum('txt','html','pdf') default 'txt',
@@ -1276,6 +1320,7 @@ CREATE TABLE IF NOT EXISTS `host` (
   `host_stalking_options` varchar(200) default NULL,
   `host_snmp_community` varchar(255) default NULL,
   `host_snmp_version` varchar(255) default NULL,
+  `host_location` INT default '0',
   `host_comment` text,
   `host_register` enum('0','1') default NULL,
   `host_activate` enum('0','1','2') default '1',
