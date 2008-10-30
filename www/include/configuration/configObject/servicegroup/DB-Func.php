@@ -181,7 +181,8 @@
 		$fields["sg_alias"] = htmlentities($ret["sg_alias"], ENT_QUOTES);
 		$fields["sg_comment"] = htmlentities($ret["sg_comment"], ENT_QUOTES);
 		$fields["sg_activate"] = $ret["sg_activate"]["sg_activate"];
-		$fields["sg_hgServices"] = implode(",", $ret["sg_hgServices"]);
+		if (isset($ret["sg_hgServices"]))
+			$fields["sg_hgServices"] = implode(",", $ret["sg_hgServices"]);
 		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id["MAX(sg_id)"], htmlentities($ret["sg_name"], ENT_QUOTES), "a", $fields);
 		
 		/*
@@ -224,7 +225,8 @@
 		$fields["sg_alias"] = htmlentities($ret["sg_alias"], ENT_QUOTES);
 		$fields["sg_comment"] = htmlentities($ret["sg_comment"], ENT_QUOTES);
 		$fields["sg_activate"] = $ret["sg_activate"]["sg_activate"];
-		$fields["sg_hgServices"] = implode(",", $ret["sg_hgServices"]);
+		if (isset($ret["sg_hgServices"]))
+			$fields["sg_hgServices"] = implode(",", $ret["sg_hgServices"]);
 		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, htmlentities($ret["sg_name"], ENT_QUOTES), "c", $fields);
 	}
 	
