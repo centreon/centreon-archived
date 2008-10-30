@@ -25,18 +25,15 @@ sub getLastRestart(){
 	
 	# Create connection
 	$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	if (defined($con)) {
-		my $sth1_oreon = $con->prepare("SELECT `last_restart` FROM `nagios_server`");
-	    if (!$sth1_oreon->execute()) {
-	    	writeLogFile("Error - getLastRestart : " . $sth1_oreon->errstr . "\n");
-	    }
-	    my $data_oreon = $sth1_oreon->fetchrow_hashref();
-	    undef($sth1_oreon);
-	    $con->disconnect();
-	    return $data_oreon->{'last_restart'};
-	} else {
-		return 0;
-	}
+	
+	my $sth1_oreon = $con->prepare("SELECT last_restart FROM nagios_server");
+    if (!$sth1_oreon->execute) {
+    	writeLogFile("Error - getLastRestart : " . $sth1_oreon->errstr . "\n");
+    }
+    my $data_oreon = $sth1_oreon->fetchrow_hashref();
+    undef($sth1_oreon);
+   $con->disconnect();
+    return $data_oreon->{'last_restart'};
 }
 
 # Get last time restart of nagios
