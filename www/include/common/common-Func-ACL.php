@@ -143,7 +143,77 @@
 		isset($lcaHostGroup) ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"] = array();
 		return $LcaHHG;
 	}
+
+	/*
+	 * Get list by name of host and hostgroup by Alias 
+	 *  authorized by ACL  
+	 *
+	 * <code>
+	 * $aclHostByName = getLCAHostByAlias($pearDB);
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$pearDB{TAB}Pear DB connector
+	 * @return{TAB}array{TAB}List of hosts
+	 */
+	
+	function getLCAHostByName($pearDB){
+		if (!$pearDB)
+			return ;
+		/*
+		 * Get Groups list
+		 */	
+		$groups = getGroupListofUser($pearDB);
+		$str 	= groupsListStr($groups);
 		
+		$condition = "";
+		if ($str != "")
+			$condition = " WHERE acl_group_id IN (".$str.")";		
+		$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
+		
+		while ($res =& $DBRESULT2->fetchRow()){
+  			/*
+  			 * Hosts
+  			 */
+  			$host = array();
+  			$DBRESULT3 =& $pearDB->query("SELECT host_name, host_id FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id");
+	  		while ($host =& $DBRESULT3->fetchRow())
+				if ($host["host_name"] != "")
+					$lcaHost[$host["host_name"]] = $host["host_id"];
+			unset($DBRESULT3);
+			/*
+			 * Hosts Groups Inclus
+			 */
+			$hostgroup =  array();
+			$DBRESULT3 =& $pearDB->query(	"SELECT hg_id, hg_alias " .
+											"FROM `hostgroup`, `acl_resources_hg_relations` " .
+											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
+											"AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
+	  		while ($hostgroup =& $DBRESULT3->fetchRow()){
+	  			$DBRESULT4 =& $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation` WHERE host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = '".$hostgroup["hg_id"]."'");
+	  			while ($host_hostgroup =& $DBRESULT4->fetchRow())
+					$lcaHost[$host_hostgroup["host_name"]] = $host_hostgroup["host_id"];
+				$lcaHostGroup[$hostgroup["hg_alias"]] = $hostgroup["hg_id"];	
+	  		}
+			/*
+			 * Hosts Exclus
+			 */
+			$host = array();
+			$DBRESULT3 =& $pearDB->query("SELECT host_name FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND host.host_id = acl_resources_hostex_relations.host_host_id");
+	  		if ($DBRESULT3->numRows())
+		  		while ($host =& $DBRESULT3->fetchRow())
+					if (isset($lcaHost[$host["host_name"]]))
+						unset($lcaHost[$host["host_name"]]);
+			unset($DBRESULT3);
+  		}
+  		if (isset($host) && isset($host["host_name"]))
+			$lcaHost[$host["host_name"]] = $host["host_id"];
+		unset($DBRESULT2);
+  		$LcaHHG = array();
+		isset($lcaHost) ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
+		isset($lcaHostGroup) ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"] = array();
+		return $LcaHHG;
+	}
+
 	/*
 	 * Get Group list of an user
 	 *
@@ -173,20 +243,22 @@
 			$uid = $_POST["uid"]; 
 		/*
 		 * Get User
-		 */			
-		$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
+		 */
+		$DBRESULT =& $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".$uid."'");
 		$user =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
+
 		/*
 		 * Get Groups
 		 */
 		$groups = array();
-		$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$user["user_id"]."'");
+		$DBRESULT =& $pearDB->query("SELECT `acl_group_id` FROM `acl_group_contacts_relations` WHERE `acl_group_contacts_relations`.`contact_contact_id` = '".$user["user_id"]."'");
   		if ($num = $DBRESULT->numRows()){
 			while ($group =& $DBRESULT->fetchRow())
 				$groups[$group["acl_group_id"]] = $group["acl_group_id"];
 			$DBRESULT->free();
   		}
+
   		/*
   		 * Free
   		 */
@@ -228,7 +300,7 @@
 	function groupsListStr($groups){
 		$str = '';
 		if (count($groups))
-			foreach ($groups as $group_id){
+			foreach ($groups as $group_id) {
 				if ($str != "")
 					$str .= ", ";
 				$str .= $group_id;
@@ -373,9 +445,10 @@
 	 */
 	
 	function getServiceTemplateList2($service_id = NULL)	{
+		global $pearDB;
+
 		if (!$service_id) 
 			return;
-		global $pearDB;
 		/*
 		 * Init Table of template
 		 */
@@ -414,7 +487,7 @@
 		global $pearDB;
 		
 		$tab = array();
-		$DBRESULT =& $pearDB->query("SELECT sc_id FROM `service_categories_relation` WHERE service_service_id IN (".$str.")");
+		$DBRESULT =& $pearDB->query("SELECT `sc_id` FROM `service_categories_relation` WHERE `service_service_id` IN (".$str.")");
 		while ($res =& $DBRESULT->fetchRow())
 			$tab[$res["sc_id"]] = $res["sc_id"];
 		unset($res);		
@@ -442,23 +515,24 @@
 			$groups = getGroupListofUser($pearDB);
 			$groupstr = groupsListStr($groups);
 		}		
+
 		/*
-		 * Init Table
+		 * Init Acl Table
 		 */
 		$svc = array();
 		
 		$str_topo = "";
 		$condition = "";
 		if ($groupstr != "")
-			$condition = " WHERE acl_group_id IN (".$groupstr.")";		
-		$DBRESULT =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
-		while ($res =& $DBRESULT->fetchRow()){
-			$DBRESULT2 =& $pearDB->query(	"SELECT service_service_id " .
-											"FROM servicegroup, acl_resources_sg_relations, servicegroup_relation " .
-											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
-													"AND acl_resources_sg_relations.sg_id = servicegroup.sg_id " .
-													"AND servicegroup_relation.servicegroup_sg_id = servicegroup.sg_id " .
-													"AND servicegroup_relation.host_host_id = '".$host_id."'");	
+			$condition = " WHERE `acl_group_id` IN (".$groupstr.")";		
+		$DBRESULT =& $pearDB->query("SELECT `acl_res_id` FROM `acl_res_group_relations` $condition");
+		while ($res =& $DBRESULT->fetchRow()) {
+			$DBRESULT2 =& $pearDB->query(	"SELECT `service_service_id` " .
+											"FROM `servicegroup`, `acl_resources_sg_relations`, `servicegroup_relation` " .
+											"WHERE `acl_res_id` = '".$res["acl_res_id"]."' " .
+													"AND `acl_resources_sg_relations`.`sg_id` = `servicegroup`.`sg_id` " .
+													"AND `servicegroup_relation`.`servicegroup_sg_id` = `servicegroup`.`sg_id` " .
+													"AND `servicegroup_relation`.`host_host_id` = '".$host_id."'");	
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($service =& $DBRESULT2->fetchRow())
@@ -485,10 +559,11 @@
 		global $pearDB;
 		
 		$tab_svc 	= getMyHostServicesByName($host_id);
+
 		/*
 		 * Get categories
 		 */
-		if ($res_id == NULL){ 
+		if ($res_id == NULL) { 
 			$tab_cat    = getAuthorizedCategories($groupstr);
 		} else {
 			$tab_cat    = getAuthorizedCategories($groupstr, $res_id);
@@ -540,7 +615,7 @@
 		$groups 	= getGroupListofUser($pearDB);
 		$groupstr 	= groupsListStr($groups);
 		
-		foreach ($lca["LcaHost"] as $key => $value){
+		foreach ($lca["LcaHost"] as $key => $value) {
 			$host = array();
 			$host["id"] = $value;
 			$host["svc"] = getAuthorizedServicesHost($value, $groupstr);
@@ -791,21 +866,22 @@
 		return array();
 	}
 	
-/*
- * function getActionsACLList
- * This function is designed to return a list of actions allowed for an user
- *
- * <code>
- *		$authorized_actions = array();
- *		$authorized_actions = getActionsACLList($GroupListofUser);
- * </code>
- *
- * Input is a list of ACL groups of user
- * @param	array ( [0] => Group1 [1] => Groupx ) 
- * 
- * Output is a list of actions allowed for a user like:
- * @return array ( [0] => service_notifications [1] => service_schedule_check [2] => service_schedule_downtime [3] => ... )
- */
+	/*
+	 * function getActionsACLList
+	 * This function is designed to return a list of actions allowed for an user
+	 *
+	 * <code>
+	 *		$authorized_actions = array();
+	 *		$authorized_actions = getActionsACLList($GroupListofUser);
+	 * </code>
+	 *
+	 * Input is a list of ACL groups of user
+	 * @param	array ( [0] => Group1 [1] => Groupx ) 
+	 * 
+	 * Output is a list of actions allowed for a user like:
+	 * @return array ( [0] => service_notifications [1] => service_schedule_check [2] => service_schedule_downtime [3] => ... )
+	 */
+	 
 	function getActionsACLList($GroupListofUser){	
 		global $pearDB;		
 		
@@ -848,13 +924,12 @@
 			
 			# Request in order to list Actions Access enabled
 			if ($idsRequest != "") {
-				$request = "SELECT acl_action_id FROM `acl_actions` WHERE acl_action_activate = '1' AND ($idsRequest)";
-				
+				$request = "SELECT acl_action_id FROM `acl_actions` WHERE acl_action_activate = '1' AND ($idsRequest)";			
 				$DBRESULT =& $pearDB->query($request);
 				if (PEAR::isError($DBRESULT)) 
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				$idsActions = array();
-				while ($rule =& $DBRESULT->fetchRow()){
+				while ($rule =& $DBRESULT->fetchRow()) {
 					$idsActions[] =  $rule["acl_action_id"];
 				}
 			} else {
@@ -887,29 +962,29 @@
 		return NULL;
 	}
 	
-/*
- * function verifyActionsACLofUser
- * This function is designed to verify if user is allowed to perform an action
- *
- * <code>
- * 		// Un exemple with the action "host_comment"
- *		$authorized_actions = false;
- *		$authorized_actions = getActionsACLList("host_comment");
- *		print $authorized_actions; // (print true or false if user is allowed or not)
- * </code>
- *
- * Input is the name of the action, names are in the "DB-Func.php" of the "Actions Access" configuration interface (function listActions()).
- * @param	string "service_checks" 
- * 
- * Output is true or false
- * @return string true/false
- */
+	/*
+	 * function verifyActionsACLofUser
+	 * This function is designed to verify if user is allowed to perform an action
+	 *
+	 * <code>
+	 * 		// Un exemple with the action "host_comment"
+	 *		$authorized_actions = false;
+	 *		$authorized_actions = getActionsACLList("host_comment");
+	 *		print $authorized_actions; // (print true or false if user is allowed or not)
+	 * </code>
+	 *
+	 * Input is the name of the action, names are in the "DB-Func.php" of the "Actions Access" configuration interface (function listActions()).
+	 * @param	string "service_checks" 
+	 * 
+	 * Output is true or false
+	 * @return string true/false
+	 */
+	 
 	function verifyActionsACLofUser($action_name){
 		global $pearDB;	
 		
-		$GroupListofUser = array();
-		$authorized_actions = array();
 		$authorisation = false;
+		$authorized_actions = array();
 		
 		$GroupListofUser = getGroupListofUser($pearDB);
 		$authorized_actions = getActionsACLList($GroupListofUser);
@@ -925,4 +1000,8 @@
 
 		return $authorisation;
 	}
+	
+	/*
+	 * --- End ---
+	 */
 ?>
