@@ -26,15 +26,13 @@
 		$limit = $oreon->historyLimit[$url];
 	else {
 		if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)){
-			$pagination = "maxViewMonitoring";
-			$DBRESULT =& $pearDB->query("SELECT $pagination FROM general_opt LIMIT 1");
+			$DBRESULT =& $pearDB->query("SELECT `maxViewMonitoring` FROM general_opt LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 			$limit = $gopt[$pagination];
 		} else {
-			$pagination = "maxViewConfiguration";
-			$DBRESULT =& $pearDB->query("SELECT $pagination FROM general_opt LIMIT 1");
+			$DBRESULT =& $pearDB->query("SELECT `maxViewConfiguration` FROM general_opt LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
