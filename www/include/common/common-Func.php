@@ -18,11 +18,7 @@
 /*
  * This file contains all globals functions using by Centreon. 
  *
- * PHP version 5
- *
  * @package common-Func.php
- * @author Julien Mathis
- * @author Damien Duponchelle
  * @version $Id: $
  * @copyright (c) 2007-2008 Centreon
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -38,17 +34,17 @@
 	 * @param	string	$table_name (the name of the table to test)
 	 * @return	int		0 			(return 0 if the table exists)
 	 */
+
 	function table_not_exists($table_name) {
 		global $pearDBndo;
 
 		$DBRESULT =& $pearDBndo->query("SHOW TABLES LIKE '".$table_name."'");
-		
 		if (PEAR::isERROR($DBRESULT)) {
 			return ("[" . $table_name . "] -- " . $DBRESULT->getMessage());
 		}
 				
 		if ($DBRESULT->numRows() > 0) {
-		return 0;
+			return 0;
 		}
 	}
 
@@ -59,8 +55,7 @@
 	function getStatusColor($pearDB){
 		$DBRESULT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error When selection color status : ".$DBRESULT->getDebugInfo()."<br />";
-		
+			print "DB Error When selection color status : ".$DBRESULT->getDebugInfo()."<br />";		
 		return $DBRESULT->fetchRow();	
 	}
 
@@ -107,24 +102,26 @@
 		$tpl->force_compile = true;
 		return $tpl;
 	}
-
-
-	#
-	## FORM VALIDATION
-	#
+	
+	/*
+	 * FORM VALIDATION
+	 */
 	function myTrim($str)	{
 		global $form;
 		$str = rtrim($str,'\\');
 		return (trim($str));
 	}
 
-	#
-	## HOST
-	#
+	/*
+	 * Hosts Functions
+	 */
 
 	function getMyHostTemplateModel($host_id = NULL)	{
-		if (!$host_id) return;
 		global $pearDB;
+		
+		if (!$host_id) 
+			return;
+		
 		$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -136,8 +133,10 @@
 	}
 
 	function getMyHostName($host_id = NULL)	{
-		if (!$host_id) return;
 		global $pearDB;
+		
+		if (!$host_id) 
+			return;
 		$DBRESULT =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$host_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -147,8 +146,10 @@
 	}
 
 	function isAHostTpl($host_id = NULL)	{
-		if (!$host_id) return;
 		global $pearDB;
+		
+		if (!$host_id) 
+			return;
 		$DBRESULT =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
