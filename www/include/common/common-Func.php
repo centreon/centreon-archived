@@ -374,6 +374,111 @@
 		return $row["nagios_version"];	
 	}
 
+	function getMyHostMacroFromMultiTemplates($host_id, $field){
+		if (!$host_id) 
+			return NULL;
+		global $pearDB;		
+		
+		$rq = "SELECT host_tpl_id " .
+			"FROM host_template_relation " .
+			"WHERE host_host_id = '".$host_id."' " .
+			"ORDER BY `order`";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($row =& $DBRESULT->fetchRow()) {
+			$rq2 = 	"SELECT macro.host_macro_value " .
+					"FROM on_demand_macro_host macro " .
+					"WHERE macro.host_host_id = '".$row["host_tpl_id"]."' AND macro.host_macro_name = '\$_HOST".$field."\$' LIMIT 1";										
+			$DBRESULT2 =& $pearDB->query($rq2);
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			$row2 =& $DBRESULT2->fetchRow();
+			if (isset($row2["host_macro_value"]) && $row2["host_macro_value"])
+				return $row2["host_macro_value"];
+			else {
+				if ($result_field = getMyHostMacroFromMultiTemplates($row['host_tpl_id'], $field)) {
+					return $result_field;
+				}
+			}
+		}
+		return NULL;
+	}
+	
+	function getMyHostMacro($host_id = NULL, $field)	{
+		if (!$host_id) 
+			return;
+		global $pearDB, $oreon;
+		
+		$version = getVersion();
+		
+		if ($version < 3) {
+			while (1)	{
+				$DBRESULT =& $pearDB->query("SELECT macro.host_macro_value, h.host_template_model_htm_id FROM host h, on_demand_macro_host macro WHERE macro.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' AND macro.host_macro_name = '\$_HOST".$field."\$' LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$row =& $DBRESULT->fetchRow();
+				if (isset($row["host_macro_value"]) && $row["host_macro_value"])
+					return $row["host_macro_value"];
+				else if ($row["host_template_model_htm_id"])
+					$host_id = $row["host_template_model_htm_id"];
+				else
+					return NULL;
+			}
+		} else if ($version >= 3) {			
+			$rq = 	"SELECT macro.host_macro_value " .
+					"FROM on_demand_macro_host macro " .
+					"WHERE macro.host_host_id = '".$host_id."' AND macro.host_macro_name = '\$_HOST".$field."\$' LIMIT 1";								
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$row =& $DBRESULT->fetchRow();
+			if (isset($row["host_macro_value"]) && $row["host_macro_value"])
+				return $row["host_macro_value"];
+			else {
+				return getMyHostMacroFromMultiTemplates($host_id, $field);
+			}
+		}
+			
+	}
+	
+	function getMyServiceMacro($service_id = NULL, $field)	{
+		if (!$service_id) 
+			return;
+		global $pearDB, $oreon;
+		
+		$version = getVersion();
+		
+		if ($version < 3) {
+			while (1)	{
+				$DBRESULT =& $pearDB->query("SELECT macro.svc_macro_value, s.service_template_model_stm_id FROM service s, on_demand_macro_service macro WHERE macro.service_service_id = '".$service_id."' AND s.service_id = '".$service_id."' AND macro.svc_macro_name = 'macro.svc_macro_name = '\$_SERVICE".$field."\$' LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$row =& $DBRESULT->fetchRow();
+				if (isset($row["svc_macro_value"]) && $row["svc_macro_value"])
+					return $row["svc_macro_value"];
+				else if ($row["service_template_model_stm_id"])
+					$service_id = $row["service_template_model_stm_id"];
+				else
+					return NULL;
+			}
+		} else if ($version >= 3) {			
+			$rq = 	"SELECT macro.svc_macro_value " .
+					"FROM on_demand_macro_service macro " .
+					"WHERE macro.svc_svc_id = '".$service_id."' AND macro.svc_macro_name = '\$_SERVICE".$field."\$' LIMIT 1";								
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$row =& $DBRESULT->fetchRow();
+			if (isset($row["svc_macro_value"]) && $row["svc_macro_value"])
+				return $row["svc_macro_value"];
+			else {
+				$service_id = getMyServiceField($service_id, "service_template_model_stm_id");
+				return getMyServiceMacro($service_id, $field);
+			}
+		}
+	}
+
 	function getMyHostExtendedInfoField($host_id = NULL, $field)	{
 		if (!$host_id) return;
 		global $pearDB, $oreon;
@@ -822,7 +927,8 @@
 	}
 
 	function getMyServiceID($service_description = NULL, $host_id = NULL, $hg_id = NULL)	{
-		if (!$service_description && (!$host_id || !$hg_id)) return;
+		if (!$service_description && (!$host_id || !$hg_id)) 
+			return;
 		global $pearDB;
 		$service_description = str_replace('/', '#S#', $service_description);
 		$service_description = str_replace('\\', '#BS#', $service_description);
