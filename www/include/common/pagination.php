@@ -150,8 +150,7 @@
 	$form->addElement('hidden', 'order');
 	$form->addElement('hidden', 'type');
 	$form->addElement('hidden', 'sort_types');
-	$tab = array ("p" => $p, "search" => $search, "num"=>$num);
-	$form->setDefaults($tab);
+	$form->setDefaults(array("p" => $p, "search" => $search, "num"=>$num));
 
 	/*
 	 * Init QuickForm
