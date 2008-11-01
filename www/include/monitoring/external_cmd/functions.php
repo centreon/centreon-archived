@@ -18,8 +18,11 @@
 	if (!isset($oreon))
 		exit();	
 
-	$tab["1"] = "ENABLE";
-	$tab["0"] = "DISABLE";
+	$tab = array("1" => "ENABLE", "0" => "DISABLE");
+
+	/*
+	 * Write command in nagios pipe or in centcore pipe. 
+	 */
 
 	function write_command($cmd, $poller){
 		global $oreon, $key, $pearDB;
@@ -42,44 +45,48 @@
 		return $ret;
 	}
 	
-	// Re-Schedule for all service of an host
+	/*
+	 * 	Re-Schedule for all service of an host
+	 */
 	function schedule_host_svc_checks($arg, $forced){
-		global $pearDB;
+		global $pearDB, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_checks_for_services");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$tab_forced = array("0" => "", "1" => "_FORCED");
 			$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_HOST_SVC_CHECKS;" . $arg . ";" . time(), GetMyHostPoller($pearDB, $arg));
 			return $flg;
 		}
-		
 		return NULL;
 	}
 	
-	// SCHEDULE_SVC_CHECK
+	/*
+	 * SCHEDULE_SVC_CHECK
+	 */
 	function schedule_svc_checks($arg, $forced){
-		global $pearDB;
+		global $pearDB, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("service_checks");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$tab_forced = array("0" => "", "1" => "_FORCED");
 			$tab_data = split(";", $arg);
 			$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_SVC_CHECK;". $tab_data[0] . ";" . $tab_data[1] . ";" . time(), GetMyHostPoller($pearDB, $tab_data[0]));
 			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 	
-	// host check
+	/*
+	 * host check
+	 */
 	function host_check($arg, $type){
-		global $tab, $pearDB;
+		global $tab, $pearDB, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_checks");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$flg = write_command(" ". $tab[$type]."_HOST_CHECK;". $arg, GetMyHostPoller($pearDB, $arg));
 			return _("Your command has been sent");
 		}
@@ -87,91 +94,92 @@
 		return NULL;
 	}
 	
-	//  host notification
-	
+	/*
+	 * 	host notification
+	 */	
 	function host_notification($arg, $type){
-		global $tab, $pearDB;
+		global $tab, $pearDB, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_notifications");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$flg = write_command(" ".$tab[$type]."_HOST_NOTIFICATIONS;". $arg, GetMyHostPoller($pearDB, $arg));
 			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 	
-	// ENABLE_HOST_SVC_NOTIFICATIONS
-	
+	/*
+	 * ENABLE_HOST_SVC_NOTIFICATIONS
+	 */
 	function host_svc_notifications($arg, $type){
-		global $tab, $pearDB;
+		global $tab, $pearDB, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_notifications_for_services");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$flg = write_command(" " . $tab[$type] . "_HOST_SVC_NOTIFICATIONS;". $arg, GetMyHostPoller($pearDB, $arg));
 			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 	
-	// ENABLE_HOST_SVC_CHECKS
-	
+	/*
+	 * ENABLE_HOST_SVC_CHECKS
+	 */
 	function host_svc_checks($arg, $type){
-		global $tab, $pearDB;
+		global $tab, $pearDB, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_checks_for_services");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$flg = write_command(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $arg, GetMyHostPoller($pearDB, $arg));
 			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 	
-	// ENABLE_HOST_SVC_CHECKS
-	
+	/*
+	 * ENABLE_HOST_SVC_CHECKS
+	 */
 	function svc_check($arg, $type){
-		global $tab, $pearDB;
+		global $tab, $pearDB, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_checks");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
 			$flg = write_command(" " . $tab[$type] . "_SVC_CHECK;". $tab_data["0"] .";".$tab_data["1"], GetMyHostPoller($pearDB, $tab_data["0"]));
 			return _("Your command has been sent");
-		}
-		
+		}		
 		return NULL;
 	}
 	
-	// PASSIVE_SVC_CHECKS
-	
+	/*
+	 * PASSIVE_SVC_CHECKS
+	 */
 	function passive_svc_check($arg, $type){
-		global $pearDB,$tab;
+		global $pearDB,$tab, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("service_passive_checks");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
 			$flg = write_command(" " . $tab[$type] . "_PASSIVE_SVC_CHECKS;". $tab_data[0] . ";". $tab_data[1], GetMyHostPoller($pearDB, $tab_data["0"]));
 			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 	
-	// SVC_NOTIFICATIONS
-	
+	/*
+	 * SVC_NOTIFICATIONS
+	 */
 	function svc_notifications($arg, $type){
-		global $pearDB,$tab;
+		global $pearDB,$tab, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("service_notifications");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
 			$flg = write_command(" " . $tab[$type] . "_SVC_NOTIFICATIONS;". $tab_data[0] . ";". $tab_data[1], GetMyHostPoller($pearDB, $tab_data["0"]));
 			return _("Your command has been sent");
@@ -179,146 +187,160 @@
 		return NULL;
 	}
 	
-	// _SVC_EVENT_HANDLER
-	
+	/*
+	 * SVC_EVENT_HANDLER
+	 */
 	function svc_event_handler($arg, $type){
-		global $pearDB,$tab;
+		global $pearDB,$tab, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("service_event_handler");
 		
-		if($actions == true) {
-		$tab_data = split(";", $arg);
-		$flg = write_command(" " . $tab[$type] . "_SVC_EVENT_HANDLER;". $tab_data[0] .";".$tab_data[1], GetMyHostPoller($pearDB, $tab_data["0"]));
-		return _("Your command has been sent");
+		if ($actions == true || $is_admin) {
+			$tab_data = split(";", $arg);
+			$flg = write_command(" " . $tab[$type] . "_SVC_EVENT_HANDLER;". $tab_data[0] .";".$tab_data[1], GetMyHostPoller($pearDB, $tab_data["0"]));
+			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 	
-	// _HOST_EVENT_HANDLER
-	
+	/*
+	 * HOST_EVENT_HANDLER
+	 */
 	function host_event_handler($arg, $type){
-		global $pearDB,$tab;
+		global $pearDB,$tab, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_event_handler");
 		
-		if($actions == true) {
-		$tab_data = split(";", $arg);
-		$flg = write_command(" " . $tab[$type] . "_HOST_EVENT_HANDLER;". $arg, GetMyHostPoller($pearDB, $arg));
-		return _("Your command has been sent");
+		if ($actions == true || $is_admin) {
+			$tab_data = split(";", $arg);
+			$flg = write_command(" " . $tab[$type] . "_HOST_EVENT_HANDLER;". $arg, GetMyHostPoller($pearDB, $arg));
+			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 	
-	//_SVC_FLAP_DETECTION
+	/*
+	 * Enable or disable Flap detection 
+	 */
 	function svc_flapping_enable($arg, $type){
-		global $pearDB,$tab;
+		global $pearDB,$tab, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("service_flap_detection");
 		
-		if($actions == true) {
-		$tab_data = split(";", $arg);
-		$flg = write_command(" " . $tab[$type] . "_SVC_FLAP_DETECTION;". $tab_data[0] .";".$tab_data[1], GetMyHostPoller($pearDB, $tab_data[0]));
-		return _("Your command has been sent");
+		if ($actions == true || $is_admin) {
+			$tab_data = split(";", $arg);
+			$flg = write_command(" " . $tab[$type] . "_SVC_FLAP_DETECTION;". $tab_data[0] .";".$tab_data[1], GetMyHostPoller($pearDB, $tab_data[0]));
+			return _("Your command has been sent");
 		}
 		return NULL;
 	}
 	
-	//_HOST_FLAP_DETECTION
+	/*
+	 * HOST_FLAP_DETECTION
+	 */
 	function host_flapping_enable($arg, $type){
-		global $pearDB,$tab;
+		global $pearDB,$tab, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_flap_detection");
 		
-		if($actions == true) {
-		$tab_data = split(";", $arg);
-		$flg = write_command(" " . $tab[$type] . "_HOST_FLAP_DETECTION;". $arg, GetMyHostPoller($pearDB, $arg));
-		return _("Your command has been sent");
+		if ($actions == true || $is_admin) {
+			$tab_data = split(";", $arg);
+			$flg = write_command(" " . $tab[$type] . "_HOST_FLAP_DETECTION;". $arg, GetMyHostPoller($pearDB, $arg));
+			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 	
+	/*
+	 * enable or disable notification for a hostgroup 
+	 */
 	function notifi_host_hostgroup($arg, $type){
-		global $pearDB,$tab;
+		global $pearDB, $tab, $is_admin;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_HOST_NOTIFICATIONS;". $tab_data[0], GetMyHostPoller($pearDB, $tab_data[0]));
 		return _("Your command has been sent");
 	}
-	
+
+	/*
+	 * Ack a host
+	 */	
 	function acknowledgeHost(){
-		global $pearDB,$tab, $_GET, $key;
+		global $pearDB,$tab, $_GET, $key, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_acknowledgement");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$key = $_GET["host_name"];
 			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$_GET["host_name"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
 			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 	
+	/*
+	 * Remove ack for a host
+	 */
 	function acknowledgeHostDisable(){
-		global $pearDB,$tab, $_GET;
+		global $pearDB,$tab, $_GET, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("host_acknowledgement");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$_GET["host_name"], GetMyHostPoller($pearDB, $_GET["host_name"]));
 			return _("Your command has been sent");
 		}
 		
 		return NULL;
 	}
-	
+
+	/*
+	 * Remove ack for a service
+	 */	
 	function acknowledgeServiceDisable(){
-		global $pearDB,$tab;
+		global $pearDB,$tab, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("service_acknowledgement");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$_GET["host_name"].";".$_GET["service_description"], GetMyHostPoller($pearDB, $_GET["host_name"]));
 			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 
+	/*
+	 * Ack a service
+	 */
 	function acknowledgeService(){
-		global $pearDB, $tab;
+		global $pearDB, $tab, $is_admin;
 		$actions = false;
 		$actions = verifyActionsACLofUser("service_acknowledgement");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$_GET["comment"] = $_GET["comment"];
 			$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
 			$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$_GET["host_name"].";".$_GET["service_description"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
 			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 
-	function submitPassiveCheck(){
-		global $pearDB, $key;
+	function submitPassiveCheck() {
+		global $pearDB, $key, $is_admin;
 		$actions = false;		
 		$actions = verifyActionsACLofUser("service_submit_result");
 		
-		if ($actions == true) {
+		if ($actions == true || $is_admin) {
 			$key = $_GET["host_name"];
 			$flg = write_command(" PROCESS_SERVICE_CHECK_RESULT;".$_GET["host_name"].";".$_GET["service_description"].";".$_GET["return_code"].";".$_GET["output"]."|".$_GET["dataPerform"], GetMyHostPoller($pearDB, $_GET["host_name"]));
 			return _("Your command has been sent");
 		}
-		
 		return NULL;
 	}
 	
 	
 	function notifi_svc_host_hostgroup($arg, $type){
-		global $tab, $pearDB;
+		global $tab, $pearDB, $is_admin;
 	/*	$res =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$arg."'");
 		while ($r =& $res->fetchRow()){
 			$resH =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$r["host_host_id"]."'");
@@ -330,7 +352,7 @@
 	}
 	
 	function checks_svc_host_hostgroup($arg, $type){
-		global $tab, $pearDB;
+		global $tab, $pearDB, $is_admin;
 		/*$res =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$arg."'");
 		$r =& $res->fetchRow();
 		$flg = write_command(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $rH["host_name"]);
@@ -342,98 +364,175 @@
 	# Monitoring Quick Actions
 	#############################################################################
 	
-	/* Acknowledge */
+	/*
+	 * Quick Action -> service ack : Stop and start
+	 */
 	
 	function autoAcknowledgeServiceStart($key){
-		global $pearDB,$tab,$oreon;
-		$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
-		$ressource = split(";", $key);
-		$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$ressource[0].";".$ressource[1].";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab,$oreon, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("service_acknowledgement");
+		
+		if ($actions == true || $is_admin) {
+			$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
+			$ressource = split(";", $key);
+			$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$ressource[0].";".$ressource[1].";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
 	function autoAcknowledgeServiceStop($key){
-		global $pearDB,$tab,$oreon;
-		$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
-		$ressource = split(";", $key);
-		$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab,$oreon, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("service_acknowledgement");
+		
+		if ($actions == true || $is_admin) {
+			$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
+			$ressource = split(";", $key);
+			$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
+	/*
+	 * Quick Action -> host ack : Stop and start
+	 */
+	
 	function autoAcknowledgeHostStart($key){
-		global $pearDB,$tab,$oreon;
-		$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";
-		$ressource = split(";", $key);
-		$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$ressource[0].";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab,$oreon, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("host_acknowledgement");
+		
+		if ($actions == true || $is_admin) {
+			$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";
+			$ressource = split(";", $key);
+			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$ressource[0].";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
 	function autoAcknowledgeHostStop($key){
-		global $pearDB,$tab,$oreon;
-		$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";
-		$ressource = split(";", $key);
-		$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab,$oreon, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("host_acknowledgement");
+		
+		if ($actions == true || $is_admin) {
+			$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";
+			$ressource = split(";", $key);
+			$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
-	/* Notification */
+	/*
+	 * Quick Action -> service notification : Stop and start
+	 */
 	
 	function autoNotificationServiceStart($key){
-		global $pearDB,$tab;
-		$ressource = split(";", $key);
-		$flg = write_command(" ENABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("host_notifications");
+		
+		if ($actions == true || $is_admin) {
+			$ressource = split(";", $key);
+			$flg = write_command(" ENABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
 	function autoNotificationServiceStop($key){
-		global $pearDB,$tab;
-		$ressource = split(";", $key);
-		$flg = write_command(" DISABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("service_notifications");
+		
+		if ($actions == true || $is_admin) {
+			$ressource = split(";", $key);
+			$flg = write_command(" DISABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
+	/*
+	 * Quick Action -> host notification : Stop and start
+	 */
+	
 	function autoNotificationHostStart($key){
-		global $pearDB,$tab;
-		$ressource = split(";", $key);
-		$flg = write_command(" ENABLE_HOST_NOTIFICATIONS;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("host_notifications");
+		
+		if ($actions == true || $is_admin) {
+			$ressource = split(";", $key);
+			$flg = write_command(" ENABLE_HOST_NOTIFICATIONS;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
 	function autoNotificationHostStop($key){
-		global $pearDB,$tab;
-		$ressource = split(";", $key);
-		$flg = write_command(" DISABLE_HOST_NOTIFICATIONS;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("host_notifications");
+		
+		if ($actions == true || $is_admin) {
+			$ressource = split(";", $key);
+			$flg = write_command(" DISABLE_HOST_NOTIFICATIONS;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
-	/* Check */
+	/*
+	 * Quick Action -> service check : Stop and start
+	 */
 	
 	function autoCheckServiceStart($key){
-		global $pearDB,$tab;
-		$ressource = split(";", $key);
-		$flg = write_command(" ENABLE_SVC_CHECK;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("service_checks");
+		
+		if ($actions == true || $is_admin) {
+			$ressource = split(";", $key);
+			$flg = write_command(" ENABLE_SVC_CHECK;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
 	function autoCheckServiceStop($key){
-		global $pearDB,$tab;
-		$ressource = split(";", $key);
-		$flg = write_command(" DISABLE_SVC_CHECK;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("service_checks");
+		
+		if ($actions == true || $is_admin) {
+			$ressource = split(";", $key);
+			$flg = write_command(" DISABLE_SVC_CHECK;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
+	/*
+	 * Quick Action -> host check : Stop and start
+	 */
+	
 	function autoCheckHostStart($key){
-		global $pearDB,$tab;
-		$ressource = split(";", $key);
-		$flg = write_command(" ENABLE_HOST_CHECK;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		global $pearDB,$tab, $is_admin;
+		$actions = false;		
+		$actions = verifyActionsACLofUser("host_checks");
+		
+		if ($actions == true || $is_admin) {
+			$ressource = split(";", $key);
+			$flg = write_command(" ENABLE_HOST_CHECK;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
 	
 	function autoCheckHostStop($key){
-		global $pearDB,$tab;
-		$ressource = split(";", $key);
-		$flg = write_command(" DISABLE_HOST_CHECK;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
-		return _("Your command has been sent");
+		$actions = false;		
+		$actions = verifyActionsACLofUser("host_checks");
+		
+		if ($actions == true || $is_admin) {
+			global $pearDB,$tab, $is_admin;
+			$ressource = split(";", $key);
+			$flg = write_command(" DISABLE_HOST_CHECK;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
+			return _("Your command has been sent");
+		}
 	}
-	
 ?>
