@@ -109,12 +109,7 @@
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 
-	$tab_status_service = array();
-	$tab_status_service[0] = "OK";
-	$tab_status_service[1] = "WARNING";
-	$tab_status_service[2] = "CRITICAL";
-	$tab_status_service[3] = "UNKNOWN";
-	$tab_status_service[4] = "PENDING";
+	$tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 
 	while ($ndo =& $DBRESULT_NDO->fetchRow()){
 		if($ndo["service_description"] == $svc_description)
@@ -164,7 +159,9 @@
 
 		$path = "./include/monitoring/objectDetails/";
 
-		# Smarty template Init
+		/*
+		 * Smarty template Init
+		 */
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl($path, $tpl, "./template/");
 
@@ -188,7 +185,6 @@
 		
 		$en_acknowledge_text= array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge 	= array("1" => "0", "0" => "1");
-
 		$en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
 		$en_inv	 			= array("1" => "0", "0" => "1");
 		$en_inv_text 		= array("1" => _("Disable"), "0" => _("Enable"));
@@ -289,12 +285,14 @@
 		 * else we introduce all actions allowed for user
 		 */
 		$tpl->assign("acl_allActions", $allActions);
+		$tpl->assign($aclAct, $authorized_actions);			
+		/*
 		if (isset($authorized_actions)){
 			foreach ($authorized_actions as $actions) {
 				$tpl->assign($actions, $actions);			
 			}
 		}
-		
+		*/
 		$tpl->assign("p", $p);
 		$tpl->assign("o", $o);
 		$tpl->assign("en", $en);
