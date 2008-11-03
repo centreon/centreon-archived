@@ -58,8 +58,7 @@
 	 */
 	$host_id = getMyHostID($host_name);
 
-	isset($lcaHost["LcaHost"][$host_name]) || $is_admin ? $key = true : $key = NULL;
-	if ($key == NULL){
+	if ((!$is_admin && !isset($lcaHost["LcaHost"][$host_name]))){
 		include_once("alt_error.php");
 	} else {
 
