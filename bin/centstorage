@@ -440,7 +440,7 @@ sub updateServiceState($$$$){ # Host name, sercvice desc, ctime, index
 			$interval = 3 if (!defined($interval));
 			$interval = getIntervalLenght() * $interval;
 			my $interval_hb = $interval * 2;
-			$nb_value = getLenStorageDB() * 24 * 60 * 60 / $interval;
+			$nb_value = getLenStorageDB() / $interval;
 
 			createRRDDatabase($RRDdatabase_status_path, $index, $begin, $interval, "status", $nb_value);
 			tuneRRDDatabase($RRDdatabase_status_path, $index, "status", $interval_hb);
