@@ -140,8 +140,6 @@
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"this.form.elements['o1'].selectedIndex = 0");
 	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
@@ -152,10 +150,8 @@
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"this.form.elements['o1'].selectedIndex = 0");
-    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
+    $form->addElement('select', 'o2', NULL, array(NULL => _("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 =& $form->getElement('o1');
