@@ -25,7 +25,7 @@
 	$GroupListofUser =  getGroupListofUser($pearDB);
 	
 	$allActions = false;
-	if (count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+	if (count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
 		$authorized_actions = getActionsACLList($GroupListofUser);
 		
@@ -56,117 +56,110 @@
 
 	$tab_status = array();
 
-	/*
-	 * Host Group List
-	 */
-	$host_id = getMyHostID($host_name);
-
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
-	for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
-		$hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
-	$DBRESULT->free();
-
-	if (isset($host_id)) {
-		$proc_warning = getMyHostMacro($host_id, "PROC_WARNING");
-		$proc_critical = getMyHostMacro($host_id, "PROC_CRITICAL");
-	}
-	
-
-	include_once("./DBNDOConnect.php");
-	
-	/* 
-	 * start ndo svc info 
-	 */
-	$rq ="SELECT " .
-			" nss.current_state," .
-			" nss.output as plugin_output," .
-			" nss.current_check_attempt as current_attempt," .
-			" nss.status_update_time as status_update_time," .
-			" unix_timestamp(nss.last_state_change) as last_state_change," .
-			" unix_timestamp(nss.last_check) as last_check," .
-			" nss.notifications_enabled," .
-			" unix_timestamp(nss.next_check) as next_check," .
-			" nss.problem_has_been_acknowledged," .
-			" nss.passive_checks_enabled," .
-			" nss.active_checks_enabled," .
-			" nss.event_handler_enabled," .
-			" nss.is_flapping," .
-			" nss.latency as check_latency," .
-			" nss.execution_time as check_execution_time," .
-			" nss.flap_detection_enabled," .
-			" unix_timestamp(nss.last_notification) as last_notification," .
-			" no.name1 as host_name," .
-			" no.name2 as service_description" .
-			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-			" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
-
-	$DBRESULT_NDO =& $pearDBndo->query($rq);
-	if (PEAR::isError($DBRESULT_NDO))
-		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-
-	$tab_status_service = array();
-	$tab_status_service[0] = "OK";
-	$tab_status_service[1] = "WARNING";
-	$tab_status_service[2] = "CRITICAL";
-	$tab_status_service[3] = "UNKNOWN";
-	$tab_status_service[4] = "PENDING";
-
-	while ($ndo =& $DBRESULT_NDO->fetchRow())	{
-		if (!isset($tab_status[$ndo["current_state"]]))
-			$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
-		$tab_status[$tab_status_service[$ndo["current_state"]]]++;
-	}
-
-	/* 
-	 * start ndo host detail
-	 */
-	$tab_host_status[0] = "UP";
-	$tab_host_status[1] = "DOWN";
-	$tab_host_status[2] = "UNREACHABLE";
-
-	$rq2 = "SELECT nhs.current_state," .
-		" nhs.problem_has_been_acknowledged, " .
-		" nhs.passive_checks_enabled," .
-		" nhs.active_checks_enabled," .
-		" nhs.notifications_enabled," .
-		" nhs.state_type," .
-		" nhs.execution_time as check_execution_time," .
-		" nhs.latency as check_latency," .
-		" nhs.perfdata as performance_data," .
-		" nhs.current_check_attempt as current_attempt," .
-		" nhs.state_type," .
-		" nhs.check_type," .
-		" unix_timestamp(nhs.last_notification) as last_notification," .
-		" unix_timestamp(nhs.next_notification) as next_notification," .
-		" nhs.is_flapping," .
-		" nhs.flap_detection_enabled," .
-		" nhs.event_handler_enabled," .
-		" nhs.obsess_over_host,".
-		" nhs.current_notification_number," .
-		" nhs.percent_state_change," .
-		" nhs.scheduled_downtime_depth," .
-		" unix_timestamp(nhs.last_state_change) as last_state_change," .
-		" nhs.output as plugin_output," .
-		" unix_timestamp(nhs.last_check) as last_check," .
-		" unix_timestamp(nhs.last_notification) as last_notification," .
-		" unix_timestamp(nhs.next_check) as next_check," .
-		" nh.address," .
-		" no.name1 as host_name" .
-		" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
-		" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
-
-	$DBRESULT_NDO =& $pearDBndo->query($rq2);
-	if (PEAR::isError($DBRESULT_NDO))
-		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-	$ndo2 =& $DBRESULT_NDO->fetchRow();
-
-	$host_status[$host_name] = $ndo2;
-	$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
-
-	isset($lcaHost["LcaHost"][$host_name]) || $is_admin  ? $key = true : $key = NULL;
-	if ($key == NULL){
+	if (isset($lcaHost["LcaHost"][$host_name])){
 		include_once("alt_error.php");
 	} else {
+		/*
+		 * Host Group List
+		 */
+	
+		$host_id = getMyHostID($host_name);
+	
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
+		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
+			$hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
+		$DBRESULT->free();
+	
+		if (isset($host_id)) {
+			$proc_warning = getMyHostMacro($host_id, "PROC_WARNING");
+			$proc_critical = getMyHostMacro($host_id, "PROC_CRITICAL");
+		}
+		
+	
+		include_once("./DBNDOConnect.php");
+		
+		/*
+		 * Init Table status
+		 */
+		$tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
+		$tab_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
+		
+		/* 
+		 * start ndo svc info 
+		 */
+		$rq ="SELECT nss.current_state," .
+					" nss.output as plugin_output," .
+					" nss.current_check_attempt as current_attempt," .
+					" nss.status_update_time as status_update_time," .
+					" unix_timestamp(nss.last_state_change) as last_state_change," .
+					" unix_timestamp(nss.last_check) as last_check," .
+					" nss.notifications_enabled," .
+					" unix_timestamp(nss.next_check) as next_check," .
+					" nss.problem_has_been_acknowledged," .
+					" nss.passive_checks_enabled," .
+					" nss.active_checks_enabled," .
+					" nss.event_handler_enabled," .
+					" nss.is_flapping," .
+					" nss.latency as check_latency," .
+					" nss.execution_time as check_execution_time," .
+					" nss.flap_detection_enabled," .
+					" unix_timestamp(nss.last_notification) as last_notification," .
+					" no.name1 as host_name," .
+					" no.name2 as service_description" .
+					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
+					" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
+	
+		$DBRESULT_NDO =& $pearDBndo->query($rq);
+		if (PEAR::isError($DBRESULT_NDO))
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
+		while ($ndo =& $DBRESULT_NDO->fetchRow())	{
+			if (!isset($tab_status[$ndo["current_state"]]))
+				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
+			$tab_status[$tab_status_service[$ndo["current_state"]]]++;
+		}
+	
+		/* 
+		 * start ndo host detail
+		 */
+		$rq2 = "SELECT nhs.current_state," .
+			" nhs.problem_has_been_acknowledged, " .
+			" nhs.passive_checks_enabled," .
+			" nhs.active_checks_enabled," .
+			" nhs.notifications_enabled," .
+			" nhs.state_type," .
+			" nhs.execution_time as check_execution_time," .
+			" nhs.latency as check_latency," .
+			" nhs.perfdata as performance_data," .
+			" nhs.current_check_attempt as current_attempt," .
+			" nhs.state_type," .
+			" nhs.check_type," .
+			" unix_timestamp(nhs.last_notification) as last_notification," .
+			" unix_timestamp(nhs.next_notification) as next_notification," .
+			" nhs.is_flapping," .
+			" nhs.flap_detection_enabled," .
+			" nhs.event_handler_enabled," .
+			" nhs.obsess_over_host,".
+			" nhs.current_notification_number," .
+			" nhs.percent_state_change," .
+			" nhs.scheduled_downtime_depth," .
+			" unix_timestamp(nhs.last_state_change) as last_state_change," .
+			" nhs.output as plugin_output," .
+			" unix_timestamp(nhs.last_check) as last_check," .
+			" unix_timestamp(nhs.last_notification) as last_notification," .
+			" unix_timestamp(nhs.next_check) as next_check," .
+			" nh.address," .
+			" no.name1 as host_name" .
+			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
+			" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
+	
+		$DBRESULT_NDO =& $pearDBndo->query($rq2);
+		if (PEAR::isError($DBRESULT_NDO))
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
+		$ndo2 =& $DBRESULT_NDO->fetchRow();
+	
+		$host_status[$host_name] = $ndo2;
+		$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
+
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
@@ -201,14 +194,14 @@
 		}
 		unset($data);
 
-		$en_acknowledge_text = array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
-		$en_acknowledge = array("1" => "0", "0" => "1");
+		$en_acknowledge_text 	= array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
+		$en_acknowledge 		= array("1" => "0", "0" => "1");
 
-		$en_inv = array("1" => "0", "0" => "1");
-		$en_inv_text = array("1" => _("Disable"), "0" => _("Enable"));
-		$color_onoff = array("1" => "#00ff00", "0" => "#ff0000");
-		$color_onoff_inv = array("0" => "#00ff00", "1" => "#ff0000");
-		$en_disable = array("1" => _("Enabled"), "0" => _("Disabled"));
+		$en_inv 				= array("1" => "0", "0" => "1");
+		$en_inv_text 			= array("1" => _("Disable"), "0" => _("Enable"));
+		$color_onoff 			= array("1" => "#00ff00", "0" => "#ff0000");
+		$color_onoff_inv 		= array("0" => "#00ff00", "1" => "#ff0000");
+		$en_disable 			= array("1" => _("Enabled"), "0" => _("Disabled"));
 
 		$img_en = array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
 
@@ -294,14 +287,15 @@
 		$tpl->assign("m_mon_ed_event_handler", _("Event handler for this host"));
 		$tpl->assign("m_mon_ed_flapping_detect", _("Flap detection for this host"));
 		$tpl->assign("m_mon_acknowledge", _("Acknowledge this host"));
+		$tpl->assign("seconds", _("seconds"));
+		$tpl->assign("links", _("Links"));
 
-		// if user is admin, allActions is true, else, we introduce all actions allowed for user
+		/*
+		 * if user is admin, allActions is true, 
+		 * else we introduce all actions allowed for user
+		 */
 		$tpl->assign("acl_allActions", $allActions);
-		if (isset($authorized_actions) && $allActions == false){		
-			foreach ($authorized_actions as $actions) {
-				$tpl->assign($actions, $actions);	
-			}
-		}
+		$tpl->assign("authorized_actions", $authorized_actions);
 			
 		$tpl->assign("p", $p);
 		$tpl->assign("en", $en);
@@ -341,8 +335,9 @@
 		
 		$tpl->assign("host_data", $host_status[$host_name]);
 
-		# Ext informations
-		//$tpl->assign("nagios_path_img", $oreon->optGen["nagios_path_img"]);
+		/*
+		 * Ext informations
+		 */
 		$tpl->assign("h_ext_notes", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes"));
 		$tpl->assign("h_ext_notes_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes_url"));
 		$tpl->assign("h_ext_action_url_lang", _("URL Action"));
@@ -350,13 +345,11 @@
 		/*
 		* This part was added by Kay Roesler to fix the $HOSTMANE$ Thingy
 		*/
-		//$tpl->assign("h_ext_action_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url")); out by Kay
-		
-		$action_url = getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url");
-		$new_action_url = str_replace("\$HOSTNAME$", $host_name, $action_url); // in by Kay
-		$tpl->assign("h_ext_action_url", $new_action_url); //in by Kay
 
-		//$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
+		$action_url = getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url");
+		$new_action_url = str_replace("\$HOSTNAME$", $host_name, $action_url);
+		$tpl->assign("h_ext_action_url", $new_action_url);
+		$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
 		$tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
 
 		$tpl->display("hostDetails.ihtml");

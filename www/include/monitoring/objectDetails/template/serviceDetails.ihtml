@@ -112,7 +112,7 @@
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$m_mon_service_command}</td>
+						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/gear.gif">&nbsp;{$m_mon_service_command}</td>
 					</tr>
 						{if $aclAct.service_checks || $acl_allActions == true}
 							<tr class='list_one'>
@@ -175,7 +175,7 @@
 				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter" colspan="2">Options</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src="./img/icones/16x16/wrench.gif">&nbsp;Options</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColLeft">{$m_mon_services_en_check_active}</td>
@@ -206,7 +206,7 @@
 				{if $lcaTopo.602}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft">{$m_mon_tips}</td>
+						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/wrench.gif">&nbsp;{$m_mon_tips}</td>
 					</tr>
 					<tr>
 						<td class="ListColLeft"><a href='./main.php?p=602&service_id={$service_id}&o=c'>Configure {$svc_description}</a></td>
@@ -227,21 +227,30 @@
 				<br>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$hostgroups_label}</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src="./img/icones/16x16/link.gif">&nbsp;{$links}</td>
 					</tr>
 					<tr class='list_one'>
+						<td class="ListColLeft">{$hostgroups_label} : </td>
 						<td class="ListColLeft">
 						{foreach item=hg from=$hostgroups}
-							-&nbsp;{$hg}<br>
+							&nbsp;&nbsp;&nbsp;-&nbsp;{$hg}<br>
 						{/foreach}
 						</td>
-					</tr>					
+					</tr>
+					<tr class='list_one'>
+						<td class="ListColLeft">{$sg_label} : </td>
+						<td class="ListColLeft">
+						{foreach item=sc from=$service_categories}
+							&nbsp;&nbsp;&nbsp;-&nbsp;{$sc}<br>
+						{/foreach}
+						</td>
+					</tr>
 				</table>
 				<br>
 				{if $proc_warning && $proc_warning == "NO_ACTION" && $proc_critical && $proc_warning == "NO_ACTION"}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">Procedure</td>
+						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/clipboard.gif">&nbsp;Procedure</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColLeft">
