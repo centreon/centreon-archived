@@ -156,7 +156,7 @@
 	 * @return{TAB}array{TAB}List of hosts
 	 */
 	
-	function getLCAHostByName($pearDB){
+	function getLCAHostByAlias($pearDB){
 		if (!$pearDB)
 			return ;
 		/*
