@@ -124,9 +124,9 @@
 	 */
 	if (isset($authorized_actions) && $allActions == false){		
 		foreach ($authorized_actions as $action_name) {
-			if ($action_name == "service_checks" || $allActions == true) 
+			if ($action_name == "service_schedule_check" || $allActions == true) 
 				$action_list[3] = _("Verification Check");
-			if ($action_name == "service_checks" || $allActions == true) 
+			if ($action_name == "service_schedule_check" || $allActions == true) 
 				$action_list[4] = _("Verification Check (Forced)");
 			if ($action_name == "service_acknowledgement" || $allActions == true) 
 				$action_list[70] = _("Services : Acknowledge");

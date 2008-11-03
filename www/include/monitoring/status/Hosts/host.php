@@ -25,12 +25,16 @@
 	$GroupListofUser =  getGroupListofUser($pearDB);
 	
 	$allActions = false;
-	// Get list of actions allowed for user
+	/*
+	 * Get list of actions allowed for user
+	 */
 	if (count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
 		$authorized_actions = getActionsACLList($GroupListofUser);
 	} else {
-	 	// if user is admin, or without ACL, he cans perform all actions
+	 	/*
+	 	 * if user is admin, or without ACL, he cans perform all actions
+	 	 */
 		$allActions = true;
 	}
 
@@ -41,7 +45,9 @@
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
 
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	include_once("./include/common/quickSearch.php");
 	
 	$tab_class = array("0" => "list_one", "1" => "list_two");
@@ -50,7 +56,9 @@
 	include_once("hostJS.php");
 
 
-	# Smarty template Init
+	/*
+	 *  Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 
@@ -85,15 +93,24 @@
 
 	$action_list = array();
 	$action_list[]	=	_("More actions...");
-	// Showing actions allowed for current user
+
+	/*
+	 * Showing actions allowed for current user
+	 */
 	if(isset($authorized_actions) && $allActions == false){		
 		foreach($authorized_actions as $action_name) {
-			if($action_name == "host_acknowledgement" || $allActions == true) $action_list[72] = _("Hosts : Acknowledge");
-			if($action_name == "host_acknowledgement" || $allActions == true) $action_list[73] = _("Hosts : Disacknowledge");
-			if($action_name == "host_notifications" || $allActions == true) $action_list[82] = _("Hosts : Enable Notification");
-			if($action_name == "host_notifications" || $allActions == true) $action_list[83] = _("Hosts : Disable Notification");
-			if($action_name == "host_checks" || $allActions == true) $action_list[92] = _("Hosts : Enable Check");
-			if($action_name == "host_checks" || $allActions == true) $action_list[93] = _("Hosts : Disable Check");		
+			if($action_name == "host_acknowledgement" || $allActions == true) 
+				$action_list[72] = _("Hosts : Acknowledge");
+			if($action_name == "host_acknowledgement" || $allActions == true) 
+				$action_list[73] = _("Hosts : Disacknowledge");
+			if($action_name == "host_notifications" || $allActions == true) 
+				$action_list[82] = _("Hosts : Enable Notification");
+			if($action_name == "host_notifications" || $allActions == true) 
+				$action_list[83] = _("Hosts : Disable Notification");
+			if($action_name == "host_checks" || $allActions == true) 
+				$action_list[92] = _("Hosts : Enable Check");
+			if($action_name == "host_checks" || $allActions == true) 
+				$action_list[93] = _("Hosts : Disable Check");		
 		}
 	} else {
 		$action_list[72] = _("Hosts : Acknowledge");
