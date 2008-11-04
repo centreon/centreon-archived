@@ -102,7 +102,7 @@
 			/*
 			 * Send Service/host list for a SG 
 			 */
-			$data = getMyServiceGroupServices($id);
+			$data = getMyServiceGroupActivateServices($id);
 			foreach ($data as $key => $value){
 				$tab_value = split("_", $key);
 				$host_name = getMyHostName($tab_value[0]);
@@ -117,7 +117,7 @@
 			/*
 			 * get services for host
 			 */
-			$services = getMyHostServices($id);
+			$services = getMyHostActiveServices($id);
 			foreach ($services as $svc_id => $svc_name){
 				$host_name = getMyHostName($id);
 		        if ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][getMyServiceName($svc_id)])))
@@ -265,7 +265,7 @@
 				$hosts_selected[$id] = getMyHostName($id);
 				$hosts_open[$id] = getMyHostName($id);	
 				/* + all svc*/
-				$services = getMyHostServices($id);
+				$services = getMyHostActiveServices($id);
 				foreach($services as $svc_id => $svc_name)
 					$svcs_selected[$svc_id] = $svc_name;
 				// 	hg_parent
@@ -310,7 +310,7 @@
 					$hosts_selected[$host_id] = $host_name;
 	
 					/* + all svc*/
-					$services = getMyHostServices($host_id);
+					$services = getMyHostActiveServices($host_id);
 					foreach($services as $svc_id => $svc_name)
 						$svcs_selected[$svc_id] = $svc_name;
 				}
