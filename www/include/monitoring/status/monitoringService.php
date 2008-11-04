@@ -47,7 +47,7 @@
 		submitPassiveCheck();
 
 	if (isset($_GET["host_name"]) && $_GET["host_name"]) {
-		$_GET["search"] = $_GET["host_name"];
+		;//$_GET["search"] = $_GET["host_name"];
 	}
 
 	if ($o == "svcSch"){

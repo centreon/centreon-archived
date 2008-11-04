@@ -323,5 +323,8 @@
 	$buffer .= '<sid>'.$sid.'</sid>';
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
+	header('Pragma: no-cache');
+	header('Expires: 0');
+	header('Cache-Control: no-cache, must-revalidate'); 
 	echo $buffer;
 ?>
