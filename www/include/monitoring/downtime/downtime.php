@@ -14,28 +14,48 @@
  * 
  * For information : contact@centreon.com
  */
+ 
 	if (!isset ($oreon))
 		exit ();
 		
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/monitoring/downtime/";
 	
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once "./include/common/common-Func.php";
-	require_once "./include/monitoring/common-Func.php";
+	require_once "./include/monitoring/downtime/common-Func.php";
+	require_once "./include/monitoring/external_cmd/functions.php";
 
 	switch ($o)	{
-		case "ah" : require_once($path."AddHostDowntime.php"); break;
-		case "as" : require_once($path."AddSvcDowntime.php"); break;
-		case "ds" : DeleteDowntime("SVC",isset($_GET["select"]) ? $_GET["select"] : array());require_once($path."viewDowntime.php"); break; 
-		case "dh" : DeleteDowntime("HOST",isset($_GET["select"]) ? $_GET["select"] : array());require_once($path."viewDowntime.php"); break;
-		default : require_once($path."viewDowntime.php"); break;
+		case "ah" : 
+			require_once($path."AddHostDowntime.php"); 
+			break;
+		case "as" : 
+			require_once($path."AddSvcDowntime.php"); 
+			break;
+		case "ds" : 
+			DeleteDowntime("SVC", isset($_GET["select"]) ? $_GET["select"] : array());
+			require_once($path."viewDowntime.php"); 
+			break; 
+		case "dh" : 
+			DeleteDowntime("HOST", isset($_GET["select"]) ? $_GET["select"] : array());
+			require_once($path."viewDowntime.php"); 
+			break;
+		default : 
+			require_once($path."viewDowntime.php"); 
+			break;
 	}
 ?>

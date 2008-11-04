@@ -17,6 +17,15 @@
 	
 	if (!isset($oreon))
 		exit();
+		
+	include_once $centreon_path."www/class/centreonGMT.class.php";
+
+	/*
+	 * Init GMT class
+	 */
+	
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession(session_id());
 
 	/*
 	 * ACL Actions
@@ -25,11 +34,10 @@
 	$GroupListofUser =  getGroupListofUser($pearDB);
 	
 	$allActions = false;
-	if(count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
+	if(count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
 		$authorized_actions = getActionsACLList($GroupListofUser);
-	}
-	else {
+	} else {
 		$allActions = true;
 	}
 
@@ -63,15 +71,17 @@
 	/*
 	 * Hosts Downtimes
 	 */
-	$rq2 =	" SELECT dtm.internal_downtime_id, dtm.entry_time, dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
-			" FROM ".$ndo_base_prefix."downtimehistory dtm, ".$ndo_base_prefix."objects obj " .
-			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS  NULL AND obj.object_id = dtm.object_id AND dtm.was_cancelled = '0' AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' ORDER BY dtm.actual_start_time";
+	$rq2 =	" SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
+			" FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
+			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS  NULL AND obj.object_id = dtm.object_id AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' ORDER BY dtm.actual_start_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_downtime_host[$i] = $data;
 		$tab_downtime_host[$i]["duration"] .= " "._("s");
+		$tab_downtime_host[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_start_time"])." ";
+		$tab_downtime_host[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_end_time"])." ";
 	}
 	unset($data);	
 
@@ -83,14 +93,17 @@
 	/*
 	 * Service Downtimes
 	 */
-	$rq2 =	" SELECT dtm.internal_downtime_id, dtm.entry_time, dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, dtm.scheduled_start_time, dtm.scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
-			" FROM ".$ndo_base_prefix."downtimehistory dtm, ".$ndo_base_prefix."objects obj " .
-			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS NOT NULL AND obj.object_id = dtm.object_id AND dtm.was_cancelled = '0' AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' ORDER BY dtm.actual_start_time";
+	$rq2 =	" SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
+			" FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
+			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS NOT NULL AND obj.object_id = dtm.object_id AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' ORDER BY dtm.actual_start_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++)
+	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++) {
 		$tab_downtime_svc[$i] = $data;
+		$tab_downtime_svc[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_start_time"])." ";
+		$tab_downtime_svc[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_end_time"])." ";
+	}
 	unset($data);	
 
 	$en = array("0" => _("No"), "1" => _("Yes"));
@@ -99,7 +112,7 @@
 
 	if (!$is_admin){
 		$tab_downtime_host2 = array();
-		for ($n=0,$i=0; $i < count($tab_downtime_host); $i++) {
+		for ($n = 0,$i = 0 ; $i < count($tab_downtime_host); $i++) {
 			if (isset($lcaHostByName["LcaHost"][$tab_downtime_host[$i]["host_name"]]))
 				$tab_downtime_host2[$n++] = $tab_downtime_host[$i];
 		}
@@ -113,19 +126,23 @@
 		$tab_downtime_svc = $tab_downtime_svc2;
 	}
 
-	#Element we need when we reload the page
+	/*
+	 * Element we need when we reload the page
+	 */
 	$form->addElement('hidden', 'p');
 	$tab = array ("p" => $p);
 	$form->setDefaults($tab);
 
-	if(isset($authorized_actions) && $allActions == false){		
-		foreach($authorized_actions as $action_name) {
-			if($action_name == "host_schedule_downtime") $tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-			if($action_name == "service_schedule_downtime") $tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+	if (isset($authorized_actions) && $allActions == false){		
+		foreach ($authorized_actions as $action_name) {
+			if ($action_name == "host_schedule_downtime") 
+				$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+			if ($action_name == "service_schedule_downtime") 
+				$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 		}
 	} else {
-	$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+		$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	}
 	
 	$tpl->assign("p", $p);

@@ -17,13 +17,24 @@
 
 	if (!isset($oreon))
 		exit();
-		
+	
+	include_once $centreon_path."www/class/centreonGMT.class.php";
+
+	/*
+	 * Init GMT class
+	 */
+	
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession(session_id());
+	
 	$actions = false;		
 	$actions = verifyActionsACLofUser("host_schedule_downtime");
 	$GroupListofUser =  getGroupListofUser($pearDB);
 	
 	if ($actions == true || count($GroupListofUser) == 0) {	
-		# Init
+		/*
+		 * Init
+		 */
 		$LCA_error = 0;
 		if (!$is_admin){
 			$lcaHostByName = getLcaHostByName($pearDB);
@@ -40,11 +51,11 @@
 		if ($LCA_error)
 			require_once("./alt_error.php");
 		else {
-			$data = array("host_id" => getMyHostID($host_name), "start" => date("Y/m/d G:i" , time() + 120), "end" => date("Y/m/d G:i", time() + 7320));
+			$data = array("host_id" => getMyHostID($host_name), "start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320));
 				
-			#
-			## Database retrieve information for differents elements list we need on the page
-			#
+			/*
+			 * Database retrieve information for differents elements list we need on the page
+			 */
 			 
 			$hosts = array(""=>"");
 			$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
@@ -63,17 +74,17 @@
 			$attrsText 		= array("size"=>"30");
 			$attrsTextarea 	= array("rows"=>"7", "cols"=>"100");
 			
-			#
-			## Form begin
-			#
+			/*
+			 * Form begin
+			 */
 			
 			$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 			if ($o == "ah")
 				$form->addElement('header', 'title', _("Add a Host downtime"));
-			#
-			## Indicator basic information
-			#
-					
+			
+			/*
+			 * Indicator basic information
+			 */					
 			$redirect =& $form->addElement('hidden', 'o');
 			$redirect->setValue($o);
 			
@@ -100,11 +111,15 @@
 				AddHostDowntime($_POST["host_id"], $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
 				require_once("viewDowntime.php");
 		    } else {	
-				# Smarty template Init
+				/*
+				 * Smarty template Init
+				 */
 				$tpl = new Smarty();
 				$tpl = initSmartyTpl($path, $tpl, "template/");
 					
-				#Apply a template definition	
+				/*
+				 * Apply a template definition	
+				 */
 				$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 				$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 				$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

@@ -17,6 +17,15 @@
 	if (!isset($oreon))
 		exit();
 
+	include_once $centreon_path."www/class/centreonGMT.class.php";
+
+	/*
+	 * Init GMT class
+	 */
+	
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession(session_id());
+
 	/*
 	 * ACL Actions
 	 */
@@ -31,18 +40,24 @@
 		$allActions = true;
 	}
 
-	# LCA
+	/*
+	 * LCA
+	 */
 	if (!$is_admin)
 		$lcaHostByName = getLcaHostByName($pearDB);
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "template/");
 
 	$ndo_base_prefix = getNDOPrefix();
 	include_once("./DBNDOConnect.php");
 
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -51,11 +66,13 @@
 
 	$tab_comments_host = array();
 	$tab_comments_svc = array();
-	
+
+	$en = array("0" => _("No"), "1" => _("Yes"));
+		
 	/*
 	 * Hosts Comments
 	 */
-	$rq2 =	" SELECT cmt.internal_comment_id, cmt.entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+	$rq2 =	" SELECT cmt.internal_comment_id, unix_timestamp(cmt.entry_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 			" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS  NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.entry_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
@@ -63,19 +80,15 @@
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_comments_host[$i] = $data;
+		$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
+		$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
 	}
-	unset($data);	
-
-	
-	$en = array("0" => _("No"), "1" => _("Yes"));
-	foreach ($tab_comments_host as $key => $value){
-		$tab_comments_host[$key]["is_persistent"] = $en[$tab_comments_host[$key]["is_persistent"]];
-	}
+	unset($data);
 	
 	/*
 	 * Service Comments
 	 */
-	$rq2 =	" SELECT cmt.internal_comment_id, cmt.entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+	$rq2 =	" SELECT cmt.internal_comment_id, unix_timestamp(cmt.entry_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 			" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS NOT NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.entry_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
@@ -83,24 +96,22 @@
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_comments_svc[$i] = $data;
+		$tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
+		$tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
 	}
-	unset($data);	
-	
-	$en = array("0" => _("No"), "1" => _("Yes"));
-	foreach ($tab_comments_svc as $key => $value) {
-		$tab_comments_svc[$key]["is_persistent"] = $en[$tab_comments_svc[$key]["is_persistent"]];
-	}
+	unset($data);
 
 	if (!$is_admin) {
+		
 		$tab_comments_host2 = array();
 		for ($n = 0, $i = 0; $i < count($tab_comments_host); $i++) {
-			if(isset($lcaHostByName["LcaHost"][$tab_comments_host[$i]["host_name"]]))
+			if (isset($lcaHostByName["LcaHost"][$tab_comments_host[$i]["host_name"]]))
 				$tab_comments_host2[$n++] = $tab_comments_host[$i];
 		}
 		
 		$tab_comments_svc2 = array();
 		for($n = 0, $i = 0; $i < count($tab_comments_svc); $i++) {
-			if(isset($lcaHostByName["LcaHost"][$tab_comments_svc[$i]["host_name"]]))
+			if (isset($lcaHostByName["LcaHost"][$tab_comments_svc[$i]["host_name"]]))
 				$tab_comments_svc2[$n++] = $tab_comments_svc[$i];
 		}
 
@@ -108,7 +119,9 @@
 		$tab_comments_svc = $tab_comments_svc2;
 	}
 
-	#Element we need when we reload the page
+	/*
+	 * Element we need when we reload the page
+	 */
 	$form->addElement('hidden', 'p');
 	$tab = array ("p" => $p);
 	$form->setDefaults($tab);

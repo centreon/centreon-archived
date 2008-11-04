@@ -17,7 +17,16 @@
 
 	if (!isset($oreon))
 		exit();
-		
+	
+	include_once $centreon_path."www/class/centreonGMT.class.php";
+
+	/*
+	 * Init GMT class
+	 */
+	
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession(session_id());
+	
 	$actions = false;		
 	$actions = verifyActionsACLofUser("service_schedule_downtime");
 	$GroupListofUser =  getGroupListofUser($pearDB);
@@ -47,7 +56,7 @@
 		if ($LCA_error)
 			require_once("./alt_error.php");
 		else {
-			$data = array("host_id" => $host_id, "service_id" => getMyServiceID($svc_description, $host_id),"start" => date("Y/m/d G:i" , time() + 120), "end" => date("Y/m/d G:i", time() + 7320));
+			$data = array("host_id" => $host_id, "service_id" => getMyServiceID($svc_description, $host_id),"start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320));
 			
 			#
 			## Database retrieve information for differents elements list we need on the page
@@ -66,7 +75,7 @@
 		
 			$services = array();
 			if (isset($host_id))
-				$services = getMyHostServices($host_id);
+				$services = getMyHostActiveServices($host_id);
 		
 			$debug = 0;
 			$attrsTextI		= array("size"=>"3");

@@ -18,6 +18,15 @@
 	if (!isset($oreon))
 		exit();
 	
+	include_once $centreon_path."www/class/centreonGMT.class.php";
+
+	/*
+	 * Init GMT class
+	 */
+	
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession(session_id());
+	
 	$actions = false;
 	$actions = verifyActionsACLofUser("service_comment");
 	$GroupListofUser =  getGroupListofUser($pearDB);
