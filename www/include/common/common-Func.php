@@ -749,7 +749,7 @@
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 			$hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
 			foreach ($hosts as $key => $value)
-				$svs[$key."_".$elem["service_id"]] = $elem["service_description"] . ":::" . $elem["host_name"];
+				$svs[$key."_".$elem["service_id"]] = $elem["service_description"] . ":::" . $value;
 		}
 		$DBRESULT->free();
 		return $svs;
@@ -797,7 +797,7 @@
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 			$hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
 			foreach ($hosts as $key => $value)
-				$svs[$key."_".$elem["service_id"]] = $elem["service_description"] . ":::" . $elem["host_name"];
+				$svs[$key."_".$elem["service_id"]] = $elem["service_description"] . ":::" . $value;
 		}
 		$DBRESULT->free();
 		return $svs;
