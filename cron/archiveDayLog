@@ -406,10 +406,12 @@ sub insert_services_stats_in_db ($$) {
 		$svc_desc =~ s/\//#S#/g;
 		$svc_desc =~ s/\\/#BS#/g;
 		
-		my $id_query = 	" SELECT h.host_id, s.service_id ".
-						" FROM `".$mysql_database_oreon."`.`host` h, `".$mysql_database_oreon."`.`host_service_relation` r, `".$mysql_database_oreon."`.`service` s".
+		my $id_query = 	" SELECT DISTINCT(h.host_id), s.service_id ".
+						" FROM `".$mysql_database_oreon."`.`host` h, `".$mysql_database_oreon."`.`host_service_relation` r, ".
+							" `".$mysql_database_oreon."`.`service` s, `".$mysql_database_oreon."`.`hostgroup_relation` hgr".
 						" WHERE h.`host_name` = '".$host_name."' AND s.service_description = '".$svc_desc."' ".
-						" AND h.host_id = r.host_host_id AND s.service_id = r.service_service_id";
+						" AND ((h.host_id = r.host_host_id AND s.service_id = r.service_service_id)".
+						" OR (h.host_id = hgr.host_host_id AND hgr.hostgroup_hg_id = r.hostgroup_hg_id AND r.service_service_id = s.service_id))";
 
 		my $sth = $dbh->prepare($id_query);
 		die "Error : " . $dbh->errstr . "\n" if (!$sth);
