@@ -6,8 +6,7 @@
 		<form name="formu2">
 		    <table class="ajaxOption" >
 	            <tr>
-	            	<td style="vertical-align:top;"><b><xsl:value-of select="//lang/ty"/></b>
-	            	</td>
+	            	<td style="vertical-align:top;"><b><xsl:value-of select="//lang/ty"/></b></td>
 					<td>
 						<table>
 			               	<tr>
@@ -201,7 +200,7 @@
 					</td>
 				</xsl:if>
 				<xsl:for-each select="//page">
-				<td>
+				<td style='padding: 0px 2px;'>
 					<xsl:element name='a'>
 						<xsl:attribute name="href">#</xsl:attribute>
 						<xsl:if test="selected = 0">
@@ -304,7 +303,7 @@
 					</td>
 				</xsl:if>
 				<xsl:for-each select="//page">
-				<td>
+				<td style='padding: 0px 2px;'>
 					<xsl:element name='a'>
 						<xsl:attribute name="href">#</xsl:attribute>
 						<xsl:if test="selected = 0">
