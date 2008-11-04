@@ -41,7 +41,11 @@
 	  	             	<ul>
 		  	            {foreach item=user from=$tab_user}
 		  	            	<li>
+		  	             		{if $user.admin == 1}
 		  	             		<img src='./img/icones/16x16/guard.gif' title='{$user.ip}' style='padding:1px;' />
+								{else}
+		  	             		<img src='./img/icones/16x16/user1.gif' title='{$user.ip}' style='padding:1px;' />
+								{/if}
 		  	             		{if $user.alias == $UserName}
 		 	       					<a href="{$UserInfoUrl}">{$user.alias}</a>
 		  	             		{else}
