@@ -30,8 +30,6 @@
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 	
-	$CentreonGMT = new CentreonGMT();
-	
 	function getStatusDBDir($pearDBO){
 		$data =& $pearDBO->query("SELECT `RRDdatabase_status_path` FROM `config` LIMIT 1");
 		$dir =& $data->fetchRow();
@@ -65,6 +63,7 @@
 		/*
 	 	 * Get GMT for current user
 	 	 */
+	 	$CentreonGMT = new CentreonGMT();
 	 	$CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
 	 
 		/*
@@ -108,7 +107,12 @@
 		/*
 		 * Create command line
 		 */
-		 
+		
+		if (isset($_GET["flagperiod"]) && $_GET["flagperiod"] == 0) {
+			$start 	= $CentreonGMT->getUTCDate($start);
+			$end 	= $CentreonGMT->getUTCDate($end);
+		} 
+		
 		$command_line = " graph - --start=".$start." --end=".$end;
 
 		/*

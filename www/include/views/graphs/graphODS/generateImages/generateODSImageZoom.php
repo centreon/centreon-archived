@@ -37,6 +37,14 @@
 	require_once $centreon_path."www/class/Session.class.php";
 	require_once $centreon_path."www/class/Oreon.class.php";
 	require_once "$centreon_path/www/class/centreonGMT.class.php";
+
+	/*
+	 * Verify if start and end date
+	 */	
+
+	(!isset($_GET["start"])) ? $start = time() - (60*60*48) : $start = $_GET["start"];
+	(!isset($_GET["end"])) ? $end = time() - 120 : $end = $_GET["end"] - 120;
+	
 	
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
@@ -104,7 +112,13 @@
 		$command_line = " graph - ";
 		if ($GraphTemplate["base"])
 			$command_line .= "-b ".$GraphTemplate["base"];
-		$command_line .= " --start=".$_GET["start"]. " --end=".$_GET["end"];		
+			
+		if ($_GET["flagperiod"] == 0) {
+			$start 	= $CentreonGMT->getUTCDate($start);
+			$end 	= $CentreonGMT->getUTCDate($end);
+		}	
+			
+		$command_line .= " --start=".$start. " --end=".$end;		
 		
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
@@ -246,9 +260,9 @@
 		 * Display Start and end time on graph
 		 */
 		
-		$rrd_time  = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $_GET["start"]));
+		$rrd_time  = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $start));
 		$rrd_time = str_replace(":", "\:", $rrd_time);
-		$rrd_time2 = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $_GET["end"])) ;
+		$rrd_time2 = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $end)) ;
 		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
 		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
 

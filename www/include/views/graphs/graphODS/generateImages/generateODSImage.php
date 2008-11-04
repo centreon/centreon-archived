@@ -31,8 +31,6 @@
 	
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
-	
-	$CentreonGMT = new CentreonGMT();
 
 	require_once $centreon_path."www/include/common/common-Func.php";
 
@@ -80,6 +78,7 @@
 		/*
 	 	 * Get GMT for current user
 	 	 */
+	 	$CentreonGMT = new CentreonGMT();
 	 	$gmt = $CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
 	
 		/*
@@ -112,7 +111,12 @@
 		/*
 		 * Create command line
 		 */
-		 
+		
+		if ($_GET["flagperiod"] == 0) {
+			$start 	= $CentreonGMT->getUTCDate($start);
+			$end 	= $CentreonGMT->getUTCDate($end);
+		}
+		
 		$command_line = " graph - --start=".$start." --end=".$end;
 
 		/*
@@ -258,31 +262,27 @@
 				$command_line .= " DEF:v".$cpt."=".$RRDdatabase_path.$key.".rrd:".substr($metrics[$key]["metric"],0 , 19).":AVERAGE ";
 			if ($tm["legend_len"] > $longer)
 				$longer = $tm["legend_len"];
-			//$command_line .= " CDEF:v".$cpt."W=v".$cpt.",".$tm["warn"].",GT,v".$cpt.",0,IF ";
-			//$command_line .= " CDEF:v".$cpt."C=v".$cpt.",".$tm["crit"].",GT,v".$cpt.",0,IF ";
-			//$command_line .= " CDEF:v".$cpt."N=v".$cpt.",".$tm["warn"].",GT,0,v".$cpt.",IF ";
 			$cpt++;
 		}
 		
 		/*
 		 * Display Start and end time on graph
 		 */
-		
 		$rrd_time  = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $start));
 		$rrd_time = str_replace(":", "\:", $rrd_time);
 		$rrd_time2 = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $end)) ;
 		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
+		
 		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
 		
 		
 		# Create Legende
 		$cpt = 0;
 		foreach ($metrics as $key => $tm){
+			
 			if ($metrics[$key]["ds_filled"])
 				$command_line .= " AREA:v".($cpt).$tm["ds_color_area"].$tm["ds_transparency"]." ";
-			//	$command_line .= " AREA:v".($cpt-1)."W#434343".$tm["ds_transparency"]." ";
-			//	$command_line .= " AREA:v".($cpt-1)."C#3918E6".$tm["ds_transparency"]." ";
-			//	$command_line .= " AREA:v".($cpt-1)."N".$tm["ds_color_area"].$tm["ds_transparency"]." ";
+			
 			$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt);
 			$command_line .= $tm["ds_color_line"].":\"";
 			$command_line .= $metrics[$key]["legend"];
