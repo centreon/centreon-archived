@@ -27,6 +27,8 @@
 	$centreonGMT = new CentreonGMT();
 	$centreonGMT->getMyGMTFromSession(session_id());
 
+	print "->".$centreonGMT->getMyGMT();
+
 	/*
 	 * ACL Actions
 	 */
@@ -34,7 +36,7 @@
 	$GroupListofUser =  getGroupListofUser($pearDB);
 	
 	$allActions = false;
-	if(count($GroupListofUser) > 0 && $is_admin == 0) {
+	if (count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
 		$authorized_actions = getActionsACLList($GroupListofUser);
 	} else {
