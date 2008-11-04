@@ -318,10 +318,15 @@
 			_critical = 1;
 		}
 		
+		var _pchoice = 0;
+		if (document.formu2 && document.formu2.pchoice && document.formu2.pchoice.checked)	{
+			_pchoice = 1;
+		}
+		
 		tree.selectItem(id);
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/GraphService.xsl";
-		var _addrXML = './include/views/graphs/GetODSXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+		var _addrXML = './include/views/graphs/GetODSXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>'+'&pchoice='+_pchoice;
 
 		proc.setXml(_addrXML)
 		proc.setXslt(_addrXSL)

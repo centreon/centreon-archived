@@ -27,13 +27,19 @@
 	 */
 	echo "<root>";
 	
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	/*
+	 * if debug == 0 => Normal, 
+	 * debug == 1 => get use, 
+	 * debug == 2 => log in file (log.xml)
+	 */
 	$debugXML = 0;
 	$buffer = '';
+
 	/*
 	 * pearDB init
 	 */ 
 	require_once 'DB.php';
+	//include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
@@ -83,10 +89,18 @@
 	(isset($_GET["EndDate"]) 		&& !check_injection($_GET["EndDate"])) ? $EndDate = htmlentities($_GET["EndDate"]) : $EndDate = "";
 	(isset($_GET["StartTime"]) 		&& !check_injection($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"]) : $StartTime = "";
 	(isset($_GET["EndTime"]) 		&& !check_injection($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) :$EndTime = "";
-	(isset($_GET["period"]) 		&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
 	(isset($_GET["multi"]) 			&& !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
 	(isset($_GET["id"])) ? 			$openid = htmlentities($_GET["id"]) : $openid = "-1";
-
+	(isset($_GET["period"]) 		&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
+	
+	/*
+	 * Check if period is a period by duration or a time range.
+	 */
+	if (isset($_GET["period"]) && $_GET["period"]) {
+		$flag_period = 1;
+	} else
+		$flag_period = 0;
+	
 	if (!strncmp($openid, "SS_HS", 5)){
 		$tab = split("_", $openid);
 		$openid = "SS_".$tab[2]."_".$tab[3];
@@ -392,6 +406,7 @@
 	
 			echo "<id>".$id."</id>";
 			echo "<index>".$index."</index>";
+			echo "<flagperiod>$flag_period</flagperiod>";
 			echo "<opid>".$openid."</opid>";
 			echo "<split>".$split."</split>";
 			echo "<status>".$status."</status>";
@@ -543,6 +558,7 @@
 	
 			echo "<sid>".$sid."</sid>";
 			echo "<id>".$id."</id>";
+			echo "<flagperiod>$flag_period</flagperiod>";
 			echo "<opid>".$openid."</opid>";
 			echo "<start>".$start."</start>";
 			echo "<end>".$end."</end>";
