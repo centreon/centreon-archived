@@ -16,7 +16,7 @@
  */
 
 	if (!isset($oreon))
-		exit();	
+		exit();
 
 	$tab = array("1" => "ENABLE", "0" => "DISABLE");
 
@@ -46,7 +46,7 @@
 	}
 	
 	/*
-	 * 	Re-Schedule for all service of an host
+	 * 	Re-Schedule for all services of an host
 	 */
 	function schedule_host_svc_checks($arg, $forced){
 		global $pearDB, $is_admin;
