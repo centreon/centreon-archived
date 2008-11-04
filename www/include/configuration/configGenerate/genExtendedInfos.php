@@ -151,9 +151,8 @@
 							$strTMP .= print_line("icon_image_alt", $field);
 							$flag++;
 						}
-						$strTMP .= "}\n\n";
 						if ($flag != 0)
-							$str .= $strTMP;
+							$str .= $strTMP."}\n\n";
 						$i++;
 					}
 				}
@@ -195,9 +194,8 @@
 						$strTMP .= print_line("icon_image_alt", $field);
 						$flag++;
 					}
-					$str .= "}\n\n";
 					if ($flag != 0)
-						$str .= $strTMP;
+						$str .= $strTMP."}\n\n";
 					$i++;
 				}
 			}
