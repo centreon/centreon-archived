@@ -73,7 +73,7 @@ class CentreonGMT{
 	}
 	
 	function getMyGMT(){
-		return "+".$this->myGMT;
+		return $this->myGMT;
 	}
 
 	function getMyGMTForRRD(){
@@ -93,6 +93,21 @@ class CentreonGMT{
 		if (isset($date) && isset($gmt)) {
 			$date += $gmt * 60 * 60;
 			return date($format, $date);
+		} else {
+			return "";	
+		}
+	}
+	
+	function getUTCDate($date, $gmt = NULL) {
+		/*
+		 * Specify special GMT
+		 */
+		if (!isset($gmt))
+			$gmt = $this->myGMT;
+			
+		if (isset($date) && isset($gmt)) {
+			$date += -1 * ($gmt * 60 * 60);
+			return $date;
 		} else {
 			return "";	
 		}
