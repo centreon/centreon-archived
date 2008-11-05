@@ -955,7 +955,7 @@
 		
 				$authorized_actions = array();
 				while ($actions =& $DBRESULT->fetchRow())
-					$authorized_actions[] = $actions["acl_action_name"];
+					$authorized_actions[$actions["acl_action_name"]] = $actions["acl_action_name"];
 				return $authorized_actions;	
 			}
 		}
