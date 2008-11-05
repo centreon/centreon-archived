@@ -47,10 +47,10 @@
 	 * start header menu
 	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_name", _("Host Template Model"));
+	$tpl->assign("headerMenu_name", _("Host Templates name"));
 	$tpl->assign("headerMenu_desc", _("Description"));
-	$tpl->assign("headerMenu_svChilds", _("Linked Services Template"));
-	$tpl->assign("headerMenu_parent", _("Parent Template"));
+	$tpl->assign("headerMenu_svChilds", _("Linked Services Templates"));
+	$tpl->assign("headerMenu_parent", _("Parent Templates"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
