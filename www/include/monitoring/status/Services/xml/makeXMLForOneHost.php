@@ -26,6 +26,8 @@
 	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
+	include_once $centreon_path."www/class/centreonGMT.class.php";
+	
 	$ndo_base_prefix = getNDOPrefix();
 	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
@@ -45,12 +47,20 @@
 	/* security end*/
 
 	function get_centreon_date($date){
-		global $date_time_format_status;
+		global $date_time_format_status, $CentreonGMT;
 		if ($date > 0)
-			return date($date_time_format_status,$date);
+			return $CentreonGMT->getDate($date_time_format_status,$date);
 		else
 			return "N/A";
 	}
+
+	/*
+	 * Init GMT class
+	 */
+	
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession($sid);
+	
 
 	$general_opt = getStatusColor($pearDB);
 
