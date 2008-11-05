@@ -189,6 +189,7 @@
 	
 	if ($o == "svc_unhandled") {
 		$rq .= " AND nss.current_state != 0";
+		$rq .= " AND nss.state_type = '1'";
 		$rq .= " AND nss.problem_has_been_acknowledged = 0";
 		$rq .= " AND nss.scheduled_downtime_depth = 0";
 	}

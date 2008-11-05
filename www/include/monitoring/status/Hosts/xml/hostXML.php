@@ -144,6 +144,7 @@
 	
 	if ($o == "h_unhandled") {
 		$rq1 .= " AND nhs.current_state != 0 ";
+		$rq1 .= " AND nhs.state_type = '1'";
 		$rq1 .= " AND nhs.problem_has_been_acknowledged = 0";
 		$rq1 .= " AND nhs.scheduled_downtime_depth = 0";		
 	}
