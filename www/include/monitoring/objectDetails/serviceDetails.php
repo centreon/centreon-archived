@@ -53,12 +53,16 @@
 		$svc_description = $tab_data[1];
 	}
 
+
+	if (!$is_admin)
+		$lcaHost = getLcaHostByName($pearDB);
+
 	/*
 	 * Host Group List
 	 */
 	$host_id = getMyHostID($host_name);
 
-	if ((!$is_admin && !isset($lcaHost["LcaHost"][$host_name]))){
+	if (!isset($lcaHost["LcaHost"][$host_name])){
 		include_once("alt_error.php");
 	} else {
 
@@ -301,9 +305,7 @@
 		 * else we introduce all actions allowed for user
 		 */
 		$tpl->assign("acl_allActions", $allActions);
-		$tpl->assign($aclAct, $authorized_actions);			
-		
-		
+		$tpl->assign("aclAct", $authorized_actions);
 		
 		$tpl->assign("p", $p);
 		$tpl->assign("o", $o);

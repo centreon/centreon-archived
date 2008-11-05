@@ -150,68 +150,68 @@
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/gear.gif">&nbsp;{$hosts_command}</td>
 					</tr>
-					{if $host_checks || $acl_allActions == true}	
+					{if $aclAct.host_checks || $acl_allActions == true}	
 						<tr class='list_one'>
 							<td class="ListColLeft">{$img_en[$host_data.active_checks_enabled]}&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=6&select[{$h.host_name}]=1&en={$en_inv[$host_data.active_checks_enabled]}'>{$en_inv_text[$host_data.active_checks_enabled]} {$m_mon_check_this_host}</a></td>
 						</tr>
 					{/if}
-					{if $host_notifications || $acl_allActions == true}	
+					{if $aclAct.host_notifications || $acl_allActions == true}	
 						<tr class='list_two'>
 							<td class="ListColLeft">{$img_en[$host_data.notifications_enabled]}&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=9&select[{$h.host_name}]=1&en={$en_inv[$host_data.notifications_enabled]}'>{$en_inv_text[$host_data.notifications_enabled]} {$m_mon_notify_this_host}</a></td>
 						</tr>
 					{/if}
-					{if $host_schedule_downtime || $acl_allActions == true}	
+					{if $aclAct.host_schedule_downtime || $acl_allActions == true}	
 						<tr class='list_one'>
 							<td class="ListColLeft"><img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='main.php?p=20305&o=ah&host_name={$h.host_name}'>{$m_mon_SCH_downtime}</a></td>
 						</tr>
 					{/if}
-					{if $host_comment || $acl_allActions == true}						
+					{if $aclAct.host_comment || $acl_allActions == true}						
 						<tr class='list_two'>
 							<td class="ListColLeft"><img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='main.php?p=20306&o=ah&host_name={$h.host_name}'>{$m_mon_add_comment}</a></td>
 						</tr>
 					{/if}
-					{if $host_notifications_for_services || $acl_allActions == true}	
+					{if $aclAct.host_notifications_for_services || $acl_allActions == true}	
 						<tr class='list_one'>
 							<td class="ListColLeft"><img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=8&select[{$h.host_name}]=1&en=0'>{$m_mon_disable_not_all_services}</a></td>
 						</tr>
 					{/if}
-					{if $host_notifications_for_services || $acl_allActions == true}
+					{if $aclAct.host_notifications_for_services || $acl_allActions == true}
 						<tr class='list_two'>
 							<td class="ListColLeft"><img src='./img/icones/16x16/element_next.gif' border='0'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=8&select[{$h.host_name}]=1&en=1'>{$m_mon_enable_not_all_services}</a></td>
 						</tr>
 					{/if}
-					{if $host_schedule_check || $acl_allActions == true}						
+					{if $aclAct.host_schedule_check || $acl_allActions == true}						
 						<tr class='list_one'>
 							<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=1&select[{$h.host_name}]=1'>{$m_mon_SCH_immediate_check}<a></td>
 						</tr>
 					{/if}
-					{if $host_schedule_check || $acl_allActions == true}					
+					{if $aclAct.host_schedule_check || $acl_allActions == true}					
 						<tr class='list_two'>
 							<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=2&select[{$h.host_name}]=1'>{$m_mon_SCH_immediate_check_f}</a></td>
 						</tr>
 					{/if}
-					{if $host_checks_for_services || $acl_allActions == true}	
+					{if $aclAct.host_checks_for_services || $acl_allActions == true}	
 						<tr class='list_one'>
 							<td class="ListColLeft"><img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=5&select[{$h.host_name}]=1&en=0'>{$m_mon_diable_check_all_svc}</a></td>
 						</tr>
 					{/if}
-					{if $host_checks_for_services || $acl_allActions == true}	
+					{if $aclAct.host_checks_for_services || $acl_allActions == true}	
 						<tr class='list_two'>
 							<td class="ListColLeft"><img src='./img/icones/16x16/element_next.gif' border='0'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=5&select[{$h.host_name}]=1&en=1'>{$m_mon_enable_check_all_svc}</a></td>
 						</tr>
 					{/if}
-					{if $host_event_handler || $acl_allActions == true}					
+					{if $aclAct.host_event_handler || $acl_allActions == true}					
 						<tr class='list_one'>
 							<td class="ListColLeft">{$img_en[$host_data.event_handler_enabled]}&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=45&select[{$h.host_name}]=1&en={$en_inv[$host_data.event_handler_enabled]}'>{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}</a></td>
 						</tr>
 					{/if}
-					{if $host_flap_detection || $acl_allActions == true}
+					{if $aclAct.host_flap_detection || $acl_allActions == true}
 						<tr class='list_two'>
 							<td class="ListColLeft">{$img_en[$host_data.flap_detection_enabled]}&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=43&select[{$h.host_name}]=1&en={$en_inv[$host_data.flap_detection_enabled]}'>{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}</a></td>
 						</tr>
 					{/if}	
 					{if $host_data.current_state != UP}
-						{if $host_acknowledgement || $acl_allActions == true}			
+						{if $aclAct.host_acknowledgement || $acl_allActions == true}			
 							<tr class='list_one'>
 								<td class="ListColLeft">{$img_en[$host_data.problem_has_been_acknowledged]}&nbsp;
 								<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
@@ -222,7 +222,6 @@
 					{/if}
 				</table>
 				<br />
-				
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/wrench.gif">&nbsp;{$m_mon_tools}</td>
