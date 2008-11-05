@@ -84,6 +84,13 @@
 	$tpl->assign("date_time_format_status", _("d/m/Y H:i:s"));
 
 	/*
+	 * Display Login
+	 */
+	$tpl->assign("user_login", $oreon->user->get_alias());
+	$tpl->assign("loggedlabel", _("You are"));
+
+
+	/*
 	 * Fixe ACL
 	 */
 
