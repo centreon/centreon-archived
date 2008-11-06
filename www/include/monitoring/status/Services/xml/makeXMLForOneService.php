@@ -46,9 +46,9 @@
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 
 	function get_centreon_date($date){
-		global $date_time_format_status, $CentreonGMT;
+		global $date_time_format_status, $centreonGMT;
 		if ($date > 0)
-			return $CentreonGMT->getDate($date_time_format_status,$date);
+			return $centreonGMT->getDate($date_time_format_status, $date);
 		else
 			return "N/A";
 	}

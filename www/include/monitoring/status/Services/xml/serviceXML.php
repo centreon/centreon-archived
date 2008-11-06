@@ -109,7 +109,6 @@
 			" WHERE no.object_id = nhs.host_object_id " .
 			" AND nh.host_object_id = no.object_id " .
 			" AND no.objecttype_id = 1 " .
-			" AND no.is_active = 1 " .
 			" AND no.object_id = nh.host_object_id";
 
 	if ($instance != "ALL")
@@ -153,7 +152,7 @@
 		
 	$rq .= 	" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'" .
-			" AND no.is_active = 1" .
+			//" AND no.is_active = 1" .
 		  	" AND objecttype_id = 2";
 
 	if (!$is_admin && $groupnumber)

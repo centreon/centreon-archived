@@ -47,9 +47,9 @@
 	/* security end*/
 
 	function get_centreon_date($date){
-		global $date_time_format_status, $CentreonGMT;
+		global $date_time_format_status, $centreonGMT;
 		if ($date > 0)
-			return $CentreonGMT->getDate($date_time_format_status,$date);
+			return $centreonGMT->getDate($date_time_format_status,$date);
 		else
 			return "N/A";
 	}
@@ -111,7 +111,9 @@
 			" WHERE no.object_id = " . $host_id .
 			" AND no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 1 AND no.objecttype_id = 1 AND nh.config_type = 1";
+			" AND no.objecttype_id = 1";
+
+			//" AND no.is_active = 1 AND no.objecttype_id = 1 AND nh.config_type = 1";
 	
 	/*
 	 * Request
