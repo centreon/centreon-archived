@@ -112,7 +112,7 @@
 		 * Create command line
 		 */
 		
-		if ($_GET["flagperiod"] == 0) {
+		if (isset($_GET["flagperiod"]) && $_GET["flagperiod"] == 0) {
 			$start 	= $CentreonGMT->getUTCDate($start);
 			$end 	= $CentreonGMT->getUTCDate($end);
 		}
