@@ -61,8 +61,10 @@
 	if ($host_id)	{
 		$services = array(NULL=>NULL);
 		$services = getMyHostServices($host_id);
-		foreach ($services as $key=>$value)	{
-			$DBRESULT =& $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name FROM metrics m, index_data i WHERE i.host_name = '".getMyHostName($host_id)."' AND i.service_description = '".$value."' and i.id=m.index_id ORDER BY metric_name, unit_name");
+		foreach ($services as $key => $value)	{
+			$value2 = str_replace("/", "#S#", $value);			
+			$value2 = str_replace("\\", "#BS#", $value2);			
+			$DBRESULT =& $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name FROM metrics m, index_data i WHERE i.host_name = '".getMyHostName($host_id)."' AND i.service_description = '".$value2."' and i.id=m.index_id ORDER BY metric_name, unit_name");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($metricSV =& $DBRESULT->fetchRow())	{
@@ -119,22 +121,20 @@
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
-	# Just watch
+	/*
+	 * Just watch
+	 */
 	if ($o == "ws")	{		
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=cs&msr_id=".$msr_id."'"));
 	    $form->setDefaults($metric);
 		$form->freeze();
-	}
-	# Modify
-	else if ($o == "cs")	{
+	} else if ($o == "cs")	{
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($metric);
 	    $hn->freeze();
 	    $sel->freeze();
-	}
-	# Add
-	else if ($o == "as")	{
+	} else if ($o == "as")	{
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -151,15 +151,20 @@
 		$form->freeze();
 		$valid = true;
     }
+    
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once($path."listMetric.php");
 	else	{	
-		# Smarty template Init
+		/*
+		 * Smarty template Init
+		 */
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl($path, $tpl);
 			
-		#Apply a template definition	
+		/*
+		 * Apply a template definition	
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
