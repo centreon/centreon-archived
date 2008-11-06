@@ -30,13 +30,13 @@
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
-			$limit = $gopt[$pagination];
+			$limit = $gopt["maxViewMonitoring"];
 		} else {
 			$DBRESULT =& $pearDB->query("SELECT `maxViewConfiguration` FROM general_opt LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
-			$limit = $gopt[$pagination];
+			$limit = $gopt["maxViewConfiguration"];
 		}
 	}
 
