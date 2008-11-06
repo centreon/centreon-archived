@@ -56,7 +56,7 @@
 
 	$tab_status = array();
 
-	if (!isset($lcaHost["LcaHost"][$host_name])){
+	if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 		include_once("alt_error.php");
 	} else {
 		/*
@@ -295,7 +295,8 @@
 		 * else we introduce all actions allowed for user
 		 */
 		$tpl->assign("acl_allActions", $allActions);
-		$tpl->assign("aclAct", $authorized_actions);
+		if (isset($authorized_actions))
+			$tpl->assign("aclAct", $authorized_actions);
 			
 		$tpl->assign("p", $p);
 		$tpl->assign("en", $en);
@@ -319,7 +320,8 @@
 		 * Hostgroups Display
 		 */
 		$tpl->assign("hostgroups_label", _("Hosts Groups"));
-		$tpl->assign("hostgroups", $hostGroups);
+		if (isset($hostGroups))
+			$tpl->assign("hostgroups", $hostGroups);
 		
 		/*
 		 * Macros

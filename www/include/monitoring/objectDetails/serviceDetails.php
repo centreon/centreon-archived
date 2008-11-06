@@ -62,7 +62,7 @@
 	 */
 	$host_id = getMyHostID($host_name);
 
-	if (!isset($lcaHost["LcaHost"][$host_name])){
+	if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 		include_once("alt_error.php");
 	} else {
 
@@ -305,7 +305,8 @@
 		 * else we introduce all actions allowed for user
 		 */
 		$tpl->assign("acl_allActions", $allActions);
-		$tpl->assign("aclAct", $authorized_actions);
+		if (isset($authorized_actions))
+			$tpl->assign("aclAct", $authorized_actions);
 		
 		$tpl->assign("p", $p);
 		$tpl->assign("o", $o);
@@ -336,14 +337,16 @@
 		 * Hostgroups Display
 		 */
 		$tpl->assign("hostgroups_label", _("Hosts Groups"));
-		$tpl->assign("hostgroups", $hostGroups);
+		if (isset($hostGroups))
+			$tpl->assign("hostgroups", $hostGroups);
 	
 		/*
 		 * Service Categories
 		 */
 		$tpl->assign("sg_label", _("Service Categories"));
-		$tpl->assign("service_categories", $serviceCategories);
-				
+		if (isset($serviceCategories))
+			$tpl->assign("service_categories", $serviceCategories);
+					
 		/*
 		 * Macros
 		 */
