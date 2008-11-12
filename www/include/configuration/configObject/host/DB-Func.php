@@ -1775,7 +1775,7 @@
 		$ret = $form->getSubmitValue("host_hgs");
 		for($i = 0; $i < count($ret); $i++)	{
 			if (!isset($hgs[$ret[$i]]))	{
-				$rq = "group_relation ";
+				$rq = "INSERT INTO hostgroup_relation ";
 				$rq .= "(hostgroup_hg_id, host_host_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$ret[$i]."', '".$host_id."')";
