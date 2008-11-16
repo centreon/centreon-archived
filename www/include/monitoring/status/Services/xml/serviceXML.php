@@ -111,6 +111,11 @@
 			" AND no.objecttype_id = 1 " .
 			" AND no.object_id = nh.host_object_id";
 
+	if ($o == "svc_unhandled") {
+		$rq1 .= " AND nhs.problem_has_been_acknowledged = 0";
+		$rq1 .= " AND nhs.scheduled_downtime_depth = 0";
+	}
+
 	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
