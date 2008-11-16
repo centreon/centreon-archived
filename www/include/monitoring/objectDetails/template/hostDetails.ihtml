@@ -275,7 +275,7 @@
 					</tr>
 				</table>
 				<br>
-				{if $proc_warning && $proc_critical && $proc_warning != NO_ACTION && $proc_critical != NO_ACTION}
+				{if ($proc_warning && $proc_warning != "NO_ACTION") || ($proc_critical && $proc_critical != "NO_ACTION")}
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">Procedure</td>
