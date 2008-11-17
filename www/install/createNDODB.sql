@@ -8,16 +8,15 @@
 -- Structure de la table `centreon_acl`
 --
 
-CREATE TABLE IF NOT EXISTS `centreon_acl` (
+CREATE TABLE `centreon_acl` (
   `id` int(11) NOT NULL auto_increment,
-  `host_name` varchar(255) default NULL,
-  `service_description` varchar(255) default NULL,
+  `host_name` varchar(60) default NULL,
+  `service_description` varchar(128) default NULL,
   `group_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
-  KEY `host_name` (`host_name`),
-  KEY `service_description` (`service_description`),
-  KEY `group_id` (`group_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+  KEY `host_name` (`host_name`,`service_description`,`group_id`),
+  KEY `host_name_2` (`host_name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
