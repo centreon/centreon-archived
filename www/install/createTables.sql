@@ -9,7 +9,7 @@
 -- Structure de la table `acl_actions`
 --
 
-CREATE TABLE `acl_actions` (
+CREATE TABLE IF NOT EXISTS `acl_actions` (
   `acl_action_id` int(11) NOT NULL auto_increment,
   `acl_action_name` varchar(255) default NULL,
   `acl_action_description` varchar(255) default NULL,
@@ -23,7 +23,7 @@ CREATE TABLE `acl_actions` (
 -- Structure de la table `acl_actions_rules`
 --
 
-CREATE TABLE `acl_actions_rules` (
+CREATE TABLE IF NOT EXISTS `acl_actions_rules` (
   `aar_id` int(11) NOT NULL auto_increment,
   `acl_action_rule_id` int(11) default NULL,
   `acl_action_name` varchar(255) default NULL,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `acl_groups` (
 -- Structure de la table `acl_group_actions_relations`
 --
 
-CREATE TABLE `acl_group_actions_relations` (
+CREATE TABLE IF NOT EXISTS `acl_group_actions_relations` (
   `agar_id` int(11) NOT NULL auto_increment,
   `acl_action_id` int(11) default NULL,
   `acl_group_id` int(11) default NULL,
