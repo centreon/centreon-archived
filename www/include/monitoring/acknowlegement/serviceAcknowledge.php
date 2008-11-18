@@ -45,7 +45,7 @@
 	
 		## Form begin
 		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-		$form->addElement('header', 'title', 'Acknowledge a Service');
+		$form->addElement('header', 'title', _("Acknowledge a Service"));
 
 		$tpl->assign('hostlabel', _("Host Name"));
 		$tpl->assign('hostname', $host_name);
@@ -56,10 +56,15 @@
 		$tpl->assign('authorlabel', _("Alias"));
 		$tpl->assign('authoralias', $oreon->user->get_alias());
 	
-		$form->addElement('checkbox', 'notify', 'notify');
-		$form->addElement('checkbox', 'sticky', 'sticky');
-		$form->addElement('checkbox', 'persistent', 'persistent');
-	
+		$ckbx[] =& $form->addElement('checkbox', 'notify', 'notify');
+		$ckbx[0]->setChecked(false);
+		
+		$ckbx1[] =& $form->addElement('checkbox', 'sticky', 'sticky');
+		$ckbx1[0]->setChecked(true);
+		
+		$ckbx2[] =& $form->addElement('checkbox', 'persistent', 'persistent');
+		$ckbx2[0]->setChecked(true);
+		
 		$form->addElement('hidden', 'host_name', $host_name);
 		$form->addElement('hidden', 'service_description', $service_description);
 		$form->addElement('hidden', 'author', $oreon->user->get_alias());
@@ -67,7 +72,7 @@
 		$form->addElement('hidden', 'p', $p);
 		$form->addElement('hidden', 'en', $en);
 
-		$form->setDefaults(array("sticky"=>1, "notify" => 1, "persistent" => 1));
+		//$form->setDefaults(array("sticky" => "checked", "notify" => 1, "persistent" => 1));
 		
 		$form->applyFilter('__ALL__', 'myTrim');
 		

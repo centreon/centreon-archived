@@ -50,8 +50,11 @@
 		$tpl->assign('authorlabel', _("Alias"));
 		$tpl->assign('authoralias', $oreon->user->get_alias());
 	
-		$form->addElement('checkbox', 'notify', 'notify');
-		$form->addElement('checkbox', 'persistent', 'persistent');
+		$ckbx[] =& $form->addElement('checkbox', 'notify', 'notify');
+		$ckbx[0]->setChecked(true);
+			
+		$ckbx1[] =& $form->addElement('checkbox', 'persistent', 'persistent');
+		$ckbx1[0]->setChecked(true);
 	
 		$form->addElement('hidden', 'host_name', $host_name);
 		$form->addElement('hidden', 'author', $oreon->user->get_alias());
