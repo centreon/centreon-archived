@@ -85,11 +85,12 @@ $pear_module[13]["version"] = "1.2";
 $pear_module[13]["file"] = "Console_Getopt-1.2.tgz";
 $pear_module[13]["path"] = "Console/Getopt.php";
 
+/*
 $pear_module[14]["name"] = "HTTP";
 $pear_module[14]["version"] = "1.2.2";
 $pear_module[14]["file"] = "HTTP-1.2.2.tgz";
 $pear_module[14]["path"] = "HTTP.php";
-/*
+
 $pear_module[15]["name"] = "Image_Canvas";
 $pear_module[15]["version"] = "0.2.4";
 $pear_module[15]["file"] = "Image_Canvas-0.2.4.tgz";
