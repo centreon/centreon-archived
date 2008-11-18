@@ -43,21 +43,21 @@
 	require_once("./DBOdsConnect.php");
 	
 	if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])){
-		if ($_POST["o"] == "rg"){
+		if ($_POST["o"] == "rg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";		
 			}	
-		} else if ($_POST["o"] == "nrg"){
+		} else if ($_POST["o"] == "nrg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";		
 			}
-		} else if ($_POST["o"] == "ed"){
+		} else if ($_POST["o"] == "ed" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE  `index_id` = '".$key."'");
@@ -75,28 +75,28 @@
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";
 			}
-		} else if ($_POST["o"] == "hg"){
+		} else if ($_POST["o"] == "hg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";		
 			}
-		} else if ($_POST["o"] == "nhg"){
+		} else if ($_POST["o"] == "nhg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";		
 			}
-		} else if ($_POST["o"] == "lk"){
+		} else if ($_POST["o"] == "lk" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";		
 			}
-		} else if ($_POST["o"] == "nlk"){
+		} else if ($_POST["o"] == "nlk" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = '".$key."'");
