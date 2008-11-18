@@ -164,8 +164,8 @@
 								<td class="ListColLeft">{$img_en[$service_data.flap_detection_enabled]}&nbsp;<a href='./main.php?p={$p}&o={$o}&cmd=44&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.flap_detection_enabled]}'>{$en_inv_text[$service_data.flap_detection_enabled]} {$m_mon_flap_detection}</a></td>
 							</tr>
 						{/if}
-						{if $aclAct.service_data.current_state != OK}
-								{if $service_acknowledgement || $acl_allActions == true}	
+						{if $service_data.current_state != OK}
+								{if $aclAct.service_acknowledgement || $acl_allActions == true}	
 									<tr class='list_one'>
 										<td class="ListColLeft">{$img_en[$service_data.problem_has_been_acknowledged]}&nbsp;<a href='./main.php?p={$p}&o=svcak&cmd=15&host_name={$h.host_name}&service_description={$svc_description}&en={$en_acknowledge[$service_data.problem_has_been_acknowledged]}'>{$en_acknowledge_text[$service_data.problem_has_been_acknowledged]}</a></td>
 									</tr>
