@@ -144,9 +144,11 @@ else
 	RC="$?"
 fi
 if [ "$RC" -eq "0" ] ; then 
+	log "INFO" "$(gettext "CentCore init script installed")"
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-		$TMPDIR/final/centcore.init.d $INIT_D/centcore >> $LOG_FILE 2>&1
-	check_result $?"$(gettext "CentCore init script installed")"
+		$TMPDIR/final/centcore.init.d \
+    $INIT_D/centcore >> $LOG_FILE 2>&1
+	check_result $? "$(gettext "CentCore init script installed")"
 	log "INFO" "$(gettext "CentCore init script installed")"
 	RC="1"
 	if [ "${CENTCORE_INSTALL_RUNLVL:-0}" -eq 1 ] ; then
@@ -156,8 +158,8 @@ if [ "$RC" -eq "0" ] ; then
 		RC="$?"
 	fi
 	if [ "$RC" -eq "0" ] ; then
-		install_init_service "centcore"
-	#	check_result $? "$(gettext "CentCore run level installed")"
+		install_init_service "centcore" | tee -a $LOG_FILE
+		#check_result $? "$(gettext "CentCore run level installed")"
 		log "INFO" "$(gettext "CentCore run level installed")"
 	else
 		echo_passed "$(gettext "CentCore run level not installed")" "$passed"
