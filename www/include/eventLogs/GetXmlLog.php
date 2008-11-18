@@ -15,13 +15,7 @@
  * For information : contact@centreon.com
  */
 
-	/*
-	 * if debug == 0 => Normal, 
-	 * debug == 1 => get use, 
-	 * debug == 2 => log in file (log.xml)
-	 * 
-	 */	
-	 
+	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
 	$debugXML = 0;
 	$buffer = '';
 
@@ -35,6 +29,7 @@
 	/*
 	 * Start XML document root
 	 */
+ 
 	echo "<root>";
 	
 	/*
@@ -42,21 +37,20 @@
 	 */ 
 	require_once 'DB.php';
 	
-	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path . "www/include/eventLogs/common-Func.php";
-	include_once $centreon_path . "www/DBconnect.php";
-	include_once $centreon_path . "www/DBOdsConnect.php";
-	include_once $centreon_path . "www/class/centreonGMT.class.php";
-	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
-	include_once $centreon_path . "www/include/common/common-Func.php";
+	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
+	include_once($centreon_path . "www/DBconnect.php");
+	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
+	include_once($centreon_path . "www/include/common/common-Func.php");
 	
 	/*
 	 * Lang file
 	 */
 	 
-	(isset($_GET["lang"]) && !check_injection($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"]) : $lang_ = "-1";
-	(isset($_GET["id"]) && !check_injection($_GET["id"])) ? $openid = htmlentities($_GET["id"]) : $openid = "-1";
-	(isset($_GET["sid"]) && !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"]) : $sid = "-1";
+	(isset($_GET["lang"]) 	&& !check_injection($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"]) : $lang_ = "-1";
+	(isset($_GET["id"]) 	&& !check_injection($_GET["id"])) ? $openid = htmlentities($_GET["id"]) : $openid = "-1";
+	(isset($_GET["sid"])	&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"]) : $sid = "-1";
 
 	$contact_id = check_session($sid,$pearDB);
 	
@@ -67,34 +61,26 @@
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	}
 	
-	/*
-	 * Init GMT class
-	 */
+	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
+	(isset($_GET["limit"])		&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : $limit = "30";
+	(isset($_GET["StartDate"]) 	&& !check_injection($_GET["StartDate"])) ? $StartDate = htmlentities($_GET["StartDate"]) : $StartDate = "";
+	(isset($_GET["EndDate"]) 	&& !check_injection($_GET["EndDate"])) ? $EndDate = htmlentities($_GET["EndDate"]) : $EndDate = "";
+	(isset($_GET["StartTime"]) 	&& !check_injection($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"]) : $StartTime = "";
+	(isset($_GET["EndTime"]) 	&& !check_injection($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) : $EndTime = "";
+	(isset($_GET["period"]) 	&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
+	(isset($_GET["multi"]) 		&& !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
 	
-	$centreonGMT = new CentreonGMT();
-	$centreonGMT->getMyGMTFromSession($sid);
-	
-	
-	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
-	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : $limit = "30";
-	(isset($_GET["StartDate"]) && !check_injection($_GET["StartDate"])) ? $StartDate = htmlentities($_GET["StartDate"]) : $StartDate = "";
-	(isset($_GET["EndDate"]) && !check_injection($_GET["EndDate"])) ? $EndDate = htmlentities($_GET["EndDate"]) : $EndDate = "";
-	(isset($_GET["StartTime"]) && !check_injection($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"]) : $StartTime = "";
-	(isset($_GET["EndTime"]) && !check_injection($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) : $EndTime = "";
-	(isset($_GET["period"]) && !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
-	(isset($_GET["multi"]) && !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
-	
-	(isset($_GET["up"]) && !check_injection($_GET["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($_GET["up"])) : $up = "true";
-	(isset($_GET["down"]) && !check_injection($_GET["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($_GET["down"])) : $down = "true";
-	(isset($_GET["unreachable"]) && !check_injection($_GET["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($_GET["unreachable"])) : $unreachable = "true";
-	(isset($_GET["ok"]) && !check_injection($_GET["ok"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_ok", htmlentities($_GET["ok"])) : $ok = "true";
-	(isset($_GET["warning"]) && !check_injection($_GET["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($_GET["warning"])) : $warning = "true";
-	(isset($_GET["critical"]) && !check_injection($_GET["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($_GET["critical"])) : $critical = "true";
-	(isset($_GET["unknown"]) && !check_injection($_GET["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($_GET["unknown"])) : $unknown = "true";
+	(isset($_GET["up"]) 		&& !check_injection($_GET["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($_GET["up"])) : $up = "true";
+	(isset($_GET["down"]) 		&& !check_injection($_GET["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($_GET["down"])) : $down = "true";
+	(isset($_GET["unreachable"])&& !check_injection($_GET["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($_GET["unreachable"])) : $unreachable = "true";
+	(isset($_GET["ok"]) 		&& !check_injection($_GET["ok"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_ok", htmlentities($_GET["ok"])) : $ok = "true";
+	(isset($_GET["warning"]) 	&& !check_injection($_GET["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($_GET["warning"])) : $warning = "true";
+	(isset($_GET["critical"]) 	&& !check_injection($_GET["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($_GET["critical"])) : $critical = "true";
+	(isset($_GET["unknown"]) 	&& !check_injection($_GET["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($_GET["unknown"])) : $unknown = "true";
 	(isset($_GET["notification"]) && !check_injection($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
-	(isset($_GET["alert"]) && !check_injection($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
-	(isset($_GET["error"]) && !check_injection($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
-	(isset($_GET["oh"]) && !check_injection($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
+	(isset($_GET["alert"]) 		&& !check_injection($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
+	(isset($_GET["error"]) 		&& !check_injection($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
+	(isset($_GET["oh"]) 		&& !check_injection($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
 
 	if ($contact_id){
 		$user_params = get_user_param($contact_id, $pearDB);		
@@ -239,7 +225,7 @@
 	/*
 	 * If multi checked 
 	 */
-	if ($multi == 1){
+	if ($multi == 1) {
 		$tab_id = split(",", $openid);
 		$tab_host_name = array();
 		$tab_svc = array();
@@ -249,7 +235,8 @@
 		$strSG = "";
 		$tab_SG = array();
 		$flag_already_call = 0;
-		foreach ($tab_id as $openid){
+		
+		foreach ($tab_id as $openid) {
 			$tab_tmp = split("_",$openid);
 			$id = $tab_tmp[1];
 			$type = $tab_tmp[0];
@@ -268,8 +255,6 @@
 						$flag_already_call++;
 					}
 				}
-			} else if ($type == 'MS')	{
-				array_push($tab_id, $openid);
 			} else if ($type == "HH"){
 				$host_name = getMyHostName($id);
 				array_push ($tab_host_name, "'".$host_name."'");		
@@ -277,6 +262,12 @@
 				$service_description = getMyServiceName($id);
 				$host_id = getMyHostIDService($id);
 				$host_name = getMyHostName($host_id);
+				$tmp["svc_name"] = $service_description;
+				$tmp["host_name"] = $host_name;
+				array_push($tab_svc, $tmp);
+			} else if ($type == "MS"){
+				$service_description = "meta_".$id;
+				$host_name = "Meta_Module";
 				$tmp["svc_name"] = $service_description;
 				$tmp["host_name"] = $host_name;
 				array_push($tab_svc, $tmp);
@@ -303,7 +294,6 @@
 			$str_unitH .= " OR (";
 		/*
 		 * Concat 
-		 *
 		 */
 		$flag = 0;
 		$str_unitSVC = "";
@@ -367,6 +357,7 @@
 			$req .= ") ";		
 		} if ($type == "MS"){			
 			$other_services = array();
+			
 			$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
@@ -476,11 +467,10 @@
 	/*
 	 * Full Request
 	 */
-    if(isset($csv_flag) && ($csv_flag == 1))
-    $req .= " ORDER BY ctime DESC,log_id DESC LIMIT 0,64000"; //limit a little less than 2^16 which is excel maximum number of lines
+    if (isset($csv_flag) && ($csv_flag == 1))
+    	$req .= " ORDER BY ctime DESC,log_id DESC LIMIT 0,64000"; //limit a little less than 2^16 which is excel maximum number of lines
     else
-    $req .= " ORDER BY ctime DESC,log_id DESC LIMIT $lstart,$limit";
-
+    	$req .= " ORDER BY ctime DESC,log_id DESC LIMIT $lstart,$limit";
 
 	$DBRESULT =& $pearDBO->query($req);
 	if (PEAR::isError($DBRESULT))
@@ -488,18 +478,10 @@
 	
 	$cpts = 0;
 	while ($log =& $DBRESULT->fetchRow()) {
-		echo "<line>";
-		echo "<msg_type>".$log["msg_type"]."</msg_type>";
-
-		if ($log["msg_type"] > 1)
-		 	echo "<retry></retry>";
-		else
-		 	echo "<retry>".$log["retry"]."</retry>";
-
-		if ($log["msg_type"] == 2 || $log["msg_type"] == 3)
-			echo "<type>NOTIF</type>";
-		else
-			echo "<type>".$log["type"]."</type>";
+		
+		echo "<line><msg_type>".$log["msg_type"]."</msg_type>";
+		echo ($log["msg_type"] > 1) ? "<retry></retry>" : "<retry>".$log["retry"]."</retry>";
+		echo ($log["msg_type"] == 2 || $log["msg_type"] == 3) ? "<type>NOTIF</type>" : "<type>".$log["type"]."</type>";
 
 		# Color initialisation for services and hosts status
 		$color = '';
@@ -520,8 +502,8 @@
 		echo "<service_description>".$log["service_description"]."</service_description>";
 		echo "<host_name>".$log["host_name"]."</host_name>";
 		echo "<class>".$tab_class[$cpts % 2]."</class>";
-		echo "<date>".$centreonGMT->getDate(_("Y/m/d"), $log["ctime"])."</date>";
-		echo "<time>".$centreonGMT->getDate(_("H:i:s"), $log["ctime"])."</time>";
+		echo "<date>".date(_("Y/m/d"), $log["ctime"])."</date>";
+		echo "<time>".date(_("H:i:s"), $log["ctime"])."</time>";
 		echo "<output><![CDATA[".$log["output"]."]]></output>";
 		echo "<contact><![CDATA[".$log["notification_contact"]."]]></contact>";
 		echo "<contact_cmd><![CDATA[".$log["notification_cmd"]."]]></contact_cmd>";
