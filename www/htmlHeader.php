@@ -29,7 +29,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $mlang; ?>">
 <head>
 <title>Centreon, Revisited Experience Of Nagios</title>
-<link rel="shortcut icon" href="./img/iconOreon.ico"/>
+<link rel="shortcut icon" href="./img/favicon.ico"/>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved." />
 <meta name="robots" content="index, nofollow" />
