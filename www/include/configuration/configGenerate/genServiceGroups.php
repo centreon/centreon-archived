@@ -1,26 +1,44 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL
+ * SVN : $Id$
+ * 
  */
-
+	
 	if (!isset($oreon))
 		exit();
-		
-	if (!is_dir($nagiosCFGPath.$tab['id']."/"))
-		mkdir($nagiosCFGPath.$tab['id']."/");
-
+	
 	$generatedSG = array();
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/servicegroups.cfg", $oreon->user->get_name());
@@ -51,6 +69,7 @@
 			
 			if ($serviceGroup["sg_name"])  $strDef .= print_line("servicegroup_name", $serviceGroup["sg_name"]);
 			if ($serviceGroup["sg_alias"]) $strDef .= print_line("alias", $serviceGroup["sg_alias"]);
+			
 			// Service members
 			$service = array();
 			$strTemp = NULL;
@@ -65,14 +84,10 @@
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($service =& $DBRESULT2->fetchRow()){
-				isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
-				
-				if ($BP)	{				
+				if (isset($gbArr[4][$service["service_id"]]))	{				
 					if ($service["host_id"])	{
-						$BP = false;
-						isset($gbArr[2][$service["host_id"]]) ? $BP = true : NULL;
-						
-						if ($BP && isHostOnThisInstance($service["host_id"], $tab['id'])){
+						if (isset($gbArr[2][$service["host_id"]]) && isHostOnThisInstance($service["host_id"], $tab['id'])){
+							
 							$service["service_description"] = str_replace("#S#", "/", $service["service_description"]);
 							$service["service_description"] = str_replace("#BS#", "\\", $service["service_description"]);
 			
@@ -94,22 +109,16 @@
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($service =& $DBRESULT2->fetchRow()){
-				isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
-				
-				if ($BP)	{				
+				if (isset($gbArr[4][$service["service_id"]]))	{				
 					if ($service["hg_id"])	{
-						$BP = false;
-						isset($gbArr[3][$service["hg_id"]]) ? $BP = true : NULL;
-						
-						if ($BP){
+						if (isset($gbArr[3][$service["hg_id"]])){
 							$DBRESULT3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
 							if (PEAR::isError($DBRESULT3)) 
 								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 							while($host =& $DBRESULT3->fetchRow())	{
-								$BP = false;
-								isset($gbArr[2][$host["host_host_id"]]) ? $BP = true : NULL;
-								
-								if ($BP && isHostOnThisInstance($host["host_host_id"],$tab['id'])){
+								if (isset($gbArr[2][$host["host_host_id"]]) && isHostOnThisInstance($host["host_host_id"],$tab['id'])){
+									$service["service_description"] = str_replace("#S#", "/", $service["service_description"]);
+									$service["service_description"] = str_replace("#BS#", "\\", $service["service_description"]);
 									$strTemp != NULL ? $strTemp .= ", ".getMyHostName($host["host_host_id"]).", ".$service["service_description"] : $strTemp = getMyHostName($host["host_host_id"]).", ".$service["service_description"];
 									$generated++;
 								}
@@ -121,7 +130,8 @@
 			}
 			$DBRESULT2->free();
 			unset($service);
-			if ($strTemp) $strDef .= print_line("members", $strTemp);
+			if ($strTemp) 
+				$strDef .= print_line("members", $strTemp);
 			unset($strTemp);
 			$strDef .= "}\n\n";
 			$i++;
