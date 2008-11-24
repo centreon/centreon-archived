@@ -97,6 +97,10 @@
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])
 			$elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
+		
+		$elem["service_description"] = str_replace("#S#", "/", $elem["service_description"]);
+		$elem["service_description"] = str_replace("#BS#", "\\", $elem["service_description"]);
+		
 		$hgServices[$elem["hg_id"] . '-'.$elem["service_id"]] = $elem["hg_name"]."&nbsp;&nbsp;&nbsp;&nbsp;".$elem["service_description"];
 	}
 	$DBRESULT->free();
