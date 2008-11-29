@@ -1,5 +1,12 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form' method='POST'>
+	<table>
+		<tr>
+			<td>Hosts : <input type='text' name='searchH' value='{$searchH}' /></td>
+			<td>Services: <input type='text' name='searchS' value='{$searchS}' /></td>
+			<td><input type='submit' name='Search' value='Search' /></td>
+		</tr>
+	</table>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
 			<td class="Toolbar_TDSelectAction_Top">
