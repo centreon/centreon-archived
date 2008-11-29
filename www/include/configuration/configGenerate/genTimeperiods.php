@@ -102,7 +102,7 @@
 				unset($timePeriod);
 				foreach ($Period as $day => $value){
 					if (strlen($PeriodAfter[$day].$Period[$day].$PeriodBefore[$day]))
-						$str .= print_line($day, $PeriodAfter[$day].$Period[$day].$PeriodBefore[$day]);
+					  $str .= print_line($day, $PeriodAfter[$day].($Period[$day] && $PeriodAfter[$day] ? "," : "").$Period[$day].($PeriodBefore[$day] && ($PeriodAfter[$day] || $Period[$day]) ? "," : "").$PeriodBefore[$day]);
 				}
 				$str .= "}\n\n";
 			}

@@ -47,6 +47,23 @@
 		$str = str_replace('#BS#', "\\", $str);
 		return $str;
 	}
+	
+	function myHour($hour) {
+		if (!$hour)
+			return "00";
+		if ($hour < 10)
+			return "0".$hour;
+		return $hour; 
+	}
+	
+	function myMinute($min) {
+		if (!$min)
+			return "00";
+		if ($min < 10 && $min > 0)
+			return "0".$min;
+		return $min; 
+	}
+	
 	/*
 	 * Compute values for time range
 	 */
@@ -65,26 +82,35 @@
 				$tabValue[3] += $gmt;
 				
 				if ($tabValue[1] < 0 && $tabValue[3] < 0) {				
-					$PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".$tabValue[2]."-".(24 + $tabValue[3]).":".$tabValue[4].";";
+					$value = (24 + $tabValue[1]);
+					$value = myHour($value); 
+					$PeriodBefore[$daybefore] .= $value.":".$tabValue[2]."-".(24 + $tabValue[3]).":".myMinute($tabValue[4]);
 				} else if ($tabValue[1] < 0 && $tabValue[3] > 0) {
-					$Period[$day] .= "00:00-".((24 + $tabValue[3]) % 24).":".$tabValue[4].";";
-					$PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".$tabValue[2]."-24:00;";
+					$value = ((24 + $tabValue[3]) % 24);
+					$Period[$day] .= "00:00-".myHour($value).":".(($tabValue[4] < 10 && $tabValue[4] > 0) ? "0".$tabValue[4] : $tabValue[4]);
+					$PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".myMinute($tabValue[2])."-24:00";
 				} else {
-					$Period[$day] .= ($tabValue[1] < 0 ? 24 + $tabValue[1] : $tabValue[1]).":".$tabValue[2]."-".($tabValue[3] <= 0 ? 24 + $tabValue[3] : $tabValue[3]).":".$tabValue[4].";";					
+					$value = ($tabValue[1] < 0 ? 24 + $tabValue[1] : $tabValue[1]);
+					$Period[$day] .= myHour($value).":".myMinute($tabValue[2])."-".($tabValue[3] <= 0 ? 24 + $tabValue[3] : $tabValue[3]).":".myMinute($tabValue[4]);
 				}
 			} else if ($gmt > 0) {
 				$tabValue[1] += $gmt;
 				$tabValue[3] += $gmt;
 				if ($tabValue[1] > 24 && $tabValue[3] > 24) {				
-					$PeriodAfter[$dayafter] .= ($tabValue[1] % 24).":".$tabValue[2]."-".($tabValue[3] % 24).":".$tabValue[4].";";
+					$PeriodAfter[$dayafter] .= ($tabValue[1] % 24).":".myMinute($tabValue[2])."-".($tabValue[3] % 24).":".myMinute($tabValue[4])."";
 				} else if ($tabValue[1] < 24 && $tabValue[3] > 24) {
-					$Period[$day] .= $tabValue[1].":".$tabValue[2]."-"."24:00;";
-					$PeriodAfter[$dayafter] .= "00:00-".($tabValue[3] % 24).":".$tabValue[4].";";
+					$Period[$day] .= (($tabValue[1] < 10 && $tabValue[1] > 0) ? "0".$tabValue[1] : $tabValue[1]).":".$tabValue[2]."-"."24:00";
+					$tabValue[3] = $tabValue[3] % 24;
+					$PeriodAfter[$dayafter] .= "00:00-".myHour($tabValue[3]) .":".myMinute($tabValue[4])."";
 				} else {
-					$Period[$day] .= $tabValue[1].":".$tabValue[2]."-".$tabValue[3].":".$tabValue[4].";";					
+					if (($tabValue[3] == 24 && $tabValue[4] > 0)) {
+						$PeriodAfter[$dayafter] .= "00:00-00:".myMinute($tabValue[4]);
+						$tabValue[4] = "00";
+					}
+					$Period[$day] .= myMinute($tabValue[1]).":".myMinute($tabValue[2])."-".myMinute($tabValue[3]).":".myMinute($tabValue[4]);			
 				}
 			} else if ($gmt == 0) {
-				$Period[$day] .= $tabValue[1].":".$tabValue[2]."-".$tabValue[3].":".$tabValue[4].";";
+				$Period[$day] .= $tabValue[1].":".$tabValue[2]."-".$tabValue[3].":".$tabValue[4];
 			}		
 		}
 	}
