@@ -86,7 +86,7 @@
 			while($service =& $DBRESULT2->fetchRow()){
 				if (isset($gbArr[4][$service["service_id"]]))	{				
 					if ($service["host_id"])	{
-						if (isset($gbArr[2][$service["host_id"]]) && isHostOnThisInstance($service["host_id"], $tab['id'])){
+						if (isset($gbArr[2][$service["host_id"]]) && isset($host_instance[$service["host_id"]])){
 							
 							$service["service_description"] = str_replace("#S#", "/", $service["service_description"]);
 							$service["service_description"] = str_replace("#BS#", "\\", $service["service_description"]);
@@ -116,7 +116,7 @@
 							if (PEAR::isError($DBRESULT3)) 
 								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 							while($host =& $DBRESULT3->fetchRow())	{
-								if (isset($gbArr[2][$host["host_host_id"]]) && isHostOnThisInstance($host["host_host_id"],$tab['id'])){
+								if (isset($gbArr[2][$host["host_host_id"]]) && isset($host_instance[$host["host_host_id"]])){
 									$service["service_description"] = str_replace("#S#", "/", $service["service_description"]);
 									$service["service_description"] = str_replace("#BS#", "\\", $service["service_description"]);
 									$strTemp != NULL ? $strTemp .= ", ".getMyHostName($host["host_host_id"]).", ".$service["service_description"] : $strTemp = getMyHostName($host["host_host_id"]).", ".$service["service_description"];

@@ -23,7 +23,7 @@
 	 */
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/services.cfg", $oreon->user->get_name());
-
+	
 	/*
 	 * Get Service List
 	 */
@@ -34,11 +34,8 @@
 	$i = 1;
 	$str = NULL;
 	while ($service =& $DBRESULT->fetchRow()) {
-		$BP = false;
 		$LinkedToHost = 0;
 		$strDef = "";
-	
-		isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
 		
 		/*
 		 * Convert spécial char
@@ -46,7 +43,7 @@
 		$service["service_description"] = convertServiceSpecialChar($service["service_description"]);
 		$service["service_alias"] = convertServiceSpecialChar($service["service_alias"]);
 				
-		if ($BP) {
+		if (isset($gbArr[4][$service["service_id"]])) {
 			
 			/*
 			 * Check GMT compatibility
@@ -91,7 +88,7 @@
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while ($host =& $DBRESULT2->fetchRow())	{
 						if (isset($gbArr[2][$host["host_id"]])) {
-							if (isHostOnThisInstance($host["host_id"], $tab['id'])) {
+							if (isset($host_instance[$host["host_id"]])) {
 								$parent = true;
 								if (!isset($hosts[$host["host_location"]]))
 									$hosts[$host["host_location"]] = array();
@@ -391,7 +388,7 @@
 						while ($host =& $DBRESULT2->fetchRow())	{
 							if (isset($gbArr[2][$host["host_id"]]))	{
 								$parent = true;
-								if (isHostOnThisInstance($host["host_id"], $tab['id'])){
+								if (isset($host_instance[$host["host_id"]])){
 									$strTMPTemp != NULL ? $strTMPTemp .= ", ".$host["host_name"] : $strTMPTemp = $host["host_name"];
 									$LinkedToHost++;
 								}

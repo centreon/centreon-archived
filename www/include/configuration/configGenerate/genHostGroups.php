@@ -65,45 +65,17 @@
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		while($host =& $DBRESULT2->fetchRow())	{
-			$BP = false;
-			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-			
-			if ($BP && isHostOnThisInstance($host["host_id"], $tab['id'])){
+			if (isset($gbArr[2][$host["host_id"]]) && isset($host_instance[$host["host_id"]])){
 				$HGLinkedToHost++;
 				$strTemp != NULL ? $strTemp .= ", ".$host["host_name"] : $strTemp = $host["host_name"];
 			}
 		}
 		$DBRESULT2->free();
 		unset($host);
-		if ($strTemp) $strDef .= print_line("members", $strTemp);
+		if ($strTemp) 
+			$strDef .= print_line("members", $strTemp);
 		unset($strTemp);
 	
-		/*
-		 * Only for Nagios V1 : Contactgroups
-		 */ 
-	
-		if ($oreon->user->get_version() == 1)	{
-			$contactGroup = array();
-			$strTemp = NULL;
-			$DBRESULT2 =& $pearDB->query("SELECT cg.cg_name, cg.cg_id FROM contactgroup_hostgroup_relation cghgr, contactgroup cg WHERE cghgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND cghgr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while($contactGroup =& $DBRESULT2->fetchRow())	{
-				$BP = false;
-				array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-				
-				if ($BP)
-					$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
-			}
-			$DBRESULT2->free();
-			unset($contactGroup);
-			if ($strTemp) {
-				$strDef .= print_line("contact_groups", $strTemp);
-				
-			}
-			unset($strTemp);
-		}
-		
 		/*
 		 * Generate only if this hostgroup had a host generate on this nagios instance
 		 */

@@ -162,14 +162,8 @@
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($svPar =& $DBRESULT->fetchRow())	{
-		$BP = false;
-		array_key_exists($svPar["service_service_id"], $gbArr[4]) ? $BP = true : "";
-		
-		if ($BP)	{
-			$BP = false;
-			array_key_exists($svPar["host_host_id"], $gbArr[2]) ? $BP = true : "";
-			
-			if ($BP && isHostOnThisInstance($svPar["host_host_id"], $tab['id'])){						
+		if (isset($gbArr[4][$svPar["service_service_id"]]))	{
+			if (isset($gbArr[2][$svPar["host_host_id"]]) && isset($host_instance[$svPar["host_host_id"]])) {						
 				$hPar = getMyHostName($svPar["host_host_id"]);
 			}
 			# Service Child
@@ -177,14 +171,8 @@
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($svCh =& $DBRESULT2->fetchRow())	{
-				$BP = false;
-				array_key_exists($svCh["service_service_id"], $gbArr[4]) ? $BP = true : "";
-				
-				if ($BP)	{
-					$BP = false;
-					array_key_exists($svCh["host_host_id"], $gbArr[2]) ? $BP = true : "";
-					
-					if ($BP && isHostOnThisInstance($svCh["host_host_id"], $tab['id']))	{					
+				if (isset($gbArr[4][$svCh["service_service_id"]])) {
+					if (isset($gbArr[2][$svCh["host_host_id"]]) && isset($gbArr[2][$svCh["host_host_id"]]))	{					
 						$hCh = getMyHostName($svCh["host_host_id"]);
 					}
 				}

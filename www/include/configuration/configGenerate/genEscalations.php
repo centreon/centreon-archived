@@ -63,7 +63,7 @@
 		$hosts = array();
 		$strTemp = NULL;
 		while ($host =& $DBRESULT2->fetchRow())	{
-			if (isset($gbArr[2][$host["host_id"]]) && isHostOnThisInstance($host["host_id"], $tab['id'])) {
+			if (isset($gbArr[2][$host["host_id"]]) && isset($host_instance[$host["host_id"]])) {
 				$linkedToHost++;
 				if (!isset($hosts[$host["host_location"]]))
 					$hosts[$host["host_location"]] = array();
@@ -351,7 +351,7 @@
 					if (isset($host) && count($host))
 						foreach ($host as $ids => $escalation) {
 							$tabHS = split("_", $ids);
-							if (isHostOnThisInstance($tabHS[0], $tab['id'])) {
+							if (isset($host_instance[$tabHS[0]])) {
 								$host = array();
 								$strDef = "";
 								$host_id = $tabHS[0];
@@ -369,7 +369,7 @@
 									
 									$strDef .= "define serviceescalation{\n";			
 									$strDef .= print_line("host_name", $host_name);										
-									if (isHostOnThisInstance($host_id, $tab['id']))					
+									if (isset($host_instance[$host_id]))					
 										$generated++;
 									
 									$strDef .= print_line("service_description", $service_description);
@@ -516,7 +516,7 @@
 			
 			$escalation = array();
 			while ($escalation =& $DBRESULT2->fetchRow()) {
-				if (isHostOnThisInstance($escalation["host_host_id"], $tab['id'])){
+				if (isset($host_instance[$escalation["host_host_id"]])){
 					$host = array();
 					$strDef = "";
 					
@@ -535,7 +535,7 @@
 						
 						$strDef .= "define serviceescalation{\n";			
 						$strDef .= print_line("host_name", getMyHostName($escalation["host_host_id"]));										
-						if (isHostOnThisInstance($escalation["host_host_id"], $tab['id']))					
+						if (isset($host_instance[$escalation["host_host_id"]]))					
 							$generated++;
 						
 						$strDef .= print_line("service_description", $service["service_description"]);

@@ -17,11 +17,22 @@
 
 	if (!isset($oreon))
 		exit();
-			
+	
 	/*
-	 * Get Host List
+	 * Create table for host / instance list.
 	 */
 	
+	$host_instance = array();
+	$DBRESULT =& $pearDB->query("SELECT * FROM `ns_host_relation` WHERE `nagios_server_id` = '".$tab['id']."'");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while ($datas =& $DBRESULT->fetchRow())
+		$host_instance[$datas["host_host_id"]] = $datas["host_host_id"];
+	$DBRESULT->free();
+				
+	/*
+	 * Get Command List
+	 */
 	$DBRESULT =& $pearDB->query('SELECT command_id, command_name FROM `command` ORDER BY `command_type`,`command_name`');
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -41,12 +52,8 @@
 	$str = NULL;
 	
 	while ($host =& $DBRESULT->fetchRow())	{
-		if (isHostOnThisInstance($host["host_id"], $tab['id']) || $host["host_register"] == 0) {			
-			$BP = false;
-			isset($gbArr[2][$host["host_id"]]) ? $BP = true : NULL;			
-			if (!$host["host_register"])
-				$BP = true;				
-			if ($BP)	{								
+		if (isset($host_instance[$host["host_id"]]) || $host["host_register"] == 0) {			
+			if (isset($gbArr[2][$host["host_id"]]) || !$host["host_register"])	{								
 				$ret["comment"] ? ($str .= "# '" . $host["host_name"]."' host definition ".$i."\n") : NULL;
 				if ($ret["comment"] && $host["host_comment"])	{
 					$comment = array();
