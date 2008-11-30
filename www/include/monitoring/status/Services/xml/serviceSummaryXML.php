@@ -15,7 +15,11 @@
  * For information : contact@centreon.com
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	/*
+	 * if debug == 0 => Normal, 
+	 * debug == 1 => get use, 
+	 * debug == 2 => log in file (log.xml)
+	 */
 	$debugXML = 0;
 	$buffer = '';
 
@@ -29,9 +33,8 @@
 
 	$ndo_base_prefix = getNDOPrefix();
 	
-	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
-		$sid = $_GET["sid"];
-		$sid = htmlentities($sid);
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])) {
+		$sid = htmlentities($_GET["sid"]);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
