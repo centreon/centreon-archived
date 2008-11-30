@@ -1,8 +1,6 @@
 <form {$form.attributes}>
-<table class="ListTable">	
-	<tr class="ListHeader">
-	 	<td class="FormHeader">&nbsp;&nbsp;{$form.start.label}&nbsp;&nbsp;{$form.start.html}</td>
-	 </tr>
+<table class="ListTable">
+	<tr class="ListHeader"><td class="FormHeader">&nbsp;&nbsp;{$form.start.label}&nbsp;&nbsp;{$form.start.html}</td></tr>
 </table>
 <br>
 <div>
@@ -17,11 +15,12 @@
 <a name="generate">
 {assign var='cpt' value=0}
 {foreach from=$host_list key=key item=item}
+{assign var='cpt2' value=$cpt}
 {assign var='cpt' value=$cpt+1}
 <div id='tab{$cpt}' class='tab'>
  	<table class="ListTable">
 	 	<tr class="ListHeader">
-	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;</td>
+	 		<td class="FormHeader"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$tab_server[$cpt2]}&nbsp;</td>
 	 	</tr>
 		{assign var='counter' value=0}
 		<tr>
