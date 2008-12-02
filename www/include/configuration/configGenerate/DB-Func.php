@@ -96,10 +96,10 @@
 			} else if ($gmt > 0) {
 				$tabValue[1] += $gmt;
 				$tabValue[3] += $gmt;
-				if ($tabValue[1] > 24 && $tabValue[3] > 24) {				
+				if ($tabValue[1] >= 24 && $tabValue[3] > 24) {				
 					$PeriodAfter[$dayafter] .= ($tabValue[1] % 24).":".myMinute($tabValue[2])."-".($tabValue[3] % 24).":".myMinute($tabValue[4])."";
 				} else if ($tabValue[1] < 24 && $tabValue[3] > 24) {
-					$Period[$day] .= (($tabValue[1] < 10 && $tabValue[1] > 0) ? "0".$tabValue[1] : $tabValue[1]).":".$tabValue[2]."-"."24:00";
+					$Period[$day] .= myMinute($tabValue[1]).":".$tabValue[2]."-"."24:00";
 					$tabValue[3] = $tabValue[3] % 24;
 					$PeriodAfter[$dayafter] .= "00:00-".myHour($tabValue[3]) .":".myMinute($tabValue[4])."";
 				} else {
