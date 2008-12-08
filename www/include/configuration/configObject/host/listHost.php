@@ -51,7 +51,11 @@
 	/*
 	 * Launch Request
 	 */	
-	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h WHERE $SearchTool $LCATool host_register = '1'");
+	 
+	if ($poller) 
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation WHERE $SearchTool $LCATool host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller'");
+	else
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h WHERE $SearchTool $LCATool host_register = '1'");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	$tmp =& $DBRESULT->fetchRow();
@@ -124,7 +128,10 @@
 	/*
 	 * Select hosts 
 	 */
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE $SearchTool $LCATool host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
+	if ($poller)
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation WHERE $SearchTool $LCATool host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
+	else
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE $SearchTool $LCATool host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 
