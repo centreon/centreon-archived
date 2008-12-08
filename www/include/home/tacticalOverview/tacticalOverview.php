@@ -77,6 +77,7 @@
 						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id".
 						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 						" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR)" .
+						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'qos_Module' " .
 						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 			} else {
@@ -84,6 +85,7 @@
 						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
 						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id".
 						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'Meta_Module' AND ".$ndo_base_prefix."objects.name1 NOT LIKE 'qos_Module' " .
 						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 			}
