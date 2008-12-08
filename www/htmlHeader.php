@@ -1,30 +1,46 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
- */
-
-/*
- * SVN: $URL: http://svn.centreon.com/trunk/centreon/www/htmlHeader.php $
- * SVN: $Id$
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL
+ * SVN : $Id: htmlHeader.php 7192 2008-12-02 16:24:56Z jmathis $
+ * 
  */
 
 	if (!isset($oreon))
 		exit();
 		
 	print "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
-	
+
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $mlang; ?>">
 <head>
@@ -35,14 +51,14 @@
 <meta name="robots" content="index, nofollow" />
 <link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?><?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
-<script src="./include/common/javascript/scriptaculous/prototype.js" type="text/javascript"></script>
-<script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<script type="text/javascript" src="./include/common/javascript/scriptaculous/prototype.js"></script>
+<script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects"></script>
 <?php
 
+	/*
+	 * Add Javascript for NDO status Counter
+	 */		
 	if ($min != 1) {
-		/*
-		 * Add Javascript for NDO status Counter
-		 */		
 		print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
 	}
 
@@ -52,10 +68,7 @@
 	if (isset($p) && !strcmp($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
 		echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
 
-	print "<SCRIPT type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?sid=".session_id()."'></SCRIPT>\n";
-	
-	if (isset($p) && $p == 310)
-		print "<SCRIPT type='text/javascript' src='./include/common/javascript/datepicker.js'></SCRIPT>\n";
+	print "<script type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?sid=".session_id()."'></script>\n";
 
 	/*
 	 * include javascript
@@ -65,9 +78,10 @@
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 	if (PEAR::isError($DBRESULT))
 		print $DBRESULT->getDebugInfo()."<br />";
-	while ($topology_js =& $DBRESULT->fetchRow()){
+	while ($topology_js =& $DBRESULT->fetchRow()) {
 		if ($topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js" && $topology_js['PathName_js'] != "./include/common/javascript/codebase/dhtmlxtree.js")
-			echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script>\n";
+			if ($topology_js['PathName_js'] != "")
+				echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script>\n";
 	}
 	
 	/*
@@ -78,28 +92,30 @@
 
 	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
+	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;	
 	
 	?>
-	<script type='text/javascript'>
-	    window.onload = function () {
+<script type='text/javascript'>
+    window.onload = function () {
 	<?php
+		
 	if ($min != 1)
-		print "setTimeout('reloadStatusCounter($tS, \"$sid\")', 0);\n";
+		print "setTimeout('reloadStatusCounter($tS, \"$sid\")', $tFS);\n";
 
 	$res = null;
-	$DBRESULT =& $pearDB->query("SELECT `PathName_js`, `init` FROM `topology_JS` WHERE `id_page` = '".$p."' AND (`o` = '" . $o . "' OR `o` IS NULL)");
-	if (PEAR::isError($DBRESULT)) 
-		print $DBRESULT->getDebugInfo()."<br />";
+	$DBRESULT =& $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
+	if (PEAR::isError($DBRESULT)) print $DBRESULT->getDebugInfo()."<br />";
 	while ($topology_js =& $DBRESULT->fetchRow()){
-		if ($topology_js['init'] == "initM")	{
-			?>setTimeout('initM(<?php echo $tM; ?>,"<?php echo $sid ; ?>", "<?php echo $o;?>")', 0);<?php
+		if ($topology_js['init'] == "initM") {
+			if ($o != "hd" && $o != "svcd") {
+				print "\tsetTimeout('initM($tM, \"$sid\", \"$o\")', 0);";
+			}
 		} else if ($topology_js['init']){
 			echo $topology_js['init'] ."();";
 		}
 	}
+	print "\n};\n</script>\n";
 	?>
-    	};
-    </script>
-	<script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
+<script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
 </head>
 <body>
