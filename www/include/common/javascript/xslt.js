@@ -45,14 +45,14 @@ var pickRecentProgID = function (idList){
 }
 
 // Retourne un nouvel objet XmlHttpRequest
-var GetXmlHttpRequest_AXO=null
+var GetXmlHttpRequest_AXO = null;
+
 var GetXmlHttpRequest=function () {
 	if (window.XMLHttpRequest) {
 		return new XMLHttpRequest()
-	}
-	else if (window.ActiveXObject) {
+	} else if (window.ActiveXObject) {
 		if (!GetXmlHttpRequest_AXO) {
-			GetXmlHttpRequest_AXO=pickRecentProgID(["Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"]);
+			GetXmlHttpRequest_AXO = pickRecentProgID(["Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"]);
 		}
 		return new ActiveXObject(GetXmlHttpRequest_AXO)
 	}
@@ -81,7 +81,7 @@ var xslt_js = {
  * Constructor for client-side XSLT transformations.
  *
  * @author <a href="mailto:jb@eaio.com">Johann Burkard</a>
- * @version $Id: xslt.js,v 1.5 2007/06/23 19:48:30 jburkard Exp $
+ * @version $Id: xslt.js 7202 2008-12-03 21:36:14Z jmathis $
  * @constructor
  */
 
@@ -152,25 +152,22 @@ function loadXML(url)
 
 
 function Transformation() {
-var xsltRequest = GetXmlHttpRequest();
+
+	var xsltRequest = GetXmlHttpRequest();
 
     var xml;
-
     var xmlDoc;
-
     var xslt;
-
     var xsltDoc;
-
 
     var callback = function() {};
 
-    /**
+    /*
      * Sort of like a fix for Opera who doesn't always get readyStates right.
      */
     var transformed = false;
 
-    /**
+    /*
      * Returns the URL of the XML document.
      *
      * @return the URL of the XML document
@@ -253,155 +250,121 @@ var xsltRequest = GetXmlHttpRequest();
         return this;
     }
 
-    /**
-     * Sets the target element to write the transformed content to and asynchronously
-     * starts the transformation process.
-     * <p>
-     * <code>target</code> can be a Node or the ID of an element. 2DO
-     * <p>
-     * This method may only be called after {@link #setXml} and {@link #setXslt} have
-     * been called.
-     * <p>
-     * Note that the target element must exist once this method is called. Calling
-     * this method before <code>onload</code> was fired will most likely
-     * not work.
-     *
-     * @param target the Node or the ID of an element
-     */
-    this.transform = function(target) {
-        if (!browserSupportsXSLT()) {
-           return;
-        }
-        var t = this;
-
-        if (document.recalc) {
-            var xmlID = randomID();
-            var xsltID = randomID();
-
-            var change = function() {
-                var c = 'complete'; // ?loading ?interactive
-                var u = 'undefined';
-/*
-                if (typeof document.all[xmlID] != u && document.all[xmlID].readyState == c &&
-                typeof document.all[xsltID] != u && document.all[xsltID].readyState == c) {
-
-*/
-                if (typeof document.all[xmlID] != u && document.all[xmlID].readyState != null &&
-                typeof document.all[xsltID] != u && document.all[xsltID].readyState != null) {
-/*
-viewDebugInfo('---->' + document.all[xmlID].readyState);
-viewDebugInfo('---->' + document.all[xsltID].readyState);
-*/
-
-document.all[target].innerHTML = '';
-                    window.setTimeout(function() {
-                        xmlDoc = document.all[xmlID].XMLDocument;
-                        xsltDoc = document.all[xsltID].XMLDocument;
-                        callback(t);
-mk_pagination(xmlDoc);
-                       document.all[target].innerHTML = document.all[xmlID].transformNode(document.all[xsltID].XMLDocument);
-//                        document.all[target].innerHTML = document.all[xmlID].transformNode(document.all[xsltID].XMLDocument);
-						set_header_title();
-
-
-
-                    }, 50);
-                }
-            }
-
-            var xm = document.createElement('xml');
-            xm.onreadystatechange = change;
-            xm.id = xmlID;
-            xm.src = xml;
-
-            var xs = document.createElement('xml');
-            xs.onreadystatechange = change;
-            xs.id = xsltID;
-            xs.src = xslt;
-
-            document.body.insertBefore(xm);
-            document.body.insertBefore(xs);
-            
-        }
-        else {
-			/* tradition
-			            var xsltRequest = new XMLHttpRequest();
-			            var xmlRequest = new XMLHttpRequest();
-			*/
-
-			/* legerement plus rapide avec FF*/
-            var xmlRequest = GetXmlHttpRequest();
-
-//console.log(xsltRequest);
-
-            var change = function() {
-
-                if (xmlRequest.readyState == 4 && xmlRequest.responseXML && xsltRequest.status == 200 && xsltRequest.readyState == 4 && xsltRequest.statusText == "OK" && xsltRequest.responseText ) {
-
-                    if (transformed) {
-                        return;
-                    }
-                    xsltDoc = xsltRequest.responseXML;
-                    xmlDoc = xmlRequest.responseXML;
-
-// responseText
-/*
-					var xmlstring = xsltRequest.responseText;
-                    xsltDoc = ( new DOMParser() ).parseFromString( xmlstring , "text/xml" );
-*/
-                    var resultDoc;
-                    var processor = new XSLTProcessor();
-
-                        document.getElementById(target).innerHTML = '';
-
-/*
-                    if (typeof processor.transformToFragment == 'function') {
-                        // obsolete Mozilla interface
-                        resultDoc = document.implementation.createDocument("", "", null);
-						processor.transformDocument(xmlDoc, xsltDoc, resultDoc, null);
-                        var out = new XMLSerializer().serializeToString(resultDoc);
-                        callback(t);
-                        mk_pagination(xmlDoc);
-
-						if(out)
-						 document.getElementById(target).innerHTML = out;
-                       	set_header_title();
-
-                    }
-                    else {*/
-                        processor.importStylesheet(xsltDoc);
-                        resultDoc = processor.transformToFragment(xmlDoc, document);
-                        callback(t);
-                       	mk_pagination(xmlDoc);
-                        document.getElementById(target).appendChild(resultDoc);
-                       	set_header_title();
-//                    }
-                    transformed = true;
-                }
-            }
-           	
-            xmlRequest.open("GET", xml, true);
-            xmlRequest.onreadystatechange = change;
-            xmlRequest.send(null);
-
-			if(xsltRequest.readyState != 4){
-	            xsltRequest.open("GET", xslt);
-	            xsltRequest.overrideMimeType("text/xml");
-	            xsltRequest.onreadystatechange = change;
-	            xsltRequest.send(null);
+	/**
+	 * Sets the target element to write the transformed content to and asynchronously
+	 * starts the transformation process.
+	 * <p>
+	 * <code>target</code> can be a Node or the ID of an element. 2DO
+	 * <p>
+	 * This method may only be called after {@link #setXml} and {@link #setXslt} have
+	 * been called.
+	 * <p>
+	 * Note that the target element must exist once this method is called. Calling
+	 * this method before <code>onload</code> was fired will most likely
+	 * not work.
+	 *
+	 * @param target the Node or the ID of an element
+	 *           if (typeof document.all[xmlID] != u && document.all[xmlID].readyState == c &&
+	 *           typeof document.all[xsltID] != u && document.all[xsltID].readyState == c) {
+	 *
+	 * 
+	 */
+	
+	this.transform = function(target) {
+	    var t = this;
+	
+	    if (!browserSupportsXSLT()) {
+	       return;
+	    }
+		
+	    if (document.recalc) {
+	        var xmlID 	= randomID();
+	        var xsltID	= randomID();
+	        var change = function() {
+	            var c = 'complete'; // ?loading ?interactive
+	            var u = 'undefined';
+	            //var transformed = false;
+	            if (typeof document.all[xmlID] != u && document.all[xmlID].readyState != null && typeof document.all[xsltID] != u && document.all[xsltID].readyState != null) {
+					window.setTimeout(function() {                	
+		                if (transformed) {
+							return;
+						}
+		              	if (document.all[xmlID].readyState == 'complete' || document.all[xmlID].readyState == 'loading') {
+			                xmlDoc = document.all[xmlID].XMLDocument;
+			                xsltDoc = document.all[xsltID].XMLDocument;
+			                callback(t);
+			                mk_pagination(xmlDoc);
+							document.all[target].innerHTML = document.all[xmlID].transformNode(document.all[xsltID].XMLDocument);
+							set_header_title();
+							transformed = true;
+						}
+					}, 50);
+				}
 			}
-        }
-    }
+			var xm = document.createElement('xml');
+			xm.onreadystatechange = change;
+			xm.id = xmlID;
+			xm.src = xml;
+			
+			var xs = document.createElement('xml');
+			xs.onreadystatechange = change;
+	        xs.id = xsltID;
+	        xs.src = xslt;
+	
+			document.body.insertBefore(xm);
+			document.body.insertBefore(xs);
+	
+		} else {
+			/* 
+			 * legerement plus rapide avec FF
+			 */
+	        var xmlRequest = GetXmlHttpRequest();
+			
+			//console.log(xsltRequest);
+	
+			var change = function() {
+				if (xmlRequest.readyState == 4 && xmlRequest.responseXML && xsltRequest.status == 200 && xsltRequest.readyState == 4 && xsltRequest.statusText == "OK" && xsltRequest.responseText ) {
+					if (transformed) {
+						return;
+					}
+	                xsltDoc = xsltRequest.responseXML;
+	                xmlDoc = xmlRequest.responseXML;
+	
+					var resultDoc;
+					var processor = new XSLTProcessor();
+					document.getElementById(target).innerHTML = '';
+	
+					processor.importStylesheet(xsltDoc);
+					resultDoc = processor.transformToFragment(xmlDoc, document);
+					callback(t);
+					mk_paginationFF(xmlDoc);				
+					document.getElementById(target).appendChild(resultDoc);
+					set_header_title();
+	                transformed = true;
+				}
+			}
+	  		xmlRequest.open("GET", xml, true);
+			xmlRequest.onreadystatechange = change;
+			xmlRequest.send(null);
 
-    /**
-     * Generates a random ID.
-     *
-     * @return a random ID
-     */
-    function randomID() {
-        var out = 'id' + Math.round(Math.random() * 100000);
-        return out;
-    }
+			if (xsltRequest.readyState != 4){
+				xsltRequest.open("GET", xslt);
+				xsltRequest.overrideMimeType("text/xml");
+				xsltRequest.onreadystatechange = change;
+				xsltRequest.send(null);
+			}
+	    }
+	}
+	
+	/**
+	 * Generates a random ID.
+	 *
+	 * @return a random ID
+	 */
+	function randomID() {
+	    var out = 'id' + Math.round(Math.random() * 100000);
+	    return out;
+	}
 
 }
 
@@ -411,6 +374,7 @@ mk_pagination(xmlDoc);
  * @return the browser supports XSLT
  * @type boolean
  */
+
 function browserSupportsXSLT() {
     var support = false;
     if (document.recalc) { // IE 5+
@@ -421,8 +385,7 @@ function browserSupportsXSLT() {
        var processor = new XSLTProcessor();
        if (typeof processor.transformDocument == 'function') {
            support = typeof XMLSerializer != u;
-       }
-       else {
+       } else {
            support = true;
        }
     }
