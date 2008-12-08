@@ -110,7 +110,7 @@
 			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = " . $svc_id .
 			" AND no.object_id = nss.service_object_id " .
-			" AND no.name1 not like 'OSL_Module'".
+			" AND no.name1 not like 'qos_Module'".
 			" AND no.is_active = 1 AND no.objecttype_id = 2";
 	
 	/*

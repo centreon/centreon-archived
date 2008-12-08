@@ -86,7 +86,7 @@
 			$rq .= ", centreon_acl ";
 					
 		$rq .= 		" WHERE no.object_id = nss.service_object_id" .
-					" AND no.name1 NOT LIKE 'OSL_Module'" .
+					" AND no.name1 NOT LIKE 'qos_Module'" .
 					" AND no.name1 NOT LIKE 'Meta_Module'";
 		
 		if (!$is_admin && $groupnumber)
@@ -107,7 +107,7 @@
 					" FROM ".$ndo_base_prefix."objects nno" .
 					" WHERE nno.objecttype_id =2" .
 					" AND nno.name1 = '".$host_name."'" .
-					" AND nno.name1 not like 'OSL_Module'".
+					" AND nno.name1 not like 'qos_Module'".
 					" )";
 		
 		if($instance != "ALL")
@@ -151,7 +151,7 @@
 	$rq1 .= 		" WHERE hs.host_object_id = hgm.host_object_id".
 					" AND no.object_id = hgm.host_object_id" .
 					" AND hgm.hostgroup_id = hg.hostgroup_id".
-					" AND no.name1 not like 'OSL_Module'" .
+					" AND no.name1 not like 'qos_Module'" .
 					" AND no.name1 not like 'Meta_Module'";
 	
 	if (!$is_admin && $groupnumber)

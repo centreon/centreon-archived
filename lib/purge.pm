@@ -52,7 +52,7 @@ sub CheckMySQLDrain(){
 	
 	my $flg = 0;
 	my $sth;
-	$sth = $con_ods->prepare("SELECT host_id, service_id FROM index_data WHERE `host_name` != 'OSL_Module' AND `host_name` != 'META_Module'");
+	$sth = $con_ods->prepare("SELECT host_id, service_id FROM index_data WHERE `host_name` != 'qos_Module' AND `host_name` != 'META_Module'");
 	if (!$sth->execute) {writeLogFile("Error in Drain function 3 : " . $sth->errstr . "\n");}
 	while ($data = $sth->fetchrow_hashref()){
 		if ($data->{'service_id'} && $data->{'host_id'} && !defined($srv_list{$data->{'host_id'}."_".$data->{'service_id'}})){

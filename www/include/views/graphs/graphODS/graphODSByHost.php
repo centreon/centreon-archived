@@ -51,7 +51,7 @@
 	while ($hostInOreon =& $DBRESULT->fetchRow()){
 		if ($hostInOreon["host_name"] == "Meta_Module")
 			$ppHosts[$hostInOreon["host_name"]] = "Meta Services";
-		else if ($hostInOreon["host_name"] != "OSL_Module")
+		else if ($hostInOreon["host_name"] != "qos_Module")
 			$ppHosts[$hostInOreon["host_name"]] = $hostInOreon["host_name"];
 	}
 	$DBRESULT->free();

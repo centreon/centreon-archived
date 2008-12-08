@@ -68,7 +68,7 @@
 			$rq	.=	", centreon_acl";
 		
 		$rq	.=	" WHERE nno.objecttype_id = 2 ".
-				" AND nno.name1 not like 'OSL_Module'" .
+				" AND nno.name1 not like 'qos_Module'" .
 				" AND nno.name1 not like 'Meta_Module'";
 		
 		if (!$is_admin && $groupnumber)

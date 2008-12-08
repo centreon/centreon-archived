@@ -69,14 +69,14 @@
 				$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
 			}
 	# Include for Module the cfg file
-	if (isset($oreon->modules["osl"]) && isset($tab['localhost']) && $tab['localhost'])
-		if ($oreon->modules["osl"]["gen"] && $files = glob("./modules/osl/generate_files/*.php"))
+	if (isset($oreon->modules["CentQos"]) && isset($tab['localhost']) && $tab['localhost'])
+		if ($oreon->modules["CentQos"]["gen"] && $files = glob("./modules/CentQos/generate_files/*.php"))
 			foreach ($files as $filename)	{
 				$cfg = NULL;
 				$file =& basename($filename);
 				$file = explode(".", $file);
 				$cfg .= $file[0];
-				$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$cfg.".cfg\n";
+				$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
 			}
 	$str .= "resource_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/resource.cfg\n";
 	$nagios["cfg_dir"] = NULL;

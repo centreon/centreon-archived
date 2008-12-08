@@ -90,7 +90,7 @@
 		$rq = 	"SELECT no.name1, no.name2 as service_name, nss.current_state" .
 			 	" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
 				" WHERE no.object_id = nss.service_object_id" ;
-					" AND no.name1 not like 'OSL_Module'";
+					" AND no.name1 not like 'qos_Module'";
 
 		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb")
 			$rq .= 	" AND nss.current_state != 0" ;

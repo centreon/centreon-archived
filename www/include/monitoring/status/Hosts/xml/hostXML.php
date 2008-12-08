@@ -127,7 +127,7 @@
 		$rq1 .= ", centreon_acl ";
 		 
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
-			" AND no.name1 not like 'OSL_Module'".
+			" AND no.name1 not like 'qos_Module'".
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
 			" AND no.name1 NOT LIKE 'Meta_Module'";
 

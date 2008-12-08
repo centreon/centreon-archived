@@ -102,7 +102,7 @@
 		$rq1 .= ", centreon_acl ";
 
 		$rq1 .=	" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
-				" AND no.name1 not like 'OSL_Module'" .
+				" AND no.name1 not like 'qos_Module'" .
 				" AND no.name1 not like 'Meta_Module'";
 
 	if ($o == "svcSum_pb")

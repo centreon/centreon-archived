@@ -163,7 +163,8 @@
 				unset($generatedS);
 			}
 		}
-					
+		
+		$flag_localhost = 0;			
 		/*
 		 * Meta Module Generator engine
 		 */
@@ -172,17 +173,19 @@
 		if (PEAR::isError($DBRESULT_Servers))
 			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
-			if (isset($tab['localhost']) && $tab['localhost'])
+			if (isset($tab['localhost']) && $tab['localhost']) {
+				$flag_localhost = $tab['localhost'];
 				if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
 					foreach ($files as $filename)
 						require_once($filename);
+			}
 		}
 		
 		/*
 		 *  Centreon Modules generator engine
 		 */
 		 
-		if (isset($tab['localhost']) && $tab['localhost'])
+		if ($flag_localhost)
 			foreach ($oreon->modules as $key=>$value)
 				if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php"))
 					foreach ($files as $filename)
