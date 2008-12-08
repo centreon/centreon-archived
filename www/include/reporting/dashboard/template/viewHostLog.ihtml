@@ -131,11 +131,10 @@
 				<td colspan=2 style=' padding:5px;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
-							<td class="FormHeader" colspan=11>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
+							<td class="FormHeader" colspan="10">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$serviceTitle}</td>
-							<td colspan=1 class="ListColHeaderCenter">&nbsp;</td>
 							<td colspan=2 class="ListColHeaderCenter">{$OKTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$WarningTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$CriticalTitle}</td>
@@ -143,7 +142,7 @@
 							<td class="ListColHeaderCenter">{$PendingTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter" colspan="2"></td>
+							<td class="ListColHeaderCenter"></td>
 							<td class="ListColHeaderCenter">%</td>
 							<td class="ListColHeaderCenter">Alert</td>
 							<td class="ListColHeaderCenter">%</td>
@@ -156,10 +155,7 @@
 						</tr>
 						{foreach item=tb from=$components}
 						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderLeft">
-								<a href="main.php?p=30702&period={$get_period}&start={$get_date_start}&end={$get_date_end}&host_id={$host_id}&item={$tb.ID}">{$tb.DESCRIPTION}</a>
-							</td>
-							<td class="ListColHeaderCenter"><img onmouseout="hiddenIMG('22');" onmouseover="displayIMG('809','993e01f4fe1dbc6b680be85e6ba427dc','22');" src="./img/icones/16x16/column-chart.gif"></td>
+							<td class="ListColHeaderLeft"><a href="main.php?p=30702&period={$get_period}&start={$get_date_start}&end={$get_date_end}&host_id={$host_id}&item={$tb.ID}">{$tb.DESCRIPTION}</a></td>
 							<td {$style_ok}>{$tb.OK_TP}% ({$tb.OK_MP}%)</td>
 							<td {$style_ok_alert} >{$tb.OK_A}</td>
 							<td {$style_warning}>{$tb.WARNING_TP}% ({$tb.WARNING_MP}%)</td>
@@ -172,7 +168,7 @@
 						</tr>
 						{/foreach}
 						<tr class="list_lvl_2">
-							<td class="ListColHeaderCenter" colspan="2">{$averageTilte}</td>
+							<td class="ListColHeaderCenter">{$averageTilte}</td>
 							<td class='ListColHeaderCenter'{$style_ok}>{$components_avg.OK_TP}% ({$components_avg.OK_MP}%)</td>
 							<td class='ListColHeaderCenter'{$style_ok_alert}>{$components_avg.OK_A}</td>
 							<td class='ListColHeaderCenter'{$style_warning}>{$components_avg.WARNING_TP}% ({$components_avg.WARNING_MP}%)</td>
