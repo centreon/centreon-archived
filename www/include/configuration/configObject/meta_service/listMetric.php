@@ -1,20 +1,40 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
- */
- 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL
+ * SVN : $Id: listMetric.php 7146 2008-11-25 10:13:21Z jmathis $
+ * 
+ */ 
 
 	$calcType = array("AVE"=>_("Average"), "SOM"=>_("Sum"), "MIN"=>_("Min"), "MAX"=>_("Max"));
 
@@ -47,8 +67,8 @@
 	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_host", _("Host"));
-	$tpl->assign("headerMenu_service", _("Server"));
-	$tpl->assign("headerMenu_metric", _("Metric"));
+	$tpl->assign("headerMenu_service", _("Services"));
+	$tpl->assign("headerMenu_metric", _("Metrics"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
@@ -79,6 +99,8 @@
 			$moptions .= "<a href='main.php?p=".$p."&msr_id=".$metric['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		$DBRESULTO =& $pearDBO->query("SELECT * FROM metrics m, index_data i WHERE m.metric_id = '".$metric['metric_id']."' and m.index_id=i.id");
 		$row =& $DBRESULTO->fetchRow();
+		$row["service_description"] = str_replace("#S#", "/", $row["service_description"]);
+		$row["service_description"] = str_replace("#BS#", "\\", $row["service_description"]);
 		$elemArr1[$i] = array("MenuClass"=>"list_".$style, 
 					"RowMenu_select"=>$selectedElements->toHtml(),
 					"RowMenu_host"=>htmlentities($row["host_name"], ENT_QUOTES),

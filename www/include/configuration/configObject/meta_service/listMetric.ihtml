@@ -1,6 +1,6 @@
 <table class="ListTable">
 	<tr class="ListHeader">
-	<td class="ListColCenter">
+	<td class="ListColLeft">
 		<img src='./img/icones/16x16/workstation2.gif'>&nbsp;{$meta.meta} -	{$meta.name}&nbsp;({$meta.calc_type})
 	</td>
 	</tr>
