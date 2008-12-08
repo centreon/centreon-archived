@@ -1,20 +1,41 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL
+ * SVN : $Id: GetXmlTree.php 7140 2008-11-24 19:48:50Z jmathis $
+ * 
  */
-
+ 
 	$debugXML = 0;
 	$buffer = '';
 
@@ -53,7 +74,8 @@
 
 
 	/* 
-	 * if debug == 0 => Normal, debug == 1 => get use, 
+	 * if debug == 0 => Normal, 
+	 * debug == 1 => get use, 
 	 * debug == 2 => log in file (log.xml) 
 	 */
 	
@@ -91,14 +113,14 @@
 			$hosts = getMyHostGroupHosts($id);
 			foreach ($hosts as $host){
 				if ($is_admin){
-					if (host_has_one_or_more_GraphService($host))
-				        print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+					print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 				} else {
-					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][getMyHostName($host)]) && host_has_one_or_more_GraphService($host))
+					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][getMyHostName($host)]))
 			        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 				}
 			}
 		} else if ($type == "ST") {
+			
 			/*
 			 * Send Service/host list for a SG 
 			 */
@@ -208,11 +230,12 @@
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($MS =& $DBRESULT->fetchRow()){
-				$i++;$cpt++;
+				$i++;
+				$cpt++;
 		        $str .= "<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";
 			}
-			if ($cpt){
-				print("<item child='1' id='MS_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
+			if ($cpt) {
+				print("<item child='1' id='MT_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
 				print $str;
 				print("</item>");
 			}
@@ -245,8 +268,9 @@
 		$hosts_open = array();
 		
 		print("<tree id='1' >");
+		
 		$tab_id = split(",",$url_var);
-		foreach($tab_id as $openid) {
+		foreach ($tab_id as $openid) {
 			$type = substr($openid, 0, 2);
 			$id = substr($openid, 3, strlen($openid));
 	
