@@ -1082,7 +1082,7 @@
 	 			if (isset($_POST[$macInput]) && isset($already_stored_in_db[$_POST[$macInput]])) {	 			 				
 	 				$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-	 				$rq = "UPDATE on_demand_macro_host SET `host_macro_value`='". $_POST[$macValue] . "'".
+	 				$rq = "UPDATE on_demand_macro_service SET `svc_macro_value`='". $_POST[$macValue] . "'".
 	 					  " WHERE `svc_svc_id`=" . $service_id .
 	 					  " AND `svc_macro_name`='\$_SERVICE" . $_POST[$macInput] . "\$'";
 			 		$DBRESULT =& $pearDB->query($rq);
