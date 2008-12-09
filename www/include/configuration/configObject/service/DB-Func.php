@@ -1079,7 +1079,7 @@
 	 		{ 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
-	 			if (isset($_POST[$macInput]) && isset($already_stored_in_db[$_POST[$macInput]])) {	 			 				
+	 			if (isset($_POST[$macInput]) && isset($already_stored_in_db[strtolower($_POST[$macInput])])) {	 			 				
 	 				$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 	 				$rq = "UPDATE on_demand_macro_service SET `svc_macro_value`='". $_POST[$macValue] . "'".
@@ -1089,7 +1089,7 @@
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 			}
-	 			elseif (isset($_POST[$macInput]) && !isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {		 			
+	 			elseif (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {		 			
 		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id .")";
