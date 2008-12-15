@@ -103,6 +103,7 @@
 			$tpl->assign('start', $start_date);
 			$tpl->assign('end', $end_date);
 			$tpl->assign('period', $period);
+			$tpl->assign('resumeTitle', _("Hosts group state"));
 	//		$tpl->assign('period', $var_url_export_csv);
 			$formPeriod->setDefaults(array('period' => $period));
 			$tpl->assign('id', $id);

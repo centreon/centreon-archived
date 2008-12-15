@@ -105,6 +105,7 @@
 			$tpl->assign('date_start', date("d/m/Y H:i", $start_date));
 			$tpl->assign('to', _(" to "));
 			$tpl->assign('date_end', date("d/m/Y H:i", $end_date));
+			$tpl->assign('resumeTitle', _("Service state"));
 	//		$tpl->assign('period', $var_url_export_csv);
 			$formPeriod->setDefaults(array('period' => $period));
 			$tpl->assign('id', $service_id);

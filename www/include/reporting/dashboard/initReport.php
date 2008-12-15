@@ -112,7 +112,6 @@
 	$tpl->assign('InformationsTitle', _("Info"));
 
 	$tpl->assign('periodTitle', _("Period Selection"));
-	$tpl->assign('resumeTitle', _("Host state"));
 	$tpl->assign('logTitle', _("Today's Host log"));
 	$tpl->assign('svcTitle', _("State Breakdowns For Host Services"));
 	/*
