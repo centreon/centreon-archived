@@ -1,41 +1,21 @@
 <?php
 /*
- * Copyright 2005-2009 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
- * GPL Licence 2.0.
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus
  * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation ; either version 2 of the License.
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
- * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
- * exception to your version of the program, but you are not obliged to do so. If you
- * do not wish to do so, delete this exception statement from your version.
- * 
- * For more information : contact@centreon.com
- * 
- * SVN : $URL
- * SVN : $Id: DB-Func.php 7139 2008-11-24 17:19:45Z jmathis $
- * 
+ * For information : contact@centreon.com
  */
 
+	
 	/*
 	 * Get all hosts from DB
 	 */
@@ -428,12 +408,11 @@
 		
 		/* $count count the number of services in servicegroup */
 		$count = 0;
-		$services = getMyServiceActiveGroupServices($servicegroup_id);		
+		$services = getServiceGroupActivateServices($servicegroup_id);
 		foreach($services as $host_service_id => $host_service_name){
 			foreach($serviceStatsLabels as $name) {
 				$serviceGroupStats[$host_service_id][$name] = 0;
 			}
-			
 			$servicesStats = array();
 			$res = preg_split("/_/", $host_service_id);
 			$servicesStats = getLogInDbForOneSVC($res[0], $res[1], $start_date, $end_date, $reportTimePeriod);
@@ -455,7 +434,10 @@
 		/* Average time for all status (OK, Critical, Warning, Unknown) */
 			foreach($serviceStatsLabels as $name)
 				if ($name == "OK_T" || $name == "WARNING_T" || $name == "CRITICAL_T" || $name == "UNKNOWN_T" || $name == "UNDETERMINED_T")		
-					$serviceGroupStats["average"][$name] /= $count;
+					if ($count)
+						$serviceGroupStats["average"][$name] /= $count;
+					else
+						$serviceGroupStats["average"][$name] = 0;
 		/*
 		 * Calculate percentage of time (_TP => Total time percentage) for each status 
 		 */
@@ -464,7 +446,10 @@
 						+  $serviceGroupStats["average"]["UNDETERMINED_T"];
 		$time = $serviceGroupStats["average"]["TOTAL_TIME"];
 		foreach ($status as $key => $value)
-			$serviceGroupStats["average"][$value."_TP"] = round($serviceGroupStats["average"][$value."_T"] / $time * 100, 2);
+			if ($time)
+				$serviceGroupStats["average"][$value."_TP"] = round($serviceGroupStats["average"][$value."_T"] / $time * 100, 2);
+			else
+				$serviceGroupStats["average"][$value."_TP"] = 0;
 		/*
 		 * Calculate percentage of time (_MP => Mean Time percentage) for each status ignoring undetermined time
 		 */
@@ -487,48 +472,58 @@
 		}
 		return $serviceGroupStats;
 	}
-
+	/*
+	 * Returns all activated services from a servicegroup including services by host and services by hostgroup
+	 */
+	function getServiceGroupActivateServices($sg_id = NULL)	{
+		global $pearDB;
+		if (!$sg_id) 
+			return;
+		/*
+		 * ServiceGroups by host
+		 */
+		$svs = array();
+		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
+									"FROM servicegroup_relation, service, host " .
+									"WHERE servicegroup_sg_id = '".$sg_id."' " .
+									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
+									"AND service.service_id = servicegroup_relation.service_service_id " .
+									"AND servicegroup_relation.host_host_id = host.host_id " .
+									"AND servicegroup_relation.host_host_id IS NOT NULL " .
+									"AND service.service_activate = '1'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($elem =& $DBRESULT->fetchRow())	{
+			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
+			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
+			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = $elem["service_description"] . ":::" . $elem["host_name"];
+		}
+		
+		/*
+		 * ServiceGroups by hostGroups
+		 */		
+		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
+									"FROM servicegroup_relation, service, hostgroup " .
+									"WHERE servicegroup_sg_id = '".$sg_id."' " .
+									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
+									"AND service.service_id = servicegroup_relation.service_service_id " .
+									"AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
+									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL " .
+									"AND service.service_activate = '1'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($elem =& $DBRESULT->fetchRow())	{
+			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
+			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
+			$hosts = getMyHostGroupHostsForReporting($elem["hostgroup_hg_id"]);
+			foreach ($hosts as $key => $value)
+				$svs[$key."_".$elem["service_id"]] =  $value. ":::" . $elem["service_description"];
+		}
+		$DBRESULT->free();
+		return $svs;
+	}
 	
-	function getMyServiceActiveGroupServices($sg_id = NULL) {
-                if (!$sg_id) return;
-                global $pearDB;
-                $svs = array();
-
-                $DBRESULT =& $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
-                                                                        "FROM servicegroup_relation, service, host " .
-                                                                        "WHERE servicegroup_sg_id = '".$sg_id."' " .
-                                                                        "AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
-                                                                        "AND service.service_id = servicegroup_relation.service_service_id " .
-                                                                        "AND servicegroup_relation.host_host_id = host.host_id " .
-                                                                        "AND service_activate = '1' ".
-                                                                        "AND servicegroup_relation.host_host_id IS NOT NULL");
-                if (PEAR::isError($DBRESULT))
-                        print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-                while ($elem =& $DBRESULT->fetchRow())  {
-                        $elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
-                        $elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
-                        $svs[$elem["host_host_id"]."_".$elem["service_id"]] =  $elem["host_name"].":::".$elem["service_description"];
-                }
-
-                $DBRESULT =& $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, host_name " .
-                                                                        "FROM servicegroup_relation, service, host " .
-                                                                        "WHERE servicegroup_sg_id = '".$sg_id."' " .
-                                                                        "AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
-                                                                        "AND service.service_id = servicegroup_relation.service_service_id " .
-                                                                        "AND servicegroup_relation.host_host_id = host.host_id " .
-                                                                        "AND servicegroup_relation.hostgroup_hg_id IS NOT NULL");
-                if (PEAR::isError($DBRESULT))
-                        print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-                while ($elem =& $DBRESULT->fetchRow())  {
-                        $elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
-                        $elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
-                        $hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
-                        foreach ($hosts as $key=>$value)
-                                $svs[$key."_".$elem["service_id"]] =  $elem["host_name"].":::".$elem["service_description"];
-                }
-                $DBRESULT->free();
-                return $svs;
-        }
+	
 	
 	/*
 	 * Get timeperiods to take in account to retrieve log from nagios
@@ -574,7 +569,7 @@
 	 * Get all hostgroups linked with at least one host 
 	 */
 	function getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr){
-		global $pearDB;
+		global $pearDB, $lcaHoststr;
 		$hgs = array("NULL" => "");
 		$lcaStr = "";
 		if (!$is_admin) {
@@ -593,9 +588,14 @@
 	 */
 	function getMyHostGroupHostsForReporting($hg_id = NULL)	{
 		if (!$hg_id) return;
-		global $pearDB;
+		global $pearDB, $is_admin, $lcaHoststr;
+		$lcaStr = "";
+		if (!$is_admin)
+			if ($lcaHoststr != "")
+				$lcaStr = " AND host_id IN (".$lcaHoststr.") ";
 		$hosts = array();
-		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id, h.host_name FROM hostgroup_relation hgr, host h WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ORDER by h.host_name");
+		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id, h.host_name FROM hostgroup_relation hgr, host h ".
+									" WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ".$lcaStr." ORDER by h.host_name");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())
@@ -699,7 +699,10 @@
 				$lcaStr = " AND `service_id` IN (".$svcStr.") ";
 			}
 		}
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' ".$lcaStr." AND hsr.service_service_id = service_id AND service_activate = '1'");
+		$DBRESULT =& $pearDB->query(" SELECT `service_id`, `service_description` ".
+									" FROM `service`, `host_service_relation` hsr,  `hostgroup_relation` hgr".
+									" WHERE hsr.`host_host_id` = '".$host_id."' ".$lcaStr." AND hsr.service_service_id = service_id ".
+										" AND service_activate = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())	{
@@ -708,6 +711,18 @@
 			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES);
 		}
 		$DBRESULT->free();
+		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+				" AND service_id = hsr.service_service_id");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($elem =& $DBRESULT->fetchRow()){
+			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
+			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
+			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
+		}
+		$DBRESULT->free();
+		asort($hSvs);
 		return $hSvs;
 	}
 	
