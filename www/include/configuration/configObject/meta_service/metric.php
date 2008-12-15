@@ -71,23 +71,24 @@
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	while($host =& $DBRESULT->fetchRow())
-		//if ($is_admin || (!$is_admin && isset($lcaHostByName["LcaHost"][$host["host_name"]])))
-			$hosts[$host["host_id"]] = $host["host_name"];
+		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	
-	$services1 = array();
-	$services2 = array();
+	$services1 = array(NULL => NULL);
+	$services2 = array(NULL => NULL);
 	if ($host_id)	{
-		$services = array(NULL=>NULL);
+		$services = array(NULL => NULL);
 		$services = getMyHostServices($host_id);
 		foreach ($services as $key => $value)	{
-			$value2 = str_replace("/", "#S#", $value);			
-			$value2 = str_replace("\\", "#BS#", $value2);			
+			$value2 = str_replace("#S#", "/", $value);			
+			$value2 = str_replace("#BS#", "\\", $value2);			
 			$DBRESULT =& $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name FROM metrics m, index_data i WHERE i.host_name = '".getMyHostName($host_id)."' AND i.service_description = '".$value2."' and i.id=m.index_id ORDER BY metric_name, unit_name");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($metricSV =& $DBRESULT->fetchRow())	{
 				$services1[$key] = $value;
+				$metricSV["metric_name"] = str_replace("#S#", "/", $metricSV["metric_name"]);			
+				$metricSV["metric_name"] = str_replace("#BS#", "\\", $metricSV["metric_name"]);
 				$services2[$key][$metricSV["metric_id"]] = $metricSV["metric_name"]."  (".$metricSV["unit_name"].")";
 			}
 		}
