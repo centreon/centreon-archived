@@ -25,7 +25,7 @@ class CentreonGMT{
 		/*
 		 * Define Table of GMT line
 		 */
-		$this->listGTM = array();
+		$this->listGTM = array(null=>null);
 		
 		$this->listGTM['-12'] = -12;
 		$this->listGTM['-11'] = -11;
