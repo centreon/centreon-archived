@@ -296,7 +296,7 @@
 	$form->addElement('select', 'host_location', _("GMT / Location"), $GMTList);
 	$form->setDefaults(array('host_location' => NULL));
 	if (!isset($host["host_location"]))
-		$host["host_location"] = NULL;u
+		$host["host_location"] = NULL;
 	unset($GMTList);
 	unset($CentreonGMT);
 
@@ -672,7 +672,6 @@
 			$form->addRule('host_notification_interval', _("Required Field"), 'required');
 			$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
 			$form->addRule('host_notifOpts', _("Compulsory Option"), 'required');
-	
 		} else if ($oreon->user->get_version() >= 3 && isset($_POST['nbOfSelect'])) {
 			$z = 0;
 			$ok_flag = 0;
