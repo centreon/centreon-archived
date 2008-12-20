@@ -32,17 +32,38 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL
- * SVN : $Id$
+ * SVN : $Id: index.php 7247 2008-12-12 10:56:23Z jmathis $
  * 
  */
   
-	if (!file_exists("@CENTREON_ETC@/centreon.conf.php") && is_dir('./install'))
+  	$etc = "@CENTREON_ETC@";
+  	
+  	/*
+  	 * Define Crypt system 
+  	 * 
+  	 * 0 : MD5
+  	 * 1 : SHA1
+  	 * 
+  	 */
+  
+  	$cryptSystem = 1;
+  
+  	function myCrypt($str) {
+  		global $cryptSystem;
+  		switch ($cryptSystem) {
+  			case 0 : return md5($str);
+  			case 1 : return sha1($str);
+  			default : return md5($str);
+  		}
+  	}
+  
+	if (!file_exists("$etc/centreon.conf.php") && is_dir('./install'))
 		header("Location: ./install/setup.php");
-	else if (file_exists("@CENTREON_ETC@/centreon.conf.php") && is_dir('install'))
+	else if (file_exists("$etc/centreon.conf.php") && is_dir('install'))
 		header("Location: ./install/upgrade.php");
 	else {
-		if (file_exists("@CENTREON_ETC@/centreon.conf.php")){
-			require_once ("@CENTREON_ETC@/centreon.conf.php");
+		if (file_exists("$etc/centreon.conf.php")){
+			require_once ("$etc/centreon.conf.php");
 			$freeze = 0;
 		} else {
 			$freeze = 1;
@@ -133,7 +154,7 @@
 			$password = ($password == '' ? time() : $password  );
 		    
 			if (!isset($_POST["submit"]))
-				$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
+				$res =& $pearDB->query("SELECT * FROM contact WHERE SHA1(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
 			else
 				$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
 	
@@ -153,7 +174,6 @@
 					$fallback = false;
 					if ($ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap" ) {
 						$connect = true;
-						//print "ok";
 						# BugFix  #265
 						if  ((!(isset($contact['contact_ldap_dn'] )) || $contact['contact_ldap_dn']  == '' ) ) {
 							$contact['contact_ldap_dn']  = "anonymous" ;
@@ -223,7 +243,7 @@
 					$res->free();
 					//update password in mysql database to provide login even if there is LDAP connection
 					if (isset($_POST["submit"]) && $ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap" && $connect && !$fallback) {
-						$pearDB->query("UPDATE contact set contact_passwd = '".md5(htmlentities($password, ENT_QUOTES))."' WHERE contact_alias ='".$useralias."' ");
+						$pearDB->query("UPDATE contact set contact_passwd = '".myCrypt(htmlentities($password, ENT_QUOTES))."' WHERE contact_alias ='".$useralias."' ");
 						if ($debug_auth == 1)
 							error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : Local password updated with LDAP password for $useralias \n", 3, $debug_path."auth.log");
 					}
@@ -232,10 +252,10 @@
 							error_log("[" . date("d/m/Y H:s") ."] Local AUTH : Local Auth or LDAP Fallback\n", 3, $debug_path."auth.log");
 						// Autologin case => contact_alias is MD5 format
 						if (!isset($_POST["submit"]))
-							$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".htmlentities($password, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
+							$res =& $pearDB->query("SELECT * FROM contact WHERE SHA1(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".htmlentities($password, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
 						// Normal auth
 						else
-							$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".md5(htmlentities($password, ENT_QUOTES))."' AND contact_activate = '1' LIMIT 1");
+							$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".myCrypt(htmlentities($password, ENT_QUOTES))."' AND contact_activate = '1' LIMIT 1");
 						if ($res->numRows() ) {
 							if ($debug_auth == 1)
 								error_log("[" . date("d/m/Y H:s") ."] Local AUTH : User " . $useralias ." Successfully authentificated\n", 3, $debug_path."auth.log");
@@ -277,13 +297,12 @@
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>Centreon, Revisited Experience Of Nagios</title>
+<title>Centreon - IT & Network Monitoring</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta name="robots" content="index, nofollow" />
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved." />
+<meta name="robots" content="index, nofollow" />
 <link href="<?php echo $skin; ?>login.css" rel="stylesheet" type="text/css">
-<link rel="shortcut icon" href="./img/iconOreon.ico">
+<link rel="shortcut icon" href="./img/favicon.ico">
 </head>
 <body OnLoad="document.login.useralias.focus();">
 <?php 
