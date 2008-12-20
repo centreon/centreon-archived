@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL
- * SVN : $Id: htmlHeader.php 7192 2008-12-02 16:24:56Z jmathis $
+ * SVN : $Id: htmlHeader.php 7246 2008-12-12 10:55:35Z jmathis $
  * 
  */
 
@@ -44,7 +44,7 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $mlang; ?>">
 <head>
-<title>Centreon, Revisited Experience Of Nagios</title>
+<title>Centreon - IT & Network Monitoring</title>
 <link rel="shortcut icon" href="./img/favicon.ico"/>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved." />
