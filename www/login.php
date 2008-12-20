@@ -32,10 +32,9 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL
- * SVN : $Id$
+ * SVN : $Id: login.php 7139 2008-11-24 17:19:45Z jmathis $
  * 
- */
- 
+ */ 
 	/*
 	 * Init Date
 	 */
@@ -54,20 +53,23 @@
 		print "<div style='padding-top: 60px;'><span class='msg'>$error_msg</span></div>";
 	if (isset($msg) && $msg)
 		print "<div style='padding-top: 60px;'><span class='msg'>$msg</span></div>";
-?>
-<div id="LoginInvit">
+
+?><div id='LoginInvit'>
 	<table id="logintab1">
 		<tr>
-			<td class="LoginInvitLogo" colspan="2"><img src="img/logo_centreon_wt.gif" alt="Centreon logo" title="Centreon Logo"></td>
+			<td class="LoginInvitLogo" colspan="2"><img src="img/centreon.gif" alt="Centreon Logo" title="Centreon Logo" style="" /></td>
 		</tr>
 		<tr>
 			<td class="LoginInvitVersion"><br />
 			<?php
-			$DBRESULT =& $pearDB->query("SELECT oi.value FROM informations oi WHERE oi.key = 'version' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$release = $DBRESULT->fetchRow();
-			print $release["value"];
+				/*
+				 * Print Centreon Version
+				 */
+				$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$release = $DBRESULT->fetchRow();
+				print $release["value"];
 			?>
 			</td>
 			<td class="LoginInvitDate"><br /><?php echo $date; ?></td>
@@ -94,9 +96,9 @@
 		<tr>
 			<td id="LoginInvitcpy" colspan="2">
 				<br />
-				&copy; 2004-2008 <a href="mailto:infos@centreon.com">Centreon</a>
+				&copy; 2005-2009 <a href="mailto:infos@centreon.com">Centreon</a>
 			</td>
 		</tr>
 	</table>
-</form>
 </div>
+</form>
