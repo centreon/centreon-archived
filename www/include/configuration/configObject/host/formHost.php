@@ -294,9 +294,9 @@
 	$GMTList = $CentreonGMT->getGMTList();
 	
 	$form->addElement('select', 'host_location', _("GMT / Location"), $GMTList);
-	$form->setDefaults(array('host_location' => '0'));
+	$form->setDefaults(array('host_location' => NULL));
 	if (!isset($host["host_location"]))
-		$host["host_location"] = 0;
+		$host["host_location"] = NULL;u
 	unset($GMTList);
 	unset($CentreonGMT);
 
