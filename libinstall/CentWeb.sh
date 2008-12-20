@@ -168,7 +168,7 @@ cp $TMPDIR/work/www/install/insertBaseConf.sql \
 ### Step 2: Change right on Centreon WebFront
 
 ## use this step to change macros on php file...
-echo_info "$(gettext "Change macros for php file")"
+echo_info "$(gettext "Change macros for php files")"
 macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@"
 find_macros_in_dir "$macros" "$TMPDIR/src/" "www" "*.php" "file_php_temp"
 
@@ -182,6 +182,7 @@ ${CAT} "$file_php_temp" | while read file ; do
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
 		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 		$TMPDIR/src/$file > $TMPDIR/work/$file
 		[ $? -ne 0 ] && flg_error=1
 	log "MACRO" "$(gettext "Copy in final dir") : $file"

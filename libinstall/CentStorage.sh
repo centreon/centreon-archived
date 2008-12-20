@@ -177,7 +177,7 @@ if [ "$RC" -eq "0" ] ; then
 	fi
 	if [ "$RC" -eq "0" ] ; then
 		install_init_service "centstorage" | tee -a $LOG_FILE
-	#	check_result $? "$(gettext "CentStorage run level installed")"
+		#check_result $? "$(gettext "CentStorage run level installed")"
 		log "INFO" "$(gettext "CentStorage run level installed")"
 	else
 		echo_passed "$(gettext "CentStorage run level not installed")" "$passed"
