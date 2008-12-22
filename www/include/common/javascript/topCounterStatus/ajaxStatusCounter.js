@@ -38,8 +38,6 @@ function reloadStatusCounter(_relaod_time,_sid){
 
 	_form=document.getElementById('AjaxBankBasic');		       
 	_version=_form.version.value;
-	_fileStatus=_form.fileStatus.value;
-	_fileCentreonConf=_form.fileCentreonConf.value;
 
 	var xhrC = getXhrC();
 	// On defini ce qu'on va faire quand on aura la reponse
@@ -144,6 +142,6 @@ function reloadStatusCounter(_relaod_time,_sid){
 
 	xhrC.open("POST",_adrrsearchC,true);
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhrC.send("sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&session_expire="+(_relaod_time/1000));
+	xhrC.send("sid="+_sid+"&version="+_version+"&session_expire="+(_relaod_time/1000));
 	setTimeout('reloadStatusCounter("'+ _relaod_time +'","'+ _sid +'")', _relaod_time);
 }
