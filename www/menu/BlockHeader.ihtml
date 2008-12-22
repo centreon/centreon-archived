@@ -24,8 +24,6 @@
 			<input type="hidden" name="icon_downtime" value="./img/icones/14x14/breakpoint.gif" />
 			<input type="hidden" name="icon_comment" value="./img/icones/14x14/about.gif" />
 			<input type="hidden" name="version" value="{$version}"/>
-			<input type="hidden" name="fileStatus" value="{$fileStatus}"/>
-			<input type="hidden" name="fileCentreonConf" value="{$fileOreonConf}"/>
 			<input type="hidden" name="date_time_format_status" value="{$date_time_format_status}"/>			
 		</div>
 	</form>
