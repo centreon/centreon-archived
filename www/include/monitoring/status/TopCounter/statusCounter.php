@@ -88,8 +88,6 @@
 		$grouplistStr = groupsListStr($grouplist);
 	}
 	
-	
-	 
 	function restore_session($statistic_service = 'null', $statistic_host = 'null'){
 		global $pearDB;
 		if (isset($statistic_service) && !is_null($statistic_service)){
