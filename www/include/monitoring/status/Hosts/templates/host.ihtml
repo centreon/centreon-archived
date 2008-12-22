@@ -4,7 +4,7 @@
 <input name="o" value="svc" type="hidden">
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
-		<td class="Toolbar_TDSelectAction_Top" width="330">
+		<td class="Toolbar_TDSelectAction_Top" width="460">
 			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>
 			<span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' alt='Play' title='Play'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
