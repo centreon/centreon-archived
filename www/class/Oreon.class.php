@@ -36,6 +36,8 @@ class Oreon	{
 	var $search_type_host;
 	var $CentreonGMT;
 	var $CentreonLogAction;
+	var $svc_svc_search;
+	var $svc_host_search;
   
 	function Oreon($user = NULL, $pages = array())	{
 		global $pearDB;
