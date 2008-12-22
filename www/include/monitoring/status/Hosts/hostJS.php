@@ -78,8 +78,8 @@ var _default_instance = '0';
 
 function set_header_title(){
 
-	var _img_asc = mk_img('./img/icones/7x7/sort_asc.gif', "asc");
-	var _img_desc = mk_img('./img/icones/7x7/sort_desc.gif', "desc");
+	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
+	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
 
 	if(document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
