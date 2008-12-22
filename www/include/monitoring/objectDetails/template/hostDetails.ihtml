@@ -292,7 +292,7 @@
 					</tr>
 					{if ($proc_warning && $proc_warning != NO_ACTION) || ($proc_critical && $proc_critical != NO_ACTION)}
 					<tr class='list_two'>
-                        <td class="ListColLeft"><a onClick="window.open('main.php?p=2020190&o=ticket&type=1&min=1&host_id={$h.host_id}&host_name={$h.host_name}&status={$service_data.current_state}&service_name={$svc_description}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">{$m_mon_ticket}</a></td>
+                        <td class="ListColLeft"><a style='cursor:pointer' onClick="window.open('main.php?p=2020190&o=ticket&type=1&min=1&host_id={$h.host_id}&host_name={$h.host_name}&status={$host_data.current_state}&service_name={$svc_description}&output={$host_data.plugin_output}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');" style="cursor:pointer;">{$m_mon_ticket}</a></td>
                     </tr>
                     {/if}
 				</table>
