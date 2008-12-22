@@ -81,17 +81,13 @@
 		/*
 		 * Get service category
 		 */
-		 
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT service_categories.sc_id, sc_name " .
-									"FROM service_categories, service_categories_relation " .
-									"WHERE service_categories_relation.service_service_id = '".$service_id."' " .
-											"AND service_categories_relation.sc_id = service_categories.sc_id " .
-											"AND sc_activate = '1'");
 		
-		for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++)
-			$serviceCategories[] = $sc["sc_name"];
-		$DBRESULT->free();
-		
+		$tab_sc = getMyServiceCategories($service_id);
+                foreach ($tab_sc as $sc_id) {
+                  $serviceCategories[] = getMyCategorieName($sc_id);
+                }
+
+
 		$tab_status = array();
 	
 		include_once("./DBNDOConnect.php");
@@ -213,7 +209,7 @@
 		/*
 		 * Ajust data for beeing displayed in template
 		 */
-
+//print_r($service_status);
 		 $service_status[$host_name."_".$svc_description]["status_color"] = $oreon->optGen["color_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])];
 		 $service_status[$host_name."_".$svc_description]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_check"], $oreon->user->getMyGMT());
 		 $service_status[$host_name."_".$svc_description]["next_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_check"], $oreon->user->getMyGMT());
@@ -229,10 +225,22 @@
 		else
 			$service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"], $oreon->user->getMyGMT());
 		
+
+		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace("<b>", "", $service_status[$host_name."_".$svc_description]["plugin_output"]);
+		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("</b>", "", $service_status[$host_name."_".$svc_description]["plugin_output"]);
+		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace("<br>", "", $service_status[$host_name."_".$svc_description]["plugin_output"]);
+
+		$service_status[$host_name."_".$svc_description]["plugin_output"] = utf8_encode($service_status[$host_name."_".$svc_description]["plugin_output"]);
+
+		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
+	
+		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]['plugin_output']);
+
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = Duration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = Duration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$service_status[$host_name."_".$svc_description]["last_state_change"], $oreon->user->getMyGMT());
 		 $service_status[$host_name."_".$svc_description]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time(), $oreon->user->getMyGMT());
 		!$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["is_flapping"], $oreon->user->getMyGMT());
+
 
 		if (isset($ndo) && $ndo) {
 			foreach ($tab_host_service[$host_name] as $key_name => $s){
