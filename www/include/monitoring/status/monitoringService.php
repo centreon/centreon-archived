@@ -46,10 +46,6 @@
 	if (isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"]))
 		submitPassiveCheck();
 
-	if (isset($_GET["host_name"]) && $_GET["host_name"]) {
-		;//$_GET["search"] = $_GET["host_name"];
-	}
-
 	if ($o == "svcSch"){
 		$_GET["sort_types"] = "next_check";
 		$_GET["order"] = "sort_asc";
