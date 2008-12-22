@@ -6,7 +6,8 @@
 		<form name="formu2">
 		    <table class="ajaxOption" >
 	            <tr>
-	            	<td style="vertical-align:top;"><b><xsl:value-of select="//lang/ty"/></b></td>
+	            	<td style="vertical-align:top;"><b><xsl:value-of select="//lang/ty"/></b>
+	            	</td>
 					<td>
 						<table>
 			               	<tr>
@@ -174,33 +175,33 @@
 		<table>
 			<tr>
 				<xsl:if test="first/@show = 'true'">
-					<td>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">first</xsl:attribute>						
-								<xsl:attribute name="alt">first</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue_double.gif</xsl:attribute>						
-							</xsl:element>
+				<td style='padding-left:5px;'>
+					<xsl:element name='a'>
+						<xsl:attribute name="href">#</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
+						<xsl:element name='img'>
+							<xsl:attribute name="title">first</xsl:attribute>						
+							<xsl:attribute name="alt">first</xsl:attribute>						
+							<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue_double.gif</xsl:attribute>						
 						</xsl:element>
-					</td>
+					</xsl:element>
+				</td>
 				</xsl:if>
 				<xsl:if test="prev/@show = 'true'">
-					<td>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">previous</xsl:attribute>						
-								<xsl:attribute name="alt">previous</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue.gif</xsl:attribute>						
-							</xsl:element>
+				<td style='padding-left:5px;'>
+					<xsl:element name='a'>
+						<xsl:attribute name="href">#</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
+						<xsl:element name='img'>
+							<xsl:attribute name="title">previous</xsl:attribute>						
+							<xsl:attribute name="alt">previous</xsl:attribute>						
+							<xsl:attribute name="src">./img/icones/16x16/arrow_left_blue.gif</xsl:attribute>						
 						</xsl:element>
-					</td>
+					</xsl:element>
+				</td>
 				</xsl:if>
 				<xsl:for-each select="//page">
-				<td style='padding: 0px 2px;'>
+				<td style='padding-left:5px;'>
 					<xsl:element name='a'>
 						<xsl:attribute name="href">#</xsl:attribute>
 						<xsl:if test="selected = 0">
@@ -215,30 +216,30 @@
 				</td>
 				</xsl:for-each>
 				<xsl:if test="next/@show = 'true'">
-					<td>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">next</xsl:attribute>						
-								<xsl:attribute name="alt">next</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue.gif</xsl:attribute>						
-							</xsl:element>
+				<td style='padding-left:5px;'>
+					<xsl:element name='a'>
+						<xsl:attribute name="href">#</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
+						<xsl:element name='img'>
+							<xsl:attribute name="title">next</xsl:attribute>						
+							<xsl:attribute name="alt">next</xsl:attribute>						
+							<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue.gif</xsl:attribute>						
 						</xsl:element>
-					</td>
+					</xsl:element>
+				</td>
 				</xsl:if>
 				<xsl:if test="last/@show = 'true'">
-					<td>
-						<xsl:element name='a'>
-							<xsl:attribute name="href">#</xsl:attribute>
-							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name="title">last</xsl:attribute>						
-								<xsl:attribute name="alt">last</xsl:attribute>						
-								<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue_double.gif</xsl:attribute>						
-							</xsl:element>
+				<td style='padding-left:5px;'>
+					<xsl:element name='a'>
+						<xsl:attribute name="href">#</xsl:attribute>
+						<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
+						<xsl:element name='img'>
+							<xsl:attribute name="title">last</xsl:attribute>						
+							<xsl:attribute name="alt">last</xsl:attribute>						
+							<xsl:attribute name="src">./img/icones/16x16/arrow_right_blue_double.gif</xsl:attribute>						
 						</xsl:element>
-					</td>
+					</xsl:element>
+				</td>
 				</xsl:if>
 			</tr>
 		</table>
@@ -277,7 +278,7 @@
 		<table>
 			<tr>
 				<xsl:if test="first/@show = 'true'">
-					<td>
+					<td style='padding-left:5px;'>
 						<xsl:element name='a'>
 							<xsl:attribute name="href">#</xsl:attribute>
 							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="first"/>'); return false;</xsl:attribute>
@@ -290,7 +291,7 @@
 					</td>
 				</xsl:if>
 				<xsl:if test="prev/@show = 'true'">
-					<td>
+					<td style='padding-left:5px;'>
 						<xsl:element name='a'>
 							<xsl:attribute name="href">#</xsl:attribute>
 							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="prev"/>'); return false;</xsl:attribute>
@@ -303,7 +304,7 @@
 					</td>
 				</xsl:if>
 				<xsl:for-each select="//page">
-				<td style='padding: 0px 2px;'>
+				<td style='padding-left:5px;'>
 					<xsl:element name='a'>
 						<xsl:attribute name="href">#</xsl:attribute>
 						<xsl:if test="selected = 0">
@@ -318,7 +319,7 @@
 				</td>
 				</xsl:for-each>
 				<xsl:if test="next/@show = 'true'">
-					<td>
+					<td style='padding-left:5px;'>
 						<xsl:element name='a'>
 							<xsl:attribute name="href">#</xsl:attribute>
 							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="next"/>'); return false;</xsl:attribute>
@@ -331,11 +332,10 @@
 					</td>
 				</xsl:if>
 				<xsl:if test="last/@show = 'true'">
-					<td>
+					<td style='padding-left:5px;'>
 						<xsl:element name='a'>
 							<xsl:attribute name="href">#</xsl:attribute>
 							<xsl:attribute name="onClick">log_4_host_page('<xsl:value-of select="//opid"/>', this.form,'<xsl:value-of select="last"/>'); return false;</xsl:attribute>
-
 							<xsl:element name='img'>
 								<xsl:attribute name="title">last</xsl:attribute>						
 								<xsl:attribute name="alt">last</xsl:attribute>						

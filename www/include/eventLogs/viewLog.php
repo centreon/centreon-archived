@@ -1,26 +1,47 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL
+ * SVN : $Id: viewLog.php 7215 2008-12-05 16:29:33Z jmathis $
+ * 
  */
- 
+  
 	if (!isset($oreon))
 		exit();
 
 	function get_user_param($user_id, $pearDB){
 		$tab_row = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");
+		$DBRESULT =& $pearDB->query("SELECT * FROM `contact_param` WHERE `cp_contact_id` = '".$user_id."'");
 		if (PEAR::isError($DBRESULT)){
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			return null;		
@@ -29,6 +50,7 @@
 			$tab_row[$row["cp_key"]] = $row["cp_value"];
 		return $tab_row;
 	}
+	
 	$user_params = get_user_param($oreon->user->user_id, $pearDB);
 	
 	if (!isset($user_params["log_filter_host"]))
@@ -58,13 +80,20 @@
 	if (!isset($user_params["log_filter_oh"]))
 		$user_params["log_filter_oh"] = 1;
 	
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/eventLogs/";
-	# Smarty template Init
+
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
@@ -78,13 +107,16 @@
 
 	if (isset($_GET["id"])){
 		$id = $_GET["id"];
-	} else
+	} else {
 		$id = 1;
+	}
+	
 	if (isset($_POST["id"])){
 		$id = $_POST["id"];
-	} else
+	} else {
 		$id = 1;
-
+	}
+	
 	if (isset($_POST["svc_id"]) && $_POST["svc_id"]){
 		$id = "";
 		$id_svc = $_POST["svc_id"];
@@ -94,6 +126,7 @@
 			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
 		}
 	}
+	
 	$id_log = "'RR_0'";
 	$multi =0;
 	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
@@ -105,7 +138,9 @@
 		$id = 1;
 	}
 
-	## Form begin
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
 	$form->addElement('header', 'title', _("Choose the source"));
 
@@ -161,9 +196,14 @@
     tree.loadXML("./include/common/XmlTree/GetXmlTree.php?sid=<?php print session_id(); ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 	// system to reload page after link with new url
-	tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
-	tree.attachEvent("onDblClick",onDblClick)//set function object to call on node select 
-	tree.attachEvent("onCheck",onCheck)//set function object to call on node select 
+	//set function object to call on node select 
+	tree.attachEvent("onClick", onNodeSelect)
+	
+	//set function object to call on node select 
+	tree.attachEvent("onDblClick", onDblClick)
+	
+	//set function object to call on node select 
+	tree.attachEvent("onCheck", onCheck)
 
 	tree.enableDragAndDrop(0);
 	tree.enableTreeLines(false);
@@ -174,6 +214,7 @@
 	function getCheckedList(tree){
 		return tree.getAllChecked();
 	}
+	
 	if (document.getElementById('linkBar')){
 		var _menu_2 = document.getElementById('linkBar')
 		var _divBar = document.createElement("div");
@@ -183,7 +224,6 @@
 		_divBar.setAttribute('style','float:right; margin-right:10px;' );
 		_menu_2.appendChild(_divBar);
 	}
-	//end for linkBar
 
 	function onDblClick(nodeId){
 		tree.openAllItems(nodeId);
@@ -208,6 +248,7 @@
 		
 	// it's fake methode for using ajax system by default
 	function mk_pagination(){;}
+	function mk_paginationFF(){;}
 	function set_header_title(){;}
 	
 	function apply_period(){
@@ -253,38 +294,10 @@
 	if (document.formu && !document.formu.period_choice[1].checked)	{
 		period = document.formu.period.value;
 	} else {
-		if(currentTime.getMinutes() <= 9){
-			_zero_min = '0';
-		}
-
-		if (currentTime.getHours() >= 12){
-			StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
-			EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
-	
-			if ((currentTime.getHours()- 12) <= 9){
-				_zero_hour = '0';					
-			} else {
-				_zero_hour = '';											
-			}
-			StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
-			if (currentTime.getHours() <= 9){
-				_zero_hour = '0';					
-			} else {
-				_zero_hour = '';											
-			}	
-			EndTime   = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-		} else {
-			StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
-			EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
-	
-			StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
-			if (currentTime.getHours() <= 9){
-				_zero_hour = '0';					
-			} else {
-				_zero_hour = '';											
-			}		
-			EndTime = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-		}	
+		StartDate= "<?php echo date("m/d/Y"); ?>";
+		EndDate= "<?php echo date("m/d/Y"); ?>";						
+		StartTime= "<?php echo date("H:i", (time() - 60*60*6)); ?>";
+		EndTime= "<?php echo date("H:i"); ?>";		
 	}
 
 	if (document.formu){

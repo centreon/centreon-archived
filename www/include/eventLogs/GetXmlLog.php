@@ -1,21 +1,48 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL
+ * SVN : $Id: GetXmlLog.php 7215 2008-12-05 16:29:33Z jmathis $
+ * 
  */
+ 
+ 	ini_set("display_errors", "Off"); 
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	/*
+	 * if debug == 0 => Normal, 
+	 * debug == 1 => get use, 
+	 * debug == 2 => log in file (log.xml)
+	 */
 	$debugXML = 0;
 	$buffer = '';
 
@@ -48,16 +75,23 @@
 	 * Lang file
 	 */
 	 
+	/*
+	 * Security check
+	 */	
+	 
 	(isset($_GET["lang"]) 	&& !check_injection($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"]) : $lang_ = "-1";
 	(isset($_GET["id"]) 	&& !check_injection($_GET["id"])) ? $openid = htmlentities($_GET["id"]) : $openid = "-1";
-	(isset($_GET["sid"])	&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"]) : $sid = "-1";
+	(isset($_GET["sid"]) 	&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES) : $sid = "-1";
 
-	$contact_id = check_session($sid,$pearDB);
+	$contact_id = check_session($sid, $pearDB);
 	
 	$is_admin = isUserAdmin($sid);
 	if (!$is_admin){
 		$_POST["sid"] = $sid;	
 		$lca =  getLCAHostByName($pearDB);
+		$lcaHStr = getLCAHostStr($lca);
+		$grouplist = getGroupListofUser($pearDB); 
+		$groupListStr = groupsListStr($grouplist);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	}
 	
@@ -123,19 +157,19 @@
 		$oh = $user_params["log_filter_oh"];
 	}
 
-	if ($StartDate !=  "" && $StartTime != ""){
+	if ($StartDate != "" && $StartTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
-		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 1) ;
+		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1) ;
 	}
 	if ($EndDate !=  "" && $EndTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
-		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 1) ;
+		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1) ;
 	}
 
 	$period = 86400;
-	if ($auto_period > 0){
+	if ($auto_period > 0) {
 		$period = $auto_period;
 		$start = time() - ($period);
 		$end = time();
@@ -187,15 +221,13 @@
 		array_push ($msg_type_set, "'3'");
 	if ($error == 'true')
 		array_push ($msg_type_set, "'4'");
+	
 	$msg_req = '';
 	
-	if (count($msg_type_set) > 0)
-		$msg_req .= ' AND msg_type IN (' . implode(",",$msg_type_set). ') ';
-	
-	$msg_status_set = array ();
+	$msg_status_set = array();
 	
 	if ($error == 'true')
-		array_push ($msg_status_set, "'NULL'");
+		array_push($msg_status_set, "'NULL'");
 	if ($up == 'true' )
 		array_push ($msg_status_set, "'UP'");
 	if ($down == 'true' )
@@ -212,15 +244,38 @@
 	if ($unknown == 'true')
 		array_push ($msg_status_set, "'UNKNOWN'");
 	
-	if (count($msg_status_set) > 0 ){
-		$msg_req .= ' AND (status IN (' . implode(",",$msg_status_set). ') ';
-		if ($error  == 'true' || $notification == 'true')
-			$msg_req .= 'OR status is null';
-		$msg_req .=')';
+	$flag_begin = 0;
+	if ($notification == 'true') {
+		$msg_req .= "AND (";
+		$flag_begin = 1;
+		$msg_req .= " (`msg_type` IN ('2', '3') ";
+		if (count($msg_status_set) > 0)
+			$msg_req .= " AND `status` IN (" . implode(',', $msg_status_set).")"; 	
+	 	$msg_req .= ") ";
 	}
-
-	if ($oh == 'true')
-		$msg_req .= " AND `type` = 'HARD' ";
+	if ($alert == 'true') {
+		if ($flag_begin == 0) {
+			$msg_req .= "AND (";
+			$flag_begin = 1;
+		} else
+			$msg_req .= " OR ";
+		$msg_req .= " (`msg_type` IN ('0', '1') ";
+		if (count($msg_status_set) > 0)
+		 	$msg_req .= " AND `status` IN (" . implode(',', $msg_status_set) . ") ";
+		if ($oh == 'true')
+			$msg_req .= " AND `type` = 'HARD' ";
+		$msg_req .=	") ";
+	}
+	if ($error == 'true') {
+		if ($flag_begin == 0) {
+			$msg_req .= "AND (";
+			$flag_begin = 1;
+		} else
+			$msg_req .= " OR ";
+		$msg_req .= " (`msg_type` IN ('4', '5', '6', '7', '8', '9') AND `status` IS NULL) ";
+	}
+	if ($flag_begin)	
+		$msg_req .= ")";
 
 	/*
 	 * If multi checked 
@@ -238,46 +293,46 @@
 		
 		foreach ($tab_id as $openid) {
 			$tab_tmp = split("_",$openid);
-			$id = $tab_tmp[1];
+			if (isset($tab_tmp[1]))
+				$id = $tab_tmp[1];
 			$type = $tab_tmp[0];
-			if ($type == "HG"){
+			if ($type == "HG" && isset($id)){
 				$hosts = getMyHostGroupHosts($id);
 				foreach ($hosts as $h_id)	{
 					$host_name = getMyHostName($h_id);
-					array_push ($tab_host_name, "'".$host_name."'");
+					if ((isset($lca["Host"][$host_name]) && !$is_admin) || $is_admin) {
+					   $tab_host_name[] = $host_name; 
+					}
 				}
 			} else if ($type == 'ST'){
 				$services = getMyServiceGroupServices($id);
 				foreach ($services as $svc_id => $svc_name)	{
 					$tab_tmp = split("_", $svc_id);
-					if (service_has_graph($tab_tmp[0], $tab_tmp[1]) && (($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($tab_tmp[1])]) && isset($lca["LcaHost"][getMyHostName($id)]["svc"][$svc_name]))))	{
+					if ((($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($tab_tmp[1])]) && isset($lca["LcaHost"][getMyHostName($id)]["svc"][$svc_name]))))	{
 						$tab_SG[$flag_already_call] = array("h" => getMyHostName($tab_tmp[0]), "s" => getMyServiceName($tab_tmp[1], $tab_tmp[0])); 
 						$flag_already_call++;
 					}
 				}
-			} else if ($type == "HH"){
+			} else if ($type == "HH") {
 				$host_name = getMyHostName($id);
-				array_push ($tab_host_name, "'".$host_name."'");		
-			} else if ($type == "HS"){
-				$service_description = getMyServiceName($id);
-				$host_id = getMyHostIDService($id);
-				$host_name = getMyHostName($host_id);
-				$tmp["svc_name"] = $service_description;
-				$tmp["host_name"] = $host_name;
+				$tab_host_name[] = $host_name;		
+			} else if ($type == "HS") {
+				$tmp["svc_name"] = getMyServiceName($id);
+				$tmp["host_name"] = getMyHostName(getMyHostIDService($id));
 				array_push($tab_svc, $tmp);
-			} else if ($type == "MS"){
-				$service_description = "meta_".$id;
-				$host_name = "Meta_Module";
-				$tmp["svc_name"] = $service_description;
-				$tmp["host_name"] = $host_name;
-				array_push($tab_svc, $tmp);
+			} else if ($type == "MS") {
+				if ($id != 0) {
+					$tmp["svc_name"] = "meta_".$id;
+					$tmp["host_name"] = "Meta_Module";
+					$tab_svc[] = $tmp;
+				}
 			}
 		}
 		/*
 		 * Building request
 		 */
 		
-		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
+		$req = "SELECT * FROM `log` WHERE `ctime` > '$start' AND `ctime` <= '$end' $msg_req";
 		
 		/*
 		 * Add Host
@@ -285,13 +340,25 @@
 		$str_unitH_flag = 0;
 		$str_unitH = "";
 		if	(count($tab_host_name) > 0){
-			$str_unitH .= " (`host_name` in (".implode(",", $tab_host_name).")) ";
-			if ($error  == 'true' || $notification == 'true')
-				$str_unitH .= ' OR host_name is null';
-			$str_unitH_flag = 1;
+			foreach ($tab_host_name as $host_name) {
+				if (!$is_admin)
+					$svc = getAuthorizedServicesHost(getMyHostID($host_name), $groupListStr);
+				else
+					$svc = getMyHostServices(getMyHostID($host_name));
+				if (isset($svc)) {
+					foreach  ($svc as $s) {
+						if ($str_unitH != "")
+							$str_unitH .= " OR ";
+						$str_unitH .= " (`host_name` = '$host_name' AND `service_description` = '$s') ";
+					}
+				}
+			}
 		}
-		if ($str_unitH !=  "" && (count($tab_svc) || count($tab_SG)))
-			$str_unitH .= " OR (";
+		
+		if (!$is_admin && $str_unitH == "" && count($tab_svc) == 0 && count($tab_SG) == 0) {
+			$str_unitH = " `host_name` IN ($lcaHStr) ";
+		}
+		
 		/*
 		 * Concat 
 		 */
@@ -299,11 +366,10 @@
 		$str_unitSVC = "";
 		if (count($tab_svc) > 0){
 			foreach ($tab_svc as $svc){
-				($flag == 1) ? $str_unitSVC .= " OR " : NULL;
+				($flag == 1 || $str_unitH != "") ? $str_unitSVC .= " OR " : NULL;
 				$str_unitSVC .= " (`host_name` = '".$svc["host_name"]."' AND `service_description` = '".$svc["svc_name"]."') ";
 				$flag = 1;			
 			}
-			
 		}
 		if (count($tab_SG) > 0){
 			foreach ($tab_SG as $SG){
@@ -312,15 +378,10 @@
 				$flag = 1;			
 			}
 		}  
-		if ($str_unitH !=  "" && (count($tab_svc) || count($tab_SG)))
-			$str_unitSVC .= " )";
 		
 		if ($str_unitH || $str_unitSVC)
 			$req .= " AND (".$str_unitH.$str_unitSVC.")";
-		/* 
-		 * Debug
-		 */
-		//print "\n\n\n".$req."\n\n\n";
+			
 	} else {
 		/*
 		 * only click on one element
@@ -344,7 +405,7 @@
 			if ($error  == 'true' || $notification == 'true')
 				$req .= ' OR host_name is null';
 			$req .= ")";
-		} else if($type == "HS"){
+		} else if($type == "HS") {
 			$service_description = getMyServiceName($id);
 			$host_id = getMyHostIDService($id);
 			$host_name = getMyHostName($host_id);
@@ -355,26 +416,28 @@
 			$req .= ")";
 			$req .= " AND (service_description like '".$service_description."' ";
 			$req .= ") ";		
-		} if ($type == "MS"){			
-			$other_services = array();
-			
-			$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-			if ($svc_id =& $DBRESULT2->fetchRow()){
-				if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
-					$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-					if (PEAR::isError($DBRESULT_meta))
-						print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
-					$meta =& $DBRESULT_meta->fetchRow();
-					$DBRESULT_meta->free();
-					$svc_id["service_description"] = $meta["meta_name"];
-				}	
-				$svc_id["service_description"] = str_replace("#S#", "/", $svc_id["service_description"]);
-				$svc_id["service_description"] = str_replace("#BS#", "\\", $svc_id["service_description"]);
-				$svc_id[$svc_id["id"]] = $svc_id["service_description"];
+		} if ($type == "MS") {
+			if ($id != 0) {
+				$other_services = array();
+				
+				$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
+				if (PEAR::isError($DBRESULT2))
+					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+				if ($svc_id =& $DBRESULT2->fetchRow()){
+					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
+						$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+						if (PEAR::isError($DBRESULT_meta))
+							print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
+						$meta =& $DBRESULT_meta->fetchRow();
+						$DBRESULT_meta->free();
+						$svc_id["service_description"] = $meta["meta_name"];
+					}	
+					$svc_id["service_description"] = str_replace("#S#", "/", $svc_id["service_description"]);
+					$svc_id["service_description"] = str_replace("#BS#", "\\", $svc_id["service_description"]);
+					$svc_id[$svc_id["id"]] = $svc_id["service_description"];
+				}
+				$DBRESULT2->free();
 			}
-			$DBRESULT2->free();
 		} else { 
 			if ($is_admin)
 				$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
@@ -386,135 +449,155 @@
 	/*
 	 * calculate size before limit for pagination 
 	 */
-	 
-	$lstart = 0;
-	$DBRESULT =& $pearDBO->query($req);
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getMessage() . "\n\n\n $req";
-	$rows = $DBRESULT->numrows();
-	if (($num * $limit) > $rows)
-		$num = round($rows / $limit) - 1;
-	$lstart = $num * $limit;
 	
-	if ($lstart <= 0)
+	if (isset($req) && $req) {
 		$lstart = 0;
-	
-	/*
-	 * pagination
-	 */
-	$page_max = ceil($rows / $limit);
-	if ($num > $page_max && $rows)
-		$num = $page_max - 1;
+		$DBRESULT =& $pearDBO->query($req);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage() . "\n\n\n $req";
+		$rows = $DBRESULT->numrows();
+		if (($num * $limit) > $rows)
+			$num = round($rows / $limit) - 1;
+		$lstart = $num * $limit;
 		
-	if ($num < 0)
-		$num = 0;
+		if ($lstart <= 0)
+			$lstart = 0;
+		
+		/*
+		 * pagination
+		 */
+		$page_max = ceil($rows / $limit);
+		if ($num > $page_max && $rows)
+			$num = $page_max - 1;
+			
+		if ($num < 0)
+			$num = 0;
+		
+		$pageArr = array();
+		$istart = 0;
+		
+		for ($i = 5, $istart = $num; $istart > 0 && $i > 0; $i--)
+			$istart--;
+		
+		for ($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
+			$iend++;
+		
+		for ($i = $istart; $i <= $iend; $i++)
+			$pageArr[$i] = array("url_page"=>"&num=$i&limit=".$limit, "label_page"=>($i +1),"num"=> $i);
 	
-	$pageArr = array();
-	$istart = 0;
+		if ($i > 1){
+			foreach ($pageArr as $key => $tab) {
+				echo "<page>";
+				if ($tab["num"] == $num)
+					echo "<selected>1</selected>";
+				else
+					echo "<selected>0</selected>";
+				echo "<num><![CDATA[".$tab["num"]."]]></num>";
+				echo "<url_page><![CDATA[".$tab["url_page"]."]]></url_page>";
+				echo "<label_page><![CDATA[".$tab["label_page"]."]]></label_page>";
+				echo "</page>";
+			}
+		}
+		$num_page = 0;
+		
+		if ($num > 0 && $num < $rows)
+			$num_page= $num * $limit;
 	
-	for ($i = 5, $istart = $num; $istart > 0 && $i > 0; $i--)
-		$istart--;
+		$prev = $num - 1;
+		$next = $num + 1;
+			
+		if ($num > 0)
+			echo "<first show='true'>0</first>";
+		else
+			echo "<first show='false'>none</first>";
 	
-	for ($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
-		$iend++;
+		if ($num > 1)
+			echo "<prev show='true'>$prev</prev>";
+		else
+			echo "<prev show='false'>none</prev>";
 	
-	for ($i = $istart; $i <= $iend; $i++)
-		$pageArr[$i] = array("url_page"=>"&num=$i&limit=".$limit, "label_page"=>($i +1),"num"=> $i);
-
-	if ($i > 1){
-		foreach ($pageArr as $key => $tab) {
-			echo "<page>";
-			if ($tab["num"] == $num)
-				echo "<selected>1</selected>";
-			else
-				echo "<selected>0</selected>";
-			echo "<num><![CDATA[".$tab["num"]."]]></num>";
-			echo "<url_page><![CDATA[".$tab["url_page"]."]]></url_page>";
-			echo "<label_page><![CDATA[".$tab["label_page"]."]]></label_page>";
-			echo "</page>";
+		if ($num < $page_max - 1)
+			echo "<next show='true'>$next</next>";
+		else
+			echo "<next show='false'>none</next>";
+	
+		$last = $page_max - 1;
+	
+		if ($num < $page_max-1)
+			echo "<last show='true'>$last</last>";
+		else
+			echo "<last show='false'>none</last>";
+		
+		/*
+		 * Full Request
+		 */
+	    if (isset($csv_flag) && ($csv_flag == 1))
+	    	$req .= " ORDER BY ctime DESC,log_id DESC LIMIT 0,64000"; //limit a little less than 2^16 which is excel maximum number of lines
+	    else
+	    	$req .= " ORDER BY ctime DESC,log_id DESC LIMIT $lstart,$limit";
+		
+		//echo "<reg><![CDATA[$req]]></req>";
+	
+		$DBRESULT =& $pearDBO->query($req);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		
+		$cpts = 0;
+		while ($log =& $DBRESULT->fetchRow()) {
+			
+			echo "<line><msg_type>".$log["msg_type"]."</msg_type>";
+			echo ($log["msg_type"] > 1) ? "<retry></retry>" : "<retry>".$log["retry"]."</retry>";
+			echo ($log["msg_type"] == 2 || $log["msg_type"] == 3) ? "<type>NOTIF</type>" : "<type>".$log["type"]."</type>";
+	
+			/*
+			 * Color initialisation for services and hosts status
+			 */
+			$color = '';
+			if ($log["msg_type"] == 0 || $log["msg_type"] == 2)
+				$color = $tab_color_service[$log["status"]];
+			if ($log["msg_type"] == 1 || $log["msg_type"] == 3)
+				$color = $tab_color_host[$log["status"]];
+	
+			/*
+			 * Variable initialisation to color "INITIAL STATE" on envent logs
+			 */
+	        if ($log["msg_type"] == 8)
+	        	$color = $tab_color_service[$log["status"]];
+	        if ($log["msg_type"] == 9)
+	        	$color = $tab_color_host[$log["status"]];
+	        if ($log["output"] == "" && $log["status"] != "")
+	        	$log["output"] = "INITIAL STATE";
+	
+			echo '<status color="'.$color.'">'.$log["status"].'</status>';
+			if ($log["host_name"] == "Meta_Module") {
+				preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
+				$DBRESULT2 =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
+				if (PEAR::isError($DBRESULT))
+					print "Mysql Error : ".$DBRESULT->getMessage();
+				$meta =& $DBRESULT2->fetchRow();
+				$DBRESULT2->free();
+				echo "<host_name>".$log["host_name"]."</host_name>";
+				echo "<service_description>".$meta["meta_name"]."</service_description>";
+				unset($meta);
+			} else {
+				echo "<host_name>".$log["host_name"]."</host_name>";
+				echo "<service_description>".$log["service_description"]."</service_description>";
+			}
+			echo "<class>".$tab_class[$cpts % 2]."</class>";
+			echo "<date>".date(_("Y/m/d"), $log["ctime"])."</date>";
+			echo "<time>".date(_("H:i:s"), $log["ctime"])."</time>";
+			echo "<output><![CDATA[".$log["output"]."]]></output>";
+			echo "<contact><![CDATA[".$log["notification_contact"]."]]></contact>";
+			echo "<contact_cmd><![CDATA[".$log["notification_cmd"]."]]></contact_cmd>";
+			echo "</line>";
+			$cpts++;
 		}
 	}
-	$num_page = 0;
 	
-	if ($num > 0 && $num < $rows)
-		$num_page= $num * $limit;
-
-	$prev = $num - 1;
-	$next = $num + 1;
-		
-	if ($num > 0)
-		echo "<first show='true'>0</first>";
-	else
-		echo "<first show='false'>none</first>";
-
-	if ($num > 1)
-		echo "<prev show='true'>$prev</prev>";
-	else
-		echo "<prev show='false'>none</prev>";
-
-	if ($num < $page_max - 1)
-		echo "<next show='true'>$next</next>";
-	else
-		echo "<next show='false'>none</next>";
-
-	$last = $page_max - 1;
-
-	if ($num < $page_max-1)
-		echo "<last show='true'>$last</last>";
-	else
-		echo "<last show='false'>none</last>";
-	
-	/*
-	 * Full Request
-	 */
-    if (isset($csv_flag) && ($csv_flag == 1))
-    	$req .= " ORDER BY ctime DESC,log_id DESC LIMIT 0,64000"; //limit a little less than 2^16 which is excel maximum number of lines
-    else
-    	$req .= " ORDER BY ctime DESC,log_id DESC LIMIT $lstart,$limit";
-
-	$DBRESULT =& $pearDBO->query($req);
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getMessage();
-	
-	$cpts = 0;
-	while ($log =& $DBRESULT->fetchRow()) {
-		
-		echo "<line><msg_type>".$log["msg_type"]."</msg_type>";
-		echo ($log["msg_type"] > 1) ? "<retry></retry>" : "<retry>".$log["retry"]."</retry>";
-		echo ($log["msg_type"] == 2 || $log["msg_type"] == 3) ? "<type>NOTIF</type>" : "<type>".$log["type"]."</type>";
-
-		# Color initialisation for services and hosts status
-		$color = '';
-		if ($log["msg_type"] == 0 || $log["msg_type"] == 2)
-			$color = $tab_color_service[$log["status"]];
-		if ($log["msg_type"] == 1 || $log["msg_type"] == 3)
-			$color = $tab_color_host[$log["status"]];
-
-		# Variable initialisation to color "INITIAL STATE" on envent logs
-        if ($log["msg_type"] == 8)
-        	$color = $tab_color_service[$log["status"]];
-        if ($log["msg_type"] == 9)
-        	$color = $tab_color_host[$log["status"]];
-        if($log["output"] == "" && $log["status"] != "")
-        	$log["output"] = "INITIAL STATE";
-
-		echo '<status color="'.$color.'">'.$log["status"].'</status>';
-		echo "<service_description>".$log["service_description"]."</service_description>";
-		echo "<host_name>".$log["host_name"]."</host_name>";
-		echo "<class>".$tab_class[$cpts % 2]."</class>";
-		echo "<date>".date(_("Y/m/d"), $log["ctime"])."</date>";
-		echo "<time>".date(_("H:i:s"), $log["ctime"])."</time>";
-		echo "<output><![CDATA[".$log["output"]."]]></output>";
-		echo "<contact><![CDATA[".$log["notification_contact"]."]]></contact>";
-		echo "<contact_cmd><![CDATA[".$log["notification_cmd"]."]]></contact_cmd>";
-		echo "</line>";
-		$cpts++;
-	}
-
-	echo "<lang>";
 	/*
 	 * Translation for Menu.
 	 */
+	echo "<lang>";
 	echo "<ty>"._("Type")."</ty>";
 	echo "<n>"._("Notifications")."</n>";
 	echo "<a>"._("Alerts")."</a>";
