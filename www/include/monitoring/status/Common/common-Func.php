@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL
- * SVN : $Id: common-Func.php 7199 2008-12-03 09:22:07Z jmathis $
+ * SVN : $Id: 
  * 
  */
  

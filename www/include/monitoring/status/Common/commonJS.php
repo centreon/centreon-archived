@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL
- * SVN : $Id: makeJS_Common.php 7202 2008-12-03 21:36:14Z jmathis $
+ * SVN : $Id: 
  * 
  */
   
