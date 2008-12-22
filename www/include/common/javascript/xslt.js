@@ -24,8 +24,6 @@
  *
  */
 
-
-/* merethis modification for centreon */
 var pickRecentProgID = function (idList){
 	// found progID flag
     var bFound = false;
@@ -85,71 +83,38 @@ var xslt_js = {
  * @constructor
  */
 
-function loadXML(url)
+function loadXML(url) {
 
-      {
-
-        var xmlDoc;
-
-        /* chargement du fichier XML */
-
+    var xmlDoc;
+    /* chargement du fichier XML */
+    try {
+      // navigateur basé sur Gecko
+      if (document.implementation && document.implementation.createDocument) {
+        xmlDoc = document.implementation.createDocument('', '', null);
+        xmlDoc.load(url);
+      } else if (window.ActiveXObject) {
+	    // ActiveX pour Internet Explorer
         try {
-
-          // navigateur basé sur Gecko
-
-          if (document.implementation && document.implementation.createDocument)
-
-          {
-
-            xmlDoc = document.implementation.createDocument('', '', null);
-
-            xmlDoc.load(url);
-
-          // ActiveX pour Internet Explorer
-
-          } else if (window.ActiveXObject) {
-
-            try {
-
-              xmlDoc = new ActiveXObject('Msxml2.XMLDOM');
-
-            } catch (e) {
-
-              xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
-
-            }
-
-            xmlDoc.async = false;
-
-            xmlDoc.load(url);
-
-          // à l'aide de lobjet XMLHTTPRequest
-
-          } else if (window.XMLHttpRequest) {
-
-            xmlDoc = new XMLHttpRequest();
-
-            xmlDoc.overrideMimeType('text/xml');
-
-            xmlDoc.open('GET', url, false);
-
-            xmlDoc.send(null);
-
-            if (this.xmlDoc.readyState == 4) xmlDoc = xmlDoc.responseXML;
-
-          }
-
+          xmlDoc = new ActiveXObject('Msxml2.XMLDOM');
         } catch (e) {
-
-          return e;
-
+          xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
         }
-
-        return xmlDoc;
-
-      }
-
-
+        xmlDoc.async = false;
+        xmlDoc.load(url);
+      } else if (window.XMLHttpRequest) {
+		// à l'aide de lobjet XMLHTTPRequest
+      	xmlDoc = new XMLHttpRequest();
+		xmlDoc.overrideMimeType('text/xml');
+		xmlDoc.open('GET', url, false);
+		xmlDoc.send(null);
+		if (this.xmlDoc.readyState == 4) 
+        	xmlDoc = xmlDoc.responseXML;
+		}
+	} catch (e) {
+		return e;
+	}
+	return xmlDoc;
+}
 
 function Transformation() {
 
