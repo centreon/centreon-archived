@@ -1,18 +1,39 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL
+ * SVN : $Id: 
+ * 
  */
 
 	/*
@@ -130,7 +151,9 @@
 	while ($ndo =& $DBRESULT_NDO1->fetchRow())
 		$host_status[$ndo["host_name"]] = $ndo;
 
-	/* Get Service status */
+	/* 
+	 * Get Service status
+	 */
 	$rq =		" SELECT " .
 				" DISTINCT no.name1 as host_name," .
 				" nss.process_performance_data," . 
@@ -157,7 +180,6 @@
 		
 	$rq .= 	" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'qos_Module'" .
-			//" AND no.is_active = 1" .
 		  	" AND objecttype_id = 2";
 
 	if (!$is_admin && $groupnumber)
@@ -276,25 +298,26 @@
 
 			if ($host_prev == $ndo["host_name"]){
 				$buffer .= '<hc>transparent</hc>';
-				$buffer .= '<hn none="1">'. $ndo["host_name"] . '</hn>';
+				$buffer .= '<hn none="1">'.  utf8_encode($ndo["host_name"]) . '</hn>';
 			} else {
 				$host_prev = $ndo["host_name"];
 				$buffer .= '<hc>'.$color_host.'</hc>';
-				$buffer .= '<hn none="0">'. $ndo["host_name"] . '</hn>';
-				$buffer .= '<hau><![CDATA['. $host_status[$ndo["host_name"]]["action_url"] . ']]></hau>';
+				$buffer .= '<hn none="0">'.  utf8_encode($ndo["host_name"]) . '</hn>';
+				$buffer .= '<hau><![CDATA['.  utf8_encode($host_status[$ndo["host_name"]]["action_url"]) . ']]></hau>';
 
 				if ($host_status[$ndo["host_name"]]["notes_url"])
-					$buffer .= '<hnu><![CDATA['. $host_status[$ndo["host_name"]]["notes_url"] . ']]></hnu>';				
+					$buffer .= '<hnu><![CDATA['.  utf8_encode($host_status[$ndo["host_name"]]["notes_url"]) . ']]></hnu>';				
 				else
 					$buffer .= '<hnu>none</hnu>';
-				$buffer .= '<hnn><![CDATA['. $host_status[$ndo["host_name"]]["notes"] . ']]></hnn>';
-				$buffer .= '<hip><![CDATA['. $host_status[$ndo["host_name"]]["address"] . ']]></hip>';
+					
+				$buffer .= '<hnn><![CDATA['.  utf8_encode($host_status[$ndo["host_name"]]["notes"]) . ']]></hnn>';
+				$buffer .= '<hip><![CDATA['.  utf8_encode($host_status[$ndo["host_name"]]["address"]) . ']]></hip>';
 				$buffer .= '<hid>'. $host_status[$ndo["host_name"]]["object_id"] . '</hid>';
 			}
 
 			$buffer .= '<ppd>'. $ndo["process_performance_data"]  . '</ppd>';
 			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
-			$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
+			$buffer .= '<sd><![CDATA['.  utf8_encode($ndo["service_description"]).']]></sd>';
 			$buffer .= '<svc_id>'. $ndo["object_id"] . '</svc_id>';
 			
 			$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
@@ -303,7 +326,7 @@
 			$buffer .= '<svc_index>'.getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO).'</svc_index>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
 			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
-			$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';
+			$buffer .= '<po><![CDATA['. utf8_encode($ndo["plugin_output"]).']]></po>';
 			$buffer .= '<ca>'. $ndo["current_attempt"] . '</ca>';
 			$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
 			$buffer .= '<pa>'. $ndo["problem_has_been_acknowledged"] . '</pa>';
