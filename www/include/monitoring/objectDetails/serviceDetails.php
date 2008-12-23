@@ -83,10 +83,9 @@
 		 */
 		
 		$tab_sc = getMyServiceCategories($service_id);
-                foreach ($tab_sc as $sc_id) {
-                  $serviceCategories[] = getMyCategorieName($sc_id);
-                }
-
+        foreach ($tab_sc as $sc_id) {
+          	$serviceCategories[] = getMyCategorieName($sc_id);
+        }
 
 		$tab_status = array();
 	
