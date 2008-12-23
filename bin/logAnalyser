@@ -273,7 +273,8 @@ my $sth2 = $dbhoreon->prepare("SELECT `id`, `name`, `localhost` FROM `nagios_ser
 if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
 } else { 
-    while (my $ns_server = $sth2->fetchrow_hashref()){
+	my $flag = 0;
+    while (my $ns_server = $sth2->fetchrow_hashref()) {
 		my $sth1 = $dbh->prepare("SELECT `instance_name` FROM `instance` WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
 		if (!$sth1->execute) {
 		    die "Error:" . $sth1->errstr . "\n";
@@ -297,8 +298,11 @@ if (!$sth2->execute) {
 		    my $res = $dbh->do("UPDATE `instance` SET `log_flag` = '0'");
 		    if (!defined($res)) {die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";}
 	
-			$res = $dbh->do("TRUNCATE TABLE `log`");
-		    print "SQL INSERT ERROR :TRUNCATE TABLE `log`\n" if (!defined($res));	   
+			if (!$flag) {
+				$res = $dbh->do("TRUNCATE TABLE `log`");
+			    print "SQL INSERT ERROR :TRUNCATE TABLE `log`\n" if (!defined($res));	   
+				$flag = 1;
+			}
 		    parseArchive($ns_server->{'id'}, $ns_server->{'localhost'});
 		} else {
 		    parseLogFile($ns_server->{'id'}, $ns_server->{'localhost'});
