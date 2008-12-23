@@ -1123,8 +1123,10 @@
 	}
 	
 	function updateHost_MC($host_id = null)	{
-		if (!$host_id) return;
 		global $form, $pearDB, $oreon;
+		
+		if (!$host_id) 
+			return;
 		$ret = array();
 		$ret = $form->getSubmitValues();		
 		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL)		{
@@ -1270,6 +1272,10 @@
 			$rq .= "host_snmp_version = '".htmlentities($ret["host_snmp_version"], ENT_QUOTES)."', ";
 			$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES);
 		}
+		if (isset($ret["host_location"]) && $ret["host_location"] != NULL) {
+			$rq .= "host_location = '".htmlentities($ret["host_location"], ENT_QUOTES)."', ";
+			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES);
+		}
 		if (isset($ret["host_comment"]) && $ret["host_comment"] != NULL) {
 			$rq .= "host_comment = '".htmlentities($ret["host_comment"], ENT_QUOTES)."', ";
 			$fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES);
@@ -1282,6 +1288,7 @@
 			$rq .= "host_activate = '".$ret["host_activate"]["host_activate"]."', ";
 			$fields["host_activate"] = $ret["host_activate"]["host_activate"];
 		}
+		print $rq;
 		if (strcmp("UPDATE host SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";
