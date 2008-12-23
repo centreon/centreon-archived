@@ -304,19 +304,24 @@
 	function getMyHostField($host_id = NULL, $field)	{
 		if (!$host_id) return;
 		global $pearDB;
-		while (1)	{
-			$DBRESULT =& $pearDB->query("SELECT ".$field.", host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$row =& $DBRESULT->fetchRow();
-			if (isset($row[$field]) && $row[$field])
-				return $row[$field];
-			else if ($row["host_template_model_htm_id"])
-				$host_id = $row["host_template_model_htm_id"];
-			else
-				break;
+		
+		$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$host_id."' ORDER BY `order` ASC");
+		if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";		
+		while ($row =& $DBRESULT->fetchRow()) {
+			$DBRESULT2 =& $pearDB->query("SELECT ".$field." FROM host WHERE host_id = '". $row['host_tpl_id']."'");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			while ($row2 =& $DBRESULT2->fetchRow()) {
+				if (isset($row2[$field]))
+					return $row2[$field];
+				if ($tmp = getMyHostField($row['host_tpl_id'], $field))
+					return $tmp;
+			}
 		}
+		return NULL;
 	}
+	
 
 	function getMyHostFieldOnHost($host_id = NULL, $field)	{
 		global $pearDB;
@@ -332,6 +337,7 @@
 			return $row[$field];
 		else
 			return 0;
+		
 	}
 
 	/*
