@@ -32,11 +32,13 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL
- * SVN : $Id$
+ * SVN : $Id: footer.php 7150 2008-11-25 23:14:38Z jmathis $
  * 
  */
-	if (!isset($oreon))
+ 
+ 	if (!isset($oreon))
 		exit;
+
 	?><div>
 		<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
 			<tr><td id="footerline1"></td></tr>
@@ -45,7 +47,7 @@
 		<div id="footer">
 			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
 				<tr>
-					<td align='center' class='copyRight'><a href="http://www.centreon.com">Centreon</a> - Copyright &copy; 2005-2008 <a href="mailto:infos@centreon.com">Merethis</a> - All Rights Reserved<br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . _(" seconds "); ?></td>
+					<td align='center' class='copyRight'><a href="http://www.centreon.com">Centreon</a> - Copyright &copy; 2005-2009 <a href="mailto:infos@centreon.com">Merethis</a> - All Rights Reserved<br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . _(" seconds "); ?></td>
 				</tr>
 			</table>
 		</div>
