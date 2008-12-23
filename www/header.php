@@ -32,10 +32,9 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL
- * SVN : $Id$
+ * SVN : $Id: header.php 7139 2008-11-24 17:19:45Z jmathis $
  * 
- */
- 
+ */ 
 	/*
 	 * Bench
 	 */
@@ -57,7 +56,6 @@
 	/*
 	 * Include
 	 */
-	
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once "./DBconnect.php";
 	require_once "./DBOdsConnect.php";
@@ -96,11 +94,11 @@
 		header("Location: index.php?disconnect=1");
 
 	/*
-	 * Define Centreon var alias
+	 * Define Oreon var alias
 	 */
 	$oreon =& $_SESSION["oreon"];
 	if (!is_object($oreon))
-		exit(); 
+		exit();
 
 	/*
 	 * Init differents elements we need in a lot of pages
@@ -112,8 +110,8 @@
 	$oreon->initNagiosCFG($pearDB);
 	unset($oreon->optGen);
 	$oreon->initOptGen($pearDB);
-	
-	if (!$p) {
+
+	if (!$p){
 		$root_menu = get_my_first_allowed_root_menu($oreon->user->lcaTStr);
 		if (isset($root_menu["topology_page"])) 
 			$p = $root_menu["topology_page"]; 
@@ -145,7 +143,11 @@
 	/*
 	 * Skin path
 	 */
-	$skin = getSkin($pearDB);
+	$DBRESULT =& $pearDB->query("SELECT `template` FROM `general_opt` LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
+	$data = $DBRESULT->fetchRow();
+	$skin = "./Themes/".$data["template"]."/";
 
 	$tab_file_css = array();
 	$i = 0;
