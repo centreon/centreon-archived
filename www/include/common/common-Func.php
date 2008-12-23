@@ -449,6 +449,46 @@
 			
 	}
 	
+	function getMyServiceCategories($service_id = NULL) {
+	  if (!$service_id)
+	    return;
+	  global $pearDB, $oreon;
+	
+	  $version = getVersion();
+	
+	  while (1) {
+	    $DBRESULT =& $pearDB->query("SELECT sc_id FROM service_categories_relation scr WHERE scr.service_service_id = '".$service_id."'");
+	    if (PEAR::isError($DBRESULT))
+	      print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	    if ($DBRESULT->numRows()) {
+	      $tabSC = array();
+	      while ($row =& $DBRESULT->fetchRow())
+		$tabSC[$row["sc_id"]] = $row["sc_id"];
+	      return $tabSC;
+	    } else {
+	      $DBRESULT =& $pearDB->query("SELECT service_template_model_stm_id FROM service WHERE service_id = '".$service_id."'");
+	      $row =& $DBRESULT->fetchRow();
+	      if ($row["service_template_model_stm_id"])
+		$service_id = $row["service_template_model_stm_id"];
+	      else
+		return array();
+	    }
+	  }
+	}
+	
+	function getMyCategorieName($sc_id = NULL) {
+	  if (!$sc_id)
+	    return;
+	  global $pearDB, $oreon;
+	
+	  $DBRESULT =& $pearDB->query("SELECT sc_name FROM service_categories WHERE sc_id = '".$sc_id."'");
+	  if (PEAR::isError($DBRESULT))
+	    print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	  $row =& $DBRESULT->fetchRow();
+	  return $row["sc_name"];
+	}
+	
+	
 	function getMyServiceMacro($service_id = NULL, $field)	{
 		if (!$service_id) 
 			return;
