@@ -1288,7 +1288,6 @@
 			$rq .= "host_activate = '".$ret["host_activate"]["host_activate"]."', ";
 			$fields["host_activate"] = $ret["host_activate"]["host_activate"];
 		}
-		print $rq;
 		if (strcmp("UPDATE host SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";
