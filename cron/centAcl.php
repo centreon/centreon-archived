@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL
- * SVN : $Id: centAcl.php 7136 2008-11-24 17:08:27Z jmathis $
+ * SVN : $Id: centAcl.php 7240 2008-12-11 18:46:04Z jmathis $
  * 
  */
  	
@@ -76,15 +76,13 @@
 	$cpt = 0;	
 	foreach ($tabGroups as $acl_group_id => $acl_res_id){
 		$tabElem = array();
-		
-		if ($cpt == 0) {
-			/*
-			 * Delete old datas for this groups
-			 */
-			$DBRESULT =& $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";			
-		}
+
+		/*
+		 * Delete old datas for this groups
+		 */
+		$DBRESULT =& $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		/*
 		 * Select 
@@ -149,7 +147,7 @@
 			if ($DBRESULT3->numRows()) {
 		  		while ($h =& $DBRESULT3->fetchRow()){
 					if (!isset($tabElem[$h["host_id"]]))
-						$tabElem[$h["host_id"]] = array();
+						$tabElem[$h["host_name"]] = array();
 		  			$tabElem[$h["host_name"]][$h["service_description"]] = 1;
 		  		}
 			}
