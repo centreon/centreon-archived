@@ -44,7 +44,7 @@
 
 	include_once "DB.php";
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path."www/class/other.class.php";
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/DBconnect.php";
@@ -145,11 +145,13 @@
 	else
 		$rq1 .= " AND no.name1 != 'Meta_Module'";
 
+	$str = "";
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
-	while ($ndo =& $DBRESULT_NDO1->fetchRow())
+	while ($ndo =& $DBRESULT_NDO1->fetchRow()) {
 		$host_status[$ndo["host_name"]] = $ndo;
+	}
 
 	/* 
 	 * Get Service status
@@ -178,7 +180,7 @@
 	if (!$is_admin)
 		$rq .= ", centreon_acl ";
 		
-	$rq .= 	" WHERE no.object_id = nss.service_object_id".
+	$rq .= 	" WHERE no.object_id = nss.service_object_id" .
 			" AND no.name1 not like 'qos_Module'" .
 		  	" AND objecttype_id = 2";
 
@@ -240,6 +242,8 @@
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_NDO2))
 		print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
+
+	//print $rq . "\n\n" . $rq_pagination . "\n";
 
 	/* 
 	 * Get Pagination Rows 
