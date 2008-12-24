@@ -107,7 +107,8 @@
 					$value = ($tabValue[1] < 0 ? 24 + $tabValue[1] : $tabValue[1]);
 					if ($Period[$day] != "")
 						$Period[$day] .= ",";
-					$Period[$day] .= myHour($value).":".myMinute($tabValue[2])."-".($tabValue[3] <= 0 ? 24 + $tabValue[3] : $tabValue[3]).":".myMinute($tabValue[4]);
+					$tabValue[3] = ($tabValue[3] < 0 ? 24 + $tabValue[3] : $tabValue[3]);
+					$Period[$day] .= myHour($value).":".myMinute($tabValue[2])."-".(($tabValue[3] < 10 && $tabValue[3] > 0) ? "0".$tabValue[3] : $tabValue[3]).":".myMinute($tabValue[4]);
 				}
 			} else if ($gmt > 0) {
 				$tabValue[1] += $gmt;
