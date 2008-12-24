@@ -70,7 +70,7 @@
 	
 	function ComputeGMTTime($day, $daybefore, $dayafter, $gmt, $conf) {
 		global $PeriodBefore, $PeriodAfter, $Period;
-		$tabPeriod = split(";", $conf);
+		$tabPeriod = split(",", $conf);
 		foreach ($tabPeriod as $period) {
 			/*
 			 * Match hours
@@ -84,32 +84,60 @@
 				if ($tabValue[1] < 0 && $tabValue[3] < 0) {				
 					$value = (24 + $tabValue[1]);
 					$value = myHour($value); 
+					if ($PeriodBefore[$daybefore] != "")
+						$PeriodBefore[$daybefore] .= ",";
 					$PeriodBefore[$daybefore] .= $value.":".$tabValue[2]."-".(24 + $tabValue[3]).":".myMinute($tabValue[4]);
 				} else if ($tabValue[1] < 0 && $tabValue[3] > 0) {
 					$value = ((24 + $tabValue[3]) % 24);
+					if ($Period[$day] != "")
+						$Period[$day] .= ",";
 					$Period[$day] .= "00:00-".myHour($value).":".(($tabValue[4] < 10 && $tabValue[4] > 0) ? "0".$tabValue[4] : $tabValue[4]);
+					if ($PeriodBefore[$daybefore] != "")
+						$PeriodBefore[$daybefore] .= ",";
+					$PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".myMinute($tabValue[2])."-24:00";
+				} else if ($tabValue[1] < 0 && $tabValue[3] == 0) {
+					$value = ((24 + $tabValue[3]) % 24);
+					if ($Period[$day] != "")
+						$Period[$day] .= ",";
+					$Period[$day] .= "00:00-".myHour($value).":".(($tabValue[4] < 10 && $tabValue[4] > 0) ? "0".$tabValue[4] : $tabValue[4]);
+					if ($PeriodBefore[$daybefore] != "")
+						$PeriodBefore[$daybefore] .= ",";
 					$PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".myMinute($tabValue[2])."-24:00";
 				} else {
 					$value = ($tabValue[1] < 0 ? 24 + $tabValue[1] : $tabValue[1]);
+					if ($Period[$day] != "")
+						$Period[$day] .= ",";
 					$Period[$day] .= myHour($value).":".myMinute($tabValue[2])."-".($tabValue[3] <= 0 ? 24 + $tabValue[3] : $tabValue[3]).":".myMinute($tabValue[4]);
 				}
 			} else if ($gmt > 0) {
 				$tabValue[1] += $gmt;
 				$tabValue[3] += $gmt;
 				if ($tabValue[1] >= 24 && $tabValue[3] > 24) {				
+					if ($PeriodAfter[$dayafter] != "")
+						$PeriodAfter[$dayafter] .= ",";
 					$PeriodAfter[$dayafter] .= ($tabValue[1] % 24).":".myMinute($tabValue[2])."-".($tabValue[3] % 24).":".myMinute($tabValue[4])."";
 				} else if ($tabValue[1] < 24 && $tabValue[3] > 24) {
+					if ($Period[$day] != "")
+						$Period[$day] .= ",";
 					$Period[$day] .= myMinute($tabValue[1]).":".$tabValue[2]."-"."24:00";
 					$tabValue[3] = $tabValue[3] % 24;
+					if ($PeriodAfter[$dayafter] != "")
+						$PeriodAfter[$dayafter] .= ",";
 					$PeriodAfter[$dayafter] .= "00:00-".myHour($tabValue[3]) .":".myMinute($tabValue[4])."";
 				} else {
 					if (($tabValue[3] == 24 && $tabValue[4] > 0)) {
+						if ($PeriodAfter[$dayafter] != "")
+							$PeriodAfter[$dayafter] .= ",";
 						$PeriodAfter[$dayafter] .= "00:00-00:".myMinute($tabValue[4]);
 						$tabValue[4] = "00";
 					}
+					if ($Period[$day] != "")
+						$Period[$day] .= ",";
 					$Period[$day] .= myMinute($tabValue[1]).":".myMinute($tabValue[2])."-".myMinute($tabValue[3]).":".myMinute($tabValue[4]);			
 				}
 			} else if ($gmt == 0) {
+				if ($Period[$day] != "")
+					$Period[$day] .= ",";
 				$Period[$day] .= $tabValue[1].":".$tabValue[2]."-".$tabValue[3].":".$tabValue[4];
 			}		
 		}
