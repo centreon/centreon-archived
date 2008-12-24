@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
  
-	if (!isset ($oreon))
+	if (!isset($oreon))
 		exit ();
 	
 	/*

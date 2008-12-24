@@ -18,13 +18,30 @@
 	if (!isset($oreon))
 		exit();
 
+	if (isset($_POST["searchH"])) {
+		$searchH = $_POST["searchH"];
+		$oreon->svc_host_search = $searchH;
+		$search_type_host = 1;
+	} else {
+		if (isset($oreon->svc_host_search) && $oreon->svc_host_search)
+			$searchH = $oreon->svc_host_search;
+		else
+			$searchH = NULL;
+	}
+	
+	if (isset($_POST["searchS"])) {
+		$searchS = $_POST["searchS"];
+		$oreon->svc_svc_search = $searchS;
+		$search_type_service = 1;
+	} else {	
+		if (isset($oreon->svc_svc_search) && $oreon->svc_svc_search)
+			$searchS = $oreon->svc_svc_search;
+		else
+			$searchS = NULL;
+	}
+
 	include("./include/common/autoNumLimit.php");
 
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
 	
 	if (isset($_GET["search_type_service"])){
 		$search_type_service = $_GET["search_type_service"];

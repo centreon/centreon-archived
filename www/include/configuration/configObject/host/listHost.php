@@ -20,13 +20,15 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	if (isset($_POST["searchH"]))
+	if (isset($_POST["searchH"])) {
 		$search = $_POST["searchH"];
-	else if (isset($oreon->historySearch[$url]))
+		$_POST["search"] = $_POST["searchH"];
+		$oreon->historySearch[$url] = $search;
+	} else if (isset($oreon->historySearch[$url]))
 		$search = $oreon->historySearch[$url];
 	else
 		$search = NULL;
-
+	
 	if (isset($_POST["poller"]))
 		$poller = $_POST["poller"];
 	else

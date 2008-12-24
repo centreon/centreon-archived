@@ -24,7 +24,9 @@
 		$search_type_host = 1;
 	} else {
 		if (isset($oreon->svc_host_search) && $oreon->svc_host_search)
-			$searchH = $oreon->svc_host_search;	
+			$searchH = $oreon->svc_host_search;
+		else
+			$searchH = NULL;
 	}
 	
 	if (isset($_POST["searchS"])) {
@@ -34,6 +36,8 @@
 	} else {	
 		if (isset($oreon->svc_svc_search) && $oreon->svc_svc_search)
 			$searchS = $oreon->svc_svc_search;
+		else
+			$searchS = NULL;
 	}
 		
 	include("./include/common/autoNumLimit.php");
