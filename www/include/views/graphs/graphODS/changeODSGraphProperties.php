@@ -66,7 +66,7 @@
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	$index =& $DBRESULT->fetchRow();
 	
-	if ($index["host_name"] == "Meta_Module")
+	if ($index["host_name"] == "_Module_Meta")
 		$index["host_name"] = "Meta Services";
 	# Init variable in the page
 	$label = NULL;
@@ -108,7 +108,7 @@
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
 	
-	if ($index["host_name"] == "Meta_Module")
+	if ($index["host_name"] == "_Module_Meta")
 		$index["host_name"] = "Meta Services";
 	$tpl->assign('host_name', $index["host_name"]);
 	if (preg_match("/meta_([0-9]*)/", $index["service_description"], $matches)){

@@ -40,7 +40,7 @@
 						$str .= "# ".$cmt."\n";
 				}
 				$str .= "define serviceescalation{\n";
-				$str .= print_line("host_name", "Meta_Module");
+				$str .= print_line("host_name", "_Module_Meta");
 				$str .= print_line("service_description", "meta_".$service["meta_service_meta_id"]);
 				$cg = array();
 				$strTemp = NULL;

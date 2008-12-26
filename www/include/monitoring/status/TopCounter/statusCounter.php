@@ -172,8 +172,7 @@
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
 					" WHERE no.object_id = nss.service_object_id".
-					" AND no.name1 not like 'qos_Module' ".
-					" AND no.name1 not like 'Meta_Module' ".
+					" AND no.name1 NOT LIKE '_Module_%' ".					
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
 					" AND centreon_acl.group_id IN (".$grouplistStr.") ".
@@ -182,8 +181,7 @@
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 					" WHERE no.object_id = nss.service_object_id".
-					" AND no.name1 not like 'qos_Module' ".
-					" AND no.name1 not like 'Meta_Module' ".
+					" AND no.name1 NOT LIKE '_Module_%' ".
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";			
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO2))

@@ -109,8 +109,7 @@
 			$rq .= ", centreon_acl ";
 					
 		$rq .= 		" WHERE no.object_id = nss.service_object_id".
-					" AND no.name1 not like 'OSL_Module'";
-					" AND no.name1 not like 'Meta_Module'";
+					" AND no.name1 NOT LIKE '_Module_%'";					
 
 		if ($o == "svcgrid_pb" || $o == "svcOV_pb")
 			$rq .= 	" AND nss.current_state != 0" ;
@@ -172,8 +171,7 @@
 		$rq1 	.= ", centreon_acl ";
 	
 	$rq1 .=		" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
-				" AND no.name1 NOT LIKE 'OSL_Module'".
-				" AND no.name1 NOT LIKE 'Meta_Module'";
+				" AND no.name1 NOT LIKE '_Module_%'";				
 	
 	if (!$is_admin && $groupnumber)
 		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).")";

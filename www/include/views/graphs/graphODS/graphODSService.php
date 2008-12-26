@@ -226,7 +226,7 @@
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('p', $p);
-		if ($svc_id["host_name"] == "Meta_Module")
+		if ($svc_id["host_name"] == "_Module_Meta")
 			$svc_id["host_name"] = "Meta Services";
 			
 		$svc_id["service_description"] = str_replace("#S#", "/", $svc_id["service_description"]);	

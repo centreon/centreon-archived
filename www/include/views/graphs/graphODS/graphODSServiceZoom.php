@@ -233,7 +233,7 @@
 		$tpl->assign('o', $o);
 		$tpl->assign('p', $p);
 		
-		if ($svc_id["host_name"] == "Meta_Module")
+		if ($svc_id["host_name"] == "_Module_Meta")
 			$svc_id["host_name"] = "Meta Services";
 		$tpl->assign('host_name', $svc_id);
 		

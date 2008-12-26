@@ -49,9 +49,9 @@
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while ($hostInOreon =& $DBRESULT->fetchRow()){
-		if ($hostInOreon["host_name"] == "Meta_Module")
+		if ($hostInOreon["host_name"] == "_Module_Meta")
 			$ppHosts[$hostInOreon["host_name"]] = "Meta Services";
-		else if ($hostInOreon["host_name"] != "qos_Module")
+		else if (!ereg("^_Module_", $hostInOreon["host_name"]))
 			$ppHosts[$hostInOreon["host_name"]] = $hostInOreon["host_name"];
 	}
 	$DBRESULT->free();
@@ -271,7 +271,7 @@
 	$tpl->assign('session_id', session_id());
 	
 	if (isset($host_name)){
-		if ($host_name == "Meta_Module")
+		if ($host_name == "_Module_Meta")
 			$host_name = "Meta Services";
 		$tpl->assign('host_name', $host_name);
 	}

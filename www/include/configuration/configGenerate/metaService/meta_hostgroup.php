@@ -29,7 +29,7 @@
 		$str .= "define hostgroup{\n";
 		$str .= print_line("hostgroup_name", "meta_hostgroup");
 		$str .= print_line("alias", "meta_hostgroup");
-		$str .= print_line("members", "Meta_Module");
+		$str .= print_line("members", "_Module_Meta");
 		$str .= "\t}\n\n";
 	}
 	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_hostgroup.cfg");

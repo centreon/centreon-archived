@@ -130,9 +130,11 @@
 				
 				if (!$is_admin)
 					$rq .= ", centreon_acl ";
-					
+				
+		
 		$rq .= 	" WHERE no.object_id = nss.service_object_id".
-				" AND no.name1 not like 'qos_Module'" .
+				" AND no.name1 NOT LIKE '_Module_%'" .
+				" OR no.name1 LIKE '_Module_Meta'" .
 				" AND no.is_active = 1" .
 			  	" AND objecttype_id = 2";
 
@@ -140,7 +142,7 @@
 		$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr($grouplist).")";
 	}
 
-	($o == "meta") ? $rq .= " AND no.name1 = 'Meta_Module'" : $rq .= " AND no.name1 != 'Meta_Module'";
+	($o == "meta") ? $rq .= " AND no.name1 = '_Module_Meta'" : $rq .= " AND no.name1 != '_Module_Meta'";
 
 	if ($instance != "ALL")
 		$rq .= " AND no.instance_id = ".$instance;

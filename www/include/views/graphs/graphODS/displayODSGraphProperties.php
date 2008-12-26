@@ -100,7 +100,7 @@
 	$tpl->assign('o', $o);
 	$tpl->assign('p', $p);
 	
-	if ($svc_id["host_name"] == "Meta_Module")
+	if ($svc_id["host_name"] == "_Module_Meta")
 		$svc_id["host_name"] = "Meta Services";
 	$tpl->assign('host_name', $svc_id["host_name"]);
 	if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){

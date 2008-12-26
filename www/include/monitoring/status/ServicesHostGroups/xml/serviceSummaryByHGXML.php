@@ -86,8 +86,7 @@
 			$rq .= ", centreon_acl ";
 					
 		$rq .= 		" WHERE no.object_id = nss.service_object_id" .
-					" AND no.name1 NOT LIKE 'qos_Module'" .
-					" AND no.name1 NOT LIKE 'Meta_Module'";
+					" AND no.name1 NOT LIKE '_Module_%'";					
 		
 		if (!$is_admin && $groupnumber)
 			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr($grouplist).")";
@@ -107,7 +106,7 @@
 					" FROM ".$ndo_base_prefix."objects nno" .
 					" WHERE nno.objecttype_id =2" .
 					" AND nno.name1 = '".$host_name."'" .
-					" AND nno.name1 not like 'qos_Module'".
+					" AND nno.name1 NOT LIKE '_Module_%'".
 					" )";
 		
 		if($instance != "ALL")
@@ -151,8 +150,7 @@
 	$rq1 .= 		" WHERE hs.host_object_id = hgm.host_object_id".
 					" AND no.object_id = hgm.host_object_id" .
 					" AND hgm.hostgroup_id = hg.hostgroup_id".
-					" AND no.name1 not like 'qos_Module'" .
-					" AND no.name1 not like 'Meta_Module'";
+					" AND no.name1 not like '_Module_%'";
 	
 	if (!$is_admin && $groupnumber)
 		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).") AND hg.alias IN ($lcaSTR_HG)";

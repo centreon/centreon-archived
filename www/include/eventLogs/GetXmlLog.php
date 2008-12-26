@@ -323,7 +323,7 @@
 			} else if ($type == "MS") {
 				if ($id != 0) {
 					$tmp["svc_name"] = "meta_".$id;
-					$tmp["host_name"] = "Meta_Module";
+					$tmp["host_name"] = "_Module_Meta";
 					$tab_svc[] = $tmp;
 				}
 			}
@@ -569,7 +569,7 @@
 	        	$log["output"] = "INITIAL STATE";
 	
 			echo '<status color="'.$color.'">'.$log["status"].'</status>';
-			if ($log["host_name"] == "Meta_Module") {
+			if ($log["host_name"] == "_Module_Meta") {
 				preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
 				$DBRESULT2 =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
 				if (PEAR::isError($DBRESULT))

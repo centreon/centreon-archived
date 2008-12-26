@@ -25,7 +25,7 @@
 		$strEval = NULL;
 		$strEval .= "define service{\n";
 		$strEval .= print_line("service_description", "meta_".$meta["meta_id"]);
-		$strEval .= print_line("host_name", "Meta_Module");
+		$strEval .= print_line("host_name", "_Module_Meta");
 		$strEval .= print_line("check_command", "check_meta!" . $meta["meta_id"]);
 		$strEval .= print_line("max_check_attempts", $meta["max_check_attempts"]);
 		$strEval .= print_line("normal_check_interval", $meta["normal_check_interval"]);

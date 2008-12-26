@@ -31,7 +31,7 @@
 	
 	if ($nb){
 		$str .= "define host{\n";
-		$str .= print_line("host_name", "Meta_Module");
+		$str .= print_line("host_name", "_Module_Meta");
 		$str .= print_line("alias", "Meta Service Calculate Module For Centreon");
 		$str .= print_line("address", "127.0.0.1");
 		$str .= print_line("check_command", "check_host_alive");

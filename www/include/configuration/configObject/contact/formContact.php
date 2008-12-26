@@ -443,7 +443,7 @@ function uncheckAllH(object) {
 	}
 }
 
-function uncheckAllS(object) {	
+function uncheckAllS(object) {
 	if (object.id == "sNone" && object.checked) {
 		document.getElementById('sWarning').checked = false;
 		document.getElementById('sUnknown').checked = false;

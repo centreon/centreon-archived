@@ -149,7 +149,7 @@
 	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
-	($o == "meta") ? $rq1 .= " AND no.name1 = 'Meta_Module'" : $rq1 .= " AND no.name1 != 'Meta_Module'";
+	($o == "meta") ? $rq1 .= " AND no.name1 = '_Module_Meta'" : $rq1 .= " AND no.name1 != '_Module_Meta'";
 
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
@@ -180,16 +180,17 @@
 			" no.name2 as service_description" .
 			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = nss.service_object_id".
-			" AND no.name1 not like 'qos_Module'".
+			" AND no.name1 not like '_Module_%'".
+			" OR no.name1 LIKE '_Module_Meta'".
 			" AND no.is_active = '1' AND objecttype_id = '2' AND `nss`.`active_checks_enabled` = '1'";
 
 	if (!$is_admin)
 		$rq .= " AND no.name1 IN (".$lcaSTR." )";
 	
 	if ($o == "meta")
-		$rq .= " AND no.name1 = 'Meta_Module'";
+		$rq .= " AND no.name1 = '_Module_Meta'";
 	else
-		$rq .= " AND no.name1 != 'Meta_Module'";
+		$rq .= " AND no.name1 != '_Module_Meta'";
 
 
 	if ($instance != "ALL")
