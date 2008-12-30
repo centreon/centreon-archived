@@ -125,6 +125,10 @@
 					if ($PeriodAfter[$dayafter] != "")
 						$PeriodAfter[$dayafter] .= ",";
 					$PeriodAfter[$dayafter] .= "00:00-".myHour($tabValue[3]) .":".myMinute($tabValue[4])."";
+				} else if ($tabValue[1] == 24 && $tabValue[3] == 24) {			
+					if ($PeriodAfter[$dayafter] != "")
+						$PeriodAfter[$dayafter] .= ",";
+					$PeriodAfter[$dayafter] .= "00:".myMinute($tabValue[2])."-00:".myMinute($tabValue[4]);			
 				} else {
 					if (($tabValue[3] == 24 && $tabValue[4] > 0)) {
 						if ($PeriodAfter[$dayafter] != "")
