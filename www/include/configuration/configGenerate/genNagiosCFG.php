@@ -148,7 +148,7 @@
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
-			else if ($key == "host_perfdata_command`" && $value)	{
+			else if ($key == "host_perfdata_command" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
