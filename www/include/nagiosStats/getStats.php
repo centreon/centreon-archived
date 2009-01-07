@@ -133,6 +133,9 @@
 			$start = time() - (60*60*24);		
 		} else {				
 			switch ($_GET["start"]) {
+				case "last3hours" :
+					$start = time() - (60*60*3);
+					break;
 				case "today" : 
 					$start = time() - (60*60*24); 
 					break;

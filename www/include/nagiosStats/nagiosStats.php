@@ -30,7 +30,8 @@
 	 * Time period select
 	 */	
 	$form = new HTML_QuickForm('form', 'post', "?p=".$p);	
-	$time_period = array("today" 		=> _("Today"),
+	$time_period = array("last3hours"	=> _("Last 3 hours"),
+						"today" 		=> _("Today"),
 						"yesterday" 	=> _("Yesterday"),
 						"last4days" 	=> _("Last 4 days"),
 						"lastweek" 		=> _("Last week"),
