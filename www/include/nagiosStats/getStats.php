@@ -211,6 +211,7 @@
 		$cpt = 1;
 		foreach ($metrics as $key => $tm){
 			$command_line .= " LINE1:v".$cpt.$colors[$cpt].":\"".$tm."\"";
+			$command_line .= " GPRINT:v". ($cpt) .":LAST:\"\tLast\:%7.2lf%s\l\"";
 			$cpt++;
 		}
 		
