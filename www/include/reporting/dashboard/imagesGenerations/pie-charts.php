@@ -50,10 +50,12 @@
 		if ($val)
 			if (!isset($oreon->optGen["color_".strtolower($key)])) {
 				$color[] = $oreon->optGen["color_undetermined"];
+				$val = str_replace(",", ".", $val);
 				$data[] = $val;
 				$legend[] = "";
 			} else {
-				$color[] = $oreon->optGen["color_".strtolower($key)];		
+				$color[] = $oreon->optGen["color_".strtolower($key)];
+				$val = str_replace(",", ".", $val);		
 				$data[] = $val;
 				$legend[] = "";
 			}

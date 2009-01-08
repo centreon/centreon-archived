@@ -100,12 +100,12 @@
 	$tpl->assign('CriticalTitle', _("Critical"));
 	$tpl->assign('PendingTitle', _("Undetermined"));
 
-	$tpl->assign('stateLabel', ("State"));
-	$tpl->assign('totalLabel', ("Total"));
-	$tpl->assign('durationLabel', ("Duration"));
-	$tpl->assign('totalTimeLabel', ("Total Time"));
-	$tpl->assign('meanTimeLabel', ("Mean Time"));
-	$tpl->assign('alertsLabel', ("Alerts"));
+	$tpl->assign('stateLabel', _("State"));
+	$tpl->assign('totalLabel', _("Total"));
+	$tpl->assign('durationLabel', _("Duration"));
+	$tpl->assign('totalTimeLabel', _("Total Time"));
+	$tpl->assign('meanTimeLabel', _("Mean Time"));
+	$tpl->assign('alertsLabel', _("Alerts"));
 
 	$tpl->assign('DateTitle', _("Date"));
 	$tpl->assign('EventTitle', _("Event"));
