@@ -180,8 +180,8 @@
 			" no.name2 as service_description" .
 			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = nss.service_object_id".
-			" AND no.name1 not like '_Module_%'".
-			" OR no.name1 LIKE '_Module_Meta'".
+			" AND (no.name1 not like '_Module_%'".
+			" OR no.name1 LIKE '_Module_Meta')".
 			" AND no.is_active = '1' AND objecttype_id = '2' AND `nss`.`active_checks_enabled` = '1'";
 
 	if (!$is_admin)
