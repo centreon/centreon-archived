@@ -136,6 +136,16 @@
 									foreach ($comment as $cmt)
 										$strTMP .= "# ".$cmt."\n";
 								}
+								/*
+								 * Adjust host_location and time period name
+								 */
+								 if ($gmt > 0)
+								 	$gmt = "-".$gmt;
+								 else if ($gmt < 0)
+								 	$gmt = abs($gmt);
+								 else
+									 $gmt = "";
+					 
 								$strTMP .= "define service{\n";
 								
 								/*

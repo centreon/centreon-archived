@@ -61,6 +61,16 @@
 					foreach ($comment as $cmt)
 						$str .= "# ".$cmt."\n";
 				}
+				/*
+				 * Adjust host_location and time period name
+				 */
+				 if ($host["host_location"] > 0)
+				 	$host["host_location_tp"] = "-".$host["host_location"];
+				 else if ($host["host_location"] < 0)
+				 	$host["host_location_tp"] = abs($host["host_location"]);
+				 else
+					 $host["host_location_tp"] = "";
+				
 				$str .= "define host{\n";
 				if (!$host["host_register"] && $host["host_name"])	
 					$str .= print_line("name", $host["host_name"]);
@@ -192,7 +202,7 @@
 				if ($host["host_register"] == 1 && (!isset($host["timeperiod_tp_id1"]) || $host["host_location"] != 0))
 					$host["timeperiod_tp_id"] = getMyHostField($host["host_id"], "timeperiod_tp_id");
 				if ($host["timeperiod_tp_id"])
-					$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location"] : ""));
+					$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location_tp"] : ""));
 
 				if ($host["host_obsess_over_host"] != 2) 
 					$str .= print_line("obsess_over_host", $host["host_obsess_over_host"] == 1 ? "1": "0");
@@ -272,7 +282,7 @@
 				if ($host["host_register"] == 1 && (!$host["timeperiod_tp_id2"] || $host["host_location"] != 0))
 					$host["timeperiod_tp_id2"] = getMyHostField($host["host_id"], "timeperiod_tp_id2");
 				if ($host["timeperiod_tp_id2"])
-					$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location"] : ""));
+					$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location_tp"] : ""));
 			
 				if ($host["host_notification_options"]) 
 					$str .= print_line("notification_options", $host["host_notification_options"]);
