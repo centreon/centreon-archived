@@ -184,9 +184,9 @@
 		 * Get comments for service
 		 */
 		$tabCommentServices = array();
-		$rq2 =	" SELECT DISTINCT cmt.entry_time as entry_time, cmt.comment_id, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+		$rq2 =	" SELECT DISTINCT cmt.comment_time as entry_time, cmt.comment_id, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 				" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-				" WHERE obj.name1 = '".$host_name."' AND obj.name2 = '".$svc_description."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.entry_time";
+				" WHERE obj.name1 = '".$host_name."' AND obj.name2 = '".$svc_description."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO))
 			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";

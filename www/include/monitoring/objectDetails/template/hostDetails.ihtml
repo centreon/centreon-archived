@@ -319,7 +319,7 @@
 		{foreach item=tch from=$tab_comments_host}
 		<tr class={cycle values="list_two, list_one"}>
 			<td class="ListColLeft">{$tch.host_name}</td>
-			<td class="ListColRight">{$tch.entry_time}</td>
+			<td class="ListColRight">{$tch.comment_time}</td>
 			<td class="ListColCenter">{$tch.author_name}</td>
 			<td class="ListColLeft">{$tch.comment_data}</td>
 			<td class="ListColCenter">{$tch.is_persistent}</td>
