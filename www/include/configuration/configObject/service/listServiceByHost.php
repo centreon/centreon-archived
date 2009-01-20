@@ -246,8 +246,8 @@
 				$value = str_replace('#BS#', "\\", $value);			
 				$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
 			}
-		$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") / $time_min;
-		$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") / $time_min;
+		$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") * $time_min;
+		$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") * $time_min;
 		
 		$elemArr[$i] = array(	"MenuClass"			=> "list_".($service["nbr"]>1 ? "three" : $style), 
 								"RowMenu_select"	=> $selectedElements->toHtml(),

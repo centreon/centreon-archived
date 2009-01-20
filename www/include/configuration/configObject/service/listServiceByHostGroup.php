@@ -184,8 +184,8 @@
 				$value = str_replace('#BS#', "\\", $value);
 			}
 		
-		$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") / $time_min;
-		$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") / $time_min;
+		$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") * $time_min;
+		$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") * $time_min;
 		
 		$tplStr = decodeObjectNames($tplStr);
 		

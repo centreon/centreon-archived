@@ -128,8 +128,8 @@
 			$service["service_alias"] = str_replace("#S#", '/', $service["service_alias"]);
 			$service["service_alias"] = str_replace("#BS#", '\\', $service["service_alias"]);			
 			
-			$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") / $time_min;
-			$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") / $time_min;
+			$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") * $time_min;
+			$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") * $time_min;
 		
 			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
