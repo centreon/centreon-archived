@@ -43,6 +43,24 @@ use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_d
 
 require "@CENTREON_ETC@/conf.pm";
 
+## logAnalyser's lock file
+my $lock_file = "/var/lib/centreon/logAnalyser.lock";
+my $cmdtmp;
+my $pid;
+if (-e "$lock_file") {
+   chomp($pid = `cat $lock_file`);
+   my @progTab = split(/\//,$0);
+   my $progName = pop(@progTab);
+   my $cmd = "ps -p ".$pid." | grep ".$progName;
+   $cmdtmp = `$cmd`;
+   if (length($cmdtmp) > 0) {
+      print("$progName is already running... (pid=$pid)\n");
+      exit;
+   }
+}
+$pid = getpgrp(0);
+$cmdtmp = `echo $pid > $lock_file`;
+
 ## Init Date
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
 
@@ -332,4 +350,5 @@ if ($retention ne 0){
 }
 $dbh->disconnect();
 $dbhoreon->disconnect();
+$cmdtmp = `rm -rf $lock_file`;
 exit;
