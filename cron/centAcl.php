@@ -62,14 +62,14 @@
 									"FROM acl_res_group_relations, `acl_groups`, `acl_resources` " .
 									"WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id " .
 									"AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id " .
-									"AND `acl_resources`.`acl_res_activate` = '1' " .
+									//"AND `acl_resources`.`acl_res_activate` = '1' " .
 									"AND acl_groups.acl_group_activate = '1' ".			
 									"AND acl_resources.changed = '1'");
 	while ($result =& $DBRESULT1->fetchRow())
 		$tabGroups[$result["acl_group_id"]] = 1;
 	
 	/*
-	 * Purge datas
+	 * Purge data
 	 */
 	$strBegin = "INSERT INTO `centreon_acl` ( `host_name` , `service_description` , `group_id` ) VALUES ";
 
@@ -78,7 +78,7 @@
 		$tabElem = array();
 
 		/*
-		 * Delete old datas for this groups
+		 * Delete old data for this group
 		 */
 		$DBRESULT =& $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
 		if (PEAR::isError($DBRESULT))
@@ -87,13 +87,15 @@
 		/*
 		 * Select 
 		 */
-		
-		$Host = array();
-		$DBRESULT2 =& $pearDB->query("SELECT `acl_res_id` FROM `acl_res_group_relations` WHERE `acl_group_id` = '".$acl_group_id."'");			
+				
+		$DBRESULT2 =& $pearDB->query("SELECT `acl_resources`.`acl_res_id` FROM `acl_res_group_relations`, `acl_resources` " .
+									"WHERE `acl_res_group_relations`.`acl_group_id` = '".$acl_group_id."' " .
+									"AND `acl_res_group_relations`.acl_res_id = `acl_resources`.acl_res_id " .
+									"AND `acl_resources`.acl_res_activate = '1'");			
 		if ($debug)
 			$time_start = microtime_float2();
 		while ($res2 =& $DBRESULT2->fetchRow()){
-	
+			$Host = array();
 			/* ------------------------------------------------------------------ */
 
 			/*
@@ -125,6 +127,31 @@
 						unset($Host[$h["host_id"]]);
 			$DBRESULT3->free();
 			
+			if (!count($Host)) {
+				$flag_all_host = 0;
+				$DBRESULT3 =& $pearDB->query("SELECT arsr.sc_id FROM acl_resources_sc_relations arsr, acl_resources ar WHERE arsr.acl_res_id = '".$res2["acl_res_id"]."' " .
+											"AND arsr.acl_res_id = ar.acl_res_id " .
+											"AND ar.acl_res_activate");
+				if ($DBRESULT3->numRows())
+					$flag_all_host = 1;
+				$DBRESULT3->free();
+				if (!$flag_all_host) {
+					$DBRESULT3 =& $pearDB->query("SELECT arsr.sc_id FROM acl_resources_sg_relations arsr, acl_resources ar WHERE arsr.acl_res_id = '".$res2["acl_res_id"]."' " .
+											"AND arsr.acl_res_id = ar.acl_res_id " .
+											"AND ar.acl_res_activate = '1'");
+					if ($DBRESULT3->numRows())
+						$flag_all_host = 1;
+					$DBRESULT3->free();
+				}
+				if ($flag_all_host) {
+					$DBRESULT3 =& $pearDB->query("SELECT host_id, host_name FROM `host` WHERE host_register = '1' AND host_activate = '1'");
+					while ($h =& $DBRESULT3->fetchRow())
+						$Host[$h["host_id"]] = $h["host_name"];
+					$DBRESULT3->free();
+				}
+			}
+			
+			
 			$str = "";	
 			foreach ($Host as $key => $value){
 				$tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"]);
@@ -152,7 +179,7 @@
 		  		}
 			}
 			$DBRESULT3->free();
-			
+			unset($Host);
 			/* ------------------------------------------------------------------ */
 		}
 		$DBRESULT2->free();
