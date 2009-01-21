@@ -56,9 +56,12 @@
 				
 		$condition = "";
 		if ($str != "")
-			$condition = " WHERE `acl_group_id` IN (".$str.")";		
-
-		$DBRESULT =& $pearDB->query("SELECT `acl_res_id` FROM `acl_res_group_relations` $condition");
+			$condition = " WHERE `acl_group_id` IN (".$str.") AND ";			
+		else
+			$condition = " WHERE ";
+		$DBRESULT =& $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar ".$condition." " .
+									"argr.acl_res_id = ar.acl_res_id " .
+									"AND ar.acl_res_activate = '1'");
 		$lcaServiceGroup = array();
 		while ($res =& $DBRESULT->fetchRow()){
 
@@ -97,8 +100,12 @@
 		
 		$condition = "";
 		if ($str != "")
-			$condition = " WHERE acl_group_id IN (".$str.")";		
-		$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
+			$condition = " WHERE `acl_group_id` IN (".$str.") AND ";			
+		else
+			$condition = " WHERE ";
+		$DBRESULT2 =& $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar ".$condition." " .
+									"argr.acl_res_id = ar.acl_res_id " .
+									"AND ar.acl_res_activate = '1'");
 		
 		while ($res =& $DBRESULT2->fetchRow()){
   			/*
@@ -167,8 +174,12 @@
 		
 		$condition = "";
 		if ($str != "")
-			$condition = " WHERE acl_group_id IN (".$str.")";		
-		$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
+			$condition = " WHERE `acl_group_id` IN (".$str.") AND ";			
+		else
+			$condition = " WHERE ";
+		$DBRESULT2 =& $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar ".$condition." " .
+									"argr.acl_res_id = ar.acl_res_id " .
+									"AND ar.acl_res_activate = '1'");
 		
 		while ($res =& $DBRESULT2->fetchRow()){
   			/*
@@ -252,7 +263,7 @@
 		 * Get Groups
 		 */
 		$groups = array();
-		$DBRESULT =& $pearDB->query("SELECT `acl_group_id` FROM `acl_group_contacts_relations` WHERE `acl_group_contacts_relations`.`contact_contact_id` = '".$user["user_id"]."'");
+		$DBRESULT =& $pearDB->query("SELECT agcr.`acl_group_id` FROM `acl_group_contacts_relations` agcr, `acl_groups` ag WHERE agcr.`contact_contact_id` = '".$user["user_id"]."' AND agcr.`acl_group_id` = ag.acl_group_id AND ag.`acl_group_activate` = '1'");
   		if ($num = $DBRESULT->numRows()){
 			while ($group =& $DBRESULT->fetchRow())
 				$groups[$group["acl_group_id"]] = $group["acl_group_id"];
@@ -263,7 +274,6 @@
   		 * Free
   		 */
   		unset($user);
-  		unset($res1);
 		return $groups;
 	}
 
@@ -334,18 +344,25 @@
 		$str_topo = "";
 		$condition = "";
 		if ($str != "")
-			$condition = " WHERE acl_group_id IN (".$str.")";		
-		$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
+			$condition = " WHERE `acl_group_id` IN (".$str.") AND ";			
+		else
+			$condition = " WHERE ";
+		$DBRESULT2 =& $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar ".$condition." " .
+									"argr.acl_res_id = ar.acl_res_id " .
+									"AND ar.acl_res_activate = '1'");
 		
 		while ($res =& $DBRESULT2->fetchRow()){
   			/*
   			 * Hosts
   			 */
+  			$flag_all_host = 1;
   			$host = array();
   			$DBRESULT3 =& $pearDB->query("SELECT host_name, host_id FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id");
-	  		while ($host =& $DBRESULT3->fetchRow())
-				if ($host["host_id"] != "")
+	  		while ($host =& $DBRESULT3->fetchRow()) 
+				if ($host["host_id"] != "") {
 					$lcaHost[$host["host_id"]] = $host["host_id"];
+					$flag_all_host = 0;
+				}
 			unset($DBRESULT3);
 			/*
 			 * Hosts Groups Inclus
@@ -357,8 +374,10 @@
 											"AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
 	  		while ($hostgroup =& $DBRESULT3->fetchRow()){
 	  			$DBRESULT4 =& $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation` WHERE host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = '".$hostgroup["hg_id"]."'");
-	  			while ($host_hostgroup =& $DBRESULT4->fetchRow())
+	  			while ($host_hostgroup =& $DBRESULT4->fetchRow()) {
 					$lcaHost[$host_hostgroup["host_id"]] = $host_hostgroup["host_id"];
+	  				$flag_all_host = 0;
+	  			}
 				$lcaHostGroup[$hostgroup["hg_id"]] = $hostgroup["hg_id"];	
 	  		}
 			/*
@@ -371,12 +390,39 @@
 					if (isset($lcaHost[$host["host_id"]]))
 						unset($lcaHost[$host["host_id"]]);
 			unset($DBRESULT3);
+			
+			
+			/*
+			 *  Service categories			 
+			 */
+			$host = array();
+			if ($flag_all_host) {				
+				$DBRESULT3 =& $pearDB->query(	"SELECT service_service_id FROM `acl_resources_sc_relations`,  `service_categories_relation`  " .
+												"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
+												"AND service_categories_relation.sc_id = acl_resources_sc_relations.sc_id");
+				
+				$tmpSTR = "";
+				while ($svc =& $DBRESULT3->fetchRow()) {
+					if ($tmpSTR != "")
+						$tmpSTR .= ",";					
+					$tmpSTR .= $svc["service_service_id"];
+				}
+				if ($tmpSTR != "") {
+					$DBH =& $pearDB->query ("SELECT host_host_id FROM `host_service_relation` WHERE service_service_id IN (".$tmpSTR.")");
+					if ($DBH->numRows())
+			  			while ($host =& $DBH->fetchRow()){
+							$lcaHost[$host["host_host_id"]] = $host["host_host_id"];
+			  			}
+					unset($DBRESULT3);
+				}
+			}
+			
 			/*
 			 * Service group hosts
 			 */
 			$DBRESULT3 =& $pearDB->query(	"SELECT host_host_id FROM `acl_resources_sg_relations`,  `servicegroup_relation`  " .
 											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
-													"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id");
+											"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id");
 	  		if ($DBRESULT3->numRows())
 		  		while ($host =& $DBRESULT3->fetchRow()){
 					$lcaHost[$host["host_host_id"]] = $host["host_host_id"];
@@ -411,24 +457,31 @@
 		if (strlen($groupstr) == 0)
 			return array();
 			
-		$tab_categories = array();
-		if ($res_id == NULL)
+		$tab_categories = array();		
+		if ($res_id == NULL){			
 			$request = "SELECT sc_id " .
-						"FROM acl_resources_sc_relations, acl_res_group_relations " .
+						"FROM acl_resources_sc_relations, acl_res_group_relations, acl_resources " .
 						"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-						"AND acl_res_group_relations.acl_group_id IN (".$groupstr.")";
-		else
+						"AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id ".
+						"AND acl_resources.acl_res_activate = '1' " .
+						"AND acl_res_group_relations.acl_group_id IN (".$groupstr.") ";			
+		}
+		else {
+			$DBRES =& $pearDB->query("SELECT acl_res_id FROM `acl_resources` WHERE acl_res_id = '".$res_id."' AND acl_res_activate = '1'");
+			
+			if (!$DBRES->numRows())
+				return array();
 			$request = "SELECT sc_id " .
 						"FROM acl_resources_sc_relations, acl_res_group_relations " .
 						"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
 						"AND acl_res_group_relations.acl_group_id IN (".$groupstr.") " .
-						"AND acl_resources_sc_relations.acl_res_id = '$res_id'";
-					
+						"AND acl_resources_sc_relations.acl_res_id = '$res_id'";				
+		}		
 		$DBRESULT =& $pearDB->query($request);
-		while ($res =& $DBRESULT->fetchRow())
-			$tab_categories[$res["sc_id"]] = $res["sc_id"];
+		while ($res =& $DBRESULT->fetchRow())			
+			$tab_categories[$res["sc_id"]] = $res["sc_id"];		
 	  	unset($res);
-	  	unset($DBRESULT);
+	  	unset($DBRESULT);		
 	  	return $tab_categories;
 	}
 	
@@ -522,10 +575,17 @@
 		$svc = array();
 		
 		$str_topo = "";
+		$condition = "";		
+		
 		$condition = "";
 		if ($groupstr != "")
-			$condition = " WHERE `acl_group_id` IN (".$groupstr.")";		
-		$DBRESULT =& $pearDB->query("SELECT `acl_res_id` FROM `acl_res_group_relations` $condition");
+			$condition = " WHERE `acl_group_id` IN (".$groupstr.") AND ";			
+		else
+			$condition = " WHERE ";
+		$DBRESULT =& $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar ".$condition." " .
+									"argr.acl_res_id = ar.acl_res_id " .
+									"AND ar.acl_res_activate = '1'");
+				
 		while ($res =& $DBRESULT->fetchRow()) {
 			$DBRESULT2 =& $pearDB->query(	"SELECT `service_service_id` " .
 											"FROM `servicegroup`, `acl_resources_sg_relations`, `servicegroup_relation` " .
@@ -563,11 +623,12 @@
 		/*
 		 * Get categories
 		 */
-		if ($res_id == NULL) { 
+		if ($res_id == NULL) { 			
 			$tab_cat    = getAuthorizedCategories($groupstr);
 		} else {
 			$tab_cat    = getAuthorizedCategories($groupstr, $res_id);
 		}
+
 
 		/*
 		 * Get Service Groups
@@ -576,15 +637,17 @@
 		
 		$tab_services = array();
 		if (count($tab_cat) || count($svc_SG)){
-			if ($tab_svc)
+			if ($tab_svc) {
 				foreach ($tab_svc as $svc_descr => $svc_id){
 					$tmp = getServiceTemplateList2($svc_id);
-					$tab = getServicesCategories($tmp);
+					$tab = getServicesCategories($tmp);					
 					foreach ($tab as $t){
-						if (isset($tab_cat[$t]))
+						if (isset($tab_cat[$t])) {							
 							$tab_services[$svc_descr] = $svc_id;
+						}
 					}
 				}
+			}
 			if ($svc_SG)
 				foreach ($svc_SG as $key => $value)
 					$tab_services[$key] = $value;
@@ -849,6 +912,7 @@
 		if (!isset($group_list))
 			return ;
 		global $pearDB;
+		
 		$str = "";
 		foreach ($group_list as $gl){
 			if ($str)
@@ -856,7 +920,7 @@
 			$str .= $gl; 
 		}	
 		$tab_res = array();
-		$DBRESULT =& $pearDB->query("SELECT `acl_res_id` FROM `acl_res_group_relations` WHERE `acl_group_id` IN ($str)");
+		$DBRESULT =& $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar WHERE argr`acl_group_id` IN ($str) AND argr.acl_res_id = ar.acl_res_id AND ar.acl_res_activate = '1'");
 		while ($res =& $DBRESULT->fetchRow())
 			$tab_res[$res["acl_res_id"]] = $res["acl_res_id"];
 		$DBRESULT->free();
