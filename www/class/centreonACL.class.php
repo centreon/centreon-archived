@@ -73,9 +73,15 @@
  	 *  Function that will check whether or not the user needs to rebuild his ACL
  	 */
  	private function checkUpdateACL() { 		 		
+ 		global $pearDB;
+ 		
  		if (!$this->admin) { 			
 	 		$query = "SELECT update_acl FROM session WHERE update_acl = '1' AND user_id = '".$this->userID."'";
-	 		;$this->resetACL();
+	 		$DBRES =& $pearDB->query($query);
+	 		if ($DBRES->numRows()) {	 			
+	 			$pearDB->query("UPDATE session SET update_acl = '0' WHERE user_id = '".$this->userID."'");
+	 			$this->resetACL();
+	 		}
  		}
  	}
  	
@@ -528,5 +534,19 @@
 	 	return 0;
 	 }
 	 
+	 /*
+	  *  Function that returns the pair host/service
+	  */
+	 public function getHostServices($pearDBndo) {		
+		$tab = array();
+		if ($this->admin)
+			$query = "SELECT host_id, service_id FROM centreon_acl";
+		else
+			$query = "SELECT host_id, service_id FROM centreon_acl WHERE group_id IN (".$this->getAccessGroupsString().")";
+		$DBRESULT =& $pearDBndo->query($query);
+		while ($row =& $DBRESULT->fetchRow())
+			$tab[$row['host_id']][$row['service_id']] = 1;		
+		return $tab;
+	 }
  }
  ?>
