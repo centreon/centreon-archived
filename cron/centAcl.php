@@ -40,29 +40,19 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."/www/DBconnect.php";
 	include_once $centreon_path."/www/DBNDOConnect.php";
-	include_once $centreon_path."/www/include/common/common-Func.php";
-	include_once $centreon_path."/www/include/common/common-Func-ACL.php";
+	include_once $centreon_path."/cron/centAcl-Func.php";
 	
 	/*
 	 * Init values
 	 */
 	
 	$debug = 0;
-	
-	/*
-	 * Init functions
-	 */
-	function microtime_float2() 	{
-	   list($usec, $sec) = explode(" ", microtime());
-	   return ((float)$usec + (float)$sec);
-	}
-	
+		
 	$tabGroups = array();
 	$DBRESULT1 =& $pearDB->query(	"SELECT DISTINCT acl_groups.acl_group_id, acl_resources.acl_res_id " .
 									"FROM acl_res_group_relations, `acl_groups`, `acl_resources` " .
 									"WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id " .
 									"AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id " .
-									//"AND `acl_resources`.`acl_res_activate` = '1' " .
 									"AND acl_groups.acl_group_activate = '1' ".			
 									"AND acl_resources.changed = '1'");
 	while ($result =& $DBRESULT1->fetchRow())
@@ -71,11 +61,11 @@
 	/*
 	 * Purge data
 	 */
-	$strBegin = "INSERT INTO `centreon_acl` ( `host_name` , `service_description` , `group_id` ) VALUES ";
+	$strBegin = "INSERT INTO `centreon_acl` ( `host_name` , `service_description` , `host_id` , `service_id`,`group_id` ) VALUES ";
 
 	$cpt = 0;	
 	foreach ($tabGroups as $acl_group_id => $acl_res_id){
-		$tabElem = array();
+		$tabElem = array();		
 
 		/*
 		 * Delete old data for this group
@@ -158,7 +148,7 @@
 				foreach ($tab as $desc => $id){
 					if (!isset($tabElem[$value]))
 						$tabElem[$value] = array();
-					$tabElem[$value][$desc] = 1;
+					$tabElem[$value][$desc] = $key.",".$id;
 				}	 
 				unset($tab);
 			}
@@ -166,16 +156,17 @@
 			/*
 			 * get all Service groups
 			 */
-			$DBRESULT3 =& $pearDB->query(	"SELECT host_name, host_id, service_description FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service` " .
+			$DBRESULT3 =& $pearDB->query(	"SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service` " .
 											"WHERE acl_res_id = '".$res2["acl_res_id"]."' " .
-												"AND host.host_id = servicegroup_relation.host_host_id " .
-												"AND service.service_id = servicegroup_relation.service_service_id " .
-												"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id");
+											"AND host.host_id = servicegroup_relation.host_host_id " .
+											"AND service.service_id = servicegroup_relation.service_service_id " .
+											"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id " .
+											"AND service_activate = '1'");
 			if ($DBRESULT3->numRows()) {
 		  		while ($h =& $DBRESULT3->fetchRow()){
 					if (!isset($tabElem[$h["host_id"]]))
 						$tabElem[$h["host_name"]] = array();
-		  			$tabElem[$h["host_name"]][$h["service_description"]] = 1;
+		  			$tabElem[$h["host_name"]][$h["service_description"]] = $h["host_id"].",".$h["service_id"];
 		  		}
 			}
 			$DBRESULT3->free();
@@ -195,7 +186,8 @@
 				foreach ($svc_list as $desc => $t){
 					if ($str != "")
 						$str .= ', ';
-					$str .= "('".$host."', '".$desc."', ".$acl_group_id.") ";
+					$id_tmp = split(",", $t);
+					$str .= "('".$host."', '".$desc."', '".$id_tmp[0]."' , '".$id_tmp[1]."' , ".$acl_group_id.") ";
 				}
 			}
 			$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
