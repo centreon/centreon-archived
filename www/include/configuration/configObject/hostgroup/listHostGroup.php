@@ -33,12 +33,7 @@
 	if (isset($search) && $search)	
 		$SearchTool = " WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	
-	$LcaTool = "";
-	if (!isUserAdmin(session_id())){
-		$SearchTool != "" ? $LcaTool .= " AND hg_id IN (".$lcaHostGroupstr.")" : $LcaTool .= " WHERE hg_id IN (".$lcaHostGroupstr.")";
-	}
-	
-	$request = "SELECT COUNT(*) FROM hostgroup $SearchTool $LcaTool";
+	$request = "SELECT COUNT(*) FROM hostgroup $SearchTool";
 	
 	$DBRESULT =& $pearDB->query($request);
 	if (PEAR::isError($DBRESULT))
@@ -71,8 +66,7 @@
 	 * Hostgroup list
 	 */
 	 
-	 
-	$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup $SearchTool $LcaTool ORDER BY hg_name LIMIT ".$num * $limit .", $limit"; 
+	$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup $SearchTool ORDER BY hg_name LIMIT ".$num * $limit .", $limit"; 
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	

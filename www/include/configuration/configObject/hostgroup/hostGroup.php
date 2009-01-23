@@ -18,12 +18,6 @@
 	if (!isset ($oreon))
 		exit ();
 	
-	if (!isUserAdmin(session_id())){
-		$lcaHost = getLcaHostByID($pearDB);
-		$lcaHoststr = getLCAHostStr($lcaHost["LcaHost"]);
-		$lcaHostGroupstr = getLcaHGStr($lcaHost["LcaHostGroup"]);
-	}	
-	
 	isset($_GET["hg_id"]) ? $hG = $_GET["hg_id"] : $hG = NULL;
 	isset($_POST["hg_id"]) ? $hP = $_POST["hg_id"] : $hP = NULL;
 	$hG ? $hg_id = $hG : $hg_id = $hP;
@@ -37,15 +31,21 @@
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 	
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/configuration/configObject/hostgroup/";
 	
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	

@@ -15,65 +15,59 @@
  * For information : contact@centreon.com
  */
  
-	#
-	## Database retrieve information for HostGroup
-	#
+	/*
+	 * Database retrieve information for HostGroup
+	 */
 	$hg = array();
-	if (($o == "c" || $o == "w") && $hg_id)	{	
-		if ($is_admin)
-			$rq = "SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1";
-		else
-			$rq = "SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' AND hg_id IN (".$lcaHostGroupstr.") LIMIT 1";
-		$DBRESULT =& $pearDB->query($rq);
+	if (($o == "c" || $o == "w") && $hg_id)	{
+		$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$hg = array_map("myDecode", $DBRESULT->fetchRow());
-		# Set HostGroup Childs
+		
+		/*
+		 *  Set HostGroup Childs
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $hosts =& $DBRESULT->fetchRow(); $i++)
 			$hg["hg_hosts"][$i] = $hosts["host_host_id"];
 		$DBRESULT->free();
-		# Nagios 1 - Set Contact Group Childs
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $cgs =& $DBRESULT->fetchRow(); $i++)
-			$hg["hg_cgs"][$i] = $cgs["contactgroup_cg_id"];
-		$DBRESULT->free();
 	}
+	
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
-	if ($is_admin)
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	else
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($host =& $DBRESULT->fetchRow())
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while ($host =& $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
-	# Contact Groups comes from DB -> Store in $cgs Array
+	
+	/*
+	 * Contact Groups comes from DB -> Store in $cgs Array
+	 */
 	$cgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($cg =& $DBRESULT->fetchRow())
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while ($cg =& $DBRESULT->fetchRow())
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################
+	
 	##########################################################
 	# Var information to format the element
 	#
 	$attrsText 		= array("size"=>"30");
-	$attrsAdvSelect = array("style" => "width: 220px; height: 170px;");
+	$attrsAdvSelect = array("style" => "width: 220px; height: 320px;");
 	$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
@@ -97,9 +91,9 @@
 	$form->addElement('select', 'hg_snmp_version', _("Version"), array(0=>null, 1=>"1", 2=>"2c", 3=>"3"));
 	$form->addElement('text', 'hg_snmp_community', _("SNMP Community"), $attrsText);
 	
-	##
-	## Hosts Selection
-	##
+	/*
+	 * Hosts Selection
+	 */
 	$form->addElement('header', 'relation', _("Relations"));
 	
     $ams1 =& $form->addElement('advmultiselect', 'hg_hosts', _("Linked Hosts"), $hosts, $attrsAdvSelect);
