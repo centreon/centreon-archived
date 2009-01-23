@@ -26,29 +26,7 @@
 	
 	$centreonGMT = new CentreonGMT();
 	$centreonGMT->getMyGMTFromSession(session_id());
-
-	print "->".$centreonGMT->getMyGMT();
-
-	/*
-	 * ACL Actions
-	 */
-	$GroupListofUser = array();
-	$GroupListofUser =  getGroupListofUser($pearDB);
-	
-	$allActions = false;
-	if (count($GroupListofUser) > 0 && $is_admin == 0) {
-		$authorized_actions = array();
-		$authorized_actions = getActionsACLList($GroupListofUser);
-	} else {
-		$allActions = true;
-	}
-
-	/*
-	 * ACL
-	 */
-	if (!$is_admin)
-		$lcaHostByName = getLcaHostByName($pearDB);
-	
+		
 	$ndo_base_prefix = getNDOPrefix();
 	include_once("./DBNDOConnect.php");
 	
@@ -70,12 +48,19 @@
 	$tab_downtime_host = array();
 	$tab_downtime_svc = array();
 
+	$hostStr = $oreon->user->access->getHostsString("ID", $pearDBndo);
+
 	/*
 	 * Hosts Downtimes
 	 */
-	$rq2 =	" SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
-			" FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
-			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS  NULL AND obj.object_id = dtm.object_id AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' ORDER BY dtm.actual_start_time";
+	$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
+			"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
+			"WHERE obj.name1 IS NOT NULL " .
+			"AND obj.name2 IS NULL " .
+			"AND obj.object_id = dtm.object_id " .
+			$oreon->user->access->queryBuilder("AND", "obj.name1", $hostStr) . 
+			"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
+			"ORDER BY dtm.actual_start_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
@@ -95,9 +80,25 @@
 	/*
 	 * Service Downtimes
 	 */
-	$rq2 =	" SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
-			" FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
-			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS NOT NULL AND obj.object_id = dtm.object_id AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' ORDER BY dtm.actual_start_time";
+	if ($is_admin) 
+		$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
+				"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
+				"WHERE obj.name1 IS NOT NULL " .
+				"AND obj.name2 IS NOT NULL " .
+				"AND obj.object_id = dtm.object_id " .
+				"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
+				"ORDER BY dtm.actual_start_time";
+	else
+		$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
+				"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj, centreon_acl " .
+				"WHERE obj.name1 IS NOT NULL " .
+				"AND obj.name2 IS NOT NULL " .
+				"AND obj.object_id = dtm.object_id " .
+				"AND obj.name1 = centreon_acl.host_name " . 
+				"AND obj.name2 = centreon_acl.service_description " . 
+				"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
+				"ORDER BY dtm.actual_start_time";
+				
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
@@ -111,41 +112,19 @@
 	$en = array("0" => _("No"), "1" => _("Yes"));
 	foreach ($tab_downtime_svc as $key => $value)
 		$tab_downtime_svc[$key]["is_fixed"] = $en[$tab_downtime_svc[$key]["is_fixed"]];
-
-	if (!$is_admin){
-		$tab_downtime_host2 = array();
-		for ($n = 0,$i = 0 ; $i < count($tab_downtime_host); $i++) {
-			if (isset($lcaHostByName["LcaHost"][$tab_downtime_host[$i]["host_name"]]))
-				$tab_downtime_host2[$n++] = $tab_downtime_host[$i];
-		}
-		$tab_downtime_svc2 = array();
-		for ($n=0,$i=0; $i < count($tab_downtime_svc); $i++) {
-			if (isset($lcaHostByName["LcaHost"][$tab_downtime_svc[$i]["host_name"]]))
-				$tab_downtime_svc2[$n++] = $tab_downtime_svc[$i];
-		}
-
-		$tab_downtime_host = $tab_downtime_host2;
-		$tab_downtime_svc = $tab_downtime_svc2;
-	}
-
+	
 	/*
 	 * Element we need when we reload the page
 	 */
 	$form->addElement('hidden', 'p');
 	$tab = array ("p" => $p);
-	$form->setDefaults($tab);
-
-	if (isset($authorized_actions) && $allActions == false){		
-		foreach ($authorized_actions as $action_name) {
-			if ($action_name == "host_schedule_downtime") 
-				$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-			if ($action_name == "service_schedule_downtime") 
-				$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-		}
-	} else {
+	$form->setDefaults($tab);			
+	
+	if ($oreon->user->access->checkAction("host_schedule_downtime")) 
 		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+	if ($oreon->user->access->checkAction("service_schedule_downtime")) 
 		$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-	}
+		
 	
 	$tpl->assign("p", $p);
 	

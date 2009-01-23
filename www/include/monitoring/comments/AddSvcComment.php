@@ -43,8 +43,6 @@
 		
 		if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
 			$host_id = getMyHostID($_GET["host_name"]);
-			if (!$is_admin && !isset($lcaHostByName["LcaHost"][$_GET["host_name"]]))
-				$LCA_error = 1;
 			$service_id = getMyServiceID($_GET["service_description"], $host_id);
 			$host_name = $_GET["host_name"];
 			$svc_description = $_GET["service_description"];

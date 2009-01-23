@@ -19,6 +19,7 @@
 		exit();
 	
 	include_once $centreon_path."www/class/centreonGMT.class.php";
+	include_once $centreon_path."www/DBNDOConnect.php";
 
 	/*
 	 * Init GMT class
@@ -26,17 +27,10 @@
 	
 	$centreonGMT = new CentreonGMT();
 	$centreonGMT->getMyGMTFromSession(session_id());
-	
-	$actions = false;		
-	$actions = verifyActionsACLofUser("service_schedule_downtime");
-	$GroupListofUser =  getGroupListofUser($pearDB);
-	
-	if ($actions == true || count($GroupListofUser) == 0) {		
-		$LCA_error = 0;
-		if (!$is_admin){
-			$lcaHostByName = getLcaHostByName($pearDB);
-		}
 		
+	$hostStr = $oreon->user->access->getHostsString("ID", $pearDBndo);
+	
+	if ($oreon->user->access->checkAction("service_schedule_downtime")) {		
 		isset($_GET["host_id"]) ? $cG = $_GET["host_id"] : $cG = NULL;
 		isset($_POST["host_id"]) ? $cP = $_POST["host_id"] : $cP = NULL;	
 		$cG ? $host_id = $cG : $host_id = $cP;
@@ -44,38 +38,41 @@
 	    $svc_description = NULL;
 		
 		if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
-			$host_id = getMyHostID($_GET["host_name"]);
-			if (!isset($lcaHostByName["LcaHost"][$_GET["host_name"]]) && !$is_admin)
-				$LCA_error = 1;
+			$host_id = getMyHostID($_GET["host_name"]);			
 			$service_id = getMyServiceID($_GET["service_description"], $host_id);
 			$host_name = $_GET["host_name"];
 			$svc_description = $_GET["service_description"];
 		} else
 			$host_name = NULL;
-		
-		if ($LCA_error)
-			require_once("./alt_error.php");
-		else {
-			$data = array("host_id" => $host_id, "service_id" => getMyServiceID($svc_description, $host_id),"start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320));
+			
+			$data = array();
+			$data = array("start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320));
+			if (isset($host_id)) 
+				$data["host_id"] = $host_id;			
+			if (isset($service_id))
+				$data["service_id"] = $service_id;
+				
 			
 			#
 			## Database retrieve information for differents elements list we need on the page
 			#
-			$hosts = array(""=>"");
-			$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
+			$hosts = array(NULL => NULL);
+			$query = "SELECT host_id, host_name " .
+					"FROM `host` " .
+					"WHERE host_register = '1' " .
+					$oreon->user->access->queryBuilder("AND", "host_id", $hostStr) . 
+					"ORDER BY host_name";
+			$DBRESULT =& $pearDB->query($query);
 			if (PEAR::isError($DBRESULT))
 				print "AddSvcDonwtime RQ 1 - Mysql Error : ".$DBRESULT->getMessage();
-			while ($host =& $DBRESULT->fetchRow()){
-				if (!$host["host_name"])
-					$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-				if (isset($lcaHostByName["LcaHost"][$host["host_name"]]) || $is_admin)
-					$hosts[$host["host_id"]]= $host["host_name"];
+			while ($host =& $DBRESULT->fetchRow()){				
+				$hosts[$host["host_id"]]= $host["host_name"];
 			}
 			$DBRESULT->free();
 		
-			$services = array();
+			$services = array(NULL => NULL);
 			if (isset($host_id))
-				$services = getMyHostActiveServices($host_id);
+				$services = $oreon->user->access->getHostServices($pearDBndo, $host_id);
 		
 			$debug = 0;
 			$attrsTextI		= array("size"=>"3");
@@ -138,7 +135,7 @@
 				$tpl->display("AddSvcDowntime.ihtml");
 		    }
 		}
-	} else {
+	else {
 		require_once("./alt_error.php");
 	}
 ?>
