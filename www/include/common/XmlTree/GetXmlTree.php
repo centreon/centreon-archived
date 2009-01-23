@@ -44,9 +44,10 @@
 	 */
 	require_once 'DB.php';
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/DBconnect.php";
 	include_once $centreon_path . "www/DBOdsConnect.php";
+	include_once $centreon_path . "www/DBNDOConnect.php";
 
 	/* 
 	 * PHP functions 
@@ -54,6 +55,12 @@
 	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
+	/*
+	 * Include Access Class
+	 */
+	include_once $centreon_path . "www/class/centreonACL.class.php";
+	
+	
 	if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) { 	
 		header("Content-type: application/xhtml+xml"); 
 	} else {
@@ -83,13 +90,15 @@
 
 	$is_admin = isUserAdmin($_GET["sid"]);
 	if (isset($_GET["sid"]) && $_GET["sid"]){
-		if (!isUserAdmin($_GET["sid"])){
-			$lca = getLcaHostByName($pearDB);
-			$lca = getLCASVC($lca);
-		}
-	} else {
+		$DBRESULT =& $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
+		$session =& $DBRESULT->fetchRow();
+		$access = new CentreonAcl($session["user_id"], $is_admin);
+		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups());
+		
+		$hoststr = $access->getHostsString("ID", $pearDBndo);
+		$servicestr = $access->getServicesString("ID", $pearDBndo);
+	} else 
 		exit();
-	}
 	
 	$normal_mode = 1;
 	(isset($_GET["mode"])) ? $normal_mode = $_GET["mode"] : $normal_mode = 1;
@@ -115,7 +124,7 @@
 				if ($is_admin){
 					print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 				} else {
-					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][getMyHostName($host)]))
+					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host]))
 			        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 				}
 			}
@@ -139,11 +148,12 @@
 			/*
 			 * get services for host
 			 */
+			$tab_id = split('_', $id);
+			$id = $tab_id[0];
 			$services = getMyHostActiveServices($id);
-			foreach ($services as $svc_id => $svc_name){
-				$host_name = getMyHostName($id);
-		        if ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][getMyServiceName($svc_id)])))
-			        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
+			foreach ($services as $svc_id => $svc_name) {
+				if ($is_admin || (!$is_admin && isset($lca["LcaHost"][$id]) && isset($lca["LcaHost"][$id][$svc_id])))
+			    	print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
 			}
 		} else if ($type == "HS") {	
 			;
@@ -180,7 +190,7 @@
 			}
 			$DBRESULT->free();
 		} else if ($type == "RR") {
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
+			$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY `hg_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($HG =& $DBRESULT->fetchRow()){
@@ -190,14 +200,16 @@
 			        	print("<item child='1' test='$is_admin' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
 					}					
 				} else {
-					if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_name"]])){
+					if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_id"]])){
 			        	print("<item child='1' test='$is_admin' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
 					}					
 				}
 			}
+		
 			/*
 			 * Hosts Alone
 			 */
+			
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' order by host_name");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
@@ -209,7 +221,7 @@
 		           	$hostaloneSTR2 .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>\n";
 					$cpt++;
 				} else {
-					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]])){
+					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_id"]])){
 						$hostaloneSTR2 .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>\n";	
 						$cpt++;
 					}
