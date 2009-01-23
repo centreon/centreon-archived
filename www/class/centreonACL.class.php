@@ -46,6 +46,7 @@
 	 		$this->setServiceGroups();
 	 		$this->setServiceCategories();
 	 		$this->setTopology();
+	 		$this->setActions();
  		} 		
  	}
  	
@@ -67,6 +68,7 @@
  		$this->setServiceGroups();
  		$this->setServiceCategories();
  		$this->setTopology();
+ 		$this->setActions();
  	}
  	
  	/*
@@ -154,7 +156,7 @@
  		$DBRESULT =& $pearDB->query($query);
  		while ($row =& $DBRESULT->fetchRow()) {
  			$this->serviceGroups[$row['sg_id']] = $row['sg_name'];
- 			$this->serviceGroupsFilter[$row['acl_res_id']][$row['sc_id']] = $row['sg_id'];
+ 			$this->serviceGroupsFilter[$row['acl_res_id']][$row['sg_id']] = $row['sg_id'];
  		}
  	}
  	
@@ -183,12 +185,12 @@
  	private function setActions(){	
 		global $pearDB;		
 		
-		$query = "SELECT ar.acl_action_name" .
+		$query = "SELECT ar.acl_action_name " .
 				"FROM acl_group_actions_relations agar, acl_actions a, acl_actions_rules ar " .
 				"WHERE a.acl_action_id = agar.acl_action_id " .
-				"AND agar.acl_action_rule_id = ar.acl_action_rule_id " .
+				"AND agar.acl_action_id = ar.acl_action_rule_id " .
 				"AND a.acl_action_activate = '1'" .				
-				"AND agar.acl_action_id IN (".$this->getAccessGroupsString().")";
+				"AND agar.acl_group_id IN (".$this->getAccessGroupsString().")";			
 		$DBRESULT =& $pearDB->query($query);
 		while ($row =& $DBRESULT->fetchRow())
 			$this->actions[$row['acl_action_name']] = $row['acl_action_name'];		

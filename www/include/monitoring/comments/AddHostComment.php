@@ -19,57 +19,45 @@
 		exit();
 	
 	include_once $centreon_path."www/class/centreonGMT.class.php";
-
+	include_once $centreon_path."www/DBNDOConnect.php";
 	/*
 	 * Init GMT class
 	 */
 	
+	
+	$hostStr = $oreon->user->access->getHostsString("ID", $pearDBndo);
 	$centreonGMT = new CentreonGMT();
 	$centreonGMT->getMyGMTFromSession(session_id());
-	
-	/*
-	 * ACL Actions
-	 */
-	$actions = false;
-	$GroupListofUser = array();
-	$actions = verifyActionsACLofUser("host_comment");
-	$GroupListofUser =  getGroupListofUser($pearDB);
-	
-	if ($actions == true || count($GroupListofUser) == 0) {
-		
+	if ($oreon->user->access->checkAction("host_comment")) {				
 		/*
 		 * ACL
-		 */
-		$LCA_error = 0;
-		if (!$is_admin)
-			$lcaHostByName = getLcaHostByName($pearDB);
-		
+		 */				
 		if (isset($_GET["host_name"])){
 			$host_id = getMyHostID($_GET["host_name"]);
-			if (!isset($lcaHostByName["LcaHost"] [$_GET["host_name"]]) && !$is_admin)
-				$LCA_error = 1;
 			$host_name = $_GET["host_name"];
 		} else
-			$host_name = NULL;
+			$host_name = "";
 		
-		if ($LCA_error)
-			require_once("./alt_error.php");
-		else {
-		
-			$data = array("host_id" => getMyHostID($host_name));
+		$data = array();
+		if (isset($host_id))
+			$data = array("host_id" => $host_id);		
+			
 				
 			/*
 			 * Database retrieve information for differents elements list we need on the page
 			 */
 			$hosts = array(""=>"");
-			$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
+			$query = "SELECT host_id, host_name " .
+					"FROM `host` " .
+					"WHERE host_register = '1' " .
+					"AND host_activate = '1'" .
+					$oreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
+					"ORDER BY host_name";
+			$DBRESULT =& $pearDB->query($query);
 			if (PEAR::isError($DBRESULT)) 
 				print "AddHostComment - Rq 1 Mysql Error : ".$DBRESULT->getMessage();
 			while ($host =& $DBRESULT->fetchRow()){
-				if (!$host["host_name"])
-					$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-				if (isset($lcaHostByName["LcaHost"][$host["host_name"]])  || $is_admin)
-					$hosts[$host["host_id"]]= $host["host_name"];
+				$hosts[$host["host_id"]]= $host["host_name"];
 			}
 			$DBRESULT->free();
 		
@@ -131,7 +119,4 @@
 				$tpl->display("AddHostComment.ihtml");
 		    }
 		}
-	} else {
-		require_once("./alt_error.php");
-	}
 ?>

@@ -27,26 +27,6 @@
 	$centreonGMT->getMyGMTFromSession(session_id());
 
 	/*
-	 * ACL Actions
-	 */
-	$GroupListofUser = array();
-	$GroupListofUser =  getGroupListofUser($pearDB);
-	
-	$allActions = false;
-	if (count($GroupListofUser) > 0 && isUserAdmin($pearDB) == 1) {
-		$authorized_actions = array();
-		$authorized_actions = getActionsACLList($GroupListofUser);
-	} else {
-		$allActions = true;
-	}
-
-	/*
-	 * LCA
-	 */
-	if (!$is_admin)
-		$lcaHostByName = getLcaHostByName($pearDB);
-
-	/*
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
@@ -68,13 +48,18 @@
 	$tab_comments_svc = array();
 
 	$en = array("0" => _("No"), "1" => _("Yes"));
-		
+	
+	$acl_host_list = $oreon->user->access->getHostsString("NAME", $pearDBndo);		
 	/*
 	 * Hosts Comments
 	 */
 	$rq2 =	" SELECT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-			" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS  NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.entry_time";
+			"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+			"WHERE obj.name1 IS NOT NULL " .
+			"AND obj.name2 IS NULL " .
+			"AND obj.object_id = cmt.object_id " .
+			$oreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
+			"AND cmt.expires = 0 ORDER BY cmt.comment_time";
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
@@ -88,9 +73,24 @@
 	/*
 	 * Service Comments
 	 */
-	$rq2 =	" SELECT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-			" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-			" WHERE obj.name1 IS NOT NULL AND obj.name2 IS NOT NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.entry_time";
+	if ($is_admin) {
+		$rq2 =	"SELECT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+				"WHERE obj.name1 IS NOT NULL " .
+				"AND obj.name2 IS NOT NULL " .			
+				"AND obj.object_id = cmt.object_id " .
+				"AND cmt.expires = 0 ORDER BY cmt.entry_time";
+	}
+	else {
+		$rq2 =	"SELECT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj, centreon_acl " .
+				"WHERE obj.name1 IS NOT NULL " .
+				"AND obj.name2 IS NOT NULL " .			
+				"AND obj.object_id = cmt.object_id " .
+				"AND centreon_acl.host_name = obj.name1 " .
+				"AND centreon_acl.service_description = obj.name2 " .
+				"AND cmt.expires = 0 ORDER BY cmt.entry_time";
+	}
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
@@ -101,24 +101,6 @@
 	}
 	unset($data);
 
-	if (!$is_admin) {
-		
-		$tab_comments_host2 = array();
-		for ($n = 0, $i = 0; $i < count($tab_comments_host); $i++) {
-			if (isset($lcaHostByName["LcaHost"][$tab_comments_host[$i]["host_name"]]))
-				$tab_comments_host2[$n++] = $tab_comments_host[$i];
-		}
-		
-		$tab_comments_svc2 = array();
-		for($n = 0, $i = 0; $i < count($tab_comments_svc); $i++) {
-			if (isset($lcaHostByName["LcaHost"][$tab_comments_svc[$i]["host_name"]]))
-				$tab_comments_svc2[$n++] = $tab_comments_svc[$i];
-		}
-
-		$tab_comments_host = $tab_comments_host2;
-		$tab_comments_svc = $tab_comments_svc2;
-	}
-
 	/*
 	 * Element we need when we reload the page
 	 */
@@ -126,17 +108,12 @@
 	$tab = array ("p" => $p);
 	$form->setDefaults($tab);
 	
-	if(isset($authorized_actions) && $allActions == false){		
-		foreach($authorized_actions as $action_name) {
-			if ($action_name == "host_comment") 	
-				$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-			if ($action_name == "service_comment") 
-				$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-		}
-	} else {
+	
+	if ($oreon->user->access->checkAction("host_comment")) 	
 		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-		$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));		
-	}
+	if ($oreon->user->access->checkAction("service_comment"))
+		$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+		
 	
 	$tpl->assign("p", $p);
 	$tpl->assign("tab_comments_host", $tab_comments_host);

@@ -45,13 +45,15 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");	
 	include_once($centreon_path . "www/class/other.class.php");
-	include_once $centreon_path . "www/class/centreonGMT.class.php";
+	include_once($centreon_path . "www/class/centreonGMT.class.php");
+	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");
 	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
+	
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
@@ -62,6 +64,8 @@
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
+		else
+			$userID = $session['user_id'];			
 	} else
 		get_error('need session identifiant !');
 
@@ -93,21 +97,14 @@
 	(isset($_GET["p"]) 			&& !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 	(isset($_GET["nc"]) 		&& !check_injection($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";
 
-	/* LCA */
-	// check is admin
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$user =& $res1->fetchRow();
-	$user_id = $user["user_id"];
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$admin =& $res2->fetchRow();
+	/* ACL */
 	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
-
-	if (!$is_admin){
-		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
-	}
+	$res1 =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_id = '".$userID."' AND contact_admin ='1'");
+	while ($row =& $res1->fetchRow())
+		$is_admin = 1;
+	$access = new CentreonACL($userID, $is_admin);	
+	$lcaSTR = $access->getHostsString("NAME", $pearDBndo);
+	
 	
 	/* security end*/
 
@@ -182,10 +179,8 @@
 			" WHERE no.object_id = nss.service_object_id".
 			" AND (no.name1 not like '_Module_%'".
 			" OR no.name1 LIKE '_Module_Meta')".
-			" AND no.is_active = '1' AND objecttype_id = '2' AND `nss`.`active_checks_enabled` = '1'";
-
-	if (!$is_admin)
-		$rq .= " AND no.name1 IN (".$lcaSTR." )";
+			" AND no.is_active = '1' AND objecttype_id = '2' AND `nss`.`active_checks_enabled` = '1'";	
+	$rq .= $access->queryBuilder("AND", "no.name1", $lcaSTR);
 	
 	if ($o == "meta")
 		$rq .= " AND no.name1 = '_Module_Meta'";
