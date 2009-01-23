@@ -258,7 +258,7 @@
 								 * Notifications
 								 */
 								if (!$service["timeperiod_tp_id2"])
-									$service["timeperiod_tp_id2"] = $service["timeperiod_tp_id"] = getMyServiceField($service["service_id"], "timeperiod_tp_id");
+									$service["timeperiod_tp_id2"] = getMyServiceField($service["service_id"], "timeperiod_tp_id2");
 								$strTMP .= print_line("notification_period", $timeperiods[$service["timeperiod_tp_id2"]]."_GMT".$gmt);
 
 								if ($service["service_notification_interval"] != NULL) 
