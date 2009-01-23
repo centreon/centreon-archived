@@ -38,6 +38,7 @@ class Oreon	{
 	var $CentreonLogAction;
 	var $svc_svc_search;
 	var $svc_host_search;
+	var $poller;
   
 	function Oreon($user = NULL, $pages = array())	{
 		global $pearDB;
@@ -71,6 +72,11 @@ class Oreon	{
 		 * Create LogAction object
 		 */
 		$this->CentreonLogAction = new CentreonLogAction($user);
+		
+		/*
+		 * Init Poller id
+		 */
+		$this->poller = 0;
 	}
 	
 	
