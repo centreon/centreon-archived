@@ -29,11 +29,23 @@
 	else
 		$search = NULL;
 	
+	/*
+	 * Get Poller -> used for poller section in host display list
+	 */
 	if (isset($_POST["poller"]))
 		$poller = $_POST["poller"];
+	else if (isset($_GET["poller"]))
+		$poller = $_GET["poller"];
+	else if (isset($oreon->poller) && $oreon->poller)
+		$poller = $oreon->poller;
 	else
 		$poller = 0;
-
+	
+	/*
+	 * set Poller id
+	 */	
+	$oreon->poller = $poller;
+	
 	/*
 	 * Search active
 	 */	
