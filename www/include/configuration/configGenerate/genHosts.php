@@ -202,7 +202,7 @@
 				 
 				 
 				if ($host["host_register"] == 1) {
-					if ((!isset($host["timeperiod_tp_id"]) || $host["host_location"] != 0)) {
+					if ((!isset($host["timeperiod_tp_id"]) && $host["host_location"] != 0)) {
 						$host["timeperiod_tp_id"] = getMyHostField($host["host_id"], "timeperiod_tp_id");
 					}
 				} 
@@ -285,8 +285,11 @@
 				/*
 				 * Timeperiod name
 				 */
-				if ($host["host_register"] == 1 && (!$host["timeperiod_tp_id2"] || $host["host_location"] != 0))
-					$host["timeperiod_tp_id2"] = getMyHostField($host["host_id"], "timeperiod_tp_id2");
+				if ($host["host_register"] == 1) {
+					if ((!isset($host["timeperiod_tp_id2"]) && $host["host_location"] != 0)) {
+						$host["timeperiod_tp_id2"] = getMyHostField($host["host_id"], "timeperiod_tp_id2");
+					}
+				} 
 				if ($host["timeperiod_tp_id2"])
 					$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location_tp"] : ""));
 			
