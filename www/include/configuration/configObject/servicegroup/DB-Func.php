@@ -20,8 +20,7 @@
 		exit ();
 	
 	function testServiceGroupExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('sg_id');
@@ -107,22 +106,7 @@
 						print $DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(sg_id)"]))	{
-						/*
-						 *  Update LCA
-						 */
-						if (!$is_admin){
-							$group_list = getGroupListofUser($pearDB);
-							$resource_list = getResourceACLList($group_list);
-							if (count($resource_list)){
-								foreach ($resource_list as $res_id)	{			
-									$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_sg_relations` (acl_res_id, sg_id) VALUES ('".$res_id."', '".$maxId["MAX(sg_id)"]."')");
-									if (PEAR::isError($DBRESULT3))
-										print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-								}
-								unset($resource_list);
-							}
-						}
-
+						
 						$DBRESULT->free();
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
@@ -158,7 +142,7 @@
 	}
 		
 	function insertServiceGroup($ret = array())	{
-		global $form, $pearDB, $oreon, $is_admin;
+		global $form, $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO servicegroup (sg_name, sg_alias, sg_comment, sg_activate) ";
@@ -184,31 +168,14 @@
 		if (isset($ret["sg_hgServices"]))
 			$fields["sg_hgServices"] = implode(",", $ret["sg_hgServices"]);
 		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id["MAX(sg_id)"], htmlentities($ret["sg_name"], ENT_QUOTES), "a", $fields);
-		
-		/*
-		 *  Update LCA
-		 */
-		if (!$is_admin){
-			$group_list = getGroupListofUser($pearDB);
-			$resource_list = getResourceACLList($group_list);
-			if (count($resource_list)){
-				foreach ($resource_list as $res_id)	{			
-					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_sg_relations` (acl_res_id, sg_id) VALUES ('".$res_id."', '".$sg_id["MAX(sg_id)"]."')");
-					if (PEAR::isError($DBRESULT3))
-						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-				}
-				unset($resource_list);
-			}
-		}
-
 		$DBRESULT->free();
 		return ($sg_id["MAX(sg_id)"]);
 	}
 	
 	function updateServiceGroup($sg_id)	{
-		if (!$sg_id) return;
-		global $form;
-		global $pearDB, $oreon;
+		if (!$sg_id) 
+			return;
+		global $form, $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE servicegroup SET ";
@@ -231,7 +198,8 @@
 	}
 	
 	function updateServiceGroupServices($sg_id, $ret = array())	{
-		if (!$sg_id) return;
+		if (!$sg_id) 
+			return;
 		global $pearDB, $form;
 		$rq  = 	"DELETE FROM servicegroup_relation ";
 		$rq .= 	"WHERE servicegroup_sg_id = '".$sg_id."'";
@@ -239,7 +207,7 @@
 		if (PEAR::isError($DBRESULT)) 
 			print $DBRESULT->getDebugInfo()."<br />";
 		isset($ret["sg_hServices"]) ? $ret = $ret["sg_hServices"] : $ret = $form->getSubmitValue("sg_hServices");
-		for($i = 0; $i < count($ret); $i++)	{
+		for ($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]) && $ret[$i]){
 				$t = split("\-", $ret[$i]);
 				$rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
@@ -249,7 +217,7 @@
 			}
 		}
 		isset($ret["sg_hgServices"]) ? $ret = $ret["sg_hgServices"] : $ret = $form->getSubmitValue("sg_hgServices");
-		for($i = 0; $i < count($ret); $i++)	{
+		for ($i = 0; $i < count($ret); $i++)	{
 			$t = split("\-", $ret[$i]);
 			$rq = "INSERT INTO servicegroup_relation (hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
 			$DBRESULT =& $pearDB->query($rq);

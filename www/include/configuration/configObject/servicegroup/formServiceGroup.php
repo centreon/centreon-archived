@@ -15,13 +15,8 @@
  * For information : contact@centreon.com
  */
  
-
-	if (!$is_admin){
-		$lcaHost = getLCAHostByID($pearDB);
-		$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
-		$lcaSGStr = getLCASGStr(getLCASG($pearDB));
-		$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
-	}
+	if (!isset($oreon))
+		exit();
 		
 	#
 	## Database retrieve information for ServiceGroup
@@ -29,10 +24,7 @@
 	
 	$sg = array();
 	if (($o == "c" || $o == "w") && $sg_id)	{	
-		if ($is_admin)		
-			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
-		else
-			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' AND sg_id IN (".$lcaSGStr.") LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
@@ -43,12 +35,13 @@
 		$DBRESULT =& $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL ORDER BY service_service_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $host =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $host =& $DBRESULT->fetchRow(); $i++)
 			$sg["sg_hServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
+		
 		$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $services =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $services =& $DBRESULT->fetchRow(); $i++)
 			$sg["sg_hgServices"][$i] = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
 		$DBRESULT->free();
 	}
@@ -59,41 +52,27 @@
 	$hServices = array();
 	$hgServices = array();
 	$initName = NULL;
-	if ($is_admin)		
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' ORDER BY host_name");
-	else
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
+	
+	$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($host =& $DBRESULT->fetchRow())	{
+	while ($host =& $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($host["host_id"]);
 		foreach ($services as $key => $s)
 			$hServices[$host["host_id"]."-".$key] = $host["host_name"]."&nbsp;-&nbsp;".$s;
+		unset($services);
 	}
 	$DBRESULT->free();
 
-	# Host Group LCA
-	if (!$is_admin)
-		$lcaHGStr ? $lcaHGStr = $lcaHGStr : $lcaHGStr =  '\'\'';
-	if ($is_admin)		
-		$DBRESULT =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
-								"FROM host_service_relation hsr, service sv, hostgroup hg " .
-								"WHERE sv.service_register = '1' " .
-								"AND hsr.service_service_id = sv.service_id " .
-								"AND hg.hg_id = hsr.hostgroup_hg_id " .
-								"ORDER BY hg.hg_name, sv.service_description");
-	else
-		$DBRESULT =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
-								"FROM host_service_relation hsr, service sv, hostgroup hg " .
-								"WHERE sv.service_register = '1' " .
-								"AND hsr.service_service_id = sv.service_id " .
-								"AND hg.hg_id = hsr.hostgroup_hg_id " .
-								"AND hg.hg_id IN (".$lcaHGStr.") " .
-								"ORDER BY hg.hg_name, sv.service_description");
-	
+	$DBRESULT =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
+									"FROM host_service_relation hsr, service sv, hostgroup hg " .
+									"WHERE sv.service_register = '1' " .
+									"AND hsr.service_service_id = sv.service_id " .
+									"AND hg.hg_id = hsr.hostgroup_hg_id " .
+									"ORDER BY hg.hg_name, sv.service_description");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($elem =& $DBRESULT->fetchRow())	{
+	while ($elem =& $DBRESULT->fetchRow())	{
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])
 			$elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
@@ -104,6 +83,7 @@
 		$hgServices[$elem["hg_id"] . '-'.$elem["service_id"]] = $elem["hg_name"]."&nbsp;&nbsp;&nbsp;&nbsp;".$elem["service_description"];
 	}
 	$DBRESULT->free();
+	
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -111,7 +91,7 @@
 	# Var information to format the element
 	#
 	$attrsText 		= array("size"=>"30");
-	$attrsAdvSelect = array("style" => "width: 250px; height: 150px;");
+	$attrsAdvSelect = array("style" => "width: 250px; height: 250px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
@@ -227,6 +207,7 @@
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
+	
 	if ($valid && $action["action"]["action"])
 		require_once($path."listServiceGroup.php");
 	else	{

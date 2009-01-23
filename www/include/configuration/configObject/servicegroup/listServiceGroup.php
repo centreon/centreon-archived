@@ -26,24 +26,11 @@
 	 */
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
-	
-	if (!$is_admin){
-		$lcaHost 	= getLCAHostByID($pearDB);
-		$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
-		$lcaSGStr 	= getLCASGStr(getLCASG($pearDB));
-		$lcaHGStr 	= getLCAHGStr($lcaHost["LcaHostGroup"]);
-	}
 
 	if (isset($search)){
-		if ($is_admin)		
-			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
-		else
-			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sg_id IN (".$lcaSGStr.")");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 	} else {
-		if ($is_admin)		
-			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
-		else
-			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_id IN (".$lcaSGStr.")");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
 	}
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -65,17 +52,10 @@
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
-	!$is_admin ? $lcaStr = " AND sg_id IN (".$lcaSGStr.") " : $lcaStr = ""; 
 	if ($search) {
-		if ($is_admin)
-			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE (sg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR sg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
-		else
-			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE (sg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR sg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND sg_id IN (".$lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE (sg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR sg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		if ($is_admin)
-			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
-		else
-			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_id IN (".$lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 	}
 
 	$DBRESULT = & $pearDB->query($rq);
@@ -102,14 +82,16 @@
 		else
 			$moptions .= "<a href='main.php?p=".$p."&sg_id=".$sg['sg_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$sg['sg_id']."]'></input>";
-		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$sg["sg_name"],
-						"RowMenu_link"=>"?p=".$p."&o=c&sg_id=".$sg['sg_id'],
-						"RowMenu_desc"=>$sg["sg_alias"],
-						"RowMenu_status"=>$sg["sg_activate"] ? _("Enabled") : _("Disabled"),
-						"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
+								"RowMenu_select"=>$selectedElements->toHtml(),
+								"RowMenu_name"=>$sg["sg_name"],
+								"RowMenu_link"=>"?p=".$p."&o=c&sg_id=".$sg['sg_id'],
+								"RowMenu_desc"=>$sg["sg_alias"],
+								"RowMenu_status"=>$sg["sg_activate"] ? _("Enabled") : _("Disabled"),
+								"RowMenu_options"=>$moptions);
+								
+		$style != "two" ? $style = "two" : $style = "one";	
+	}
 	$tpl->assign("elemArr", $elemArr);
 	
 	/*
