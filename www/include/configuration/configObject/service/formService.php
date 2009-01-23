@@ -43,7 +43,7 @@
 		$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($parent = $DBRESULT->fetchRow())	{
+		while ($parent =& $DBRESULT->fetchRow())	{
 			if ($parent["host_host_id"])
 				$service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
 			else if ($parent["hostgroup_hg_id"])
@@ -65,7 +65,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
 		
@@ -73,7 +73,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifC =& $DBRESULT->fetchRow(); $i++)
 			$service["service_cs"][$i] = $notifC["contact_id"];
 		$DBRESULT->free();
 				
@@ -81,7 +81,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $sg =& $DBRESULT->fetchRow(); $i++)
 			$service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
 		$DBRESULT->free();
 		
@@ -89,7 +89,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $trap =& $DBRESULT->fetchRow(); $i++)
 			$service["service_traps"][$i] = $trap["traps_id"];
 		$DBRESULT->free();
 		
@@ -97,7 +97,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for ($i = 0; $service_category = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $service_category =& $DBRESULT->fetchRow(); $i++)
 			$service["service_categories"][$i] = $service_category["sc_id"];
 		$DBRESULT->free();
 	}
@@ -106,18 +106,15 @@
 	#
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
-	//if ($is_admin)
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	//else
-	//	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHostStr.") AND host_register = '1' ORDER BY host_name");		
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($host = $DBRESULT->fetchRow())
+	while ($host =& $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	
 	# Service Templates comes from DB -> Store in $svTpls Array
-	$svTpls = array(NULL=>NULL);
+	$svTpls = array(NULL => NULL);
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -137,7 +134,7 @@
 	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($hg = $DBRESULT->fetchRow())
+	while ($hg =& $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
 
@@ -146,7 +143,7 @@
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($tp = $DBRESULT->fetchRow())
+	while ($tp =& $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
 
@@ -155,7 +152,7 @@
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($checkCmd = $DBRESULT->fetchRow())
+	while ($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 
@@ -164,7 +161,7 @@
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($checkCmd = $DBRESULT->fetchRow())
+	while ($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 
@@ -173,7 +170,7 @@
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($notifCg = $DBRESULT->fetchRow())
+	while ($notifCg =& $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
 
@@ -182,13 +179,12 @@
 	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($notifC = $DBRESULT->fetchRow())
+	while ($notifC =& $DBRESULT->fetchRow())
 		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
 	$DBRESULT->free();
 
 	# Service Groups comes from DB -> Store in $sgs Array
 	$sgs = array();
-//	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name");
 	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -201,7 +197,7 @@
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($graphTpl = $DBRESULT->fetchRow())
+	while ($graphTpl =& $DBRESULT->fetchRow())
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
 
@@ -210,7 +206,7 @@
 	$DBRESULT =& $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($service_categorie = $DBRESULT->fetchRow())
+	while ($service_categorie =& $DBRESULT->fetchRow())
 		$service_categories[$service_categorie["sc_id"]] = $service_categorie["sc_name"];
 	$DBRESULT->free();
 
@@ -219,7 +215,7 @@
 	$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while ($trap = $DBRESULT->fetchRow())
+	while ($trap =& $DBRESULT->fetchRow())
 		$traps[$trap["traps_id"]] = $trap["traps_name"];
 	$DBRESULT->free();
 	
@@ -233,8 +229,7 @@
 	 */
 	$j = 0;		
 	$DBRESULT =& $pearDB->query("SELECT svc_macro_id, svc_macro_name, svc_macro_value, svc_svc_id FROM on_demand_macro_service WHERE svc_svc_id = '". $service_id ."' ORDER BY `svc_macro_id`");
-	while($od_macro = $DBRESULT->fetchRow())
-	{
+	while($od_macro = $DBRESULT->fetchRow()) {
 		$od_macro_id[$j] = $od_macro["svc_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_SERVICE", "", $od_macro["svc_macro_name"]);
 		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);		

@@ -779,8 +779,7 @@
 			$already_stored = array();
 			$DBRESULT =& $pearDB->query("DELETE FROM `on_demand_macro_service` WHERE `svc_svc_id`='".$service_id."'");
 			
-	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
-	 		{ 			
+	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++) { 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
 	 			if (isset($_POST[$macInput]) && !isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
@@ -863,7 +862,8 @@
 	}
 	
 	function updateService_MC($service_id = null)	{
-		if (!$service_id) return;
+		if (!$service_id) 
+			return;
 		global $form;
 		global $pearDB, $oreon;
 		$ret = array();
@@ -1340,7 +1340,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$traps = array();
-		while($arr =& $DBRESULT->fetchRow())
+		while ($arr =& $DBRESULT->fetchRow())
 			$traps[$arr["traps_id"]] = $arr["traps_id"];
 		$ret = $form->getSubmitValue("service_traps");
 		for($i = 0; $i < count($ret); $i++)	{

@@ -88,10 +88,7 @@
 		$searchS = str_replace('/', "#S#", $searchS);
 		$searchS = str_replace('\\', "#BS#", $searchS);
 		if ($search_type_service && !$search_type_host) {
-			if ($is_admin)
-				$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')");
-			else
-				$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')");	
+			$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($service = $DBRESULT->fetchRow()){
@@ -102,10 +99,7 @@
 				$rows++;
 			}
 		} else if (!$search_type_service && $search_type_host)	{
-			if ($is_admin)
-				$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
-			else
-				$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) ";				
+			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
 			$DBRESULT =& $pearDB->query($locale_query);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -115,10 +109,7 @@
 				$rows++;				
 			}
 		} else {
-			if ($is_admin)
-				$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
-			else
-				$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) ";				
+			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
 			$DBRESULT =& $pearDB->query($locale_query);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -129,10 +120,7 @@
 			}
 		}
     } else {
-    	if ($is_admin)
-			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL");
-		else
-			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) AND hsr.hostgroup_hg_id IS NULL");
+    	$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rows = $DBRESULT->numRows();
@@ -146,8 +134,9 @@
 	
 	include("./include/common/checkPagination.php");
 
-	
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Host"));
 	$tpl->assign("headerMenu_desc", _("Service"));
@@ -163,7 +152,6 @@
 	 * Host/service list
 	 */
 	 
-	$is_admin ? $strLCA = "" : $strLCA = "AND host.host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) "; 
 	if ($searchH || $searchS)
 		$rq = 	"SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
 				"WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, " .
@@ -175,7 +163,7 @@
 						"AND host.host_id IN (".($tmp2 ? $tmp2 : 'NULL').") " .
 						"AND sv.service_register = '1' " .
 						"AND hsr.service_service_id = sv.service_id " .
-						"AND host.host_id = hsr.host_host_id $strLCA " .
+						"AND host.host_id = hsr.host_host_id " .
 						"AND host.host_register = '1' " .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else
@@ -187,7 +175,7 @@
 				"FROM service sv, host, host_service_relation hsr " .
 				"WHERE sv.service_register = '1' " .
 						"AND hsr.service_service_id = sv.service_id " .
-						"AND host.host_id = hsr.host_host_id $strLCA " .
+						"AND host.host_id = hsr.host_host_id " .
 						"AND host.host_register = '1' " .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	
@@ -326,7 +314,6 @@
 	
 	$tpl->assign("searchH", (isset($searchH) ? $searchH : NULL));
 	$tpl->assign("searchS", (isset($searchS) ? $searchS : NULL));
-	
 	 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	

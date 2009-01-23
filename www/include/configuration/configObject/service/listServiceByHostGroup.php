@@ -68,27 +68,18 @@
 		$search = str_replace('/', "#S#", $search);
 		$search = str_replace('\\', "#BS#", $search);
 	
-		if ($is_admin) {
-			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND (sv.service_description LIKE '%$search%')");
-		} else {
-			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") AND (sv.service_description LIKE '%$search%')");
-		}
-		
+		$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND (sv.service_description LIKE '%$search%')");
 		if (PEAR::isError($DBRESULT)) {
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 		
-		while ($service = $DBRESULT->fetchRow()){
+		while ($service =& $DBRESULT->fetchRow()){
 			$rows++;
 			$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
 		}
 		
 	} else	{
-		if ($is_admin) {
-			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
-		} else {
-			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
-		}
+		$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		if (PEAR::isError($DBRESULT)) {
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
@@ -117,11 +108,10 @@
 	/*
 	 * HostGroup/service list
 	 */
-	$is_admin ? $strLca = "" : $strLca = " AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") ";
 	if ($search) {
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $strLca ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $strLca ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	}
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
@@ -148,7 +138,7 @@
 	$search = str_replace('#S#', "/", $search);
 	$search = str_replace('#BS#', "\\", $search);
 	
-	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
+	for ($i = 0; $service =& $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$fgHostgroup["value"] != $service["hg_name"] ? ($fgHostgroup["print"] = true && $fgHostgroup["value"] = $service["hg_name"]) : $fgHostgroup["print"] = false;
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");
@@ -189,17 +179,18 @@
 		
 		$tplStr = decodeObjectNames($tplStr);
 		
-		$elemArr[$i] = array("MenuClass"=>"list_".($service["nbr"]>1 ? "three" : $style),
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$service["hg_name"],
-						"RowMenu_link"=>"?p=60102&o=c&hg_id=".$service['hg_id'],
-						"RowMenu_link2"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
-						"RowMenu_parent"=>$tplStr,
-						"RowMenu_retry"=> $normal_check_interval . " min / ".$retry_check_interval." min",
-						"RowMenu_attempts"=>getMyServiceField($service['service_id'], "service_max_check_attempts"),
-						"RowMenu_desc"=>$service["service_description"],
-						"RowMenu_status"=>$service["service_activate"] ? _("Enabled") : _("Disabled"),
-						"RowMenu_options"=>$moptions);
+		$elemArr[$i] = array(	"MenuClass"=>"list_".($service["nbr"]>1 ? "three" : $style),
+								"RowMenu_select"=>$selectedElements->toHtml(),
+								"RowMenu_name"=>$service["hg_name"],
+								"RowMenu_link"=>"?p=60102&o=c&hg_id=".$service['hg_id'],
+								"RowMenu_link2"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
+								"RowMenu_parent"=>$tplStr,
+								"RowMenu_retry"=> $normal_check_interval . " min / ".$retry_check_interval." min",
+								"RowMenu_attempts"=>getMyServiceField($service['service_id'], "service_max_check_attempts"),
+								"RowMenu_desc"=>$service["service_description"],
+								"RowMenu_status"=>$service["service_activate"] ? _("Enabled") : _("Disabled"),
+								"RowMenu_options"=>$moptions);
+								
 		$fgHostgroup["print"] ? NULL : $elemArr[$i]["RowMenu_name"] = NULL;
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);

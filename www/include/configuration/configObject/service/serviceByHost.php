@@ -29,18 +29,6 @@
 	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
-	if (!$is_admin){
-		$lcaHost = getLCAHostByID($pearDB);
-		$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);		
-		$lcaServiceGroupStr = getLCASGStr($lcaHost["LcaHost"]);
-		//$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
-		$lcaSvcStr = getLCASVCStr($lcaHost);
-		if ($lcaHostStr == "''")
-			$lcaHostStr = 'NULL';
-		if ($lcaSvcStr == "")
-			$lcaSvcStr = 'NULL';
-	}
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
