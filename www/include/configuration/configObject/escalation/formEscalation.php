@@ -97,51 +97,27 @@
 	
 	# Host Groups comes from DB -> Store in $hgs Array
 	$hgs = array();
-	if ($is_admin)	{	
-		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while($hg =& $DBRESULT->fetchRow())
-			$hgs[$hg["hg_id"]] = $hg["hg_name"];
-		$DBRESULT->free();
-	} else {
-		if (isset($lcaHGStr) && strlen($lcaHGStr)){
-			$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHGStr.") ORDER BY hg_name");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			while($hg =& $DBRESULT->fetchRow())
-				$hgs[$hg["hg_id"]] = $hg["hg_name"];
-			$DBRESULT->free();
-		}
-	}
+	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while($hg =& $DBRESULT->fetchRow())
+		$hgs[$hg["hg_id"]] = $hg["hg_name"];
+	$DBRESULT->free();
+
 	#
 	# Service Groups comes from DB -> Store in $sgs Array
 	$sgs = array();
-	if ($is_admin){	
-		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while($sg =& $DBRESULT->fetchRow())
-			$sgs[$sg["sg_id"]] = $sg["sg_name"];
-		$DBRESULT->free();
-	} else {
-		if (isset($lcaSGStr) && strlen($lcaSGStr)){
-			$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaSGStr.") ORDER BY sg_name");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			while($sg =& $DBRESULT->fetchRow())
-				$sgs[$sg["sg_id"]] = $sg["sg_name"];
-			$DBRESULT->free();
-		}
-	}
+	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while($sg =& $DBRESULT->fetchRow())
+		$sgs[$sg["sg_id"]] = $sg["sg_name"];
+	$DBRESULT->free();
 
 	#
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
-	if ($is_admin)		
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	else 
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($host =& $DBRESULT->fetchRow())
@@ -150,13 +126,10 @@
 	#
 	# Services comes from DB -> Store in $hServices Array	
 	$hServices = array();
-	if ($is_admin)		
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	else
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($elem =& $DBRESULT->fetchRow())	{
+	while ($elem =& $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key=>$index)	{
 			$index = str_replace('#S#', "/", $index);
@@ -165,31 +138,34 @@
 		}
 	}
 	$DBRESULT->free();
+	
 	# Meta Services comes from DB -> Store in $metas Array
 	$metas = array();
 	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($meta =& $DBRESULT->fetchRow())
+	while ($meta =& $DBRESULT->fetchRow())
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
 	$DBRESULT->free();
+	
 	# Contact Groups comes from DB -> Store in $cgs Array
 	$cgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($cg =& $DBRESULT->fetchRow())
+	while ($cg =& $DBRESULT->fetchRow())
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$DBRESULT->free();
-	#
+	
 	# TimePeriods comes from DB -> Store in $tps Array
 	$tps = array();
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($tp =& $DBRESULT->fetchRow())
+	while ($tp =& $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
+	
 	#
 	# End of "database-retrieved" information
 	##########################################################

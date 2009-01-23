@@ -16,7 +16,7 @@
  */
  
 
-if (!isset($oreon))
+	if (!isset($oreon))
 		exit();
 	#
 	## Database retrieve information for Host
