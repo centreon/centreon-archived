@@ -24,9 +24,7 @@
 
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
-		!$is_admin ? $restriction = "AND host_id IN (".$lcaHoststr.") " : $restriction = "";
-		$restriction = "";
-		$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id $restriction LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
@@ -55,7 +53,7 @@
 		 * Set Contact Group
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
-		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 			$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
 		
@@ -63,7 +61,7 @@
 		 * Set Contacts
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '".$host_id."'");
-		for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifC =& $DBRESULT->fetchRow(); $i++)
 			$host["host_cs"][$i] = $notifC["contact_id"];
 		$DBRESULT->free();
 		
@@ -71,7 +69,7 @@
 		 * Set Host Parents
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
-		for ($i = 0; $parent = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $parent =& $DBRESULT->fetchRow(); $i++)
 			$host["host_parents"][$i] = $parent["host_parent_hp_id"];
 		$DBRESULT->free();
 		
@@ -79,7 +77,7 @@
 		 * Set Host Childs
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$host_id."'");
-		for ($i = 0; $child = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $child =& $DBRESULT->fetchRow(); $i++)
 			$host["host_childs"][$i] = $child["host_host_id"];
 		$DBRESULT->free();
 		
@@ -87,7 +85,7 @@
 		 * Set Host Group Parents
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
-		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $hg =& $DBRESULT->fetchRow(); $i++)
 			$host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
 		
@@ -95,7 +93,7 @@
 		 * Set Host and Nagios Server Relation
 		 */
 		$DBRESULT =& $pearDB->query("SELECT `nagios_server_id` FROM `ns_host_relation` WHERE `host_host_id` = '".$host_id."'");
-		for (($o != "mc") ? $i = 0 : $i = 1; $ns = $DBRESULT->fetchRow(); $i++)
+		for (($o != "mc") ? $i = 0 : $i = 1; $ns =& $DBRESULT->fetchRow(); $i++)
 			$host["nagios_server_id"][$i] = $ns["nagios_server_id"];
 		$DBRESULT->free();
 		unset($ns);
@@ -109,7 +107,7 @@
 	$hTpls = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
 	$nbMaxTemplates = 0;
-	while($hTpl = $DBRESULT->fetchRow())	{
+	while ($hTpl =& $DBRESULT->fetchRow())	{
 		if (!$hTpl["host_name"])
 			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";		
 		$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
@@ -122,7 +120,7 @@
 	 */
 	$tps = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	while($tp = $DBRESULT->fetchRow())
+	while ($tp =& $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
 	
@@ -131,7 +129,7 @@
 	 */
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-	while($checkCmd = $DBRESULT->fetchRow())
+	while($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 	
@@ -140,7 +138,7 @@
 	 */
 	$checkCmdEvent = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
-	while($checkCmd = $DBRESULT->fetchRow())
+	while ($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 	
@@ -149,7 +147,7 @@
 	 */
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while($notifCg = $DBRESULT->fetchRow())
+	while ($notifCg =& $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
 	
@@ -158,7 +156,7 @@
 	 */
 	$notifCs = array();
 	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
-	while($notifC = $DBRESULT->fetchRow())
+	while ($notifC =& $DBRESULT->fetchRow())
 		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
 	$DBRESULT->free();
 	
@@ -171,7 +169,7 @@
 	if ($o == "mc")
 		$nsServers[NULL] = NULL;
 	$DBRESULT =& $pearDB->query("SELECT id, name FROM nagios_server ORDER BY name");
-	while ($nsServer = $DBRESULT->fetchRow())
+	while ($nsServer =& $DBRESULT->fetchRow())
 		$nsServers[$nsServer["id"]] = $nsServer["name"];
 	$DBRESULT->free();
 	
@@ -179,12 +177,8 @@
 	 * Host Groups comes from DB -> Store in $hgs Array
 	 */
 	$hgs = array();
-//	if ($oreon->user->admin || !HadUserLca($pearDB))		
 		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-/*	else
-		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
-*/
-	while($hg = $DBRESULT->fetchRow())
+	while ($hg = $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
 	
@@ -192,11 +186,8 @@
 	 * Host Parents comes from DB -> Store in $hostPs Array
 	 */
 	$hostPs = array();
-//	if ($oreon->user->admin || !HadUserLca($pearDB))
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
-/*	else
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
-*/	while($hostP = $DBRESULT->fetchRow())	{
+	while ($hostP =& $DBRESULT->fetchRow())	{
 		if (!$hostP["host_name"])
 			$hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"])."'";
 		$hostPs[$hostP["host_id"]] = $hostP["host_name"];
@@ -218,7 +209,7 @@
 	$mTp = array();
 	$k = 0;
 	$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
-	while($multiTp = $DBRESULT->fetchRow()){
+	while ($multiTp =& $DBRESULT->fetchRow()){
 		$mTp[$k] = $multiTp["host_tpl_id"];
 		$k++;
 	}
@@ -229,7 +220,7 @@
 	 */
 	$j = 0;		
 	$DBRESULT =& $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
-	while ($od_macro = $DBRESULT->fetchRow()){
+	while ($od_macro =& $DBRESULT->fetchRow()){
 		$od_macro_id[$j] = $od_macro["host_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
 		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
@@ -589,19 +580,15 @@
 		$form->addElement('header', 'title4', _("Massive Change"));
 
 	$form->addElement('header', 'nagios', _("Nagios"));
-	if ($oreon->user->get_version() >= 2)
-		$form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
+	$form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
-	if ($oreon->user->get_version() >= 2)
-		$form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
+	$form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
 	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('ehi_icon_image',this.form.elements['ehi_icon_image'].value)"));
 	$form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
 	$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("onChange"=>"showLogo('ehi_vrml_image',this.form.elements['ehi_vrml_image'].value)"));
 	$form->addElement('select', 'ehi_statusmap_image', _("Nagios Status Map Image"), $extImgStatusmap, array("onChange"=>"showLogo('ehi_statusmap_image',this.form.elements['ehi_statusmap_image'].value)"));	
 	$form->addElement('text', 'ehi_2d_coords', _("Nagios 2d Coords"), $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', _("Nagios 3d Coords"), $attrsText2);
-
-	
 
 	#
 	## Sort 5 - Macros - Nagios 3

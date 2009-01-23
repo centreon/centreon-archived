@@ -193,22 +193,6 @@
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(host_id)"]))	{
-						
-						/*
-						 *  Update LCA
-						 */
-						if (!$is_admin){
-							$group_list = getGroupListofUser($pearDB);
-							$resource_list = getResourceACLList($group_list);
-							if (count($resource_list)){
-								foreach ($resource_list as $res_id)	{			
-									$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_host_relations` (acl_res_id, host_host_id) VALUES ('".$res_id."', '".$maxId["MAX(host_id)"]."')");
-									if (PEAR::isError($DBRESULT3))
-										print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-								}
-								unset($resource_list);
-							}
-						}
 						#
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
@@ -620,22 +604,6 @@
 		}
 		
 		/*
-		 *  Update LCA
-		 */
-		if (!$is_admin){
-			$group_list = getGroupListofUser($pearDB);
-			$resource_list = getResourceACLList($group_list);
-			if ($ret["host_register"]["host_register"] == 1 && count($resource_list)){
-				foreach ($resource_list as $res_id)	{			
-					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_host_relations` (acl_res_id, host_host_id) VALUES ('".$res_id."', '".$host_id["MAX(host_id)"]."')");
-					if (PEAR::isError($DBRESULT3))
-						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-				}
-				unset($resource_list);
-			}
-		}
-		#
-		/*
 		 *  Logs
 		 */
 		$fields["command_command_id"] = $ret["command_command_id"];
@@ -710,8 +678,10 @@
 	}	
 	
 	function insertHostExtInfos($host_id = null, $ret)	{
-		if (!$host_id) return;
 		global $form, $pearDB;
+		
+		if (!$host_id) 
+			return;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		/*
@@ -776,8 +746,7 @@
 		
 		$hst_list = "";
 		$flag_first = 1;
-		foreach ($host_list as $val)
-	 	{	 		
+		foreach ($host_list as $val) {	 		
 	 		if (isset($val)) {
 		 		if (!$flag_first)
 		 			$hst_list .= ",'" . $val . "'";
