@@ -63,13 +63,10 @@
 	 */
 	
 	$hServices = array();
-	if ($is_admin)
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1'  ORDER BY host_name");
-	else
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($elem =& $DBRESULT->fetchRow())	{
+	while ($elem =& $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key=>$index)	{						
 			$index = str_replace('#S#', "/", $index);

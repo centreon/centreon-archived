@@ -17,13 +17,6 @@
  
 	if (!isset ($oreon))
 		exit ();
-
-	if (!$is_admin){ 
-		$lcaHostByName 	= getLcaHostByName($pearDB);
-		$lcaHostByID 	= getLcaHostByID($pearDB);
-		$lcaHoststr 	= getLCAHostStr($lcaHostByID["LcaHost"]);
-		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
-	}
 	
 	isset($_GET["dep_id"]) ? $cG = $_GET["dep_id"] : $cG = NULL;
 	isset($_POST["dep_id"]) ? $cP = $_POST["dep_id"] : $cP = NULL;

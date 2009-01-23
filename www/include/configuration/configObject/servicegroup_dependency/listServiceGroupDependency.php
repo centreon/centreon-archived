@@ -28,10 +28,7 @@
 	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 	$rq = "SELECT COUNT(*) FROM dependency dep";
-	if ($is_admin)
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id ) > 0";
-	else
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id ) > 0";
 	
 	/*
 	 * Search case
@@ -65,10 +62,7 @@
 	 * Dependcy list
 	 */
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-	if ($is_admin)
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id ) > 0";
-	else
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id ) > 0";
 	
 	/*
 	 * Search Case
@@ -97,12 +91,12 @@
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$dep['dep_id']."]");	
 		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$dep['dep_id']."]'></input>";
-		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>htmlentities($dep["dep_name"]),
-						"RowMenu_link"=>"?p=".$p."&o=c&dep_id=".$dep['dep_id'],
-						"RowMenu_description"=>htmlentities($dep["dep_description"]),
-						"RowMenu_options"=>$moptions);
+		$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
+								"RowMenu_select"=>$selectedElements->toHtml(),
+								"RowMenu_name"=>htmlentities($dep["dep_name"]),
+								"RowMenu_link"=>"?p=".$p."&o=c&dep_id=".$dep['dep_id'],
+								"RowMenu_description"=>htmlentities($dep["dep_description"]),
+								"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
 	

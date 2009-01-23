@@ -28,20 +28,14 @@
 		
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 
-	if ($is_admin){
-		$rq = "SELECT COUNT(*) FROM dependency dep";
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0";
-	}  else  {
-		$rq = "SELECT COUNT(*) FROM dependency dep";
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
-	}
+	$rq = "SELECT COUNT(*) FROM dependency dep";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0";
 	
 	if (isset($search))
 		$rq .= " AND (dep_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$DBRESULT = & $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
@@ -65,13 +59,9 @@
 	/*
 	 * List dependancies
 	 */
-	if ($is_admin){
-		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0";
-	} else {
-		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";	
-	}
+	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0";
+	
 	if ($search)
 		$rq .= " AND (dep_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
@@ -92,16 +82,17 @@
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$dep['dep_id']."]");	
 		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$dep['dep_id']."]'></input>";
-		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>htmlentities($dep["dep_name"]),
-						"RowMenu_link"=>"?p=".$p."&o=c&dep_id=".$dep['dep_id'],
-						"RowMenu_description"=>htmlentities($dep["dep_description"]),
-						"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
+								"RowMenu_select"=>$selectedElements->toHtml(),
+								"RowMenu_name"=>htmlentities($dep["dep_name"]),
+								"RowMenu_link"=>"?p=".$p."&o=c&dep_id=".$dep['dep_id'],
+								"RowMenu_description"=>htmlentities($dep["dep_description"]),
+								"RowMenu_options"=>$moptions);
+		$style != "two" ? $style = "two" : $style = "one";	
+	}
 	$tpl->assign("elemArr", $elemArr);
 	
-	#Different messages we put in the template
+	# Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
 	/*

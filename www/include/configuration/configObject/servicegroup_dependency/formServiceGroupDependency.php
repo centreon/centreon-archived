@@ -42,7 +42,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $sgP =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $sgP =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_sgParents"][$i] = $sgP["servicegroup_sg_id"];
 		$DBRESULT->free();
 		
@@ -50,7 +50,7 @@
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $sgC =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $sgC =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_sgChilds"][$i] = $sgC["servicegroup_sg_id"];
 		$DBRESULT->free();
 	}
@@ -64,13 +64,10 @@
 	  */
 	
 	$sgs = array();
-	if ($is_admin)
-		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-	else
-		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaSGStr.") ORDER BY sg_name");
+	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($sg =& $DBRESULT->fetchRow())
+	while ($sg =& $DBRESULT->fetchRow())
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$DBRESULT->free();
 	
@@ -184,15 +181,13 @@
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
 	    $form->setDefaults($dep);
 		$form->freeze();
-	}
-	# Modify a Dependency information
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
+		# Modify a Dependency information
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($dep);
-	}
-	# Add a Dependency information
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
+		# Add a Dependency information
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -210,10 +205,11 @@
 		$form->freeze();
 		$valid = true;
 	}
+	
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once("listServiceGroupDependency.php");
-	else	{
+	else {
 		/*
 		 * Apply a template definition
 		 */

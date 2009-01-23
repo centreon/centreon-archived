@@ -93,7 +93,8 @@
 						"RowMenu_link"=>"?p=".$p."&o=c&dep_id=".$dep['dep_id'],
 						"RowMenu_description"=>myDecode($dep["dep_description"]),
 						"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$style != "two" ? $style = "two" : $style = "one";	
+	}
 	$tpl->assign("elemArr", $elemArr);
 	
 	/*

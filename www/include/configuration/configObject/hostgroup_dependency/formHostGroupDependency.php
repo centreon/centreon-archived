@@ -61,13 +61,10 @@
 	#
 	# HostGroup comes from DB -> Store in $hgs Array
 	$hgs = array();
-	if ($is_admin)
-		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	else
-		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
+	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($hg =& $DBRESULT->fetchRow())
+	while ($hg =& $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
 	

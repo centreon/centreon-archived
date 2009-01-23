@@ -63,10 +63,7 @@
 	 * Host comes from DB -> Store in $hosts Array
 	 */
 	$hosts = array();
-	if ($is_admin)
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	else
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($host =& $DBRESULT->fetchRow())

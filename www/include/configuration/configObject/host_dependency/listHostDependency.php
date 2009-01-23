@@ -28,14 +28,9 @@
 	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 	
-	if ($is_admin){
-		$rq = "SELECT COUNT(*) FROM dependency dep";
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id ) > 0";
-	} else {
-		$rq = "SELECT COUNT(*) FROM dependency dep";
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
-	}
-	 
+	$rq = "SELECT COUNT(*) FROM dependency dep";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id ) > 0";
+		 
 	if (isset($search))
 		$rq .= " AND (dep_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$DBRESULT = & $pearDB->query($rq);
@@ -60,14 +55,11 @@
 	$tpl->assign("headerMenu_description", _("Description"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
-	#Dependcy list
-	if ($is_admin){
-		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0";
-	} else {
-		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
-	}
+	/*
+	 * Dependcy list
+	 */
+	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0";
 	
 	if ($search)
 		$rq .= " AND (dep_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR dep_description LIKE '".htmlentities($search, ENT_QUOTES)."')";
