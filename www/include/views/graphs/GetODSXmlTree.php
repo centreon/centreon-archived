@@ -23,10 +23,16 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/DBconnect.php";
 	include_once $centreon_path . "www/DBOdsConnect.php";
+	include_once $centreon_path . "www/DBNDOConnect.php";
 	
 	/* PHP functions */
 	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
+
+	/*
+	 * Include Access Class
+	 */
+	include_once $centreon_path . "www/class/centreonACL.class.php";
 
 	if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) { 	
 		header("Content-type: application/xhtml+xml"); 
@@ -96,11 +102,16 @@
 
 	$is_admin = isUserAdmin($_GET["sid"]);
 	if (isset($_GET["sid"]) && $_GET["sid"]){
-		if (!isUserAdmin($_GET["sid"]))
-			$lca = getLCASVC(getLcaHostByName($pearDB));
+		$DBRESULT =& $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
+		$session =& $DBRESULT->fetchRow();
+		$access = new CentreonAcl($session["user_id"], $is_admin);
+		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups());
+		
+		$hoststr = $access->getHostsString("ID", $pearDBndo);
+		$servicestr = $access->getServicesString("ID", $pearDBndo);
 	} else 
 		exit();
-
+		
 	$normal_mode = 1;
 	(isset($_GET["mode"])) ? $normal_mode = $_GET["mode"] : $normal_mode = 1;
 	(isset($_GET["id"])) ? $url_var = $_GET["id"] : $url_var = 0;
@@ -127,7 +138,7 @@
 					if (host_has_one_or_more_GraphService($host))
 				        print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 				} else {
-					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][getMyHostName($host)]) && host_has_one_or_more_GraphService($host))
+					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host]) && host_has_one_or_more_GraphService($host))
 			        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 				}
 			}
@@ -152,12 +163,15 @@
 			/*
 			 * get services for host
 			 */
+			$tab_value = split("_", $id);
+			$id = $tab_value[0];
 			$services = getMyHostActiveServices($id);
 			$graphList = getMyHostGraphs($id);
 		    $host_name = getMyHostName($id);
-		        
+		    //print_r($services);
+		    //print_r($lca["LcaHost"]);
 		    foreach ($services as $svc_id => $svc_name){
-				if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]])))
+				if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$id]) && isset($lca["LcaHost"][$id][$svc_id])))
 			        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
 			}
 		} else if ($type == "HS") {	
@@ -214,14 +228,14 @@
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-			while ($HG =& $DBRESULT->fetchRow()){
-			    $i++;
+			while ($HG =& $DBRESULT->fetchRow()) {
+				$i++;
 				if ($is_admin){
 					if (HG_has_one_or_more_host($HG["hg_id"])){
 			        	print("<item child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
 					}					
 				} else {
-					if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_name"]])){
+					if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_id"]])){
 			        	print("<item child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
 					}					
 				}
@@ -230,6 +244,7 @@
 			/*
 			 * Hosts Alone
 			 */
+			
 			$cpt = 0;
 			$str = "";
 			$hostWithGraph = getHostGraphedList();
@@ -256,6 +271,7 @@
 				print $str ;
 				print("</item>");	
 			}
+			
 			/*
 			 * Meta Services
 			 */
@@ -273,6 +289,7 @@
 				print $str ;
 				print("</item>");
 			}
+			
 		} else {
 			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='HostGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 			print("<itemtext>label</itemtext>");
