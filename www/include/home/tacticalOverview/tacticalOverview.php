@@ -50,14 +50,9 @@
 				print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
 			}
 
-			// Check ACL and generate ACL restrictions
-			if (!$is_admin)	{
-				$lca = getLcaHostByName($pearDB);
-				$lcaSTR = getLCAHostStr($lca["LcaHost"]);
-		    	$grouplist = getGroupListofUser($pearDB);
-		    	$grouplistStr = groupsListStr($grouplist);
-		    }
-
+			$acl_host_name_list = $oreon->user->access->getHostsString("NAME", $pearDBndo);
+			$acl_access_group_list = $oreon->user->access->getAccessGroupsString();
+			
 			// Including Pear files
 			require_once 'HTML/QuickForm.php';
 			require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -70,26 +65,16 @@
 			$grouplist = getGroupListofUser($pearDB); // Getting group of user
 			$groupnumber = count($grouplist); // Getting group id of the previous group
 
-			// Get Status Globals for hosts
-			if (!$is_admin) {
-				$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
-						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
-						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id".
-						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-						" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR)" .
-						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-			} else {
-				$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state) , ".$ndo_base_prefix."hoststatus.current_state" .
-						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
-						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id".
-						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-			}
-						
+			// Get Status Globals for hosts		
+			$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
+					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
+					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id".
+					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+					$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) . 
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
+					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+			
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 			if (PEAR::isError($DBRESULT_NDO1))
 				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
@@ -103,27 +88,17 @@
 			
 			/*
 			 * Get the id's of problem hosts
-			*/
-			if (!$is_admin) {
-				$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state ".
-						" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
-						" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
-						" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
-						" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
-						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-						" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR) ".
-						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-						" GROUP BY ".$ndo_base_prefix."services.host_object_id";
-			} else {
-				$rq1 = 	" SELECT ".$ndo_base_prefix."services.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state" . 
-						" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
-						" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
-						" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
-						" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
-						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-						" GROUP BY ".$ndo_base_prefix."services.host_object_id";
-			}
+			*/			
+			$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state ".
+					" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
+					" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
+					" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
+					" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
+					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+					$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .						
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
+					" GROUP BY ".$ndo_base_prefix."services.host_object_id";
+			
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 			if (PEAR::isError($DBRESULT_NDO1))
 				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
@@ -137,51 +112,35 @@
 			
 			/*
 			 * Get Host Ack  UP(0), DOWN(1),  UNREACHABLE(2)
-			 */
-			if (!$is_admin)
-				$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
-						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects, centreon_acl " .
-						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
-								" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-								" AND ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 " .
-								" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name " .
-								" AND centreon_acl.group_id IN (".$grouplistStr.")".
-						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-			else
-				$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
-						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
-						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id" .
-								" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-								" AND ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 " .
-						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";						
+			 */			
+			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
+					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
+					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+					" AND ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 " .
+					$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) . 
+					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 			
 			$hostAck = array(0=>0, 1=>0, 2=>0);
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 			if (PEAR::isError($DBRESULT_NDO1))
 				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
-			while ($ndo =& $DBRESULT_NDO1->fetchRow())
+			while ($ndo =& $DBRESULT_NDO1->fetchRow()) {
 				$hostAck[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
+				$hostUnhand[$ndo["current_state"]] -= $hostAck[$ndo["current_state"]]; 
+			}
 
 			/*
 			 * Get Host inactive objects
-			 */
-			if (!$is_admin)
-				$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
-						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
-						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 0 " .
-						" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR)" .
-						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-			else
-				$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state) , ".$ndo_base_prefix."hoststatus.current_state" .
-						" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
-						" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 0 " .
-						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-						" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-						" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+			 */			
+			$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
+					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
+					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 0 " .					
+					$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) . 
+					" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
+					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 						
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 			if (PEAR::isError($DBRESULT_NDO1))
@@ -190,7 +149,7 @@
 			$hostInactive = array(0=>0, 1=>0, 2=>0, 3=>0);
 			while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
 				$hostInactive[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
-				$hostUnhand[$ndo["current_state"]] -= $hostInactive[$ndo["current_state"]];
+				$hostUnhand[$ndo["current_state"]] -= $hostInactive[$ndo["current_state"]];				
 			}
 			 
 			 
@@ -201,14 +160,14 @@
 			/*
 			 * Get Status global for Services
 			 */		
-			if (!$is_admin && $groupnumber)
+			if (!$is_admin)
 				$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 						" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl" .
 						" WHERE no.object_id = nss.service_object_id".						
 						" AND no.name1 NOT LIKE '_Module_%' ".
 						" AND no.name1 = centreon_acl.host_name ".
 						" AND no.name2 = centreon_acl.service_description " .						
-						" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
+						" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 						" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 			else
 				$rq2 = 	" SELECT count(nss.current_state), nss.current_state". 
@@ -229,7 +188,7 @@
 			/*
 			 * Get on pb host
 			*/
-			if (!$is_admin && $groupnumber)
+			if (!$is_admin)
 				$rq2 = 	" SELECT nss.current_state, " . $ndo_base_prefix ."services.host_object_id".
 						" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl, " . $ndo_base_prefix."services" .
 						" WHERE no.object_id = nss.service_object_id".
@@ -237,7 +196,7 @@
 						" AND no.name1 NOT LIKE '_Module_%' ".
 						" AND no.name1 = centreon_acl.host_name ".
 						" AND no.name2 = centreon_acl.service_description " .
-						" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
+						" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 						" AND no.is_active = 1" .
 						" AND nss.problem_has_been_acknowledged = 0" .
 						" AND nss.current_state > 0 GROUP BY nss.service_object_id";
@@ -275,7 +234,7 @@
 						" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 						" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name ".
 						" AND ".$ndo_base_prefix."objects.name2 = centreon_acl.service_description " .
-						" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
+						" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 						" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
 						" GROUP BY ".$ndo_base_prefix."servicestatus.current_state";								
 			else
@@ -298,14 +257,14 @@
 			/*
 			 * Get Services Inactive objects
 			 */
-			if (!$is_admin && $groupnumber)
+			if (!$is_admin)
 				$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 						" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
 						" WHERE no.object_id = nss.service_object_id".				
 						" AND no.name1 NOT LIKE '_Module_%' ".
 						" AND no.name1 = centreon_acl.host_name ".
 						" AND no.name2 = centreon_acl.service_description " .
-						" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") ".
+						" AND centreon_acl.group_id IN (".$acl_access_group_list.") ".
 						" AND no.is_active = 0 GROUP BY nss.current_state ORDER by nss.current_state";
 			else
 				$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
@@ -333,7 +292,7 @@
 			/*
 			 * Get problem table
 			*/
-			if (!$is_admin && $groupnumber)
+			if (!$is_admin)
 				$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
 						" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht" .
 						" WHERE obj.object_id = stat.service_object_id" .
@@ -346,7 +305,7 @@
 						" AND obj.name1 NOT LIKE '_Module_%' " .
 						" AND obj.name1 = centreon_acl.host_name ".
 						" AND obj.name2 = centreon_acl.service_description " .
-						" AND centreon_acl.group_id IN (".groupsListStr($grouplist).") " .
+						" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 						" ORDER by stat.current_state DESC, obj.name1";
 			else
 				$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .

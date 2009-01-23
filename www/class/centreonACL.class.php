@@ -454,6 +454,8 @@
  				$i++; 
  			}
  		}
+ 		if (!$i)
+ 			$string = "''";
  		return $string;
  	}
  	
@@ -485,6 +487,8 @@
  				$i++; 
  			}
  		}
+ 		if (!$i)
+ 			$string = "''";
  		return $string;
  	}
  	
@@ -505,7 +509,7 @@
  		$str = "";
  		if ($this->admin)
  			return $str;
- 		$str .= " " . $condition . "`" . $field . "` IN (".$stringlist.") ";
+ 		$str .= " " . $condition . " " . $field . " IN (".$stringlist.") ";
  		return $str;
  	}
  	 	
@@ -535,18 +539,79 @@
 	 }
 	 
 	 /*
-	  *  Function that returns the pair host/service
+	  *  Function that returns the pair host/service by ID if $host_id is NULL
+	  *  Otherwise, it returns all the services of a specific host
+	  *  
 	  */
-	 public function getHostServices($pearDBndo) {		
+	 public function getHostServices($pearDBndo, $host_id = NULL) {		
 		$tab = array();
-		if ($this->admin)
-			$query = "SELECT host_id, service_id FROM centreon_acl";
-		else
-			$query = "SELECT host_id, service_id FROM centreon_acl WHERE group_id IN (".$this->getAccessGroupsString().")";
-		$DBRESULT =& $pearDBndo->query($query);
-		while ($row =& $DBRESULT->fetchRow())
-			$tab[$row['host_id']][$row['service_id']] = 1;		
+		if (!isset($host_id)) {
+			if ($this->admin)
+				$query = "SELECT host_id, service_id FROM centreon_acl";
+			else
+				$query = "SELECT host_id, service_id FROM centreon_acl WHERE group_id IN (".$this->getAccessGroupsString().")";
+			$DBRESULT =& $pearDBndo->query($query);
+			while ($row =& $DBRESULT->fetchRow())
+				$tab[$row['host_id']][$row['service_id']] = 1;
+		}
+		else {
+			if ($this->admin)
+				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_id = '".$host_id."'";
+			else
+				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_id = '".$host_id."' AND group_id IN (".$this->getAccessGroupsString().")";
+			$DBRESULT =& $pearDBndo->query($query);
+			while ($row =& $DBRESULT->fetchRow())
+				$tab[$row['service_id']] = $row['service_description'];
+		}		
 		return $tab;
+	 }
+	 
+	 /*
+	  *  Function that returns the pair host/service by NAME if $host_name is NULL
+	  *  Otherwise, it returns all the services of a specific host
+	  *  
+	  */
+	 public function getHostServicesName($pearDBndo, $host_name = NULL) {		
+		$tab = array();
+		if (!isset($host_name)) {
+			if ($this->admin)
+				$query = "SELECT host_name, service_description FROM centreon_acl";
+			else
+				$query = "SELECT host_name, service_description FROM centreon_acl WHERE group_id IN (".$this->getAccessGroupsString().")";
+			$DBRESULT =& $pearDBndo->query($query);
+			while ($row =& $DBRESULT->fetchRow())
+				$tab[$row['host_name']][$row['service_description']] = 1;
+		}
+		else {
+			if ($this->admin)
+				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_name = '".$host_name."'";
+			else
+				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_name = '".$host_name."' AND group_id IN (".$this->getAccessGroupsString().")";
+			$DBRESULT =& $pearDBndo->query($query);
+			while ($row =& $DBRESULT->fetchRow())
+				$tab[$row['service_id']] = $row['service_description'];
+		}		
+		return $tab;
+	 }
+	 
+	 
+	 /*
+	  *  Function  that returns the hosts of a specific hostgroup
+	  */
+	 public function getHostgroupHosts($hg_id, $pearDBndo) {	 	
+	 	global $pearDB;
+	 	
+	 	$tab = array();
+	 	$query = "SELECT h.host_id, h.host_name " .
+	 			"FROM hostgroup_relation hgr, host h " .
+	 			"WHERE hgr.hostgroup_hg_id = '".$hg_id."' " .
+	 			"AND hgr.host_host_id = h.host_id " .
+	 			$this->queryBuilder("AND", "h.host_id",  $this->getHostsString("ID", $pearDBndo));
+	 			
+	 	$DBRESULT =& $pearDB->query($query);
+	 	while ($row =& $DBRESULT->fetchRow())
+	 		$tab[$row['host_id']] = $row['host_name'];
+	 	return ($tab);
 	 }
  }
  ?>

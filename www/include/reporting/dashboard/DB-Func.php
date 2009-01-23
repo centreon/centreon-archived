@@ -131,7 +131,7 @@
 	 * and alerts (the sum of alerts of all hosts from hostgroup) for given hostgroup defined by $hostgroup_id
 	 */
 	function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTimePeriod){
-		global $pearDBO;
+		global $pearDBO, $pearDBndo, $oreon;
 		
 		$hostStatsLabels = getHostStatsValueName();
 		
@@ -139,8 +139,8 @@
 		foreach($hostStatsLabels as $name)
 			$hostgroupStats["average"][$name] = 0;
 
-		/* c.f. : www/include/common/common-Func.php */
-		$hosts_id = getHostsFromHostgroup($hostgroup_id);
+		
+		$hosts_id = $oreon->user->access->getHostgroupHosts($hostgroup_id, $pearDBndo);
 		
 		/* get availability stats for each host */
 		$count = 0;
@@ -200,15 +200,18 @@
 	function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePeriod){
 		global $pearDBO;
 		global $pearDB;
+		global $pearDBndo;
 		global $is_admin;
+		global $oreon;
+		global $lcaSvcstr;
+		
 		$hostServiceStats = array();
 		$services_ids = array();
 		
 		/*
 		 * Getting authorized services
 		 */
-		$services_ids = getHostServices($host_id);
-		$lcaStr = "";
+		$services_ids = $oreon->user->access->getHostServices($pearDBndo, $host_id);		
 		$svcStr = "";
 		if (count($services_ids)) {
 				foreach ($services_ids as $id => $description){
@@ -216,7 +219,6 @@
 						$svcStr .= ", ";
 					$svcStr .= $id;
 				}
-				$lcaStr = " AND `service_id` IN (".$svcStr.") ";
 			}
 		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED");
 				
@@ -240,7 +242,9 @@
 					 "sum(`CRITICALTimeScheduled`) as CRITICAL_T, sum(`CRITICALnbEvent`) as CRITICAL_A, ".
 					 "sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T ".
 			  "FROM `log_archive_service` ".
-			  "WHERE `host_id` = ".$host_id." ".$lcaStr." AND `date_start` >= ".$start_date." AND `date_end` <= ".$end_date." ".
+			  "WHERE `host_id` = ".$host_id." ".
+			  $oreon->user->access->queryBuilder("AND", "service_id", $svcStr) . 
+			  "AND `date_start` >= ".$start_date." AND `date_end` <= ".$end_date." ".
 			 		 "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
 			  "GROUP BY `service_id`";
 		$DBRESULT =& $pearDBO->query($rq);
@@ -569,14 +573,16 @@
 	 * Get all hostgroups linked with at least one host 
 	 */
 	function getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr){
-		global $pearDB, $lcaHoststr;
+		global $pearDB, $lcaHoststr, $oreon;
 		$hgs = array("NULL" => "");
 		$lcaStr = "";
-		if (!$is_admin) {
-			
-			$lcaStr = " `hg_id` IN (".$lcaHostGroupstr.") AND ";
-		}
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM `hostgroup` WHERE ".$lcaStr." `hg_id` IN (SELECT `hostgroup_hg_id` FROM `hostgroup_relation`) ORDER BY `hg_name`");
+		
+		$query = "SELECT DISTINCT * " .
+				"FROM `hostgroup` " .
+				"WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$oreon->user->access->queryBuilder("WHERE", "host_host_id", $lcaHoststr).") " .
+				$oreon->user->access->queryBuilder("AND", "hg_id", $lcaHostGroupstr) . 	
+				"ORDER BY `hg_name`";
+		$DBRESULT =& $pearDB->query($query);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($hg =& $DBRESULT->fetchRow())
@@ -607,19 +613,16 @@
 	 * Get all servicesgroup with at least one service
 	 */
 	 function getAllServicesgroupsForReporting() {
-		global $pearDB;
-		global $is_admin;
+		global $pearDB, $oreon;
 		
-		$lcaStr = "";
-		if (!$is_admin) {
-			$sgStr = "";
-			$sgStr = getLCASGStr(getLCASG($pearDB));
-			if ($sgStr != "")
-				$lcaStr = " AND sg_id IN (".$sgStr.") ";
-		}
+		$sgStr = $oreon->user->access->getServiceGroupsString();		
+				
 		$sg = array("NULL" => "");
-		$DBRESULT =& $pearDB->query("SELECT `sg_name`, `sg_id` FROM `servicegroup` ".
-									"WHERE `sg_id` IN (SELECT `servicegroup_sg_id` FROM `servicegroup_relation`) ".$lcaStr." ORDER BY `sg_name`");
+		$query = "SELECT `sg_name`, `sg_id` FROM `servicegroup` ".
+				"WHERE `sg_id` IN (SELECT `servicegroup_sg_id` FROM `servicegroup_relation`) ". 
+				$oreon->user->access->queryBuilder("AND", "sg_id", $sgStr) .
+				"ORDER BY `sg_name`";
+		$DBRESULT =& $pearDB->query($query);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())

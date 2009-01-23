@@ -50,6 +50,9 @@
 	require_once './include/reporting/dashboard/DB-Func.php';
 	require_once './include/common/common-Func.php';
 	require_once './include/common/common-Func-ACL.php';
+	require_once './DBconnect.php';
+	require_once './DBNDOConnect.php';
+	
 	$debug = 0;
 	
 	/*
@@ -155,10 +158,10 @@
 	 /*
 	  * LCA
 	  */
-	$lcaHostByName = getLcaHostByName($pearDB);
-	$lcaHostByID = getLcaHostByID($pearDB);
-	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
-	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
+	$lcaHoststr = $oreon->user->access->getHostsString("ID", $pearDBndo);
+	$lcaHostGroupstr = $oreon->user->access->getHostGroupsString();
+	$lcaSvcstr = $oreon->user->access->getServicesString("ID", $pearDBndo);
+	
 
 	/* 
 	 * setting variables for link with services

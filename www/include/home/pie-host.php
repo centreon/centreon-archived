@@ -47,43 +47,15 @@
 	 * calcul stat for resume
 	 */
 	$statistic_host = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE",3 => "PENDING");
-	
-    /*
-	 * LCA
-	 */
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$_GET["sid"]."'");
-	$user =& $res1->fetchRow();
-	$user_id = $user["user_id"];
-
-	global $is_admin;
-	
-	$is_admin =  isUserAdmin($_GET["sid"]);	
-	
-	if (!$is_admin){
-		/*
-		 * Get Acl Group list
-		 */
-		$grouplist = getGroupListofUser($pearDB); 
-		$groupnumber = count($grouplist);
-		$grouplistStr = groupsListStr($grouplist);
-	}
-	
+		
 	/* Get HostNDO status */
-	if (!$is_admin && isset($groupnumber) && $groupnumber)
-		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state" .
-				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects, centreon_acl " .
-				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
-				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-				" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name " .
-				" AND centreon_acl.group_id IN (".$grouplistStr.")".
-				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-	else
-		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt , ".$ndo_base_prefix."hoststatus.current_state" .
-				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
-				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
-				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+	$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state" .
+			" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
+			" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
+			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+			$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .	
+			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))

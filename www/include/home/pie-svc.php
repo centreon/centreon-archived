@@ -22,7 +22,8 @@
 	$oreon =& $_SESSION["oreon"];
 
 	require_once "DB.php" ;
-	include_once "@CENTREON_ETC@/centreon.conf.php";	
+	include_once "/etc/centreon/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";	
 		
 	/* 
 	 * Connect to oreon DB
@@ -86,8 +87,8 @@
 	else
 		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-				" WHERE no.object_id = nss.service_object_id".				
-				" AND no.name1 not like '_Module_%' ".
+				" WHERE no.object_id = nss.service_object_id".
+				" AND no.name1 NOT LIKE '_Module_%' ".
 				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";			
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO2))
