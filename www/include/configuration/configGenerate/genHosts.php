@@ -199,8 +199,14 @@
 				/*
 				 * Check Period
 				 */
-				if ($host["host_register"] == 1 && (!isset($host["timeperiod_tp_id1"]) || $host["host_location"] != 0))
-					$host["timeperiod_tp_id"] = getMyHostField($host["host_id"], "timeperiod_tp_id");
+				 
+				 
+				if ($host["host_register"] == 1) {
+					if ((!isset($host["timeperiod_tp_id"]) || $host["host_location"] != 0)) {
+						$host["timeperiod_tp_id"] = getMyHostField($host["host_id"], "timeperiod_tp_id");
+					}
+				} 
+				
 				if ($host["timeperiod_tp_id"])
 					$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location_tp"] : ""));
 

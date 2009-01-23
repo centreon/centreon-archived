@@ -302,18 +302,19 @@
 	}
 
 	function getMyHostField($host_id = NULL, $field)	{
-		if (!$host_id) return;
+		if (!$host_id) 
+			return;
 		global $pearDB;
 		
 		$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$host_id."' ORDER BY `order` ASC");
 		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";		
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";		
 		while ($row =& $DBRESULT->fetchRow()) {
 			$DBRESULT2 =& $pearDB->query("SELECT ".$field." FROM host WHERE host_id = '". $row['host_tpl_id']."'");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($row2 =& $DBRESULT2->fetchRow()) {
-				if (isset($row2[$field]))
+				if (isset($row2[$field]) && $row2[$field])
 					return $row2[$field];
 				if ($tmp = getMyHostField($row['host_tpl_id'], $field))
 					return $tmp;
@@ -1567,11 +1568,11 @@
 	}
 	
 	function host_has_one_or_more_GraphService($host_id){
-		global $pearDBO;
+		global $pearDBO, $lca;
 	
 		$services = getMyHostServices($host_id);
 		foreach ($services as $svc_id => $svc_name)
-			if (service_has_graph($host_id, $svc_id))
+			if (service_has_graph($host_id, $svc_id) && isset($lca["LcaHost"][$host_id][$svc_id]))
 				return true;
 		return false;	
 	}
@@ -1583,15 +1584,22 @@
 	}
 	
 	function HG_has_one_or_more_host($hg_id){
-		global $pearDBO;
-	
-		$hosts = getMyHostGroupHosts($hg_id);
-		foreach ($hosts as $host_id => $host_name)	{
-			$services = getMyHostServices($host_id);
-			foreach ($services as $svc_id => $svc_name)	{
-				if (service_has_graph($host_id, $svc_id))
+		global $pearDBO, $pearDB, $pearDBndo, $access, $is_admin, $lca, $hoststr, $servicestr;
+				
+		if ($is_admin)
+			$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$hg_id."'");
+		else
+			$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND hgr.host_host_id IN ($hoststr)");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($h =& $DBRESULT->fetchRow()) {
+			if ($is_admin)
+				return true;
+			else
+				$DBRESULT2 =& $pearDBO->query("SELECT service_id FROM index_data WHERE index_data.host_id = '".$h["host_host_id"]."' AND service_id IN ($servicestr)");
+			while ($flag =& $DBRESULT2->fetchRow())
 					return true;
-			}
+			
 		}
 		return false;	
 	}
