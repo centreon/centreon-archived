@@ -56,10 +56,9 @@
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$meta =& $DBRESULT->fetchRow();
-	$tpl->assign("meta", 
-			array("meta"=>_("Meta Service"),
-				"name"=>$meta["meta_name"],
-				"calc_type"=>$calcType[$meta["calcul_type"]]));
+	$tpl->assign("meta", array(	"meta" => _("Meta Service"),
+								"name" => $meta["meta_name"],
+								"calc_type" => $calcType[$meta["calcul_type"]]));
 	$DBRESULT->free();
 
 	/*
@@ -72,10 +71,7 @@
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
-	if ($is_admin)
-		$rq = "SELECT * FROM `meta_service_relation` WHERE  meta_id = '".$meta_id."' ORDER BY host_id";
-	else
-		$rq = "SELECT * FROM `meta_service_relation` WHERE host_id IN (".$lcaHoststr.") AND meta_id = '".$meta_id."' ORDER BY host_id";
+	$rq = "SELECT * FROM `meta_service_relation` WHERE  meta_id = '".$meta_id."' ORDER BY host_id";
 	$DBRESULT = & $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -101,14 +97,14 @@
 		$row =& $DBRESULTO->fetchRow();
 		$row["service_description"] = str_replace("#S#", "/", $row["service_description"]);
 		$row["service_description"] = str_replace("#BS#", "\\", $row["service_description"]);
-		$elemArr1[$i] = array("MenuClass"=>"list_".$style, 
-					"RowMenu_select"=>$selectedElements->toHtml(),
-					"RowMenu_host"=>htmlentities($row["host_name"], ENT_QUOTES),
-					"RowMenu_link"=>"?p=".$p."&o=ws&msr_id=".$metric['msr_id'],
-					"RowMenu_service"=>htmlentities($row["service_description"], ENT_QUOTES),
-					"RowMenu_metric"=>$row["metric_name"]." (".$row["unit_name"].")",
-					"RowMenu_status"=>$metric["activate"] ? _("Enabled") : _("Disabled"),
-					"RowMenu_options"=>$moptions);
+		$elemArr1[$i] = array(	"MenuClass"=>"list_".$style, 
+								"RowMenu_select"=>$selectedElements->toHtml(),
+								"RowMenu_host"=>htmlentities($row["host_name"], ENT_QUOTES),
+								"RowMenu_link"=>"?p=".$p."&o=ws&msr_id=".$metric['msr_id'],
+								"RowMenu_service"=>htmlentities($row["service_description"], ENT_QUOTES),
+								"RowMenu_metric"=>$row["metric_name"]." (".$row["unit_name"].")",
+								"RowMenu_status"=>$metric["activate"] ? _("Enabled") : _("Disabled"),
+								"RowMenu_options"=>$moptions);
 		$DBRESULTO->free();
 		$style != "two" ? $style = "two" : $style = "one";
 	}

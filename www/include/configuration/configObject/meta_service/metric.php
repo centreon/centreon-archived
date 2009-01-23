@@ -49,14 +49,13 @@
 
 		# Set base value
 		$metric1 = array_map("myDecode", $DBRESULT->fetchRow());
-		$DBRESULT =& $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '".$metric1["metric_id"]."' and metrics.index_id=index_data.id");		
+		$DBRESULT =& $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '".$metric1["metric_id"]."' and metrics.index_id = index_data.id");		
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$metric2 = array_map("myDecode", $DBRESULT->fetchRow());
 		$metric = array_merge($metric1, $metric2);
 		$host_id = $metric1["host_id"];
 		$metric["metric_sel"][0] = getMyServiceID($metric["service_description"], $metric["host_id"]);
-		
 		$metric["metric_sel"][1] = $metric["metric_id"];		
 	}
 	
@@ -64,13 +63,14 @@
 	## Database retrieve information for differents elements list we need on the page
 	#
 
-	# Host comes from DB -> Store in $hosts Array
+	/*
+	 * Host comes from DB -> Store in $hosts Array
+	 */
 	$hosts = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-
-	while($host =& $DBRESULT->fetchRow())
+	while ($host =& $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	

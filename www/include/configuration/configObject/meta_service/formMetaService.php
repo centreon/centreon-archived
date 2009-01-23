@@ -71,7 +71,7 @@
 	$DBRESULT =& $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($metric =& $DBRESULT->fetchRow())
+	while ($metric =& $DBRESULT->fetchRow())
 		$metrics[$metric["metric_name"]] = $metric["metric_name"];
 	$DBRESULT->free();
 
@@ -81,7 +81,7 @@
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($tp =& $DBRESULT->fetchRow())
+	while ($tp =& $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
 	
@@ -256,8 +256,6 @@
 	$form->addRule('max_check_attempts', _("Required Field"), 'required');
 	$form->addRule('calcul_type', _("Required Field"), 'required');
 	$form->addRule('meta_select_mode', _("Required Field"), 'required');
-	//$form->addRule('warning', _("Required Field"), 'required');
-	//$form->addRule('critical', _("Required Field"), 'required');
 	$form->addRule('normal_check_interval', _("Required Field"), 'required');
 	$form->addRule('retry_check_interval', _("Required Field"), 'required');
 	$form->addRule('check_period', _("Compulsory Period"), 'required');
