@@ -82,7 +82,8 @@
 				"AND obj.name2 IS NOT NULL " .
 				"AND obj.object_id = dtm.object_id " .
 				"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
-				"ORDER BY dtm.actual_start_time";
+				"ORDER BY dtm.actual_start_time " . 
+				"LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
 				"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj, centreon_acl " .
@@ -92,7 +93,8 @@
 				"AND obj.name1 = centreon_acl.host_name " . 
 				"AND obj.name2 = centreon_acl.service_description " . 
 				"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
-				"ORDER BY dtm.actual_start_time";
+				"ORDER BY dtm.actual_start_time " .
+				"LIMIT ".$num * $limit.", ".$limit;
 				
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
@@ -135,7 +137,7 @@
 	$tpl->assign("dtm_service_downtime", _("Services Downtimes"));
 	
 	$tpl->assign("no_svc_dtm", _("No downtime scheduled for services"));	
-	$tpl->assign("view_host_dtm", _("View downtimes of services"));
+	$tpl->assign("view_host_dtm", _("View downtimes of hosts"));
 	$tpl->assign("host_dtm_link", "./main.php?p=".$p."&o=vh");
 	$tpl->assign("delete", _("Delete"));
 	$tpl->assign("limit", $limit);

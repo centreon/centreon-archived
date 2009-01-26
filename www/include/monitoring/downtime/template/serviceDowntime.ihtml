@@ -1,6 +1,6 @@
 <a href={$host_dtm_link}>{$view_host_dtm}</a>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<form action="" method='GET'>
+<form name="form" action="" method='GET'>
 <hidden name="p" value='{$p}'>	
 	<table class="ListTable">
 	<tr class="ToolbarTR">
@@ -18,8 +18,7 @@
 	</tr>
 	</table>
 	<br />	
-	{if $nb_downtime_svc}
-	<form action="" method='GET'>
+	{if $nb_downtime_svc}	
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -50,10 +49,17 @@
 			<td class="ListColFooterCenter" colspan="6">&nbsp;</td>
 			<td class="ListColFooterRight" align="right"><a href="{$msgs.addL}">{$msgs.addT}</a></td>
 		</tr>	
-	</table>
-	<input type='hidden' id='limit' name='limit' value='{$limit}'>
-	{$form.hidden}
+	</table>	
 	{else}
 	<center><b>{$no_svc_dtm}</b></center>
 	{/if}
+	<table class="ListTable">
+	<tr class="ToolbarTR">
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+	</tr>
+	</table>
+	<input type='hidden' id='limit' name='limit' value='{$limit}'>
+	{$form.hidden}	
 </form>

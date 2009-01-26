@@ -1,5 +1,6 @@
 <a href={$host_comment_link}>{$view_host_comments}</a>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>		
+<form name="form" method='GET'>
 <table class="ListTable">
 <tr class="ToolbarTR">
 		{php}
@@ -17,7 +18,6 @@
 </table>
 <br />
 {if $nb_comments_svc} 
-<form action="" method='GET'>
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -40,14 +40,21 @@
 		</tr>
 		{/foreach}
 		<tr>
-			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="ds"><input type="submit" name="submit" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgs.delConfirm}')"></td>
+			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="ds"><input type="submit" name="submit2" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgs.delConfirm}')"></td>
 			<td class="ListColFooterCenter" colspan="4">&nbsp;</td>
 			<td class="ListColFooterRight" align="right"><a href="{$msgs.addL}">{$msgs.addT}</a></td>
 		</tr>	
-	</table>
+	</table>	
 	{else}
 	<center><b>{$no_svc_comments}</b></center>
 	{/if}
+	<table class="ListTable">
+	<tr class="ToolbarTR">
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+	</tr>
+	</table>
 	<input type='hidden' id='limit' name='limit' value='{$limit}'>
 	{$form.hidden}
 </form>
