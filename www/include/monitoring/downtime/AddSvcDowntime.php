@@ -119,7 +119,7 @@
 				if (!isset($_POST["comment"]))
 					$_POST["comment"] = 0;
 				AddSvcDowntime($_POST["host_id"], $_POST["service_id"],  $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
-		    	require_once("viewDowntime.php");
+		    	require_once("viewServiceDowntime.php");
 			} else {
 				# Smarty template Init
 				$tpl = new Smarty();

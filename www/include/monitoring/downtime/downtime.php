@@ -48,11 +48,17 @@
 			break;
 		case "ds" : 
 			DeleteDowntime("SVC", isset($_GET["select"]) ? $_GET["select"] : array());
-			require_once($path."viewDowntime.php"); 
+			require_once($path."viewServiceDowntime.php"); 
 			break; 
 		case "dh" : 
 			DeleteDowntime("HOST", isset($_GET["select"]) ? $_GET["select"] : array());
 			require_once($path."viewDowntime.php"); 
+			break;
+		case "vh" :
+			require_once($path."viewDowntime.php");
+			break;
+		case "vs" :
+			require_once($path."viewServiceDowntime.php");
 			break;
 		default : 
 			require_once($path."viewDowntime.php"); 

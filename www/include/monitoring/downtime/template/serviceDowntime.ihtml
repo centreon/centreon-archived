@@ -1,0 +1,59 @@
+<a href={$host_dtm_link}>{$view_host_dtm}</a>
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form action="" method='GET'>
+<hidden name="p" value='{$p}'>	
+	<table class="ListTable">
+	<tr class="ToolbarTR">
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+	</tr>
+	<tr class='ListHeader'>
+		<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$dtm_service_downtime}</td>
+		{if !$nb_downtime_svc}
+		<td align='right'>
+			{if $msgs}<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
+		</td>
+		{/if}
+	</tr>
+	</table>
+	<br />	
+	{if $nb_downtime_svc}
+	<form action="" method='GET'>
+	<table class="ListTable">
+		<tr class='ListHeader'>
+			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+			<td class="ListColHeaderCenter">{$dtm_host_name}</td>
+			<td class="ListColHeaderCenter">{$dtm_service_descr}</td>
+			<td class="ListColHeaderCenter">{$dtm_start_time}</td>
+			<td class="ListColHeaderCenter">{$dtm_end_time}</td>
+			<td class="ListColHeaderCenter">{$dtm_duration}</td>
+			<td class="ListColHeaderCenter">{$dtm_author}</td>
+			<td class="ListColHeaderCenter">{$dtm_comment}</td>
+			<td class="ListColHeaderCenter">{$dtm_fixed}</td>
+		</tr>
+		{foreach item=tds from=$tab_downtime_svc}
+		<tr class={cycle values="list_two, list_one"}>
+			<td class="ListColPicker"><input type="checkbox" name='select[{$tds.host_name};{$tds.internal_downtime_id}]'></td>
+			<td class="ListColLeft">{$tds.host_name}</td>
+			<td class="ListColLeft">{$tds.service_description}</td>
+			<td class="ListColRight" width="120">{$tds.scheduled_start_time}</td>
+			<td class="ListColRight" width="120">{$tds.scheduled_end_time}</td>
+			<td class="ListColRight">{$tds.duration}</td>
+			<td class="ListColCenter">{$tds.author_name}</td>
+			<td class="ListColLeft">{$tds.comment_data}</td>
+			<td class="ListColCenter" width="50">{$tds.is_fixed}</td>
+		</tr>
+		{/foreach}
+		<tr>
+			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="ds"><input type="submit" name="{$delete}" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgs.delConfirm}')"></td>
+			<td class="ListColFooterCenter" colspan="6">&nbsp;</td>
+			<td class="ListColFooterRight" align="right"><a href="{$msgs.addL}">{$msgs.addT}</a></td>
+		</tr>	
+	</table>
+	<input type='hidden' id='limit' name='limit' value='{$limit}'>
+	{$form.hidden}
+	{else}
+	<center><b>{$no_svc_dtm}</b></center>
+	{/if}
+</form>
