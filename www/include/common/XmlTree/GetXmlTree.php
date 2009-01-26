@@ -93,10 +93,11 @@
 		$DBRESULT =& $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
 		$session =& $DBRESULT->fetchRow();
 		$access = new CentreonAcl($session["user_id"], $is_admin);
-		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups());
+		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 		
 		$hoststr = $access->getHostsString("ID", $pearDBndo);
 		$servicestr = $access->getServicesString("ID", $pearDBndo);
+		
 	} else 
 		exit();
 	
@@ -138,11 +139,7 @@
 				$tab_value = split("_", $key);
 				$host_name = getMyHostName($tab_value[0]);
 				$service_description = getMyServiceName($tab_value[1], $tab_value[0]);
-				if ($is_admin) {
-					print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
-				} else {
-					print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
-				}
+				print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
 			}
 		} else if ($type == "HH") {
 			/*
@@ -181,10 +178,9 @@
 			while ($SG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin){
-					if (SGIsNotEmpty($SG["sg_id"]))
-			        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
+					print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
 				} else {
-					if (SGIsNotEmpty($SG["sg_id"])  && isset($lcaSG) && isset($lcaSG[$SG["sg_id"]]))
+					if (isset($lca["LcaSG"]) && isset($lca["LcaSG"][$SG["sg_id"]]))
 			        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
 				}
 			}
