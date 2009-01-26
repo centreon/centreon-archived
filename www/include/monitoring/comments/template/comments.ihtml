@@ -1,9 +1,24 @@
-<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-	<form action="" method='GET'>
-	<hidden name="p" value='{$p}'>
-	<table class="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$cmt_host_comment}</td>{if !$nb_comments_host}<td align='right'>{if $msgh}<a href="{$msgh.addL}">{$msgh.addT}{/if}</a></td>{/if}</tr></table><br />
-	{if $nb_comments_host}
+<a href={$svc_comment_link}>{$view_svc_comments}</a>
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>	
+	<form name='form' action="" method='GET'>
+	<hidden name="p" value='{$p}'>	
 	<table class="ListTable">
+	<tr class="ToolbarTR">
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+	</tr>
+	<tr class='ListHeader'><td colspan="2">&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$cmt_host_comment}</td>
+		{if !$nb_comments_host}
+		<td align='right' colspan="2">
+		{if $msgh}<a href="{$msgh.addL}">{$msgh.addT}{/if}</a>
+		</td>
+		{/if}
+	</tr>
+	</table>
+	<br />	
+	{if $nb_comments_host}
+	<table class="ListTable">	
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderCenter">{$cmt_host_name}</td>
@@ -31,41 +46,6 @@
 	{else}
 	<center><b>{$no_host_comments}</b></center>
 	{/if}
+	<input type='hidden' id='limit' name='limit' value='{$limit}'>
 	{$form.hidden}
 	</form>
-	<br><br>
-	<table class="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$cmt_service_comment}</td>{if !$nb_comments_svc}<td align='right'>{if $msgs}<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}</td>{/if}</tr></table><br />
-	{if $nb_comments_svc} 
-	<form action="" method='GET'>
-	<table class="ListTable">
-		<tr class='ListHeader'>
-			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-			<td class="ListColHeaderCenter">{$cmt_host_name}</td>
-			<td class="ListColHeaderCenter">{$cmt_service_descr}</td>
-			<td class="ListColHeaderCenter" width="120">{$cmt_entry_time}</td>
-			<td class="ListColHeaderCenter">{$cmt_author}</td>
-			<td class="ListColHeaderCenter">{$cmt_comment}</td>
-			<td class="ListColHeaderCenter" width="60">{$cmt_persistent}</td>
-		</tr>
-		{foreach item=tcs from=$tab_comments_svc}
-		<tr class={cycle values="list_two, list_one"}>
-			<td class="ListColPicker"><input type="checkbox" name='select[{$tcs.host_name};{$tcs.internal_comment_id}]'></td>
-			<td class="ListColLeft">{$tcs.host_name}</td>
-			<td class="ListColLeft">{$tcs.service_description}</td>
-			<td class="ListColCenter">{$tcs.entry_time}</td>
-			<td class="ListColCenter">{$tcs.author_name}</td>
-			<td class="ListColNoWrap">{$tcs.comment_data}</td>
-			<td class="ListColCenter">{$tcs.is_persistent}</td>
-		</tr>
-		{/foreach}
-		<tr>
-			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="ds"><input type="submit" name="submit" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgh.delConfirm}')"></td>
-			<td class="ListColFooterCenter" colspan="4">&nbsp;</td>
-			<td class="ListColFooterRight" align="right"><a href="{$msgs.addL}">{$msgs.addT}</a></td>
-		</tr>	
-	</table>
-	{else}
-	<center><b>{$no_svc_comments}</b></center>
-	{/if}
-	{$form.hidden}
-</form>

@@ -120,7 +120,7 @@
 					$_POST["comment"] = 0;
 				AddSvcComment($_POST["host_id"], $_POST["service_id"], $_POST["comment"], $_POST["persistant"]);
 				$valid = true;
-		    	require_once($path."viewComment.php");
+		    	require_once($path."viewServiceComment.php");
 			} else {
 				# Smarty template Init
 				$tpl = new Smarty();

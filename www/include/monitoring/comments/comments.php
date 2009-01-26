@@ -52,11 +52,17 @@
 			break;
 		case "ds" : 
 			DeleteComment("SVC",isset($_GET["select"]) ? $_GET["select"] : array());
-			require_once($path."viewComment.php"); 
+			require_once($path."viewServiceComment.php"); 
 			break; 
 		case "dh" : 
 			DeleteComment("HOST",isset($_GET["select"]) ? $_GET["select"] : array());
 			require_once($path."viewComment.php"); 
+			break;
+		case "vh" :
+			require_once($path."viewComment.php");
+			break;
+		case "vs" :
+			require_once($path."viewServiceComment.php");
 			break;
 		default : 
 			require_once($path."viewComment.php"); 
