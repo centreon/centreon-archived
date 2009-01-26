@@ -49,10 +49,10 @@
 	/*
 	 * XML tag
 	 */
-	
+
 	stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ? header("Content-type: application/xhtml+xml") : header("Content-type: text/xml"); 
 	echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
-	
+
 	/*
 	 * Start XML document root
 	 */
@@ -64,10 +64,9 @@
 	 */ 
 	require_once 'DB.php';
 	
-	include_once("/etc/centreon/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
 	
-	//include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
 	include_once $centreon_path . "www/DBNDOConnect.php";
@@ -94,7 +93,7 @@
 	$is_admin = isUserAdmin($sid);
 	if (isset($sid) && $sid){
 		$access = new CentreonAcl($contact_id, $is_admin);
-		$lca = array("LcaHost" => $access->getHostServicesName($pearDBndo), "LcaHostGroup" => $access->getHostGroups());
+		$lca = array("LcaHost" => $access->getHostServicesName($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 		$lcaSTR = $access->getHostsString("NAME", $pearDBndo);
 		$servicestr = $access->getServicesString("NAME", $pearDBndo);
 	}
@@ -107,7 +106,7 @@
 	(isset($_GET["EndTime"]) 	&& !check_injection($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) : $EndTime = "";
 	(isset($_GET["period"]) 	&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
 	(isset($_GET["multi"]) 		&& !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
-	
+
 	(isset($_GET["up"]) 		&& !check_injection($_GET["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($_GET["up"])) : $up = "true";
 	(isset($_GET["down"]) 		&& !check_injection($_GET["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($_GET["down"])) : $down = "true";
 	(isset($_GET["unreachable"])&& !check_injection($_GET["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($_GET["unreachable"])) : $unreachable = "true";
@@ -115,6 +114,7 @@
 	(isset($_GET["warning"]) 	&& !check_injection($_GET["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($_GET["warning"])) : $warning = "true";
 	(isset($_GET["critical"]) 	&& !check_injection($_GET["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($_GET["critical"])) : $critical = "true";
 	(isset($_GET["unknown"]) 	&& !check_injection($_GET["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($_GET["unknown"])) : $unknown = "true";
+	
 	(isset($_GET["notification"]) && !check_injection($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
 	(isset($_GET["alert"]) 		&& !check_injection($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
 	(isset($_GET["error"]) 		&& !check_injection($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
@@ -232,21 +232,21 @@
 	
 	if ($error == 'true')
 		array_push($msg_status_set, "'NULL'");
-	if ($up == 'true' )
-		array_push ($msg_status_set, "'UP'");
+	if ($up == 'true')
+		array_push($msg_status_set, "'UP'");
 	if ($down == 'true' )
-		array_push ($msg_status_set, "'DOWN'");
+		array_push($msg_status_set, "'DOWN'");
 	if ($unreachable == 'true' )
-		array_push ($msg_status_set, "'UNREACHABLE'");
+		array_push($msg_status_set, "'UNREACHABLE'");
 	
 	if ($ok == 'true')
-		array_push ($msg_status_set, "'OK'");
+		array_push($msg_status_set, "'OK'");
 	if ($warning == 'true')
-		array_push ($msg_status_set, "'WARNING'");
+		array_push($msg_status_set, "'WARNING'");
 	if ($critical == 'true')
-		array_push ($msg_status_set, "'CRITICAL'");
+		array_push($msg_status_set, "'CRITICAL'");
 	if ($unknown == 'true')
-		array_push ($msg_status_set, "'UNKNOWN'");
+		array_push($msg_status_set, "'UNKNOWN'");
 	
 	$flag_begin = 0;
 	if ($notification == 'true') {
@@ -280,6 +280,7 @@
 	}
 	if ($flag_begin)	
 		$msg_req .= ")";
+		
 
 	/*
 	 * If multi checked 
@@ -296,7 +297,7 @@
 		$flag_already_call = 0;
 		
 		foreach ($tab_id as $openid) {
-			$tab_tmp = split("_",$openid);
+			$tab_tmp = split("_", $openid);
 			if (isset($tab_tmp[1]))
 				$id = $tab_tmp[1];
 			$type = $tab_tmp[0];
@@ -304,8 +305,9 @@
 				$hosts = getMyHostGroupHosts($id);
 				foreach ($hosts as $h_id)	{
 					$host_name = getMyHostName($h_id);
-					if ((isset($lca["Host"][$host_name]) && !$is_admin) || $is_admin) {
-					   $tab_host_name[] = $host_name; 
+					if ((isset($lca["LcaHost"][$host_name]) && !$is_admin) || $is_admin) {
+					   $tab_host_name[] = $host_name;
+					   $tab_svc[$host_name] = getMyHostActiveServices($h_id);
 					}
 				}
 			} else if ($type == 'ST'){
@@ -319,11 +321,18 @@
 				}
 			} else if ($type == "HH") {
 				$host_name = getMyHostName($id);
-				$tab_host_name[] = $host_name;		
+				$tab_host_name[] = $host_name;
+				$tmp_tab = getMyHostActiveServices($id);
+				foreach ($tmp_tab as $key => $value)
+					if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$value])) || $is_admin)
+						$tab_svc[$host_name][$key] = $value;
 			} else if ($type == "HS") {
-				$tmp["svc_name"] = getMyServiceName($id);
-				$tmp["host_name"] = getMyHostName(getMyHostIDService($id));
-				array_push($tab_svc, $tmp);
+				$host_name = getMyHostName(getMyHostIDService($id));
+				$service_description = getMyServiceName($id);
+				if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$service_description])) || $is_admin)
+					$tab_svc[$host_name][$id] = $service_description;
+				unset($host_name);
+				unset($service_description);
 			} else if ($type == "MS") {
 				if ($id != 0) {
 					$tmp["svc_name"] = "meta_".$id;
@@ -332,68 +341,62 @@
 				}
 			}
 		}
-		/*
-		 * Building request
-		 */
-		$req = "SELECT * FROM `log` WHERE `ctime` > '$start' AND `ctime` <= '$end' $msg_req";
 		
-		print_r($tab_svc);
+		$req = "SELECT * FROM `log` WHERE `ctime` > '$start' AND `ctime` <= '$end' $msg_req";
 		
 		/*
 		 * Add Host
 		 */
 		$str_unitH_flag = 0;
 		$str_unitH = "";
+		
 		if (!$is_admin) {
-			if	(count($lca) > 0) {
-				foreach ($tab_svc as $host_name => $host) {
-					$str = "";
-					foreach ($host as $svc => $flag) {
-						if ($str != "")
-							$str .= ",";
-						$str .= "'$svc'";
-					}
-					if ($str_unitH != "")
-						$str_unitH .= " OR ";
-					$str_unitH .= " (`host_name` = '$host_name' AND `service_description` IN ($str)) ";
-					unset($str);
-				}
+			foreach ($tab_host_name as $host_name ) {
+				if ($str_unitH != "")
+					$str_unitH .= ", ";
+				$str_unitH .= "'$host_name'";
 			}
 		}
 		
-		/*
-		if (!$is_admin && $str_unitH == "" && count($tab_svc) == 0 && count($tab_SG) == 0) {
-			$str_unitH = " `host_name` IN ($lcaHStr) ";
+		if (!$is_admin && $str_unitH != "") {
+			$str_unitH = "(`host_name` IN ($str_unitH) AND service_description IS NULL)";
 		}
-		*/
+		
 		/*
-		 * Concat 
+		 * Add services
 		 */
 		$flag = 0;
 		$str_unitSVC = "";
-		if (count($tab_svc) > 0){
-			$str = "";
-			foreach ($tab_svc as $svc => $flag2){
-				if ($str != "")
-					$str .= ",";
-				$str .= "'$svc'";
+		if (count($tab_svc) > 0 && ($ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
+			foreach ($tab_svc as $host_name => $services) {
+				$str = "";
+				foreach ($services as $svc_id => $svc_name) {
+					if ((isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$svc_name])) || $is_admin) {
+						if ($str != "")
+							$str .= ",";
+						$str .= "'$svc_name'";
+					}
+				}
+				if ($str != "") {
+					($flag == 1 || $str_unitH != "") ? $str_unitSVC .= "OR" : NULL;
+					$str_unitSVC .= " (`host_name` = '".$host_name."' AND `service_description` IN ($str)) ";
+					$flag = 1;
+				}
 			}
-			($flag == 1 || $str_unitH != "") ? $str_unitSVC .= "OR" : NULL;
-			$str_unitSVC .= " (`host_name` = '".$svc["host_name"]."' AND `service_description` IN ($str)) ";
-			unset($str);
-			$flag = 1;
 		}
 		if (count($tab_SG) > 0){
 			foreach ($tab_SG as $SG){
-				($flag && strlen($str_unitSVC)) ? $str_unitSVC .= "OR" : NULL;
+				($flag == 1 || $str_unitH != "") ? $str_unitSVC .= "OR" : NULL;
 				$str_unitSVC .= " (`host_name` = '".$SG["h"]."' AND `service_description` = '".$SG["s"]."') ";
 				$flag = 1;
 			}
-		}  
-		
+		}
 		if ($str_unitH || $str_unitSVC)
 			$req .= " AND (".$str_unitH.$str_unitSVC.")";
-			
+		
+		if ($str_unitH  == "" && $str_unitSVC == "")
+			$req = "";
+		
 	} else {
 	
 		/*
@@ -420,9 +423,9 @@
 			$req .= ")";
 		} else if($type == "HS") {
 			$service_description = getMyServiceName($id);
-			$host_id = getMyHostIDService($id);
+			$host_id = getMyHostActivateService($id);
 			$host_name = getMyHostName($host_id);
-		
+			
 			$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` like '".$host_name."'";
 			if ($error  == 'true' || $notification == 'true')
 				$req .= ' OR `host_name` is null';				
@@ -459,10 +462,7 @@
 	/*
 	 * calculate size before limit for pagination 
 	 */
-	//print $req ;
 	
-	//exit();
-
 	if (isset($req) && $req) {
 		$lstart = 0;
 		$DBRESULT =& $pearDBO->query($req);
