@@ -575,6 +575,8 @@
 	  */
 	 public function getHostServicesName($pearDBndo, $host_name = NULL) {		
 		$tab = array();
+		$host_name = str_replace('/', "#S#", $host_name);
+		$host_name = str_replace('\\', "#BS#", $host_name);
 		if (!isset($host_name)) {
 			if ($this->admin)
 				$query = "SELECT host_name, service_description FROM centreon_acl";
@@ -592,7 +594,7 @@
 			$DBRESULT =& $pearDBndo->query($query);
 			while ($row =& $DBRESULT->fetchRow())
 				$tab[$row['service_id']] = $row['service_description'];
-		}		
+		}
 		return $tab;
 	 }
 	 
