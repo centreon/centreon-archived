@@ -105,7 +105,7 @@
 		$DBRESULT =& $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
 		$session =& $DBRESULT->fetchRow();
 		$access = new CentreonAcl($session["user_id"], $is_admin);
-		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups());
+		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 		
 		$hoststr = $access->getHostsString("ID", $pearDBndo);
 		$servicestr = $access->getServicesString("ID", $pearDBndo);
@@ -152,12 +152,7 @@
 				$host_name = getMyHostName($tab_value[0]);
 				$service_description = getMyServiceName($tab_value[1], $tab_value[0]);
 				if (checkIfServiceSgIsEn($tab_value[0], $tab_value[1]))
-					if ($is_admin) {
-						print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
-					} else {
-						//if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_alias"]]))
-				    	print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");					
-					}
+					print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");
 			}
 		} else if ($type == "HH") {
 			/*
@@ -168,8 +163,6 @@
 			$services = getMyHostActiveServices($id);
 			$graphList = getMyHostGraphs($id);
 		    $host_name = getMyHostName($id);
-		    //print_r($services);
-		    //print_r($lca["LcaHost"]);
 		    foreach ($services as $svc_id => $svc_name){
 				if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$id]) && isset($lca["LcaHost"][$id][$svc_id])))
 			        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
