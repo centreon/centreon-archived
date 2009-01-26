@@ -1,0 +1,40 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<div align="center">
+<form id="form" method="POST">
+	{if $msg}
+		<span class="msg">{ $msg }</span>
+		<br />
+	{/if}	
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
+			<td class="Toolbar_TDSelectAction_Top">{$form.o1.html}</td>
+			<input name="p" value="{$p}" type="hidden">
+		</tr>
+	</table>
+	<table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+			<td class="ListColHeaderLeft">{ $wi_user }</td>
+			<td class="ListColHeaderCenter">{ $distant_location }</td>			
+			<td class="ListColHeaderCenter">{ $wi_where }</td>			
+			<td class="ListColHeaderCenter">{ $actions }</td>
+		</tr>
+		{foreach name=outer item=sd from=$session_data }
+		<tr class="{$sd.class}">
+			<td class="ListColPicker">{$sd.checkbox}</td>
+			<td class="ListColLeft">{if $sd.admin == 1}<img src='./img/icones/16x16/guard.gif'>{else}<img src='./img/icones/16x16/user1.gif'>{/if}&nbsp;&nbsp;<a href='./main.php?p=60302&o=w&contact_id={$sd.user_id}'>{$sd.user_alias}</a></td>
+			<td class="ListColCenter">{$sd.ip_address}</td>
+			<td class="ListColCenter"><a href='./main.php?p={$sd.current_page}'>{$sd.topology_name}</a></td>
+			<td class="ListColCenter" align=right>{$sd.actions}</td>
+		</tr>
+		{/foreach}
+	</table>
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
+			<td class="Toolbar_TDSelectAction_Top">{$form.o2.html}</td>
+			<input name="p" value="{$p}" type="hidden">
+		</tr>
+	</table>
+<input type='hidden' name='o' id='o' value='0'>
+</form>
+</div>
