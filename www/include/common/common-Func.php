@@ -1012,9 +1012,16 @@
 	}
 
 	function getMyHostServices($host_id = NULL)	{
-		if (!$host_id) return;
 		global $pearDB;
+		
+		if (!$host_id) 
+			return;
+		
 		$hSvs = array();
+		
+		/*
+		 * Get Services attached to hosts
+		 */
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -1024,6 +1031,10 @@
 			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES);
 		}
 		$DBRESULT->free();
+		
+		/*
+		 * Get Services attached to hostgroups
+		 */
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id");
@@ -1040,10 +1051,16 @@
 	}
 	
 	function getMyHostActiveServices($host_id = NULL)	{
+		global $pearDB;
+		
 		if (!$host_id) 
 			return;
-		global $pearDB;
+		
 		$hSvs = array();
+		
+		/*
+		 * Get Services attached to hosts
+		 */
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_activate = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -1053,6 +1070,10 @@
 			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES);
 		}
 		$DBRESULT->free();
+		
+		/*
+		 * Get Services attached to hostgroups
+		 */
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id AND service_activate = '1'");
