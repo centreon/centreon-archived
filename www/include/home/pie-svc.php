@@ -21,9 +21,8 @@
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-	require_once "DB.php" ;
-	include_once "/etc/centreon/centreon.conf.php";
-	//include_once "@CENTREON_ETC@/centreon.conf.php";	
+	require_once "DB.php" ;	
+	include_once "@CENTREON_ETC@/centreon.conf.php";	
 		
 	/* 
 	 * Connect to oreon DB
@@ -55,23 +54,16 @@
     /*
 	 * LCA
 	 */
+	$sid = $_GET['sid'];
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
 	$user =& $res1->fetchRow();
 	$user_id = $user["user_id"];
 
 	global $is_admin;
 	
-	$is_admin =  isUserAdmin($sid);	
-	
-	if (!$is_admin){
-		/*
-		 * Get Acl Group list
-		 */
-		$grouplist = getGroupListofUser($pearDB); 
-		$groupnumber = count($grouplist);
-		$grouplistStr = groupsListStr($grouplist);
-	}
-	
+	$is_admin =  isUserAdmin($sid);
+	$grouplistStr = $oreon->user->access->getAccessGroupsString();
+			
 	/* 
 	 * Get Service NDO status 
 	 */
@@ -95,6 +87,7 @@
 		print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
 
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+	$counter = 0;
 	while ($ndo =& $DBRESULT_NDO2->fetchRow()){
 		$data[] = $ndo["count(nss.current_state)"];
 		$legend[] = $statistic[$ndo["current_state"]];
