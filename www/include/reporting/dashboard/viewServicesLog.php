@@ -54,7 +54,7 @@
 	 */	
 	/* service Selection */
 	$host_name = getHostNameFromId($host_id);
-	$items  = getHostServices($host_id);
+	$items  = $oreon->user->access->getHostServices($pearDBndo, $host_id);	
 	$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
 	$form->addElement('hidden', 'p', $p);
 	$redirect =& $form->addElement('hidden', 'o');

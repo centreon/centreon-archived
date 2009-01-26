@@ -422,11 +422,11 @@
 			$servicesStats = getLogInDbForOneSVC($res[0], $res[1], $start_date, $end_date, $reportTimePeriod);
 
 			if(isset($servicesStats)){
-				$serviceGroupStats[$host_service_id] = $servicesStats;
+				$serviceGroupStats[$host_service_id] = $servicesStats;				
 				$res = preg_split("/_/", $host_service_id);
 				$serviceGroupStats[$host_service_id]["HOST_ID"] = $res[0];
 				$serviceGroupStats[$host_service_id]["SERVICE_ID"] = $res[1];
-				$res = preg_split("/:::/", $host_service_name);
+				$res = preg_split("/:::/", $host_service_name);				
 				$serviceGroupStats[$host_service_id]["HOST_NAME"] = $res[0];
 				$serviceGroupStats[$host_service_id]["SERVICE_DESC"] = $res[1];
 				foreach ($serviceStatsLabels as $name)
@@ -480,7 +480,7 @@
 	 * Returns all activated services from a servicegroup including services by host and services by hostgroup
 	 */
 	function getServiceGroupActivateServices($sg_id = NULL)	{
-		global $pearDB;
+		global $pearDB, $pearDBndo, $oreon;
 		if (!$sg_id) 
 			return;
 		/*
@@ -494,13 +494,14 @@
 									"AND service.service_id = servicegroup_relation.service_service_id " .
 									"AND servicegroup_relation.host_host_id = host.host_id " .
 									"AND servicegroup_relation.host_host_id IS NOT NULL " .
+									$oreon->user->access->queryBuilder("AND", "service.service_id", $oreon->user->access->getServicesString("ID", $pearDBndo)) .
 									"AND service.service_activate = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
-			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = $elem["service_description"] . ":::" . $elem["host_name"];
+			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = $elem["host_name"] . ":::" . $elem["service_description"];
 		}
 		
 		/*
