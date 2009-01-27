@@ -494,7 +494,7 @@
 									"AND service.service_id = servicegroup_relation.service_service_id " .
 									"AND servicegroup_relation.host_host_id = host.host_id " .
 									"AND servicegroup_relation.host_host_id IS NOT NULL " .
-									$oreon->user->access->queryBuilder("AND", "service.service_id", $oreon->user->access->getServicesString("ID", $pearDBndo)) .
+									//$oreon->user->access->queryBuilder("AND", "service.service_id", $oreon->user->access->getServicesString("ID", $pearDBndo)) .
 									"AND service.service_activate = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
