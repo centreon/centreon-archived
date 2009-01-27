@@ -15,6 +15,8 @@
  * For information : contact@centreon.com
  */
 
+require_once("centreonACL.class.php");
+
 class User	{
 
 	var $user_id;
@@ -51,6 +53,7 @@ class User	{
 	  	$this->lcaTopo = array();
 	  	$this->gmt = $user["contact_location"];
 	  	$this->is_admin = NULL;
+	  	$this->access = new CentreonACL($this->user_id, $this->admin);
   	}
   
   	function getAllTopology($pearDB){
