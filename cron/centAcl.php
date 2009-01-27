@@ -36,6 +36,8 @@
  * 
  */
  	
+ 	
+ 	
 	include_once "DB.php";
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."/www/DBconnect.php";
@@ -144,7 +146,7 @@
 			
 			$str = "";	
 			foreach ($Host as $key => $value){
-				$tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"]);
+				$tab = getAuthorizedServicesHost2($key, $acl_group_id, $res2["acl_res_id"]);
 				foreach ($tab as $desc => $id){
 					if (!isset($tabElem[$value]))
 						$tabElem[$value] = array();

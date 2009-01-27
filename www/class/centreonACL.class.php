@@ -81,7 +81,7 @@
 	 		$query = "SELECT update_acl FROM session WHERE update_acl = '1' AND user_id = '".$this->userID."'";
 	 		$DBRES =& $pearDB->query($query);
 	 		if ($DBRES->numRows()) {	 			
-	 			$pearDB->query("UPDATE session SET update_acl = '0' WHERE user_id = '".$this->userID."'");
+	 			$pearDB->query("UPDATE session SET update_acl = '0' WHERE user_id = '".$this->userID."'");	 			
 	 			$this->resetACL();
 	 		}
  		}

@@ -44,7 +44,7 @@
 	   return ((float)$usec + (float)$sec);
 	}
 		
-	function getAuthorizedCategories($groupstr, $res_id){
+	function getAuthorizedCategories2($groupstr, $res_id){
 		global $pearDB;
 		
 		if (strlen($groupstr) == 0)
@@ -69,7 +69,7 @@
 	  	return $tab_categories;
 	}
 	
-	function getServiceTemplateList($service_id = NULL)	{
+	function getServiceTemplateList3($service_id = NULL)	{
 		global $pearDB;
 
 		if (!$service_id) 
@@ -96,7 +96,7 @@
 		}
 	}
 	
-	function getMyServiceName($service_id = NULL)	{
+	function getMyServiceName2($service_id = NULL)	{
 		if (!$service_id) return;
 		global $pearDB;
 		while (1) {
@@ -115,7 +115,7 @@
 		}
 	}
 	
-	function getACLSGForHost($pearDB, $host_id, $groupstr){
+	function getACLSGForHost2($pearDB, $host_id, $groupstr){
 		if (!$pearDB || !isset($host_id))
 			return ;
 
@@ -141,20 +141,20 @@
 			$DBRESULT2 =& $pearDB->query(	"SELECT `service_service_id` " .
 											"FROM `servicegroup`, `acl_resources_sg_relations`, `servicegroup_relation` " .
 											"WHERE `acl_res_id` = '".$res["acl_res_id"]."' " .
-													"AND `acl_resources_sg_relations`.`sg_id` = `servicegroup`.`sg_id` " .
-													"AND `servicegroup_relation`.`servicegroup_sg_id` = `servicegroup`.`sg_id` " .
-													"AND `servicegroup_relation`.`host_host_id` = '".$host_id."'");	
+											"AND `acl_resources_sg_relations`.`sg_id` = `servicegroup`.`sg_id` " .
+											"AND `servicegroup_relation`.`servicegroup_sg_id` = `servicegroup`.`sg_id` " .
+											"AND `servicegroup_relation`.`host_host_id` = '".$host_id."'");	
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($service =& $DBRESULT2->fetchRow())
-				$svc[getMyServiceName($service["service_service_id"])] = $service["service_service_id"];
+				$svc[getMyServiceName2($service["service_service_id"])] = $service["service_service_id"];
 			$DBRESULT2->free();
 		}
 		$DBRESULT->free();
 		return $svc;
 	}
 	
-	function getServicesCategories($str){
+	function getServicesCategories2($str){
 		global $pearDB;
 		
 		$tab = array();
@@ -166,28 +166,28 @@
 		return $tab;
 	}
 	
-	function getAuthorizedServicesHost($host_id, $groupstr, $res_id){
+	function getAuthorizedServicesHost2($host_id, $groupstr, $res_id){
 		global $pearDB;
 		
-		$tab_svc 	= getMyHostServicesByName($host_id);
+		$tab_svc 	= getMyHostServicesByName2($host_id);
 
 		/*
 		 * Get categories
 		 */
-		$tab_cat    = getAuthorizedCategories($groupstr, $res_id);		
+		$tab_cat    = getAuthorizedCategories2($groupstr, $res_id);		
 
 
 		/*
 		 * Get Service Groups
 		 */
-		$svc_SG 	= getACLSGForHost($pearDB, $host_id, $groupstr);
+		$svc_SG 	= getACLSGForHost2($pearDB, $host_id, $groupstr);
 		
 		$tab_services = array();
 		if (count($tab_cat) || count($svc_SG)){
 			if ($tab_svc) {
 				foreach ($tab_svc as $svc_descr => $svc_id){
-					$tmp = getServiceTemplateList($svc_id);
-					$tab = getServicesCategories($tmp);					
+					$tmp = getServiceTemplateList3($svc_id);
+					$tab = getServicesCategories2($tmp);					
 					foreach ($tab as $t){
 						if (isset($tab_cat[$t])) {							
 							$tab_services[$svc_descr] = $svc_id;
@@ -204,7 +204,7 @@
 	  	return $tab_services;
 	}
 	
-	function getMyHostServicesByName($host_id = NULL)	{
+	function getMyHostServicesByName2($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
 		$hSvs = array();
