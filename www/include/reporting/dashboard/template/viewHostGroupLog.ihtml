@@ -129,8 +129,7 @@
 							<td class="FormHeader" colspan=11>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter">{$hostTitle}</td>
-							<td colspan=1 class="ListColHeaderCenter">&nbsp;</td>
+							<td class="ListColHeaderCenter">{$hostTitle}</td>							
 							<td colspan=2 class="ListColHeaderCenter">{$states.UP}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$states.DOWN}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$states.UNREACHABLE}</td>
@@ -148,8 +147,7 @@
 						</tr>
 						{foreach item=tb from=$components}
 						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.NAME}</a></td>
-							<td class="ListColHeaderCenter"><img onmouseout="hiddenIMG('22');" onmouseover="displayIMG('809','993e01f4fe1dbc6b680be85e6ba427dc','22');" src="./img/icones/16x16/column-chart.gif"></td>
+							<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.NAME}</a></td>							
 							<td {$style.UP}>{$tb.UP_TP}% ({$tb.UP_MP}%)</td>
 							<td {$style.UP} >{$tb.UP_A}</td>
 							<td {$style.DOWN}>{$tb.DOWN_TP}% ({$tb.DOWN_MP}%)</td>
