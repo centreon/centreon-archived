@@ -31,6 +31,8 @@
 # 7 -> Host Current State
 # 8 -> Service Initial State  
 # 9 -> Host Initial State
+# 10 -> Service Acknowledgement
+# 11 -> Host Acknowledgement
 
 use strict;
 use warnings;
@@ -174,7 +176,7 @@ sub parseFile ($$) {
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_SVC\_PROBLEM\;(.*)$/) {
 		    $ctime = $1;
 		    my @tab = split(/;/, $2);
-		    my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description`, `notification_contact`, `output`, `instance`) VALUES ('11', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[5]."', '".$tab[6]."','".$instance."')";
+		    my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description`, `notification_contact`, `output`, `instance`) VALUES ('10', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[5]."', '".$tab[6]."','".$instance."')";
 		    my $res = $dbh->do($rq);
 		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_HOST\_PROBLEM\;(.*)$/) {
