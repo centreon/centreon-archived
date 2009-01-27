@@ -39,13 +39,20 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once($centreon_path . "www/DBNDOConnect.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
+	require_once $centreon_path . "www/class/User.class.php";
+	require_once $centreon_path . "www/class/Oreon.class.php";
 	require_once $centreon_path."www/class/other.class.php";
 	require_once $centreon_path."www/include/common/common-Func-ACL.php";
 	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
 	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+		$res =& $pearDB->query("SELECT * FROM contact, session WHERE session.session_id='".$_GET['sid']."' AND session.user_id = contact.contact_id");
+		$user =& new User($res->fetchRow(), "3");
+		$oreon = new Oreon($user);
+		
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
@@ -98,7 +105,7 @@
 							  ";".$tab["WARNING_TP"]. "%;".$tab["WARNING_MP"]. "%;".$tab["WARNING_A"]. 
 							  ";".$tab["CRITICAL_TP"]. "%;".$tab["CRITICAL_MP"]. "%;".$tab["CRITICAL_A"]. 
 							  ";".$tab["UNKNOWN_TP"]. "%;".$tab["UNKNOWN_MP"]. "%;".$tab["UNKNOWN_A"]. 
-							  ";".$tab["UNDETERMINED_TP"]. "%;".$tab["UNDETERMINED_MP"]. "%;;\n"; 
+							  ";".$tab["UNDETERMINED_TP"]. "%;;\n"; 
 	}
 	echo "\n\n";
 	/*

@@ -39,18 +39,28 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once($centreon_path . "www/DBNDOConnect.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
 	require_once $centreon_path . "www/class/other.class.php";
+	require_once $centreon_path . "www/class/User.class.php";
+	require_once $centreon_path . "www/class/Oreon.class.php";
 	require_once $centreon_path . "www/include/common/common-Func-ACL.php";
 	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
+		
+	
 	/*
 	 * Checking session
 	 */
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+		
+		$res =& $pearDB->query("SELECT * FROM contact, session WHERE session.session_id='".$_GET['sid']."' AND session.user_id = contact.contact_id");
+		$user =& new User($res->fetchRow(), "3");
+		$oreon = new Oreon($user);
+		
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");		
 		if($res->fetchInto($session)){
 			$_POST["sid"] = $sid;
 		} else
@@ -90,7 +100,7 @@
 	echo _("DOWN").";".$hostStats["DOWN_T"].";".$hostStats["DOWN_TP"].";".$hostStats["DOWN_MP"].";".$hostStats["DOWN_A"].";\n";
 	echo _("UP").";".$hostStats["UP_T"].";".$hostStats["UP_TP"].";".$hostStats["UP_MP"].";".$hostStats["UP_A"].";\n";
 	echo _("UNREACHABLE").";".$hostStats["UNREACHABLE_T"].";".$hostStats["UNREACHABLE_TP"].";".$hostStats["UNREACHABLE_MP"].";".$hostStats["UNREACHABLE_A"].";\n";
-	echo _("UNDETERMINED").";".$hostStats["UNDETERMINED_T"].";".$hostStats["UNDETERMINED_TP"].";".$hostStats["UNDETERMINED_MP"].";".$hostStats["UNDETERMINED_A"].";\n";	
+	echo _("UNDETERMINED").";".$hostStats["UNDETERMINED_T"].";".$hostStats["UNDETERMINED_TP"].";\n";	
 	echo "\n";
 	
 	echo _("Service").";"._("OK")."; "._("OK")." Alert;"
