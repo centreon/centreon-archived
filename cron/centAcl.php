@@ -128,7 +128,7 @@
 					$flag_all_host = 1;
 				$DBRESULT3->free();
 				if (!$flag_all_host) {
-					$DBRESULT3 =& $pearDB->query("SELECT arsr.sc_id FROM acl_resources_sg_relations arsr, acl_resources ar WHERE arsr.acl_res_id = '".$res2["acl_res_id"]."' " .
+					$DBRESULT3 =& $pearDB->query("SELECT arsr.sg_id FROM acl_resources_sg_relations arsr, acl_resources ar WHERE arsr.acl_res_id = '".$res2["acl_res_id"]."' " .
 											"AND arsr.acl_res_id = ar.acl_res_id " .
 											"AND ar.acl_res_activate = '1'");
 					if ($DBRESULT3->numRows())

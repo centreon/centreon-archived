@@ -44,7 +44,7 @@
 	 */
 	require_once 'DB.php';
 
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/DBconnect.php";
 	include_once $centreon_path . "www/DBOdsConnect.php";
 	include_once $centreon_path . "www/DBNDOConnect.php";
@@ -186,17 +186,15 @@
 			}
 			$DBRESULT->free();
 		} else if ($type == "RR") {
-			$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY `hg_name`");
+			$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($HG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin){
-					if (HG_has_one_or_more_host($HG["hg_id"])){
-			        	print("<item child='1' test='$is_admin' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
-					}					
+					print("<item child='1' test='$is_admin' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");					
 				} else {
-					if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_id"]])){
+					if (isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_id"]])){
 			        	print("<item child='1' test='$is_admin' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
 					}					
 				}

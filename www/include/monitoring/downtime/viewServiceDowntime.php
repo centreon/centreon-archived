@@ -82,7 +82,7 @@
 				"AND obj.name2 IS NOT NULL " .
 				"AND obj.object_id = dtm.object_id " .
 				"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
-				"ORDER BY dtm.actual_start_time " . 
+				"ORDER BY dtm.actual_start_time DESC " . 
 				"LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
@@ -93,7 +93,7 @@
 				"AND obj.name1 = centreon_acl.host_name " . 
 				"AND obj.name2 = centreon_acl.service_description " . 
 				"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
-				"ORDER BY dtm.actual_start_time " .
+				"ORDER BY dtm.actual_start_time DESC " .
 				"LIMIT ".$num * $limit.", ".$limit;
 				
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);

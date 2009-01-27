@@ -20,7 +20,7 @@
 
 	require_once 'DB.php';
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/DBconnect.php";
 	include_once $centreon_path . "www/DBOdsConnect.php";
 	include_once $centreon_path . "www/DBNDOConnect.php";
@@ -218,7 +218,7 @@
 			/*
 			 * Send Host Group list
 			 */
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
+			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($HG =& $DBRESULT->fetchRow()) {

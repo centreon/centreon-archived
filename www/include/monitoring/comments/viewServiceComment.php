@@ -83,7 +83,7 @@
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NOT NULL " .			
 				"AND obj.object_id = cmt.object_id " .
-				"AND cmt.expires = 0 ORDER BY cmt.entry_time LIMIT ".$num * $limit.", ".$limit;
+				"AND cmt.expires = 0 ORDER BY cmt.entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 	}
 	else {
 		$rq2 =	"SELECT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
@@ -93,7 +93,7 @@
 				"AND obj.object_id = cmt.object_id " .
 				"AND centreon_acl.host_name = obj.name1 " .
 				"AND centreon_acl.service_description = obj.name2 " .
-				"AND cmt.expires = 0 ORDER BY cmt.entry_time LIMIT ".$num * $limit.", ".$limit;		
+				"AND cmt.expires = 0 ORDER BY cmt.entry_time DESC LIMIT ".$num * $limit.", ".$limit;		
 	}	
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))

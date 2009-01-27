@@ -73,7 +73,7 @@
 			"AND obj.object_id = dtm.object_id " .
 			$oreon->user->access->queryBuilder("AND", "obj.name1", $hostStr) . 
 			"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
-			"ORDER BY dtm.actual_start_time " .
+			"ORDER BY dtm.actual_start_time DESC " .
 			"LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))

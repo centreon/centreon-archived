@@ -72,7 +72,7 @@
 			"AND obj.name2 IS NULL " .
 			"AND obj.object_id = cmt.object_id " .
 			$oreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
-			"AND cmt.expires = 0 ORDER BY cmt.comment_time LIMIT ".$num * $limit.", ".$limit;
+			"AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
 	
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	if (PEAR::isError($DBRESULT_NDO))
