@@ -33,6 +33,7 @@ class User	{
 	var $is_admin;
 	var $groupList;
 	var $groupListStr;
+	var $access;
 	
 	# User LCA
 	# Array with elements ID for loop test
