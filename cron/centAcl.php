@@ -164,7 +164,7 @@
 											"AND service_activate = '1'");
 			if ($DBRESULT3->numRows()) {
 		  		while ($h =& $DBRESULT3->fetchRow()){
-					if (!isset($tabElem[$h["host_id"]]))
+					if (!isset($tabElem[$h["host_name"]]))
 						$tabElem[$h["host_name"]] = array();
 		  			$tabElem[$h["host_name"]][$h["service_description"]] = $h["host_id"].",".$h["service_id"];
 		  		}
