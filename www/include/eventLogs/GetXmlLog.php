@@ -282,6 +282,8 @@
 		$msg_req .= ")";
 		
 
+	$multi = 1;
+
 	/*
 	 * If multi checked 
 	 */
