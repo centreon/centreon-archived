@@ -36,7 +36,7 @@
  * 
  */
  
- 	ini_set("display_errors", "On"); 
+ 	ini_set("display_errors", "Off"); 
 
 	/*
 	 * if debug == 0 => Normal, 
@@ -615,7 +615,7 @@
 	echo "<n>"._("Notifications")."</n>";
 	echo "<a>"._("Alerts")."</a>";
 	echo "<e>"._("Errors")."</e>";
-	echo "<s>"._("Services")."</s>";
+	echo "<s>"._("Status")."</s>";
 	echo "<do>"._("Down")."</do>";
 	echo "<up>"._("Up")."</up>";
 	echo "<un>"._("Unreachable")."</un>";
