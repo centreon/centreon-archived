@@ -43,7 +43,8 @@ use POSIX;
 
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $data);
 
-require "@CENTREON_ETC@/conf.pm";
+#require "@CENTREON_ETC@/conf.pm";
+require "/etc/centreon/conf.pm";
 
 ## logAnalyser's lock file
 my $lock_file = "/var/lib/centreon/logAnalyser.lock";
@@ -62,6 +63,10 @@ if (-e "$lock_file") {
 }
 $pid = getpgrp(0);
 $cmdtmp = `echo $pid > $lock_file`;
+
+# Define Var lib dir
+#my $VarLib = "@CENTREON_VARLIB@";
+my $VarLib = "/var/lib/centreon/";
 
 ## Init Date
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
@@ -96,16 +101,73 @@ my $last_line_read;
 # Parsing nagios.log
 sub parseFile ($$) {
     my $instance = $_[1];
+	my $logFile = $_[0];
+	my $lastCTime = 0;
+	my $CTime = 0;
+	
+    my $historyFile = "$VarLib/log/$instance/.history";
+     
+    # Get History Flag
+   	if (!open(FILE, $historyFile)){
+		print "Cannot open file : $historyFile (READ)\n";
+    } else {
+    	while (<FILE>) {
+    		$lastCTime = $_;
+    		$lastCTime =~ s/\n//g;	
+    	}
+    	close(FILE);
+    }
+    
+    # Get History Flag
+   	if (!open(FILE, $logFile)){
+		print "Cannot open file : $logFile (READ)\n";
+		return;
+    } else {
+    	my @tab;
+    	while (<FILE>) {
+    		if ($_ =~ m/\[([0-9]*)\]\ /) {
+		    	$CTime = $1;
+		    	$CTime =~ s/\n//g;	
+		    	last;
+		    } else {
+		    	print "Cannot find ctime in first line for poller $instance\n";
+		    	last;
+		    }
+    	}
+    	close(FILE);
+    }
+    
+    # Decide if we have to read the nagios.log from the begining 
+	
+    if ($CTime ne $lastCTime && $CTime ne 0 & $lastCTime ne 0){
+    	$last_line_read = 0;
+    } else {
+		my $sth_flag = $dbh->prepare("SELECT `log_flag` FROM `instance` WHERE `instance_id` = '".$instance."'");
+		if (!$sth_flag->execute) {
+			die "Error:" . $sth_flag->errstr . "\n";
+		}
+		$data = $sth_flag->fetchrow_hashref();
+		$last_line_read = $data->{'log_flag'};
+		
+		if (!defined($last_line_read)) {
+			print "Alert : Cannot get last line read in DB for poller $instance\n";
+			return ;
+		}
+		$sth_flag->finish();
+	}
+        
+    # Open Log File for parsing
     if (!open (FILE, $_[0])){
 		print "Cannot open file : $_[0]\n";
 		return;
     }
+    
+    # Init Counter
     $cpt = 0;
-    #
+    
     # Skip old lines (already read)
-    #
-    if (!$opt_a) {
-		while ($cpt < $last_line_read && <FILE>){
+    if (!$opt_a && $last_line_read) {
+		while ($cpt < $last_line_read && <FILE>) {
 		    $cpt++;
 		}
     }
@@ -113,8 +175,6 @@ sub parseFile ($$) {
     # Now Read unknown log lines
     #
     while (<FILE>) {
-		
-		
 		if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -205,6 +265,16 @@ sub parseFile ($$) {
 		$cpt++;
     }
     close(FILE);
+    
+    # Add History
+   	if (!open(FILE, "> ".$historyFile)){
+		print "Cannot open file : $historyFile (WRITE)\n";
+		return;
+    } else {
+    	print FILE $CTime."\n";
+    	close(FILE);
+    }
+    
     return $cpt;
 }
 
@@ -223,7 +293,7 @@ sub parseArchive($$) {
 		$archives = $data->{'log_archive_path'};
 		$sth->finish();
     } else {
-		$archives = "@CENTREON_VARLIB@/log/$instance/archives/";
+		$archives = "$VarLib/log/$instance/archives/";
     }
 
     $archives .= "/" if (!($archives =~ /\/$/));
@@ -264,26 +334,8 @@ sub parseLogFile($$) {
 		}
 		$sth->finish();
     } else {
-		$LOG_FILE = "@CENTREON_VARLIB@/log/$instance/nagios.log";
+		$LOG_FILE = "$VarLib/log/$instance/nagios.log";
     }
-
-    # Decide if we have to read the nagios.log from the begining 
-
-    if ($hour eq 0 && $min eq 0){
-		$last_line_read = 0;
-		my $rq = "UPDATE `instance` SET `log_flag` = '0'";
-		my $res = $dbh->do($rq);
-		if (!defined($res)) {die "SQL Error: ".$rq."\n";}
-    }
-
-    my $sth_flag = $dbh->prepare("SELECT `log_flag` FROM `instance` WHERE `instance_id` = '".$instance."'");
-    if (!$sth_flag->execute) {
-    	die "Error:" . $sth_flag->errstr . "\n";
-    }
-    $data = $sth_flag->fetchrow_hashref();
-    $last_line_read = $data->{'log_flag'};
-    $last_line_read = 0 if (!defined($last_line_read));
-    $sth_flag->finish();
 
     # Parse -> 
 
