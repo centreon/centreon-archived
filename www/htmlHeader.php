@@ -46,7 +46,7 @@
 <head>
 <title>Centreon - IT & Network Monitoring</title>
 <link rel="shortcut icon" href="./img/favicon.ico"/>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved." />
 <meta name="robots" content="index, nofollow" />
 <link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
