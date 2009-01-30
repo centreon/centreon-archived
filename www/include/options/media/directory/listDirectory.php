@@ -20,7 +20,7 @@
 	include("./include/common/autoNumLimit.php");
 
 	# start quickSearch form
-	$advanced_search = 1;
+	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 	
