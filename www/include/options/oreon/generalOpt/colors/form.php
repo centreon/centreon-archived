@@ -61,7 +61,7 @@
 		$attrsText3 	= array("value"=>$nameColor,"size"=>"8","maxlength"=>"7");
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
 		if ($form->validate())	{
-			$colorColor = $form->exportValue($nameColor);
+			$codeColor = $form->exportValue($nameColor);
 		}
 		$attrsText4 	= array("style"=>"width:50px; height:18px; background: ".$codeColor." url() left repeat-x 0px; border-color:".$codeColor.";");
 		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
