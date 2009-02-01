@@ -94,7 +94,7 @@ NAGIOS_IMG=""
 ## The nagios binary (optional)
 #NAGIOS_BINARY=""
 ## The nagiostats binary (optional)
-#NAGIOSSTATS_BINARY=""
+#NAGIOSTATS_BINARY=""
 ## Logging directory
 NAGIOS_VAR=""
 ## Nagios user (optional)

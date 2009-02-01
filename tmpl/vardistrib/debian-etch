@@ -105,7 +105,7 @@ NAGIOS_IMG="/usr/share/nagios2/htdocs/images"
 ## The nagios binary (optional)
 NAGIOS_BINARY="/usr/sbin/nagios2"
 ## The nagiostats binary (optional)
-NAGIOSSTATS_BINARY="/usr/sbin/nagios2stats"
+NAGIOSTATS_BINARY="/usr/sbin/nagios2stats"
 ## Logging directory
 NAGIOS_VAR="/var/log/nagios2"
 ## Nagios user (optional)

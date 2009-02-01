@@ -94,7 +94,7 @@ NAGIOS_IMG="/opt/nagios/share/images"
 ## The nagios binary (optional)
 NAGIOS_BINARY="/opt/nagios/bin/nagios"
 ## The nagiostats binary (optional)
-NAGIOSSTATS_BINARY="/opt/nagios/bin/nagiostats"
+NAGIOSTATS_BINARY="/opt/nagios/bin/nagiostats"
 ## Logging directory
 NAGIOS_VAR="/opt/nagios/var"
 ## Nagios user (optional)
