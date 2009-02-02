@@ -242,12 +242,13 @@ function Transformation() {
 	       return;
 	    }
 		
-		 _setAlign("centreonMsg", "center");
-         _setTextStyle("centreonMsg", "bold");
-         _setImage("centreonMsg", "./img/misc/ajax-loader.gif");
-         _setText("centreonMsg", " Loading...");
-         _setValign("centreonMsg", "bottom");
-		
+		if (!document.getElementById("centreonMsg_img")) {
+			 _setAlign("centreonMsg", "center");
+	         _setTextStyle("centreonMsg", "bold");
+	         _setImage("centreonMsg", "./img/misc/ajax-loader.gif");
+	         _setText("centreonMsg", " Loading...");
+	         _setValign("centreonMsg", "bottom");
+		}
 	    if (document.recalc) {
 	        var xmlID 	= randomID();
 	        var xsltID	= randomID();

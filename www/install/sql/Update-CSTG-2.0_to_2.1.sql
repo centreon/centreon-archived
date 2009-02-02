@@ -1,3 +1,4 @@
+ALTER TABLE `session` ADD update_acl ENUM('0', '1');
 
 ALTER TABLE `log` CHANGE `msg_type` `msg_type` INT NULL;
 

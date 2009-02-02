@@ -108,7 +108,7 @@ function _setText(div_str, str) {
 function _setImage(div_str, url) {	
 	var _image = document.createElement("img");
 	_image.src = url;
-	_image.id = "centreonMsg_image";
+	_image.id = "centreonMsg_img";
 	var my_div = document.getElementById(div_str);
 	my_div.appendChild(_image);
 }
