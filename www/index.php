@@ -46,7 +46,7 @@
   	 * 
   	 */
   
-  	$cryptSystem = 1;
+  	$cryptSystem = 0;
   
   	function myCrypt($str) {
   		global $cryptSystem;
