@@ -61,6 +61,7 @@
 	require_once "./DBOdsConnect.php";
 	require_once "$classdir/Session.class.php";
 	require_once "$classdir/Oreon.class.php";
+	require_once "$classdir/centreonMsg.class.php";
 	require_once SMARTY_DIR."Smarty.class.php";
 
 	ini_set("session.gc_maxlifetime", "31536000");

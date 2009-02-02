@@ -242,6 +242,12 @@ function Transformation() {
 	       return;
 	    }
 		
+		 _setAlign("centreonMsg", "center");
+         _setTextStyle("centreonMsg", "bold");
+         _setImage("centreonMsg", "./img/misc/ajax-loader.gif");
+         _setText("centreonMsg", " Loading...");
+         _setValign("centreonMsg", "bottom");
+		
 	    if (document.recalc) {
 	        var xmlID 	= randomID();
 	        var xsltID	= randomID();
@@ -306,6 +312,7 @@ function Transformation() {
 					document.getElementById(target).appendChild(resultDoc);
 					set_header_title();
 	                transformed = true;
+	                _clear("centreonMsg");
 				}
 			}
 	  		xmlRequest.open("GET", xml, true);
