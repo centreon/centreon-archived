@@ -117,6 +117,15 @@ div.pagination 		{margin-left:40%;}
 
 /* Warning */ 
 .msg 	{background-color:red;border:1px solid #000;color:#FFF;font-weight:400;margin:5px;padding:3px;text-align:center;}
+#centreonMsg 	{
+	top:50px;
+	height:15px;
+	left:450px;
+	overflow:auto;
+	position:absolute;
+	width:310px;
+	text-align:center;
+}
 
 
 div.uptodate,div.updateSecu,div.update,div.update_readme,div.update_output,div.graph_footer,div.left_menu {margin:3px;padding:3px;}
