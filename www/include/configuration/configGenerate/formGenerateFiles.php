@@ -150,7 +150,8 @@
 					require $path."genContacts.php";
 					require $path."genContactGroups.php";
 					require $path."genHosts.php";
-					require $path."genExtendedInfos.php";
+					if ($oreon->user->get_version() >= 3)
+						require $path."genExtendedInfos.php";
 					require $path."genHostGroups.php";
 					require $path."genServices.php";
 					require $path."genServiceGroups.php";

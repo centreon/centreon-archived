@@ -51,7 +51,7 @@
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/escalations.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/dependencies.cfg\n";	
 	
-	if ($oreon->user->get_version() >= 2)	{
+	if ($oreon->user->get_version() >= 3)	{
 		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/hostextinfo.cfg\n";
 		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/serviceextinfo.cfg\n";
 	}

@@ -322,10 +322,11 @@
 									unset($DBRESULT_TEMP);
 								}
 								
-								/*
-								 * On-demand macros
-								 */
+								
 								if ($oreon->user->get_version() >= 3) {
+									/*
+									 * On-demand macros
+									 */
 									$rq = "SELECT svc_macro_name, svc_macro_value FROM on_demand_macro_service WHERE `svc_svc_id`=" . $service['service_id'];
 									$DBRESULT3 =& $pearDB->query($rq);
 									if (PEAR::isError($DBRESULT3))
@@ -336,8 +337,27 @@
 										$mac_value = $od_macro['svc_macro_value'];
 										$strTMP .= print_line($mac_name, $mac_value);
 									}
-								}
+									$DBRESULT3->free();
 								
+									/*
+									 * Extended Informations
+									 */
+								
+									$DBRESULT3 =& $pearDB->query("SELECT * FROM extended_service_information esi WHERE esi.service_service_id = '".$service["service_id"]."'");
+									if (PEAR::isError($DBRESULT3))
+										print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+									$esi =& $DBRESULT3->fetchRow();
+									if ($field = $esi["esi_notes"])
+										$strTMP .= print_line("notes", $field);
+									if ($field = $esi["esi_notes_url"])
+										$strTMP .= print_line("notes_url", $field);
+									if ($field = $esi["esi_action_url"])
+										$strTMP .= print_line("action_url", $field);
+									if ($field = getMyHostExtendedInfoImage($esi["service_id"], "esi_icon_image"))
+										$strTMP .= print_line("icon_image", $field);
+									if ($field = $esi["esi_icon_image_alt"])
+										$strTMP .= print_line("icon_image_alt", $field);
+								}
 								$strTMP .= "}\n\n";
 								if (!$service["service_register"] || $LinkedToHost)	{
 									$i++;
@@ -575,10 +595,10 @@
 					unset($DBRESULT_TEMP);
 				}
 				
-				/*
-				 * On-demand macros
-				 */
 				if ($oreon->user->get_version() >= 3) {
+					/*
+					 * On-demand macros
+					 */
 					$rq = "SELECT svc_macro_name, svc_macro_value FROM on_demand_macro_service WHERE `svc_svc_id`=" . $service['service_id'];
 					$DBRESULT3 =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT3))
@@ -589,6 +609,26 @@
 						$mac_value = $od_macro['svc_macro_value'];
 						$strTMP .= print_line($mac_name, $mac_value);
 					}
+					$DBRESULT3->free();
+				
+					/*
+					 * Extended Informations
+					 */
+				
+					$DBRESULT3 =& $pearDB->query("SELECT * FROM extended_service_information esi WHERE esi.service_service_id = '".$service["service_id"]."'");
+					if (PEAR::isError($DBRESULT3))
+						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+					$esi =& $DBRESULT3->fetchRow();
+					if ($field = $esi["esi_notes"])
+						$strTMP .= print_line("notes", $field);
+					if ($field = $esi["esi_notes_url"])
+						$strTMP .= print_line("notes_url", $field);
+					if ($field = $esi["esi_action_url"])
+						$strTMP .= print_line("action_url", $field);
+					if ($field = getMyHostExtendedInfoImage($esi["service_id"], "esi_icon_image"))
+						$strTMP .= print_line("icon_image", $field);
+					if ($field = $esi["esi_icon_image_alt"])
+						$strTMP .= print_line("icon_image_alt", $field);
 				}
 				
 				$strTMP .= "}\n\n";

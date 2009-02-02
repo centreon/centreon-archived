@@ -317,6 +317,33 @@
 						$str .= print_line($mac_name, $mac_value);
 					}
 				}
+				
+				if ($oreon->user->get_version() >= 3)	{
+					$DBRESULT2 =& $pearDB->query("SELECT * FROM extended_host_information ehi WHERE ehi.host_host_id = '".$host["host_id"]."'");
+					if (PEAR::isError($DBRESULT2))
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+					$ehi =& $DBRESULT2->fetchRow();
+					if ($ehi["ehi_notes"])
+						$str .= print_line("notes", $ehi["ehi_notes"]);
+					if ($ehi["ehi_notes_url"])
+	        			$str .= print_line("notes_url", $ehi["ehi_notes_url"]);
+					if ($ehi["ehi_action_url"])
+	        			$str .= print_line("action_url", $ehi["ehi_action_url"]);
+					if ($ehi["ehi_icon_image"])
+	        			$str .= print_line("icon_image", getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1));
+					if ($ehi["ehi_icon_image_alt"])
+	        			$str .= print_line("icon_image", $ehi["ehi_icon_image_alt"]);
+					if ($ehi["ehi_vrml_image"])
+	        			$str .= print_line("vrml_image", getMyHostExtendedInfoImage($host["host_id"], "ehi_vrml_image", 1));
+					if ($ehi["ehi_statusmap_image"])
+	        			$str .= print_line("statusmap_image", getMyHostExtendedInfoImage($host["host_id"], "ehi_statusmap_image", 1));
+					if ($ehi["ehi_2d_coords"])
+	        			$str .= print_line("2d_coords", $ehi["ehi_2d_coords"]);
+					if ($ehi["ehi_3d_coords"])
+	        			$str .= print_line("3d_coords", $ehi["ehi_3d_coords"]);
+					}
+					$DBRESULT2->free();
+				}
 				$str .= "}\n\n";
 				$i++;
 			}
