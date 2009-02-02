@@ -34,7 +34,8 @@
 	$dependency = array();
 	$i = 1;
 	$str = "";
-	while($dependency =& $DBRESULT->fetchRow())	{
+	while ($dependency =& $DBRESULT->fetchRow()) {
+		
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostParent_relation dhpr, host, ns_host_relation nhr WHERE host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab["id"]."' AND dhpr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhpr.host_host_id");
 		if (PEAR::isError($DBRESULT2))
@@ -42,20 +43,17 @@
 		$host = array();
 		$strTemp1 = "";
 		while ($host =& $DBRESULT2->fetchRow())	{
-			$BP = false;
-			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : "";
-			if ($BP)	
+			if (isset($host_instance[$host["host_id"]]) && isset($gbArr[2][$host["host_id"]]))	
 				$strTemp1 != "" ? $strTemp1 .= ", ".$host["host_name"] : $strTemp1 = $host["host_name"];
 		}
+		
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostChild_relation dhcr, host, ns_host_relation nhr WHERE host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab["id"]."' AND dhcr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhcr.host_host_id");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$host = array();
 		$strTemp2 = "";
 		while ($host =& $DBRESULT2->fetchRow())	{
-			$BP = false;
-			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : "";
-			if ($BP)	
+			if (isset($host_instance[$host["host_id"]]) && isset($gbArr[2][$host["host_id"]]))	
 				$strTemp2 != "" ? $strTemp2 .= ", ".$host["host_name"] : $strTemp2 = $host["host_name"];
 		}
 		$DBRESULT2->free();			
@@ -71,10 +69,13 @@
 			$str .= print_line("dependent_host_name", $strTemp2);
 			$str .= print_line("host_name", $strTemp1);
 			if ($oreon->user->get_version() >= 2)	{
-				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") $str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
-				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") $str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
+				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") 
+					$str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
+				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") 
+					$str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 			}
-			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != "") $str .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
+			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != "") 
+				$str .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
 			$str .= "}\n\n";
 			$i++;
 		}
@@ -102,10 +103,7 @@
 		$hg = array();
 		$strTemp1 = "";
 		while ($hg =& $DBRESULT2->fetchRow())	{
-			$BP = false;
-			array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : "";
-			
-			if ($BP && $generatedHG[$hg["hg_id"]]){
+			if ($gbArr[3][$hg["hg_id"]] && $generatedHG[$hg["hg_id"]]){
 				$generated++;
 				$strTemp1 != "" ? $strTemp1 .= ", ".$hg["hg_name"] : $strTemp1 = $hg["hg_name"];
 			}
@@ -117,10 +115,7 @@
 		$hg = array();
 		$strTemp2 = "";
 		while ($hg =& $DBRESULT2->fetchRow())	{
-			$BP = false;
-			array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : "";
-			
-			if ($BP && $generatedHG[$hg["hg_id"]])	{
+			if ($gbArr[3][$hg["hg_id"]] && $generatedHG[$hg["hg_id"]])	{
 				$strTemp2 != "" ? $strTemp2 .= ", ".$hg["hg_name"] : $strTemp2 = $hg["hg_name"];
 				$generated2++;
 			}
@@ -143,7 +138,8 @@
 				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") 
 					$strDef .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 			}
-			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != "") $strDef .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
+			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != "") 
+				$strDef .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
 			$strDef .= "}\n\n";
 			$i++;
 		}
