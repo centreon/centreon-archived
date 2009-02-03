@@ -269,6 +269,7 @@ function Transformation() {
 							document.all[target].innerHTML = document.all[xmlID].transformNode(document.all[xsltID].XMLDocument);
 							set_header_title();
 							transformed = true;
+							_clear("centreonMsg");
 						}
 					}, 50);
 				}
