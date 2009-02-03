@@ -342,7 +342,7 @@
 		 */
 		$tpl->assign("h_ext_notes", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes"));
 		$tpl->assign("h_ext_notes_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes_url"));
-		$tpl->assign("h_ext_action_url_lang", _("URL Action"));
+		$tpl->assign("h_ext_action_url_lang", _("Action URL"));
 
 		/*
 		* This part was added by Kay Roesler to fix the $HOSTMANE$ Thingy
