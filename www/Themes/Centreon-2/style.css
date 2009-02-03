@@ -119,12 +119,13 @@ div.pagination 		{margin-left:40%;}
 .msg 	{background-color:red;border:1px solid #000;color:#FFF;font-weight:400;margin:5px;padding:3px;text-align:center;}
 #centreonMsg 	{
 	top:50px;
-	height:15px;
+	height:20px;
 	left:450px;
 	overflow:auto;
 	position:absolute;
 	width:310px;
 	text-align:center;
+	-moz-border-radius:4px;
 }
 
 
