@@ -162,6 +162,10 @@
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>
+		
+		{if $o == "mc"}
+		<tr class="list_two"><td class="FormRowField">{$form.mc_mod_sc.label}</td><td class="FormRowValue">{$form.mc_mod_sc.html}</td></tr>
+		{/if}
 		<tr class="list_one"><td class="FormRowField">{$form.service_categories.label}</td><td class="FormRowValue">{$form.service_categories.html}</td></tr>
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.nagios}</td></tr>

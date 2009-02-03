@@ -432,7 +432,7 @@
 		# 3 - Normal update
 		if (isset($ret["mc_mod_traps"]["mc_mod_traps"]) && $ret["mc_mod_traps"]["mc_mod_traps"])
 			updateServiceTrap($service_id);
-		else if (isset($ret["mc_mod_traps"]["mc_mod_traps"]) && $ret["mc_mod_traps"]["mc_mod_traps"])
+		else if (isset($ret["mc_mod_traps"]["mc_mod_traps"]) && !$ret["mc_mod_traps"]["mc_mod_traps"])
 			updateServiceTrap_MC($service_id);
 		else
 			updateServiceTrap($service_id);
@@ -442,7 +442,7 @@
 		# 3 - Normal update
 		if (isset($ret["mc_mod_catgeories"]["mc_mod_catgeories"]) && $ret["mc_mod_catgeories"]["mc_mod_catgeories"])
 			updateServiceCategories($service_id);
-		else if (isset($ret["mc_mod_catgeories"]["mc_mod_catgeories"]) && $ret["mc_mod_catgeories"]["mc_mod_catgeories"])
+		else if (isset($ret["mc_mod_catgeories"]["mc_mod_catgeories"]) && !$ret["mc_mod_catgeories"]["mc_mod_catgeories"])
 			updateServiceCategories_MC($service_id);
 		else
 			updateServiceCategories($service_id);
@@ -1521,6 +1521,21 @@
 	function updateServiceCategories_MC($service_id = null, $ret = array())	{
 		if (!$service_id) 
 			return;
+		global $form, $pearDB;
+		
+		if (isset($ret["service_categories"]))
+			$ret = $ret["service_categories"];
+		else
+			$ret = $form->getSubmitValue("service_categories");
+		for ($i = 0; $i < count($ret); $i++)	{
+			$rq = "INSERT INTO service_categories_relation ";
+			$rq .= "(sc_id, service_service_id) ";
+			$rq .= "VALUES ";
+			$rq .= "('".$ret[$i]."', '".$service_id."')";
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		}
 	}
 	
 	function updateServiceCategories($service_id = null, $ret = array())	{

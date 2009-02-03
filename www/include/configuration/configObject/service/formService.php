@@ -559,6 +559,13 @@
 	$form->addElement('header', 'oreon', _("Centreon"));
 	$form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);
 
+	if ($o == "mc")	{
+		$mc_mod_sc = array();
+		$mc_mod_sc[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sc', null, _("Incremental"), '0');
+		$mc_mod_sc[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sc', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_sc, 'mc_mod_sc', _("Update options"), '&nbsp;');
+		$form->setDefaults(array('mc_mod_sc'=>'0'));
+	}
 	$ams3 =& $form->addElement('advmultiselect', 'service_categories', _("Categories"), $service_categories, $attrsAdvSelect_small);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
