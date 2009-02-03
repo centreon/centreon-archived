@@ -1714,6 +1714,7 @@ CREATE TABLE IF NOT EXISTS `session` (
   `s_nbServicesCritical` int(11) default NULL,
   `s_nbServicesPending` int(11) default NULL,
   `s_nbServicesUnknown` int(11) default NULL,
+  `update_acl` ENUM('0','1') default 0,
   PRIMARY KEY  (`id`),
   KEY `session_id` (`session_id`),
   KEY `user_id` (`user_id`)

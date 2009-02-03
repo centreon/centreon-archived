@@ -13,8 +13,10 @@ CREATE TABLE `centreon_acl` (
   `host_name` varchar(60) default NULL,
   `service_description` varchar(128) default NULL,
   `group_id` int(11) default NULL,
+  `host_id` int(11) default NULL,
+  `service_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
-  KEY `host_name` (`host_name`,`service_description`,`group_id`),
+  KEY `host_name` (`host_name`,`service_description`,`group_id`,`host_id`,`service_id`),
   KEY `host_name_2` (`host_name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
