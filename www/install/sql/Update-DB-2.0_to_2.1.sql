@@ -1,4 +1,4 @@
-
+ALTER TABLE `session` ADD update_acl ENUM('0', '1') ;
 ALTER TABLE `contact` ADD `contact_location` INT default '0' AFTER `contact_comment` ;
 ALTER TABLE `host` ADD `host_location` INT default '0' AFTER `host_snmp_version` ;
 
