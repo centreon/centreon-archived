@@ -126,12 +126,17 @@ cp -Rf $TMPDIR/src/GPL_LIB $TMPDIR/final
 mkdir -p $TMPDIR/work/www/install >> "$LOG_FILE" 2>&1
 mkdir -p $TMPDIR/work/cron/reporting >> "$LOG_FILE" 2>&1
 mkdir -p $TMPDIR/final/cron/reporting >> "$LOG_FILE" 2>&1
+mkdir -p $TMPDIR/final/libinstall >> "$LOG_FILE" 2>&1
 
 ## Install Centreon doc (nagios doc)
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-g $WEB_GROUP -d 755 -m 644 \
 	$TMPDIR/src/doc $INSTALL_DIR_CENTREON/doc >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install nagios documentation")"
+
+## Ticket #372 : add functions/cinstall fonctionnality
+cp -Rf $TMPDIR/src/libinstall/{functions,cinstall,gettext} \
+  $TMPDIR/final/libinstall/ >> "$LOG_FILE" 2>&1
 
 ## Prepare insertBaseConf.sql
 echo -e "$(gettext "In process")"
@@ -249,6 +254,12 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
 	$TMPDIR/final/GPL_LIB $INSTALL_DIR_CENTREON/GPL_LIB >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install libraries")"
+
+log "INFO" "$(gettext "Copying libinstall")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+  -d 755 -m 755 \
+  $TMPDIR/final/libinstall $INSTALL_DIR_CENTREON/libinstall >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Copying libinstall")"
 
 ## Cron stuff
 ## need to add stuff for Unix system... (freeBSD...)

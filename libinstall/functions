@@ -1932,7 +1932,7 @@ function check_group_apache()
 #----
 function copyInTempFile()
 {
-	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www plugins"
+	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www plugins libinstall"
 	# Prepare centreon Plugins
 	echo "$gettext "Preparing Centreon temporary files")"
 	if [ -d $TMPDIR ] ; then
