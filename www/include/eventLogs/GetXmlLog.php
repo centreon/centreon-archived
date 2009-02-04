@@ -396,7 +396,7 @@
 		if ($str_unitH || $str_unitSVC)
 			$req .= " AND (".$str_unitH.$str_unitSVC.")";
 		
-		if ($str_unitH  == "" && $str_unitSVC == "")
+		if ($str_unitH  == "" && $str_unitSVC == "" && !isset($_GET['export']))
 			$req = "";
 		
 	} else {
