@@ -1089,6 +1089,7 @@
 		if (isset($ret["nagios_server_id"]))
 			$fields["nagios_server_id"] = $ret["nagios_server_id"];
 		$oreon->CentreonLogAction->insertLog("host", $host_id, htmlentities($ret["host_name"], ENT_QUOTES), "c", $fields);
+		updateACL();
 	}
 	
 	function updateHost_MC($host_id = null)	{
