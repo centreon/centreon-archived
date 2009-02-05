@@ -1,3 +1,4 @@
+INSERT INTO `topology`(topology_name, topology_icone, topology_parent, topology_page, topology_order, topology_group, topology_url, topology_show) VALUES  ('Reload ACL', './img/icones/16x16/refresh.gif', '502', '50205', '50', '1', './include/options/accessLists/reloadACL/reloadACL.php', '1');
 ALTER TABLE `session` ADD update_acl ENUM('0', '1') ;
 ALTER TABLE `contact` ADD `contact_location` INT default '0' AFTER `contact_comment` ;
 ALTER TABLE `host` ADD `host_location` INT default '0' AFTER `host_snmp_version` ;
