@@ -52,7 +52,6 @@
 	/* 
 	 * PHP functions 
 	 */
-	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	/*

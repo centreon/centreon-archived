@@ -24,9 +24,6 @@
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
  */
 
-	if (file_exists("./include/common/common-Func-ACL.php"))
-		include_once './include/common/common-Func-ACL.php';
-
 	/* 
 	 * function table_not_exists()
 	 * - This function test if a table exist in database.
@@ -34,6 +31,25 @@
 	 * @param	string	$table_name (the name of the table to test)
 	 * @return	int		0 			(return 0 if the table exists)
 	 */
+	function isUserAdmin($sid = NULL){
+		if (!isset($sid))
+			return ;
+		global $pearDB;
+		$DBRESULT =& $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
+		$admin =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
+		
+		$DBRESULT =& $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = '".$admin["contact_id"]."'");
+		$admin2 =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
+
+		if ($admin["contact_admin"])
+			return 1 ;
+		else if (!$admin2["count(*)"])
+			return 1;
+		return 0;
+	}
+
 
 	function table_not_exists($table_name) {
 		global $pearDBndo;

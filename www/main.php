@@ -82,7 +82,7 @@
 	 */
 	  
 	global $is_admin;
-	$is_admin = isUserAdmin(session_id());
+	$is_admin = $oreon->user->admin;
 	
 	$DBRESULT =& $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
 	if (PEAR::isError($DBRESULT)) 

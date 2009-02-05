@@ -38,16 +38,15 @@
 	/*
 	 * pearDB init
 	 */ 
-	require_once 'DB.php';
-	//include_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once 'DB.php';	
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once $centreon_path . "www/class/centreonACL.class.php";
 	
 	/*
 	 * PHP functions
-	 */
-	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
+	 */	
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	
 	/*
@@ -72,6 +71,7 @@
 	$sid = $_GET['sid'];
 	
 	$contact_id = check_session($sid, $pearDB);
+	$access = new CentreonAcl($contact_id, $is_admin);
 	$is_admin = isUserAdmin($sid);
 		
 	if (!$is_admin)	{
