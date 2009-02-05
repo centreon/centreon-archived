@@ -48,7 +48,6 @@
 	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
-	require_once "./include/common/common-Func-ACL.php";
 	
 	if (isset($_POST["o1"]) && isset($_POST["o2"])){
 		if ($_POST["o1"] != "")
