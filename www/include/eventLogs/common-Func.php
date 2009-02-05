@@ -49,7 +49,7 @@
 	}
 
 	function set_user_param($user_id, $pearDB, $key, $value){
-		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param WHERE cp_value = '".$value."' AND cp_contact_id like '".$user_id."' AND cp_key like '".$key."'");		
+		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param WHERE cp_contact_id like '".$user_id."' AND cp_key like '".$key."'");		
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows()){
