@@ -35,8 +35,7 @@
 
 	// Including files and dependences 
 	require_once './class/other.class.php';
-	require_once './include/common/common-Func.php';
-	require_once './include/common/common-Func-ACL.php';
+	require_once './include/common/common-Func.php';	
 	require_once './DBconnect.php';
 	require_once './DBNDOConnect.php';
 	
@@ -60,11 +59,7 @@
 			// Declaring variables
 			$ndo_base_prefix = getNDOPrefix(); // Getting ndo database prefix
 			$general_opt = getStatusColor($pearDB); // Getting colors of each status like : "[color_ok] => #13EB3A [color_warning] => #F8C706 ..." 
-
-		    // Getting Group list
-			$grouplist = getGroupListofUser($pearDB); // Getting group of user
-			$groupnumber = count($grouplist); // Getting group id of the previous group
-
+		    
 			// Get Status Globals for hosts		
 			$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
 					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .

@@ -61,7 +61,7 @@
 
 	global $is_admin;
 	
-	$is_admin =  isUserAdmin($sid);
+	$is_admin =  $oreon->user->admin;
 	$grouplistStr = $oreon->user->access->getAccessGroupsString();
 			
 	/* 
