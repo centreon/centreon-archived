@@ -359,13 +359,28 @@
 								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 							while ($sv =& $DBRESULT3->fetchRow()) {
 								$macName = str_replace("\$", "", $sv["svc_macro_name"]);
-								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES" .
+								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES " .
 											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $sv['svc_macro_value'] ."')";
 						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
 						 		if (PEAR::isError($DBRESULT4))
 									print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
 								$fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
 							}
+						}
+						
+						/*
+						 *  Service categories
+						 */
+						$mTpRq1 = "SELECT * FROM `service_categories_relation` WHERE `service_service_id` = '".$key."'";
+					 	$DBRESULT3 =& $pearDB->query($mTpRq1);
+					 	if (PEAR::isError($DBRESULT3))
+							print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+						while ($sv =& $DBRESULT3->fetchRow()) { 
+							$mTpRq2 = "INSERT INTO `service_categories_relation` (`service_service_id`, `sc_id`) VALUES " .
+										"('".$maxId["MAX(service_id)"]."', '". $sv['sc_id'] ."')";
+					 		$DBRESULT4 =& $pearDB->query($mTpRq2);
+					 		if (PEAR::isError($DBRESULT4))
+								print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
 						}
 					}
 				}
@@ -440,9 +455,9 @@
 		# 1 - MC with deletion of existing categories
 		# 2 - MC with addition of new categories
 		# 3 - Normal update
-		if (isset($ret["mc_mod_catgeories"]["mc_mod_catgeories"]) && $ret["mc_mod_catgeories"]["mc_mod_catgeories"])
+		if (isset($ret["mc_mod_sc"]["mc_mod_sc"]) && $ret["mc_mod_sc"]["mc_mod_sc"])
 			updateServiceCategories($service_id);
-		else if (isset($ret["mc_mod_catgeories"]["mc_mod_catgeories"]) && !$ret["mc_mod_catgeories"]["mc_mod_catgeories"])
+		else if (isset($ret["mc_mod_sc"]["mc_mod_sc"]) && !$ret["mc_mod_sc"]["mc_mod_sc"])
 			updateServiceCategories_MC($service_id);
 		else
 			updateServiceCategories($service_id);
