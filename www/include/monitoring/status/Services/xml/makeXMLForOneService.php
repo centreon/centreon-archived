@@ -214,7 +214,7 @@
 	 * Translations
 	 */
 
-	$buffer .= '<tr1><![CDATA['._("Ckeck informations").']]></tr1><tr2><![CDATA['._("Notification Informations").']]></tr2><tr3><![CDATA['._("Last Status Change").']]></tr3>';
+	$buffer .= '<tr1><![CDATA['._("Check informations").']]></tr1><tr2><![CDATA['._("Notification Informations").']]></tr2><tr3><![CDATA['._("Last Status Change").']]></tr3>';
 	
 	/*
 	 * End Buffer
