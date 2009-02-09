@@ -48,6 +48,7 @@
 	include_once $centreon_path."www/class/other.class.php";
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonACL.class.php";
+	include_once $centreon_path."www/class/centreonXML.class.php";
 	include_once $centreon_path."www/DBconnect.php";
 	include_once $centreon_path."www/DBOdsConnect.php";
 	include_once $centreon_path."www/DBNDOConnect.php";
@@ -257,16 +258,16 @@
 	/*
 	 * Create Buffer
 	 */
-	$buffer .= '<reponse>';
-	$buffer .= '<i>';
-	$buffer .= '<numrows>'.$numRows.'</numrows>';
-	$buffer .= '<num>'.$num.'</num>';
-	$buffer .= '<limit>'.$limit.'</limit>';
-	$buffer .= '<p>'.$p.'</p>';
-	$buffer .= '<nc>'.$nc.'</nc>';
-	$buffer .= '<o>'.$o.'</o>';
-	$buffer .= '</i>';
-	
+	$buffer = new CentreonXML();
+	$buffer->startElement("reponse");
+	$buffer->startElement("i");
+	$buffer->writeElement("numrows", $numrows);
+	$buffer->writeElement("num", $num);
+	$buffer->writeElement("limit", $limit);
+	$buffer->writeElement("p", $p);
+	$buffer->writeElement("nc", $nc);
+	$buffer->writeElement("o", $o);
+	$buffer->endElement();
 
 	$host_prev = "";
 	$class = "list_one";
@@ -299,67 +300,73 @@
 					$class = "list_four";
 			}
 
-			$buffer .= '<l class="'.$class.'">';
-			$buffer .= '<o>'. $ct++ . '</o>';
-			$buffer .= '<f>'. $flag . '</f>';
-
+			$buffer->startElement("l");
+			$buffer->writeAttribute("class", $class);
+			$buffer->writeElement("o", $ct++);
+			$buffer->writeElement("f", $flag);
+			
 			if ($host_prev == $ndo["host_name"]){
-				$buffer .= '<hc>transparent</hc>';
-				$buffer .= '<hn none="1">'.  utf8_encode($ndo["host_name"]) . '</hn>';
-			} else {
+				$buffer->writeElement("hc", "transparent");				
+				$buffer->startElement("hn");
+				$buffer->writeAttribute("none", "1");
+				$buffer->text($ndo["host_name"]);
+				$buffer->endElement();				
+			} else {				
 				$host_prev = $ndo["host_name"];
-				$buffer .= '<hc>'.$color_host.'</hc>';
-				$buffer .= '<hn none="0">'.  utf8_encode($ndo["host_name"]) . '</hn>';
-				$buffer .= '<hau><![CDATA['.  utf8_encode($host_status[$ndo["host_name"]]["action_url"]) . ']]></hau>';
+				$buffer->writeElement("hc", $color_host);
+				$buffer->startElement("hn");
+				$buffer->writeAttribute("none", "0");
+				$buffer->text($ndo["host_name"]);
+				$buffer->endElement();
+				$buffer->writeElement("hau", $host_status[$ndo["host_name"]]["action_url"]);								
 
 				if ($host_status[$ndo["host_name"]]["notes_url"])
-					$buffer .= '<hnu><![CDATA['.  utf8_encode($host_status[$ndo["host_name"]]["notes_url"]) . ']]></hnu>';				
+					$buffer->writeElement("hnu", $host_status[$ndo["host_name"]]["notes_url"]);
 				else
-					$buffer .= '<hnu>none</hnu>';
+					$buffer->writeElement("hnu", "none");
 					
-				$buffer .= '<hnn><![CDATA['.  utf8_encode($host_status[$ndo["host_name"]]["notes"]) . ']]></hnn>';
-				$buffer .= '<hip><![CDATA['.  utf8_encode($host_status[$ndo["host_name"]]["address"]) . ']]></hip>';
-				$buffer .= '<hid>'. $host_status[$ndo["host_name"]]["object_id"] . '</hid>';
+				$buffer->writeElement("hnn", $host_status[$ndo["host_name"]]["notes"]);				
+				$buffer->writeElement("hip", $host_status[$ndo["host_name"]]["address"]);				
+				$buffer->writeElement("hid", $host_status[$ndo["host_name"]]["object_id"]);				
 			}
 
-			$buffer .= '<ppd>'. $ndo["process_performance_data"]  . '</ppd>';
-			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
-			$buffer .= '<sd><![CDATA['.  utf8_encode($ndo["service_description"]).']]></sd>';
-			$buffer .= '<svc_id>'. $ndo["object_id"] . '</svc_id>';
-			
+			$buffer->writeElement("ppd", $ndo["process_performance_data"]);
+			$buffer->writeElement("hs", $host_status[$ndo["host_name"]]["current_state"]);			
+			$buffer->writeElement("sd", $ndo["service_description"]);
+			$buffer->writeElement("svc_id", $ndo["object_id"]);			
+						
 			$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
 			$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
 			
-			$buffer .= '<svc_index>'.getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO).'</svc_index>';
-			$buffer .= '<sc>'.$color_service.'</sc>';
-			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
-			$buffer .= '<po><![CDATA['. utf8_encode($ndo["plugin_output"]).']]></po>';
-			$buffer .= '<ca>'. $ndo["current_attempt"] . '</ca>';
-			$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
-			$buffer .= '<pa>'. $ndo["problem_has_been_acknowledged"] . '</pa>';
-			$buffer .= '<pc>'. $ndo["passive_checks_enabled"] . '</pc>';
-			$buffer .= '<ac>'. $ndo["active_checks_enabled"] . '</ac>';
-			$buffer .= '<eh>'. $ndo["event_handler_enabled"] . '</eh>';
-			$buffer .= '<is>'. $ndo["is_flapping"] . '</is>';
-			$buffer .= '<fd>'. $ndo["flap_detection_enabled"] . '</fd>';
-	        $buffer .= '<ha>'. $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';
-	        $buffer .= '<hae>'. $host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';
-	        $buffer .= '<hpe>'. $host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';
-			$buffer .= '<nc>'. $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]) . '</nc>';
-			$buffer .= '<lc>'. $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]) . '</lc>';
-			$buffer .= '<d>'. $duration . '</d>';
-			$buffer .= '</l>';
+			$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO));
+			$buffer->writeElement("sc", $color_service);
+			$buffer->writeElement("cs", $tab_status_svc[$ndo["current_state"]]);
+			$buffer->writeElement("po", $ndo["plugin_output"]);
+			$buffer->writeElement("ca", $ndo["current_attempt"]);
+			$buffer->writeElement("ne", $ndo["notifications_enabled"]);
+			$buffer->writeElement("pa", $ndo["problem_has_been_acknowledged"]);
+			$buffer->writeElement("pc", $ndo["passive_checks_enabled"]);			
+			$buffer->writeElement("ac", $ndo["active_checks_enabled"]);
+			$buffer->writeElement("eh", $ndo["event_handler_enabled"]);
+			$buffer->writeElement("is", $ndo["is_flapping"]);
+			$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);			
+			$buffer->writeElement("ha", $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]);
+			$buffer->writeElement("hae", $host_status[$ndo["host_name"]]["active_checks_enabled"]);
+	        $buffer->writeElement("hpe", $host_status[$ndo["host_name"]]["passive_checks_enabled"]);
+	        $buffer->writeElement("nc", $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]));	        	        
+			$buffer->writeElement("lc", $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]));
+			$buffer->writeElement("d", $duration);
+			$buffer->endElement();			
 		}
 	}
 
 	if (!$ct)
-		$buffer .= '<infos>none</infos>';
-		
-	$buffer .= '<sid>'.$sid.'</sid>';
-	$buffer .= '</reponse>';
+		$buffer->writeElement("infos", "none");
+	$buffer->writeElement("sid", $sid);			
+	$buffer->endElement();
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
-	header('Cache-Control: no-cache, must-revalidate'); 
-	echo $buffer;
+	header('Cache-Control: no-cache, must-revalidate');
+	$buffer->output();
 ?>
