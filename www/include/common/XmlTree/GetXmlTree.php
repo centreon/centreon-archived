@@ -170,7 +170,7 @@
 			/*
 			 * Send Service Group list
 			 */
-			$lcaSG = getLCASG($pearDB);
+			$lcaSG = $access->getServiceGroups();
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();

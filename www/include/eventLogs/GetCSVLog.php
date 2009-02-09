@@ -60,8 +60,7 @@
 			get_error('need session identifiant !');		
 			
 	require_once $centreon_path . "www/class/other.class.php";
-	require_once $centreon_path . "www/include/common/common-Func.php";
-	require_once $centreon_path . "www/include/common/common-Func-ACL.php";
+	require_once $centreon_path . "www/include/common/common-Func.php";	
 	
 	// save of the XML flow in $flux
 	$csv_flag = 1; //setting the csv_flag variable to change limit in SQL request of getODSXmlLog.php when CSV exporting

@@ -71,7 +71,6 @@
 	include_once($centreon_path . "www/DBOdsConnect.php");
 	include_once $centreon_path . "www/DBNDOConnect.php";
 	
-	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	
 	
