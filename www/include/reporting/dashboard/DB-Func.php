@@ -220,6 +220,8 @@
 					$svcStr .= $id;
 				}
 			}
+		else
+			$svcStr = "''";
 		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED");
 				
 		/* initialising all host services stats to 0 */
