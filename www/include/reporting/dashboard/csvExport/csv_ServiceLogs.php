@@ -44,8 +44,7 @@
 	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
 	require_once $centreon_path . "www/class/User.class.php";
 	require_once $centreon_path . "www/class/Oreon.class.php";
-	require_once $centreon_path . "www/class/other.class.php";
-	require_once $centreon_path . "www/include/common/common-Func-ACL.php";
+	require_once $centreon_path . "www/class/other.class.php";	
 	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
 	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){

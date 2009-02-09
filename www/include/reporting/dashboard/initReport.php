@@ -49,7 +49,6 @@
 	require_once './include/reporting/dashboard/common-Func.php';
 	require_once './include/reporting/dashboard/DB-Func.php';
 	require_once './include/common/common-Func.php';
-	require_once './include/common/common-Func-ACL.php';
 	require_once './DBconnect.php';
 	require_once './DBNDOConnect.php';
 	
