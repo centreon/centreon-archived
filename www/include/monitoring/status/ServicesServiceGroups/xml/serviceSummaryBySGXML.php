@@ -26,6 +26,7 @@
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");	
 	include_once($centreon_path."www/class/other.class.php");
+	include_once($centreon_path."www/class/centreonACL.class.php");
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBNDOConnect.php");
 	include_once($centreon_path."www/include/monitoring/status/Common/common-Func.php");	
@@ -71,17 +72,12 @@
 	 * check is admin
 	 */
 	$is_admin = isUserAdmin($sid);
-
-	/*
-	 * if is admin -> lca
-	 */
-	if (!$is_admin){
-		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
-		$lcaSG = getLCASG($pearDB);
-		$lcaSGStr = getLCASGStrByName($lcaSG);
-	}
+	$user_id = getUserIdFromSID($sid);
+	$access = new CentreonACL($user_id, $is_admin);
+	$grouplist = $access->getAccessGroups();
+	$grouplistStr = $access->getAccessGroupsString(); 
+	$groupnumber = count($grouplist);
+	
 
 	function get_services($host_name){
 		global $pearDBndo, $general_opt, $o, $lcaSGStr, $ndo_base_prefix;
@@ -143,9 +139,8 @@
 			" AND no.object_id = sgm.service_object_id" .
 			" AND sgm.servicegroup_id = sg.servicegroup_id".
 			" AND no.is_active = 1";
-	
-	if (!$is_admin && $lcaSGStr != "")
-			$rq1 .= " AND sg.alias IN ($lcaSGStr) ";
+		
+	$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
 
 
 	if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb")

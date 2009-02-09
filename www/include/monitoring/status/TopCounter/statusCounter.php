@@ -28,6 +28,7 @@
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
+	include_once $centreon_path . "www/class/centreonACL.class.php";
 	
 	/* 
 	 * Connect to oreon DB 
@@ -82,9 +83,10 @@
 		/*
 		 * Get Acl Group list
 		 */
-		$grouplist = getGroupListofUser($pearDB); 
+		$access = new CentreonACL($user_id, $is_admin);
+		$grouplist = $access->getAccessGroups(); 
 		$groupnumber = count($grouplist);
-		$grouplistStr = groupsListStr($grouplist);
+		$grouplistStr = $access->getAccessGroupsString(); 
 	}
 	
 	function restore_session($statistic_service = 'null', $statistic_host = 'null'){

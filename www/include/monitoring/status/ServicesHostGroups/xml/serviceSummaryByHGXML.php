@@ -21,6 +21,7 @@
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/other.class.php");
+	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");	
 	include_once($centreon_path . "www/include/monitoring/status/Common/common-Func.php");	
@@ -50,14 +51,13 @@
 
 	// check is admin
 	$is_admin = isUserAdmin($sid);
+	$user_id = getUserIdFromSID($sid);
+	$access = new CentreonACL($user_id, $is_admin);
+	$grouplist = $access->getAccessGroups();
+	$grouplistStr = $access->getAccessGroupsString(); 
+	$groupnumber = count($grouplist);
 
-	if (!$is_admin)	{
-		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByAlias($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
-		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
-	}
-	
+		
 	/*
 	 * invert HG Name and Alias
 	 */
@@ -76,19 +76,18 @@
 	 
 	function get_services($host_name){
 		
-		global $pearDBndo, $pearDB, $ndo_base_prefix, $general_opt, $o, $instance, $is_admin, $groupnumber, $grouplist;
+		global $pearDBndo, $pearDB, $ndo_base_prefix, $general_opt, $o, $instance, $is_admin, $groupnumber, $grouplist, $access;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no";
-				
-		if (!$is_admin && $groupnumber)
-			$rq .= ", centreon_acl ";
+						
+		$rq .= ", centreon_acl ";
 					
 		$rq .= 		" WHERE no.object_id = nss.service_object_id" .
 					" AND no.name1 NOT LIKE '_Module_%'";					
 		
-		if (!$is_admin && $groupnumber)
-			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr($grouplist).")";
+		$grouplistStr = $access->getAccessGroupsString(); 
+		$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description " . $access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
 		if	($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 			$rq .= 	" AND nss.current_state != 0" ;
@@ -120,9 +119,7 @@
 		}
 		return($tab);
 	}
-	
-	$grouplist = getGroupListofUser($pearDB); 
-	$groupnumber = count($grouplist);
+		
 
 	$service = array();
 	$host_status = array();
@@ -150,9 +147,8 @@
 					" AND no.object_id = hgm.host_object_id" .
 					" AND hgm.hostgroup_id = hg.hostgroup_id".
 					" AND no.name1 not like '_Module_%'";
-	
-	if (!$is_admin && $groupnumber)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).") AND hg.alias IN ($lcaSTR_HG)";
+		
+	$rq1 .= " AND no.name1 = centreon_acl.host_name ".$access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString());
 	
 	if ($instance != "ALL")
 		$rq1 .= 	" AND no.instance_id = ".$instance;

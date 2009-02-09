@@ -76,7 +76,8 @@
 	$is_admin = isUserAdmin($sid);
 	$user_id = getUserIdFromSID($sid);
 	$access = new CentreonACL($user_id, $is_admin);
-	$grouplist = $access->getAccessGroups(); 
+	$grouplist = $access->getAccessGroups();
+	$grouplistStr = $access->getAccessGroupsString();
 	$groupnumber = count($grouplist);	
 
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
@@ -178,17 +179,16 @@
 				" no.object_id," .
 				" no.name2 as service_description" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
-				
-	if (!$is_admin)
-		$rq .= ", centreon_acl ";
+					
+	$rq .= ", centreon_acl ";
 		
 	$rq .= 	" WHERE no.object_id = nss.service_object_id" .
 			" AND (no.name1 NOT LIKE '_Module_%'" .
 			" OR no.name1 LIKE '_Module_Meta')" .
 		  	" AND objecttype_id = 2";
 
-	if (!$is_admin && $groupnumber)
-		$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr($grouplist).")";
+
+	$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description " .$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
 
 	($o == "meta") ? $rq .= " AND no.name1 = '_Module_Meta'" : $rq .= " AND no.name1 != '_Module_Meta'";

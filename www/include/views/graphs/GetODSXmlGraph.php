@@ -42,6 +42,7 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once($centreon_path . "www/DBNDOConnect.php");
 	include_once $centreon_path . "www/class/centreonACL.class.php";
 	
 	/*
@@ -74,10 +75,8 @@
 	$access = new CentreonAcl($contact_id, $is_admin);
 	$is_admin = isUserAdmin($sid);
 		
-	if (!$is_admin)	{
-		$lca = getLcaHostByName($pearDB);
-		$lca = getLCASVC($lca);
-	}
+	
+	$lca = $access->getHostServices($pearDBndo);		
 
 	(isset($_GET["sid"]) 			&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"]) : $sid = "-1";
 	(isset($_GET["template_id"]) 	&& !check_injection($_GET["template_id"])) ? $template_id = htmlentities($_GET["template_id"]) : $template_id = "1";

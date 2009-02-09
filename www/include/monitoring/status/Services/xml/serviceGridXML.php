@@ -46,6 +46,7 @@
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/other.class.php");
+	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");	
 	include_once($centreon_path . "www/include/common/common-Func.php");
@@ -68,8 +69,10 @@
 	/*
 	 * Get Acl Group list
 	 */
-	
-	$grouplist = getGroupListofUser($pearDB); 
+	$user_id = getUserIdFromSID($sid);
+	$is_admin = isUserAdmin($sid);
+	$access = new CentreonACL($user_id, $is_admin);
+	$grouplist = $access->getAccessGroups(); 
 	$groupnumber = count($grouplist);
 	
 	/* 
@@ -99,7 +102,7 @@
 	
 	function get_services_status($host_name){
 	
-		global $pearDBndo,$pearDB, $ndo_base_prefix, $general_opt, $o, $instance,$is_admin, $groupnumber, $grouplist;
+		global $pearDBndo,$pearDB, $ndo_base_prefix, $general_opt, $o, $instance,$is_admin, $groupnumber, $grouplist, $access;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `".$ndo_base_prefix."servicestatus` nss, `".$ndo_base_prefix."objects` no";
@@ -126,8 +129,8 @@
 		if ($instance != "ALL")
 			$rq .= 	" AND no.instance_id = ".$instance;
 
-		if (!$is_admin && $groupnumber)
-			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
+		$grouplistStr = $access->getAccessGroupsString();
+		$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description ".$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -166,14 +169,14 @@
 	 
 	$rq1 =	  	" SELECT DISTINCT no.name1 as host_name, nhs.current_state" .
 				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs ";
-	if (!$is_admin)
-		$rq1 	.= ", centreon_acl ";
+	
+	$rq1 	.= ", centreon_acl ";
 	
 	$rq1 .=		" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 				" AND no.name1 NOT LIKE '_Module_%'";				
 	
-	if (!$is_admin && $groupnumber)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).")";
+	$grouplistStr = $access->getAccessGroupsString();
+	$rq1 .= " AND no.name1 = centreon_acl.host_name ".$access->queryBuilder("AND", "group_id", $grouplistStr);
 
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND no.name1 IN (" .

@@ -49,7 +49,7 @@
 	// Get list of actions allowed for user
 	if (count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
-		$authorized_actions = getActionsACLList($GroupListofUser);
+		$authorized_actions = $oreon->user->access->getActions();
 	} else {
 	 	// if user is admin, or without ACL, he cans perform all actions
 		$allActions = true;

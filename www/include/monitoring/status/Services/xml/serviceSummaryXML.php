@@ -45,6 +45,7 @@
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/other.class.php");
+	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");
 	include_once($centreon_path . "www/include/monitoring/status/Common/common-Func.php");	
@@ -60,6 +61,13 @@
 	} else
 		get_error('need session identifiant !');
 
+	$user_id = getUserIdFromSID($sid);
+	$is_admin = isUserAdmin($sid);
+	$access = new CentreonACL($user_id, $is_admin);
+	$grouplist = $access->getAccessGroups();
+	$grouplistStr = $access->getAccessGroupsString();
+	$groupnumber = count($grouplist);
+
 	/* requisit */
 	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
 	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
@@ -71,19 +79,10 @@
 	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
-	$is_admin = isUserAdmin($sid);
-
 	// if is admin -> lca
 	if (!$is_admin){
 		$_POST["sid"] = $sid;
 	}
-	
-	/*
-	 * Get Acl Group list
-	 */
-	
-	$grouplist = getGroupListofUser($pearDB); 
-	$groupnumber = count($grouplist);
 	
 	/*
 	 * Get status Color
@@ -116,9 +115,8 @@
 	$rq1 = 		" SELECT " .
 				" DISTINCT no.name1 as host_name, nhs.current_state" .
 				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs";
-	
-	if (!$is_admin && $groupnumber)
-		$rq1 .= ", centreon_acl ";
+		
+	$rq1 .= ", centreon_acl ";
 
 		$rq1 .=	" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 				" AND no.name1 NOT LIKE '_Module_%'";				
@@ -141,10 +139,9 @@
 				")";
 
 	if ($search != "")
-		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-
-	if (!$is_admin && $groupnumber)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr($grouplist).")";
+		$rq1 .= " AND no.name1 like '%" . $search . "%' ";	
+	
+	$rq1 .= " AND no.name1 = centreon_acl.host_name ".$access->queryBuilder("AND", "group_id", $grouplistStr);
 
 	switch($sort_type){
 		case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 "; break;

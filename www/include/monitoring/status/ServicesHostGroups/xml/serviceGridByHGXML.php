@@ -25,6 +25,7 @@
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/other.class.php");
+	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");	
 	include_once($centreon_path . "www/include/monitoring/status/Common/common-Func.php");	
@@ -56,13 +57,18 @@
 
 	// check is admin
 	$is_admin = isUserAdmin($sid);
+	$user_id = getUserIdFromSID($sid);
+	$access = new CentreonACL($user_id, $is_admin);
+	$grouplist = $access->getAccessGroups();
+	$grouplistStr = $access->getAccessGroupsString(); 
+	$groupnumber = count($grouplist);
 
-	if (!$is_admin)	{
+	/*if (!$is_admin)	{
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByAlias($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
-	}
+	}*/
 	
 	//print_r($lca);
 	
@@ -70,8 +76,6 @@
 	 * Get Acl Group list
 	 */
 	
-	$grouplist = getGroupListofUser($pearDB); 
-	$groupnumber = count($grouplist);
 
 	$service = array();
 	$host_status = array();
@@ -90,16 +94,16 @@
 
 	$rq1 =	  	" SELECT DISTINCT no.object_id id, no.name1 as host_name, nhs.current_state hs, no.name2 svc_name, nss.current_state svcs " .
 				" FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."services ns, ".$ndo_base_prefix."servicestatus nss ";
-	
-	if (!$is_admin && $groupnumber)
-		$rq1 .= ", centreon_acl ";
+		
+	$rq1 .= ", centreon_acl ";
 	
 	$rq1 .=  	" WHERE ((no.objecttype_id = '1' AND nhs.host_object_id = no.object_id) OR (no.objecttype_id = '2' AND nss.service_object_id = no.object_id))".				
 				" AND no.name1 NOT LIKE '_Module_%'".
 				" AND no.is_active = 1";
 
-	if (!$is_admin && $groupnumber)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND group_id IN (".groupsListStr($grouplist).")";
+	
+	$rq1 .= " AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description ".$access->queryBuilder("AND", "group_id", $grouplistStr);
+	
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND nss.current_state != 0 ";
 	if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1")
