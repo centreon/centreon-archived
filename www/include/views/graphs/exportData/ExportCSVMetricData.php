@@ -46,8 +46,7 @@
 
 	$path = "./include/views/graphs/graphODS/";
 	require_once '../../../class/other.class.php';
-	require_once '../../common/common-Func.php';
-	require_once '../../common/common-Func-ACL.php';
+	require_once '../../common/common-Func.php';	
 
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;

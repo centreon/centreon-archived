@@ -49,7 +49,29 @@
 			return 1;
 		return 0;
 	}
-
+	
+	/*
+	 * 
+	 *
+	 * <code>
+	 * 
+	 * </code>
+	 *
+	 * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
+	 * @param{TAB}string{TAB}$argument2{TAB}Mon deuxi�me argument
+	 * @return{TAB}int{TAB}Ma valeur de retour
+	 */
+	function getUserIdFromSID($sid = NULL){
+		if (!isset($sid))
+			return ;
+		global $pearDB;
+		$DBRESULT =& $pearDB->query("SELECT contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
+		$admin =& $DBRESULT->fetchRow();
+		unset($DBRESULT);
+		if (isset($admin["contact_id"]))
+			return $admin["contact_id"];
+		return 0;
+	}
 
 	function table_not_exists($table_name) {
 		global $pearDBndo;

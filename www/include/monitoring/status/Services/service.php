@@ -43,7 +43,7 @@
 	 * ACL Actions
 	 */
 	$GroupListofUser = array();
-	$GroupListofUser = getGroupListofUser($pearDB);
+	$GroupListofUser = $oreon->user->access->getAccessGroups();
 
 	$allActions = false;
 	// Get list of actions allowed for user

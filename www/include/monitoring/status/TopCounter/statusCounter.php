@@ -26,8 +26,7 @@
 
 	include_once 'DB.php';
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path . "www/include/common/common-Func-ACL.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	
 	/* 

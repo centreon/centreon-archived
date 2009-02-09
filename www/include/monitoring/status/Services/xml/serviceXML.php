@@ -44,14 +44,14 @@
 
 	include_once "DB.php";
 
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."www/class/other.class.php";
 	include_once $centreon_path."www/class/centreonGMT.class.php";
+	include_once $centreon_path."www/class/centreonACL.class.php";
 	include_once $centreon_path."www/DBconnect.php";
 	include_once $centreon_path."www/DBOdsConnect.php";
 	include_once $centreon_path."www/DBNDOConnect.php";
-	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";
-	include_once $centreon_path."www/include/common/common-Func-ACL.php";
+	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";	
 	include_once $centreon_path."www/include/common/common-Func.php";
 
 	$ndo_base_prefix = getNDOPrefix();
@@ -73,8 +73,10 @@
 	/*
 	 * Get Acl Group list
 	 */
-	
-	$grouplist = getGroupListofUser($pearDB); 
+	$is_admin = isUserAdmin($sid);
+	$user_id = getUserIdFromSID($sid);
+	$access = new CentreonACL($user_id, $is_admin);
+	$grouplist = $access->getAccessGroups(); 
 	$groupnumber = count($grouplist);	
 
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
@@ -100,7 +102,7 @@
 	/*
 	 * check is admin
 	 */
-	$is_admin = isUserAdmin($sid);
+	
 
 	if (!$is_admin)
 		$_POST["sid"] = $sid;
