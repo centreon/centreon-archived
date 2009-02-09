@@ -24,7 +24,6 @@
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBNDOConnect.php");
 	include_once($centreon_path."www/include/monitoring/status/Common/common-Func.php");
-	include_once($centreon_path."www/include/common/common-Func-ACL.php");
 	include_once($centreon_path."www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();

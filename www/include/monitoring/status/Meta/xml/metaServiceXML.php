@@ -44,11 +44,11 @@
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path."www/class/other.class.php");
+	include_once($centreon_path."www/class/centreonACL.class.php");
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBOdsConnect.php");
 	include_once($centreon_path."www/DBNDOConnect.php");	
-	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";
-	include_once($centreon_path."www/include/common/common-Func-ACL.php");
+	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";	
 	include_once($centreon_path."www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();
@@ -70,25 +70,25 @@
 	/*
 	 * Get Acl Group list
 	 */
-	
-	$grouplist = getGroupListofUser($pearDB); 
+	// check is admin
+	$is_admin = isUserAdmin($sid);
+	$user_id = getUserIdFromSID($sid);
+	$access = new CentreonACL($user_id, $is_admin);
+	$grouplist = $access->getAccessGroups(); 
 	$groupnumber = count($grouplist);	
 
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) 		&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
 	(isset($_GET["search"]) 	&& !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
-	(isset($_GET["sort_type"]) 	&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "host_name";
+	(isset($_GET["sort_type"]) 	&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "service_description";
 	(isset($_GET["search_type_host"]) 		&& !check_injection($_GET["search_type_host"])) ? $search_type_host = htmlentities($_GET["search_type_host"]) : $search_type_host = 1;
 	(isset($_GET["search_type_service"])	&& !check_injection($_GET["search_type_service"])) ? $search_type_service = htmlentities($_GET["search_type_service"]) : $search_type_service = 1;
 	(isset($_GET["order"]) 		&& !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 	(isset($_GET["o"]) 			&& !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) 			&& !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
-	(isset($_GET["nc"]) 		&& !check_injection($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";
-
-	// check is admin
-	$is_admin = isUserAdmin($sid);
+	(isset($_GET["nc"]) 		&& !check_injection($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";	
 
 	if (!$is_admin)
 		$_POST["sid"] = $sid;
@@ -132,9 +132,8 @@
 					$rq .= ", centreon_acl ";
 				
 		
-		$rq .= 	" WHERE no.object_id = nss.service_object_id".
-				" AND no.name1 NOT LIKE '_Module_%'" .
-				" OR no.name1 LIKE '_Module_Meta'" .
+		$rq .= 	" WHERE no.object_id = nss.service_object_id".				
+				" AND no.name1 LIKE '_Module_Meta'" .
 				" AND no.is_active = 1" .
 			  	" AND objecttype_id = 2";
 

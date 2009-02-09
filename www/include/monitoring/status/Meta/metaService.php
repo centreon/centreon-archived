@@ -45,7 +45,7 @@
 	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
 	!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
 	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
-	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
+	!isset($_GET["sort_type"]) ? $sort_type = "service_description" : $sort_type = $_GET["sort_type"];
 	!isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
 
 	/*

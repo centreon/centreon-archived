@@ -38,8 +38,7 @@
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
-	include_once('/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once('/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );	
 	include_once($oreonPath . "www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();

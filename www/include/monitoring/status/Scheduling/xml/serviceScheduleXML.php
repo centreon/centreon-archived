@@ -50,8 +50,7 @@
 	include_once($centreon_path . "www/class/centreonGMT.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBNDOConnect.php");
-	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
+	include_once($centreon_path . "www/DBNDOConnect.php");	
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	
 

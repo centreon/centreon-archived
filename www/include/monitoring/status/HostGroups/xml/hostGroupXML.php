@@ -44,9 +44,9 @@
 	
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/other.class.php");
+	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBNDOConnect.php");
-	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
+	include_once($centreon_path . "www/DBNDOConnect.php");	
 	include_once($centreon_path . "www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();
@@ -66,8 +66,10 @@
 	/*
 	 * Get Acl Group list
 	 */
-	
-	$grouplist = getGroupListofUser($pearDB); 
+	$is_admin = isUserAdmin($sid);
+	$user_id = getUserIdFromSID($sid);
+	$access = new CentreonACL($user_id, $is_admin);
+	$grouplist = $access->getAccessGroups(); 
 	$groupnumber = count($grouplist);
 	
 	/* 
