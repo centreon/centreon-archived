@@ -66,7 +66,7 @@
 	/* 
 	 * Get Service NDO status 
 	 */
-	if (!$is_admin && $groupnumber)
+	if (!$is_admin)
 		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
 				" WHERE no.object_id = nss.service_object_id".				

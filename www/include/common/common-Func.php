@@ -45,8 +45,6 @@
 
 		if ($admin["contact_admin"])
 			return 1 ;
-		else if (!$admin2["count(*)"])
-			return 1;
 		return 0;
 	}
 	
