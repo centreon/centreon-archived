@@ -34,10 +34,10 @@
 	}
 
 	// Including files and dependences 
-	require_once './class/other.class.php';
+	require_once './class/other.class.php';	
 	require_once './include/common/common-Func.php';	
 	require_once './DBconnect.php';
-	require_once './DBNDOConnect.php';
+	require_once './DBNDOConnect.php';	
 	
 	// Testing the NDO database connexion. If "error" or "failed" is matching in the output message, the script print a error message and exit
 	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {

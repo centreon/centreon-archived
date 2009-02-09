@@ -77,7 +77,7 @@ class CentreonMsg {
  	/* If you want to display your message for a limited time period, just call this function */
  	public function setTimeOut($sec) { 		 		
  		$sec *= 1000;
- 		echo "<script type=\"text/javascript\">_setTimeout(function(){clear(\"$this->div\")}, $sec)</script>";
+ 		echo "<script type=\"text/javascript\">setTimeout(function(){new Effect.toggle(\"$this->div\")}, $sec)</script>";
  	}
  	
  	/* Clear message box */

@@ -14,7 +14,6 @@
  * 
  * For information : contact@centreon.com
  */
- 
 
  /*
   *  This class contains the access information of a user 
@@ -259,7 +258,7 @@
  	/*
  	 *  Access groups Getter
  	 */
- 	public function getAccessGroups() { 		
+ 	public function getAccessGroups() { 		 		
  		return ($this->accessGroups);
  	}
  	

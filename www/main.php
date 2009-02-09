@@ -196,6 +196,15 @@
 	/*
 	 * Go on our page
 	 */
+	require_once ("./class/centreonMsg.class.php");
+	$msg = new CentreonMsg();
+	if (!$oreon->user->admin && !count($oreon->user->access->getAccessGroups())) {
+		$msg->setImage("./img/icones/16x16/warning.gif");
+		$msg->setTextStyle("bold");
+		$msg->setText(_("You are not in an access group"));
+		$msg->setTimeOut("3");
+	}
+	 
 	if (isset($url) && $url)
     	include_once $url;
 
