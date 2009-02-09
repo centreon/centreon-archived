@@ -568,7 +568,7 @@
 	 		{ 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
-	 			if (isset($_POST[$macInput]) && !isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
+	 			if (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
 		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id["MAX(service_id)"] .")";
@@ -797,7 +797,7 @@
 	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++) { 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
-	 			if (isset($_POST[$macInput]) && !isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
+	 			if (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
 		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id .")";
