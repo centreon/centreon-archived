@@ -138,9 +138,8 @@
 
 	$rq1 = 			" SELECT DISTINCT no.name1 as host_name, hg.alias, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
 					" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no";
-	
-	if (!$is_admin && $groupnumber)
-		$rq1 .= ", centreon_acl ";
+		
+	$rq1 .= ", centreon_acl ";
 	
 	
 	$rq1 .= 		" WHERE hs.host_object_id = hgm.host_object_id".
