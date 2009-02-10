@@ -436,10 +436,10 @@
 		updateNagiosServerRelation($host_id);
 	}	
 	
-	function insertHostInDB ($ret = array())	{
+	function insertHostInDB ($ret = array(), $macro_on_demand = NULL)	{
 		global $oreon;
 		
-		$host_id = insertHost($ret);
+		$host_id = insertHost($ret, $macro_on_demand);
 		updateHostHostParent($host_id, $ret);
 		updateHostHostChild($host_id, $ret);
 		updateHostContactGroup($host_id, $ret);
@@ -459,7 +459,7 @@
 		return ($host_id);
 	}
 	
-	function insertHost($ret)	{
+	function insertHost($ret, $macro_on_demand = NULL)	{
 		global $form, $pearDB, $oreon, $is_admin;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
@@ -584,21 +584,25 @@
 		/*
 		 *  Insert on demand macros
 		 */
-		if (isset($_POST['nbOfMacro']) || $oreon->user->get_version() >= 3) {			
+		if (isset($macro_on_demand))
+			$my_tab = $macro_on_demand;
+		else if (isset($_POST['nbOfMacro']))
+			$my_tab = $_POST;
+		if (isset($my_tab['nbOfMacro']) || $oreon->user->get_version() >= 3) {			
 			$already_stored = array(); 		
-	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
+	 		for ($i=0; $i <= $my_tab['nbOfMacro']; $i++)
 	 		{ 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
-	 			if (isset($_POST[$macInput]) && !isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
-		 			$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
-		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $host_id['MAX(host_id)'] .")";
+	 			if (isset($my_tab[$macInput]) && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]) {
+		 			$my_tab[$macInput] = str_replace("\$_HOST", "", $my_tab[$macInput]);
+		 			$my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
+		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($my_tab[$macInput]) ."\$', '". $my_tab[$macValue] ."', ". $host_id['MAX(host_id)'] .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];	
-					$already_stored[$_POST[$macInput]] = 1;
+					$fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];	
+					$already_stored[strtolower($my_tab[$macInput])] = 1;
 	 			}			
 	 		}
 		}
@@ -1002,7 +1006,7 @@
 	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++){ 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
-	 			if (isset($_POST[$macInput]) && !isset($already_stored[$_POST[$macInput]]) && $_POST[$macInput]) {
+	 			if (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
 		 			$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $host_id .")";
@@ -1010,7 +1014,7 @@
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];	
-					$already_stored[$_POST[$macInput]] = 1;
+					$already_stored[strtolower($_POST[$macInput])] = 1;
 	 			}			
 	 		}
 		}
@@ -1356,7 +1360,7 @@
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
-					$already_stored[$_POST[$macInput]] = 1;
+					$already_stored[strtolower($_POST[$macInput])] = 1;
 	 			}
 	 			$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
 	 		}

@@ -543,6 +543,7 @@
 	function insertHostCFG($tmpConf = array())	{
 		$use = NULL;
 		$useTpl = array();
+		$macro_on_demand = array();
 		global $nbr;
 		global $oreon;
 		global $debug_nagios_import;
@@ -550,6 +551,7 @@
 		if (isset($tmpConf["host_name"]) && testHostExistence($tmpConf["host_name"]) || isset($tmpConf["name"]) && testHostTplExistence($tmpConf["name"]))	{
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ."\n", 3, $debug_path."cfgimport.log");
+			$counter = 0;
 			foreach ($tmpConf as $key=>$value)	{
 				switch($key)	{
 					case "use" : $use = trim($tmpConf[$key]); /*unset ($tmpConf[$key])*/; break;
@@ -634,6 +636,22 @@
 						}
 						unset ($tmpConf[$key]);
 						break;
+						
+					case "_SNMPCOMMUNITY" : 
+						$tmpConf["host_snmp_community"] = $tmpConf[$key];
+						break;
+						
+					case "_SNMPVERSION" : 
+						$tmpConf["host_snmp_version"] = $tmpConf[$key];
+						break;
+					
+					default :
+						if (preg_match("/^_([a-zA-Z0-9]+)/", $key, $def)) {
+							$macro_on_demand["macroInput_".$counter] = $def[1];
+							$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
+							$macro_on_demand["nbOfMacro"] = $counter++;	
+						}
+						break;
 				}
 			}
 			if (isset($tmpConf["host_register"]["host_register"]))	{
@@ -655,7 +673,7 @@
 			$tmpConf["ehi_statusmap_image"] = NULL;
 			$tmpConf["ehi_2d_coords"] = NULL;
 			$tmpConf["ehi_3d_coords"] = NULL;			
-			$useTpl[0] = insertHostInDB($tmpConf);
+			$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
 			$useTpl[1] = $use;
 			isset($tmpConf["host_parentsTMP"]) ? $useTpl[2] = $tmpConf["host_parentsTMP"] : NULL;
 			$nbr["h"] += 1;
@@ -963,6 +981,7 @@
 		$use = NULL;
 		$rrd_host = NULL;
 		$rrd_service = NULL;
+		$macro_on_demand = array();
 		$useTpl = array();
 		$tmpConf["service_hPars"] = array();
 		$tmpConf["service_hgPars"] = array();
@@ -971,7 +990,7 @@
 		# For loading template link
 		$cpt_tpl = 0;
 		$tab_link_tpl = array();
-		
+		$counter = 0;
 		foreach ($tmpConf as $key => $value){
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
@@ -1083,6 +1102,13 @@
 					$tab_link_tpl[$cpt_tpl] = $value;
 					$cpt_tpl++;
 					break;
+				default :
+					if (preg_match("/^_([a-zA-Z0-9]+)/", $key, $def)) {
+						$macro_on_demand["macroInput_".$counter] = $def[1];
+						$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
+						$macro_on_demand["nbOfMacro"] = $counter++;	
+					}
+					break;
 			}
 		}
 		if (isset($tmpConf["service_register"]["service_register"]))	{
@@ -1101,7 +1127,7 @@
 				if ($debug_nagios_import == 1)
 					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceCFG : ". $tmpConf["service_description"] ." \n", 3, $debug_path."cfgimport.log");
 
-				$useTpl[0] = insertServiceInDB($tmpConf);
+				$useTpl[0] = insertServiceInDB($tmpConf, $macro_on_demand);
 				$useTpl[1] = $use;
 				$nbr["sv"] += 1;
 				# Add link with host template

@@ -463,8 +463,8 @@
 			updateServiceCategories($service_id);
 	}	
 	
-	function insertServiceInDB ($ret = array())	{
-		$service_id = insertService($ret);
+	function insertServiceInDB ($ret = array(), $macro_on_demand = NULL)	{
+		$service_id = insertService($ret, $macro_on_demand);
 		updateServiceContactGroup($service_id, $ret);
 		updateServiceContact($service_id, $ret);
 		updateServiceHost($service_id, $ret);
@@ -476,7 +476,7 @@
 		return ($service_id);
 	}
 	
-	function insertService($ret = array())	{
+	function insertService($ret = array(), $macro_on_demand = NULL)	{
 		global $form, $pearDB, $oreon;
 		
 		if (!count($ret))
@@ -562,21 +562,25 @@
 		/*
 		 *  Insert on demand macros
 		 */
-		if (isset($_POST['nbOfMacro'])) {			
+		if (isset($macro_on_demand))
+			$my_tab = $macro_on_demand;
+		else if (isset($_POST['nbOfMacro']))
+			$my_tab = $_POST;
+		if (isset($my_tab['nbOfMacro'])) {			
 			$already_stored = array(); 		
-	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
+	 		for ($i=0; $i <= $my_tab['nbOfMacro']; $i++)
 	 		{ 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
-	 			if (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
-		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
-		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id["MAX(service_id)"] .")";
+	 			if (isset($my_tab[$macInput]) && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]) {
+		 			$my_tab[$macInput] = str_replace("\$_SERVICE", "", $my_tab[$macInput]);
+		 			$my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($my_tab[$macInput]) ."\$', '". $my_tab[$macValue] ."', ". $service_id["MAX(service_id)"] .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";		
-					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];		
-					$already_stored[$_POST[$macInput]] = 1;
+					$fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];		
+					$already_stored[strtolower($my_tab[$macInput])] = 1;
 	 			}			
 	 		}
 		}
@@ -805,7 +809,7 @@
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];	
-					$already_stored[$_POST[$macInput]] = 1;
+					$already_stored[strtolower($_POST[$macInput])] = 1;
 	 			}			
 	 		}
 		}
