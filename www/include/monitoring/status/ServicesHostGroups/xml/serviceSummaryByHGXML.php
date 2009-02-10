@@ -87,7 +87,7 @@
 					" AND no.name1 NOT LIKE '_Module_%'";					
 		
 		$grouplistStr = $access->getAccessGroupsString(); 
-		$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description " . $access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
+		$rq .= 	$access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "no.name2", "centreon_acl.service_description") . $access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
 		if	($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 			$rq .= 	" AND nss.current_state != 0" ;
@@ -147,7 +147,7 @@
 					" AND hgm.hostgroup_id = hg.hostgroup_id".
 					" AND no.name1 not like '_Module_%'";
 		
-	$rq1 .= " AND no.name1 = centreon_acl.host_name ".$access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString());
+	$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString());
 	
 	if ($instance != "ALL")
 		$rq1 .= 	" AND no.instance_id = ".$instance;

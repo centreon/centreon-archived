@@ -141,7 +141,7 @@
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";	
 	
-	$rq1 .= " AND no.name1 = centreon_acl.host_name ".$access->queryBuilder("AND", "group_id", $grouplistStr);
+	$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name").$access->queryBuilder("AND", "group_id", $grouplistStr);
 
 	switch($sort_type){
 		case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 "; break;

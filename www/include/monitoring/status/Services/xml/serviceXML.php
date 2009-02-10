@@ -189,8 +189,7 @@
 		  	" AND objecttype_id = 2";
 
 
-	$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description " .$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
-
+	$rq .= 	$access->queryBuilder("AND", "no.name1", "centreon_acl.host_name"). $access->queryBuilder("AND", "no.name2", "centreon_acl.service_description").$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
 	($o == "meta") ? $rq .= " AND no.name1 = '_Module_Meta'" : $rq .= " AND no.name1 != '_Module_Meta'";
 

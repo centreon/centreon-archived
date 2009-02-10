@@ -102,7 +102,7 @@
 				" AND no.is_active = 1";
 
 	
-	$rq1 .= " AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description ".$access->queryBuilder("AND", "group_id", $grouplistStr);
+	$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND","no.name2", "centreon_acl.service_description") . $access->queryBuilder("AND", "group_id", $grouplistStr);
 	
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND nss.current_state != 0 ";
