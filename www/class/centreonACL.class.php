@@ -84,7 +84,7 @@
 	 			$this->resetACL();
 	 		}
  		}
- 	}
+ 	} 	
  	
  	/*
  	 *  Setter functions
@@ -617,5 +617,14 @@
 	 		$tab[$row['host_id']] = $row['host_name'];
 	 	return ($tab);
 	 }
+	 
+	 /* Function that sets the changed flag to 1 for the cron centAcl.php */
+	 public function updateACL(){
+		global $pearDB;
+
+		$DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	}
  }
  ?>

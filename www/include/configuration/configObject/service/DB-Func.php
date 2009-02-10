@@ -464,6 +464,8 @@
 	}	
 	
 	function insertServiceInDB ($ret = array(), $macro_on_demand = NULL)	{
+		global $oreon;
+		
 		$service_id = insertService($ret, $macro_on_demand);
 		updateServiceContactGroup($service_id, $ret);
 		updateServiceContact($service_id, $ret);
@@ -472,7 +474,7 @@
 		insertServiceExtInfos($service_id, $ret);
 		updateServiceTrap($service_id, $ret);
 		updateServiceCategories($service_id, $ret);
-		updateACL();
+		$oreon->user->access->updateACL();
 		return ($service_id);
 	}
 	

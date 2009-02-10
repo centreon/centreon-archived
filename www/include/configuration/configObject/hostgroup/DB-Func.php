@@ -163,20 +163,23 @@
 	}
 		
 	function insertHostGroupInDB ($ret = array())	{
+		global $oreon;
+		
 		$hg_id = insertHostGroup($ret);
 		updateHostGroupHosts($hg_id, $ret);
 		updateHostGroupContactGroups($hg_id, $ret);
-		updateACL();
+		$oreon->user->access->updateACL();
 		return $hg_id;
 	}
 	
 	function updateHostGroupInDB ($hg_id = NULL)	{
+		global $oreon;
 		if (!$hg_id) 
 			return;
 		updateHostGroup($hg_id);
 		updateHostGroupHosts($hg_id);
 		updateHostGroupContactGroups($hg_id);
-		updateACL();
+		$oreon->user->access->updateACL();
 	}
 		
 	function insertHostGroup($ret = array())	{
