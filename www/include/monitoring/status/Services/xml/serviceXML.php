@@ -260,7 +260,7 @@
 	$buffer = new CentreonXML();
 	$buffer->startElement("reponse");
 	$buffer->startElement("i");
-	$buffer->writeElement("numrows", $numrows);
+	$buffer->writeElement("numrows", $numRows);
 	$buffer->writeElement("num", $num);
 	$buffer->writeElement("limit", $limit);
 	$buffer->writeElement("p", $p);
