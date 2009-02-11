@@ -22,6 +22,7 @@
 	 * Path to the configuration dir
 	 */
 	$path = "./menu/";
+	$user_update_pref = $path. "userMenuPreferences.php";
 
 	/*
 	 * Smarty template Init
@@ -229,6 +230,12 @@
 	$tpl->assign("legend2", _("Legend"));
 
 	/*
+	 *  User's preference
+	 */
+	$tpl->assign("user_update_pref_header", $user_update_pref . "?uid=".$oreon->user->user_id."&div=header");
+	$tpl->assign("user_update_pref_menu_3", $user_update_pref . "?uid=".$oreon->user->user_id."&div=menu_3");
+	
+	/*
 	 * User Online
 	 */
 	if ($is_admin){
@@ -242,7 +249,6 @@
 		$tpl->assign("tab_user", $tab_user);
 	}
 	$tpl->assign('amIadmin', $oreon->user->admin);
-
 	# Display
 	$tpl->display("BlockHeader.ihtml");
 	$tpl->display("BlockMenuType1.ihtml");	

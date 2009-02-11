@@ -33,7 +33,7 @@ class User	{
 	var $is_admin;
 	var $groupList;
 	var $groupListStr;
-	var $access;
+	var $access;	
 	
 	# User LCA
 	# Array with elements ID for loop test
@@ -55,6 +55,22 @@ class User	{
 	  	$this->gmt = $user["contact_location"];
 	  	$this->is_admin = NULL;
 	  	$this->access = new CentreonACL($this->user_id, $this->admin);
+  	}
+    
+  	public function showDiv($div_name = NULL) {
+  		global $pearDB;
+  		
+  		if (!isset($div_name))
+  			return 0;
+  		
+  		$query = "SELECT cp_value " .
+  				"FROM contact_param " .
+  				"WHERE cp_contact_id = '".$this->user_id."' " .
+  				"AND cp_key LIKE '_Div_".$div_name."' LIMIT 1" ;
+  		$DBRESULT =& $pearDB->query($query);
+  		while ($row  =& $DBRESULT->fetchRow())
+  			return $row['cp_value'];  		
+  		return "1";  		
   	}
   
   	function getAllTopology($pearDB){

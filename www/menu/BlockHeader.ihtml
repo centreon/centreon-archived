@@ -1,4 +1,4 @@
-<div><img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('header')" style="position:absolute;top:0px;right:7px;" alt="hide_or_show_menu" /></div>
+<div><img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('header'); xhr = new XMLHttpRequest(); xhr.open('GET','{$user_update_pref_header}', true);xhr.send(null);" style="position:absolute;top:0px;right:7px;" alt="hide_or_show_menu" /></div>
 <div id="header">
 	<img src='{$urlLogo}' title='Centreon Logo' id="logo" />	
 	<!-- informations bank for ajax -->

@@ -88,24 +88,14 @@
 	if (PEAR::isError($DBRESULT)) 
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$redirect =& $DBRESULT->fetchRow();
-
-	$nb_page = NULL;
-	if (!$is_admin){
-		if (!count(!$oreon->user->lcaTopo) || !isset($oreon->user->lcaTopo[$p])){
-			$nb_page = 0;
-			include_once "./alt_error.php";
-		} else
-			$nb_page = 1;
-	} else
-		$nb_page = 1;
-
+	
 	/*
 	 * Init URL
 	 */
 	 
 	$url = "";
 	if (!isset($_GET["doc"])){
-		if ((isset($nb_page) && $nb_page) || $is_admin){
+		if ($oreon->user->access->page($p)){
 			if ($redirect["topology_page"] < 100){
 				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 				if (!$ret['topology_page']){
