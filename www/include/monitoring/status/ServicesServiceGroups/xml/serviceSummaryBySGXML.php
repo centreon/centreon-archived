@@ -27,6 +27,7 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");	
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
+	include_once($centreon_path."www/class/centreonXML.class.php");
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBNDOConnect.php");
 	include_once($centreon_path."www/include/monitoring/status/Common/common-Func.php");	
@@ -178,19 +179,20 @@
 
 	$rq1 .= " ORDER BY sg.alias ASC, no.name1 ".$order." LIMIT ".($num * $limit).",".$limit;
 
-	$buffer .= '<reponse>';
-	$buffer .= '<i>';
-	$buffer .= '<numrows>'.$numRows.'</numrows>';
-	$buffer .= '<num>'.$num.'</num>';
-	$buffer .= '<limit>'.$limit.'</limit>';
-	$buffer .= '<p>'.$p.'</p>';
-	$buffer .= '<sk><![CDATA['.$tab_color_service[0].']]></sk>';
-	$buffer .= '<sw><![CDATA['.$tab_color_service[1].']]></sw>';
-	$buffer .= '<sc><![CDATA['.$tab_color_service[2].']]></sc>';
-	$buffer .= '<su><![CDATA['.$tab_color_service[3].']]></su>';
-	$buffer .= '<sp><![CDATA['.$tab_color_service[4].']]></sp>';
-	($o == "svcOVSG") ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
-	$buffer .= '</i>';
+	$buffer = new CentreonXML();
+	$buffer->startElement("reponse");
+	$buffer->startElement("i");
+	$buffer->writeElement("numrows", $numRows);
+	$buffer->writeElement("num", $num);
+	$buffer->writeElement("limit", $limit);
+	$buffer->writeElement("p", $p);
+	$buffer->writeElement("sk", $tab_color_service[0]);
+	$buffer->writeElement("sw", $tab_color_service[1]);
+	$buffer->writeElement("sc", $tab_color_service[2]);
+	$buffer->writeElement("su", $tab_color_service[3]);
+	$buffer->writeElement("sp", $tab_color_service[4]);	
+	($o == "svcOVSG") ? $buffer->writeElement("s", "1") : $buffer->writeElement("s", "0");
+	$buffer->endElement();
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
@@ -207,24 +209,25 @@
 	while ($tab =& $DBRESULT_NDO1->fetchRow()){
 		($class == "list_one") ? $class = "list_two" : $class = "list_one";
 		if ($h != $tab["host_name"] && $h != "") {
-			$buffer .= '<h class="'.$class.'">';
-			$buffer .= '<hn><![CDATA['. $h . ']]></hn>';
-			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
-			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
-			$buffer .= '<sk>'.$nb_service[0].'</sk>';
-			$buffer .= '<sw>'.$nb_service[1].'</sw>';
-			$buffer .= '<sc>'.$nb_service[2].'</sc>';
-			$buffer .= '<su>'.$nb_service[3].'</su>';
-			$buffer .= '<sp>'.$nb_service[4].'</sp>';
-			$buffer .= '</h>';
+			$buffer->startElement("h");
+			$buffer->writeAttribute("class", $class);
+			$buffer->writeElement("hn", $h);
+			$buffer->writeElement("hs", $tab_status_host[$hs]);
+			$buffer->writeElement("hc", $tab_color_host[$hs]);
+			$buffer->writeElement("sk", $nb_service[0]);
+			$buffer->writeElement("sw", $nb_service[1]);
+			$buffer->writeElement("sc", $nb_service[2]);
+			$buffer->writeElement("su", $nb_service[3]);
+			$buffer->writeElement("sp", $nb_service[4]);			
+			$buffer->endElement();
 		}
 		if ($sg != $tab["alias"]){
 			if ($flag)
-				$buffer .= '</sg>';
+				$buffer->endElement();				
 			$sg = $tab["alias"];
-			$buffer .= '<sg>';
-			$buffer .= '<sgn><![CDATA['. $tab["alias"]  .']]></sgn>';
-			$buffer .= '<o>'. $ct . '</o>';
+			$buffer->startElement("sg");
+			$buffer->writeElement("sgn", $tab["alias"]);
+			$buffer->writeElement("o", $ct);			
 			$flag = 1;
 		}
 		$ct++;
@@ -239,22 +242,23 @@
 		$sg = $tab["alias"];
 	}
 
-	$buffer .= '<h class="'.$class.'">';
-	$buffer .= '<hn><![CDATA['. $h . ']]></hn>';
-	$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
-	$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
-	$buffer .= '<sk>'.$nb_service[0].'</sk>';
-	$buffer .= '<sw>'.$nb_service[1].'</sw>';
-	$buffer .= '<sc>'.$nb_service[2].'</sc>';
-	$buffer .= '<su>'.$nb_service[3].'</su>';
-	$buffer .= '<sp>'.$nb_service[4].'</sp>';
-	$buffer .= '</h>';
-
-	$buffer .= "</sg>";	
-	$buffer .= '</reponse>';
+	$buffer->startElement("h");
+	$buffer->writeAttribute("class", $class);
+	$buffer->writeElement("hn", $h);
+	$buffer->writeElement("hs", $tab_status_host[$hs]);
+	$buffer->writeElement("hc", $tab_color_host[$hs]);
+	$buffer->writeElement("sk", $nb_service[0]);
+	$buffer->writeElement("sw", $nb_service[1]);
+	$buffer->writeElement("sc", $nb_service[2]);
+	$buffer->writeElement("su", $nb_service[3]);
+	$buffer->writeElement("sp", $nb_service[4]);
+	$buffer->endElement();
+	$buffer->endElement();
+	$buffer->endElement();
+	
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
 	header('Cache-Control: no-cache, must-revalidate'); 
-	echo $buffer;
+	$buffer->output();
 ?>

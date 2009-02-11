@@ -22,6 +22,7 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
+	include_once($centreon_path."www/class/centreonXML.class.php");
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBNDOConnect.php");
 	include_once($centreon_path."www/include/monitoring/status/Common/common-Func.php");
@@ -64,15 +65,7 @@
 	$grouplist = $access->getAccessGroups();
 	$grouplistStr = $access->getAccessGroupsString(); 
 	$groupnumber = count($grouplist);
-	// if is admin -> lca
-	/*if (!$is_admin){
-		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
-		$lcaSG = getLCASG($pearDB);
-		$lcaSGStr = getLCASGStrByName($lcaSG);
-	}*/
-
+	
 	function get_services($host_name){
 		global $pearDBndo,$ndo_base_prefix, $lcaSGStr, $instance;
 		global $general_opt, $o;
@@ -148,20 +141,10 @@
 
 	if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
 		$rq1 .= " AND ss.current_state != 0" ;
-/*
-		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
-				")";
-*/
+
 	if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0")
 		$rq1 .= " AND ss.current_state != 0 AND ss.problem_has_been_acknowledged = 0" ;
-/*
-		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
-				")";
-*/
+
 	if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
@@ -188,16 +171,18 @@
 	/*
 	 * Init Buffer
 	 */
-	$buffer .= '<reponse>';
-	$buffer .= '<i>';
-	$buffer .= '<numrows>'.$numRows.'</numrows>';
-	$buffer .= '<num>'.$num.'</num>';
-	$buffer .= '<limit>'.$limit.'</limit>';
-	$buffer .= '<host_name>'._("Hosts").'</host_name>';
-	$buffer .= '<services>'._("Services").'</services>';
-	$buffer .= '<p>'.$p.'</p>';
-	($o == "svcOVSG") ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
-	$buffer .= '</i>';
+	 
+	$buffer = new CentreonXML();
+	$buffer->startElement("reponse");
+	$buffer->startElement("i");
+	$buffer->writeElement("numrows", $numRows);
+	$buffer->writeElement("num", $num);
+	$buffer->writeElement("limit", $limit);
+	$buffer->writeElement("host_name", _("Hosts"));
+	$buffer->writeElement("services", _("Services"));
+	$buffer->writeElement("p", $p);	
+	($o == "svcOVSG") ? $buffer->writeElement("s", "1")  : $buffer->writeElement("s", "0");
+	$buffer->endElement();
 
 	$class = "list_one";
 	$ct = 0;
@@ -214,41 +199,44 @@
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 		if ($sg != $tab["alias"]){
 			$flag = 0;
-			if ($sg != "")
-				$buffer .= '</h></sg>';
+			if ($sg != "") {
+				$buffer->endElement();
+				$buffer->endElement();				
+			}
 			$sg = $tab["alias"];
-			$buffer .= '<sg>';
-			$buffer .= '<sgn><![CDATA['. $tab["alias"]  .']]></sgn>';
-			$buffer .= '<o><![CDATA['. $ct . ']]></o>';
+			$buffer->startElement("sg");
+			$buffer->writeElement("sgn", $tab["alias"]);
+			$buffer->writeElement("o", $ct);			
 		}
 		$ct++;
 
 		if ($h != $tab["host_name"]){
 			if ($h != "" && $flag)
-				$buffer .= '</h>';
+				$buffer->endElement();
 			$flag = 1;
 			$h = $tab["host_name"];
 			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
-			$buffer .= '<h class="'.$class.'">';
-			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
-			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
-			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
+			$buffer->startElement("h");
+			$buffer->writeAttribute("class", $class);
+			$buffer->writeElement("hn", $tab["host_name"]);
+			$buffer->writeElement("hs", $tab_status_host[$hs]);
+			$buffer->writeElement("hc", $tab_color_host[$hs]);			
 		}
-
-		$buffer .= '<svc>';
-		$buffer .= '<sn><![CDATA['. $tab["service_description"] . ']]></sn>';
-		$buffer .= '<sc><![CDATA['. $tab_color_service[$tab["current_state"]] . ']]></sc>';
-		$buffer .= '</svc>';
+		$buffer->startElement("svc");
+		$buffer->writeElement("sn", $tab["service_description"]);
+		$buffer->writeElement("sc", $tab_color_service[$tab["current_state"]]);
+		$buffer->endElement();		
 
 	}
-	if ($sg != "")
-		$buffer .= '</h></sg>';
-
-	$buffer .= '</reponse>';
+	if ($sg != "") {
+		$buffer->endElement();
+		$buffer->endElement();
+	}	
+	$buffer->endElement();
 
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
 	header('Cache-Control: no-cache, must-revalidate'); 
-	echo $buffer;
+	$buffer->output();
 ?>
