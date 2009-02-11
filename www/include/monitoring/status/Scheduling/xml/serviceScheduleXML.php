@@ -49,6 +49,7 @@
 	include_once($centreon_path . "www/class/other.class.php");
 	include_once($centreon_path . "www/class/centreonGMT.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");
+	include_once($centreon_path . "www/class/centreonXML.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");	
 	include_once($centreon_path . "www/include/common/common-Func.php");
@@ -139,8 +140,8 @@
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = nhs.host_object_id AND no.objecttype_id = 1";
 
-	if (!$is_admin)
-		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
+	
+	$rq1 .= $access->queryBuilder("AND", "no.name1", $lcaSTR);
 
 	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
@@ -228,7 +229,9 @@
 	$DBRESULT_NDO =& $pearDBndo->query($rq);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-	$buffer .= '<reponse>';
+	
+	$buffer = new CentreonXML();
+	$buffer->startElement("reponse");	
 	$ct = 0;
 	$flag = 0;
 
@@ -237,14 +240,15 @@
 	if (PEAR::isError($DBRESULT_PAGINATION))
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
-	$buffer .= '<i>';
-	$buffer .= '<numrows>'.$numRows.'</numrows>';
-	$buffer .= '<num>'.$num.'</num>';
-	$buffer .= '<limit>'.$limit.'</limit>';
-	$buffer .= '<p>'.$p.'</p>';
-	$buffer .= '<nc>'.$nc.'</nc>';
-	$buffer .= '<o>'.$o.'</o>';
-	$buffer .= '</i>';
+	$buffer->startElement("i");
+	$buffer->writeElement("numrows", $numRows);
+	$buffer->writeElement("num", $num);
+	$buffer->writeElement("limit", $limit);
+	$buffer->writeElement("p", $p);
+	$buffer->writeElement("nc", $nc);
+	$buffer->writeElement("o", $o);
+	$buffer->endElement();
+	
 	/* End Pagination Rows */
 
 	$host_prev = "";
@@ -279,54 +283,58 @@
 					$class = "list_four";
 			}
 
-			$buffer .= '<l class="'.$class.'">';
-			$buffer .= '<o>'. $ct++ . '</o>';
-			$buffer .= '<f>'. $flag . '</f>';
+			$buffer->startElement("l");
+			$buffer->writeAttribute("class", $class);
+			$buffer->writeElement("o", $ct++);
+			$buffer->writeElement("f", $flag);
 
 			if ($host_prev == $ndo["host_name"]){
-				$buffer .= '<hc>transparent</hc>';
-				$buffer .= '<hn none="1">'. $ndo["host_name"] . '</hn>';
+				$buffer->writeElement("hc", "transparent");
+				$buffer->startElement("hn");
+				$buffer->writeAttribute("none", "1");
+				$buffer->text($ndo["host_name"]);
+				$buffer->endElement();				
 			} else {
 				$host_prev = $ndo["host_name"];
-				$buffer .= '<hc>'.$color_host.'</hc>';
-				$buffer .= '<hn none="0">'. $ndo["host_name"] . '</hn>';
+				$buffer->writeElement("hc", $color_host);
+				$buffer->startElement("hn");
+				$buffer->writeAttribute("none", "0");
+				$buffer->text($ndo["host_name"]);
+				$buffer->endElement();				
 			}
-
-			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';
-			$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
-			$buffer .= '<ac>'. $color_en_label[$ndo["active_checks_enabled"]] . '</ac>';
-			$buffer .= '<sc>'.$color_service.'</sc>';
-			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
-			$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';
-			$buffer .= '<ca>'. $ndo["current_attempt"] . '</ca>';
-			$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
-			$buffer .= '<pa>'. $ndo["problem_has_been_acknowledged"] . '</pa>';
-			$buffer .= '<pc>'. $passive . '</pc>';
-			$buffer .= '<ac>'. $active . '</ac>';
-			$buffer .= '<eh>'. $ndo["event_handler_enabled"] . '</eh>';
-			$buffer .= '<is>'. $ndo["is_flapping"] . '</is>';
-			$buffer .= '<fd>'. $ndo["flap_detection_enabled"] . '</fd>';
-	        $buffer .= '<ha>'.$host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';
-	        $buffer .= '<hae>'.$host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';
-	        $buffer .= '<hpe>'.$host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';
-			$buffer .= '<nc>'. $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]) . '</nc>';
-			$buffer .= '<lc>'. $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]) . '</lc>';
-			$buffer .= '<d>'. $duration . '</d>';
-			$buffer .= '</l>';
+			$buffer->writeElement("hs", $host_status[$ndo["host_name"]]["current_state"]);
+			$buffer->writeElement("sd", $ndo["service_description"]);
+			$buffer->writeElement("ac", $color_en_label[$ndo["active_checks_enabled"]]);
+			$buffer->writeElement("sc", $color_service);
+			$buffer->writeElement("cs", $tab_status_svc[$ndo["current_state"]]);
+			$buffer->writeElement("po", $ndo["plugin_output"]);
+			$buffer->writeElement("ca", $ndo["current_attempt"]);
+			$buffer->writeElement("ne", $ndo["notifications_enabled"]);			
+			$buffer->writeElement("pa", $ndo["problem_has_been_acknowledged"]);
+			$buffer->writeElement("pc", $passive);
+			$buffer->writeElement("ac", $active);			
+			$buffer->writeElement("eh", $ndo["event_handler_enabled"]);
+			$buffer->writeElement("is", $ndo["is_flapping"]);
+			$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);
+			$buffer->writeElement("ha", $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]);
+			$buffer->writeElement("hae", $host_status[$ndo["host_name"]]["active_checks_enabled"]);
+			$buffer->writeElement("hpe", $host_status[$ndo["host_name"]]["passive_checks_enabled"]);	        
+			$buffer->writeElement("nc", $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]));
+	        $buffer->writeElement("lc", $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]));
+			$buffer->writeElement("d", $duration);			
+			$buffer->endElement();			
 		}
 	}
 	/* end */
 
-	if (!$ct){
-		$buffer .= '<infos>';
-		$buffer .= 'none';
-		$buffer .= '</infos>';
-	}
+	if (!$ct)
+		$buffer->writeElement("infos", "none");
+		
 
-	$buffer .= '</reponse>';
+	$buffer->endElement();
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
 	header('Cache-Control: no-cache, must-revalidate'); 
-	echo $buffer;
+	$buffer->output();
 ?>

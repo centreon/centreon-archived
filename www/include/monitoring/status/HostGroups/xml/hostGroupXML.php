@@ -45,6 +45,7 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/other.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");
+	include_once($centreon_path . "www/class/centreonXML.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");	
 	include_once($centreon_path . "www/include/common/common-Func.php");
@@ -91,18 +92,14 @@
 	$general_opt = getStatusColor($pearDB);
 
 	function get_hosts_status($host_group_id, $status){
-		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $is_admin, $grouplist, $groupnumber;
+		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $is_admin, $grouplist, $groupnumber, $access;		
 
-		$tab_acl = "";
-		$condition_acl = "";
-		if (!$is_admin && $groupnumber){
-			$tab_acl = ", centreon_acl";
-			$condition_acl = " AND nh.display_name = centreon_acl.host_name AND centreon_acl.group_id IN (".groupsListStr($grouplist).") ";
-		}
 		$rq = 	" SELECT count( nhs.host_object_id ) AS nb".
 				" FROM " .$ndo_base_prefix."hoststatus nhs".
 				" WHERE nhs.current_state = '".$status."'".
-				" AND nhs.host_object_id IN (SELECT nhgm.host_object_id FROM ".$ndo_base_prefix."hostgroup_members nhgm, ".$ndo_base_prefix."hosts nh $tab_acl WHERE nhgm.hostgroup_id =".$host_group_id." AND nh.host_object_id = nhgm.host_object_id $condition_acl)";
+				" AND nhs.host_object_id IN (" .
+				"SELECT nhgm.host_object_id FROM ".$ndo_base_prefix."hostgroup_members nhgm, ".$ndo_base_prefix."hosts nh, centreon_acl WHERE nhgm.hostgroup_id =".$host_group_id." AND nh.host_object_id = nhgm.host_object_id " .
+				$access->queryBuilder("AND", "nh.display_name", "centreon_acl.host_name") . $access->queryBuilder("AND", "centreon_acl.group_id", $access->getAccessGroupsString()) . ")";
 
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -112,16 +109,15 @@
 	}
 
 	function get_services_status($host_group_id, $status){
-		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $instance,$lcaSTR, $is_admin, $grouplist, $groupnumber;
+		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $instance,$lcaSTR, $is_admin, $grouplist, $access;
 
 		$rq = 			" SELECT count( nss.service_object_id ) AS nb".
 						" FROM " .$ndo_base_prefix."servicestatus nss ".
 						" WHERE nss.current_state = '".$status."'".
 						" AND nss.service_object_id".
 						" IN (SELECT nno.object_id FROM " .$ndo_base_prefix."objects nno, centreon_acl WHERE nno.objecttype_id = '2' ";
-						
-		if (!$is_admin && $groupnumber)
-			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr($grouplist).")";
+								
+		$rq .= 	$access->queryBuilder("AND", "nno.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "nno.name2", "centreon_acl.service_description") . $access->queryBuilder("AND", "centreon_acl.group_id", $access->getAccessGroupsString());
 
 		if ($instance != "ALL")
 			$rq .= 	" AND nno.instance_id = ".$instance;
@@ -170,11 +166,11 @@
 
 
 	/* Get Host status */
-			$rq1 = 	" SELECT " .
-					" no.name1 as hostgroup_name," .
-					" hg.hostgroup_id" .
-					" FROM " .$ndo_base_prefix."hostgroups hg, ".$ndo_base_prefix."objects no, centreon_acl ".
-					" WHERE no.object_id = hg.hostgroup_object_id AND hg.alias != 'meta_hostgroup'";
+	$rq1 = 	" SELECT " .
+			" no.name1 as hostgroup_name," .
+			" hg.hostgroup_id" .
+			" FROM " .$ndo_base_prefix."hostgroups hg, ".$ndo_base_prefix."objects no, centreon_acl ".
+			" WHERE no.object_id = hg.hostgroup_object_id AND hg.alias != 'meta_hostgroup'";
 
 	if ($search != "")
 		$rq1 .= 	" AND no.name1 like '%" . $search . "%' ";
@@ -196,13 +192,16 @@
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-	$buffer .= '<reponse>';
-	$buffer .= '<i>';
-	$buffer .= '<numrows>'.$numRows.'</numrows>';
-	$buffer .= '<num>'.$num.'</num>';
-	$buffer .= '<limit>'.$limit.'</limit>';
-	$buffer .= '<p>'.$p.'</p>';
-	$buffer .= '</i>';
+
+	$buffer = new CentreonXML();
+	$buffer->startElement("reponse");
+	$buffer->startElement("i");
+	$buffer->writeElement("numrows", $numRows);
+	$buffer->writeElement("num", $num);
+	$buffer->writeElement("limit", $limit);
+	$buffer->writeElement("p", $p);
+	$buffer->endElement();
+	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
@@ -230,40 +229,38 @@
 	
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
 			if ($nb_host_up || $nb_host_down || $nb_host_unreachable || $nb_service_k || $nb_service_w || $nb_service_c || $nb_service_u || $nb_service_p){
-				$buffer .= '<l class="'.$class.'">';
-				$buffer .= '<o>'. $ct++ . '</o>';
-				$buffer .= '<hn><![CDATA['. $ndo["hostgroup_name"]  . ']]></hn>';
-				$buffer .= '<hu>'. $nb_host_up  . '</hu>';
-				$buffer .= '<huc>'. $tab_color_host[0]  . '</huc>';
-				$buffer .= '<hd>'.  $nb_host_down . '</hd>';
-				$buffer .= '<hdc>'. $tab_color_host[1]  . '</hdc>';
-				$buffer .= '<hur>'. $nb_host_unreachable  . '</hur>';
-				$buffer .= '<hurc>'. $tab_color_host[2]  . '</hurc>';
-				$buffer .= '<sk>'. $nb_service_k  . '</sk>';
-				$buffer .= '<skc>'. $tab_color_service[0]  . '</skc>';
-				$buffer .= '<sw>'. $nb_service_w  . '</sw>';
-				$buffer .= '<swc>'. $tab_color_service[1]  . '</swc>';
-				$buffer .= '<sc>'. $nb_service_c  . '</sc>';
-				$buffer .= '<scc>'. $tab_color_service[2]  . '</scc>';
-				$buffer .= '<su>'. $nb_service_u  . '</su>';
-				$buffer .= '<suc>'. $tab_color_service[3]  . '</suc>';
-				$buffer .= '<sp>'. $nb_service_p  . '</sp>';
-				$buffer .= '<spc>'. $tab_color_service[4]  . '</spc>';
-				$buffer .= '</l>';
+				$buffer->startElement("l");
+				$buffer->writeAttribute("class", $class);
+				$buffer->writeElement("o", $ct++);
+				$buffer->writeElement("hn", $ndo["hostgroup_name"]);
+				$buffer->writeElement("hu", $nb_host_up);
+				$buffer->writeElement("huc", $tab_color_host[0]);
+				$buffer->writeElement("hd", $nb_host_down);
+				$buffer->writeElement("hdc", $tab_color_host[1]);				
+				$buffer->writeElement("hur", $nb_host_unreachable);
+				$buffer->writeElement("hurc", $tab_color_host[2]);
+				$buffer->writeElement("sk", $nb_service_k);
+				$buffer->writeElement("skc", $tab_color_service[0]);
+				$buffer->writeElement("sw", $nb_service_w);
+				$buffer->writeElement("swc", $tab_color_service[1]);
+				$buffer->writeElement("sc", $nb_service_c);
+				$buffer->writeElement("scc", $tab_color_service[2]);				
+				$buffer->writeElement("su", $nb_service_u);
+				$buffer->writeElement("suc", $tab_color_service[3]);
+				$buffer->writeElement("sp", $nb_service_p);
+				$buffer->writeElement("spc", $tab_color_service[4]);				
+				$buffer->endElement();				
 			}
 		}
 	}
 
-	if (!$ct){
-		$buffer .= '<infos>';
-		$buffer .= 'none';
-		$buffer .= '</infos>';
-	}
+	if (!$ct)
+		$buffer->writeElement("infos", "none");		
 
-	$buffer .= '</reponse>';
+	$buffer->endElement();
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
 	header('Cache-Control: no-cache, must-revalidate'); 
-	echo $buffer;
+	$buffer->output();
 ?>

@@ -48,6 +48,8 @@
 	include_once $centreon_path . "www/DBconnect.php";
 	include_once $centreon_path . "www/DBNDOConnect.php";
 	include_once $centreon_path . "www/class/other.class.php";
+	include_once $centreon_path . "www/class/centreonXML.class.php";
+	include_once $centreon_path . "www/class/centreonACL.class.php";
 	include_once $centreon_path . "www/class/centreonGMT.class.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	
@@ -86,16 +88,10 @@
 	 */
 	
 	$is_admin =  isUserAdmin($sid);
-
-	// if is admin -> lca
-	if (!$is_admin){
-		$_POST["sid"] = $sid;
+	$user_id = getUserIdFromSID($sid); 	
+	$access = new CentreonACL($user_id, $is_admin);	
+	$grouplistStr = $access->getAccessGroupsString();
 		
-		$grouplist = getGroupListofUser($pearDB); 
-		$groupnumber = count($grouplist);
-		$grouplistStr = groupsListStr($grouplist);
-		
-	}
 
 	/*
 	 * Init GMT class
@@ -143,17 +139,14 @@
 			" nh.icon_image," .
 			" nh.icon_image_alt" .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh";
-	if (!$is_admin)	
-		$rq1 .= ", centreon_acl ";
+		
+	$rq1 .= ", centreon_acl ";
 		 
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
 			" AND no.name1 NOT LIKE '_Module_%'";
 
-	if (!$is_admin)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name" .
-				" AND centreon_acl.group_id IN (".$grouplistStr.")";
-
+	$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
@@ -195,14 +188,14 @@
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-
-	$buffer .= '<reponse>';
-	$buffer .= '<i>';
-	$buffer .= '<numrows>'.$numRows.'</numrows>';
-	$buffer .= '<num>'.$num.'</num>';
-	$buffer .= '<limit>'.$limit.'</limit>';
-	$buffer .= '<p>'.$p.'</p>';
-	$buffer .= '</i>';
+	$buffer = new CentreonXML();
+	$buffer->startElement("reponse");
+	$buffer->startElement("i");
+	$buffer->writeElement("numrows", $numRows);
+	$buffer->writeElement("num", $num);
+	$buffer->writeElement("limit", $limit);
+	$buffer->writeElement("p", $p);
+	$buffer->endElement();	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
@@ -210,7 +203,7 @@
 	$ct = 0;
 	$flag = 0;
 	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
-		$color_host = $tab_color_host[$ndo["current_state"]]; //"#FF0000";
+		$color_host = $tab_color_host[$ndo["current_state"]];
 		$passive = 0;
 		$active = 1;
 		$last_check = " ";
@@ -222,34 +215,35 @@
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 			
 		$host_status[$ndo["host_name"]] = $ndo;
-		$buffer .= '<l class="'.$class.'">';
-		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hc><![CDATA['. $color_host . ']]></hc>';
-		$buffer .= '<f><![CDATA['. $flag . ']]></f>';
-		$buffer .= '<hn><![CDATA['. $ndo["host_name"]  . ']]></hn>';
-		$buffer .= '<a><![CDATA['. $ndo["address"]  . ']]></a>';
-		$buffer .= '<ou><![CDATA['. $ndo["output"]  . ']]></ou>';
-		$buffer .= '<lc>'. (($ndo["last_check"] != 0) ? $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]) : "N/A") . '</lc>';
-		$buffer .= '<cs>'. $tab_status_host[$ndo["current_state"]] . '</cs>';
-        $buffer .= '<pha>'. $ndo["problem_has_been_acknowledged"] .'</pha>';
-        $buffer .= '<pce>'.$ndo["passive_checks_enabled"] .'</pce>';
-        $buffer .= '<ace>'.$ndo["active_checks_enabled"] .'</ace>';
-        $buffer .= '<lsc>'.($duration ? $duration : "N/A") .'</lsc>';
-        $buffer .= '<ha>'.$ndo["problem_has_been_acknowledged"]  .'</ha>';///
-        $buffer .= '<hae>'.$ndo["active_checks_enabled"] .'</hae>';///
-        $buffer .= '<hpe>'.$ndo["passive_checks_enabled"]  .'</hpe>';///
-		$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
-		$buffer .= '</l>';
+		$buffer->startElement("l");
+		$buffer->writeAttribute("class", $class);
+		$buffer->writeElement("o", $ct++);
+		$buffer->writeElement("hc", $color_host);
+		$buffer->writeElement("f", $flag);
+		$buffer->writeElement("hn", $ndo["host_name"]);
+		$buffer->writeElement("a", $ndo["address"]);
+		$buffer->writeElement("ou", $ndo["output"]);
+		$buffer->writeElement("lc", (($ndo["last_check"] != 0) ? $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]) : "N/A"));
+		$buffer->writeElement("cs", $tab_status_host[$ndo["current_state"]]);		
+		$buffer->writeElement("pha", $ndo["problem_has_been_acknowledged"]);
+        $buffer->writeElement("pce", $ndo["passive_checks_enabled"]);
+        $buffer->writeElement("ace", $ndo["active_checks_enabled"]);
+        $buffer->writeElement("lsc", ($duration ? $duration : "N/A"));      
+        $buffer->writeElement("ha", $ndo["problem_has_been_acknowledged"]);
+        $buffer->writeElement("hae", $ndo["active_checks_enabled"]);       
+        $buffer->writeElement("hpe", $ndo["passive_checks_enabled"]);
+        $buffer->writeElement("ne", $ndo["notifications_enabled"]);
+		$buffer->endElement();		
 	}
 
 	if (!$ct)
-		$buffer .= '<infos>none</infos>';
+		$buffer->writeElement("infos", "none");
 
-	$buffer .= '</reponse>';
+	$buffer->endElement();
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
 	header('Cache-Control: no-cache, must-revalidate'); 
 	
-	echo $buffer;
+	$buffer->output();
 ?>

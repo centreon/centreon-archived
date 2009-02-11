@@ -45,6 +45,7 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
+	include_once($centreon_path."www/class/centreonXML.class.php");
 	include_once($centreon_path."www/DBconnect.php");
 	include_once($centreon_path."www/DBOdsConnect.php");
 	include_once($centreon_path."www/DBNDOConnect.php");	
@@ -129,10 +130,10 @@
 				" no.name2 as service_description" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
 				
-				$rq .= ", centreon_acl ";
+	$rq .= ", centreon_acl ";
 				
 		
-		$rq .= 	" WHERE no.object_id = nss.service_object_id".				
+	$rq .= 	" WHERE no.object_id = nss.service_object_id".				
 				" AND no.name1 LIKE '_Module_Meta'" .
 				" AND no.is_active = 1" .
 			  	" AND objecttype_id = 2";
@@ -201,16 +202,16 @@
 	/*
 	 * Create Buffer
 	 */
-	$buffer .= '<reponse>';
-	$buffer .= '<i>';
-	$buffer .= '<numrows>'.$numRows.'</numrows>';
-	$buffer .= '<num>'.$num.'</num>';
-	$buffer .= '<limit>'.$limit.'</limit>';
-	$buffer .= '<p>'.$p.'</p>';
-	$buffer .= '<nc>'.$nc.'</nc>';
-	$buffer .= '<o>'.$o.'</o>';
-	$buffer .= '</i>';
-	
+	$buffer = new CentreonXML();
+	$buffer->startElement("reponse");
+	$buffer->startElement("i");
+	$buffer->writeElement("numrows", $numRows);
+	$buffer->writeElement("num", $num);
+	$buffer->writeElement("limit", $limit);
+	$buffer->writeElement("p", $p);
+	$buffer->writeElement("nc", $nc);
+	$buffer->writeElement("o", $o);
+	$buffer->endElement();
 
 	$host_prev = "";
 	$class = "list_one";
@@ -250,46 +251,46 @@
 		$dataMeta =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		
-		$buffer .= '<l class="'.$class.'">';
-		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<f>'. $flag . '</f>';
-
-		$buffer .= '<ppd>'. $ndo["process_performance_data"]  . '</ppd>';
-		$buffer .= '<sd><![CDATA['. $dataMeta['meta_name'] . ']]></sd>';
-		$buffer .= '<svc_id>'. $ndo["object_id"] . '</svc_id>';
-		
+		$buffer->startElement("l");
+		$buffer->writeAttribute("class", $class);		
+		$buffer->writeElement("o", $ct++);
+		$buffer->writeElement("f", $flag);		
+		$buffer->writeElement("ppd", $ndo["process_performance_data"]);
+		$buffer->writeElemen("sd", $dataMeta['meta_name']);
+		$buffer->writeElement("svc_id", $ndo["object_id"]);
+						
 		$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
 		$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
 		
-		$buffer .= '<svc_index>'.getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO).'</svc_index>';
-		$buffer .= '<sc>'.$color_service.'</sc>';
-		$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
-		$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';
-		$buffer .= '<ca>'. $ndo["current_attempt"] . '</ca>';
-		$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
-		$buffer .= '<pa>'. $ndo["problem_has_been_acknowledged"] . '</pa>';
-		$buffer .= '<pc>'. $ndo["passive_checks_enabled"] . '</pc>';
-		$buffer .= '<ac>'. $ndo["active_checks_enabled"] . '</ac>';
-		$buffer .= '<eh>'. $ndo["event_handler_enabled"] . '</eh>';
-		$buffer .= '<is>'. $ndo["is_flapping"] . '</is>';
-		$buffer .= '<fd>'. $ndo["flap_detection_enabled"] . '</fd>';
-        $buffer .= '<ha>'. $ndo["problem_has_been_acknowledged"]  .'</ha>';
-        $buffer .= '<hae>'. $ndo["active_checks_enabled"] .'</hae>';
-        $buffer .= '<hpe>'. $ndo["passive_checks_enabled"]  .'</hpe>';
-		$buffer .= '<nc>'. date($date_time_format_status, $ndo["next_check"]) . '</nc>';
-		$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"]) . '</lc>';
-		$buffer .= '<d>'. $duration . '</d>';
-		$buffer .= '</l>';
+		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO));
+		$buffer->writeElement("sc", $color_service);
+		$buffer->writeElement("cs", $tab_status_svc[$ndo["current_state"]]);
+		$buffer->writeElement("po", $ndo["plugin_output"]);
+		$buffer->writeElement("ca", $ndo["current_attempt"]);
+		$buffer->writeElement("ne", $ndo["notifications_enabled"]);
+		$buffer->writeElement("pa", $ndo["problem_has_been_acknowledged"]);		
+		$buffer->writeElement("pc", $ndo["passive_checks_enabled"]);
+		$buffer->writeElement("ac", $ndo["active_checks_enabled"]);
+		$buffer->writeElement("eh", $ndo["event_handler_enabled"]);
+		$buffer->writeElement("is", $ndo["is_flapping"]);
+		$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);
+		$buffer->writeElement("ha", $ndo["problem_has_been_acknowledged"]);
+		$buffer->writeElement("hae", $ndo["active_checks_enabled"]);
+        $buffer->writeElement("hpe", $ndo["passive_checks_enabled"]);
+        $buffer->writeElement("nc", date($date_time_format_status, $ndo["next_check"]));
+        $buffer->writeElement("lc", date($date_time_format_status, $ndo["last_check"]));
+		$buffer->writeElement("d", $duration);
+		$buffer->endElement();		
 	}
 
 	if (!$ct)
-		$buffer .= '<infos>none</infos>';
+		$buffer->writeElement("infos", "none");
 
-	$buffer .= '<sid>'.$sid.'</sid>';
-	$buffer .= '</reponse>';
+	$buffer->writeElement("sid", $sid);
+	$buffer->endElement();	
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
 	header('Cache-Control: no-cache, must-revalidate');
-	echo $buffer;
+	$buffer->output();
 ?>
