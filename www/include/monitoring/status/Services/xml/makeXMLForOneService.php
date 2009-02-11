@@ -42,6 +42,7 @@
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/class/other.class.php";
+	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/DBconnect.php";
 	include_once $centreon_path . "www/DBNDOConnect.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
@@ -145,14 +146,14 @@
 	/*
 	 * Init Buffer
 	 */
-		
-	$buffer .= '<reponse>';
+	$buffer = new CentreonXML();
+	$buffer->startElement("reponse");	
 
 	$class = "list_one";
 	$en = array("0" => _("No"), "1" => _("Yes"));
 
 	if ($ndo =& $DBRESULT_NDO1->fetchRow()){
-		$buffer .= '<svc_name><![CDATA['.$ndo["service_description"].']]></svc_name>';
+		$buffer->writeElement("svc_name", $ndo["service_description"]);		
 		$duration = "";
 		if ($ndo["last_state_change"] > 0)
 			$duration = Duration::toString(time() - $ndo["last_state_change"]);
@@ -164,66 +165,79 @@
 		$next_notification = "N/A";
 		if ($ndo["next_notification"] > 0)
 			$next_notification = $ndo["next_notification"];
-			
-		$buffer .= '<service_description><![CDATA['.utf8_encode($ndo["service_description"]).']]></service_description>';
-		$buffer .= '<hostname><![CDATA['.utf8_encode($ndo["hostname"]).']]></hostname>';
-		$buffer .= '<current_state color="'.$tab_color_service[$ndo["current_state"]].'">'. $tab_status_svc[$ndo["current_state"]]  . '</current_state>';
-		$buffer .= '<current_state_name><![CDATA['. html_entity_decode(_("Host Status")).']]> </current_state_name>';
-		$buffer .= '<plugin_output name="'._("Status Information").'"><![CDATA['. $ndo["output"]  . ']]></plugin_output>';
-		$buffer .= '<performance_data>'. utf8_encode($ndo["perfdata"]) . '</performance_data>';
-		$buffer .= '<performance_data_name><![CDATA['.html_entity_decode(_("Performance Data")).']]></performance_data_name>';
-		$buffer .= '<state_type>'.$state_type[$ndo["state_type"]].'</state_type>';
-		$buffer .= '<state_type_name><![CDATA['.html_entity_decode(_("State Type")).']]> </state_type_name>';
-		$buffer .= '<last_check >'. get_centreon_date($ndo["last_check"])  . '</last_check>';
-		$buffer .= '<last_check_name><![CDATA['.html_entity_decode(_("Last Check")).']]></last_check_name>';
-		$buffer .= '<next_check >'. get_centreon_date($ndo["next_check"])  . '</next_check>';
-		$buffer .= '<next_check_name><![CDATA['.html_entity_decode(_("Next Check")).']]></next_check_name>';
-		$buffer .= '<check_latency>'. $ndo["latency"]  . '</check_latency>';
-		$buffer .= '<check_latency_name><![CDATA['.html_entity_decode(_("Latency")).']]></check_latency_name>';
-		$buffer .= '<check_execution_time>'. $ndo["execution_time"]  . '</check_execution_time>';
-		$buffer .= '<check_execution_time_name><![CDATA['.html_entity_decode(_("Execution Time")).']]></check_execution_time_name>';
-		$buffer .= '<last_state_change>'. get_centreon_date($ndo["last_state_change"])  . '</last_state_change>';
-		$buffer .= '<last_state_change_name><![CDATA['._("Last State Change").']]></last_state_change_name>';
-		$buffer .= '<duration>'. $duration  . '</duration>';
-		$buffer .= '<duration_name><![CDATA['.html_entity_decode(_("Current State Duration")).']]></duration_name>';	
-		$buffer .= '<last_notification>'.  get_centreon_date($last_notification)  . '</last_notification>';
-		$buffer .= '<last_notification_name><![CDATA['.html_entity_decode(_("Last Notification")).']]></last_notification_name>';
-		$buffer .= '<next_notification>'.  get_centreon_date($next_notification)  . '</next_notification>';
-		$buffer .= '<next_notification_name><![CDATA['.html_entity_decode(_("Next Notification")).']]></next_notification_name>';
-		$buffer .= '<current_notification_number>'. $ndo["current_notification_number"]  . '</current_notification_number>';
-		$buffer .= '<current_notification_number_name><![CDATA['._("Current Notification Number").']]></current_notification_number_name>';
-		$buffer .= '<percent_state_change>'. $ndo["percent_state_change"]  . '</percent_state_change>';
-		$buffer .= '<percent_state_change_name><![CDATA['._("Percent State Change").']]></percent_state_change_name>';
-		$buffer .= '<is_downtime>'. $en[$ndo["scheduled_downtime_depth"]]  . '</is_downtime>';
-		$buffer .= '<is_downtime_name><![CDATA['._("In Scheduled Downtime?").']]></is_downtime_name>';
-		$buffer .= '<last_update>'. get_centreon_date( time())  . '</last_update>';
-		$buffer .= '<last_update_name><![CDATA['._("Last Update").']]></last_update_name>';
-		$buffer .= '<last_time_ok name="'.html_entity_decode(_("Last ok time")).'">'. get_centreon_date( $ndo["last_time_ok"])  . '</last_time_ok>';
-		$buffer .= '<last_time_warning name="'.html_entity_decode(_("Last warning time")).'">'. get_centreon_date( $ndo["last_time_warning"])  . '</last_time_warning>';
-		$buffer .= '<last_time_unknown name="'.html_entity_decode(_("Last unknown time")).'">'. get_centreon_date( $ndo["last_time_unknown"])  . '</last_time_unknown>';
-		$buffer .= '<last_time_critical name="'.html_entity_decode(_("Last critical time")).'">'. get_centreon_date( $ndo["last_time_critical"])  . '</last_time_critical>';
-
-	} else {
-		$buffer .= '<infos>';
-		$buffer .= 'none';
-		$buffer .= '</infos>';
-	}
+		
+		$buffer->writeElement("service_description", $ndo["service_description"]);	
+		$buffer->writeElement("hostname", $ndo["hostname"]);
+		$buffer->startElement("current_state");
+		$buffer->writeAttribute("color", $tab_color_service[$ndo["current_state"]]);
+		$buffer->text($tab_status_svc[$ndo["current_state"]]);
+		$buffer->endElement();
+		$buffer->writeElement("current_state_name", _("Host Status"));
+		$buffer->startElement("plugin_output");
+		$buffer->writeAttribute("name", _("Status Information"));
+		$buffer->text($ndo["output"]);
+		$buffer->endElement();
+		$buffer->writeElement("performance_data", $ndo["perfdata"]);
+		$buffer->writeElement("performance_data_name", _("Performance Data"));
+		$buffer->writeElement("state_type", $state_type[$ndo["state_type"]]);
+		$buffer->writeElement("state_type_name", _("State Type"));
+		$buffer->writeElement("last_check", get_centreon_date($ndo["last_check"]));
+		$buffer->writeElement("last_check_name", _("Last Check"));
+		$buffer->writeElement("next_check", get_centreon_date($ndo["next_check"]));		
+		$buffer->writeElement("next_check_name", _("Next Check"));
+		$buffer->writeElement("check_latency", $ndo["latency"]);
+		$buffer->writeElement("check_latency_name", _("Latency"));
+		$buffer->writeElement("check_execution_time", $ndo["execution_time"]);
+		$buffer->writeElement("check_execution_time_name", _("Execution Time"));
+		$buffer->writeElement("last_state_change", get_centreon_date($ndo["last_state_change"]));
+		$buffer->writeElement("last_state_change_name", _("Last State Change"));
+		$buffer->writeElement("duration", $duration);
+		$buffer->writeElement("duration_name", _("Current State Duration"));		
+		$buffer->writeElement("last_notification", get_centreon_date($last_notification));
+		$buffer->writeElement("last_notification_name", _("Last Notification"));	
+		$buffer->writeElement("next_notification", get_centreon_date($next_notification));
+		$buffer->writeElement("next_notification_name", _("Next Notification"));
+		$buffer->writeElement("current_notification_number", $ndo["current_notification_number"]);
+		$buffer->writeElement("current_notification_number_name", _("Current Notification Number"));
+		$buffer->writeElement("percent_state_change", $ndo["percent_state_change"]);		
+		$buffer->writeElement("percent_state_change_name", _("Percent State Change"));
+		$buffer->writeElement("is_downtime", $en[$ndo["scheduled_downtime_depth"]]);
+		$buffer->writeElement("is_downtime_name", _("In Scheduled Downtime?"));
+		$buffer->writeElement("last_update", get_centreon_date( time()));
+		$buffer->writeElement("last_update_name", _("Last Update"));
+		$buffer->startElement("last_time_ok");
+		$buffer->writeAttribute("name", _("Last ok time"));
+		$buffer->text(get_centreon_date( $ndo["last_time_ok"]));
+		$buffer->endElement();
+		$buffer->startElement("last_time_warning");
+		$buffer->writeAttribute("name", _("Last warning time"));
+		$buffer->text(get_centreon_date( $ndo["last_time_warning"]));
+		$buffer->endElement();		
+		$buffer->startElement("last_time_unknown");
+		$buffer->writeAttribute("name", _("Last unknown time"));
+		$buffer->text(get_centreon_date( $ndo["last_time_unknown"]));
+		$buffer->endElement();
+		$buffer->startElement("last_time_critical");
+		$buffer->writeAttribute("name", _("Last critical time"));
+		$buffer->text(get_centreon_date( $ndo["last_time_critical"]));
+		$buffer->endElement();
+	} else
+		$buffer->writeElement("infos", "none");			
 
 	/*
 	 * Translations
 	 */
 
-	$buffer .= '<tr1><![CDATA['._("Check informations").']]></tr1><tr2><![CDATA['._("Notification Informations").']]></tr2><tr3><![CDATA['._("Last Status Change").']]></tr3>';
-	
+	$buffer->writeElement("tr1", _("Check information"));
+	$buffer->writeElement("tr2", _("Notification Information"));
+	$buffer->writeelement("tr3", _("Last Status Change"));			
 	/*
 	 * End Buffer
 	 */
 
-	$buffer .= '</reponse>';
+	$buffer->endElement();
 
 	header('Content-type: text/xml; charset=iso-8859-1');
-	header('Cache-Control: no-cache, must-revalidate');
-
-	echo '<'.'?xml version="1.0" ?'.">\n";
-	echo $buffer;
+	header('Cache-Control: no-cache, must-revalidate');	
+	$buffer->output();
 ?>

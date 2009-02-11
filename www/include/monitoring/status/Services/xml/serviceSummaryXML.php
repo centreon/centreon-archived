@@ -46,6 +46,7 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/other.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");
+	include_once($centreon_path . "www/class/centreonXML.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");
 	include_once($centreon_path . "www/include/monitoring/status/Common/common-Func.php");	
@@ -118,7 +119,7 @@
 		
 	$rq1 .= ", centreon_acl ";
 
-		$rq1 .=	" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
+	$rq1 .=	" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 				" AND no.name1 NOT LIKE '_Module_%'";				
 
 	if ($o == "svcSum_pb")
@@ -159,13 +160,15 @@
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-	$buffer .= '<reponse>';
-	$buffer .= '<i>';
-	$buffer .= '<numrows>'.$numRows.'</numrows>';
-	$buffer .= '<num>'.$num.'</num>';
-	$buffer .= '<limit>'.$limit.'</limit>';
-	$buffer .= '<p>'.$p.'</p>';
-	$buffer .= '</i>';
+	$buffer = new CentreonXML();
+	$buffer->startElement("reponse");
+	$buffer->startElement("i");
+	$buffer->writeElement("numrows", $numRows);
+	$buffer->writeElement("num", $num);
+	$buffer->writeElement("limit", $limit);
+	$buffer->writeElement("p", $p);	
+	$buffer->endElement();
+	
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
@@ -188,35 +191,33 @@
 
 	foreach ($tab_final as $host_name => $tab)	{
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
-		$buffer .= '<l class="'.$class.'">';
-		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';
-		$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["cs"]]  . ']]></hs>';
-		$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["cs"]]  . ']]></hc>';
-		$buffer .= '<sk><![CDATA['. $tab["nb_service_k"]  . ']]></sk>';
-		$buffer .= '<skc><![CDATA['. $tab_color_service[0]  . ']]></skc>';
-		$buffer .= '<sw><![CDATA['. $tab["nb_service_w"]  . ']]></sw>';
-		$buffer .= '<swc><![CDATA['. $tab_color_service[1]  . ']]></swc>';
-		$buffer .= '<sc><![CDATA['. $tab["nb_service_c"]  . ']]></sc>';
-		$buffer .= '<scc><![CDATA['. $tab_color_service[2]  . ']]></scc>';
-		$buffer .= '<su><![CDATA['. $tab["nb_service_u"]  . ']]></su>';
-		$buffer .= '<suc><![CDATA['. $tab_color_service[3]  . ']]></suc>';
-		$buffer .= '<sp><![CDATA['. $tab["nb_service_p"]  . ']]></sp>';
-		$buffer .= '<spc><![CDATA['. $tab_color_service[4]  . ']]></spc>';
-		$buffer .= '</l>';
+		$buffer->startElement("l");
+		$buffer->writeAttribute("class", $class);
+		$buffer->writeElement("o", $ct++);		
+		$buffer->writeElement("hn", $host_name);
+		$buffer->writeElement("hs", $tab_status_host[$tab["cs"]]);
+		$buffer->writeElement("hc", $tab_color_host[$tab["cs"]]);
+		$buffer->writeElement("sk", $tab["nb_service_k"]);
+		$buffer->writeElement("skc", $tab_color_service[0]);
+		$buffer->writeElement("sw", $tab["nb_service_w"]);
+		$buffer->writeElement("swc", $tab_color_service[1]);
+		$buffer->writeElement("sc", $tab["nb_service_c"]);
+		$buffer->writeElement("scc", $tab_color_service[2]);
+		$buffer->writeElement("su", $tab["nb_service_u"]);
+		$buffer->writeElement("suc", $tab_color_service[3]);
+		$buffer->writeElement("sp", $tab["nb_service_p"]);				
+		$buffer->writeElement("spc", $tab_color_service[4]);
+		$buffer->endElement();		
 	}
 	/* end */
 
-	if (!$ct){
-		$buffer .= '<infos>';
-		$buffer .= 'none';
-		$buffer .= '</infos>';
-	}
+	if (!$ct)
+		$buffer->writeElement("infos", "none");
 
-	$buffer .= '</reponse>';
+	$buffer->endElement();
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
 	header('Cache-Control: no-cache, must-revalidate'); 
-	echo $buffer;
+	$buffer->output;
 ?>

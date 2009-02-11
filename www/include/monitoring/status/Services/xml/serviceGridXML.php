@@ -47,6 +47,7 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/other.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");
+	include_once($centreon_path . "www/class/centreonXML.class.php");
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBNDOConnect.php");	
 	include_once($centreon_path . "www/include/common/common-Func.php");
@@ -211,15 +212,16 @@
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-	$buffer .= '<reponse>';
-	$buffer .= '<i>';
-	$buffer .= '<numrows>'.$numRows.'</numrows>';
-	$buffer .= '<num>'.$num.'</num>';
-	$buffer .= '<limit>'.$limit.'</limit>';
-	$buffer .= '<p>'.$p.'</p>';
+	$buffer = new CentreonXML();
+	$buffer->startElement("reponse");
+	$buffer->startElement("i");
+	$buffer->writeElement("numrows", $numRows);
+	$buffer->writeElement("num", $num);
+	$buffer->writeElement("limit", $limit);
+	$buffer->writeElement("p", $p);	
 
-	preg_match("/svcOV/",$_GET["o"], $matches) ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
-	$buffer .= '</i>';
+	preg_match("/svcOV/",$_GET["o"], $matches) ? $buffer->writeElement("s", "1") : $buffer->writeElement("s", "0");
+	$buffer->endElement();
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
@@ -238,28 +240,28 @@
 
 	foreach ($tab_final as $host_name => $tab){
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
-		$buffer .= '<l class="'.$class.'">';
+		$buffer->startElement("l");
+		$buffer->writeAttribute("class", $class);
 		foreach ($tab["tab_svc"] as $svc => $state) {
-			$buffer .= '<svc>';
-			$buffer .= '<sn><![CDATA['. $svc . ']]></sn>';
-			$buffer .= '<sc><![CDATA['. $tab_color_service[$state] . ']]></sc>';
-			$buffer .= '</svc>';
+			$buffer->startElement("svc");
+			$buffer->writeElement("sn", $svc);
+			$buffer->writeElement("sc", $tab_color_service[$state]);			
+			$buffer->endElement();			
 		}
-		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hn><![CDATA['. utf8_encode($host_name)  . ']]></hn>';
-		$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["cs"]]  . ']]></hs>';
-		$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["cs"]]  . ']]></hc>';
-		$buffer .= '</l>';
+		$buffer->writeElement("o", $ct++);
+		$buffer->writeElement("hn", $host_name);
+		$buffer->writeElement("hs", $tab_status_host[$tab["cs"]]);
+		$buffer->writeElement("hc", $tab_color_host[$tab["cs"]]);
+		$buffer->endElement();		
 	}
 
-	if (!$ct){
-		$buffer .= '<infos>none</infos>';
-	}
+	if (!$ct)
+		$buffer->writeElement("infos", "none");	
 
-	$buffer .= '</reponse>';
+	$buffer->endElement();
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
 	header('Cache-Control: no-cache, must-revalidate'); 
-	echo $buffer;
+	$buffer->output();
 ?>
