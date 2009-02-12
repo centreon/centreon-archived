@@ -75,6 +75,7 @@ class centreonAuth {
     	$this->cryptPossibilities = array('MD5', 'SHA1');
     	$this->CentreonLog =& $CentreonLog;
     	$this->login = $username;
+    	$this->password = $password;
     	$this->pearDB = $pearDB;
     	/*
     	 * Check User acces

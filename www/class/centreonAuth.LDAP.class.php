@@ -64,7 +64,7 @@ class CentreonAuthLDAP {
 		 * Keep password
 		 */
 		$this->typePassword = $password;
-		
+				
 		/*
 		 * Create URI
 		 */
@@ -74,7 +74,9 @@ class CentreonAuthLDAP {
 	function connect() {
 		if  (!isset($this->contactInfos['contact_ldap_dn']) || $this->contactInfos['contact_ldap_dn'] == '')
 			$this->contactInfos['contact_ldap_dn'] = "anonymous" ;
+			print $this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port'];
 		$this->ds = ldap_connect($this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']);
+		$this->CentreonLog->insertLog(3, "LDAP Auth Cnx : ". $this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']." : ".ldap_error($this->ds)." (".ldap_errno($this->ds).")");
 		$this->CentreonLog->insertLog(3, "LDAP Auth Cnx : ". $this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']." : ".ldap_error($this->ds)." (".ldap_errno($this->ds).")");
 	}
 	
@@ -84,16 +86,17 @@ class CentreonAuthLDAP {
 		 * LDAP BIND
 		 */
 		@ldap_bind($this->ds, $this->contactInfos['contact_ldap_dn'], $this->typePassword);
-		
+		$this->CentreonLog->insertLog(3, "Connexion = ".$this->contactInfos['contact_ldap_dn']." :: ".ldap_error($this->ds));
 		/* In some case, we fallback to local Auth
 		  0 : Bind succesfull => Default case
+		  2 : Protocol error
 		 -1 : Can't contact LDAP server (php4) => Fallback
 		 51 : Server is busy => Fallback
 		 52 : Server is unavailable => Fallback
 		 81 : Can't contact LDAP server (php5) => Fallback
 		 Else : Go away !!
 		*/
-		
+	
 		if (isset($this->ds) && $this->ds) {
 			print ldap_errno($this->ds);
 			switch (ldap_errno($this->ds)) {
