@@ -20,8 +20,7 @@
 
 	require_once 'DB.php';
 
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/DBconnect.php";
 	include_once $centreon_path . "www/DBOdsConnect.php";
 	include_once $centreon_path . "www/DBNDOConnect.php";
@@ -363,9 +362,9 @@
 			$buffer->writeAttribute("select", "1");
 			$buffer->writeAttribute("child", "1");
 			$buffer->writeAttribute("text", _("ServiceGroups"));
-			$buffer->writeAttribute("im0", "./16x16/clients.gif");
-			$buffer->writeAttribute("im1", "./16x16/clients.gif");
-			$buffer->writeAttribute("im2", "./16x16/clients.gif");
+			$buffer->writeAttribute("im0", "../16x16/clients.gif");
+			$buffer->writeAttribute("im1", "../16x16/clients.gif");
+			$buffer->writeAttribute("im2", "../16x16/clients.gif");
 			$buffer->writeElement("itemtext", "label");
 			$buffer->endElement();			
 		}
