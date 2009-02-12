@@ -176,7 +176,9 @@
 	 */
 	if (!$min)
 		include_once "menu/Menu.php";
-
+	if (!$oreon->user->showDiv("header")) { ?> <script type="text/javascript">new Effect.toggle('header', 'blind', { duration : 0 });</script> <?php }
+	if (!$oreon->user->showDiv("menu_3")) { ?> <script type="text/javascript">new Effect.toggle('menu_3', 'blind', { duration : 0 });</script> <?php }
+	if (!$oreon->user->showDiv("menu_2")) { ?> <script type="text/javascript">new Effect.toggle('menu_2', 'blind', { duration : 0 });</script> <?php }
 	/*
 	 * Display PathWay
 	 */
@@ -226,5 +228,5 @@
 	 * Display Footer
 	 */
 	if (!$min)
-		include_once "footer.php";
+		include_once "footer.php";	
 ?>

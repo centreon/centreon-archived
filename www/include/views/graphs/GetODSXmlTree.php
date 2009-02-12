@@ -20,7 +20,8 @@
 
 	require_once 'DB.php';
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/DBconnect.php";
 	include_once $centreon_path . "www/DBOdsConnect.php";
 	include_once $centreon_path . "www/DBNDOConnect.php";
@@ -33,13 +34,13 @@
 	 * Include Access Class
 	 */
 	include_once $centreon_path . "www/class/centreonACL.class.php";
+	include_once $centreon_path . "www/class/centreonXML.class.php";
 
 	if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) { 	
 		header("Content-type: application/xhtml+xml"); 
 	} else {
 		header("Content-type: text/xml"); 
 	} 
-	echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
 
 	function getMyHostGraphs($host_id = NULL)	{
 		global $pearDBO;
@@ -123,23 +124,29 @@
 		$type = substr($url_var, 0, 2);
 		$id = substr($url_var, 3, strlen($url_var));
 	}
-
+	$buffer = new CentreonXML();
 	if ($normal_mode){
 		$i = 0;
-		print("<tree id='".$url_var."' >");	
+		$buffer->startElement("tree");
+		$buffer->writeAttribute("id", $url_var);		
 		
 		if ($type == "HG") {
 			/*
 			 * Get Hosts
 			 */
 			$hosts = getMyHostGroupHosts($id);
-			foreach ($hosts as $host){
-				if ($is_admin){
-					if (host_has_one_or_more_GraphService($host))
-				        print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
-				} else {
-					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host]) && host_has_one_or_more_GraphService($host))
-			        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+			foreach ($hosts as $host){				
+				if (host_has_one_or_more_GraphService($host)) {
+					if ($is_admin || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host]))) { 
+				        $buffer->startElement("item");
+				        $buffer->writeAttribute("child", "1");
+				        $buffer->writeAttribute("id", "HH_".$host."_".$id);
+				        $buffer->writeAttribute("text", getMyHostName($host));
+				        $buffer->writeAttribute("im0", "../16x16/server_network.gif");
+				        $buffer->writeAttribute("im1", "../16x16/server_network.gif");
+				        $buffer->writeAttribute("im2", "../16x16/server_network.gif");
+				        $buffer->endElement();					
+					}
 				}
 			}
 		} else if ($type == "ST") {
@@ -151,8 +158,16 @@
 				$tab_value = split("_", $key);
 				$host_name = getMyHostName($tab_value[0]);
 				$service_description = getMyServiceName($tab_value[1], $tab_value[0]);
-				if (checkIfServiceSgIsEn($tab_value[0], $tab_value[1]))
-					print("<item child='0' id='HS_".$tab_value[1]."_".$tab_value[0]."' text='".$host_name." - ".$service_description."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif' ></item>");
+				if (checkIfServiceSgIsEn($tab_value[0], $tab_value[1])) {
+					$buffer->startElement("item");
+					$buffer->writeAttribute("child", "0");
+					$buffer->writeAttribute("id", "HS_".$tab_value[1]."_".$tab_value[0]);
+					$buffer->writeAttribute("text", $host_name." - ".$service_description);
+					$buffer->writeAttribute("im0", "../16x16/gear.gif");
+					$buffer->writeAttribute("im1", "../16x16/gear.gif");
+					$buffer->writeAttribute("im2", "../16x16/gear.gif");
+					$buffer->endElement();
+				}
 			}
 		} else if ($type == "HH") {
 			/*
@@ -164,8 +179,16 @@
 			$graphList = getMyHostGraphs($id);
 		    $host_name = getMyHostName($id);
 		    foreach ($services as $svc_id => $svc_name){
-				if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$id]) && isset($lca["LcaHost"][$id][$svc_id])))
-			        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
+				if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$id]) && isset($lca["LcaHost"][$id][$svc_id]))) {
+			        $buffer->startElement("item");
+			        $buffer->writeAttribute("child", "0");
+			        $buffer->writeAttribute("id", "HS_".$svc_id."_".$id);
+			        $buffer->writeAttribute("text", $svc_name);
+			        $buffer->writeAttribute("im0", "../16x16/gear.gif");
+			        $buffer->writeAttribute("im1", "../16x16/gear.gif");
+			        $buffer->writeAttribute("im2", "../16x16/gear.gif");
+			        $buffer->endElement();
+				}	
 			}
 		} else if ($type == "HS") {	
 			;
@@ -175,10 +198,16 @@
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
-		        if ($is_admin)
-			        print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
-				else if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))
-			       print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");			
+		        if ($is_admin || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))) {
+			        $buffer->startElement("item");
+			        $buffer->writeAttribute("child", "1");
+			        $buffer->writeAttribute("id", "HH_".$host["host_id"]);
+			        $buffer->writeAttribute("text", $host["host_name"]);
+			        $buffer->writeAttribute("im0", "../16x16/server_network.gif");
+			        $buffer->writeAttribute("im1", "../16x16/server_network.gif");
+			        $buffer->writeAttribute("im2", "../16x16/server_network.gif");
+			        $buffer->endElement();
+		        }
 			}
 			$DBRESULT2->free();
 		} else if ($type == "RS") {
@@ -191,13 +220,18 @@
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($SG =& $DBRESULT->fetchRow()){
 			    $i++;
-				if ($is_admin){
-					if (SGIsNotEmpty($SG["sg_id"]))
-			        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
-				} else {
-					if (SGIsNotEmpty($SG["sg_id"]) && isset($lcaSG) && isset($lcaSG[$SG["sg_id"]]))
-			        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
-				}
+				if (SGIsNotEmpty($SG["sg_id"])) {
+			        if ($is_admin || (isset($lcaSG) && isset($lcaSG[$SG["sg_id"]]))) {
+			        	$buffer->startElement("item");
+				        $buffer->writeAttribute("child", "1");
+				        $buffer->writeAttribute("id", "ST_".$SG["sg_id"]);
+				        $buffer->writeAttribute("text", $SG["sg_name"]);
+				        $buffer->writeAttribute("im0", "../16x16/clients.gif");
+				        $buffer->writeAttribute("im1", "../16x16/clients.gif");
+				        $buffer->writeAttribute("im2", "../16x16/clients.gif");
+				        $buffer->endElement();
+					}
+				}				
 			}
 			$DBRESULT->free();
 		} else if ($type == "MT") {
@@ -211,7 +245,14 @@
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
-				print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+				$buffer->startElement("item");
+				$buffer->writeAttribute("child", "0");
+				$buffer->writeAttribute("id", "MS_".$MS["meta_id"]);
+				$buffer->writeAttribute("text", $MS["meta_name"]);
+				$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+				$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+				$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+				$buffer->endElement();				
 			}
 			$DBRESULT->free();
 		} else if ($type == "RR") {
@@ -222,15 +263,18 @@
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($HG =& $DBRESULT->fetchRow()) {
-				$i++;
-				if ($is_admin){
-					if (HG_has_one_or_more_host($HG["hg_id"])){
-			        	print("<item child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
-					}					
-				} else {
-					if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_id"]])){
-			        	print("<item child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
-					}					
+				$i++;				
+				if (HG_has_one_or_more_host($HG["hg_id"])){
+			       	if ($is_admin || (isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_id"]]))) {
+				       	$buffer->startElement("item");
+						$buffer->writeAttribute("child", "1");
+						$buffer->writeAttribute("id", "HG_".$HG["hg_id"]);
+						$buffer->writeAttribute("text", $HG["hg_name"]);
+						$buffer->writeAttribute("im0", "../16x16/clients.gif");
+						$buffer->writeAttribute("im1", "../16x16/clients.gif");
+						$buffer->writeAttribute("im2", "../16x16/clients.gif");						
+						$buffer->endElement();
+			       	}
 				}
 			}
 			$DBRESULT->free();
@@ -243,27 +287,35 @@
 			$hostWithGraph = getHostGraphedList();
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' ORDER BY host_name");
 			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+				print "Mysql Error : ".$DBRESULT2->getDebugInfo();			
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
 				if (isset($hostWithGraph[$host["host_id"]])){
-					if ($is_admin){
-			           	$cpt++;
-			           	$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";
-					} else {
-						if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]])){
-							$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";	
-							$cpt++;
-						}
+					if ($is_admin || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))){			           	
+			           	if (!$cpt) {
+			    			$buffer->startElement("item");
+							$buffer->writeAttribute("child", "1");
+							$buffer->writeAttribute("id", "HO_0");
+							$buffer->writeAttribute("text", _("Orphan hosts"));
+							$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+							$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+							$buffer->writeAttribute("im2", "../16x16/server_network.gif");       		
+			           	}
+			           	$buffer->startElement("item");
+						$buffer->writeAttribute("child", "1");
+						$buffer->writeAttribute("id", "HH_".$host["host_id"]);
+						$buffer->writeAttribute("text", $host["host_name"]);
+						$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+						$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+						$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+						$buffer->endElement();
+						if (!$cpt)
+							$buffer->endElement();
+						$cpt++;
 					}
 				}
 			}
-			$DBRESULT2->free();
-			if ($cpt){
-				print ("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
-				print $str ;
-				print("</item>");	
-			}
+			$DBRESULT2->free();			
 			
 			/*
 			 * Meta Services
@@ -278,18 +330,44 @@
 				$cpt++;
 			}
 			if ($cpt && $is_admin){
-				print("<item child='1' id='MT_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
-				print $str ;
-				print("</item>");
+				$buffer->startElement("item");
+				$buffer->writeAttribute("child", "1");
+				$buffer->writeAttribute("id", "MT_0");
+				$buffer->writeAttribute("text", _("Meta services"));
+				$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+				$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+				$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+				$buffer->text($str);
+				$buffer->endElement();				
 			}
 			
 		} else {
-			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='HostGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
-			print("<itemtext>label</itemtext>");
-			print("</item>");
-			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RS_0' text='ServiceGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
-			print("<itemtext>label</itemtext>");
-			print("</item>");
+			$buffer->startElement("item");
+			$buffer->writeAttribute("nocheckbox", "1");
+			$buffer->writeAttribute("open", "1");
+			$buffer->writeAttribute("call", "1");
+			$buffer->writeAttribute("select", "1");
+			$buffer->writeAttribute("child", "1");
+			$buffer->writeAttribute("id", "RR_0");
+			$buffer->writeAttribute("text", _("HostGroups"));
+			$buffer->writeAttribute("im0", "../16x16/clients.gif");
+			$buffer->writeAttribute("im1", "../16x16/clients.gif");
+			$buffer->writeAttribute("im2", "../16x16/clients.gif");
+			$buffer->writeElement("itemtext", "label");
+			$buffer->endElement();
+			$buffer->startElement("item");
+			$buffer->writeAttribute("nocheckbox", "1");
+			$buffer->writeAttribute("open", "1");
+			$buffer->writeAttribute("call", "1");
+			$buffer->writeAttribute("id", "RS_0");
+			$buffer->writeAttribute("select", "1");
+			$buffer->writeAttribute("child", "1");
+			$buffer->writeAttribute("text", _("ServiceGroups"));
+			$buffer->writeAttribute("im0", "./16x16/clients.gif");
+			$buffer->writeAttribute("im1", "./16x16/clients.gif");
+			$buffer->writeAttribute("im2", "./16x16/clients.gif");
+			$buffer->writeElement("itemtext", "label");
+			$buffer->endElement();			
 		}
 	} else {
 		/* 
@@ -315,36 +393,61 @@
 	   	$i = 0;
 		foreach ($hostgroups as $hg_id => $hg_name){
 			$i++;
-			if (HG_has_one_or_more_host($hg_id)){
-	
-				$hg_open = $hg_checked = "";
-				if (isset($hgs_selected[$hg_id]))
-					$hg_checked = " checked='1' ";
-				if (isset($hgs_open[$hg_id]))
-					$hg_open = " open='1' ";
-	    		if (HG_has_one_or_more_host($hg_id) && ($is_admin || isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$hg_name]))){
-		    		print("<item child='1' $hg_open $hg_checked id='HG_".$hg_id."_$i' text='".$hg_name."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+			if (HG_has_one_or_more_host($hg_id)){				
+	    		if ($is_admin || isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$hg_name])){
+		    		$buffer->startElement("item");
+		    		$buffer->writeAttribute("child", "1");
+		    		if (isset($hgs_selected[$hg_id]))
+		    			$buffer->writeAttribute("checked", "1");
+		    		if (isset($hgs_open[$hg_id]))
+		    			$buffer->writeAttribute("open", "1");
+		    		$buffer->writeAttribute("id", "HG_".$hg_id."_".$i);
+		    		$buffer->writeAttribute("text", $hg_name);
+		    		$buffer->writeAttribute("im0", "../16x16/clients.gif");
+		    		$buffer->writeAttribute("im1", "../16x16/clients.gif");
+		    		$buffer->writeAttribute("im2", "../16x16/clients.gif");		    		
 					$hosts = getMyHostGroupHosts($hg_id);
 					foreach ($hosts as $host_id => $host_name){
 						$i++;
 						$services = getMyHostActiveServices($host_id);
 						$graphList = getMyHostGraphs($host_id);
 						$host_name = getMyHostName($host_id);
-						if (($is_admin &&  host_has_one_or_more_GraphService($host_id)) || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host_name]) && host_has_one_or_more_GraphService($host_id))) {
-							print("<item child='1' call='0' id='HH_".$host_id."_$i' text='$host_name' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");	
+						if (host_has_one_or_more_GraphService($host_id) && ($is_admin || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host_name])))) {
+							$buffer->startElement("item");
+							$buffer->writeAttribute("child", "1");
+							$buffer->writeAttribute("call", "0");
+							$buffer->writeAttribute("id", "HH_".$host_id."_".$i);
+							$buffer->writeAttribute("text", $host_name);
+							$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+							$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+							$buffer->writeAttribute("im2", "../16x16/server_network.gif");
 						    foreach ($services as $svc_id => $svc_name){
 								if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]]))){
 							    	$checked = "";
-									if (isset($selected[$svc_id."_".$host_id]))
+									if (isset($selected[$svc_id."_".$host_id])) {										
 										$checked = " open='1' checked='1' ";
-									if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]])))
-								        print("<item child='0' $checked call='0' id='HS_".$svc_id."_".$host_id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
+									}
+									if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]]))) {
+								     	$buffer->startElement("item");
+								     	$buffer->writeAttribute("child", "0");
+								     	if (isset($selected[$svc_id."_".$host_id])) {
+								     		$buffer->writeAttribute("open", "1");
+								     		$buffer->writeAttribute("checked", "1");
+								     	}
+								     	$buffer->writeAttribute("call", "0");
+								     	$buffer->writeAttribute("id", "HS_".$svc_id."_".$host_id);
+								     	$buffer->writeAttribute("text", $svc_name);
+								     	$buffer->writeAttribute("im0", "../16x16/gear.gif");
+								     	$buffer->writeAttribute("im1", "../16x16/gear.gif");
+								     	$buffer->writeAttribute("im2", "../16x16/gear.gif");
+								        $buffer->endElement();
+									}
 								}
 							}
-							print("</item>");
+							$buffer->endElement();							
 						}
 					}
-					print("</item>");
+					$buffer->endElement();					
 	    		}
 			}
 		}
@@ -360,62 +463,61 @@
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		while ($host =& $DBRESULT2->fetchRow()){
 			$i++;
-			if (isset($hostWithGraph[$host["host_id"]])){
-				if ($is_admin){
-		           	$cpt++;
-		           	$checked = "";
+			if (isset($hostWithGraph[$host["host_id"]])){				
+		           	if (!$cpt) {
+		           		$buffer->startElement("item");
+		           		$buffer->writeAttribute("child", "1");
+		           		$buffer->writeAttribute("id", "HO_0");
+		           		$buffer->writeAttribute("text", _("Orphan hosts"));
+		           		$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+		           		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+		           		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+		           	}		           	
+					$buffer->startElement("item");
+					$buffer->writeAttribute("child", "1");
 					if (isset($selected_host[$host["host_id"]]))
-						$checked = " open='1' ";
-		           	$str .= "<item child='1' $checked call='0' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>";
+						$buffer->writeAttribute("open", "1");
+					$buffer->writeAttribute("call", "0");
+					$buffer->writeAttribute("id", "HH_".$host["host_id"]);
+					$buffer->writeAttribute("text", $host["host_name"]);
+					$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+					$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+					$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+		           	
 		           	$host_id = $host["host_id"];
 		           	$services = getMyHostActiveServices($host_id);
 					$graphList = getMyHostGraphs($host_id);
 					$host_name = getMyHostName($host_id);
-					if (($is_admin &&  host_has_one_or_more_GraphService($host_id)) || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host_name]) && host_has_one_or_more_GraphService($host_id))) {
+					if (host_has_one_or_more_GraphService($host_id) && (($is_admin) || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host_name])))) {
 						foreach ($services as $svc_id => $svc_name){
-							if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]]))){
-						    	$checked = "";
-								if (isset($selected[$svc_id."_".$host_id]))
-									$checked = " open='1' checked='1' ";
-								if (isset($graphList[$svc_id]))
-							        $str .= "<item child='0' $checked call='0' id='HS_".$svc_id."_".$host_id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>";			
+							if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]]))){						    	
+								if (isset($graphList[$svc_id])) {
+							        $buffer->startElement("item");
+							        $buffer->writeAttribute("child", "0");
+							        if (isset($selected[$svc_id."_".$host_id])) {
+							        	$buffer->writeAttribute("open", "1");
+							        	$buffer->writeAttribute("checked", "1");
+							        }
+							        $buffer->writeAttribute("call", "0");
+							        $buffer->writeAttribute("id", "HS_".$svc_id."_".$host_id);
+							        $buffer->writeAttribute("text", $svc_name);
+							        $buffer->writeAttribute("im0", "../16x16/gear.gif");
+							        $buffer->writeAttribute("im1", "../16x16/gear.gif");
+							        $buffer->writeAttribute("im2", "../16x16/gear.gif");
+							        $buffer->endElement();							        
+								}			
 							}
 						}
 					}
-		           	$str .= "</item>";
-				} else {
-					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]])) {
-						$checked = "";
-						if (isset($selected_host[$host["host_id"]]))
-							$checked = " open='1' ";
-						$str .= "<item child='1' $checked call='0' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>";
-						$host_id = $host["host_id"];
-			           	$services = getMyHostActiveServices($host_id);
-						$graphList = getMyHostGraphs($host_id);
-						$host_name = getMyHostName($host_id);
-						if (($is_admin &&  host_has_one_or_more_GraphService($host_id)) || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host_name]) && host_has_one_or_more_GraphService($host_id))) {
-							foreach ($services as $svc_id => $svc_name){
-								if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]]))){
-							    	$checked = "";
-									if (isset($selected[$svc_id."_".$host_id]))
-										$checked = " open='1' checked='1' ";
-									if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]])))
-								        $str .= "<item child='0' $checked call='0' id='HS_".$svc_id."_".$host_id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>";			
-								}
-							}
-						}
-						$str .= "</item>";
-						$cpt++;
-					}
-				}
+		           	$buffer->endElement();
+		           	if (!$cpt)
+		           		$buffer->endElement();
+		           	$cpt++;
 			}
 		}
+		
 		$DBRESULT2->free();
-		if ($cpt){
-			print ("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
-			print $str ;
-			print("</item>");	
-		}
+		
 		/*
 		 * Meta Services
 		 */
@@ -429,12 +531,29 @@
 			$cpt++;
 		}
 		if ($cpt && $is_admin){
-			print("<item child='1' id='MT_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
-			print $str ;
-			print("</item>");
+			$buffer->startElement("item");
+			$buffer->writeAttribute("child", "1");
+			$buffer->writeAttribute("id", "MT_0");
+			$buffer->writeAttribute("text", _("Meta services"));
+			$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+			$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+			$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+			$buffer->text($str);
+			$buffer->endElement();			
 		}
-		print("</item>");
-		print("<item nocheckbox='1' open='1' call='0' select='1' child='0' id='RS_0' text='ServiceGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+		$buffer->endElement();
+		$buffer->startElement("item");
+		$buffer->writeAttribute("nocheckbox", "1");
+		$buffer->writeAttribute("open", "1");
+		$buffer->writeAttribute("call", "0");
+		$buffer->writeAttribute("select", "1");
+		$buffer->writeAttribute("child", "1");
+		$buffer->writeAttribute("id", "RS_0");
+		$buffer->writeAttribute("text", _("ServiceGroups"));
+		$buffer->writeAttribute("im0", "../16x16/clients.gif");
+		$buffer->writeAttribute("im1", "../16x16/clients.gif");
+		$buffer->writeAttribute("im2", "../16x16/clients.gif");
+		
 		/*
 		 * Send Service Group list
 		 */
@@ -443,19 +562,21 @@
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		while ($SG =& $DBRESULT->fetchRow()){
-		    $i++;
-			if ($is_admin) {
-				if (SGIsNotEmpty($SG["sg_id"]))
-		        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
-			} else {
-				if (SGIsNotEmpty($SG["sg_id"]) && isset($lcaSG) && isset($lcaSG[$SG["sg_id"]]))
-		        	print("<item child='1' id='ST_".$SG["sg_id"]."' text='".$SG["sg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' ></item>");
-			}
+		    $i++;			
+			if (SGIsNotEmpty($SG["sg_id"]) && (($is_admin) || ((isset($lcaSG) && isset($lcaSG[$SG["sg_id"]])))))
+		       	$buffer->startElement("item");
+		       	$buffer->writeAttribute("child", "1");
+		       	$buffer->writeAttribute("id", "ST_".$SG["sg_id"]);
+		       	$buffer->writeAttribute("text", $SG["sg_name"]);
+		       	$buffer->writeAttribute("im0", "../16x16/clients.gif");
+		       	$buffer->writeAttribute("im1", "../16x16/clients.gif");
+		       	$buffer->writeAttribute("im2", "../16x16/clients.gif");
+		       	$buffer->endElement();		       				
 		}
 		$DBRESULT->free();
-		
-		print("<itemtext>label</itemtext>");
-		print("</item>");
+		$buffer->writeElement("itemtext", "label");
+		$buffer->endElement();		
 	}
-	print("</tree>");
+	$buffer->endElement();
+	$buffer->output();	
 ?>

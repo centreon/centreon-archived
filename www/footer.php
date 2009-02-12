@@ -65,10 +65,7 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 		Effect.toggle('QuickSearch');
 	</script>
 <?php } else { 	
-	if (!$oreon->user->showDiv("header")) { ?> <script type="text/javascript">new Effect.toggle('header', 'slide', { duration : 0 });</script> <?php }
-	if (!$oreon->user->showDiv("menu_3")) { ?> <script type="text/javascript">new Effect.toggle('menu_3', 'slide', { duration : 0 });</script> <?php }
-	if (!$oreon->user->showDiv("menu_2")) { ?> <script type="text/javascript">new Effect.toggle('menu_2', 'slide', { duration : 0 });</script> <?php }
-	if (!$oreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('footer', 'slide', { duration : 0 });</script> <?php }
+	if (!$oreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('footer', 'blind', { duration : 0 });</script> <?php }
 }
 ?>
 </body>
