@@ -68,6 +68,7 @@ class CentreonUserLog {
 		
 		$this->errorType[1] = $this->path."/error-login-";
 		$this->errorType[2] = $this->path."/error-sql-";
+		$this->errorType[3] = $this->path."/error-ldap-";
 	}
 	
 	/*
