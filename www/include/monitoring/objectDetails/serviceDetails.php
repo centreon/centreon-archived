@@ -18,11 +18,13 @@
 	if (!isset($oreon))
 		exit();
 
+	include_once("./DBNDOConnect.php");
+
 	/*
 	 * ACL Actions
 	 */
 	$GroupListofUser = array();
-	$GroupListofUser =  getGroupListofUser($pearDB);
+	$GroupListofUser =  $oreon->user->access->getAccessGroups();
 	
 	$allActions = false;
 	/*
@@ -30,7 +32,7 @@
 	 */
 	if (count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
-		$authorized_actions = getActionsACLList($GroupListofUser);
+		$authorized_actions = $oreon->user->access->getActions();
 		if (count($authorized_actions) == 0) 
 			$allActions = true;
 	} else {
@@ -53,20 +55,18 @@
 		$svc_description = $tab_data[1];
 	}
 
-
-	if (!$is_admin)
-		$lcaHost = getLcaHostByName($pearDB);
-
 	/*
 	 * Host Group List
 	 */
 	$host_id = getMyHostID($host_name);
+	$lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName($pearDBndo);
 
 	if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
 		include_once("alt_error.php");
 	} else {
 
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."' " .
+					$oreon->user->access->queryBuilder("AND", "host_host_id", $oreon->user->access->getHostsString("ID", $pearDBndo)));
 		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
 			$hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
 		$DBRESULT->free();
@@ -88,8 +88,7 @@
         }
 
 		$tab_status = array();
-	
-		include_once("./DBNDOConnect.php");
+			
 	
 		/* start ndo service info */
 		$rq =	"SELECT " .
@@ -159,9 +158,7 @@
 	
 		if (!isset($_GET["service_description"]))
 			$_GET["service_description"] = $svc_description;
-	
-		$lcaHost = getLcaHostByName($pearDB);
-
+			
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();

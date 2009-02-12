@@ -18,16 +18,18 @@
 	if (!isset($oreon))
 		exit();
 
+	include_once("./DBNDOConnect.php");
+
 	/*
 	 * ACL Actions
 	 */
 	$GroupListofUser = array();
-	$GroupListofUser =  getGroupListofUser($pearDB);
+	$GroupListofUser =  $oreon->user->access->getAccessGroups();
 	
 	$allActions = false;
 	if (count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
-		$authorized_actions = getActionsACLList($GroupListofUser);
+		$authorized_actions = $oreon->user->access->getActions();
 		
 		if (count($authorized_actions) == 0) 
 			$allActions = true;
@@ -52,7 +54,7 @@
 			$host_name = $key;
 
 	if (!$is_admin)
-		$lcaHost = getLcaHostByName($pearDB);
+		$lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName($pearDBndo);
 
 	$tab_status = array();
 
@@ -74,9 +76,7 @@
 			$proc_warning = getMyHostMacro($host_id, "PROC_WARNING");
 			$proc_critical = getMyHostMacro($host_id, "PROC_CRITICAL");
 		}
-		
-	
-		include_once("./DBNDOConnect.php");
+				
 		
 		/*
 		 * Init Table status

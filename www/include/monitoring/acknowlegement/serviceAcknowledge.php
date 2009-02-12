@@ -20,7 +20,7 @@
 
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	
+	require_once "./DBNDOConnect.php";
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	isset($_GET["service_description"]) ? $service_description = $_GET["service_description"] : $service_description = NULL;
@@ -36,12 +36,12 @@
 	$tpl = initSmartyTpl($path, $tpl, './templates/');
 	
 	if (!$is_admin)
-		$lcaHostByName = getLcaHostByName($pearDB);
+		$lcaHostByName["LcaHost"] = $oreon->user->access->getHostServicesName($pearDBndo);
 	
 	/*
 	 * HOST LCA
 	 */
-	if ($is_admin || (isset($lcaHostByName["LcaHost"][$host_name]) && !$is_admin)){
+	if ($is_admin || (isset($lcaHostByName["LcaHost"][$host_name]))){
 	
 		## Form begin
 		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);

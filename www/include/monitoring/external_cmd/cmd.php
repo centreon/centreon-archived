@@ -19,7 +19,7 @@
 		exit();
 
 	include_once("./include/monitoring/external_cmd/functions.php");
-	
+
 	if (isset($_GET["en"]))
 		$en = $_GET["en"];
 	
