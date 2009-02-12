@@ -47,9 +47,12 @@
   	/*
   	 *  Simply puts text
   	 */
-  	public function text($txt) {
+  	public function text($txt, $cdata = true) {
   		$txt = preg_replace('/[\x00-\x19\x7F]/', "", $txt);
-  		$this->buffer->writeCData(utf8_encode(html_entity_decode($txt)));
+  		if ($cdata)
+  			$this->buffer->writeCData(utf8_encode(html_entity_decode($txt)));
+  		else
+  			$this->buffer->text(utf8_encode(html_entity_decode($txt)));
   	}
   	
   	/*

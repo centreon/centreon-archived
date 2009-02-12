@@ -40,11 +40,11 @@
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
 	require_once $centreon_path.'www/class/other.class.php';
+	require_once $centreon_path.'www/class/centreonXML.class.php';
 	require_once $centreon_path.'www/include/reporting/dashboard/xmlInformations/common-Func.php';
 	
-	$buffer = null;
-	$buffer  = '<?xml version="1.0"?>';
-	$buffer .= '<data>';
+	$buffer = new CentreonXML();
+	$buffer->startElement("data");	
 
 	$state["OK"] = _("OK");
 	$state["WARNING"] = _("WARNING");
@@ -81,14 +81,13 @@
 					'FROM `log_archive_service` WHERE `service_id` IN ('.$str.') group by date_end, date_start order by date_start desc';
 		$res = & $pearDBO->query($request);
 		$statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
-		while ($row =& $res->fetchRow())
-			$buffer = fillBuffer($statesTab, $row, $color, $buffer);
+		while ($row =& $res->fetchRow())			
+			fillBuffer($statesTab, $row, $color);
 	}else {
-		$buffer .= '<error>error</error>';
+		$buffer->writeElement("error", "error");		
 	}
-
-	$buffer .= '</data>';
+	$buffer->endElement();	
 
 	header('Content-Type: text/xml');
-	echo $buffer;
+	$buffer->output();
 ?>

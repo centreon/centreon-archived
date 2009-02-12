@@ -77,7 +77,8 @@
 	/*
 	 * Create a XML node for each day stats (in $row) for a service, a servicegroup, an host or an hostgroup
 	 */
-	function fillBuffer($statesTab, $row, $color, $buffer) {
+	function fillBuffer($statesTab, $row, $color) {
+		global $buffer;
 		$statTab = array();
 		$totalTime = 0;
 		$sumTime = 0;
@@ -127,16 +128,15 @@
 				$start = mktime(0, 0, 0, $month, $day, $year);
 				$start += ($statTab[$value."_T"]/100*2);
 				$end = $start + ($statTab[$value."_T"]/100*96);
-				$buffer .= '<event ';
-				$buffer .= '	start="' .create_date_timeline_format($start) . ' GMT"';
-				$buffer .= '	end="' . create_date_timeline_format($end). ' GMT"';
-				$buffer .= '	color="'.$color[$value].'"';
-				$buffer .= '	isDuration="true" ';
-				$buffer .= '	title= "'.$statTab[$value."_MP"].'%" >' ;
-				$buffer .= '	'.$detailPopup;
-				$buffer .= '</event>';	
+				$buffer->startElement("event");
+				$buffer->writeAttribute("start", create_date_timeline_format($start) . " GMT");
+				$buffer->writeAttribute("end", create_date_timeline_format($end). " GMT");
+				$buffer->writeAttribute("color", $color[$value]);
+				$buffer->writeAttribute("isDuration", "true");				
+				$buffer->writeAttribute("title", $statTab[$value."_MP"] . "%");				
+				$buffer->text($detailPopup, false);
+				$buffer->endElement();
 			}
-		}
-		return $buffer;
+		}		
 	}
 ?>

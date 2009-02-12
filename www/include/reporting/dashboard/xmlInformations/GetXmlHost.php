@@ -41,11 +41,11 @@
 	
 	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
 	require_once $centreon_path.'www/class/other.class.php';
+	require_once $centreon_path.'www/class/centreonXML.class.php';
 	require_once $centreon_path.'www/include/reporting/dashboard/xmlInformations/common-Func.php';
 	
-	$buffer = null;
-	$buffer  = '<?xml version="1.0"?>';
-	$buffer .= '<data>';
+	$buffer = new CentreonXML();
+	$buffer->startElement("data");	
 
 	/*
 	 * Definition of status
@@ -72,13 +72,13 @@
 		  die("DB ERROR : ".$DBRESULT->getDebugInfo()."<br />");
 		  $statesTab = array("UP", "DOWN", "UNREACHABLE");
 		  while ($row =& $DBRESULT->fetchRow()) {
-		  	$buffer = fillBuffer($statesTab, $row, $color, $buffer);
+		  	fillBuffer($statesTab, $row, $color);
 		  }
 	} else {
-		$buffer .= '<error>error</error>';
+		$buffer->writeElement("error", "error");		
 	}
 
-	$buffer .= '</data>';
+	$buffer->endElement();	
 	header('Content-Type: text/xml');
-	echo $buffer;
+	$buffer->output;
 ?>

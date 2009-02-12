@@ -25,7 +25,8 @@
 			     'database' => $conf_centreon['db']);
 			     
 	$options = array('debug'       => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
-		
+	
+	require_once $centreon_path . "/www/class/centreonXML.class.php";
 	/* 
 	 * start init db
 	 */	
@@ -34,9 +35,8 @@
 		die("Connecting probems with Centreon database : " . $pearDB->getMessage());		
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 		
-	$buffer = null;
-	$buffer  = '<?xml version="1.0"?>';
-	$buffer .= '<traps>';
+	$buffer = new CentreonXML();
+	$buffer->startElement("traps");		
 
 	if (isset($_POST["mnftr_id"])){ 
 		$traps = array();
@@ -49,17 +49,16 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 		while ($trap =& $DBRESULT->fetchRow()){
-				$buffer .= '<trap>';
-				$buffer .= '<id>'.$trap["traps_id"].'</id>';			
-				$buffer .= '<name>'.$trap["traps_name"].'</name>';			
-				$buffer .= '</trap>';
+				$buffer->startElement("trap");
+				$buffer->writeElement("id", $trap["traps_id"]);
+				$buffer->writeElement("name", $trap["traps_name"]);
+				$buffer->endElement();							
 		}
 		$DBRESULT->free();
 	} else{
-		$buffer .= '<error>mnftr_id not found</error>';
+		$buffer->writeElement("error", "mnftr_id not found");		
 	}
-	
-	$buffer .= '</traps>';
+	$buffer->endElement();	
 	header('Content-Type: text/xml');
-	echo $buffer;
+	$buffer->output();
 ?>

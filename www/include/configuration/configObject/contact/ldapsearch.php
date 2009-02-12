@@ -20,6 +20,7 @@
 	require_once("../../../../include/common/common-Func.php");
  	require_once("../../../../$classdir/Session.class.php");
  	require_once("../../../../$classdir/Oreon.class.php");
+ 	require_once("../../../../$classdir/centreonXML.class.php");
 
  	Session::start();
 
@@ -175,9 +176,10 @@
 			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : ". $info["count"] . " \n", 3, $debug_path."ldapsearch.log");
 		@ldap_free_result($sr);
 		
+		$buffer = new CentreonXML();
 		if ($number_returned) {
-			$buffer  = '<reponse>';
-			$buffer .= '<entries>'.$number_returned.'</entries>' ;
+			$buffer->startElement("reponse");
+			$buffer->writeElement("entries", $number_returned);			
 			for ($i=0 ; $i < $number_returned ; $i++) {
 				if (isset($info[$i]["givenname"])){
 					$isvalid = "0";
@@ -217,36 +219,55 @@
 					$info[$i]["cn"][0] = str_replace("\"", "", $info[$i]["cn"][0]);
 					$info[$i]["cn"][0] = htmlentities($info[$i]["cn"][0]);
 					
-					$buffer .= "<user isvalid='".$isvalid."'>";
-					$buffer .= "<dn isvalid='". (isset($info[$i]["dn"]) ? "1" : "0" ) ."'><![CDATA[". (isset($info[$i]["dn"]) ? $info[$i]["dn"] : "" )."]]></dn>";
-					$buffer .= "<sn isvalid='". (isset($info[$i]["sn"]) ? "1" : "0" ) ."'><![CDATA[". (isset($info[$i]["sn"][0]) ? $info[$i]["sn"][0] : "")."]]></sn>";
-					$buffer .= "<givenname isvalid='". (isset($info[$i]["givenname"]) ? "1" : "0" ) ."'><![CDATA[".(isset($info[$i]["givenname"][0]) ? str_replace("\'", "\\\'", $info[$i]["givenname"][0]) : "" ). "]]></givenname>";
-					$buffer .= "<mail isvalid='". (isset($info[$i]["mail"]) ? "1" : "0" ) ."'><![CDATA[".(isset($info[$i]["mail"][0]) ? $info[$i]["mail"][0] : "" )."]]></mail>";
-					$buffer .= "<cn isvalid='". (isset($info[$i]["cn"]) ? "1" : "0" ) ."'><![CDATA[".(isset($info[$i]["cn"][0]) ? $info[$i]["cn"][0] : "" ). "]]></cn>";
-					$buffer .= "<uid isvalid='". (empty($uid) ? "0" : "1" ) ."'><![CDATA[".$uid. "]]></uid>";
-					$buffer .= "</user>";
+					$buffer->startElement("user");
+					$buffer->writeAttribute("isvalid", $isvalid);
+					$buffer->startElement("dn");
+					$buffer->writeAttribute("isvalid", (isset($info[$i]["dn"]) ? "1" : "0" )); 
+					$buffer->text((isset($info[$i]["dn"]) ? $info[$i]["dn"] : "" ));
+					$buffer->endElement();
+					$buffer->startElement("sn");
+					$buffer->writeAttribute("isvalid", (isset($info[$i]["sn"]) ? "1" : "0" ));					
+					$buffer->text((isset($info[$i]["sn"][0]) ? $info[$i]["sn"][0] : ""));
+					$buffer->endElement();
+					$buffer->startElement("givenname");
+					$buffer->writeAttribute("isvalid", (isset($info[$i]["givenname"]) ? "1" : "0" ));
+					$buffer->text((isset($info[$i]["givenname"][0]) ? str_replace("\'", "\\\'", $info[$i]["givenname"][0]) : "" ));
+					$buffer->endElement();
+					$buffer->startElement("mail");
+					$buffer->writeAttribute("isvalid", (isset($info[$i]["mail"]) ? "1" : "0" ));
+					$buffer->text((isset($info[$i]["mail"][0]) ? $info[$i]["mail"][0] : "" ));
+					$buffer->endElement();				
+					$buffer->startElement("cn");
+					$buffer->writeAttribute("isvalid", (isset($info[$i]["cn"]) ? "1" : "0" ));
+					$buffer->text((isset($info[$i]["cn"][0]) ? $info[$i]["cn"][0] : "" ));
+					$buffer->endElement();
+					$buffer->startElement("uid");
+					$buffer->writeAttribute("isvalid", (empty($uid) ? "0" : "1" ));
+					$buffer->text($uid);
+					$buffer->endElement();
+					$buffer->endElement();					
 				}
 		   	}
-		   	$buffer .= "</reponse>";
+		   	$buffer->endElement();		   	
 		} else {
-			$buffer = '<reponse>';
-			$buffer .= '<entries>0</entries>' ;
-			$buffer .= '<error>'.ldap_err2str($ds).'</error>' ;
-			$buffer .= '</reponse>';
+			$buffer->startElement("reponse");
+			$buffer->writeElement("entries", "0");
+			$buffer->writeElement("error", ldap_err2str($ds));
+			$buffer->endElement();			
 		}
 		@ldap_close($ds);
 	} 
 
 	if (isset($error)){
-		$buffer  = '<reponse>';
-		$buffer .= '<error><![CDATA[' . $error . ']]></error>';
-		$buffer .= '</reponse>';
+		$buffer->startElement("reponse");
+		$buffer->writeElement("error", $error);
+		$buffer->endElement();		
 	}
 
 	header('Content-Type: text/xml');
-	$buffer =  '<?xml version="1.0"?>' . $buffer ;
+
 	
-	print $buffer;
+	$buffer->output();
 	
 	if ($debug_ldap_import == 1)
 		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : XML Output : $buffer\n", 3, $debug_path."ldapsearch.log");

@@ -42,6 +42,7 @@
 	
 	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
 	require_once $centreon_path.'www/class/other.class.php';
+	require_once $centreon_path.'www/class/centreonXML.class.php';
 	require_once $centreon_path.'www/include/reporting/dashboard/xmlInformations/common-Func.php';
 	/*
 	 * Definition of status
@@ -51,8 +52,8 @@
 	$state["UNREACHABLE"] = _("UNREACHABLE");
 	$state["UNDETERMINED"] = _("UNDETERMINED");
 	
-	$buffer  = '<?xml version="1.0"?>';
-	$buffer .= '<data>';
+	$buffer = new CentreonXML();
+	$buffer->startElement("data");	
 	
 	if (isset($_GET["id"]) && isset($_GET["color"])){
 		$color = array();
@@ -86,13 +87,12 @@
 			die( "MySQL Error : ".$DBRESULT->getDebugInfo());
 			$statesTab = array("UP", "DOWN", "UNREACHABLE");
 		while ($row =& $DBRESULT->fetchRow()) {
-			$buffer = fillBuffer($statesTab, $row, $color, $buffer);
+			fillBuffer($statesTab, $row, $color);
 		  }
 	} else	{
-		$buffer .= '<error>error</error>';
+		$buffer->writeElement("error", "error");
 	}
-
-	$buffer .= '</data>';
+	$buffer->endElement();	
 	header('Content-Type: text/xml');
-	echo $buffer;
+	$buffer->output();
 ?>
