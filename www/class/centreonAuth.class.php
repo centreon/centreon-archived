@@ -37,6 +37,10 @@
  */
  
 class centreonAuth {
+
+	/*
+	 * Declare Values
+	 */
 	var $login;
 	var $password;
 	var $enable;
@@ -45,35 +49,88 @@ class centreonAuth {
 	var $autologin;
 	var $userInfos;
 	
+	var $cryptPossibilities;
 	/*
 	 * Flags
 	 */
-	
 	var $passwdOk;
 	var $authType;
 	
-    function centreonAuth($username, $password, $autologin, $encryptType = 0) {
-    	$this->userInfos = getUserInfos($username, $password, $autologin, $encryptType);
-    	if (count($this->userInfos))
-    		$this->userExists = 1;
-    	//$cryptEngine = $userInfos["Crypt"];
-    	$this->cryptEngine = $this->userInfos["contact_auth_type"];
-    	
+	/*
+	 * keep log class 
+	 */
+	var $CentreonLog;
+
+	/*
+	 * Error Message
+	 */
+	var $error;
+	
+	/*
+	 * Constructor
+	 */
+    function centreonAuth($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1) {
+    	$this->cryptPossibilities = array('MD5', 'SHA1');
+    	$this->CentreonLog =& $CentreonLog;
+    	/*
+    	 * Check User acces
+    	 */
+    	$this->checkUser($username, $password, $autologin, $pearDB);
     }
-    
-    function getUserInfos($username, $password, $autologin, $encryptType) {
+	    
+	function checkPassword($password) {
+		if ($this->userInfos["contact_auth_type"] == "LDAP") {
+			/*
+			 * To be continue
+			 */
+		} else if ($this->userInfos["contact_auth_type"] == "local") {
+			if ($this->userInfos["contact_passwd"] == myCrypt($password))
+				$this->passwdOk = 1;
+			else
+				$this->passwdOk = 0;
+		}
+	}
+	    
+    function checkUser($username, $password, $autologin, $pearDB) {
     	if ($autologin == 0) {
-	    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($useralias, ENT_QUOTES)."' LIMIT 1");
+	    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");
 	    	if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	    	$this->$DBRESULT->fetchRow();
+				$this->CentreonLog->insertLog(1, "DB Error : ".$DBRESULT->getDebugInfo(), 1);
+	    	if ($DBRESULT->numRows()) {
+	    		$this->userInfos =& $DBRESULT->fetchRow();
+	    		if ($this->userInfos["contact_oreon"]) {
+					/*
+					 * Check password matching
+					 */
+					$this->getCryptFunction();
+					$this->checkPassword($password);
+
+					if ($this->passwdOk == 1) {
+						$this->CentreonLog->setUID($this->userInfos["contact_id"]);
+						$this->CentreonLog->insertLog(1, "Contact '".$username."' logged in - IP : ".$_SERVER["REMOTE_ADDR"]);
+					} else {
+						$this->CentreonLog->insertLog(1, "Contact '".$username."' doesn't match with password");
+						$this->error = "Invalid user";	
+					}
+				} else {
+					$this->CentreonLog->insertLog(1, "Contact '".$username."' is not enable for reaching centreon");
+					$this->error = "Invalid user";
+				}
+	    	} else {
+	    		$this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");
+	    		$this->error = "Invalid user";
+	    	}
     	} else {
-    		switch ($autologin)	{
-    			case 0 : ;
-    			case 1 : ;
-    			default : ;
-    		}
-    	}
+	    	/*
+	    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($useralias, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");
+    		if (PEAR::isError($DBRESULT))
+				$this->CentreonLog->insertLog(1, "DB Error : ".$DBRESULT->getDebugInfo(), 1);
+	    	if ($DBRESULT->numRows()) {
+	    		;	
+	    	}
+	    	*/
+	    	;
+	    }
     }
     
     function checkPasswd($username, $password, $Crypt) {
@@ -82,6 +139,42 @@ class centreonAuth {
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
     	$this->$DBRESULT->fetchRow();
     }
+
+	/*
+     * Check crypt system
+     */
+
+    function getCryptFunction() {
+  		switch ($this->userInfos["contact_crypt"]) {
+  			case 1 : 
+  				return "MD5";
+  				break;
+  			case 2 : 
+  				return "SHA1";
+  				break;
+  			default : 
+  				return "MD5";
+  				break;
+  		}
+  	}
+
+	/*
+	 * Crypt String
+	 */
+    
+    function myCrypt($str) {
+  		switch ($this->cryptEngine) {
+  			case 1 : 
+  				return md5($str);
+  				break;
+  			case 2 : 
+  				return sha1($str);
+  				break;
+  			default : 
+  				return md5($str);
+  				break;
+  		}
+  	}
 
     function getCryptEngine() {
     	return $this->cryptEngine;
