@@ -20,12 +20,20 @@
 	} else {
 		header("Content-type: text/xml"); 
 	} 
-	echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
+	
+	require_once 'DB.php';
+	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once $centreon_path . "www/class/centreonXML.class.php";
+	include_once($centreon_path . "www/DBconnect.php");
+	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once($centreon_path . "www/DBNDOConnect.php");
+	include_once $centreon_path . "www/class/centreonACL.class.php";
 	
 	/*
 	 * Start document root
 	 */
-	echo "<root>";
+	$buffer = new CentreonXML();
+	$buffer->startElement("root");	
 	
 	/*
 	 * if debug == 0 => Normal, 
@@ -33,18 +41,8 @@
 	 * debug == 2 => log in file (log.xml)
 	 */
 	$debugXML = 0;
-	$buffer = '';
+	//$buffer = '';
 
-	/*
-	 * pearDB init
-	 */ 
-	require_once 'DB.php';	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBOdsConnect.php");
-	include_once($centreon_path . "www/DBNDOConnect.php");
-	include_once $centreon_path . "www/class/centreonACL.class.php";
-	
 	/*
 	 * PHP functions
 	 */	
@@ -155,7 +153,7 @@
 			$id .= "_".$tab_tmp[$i];
 		array_push($tab_id, $type.$id);
 	} else {
-		echo "<opid>".$openid."</opid>";
+		$buffer->writeElement("opid", $openid);		
 		$tab_tmp = split(",", $openid);
 	
 		foreach ($tab_tmp as $openid) {
@@ -394,38 +392,38 @@
 			/*
 			 * Create XML response
 			 */
-			echo "<svc>";
-			echo "<name>".$name."</name>";
-			echo "<sid>".$sid."</sid>";
+			$buffer->startElement("svc");
+			$buffer->writeElement("name", $name);
+			$buffer->writeElement("sid", $sid);			
 	
 			if ($type == "MS")
-				echo "<zoom_type>SM_</zoom_type>";
+				$buffer->writeElement("zoom_type", "SM_");				
 			if ($type == "HS")
-				echo "<zoom_type>SS_</zoom_type>";
+				$buffer->writeElement("zoom_type", "SS_");				
 	
-			echo "<id>".$id."</id>";
-			echo "<index>".$index."</index>";
-			echo "<flagperiod>$flag_period</flagperiod>";
-			echo "<opid>".$openid."</opid>";
-			echo "<split>".$split."</split>";
-			echo "<status>".$status."</status>";
-			echo "<warning>".$warning."</warning>";
-			echo "<critical>".$critical."</critical>";
+			$buffer->writeElement("id", $id);
+			$buffer->writeElement("index", $index);
+			$buffer->writeElement("flagperiod", $flag_period);
+			$buffer->writeElement("opid", $openid);
+			$buffer->writeElement("split", $split);
+			$buffer->writeElement("status", $status);
+			$buffer->writeElement("warning", $warning);
+			$buffer->writeElement("critical", $critical);			
 			foreach ($tab_period as $name => $start){
-				echo "<period>";
-				echo "<name>".$name."</name>";
-				echo "<start>".$start."</start>";
-				echo "<end>".time()."</end>";
+				$buffer->startElement("period");
+				$buffer->writeElement("name", $name);
+				$buffer->writeElement("start", $start);
+				$buffer->writeElement("end", time());				
 		
 				if ($split)
 					foreach ($metrics as $metric_id => $metric)	{
-						echo "<metric>";
-						echo "<metric_id>".$metric_id."</metric_id>";	
-						echo "</metric>";
+						$buffer->startElement("metric");
+						$buffer->writeElement("metric_id", $metric_id);
+						$buffer->endElement();						
 					}
-				echo "</period>";	
+				$buffer->endElement();				
 			}
-			echo "</svc>";
+			$buffer->endElement();			
 		}
 	
 		/*
@@ -551,70 +549,69 @@
 			}
 		
 			if ($multi)
-				echo "<multi_svc>";
+				$buffer->startElement("multi_svc");				
 			else
-				echo "<svc_zoom>";
+				$buffer->startElement("svc_zoom");				
 	
-			echo "<sid>".$sid."</sid>";
-			echo "<id>".$id."</id>";
-			echo "<flagperiod>$flag_period</flagperiod>";
-			echo "<opid>".$openid."</opid>";
-			echo "<start>".$start."</start>";
-			echo "<end>".$end."</end>";
-			echo "<index>".$index_id."</index>";
-			echo "<split>".$split."</split>";
-			echo "<critical>".$critical."</critical>";
-			echo "<warning>".$warning."</warning>";
-			echo "<status>".$status."</status>";
-			echo "<tpl>".$template_id."</tpl>";
-			echo "<multi>".$multi."</multi>";
-	
+			$buffer->writeElement("sid", $sid);
+			$buffer->writeElement("id", $id);
+			$buffer->writeElement("flagperiod", $flag_period);
+			$buffer->writeElement("opid", $openid);
+			$buffer->writeElement("start", $start);
+			$buffer->writeElement("end", $end);
+			$buffer->writeElement("index", $index_id);
+			$buffer->writeElement("split", $split);
+			$buffer->writeElement("critical", $critical);
+			$buffer->writeElement("warning", $warning);
+			$buffer->writeElement("status", $status);
+			$buffer->writeElement("tpl", $template_id);
+			$buffer->writeElement("multi", $multi);
+						
 			if (!$multi){
 				if ($split == 0){
-					echo "<metricsTab>";
+					$buffer->startElement("metricsTab");					
 					$flag = 0;
 					foreach ($metrics as $id => $metric)	{
 						if(isset($_GET["metric"]) && $_GET["metric"][$id] == 1){
 							if ($flag)
-								echo "&amp;";
+								$buffer->text("&amp;");
 							$flag = 1;
-							echo "metric[".$id."]=1";
+							$buffer->text("metric[".$id."]=1");							
 						}
 					}
-					echo "</metricsTab>";
+					$buffer->endElement();					
 				} else	{
-					echo "<metricsTab>..</metricsTab>";
+					$buffer->writeElement("metricsTab", "..");					
 				}			
 				foreach ($metrics as $id => $metric){
-					echo "<metrics>";
-					echo "<metric_id>" . $id ."</metric_id>";
+					$buffer->startElement("metrics");
+					$buffer->writeElement("metric_id", $id);					
 					if (isset($_GET["metric"]) && $_GET["metric"][$id] == 0)
-						echo "<select>0</select>";
+						$buffer->writeElement("select", "0");						
 					else
-						echo "<select>1</select>";
-					echo "<metric_name>" . $metric["metric_name"] ."</metric_name>";
-					echo "</metrics>";
+						$buffer->writeElement("select", "1");						
+					$buffer->writeElement("metric_name", $metric["metric_name"]);
+					$buffer->endElement();					
 				}
 				
 				foreach ($graphTs as $id => $tpl){
 					if ($tpl && $id){
-						echo "<tpl>";
-						echo "<tpl_name>".$tpl."</tpl_name>";
-						echo "<tpl_id>".$id."</tpl_id>";
-						echo "</tpl>";	
+						$buffer->startElement("tpl");
+						$buffer->writeElement("tpl_name", $tpl);
+						$buffer->writeElement("tpl_id", $id);						
+						$buffer->endElement();						
 					}
 				}
-				echo "</svc_zoom>";
-
+				$buffer->endElement();				
 			} else {
 				foreach ($metrics as $id => $metric){
-					echo "<metrics>";
-					echo "<metric_id>" . $id ."</metric_id>";
-					echo "<select>1</select>";
-					echo "<metric_name>" . $metric["metric_name"] ."</metric_name>";
-					echo "</metrics>";
+					$buffer->startElement("metrics");
+					$buffer->writeElement("metric_id", $id);
+					$buffer->writeElement("select", "1");
+					$buffer->writeElement("metric_name", $metric["metric_name"]);
+					$buffer->endElement();					
 				}
-				echo "</multi_svc>";
+				$buffer->endElement();				
 			}
 		} 
 		$metrics = array();	
@@ -623,20 +620,21 @@
 	/*
 	 * LANG
 	 */
-	
-	echo "<lang>";
-	echo "<giv_gg_tpl>"._("Template")."</giv_gg_tpl>";
-	echo "<advanced>"._("Options")."</advanced>";
-	echo "<giv_split_component>"._("Split Components")."</giv_split_component>";
-	echo "<status>"._("Display Status")."</status>";
-	echo "<warning>"._("Warning")."</warning>";
-	echo "<critical>"._("Critical")."</critical>";		
-	echo "</lang>";
+		
+	$buffer->startElement("lang");
+	$buffer->writeElement("giv_gg_tpl", _("Template"));
+	$buffer->writeElement("advanced", _("Options"));
+	$buffer->writeElement("giv_split_component", _("Split Components"));
+	$buffer->writeElement("status", _("Display Status"));
+	$buffer->writeElement("warning", _("Warning"));
+	$buffer->writeElement("critical", _("Critical"));
+	$buffer->endElement();		
 	
 	/*
 	 * if you want debug img..
 	 */
 	$debug = 0;
-	echo "<debug>".$debug."</debug>";
-	echo "</root>";
+	$buffer->writeElement("debug", $debug);
+	$buffer->endElement();
+	$buffer->output();
 ?>
