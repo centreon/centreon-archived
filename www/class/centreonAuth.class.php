@@ -50,6 +50,8 @@ class centreonAuth {
 	var $userInfos;
 	
 	var $cryptPossibilities;
+	
+	var $pearDB;
 	/*
 	 * Flags
 	 */
@@ -72,6 +74,8 @@ class centreonAuth {
     function centreonAuth($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1) {
     	$this->cryptPossibilities = array('MD5', 'SHA1');
     	$this->CentreonLog =& $CentreonLog;
+    	$this->login = $username;
+    	$this->pearDB = $pearDB;
     	/*
     	 * Check User acces
     	 */
@@ -79,10 +83,21 @@ class centreonAuth {
     }
 	    
 	function checkPassword($password) {
-		if ($this->userInfos["contact_auth_type"] == "LDAP") {
+		if ($this->userInfos["contact_auth_type"] == "ldap") {
+			
 			/*
-			 * To be continue
+			 * Insert LDAP Class
 			 */
+			include_once ("/usr/local/centreon/www/class/centreonAuth.LDAP.class.php");
+			
+			/*
+			 * Create Class
+			 */
+			$authLDAP = new CentreonAuthLDAP($this->pearDB, $this->CentreonLog, $this->login, $this->password, $this->userInfos);
+			$authLDAP->connect();
+			$this->passwdOk = $authLDAP->checkPassword();
+			$authLDAP->close();
+			
 		} else if ($this->userInfos["contact_auth_type"] == "local") {
 			if ($this->userInfos["contact_passwd"] == myCrypt($password))
 				$this->passwdOk = 1;
