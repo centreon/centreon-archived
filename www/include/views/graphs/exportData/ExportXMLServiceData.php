@@ -29,9 +29,9 @@
 	}
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path."www/DBconnect.php");
-	//$oreon = 1;
+	include_once($centreon_path."www/DBconnect.php");	
 	include_once($centreon_path."www/DBOdsConnect.php");
+	include_once($centreon_path."www/class/centreonXML.class.php");
 
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
@@ -77,16 +77,18 @@
 			$datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
 		}
 	}
-	print '<?xml version="1.0" ?>';
-	print '<root>';
-	print '<datas>';
+	$buffer = new CentreonXML();
+	$buffer->startElement("root");
+	$buffer->startElement("datas");	
 	foreach ($datas as $key => $tab){
-		print '<data no="'.$key.'">';
+		$buffer->startElement("data");
+		$buffer->writeAttribute("no", $key);		
 		foreach($tab as $value)
-			print '<metric>'.$value.'</metric>';
-		print '</data>';
+			$buffer->writeElement("metric", $value);			
+		$buffer->endElement();		
 	}
-	print "</datas>";
-	print "</root>";
+	$buffer->endElement();
+	$buffer->endElement();
+	$buffer->output();
 	exit();
 ?>

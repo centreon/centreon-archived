@@ -20,8 +20,8 @@
 	
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path."/www/DBconnect.php";
-	
-	echo "<?xml version=\"1.0\"?>\n";
+	require_once $centreon_path."/www/class/centreonXML.class.php";
+		
 	
 	$DBRESULT =& $pearDB->query("SELECT `host_id`, `host_name` FROM `host` WHERE `host_register` = '0' ORDER BY `host_name`");
 	if (PEAR::isError($DBRESULT))
@@ -30,23 +30,25 @@
 	/*
 	 *  The first element of the select is empty
 	 */
-	echo "<template_data>\n";
-	echo "<template>";
-	echo "<tp_id>0</tp_id>\n";	
-	echo "<tp_alias>empty</tp_alias>\n";	
-	echo "</template>\n";
+	$buffer = new CentreonXML();
+	$buffer->startElement("template_data");
+	$buffer->startElement("template");
+	$buffer->writeElement("tp_id", "0");
+	$buffer->writeElement("tp_alias", "empty");
+	$buffer->endElement();	
 	
 	/*
 	 *  Now we fill out the select with templates id and names
 	 */
 	while ($h =& $DBRESULT->fetchRow()){
 		if ($h['host_id'] != $_GET['host_id']) {
-			echo "<template>";
-			echo "<tp_id>".$h['host_id']."</tp_id>\n";	
-			echo "<tp_alias><![CDATA[".html_entity_decode($h['host_name'])."]]></tp_alias>\n";	
-			echo "</template>\n";
+			$buffer->startElement("template");
+			$buffer->writeElement("tp_id", $h['host_id']);
+			$buffer->writeElement("tp_alias", $h['host_name']);
+			$buffer->endElement();				
 		}
 	}
 	$DBRESULT->free();
-	echo "</template_data>\n";
+	$buffer->endElement();
+	$buffer->output();
 ?>

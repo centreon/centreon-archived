@@ -307,13 +307,13 @@
 						$buffer->writeAttribute("im0", "../16x16/server_network.gif");
 						$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 						$buffer->writeAttribute("im2", "../16x16/server_network.gif");
-						$buffer->endElement();
-						if (!$cpt)
-							$buffer->endElement();
+						$buffer->endElement();						
 						$cpt++;
 					}
 				}
 			}
+			if ($cpt)
+				$buffer->endElement();
 			$DBRESULT2->free();			
 			
 			/*
@@ -508,13 +508,12 @@
 							}
 						}
 					}
-		           	$buffer->endElement();
-		           	if (!$cpt)
-		           		$buffer->endElement();
+		           	$buffer->endElement();		           	
 		           	$cpt++;
 			}
 		}
-		
+		if ($cpt)
+			$buffer->endElement();
 		$DBRESULT2->free();
 		
 		/*

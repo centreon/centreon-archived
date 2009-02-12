@@ -51,13 +51,6 @@
 	 */
 
 	stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ? header("Content-type: application/xhtml+xml") : header("Content-type: text/xml"); 
-	echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
-
-	/*
-	 * Start XML document root
-	 */
- 
-	echo "<root>";
 	
 	/*
 	 * pearDB init
@@ -70,14 +63,18 @@
 	include_once($centreon_path . "www/DBconnect.php");
 	include_once($centreon_path . "www/DBOdsConnect.php");
 	include_once $centreon_path . "www/DBNDOConnect.php";
-	
-	include_once($centreon_path . "www/include/common/common-Func.php");
-	
-	
 	/*
 	 * Include Access Class
 	 */
 	include_once $centreon_path . "www/class/centreonACL.class.php";
+	include_once $centreon_path . "www/class/centreonXML.class.php";
+	include_once($centreon_path . "www/include/common/common-Func.php");
+	
+	/*
+	 * Start XML document root
+	 */
+	$buffer = new CentreonXML();
+	$buffer->startElement("root");	
  
 	/*
 	 * Security check
@@ -193,25 +190,24 @@
 	/*
 	 * Print infos..
 	 */
-	 
-	echo "<infos>";
-	echo "<multi>".$multi."</multi>";
-	echo "<sid>".$sid."</sid>";
-	echo "<opid>".$openid."</opid>";
-	echo "<start>".$start."</start>";
-	echo "<end>".$end."</end>";
-	echo "<notification>".$notification."</notification>";
-	echo "<alert>".$alert."</alert>";
-	echo "<error>".$error."</error>";
-	echo "<up>".$up."</up>";
-	echo "<down>".$down."</down>";
-	echo "<unreachable>".$unreachable."</unreachable>";
-	echo "<ok>".$ok."</ok>";
-	echo "<warning>".$warning."</warning>";
-	echo "<critical>".$critical."</critical>";
-	echo "<unknown>".$unknown."</unknown>";
-	echo "<oh>".$oh."</oh>";
-	echo "</infos>";
+	$buffer->startElement("infos"); 
+	$buffer->writeElement("multi", $multi);
+	$buffer->writeElement("sid", $sid);
+	$buffer->writeElement("opid", $openid);
+	$buffer->writeElement("start", $start);
+	$buffer->writeElement("end", $end);
+	$buffer->writeElement("notification", $notification);
+	$buffer->writeElement("alert", $alert);
+	$buffer->writeElement("error", $error);
+	$buffer->writeElement("up", $up);
+	$buffer->writeElement("down", $down);
+	$buffer->writeElement("unreachable", $unreachable);
+	$buffer->writeElement("ok", $ok);
+	$buffer->writeElement("warning", $warning);
+	$buffer->writeElement("critical", $critical);
+	$buffer->writeElement("unknown", $unknown);
+	$buffer->writeElement("oh", $oh);
+	$buffer->endElement();
 	
 	$msg_type_set = array ();
 	if ($alert == 'true' )
@@ -501,15 +497,15 @@
 	
 		if ($i > 1){
 			foreach ($pageArr as $key => $tab) {
-				echo "<page>";
+				$buffer->startElement("page");				
 				if ($tab["num"] == $num)
-					echo "<selected>1</selected>";
+					$buffer->writeElement("selected", "1");					
 				else
-					echo "<selected>0</selected>";
-				echo "<num><![CDATA[".$tab["num"]."]]></num>";
-				echo "<url_page><![CDATA[".$tab["url_page"]."]]></url_page>";
-				echo "<label_page><![CDATA[".$tab["label_page"]."]]></label_page>";
-				echo "</page>";
+					$buffer->writeElement("selected", "0");					
+				$buffer->writeElement("num", $tab["num"]);
+				$buffer->writeElement("url_page", $tab["url_page"]);
+				$buffer->writeElement("label_page", $tab["label_page"]);
+				$buffer->endElement();				
 			}
 		}
 		$num_page = 0;
@@ -520,27 +516,59 @@
 		$prev = $num - 1;
 		$next = $num + 1;
 			
-		if ($num > 0)
-			echo "<first show='true'>0</first>";
-		else
-			echo "<first show='false'>none</first>";
+		if ($num > 0) {
+			$buffer->startElement("first");
+			$buffer->writeAttribute("show", "true");
+			$buffer->text("0");
+			$buffer->endElement();			
+		}
+		else {
+			$buffer->startElement("first");
+			$buffer->writeAttribute("show", "false");
+			$buffer->text("none");
+			$buffer->endElement();			
+		}
 	
-		if ($num > 1)
-			echo "<prev show='true'>$prev</prev>";
-		else
-			echo "<prev show='false'>none</prev>";
+		if ($num > 1) {
+			$buffer->startElement("prev");
+			$buffer->writeAttribute("show", "true");
+			$buffer->text($prev);
+			$buffer->endElement();			
+		}
+		else {
+			$buffer->startElement("prev");
+			$buffer->writeAttribute("show", "false");
+			$buffer->text("none");
+			$buffer->endElement();			
+		}
 	
-		if ($num < $page_max - 1)
-			echo "<next show='true'>$next</next>";
-		else
-			echo "<next show='false'>none</next>";
+		if ($num < $page_max - 1) {
+			$buffer->startElement("next");
+			$buffer->writeAttribute("show", "true");
+			$buffer->text($next);
+			$buffer->endElement();			
+		}
+		else {
+			$buffer->startElement("next");
+			$buffer->writeAttribute("show", "false");
+			$buffer->text("none");
+			$buffer->endElement();			
+		}
 	
 		$last = $page_max - 1;
 	
-		if ($num < $page_max-1)
-			echo "<last show='true'>$last</last>";
-		else
-			echo "<last show='false'>none</last>";
+		if ($num < $page_max-1) {
+			$buffer->startElement("last");
+			$buffer->writeAttribute("show", "true");
+			$buffer->text($last);
+			$buffer->endElement();			
+		}
+		else {
+			$buffer->startElement("last");
+			$buffer->writeAttribute("show", "false");
+			$buffer->text("none");
+			$buffer->endElement();			
+		}
 		
 		/*
 		 * Full Request
@@ -556,10 +584,10 @@
 		
 		$cpts = 0;
 		while ($log =& $DBRESULT->fetchRow()) {
-			
-			echo "<line><msg_type>".$log["msg_type"]."</msg_type>";
-			echo ($log["msg_type"] > 1) ? "<retry></retry>" : "<retry>".$log["retry"]."</retry>";
-			echo ($log["msg_type"] == 2 || $log["msg_type"] == 3) ? "<type>NOTIF</type>" : "<type>".$log["type"]."</type>";
+			$buffer->startElement("line");
+			$buffer->writeElement("msg_type", $log["msg_type"]);				
+			$log["msg_type"] > 1 ? $buffer->writeElement("retry", "") : $buffer->writeElement("retry", $log["retry"]);
+			$log["msg_type"] == 2 || $log["msg_type"] == 3 ? $buffer->writeElement("type", "NOTIF") : $buffer->writeElement("type", $log["type"]);
 	
 			/*
 			 * Color initialisation for services and hosts status
@@ -580,7 +608,10 @@
 	        if ($log["output"] == "" && $log["status"] != "")
 	        	$log["output"] = "INITIAL STATE";
 	
-			echo '<status color="'.$color.'">'.$log["status"].'</status>';
+			$buffer->startElement("status");
+			$buffer->writeAttribute("color", $color);
+			$buffer->text($log["status"]);
+			$buffer->endElement();			
 			if ($log["host_name"] == "_Module_Meta") {
 				preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
 				$DBRESULT2 =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
@@ -588,20 +619,20 @@
 					print "Mysql Error : ".$DBRESULT->getMessage();
 				$meta =& $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
-				echo "<host_name>".$log["host_name"]."</host_name>";
-				echo "<service_description>".$meta["meta_name"]."</service_description>";
+				$buffer->writeElement("host_name", $log["host_name"]);
+				$buffer->writeElement("service_description", $meta["meta_name"]);				
 				unset($meta);
 			} else {
-				echo "<host_name>".$log["host_name"]."</host_name>";
-				echo "<service_description>".$log["service_description"]."</service_description>";
+				$buffer->writeElement("host_name", $log["host_name"]);
+				$buffer->writeElement("service_description", $log["service_description"]);				
 			}
-			echo "<class>".$tab_class[$cpts % 2]."</class>";
-			echo "<date>".date(_("Y/m/d"), $log["ctime"])."</date>";
-			echo "<time>".date(_("H:i:s"), $log["ctime"])."</time>";
-			echo "<output><![CDATA[".$log["output"]."]]></output>";
-			echo "<contact><![CDATA[".$log["notification_contact"]."]]></contact>";
-			echo "<contact_cmd><![CDATA[".$log["notification_cmd"]."]]></contact_cmd>";
-			echo "</line>";
+			$buffer->writeElement("class", $tab_class[$cpts % 2]);
+			$buffer->writeElement("date", date(_("Y/m/d"), $log["ctime"]));
+			$buffer->writeElement("time", date(_("H:i:s"), $log["ctime"]));
+			$buffer->writeElement("output", $log["output"]);
+			$buffer->writeElement("contact", $log["notification_contact"]);
+			$buffer->writeElement("contact_cmd", $log["notification_cmd"]);
+			$buffer->endElement();			
 			$cpts++;
 		}
 	}
@@ -609,33 +640,35 @@
 	/*
 	 * Translation for Menu.
 	 */
-	echo "<lang>";
-	echo "<ty>"._("Type")."</ty>";
-	echo "<n>"._("Notifications")."</n>";
-	echo "<a>"._("Alerts")."</a>";
-	echo "<e>"._("Errors")."</e>";
-	echo "<s>"._("Status")."</s>";
-	echo "<do>"._("Down")."</do>";
-	echo "<up>"._("Up")."</up>";
-	echo "<un>"._("Unreachable")."</un>";
-	echo "<w>"._("Warning")."</w>";
-	echo "<ok>"._("Ok")."</ok>";
-	echo "<cr>"._("Critical")."</cr>";
-	echo "<uk>"._("Unknown")."</uk>";
-	echo "<oh>"._("Hard Only")."</oh>";
+	$buffer->startElement("lang");
+	$buffer->writeElement("ty", _("Type"));
+	$buffer->writeElement("n", _("Notifications"));
+	$buffer->writeElement("a", _("Alerts"));
+	$buffer->writeElement("e", _("Errors"));
+	$buffer->writeElement("s", _("Status"));
+	$buffer->writeElement("do", _("Down"));
+	$buffer->writeElement("up", _("Up"));
+	$buffer->writeElement("un", _("Unreachable"));
+	$buffer->writeElement("w", _("Warning"));
+	$buffer->writeElement("ok", _("Ok"));
+	$buffer->writeElement("cr", _("Critical"));
+	$buffer->writeElement("uk", _("Unknown"));
+	$buffer->writeElement("oh", _("Hard Only"));
+	
 	/*
 	 * Translation for tables.
 	 */
-	echo "<d>"._("Day")."</d>";
-	echo "<t>"._("Time")."</t>";
-	echo "<h>"._("Host")."</h>";
-	echo "<s>"._("Status")."</s>";
-	echo "<T>"._("Type")."</T>";
-	echo "<R>"._("Retry")."</R>";
-	echo "<o>"._("Output")."</o>";
-	echo "<c>"._("Contact")."</c>";
-	echo "<C>"._("Cmd")."</C>";
+	$buffer->writeElement("d", _("Day"));
+	$buffer->writeElement("t", _("Time"));
+	$buffer->writeElement("h", _("Host"));
+	$buffer->writeElement("s", _("Status"));
+	$buffer->writeElement("T", _("Type"));
+	$buffer->writeElement("R", _("Retry"));
+	$buffer->writeElement("o", _("Output"));
+	$buffer->writeElement("c", _("Contact"));
+	$buffer->writeElement("C", _("Command"));
 	
-	echo "</lang>";
-	echo "</root>";
+	$buffer->endElement();
+	$buffer->endElement();
+	$buffer->output();
 ?>
