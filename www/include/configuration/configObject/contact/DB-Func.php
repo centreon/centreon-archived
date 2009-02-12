@@ -356,7 +356,7 @@
 		$rq .= "contact_auth_type = ";
 		isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL ? $rq .= "'".$ret["contact_auth_type"]."', ": $rq .= "'local', ";
 		$rq .= "contact_ldap_dn = ";
-		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".$ret["contact_ldap_dn"]."' ": $rq .= "NULL, ";
+		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".$ret["contact_ldap_dn"]."', ": $rq .= "NULL, ";
 		$rq .= "contact_location = ";
 		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."' ": $rq .= "NULL ";
 		$rq .= "WHERE contact_id = '".$contact_id."'";
