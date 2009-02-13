@@ -386,7 +386,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
-		$requete = "UPDATE `general_opt` SET `nagios_version` = '".$_SESSION["nagios_version"]."';";
+		$requete = "INSERT INTO `options` (`key`, `value`) SET ('nagios_version', '".$_SESSION["nagios_version"]."');";
 		if ($DEBUG) 
 			print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0']);
