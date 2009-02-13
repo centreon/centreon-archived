@@ -60,7 +60,7 @@
 	/*
 	 * set limit & num
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE key = 'maxViewMonitoring' LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE `key` = 'maxViewMonitoring' LIMIT 1");
 	$data =& $DBRESULT->fetchRow();
 	$gopt[$data['key']] = myDecode($data['key']);
 

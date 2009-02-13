@@ -47,7 +47,7 @@ class centreonAuth {
 	private $userExists;
 	private $cryptEngine;
 	private $autologin;
-	private $userInfos;
+	public $userInfos;
 	
 	private $cryptPossibilities;
 	
@@ -100,7 +100,7 @@ class centreonAuth {
 			$authLDAP->close();
 			
 		} else if ($this->userInfos["contact_auth_type"] == "local") {
-			if ($this->userInfos["contact_passwd"] == myCrypt($password))
+			if ($this->userInfos["contact_passwd"] == $this->myCrypt($password))
 				$this->passwdOk = 1;
 			else
 				$this->passwdOk = 0;
