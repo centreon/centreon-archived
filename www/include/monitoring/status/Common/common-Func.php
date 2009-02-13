@@ -78,14 +78,13 @@
 		$rq .= 	" AND nss.service_object_id".
 				" IN (".
 				" SELECT nno.object_id".
-				" FROM " .$ndo_base_prefix."objects nno";
-		if (!$is_admin && $groupnumber)
-			$rq	.=	", centreon_acl";
+				" FROM " .$ndo_base_prefix."objects nno";		
+		
+		$rq	.=	", centreon_acl";
 		
 		$rq	.=	" WHERE nno.objecttype_id = 2 ";
-		
-		if (!$is_admin && $groupnumber)
-			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
+				
+		$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
 
 		$rq .=	" AND nno.name1 = '".$host_name."')";		
 		
