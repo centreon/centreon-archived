@@ -17,11 +17,10 @@
 
 	global $pearDB;
 	
-	$DBRESULT =& $pearDB->query("SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br />";
-
-	$debug = $DBRESULT->fetchRow();
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('debug_nagios_import', 'debug_path')");
+	while ($res =& $DBRESULT->fetchRow())
+		$debug[$res["key"]] = $res["value"];
+	$DBRESULT->free(); 
 
 	$debug_nagios_import = $debug['debug_nagios_import'];
 	$debug_path = $debug['debug_path'];
