@@ -72,6 +72,10 @@
 				<td>&nbsp;</td>	
 				<td>Mathavarajan Sugumaran</td>
 			</tr>
+			tr>	
+				<td>&nbsp;</td>	
+				<td>Laurent Pinsivy</td>
+			</tr>
 			<tr>	
 				<td>&nbsp;</td>	
 				<td>Guillaume Watteeux</td>
