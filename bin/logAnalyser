@@ -43,11 +43,13 @@ use POSIX;
 
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $data);
 
-#require "@CENTREON_ETC@/conf.pm";
-require "/etc/centreon/conf.pm";
+require "@CENTREON_ETC@/conf.pm";
 
-## logAnalyser's lock file
-my $lock_file = "/var/lib/centreon/logAnalyser.lock";
+# Define Var lib dir
+my $VarLib = "@CENTREON_VARLIB@";
+
+# logAnalyser's lock file
+my $lock_file = "$VarLib/logAnalyser.lock";
 my $cmdtmp;
 my $pid;
 if (-e "$lock_file") {
@@ -63,10 +65,6 @@ if (-e "$lock_file") {
 }
 $pid = getpgrp(0);
 $cmdtmp = `echo $pid > $lock_file`;
-
-# Define Var lib dir
-#my $VarLib = "@CENTREON_VARLIB@";
-my $VarLib = "/var/lib/centreon/";
 
 ## Init Date
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);

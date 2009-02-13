@@ -25,6 +25,27 @@ use warnings;
 use RRDs;
 use DBI;
 
+# Define Var lib dir
+my $VarLib = "@CENTREON_VARLIB@";
+
+# logAnalyser's lock file
+my $lock_file = "$VarLib/logAnalyser.lock";
+my $cmdtmp;
+my $pid;
+if (-e "$lock_file") {
+   chomp($pid = `cat $lock_file`);
+   my @progTab = split(/\//,$0);
+   my $progName = pop(@progTab);
+   my $cmd = "ps -p ".$pid." | grep ".$progName;
+   $cmdtmp = `$cmd`;
+   if (length($cmdtmp) > 0) {
+      print("$progName is already running... (pid=$pid)\n");
+      exit;
+   }
+}
+$pid = getpgrp(0);
+$cmdtmp = `echo $pid > $lock_file`;
+
 my $global_prefix = "@CENTSTORAGE_LIB@/nagios-perf/";
 my $tmp_prefix;
 
@@ -212,5 +233,7 @@ if (!-e $global_prefix){
 }
 
 get_poller();
+
+$cmdtmp = `rm -rf $lock_file`;
 
 __END__
