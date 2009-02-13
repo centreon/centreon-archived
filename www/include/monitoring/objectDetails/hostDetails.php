@@ -196,7 +196,7 @@
 		}
 		unset($data);
 
-		$en_acknowledge_text 	= array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
+		$en_acknowledge_text 	= array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this host"));
 		$en_acknowledge 		= array("1" => "0", "0" => "1");
 
 		$en_inv 				= array("1" => "0", "0" => "1");

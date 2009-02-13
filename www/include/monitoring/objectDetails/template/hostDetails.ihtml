@@ -214,9 +214,7 @@
 						{if $aclAct.host_acknowledgement || $acl_allActions == true}			
 							<tr class='list_one'>
 								<td class="ListColLeft">{$img_en[$host_data.problem_has_been_acknowledged]}&nbsp;
-								<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
-								{$en_acknowledge_text[$host_data.acknowledged]}
-								{$m_mon_acknowledge}</a></td>
+								<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}</a></td>
 							</tr>
 						{/if}
 					{/if}
