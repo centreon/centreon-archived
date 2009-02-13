@@ -152,8 +152,6 @@
 	function isHostOnThisInstance($host_id, $instance_id){
 		global $pearDB;
 		$DBRESULT_relation =& $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$host_id."' AND nagios_server_id = '".$instance_id."'");
-		if (PEAR::isError($DBRESULT_relation))
-			print "DB Error : ".$DBRESULT_relation->getDebugInfo()."<br />";
 		if ($DBRESULT_relation->numRows())
 			return 1;
 		else
@@ -164,8 +162,6 @@
 		global $pearDB;
 		
 		$DBRESULT_relation =& $pearDB->query("SELECT localhost FROM nagios_server WHERE id = '".$instance_id."'");
-		if (PEAR::isError($DBRESULT_relation))
-			print "DB Error : ".$DBRESULT_relation->getDebugInfo()."<br />";
 		$data = $DBRESULT_relation->fetchRow();
 		return $data["localhost"];
 	}
@@ -199,13 +195,9 @@
 		 */
 		$contact = array();
 		$DBRESULT =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_activate ='1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($contact =& $DBRESULT->fetchRow())	{
 			if ($oreon->user->get_version() == 2) {
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_activate FROM contactgroup_contact_relation cgcr, contactgroup cg WHERE cgcr.contact_contact_id = '".$contact["contact_id"]."' AND cg.cg_id = cgcr.contactgroup_cg_id");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while($contactGroup =& $DBRESULT2->fetchRow())	{
 					if ($contactGroup["cg_activate"])
 						$cctEnb[$contact["contact_id"]] = 1;
@@ -223,8 +215,6 @@
 		 */
 		$contactGroup = array();
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT cgcr.contactgroup_cg_id, cgcr.contact_contact_id FROM contactgroup cg, contactgroup_contact_relation cgcr WHERE cg.cg_activate ='1' AND cgcr.contactgroup_cg_id = cg.cg_id");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($contactGroup =& $DBRESULT->fetchRow())
 			isset($cctEnb[$contactGroup["contact_contact_id"]]) ? $cgEnb[$contactGroup["contactgroup_cg_id"]] = 1 : NULL;
 		unset($contactGroup);
@@ -235,8 +225,6 @@
 		 */
 		$host = array();
 		$DBRESULT =& $pearDB->query("SELECT host_id FROM host WHERE host.host_register = '0' AND host.host_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($host =& $DBRESULT->fetchRow())
 			$hostEnb[$host["host_id"]] = 1;
 		$DBRESULT->free();
@@ -252,13 +240,9 @@
 			$DBRESULT =& $pearDB->query("SELECT host.host_id FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");				
 		}
 		
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($host =& $DBRESULT->fetchRow())	{				
 			if ($oreon->user->get_version() >= 3) {
 				$DBRESULT_TP =& $pearDB->query("SELECT htr.host_tpl_id, host.host_id FROM host_template_relation htr, host WHERE host.host_id = htr.host_host_id AND htr.host_host_id = ". $host["host_id"]);
-				if (PEAR::isError($DBRESULT_TP))
-					print "DB Error : ".$DBRESULT_TP->getDebugInfo()."<br />";			
 				$gotTP = $DBRESULT_TP->numRows();
 			}
 			/*
@@ -271,16 +255,12 @@
 					$hostEnb[$host["host_id"]] = 1;
 			} else {										
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cghr.contactgroup_cg_id FROM contactgroup_host_relation cghr WHERE cghr.host_host_id = '".$host["host_id"]."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while($valid = $DBRESULT2->fetchRow())
 					isset($cgEnb[$valid["contactgroup_cg_id"]]) ? $hostEnb[$host["host_id"]] = 1 : NULL;
 				$DBRESULT2->free();
 				unset($valid);
 			}
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hg.hg_activate FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hg.hg_id = hgr.hostgroup_hg_id");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($hostGroup = $DBRESULT2->fetchRow())	{
 				if ($hostGroup["hg_activate"])
 					$hostEnb[$host["host_id"]] = 1;
@@ -296,12 +276,8 @@
 
 		$hostGroup = array();
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hg.hg_id FROM hostgroup hg WHERE hg.hg_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($hostGroup =& $DBRESULT->fetchRow())	{						
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hgr.host_host_id, hgr.hostgroup_hg_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."'");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($hostGroup =& $DBRESULT2->fetchRow())
 				array_key_exists($hostGroup["host_host_id"], $hostEnb) ? $hgEnb[$hostGroup["hostgroup_hg_id"]] = 1 : NULL;
 			$DBRESULT2->free();
@@ -314,8 +290,6 @@
 		 */
 		$service = array();
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sv.service_id FROM service sv WHERE sv.service_activate = '1' AND service_register = '0'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($service = $DBRESULT->fetchRow())
 			$svEnb[$service["service_id"]] = 1;
 		$DBRESULT->free();
@@ -325,8 +299,6 @@
 		 */
 		$service = array();
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sv.service_id, sv.service_template_model_stm_id FROM service sv WHERE sv.service_activate = '1' AND service_register = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($service =& $DBRESULT->fetchRow())	{
 			# If the Service is link to a Template, we think that the dependencies are manage in the template			
 			if ($service["service_template_model_stm_id"] && isset($svEnb[$service["service_template_model_stm_id"]]))
@@ -336,8 +308,6 @@
 				$hg = false;
 				$cg = false;
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hsr.host_host_id, hsr.hostgroup_hg_id, cgsr.contactgroup_cg_id FROM contactgroup_service_relation cgsr, host_service_relation hsr WHERE cgsr.service_service_id = '".$service["service_id"]."' AND hsr.service_service_id = '".$service["service_id"]."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while ($valid =& $DBRESULT2->fetchRow())	{					
 					isset($hostEnb[$valid["host_host_id"]]) ? $h = true : NULL;					
 					isset($hgEnb[$valid["hostgroup_hg_id"]]) ? $hg = true : NULL;					
@@ -355,12 +325,8 @@
 		 */
 		$serviceGroup = array();
 		$DBRESULT =& $pearDB->query("SELECT sg_id FROM servicegroup sg WHERE sg.sg_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($serviceGroup =& $DBRESULT->fetchRow())	{
 			$DBRESULT2 =& $pearDB->query("SELECT sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$serviceGroup["sg_id"]."'");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($valid =& $DBRESULT2->fetchRow())
 				isset($svEnb[$valid["service_service_id"]]) ? $sgEnb[$serviceGroup["sg_id"]] = 1 : NULL;
 			$DBRESULT2->free();
@@ -374,8 +340,6 @@
 		if (isset($oreon->modules["centQOS"]))	{
 			$qos = array();
 			$DBRESULT =& $pearDB->query("SELECT qos_id FROM mod_centqos WHERE qos_activate = '1'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($qos =& $DBRESULT->fetchRow())
 				$oslEnb[$qos["osl_id"]] = 1;
 			unset($qos);
@@ -387,8 +351,6 @@
 		 */
 		$oms = array();
 		$DBRESULT =& $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($oms =& $DBRESULT->fetchRow())
 			$omsEnb[$oms["meta_id"]] = 1;
 		unset($oms);
@@ -412,8 +374,6 @@
 		# Contact
 		$contact = array();
 		$DBRESULT =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_activate ='1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($contact =& $DBRESULT->fetchRow())
 			$cctEnb[$contact["contact_id"]] = 1;
 		unset($contact);
@@ -422,8 +382,6 @@
 		# ContactGroup
 		$contactGroup = array();
 		$DBRESULT =& $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_activate ='1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($contactGroup =& $DBRESULT->fetchRow())
 			$cgEnb[$contactGroup["cg_id"]] = 1;
 		unset($contactGroup);
@@ -432,8 +390,6 @@
 		# Host Template Model
 		$host = array();
 		$DBRESULT =& $pearDB->query("SELECT host_id FROM host WHERE host_activate = '1' AND host_register = '0'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($host =& $DBRESULT->fetchRow())
 			$hostEnb[$host["host_id"]] = 1;
 		$DBRESULT->free();
@@ -442,8 +398,6 @@
 		# Host
 		$host = array();
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_template_model_htm_id FROM host WHERE host_activate = '1' AND host_register = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($host =& $DBRESULT->fetchRow())	{
 			if ($host["host_template_model_htm_id"])	{ 
 				if (array_key_exists($host["host_template_model_htm_id"], $hostEnb))
@@ -458,8 +412,6 @@
 		# Host Group
 		$hostGroup = array();
 		$DBRESULT =& $pearDB->query("SELECT hg.hg_id FROM hostgroup hg WHERE hg.hg_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";			
 		while($hostGroup = $DBRESULT->fetchRow())
 			$hgEnb[$hostGroup["hg_id"]] = 1;					
 		$DBRESULT->free();		
@@ -468,8 +420,6 @@
 		# Service Template Model
 		$service = array();
 		$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_activate = '1' AND service_register = '0'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($service =& $DBRESULT->fetchRow())
 			$svEnb[$service["service_id"]] = 1;
 		$DBRESULT->free();
@@ -477,8 +427,6 @@
 		# Service
 		$service = array();
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_template_model_stm_id FROM service WHERE service_activate = '1' AND service_register = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($service =& $DBRESULT->fetchRow())	{
 			if ($service["service_template_model_stm_id"])	{
 				if (array_key_exists($service["service_template_model_stm_id"], $svEnb))
@@ -491,8 +439,6 @@
 		# Service Group		
 		$serviceGroup = array();
 		$DBRESULT =& $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($serviceGroup =& $DBRESULT->fetchRow())
 			$sgEnb[$serviceGroup["sg_id"]] = 1;
 		unset($serviceGroup);
@@ -503,8 +449,6 @@
 		if (isset($oreon->modules["osl"]))	{		
 			$osl = array();
 			$DBRESULT =& $pearDB->query("SELECT osl_id FROM osl WHERE osl_activate = '1'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while($osl =& $DBRESULT->fetchRow())
 				$oslEnb[$osl["osl_id"]] = 1;
 			unset($osl);
@@ -514,8 +458,6 @@
 		# Meta Service		
 		$oms = array();
 		$DBRESULT =& $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($oms =& $DBRESULT->fetchRow())
 			$omsEnb[$oms["meta_id"]] = 1;
 		unset($oms);
@@ -540,8 +482,6 @@
 		# Contact
 		$contact = array();
 		$DBRESULT =& $pearDB->query("SELECT contact_id FROM contact");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($contact =& $DBRESULT->fetchRow())
 			$cctEnb[$contact["contact_id"]] = 1;
 		unset($contact);
@@ -550,8 +490,6 @@
 		# ContactGroup
 		$contactGroup = array();
 		$DBRESULT =& $pearDB->query("SELECT cg_id FROM contactgroup");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($contactGroup =& $DBRESULT->fetchRow())
 			$cgEnb[$contactGroup["cg_id"]] = 1;
 		unset($contactGroup);
@@ -560,8 +498,6 @@
 		# Host
 		$host = array();
 		$DBRESULT =& $pearDB->query("SELECT host_id FROM host");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($host =& $DBRESULT->fetchRow())
 			$hostEnb[$host["host_id"]] = 1;
 		$DBRESULT->free();
@@ -570,8 +506,6 @@
 		# Host Group
 		$hostGroup = array();
 		$DBRESULT =& $pearDB->query("SELECT hg.hg_id FROM hostgroup hg");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($hostGroup =& $DBRESULT->fetchRow())
 			$hgEnb[$hostGroup["hg_id"]] = 1;
 		$DBRESULT->free();
@@ -580,8 +514,6 @@
 		# Service
 		$service = array();
 		$DBRESULT =& $pearDB->query("SELECT service_id FROM service");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($service =& $DBRESULT->fetchRow())
 			$svEnb[$service["service_id"]] = 1;
 		$DBRESULT->free();
@@ -589,8 +521,6 @@
 		# Service Group		
 		$serviceGroup = array();
 		$DBRESULT =& $pearDB->query("SELECT sg_id FROM servicegroup");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($serviceGroup =& $DBRESULT->fetchRow())
 			$sgEnb[$serviceGroup["sg_id"]] = 1;
 		unset($serviceGroup);
@@ -600,8 +530,6 @@
 		if (isset($oreon->modules["osl"]))	{
 			$osl = array();
 			$DBRESULT =& $pearDB->query("SELECT osl_id FROM osl");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while($osl =& $DBRESULT->fetchRow())
 				$oslEnb[$osl["osl_id"]] = 1;
 			unset($osl);
@@ -611,8 +539,6 @@
 		# Meta Service		
 		$oms = array();
 		$DBRESULT =& $pearDB->query("SELECT meta_id FROM meta_service");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($oms =& $DBRESULT->fetchRow())
 			$omsEnb[$oms["meta_id"]] = 1;
 		unset($oms);

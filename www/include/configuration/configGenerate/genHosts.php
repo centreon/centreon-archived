@@ -24,8 +24,6 @@
 	
 	$host_instance = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM `ns_host_relation` WHERE `nagios_server_id` = '".$tab['id']."'");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($datas =& $DBRESULT->fetchRow())
 		$host_instance[$datas["host_host_id"]] = $datas["host_host_id"];
 	$DBRESULT->free();
@@ -34,8 +32,6 @@
 	 * Get Command List
 	 */
 	$DBRESULT =& $pearDB->query('SELECT command_id, command_name FROM `command` ORDER BY `command_type`,`command_name`');
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$commands = array();
 	while ($command =& $DBRESULT->fetchRow())	{
 		$commands[$command["command_id"]] = $command["command_name"];
@@ -45,8 +41,6 @@
 	
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hosts.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_activate = '1' ORDER BY `host_register`, `host_name`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$host = array();
 	$i = 1;
 	$str = NULL;
@@ -86,15 +80,11 @@
 				if ($oreon->user->get_version() >= 3) {
 					$rq = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id=" . $host["host_id"] . " ORDER BY `order`";
 					$DBRESULT2 =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					$tpl_str = "";
 					$first_on_list = 1;
 					while ($tpl_id =& $DBRESULT2->fetchRow()) {
 						$rq = "SELECT host_name FROM `host` WHERE host_id=" . $tpl_id["host_tpl_id"];
 						$DBRESULT3 =& $pearDB->query($rq);
-						if (PEAR::isError($DBRESULT3))
-							print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 						while ($tpl_name =& $DBRESULT3->fetchRow()) { 
 							if ($first_on_list) {
 								$first_on_list = 0;
@@ -112,8 +102,6 @@
 					 */
 					$hostTemplate = array();
 					$DBRESULT2 =& $pearDB->query("SELECT host.host_name FROM host WHERE host.host_id = '".$host["host_template_model_htm_id"]."'");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while($hostTemplate = $DBRESULT2->fetchRow())
 						$str .= print_line("use", $hostTemplate["host_name"]);
 					$DBRESULT2->free();
@@ -140,12 +128,8 @@
 				$hostParent = array();
 				$strTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while($hostParent = $DBRESULT2->fetchRow())	{
 					$DBRESULT3 =& $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$hostParent["host_id"]."' AND nagios_server_id = '".$tab['id']."'");
-					if (PEAR::isError($DBRESULT3))
-						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 					if (verifyIfMustBeGenerated($host["host_id"], $gbArr[2], $ret) && $DBRESULT3->numRows())
 						$strTemp != NULL ? $strTemp .= ", ".$hostParent["host_name"] : $strTemp = $hostParent["host_name"];
 				}
@@ -163,8 +147,6 @@
 					$hostGroup = array();
 					$strTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hgr.hostgroup_hg_id = hg.hg_id ORDER BY `hg_name`");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while($hostGroup = $DBRESULT2->fetchRow())	{
 						$BP = false;
 						array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
@@ -247,8 +229,6 @@
 				$contactGroup = array();
 				$strTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while ($contactGroup =& $DBRESULT2->fetchRow())	{				
 					if (isset($gbArr[1][$contactGroup["cg_id"]]))
 						$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
@@ -266,8 +246,6 @@
 					$contact = array();
 					$strTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_host_relation chr, contact c WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contact_id = c.contact_id ORDER BY `contact_name`");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";					
 					while ($contact =& $DBRESULT2->fetchRow())	{				
 						if (isset($gbArr[0][$contact["contact_id"]]))
 							$strTemp != NULL ? $strTemp .= ", ".$contact["contact_name"] : $strTemp = $contact["contact_name"];
@@ -308,8 +286,6 @@
 				if ($oreon->user->get_version() >= 3) {
 					$rq = "SELECT `host_macro_name`, `host_macro_value` FROM `on_demand_macro_host` WHERE `host_host_id` = '" . $host['host_id']."'";
 					$DBRESULT3 =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT3))
-						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 					while ($od_macro =& $DBRESULT3->fetchRow()) {
 						$mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);
 						$mac_name = str_replace("\$", "", $mac_name);
@@ -320,8 +296,6 @@
 				
 				if ($oreon->user->get_version() >= 3)	{
 					$DBRESULT2 =& $pearDB->query("SELECT * FROM extended_host_information ehi WHERE ehi.host_host_id = '".$host["host_id"]."'");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					$ehi =& $DBRESULT2->fetchRow();
 					if ($ehi["ehi_notes"])
 						$str .= print_line("notes", $ehi["ehi_notes"]);
@@ -350,7 +324,7 @@
 		}
 				
 		unset($host);
-	}	
+	
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/hosts.cfg");
 	fclose($handle);
 	$DBRESULT->free();

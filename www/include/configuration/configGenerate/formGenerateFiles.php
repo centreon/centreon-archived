@@ -30,8 +30,6 @@
 	 *  Get Poller List
 	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$n = $DBRESULT->numRows();
 	/*
 	 * Display null option
@@ -106,8 +104,6 @@
 			 */
 			$commands = array();
 			$DBRESULT2 =& $pearDB->query("SELECT command_id, command_name FROM command");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($command = $DBRESULT2->fetchRow())
 				$commands[$command["command_id"]] = $command["command_name"] ;
 			$DBRESULT2->free();
@@ -117,8 +113,6 @@
 			 */
 			$timeperiods = array();
 			$DBRESULT2 =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($timeperiod =& $DBRESULT2->fetchRow())
 				$timeperiods[$timeperiod["tp_id"]] = $timeperiod["tp_name"];
 			$DBRESULT2->free();
@@ -128,8 +122,6 @@
 			 */
 			$gbArr = manageDependencies();
 			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
-			if (PEAR::isError($DBRESULT_Servers))
-				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
 				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
 					/*
@@ -171,8 +163,6 @@
 		 */
 		 
 		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `localhost` DESC");
-		if (PEAR::isError($DBRESULT_Servers))
-			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
 			if (isset($tab['localhost']) && $tab['localhost']) {
 				$flag_localhost = $tab['localhost'];
@@ -198,8 +188,6 @@
 		 
 		$tab_server = array();
 		$DBRESULT_Servers =& $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` ORDER BY `localhost` DESC");
-		if (PEAR::isError($DBRESULT_Servers))
-			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
 			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id'])
 				$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
@@ -292,8 +280,6 @@
 					system("echo \"EXTERNALCMD:RESTART_PROGRAM:".$host["id"]."\" >> /usr/local/nagios/var/rw/nagios.cmd");
 				}
 				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				$msg_restart[$host["id"]] = "<br />".str_replace ("\n", "<br />", $stdout);	
 			}
 		}

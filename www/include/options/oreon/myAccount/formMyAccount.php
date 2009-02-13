@@ -38,8 +38,6 @@
 	$cct = array();
 	if ($o == "c")	{	
 		$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager FROM contact WHERE contact_id = '".$oreon->user->get_id()."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$cct = array_map("myDecode", $DBRESULT->fetchRow());
 	}

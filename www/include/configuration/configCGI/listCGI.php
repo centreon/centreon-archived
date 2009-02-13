@@ -30,8 +30,6 @@
 		$SearchTool = "WHERE cgi_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM cfg_cgi $SearchTool");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -62,8 +60,6 @@
 	else
 		$rq = "SELECT cgi_id, cgi_name, cgi_comment, cgi_activate FROM cfg_cgi ORDER BY cgi_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 

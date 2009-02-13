@@ -100,8 +100,6 @@
 				"LIMIT ".$num * $limit.", ".$limit;
 				
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
-	if (PEAR::isError($DBRESULT_NDO))
-		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++) {
 		$tab_downtime_svc[$i] = $data;
 		$tab_downtime_svc[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_start_time"])." ";

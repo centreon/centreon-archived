@@ -21,27 +21,9 @@
 	$pearDB = new CentreonDB();
 	
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$version =& $DBRESULT->fetchRow();
-	
-	$debug = 0;
-	$dsn = array(
-	    'phptype'  => 'mysql',
-	    'username' => $conf_centreon["user"],
-	    'password' => $conf_centreon["password"],
-	    'hostspec' => $conf_centreon["hostCentstorage"],
-	    'database' => $conf_centreon["dbcstg"],
-	);
-	
-	$options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
-	
-	global $pearDB0;
-	
-	$pearDBO =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDBO))
-	    die($pearDBO->getMessage());
-	    
-	$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
-	// End of Pear connection
+	$version =& $DBRESULT->fetchRow();	
+	global $pearDB0;	
+	$pearDBO = new CentreonDB("centstorage");	
 
 	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")) {
 		$_SESSION["mysqlscript"] = $_POST["mysqlscript"]; 
@@ -69,8 +51,6 @@
                     $str .= $line;
                     $str = chop($str);
                    $DBRESULT = $pearDBO->query($str);
-                    if (PEAR::isError($DBRESULT))
-						print $mysql_msg = $DBRESULT->getDebugInfo();
                     $str = NULL;
                 } else
                 	$str .= $line;

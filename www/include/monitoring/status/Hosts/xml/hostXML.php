@@ -185,8 +185,6 @@
 	 * Get Pagination Rows 
 	 */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
@@ -200,8 +198,6 @@
 	$buffer->writeElement("p", $p);
 	$buffer->endElement();	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;

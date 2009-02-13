@@ -41,11 +41,7 @@
 
 	function get_user_param($user_id, $pearDB){
 		$tab_row = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM `contact_param` WHERE `cp_contact_id` = '".$user_id."'");
-		if (PEAR::isError($DBRESULT)){
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			return null;		
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM `contact_param` WHERE `cp_contact_id` = '".$user_id."'");		
 		while( $row = $DBRESULT->fetchRow())
 			$tab_row[$row["cp_key"]] = $row["cp_value"];
 		return $tab_row;

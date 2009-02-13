@@ -24,8 +24,6 @@
 		global $pearDB;
 		while(1)	{
 			$DBRESULT =& $pearDB->query("SELECT host_".$rowdata.", host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getMessage();
 			$row =& $DBRESULT->fetchRow();
 			if ($row["host_".$rowdata])
 				return $row["host_$rowdata"];

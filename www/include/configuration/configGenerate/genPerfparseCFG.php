@@ -24,8 +24,6 @@
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/perfparse.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_perfparse` WHERE `perfparse_activate` = '1' LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	if ($DBRESULT->numRows())
 		$perfparse = $DBRESULT->fetchRow();
 	else

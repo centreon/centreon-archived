@@ -112,8 +112,6 @@
 					" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
 	
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 		while ($ndo =& $DBRESULT_NDO->fetchRow())	{
 			if (!isset($tab_status[$ndo["current_state"]]))
 				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
@@ -155,16 +153,12 @@
 			" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
 	
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
-		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 		$ndo2 =& $DBRESULT_NDO->fetchRow();
 	
 		$host_status[$host_name] = $ndo2;
 		$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
 
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
 		$hostDB =& $res->fetchRow();
 		$current_attempts = getMyHostField($hostDB["host_id"], "host_max_check_attempts");
 		
@@ -188,8 +182,6 @@
 				" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 				" WHERE obj.name1 = '".$host_name."' AND obj.name2 IS NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
-		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 		for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
 			$tabCommentHosts[$i] = $data;
 			$tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];

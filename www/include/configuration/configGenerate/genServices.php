@@ -28,8 +28,6 @@
 	 * Get Service List
 	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM `service` WHERE `service_activate` = '1' ORDER BY `service_register`, `service_description`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$service = array();
 	$i = 1;
 	$str = NULL;
@@ -65,8 +63,6 @@
 													"FROM host_service_relation hsr, hostgroup hg " .
 													"WHERE hsr.service_service_id ='".$service["service_id"]."' " .
 															"AND hsr.hostgroup_hg_id = hg.hg_id");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while ($hostGroup =& $DBRESULT2->fetchRow())	{
 						if (isset($generatedHG[$hostGroup["hg_id"]]) && $generatedHG[$hostGroup["hg_id"]]){
 							$hostGroups[$hostGroup["hg_id"]] = $hostGroup["hg_name"];
@@ -84,8 +80,6 @@
 													"FROM host_service_relation hsr, host " .
 													"WHERE hsr.service_service_id ='".$service["service_id"]."' " .
 															"AND hsr.host_host_id = host.host_id");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while ($host =& $DBRESULT2->fetchRow())	{
 						if (isset($gbArr[2][$host["host_id"]])) {
 							if (isset($host_instance[$host["host_id"]])) {
@@ -169,8 +163,6 @@
 								if ($service["service_template_model_stm_id"]) {
 									$serviceTemplate = array();
 									$DBRESULT2 =& $pearDB->query("SELECT service.service_description FROM service WHERE service.service_id = '".$service["service_template_model_stm_id"]."' LIMIT 1");
-									if (PEAR::isError($DBRESULT2))
-										print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 									while ($serviceTemplate =& $DBRESULT2->fetchRow())
 										$strTMP .= print_line("use", convertServiceSpecialChar($serviceTemplate["service_description"]));
 									$DBRESULT2->free();
@@ -181,8 +173,6 @@
 								$serviceGroup = array();
 								$strTMPSG = NULL;
 								$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM servicegroup_relation sgr, servicegroup sg WHERE sgr.service_service_id = '".$service["service_id"]."' AND sgr.servicegroup_sg_id = sg.sg_id ORDER BY `sg_name`");
-								if (PEAR::isError($DBRESULT2))
-									print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 								while ($serviceGroup =& $DBRESULT2->fetchRow())	{
 									if (isset($gbArr[5][$serviceGroup["sg_id"]]))
 										$strTMPSG != NULL ? $strTMPSG .= ", ".$serviceGroup["sg_name"] : $strTMPSG = $serviceGroup["sg_name"];
@@ -272,8 +262,6 @@
 								$contactGroup = array();
 								$strTMPTemp = NULL;
 								$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-								if (PEAR::isError($DBRESULT2))
-									print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 								while ($contactGroup =& $DBRESULT2->fetchRow())	{
 									$BP = false;
 									array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
@@ -293,8 +281,6 @@
 									$contact = array();
 									$strTMPTemp = NULL;
 									$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id ORDER BY `contact_name`");
-									if (PEAR::isError($DBRESULT2))
-										print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";				
 									while ($contact =& $DBRESULT2->fetchRow())	{
 										$BP = false;
 										isset($gbArr[0][$contact["contact_id"]]) ? $BP = true : NULL;					
@@ -314,8 +300,6 @@
 								
 								if (isset($service["service_register"]) && $service["service_register"] == 0){
 									$DBRESULT_TEMP =& $pearDB->query("SELECT host_name FROM host, host_service_relation WHERE `service_service_id` = '".$service["service_id"]."' AND `host_id` = `host_host_id`");
-									if (PEAR::isError($DBRESULT_TEMP))
-										print "DB Error : ".$DBRESULT_TEMP->getDebugInfo()."<br />";
 									while($template_link =& $DBRESULT_TEMP->fetchRow())
 										$strTMP .= print_line(";TEMPLATE-HOST-LINK", $template_link["host_name"]);
 									unset($template_link);
@@ -329,8 +313,6 @@
 									 */
 									$rq = "SELECT svc_macro_name, svc_macro_value FROM on_demand_macro_service WHERE `svc_svc_id`=" . $service['service_id'];
 									$DBRESULT3 =& $pearDB->query($rq);
-									if (PEAR::isError($DBRESULT3))
-										print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 									while($od_macro = $DBRESULT3->fetchRow()) {
 										$mac_name = str_replace("\$_SERVICE", "_", $od_macro['svc_macro_name']);
 										$mac_name = str_replace("\$", "", $mac_name);
@@ -344,8 +326,6 @@
 									 */
 								
 									$DBRESULT3 =& $pearDB->query("SELECT * FROM extended_service_information esi WHERE esi.service_service_id = '".$service["service_id"]."'");
-									if (PEAR::isError($DBRESULT3))
-										print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 									$esi =& $DBRESULT3->fetchRow();
 									if ($field = $esi["esi_notes"])
 										$strTMP .= print_line("notes", $field);
@@ -390,8 +370,6 @@
 					$hostGroup = array();
 					$strTMPTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM host_service_relation hsr, hostgroup hg WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.hostgroup_hg_id = hg.hg_id");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while ($hostGroup =& $DBRESULT2->fetchRow())	{
 						$BP = false;
 						if (isset($generatedHG[$hostGroup["hg_id"]]) && $generatedHG[$hostGroup["hg_id"]]){
@@ -413,8 +391,6 @@
 						$host = array();
 						$strTMPTemp = NULL;
 						$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_service_relation hsr, host WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.host_host_id = host.host_id");
-						if (PEAR::isError($DBRESULT2))
-							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						while ($host =& $DBRESULT2->fetchRow())	{
 							if (isset($gbArr[2][$host["host_id"]]))	{
 								$parent = true;
@@ -443,8 +419,6 @@
 				if ($service["service_template_model_stm_id"]) {
 					$serviceTemplate = array();
 					$DBRESULT2 =& $pearDB->query("SELECT service.service_description FROM service WHERE service.service_id = '".$service["service_template_model_stm_id"]."' LIMIT 1");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while ($serviceTemplate =& $DBRESULT2->fetchRow())
 						$strTMP .= print_line("use", convertServiceSpecialChar($serviceTemplate["service_description"]));
 					$DBRESULT2->free();
@@ -455,8 +429,6 @@
 				$serviceGroup = array();
 				$strTMPTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM servicegroup_relation sgr, servicegroup sg WHERE sgr.service_service_id = '".$service["service_id"]."' AND sgr.servicegroup_sg_id = sg.sg_id ORDER BY `sg_name`");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while($serviceGroup =& $DBRESULT2->fetchRow())	{
 					$BP = false;
 					isset($gbArr[5][$serviceGroup["sg_id"]]) ? $BP = true : NULL;
@@ -545,8 +517,6 @@
 				$contactGroup = array();
 				$strTMPTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while ($contactGroup =& $DBRESULT2->fetchRow())	{
 					$BP = false;
 					array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
@@ -566,8 +536,6 @@
 					$contact = array();
 					$strTMPTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id ORDER BY `contact_name`");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";				
 					while ($contact =& $DBRESULT2->fetchRow())	{
 						$BP = false;
 						isset($gbArr[0][$contact["contact_id"]]) ? $BP = true : NULL;					
@@ -587,8 +555,6 @@
 				
 				if (isset($service["service_register"]) && $service["service_register"] == 0){
 					$DBRESULT_TEMP =& $pearDB->query("SELECT host_name FROM host, host_service_relation WHERE `service_service_id` = '".$service["service_id"]."' AND `host_id` = `host_host_id`");
-					if (PEAR::isError($DBRESULT_TEMP))
-						print "DB Error : ".$DBRESULT_TEMP->getDebugInfo()."<br />";
 					while($template_link =& $DBRESULT_TEMP->fetchRow())
 						$strTMP .= print_line(";TEMPLATE-HOST-LINK", $template_link["host_name"]);
 					unset($template_link);
@@ -601,8 +567,6 @@
 					 */
 					$rq = "SELECT svc_macro_name, svc_macro_value FROM on_demand_macro_service WHERE `svc_svc_id`=" . $service['service_id'];
 					$DBRESULT3 =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT3))
-						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 					while($od_macro = $DBRESULT3->fetchRow()) {
 						$mac_name = str_replace("\$_SERVICE", "_", $od_macro['svc_macro_name']);
 						$mac_name = str_replace("\$", "", $mac_name);
@@ -616,8 +580,6 @@
 					 */
 				
 					$DBRESULT3 =& $pearDB->query("SELECT * FROM extended_service_information esi WHERE esi.service_service_id = '".$service["service_id"]."'");
-					if (PEAR::isError($DBRESULT3))
-						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 					$esi =& $DBRESULT3->fetchRow();
 					if ($field = $esi["esi_notes"])
 						$strTMP .= print_line("notes", $field);

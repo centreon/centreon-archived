@@ -242,8 +242,6 @@
 		$id = $tabID[1];
 		
 		$DBRESULT=& $pearDB->query("SELECT `meta_name` FROM  `meta_service` WHERE `meta_id` = '$id'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$dataMeta =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		

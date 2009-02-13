@@ -20,8 +20,7 @@
 
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	
 	while ($opt =& $DBRESULT->fetchRow()) {
 		$gopt[$opt["key"]] = myDecode($opt["value"]);
 	}

@@ -49,8 +49,6 @@
 	if (isset($search))
 		$SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";	
 	$rq = "SELECT COUNT(*) FROM acl_groups $SearchStr ORDER BY acl_group_name";
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$DBRESULT =& $pearDB->query($rq);
 	$tmp =& $DBRESULT->fetchRow();
@@ -76,8 +74,6 @@
 		$SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";	
 	$rq = "SELECT acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups $SearchStr ORDER BY acl_group_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$search = tidySearchKey($search, $advanced_search);
 	
@@ -99,8 +95,6 @@
 		$ctNbr = array();
 		$rq = "SELECT COUNT(*) AS nbr FROM acl_group_contacts_relations WHERE acl_group_id = '".$group['acl_group_id']."'";
 		$DBRESULT2 =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$ctNbr =& $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 							"RowMenu_select"=>$selectedElements->toHtml(),

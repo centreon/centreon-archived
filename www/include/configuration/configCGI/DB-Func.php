@@ -21,8 +21,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('cgi_id');
 		$DBRESULT =& $pearDB->query("SELECT cgi_name, cgi_id FROM cfg_cgi WHERE cgi_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cgi =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $cgi["cgi_id"] == $id)	
@@ -39,11 +37,7 @@
 		global $pearDB;
 		global $oreon;
 		$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id."'");		
 	}
 	
 	function disableCGIInDB ($cgi_id = null)	{
@@ -51,16 +45,10 @@
 		global $pearDB;
 		global $oreon;
 		$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0' WHERE cgi_id = '".$cgi_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi WHERE cgi_id != '".$cgi_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$maxId =& $DBRESULT->fetchRow();
 		if (isset($maxId["MAX(cgi_id)"]))	{
 			$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$maxId["MAX(cgi_id)"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -68,19 +56,11 @@
 		global $pearDB;
 		foreach($cgi as $key=>$value)
 			$DBRESULT =& $pearDB->query("DELETE FROM cfg_cgi WHERE cgi_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT cgi_id FROM cfg_cgi WHERE cgi_activate = '1'");		  
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (!$DBRESULT->numRows())	{
 			$DBRESULT =& $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$cgi_id = $DBRESULT->fetchRow();
 			$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id["MAX(cgi_id)"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -88,8 +68,6 @@
 		foreach($cgi as $key=>$value)	{
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_cgi WHERE cgi_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["cgi_id"] = '';
 			$row["cgi_activate"] = '0';
@@ -102,8 +80,6 @@
 				if (testCgiExistence($cgi_name))	{
 					$val ? $rq = "INSERT INTO cfg_cgi VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 		}
@@ -162,18 +138,12 @@
         isset($ret["cgi_comment"]) && $ret["cgi_comment"] != NULL ? $rq .= "'".htmlentities($ret["cgi_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["cgi_activate"]["cgi_activate"]) && $ret["cgi_activate"]["cgi_activate"] != NULL ? $rq .= "'".$ret["cgi_activate"]["cgi_activate"]."')" : $rq .= "'0')";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi");
 		$cgi_id = $DBRESULT->fetchRow();
 		if (isset($ret["cgi_activate"]["cgi_activate"]) && $ret["cgi_activate"]["cgi_activate"])	{
 			$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0' WHERE cgi_id != '".$cgi_id["MAX(cgi_id)"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$oreon->CGIcfg = array();
 			$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_cgi` WHERE `cgi_activate` = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$oreon->CGIcfg = $DBRESULT->fetchRow();
 		}
 		return ($cgi_id["MAX(cgi_id)"]);
@@ -215,8 +185,6 @@
 		isset($ret["cgi_activate"]["cgi_activate"]) && $ret["cgi_activate"]["cgi_activate"] != NULL ? $rq .= "cgi_activate = '".$ret["cgi_activate"]["cgi_activate"]."' " : $rq .= "cgi_activate = '0' ";
 		$rq .= "WHERE cgi_id = '".$cgi_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($ret["cgi_activate"]["cgi_activate"])
 			enableCGIInDB($cgi_id);
 	}

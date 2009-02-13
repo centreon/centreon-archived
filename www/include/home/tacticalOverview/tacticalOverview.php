@@ -75,8 +75,6 @@
 					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 			
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-			if (PEAR::isError($DBRESULT_NDO1))
-				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 			
 			$hostStatus = array(0=>0, 1=>0, 2=>0, 3=>0);
 			while ($ndo =& $DBRESULT_NDO1->fetchRow()) {
@@ -99,8 +97,6 @@
 					" GROUP BY ".$ndo_base_prefix."services.host_object_id";
 			
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-			if (PEAR::isError($DBRESULT_NDO1))
-				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 			
 			$pbCount = 0;
 			while ($ndo =& $DBRESULT_NDO1->fetchRow())
@@ -123,8 +119,6 @@
 			
 			$hostAck = array(0=>0, 1=>0, 2=>0);
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-			if (PEAR::isError($DBRESULT_NDO1))
-				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 			while ($ndo =& $DBRESULT_NDO1->fetchRow()) {
 				$hostAck[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
 				$hostUnhand[$ndo["current_state"]] -= $hostAck[$ndo["current_state"]]; 
@@ -142,8 +136,6 @@
 					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 						
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-			if (PEAR::isError($DBRESULT_NDO1))
-				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 			
 			$hostInactive = array(0=>0, 1=>0, 2=>0, 3=>0);
 			while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
@@ -176,9 +168,7 @@
 						" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";					
 		
 			$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
-			if (PEAR::isError($DBRESULT_NDO2))
-				print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
-		
+			
 			$SvcStat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		
 			while ($ndo =& $DBRESULT_NDO2->fetchRow())
@@ -212,8 +202,6 @@
 			$onPbHost = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 			
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq2);
-			if (PEAR::isError($DBRESULT_NDO1))
-				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 			while($ndo =& $DBRESULT_NDO1->fetchRow())	{			
 				if ($ndo["current_state"] != 0)
 					for ($i = 0; $i < $pbCount; $i++)
@@ -246,8 +234,6 @@
 						" GROUP BY ".$ndo_base_prefix."servicestatus.current_state";									
 			
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-			if (PEAR::isError($DBRESULT_NDO1))
-				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 			
 			$svcAck = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 			while ($ndo =& $DBRESULT_NDO1->fetchRow())
@@ -273,9 +259,7 @@
 						" AND no.is_active = 0 GROUP BY nss.current_state ORDER by nss.current_state";			
 	
 			$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
-			if (PEAR::isError($DBRESULT_NDO2))
-				print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
-		
+			
 			$svcInactive = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 			while($ndo =& $DBRESULT_NDO2->fetchRow())
 				$svcInactive[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
@@ -320,8 +304,6 @@
 						" ORDER by stat.current_state DESC, obj.name1";
 			
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-			if (PEAR::isError($DBRESULT_NDO1))
-				print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 			
 			$j = 0;	
 			$tab_hostname[$j] = "";

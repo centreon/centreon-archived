@@ -69,9 +69,7 @@
 				" AND no.name1 NOT LIKE '_Module_%' ".
 				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";			
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
-	if (PEAR::isError($DBRESULT_NDO2))
-		print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
-
+	
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	$counter = 0;
 	while ($ndo =& $DBRESULT_NDO2->fetchRow()){

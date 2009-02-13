@@ -58,9 +58,7 @@
 	);
 
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB))
-	    die("Unable to connect : " . $pearDB->getMessage());
-
+	
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
@@ -117,8 +115,6 @@
 
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-			if (PEAR::isError($DBRESULT_meta))
-				print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
 			$meta =& $DBRESULT_meta->fetchRow();
 			$index_data_ODS["service_description"] = $meta["meta_name"];
 		}
@@ -167,8 +163,6 @@
 		# Init DS template For each curv
 		$metrics = array();
 		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name, warn, crit, min, max FROM metrics WHERE metric_id = '".$_GET["metric"]."' AND `hidden` = '0' ORDER BY metric_name");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 1;
 		$order = ($_GET["cpt"] - 1);
 		$order = $order % $metricnumber;

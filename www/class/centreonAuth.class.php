@@ -109,9 +109,7 @@ class centreonAuth {
 	    
     private function checkUser($username, $password, $autologin, $pearDB) {
     	if ($autologin == 0) {
-	    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");
-	    	if (PEAR::isError($DBRESULT))
-				$this->CentreonLog->insertLog(1, "DB Error : ".$DBRESULT->getDebugInfo(), 1);
+	    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");	    	
 	    	if ($DBRESULT->numRows()) {
 	    		$this->userInfos =& $DBRESULT->fetchRow();
 	    		if ($this->userInfos["contact_oreon"]) {
@@ -150,9 +148,7 @@ class centreonAuth {
     }
     
     private function checkPasswd($username, $password, $Crypt) {
-    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($useralias, ENT_QUOTES)."' AND `contact_password` = '".htmlentities($password, ENT_QUOTES)."' LIMIT 1");
-    	if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($useralias, ENT_QUOTES)."' AND `contact_password` = '".htmlentities($password, ENT_QUOTES)."' LIMIT 1");    	
     	$this->$DBRESULT->fetchRow();
     }
 

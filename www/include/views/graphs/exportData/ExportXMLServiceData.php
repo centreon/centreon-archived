@@ -53,8 +53,6 @@
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 
 	$DBRESULT =& $pearDBO->query("SELECT host_name, service_description FROM index_data WHERE id = '$index'");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while ($res =& $DBRESULT->fetchRow()){
 		$hName = $res["host_name"];
 		$sName = $res["service_description"];
@@ -67,12 +65,8 @@
 		header("Content-disposition: filename=".$index.".xml");
 
 	$DBRESULT =& $pearDBO->query("SELECT metric_id FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index'");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while ($index_data =& $DBRESULT->fetchRow()){	
 		$DBRESULT2 =& $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".$_GET["start"]."' AND ctime < '".$_GET["end"]."'");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		while ($data =& $DBRESULT2->fetchRow()){
 			if (!isset($datas[$data["ctime"]]))
 				$datas[$data["ctime"]] = array();

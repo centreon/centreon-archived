@@ -22,8 +22,6 @@
 	$ppTemp = array();
 	if (($o == "c" || $o == "w") && $perfparse_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_perfparse WHERE perfparse_id = '".$perfparse_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$ppTemp = array_map("myDecode", $DBRESULT->fetchRow());
 		foreach ($ppTemp as $key=>$value)

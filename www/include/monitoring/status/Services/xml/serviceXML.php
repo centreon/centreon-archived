@@ -151,8 +151,6 @@
 
 	$str = "";
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	while ($ndo =& $DBRESULT_NDO1->fetchRow()) {
 		$host_status[$ndo["host_name"]] = $ndo;
 	}
@@ -243,9 +241,7 @@
 	$flag = 0;
 	
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq_pagination);
-	if (PEAR::isError($DBRESULT_NDO2))
-		print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
-
+	
 	//print $rq . "\n\n" . $rq_pagination . "\n";
 
 	/* 
@@ -272,8 +268,6 @@
 	$class = "list_one";
 	
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq);
-	if (PEAR::isError($DBRESULT_NDO2))
-		print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
 	
 	while ($ndo =& $DBRESULT_NDO2->fetchRow()) {
 		if (isset($host_status[$ndo["host_name"]])){

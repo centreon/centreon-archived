@@ -28,8 +28,6 @@
 			$lcaSTR = " AND host_id IN (".$lcaHoststr.") ";
 		}	
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_activate = '1' $lcaSTR AND host_register = '1' ORDER BY host_name");
-		if (PEAR::isError($DBRESULT))
-		  die("DB ERROR : ".$DBRESULT->getDebugInfo()."<br />");		
 		while ($row =& $DBRESULT->fetchRow())
 			if (!isset($lca) || isset($lca["LcaHost"][$row['host_name']]))
 				$hosts[$row["host_id"]] = $row["host_name"];
@@ -72,8 +70,6 @@
 			  		"AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
 			  "GROUP BY `host_id`";
 		$DBRESULT = & $pearDBO->query($rq);
-		if (PEAR::isError($DBRESULT))
-		  die("DB ERROR : ".$DBRESULT->getDebugInfo()."<br />");
 		if ($row =& $DBRESULT->fetchRow())
 			$hostStats = $row;
 		
@@ -250,8 +246,6 @@
 			 		 "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
 			  "GROUP BY `service_id`";
 		$DBRESULT =& $pearDBO->query($rq);
-		if (PEAR::isError($DBRESULT))
-		  die("DB ERROR : ".$DBRESULT->getDebugInfo()."<br />");
 		while ($row = $DBRESULT->fetchRow()){
 			$hostServiceStats[$row["service_id"]] = $row;
 		}
@@ -346,9 +340,7 @@
 			  		"AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
 			  "GROUP BY `service_id`";
 		$DBRESULT = & $pearDBO->query($rq);
-		if (PEAR::isError($DBRESULT)){
-		  die("DB ERROR : ".$DBRESULT->getDebugInfo()."<br />");
-		}
+		
 		if ($row =& $DBRESULT->fetchRow())
 			$serviceStats = $row;
 		$timeTab = getTotalTimeFromInterval($start_date, $end_date, $reportTimePeriod);
@@ -498,8 +490,6 @@
 									"AND servicegroup_relation.host_host_id IS NOT NULL " .
 									//$oreon->user->access->queryBuilder("AND", "service.service_id", $oreon->user->access->getServicesString("ID", $pearDBndo)) .
 									"AND service.service_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
@@ -517,8 +507,6 @@
 									"AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL " .
 									"AND service.service_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
@@ -544,8 +532,6 @@
 		$reportingTimePeriod = array();
 		$query = "SELECT * FROM `contact_param` WHERE cp_contact_id is null";
 		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-			die( "MySQL Error : ".$DBRESULT->getDebugInfo());
 		while ($res = $DBRESULT->fetchRow()) {
 			if ($res["cp_key"] == "report_hour_start")
 				 $reportingTimePeriod["report_hour_start"] = $res["cp_value"];
@@ -586,8 +572,6 @@
 				$oreon->user->access->queryBuilder("AND", "hg_id", $lcaHostGroupstr) . 	
 				"ORDER BY `hg_name`";
 		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($hg =& $DBRESULT->fetchRow())
 			$hgs[$hg["hg_id"]] = $hg["hg_name"];
 		return $hgs;
@@ -605,8 +589,6 @@
 		$hosts = array();
 		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id, h.host_name FROM hostgroup_relation hgr, host h ".
 									" WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ".$lcaStr." ORDER by h.host_name");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())
 			$hosts[$elem["host_host_id"]] = $elem["host_name"];
 		$DBRESULT->free();
@@ -626,8 +608,6 @@
 				$oreon->user->access->queryBuilder("AND", "sg_id", $sgStr) .
 				"ORDER BY `sg_name`";
 		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())
 			$sg[$elem["sg_id"]] = $elem["sg_name"];
 		$DBRESULT->free();
@@ -642,8 +622,6 @@
 		global $pearDB;
 		$req = "SELECT  `host_name` FROM `host` WHERE `host_id` = ".$host_id;
 		$DBRESULT =& $pearDB->query($req);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($row = $DBRESULT->fetchRow())
 			return ($row["host_name"]);
 		return "undefined";	
@@ -653,8 +631,6 @@
 		global $pearDB;
 		$req = "SELECT  `hg_name` FROM `hostgroup` WHERE `hg_id` = ".$hostgroup_id;
 		$DBRESULT =& $pearDB->query($req);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($row = $DBRESULT->fetchRow())
 			return ($row["hg_name"]);
 		return "undefined";	
@@ -664,8 +640,6 @@
 		global $pearDB;
 		$req = "SELECT  `service_description` FROM `service` WHERE `service_id` = ".$service_id;
 		$DBRESULT =& $pearDB->query($req);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($row = $DBRESULT->fetchRow())
 			return ($row["service_description"]);
 		return "undefined";	
@@ -676,8 +650,6 @@
 		$req = "SELECT  `sg_name` FROM `servicegroup` WHERE `sg_id` = ".$sg_id;
 		$DBRESULT =& $pearDB->query($req);
 		unset($req);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($row =& $DBRESULT->fetchRow())
 			return ($row["sg_name"]);
 		$DBRESULT->free();
@@ -709,8 +681,6 @@
 									" FROM `service`, `host_service_relation` hsr,  `hostgroup_relation` hgr".
 									" WHERE hsr.`host_host_id` = '".$host_id."' ".$lcaStr." AND hsr.service_service_id = service_id ".
 										" AND service_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
@@ -720,8 +690,6 @@
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($elem =& $DBRESULT->fetchRow()){
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);

@@ -57,8 +57,6 @@
 					$oreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
 					"ORDER BY host_name";
 			$DBRESULT =& $pearDB->query($query);
-			if (PEAR::isError($DBRESULT)) 
-				print "AddHostComment - Rq 1 Mysql Error : ".$DBRESULT->getMessage();
 			while ($host =& $DBRESULT->fetchRow()){
 				$hosts[$host["host_id"]]= $host["host_name"];
 			}

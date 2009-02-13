@@ -107,8 +107,6 @@
 	$rq_pagination = $rq1;
 	
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 
 	switch ($sort_type){
@@ -132,8 +130,6 @@
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	$tabH = array();
 	$tab_finalH = array();
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";	
 	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
 		if (!$ndo["svc_name"] && !isset($tabH[$ndo["id"]])) {
 			$tab_finalH[$ndo["host_name"]]["cs"] = $ndo["hs"];			
@@ -149,8 +145,6 @@
 	
 	$tab_final = array();
 	$DBRESULT =& $pearDBndo->query("SELECT object_id, no.name1, no.name2, no.objecttype_id, nhg.alias FROM nagios_objects no, nagios_hostgroups nhg, nagios_hostgroup_members nhgm WHERE no.objecttype_id = '1' AND no.name2 IS NULL AND no.is_active = 1 AND nhg.hostgroup_id = nhgm.hostgroup_id AND nhgm.host_object_id = no.object_id ORDER BY nhg.alias, no.name1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($hg =& $DBRESULT->fetchRow()) {
 		if (isset($tab_final[$hg["alias"]][$hg["name1"]]))
 			$tab_final[$hg["alias"]][$hg["name1"]] = array();

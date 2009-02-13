@@ -433,13 +433,9 @@
 			if ($id != 0) {
 				$other_services = array();
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
-				if (PEAR::isError($DBRESULT2))
-					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 				if ($svc_id =& $DBRESULT2->fetchRow()){
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 						$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-						if (PEAR::isError($DBRESULT_meta))
-							print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
 						$meta =& $DBRESULT_meta->fetchRow();
 						$DBRESULT_meta->free();
 						$svc_id["service_description"] = $meta["meta_name"];
@@ -463,8 +459,6 @@
 	if (isset($req) && $req) {
 		$lstart = 0;
 		$DBRESULT =& $pearDBO->query($req);
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getMessage() . "\n\n\n $req";
 		$rows = $DBRESULT->numrows();
 		if (($num * $limit) > $rows)
 			$num = round($rows / $limit) - 1;
@@ -579,8 +573,6 @@
 	    	$req .= " ORDER BY ctime DESC,log_id DESC LIMIT $lstart,$limit";
 		
 		$DBRESULT =& $pearDBO->query($req);
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getMessage();
 		
 		$cpts = 0;
 		while ($log =& $DBRESULT->fetchRow()) {
@@ -615,8 +607,6 @@
 			if ($log["host_name"] == "_Module_Meta") {
 				preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
 				$DBRESULT2 =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
-				if (PEAR::isError($DBRESULT))
-					print "Mysql Error : ".$DBRESULT->getMessage();
 				$meta =& $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
 				$buffer->writeElement("host_name", $log["host_name"]);

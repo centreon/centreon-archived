@@ -151,8 +151,6 @@
 
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	while($ndo =& $DBRESULT_NDO1->fetchRow())
 		$host_status[$ndo["host_name"]] = $ndo;
 	
@@ -228,8 +226,6 @@
 	$rq .= " LIMIT ".($num * $limit).",".$limit;
 
 	$DBRESULT_NDO =& $pearDBndo->query($rq);
-	if (PEAR::isError($DBRESULT_NDO))
-		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 	
 	$buffer = new CentreonXML();
 	$buffer->startElement("reponse");	
@@ -238,8 +234,6 @@
 
 	/* Get Pagination Rows */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 	$buffer->startElement("i");
 	$buffer->writeElement("numrows", $numRows);

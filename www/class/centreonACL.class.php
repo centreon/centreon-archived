@@ -208,8 +208,7 @@
 										"WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id " .
 										"AND acl_group_topology_relations.acl_group_id IN (". $this->getAccessGroupsString() .")" .
 										"AND acl_topology.acl_topo_activate = '1'");
-		if (PEAR::isError($DBRESULT)) 
-			print "[Create ACL] DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+												
 		if (!$DBRESULT->numRows()){				
 			$DBRESULT2 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
 			for ($str_topo = ""; $topo = $DBRESULT2->fetchRow(); )
@@ -225,8 +224,7 @@
 		  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
 												"AND acl_topology.acl_topo_activate = '1' " .
 												"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
-				if (PEAR::isError($DBRESULT2)) 
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+				
 				$count = 0;
 				while ($topo_page =& $DBRESULT2->fetchRow()){				
 					if ($str_topo != "")
@@ -241,8 +239,7 @@
 			$count ? $ACL = "topology_id IN ($str_topo) AND ": $ACL = "";
 			unset($DBRESULT);
 			$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");	
-			if (PEAR::isError($DBRESULT)) 
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			
 			while ($topo_page =& $DBRESULT->fetchRow())						
 				$this->topology[$topo_page["topology_page"]] = 1;
 			unset($topo_page);
@@ -622,9 +619,7 @@
 	 public function updateACL(){
 		global $pearDB;
 
-		$DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");		
 	}
  }
  ?>

@@ -29,8 +29,6 @@
 		$SearchTool = " WHERE description LIKE '%".htmlentities($search, ENT_QUOTES)."%' ";
 	
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndomod` $SearchTool");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -40,8 +38,6 @@
 	 */
 	$nagios_servers = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
@@ -72,8 +68,6 @@
 		
 	$rq = "SELECT id, description, instance_name, ns_nagios_server, activate, output_type FROM cfg_ndomod $SearchTool ORDER BY description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 

@@ -125,8 +125,6 @@
 		
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-			if (PEAR::isError($DBRESULT_meta))
-				print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
 			$meta =& $DBRESULT_meta->fetchRow();
 			$index_data_ODS["service_description"] = $meta["meta_name"];
 		}

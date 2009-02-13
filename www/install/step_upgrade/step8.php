@@ -36,8 +36,6 @@
 	global $pearDB0;
 	
 	$pearDBO =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDBO))
-	    die($pearDBO->getMessage());
 	    
 	$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
 	// End of Pear connection
@@ -68,8 +66,6 @@
                     $str .= $line;
                     $str = chop($str);
                    $DBRESULT = $pearDB->query($str);
-                    if (PEAR::isError($DBRESULT))
-						print $mysql_msg = $DBRESULT->getDebugInfo();
                     $str = NULL;
                 } else
                 	$str .= $line;

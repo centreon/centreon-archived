@@ -144,8 +144,6 @@
 	 */
 	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	
 	$class = "list_one";
 	

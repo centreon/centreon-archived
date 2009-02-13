@@ -46,8 +46,6 @@
 	$ppHosts = array( NULL => NULL );
 	$rq = "SELECT DISTINCT host_name FROM index_data ".(!$is_admin ? "WHERE host_id IN ($LcaHostStr) AND " : "WHERE ")."  `trashed` = '0' ORDER BY `host_name`";
 	$DBRESULT =& $pearDBO->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while ($hostInOreon =& $DBRESULT->fetchRow()){
 		if ($hostInOreon["host_name"] == "_Module_Meta")
 			$ppHosts[$hostInOreon["host_name"]] = "Meta Services";
@@ -60,8 +58,6 @@
 		$ppServices = array( NULL => NULL );
 		$rq = "SELECT service_description,host_name FROM index_data WHERE `trashed` = '0' AND host_name = '".$_GET["host_name"]."' ORDER BY `service_description`";
 		$DBRESULT =& $pearDBO->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		while ($svc =& $DBRESULT->fetchRow()){
 			$ppServices[$svc["service_description"]] = $svc["service_description"];
 		}
@@ -70,8 +66,6 @@
 		$ppServices = array( NULL => NULL );
 		$rq = "SELECT service_description,host_name FROM index_data WHERE `trashed` = '0' AND host_id = '".$_GET["host_id"]."' ORDER BY `service_description`";
 		$DBRESULT =& $pearDBO->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		while ($svc =& $DBRESULT->fetchRow()){
 			$ppServices[$svc["service_description"]] = $svc["service_description"];
 		}
@@ -80,8 +74,6 @@
 
 	$graphTs = array(NULL => NULL);
 	$DBRESULT =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while ($graphT =& $DBRESULT->fetchRow())
 		$graphTs[$graphT["graph_id"]] = $graphT["name"];
 	$DBRESULT->free();
@@ -137,8 +129,6 @@
 
 	# Verify if template exists
 	$DBRESULT =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	if (!$DBRESULT->numRows())
 		print "<div class='msg' align='center'>"._("There is no graph template : please configure your graph template in order to display graphs correctly.")."</div>";	
 		
@@ -156,12 +146,8 @@
 			$elem = array();
 			if (isset($_GET["host_name"])){
 				$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' AND `trashed` = '0' ORDER BY service_description");
-				if (PEAR::isError($DBRESULT))
-					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			} else if (isset($_GET["host_id"])){
 				$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$_GET["host_id"]."' AND `trashed` = '0' ORDER BY service_description");
-				if (PEAR::isError($DBRESULT))
-					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			}
 			
 			while ($index_data =& $DBRESULT->fetchRow()){
@@ -175,8 +161,6 @@
 				} else if (isset($_GET["host_id"])){
 					$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE host_id = '".$_GET["host_id"]."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");	
 				}
-				if (PEAR::isError($DBRESULT2))
-					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 				$svc_id =& $DBRESULT2->fetchrow();
 				$DBRESULT->free();
 				
@@ -189,8 +173,6 @@
 				
 				if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 					$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-					if (PEAR::isError($DBRESULT_meta))
-						print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
 					$meta =& $DBRESULT_meta->fetchrow();
 					$svc_id["service_description"] = $meta["meta_name"];
 				}
@@ -198,8 +180,6 @@
 				$elem[$index_id] = array("index_id" => $index_id, "service_description" => str_replace("#S#", "/", str_replace("#BS#", "\\", $svc_id["service_description"])));
 				
 				$DBRESULT_view =& $pearDB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$index_id."' AND `contact_id` = '".$oreon->user->user_id."'");
-				if (PEAR::isError($DBRESULT_view))
-					print "Mysql Error : ".$DBRESULT_view->getDebugInfo();
 				while ($metric_activate =& $DBRESULT_view->fetchRow())
 					$metrics_activate[$metric_activate["metric_id"]] = $metric_activate["metric_id"];
 				$DBRESULT_view->free();
@@ -209,8 +189,6 @@
 					$elem[$index_id]["metrics"] = array();
 				}
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_id."' ORDER BY `metric_name`");
-				if (PEAR::isError($DBRESULT2))
-					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 				while ($metrics_ret =& $DBRESULT2->fetchrow()){	
 					$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
 					$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
@@ -232,8 +210,6 @@
 						$period = 86400;
 					else {
 						$DBRESULT2 =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$graph["graph_id"]."'");
-						if (PEAR::isError($DBRESULT2))
-							print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 						$graph =& $DBRESULT2->fetchRow();
 						$period = $graph["period"];
 					}

@@ -23,8 +23,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('perfparse_id');
 		$DBRESULT =& $pearDB->query("SELECT perfparse_name, perfparse_id FROM cfg_perfparse WHERE perfparse_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$perfparse =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $perfparse["perfparse_id"] == $id)	
@@ -40,27 +38,17 @@
 		if (!$perfparse_id) return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '0'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '1' WHERE perfparse_id = '".$perfparse_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function disablePerfparseInDB ($perfparse_id = null)	{
 		if (!$perfparse_id) return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '0' WHERE perfparse_id = '".$perfparse_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(perfparse_id) FROM cfg_perfparse WHERE perfparse_id != '".$perfparse_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$maxId =& $DBRESULT->fetchRow();
 		if (isset($maxId["MAX(perfparse_id)"])){
 			$DBRESULT =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '1' WHERE perfparse_id = '".$maxId["MAX(perfparse_id)"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -68,18 +56,12 @@
 		global $pearDB;
 		foreach($perfparse as $key=>$value){
 			$DBRESULT =& $pearDB->query("DELETE FROM cfg_perfparse WHERE perfparse_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 		$DBRESULT =& $pearDB->query("SELECT perfparse_id FROM cfg_perfparse WHERE perfparse_activate = '1'");		  
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (!$DBRESULT->numRows())	{
 			$DBRESULT =& $pearDB->query("SELECT MAX(perfparse_id) FROM cfg_perfparse");
 			$perfparse_id = $DBRESULT->fetchRow();
 			$DBRESULT =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '1' WHERE perfparse_id = '".$perfparse_id["MAX(perfparse_id)"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -87,8 +69,6 @@
 		foreach($perfparse as $key=>$value)	{
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_perfparse WHERE perfparse_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["perfparse_id"] = '';
 			$row["perfparse_activate"] = '0';
@@ -101,8 +81,6 @@
 				if (testExistence($perfparse_name))	{
 					$val ? $rq = "INSERT INTO cfg_perfparse VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 		}
@@ -167,16 +145,10 @@
         isset($ret["perfparse_comment"]) && $ret["perfparse_comment"] != NULL ? $rq .= "'".htmlentities($ret["perfparse_comment"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
 		$rq .= "'".$ret["perfparse_activate"]["perfparse_activate"]."')";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(perfparse_id) FROM cfg_perfparse");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$perfparse_id = $DBRESULT->fetchRow();
 		if ($ret["perfparse_activate"]["perfparse_activate"]){
 			$DBRESULT =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '0' WHERE perfparse_id != '".$perfparse_id["MAX(perfparse_id)"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 		return ($perfparse_id["MAX(perfparse_id)"]);
 	}
@@ -223,8 +195,6 @@
 		$rq .= "perfparse_activate = '".$ret["perfparse_activate"]["perfparse_activate"]."' ";
 		$rq .= "WHERE perfparse_id = '".$perfparse_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($ret["perfparse_activate"]["perfparse_activate"])
 			enablePerfparseInDB($perfparse_id);
 	}

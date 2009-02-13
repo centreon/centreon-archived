@@ -77,8 +77,6 @@
 			"AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
 	
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
-	if (PEAR::isError($DBRESULT_NDO))
-		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_comments_host[$i] = $data;
 		$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];

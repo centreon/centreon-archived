@@ -43,8 +43,6 @@
 		$rq = "SELECT nhs.current_state FROM `" .$ndo_base_prefix."hoststatus` nhs, `" .$ndo_base_prefix."objects` no " .
 			  "WHERE no.object_id = nhs.host_object_id" ;
 		$DBRESULT =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$status =& $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		return $status["current_state"];
@@ -57,15 +55,11 @@
 									"AND m.hidden = '0' " .									
 									"AND i.service_description = '".$service_description."' " .
 									"AND i.id = m.index_id");									
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
 			return $row["id"];
-		} else {
-			return 0;
-		}
-		return NULL;
+		} 
+		return 0;		
 	}
 	
 	function get_services_status($host_name, $status){
@@ -95,9 +89,7 @@
 
 		$rq .=	" AND nno.name1 = '".$host_name."')";		
 		
-		$DBRESULT =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDBndo->query($rq);		
 		$tab =& $DBRESULT->fetchRow();
 		return ($tab["nb"]);
 	}

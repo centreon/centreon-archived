@@ -70,8 +70,6 @@
 			$hosts = array(NULL => NULL);			
 			while ($row =& $DBRESULT->fetchRow())
 				$hosts[$row['host_id']] = $row['host_name'];
-			if (PEAR::isError($DBRESULT))
-				print "AddSvcComment - RQ1 - Mysql Error : ".$DBRESULT->getMessage();			
 			$DBRESULT->free();
 		
 			$services = array();

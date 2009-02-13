@@ -29,9 +29,7 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE `index_data` SET `storage_type` = '".$ret["storage_type"]."' WHERE `id` = '".$index."' LIMIT 1 ;";
-		$DBRESULT =& $pearDBO->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDBO->query($rq);		
 	}
 	
 	# Smarty template Init
@@ -62,8 +60,6 @@
 				
 	# Verify if template exists
 	$DBRESULT =& $pearDBO->query("SELECT storage_type,host_name,service_description FROM index_data WHERE id = '".$_GET["index"]."'");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	$index =& $DBRESULT->fetchRow();
 	
 	if ($index["host_name"] == "_Module_Meta")
@@ -97,8 +93,6 @@
 		# Update in Oreon Object
 		
 		$DBRESULT =& $pearDBO->query("SELECT storage_type,host_name,service_description FROM index_data WHERE id = '".$_GET["index"]."'");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$index =& $DBRESULT->fetchRow();
 	}
 	
@@ -113,8 +107,6 @@
 	$tpl->assign('host_name', $index["host_name"]);
 	if (preg_match("/meta_([0-9]*)/", $index["service_description"], $matches)){
 		$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-		if (PEAR::isError($DBRESULT_meta))
-			print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
 		$meta =& $DBRESULT_meta->fetchRow();
 		$index["service_description"] = $meta["meta_name"];
 	}

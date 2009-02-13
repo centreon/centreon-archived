@@ -74,8 +74,6 @@
 		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br />";
 		$oreon->user->name = $ret["contact_name"];
 		$oreon->user->alias = $ret["contact_alias"];
 		$oreon->user->lang = $ret["contact_lang"];

@@ -30,10 +30,7 @@
 		$SearchTool = " WHERE name LIKE '%".$search."%'";		
 	}
 	
-	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM giv_components_template".$SearchTool);
-	if (PEAR::isError($DBRESULT)) {
-		print "DB Error : ".$DBRESULT->getDebugInfo();	
-	}
+	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM giv_components_template".$SearchTool);	
 	
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -58,9 +55,6 @@
 
 	$rq = "SELECT compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, ds_tickness, ds_transparency FROM giv_components_template gc $SearchTool ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT)) {
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	}
 		
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	

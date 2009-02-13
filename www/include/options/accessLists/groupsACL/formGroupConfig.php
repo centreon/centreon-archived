@@ -41,14 +41,10 @@
 	$group = array();
 	if (($o == "c" || $o == "w") && $acl_group_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '".$acl_group_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$group = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Contact Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_contact_id FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $contacts =& $DBRESULT->fetchRow(); $i++)
 			$group["cg_contacts"][$i] = $contacts["contact_contact_id"];
 		$DBRESULT->free();
@@ -59,8 +55,6 @@
 	# Contacts comes from DB -> Store in $contacts Array
 	$contacts = array();
 	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' ORDER BY contact_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($contact =& $DBRESULT->fetchRow())
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);

@@ -25,9 +25,7 @@
 	$handle = create_file($nagiosCFGPath.$tab['id']."/ndo2db.cfg", $oreon->user->get_name());
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_ndo2db` WHERE `activate` = '1' AND `ns_nagios_server` = '".$tab['id']."' LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-
+	
 	$DBRESULT->numRows() ? $ndomod = $DBRESULT->fetchRow() : $ndomod = array();
 
 	$str = "";

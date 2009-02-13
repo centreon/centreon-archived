@@ -22,8 +22,7 @@
 		$o = $_POST["o"];
 
 	$DBRESULT =& $pearDBO->query("SELECT * FROM `config` LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	
 			
 	/*
 	 * Set base value
@@ -117,8 +116,6 @@
 		
 		$oreon->optGen = array();
 		$DBRESULT2 =& $pearDBO->query("SELECT * FROM `config` LIMIT 1");
-		if (PEAR::isError($DBRESULT2))
-			print ("DB error : ".$DBRESULT2->getDebugInfo());
 		$oreon->optGen =& $DBRESULT2->fetchRow();
 
 		$o = NULL;

@@ -43,8 +43,7 @@
 		global $pearDB;
 		$rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
 		$DBRESULT =& $pearDB->query($rqPath);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
 		$redirectPath =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return $redirectPath;
@@ -54,8 +53,6 @@
 		global $pearDB;
 		$rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
 		$DBRESULT =& $pearDB->query($rqPath);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$redirectPath =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return $redirectPath;
@@ -65,8 +62,6 @@
 		global $pearDB;
 		$rqPath = "SELECT `topology_parent` FROM `topology` WHERE `topology_page` = '".$p."'";
 		$DBRESULT =& $pearDB->query($rqPath);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$redirectPath =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return $redirectPath["topology_parent"];
@@ -95,8 +90,6 @@
 	ksort($tabPath);
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_page = '".$p."'");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$current =& $DBRESULT->fetchRow();
 	$DBRESULT->free();
 	
@@ -107,8 +100,6 @@
 			if (!$DBRESULT->numRows())
 				break;
 			$new_url =& $DBRESULT->fetchRow();
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$DBRESULT->free();
 			$tabPath[$new_url["topology_page"]] = array();
 			$tabPath[$new_url["topology_page"]]["name"] = _($tab["topology_name"]);

@@ -68,8 +68,6 @@
 	$tabAliasName = array();
 	$row = array();
 	$DBRESULT_PAGINATION =& $pearDB->query("SELECT hg_name, hg_alias FROM hostgroup");
-	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	while ($row &= $DBRESULT_PAGINATION->numRows())
 		$tabAliasName[$row["hg_name"]] = $row["hg_alias"];
 
@@ -114,8 +112,6 @@
 			$rq .= " AND no.instance_id = ".$instance;
 
 		$DBRESULT =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
 		while ($svc =& $DBRESULT->fetchRow()){
 			$tab[$svc["service_name"]] = $svc["current_state"];
@@ -176,8 +172,6 @@
 	 */
 	 
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 
 	$rq1 .= " ORDER BY hg.alias";
@@ -194,9 +188,7 @@
 	$buffer->endElement();
 
 	$DBRESULT_NDO =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO))
-		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-
+	
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;

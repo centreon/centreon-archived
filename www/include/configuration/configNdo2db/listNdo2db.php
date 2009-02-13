@@ -28,8 +28,6 @@
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndo2db` WHERE description LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndo2db`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -39,8 +37,6 @@
 	 */ 
 	$nagios_servers = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
@@ -70,8 +66,6 @@
 	else
 		$rq = "SELECT id, description, ns_nagios_server, activate FROM cfg_ndo2db ORDER BY description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	

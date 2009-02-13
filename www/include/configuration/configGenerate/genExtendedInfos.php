@@ -30,8 +30,6 @@
 									"WHERE host_activate = '1' AND host_register = '1' " .
 									"ORDER BY `host_name`");
 									
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$ehi = array();
 	$i = 1;
 	$str = NULL;
@@ -104,8 +102,6 @@
 	$str = NULL;
 
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt FROM service, extended_service_information WHERE service_service_id = service_id AND service_register = '1' AND service_activate = '1'");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	while ($esi =& $DBRESULT->fetchRow())	{	
 		if (isset($esi["service_id"]) && ($esi["esi_notes"] || $esi["esi_notes_url"] || $esi["esi_action_url"] || $esi["esi_icon_image"] || $esi["esi_icon_image_alt"]))	{			
 			$hosts = getMyServiceHosts($esi["service_id"]);

@@ -51,8 +51,6 @@
 	);
 
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB))
-	    die("Unable to connect : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 	/*
@@ -128,8 +126,6 @@
 		
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-			if (PEAR::isError($DBRESULT_meta))
-				print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
 			$meta =& $DBRESULT_meta->fetchRow();
 			$index_data_ODS["service_description"] = $meta["meta_name"];
 		}
@@ -180,8 +176,6 @@
 			$command_line .= "--rigid --alt-autoscale-max ";
 			
 		$DBRESULT =& $pearDB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$_GET["index"]."' AND `contact_id` = '".$session_value["user_id"]."'");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		while ($metric_activate =& $DBRESULT->fetchRow()){
 			$metrics_activate[$metric_activate["metric_id"]] = $metric_activate["metric_id"];
 		}
@@ -191,8 +185,6 @@
 		 */
 		$metrics = array();
 		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name, warn, crit FROM metrics WHERE index_id = '".$_GET["index"]."' AND `hidden` = '0' ORDER BY metric_name");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 0;
 		
 		$metrics = array();		

@@ -45,8 +45,6 @@
 	 * PART 1 - Escalations for all Hosts
 	 */
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_host_relation ehr, escalation esc WHERE ehr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";		
 	
 	$escalation = array();
 	$i = 1;
@@ -57,8 +55,6 @@
 		$linkedToHost = 0;
 				
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name, host.host_location FROM escalation_host_relation ehr, host, ns_host_relation nhr WHERE ehr.escalation_esc_id = '".$escalation["esc_id"]."' AND host.host_id = ehr.host_host_id AND host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab['id']."' ");
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		
 		$hosts = array();
 		$strTemp = NULL;
@@ -107,8 +103,6 @@
 				$cg = array();
 				$strTemp = NULL;				
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while($cg =& $DBRESULT2->fetchRow()) {
 					if (isset($gbArr[1][$cg["cg_id"]]))
 						$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
@@ -125,8 +119,6 @@
 					$strDef .= print_line("notification_interval", $escalation["notification_interval"]);
 				
 				$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				$tp =& $DBRESULT2->fetchRow();				
 				$DBRESULT2->free();
 				
@@ -157,16 +149,12 @@
 	
 	if ($oreon->CentreonGMT->used() == 1) {	
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_hostgroup_relation ehgr, escalation esc WHERE ehgr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		$escalation = array();
 		while ($escalation =& $DBRESULT->fetchRow())	{
 			
 			$hosts = array();
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM escalation_hostgroup_relation ehgr, hostgroup hg WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."' AND hg.hg_id = ehgr.hostgroup_hg_id");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$strTemp = NULL;
 			$hg = array();
 			while ($hg =& $DBRESULT2->fetchRow()) {
@@ -208,8 +196,6 @@
 					$cg = array();
 					$strTemp = "";
 					$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while ($cg =& $DBRESULT2->fetchRow()) {
 						if (isset($gbArr[1][$cg["cg_id"]]))
 							$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
@@ -226,8 +212,6 @@
 						$str .= print_line("notification_interval", $escalation["notification_interval"]);
 					
 					$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					$tp =& $DBRESULT2->fetchRow();
 					
 					print $tp["tp_name"];
@@ -249,8 +233,6 @@
 		}
 	} else {
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM escalation_hostgroup_relation ehgr, hostgroup hg WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."' AND hg.hg_id = ehgr.hostgroup_hg_id");
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		
 		$hg = array();
 		$strTemp = NULL;
@@ -276,8 +258,6 @@
 			$strTemp = NULL;
 			
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			
 			while ($cg =& $DBRESULT2->fetchRow()) {
 				if (isset($gbArr[1][$cg["cg_id"]]))
@@ -296,8 +276,6 @@
 				$str .= print_line("notification_interval", $escalation["notification_interval"]);
 			
 			$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$tp =& $DBRESULT2->fetchRow();
 			
 			if (isset($tp["tp_name"]) == true) 
@@ -313,8 +291,6 @@
 	 * PART 3 - Escalations for all ServiceGroups	
 	 */
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_servicegroup_relation esgr, escalation esc WHERE esgr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$escalation = array();
 	$strTemp = NULL;
@@ -325,8 +301,6 @@
 		unset($hosts);
 		while ($escalation =& $DBRESULT->fetchRow()) {
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($sg =& $DBRESULT2->fetchRow()) {
 				if (isset($gbArr[5][$sg["sg_id"]])) {
 					$services =& getMyServiceGroupServices($sg["sg_id"]);
@@ -377,8 +351,6 @@
 									$strTemp = NULL;
 									
 									$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
-									if (PEAR::isError($DBRESULT3))
-										print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 									while ($cg =& $DBRESULT3->fetchRow()) {
 										if (isset($gbArr[1][$cg["cg_id"]]))
 											$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
@@ -395,8 +367,6 @@
 										$strDef .= print_line("notification_interval", $escalation["notification_interval"]);
 				
 									$DBRESULT4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
-									if (PEAR::isError($DBRESULT4))
-										print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
 									$tp =& $DBRESULT4->fetchRow();
 									$DBRESULT4->free();		
 									if (isset($tp["tp_name"])) 
@@ -422,9 +392,6 @@
 			$BP = false;
 			
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
-			if (PEAR::isError($DBRESULT2)) {
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			}
 			
 			$sg = array();
 			
@@ -457,9 +424,6 @@
 				$cg = array();
 				$strTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
-				if (PEAR::isError($DBRESULT2)) {
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-				}
 				
 				while($cg =& $DBRESULT2->fetchRow()) {
 					$BP = false;			
@@ -482,8 +446,6 @@
 					$str .= print_line("notification_interval", $escalation["notification_interval"]);
 	
 				$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				
 				$tp =& $DBRESULT2->fetchRow();				
 				if (isset($tp["tp_name"])) 
@@ -503,16 +465,11 @@
 	 */
 	 
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT service.service_activate, service.service_description, esr.service_service_id FROM service, escalation_service_relation esr WHERE esr.service_service_id = service.service_id ORDER BY esr.service_service_id");
-	if (PEAR::isError($DBRESULT)) {
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	}
 	
 	$generated = 0;
 	while ($service =& $DBRESULT->fetchRow()) {
 		if (isset($gbArr[4][$service["service_service_id"]])) {
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM escalation esc, escalation_service_relation esr WHERE esr.service_service_id = '".$service["service_service_id"]."' AND esc.esc_id = esr.escalation_esc_id ORDER BY esc.esc_name");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			
 			$escalation = array();
 			while ($escalation =& $DBRESULT2->fetchRow()) {
@@ -543,8 +500,6 @@
 						$strTemp = NULL;
 						
 						$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
-						if (PEAR::isError($DBRESULT3))
-							print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 						while ($cg =& $DBRESULT3->fetchRow()) {
 							if (isset($gbArr[1][$cg["cg_id"]]))
 								$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
@@ -561,8 +516,6 @@
 							$strDef .= print_line("notification_interval", $escalation["notification_interval"]);
 	
 						$DBRESULT4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
-						if (PEAR::isError($DBRESULT4))
-							print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
 						$tp =& $DBRESULT4->fetchRow();
 						$DBRESULT4->free();		
 						if (isset($tp["tp_name"])) 

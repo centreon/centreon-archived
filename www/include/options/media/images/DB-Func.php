@@ -41,15 +41,11 @@
 		if (!$img_path && !$dir_alias) {
 			foreach ($imgs as $key => $value)	{
 				$DBRESULT =& $pearDB->query("SELECT dir_alias, img_path FROM view_img, view_img_dir, view_img_dir_relation WHERE img_id = '".$key."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				$img_path =& $DBRESULT->fetchRow();
 				if (is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))
 					unlink("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]);
 				if (!is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))	{
 					$pearDB->query("DELETE FROM view_img WHERE img_id = '".$key."'");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				}
 			}
 		} else {
@@ -57,15 +53,11 @@
 			 * Delete single image by name
 			 */
 			$DBRESULT =& $pearDB->query("SELECT img_id FROM view_img, view_img_dir, view_img_dir_relation WHERE img_path = '".htmlentities($img_path, ENT_QUOTES)."' AND dir_alias = '".htmlentities($dir_alias, ENT_QUOTES)."' AND dir_id = dir_dir_parent_id AND img_id = img_img_id");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$img_id =& $DBRESULT->fetchRow();
 			if (isset($img_id["img_id"]) && $img_id && is_file("./img/media/".$dir_alias."/".$img_path))
 				unlink("./img/media/".$dir_alias."/".$img_path);
 			if (isset($img_id["img_id"]) && $img_id && !is_file("./img/media/".$dir_alias."/".$img_path))	{
 				$pearDB->query("DELETE FROM view_img WHERE img_id = '".$img_id["img_id"]."'");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			}
 		}
 	}
@@ -87,16 +79,13 @@
 			$rq = "UPDATE view_img SET ";
 			$rq .= "img_name = '".$ret["img_name"]."' WHERE img_id = '".$img_id."'";
 			$DBRESULT = $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			
 		}
 		if ($file->isUploadedFile())	{
 			/*
 			 * Delete old file
 			 */
 			$DBRESULT =& $pearDB->query("SELECT dir_alias, img_path FROM view_img, view_img_dir, view_img_dir_relation WHERE img_id = '".$img_id."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$img_path =& $DBRESULT->fetchRow();
 			if (is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))
 				unlink("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]);
@@ -105,8 +94,6 @@
 			 */
 			 if (!is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))	{
 				$DBRESULT =& $pearDB->query("SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$ret["directories"]."'");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				$dir_alias =& $DBRESULT->fetchRow();			
 				$file->moveUploadedFile("./img/media/".$img_path["dir_alias"]);
 				$fDataz =& $file->getValue();
@@ -128,11 +115,7 @@
 					$rq = "UPDATE view_img SET ";
 					$rq .= "img_name = '".$ret["img_name"]."', img_path = '".$ret["img_path"]."' WHERE img_id = '".$img_id."'";
 					$DBRESULT = $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 					$DBRESULT =& $pearDB->query("SELECT MAX(img_id) FROM view_img");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 					$img_id =& $DBRESULT->fetchRow();
 					updateImgDirectories($img_id["MAX(img_id)"]);
 					$img_id = $img_id["MAX(img_id)"];
@@ -141,20 +124,14 @@
 		}
 		if (isset($ret["directories"]) && $ret["directories"])	{
 			$DBRESULT =& $pearDB->query("SELECT dir_id, dir_alias FROM view_img_dir, view_img_dir_relation WHERE img_img_id = '".$img_id."' AND dir_dir_parent_id = dir_id");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$dir_old =& $DBRESULT->fetchRow();
 			/*
 			 * Check if directory has been changed
 			 */
 			if ($ret["directories"] != $dir_old["dir_id"])	{
 				$DBRESULT =& $pearDB->query("SELECT img_path FROM view_img WHERE img_id = '".$img_id."' LIMIT 1");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				$img_path =& $DBRESULT->fetchRow();
 				$DBRESULT =& $pearDB->query("SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$ret["directories"]."'");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				$dir_new =& $DBRESULT->fetchRow();
 				/*
 				 * Delete existing occurence
@@ -167,8 +144,6 @@
 				rename("./img/media/".$dir_old["dir_alias"]."/".$img_path["img_path"], "./img/media/".$dir_new["dir_alias"]."/".$img_path["img_path"]);
 				if (is_file("./img/media/".$dir_new["dir_alias"]."/".$img_path["img_path"]))	{	
 					$DBRESULT =& $pearDB->query("UPDATE view_img_dir_relation SET dir_dir_parent_id = '".htmlentities($ret["directories"], ENT_QUOTES)."' WHERE img_img_id = '".$img_id."'");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				}
 			}
 		}
@@ -206,8 +181,6 @@
 		$dir_id = $ret["directories"];
 		$rq = "SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$dir_id."' LIMIT 1";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$dir_alias =& $DBRESULT->fetchRow();		
 		if ($file)	{
 			$fDataz =& $file->getValue();
@@ -374,8 +347,6 @@
 		$rq = "DELETE FROM view_img_dir_relation ";
 		$rq .= "WHERE img_img_id = '".$img_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if (isset($ret["directories"]))
 			$ret = $ret["directories"];
 		else
@@ -384,8 +355,6 @@
 		$rq .= "(dir_dir_parent_id, img_img_id) ";
 		$rq .= "VALUES ";
 		$rq .= "('".$ret."', '".$img_id."')";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$DBRESULT =& $pearDB->query($rq);		
 	}
 ?>

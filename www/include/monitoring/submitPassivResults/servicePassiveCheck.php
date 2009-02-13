@@ -44,8 +44,6 @@
 		$hosts = array($host_name=>$host_name);
 
 		$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' ORDER BY host_name");
-		if (PEAR::isError($DBRESULT))
-			print "AddSvcComment - RQ1 - Mysql Error : ".$DBRESULT->getMessage();
 		$host =& $DBRESULT->fetchRow();
 		$host_id = $host["host_id"];
 		

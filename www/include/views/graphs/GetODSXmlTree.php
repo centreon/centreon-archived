@@ -48,8 +48,6 @@
 		$tab_svc = array();
 
 		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `hidden` = '0' AND `trashed` = '0' ORDER BY `service_description`");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($row =& $DBRESULT->fetchRow())
 			$tab_svc[$row["service_id"]] = 1;
 		return $tab_svc;
@@ -59,8 +57,6 @@
 		global $pearDBO;
 		$tab = array();
 		$DBRESULT =& $pearDBO->query("SELECT `host_id` FROM `index_data` WHERE `hidden` = '0' AND `trashed` = '0' ORDER BY `host_name`");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($row =& $DBRESULT->fetchRow())
 			$tab[$row["host_id"]] = 1;
 		return $tab;
@@ -73,8 +69,6 @@
 		$tab_svc = array();
 
 		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."' AND `hidden` = '0' AND `trashed` = '0'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$num_row =& $DBRESULT->numRows();
 		$DBRESULT->free();
 		return $num_row;
@@ -94,8 +88,6 @@
 	$options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 	
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) 
-		die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 	global $is_admin, $user_id;
@@ -193,8 +185,6 @@
 			;
 		} else if ($type == "HO") {
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
 		        if ($is_admin || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))) {
@@ -215,8 +205,6 @@
 			 */
 			$lcaSG = $access->getServiceGroups();
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($SG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if (SGIsNotEmpty($SG["sg_id"])) {
@@ -240,8 +228,6 @@
 			$cpt = 0;
 			$str = 0;
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
 				$buffer->startElement("item");
@@ -259,8 +245,6 @@
 			 * Send Host Group list
 			 */
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($HG =& $DBRESULT->fetchRow()) {
 				$i++;				
 				if (HG_has_one_or_more_host($HG["hg_id"])){
@@ -285,8 +269,6 @@
 			$str = "";
 			$hostWithGraph = getHostGraphedList();
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' ORDER BY host_name");
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();			
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
 				if (isset($hostWithGraph[$host["host_id"]])){
@@ -322,8 +304,6 @@
 			$cpt = 0;
 			$str = 0;
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
 				$cpt++;
@@ -458,8 +438,6 @@
 		
 		$hostWithGraph = getHostGraphedList();
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' ORDER BY host_name");
-		if (PEAR::isError($DBRESULT2))
-			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		while ($host =& $DBRESULT2->fetchRow()){
 			$i++;
 			if (isset($hostWithGraph[$host["host_id"]])){				
@@ -522,8 +500,6 @@
 		$cpt = 0;
 		$str = 0;
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		while ($MS =& $DBRESULT->fetchRow()){
 			$i++;
 			$cpt++;
@@ -557,8 +533,6 @@
 		 */
 		$lcaSG = getLCASG($pearDB);
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		while ($SG =& $DBRESULT->fetchRow()){
 		    $i++;			
 			if (SGIsNotEmpty($SG["sg_id"]) && (($is_admin) || ((isset($lcaSG) && isset($lcaSG[$SG["sg_id"]])))))

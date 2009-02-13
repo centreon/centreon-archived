@@ -35,7 +35,7 @@
 	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);	
 
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
+	
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 	include_once('/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );	
@@ -82,9 +82,7 @@
 
 	if ($is_admin){
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-
+	
 	while($hg = $DBRESULT->fetchRow()){
 		$counterTotal = 0;
 		$counterUP = 0;
@@ -92,8 +90,6 @@
 		$DBRESULT2 =& $pearDB->query("SELECT host_name FROM host, hostgroup_relation WHERE  hostgroup_relation.hostgroup_hg_id = '".$hg["hg_id"]."' AND hostgroup_relation.host_host_id = host.host_id");
 		while($h = $DBRESULT2->fetchRow()){
 			$DBRESULT3 =& $pearDBndo->query("SELECT current_state FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."hosts WHERE ".$ndo_base_prefix."hoststatus.host_object_id = ".$ndo_base_prefix."hosts.host_object_id AND ".$ndo_base_prefix."hosts.display_name = '".$h["host_name"]."'");
-			if (PEAR::isError($DBRESULT3))
-				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 			while($stt = $DBRESULT3->fetchRow()){
 				if ($stt["current_state"] == 1)
 					$counterDown++;
@@ -118,10 +114,6 @@
 	}
 	else
 	{
-        //$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup");
-        //if (PEAR::isError($DBRESULT))
-                //print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-
         $tmp1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '$user_id'");
         $tmp2 = $tmp1->fetchRow();
         $acl_group_id = $tmp2["acl_group_id"];
@@ -146,8 +138,6 @@
 
 		while($h = $DBRESULT2->fetchRow()){
 			$DBRESULT3 =& $pearDBndo->query("SELECT current_state FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."hosts, ".$ndo_base_prefix."objects no WHERE ".$ndo_base_prefix."hoststatus.host_object_id = ".$ndo_base_prefix."hosts.host_object_id AND ".$ndo_base_prefix."hosts.display_name = '".$h["host_name"]."'");
-                        if (PEAR::isError($DBRESULT3))
-                                print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
                         while($stt = $DBRESULT3->fetchRow()){
                                 if ($stt["current_state"] == 1)
                                         $counterDown++;

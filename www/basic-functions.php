@@ -56,9 +56,7 @@
 				WHERE  topology_page IN ($lcaTStr) 
 				AND topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
 				ORDER BY topology_order, topology_group "; 
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query($rq);		
 		$redirect =& $DBRESULT->fetchRow();
 		return $redirect;
 	}
@@ -82,8 +80,6 @@
 				AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
 				LIMIT 1"; 
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$root_menu = array();
 		if ($DBRESULT->numRows())
 			$root_menu =& $DBRESULT->fetchRow();
@@ -92,8 +88,6 @@
 	
 	function getSkin($pearDB) {
 		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'template' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
 		$data =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return "./Themes/".$data["value"]."/";

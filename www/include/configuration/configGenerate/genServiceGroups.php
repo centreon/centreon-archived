@@ -43,8 +43,6 @@
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/servicegroups.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM `servicegroup` ORDER BY `sg_name`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$serviceGroup = array();
 	$i = 1;
@@ -81,8 +79,6 @@
 									"AND service.service_activate = '1' " .
 									"AND host.host_activate = '1' " .
 									"AND  servicegroup_relation.host_host_id IS NOT NULL");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($service =& $DBRESULT2->fetchRow()){
 				if (isset($gbArr[4][$service["service_id"]]))	{				
 					if ($service["host_id"])	{
@@ -106,15 +102,11 @@
 									"AND service.service_activate = '1' " .
 									"AND hostgroup.hg_activate = '1' " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL ");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($service =& $DBRESULT2->fetchRow()){
 				if (isset($gbArr[4][$service["service_id"]]))	{				
 					if ($service["hg_id"])	{
 						if (isset($gbArr[3][$service["hg_id"]])){
 							$DBRESULT3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
-							if (PEAR::isError($DBRESULT3)) 
-								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 							while($host =& $DBRESULT3->fetchRow())	{
 								if (isset($gbArr[2][$host["host_host_id"]]) && isset($host_instance[$host["host_host_id"]])){
 									$service["service_description"] = str_replace("#S#", "/", $service["service_description"]);

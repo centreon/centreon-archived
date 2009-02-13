@@ -46,8 +46,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('acl_group_id');
 		$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups WHERE acl_group_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cg =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] == $id)	
@@ -62,25 +60,19 @@
 	function enableGroupInDB ($acl_group_id = null)	{
 		if (!$acl_group_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '".$acl_group_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '".$acl_group_id."'");		
 	}
 	
 	function disableGroupInDB ($acl_group_id = null)	{
 		if (!$acl_group_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE acl_groups SET acl_group_activate = '0' WHERE acl_group_id = '".$acl_group_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query("UPDATE acl_groups SET acl_group_activate = '0' WHERE acl_group_id = '".$acl_group_id."'");		
 	}
 	
 	function deleteGroupInDB ($Groups = array())	{
 		global $pearDB;
 		foreach($Groups as $key=>$value)	{
-			$DBRESULT =& $pearDB->query("DELETE FROM acl_groups WHERE acl_group_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$DBRESULT =& $pearDB->query("DELETE FROM acl_groups WHERE acl_group_id = '".$key."'");			
 		}
 	}
 	
@@ -88,8 +80,6 @@
 		foreach($Groups as $key=>$value)	{
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row =& $DBRESULT->fetchRow();
 			$row["acl_group_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -101,21 +91,13 @@
 				if (testGroupExistence($acl_group_name))	{
 					$val ? $rq = "INSERT INTO acl_groups VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$DBRESULT =& $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					$DBRESULT->free();
 					if (isset($maxId["MAX(cg_id)"]))	{
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while ($cct =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO acl_group_contacts_relations VALUES ('', '".$cct["contact_contact_id"]."', '".$maxId["MAX(acl_group_id)"]."')");
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 						$DBRESULT->free();
 					}
@@ -139,11 +121,7 @@
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["acl_group_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_group_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES)."')";
 		$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cg_id =& $DBRESULT->fetchRow();
 		return ($cg_id["MAX(acl_group_id)"]);
 	}
@@ -164,9 +142,7 @@
 				"acl_group_alias = '".htmlentities($ret["acl_group_alias"], ENT_QUOTES)."', " .
 				"acl_group_activate = '".htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES)."' " .
 				"WHERE acl_group_id = '".$acl_group_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query($rq);		
 	}
 	
 	function updateGroupContacts($acl_group_id, $ret = array())	{
@@ -174,8 +150,6 @@
 		global $form, $pearDB;
 		$rq = "DELETE FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($_POST["cg_contacts"]))
 			foreach ($_POST["cg_contacts"] as $id){
 				$rq = "INSERT INTO acl_group_contacts_relations ";
@@ -183,8 +157,6 @@
 				$rq .= "VALUES ";
 				$rq .= "('".$id."', '".$acl_group_id."')";
 				$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 	}
 ?>

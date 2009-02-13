@@ -67,8 +67,6 @@
 
 		$rq = 'SELECT  * FROM `log_archive_host` WHERE host_id = ' . $_GET["id"] . ' order by date_start desc';			
 		$DBRESULT = & $pearDBO->query($rq);
-		if (PEAR::isError($DBRESULT))
-		  die("DB ERROR : ".$DBRESULT->getDebugInfo()."<br />");
 		  $statesTab = array("UP", "DOWN", "UNREACHABLE");
 		  while ($row =& $DBRESULT->fetchRow()) {
 		  	fillBuffer($statesTab, $row, $color);

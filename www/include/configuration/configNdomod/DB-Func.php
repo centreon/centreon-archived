@@ -23,8 +23,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('id');
 		$DBRESULT =& $pearDB->query("SELECT description, id FROM cfg_ndomod WHERE `description` = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ndomod =& $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $ndomod["id"] == $id)#Modif case	
 			return true;
@@ -38,8 +36,6 @@
 		if (!$id) return;
 		global $pearDB, $oreon;
 		$DBRESULT =& $pearDB->query("UPDATE `cfg_ndomod` SET `activate` = '1' WHERE id = '".$id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function disableNdomodInDB ($id = null)	{
@@ -52,8 +48,6 @@
 		global $pearDB;
 		foreach($ndomod as $key => $value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM `cfg_ndomod` WHERE id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -61,8 +55,6 @@
 		foreach($ndomod as $key => $value)	{
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_ndomod` WHERE id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["id"] = '';
 			$row["activate"] = '0';
@@ -76,8 +68,6 @@
 				if (testExistence($nagios_name))	{
 					$val ? $rq = "INSERT INTO `cfg_ndomod` VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 		}
@@ -119,11 +109,7 @@
         isset($ret["config_output_options"]) && $ret["config_output_options"] != 2 ? $rq .= "'".$ret["config_output_options"]."',  " : $rq .= "NULL, ";
         isset($ret["activate"]) && $ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."')" : $rq .= "NULL )";
        	$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM `cfg_ndomod`");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ndomod_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return ($ndomod_id["MAX(id)"]);
@@ -153,7 +139,5 @@
         $rq .= "activate = '".$ret["activate"]["activate"]."' ";
 		$rq .= "WHERE id = '".$id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 ?>

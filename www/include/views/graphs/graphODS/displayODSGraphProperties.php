@@ -58,8 +58,6 @@
 
 	# Verify if template exists
 	$DBRESULT =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	if (!$DBRESULT->numRows())
 		print "<div class='msg' align='center'>"._("There is no graph template : please configure your graph template in order to display graphs correctly.")."</div>";
 	
@@ -74,8 +72,6 @@
 		
 	$elem = array();	
 	$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE id = '".$_GET["index"]."'");
-	if (PEAR::isError($DBRESULT2))
-		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 	$svc_id =& $DBRESULT2->fetchRow();
 	
 	$service_id = $svc_id["service_id"];
@@ -84,8 +80,6 @@
 	$indexF->setValue($index_id);
 	
 	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$service_id."' ORDER BY `metric_name`");
-	if (PEAR::isError($DBRESULT2))
-		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 	while ($metrics_ret =& $DBRESULT2->fetchRow()){
 		$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
 		$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
@@ -105,8 +99,6 @@
 	$tpl->assign('host_name', $svc_id["host_name"]);
 	if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 		$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-		if (PEAR::isError($DBRESULT_meta))
-			print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
 		$meta =& $DBRESULT_meta->fetchRow();
 		$svc_id["service_description"] = $meta["meta_name"];
 	}
@@ -114,15 +106,11 @@
 
 	if ($is_admin || (!$is_admin && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
 		$DBRESULT =& $pearDBO->query("SELECT * FROM config");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
 		$config =& $DBRESULT->fetchRow();
 		$tpl->assign('config', $config);
 		
 		$metrics = array();
 		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_id");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
 	
 		$counter = 1;	
 		$metrics = array();	
@@ -141,8 +129,6 @@
 		$DBRESULT->free();
 		
 		$DBRESULT_data =& $pearDBO->query("SELECT storage_type FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
-		if (PEAR::isError($DBRESULT_data))
-			print "DB Error : ".$DBRESULT_data->getDebugInfo();
 		$conf =& $DBRESULT_data->fetchRow();
 		$DBRESULT_data->free();
 		

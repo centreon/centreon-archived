@@ -21,8 +21,6 @@
 	$cgi = array();
 	if (($o == "c" || $o == "w") && $cgi_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_cgi WHERE cgi_id = '".$cgi_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$cgi = array_map("myDecode", $DBRESULT->fetchRow());
 	}
@@ -32,8 +30,6 @@
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array();
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$checkCmds = array(NULL=>NULL);
 	while ($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];

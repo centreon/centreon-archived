@@ -87,8 +87,6 @@
 		 * Get RRDTool binary Path 
 		 */
 		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'rrdtool_path_bin'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($options =& $DBRESULT->fetchRow())
 			$rrdtoolPath = $options["value"];
 		$DBRESULT->free();
@@ -189,8 +187,6 @@
 		
 		$metrics = $differentStats[$options[$_GET["key"]]];
 		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_nagios_stats_path FROM config");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$nagios_stats =& $DBRESULT->fetchRow();
 		$nagios_stats_path = $nagios_stats['RRDdatabase_nagios_stats_path'];
 	

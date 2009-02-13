@@ -130,8 +130,6 @@
 		 _("Unreachable")." "._("Time").";"._("Unreachable").";"._("Unreachable")." "._("Alert").";\n";
 	$rq = 'SELECT  * FROM `log_archive_host` WHERE `host_id` = '.$id.' ORDER BY `date_start` desc';			
 	$DBRESULT = & $pearDBO->query($rq);
-	if (PEAR::isError($DBRESULT))
-	 	die("DB ERROR : ".$DBRESULT->getDebugInfo()."<br/>");
 	while ($row =& $DBRESULT->fetchRow()) {
 			$duration = $row["UPTimeScheduled"] + $row["DOWNTimeScheduled"] + $row["UNREACHABLETimeScheduled"];
 			/* Percentage by status */

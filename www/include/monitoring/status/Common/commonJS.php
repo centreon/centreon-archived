@@ -51,10 +51,7 @@
 		return $ndo["instance_id"];
 	}
 	
-	$DBRESULT =& $pearDB->query("SELECT `cfg`.`instance_name` AS `name` FROM `nagios_server` `ns`, `cfg_ndomod` `cfg` WHERE `cfg`.`ns_nagios_server` = `ns`.`id` AND `ns`.`ns_activate` = 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	
+	$DBRESULT =& $pearDB->query("SELECT `cfg`.`instance_name` AS `name` FROM `nagios_server` `ns`, `cfg_ndomod` `cfg` WHERE `cfg`.`ns_nagios_server` = `ns`.`id` AND `ns`.`ns_activate` = 1");	
 ?>
 function getXhrC(){
 	if (window.XMLHttpRequest) // Firefox et autres

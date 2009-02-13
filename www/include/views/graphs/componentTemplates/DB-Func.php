@@ -23,8 +23,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('compo_id');
 		$DBRESULT =& $pearDB->query("SELECT compo_id, name FROM giv_components_template WHERE name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
 		$compo =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] == $id)	
@@ -40,8 +38,6 @@
 		global $pearDB;
 		foreach($compos as $key => $value){
 			$DBRESULT =& $pearDB->query("DELETE FROM giv_components_template WHERE compo_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo();
 		}
 		defaultOreonGraph();
 	}	
@@ -49,12 +45,8 @@
 	function defaultOreonGraph ()	{
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl1 = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
 		if (!$DBRESULT->numRows())	{
 			$DBRESULT2 =& $pearDB->query("UPDATE giv_components_template SET default_tpl1 = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo();
 		}
 	}
 
@@ -62,16 +54,12 @@
 		global $pearDB;
 		$rq = "UPDATE giv_components_template SET default_tpl1 = '0'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
 	}
 	
 	function multipleComponentTemplateInDB ($compos = array(), $nbrDup = array())	{
 		global $pearDB;
 		foreach($compos as $key=>$value) {
 			$DBRESULT =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo();
 			$row =& $DBRESULT->fetchRow();
 			$row["compo_id"] = '';
 			$row["default_tpl1"] = '0';
@@ -84,8 +72,6 @@
 				if (testExistence($name))	{
 					$val ? $rq = "INSERT INTO giv_components_template VALUES (".$val.")" : $rq = null;
 					$DBRESULT2 =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo();
 				}
 			}
 		}
@@ -128,12 +114,8 @@
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
 		defaultOreonGraph();
 		$DBRESULT =& $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
 		$compo_id =& $DBRESULT->fetchRow();
 		return ($compo_id["MAX(compo_id)"]);
 	}
@@ -178,8 +160,6 @@
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE compo_id = '".$compo_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
 		defaultOreonGraph();
 	}		
 	

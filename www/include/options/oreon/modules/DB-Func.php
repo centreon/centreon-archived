@@ -26,8 +26,6 @@
 		else if ($name)
 			$rq = "SELECT * FROM modules_informations WHERE name='".$name."' LIMIT 1";		
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())
 			return ($DBRESULT->fetchRow());
 		else
@@ -42,8 +40,6 @@
 		else if ($name)
 			$rq = "SELECT id FROM modules_informations WHERE name = '".$name."'  LIMIT 1";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())
 			return true;
 		else
@@ -54,8 +50,6 @@
 		if (!$id || !$release) return true;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT mod_release FROM modules_informations WHERE id = '".$id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br />";
 		$module =& $DBRESULT->fetchRow();
 		if ($module["mod_release"] == $release)
 			return true;
@@ -81,11 +75,7 @@
 		isset($module_conf["php_files"]) && $module_conf["php_files"] != NULL ? $rq .= "'".htmlentities($module_conf["php_files"] , ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM modules_informations");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$id =& $DBRESULT->fetchRow();
 		return ($id["MAX(id)"]);
 	}
@@ -108,8 +98,6 @@
 			$rq[strlen($rq)-2] = " ";
 			$rq .= "WHERE id = '".$id."'";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			return true;
 		}
 		return NULL;
@@ -120,8 +108,6 @@
 		global $pearDB;
 		$rq = "DELETE FROM `modules_informations` WHERE id = '".$id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		return true;
 	}
 	
@@ -138,8 +124,6 @@
                     $str .= $line;
                     $str = chop ($str);
                     $DBRESULT =& $pearDB->query($str);
-                    if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
                     $str = NULL;
                 }
                 else

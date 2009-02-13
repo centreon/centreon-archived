@@ -24,8 +24,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('id');
 		$DBRESULT =& $pearDB->query("SELECT name, id FROM `nagios_server` WHERE `name` = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ndomod =& $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $ndomod["id"] == $id)#Modif case	
 			return true;
@@ -40,9 +38,7 @@
 		
 		if (!$id) 
 			return;
-		$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = '".$id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = '".$id."'");		
 	}
 	
 	function disableServerInDB ($id = null)	{
@@ -55,8 +51,6 @@
 		global $pearDB;
 		foreach($server as $key => $value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM `nagios_server` WHERE id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -65,8 +59,6 @@
 		
 		foreach($server as $key => $value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["id"] = '';
 			$row["ns_activate"] = '0';
@@ -81,8 +73,6 @@
 				if (testExistence($server_name))	{
 					$val ? $rq = "INSERT INTO `nagios_server` VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 		}
@@ -114,11 +104,7 @@
         isset($ret["ns_activate"]["ns_activate"]) && $ret["ns_activate"]["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]["ns_activate"]."'  "  : $rq .= "NULL)";
        	$rq .= ")";
        	$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM `nagios_server`");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ndomod_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return ($ndomod_id["MAX(id)"]);
@@ -132,8 +118,6 @@
 		$ret = $form->getSubmitValues();
 		if ($ret["localhost"]["localhost"] == 1){
 			$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `localhost` = '0'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 		$rq = "UPDATE `nagios_server` SET ";
         isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "name = '".htmlentities($ret["name"], ENT_QUOTES)."', " : $rq .= "name = NULL, ";
@@ -145,7 +129,5 @@
         $rq .= "ns_activate = '".$ret["ns_activate"]["ns_activate"]."' ";
 		$rq .= "WHERE id = '".$id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 ?>

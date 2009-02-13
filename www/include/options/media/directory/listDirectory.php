@@ -28,8 +28,6 @@
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM view_img_dir WHERE (dir_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR dir_alias LIKE '".htmlentities($search, ENT_QUOTES)."')");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM view_img_dir");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -52,8 +50,6 @@
 	else
 		$rq = "SELECT dir_id, dir_name, dir_alias FROM view_img_dir ORDER BY dir_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$search = tidySearchKey($search, $advanced_search);
 	
@@ -71,8 +67,6 @@
 		$imgNbr = array();
 		$rq = "SELECT COUNT(*) AS nbr FROM view_img_dir_relation vidr WHERE dir_dir_parent_id = '".$dir['dir_id']."'";
 		$DBRESULT2 =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 		$imgNbr =& $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),

@@ -24,12 +24,8 @@
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/cgi.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT cfg_dir FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$nagios = $res->fetchRow();	
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_cgi` WHERE `cgi_activate` = '1' LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	if ($DBRESULT->numRows())
 		$cgi = $DBRESULT->fetchRow();
 	else

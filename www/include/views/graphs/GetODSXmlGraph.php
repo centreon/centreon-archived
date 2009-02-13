@@ -59,8 +59,6 @@
 			return;
 		
 		$DBRESULT =& $pearDB->query("SELECT host_id FROM host h, host_service_relation hs WHERE h.host_id = hs.host_host_id AND hs.service_service_id = '".$svc_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
 			return $row["host_id"];
@@ -137,8 +135,6 @@
  
 	$graphTs = array( NULL => NULL );
 	$DBRESULT =& $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while ($graphT =& $DBRESULT->fetchRow())
 		$graphTs[$graphT["graph_id"]] = $graphT["name"];
 	$DBRESULT->free();
@@ -272,8 +268,6 @@
 		
 			$graphTs = array(NULL => NULL);
 			$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($graphT =& $DBRESULT->fetchRow())
 				$graphTs[$graphT["graph_id"]] = $graphT["name"];
 			$DBRESULT->free();
@@ -281,8 +275,6 @@
 			if ($type == "HS"){
 				$tab_tmp = split("_", $real_id);
 				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
-				if (PEAR::isError($DBRESULT2))
-					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 				$svc_id =& $DBRESULT2->fetchRow();
 				$template_id = getDefaultGraph($svc_id["service_id"], 1);
 				$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
@@ -293,13 +285,9 @@
 			if ($type == "MS"){			
 				$other_services = array();
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
-				if (PEAR::isError($DBRESULT2))
-					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 				if ($svc_id =& $DBRESULT2->fetchRow()){
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 						$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-						if (PEAR::isError($DBRESULT_meta))
-							print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
 						$meta =& $DBRESULT_meta->fetchRow();
 						$DBRESULT_meta->free();
 						$svc_id["service_description"] = $meta["meta_name"];
@@ -319,8 +307,6 @@
 			$index_id = $svc_id["id"];
 		
 			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			for ($counter = 0;$metrics_ret =& $DBRESULT2->fetchRow(); $counter++){
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace('#S#', "/", $metrics_ret["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace('#BS#', "\\", $metrics[$metrics_ret["metric_id"]]["metric_name"]);
@@ -340,19 +326,13 @@
 			if ($msg_error == 0)	{
 				if (isset($_GET["metric"]) && $pass){
 					$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index."'");
-					if (PEAR::isError($DBRESULT))
-						print "Mysql Error : ".$DBRESULT->getDebugInfo();
 					foreach ($metrics_active as $key => $metric){
 						if (isset($metrics_active[$key])){
 							$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index."');");
-							if (PEAR::isError($DBRESULT))
-								print "Mysql Error : ".$DBRESULT->getDebugInfo();
 						}
 					}
 				} else {
 					$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index."' AND `contact_id` = '".$contact_id."'");
-					if (PEAR::isError($DBRESULT))
-						print "Mysql Error : ".$DBRESULT->getDebugInfo();
 					$metrics_active = array();
 					if ($DBRESULT->numRows())
 						while ($metric =& $DBRESULT->fetchRow())
@@ -370,16 +350,12 @@
 				
 			if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 				$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-				if (PEAR::isError($DBRESULT_meta))
-					print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
 				$meta =& $DBRESULT_meta->fetchRow();
 				$svc_id["service_description"] = $meta["meta_name"];
 			}	
 			
 			if ($split){
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
-				if (PEAR::isError($DBRESULT2))
-					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 				for ($counter = 1;$metrics_ret =& $DBRESULT2->fetchRow(); $counter++){
 					if (isset($metrics_active[$metrics_ret["metric_id"]]) && $metrics_active[$metrics_ret["metric_id"]])
 						$metrics_list[$metrics_ret["metric_id"]] = $counter;
@@ -434,8 +410,6 @@
 				
 			$graphTs = array(NULL=>NULL);
 			$DBRESULT =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($graphT =& $DBRESULT->fetchRow())
 				$graphTs[$graphT["graph_id"]] = $graphT["name"];
 			$DBRESULT->free();
@@ -447,8 +421,6 @@
 			
 			# Verify if template exists
 			$DBRESULT =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			if (!$DBRESULT->numRows())
 			
 			$label = NULL;
@@ -457,8 +429,6 @@
 			if ($type == "SS"){
 				$tab_tmp = split("_", $openid);
 				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
-				if (PEAR::isError($DBRESULT2))
-					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 				$svc_id =& $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
 				
@@ -472,14 +442,9 @@
 			if ($type == "SM"){
 				$other_services = array();
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
-				if (PEAR::isError($DBRESULT2))
-					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-				
 				if ($svc_id =& $DBRESULT2->fetchRow()){
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 						$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-						if (PEAR::isError($DBRESULT_meta))
-							print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
 						$meta =& $DBRESULT_meta->fetchRow();
 						$svc_id["service_description"] = $meta["meta_name"];
 					}	
@@ -504,8 +469,6 @@
 				$split = 1;
 		
 			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' ORDER BY `metric_name`");
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			$counter = 0;
 			while ($metrics_ret =& $DBRESULT2->fetchRow()){			
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#S#", "/", $metrics_ret["metric_name"]);
@@ -527,19 +490,13 @@
 			
 			if (isset($_GET["metric"]) && $pass){
 				$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$id."'");
-				if (PEAR::isError($DBRESULT))
-					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 				foreach ($metrics_active as $key => $metric){
 					if (isset($metrics_active[$metric["metric_id"]])){
 						$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index_id."');");
-						if (PEAR::isError($DBRESULT))
-							print "Mysql Error : ".$DBRESULT->getDebugInfo();
 					}
 				}
 			} else {
 				$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index_id."' AND `contact_id` = '".$contact_id."'");
-				if (PEAR::isError($DBRESULT))
-					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 				$metrics_active = array();
 				if ($DBRESULT->numRows())
 					while ($metric =& $DBRESULT->fetchRow())

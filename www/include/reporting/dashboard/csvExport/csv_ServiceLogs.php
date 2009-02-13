@@ -110,8 +110,6 @@
 
 	$request = "SELECT  * FROM `log_archive_service` WHERE `host_id` = '".$host_id."' AND `service_id` = ".$service_id." ORDER BY `date_start` DESC";
 	$DBRESULT =& $pearDBO->query($request);
-	if (PEAR::isError($DBRESULT)) 
-  		die("MSQL Error : " . $DBRESULT->getDebugInfo());
 	while ($row =& $DBRESULT->fetchRow()) {
 		$duration = $row["date_end"] - $row["date_start"];
 		/* Percentage by status */

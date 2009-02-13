@@ -78,8 +78,6 @@
 			"ORDER BY dtm.actual_start_time DESC " .
 			"LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
-	if (PEAR::isError($DBRESULT_NDO))
-		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_downtime_host[$i] = $data;
 		$tab_downtime_host[$i]["duration"] .= " "._("s");

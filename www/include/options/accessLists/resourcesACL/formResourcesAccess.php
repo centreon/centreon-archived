@@ -94,8 +94,6 @@
 
 	$groups = array();
 	$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
-	if (PEAR::isError($DBRESULT)) 
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($group =& $DBRESULT->fetchRow())
 		$groups[$group["acl_group_id"]] = $group["acl_group_name"];
 	$DBRESULT->free();

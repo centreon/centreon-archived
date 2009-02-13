@@ -65,8 +65,6 @@
 		$str = "";
 		$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" . $_GET["id"] ."'";
 		$DBRESULT = & $pearDB->query($request);
-		if (PEAR::isError($DBRESULT))
-			die( "MySQL Error : ".$DBRESULT->getDebugInfo());
 		while ($hg =& $DBRESULT->fetchRow()) {
 			if ($str != "")
 				$str .= ", ";
@@ -82,8 +80,6 @@
 				'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" ' .
 				'FROM `log_archive_host` WHERE `host_id` IN ('.$str.') GROUP BY date_end, date_start ORDER BY date_start desc';
 		$DBRESULT = & $pearDBO->query($rq);
-		if (PEAR::isError($DBRESULT))
-			die( "MySQL Error : ".$DBRESULT->getDebugInfo());
 			$statesTab = array("UP", "DOWN", "UNREACHABLE");
 		while ($row =& $DBRESULT->fetchRow()) {
 			fillBuffer($statesTab, $row, $color);

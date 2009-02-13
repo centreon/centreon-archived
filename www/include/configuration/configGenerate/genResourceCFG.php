@@ -22,8 +22,6 @@
 	
 	$handle = create_file($nagiosCFGPath.$tab['id']."/resource.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_resource` WHERE `resource_activate` = '1'");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$str = NULL;
 	while ($DBRESULTource =& $DBRESULT->fetchRow())	{
 		$ret["comment"] ? ($str .= "# '".$DBRESULTource["resource_name"]."'\n") : NULL;

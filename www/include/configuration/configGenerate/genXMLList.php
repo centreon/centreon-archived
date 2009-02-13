@@ -31,8 +31,6 @@
 	# Host List
 	foreach($gbArr[2] as $key => $value)	{
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_template_model_htm_id, host_address, host_register FROM host, extended_host_information ehi WHERE host_id = '".$key."' AND ehi.host_host_id = host_id LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$host = $DBRESULT->fetchRow();
 		if ($host["host_register"])	{
 			if (!$host["host_name"])
@@ -49,8 +47,6 @@
 	# Host Group List
 	foreach($gbArr[3] as $key => $value)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hostGroup = $DBRESULT->fetchRow();
 		$str .= "<hg id='".$key."' name='".html_entity_decode($hostGroup["hg_name"], ENT_QUOTES)."'";
 		$str .= " gps='false'";	
@@ -59,8 +55,6 @@
 	# Services List
 	foreach($gbArr[4] as $key => $value)	{		
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sv.service_description, sv.service_template_model_stm_id, service_register, hsr.host_host_id, hsr.hostgroup_hg_id FROM service sv, host_service_relation hsr WHERE sv.service_id = '".$key."' AND hsr.service_service_id = sv.service_id");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($sv =& $DBRESULT->fetchRow())	{
 			if ($sv["service_register"])	{
 				if (!$sv["service_description"])
@@ -71,8 +65,6 @@
 					$str .= "<sv id='".$sv["host_host_id"]."_".$key."' name='".$sv["service_description"]."'/>\n";
 				} else if ($sv["hostgroup_hg_id"])	{
 					$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$sv["hostgroup_hg_id"]."'");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while ($host =& $DBRESULT2->fetchRow())
 						if (array_key_exists($host["host_host_id"], $gbArr[2])){
 							$sv["service_description"] = str_replace("#S#", "/", $sv["service_description"]);
@@ -89,8 +81,6 @@
 	# Service Group List
 	foreach($gbArr[5] as $key => $value)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$serviceGroup = $DBRESULT->fetchRow();
 		$str .= "<sg id='".$key."' name='".html_entity_decode($serviceGroup["sg_name"], ENT_QUOTES)."'";
 		$str .= " gps='false'";
@@ -99,8 +89,6 @@
 	# OSL
 	foreach($gbArr[6] as $key => $value)	{		
 		$DBRESULT =& $pearDB->query("SELECT name FROM osl WHERE osl_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$osl = $DBRESULT->fetchRow();
 		$str .= "<osl id='".$key."' name='".html_entity_decode($osl["name"], ENT_QUOTES)."'/>\n";
 		$DBRESULT->free();
@@ -109,8 +97,6 @@
 	# Meta Service
 	foreach($gbArr[7] as $key => $value)	{		
 		$DBRESULT =& $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$osm = $DBRESULT->fetchRow();
 		$str .= "<ms id='".$key."' name='".html_entity_decode($osm["meta_name"], ENT_QUOTES)."'/>\n";
 		$DBRESULT->free();
@@ -125,16 +111,12 @@
 	#	Host
 	foreach($gbArr[2] as $key => $value)	{
 		$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id AS tpl, host_register FROM host WHERE host_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$host = $DBRESULT->fetchRow();
 		$str .= "<h id='".$key."'>\n";
 		## Parents
 		$str .= "<prts>\n";
 		# Host Groups
 		$DBRESULT =& $pearDB->query("SELECT hgr.hostgroup_hg_id FROM hostgroup_relation hgr WHERE hgr.host_host_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($hostGroup =& $DBRESULT->fetchRow())	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -149,8 +131,6 @@
 		$DBRESULT->free();
 		# Hosts
 		$DBRESULT =& $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		//if (!$DBRESULT->numRows() && $host["tpl"])
 		//	$DBRESULT =& getMyHostParents($host["tpl"]);
 		while($host =& $DBRESULT->fetchRow())	{
@@ -170,8 +150,6 @@
 		$str .= "<chds>\n";
 		# Hosts
 		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($host =& $DBRESULT->fetchRow())	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -186,8 +164,6 @@
 		$DBRESULT->free();
 		# Services from Host
 		$DBRESULT =& $pearDB->query("SELECT hsr.service_service_id FROM host_service_relation hsr WHERE hsr.host_host_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($service =& $DBRESULT->fetchRow())	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -202,8 +178,6 @@
 		$DBRESULT->free();
 		# Services from Host Group
 		$DBRESULT =& $pearDB->query("SELECT hgr.hostgroup_hg_id FROM hostgroup_relation hgr WHERE hgr.host_host_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($hostGroup =& $DBRESULT->fetchRow())	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -214,8 +188,6 @@
 				$BP = true;
 			if ($BP)	{
 				$DBRESULT2 =& $pearDB->query("SELECT hsr.service_service_id FROM host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostGroup["hostgroup_hg_id"]."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while($service =& $DBRESULT2->fetchRow())	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
@@ -243,8 +215,6 @@
 		## Childs
 		$str .= "<chds>\n";		
 		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($host =& $DBRESULT->fetchRow())	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -263,8 +233,6 @@
 	# Service
 	foreach($gbArr[4] as $key => $value)	{
 		$DBRESULT =& $pearDB->query("SELECT hsr.host_host_id, hsr.hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($sv =& $DBRESULT->fetchRow())	{
 			if ($sv["host_host_id"])	{
 				$str .= "<sv id='".$sv["host_host_id"]."_".$key."'>\n";								
@@ -279,8 +247,6 @@
 			}
 			else if ($sv["hostgroup_hg_id"])	{
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$sv["hostgroup_hg_id"]."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while ($host =& $DBRESULT2->fetchRow())
 					if (array_key_exists($host["host_host_id"], $gbArr[2]))	{
 						$str .= "<sv id='".$host["host_host_id"]."_".$key."'>\n";				
@@ -308,8 +274,6 @@
 		## Childs
 		$str .= "<chds>\n";
 		$DBRESULT =& $pearDB->query("SELECT sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($service =& $DBRESULT->fetchRow())	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -320,8 +284,6 @@
 				$BP = true;
 			if ($BP)	{
 				$DBRESULT2 =& $pearDB->query("SELECT hsr.host_host_id, hsr.hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service["service_service_id"]."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while($service2 =& $DBRESULT2->fetchRow())	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)	{
@@ -337,8 +299,6 @@
 					if ($BP)	{
 						if ($service2["hostgroup_hg_id"])	{
 							$DBRESULT3 =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$service2["hostgroup_hg_id"]."'");
-							if (PEAR::isError($DBRESULT3))
-								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 							while($service3 =& $DBRESULT3->fetchRow())	{
 								$BP = false;
 								if ($ret["level"]["level"] == 1)
@@ -370,8 +330,6 @@
 		## Parents
 		$str .= "<prts>\n";
 		$DBRESULT =& $pearDB->query("SELECT id_osl FROM osl_indicator WHERE id_indicator_osl = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($osl =& $DBRESULT->fetchRow())
 			$str .= "<osl id='".$osl["id_osl"]."'/>";
 		$DBRESULT->free();
@@ -380,8 +338,6 @@
 		## Childs
 		$str .= "<chds>\n";
 		$DBRESULT =& $pearDB->query("SELECT host_id, service_id, id_indicator_osl, meta_id FROM osl_indicator WHERE id_osl = '".$key."' AND activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($osl =& $DBRESULT->fetchRow())	{
 			if ($osl["host_id"] && $osl["service_id"])	{
 				$BP = false;
@@ -422,15 +378,11 @@
 		## Childs
 		$str .= "<chds>\n";
 		$DBRESULT =& $pearDB->query("SELECT meta_select_mode, regexp_str FROM meta_service WHERE meta_id = '".$key."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$meta =& $DBRESULT->fetchrow();
 		$DBRESULT->free();
 		# Regexp mode
 		if ($meta["meta_select_mode"] == 2)	{
 			$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_description LIKE '".$meta["regexp_str"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while($service =& $DBRESULT->fetchRow())	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)
@@ -441,8 +393,6 @@
 					$BP = true;
 				if ($BP)	{
 					$DBRESULT2 =& $pearDB->query("SELECT hsr.host_host_id, hsr.hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service["service_id"]."'");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while($service2 =& $DBRESULT2->fetchRow())	{
 						$BP = false;
 						if ($ret["level"]["level"] == 1)	{
@@ -458,8 +408,6 @@
 						if ($BP)	{
 							if ($service2["hostgroup_hg_id"])	{
 								$DBRESULT3 =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$service2["hostgroup_hg_id"]."'");
-								if (PEAR::isError($DBRESULT3))
-									print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 								while($service3 =& $DBRESULT3->fetchRow())	{
 									$BP = false;
 									if ($ret["level"]["level"] == 1)
@@ -489,8 +437,6 @@
 			$pearDBO = new CentreonDB("centstorage");
 			
 			$DBRESULT =& $pearDB->query("SELECT meta_id, host_id, metric_id FROM meta_service_relation msr WHERE meta_id = '".$key."' AND activate = '1'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while($metric =& $DBRESULT->fetchRow())	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)
@@ -501,8 +447,6 @@
 					$BP = true;
 				if ($BP)	{
 					$DBRESULT2 =& $pearDBO->query("SELECT service_description FROM metrics m, index_data i WHERE m.metric_id = '".$metric["metric_id"]."' and m.index_id=i.id");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					$OService =& $DBRESULT2->fetchRow();
 					$sv_id =& getMyServiceID($OService["service_description"], $metric["host_id"]);
 					$BP = false;

@@ -173,8 +173,6 @@
 			;
 		} else if ($type == "HO") {
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
 				if ($is_admin || ((isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]])))){

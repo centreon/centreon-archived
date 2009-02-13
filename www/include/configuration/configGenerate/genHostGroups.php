@@ -29,8 +29,6 @@
 	$generatedHG = array();
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostgroups.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY `hg_name`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$hostGroup = array();
 	$i = 1;
 	$str = NULL;
@@ -62,8 +60,6 @@
 		$host = array();
 		$strTemp = NULL;
 		$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM hostgroup_relation hgr, host WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND hgr.host_host_id = host.host_id ORDER BY `host_name`");
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		while($host =& $DBRESULT2->fetchRow())	{
 			if (isset($gbArr[2][$host["host_id"]]) && isset($host_instance[$host["host_id"]])){
 				$HGLinkedToHost++;

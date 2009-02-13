@@ -49,8 +49,6 @@
 			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	$data = array();
 	$color = array();
 	$counter = 0;

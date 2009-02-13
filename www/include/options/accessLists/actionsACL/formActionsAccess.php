@@ -25,13 +25,11 @@
 		
 		# 1. Get "Actions Rule" id selected by user 
 		$DBRESULT =& $pearDB->query("SELECT * FROM acl_actions WHERE acl_action_id = '".$acl_action_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$action_infos = array();
 		$action_infos = array_map("myDecode", $DBRESULT->fetchRow());
 
 		# 2. Get "Groups" id linked with the selected Rule in order to initialize the form
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_actions_relations WHERE acl_action_id = '".$acl_action_id."'");
-		if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_actions_relations WHERE acl_action_id = '".$acl_action_id."'");		
 		
 		$selected = array();
 		for($i = 0; $contacts =& $DBRESULT->fetchRow(); $i++) {
@@ -40,8 +38,7 @@
 		$action_infos["acl_groups"] = $selected; 
 		
 		# 3. Range in a table variable, all Groups used in this "Actions Access"
-		$DBRESULT =& $pearDB->query("SELECT acl_action_name FROM `acl_actions_rules` WHERE `acl_action_rule_id` = $acl_action_id");
-		if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query("SELECT acl_action_name FROM `acl_actions_rules` WHERE `acl_action_rule_id` = $acl_action_id");		
 		
 		$selected_actions = array();
 		for($i = 0; $act =& $DBRESULT->fetchRow(); $i++) {
@@ -57,7 +54,7 @@
 	# Groups list comes from Database and stores in $groups Array
 	$groups = array();
 	$DBRESULT =& $pearDB->query("SELECT acl_group_id,acl_group_name FROM acl_groups ORDER BY acl_group_name");
-	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+
 	while ($group =& $DBRESULT->fetchRow()) {
 		$groups[$group["acl_group_id"]] = $group["acl_group_name"];
 	}

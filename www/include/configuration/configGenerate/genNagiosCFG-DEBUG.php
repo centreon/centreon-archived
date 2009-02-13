@@ -24,8 +24,6 @@
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG", $oreon->user->get_name(), false);
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$nagios = $DBRESULT->fetchRow();
 	$str = NULL;
 	$ret["comment"] ? ($str .= "# '".$nagios["nagios_name"]."'\n") : NULL;
@@ -119,57 +117,41 @@
 			else if ($key == "host_inter_check_delay_method" && $value == 2);
 			else if ($key == "global_host_event_handler" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "global_service_event_handler" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "ocsp_command" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "ochp_command" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "host_perfdata_command" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "service_perfdata_command" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "host_perfdata_file_processing_command" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "service_perfdata_file_processing_command" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}

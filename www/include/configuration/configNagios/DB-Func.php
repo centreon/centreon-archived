@@ -21,8 +21,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('nagios_id');
 		$DBRESULT =& $pearDB->query("SELECT nagios_name, nagios_id FROM cfg_nagios WHERE nagios_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$nagios =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $nagios["nagios_id"] == $id)	
@@ -42,12 +40,8 @@
 		$data =& $DBRESULT->fetchRow();
 
 		$DBRESULT =& $pearDB->query("UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id."'");		
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$oreon->Nagioscfg = array();
 	}
 	
@@ -59,19 +53,13 @@
 		$data =& $DBRESULT->fetchRow();
 		
 		$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		$DBRESULT =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios WHERE nagios_id != '".$nagios_id."'");
 		$maxId =& $DBRESULT->fetchRow();
 		if (isset($maxId["MAX(nagios_id)"]))	{
 			$DBRESULT2 =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$maxId["MAX(nagios_id)"]."'");					
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$oreon->Nagioscfg = array();
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$oreon->Nagioscfg = $DBRESULT->fetchRow();
 			$DBRESULT2->free();
 		}
@@ -81,20 +69,12 @@
 		global $pearDB;
 		foreach($nagios as $key => $value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM cfg_nagios WHERE nagios_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 		$DBRESULT =& $pearDB->query("SELECT nagios_id FROM cfg_nagios WHERE nagios_activate = '1'");		  
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (!$DBRESULT->numRows())	{
 			$DBRESULT2 =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$nagios_id = $DBRESULT2->fetchRow();
 			$DBRESULT2 =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id["MAX(nagios_id)"]."'");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		}
 		$DBRESULT->free();
 	}
@@ -103,8 +83,6 @@
 		foreach($nagios as $key=>$value)	{
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["nagios_id"] = '';
 			$row["nagios_activate"] = '0';
@@ -118,8 +96,6 @@
 				if (testExistence($nagios_name))	{
 					$val ? $rq = "INSERT INTO cfg_nagios VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 		}
@@ -281,21 +257,13 @@
 		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "'".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."') " : $rq .= "'2' ) ";
  
         $DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$nagios_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		if (isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"])	{
 			$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$oreon->Nagioscfg = array();
 			$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$oreon->Nagioscfg = $DBRESULT->fetchRow();
 			$DBRESULT->free();
 		}
@@ -308,8 +276,6 @@
 		
 		if (isset($ret["nagios_server_id"])){
 			$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET `nagios_server_id` != '".$ret["nagios_server_id"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 		
 		$ret = array();
@@ -434,8 +400,6 @@
 		$rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($ret["nagios_activate"]["nagios_activate"])
 			enableNagiosInDB($nagios_id);
 	}

@@ -61,8 +61,6 @@
 	 * set limit & num
 	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE key = 'maxViewMonitoring' LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getMessage();
 	$data =& $DBRESULT->fetchRow();
 	$gopt[$data['key']] = myDecode($data['key']);
 

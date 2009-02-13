@@ -24,8 +24,6 @@
 	$nagios = array();
 	if (($o == "c" || $o == "w") && $id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_ndomod WHERE id = '".$id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$cfg_ndomod = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();
@@ -34,8 +32,6 @@
 	# nagios servers comes from DB 
 	$nagios_servers = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();

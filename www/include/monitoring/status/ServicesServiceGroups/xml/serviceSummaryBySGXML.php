@@ -102,8 +102,6 @@
 		$rq .= 		" AND no.object_id IN (SELECT nno.object_id FROM ndo_objects nno WHERE nno.objecttype_id = '2' AND nno.name1 = '".$host_name."')";
 
 		$DBRESULT =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
 		while ($svc =& $DBRESULT->fetchRow())
 			$tab[$svc["service_name"]] = $svc["current_state"];
@@ -175,8 +173,6 @@
 	 * Get Pagination Rows 
 	 */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 
 	$rq1 .= " ORDER BY sg.alias ASC, no.name1 ".$order." LIMIT ".($num * $limit).",".$limit;
@@ -197,8 +193,6 @@
 	$buffer->endElement();
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	$class = "list_one";
 	$flag = 0;
 

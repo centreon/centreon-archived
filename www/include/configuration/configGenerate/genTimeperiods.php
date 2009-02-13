@@ -27,8 +27,6 @@
 	 * Generate Standart Timeperiod
 	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$i = 1;
 	$str = NULL;
 	
@@ -62,8 +60,6 @@
 		$GMTList = $oreon->CentreonGMT->listGTM;
 		foreach ($GMTList as $gmt => $value) {
 			$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($timePeriod =& $DBRESULT->fetchRow())	{
 				$PeriodBefore 	= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");
 				$Period 		= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");

@@ -105,8 +105,6 @@
 	 */
 	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print ($DBRESULT->getMessage());
 	for ($i = 0; $DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()); $i++)
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
 								"Menu1Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
@@ -127,8 +125,6 @@
 	 */
 	$rq = "SELECT topology_page, topology_url_opt, topology_popup, topology_url, topology_name FROM topology WHERE topology_parent = '".$level1."' $lcaSTR AND topology_show = '1'  ORDER BY topology_group, topology_order";
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print ($DBRESULT->getMessage());
 	$firstP = NULL;
 	$sep = "&nbsp;";
 	for ($i = 0; $DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()); $i++)	{
@@ -147,13 +143,9 @@
 	 */
 	$request = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' $lcaSTR AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";	
 	$DBRESULT =& $pearDB->query($request);
-	if (PEAR::isError($DBRESULT))
-		print ($DBRESULT->getMessage());
 	for ($i = 0; $elem =& $DBRESULT->fetchRow();$i++)	{
 		# grab menu title for each group
 		$DBRESULT_title =& $pearDB->query("SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1");
-		if (PEAR::isError($DBRESULT_title))
-			print ($DBRESULT_title->getMessage());
 		$title = "";
 		if ($title = $DBRESULT_title->fetchRow())
 			$title = _($title["topology_name"]);
@@ -181,8 +173,6 @@
 	if ($level1 && $level2 && $level3){
 		$request = "SELECT topology_icone, topology_page, topology_url_opt, topology_url, topology_OnClick, topology_name, topology_popup FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 		$DBRESULT =& $pearDB->query($request);
-		if (PEAR::isError($DBRESULT))
-			print ($DBRESULT->getMessage());
 		for ($i = 0; $elem =& $DBRESULT->fetchRow();$i++){
 			$elemArr[4][$level1.$level2.$level3][$i] = array(	"Menu4Icone" => $elem["topology_icone"],
 																"Menu4Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
@@ -241,8 +231,6 @@
 	if ($is_admin){
 		$tab_user = array();
 		$DBRESULT =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
-		if (PEAR::isError($DBRESULT))
-			print ($DBRESULT->getMessage());
 		while ($session =& $DBRESULT->fetchRow())
 			$tab_user[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);	
 		$DBRESULT->free();

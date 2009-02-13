@@ -93,8 +93,6 @@
 	
 	if ($cmd) {
 		$DBRESULT = $pearDBO->query("SELECT DISTINCT object_name, object_id FROM log_action WHERE object_type='".$objects_type_tab[$cmd]."' ORDER BY object_id");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$objNameTab[0] = _("Please select an object name");
 		while ($res =& $DBRESULT->fetchRow()) {
 			if ($res['object_id']) {

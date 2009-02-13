@@ -63,8 +63,6 @@
 		$pearDBO = getCentStorageConnection();
 		$request = "SELECT  * FROM `log_archive_service` WHERE host_id = '".$_GET["host_id"]."' AND service_id = ".$_GET["id"]." ORDER BY `date_start` DESC";
 		$DBRESULT =& $pearDBO->query($request);
-		if (PEAR::isError($DBRESULT)) 
-	  		die("Connecting probems with centstorage database : " . $DBRESULT->getDebugInfo());
 		$statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
 		while ($row =& $DBRESULT->fetchRow())
 			fillBuffer($statesTab, $row, $color);

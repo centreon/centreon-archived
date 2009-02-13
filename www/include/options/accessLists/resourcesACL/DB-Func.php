@@ -41,8 +41,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('lca_id');
 		$DBRESULT =& $pearDB->query("SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = '".$name."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$lca =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $lca["acl_res_id"] == $id)	
@@ -57,25 +55,19 @@
 	function enableLCAInDB ($acl_id = null)	{
 		if (!$acl_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");		
 	}
 	
 	function disableLCAInDB ($acl_id = null)	{
 		if (!$acl_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '0', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '0', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");		
 	}
 	
 	function deleteLCAInDB ($acls = array())	{
 		global $pearDB;
 		foreach($acls as $key=>$value){
-			$DBRESULT =& $pearDB->query("DELETE FROM `acl_resources` WHERE acl_res_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$DBRESULT =& $pearDB->query("DELETE FROM `acl_resources` WHERE acl_res_id = '".$key."'");			
 		}
 	}
 	
@@ -100,12 +92,8 @@
 					$DBRESULT->free();
 					if (isset($maxId["MAX(lca_id)"]))	{
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while ($sg =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO acl_res_group_relations VALUES ('', '".$maxId["MAX(acl_res_id)"]."', '".$sg["acl_group_id"]."')");
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 						$DBRESULT->free();
 					}
@@ -144,11 +132,7 @@
 		$rq .= "(acl_res_name, acl_res_alias, acl_res_activate, changed) ";
 		$rq .= "VALUES ('".htmlentities($ret["acl_res_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_res_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES)."', '1')";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$acl =& $DBRESULT->fetchRow();
 		return ($acl["MAX(acl_res_id)"]);
 	}
@@ -164,9 +148,7 @@
 				"acl_res_activate = '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES)."', " .
 				"changed = '1' " .
 				"WHERE acl_res_id = '".$acl_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query($rq);		
 	}
 
 	function updateGroups($acl_id = null)	{
@@ -174,16 +156,12 @@
 		if (!$acl_id) 
 			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_groups");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) VALUES ('".$acl_id."', '".$value."')");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 	}
@@ -193,16 +171,12 @@
 		if (!$acl_id) 
 			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_host_relations WHERE acl_res_id = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_hosts");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 	}
@@ -212,16 +186,12 @@
 		if (!$acl_id) 
 			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_hostex_relations WHERE acl_res_id = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_hostexclude");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_hostex_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 	}
@@ -231,16 +201,12 @@
 		if (!$acl_id)
 			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_hg_relations WHERE acl_res_id = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_hostgroup");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) VALUES ('".$acl_id."', '".$value."')");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 	}
@@ -250,16 +216,12 @@
 		if (!$acl_id) 
 			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_sc");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_sc_relations (acl_res_id, sc_id) VALUES ('".$acl_id."', '".$value."')");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 	}
@@ -269,16 +231,12 @@
 		if (!$acl_id) 
 			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_sg_relations WHERE acl_res_id = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_sg");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_sg_relations (acl_res_id, sg_id) VALUES ('".$acl_id."', '".$value."')");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 	}

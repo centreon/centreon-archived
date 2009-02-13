@@ -28,12 +28,8 @@
 	function return_period($service_id){
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT graph_id FROM extended_service_information WHERE service_service_id = '".$service_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$service_ext =& $DBRESULT->fetchRow();
 		$DBRESULT =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$service_ext["graph_id"]."'");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$graph =& $DBRESULT->fetchRow();
 		return $graph["period"];
 	}
@@ -66,8 +62,6 @@
 		
 		if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
 			$DBRESULT2 =& $pearDBO->query("SELECT id FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$_GET["service_description"]."'");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo();
 			$svc_id =& $DBRESULT2->fetchRow();
 			$_GET["o"] = "vs";
 			$_GET["index"] = $svc_id["id"];

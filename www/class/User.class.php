@@ -123,9 +123,7 @@ class User	{
 	   	if (!$pearDB)
 	  		return; 
 	  	
-	  	$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$this->user_id."'");
-		if (PEAR::isError($res1)) 
-			print "[Create ACL] DB Error : ".$res1->getDebugInfo()."<br />";
+	  	$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$this->user_id."'");		
 		
 		if ($num = $res1->numRows())	{
 			for ($str = "", $i = 0; $group = $res1->fetchRow() ; $i++)	{
@@ -146,8 +144,7 @@ class User	{
 											"WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id " .
 											"AND acl_group_topology_relations.acl_group_id IN ($str) " .
 											"AND acl_topology.acl_topo_activate = '1'");
-			if (PEAR::isError($DBRESULT)) 
-				print "[Create ACL] DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			
 			if (!$DBRESULT->numRows()){
 				
 				$DBRESULT2 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
@@ -164,8 +161,7 @@ class User	{
 			  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
 			  												"AND acl_topology.acl_topo_activate = '1' " .
 			  												"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
-			  		if (PEAR::isError($DBRESULT2)) 
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			  		
 			  		$count = 0;
 			  		while ($topo_page =& $DBRESULT2->fetchRow()){
 			  			$have_an_lca = 1;
@@ -181,8 +177,7 @@ class User	{
 		  		$count ? $ACL = "topology_id IN ($str_topo) AND ": $ACL = "";
 		  		unset($DBRESULT);
 		  		$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");	
-				if (PEAR::isError($DBRESULT)) 
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				
 				while ($topo_page =& $DBRESULT->fetchRow())						
 					$this->lcaTopo[$topo_page["topology_page"]] = 1;
 				unset($topo_page);

@@ -123,9 +123,7 @@
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
 	
-		$DBRESULT_NDO =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
+		$DBRESULT_NDO =& $pearDBndo->query($rq);		
 	
 		$tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	
@@ -151,8 +149,6 @@
 				" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
-		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 		$ndo2 =& $DBRESULT_NDO->fetchRow();
 		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 		/* end ndo host detail */
@@ -162,8 +158,6 @@
 			$_GET["service_description"] = $svc_description;
 			
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
 		$host =& $res->fetchrow();
 		$host_id = getMyHostID($host["host_name"]);
 		$service_id = getMyServiceID($_GET["service_description"], $host_id);
@@ -187,8 +181,6 @@
 				" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 				" WHERE obj.name1 = '".$host_name."' AND obj.name2 = '".$svc_description."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
-		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 		for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
 			$tabCommentServices[$i] = $data;
 			$tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];

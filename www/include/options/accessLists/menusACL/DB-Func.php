@@ -42,8 +42,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('lca_id');
 		$DBRESULT =& $pearDB->query("SELECT acl_topo_name, acl_topo_id FROM `acl_topology` WHERE acl_topo_name = '".$name."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$lca =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $lca["acl_topo_id"] == $id)	
@@ -59,9 +57,7 @@
 		global $pearDB;
 		if (!$acl_id) 
 			return;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '1' WHERE `acl_topo_id` = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '1' WHERE `acl_topo_id` = '".$acl_id."'");		
 	}
 	
 	function disableLCAInDB ($acl_id = null)	{
@@ -69,16 +65,12 @@
 		if (!$acl_id) 
 			return;
 		$DBRESULT =& $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '0' WHERE `acl_topo_id` = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function deleteLCAInDB ($acls = array())	{
 		global $pearDB;
 		foreach($acls as $key=>$value){
 			$DBRESULT =& $pearDB->query("DELETE FROM `acl_topology` WHERE acl_topo_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -102,12 +94,8 @@
 					$DBRESULT->free();
 					if (isset($maxId["MAX(lca_id)"]))	{
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT topology_topology_id FROM acl_topology_relations WHERE acl_topo_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while ($sg =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO acl_topology_relations VALUES ('', '".$maxId["MAX(acl_topo_id)"]."', '".$sg["topology_topology_id"]."')");
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 						$DBRESULT->free();
 					}
@@ -137,11 +125,7 @@
 		$rq = "INSERT INTO `acl_topology` (acl_topo_name, acl_topo_alias, acl_topo_activate) ";
 		$rq .= "VALUES ('".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_topo_activate"]["acl_topo_activate"], ENT_QUOTES)."')";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(acl_topo_id) FROM `acl_topology`");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$acl =& $DBRESULT->fetchRow();
 		return ($acl["MAX(acl_topo_id)"]);
 	}
@@ -153,9 +137,7 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE `acl_topology` SET acl_topo_name = '".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', acl_topo_alias = '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."', acl_topo_activate = '".htmlentities($ret["acl_topo_activate"]["acl_topo_activate"], ENT_QUOTES)."' WHERE acl_topo_id = '".$acl_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$DBRESULT =& $pearDB->query($rq);	
 	}
 	
 	function updateLCATopology($acl_id = null)	{
@@ -163,17 +145,13 @@
 		if (!$acl_id) 
 			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_topology_relations WHERE acl_topo_id = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_r_topos");
 		if (is_array($ret))
 			$ret = array_keys($ret);		
 		for ($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]))	{
-				$DBRESULT =& $pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id) VALUES ('".$acl_id."', '".$ret[$i]."')");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				$DBRESULT =& $pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id) VALUES ('".$acl_id."', '".$ret[$i]."')");		
 			}
 		}
 	}
@@ -183,16 +161,12 @@
 		if (!$acl_id) 
 			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_group_topology_relations WHERE acl_topology_id = '".$acl_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_groups");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id) VALUES ('".$acl_id."', '".$value."')");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 	}

@@ -136,8 +136,6 @@
 		$rq .= 	$access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "no.name2", "centreon_acl.service_description").$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
 		$DBRESULT =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
 		while ($svc =& $DBRESULT->fetchRow())
 			$tab[$svc["service_name"]] = $svc["current_state"];
@@ -208,8 +206,6 @@
 	 * Get Pagination Rows
 	 */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
@@ -225,8 +221,6 @@
 	preg_match("/svcOV/",$_GET["o"], $matches) ? $buffer->writeElement("s", "1") : $buffer->writeElement("s", "0");
 	$buffer->endElement();
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;

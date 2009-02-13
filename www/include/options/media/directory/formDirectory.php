@@ -20,14 +20,10 @@
 	$dir = array();
 	if (($o == "c" || $o == "w") && $dir_id)	{	
 		$DBRESULT = $pearDB->query("SELECT * FROM view_img_dir WHERE dir_id = '".$dir_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$dir = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Childs elements
 		$DBRESULT = $pearDB->query("SELECT DISTINCT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$dir_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $imgs =& $DBRESULT->fetchRow(); $i++)
 			$dir["dir_imgs"][$i] = $imgs["img_img_id"];
 		$DBRESULT->free();
@@ -38,8 +34,6 @@
 	# Images comes from DB -> Store in $imgs Array
 	$imgs = array();
 	$DBRESULT = $pearDB->query("SELECT img_id, img_name FROM view_img ORDER BY img_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while ($img =& $DBRESULT->fetchRow())
 		$imgs[$img["img_id"]] = $img["img_name"];
 	$DBRESULT->free();

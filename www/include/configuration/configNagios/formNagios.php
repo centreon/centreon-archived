@@ -22,8 +22,6 @@
 	$nagios = array();
 	if (($o == "c" || $o == "w") && $nagios_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$nagios = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();
@@ -37,8 +35,6 @@
 	 */
 	$checkCmds = array();
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$checkCmds = array(NULL=>NULL);
 	while($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];

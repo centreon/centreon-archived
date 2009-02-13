@@ -36,8 +36,6 @@
 
 	if (isset($_POST["index"])){
 		$DBRESULT =& $pearDB->query("SELECT `command_example` FROM `command` WHERE `command_id` = '". $_POST["index"] ."'");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getMessage();
 		while ($arg =& $DBRESULT->fetchRow())
 			echo utf8_encode(myDecodeService($arg["command_example"]));
 		unset($arg);

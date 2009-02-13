@@ -29,8 +29,6 @@
 	 */
 	$Host = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_address, host_snmp_community, host_snmp_version FROM host WHERE host_id =". $host_id ."");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$Host = array(NULL=>NULL);
 	$Host =& $DBRESULT->fetchRow();
 	$DBRESULT->free();

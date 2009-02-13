@@ -18,8 +18,6 @@
 	$str = NULL;
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT * FROM meta_service WHERE meta_activate = '1' : ".$DBRESULT->getMessage()."<br />";
 	# Write Virtual Services For meta 
 	while ($meta =& $DBRESULT->fetchRow())	{
 		$strEval = NULL;
@@ -34,8 +32,6 @@
 		$strEval .= print_line("passive_checks_enabled", "0");
 		
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1");
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br />";
 		$period =& $DBRESULT2->fetchRow();
 		if (isset($period) && $period["tp_name"])
 			$strEval .= print_line("check_period", $period["tp_name"]);
@@ -44,8 +40,6 @@
 		$strEval .= print_line("notification_interval", $meta["notification_interval"]);
 		
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1");
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br />";
 		$period =& $DBRESULT2->fetchRow();
 		if (isset($period) && $period["tp_name"])
 			$strEval .= print_line("notification_period", $period["tp_name"]);
@@ -58,8 +52,6 @@
 		$contactGroup = array();
 		$strTemp = NULL;
 		$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr, contactgroup cg WHERE mcgr.meta_id = '".$meta["meta_id"]."' AND mcgr.cg_cg_id = cg.cg_id ORDER BY `cg_name`");
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr,.. : ".$DBRESULT2->getMessage()."<br />";
 		while ($contactGroup =& $DBRESULT2->fetchRow())	{
 			if (isset($gbArr[1][$contactGroup["cg_id"]]))
 				$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];

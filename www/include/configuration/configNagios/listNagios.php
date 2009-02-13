@@ -28,9 +28,7 @@
 	if (isset($search) && $search)
 		$SearchTool = "WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_nagios $SearchTool");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-
+	
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -39,8 +37,6 @@
 	 */
 	$nagios_servers = array(NULL => "");
 	$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
@@ -68,8 +64,6 @@
 	 */
 	
 	$DBRESULT =& $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id FROM cfg_nagios $SearchTool ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	

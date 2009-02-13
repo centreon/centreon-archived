@@ -36,7 +36,7 @@
 	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);	
 
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
+	
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 	include_once('/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );
@@ -89,8 +89,6 @@
 
 	if ($is_admin){
 	$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	while($sg = $DBRESULT->fetchRow()){
 		$counterTotal = 0;
@@ -105,8 +103,6 @@
 								"AND ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id " .
 								"AND ".$ndo_base_prefix."hosts.display_name = '".$s["host_name"]."'" .
 								"AND ".$ndo_base_prefix."services.host_object_id = ".$ndo_base_prefix."hosts.host_object_id ");
-			if (PEAR::isError($DBRESULT3))
-				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 			while($stt = $DBRESULT3->fetchRow()){
 				if ($stt["current_state"] == 1)
 					$counterWarn++;
@@ -163,8 +159,6 @@
                                                           "AND ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id " .
                                                           "AND ".$ndo_base_prefix."hosts.display_name = '".$s["host_name"]."'" .
                                                           "AND ".$ndo_base_prefix."services.host_object_id = nagios_hosts.host_object_id ");
-                        if (PEAR::isError($DBRESULT3))
-                                print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
                         while($stt = $DBRESULT3->fetchRow()){
                                 if ($stt["current_state"] == 1)
                                         $counterWarn++;

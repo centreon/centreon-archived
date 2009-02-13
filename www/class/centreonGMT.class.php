@@ -132,8 +132,7 @@ class CentreonGMT{
 		$DBRESULT =& $pearDB->query("SELECT `contact_location` FROM `contact`, `session` " .
 									"WHERE `session`.`user_id` = `contact`.`contact_id` " .
 									"AND `session_id` = '$sid' LIMIT 1");
-		if (PEAR::isError($DBRESULT)) {
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		if (PEAR::isError($DBRESULT)) {		
 			$this->myGMT = 0;
 		}
 		$info =& $DBRESULT->fetchRow();

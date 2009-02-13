@@ -95,9 +95,7 @@
 					" s_nbServicesUnknown = '".$statistic_service["UNKNOWN"]."'," .
 					" s_nbServicesPending = '".$statistic_service["PENDING"]."'" .
 					" WHERE session_id = '".$_POST["sid"]."'";
-			$DBRESULT =& $pearDB->query($sql);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$DBRESULT =& $pearDB->query($sql);			
 		}
 	}
 
@@ -127,9 +125,7 @@
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 
-		$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-		if (PEAR::isError($DBRESULT_OPT))
-			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
+		$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");		
 		$general_opt =& $DBRESULT_OPT->fetchRow();
 	
 		/* 
@@ -145,8 +141,6 @@
 				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 		
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-		if (PEAR::isError($DBRESULT_NDO1))
-			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		
 		$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
 
@@ -174,9 +168,7 @@
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";			
 		
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
-		if (PEAR::isError($DBRESULT_NDO2))
-			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
-
+		
 		$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		while ($ndo =& $DBRESULT_NDO2->fetchRow())
 			$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
