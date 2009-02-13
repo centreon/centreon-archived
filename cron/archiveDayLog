@@ -61,6 +61,28 @@ use Time::Local;
 use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
 require "@CENTREON_ETC@/conf.pm";
 
+# Define Var lib dir
+my $VarLib = "@CENTREON_VARLIB@";
+
+# logAnalyser's lock file
+my $lock_file = "$VarLib/logAnalyser.lock";
+my $cmdtmp;
+my $pid;
+if (-e "$lock_file") {
+   chomp($pid = `cat $lock_file`);
+   my @progTab = split(/\//,$0);
+   my $progName = pop(@progTab);
+   my $cmd = "ps -p ".$pid." | grep ".$progName;
+   $cmdtmp = `$cmd`;
+   if (length($cmdtmp) > 0) {
+      print("$progName is already running... (pid=$pid)\n");
+      exit;
+   }
+}
+$pid = getpgrp(0);
+$cmdtmp = `echo $pid > $lock_file`;
+
+
 # the field "msg_type" in table "log" of Centstorage DB correspond to Nagios Message type 
 my %msg_type = ("svc_alerts" 			=> 0,
 				"host_alerts" 			=> 1,
@@ -666,3 +688,5 @@ sub rebuild_archives($) {
 # MAIN EXECUTION 
 #####################################################
 main();
+
+$cmdtmp = `rm -rf $lock_file`;
