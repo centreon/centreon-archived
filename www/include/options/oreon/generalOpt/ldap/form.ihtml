@@ -10,6 +10,7 @@
 	<tr class="list_two"><td class="FormRowField">{$form.ldap_base_dn.label}</td><td class="FormRowValue">{$form.ldap_base_dn.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ldap_login_attrib.label}</td><td class="FormRowValue">{$form.ldap_login_attrib.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.ldap_ssl.label}</td><td class="FormRowValue">{$form.ldap_ssl.html}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField">{$form.ldap_protocol_version.label}</td><td class="FormRowValue">{$form.ldap_protocol_version.html}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/user1_view.gif'>&nbsp;&nbsp;{$form.header.searchldap}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ldap_search_user.label}</td><td class="FormRowValue">{$form.ldap_search_user.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.ldap_search_user_pwd.label}</td><td class="FormRowValue">{$form.ldap_search_user_pwd.html}</td></tr>

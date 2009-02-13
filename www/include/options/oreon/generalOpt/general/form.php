@@ -18,13 +18,13 @@
 	if (!isset($oreon))
 		exit();
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			
-	# Set base value
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-
+	while ($opt =& $DBRESULT->fetchRow()) {
+		$gopt[$opt["key"]] = myDecode($opt["value"]);
+	}
+	
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# End of "database-retrieved" information

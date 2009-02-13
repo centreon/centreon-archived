@@ -18,11 +18,13 @@
 	if (!isset($oreon))
 		exit();
 
-	# Skin path
-	$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
 	if (PEAR::isError($DBRESULT))
-		print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
-	$data =& $DBRESULT->fetchRow();
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while ($opt =& $DBRESULT->fetchRow()) {
+		$data[$opt["key"]] = myDecode($opt["value"]);
+	}
+	
 	$skin = "./Themes/".$data["template"]."/";
 	
 	$tab_file_css = array();

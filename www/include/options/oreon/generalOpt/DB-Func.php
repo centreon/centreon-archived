@@ -18,6 +18,22 @@
 	if (!isset($oreon))
 		exit();
 
+	function updateOption($pearDB, $key, $value) {
+		/*
+		 * Purge
+		 */
+		$DBRESULT =& $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
+		/*
+		 * Add
+		 */
+		$DBRESULT =& $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', '$value')");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	}
+
 	function is_valid_path($path) {
 		if (is_dir($path))
 		    return true;
@@ -62,210 +78,136 @@
 	}
 
 	function updateNagiosConfigData($gopt_id = null)	{
-		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `general_opt` SET ";
-		$rq .= "nagios_path = ";
-		isset($ret["nagios_path"]) && $ret["nagios_path"] != NULL ? $rq .= "'".htmlentities($ret["nagios_path"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "nagios_path_bin = ";
-		isset($ret["nagios_path_bin"]) && $ret["nagios_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["nagios_path_bin"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "nagios_init_script = ";
-		isset($ret["nagios_init_script"]) && $ret["nagios_init_script"] != NULL ? $rq .= "'".htmlentities($ret["nagios_init_script"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "nagios_path_img = ";
-		isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? $rq .= "'".htmlentities($ret["nagios_path_img"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "nagios_path_plugins = ";
-		isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? $rq .= "'".htmlentities($ret["nagios_path_plugins"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "nagios_version = ";
-		isset($ret["nagios_version"]) && $ret["nagios_version"] != NULL ? $rq .= "'".$ret["nagios_version"]."', ": $rq .= "NULL, ";
-		$rq .= "mailer_path_bin = ";
-		isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["mailer_path_bin"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
+		updateOption($pearDB, "nagios_path", isset($ret["nagios_path"]) && $ret["nagios_path"] != NULL ? htmlentities($ret["nagios_path"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "nagios_path_bin", isset($ret["nagios_path_bin"]) && $ret["nagios_path_bin"] != NULL ? htmlentities($ret["nagios_path_bin"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "nagios_init_script", isset($ret["nagios_init_script"]) && $ret["nagios_init_script"] != NULL ? htmlentities($ret["nagios_init_script"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "nagios_path_img", isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? htmlentities($ret["nagios_path_img"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? htmlentities($ret["nagios_path_plugins"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "nagios_version", isset($ret["nagios_version"]) && $ret["nagios_version"] != NULL ? $ret["nagios_version"] : "NULL");
+		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? htmlentities($ret["mailer_path_bin"], ENT_QUOTES) : "NULL");
+		
+		/*
 		$oreon->optGen = array();
 		$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$oreon->optGen =& $DBRESULT->fetchRow();
 		$oreon->user->version = $ret["nagios_version"];
+		*/
 	}
 
 	function updateSNMPConfigData($gopt_id = null)	{
-		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `general_opt` SET ";
-		$rq .= "`snmp_community` = ";
-		isset($ret["snmp_community"]) && $ret["snmp_community"] != NULL ? $rq .= "'".$ret["snmp_community"]."', ": $rq .= "NULL, ";
-		$rq .= "`snmp_version` = ";
-		isset($ret["snmp_version"]) && $ret["snmp_version"] != NULL ? $rq .= "'".$ret["snmp_version"]."', ": $rq .= "NULL, ";
-		$rq .= "`snmp_trapd_path_conf` = ";
-		isset($ret["snmp_trapd_path_conf"]) && $ret["snmp_trapd_path_conf"] != NULL ? $rq .= "'".$ret["snmp_trapd_path_conf"]."',  ": $rq .= "NULL,  ";
-		$rq .= "`snmptt_unknowntrap_log_file` = ";
-		isset($ret["snmptt_unknowntrap_log_file"]) && $ret["snmptt_unknowntrap_log_file"] != NULL ? $rq .= "'".$ret["snmptt_unknowntrap_log_file"]."',  ": $rq .= "NULL,  ";
-		$rq .= "`snmpttconvertmib_path_bin` = ";
-		isset($ret["snmpttconvertmib_path_bin"]) && $ret["snmpttconvertmib_path_bin"] != NULL ? $rq .= "'".$ret["snmpttconvertmib_path_bin"]."', ": $rq .= "NULL, ";
-		$rq .= "`perl_library_path` = ";
-		isset($ret["perl_library_path"]) && $ret["perl_library_path"] != NULL ? $rq .= "'".$ret["perl_library_path"]."' ": $rq .= "NULL ";
-		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
+		updateOption($pearDB, "snmp_community", isset($ret["snmp_community"]) && $ret["snmp_community"] != NULL ? $ret["snmp_community"] : "NULL");
+		updateOption($pearDB, "snmp_version", isset($ret["snmp_version"]) && $ret["snmp_version"] != NULL ? $ret["snmp_version"] : "NULL");
+		updateOption($pearDB, "snmp_trapd_path_conf", isset($ret["snmp_trapd_path_conf"]) && $ret["snmp_trapd_path_conf"] != NULL ? $ret["snmp_trapd_path_conf"] : "NULL");
+		updateOption($pearDB, "snmptt_unknowntrap_log_file", isset($ret["snmptt_unknowntrap_log_file"]) && $ret["snmptt_unknowntrap_log_file"] != NULL ? $ret["snmptt_unknowntrap_log_file"] : "NULL");
+		updateOption($pearDB, "snmpttconvertmib_path_bin", isset($ret["snmpttconvertmib_path_bin"]) && $ret["snmpttconvertmib_path_bin"] != NULL ? $ret["snmpttconvertmib_path_bin"] : "NULL");
+		updateOption($pearDB, "perl_library_path", isset($ret["perl_library_path"]) && $ret["perl_library_path"] != NULL ? $ret["perl_library_path"] : "NULL");
+		
 	}
 
 	function updateDebugConfigData($gopt_id = null)	{
-		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `general_opt` SET ";
-		$rq .= "debug_path = ";
-		isset($ret["debug_path"]) && $ret["debug_path"] != NULL ? $rq .= "'".$ret["debug_path"]."', ": $rq .= "NULL, ";
-		$rq .= "debug_auth = ";
-		isset($ret["debug_auth"]) && $ret["debug_auth"] != NULL ? $rq .= "'".$ret["debug_auth"]."', ": $rq .= "NULL, ";
-		$rq .= "debug_nagios_import = ";
-		isset($ret["debug_nagios_import"]) && $ret["debug_nagios_import"] != NULL ? $rq .= "'".$ret["debug_nagios_import"]."', ": $rq .= "NULL, ";
-		$rq .= "debug_rrdtool = ";
-		isset($ret["debug_rrdtool"]) && $ret["debug_rrdtool"] != NULL ? $rq .= "'".$ret["debug_rrdtool"]."', ": $rq .= "NULL, ";
-		$rq .= "debug_ldap_import = ";
-		isset($ret["debug_ldap_import"]) && $ret["debug_ldap_import"] != NULL ? $rq .= "'".$ret["debug_ldap_import"]."', ": $rq .= "NULL, ";
-		$rq .= "debug_inventory = ";
-		isset($ret["debug_inventory"]) && $ret["debug_inventory"] != NULL ? $rq .= "'".$ret["debug_inventory"]."' ": $rq .= "NULL ";
-		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$oreon->optGen = array();
+
+		updateOption($pearDB, "debug_path", isset($ret["debug_path"]) && $ret["debug_path"] != NULL ? $ret["debug_path"]: "NULL");
+		updateOption($pearDB, "debug_auth", isset($ret["debug_auth"]) && $ret["debug_auth"] != NULL ? $ret["debug_auth"]: "NULL");
+		updateOption($pearDB, "debug_nagios_import", isset($ret["debug_nagios_import"]) && $ret["debug_nagios_import"] != NULL ? $ret["debug_nagios_import"]: "NULL");
+		updateOption($pearDB, "debug_rrdtool", isset($ret["debug_rrdtool"]) && $ret["debug_rrdtool"] != NULL ? $ret["debug_rrdtool"]: "NULL");
+		updateOption($pearDB, "debug_ldap_import", isset($ret["debug_ldap_import"]) && $ret["debug_ldap_import"] != NULL ? $ret["debug_ldap_import"]: "NULL");
+		updateOption($pearDB, "debug_inventory", isset($ret["debug_inventory"]) && $ret["debug_inventory"] != NULL ? $ret["debug_inventory"]: "NULL");
+
 	}
 
 	function updateLdapConfigData($gopt_id = null)	{
-		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
+				
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `general_opt` SET ";
- 		$rq .= "ldap_host = ";
-		isset($ret["ldap_host"]) && $ret["ldap_host"] != NULL ? $rq .= "'".htmlentities($ret["ldap_host"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ldap_port = ";
-		isset($ret["ldap_port"]) && $ret["ldap_port"] != NULL ? $rq .= "'".htmlentities($ret["ldap_port"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ldap_base_dn = ";
-		isset($ret["ldap_base_dn"]) && $ret["ldap_base_dn"] != NULL ? $rq .= "'".htmlentities($ret["ldap_base_dn"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ldap_login_attrib = ";
-		isset($ret["ldap_login_attrib"]) && $ret["ldap_login_attrib"] != NULL ? $rq .= "'".htmlentities($ret["ldap_login_attrib"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ldap_ssl = ";
-		isset($ret["ldap_ssl"]["ldap_ssl"]) && $ret["ldap_ssl"]["ldap_ssl"] != NULL ? $rq .= "'".htmlentities($ret["ldap_ssl"]["ldap_ssl"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ldap_auth_enable = ";
-		isset($ret["ldap_auth_enable"]["ldap_auth_enable"]) && $ret["ldap_auth_enable"]["ldap_auth_enable"] != NULL ? $rq .= "'".htmlentities($ret["ldap_auth_enable"]["ldap_auth_enable"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ldap_search_user = ";
-		isset($ret["ldap_search_user"]) && $ret["ldap_search_user"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_user"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ldap_search_user_pwd = ";
-		isset($ret["ldap_search_user_pwd"]) && $ret["ldap_search_user_pwd"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_user_pwd"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ldap_search_filter = ";
-		isset($ret["ldap_search_filter"]) && $ret["ldap_search_filter"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_filter"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ldap_search_timeout = ";
-		isset($ret["ldap_search_timeout"]) && $ret["ldap_search_timeout"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_timeout"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ldap_search_limit = ";
-		isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_limit"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+
+		updateOption($pearDB, "ldap_host", isset($ret["ldap_host"]) && $ret["ldap_host"] != NULL ? htmlentities($ret["ldap_host"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "ldap_port", isset($ret["ldap_port"]) && $ret["ldap_port"] != NULL ? htmlentities($ret["ldap_port"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "ldap_base_dn", isset($ret["ldap_base_dn"]) && $ret["ldap_base_dn"] != NULL ? htmlentities($ret["ldap_base_dn"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "ldap_login_attrib", isset($ret["ldap_login_attrib"]) && $ret["ldap_login_attrib"] != NULL ? htmlentities($ret["ldap_login_attrib"], ENT_QUOTES): "");
+		updateOption($pearDB, "ldap_ssl", isset($ret["ldap_ssl"]["ldap_ssl"]) && $ret["ldap_ssl"]["ldap_ssl"] != NULL ? htmlentities($ret["ldap_ssl"]["ldap_ssl"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "ldap_auth_enable", isset($ret["ldap_auth_enable"]["ldap_auth_enable"]) && $ret["ldap_auth_enable"]["ldap_auth_enable"] != NULL ? htmlentities($ret["ldap_auth_enable"]["ldap_auth_enable"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "ldap_search_user", isset($ret["ldap_search_user"]) && $ret["ldap_search_user"] != NULL ? htmlentities($ret["ldap_search_user"], ENT_QUOTES): "");
+		updateOption($pearDB, "ldap_search_user_pwd", isset($ret["ldap_search_user_pwd"]) && $ret["ldap_search_user_pwd"] != NULL ? htmlentities($ret["ldap_search_user_pwd"], ENT_QUOTES): "");
+		updateOption($pearDB, "ldap_search_filter", isset($ret["ldap_search_filter"]) && $ret["ldap_search_filter"] != NULL ? htmlentities($ret["ldap_search_filter"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "ldap_search_timeout", isset($ret["ldap_search_timeout"]) && $ret["ldap_search_timeout"] != NULL ? htmlentities($ret["ldap_search_timeout"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "ldap_search_limit", isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != NULL ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES): "NULL");		
+		updateOption($pearDB, "ldap_protocol_version", isset($ret["ldap_protocol_version"]) && $ret["ldap_protocol_version"] != NULL ? htmlentities($ret["ldap_protocol_version"], ENT_QUOTES): "NULL");
 	}
 
 	function updateColorsConfigData($gopt_id = null)	{
-		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
+			
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `general_opt` SET ";
-		$rq .= "color_up = ";
-		isset($ret["color_up"]) && $ret["color_up"] != NULL ? $rq .= "'".htmlentities($ret["color_up"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "color_down = ";
-		isset($ret["color_down"]) && $ret["color_down"] != NULL ? $rq .= "'".htmlentities($ret["color_down"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "color_unreachable = ";
-		isset($ret["color_unreachable"]) && $ret["color_unreachable"] != NULL ? $rq .= "'".htmlentities($ret["color_unreachable"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "color_ok = ";
-		isset($ret["color_ok"]) && $ret["color_ok"] != NULL ? $rq .= "'".htmlentities($ret["color_ok"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "color_warning = ";
-		isset($ret["color_warning"]) && $ret["color_warning"] != NULL ? $rq .= "'".htmlentities($ret["color_warning"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "color_critical = ";
-		isset($ret["color_critical"]) && $ret["color_critical"] != NULL ? $rq .= "'".htmlentities($ret["color_critical"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "color_pending = ";
-		isset($ret["color_pending"]) && $ret["color_pending"] != NULL ? $rq .= "'".htmlentities($ret["color_pending"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "color_unknown = ";
-		isset($ret["color_unknown"]) && $ret["color_unknown"] != NULL ? $rq .= "'".htmlentities($ret["color_unknown"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
+		updateOption($pearDB, "color_up", isset($ret["color_up"]) && $ret["color_up"] != NULL ? htmlentities($ret["color_up"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "color_down", isset($ret["color_down"]) && $ret["color_down"] != NULL ? htmlentities($ret["color_down"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "color_unreachable", isset($ret["color_unreachable"]) && $ret["color_unreachable"] != NULL ? htmlentities($ret["color_unreachable"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "color_ok", isset($ret["color_ok"]) && $ret["color_ok"] != NULL ? htmlentities($ret["color_ok"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "color_warning", isset($ret["color_warning"]) && $ret["color_warning"] != NULL ? htmlentities($ret["color_warning"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "color_critical", isset($ret["color_critical"]) && $ret["color_critical"] != NULL ? htmlentities($ret["color_critical"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "color_pending", isset($ret["color_pending"]) && $ret["color_pending"] != NULL ? htmlentities($ret["color_pending"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "color_unknown", isset($ret["color_unknown"]) && $ret["color_unknown"] != NULL ? htmlentities($ret["color_unknown"], ENT_QUOTES): "NULL ");
+		
 	}
 
 	function updateGeneralConfigData($gopt_id = null)	{
-		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `general_opt` SET ";
-		$rq .= "oreon_path = ";
-		isset($ret["oreon_path"]) && $ret["oreon_path"] != NULL ? $rq .= "'".htmlentities($ret["oreon_path"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "oreon_web_path = ";
-		isset($ret["oreon_web_path"]) && $ret["oreon_web_path"] != NULL ? $rq .= "'".htmlentities($ret["oreon_web_path"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "oreon_refresh = ";
-		isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != NULL ? $rq .= "'".htmlentities($ret["oreon_refresh"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		
 		if (!isset($ret["session_expire"]) || $ret["session_expire"] == 0)
 			$ret["session_expire"] = 2;
-		$rq .= "session_expire = ";
-		isset($ret["session_expire"]) && $ret["session_expire"] != NULL ? $rq .= "'".htmlentities($ret["session_expire"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		
-		$rq .= "maxViewMonitoring = ";
-		isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["maxViewMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "maxViewConfiguration = ";
-		isset($ret["maxViewConfiguration"]) && $ret["maxViewConfiguration"] != NULL ? $rq .= "'".htmlentities($ret["maxViewConfiguration"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "AjaxTimeReloadMonitoring = ";
-		isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "AjaxTimeReloadStatistic = ";
-		isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != NULL ? $rq .= "'".htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "AjaxFirstTimeReloadMonitoring = ";
-		isset($ret["AjaxFirstTimeReloadMonitoring"]) && $ret["AjaxFirstTimeReloadMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["AjaxFirstTimeReloadMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "AjaxFirstTimeReloadStatistic = ";
-		isset($ret["AjaxFirstTimeReloadStatistic"]) && $ret["AjaxFirstTimeReloadStatistic"] != NULL ? $rq .= "'".htmlentities($ret["AjaxFirstTimeReloadStatistic"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "template = ";
-		isset($ret["template"]) && $ret["template"] != NULL ? $rq .= "'".htmlentities($ret["template"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "gmt = ";
-		isset($ret["gmt"]) && $ret["gmt"] != NULL ? $rq .= "'".htmlentities($ret["gmt"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "problem_sort_type = ";
-		isset($ret["problem_sort_type"]) && $ret["problem_sort_type"] != NULL ? $rq .= "'".htmlentities($ret["problem_sort_type"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "problem_sort_order = ";
-		isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != NULL ? $rq .= "'".htmlentities($ret["problem_sort_order"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		updateOption($pearDB, "oreon_path", isset($ret["oreon_path"]) && $ret["oreon_path"] != NULL ? htmlentities($ret["oreon_path"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "oreon_web_path", isset($ret["oreon_web_path"]) && $ret["oreon_web_path"] != NULL ? htmlentities($ret["oreon_web_path"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "oreon_refresh", isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != NULL ? htmlentities($ret["oreon_refresh"], ENT_QUOTES): "NULL");		
+		updateOption($pearDB, "session_expire", isset($ret["session_expire"]) && $ret["session_expire"] != NULL ? htmlentities($ret["session_expire"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "maxViewMonitoring", isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != NULL ? htmlentities($ret["maxViewMonitoring"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "maxViewConfiguration", isset($ret["maxViewConfiguration"]) && $ret["maxViewConfiguration"] != NULL ? htmlentities($ret["maxViewConfiguration"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "AjaxTimeReloadMonitoring", isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != NULL ? htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "AjaxTimeReloadStatistic", isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != NULL ? htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "AjaxFirstTimeReloadMonitoring", isset($ret["AjaxFirstTimeReloadMonitoring"]) && $ret["AjaxFirstTimeReloadMonitoring"] != NULL ? htmlentities($ret["AjaxFirstTimeReloadMonitoring"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "AjaxFirstTimeReloadStatistic", isset($ret["AjaxFirstTimeReloadStatistic"]) && $ret["AjaxFirstTimeReloadStatistic"] != NULL ? htmlentities($ret["AjaxFirstTimeReloadStatistic"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "template", isset($ret["template"]) && $ret["template"] != NULL ? htmlentities($ret["template"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "gmt", isset($ret["gmt"]) && $ret["gmt"] != NULL ? htmlentities($ret["gmt"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "problem_sort_type", isset($ret["problem_sort_type"]) && $ret["problem_sort_type"] != NULL ? htmlentities($ret["problem_sort_type"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "problem_sort_order", isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != NULL ? htmlentities($ret["problem_sort_order"], ENT_QUOTES): "NULL");
+		
 	}
 
 	function updateRRDToolConfigData($gopt_id = null)	{
-		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `general_opt` SET ";
-		$rq .= "rrdtool_path_bin = ";
-		isset($ret["rrdtool_path_bin"]) && $ret["rrdtool_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["rrdtool_path_bin"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "rrdtool_version = ";
-		isset($ret["rrdtool_version"]) && $ret["rrdtool_version"] != NULL ? $rq .= "'".htmlentities($ret["rrdtool_version"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		
+		updateOption($pearDB, "rrdtool_path_bin", isset($ret["rrdtool_path_bin"]) && $ret["rrdtool_path_bin"] != NULL ? htmlentities($ret["rrdtool_path_bin"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "rrdtool_version", isset($ret["rrdtool_version"]) && $ret["rrdtool_version"] != NULL ? htmlentities($ret["rrdtool_version"], ENT_QUOTES) : "NULL");
+		
 	}
 	
 	function updateODSConfigData()	{
 		global $form, $pearDBO;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if (!isset($ret["len_storage_rrd"]))
@@ -306,25 +248,17 @@
 	}	
 	
 	function updateCASConfigData($gopt_id = null)	{
-		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `general_opt` SET ";
-		$rq .= "`auth_cas_enable` = ";
-		isset($ret["auth_cas_enable"]["auth_cas_enable"]) && $ret["auth_cas_enable"]["auth_cas_enable"] != NULL ? $rq .= "'".$ret["auth_cas_enable"]["auth_cas_enable"]."', ": $rq .= "NULL, ";
-		$rq .= "`cas_server` = ";
-		isset($ret["cas_server"]) && $ret["cas_server"] != NULL ? $rq .= "'".$ret["cas_server"]."', ": $rq .= "NULL, ";
-		$rq .= "`cas_port` = ";
-		isset($ret["cas_port"]) && $ret["cas_port"] != NULL ? $rq .= "'".$ret["cas_port"]."',  ": $rq .= "NULL,  ";
-		$rq .= "`cas_url` = ";
-		isset($ret["cas_url"]) && $ret["cas_url"] != NULL ? $rq .= "'".$ret["cas_url"]."',  ": $rq .= "NULL,  ";
-		$rq .= "`cas_version` = ";
-		isset($ret["cas_version"]) && $ret["cas_version"] != NULL ? $rq .= "'".$ret["cas_version"]."', ": $rq .= "NULL ";
-		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		
+		updateOption($pearDB, "auth_cas_enable", isset($ret["auth_cas_enable"]["auth_cas_enable"]) && $ret["auth_cas_enable"]["auth_cas_enable"] != NULL ? $ret["auth_cas_enable"]["auth_cas_enable"] : "NULL");
+		updateOption($pearDB, "cas_server", isset($ret["cas_server"]) && $ret["cas_server"] != NULL ? $ret["cas_server"] : "NULL");
+		updateOption($pearDB, "cas_port", isset($ret["cas_port"]) && $ret["cas_port"] != NULL ? $ret["cas_port"] : "NULL");
+		updateOption($pearDB, "cas_url", isset($ret["cas_url"]) && $ret["cas_url"] != NULL ? $ret["cas_url"] : "NULL");
+		updateOption($pearDB, "cas_version", isset($ret["cas_version"]) && $ret["cas_version"] != NULL ? $ret["cas_version"] : "NULL");
+	
 	}
 	
 	function updateReportingTimePeriodInDB() {

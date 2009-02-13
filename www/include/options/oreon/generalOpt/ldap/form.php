@@ -18,12 +18,14 @@
 	if (!isset($oreon))
 		exit();
 
-	#
-	## Database retrieve information
-	#
-	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
-	# Set base value
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
+	
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while ($opt =& $DBRESULT->fetchRow()) {
+		$gopt[$opt["key"]] = myDecode($opt["value"]);
+	}
+	
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
@@ -65,6 +67,7 @@
 	$form->addElement('text', 'ldap_search_filter', _("Default LDAP filter"), $attrsText);
 	$form->addElement('text', 'ldap_search_timeout', _("LDAP search timeout"), $attrsText2);
 	$form->addElement('text', 'ldap_search_limit', _("LDAP Search Size Limit"), $attrsText2);
+	$form->addElement('select', 'ldap_protocol_version', _("Protocol version"), array("1" => " 1 ", "2" => " 2 ", "3" => " 3 "));
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
