@@ -38,36 +38,6 @@
   
   	$etc = "@CENTREON_ETC@";
   	$etc = "/etc/centreon/";
-  	
-  	/*
-  	 * Define Crypt system 
-  	 * 
-  	 * 0 : MD5
-  	 * 1 : SHA1
-  	 * 
-  	 */
-  
-  	$cryptSystem = 0;
-  	$cryptFunction = "";
-  
-  	function myCrypt($str) {
-  		global $cryptSystem, $cryptFunction;
-  		
-  		switch ($cryptSystem) {
-  			case 0 : 
-  				$cryptFunction = "MD5";
-  				return md5($str);
-  				break;
-  			case 1 : 
-  				$cryptFunction = "SHA1";
-  				return sha1($str);
-  				break;
-  			default : 
-  				$cryptFunction = "MD5";
-  				return md5($str);
-  				break;
-  		}
-  	}
   
 	if (!file_exists("$etc/centreon.conf.php") && is_dir('./install'))
 		header("Location: ./install/setup.php");
