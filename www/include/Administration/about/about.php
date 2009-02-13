@@ -18,8 +18,6 @@
 		exit();
 
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$release =& $DBRESULT->fetchRow();
 	
 ?><center>
