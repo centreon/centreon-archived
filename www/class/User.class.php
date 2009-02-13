@@ -16,6 +16,7 @@
  */
 
 require_once("centreonACL.class.php");
+require_once("centreonLog.class.php");
 
 class User	{
 
@@ -33,7 +34,8 @@ class User	{
 	var $is_admin;
 	var $groupList;
 	var $groupListStr;
-	var $access;	
+	var $access;
+	var $log;
 	
 	# User LCA
 	# Array with elements ID for loop test
@@ -43,6 +45,8 @@ class User	{
 	var $lcaTStr;
 	  
   	function User($user = array(), $nagios_version = NULL)  {
+		global $pearDB;
+		
 		$this->user_id = $user["contact_id"];
 		$this->name = html_entity_decode($user["contact_name"], ENT_QUOTES);
 		$this->alias = html_entity_decode($user["contact_alias"], ENT_QUOTES);
@@ -55,6 +59,7 @@ class User	{
 	  	$this->gmt = $user["contact_location"];
 	  	$this->is_admin = NULL;
 	  	$this->access = new CentreonACL($this->user_id, $this->admin);
+	  	$this->log = new CentreonUserLog($this->user_id, $pearDB);
   	}
     
   	public function showDiv($div_name = NULL) {

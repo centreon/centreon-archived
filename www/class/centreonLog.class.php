@@ -78,7 +78,7 @@ class CentreonUserLog {
 		/*
 		 * Construct alerte message
 		 */
-		$string = date("H:s")."|".$this->uid."|$page|$option|$str";
+		$string = date("H:i")."|".$this->uid."|$page|$option|$str";
 		
 		/*
 		 * Display error on Standard exit

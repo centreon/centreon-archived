@@ -106,6 +106,8 @@ class CentreonDB {
      *  The connection is established here
      */
     public function connect() {    	    	    	
+    	global $oreon;
+    	
     	$this->privatePearDB =& DB::connect($this->dsn, $this->options);
 		$i = 0;
 		while (PEAR::isError($this->privatePearDB) && ($i < $this->retry)) {
@@ -113,8 +115,7 @@ class CentreonDB {
 			$i++;
 		}
 		if ($i == $this->retry) {
-			echo "retry : $i times <br />";//log error with the number of attempts
-			echo $this->privatePearDB->getMessage() . "<br />";	
+			$oreon->user->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");			
 		}
 		else	
 			$this->privatePearDB->setFetchMode(DB_FETCHMODE_ASSOC);
@@ -127,13 +128,19 @@ class CentreonDB {
     	$this->privatePearDB->disconnect();
     }
     
+    public function toString() {
+    	return $this->privatePearDB->toString();
+    }
+    
     /*
      *  Query
      */
     public function query($query_string = NULL) {    	
+    	global $oreon;
+    	
     	$DBRES = $this->privatePearDB->query($query_string);
     	if (PEAR::isError($DBRES))
-    		$DBRES->getMessage();//log error
+    		$oreon->user->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
     	return $DBRES;
     }
 }

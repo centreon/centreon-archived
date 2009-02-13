@@ -16,7 +16,9 @@
  */
  
 require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path."/www/DBconnect.php";
+require_once $centreon_path."/www/class/centreonDB.class.php";
+
+$pearDB = new CentreonDB();
 
 if (isset($_GET['div']) && isset($_GET['uid'])) {
 	$my_div = $_GET['div'];

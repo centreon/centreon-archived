@@ -57,11 +57,13 @@
 	 * Include
 	 */
 	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once "./DBconnect.php";
-	require_once "./DBOdsConnect.php";
+	require_once "$classdir/centreonDB.class.php";
 	require_once "$classdir/Session.class.php";
 	require_once "$classdir/Oreon.class.php";	
 	require_once SMARTY_DIR."Smarty.class.php";
+
+	$pearDB = new CentreonDB();
+	$pearDBO = new CentreonDB("centstorage");
 
 	ini_set("session.gc_maxlifetime", "31536000");
 
@@ -70,22 +72,16 @@
 	/*
 	 * Delete Session Expired
 	 */
-	$DBRESULT =& $pearDB->query("SELECT `session_expire` FROM `general_opt` LIMIT 1");
-	if (PEAR::isError($DBRESULT)) 
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	$DBRESULT =& $pearDB->query("SELECT `session_expire` FROM `general_opt` LIMIT 1");	
 	$session_expire =& $DBRESULT->fetchRow();
 	$time_limit = time() - ($session_expire["session_expire"] * 60);
 
-	$DBRESULT =& $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");
-	if (PEAR::isError($DBRESULT)) 
-		print "DB error Where deleting Sessions : ".$DBRESULT->getDebugInfo()."<br />";
+	$DBRESULT =& $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");	
 
 	/*
 	 * Get session and Check if session is not expired
 	 */
-	$DBRESULT =& $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
-	if (PEAR::isError($DBRESULT)) 
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	$DBRESULT =& $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");	
 	
 	if (!$DBRESULT->numRows())
 		header("Location: index.php?disconnect=2");
@@ -144,8 +140,6 @@
 	 * Skin path
 	 */
 	$DBRESULT =& $pearDB->query("SELECT `template` FROM `general_opt` LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
 	$data = $DBRESULT->fetchRow();
 	$skin = "./Themes/".$data["template"]."/";
 
@@ -165,17 +159,13 @@
 	 * Get CSS Order and color
 	 */
 	$DBRESULT =& $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
-	if (PEAR::isError($DBRESULT))
-		print ($DBRESULT->getMessage());
 	if ($DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()))
 		$colorfile = "Color/".$elem["css_name"];
 
 	/*
 	 * Update Session Table For last_reload and current_page row
 	 */
-	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error WHERE Updating Session : ".$DBRESULT->getDebugInfo()."<br />";
+	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");	
 	
 	/*
 	 * Init Language 

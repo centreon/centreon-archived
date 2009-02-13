@@ -88,11 +88,14 @@
 	require_once ("$classdir/Oreon.class.php");
 	require_once ("$classdir/centreonAuth.class.php");
 	require_once ("$classdir/centreonLog.class.php");
-	require_once ("DBconnect.php");
+	require_once ("$classdir/centreonDB.class.php");
+	
 
 	/*
 	 * Get auth type
-	 */	 
+	 */
+	global $pearDB;
+	$pearDB = new CentreonDB();
 	$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
     $generalOptions =& $DBRESULT->fetchRow();
 	$DBRESULT->free();
