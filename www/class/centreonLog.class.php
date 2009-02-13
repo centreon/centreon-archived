@@ -53,10 +53,11 @@ class CentreonUserLog {
 		/*
 		 * Get Log directory path
 		 */
-		$DBRESULT =& $pearDB->query("SELECT debug_path FROM general_opt LIMIT 1");
-		$optGen =& $DBRESULT->fetchRow();
-		$DBRESULT->free();
-		
+		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'debug_path'");
+		while ($res =& $DBRESULT->fetchRow())
+			$this->ldapInfos[$res["key"]] = $res["value"];
+		$DBRESULT->free(); 
+
 		/*
 		 * Init log Directory
 		 */

@@ -122,6 +122,7 @@ class Oreon	{
 			$this->optGen[$opt["key"]] = $opt["value"];
 		}
 		$DBRESULT->free();
+		unset($opt);
 	}
 	
 }

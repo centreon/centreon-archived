@@ -51,9 +51,10 @@ class CentreonAuthLDAP {
 		
 		$this->CentreonLog = $CentreonLog;
 		
-		$DBRESULT =& $pearDB->query("SELECT `ldap_host`, `ldap_port`, `ldap_base_dn`, `ldap_login_attrib`, `ldap_ssl`, `ldap_auth_enable` FROM `general_opt` LIMIT 1");
-		
-		$this->ldapInfos = $DBRESULT->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_auth_enable')");
+		while ($res =& $DBRESULT->fetchRow())
+			$this->ldapInfos[$res["key"]] = $res["value"];
+		$DBRESULT->free();
 		
 		/*
 		 * Set contact Informations
