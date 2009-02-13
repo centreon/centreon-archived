@@ -19,7 +19,9 @@
 		exit();
 				
 	include_once("./include/common/common-Func.php");	
-	include_once("./DBOdsConnect.php");
+	include_once("./class/centreonDB.class.php");
+	
+	$pearDBO = new CentreonDB("centstorage");
 	
 	$lcaHostByID = getLcaHostByID($pearDB);	
 	
@@ -37,7 +39,7 @@
 	}
 
 
-	if (is_file("./DBOdsConnect.php")){
+	if (is_file("./class/centreonDB.class.php")){
 		if (isset($_GET["service_osm_id"])){
 			$tab_host_svc = split('_', $_GET["service_osm_id"]);			
 			$_GET["host_name"] = getMyHostName($tab_host_svc[0]);

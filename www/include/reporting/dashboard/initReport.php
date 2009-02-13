@@ -49,8 +49,10 @@
 	require_once './include/reporting/dashboard/common-Func.php';
 	require_once './include/reporting/dashboard/DB-Func.php';
 	require_once './include/common/common-Func.php';
-	require_once './DBconnect.php';
-	require_once './DBNDOConnect.php';
+	require_once './class/centreonDB.class.php';
+	
+	$pearDB = new CentreonDB();
+	$pearDBndo = new CentreonDB("ndo");
 	
 	$debug = 0;
 	

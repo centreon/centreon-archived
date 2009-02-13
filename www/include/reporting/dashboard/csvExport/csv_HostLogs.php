@@ -37,9 +37,7 @@
  */
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBOdsConnect.php");
-	include_once($centreon_path . "www/DBNDOConnect.php");
+	require_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
 	require_once $centreon_path . "www/class/other.class.php";
@@ -47,6 +45,9 @@
 	require_once $centreon_path . "www/class/Oreon.class.php";	
 	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
 		
+	$pearDB = new CentreonDB();
+	$pearDBndo = new CentreonDB("ndo");
+	$pearDBO = new CentreonDB("centstorage");
 	
 	/*
 	 * Checking session

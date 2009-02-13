@@ -48,8 +48,11 @@
 		switch ($o)	{
 			default : require_once($pathTools."tools.php"); break;
 		}
-	} else {
-		include_once("./DBNDOConnect.php");
+	} else {		
+		include_once("./class/centreonDB.class.php");
+		
+		$pearDBndo = new CentreonDB("ndo");
+		
 		if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
 			print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
 		} else {

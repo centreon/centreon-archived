@@ -21,6 +21,7 @@
  	require_once("../../../../$classdir/Session.class.php");
  	require_once("../../../../$classdir/Oreon.class.php");
  	require_once("../../../../$classdir/centreonXML.class.php");
+ 	require_once("../../../../$classdir/centreonDB.class.php");
 
  	Session::start();
 
@@ -32,27 +33,7 @@
 		$oreon =& $_SESSION["oreon"];
 	}
 
-	require_once 'DB.php';
-
-
-	$dsn = array(
-		     'phptype'  => 'mysql',
-		     'username' => $conf_centreon['user'],
-		     'password' => $conf_centreon['password'],
-		     'hostspec' => $conf_centreon['hostCentreon'],
-		     'database' => $conf_centreon['db'],
-		     );
-
-	$options = array(
-			 'debug'       => 2,
-			 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-			 );
-
-	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB))
-		print "DB Error : ".$pearDB->getDebugInfo()."<br />";
-
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+	$pearDB = new CentreonDB();
 
 	$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable, ldap_search_user, ldap_search_user_pwd, ldap_search_filter, ldap_search_timeout, ldap_search_limit FROM general_opt LIMIT 1");
 	$ldap_search = array_map("myDecode", $res->fetchRow());

@@ -17,7 +17,9 @@
 	if (!isset($oreon))
 		exit();
 	
-	require_once './DBNDOConnect.php';
+	require_once './class/centreonDB.class.php';
+	
+	$pearDBndo = new CentreonDB("ndo");
 	
 	/*
 	 * return database Properties

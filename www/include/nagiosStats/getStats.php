@@ -60,9 +60,11 @@
 	
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once "$centreon_path/www/class/centreonGMT.class.php";
-	require_once "$centreon_path/www/DBconnect.php";
-	require_once "$centreon_path/www/DBOdsConnect.php";
-
+	require_once "$centreon_path/www/class/centreonDB.class.php";
+	
+	$pearDB = new CentreonDB();
+	$pearDBO = new CentreonDB("centstorage");
+	
 	/*
 	 * Init GMT Class
 	 */

@@ -66,7 +66,9 @@
 	/*
 	 * Perfparse Metric comes from DB -> Store in $metrics Array
 	 */
-	require_once("./DBOdsConnect.php");
+	require_once("./class/centreonDB.class.php");
+	$pearDBO = new CentreonDB("centstorage");
+	
 	$metrics = array(NULL=>NULL);
 	$DBRESULT =& $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
 	if (PEAR::isError($DBRESULT))

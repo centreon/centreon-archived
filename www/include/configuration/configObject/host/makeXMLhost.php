@@ -19,9 +19,10 @@
 	header('Cache-Control: no-cache');
 	
 	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once $centreon_path."/www/DBconnect.php";
+	require_once $centreon_path."/www/class/centreonDB.class.php";	
 	require_once $centreon_path."/www/class/centreonXML.class.php";
 		
+	$pearDB = new CentreonDB();
 	
 	$DBRESULT =& $pearDB->query("SELECT `host_id`, `host_name` FROM `host` WHERE `host_register` = '0' ORDER BY `host_name`");
 	if (PEAR::isError($DBRESULT))

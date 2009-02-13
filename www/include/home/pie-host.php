@@ -20,27 +20,19 @@
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
-	
-	require_once("DB.php");
+		
 	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once($centreon_path . "www/class/centreonDB.class.php");
 		
 	/* Connect to oreon DB */
-	$dsn = array('phptype'  => 'mysql',
-			     'username' => $conf_centreon['user'],
-			     'password' => $conf_centreon['password'],
-			     'hostspec' => $conf_centreon['hostCentreon'],
-			     'database' => $conf_centreon['db'],);	
-	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);	
-
-	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 	
+	$pearDB = new CentreonDB();
+		
 	include_once($centreon_path . "www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();
-	
-	include_once($centreon_path . "www/DBNDOConnect.php");
+
+	$pearDBndo = new CentreonDB("ndo");
 
 	/*
 	 * calcul stat for resume

@@ -16,24 +16,13 @@
  */
  
 	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once 'DB.php';
-	
-	$dsn = array('phptype'  => 'mysql',
-			     'username' => $conf_centreon['user'],
-			     'password' => $conf_centreon['password'],
-			     'hostspec' => $conf_centreon['hostCentreon'],
-			     'database' => $conf_centreon['db']);
-			     
-	$options = array('debug'       => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
-	
+
+	require_once $centreon_path . "/www/class/centreonDB.class.php";	
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
 	/* 
 	 * start init db
 	 */	
-	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) 
-		die("Connecting probems with Centreon database : " . $pearDB->getMessage());		
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+	$pearDB = new CentreonDB();
 		
 	$buffer = new CentreonXML();
 	$buffer->startElement("traps");		

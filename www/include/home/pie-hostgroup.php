@@ -42,8 +42,8 @@
 	include_once($oreonPath . "www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();
-	
-	include_once($oreonPath . "www/DBNDOConnect.php");
+		
+	include_once($oreonPath . "www/class/centreonDB.class.php");
 
 	## calcul stat for resume
 	$statistic = array(0 => "UP", 1 => "", 2 => "CRITICAL", 3 => "UNKNOWN", 4 => "PENDING");

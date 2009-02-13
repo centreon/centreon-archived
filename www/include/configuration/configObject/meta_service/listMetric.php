@@ -49,7 +49,8 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	require_once("./DBOdsConnect.php");
+	require_once("./class/centreonDB.class.php");
+	$pearDBO = new CentreonDB("centstorage");	
 	
 	$DBRESULT = & $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."'");	
 	if (PEAR::isError($DBRESULT))

@@ -19,7 +19,7 @@
 	# use by ajax
 
 	require_once("@CENTREON_ETC@/centreon.conf.php");
-	require_once($centreon_path."www/DBconnect.php");
+	require_once($centreon_path."www/class/centreonDB.php");	
 
 	function myDecodeService($arg)	{
 		$arg = str_replace('#BR#', "\\n", $arg);
@@ -31,6 +31,8 @@
 	}	
 	
 	header('Content-type: text/html; charset=iso-8859-1');
+
+	$pearDB = new CentreonDB();
 
 	if (isset($_POST["index"])){
 		$DBRESULT =& $pearDB->query("SELECT `command_example` FROM `command` WHERE `command_id` = '". $_POST["index"] ."'");

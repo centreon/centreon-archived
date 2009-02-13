@@ -40,7 +40,9 @@
 	#PHP functions
 	require_once("./include/options/oreon/generalOpt/DB-Func.php");
 	require_once("./include/common/common-Func.php");
-	require_once("./DBOdsConnect.php");
+	require_once("./class/centreonDB.class.php");
+	
+	$pearDBO = new CentreonDB("centstorage");
 	
 	if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])){
 		if ($_POST["o"] == "rg" && isset($_POST["select"])){

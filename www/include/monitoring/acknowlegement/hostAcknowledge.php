@@ -20,7 +20,9 @@
 
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	require_once "./DBNDOConnect.php";
+	require_once "./class/centreonDB.class.php";
+	
+	$pearDBndo = new CentreonDB("ndo");
 	
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	isset($_GET["cmd"]) ? $cmd = $_GET["cmd"] : $cmd = NULL;

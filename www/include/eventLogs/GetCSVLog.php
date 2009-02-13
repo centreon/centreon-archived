@@ -39,9 +39,11 @@
  	ini_set("display_errors", "Off"); 
  	 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once($centreon_path . "www/class/centreonDB.class.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
+
+	$pearDB = new CentreonDB();
+	$pearDBO = new CentreonDB("centstorage");
 
 	/*
 	 * Security check

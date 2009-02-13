@@ -39,7 +39,9 @@
 	#PHP functions
 	require_once("./include/options/oreon/generalOpt/DB-Func.php");
 	require_once("./include/common/common-Func.php");
-	require_once("./DBOdsConnect.php");
+	require_once("./class/centreonDB.class.php");
+	
+	$pearDBO = new CentreonDB("centstorage");	
 	
 	switch ($o)	{
 		case "msvc" : require_once($path."viewMetrics.php"); break;

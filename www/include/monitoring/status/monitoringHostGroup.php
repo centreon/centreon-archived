@@ -31,7 +31,10 @@
 
 	$pathDetails = "./include/monitoring/objectDetails/";
 
-	include_once("./DBNDOConnect.php");
+	include_once("./class/centreonDB.class.php");
+	
+	$pearDBndo = new CentreonDB("ndo");
+	
 	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
 		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
 	} else {

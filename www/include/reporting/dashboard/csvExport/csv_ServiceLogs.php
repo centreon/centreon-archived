@@ -37,15 +37,17 @@
  */
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBOdsConnect.php");
-	include_once($centreon_path . "www/DBNDOConnect.php");
+	require_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
 	require_once $centreon_path . "www/class/User.class.php";
 	require_once $centreon_path . "www/class/Oreon.class.php";
 	require_once $centreon_path . "www/class/other.class.php";	
 	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
+	
+	$pearDB = new CentreonDB();
+	$pearDBndo = new CentreonDB("ndo");
+	$pearDBO = new CentreonDB("centstorage");
 	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$res =& $pearDB->query("SELECT * FROM contact, session WHERE session.session_id='".$_GET['sid']."' AND session.user_id = contact.contact_id");

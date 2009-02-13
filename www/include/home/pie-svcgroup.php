@@ -24,7 +24,7 @@
 
 	$oreonPath = '/usr/local/centreon/';
 
-	require_once("DB.php");
+	
 	require_once("@CENTREON_ETC@/centreon.conf.php");
 		
 	/* Connect to oreon DB */
@@ -44,7 +44,9 @@
 
 	$ndo_base_prefix = getNDOPrefix();	
 	
-	include_once($oreonPath . "www/DBNDOConnect.php");
+	include_once($oreonPath . "www/class/centreonDB.php");
+	
+	$pearDBndo = new CentreonDB("ndo");
 
 	## calcul stat for resume
 	$statistic = array(0 => "UP", 1 => "", 2 => "CRITICAL", 3 => "UNKNOWN", 4 => "PENDING");

@@ -41,13 +41,13 @@
 
 	/* 
 	 * pearDB init 
-	 */
-	require_once 'DB.php';
-
+	 */	
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path . "www/DBconnect.php";
-	include_once $centreon_path . "www/DBOdsConnect.php";
-	include_once $centreon_path . "www/DBNDOConnect.php";
+	include_once $centreon_path . "www/class/centreonDB.class.php";
+	
+	$pearDB = new CentreonDB();
+	$pearDBO = new CentreonDB("centstorage");
+	$pearDBndo = new CentreonDB("ndo");
 
 	/* 
 	 * PHP functions 
@@ -72,8 +72,6 @@
 		global $pearDB;
 
 		$DBRESULT =& $pearDB->query("SELECT count(sg_id) FROM `servicegroup`");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$num_row =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return $num_row["count(sg_id)"];
@@ -93,8 +91,7 @@
 		$DBRESULT =& $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
 		$session =& $DBRESULT->fetchRow();
 		$access = new CentreonAcl($session["user_id"], $is_admin);
-		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
-		
+		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());		
 		$hoststr = $access->getHostsString("ID", $pearDBndo);
 		$servicestr = $access->getServicesString("ID", $pearDBndo);
 		
@@ -205,8 +202,6 @@
 			 */
 			$lcaSG = $access->getServiceGroups();
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($SG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin || (isset($lca["LcaSG"]) && isset($lca["LcaSG"][$SG["sg_id"]]))){ 					
@@ -223,8 +218,6 @@
 			$DBRESULT->free();
 		} else if ($type == "RR") {
 			$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($HG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin || (isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_id"]]))){
@@ -245,8 +238,6 @@
 			 */
 			
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' order by host_name");
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			$cpt = 0;
 			$hostaloneSTR2 = "";
 			while ($host =& $DBRESULT2->fetchRow()){
@@ -281,8 +272,6 @@
 			$str = "";
 			$cpt = 0;
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($MS =& $DBRESULT->fetchRow()){
 				if (!$cpt) {
 					$buffer->startElement("item");

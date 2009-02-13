@@ -20,14 +20,15 @@
 	} else {
 		header("Content-type: text/xml"); 
 	} 
-	
-	require_once 'DB.php';
+		
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once $centreon_path . "www/class/centreonXML.class.php";
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBOdsConnect.php");
-	include_once($centreon_path . "www/DBNDOConnect.php");
+	include_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
+	
+	$pearDB = new CentreonDB();
+	$pearDBndo = new CentreonDB("ndo");
+	$pearDBO = new CentreonDB("centstorage");
 	
 	/*
 	 * Start document root

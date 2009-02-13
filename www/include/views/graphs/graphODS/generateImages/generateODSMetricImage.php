@@ -23,8 +23,9 @@
 	
 	include("@CENTREON_ETC@/centreon.conf.php");
 	
-	require_once 'DB.php';
+	
 	require_once './DB-Func.php';
+	require_once $centreon_path."www/class/centreonDB.class.php";
 	require_once $centreon_path."www/class/Session.class.php";
 	require_once $centreon_path."www/class/Oreon.class.php";
 	require_once "$centreon_path/www/class/centreonGMT.class.php";
@@ -76,8 +77,8 @@
 		/*
 		 * Connect to ods
 		 */
-		 
-		include_once($centreon_path."www/DBOdsConnect.php");
+		 		
+		$pearDBO = new CentreonDB("centstorage");
 
 		$RRDdatabase_path = getRRDToolPath($pearDBO);
 	

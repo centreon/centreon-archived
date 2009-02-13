@@ -15,11 +15,11 @@
  * For information : contact@centreon.com
  */
  
-# connect DB oreon
-	require_once 'DB.php';
+# connect DB oreon	
 
 	require_once ("../../../../class/Session.class.php");
 	require_once ("../../../../class/Oreon.class.php");
+	require_once ("../../../../class/centreonDB.class.php");
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
@@ -31,24 +31,8 @@
 	
 	require_once "../../../common/common-Func.php";
 	
-	$dsn = array(
-	    'phptype'  => 'mysql',
-	    'username' => $conf_centreon['user'],
-	    'password' => $conf_centreon['password'],
-	    'hostspec' => $conf_centreon['hostCentreon'],
-	    'database' => $conf_centreon['db'],
-	);
-
-	$options = array(
-	    'debug'       => 2,
-	    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-	);
-
-	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB))
-	    die("Unable to connect : " . $pearDB->getMessage());
-
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+	$pearDB = new CentreonDB();
+	
 
 # get info from database
 

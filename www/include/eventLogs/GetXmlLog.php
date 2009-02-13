@@ -54,15 +54,15 @@
 	
 	/*
 	 * pearDB init
-	 */ 
-	require_once 'DB.php';
-	
+	 */ 	
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
+	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
-	include_once($centreon_path . "www/DBconnect.php");
-	include_once($centreon_path . "www/DBOdsConnect.php");
-	include_once $centreon_path . "www/DBNDOConnect.php";
+	$pearDB = new CentreonDB();
+	$pearDBO = new CentreonDB("centstorage");
+	$pearDBndo = new CentreonDB("ndo");	
+	
 	/*
 	 * Include Access Class
 	 */

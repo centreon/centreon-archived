@@ -45,13 +45,16 @@
 	$buffer = '';
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path . "www/DBconnect.php";
-	include_once $centreon_path . "www/DBNDOConnect.php";
+	include_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once $centreon_path . "www/class/other.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
 	include_once $centreon_path . "www/class/centreonGMT.class.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
+	
+	
+	$pearDB = new CentreonDB();
+	$pearDBndo = new CentreonDB("ndo");
 	
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);

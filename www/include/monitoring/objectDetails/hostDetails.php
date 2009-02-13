@@ -17,8 +17,10 @@
  
 	if (!isset($oreon))
 		exit();
-
-	include_once("./DBNDOConnect.php");
+	
+	include_once("./class/centreonDB.class.php");
+	
+	$pearDBndo = new CentreonDB("ndo");
 
 	/*
 	 * ACL Actions

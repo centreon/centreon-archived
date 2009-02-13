@@ -484,7 +484,10 @@
 			$DBRESULT->free();
 		}
 		else if ($meta["meta_select_mode"] == 1)	{
-			require_once("./DBOdsConnect.php");
+			require_once("./class/centreonDB.class.php");
+			
+			$pearDBO = new CentreonDB("centstorage");
+			
 			$DBRESULT =& $pearDB->query("SELECT meta_id, host_id, metric_id FROM meta_service_relation msr WHERE meta_id = '".$key."' AND activate = '1'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";

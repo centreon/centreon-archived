@@ -40,20 +40,20 @@
 	 * if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
 	 */
 	$debugXML = 0;
-	$buffer = '';
-
-	include_once "DB.php";
+	$buffer = '';	
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."www/class/other.class.php";
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonACL.class.php";
 	include_once $centreon_path."www/class/centreonXML.class.php";
-	include_once $centreon_path."www/DBconnect.php";
-	include_once $centreon_path."www/DBOdsConnect.php";
-	include_once $centreon_path."www/DBNDOConnect.php";
+	include_once $centreon_path."www/class/centreonDB.class.php";
 	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";	
 	include_once $centreon_path."www/include/common/common-Func.php";
+
+	$pearDB = new CentreonDB();
+	$pearDBO = new CentreonDB("centstorage");
+	$pearDBndo = new CentreonDB("ndo");
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);

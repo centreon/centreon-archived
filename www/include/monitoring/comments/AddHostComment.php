@@ -19,7 +19,10 @@
 		exit();
 	
 	include_once $centreon_path."www/class/centreonGMT.class.php";
-	include_once $centreon_path."www/DBNDOConnect.php";
+	include_once $centreon_path."www/class/centreonDB.class.php";
+	
+	$pearDBndo = new CentreonDB("ndo");
+	
 	/*
 	 * Init GMT class
 	 */

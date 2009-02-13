@@ -35,44 +35,22 @@
  * SVN : $Id: common-Func.php 7139 2008-11-24 17:19:45Z jmathis $
  * 
  */
- 
-	require_once 'DB.php';
+ 	
 	require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once($centreon_path."www/class/centreonDB.class.php");
 	 /*
 	  * returns a connection to centstorage database
 	  */
 	function getCentStorageConnection() { 
-		global $conf_centreon;
-		$dsn = array('phptype'  => 'mysql',
-			     	'username' => $conf_centreon['user'],
-			     	'password' => $conf_centreon['password'],
-			     	'hostspec' => $conf_centreon['hostCentstorage'],
-			     	'database' => $conf_centreon['dbcstg']);
-		$options = array('debug'       => 2,
-				 		'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
-		$pearDB =& DB::connect($dsn, $options);
-		if (PEAR::isError($pearDB)) 
-		  die("Connecting probems with oreon database : " . $pearDB->getMessage());		
-		$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-		return $pearDB;
+		$pearDBO = new CentreonDB("centstorage");
+		return $pearDBO;		
 	}			
 	/*
 	 * returns a connection to centreon database
 	 */
 	function getCentreonConnection() {
-		global $conf_centreon;
-		$dsn = array('phptype'  => 'mysql',
-			     	'username' => $conf_centreon['user'],
-			     	'password' => $conf_centreon['password'],
-			     	'hostspec' => $conf_centreon['hostCentreon'],
-			     	'database' => $conf_centreon['db']);
-     	$options = array('debug'       => 2,
-	 		'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
-		$pearDBO =& DB::connect($dsn, $options);
-		if (PEAR::isError($pearDBO)) 
-		  die("Connecting probems with centstorage database : " . $pearDBO->getMessage());		
-		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
-		return $pearDBO;
+		$pearDB = new CentreonDB();
+		return $pearDB;
 	 }
 	/*
 	 * Create a XML node for each day stats (in $row) for a service, a servicegroup, an host or an hostgroup

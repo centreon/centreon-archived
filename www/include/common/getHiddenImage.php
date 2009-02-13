@@ -15,11 +15,12 @@
  * For information : contact@centreon.com
  */
 
-	require_once ("@CENTREON_ETC@/centreon.conf.php");
-	require_once ("../../DBconnect.php");
+	require_once ("@CENTREON_ETC@/centreon.conf.php");		
 	require_once ("../../$classdir/Session.class.php");
 	require_once ("../../$classdir/Oreon.class.php");
+	require_once ("../../$classdir/centreonDB.class.php");
 	
+	$pearDB = new CentreonDB();
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 	

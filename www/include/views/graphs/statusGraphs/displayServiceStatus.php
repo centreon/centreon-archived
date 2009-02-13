@@ -18,14 +18,15 @@
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
-		
-	require_once 'DB.php';
-	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once $centreon_path."www/DBconnect.php";
+			
+	require_once "@CENTREON_ETC@/centreon.conf.php";	
+	require_once $centreon_path."/www/class/centreonDB.class.php";
 	require_once $centreon_path."www/class/Session.class.php";
 	require_once $centreon_path."/www/class/centreonGMT.class.php";
 	require_once $centreon_path."www/class/Oreon.class.php";
 	require_once $centreon_path."www/include/common/common-Func.php";
+
+	$pearDB = new CentreonDB();
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
@@ -75,8 +76,8 @@
 		/*
 		 * Connect to ods
 		 */
-		 
-		include_once($centreon_path."www/DBOdsConnect.php");
+		 		
+		$pearDBO = new CentreonDB("centstorage");
 
 		$RRDdatabase_path = getStatusDBDir($pearDBO);
 	

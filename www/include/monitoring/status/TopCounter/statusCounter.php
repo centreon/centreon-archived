@@ -23,24 +23,18 @@
 		$value = filter_var($value, INPUT_GET);	
 		$_GET[$key] = $value;
 	}
-
-	include_once 'DB.php';
-
+	
 	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
+	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
 	/* 
 	 * Connect to oreon DB 
 	 */
 
-	$dsn = array('phptype'=> 'mysql', 'username' => $conf_centreon['user'], 'password' => $conf_centreon['password'],'hostspec' => $conf_centreon['hostCentreon'],'database' => $conf_centreon['db']);
-
-	$pearDB =& DB::connect($dsn, array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE));
-	if (PEAR::isError($pearDB)) 
-		die("<data>Connecting problems with oreon database : " . $pearDB->getMessage()."</data>");
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-	
+	$pearDB = new CentreonDB();
+		
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
 	
@@ -117,8 +111,11 @@
 
 		/*
 		 * Connect to NDO
-		 */
-		include_once($centreon_path . "www/DBNDOConnect.php");
+		 */		
+		include_once($centreon_path . "www/class/centreonDB.class.php");
+		
+		$pearDBndo = new CentreonDB("ndo");
+				
 		if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
 			print "<data>Can't connect to ndo Database</data>";
 			exit();

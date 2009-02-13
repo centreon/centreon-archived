@@ -34,8 +34,10 @@
 	$tpl = initSmartyTpl($path, $tpl, "template/");
 
 	$ndo_base_prefix = getNDOPrefix();
-	include_once("./DBNDOConnect.php");
-
+	include_once("./class/centreonDB.class.php");
+	
+	$pearDBndo = new CentreonDB("ndo");
+	
 	/*
 	 * Pear library
 	 */

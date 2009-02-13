@@ -38,7 +38,9 @@
 	#
 	## Database retrieve information
 	#
-	require_once("./DBOdsConnect.php");
+	require_once("./class/centreonDB.class.php");
+	
+	$pearDBO = new CentreonDB("centstorage");
 	
 	$metric = array();
 	if (($o == "cs" || $o == "ws") && $msr_id)	{	

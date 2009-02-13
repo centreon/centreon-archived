@@ -35,8 +35,7 @@
  * SVN : $Id: GetXmlHost.php 7139 2008-11-24 17:19:45Z jmathis $
  * 
  */
-	
-	require_once 'DB.php';
+		
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	
 	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';

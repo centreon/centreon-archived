@@ -38,8 +38,11 @@
 	#Path to the configuration dir
 	$path = "./include/configuration/configObject/service/";
 	
-	#PHP functions
-	require_once("./DBOdsConnect.php");
+	#PHP functions	
+	require_once("./class/centreonDB.php");
+	
+	$pearDBO = new CentreonDB("centstorage");	
+	
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	

@@ -29,9 +29,11 @@
 	}
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path."www/DBconnect.php";
-	include_once $centreon_path."www/DBOdsConnect.php";
-
+	include_once $centreon_path."www/class/centreonDB.php";
+	
+	$pearDB = new CentreonDB();
+	$pearDBO = new CentreonDB("centstorage");
+	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
