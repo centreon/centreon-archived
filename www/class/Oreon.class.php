@@ -101,8 +101,10 @@ class Oreon	{
   	}
 	
 	function initNagiosCFG($pearDB = NULL)	{
+		
 		if (!$pearDB)	
 			return;
+		
 		$this->Nagioscfg = array();
 		$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
 		$this->Nagioscfg = $DBRESULT->fetchRow();
@@ -110,11 +112,15 @@ class Oreon	{
 	}
 	
 	function initOptGen($pearDB = NULL)	{
+		
 		if (!$pearDB)	
 			return;
+		
 		$this->optGen = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		$this->optGen = $DBRESULT->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
+		while ($opt =& $DBRESULT->fetchRow()) {
+			$this->optGen[$opt["key"]] = $opt["value"];
+		}
 		$DBRESULT->free();
 	}
 	
