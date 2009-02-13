@@ -100,10 +100,10 @@
 
 		# Update in DB
 		updateLdapConfigData($form->getSubmitValue("gopt_id"));
+		
 		# Update in Oreon Object
-		$oreon->optGen = array();
-		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		$oreon->optGen =& $DBRESULT2->fetchRow();
+		$oreon->initOptGen($pearDB);
+		
 		$o = "w";
    		$valid = true;
 		$form->freeze();

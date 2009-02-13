@@ -73,7 +73,8 @@
 	}
 
 	function updateGeneralOptInDB ($gopt_id = NULL)	{
-		if (!$gopt_id) return;
+		if (!$gopt_id) 
+			return;
 		updateGeneralOpt($gopt_id);
 	}
 
@@ -91,14 +92,8 @@
 		updateOption($pearDB, "nagios_version", isset($ret["nagios_version"]) && $ret["nagios_version"] != NULL ? $ret["nagios_version"] : "NULL");
 		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? htmlentities($ret["mailer_path_bin"], ENT_QUOTES) : "NULL");
 		
-		/*
-		$oreon->optGen = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$oreon->optGen =& $DBRESULT->fetchRow();
-		$oreon->user->version = $ret["nagios_version"];
-		*/
+		$oreon->initOptGen($pearDB);
+
 	}
 
 	function updateSNMPConfigData($gopt_id = null)	{
@@ -114,6 +109,7 @@
 		updateOption($pearDB, "snmpttconvertmib_path_bin", isset($ret["snmpttconvertmib_path_bin"]) && $ret["snmpttconvertmib_path_bin"] != NULL ? $ret["snmpttconvertmib_path_bin"] : "NULL");
 		updateOption($pearDB, "perl_library_path", isset($ret["perl_library_path"]) && $ret["perl_library_path"] != NULL ? $ret["perl_library_path"] : "NULL");
 		
+		$oreon->initOptGen($pearDB);
 	}
 
 	function updateDebugConfigData($gopt_id = null)	{
@@ -129,6 +125,7 @@
 		updateOption($pearDB, "debug_ldap_import", isset($ret["debug_ldap_import"]) && $ret["debug_ldap_import"] != NULL ? $ret["debug_ldap_import"]: "NULL");
 		updateOption($pearDB, "debug_inventory", isset($ret["debug_inventory"]) && $ret["debug_inventory"] != NULL ? $ret["debug_inventory"]: "NULL");
 
+		$oreon->initOptGen($pearDB);
 	}
 
 	function updateLdapConfigData($gopt_id = null)	{
@@ -149,6 +146,8 @@
 		updateOption($pearDB, "ldap_search_timeout", isset($ret["ldap_search_timeout"]) && $ret["ldap_search_timeout"] != NULL ? htmlentities($ret["ldap_search_timeout"], ENT_QUOTES): "NULL");
 		updateOption($pearDB, "ldap_search_limit", isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != NULL ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES): "NULL");		
 		updateOption($pearDB, "ldap_protocol_version", isset($ret["ldap_protocol_version"]) && $ret["ldap_protocol_version"] != NULL ? htmlentities($ret["ldap_protocol_version"], ENT_QUOTES): "NULL");
+	
+		$oreon->initOptGen($pearDB);
 	}
 
 	function updateColorsConfigData($gopt_id = null)	{
@@ -166,6 +165,7 @@
 		updateOption($pearDB, "color_pending", isset($ret["color_pending"]) && $ret["color_pending"] != NULL ? htmlentities($ret["color_pending"], ENT_QUOTES): "NULL");
 		updateOption($pearDB, "color_unknown", isset($ret["color_unknown"]) && $ret["color_unknown"] != NULL ? htmlentities($ret["color_unknown"], ENT_QUOTES): "NULL ");
 		
+		$oreon->initOptGen($pearDB);
 	}
 
 	function updateGeneralConfigData($gopt_id = null)	{
@@ -192,6 +192,7 @@
 		updateOption($pearDB, "problem_sort_type", isset($ret["problem_sort_type"]) && $ret["problem_sort_type"] != NULL ? htmlentities($ret["problem_sort_type"], ENT_QUOTES): "NULL");
 		updateOption($pearDB, "problem_sort_order", isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != NULL ? htmlentities($ret["problem_sort_order"], ENT_QUOTES): "NULL");
 		
+		$oreon->initOptGen($pearDB);
 	}
 
 	function updateRRDToolConfigData($gopt_id = null)	{
@@ -203,6 +204,7 @@
 		updateOption($pearDB, "rrdtool_path_bin", isset($ret["rrdtool_path_bin"]) && $ret["rrdtool_path_bin"] != NULL ? htmlentities($ret["rrdtool_path_bin"], ENT_QUOTES) : "NULL");
 		updateOption($pearDB, "rrdtool_version", isset($ret["rrdtool_version"]) && $ret["rrdtool_version"] != NULL ? htmlentities($ret["rrdtool_version"], ENT_QUOTES) : "NULL");
 		
+		$oreon->initOptGen($pearDB);
 	}
 	
 	function updateODSConfigData()	{
@@ -259,6 +261,7 @@
 		updateOption($pearDB, "cas_url", isset($ret["cas_url"]) && $ret["cas_url"] != NULL ? $ret["cas_url"] : "NULL");
 		updateOption($pearDB, "cas_version", isset($ret["cas_version"]) && $ret["cas_version"] != NULL ? $ret["cas_version"] : "NULL");
 	
+		$oreon->initOptGen($pearDB);
 	}
 	
 	function updateReportingTimePeriodInDB() {

@@ -19,12 +19,6 @@
 		exit();
 
 	#
-	## Database retrieve information
-	#
-	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
-	# Set base value
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	#
@@ -81,7 +75,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path."snmp/", $tpl);
 
-	$form->setDefaults($gopt);
+	$form->setDefaults($oreon->optGen);
 
 	$subC =& $form->addElement('submit', 'submitC', _("Save"));
 	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));

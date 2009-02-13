@@ -26,10 +26,13 @@
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
 	$attrsText = array("size"=>"35");
-	
-	$query = "SELECT `gopt_id`, `patch_type_stable`, `patch_type_RC`, `patch_type_patch`, `patch_type_secu`, `patch_type_beta`, `patch_path_download` FROM `general_opt` LIMIT 1";
+
+	$query = "SELECT * FROM `options` WHERE `key` IN ('patch_type_stable', 'patch_type_RC', 'patch_type_patch', 'patch_type_secu', 'patch_type_beta', 'patch_url_service', 'patch_url_download', 'patch_path_download')";
 	$DBRESULT =& $pearDB->query($query);
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
+	while ($result =& $DBRESULT->fecthRow()) {
+		$gopt[$result["key"]] = myDecode($result["value"]);
+	}
+	$DBRESULT->free();	
 	
 	$form = new HTML_QuickForm('patchOption', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Change update options"));
