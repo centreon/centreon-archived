@@ -77,5 +77,5 @@
 
 	$buffer->endElement();	
 	header('Content-Type: text/xml');
-	$buffer->output;
+	$buffer->output();
 ?>
