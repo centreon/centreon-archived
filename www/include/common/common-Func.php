@@ -89,10 +89,11 @@
 	}
 	
 	function getStatusColor($pearDB){
-		$DBRESULT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error When selection color status : ".$DBRESULT->getDebugInfo()."<br />";		
-		return $DBRESULT->fetchRow();	
+		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('color_ok','color_warning','color_critical','color_unknown','color_pending','color_up','color_down','color_unreachable')");
+		while ($c =& $DBRESULT->fetchRow())
+			$colors[$c["key"]] = myDecode($c["value"]);
+		$DBRESULT->free();
+		return $colors;
 	}
 
 	function tidySearchKey($search, $advanced_search){
@@ -287,12 +288,12 @@
 					if ($row["hg_snmp_community"])
 						return html_entity_decode($row["hg_snmp_community"], ENT_QUOTES);
 				}
-				$DBRESULT =& $pearDB->query("SELECT snmp_community FROM general_opt LIMIT 1");
+				$DBRESULT =& $pearDB->query("SELECT value FROM options WHERE `key` = 'snmp_community' LIMIT 1");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				$row =& $DBRESULT->fetchRow();
-				if (isset($row["snmp_community"]))
-					return html_entity_decode($row["snmp_community"], ENT_QUOTES);
+				if (isset($row["value"]))
+					return html_entity_decode($row["value"], ENT_QUOTES);
 				return NULL;
 			}
 		}
@@ -323,12 +324,12 @@
 					if ($row["hg_snmp_version"])
 						return html_entity_decode($row["hg_snmp_version"], ENT_QUOTES);
 				}
-				$DBRESULT =& $pearDB->query("SELECT snmp_version FROM general_opt LIMIT 1");
+				$DBRESULT =& $pearDB->query("SELECT value FROM options WHERE `key` = 'snmp_version' LIMIT 1");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				$row =& $DBRESULT->fetchRow();
-				if (isset($row["snmp_version"]))
-					return html_entity_decode($row["snmp_version"], ENT_QUOTES);
+				if (isset($row["value"]))
+					return html_entity_decode($row["value"], ENT_QUOTES);
 				else
 					break;
 				break;
@@ -409,13 +410,14 @@
 		return NULL;
 	}
 	
-	function getVersion(){
+	function getVersion() {
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT `nagios_version` FROM `general_opt` LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'nagios_version' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$row =& $DBRESULT->fetchRow();
-		return $row["nagios_version"];	
+		$DBRESULT->free();
+		return $row["value"];	
 	}
 
 	function getMyHostMacroFromMultiTemplates($host_id, $field){
