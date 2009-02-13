@@ -232,11 +232,12 @@
 	
 	function onNodeSelect(nodeId){
 		var logView4xml = document.getElementById('logView4xml');
+		
 		logView4xml.innerHTML = "Waiting XML log";
-	
 		tree.openItem(nodeId);
 		multi = 0;
 		log_4_host(nodeId,'');
+		
 	}
 	
 	function onCheck(){
