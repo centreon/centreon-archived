@@ -41,32 +41,32 @@ class centreonAuth {
 	/*
 	 * Declare Values
 	 */
-	var $login;
-	var $password;
-	var $enable;
-	var $userExists;
-	var $cryptEngine;
-	var $autologin;
-	var $userInfos;
+	private $login;
+	private $password;
+	private $enable;
+	private $userExists;
+	private $cryptEngine;
+	private $autologin;
+	private $userInfos;
 	
-	var $cryptPossibilities;
+	private $cryptPossibilities;
 	
-	var $pearDB;
+	private $pearDB;
 	/*
 	 * Flags
 	 */
 	var $passwdOk;
-	var $authType;
+	private $authType;
 	
 	/*
 	 * keep log class 
 	 */
-	var $CentreonLog;
+	private $CentreonLog;
 
 	/*
 	 * Error Message
 	 */
-	var $error;
+	private $error;
 	
 	/*
 	 * Constructor
@@ -83,7 +83,7 @@ class centreonAuth {
     	$this->checkUser($username, $password, $autologin, $pearDB);
     }
 	    
-	function checkPassword($password) {
+	private function checkPassword($password) {
 		if ($this->userInfos["contact_auth_type"] == "ldap") {
 			
 			/*
@@ -107,7 +107,7 @@ class centreonAuth {
 		}
 	}
 	    
-    function checkUser($username, $password, $autologin, $pearDB) {
+    private function checkUser($username, $password, $autologin, $pearDB) {
     	if ($autologin == 0) {
 	    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");
 	    	if (PEAR::isError($DBRESULT))
@@ -149,7 +149,7 @@ class centreonAuth {
 	    }
     }
     
-    function checkPasswd($username, $password, $Crypt) {
+    private function checkPasswd($username, $password, $Crypt) {
     	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($useralias, ENT_QUOTES)."' AND `contact_password` = '".htmlentities($password, ENT_QUOTES)."' LIMIT 1");
     	if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -160,7 +160,7 @@ class centreonAuth {
      * Check crypt system
      */
 
-    function getCryptFunction() {
+    private function getCryptFunction() {
   		switch ($this->userInfos["contact_crypt"]) {
   			case 1 : 
   				return "MD5";
@@ -178,7 +178,7 @@ class centreonAuth {
 	 * Crypt String
 	 */
     
-    function myCrypt($str) {
+    private function myCrypt($str) {
   		switch ($this->cryptEngine) {
   			case 1 : 
   				return md5($str);
@@ -192,23 +192,23 @@ class centreonAuth {
   		}
   	}
 
-    function getCryptEngine() {
+    private function getCryptEngine() {
     	return $this->cryptEngine;
     }
     
-    function userExists() {
+    private function userExists() {
     	return $this->userExists;
     }
     
-    function userIsEnable() {
+    private function userIsEnable() {
     	return $this->enable;
     }
     
-    function passwordIsOk() {
+    private function passwordIsOk() {
     	return $this->passwdOk;
     }
 
-	function getAuthType() {
+	private function getAuthType() {
 		return $this->authType;
 	}
 

@@ -38,14 +38,14 @@
  
 class CentreonUserLog {
 
-	var $errorType;
-	var $uid;
-	var $path;
+	private $errorType;
+	private $uid;
+	private $path;
 	
 	/*
 	 * Constructor
 	 */
-	function CentreonUserLog ($uid, $pearDB) {
+	public function CentreonUserLog ($uid, $pearDB) {
 		
 		$this->uid = $uid;
 		$this->errorType = array();
@@ -74,7 +74,7 @@ class CentreonUserLog {
 	/*
 	 * Function for writing logs
 	 */		
-	function insertLog($id, $str, $print = 0, $page = 0, $option = 0) {
+	public function insertLog($id, $str, $print = 0, $page = 0, $option = 0) {
 		/*
 		 * Construct alerte message
 		 */
@@ -93,7 +93,7 @@ class CentreonUserLog {
 		exec("echo \"".$string."\" >> ".$this->errorType[$id].date("Y-m-d").".log");
 	}
 	
-	function setUID($uid)  {
+	public function setUID($uid)  {
 		$this->uid = $uid;
 	}
 	
