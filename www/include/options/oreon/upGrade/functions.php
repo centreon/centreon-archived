@@ -39,11 +39,7 @@ function getConfigPatch() {
 function getCurrentVersion() {
 	global $pearDB;
 	$query = "SELECT value FROM informations WHERE `key`='version'";
-	$DBRESULT =& $pearDB->query($query);
-	if (PEAR::isError($DBRESULT)) {
-		print $DBRESULT->getDebugInfo()."<br />";
-		return(false);
-	}
+	$DBRESULT =& $pearDB->query($query);	
 	if ($DBRESULT->numRows() != 1) {
 		return(false);
 	}

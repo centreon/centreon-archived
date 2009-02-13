@@ -31,8 +31,6 @@
 	# Get Poller List
 	$tab_nagios_server = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `localhost` DESC");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($nagios =& $DBRESULT->fetchRow())
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 	

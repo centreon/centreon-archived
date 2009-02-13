@@ -23,15 +23,11 @@
 		 * Purge
 		 */
 		$DBRESULT =& $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		/*
 		 * Add
 		 */
 		$DBRESULT =& $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', '$value')");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 
 	function is_valid_path($path) {
@@ -245,8 +241,6 @@
 				`archive_retention` = '".$ret["archive_retention"]."',
 				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
 		$DBRESULT =& $pearDBO->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}	
 	
 	function updateCASConfigData($gopt_id = null)	{
@@ -279,29 +273,19 @@
 		foreach ($ret["dayList"] as $key => $value){ 	
 			$query = "UPDATE `contact_param` SET `cp_value` = '".$ret["dayList"][$key]."' WHERE `cp_contact_id` IS NULL AND `cp_key` = '$key'";
 			$DBRESULT =& $pearDB->query($query);
-			if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 		
 		$query = "UPDATE `contact_param` SET cp_value = '".$ret["report_hour_start"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_hour_start'";
 		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		$query = "UPDATE `contact_param` SET cp_value = '".$ret["report_minute_start"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_minute_start'";
 		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		$query = "UPDATE `contact_param` SET cp_value = '".$ret["report_hour_end"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_hour_end'";
 		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		$query = "UPDATE `contact_param` SET cp_value = '".$ret["report_minute_end"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_minute_end'";
 		$DBRESULT =& $pearDB->query($query);
-		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 ?>
