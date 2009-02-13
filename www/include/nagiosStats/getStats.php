@@ -86,14 +86,14 @@
 		/*
 		 * Get RRDTool binary Path 
 		 */
-		$DBRESULT =& $pearDB->query("SELECT `rrdtool_path_bin` FROM `general_opt`");
+		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'rrdtool_path_bin'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$options =& $DBRESULT->fetchRow();
+		while ($options =& $DBRESULT->fetchRow())
+			$rrdtoolPath = $options["value"];
 		$DBRESULT->free();
-		$rrdtoolPath = $options["rrdtool_path_bin"];
 		unset($options);
-		
+				
 		$title	 = array(	
 					"active_host_check" => _("Host checks"), 
 					"active_host_last" => _("Active hosts"),
