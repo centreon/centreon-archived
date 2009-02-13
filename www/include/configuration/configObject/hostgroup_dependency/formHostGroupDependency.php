@@ -24,8 +24,6 @@
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -42,16 +40,12 @@
 		
 		# Set HostGroup Parents
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $hgP =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hgParents"][$i] = $hgP["hostgroup_hg_id"];
 		$DBRESULT->free();
 		
 		# Set HostGroup Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $hgC =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hgChilds"][$i] = $hgC["hostgroup_hg_id"];
 		$DBRESULT->free();
@@ -62,8 +56,6 @@
 	# HostGroup comes from DB -> Store in $hgs Array
 	$hgs = array();
 	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($hg =& $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();

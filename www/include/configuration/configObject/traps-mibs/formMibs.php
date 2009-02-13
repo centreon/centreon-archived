@@ -37,8 +37,6 @@
 	 */
 	$mnftr = array(NULL => NULL);
 	$DBRESULT =& $pearDB->query("SELECT `id`, `alias` FROM `traps_vendor` ORDER BY `alias`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($rmnftr =& $DBRESULT->fetchRow())
 		$mnftr[$rmnftr["id"]] = $rmnftr["alias"];
 	$DBRESULT->free();

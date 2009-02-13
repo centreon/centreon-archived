@@ -22,8 +22,6 @@
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -40,16 +38,12 @@
 		
 		# Set ServiceGroup Parents
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for ($i = 0; $sgP =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_sgParents"][$i] = $sgP["servicegroup_sg_id"];
 		$DBRESULT->free();
 		
 		# Set ServiceGroup Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for ($i = 0; $sgC =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_sgChilds"][$i] = $sgC["servicegroup_sg_id"];
 		$DBRESULT->free();
@@ -65,8 +59,6 @@
 	
 	$sgs = array();
 	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($sg =& $DBRESULT->fetchRow())
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$DBRESULT->free();

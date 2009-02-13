@@ -42,8 +42,6 @@
 	$cmd = array();
 	if (($o == "c" || $o == "w") && $command_id)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 	}
@@ -54,8 +52,6 @@
 
 	$resource = array();
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($row = $DBRESULT->fetchRow()){
 		$resource[$row["resource_name"]] = $row["resource_name"];
 		if (isset($row["resource_comment"]) && $row["resource_comment"] != "")
@@ -68,8 +64,6 @@
 	 */
 	$graphTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($graphTpl =& $DBRESULT->fetchRow())
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
@@ -79,8 +73,6 @@
 	 */
 	$macros = array();
 	$DBRESULT =& $pearDB->query("SELECT `macro_name` FROM `nagios_macro` ORDER BY `macro_name`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($row =& $DBRESULT->fetchRow())
 		$macros[$row["macro_name"]] = $row["macro_name"];
 	$DBRESULT->free();

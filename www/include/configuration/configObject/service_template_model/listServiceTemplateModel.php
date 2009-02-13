@@ -34,9 +34,6 @@
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
 	}
 	
-	if (PEAR::isError($DBRESULT)) {
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	}
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -67,8 +64,6 @@
 	else
 		$rq = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$search = tidySearchKey($search, $advanced_search);
 

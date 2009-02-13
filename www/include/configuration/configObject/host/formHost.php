@@ -25,8 +25,6 @@
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 		/*
 		 * Set base value

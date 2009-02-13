@@ -21,8 +21,6 @@
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 		# Set base value
 		if ($DBRESULT->numRows())	{
@@ -40,8 +38,6 @@
 
 			# Set Contact Group
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			for($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 				$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 			$DBRESULT->free();
@@ -56,20 +52,14 @@
 
 			# Set Host Parents
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			for($i = 0; $parent =& $DBRESULT->fetchRow(); $i++)
 				$host["host_parents"][$i] = $parent["host_parent_hp_id"];
 			$DBRESULT->free();
 
 			# Set Service Templates Childs
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$host_id."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			for($i = 0; $svTpl =& $DBRESULT->fetchRow(); $i++){
 				$DBRESULT2 =& $pearDB->query("SELECT service_register FROM service WHERE service_id = '".$svTpl['service_service_id']."' LIMIT 1");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				$tpReg = $DBRESULT2->fetchRow();
 				if ($tpReg['service_register'] == 0)
 					$host["host_svTpls"][$i] = $svTpl["service_service_id"];
@@ -88,8 +78,6 @@
 	$host_tmplt_who_use_me = array();
 	if (isset($_GET["host_id"]) && $_GET["host_id"]){ 
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_template_model_htm_id = '".$_GET["host_id"]."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while($host_tmpl_father =& $DBRESULT->fetchRow())
 			$host_tmplt_who_use_me[$host_tmpl_father["host_id"]] = $host_tmpl_father["host_name"];
 		$DBRESULT->free();
@@ -100,8 +88,6 @@
 	 */
 	$hTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($hTpl =& $DBRESULT->fetchRow())	{
 		if (!$hTpl["host_name"])
 			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
@@ -112,8 +98,6 @@
 	# Service Templates comes from DB -> Store in $svTpls Array
 	$svTpls = array();
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' ORDER BY service_description");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($svTpl =& $DBRESULT->fetchRow())	{
 		if (!$svTpl["service_description"])
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
@@ -128,8 +112,6 @@
 	# Timeperiods comes from DB -> Store in $tps Array
 	$tps = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($tp =& $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
@@ -137,8 +119,6 @@
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
@@ -146,8 +126,6 @@
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($notifCg =& $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();

@@ -26,8 +26,6 @@
 			$id = $form->getSubmitValue('cmd_category_id');
 		
 		$DBRESULT =& $pearDB->query("SELECT `category_name`, `cmd_category_id` FROM `command_categories` WHERE `category_name` = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cat =& $DBRESULT->fetchRow();
 		
 		if ($DBRESULT->numRows() >= 1 && $cat["cmd_category_id"] == $id)
@@ -44,8 +42,6 @@
 		foreach ($sc as $key => $value)	{
 			
 			$DBRESULT =& $pearDB->query("SELECT * FROM `command_categories` WHERE `cmd_category_id` = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row =& $DBRESULT->fetchRow();
 			$row["cmd_category_id"] = '';
 			
@@ -59,12 +55,8 @@
 				if (testCommandCategorieExistence($sc_name))	{
 					$val ? $rq = "INSERT INTO `command_categories` VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					
 					$DBRESULT =& $pearDB->query("SELECT MAX(cmd_category_id) FROM `command_categories`");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 				}
 			}
@@ -76,8 +68,6 @@
 		
 		if (testCommandCategorieExistence($_POST["category_name"])){
 			$DBRESULT =& $pearDB->query("INSERT INTO `command_categories` (`category_name` , `category_alias`, `category_order`) VALUES ('".$_POST["category_name"]."', '".$_POST["category_alias"]."', '1')");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -85,8 +75,6 @@
 		global $pearDB;
 		
 		$DBRESULT =& $pearDB->query("UPDATE `command_categories` SET `category_name` = '".$_POST["category_name"]."' , `category_alias` = '".$_POST["category_alias"]."' , `category_order` = '".$_POST["category_order"]."' WHERE `cmd_category_id` = '".$_POST["cmd_category_id"]."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function deleteCommandCategorieInDB($sc_id = NULL){
@@ -94,8 +82,6 @@
 		$select = $_POST["select"];
 		foreach ($select as $key => $value){
 			$DBRESULT =& $pearDB->query("DELETE FROM `command_categories` WHERE `cmd_category_id` = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 

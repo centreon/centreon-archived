@@ -35,8 +35,6 @@
 		}
 
 		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())
 			$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 	}
@@ -46,8 +44,6 @@
 	 */
 	$notifCmds = array(null=>null);
 	$DBRESULT =& $pearDB->query("SELECT `command_id`, `command_name` FROM `command` WHERE `command_type` = '1' ORDER BY `command_name`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($notifCmd =& $DBRESULT->fetchRow())
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$DBRESULT->free();
@@ -58,8 +54,6 @@
 	
 	$checkCmds = array(null=>null);
 	$DBRESULT =& $pearDB->query("SELECT `command_id`, `command_name` FROM `command` WHERE `command_type` = '2' ORDER BY `command_name`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();

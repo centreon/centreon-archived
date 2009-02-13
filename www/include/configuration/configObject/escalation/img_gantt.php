@@ -44,9 +44,6 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	"AND ehr.escalation_esc_id = esc.esc_id ".
 	"ORDER BY esc.first_notification";
 	$res_max =& $pearDB->query($max_notif);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$nb_max =& $res_max->fetchRow();
 	$nb_max["nb_firstmin_service"] != NULL ? $min_notif = $nb_max["nb_firstmin_service"] : $min_notif = 1;
 	$nb_max["nb_firstmax_service"] != NULL ? $max_min_notif = $nb_max["nb_firstmax_service"] : $max_min_notif = 1;
@@ -62,9 +59,6 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	"AND ehr.escalation_esc_id = esc.esc_id ".
 	"ORDER BY esc.first_notification desc ";
 	$res_esc_svc =& $pearDB->query($cmd);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$nb_esc = $res_esc_svc->numRows();
 	$nb_esc_default = $nb_esc;
 	$nb_esc != NULL ? $nb_esc = $nb_esc : $nb_esc = 1;
@@ -78,9 +72,6 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	"AND ecr.contactgroup_cg_id = cg.cg_id ".
 	"ORDER BY esc.first_notification desc ";
 	$nb_svc =& $pearDB->query($cmd);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$nb_esc_tot = $nb_svc->numRows();
 	$nb_esc_tot != NULL ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
 
@@ -90,9 +81,6 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	"WHERE csr.service_service_id = ".$_GET["service_id"]." ".
 	"AND csr.contactgroup_cg_id = cg.cg_id";
 	$res_cg_service =& $pearDB->query($cg_host);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$max_contact_service = $res_cg_service->numRows();
 
 	# retrieve max length contactgroup of service
@@ -101,9 +89,6 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	"WHERE csr.service_service_id = ".$_GET["service_id"]." ".
 	"AND csr.contactgroup_cg_id = cg.cg_id";
 	$res_svc_max =& $pearDB->query($cg_svc_length);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$cg_contactgroup_svc_max =& $res_svc_max->fetchRow();
 	$max_contact_length = $cg_contactgroup_svc_max["max_length"];
 
@@ -115,9 +100,6 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	"AND ehr.escalation_esc_id = esc.esc_id ".
 	"ORDER BY esc.first_notification";
 	$res_max =& $pearDB->query($max_notif);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$nb_max =& $res_max->fetchRow();
 	$nb_max["nb_firstmax_host"] != NULL ? $max_min_notif = $nb_max["nb_firstmax_host"] : $max_min_notif = 1;
 	$nb_max["nb_firstmin_host"] != NULL ? $min_notif = $nb_max["nb_firstmin_host"] : $min_notif = 1;
@@ -133,9 +115,6 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	"AND ehr.escalation_esc_id = esc.esc_id ".
 	"ORDER BY esc.first_notification desc ";
 	$res_esc_host =& $pearDB->query($cmd);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$nb_esc = $res_esc_host->numRows();
 	$nb_esc_default = $nb_esc;
 	$nb_esc != NULL ? $nb_esc = $nb_esc : $nb_esc = 1;
@@ -149,9 +128,6 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	"AND ecr.contactgroup_cg_id = cg.cg_id ".
 	"ORDER BY esc.first_notification desc ";
 	$nb_host =& $pearDB->query($cmd);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$nb_esc_tot = $nb_host->numRows();
 	$nb_esc_tot != NULL ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
 
@@ -161,9 +137,6 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	"WHERE chr.host_host_id = ".$_GET["host_id"]." ".
 	"AND chr.contactgroup_cg_id = cg.cg_id";
 	$res_cg_host =& $pearDB->query($cg_host);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$max_contact_service = $res_cg_host->numRows();
 	
 	# retrieve the max length contactgroup
@@ -183,9 +156,6 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 	"AND ehr.escalation_esc_id = esc.esc_id ".
 	"ORDER BY esc.first_notification";
 	$res_max =& $pearDB->query($max_notif);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$nb_max =& $res_max->fetchRow();
 	$nb_max["nb_firstmin_hostgroup"] != NULL ? $min_notif = $nb_max["nb_firstmin_hostgroup"] : $min_notif = 1;
 	$nb_max["nb_firstmax_hostgroup"] != NULL ? $max_min_notif = $nb_max["nb_firstmax_hostgroup"] : $max_min_notif = 1;
@@ -201,9 +171,6 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 	"AND ehr.escalation_esc_id = esc.esc_id ".
 	"ORDER BY esc.first_notification desc ";
 	$res_esc_hostgroup =& $pearDB->query($cmd);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$nb_esc = $res_esc_hostgroup->numRows();
 	$nb_esc_default = $nb_esc;
 	$nb_esc != NULL ? $nb_esc = $nb_esc : $nb_esc = 1;
@@ -217,9 +184,6 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 	"AND ecr.contactgroup_cg_id = cg.cg_id ".
 	"ORDER BY esc.first_notification desc ";
 	$nb_hostgroup =& $pearDB->query($cmd);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$nb_esc_tot = $nb_hostgroup->numRows();
 	$nb_esc_tot != NULL ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
 
@@ -237,9 +201,6 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 	"WHERE chr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
 	"AND chr.contactgroup_cg_id = cg.cg_id";
 	$res_svc_max =& $pearDB->query($cg_svc_length);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$cg_contactgroup_svc_max =& $res_svc_max->fetchRow();
 	$max_contact_length = $cg_contactgroup_svc_max["max_length"];
 }
@@ -318,9 +279,6 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 		"WHERE ecr.escalation_esc_id = ".$esc_svc_data["esc_id"]." ".
 		"AND ecr.contactgroup_cg_id = cg.cg_id";
 		$res_cg =& $pearDB->query($cmd_contactgroup);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
 		$max_contact = $res_cg->numRows();
 		$pas_tmp = ($max_contact * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1) : 20);
 		for ($cnt = 0; $contactgroup =& $res_cg->fetchRow(); $cnt++){#show contactgroup link with the escalation of the service
@@ -368,9 +326,6 @@ else if (isset($_GET["host_id"]) && $_GET["host_id"] != NULL){
 		"WHERE ecr.escalation_esc_id = ".$esc_host_data["esc_id"]." ".
 		"AND ecr.contactgroup_cg_id = cg.cg_id";
 		$res_cg =& $pearDB->query($cmd_contactgroup);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
 		$max_contact = $res_cg->numRows();
 		$pas_tmp = ($max_contact * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1) : 20);
 		for ($cnt = 0; $contactgroup =& $res_cg->fetchRow(); $cnt++){#show contactgroup link with the escalation of the host
@@ -406,9 +361,6 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 		"WHERE ecr.escalation_esc_id = ".$esc_hostgroup_data["esc_id"]." ".
 		"AND ecr.contactgroup_cg_id = cg.cg_id";
 		$res_cg =& $pearDB->query($cmd_contactgroup);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
 		$max_contact = $res_cg->numRows();
 		$pas_tmp = ($max_contact * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1) : 20);
 		for ($cnt = 0; $contactgroup =& $res_cg->fetchRow(); $cnt++){#show contactgroup link with the escalation of the hostgroup

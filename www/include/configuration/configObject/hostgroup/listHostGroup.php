@@ -36,8 +36,6 @@
 	$request = "SELECT COUNT(*) FROM hostgroup $SearchTool";
 	
 	$DBRESULT =& $pearDB->query($request);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -68,8 +66,6 @@
 	 
 	$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup $SearchTool ORDER BY hg_name LIMIT ".$num * $limit .", $limit"; 
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	
 	$search = tidySearchKey($search, $advanced_search);
 	
@@ -96,13 +92,9 @@
 		$nbrhostDeact = array();
 		$rq = "SELECT COUNT(*) as nbr FROM hostgroup_relation hgr, host WHERE hostgroup_hg_id = '".$hg['hg_id']."' AND host.host_id = hgr.host_host_id AND host.host_register = '1' AND host.host_activate = '1'";
 		$DBRESULT2 =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";	
 		$nbrhostAct = $DBRESULT2->fetchRow();
 		$rq = "SELECT COUNT(*) as nbr FROM hostgroup_relation hgr, host WHERE hostgroup_hg_id = '".$hg['hg_id']."' AND host.host_id = hgr.host_host_id AND host.host_register = '1' AND host.host_activate = '0'";
 		$DBRESULT2 =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";	
 		$nbrhostDeact = $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),

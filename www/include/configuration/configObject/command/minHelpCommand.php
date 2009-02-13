@@ -34,8 +34,6 @@
 		 * Get command informations
 		 */
 		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cmd = $DBRESULT->fetchRow();
 
 		$cmd_array = explode(" ", $cmd["command_line"]);
@@ -52,8 +50,6 @@
 			 * Select Resource line
 			 */
 			$DBRESULT =& $pearDB->query("SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = '\$USER".$matches[1]."\$' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 			$resource =& $DBRESULT->fetchRow();
 			unset($DBRESULT);

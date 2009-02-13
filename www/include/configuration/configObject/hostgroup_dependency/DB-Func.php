@@ -25,8 +25,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('dep_id');
 		$DBRESULT =& $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$dep =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id)	
@@ -58,13 +56,9 @@
 		global $pearDB, $oreon;
 		foreach($dependencies as $key=>$value)		{
 			$DBRESULT2 =& $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$row = $DBRESULT2->fetchRow();
 			
 			$DBRESULT =& $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$oreon->CentreonLogAction->insertLog("hostgroup dependency", $key, $row['dep_name'], "d");
 		}
 	}
@@ -73,8 +67,6 @@
 		foreach($dependencies as $key=>$value)	{
 			global $pearDB, $oreon;
 			$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["dep_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -89,33 +81,21 @@
 				if (testHostGroupDependencyExistence($dep_name))	{
 					$val ? $rq = "INSERT INTO dependency VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(dep_id)"]))	{
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupParent_relation WHERE dependency_dep_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						$fields["dep_hgParents"] = "";
 						while($hg =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_hostgroupParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$hg["hostgroup_hg_id"]."')");
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 							$fields["dep_hgParents"] .= $hg["hostgroup_hg_id"] . ",";
 						}
 						$fields["dep_hgParents"] = trim($fields["dep_hgParents"], ",");
 						$DBRESULT->free();
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation WHERE dependency_dep_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						$fields["dep_hgChilds"] = "";
 						while($hg =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_hostgroupChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$hg["hostgroup_hg_id"]."')");
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 							$fields["dep_hgChilds"] .= $hg["hostgroup_hg_id"] . ",";
 						}
 						$fields["dep_hgChilds"] = trim($fields["dep_hgChilds"], ",");
@@ -157,11 +137,7 @@
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$dep_id = $DBRESULT->fetchRow();
 		$fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES);
 		$fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES);
@@ -200,8 +176,6 @@
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
 		$rq .= "WHERE dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES);
 		$fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES);
 		$fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
@@ -224,8 +198,6 @@
 		$rq = "DELETE FROM dependency_hostgroupParent_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["dep_hgParents"]))
 			$ret = $ret["dep_hgParents"];
 		else
@@ -236,8 +208,6 @@
 			$rq .= "VALUES ";
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 		
@@ -248,8 +218,6 @@
 		$rq = "DELETE FROM dependency_hostgroupChild_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["dep_hgChilds"]))
 			$ret = $ret["dep_hgChilds"];
 		else
@@ -260,8 +228,6 @@
 			$rq .= "VALUES ";
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 ?>

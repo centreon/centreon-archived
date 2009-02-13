@@ -30,8 +30,6 @@
 
 	while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
 		$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");			
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$resource = $DBRESULT->fetchRow();
 		if (!isset($resource["resource_line"])){
 			$error_msg .= "\$USER".$matches[1]."\$";				
@@ -55,8 +53,6 @@
 			$resource_def = str_replace('$', '@DOLLAR@', $resource_def);
 			if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches)) {
 				$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				$resource = $DBRESULT->fetchRow();
 				if (!isset($resource["resource_line"])){
 					$error_msg .= "\$USER".$match_id."\$";
@@ -92,8 +88,6 @@
 		 * for security reasons, we do not allow the execution of any command unless it is located in path $USER1$
 		 */ 
 		$DBRESULT =& $pearDB->query("SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = '\$USER1\$' LIMIT 1");			
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$resource = $DBRESULT->fetchRow();
 		$user1Path = $resource["resource_line"];
 		$pathMatch = str_replace('/', '\/', $user1Path);

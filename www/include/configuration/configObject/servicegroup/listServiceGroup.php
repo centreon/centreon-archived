@@ -32,8 +32,6 @@
 	} else {
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
 	}
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -59,8 +57,6 @@
 	}
 
 	$DBRESULT = & $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$search = tidySearchKey($search, $advanced_search);
 	

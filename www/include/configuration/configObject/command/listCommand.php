@@ -45,8 +45,6 @@
 	}
 	
 	$DBRESULT =& $pearDB->query($req);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -81,8 +79,6 @@
 	$search = tidySearchKey($search, $advanced_search);
 
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 	

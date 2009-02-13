@@ -26,8 +26,6 @@
 			$id = $form->getSubmitValue('command_id');
 		
 		$DBRESULT =& $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$command =& $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $command["command_id"] == $id)	{
 			/*
@@ -48,12 +46,8 @@
 		
 		foreach ($commands as $key => $value)	{
 			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE `command_id` = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$row = $DBRESULT2->fetchRow();
 			$DBRESULT =& $pearDB->query("DELETE FROM `command` WHERE `command_id` = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$oreon->CentreonLogAction->insertLog("command", $key, $row['command_name'], "d");
 		}
 	}
@@ -64,8 +58,6 @@
 		foreach($commands as $key => $value)	{
 			
 			$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 			$row = $DBRESULT->fetchRow();
 			$row["command_id"] = '';
@@ -84,14 +76,10 @@
 				if (testCmdExistence($command_name))	{
 					$val ? $rq = "INSERT INTO `command` VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					/*
 		 			* Get Max ID
 		 			*/
 					$DBRESULT =& $pearDB->query("SELECT MAX(command_id) FROM `command`");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$cmd_id = $DBRESULT->fetchRow();	
 					$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $command_name, "a", $fields);
 				}
@@ -134,8 +122,6 @@
 				"`graph_id` = '".htmlentities($ret["graph_id"], ENT_QUOTES)."' " .
 				"WHERE `command_id` = '".$cmd_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			
 		$fields["command_name"] = htmlentities($ret["command_name"], ENT_QUOTES);
 		$fields["command_line"] = htmlentities($ret["command_line"], ENT_QUOTES);
@@ -174,8 +160,6 @@
 		$rq = "INSERT INTO `command` (`command_name`, `command_line`, `command_example`, `command_type`, `graph_id`) ";
 		$rq .= "VALUES ('".htmlentities($ret["command_name"], ENT_QUOTES)."', '".htmlentities($ret["command_line"], ENT_QUOTES)."', '".htmlentities($ret["command_example"], ENT_QUOTES)."', '".$ret["command_type"]["command_type"]."', '".$ret["graph_id"]."')";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$fields["command_name"] = htmlentities($ret["command_name"], ENT_QUOTES);
 		$fields["command_line"] = htmlentities($ret["command_line"], ENT_QUOTES);
 		$fields["command_example"] = htmlentities($ret["command_example"], ENT_QUOTES);
@@ -186,8 +170,6 @@
 		 * Get Max ID
 		 */
 		$DBRESULT =& $pearDB->query("SELECT MAX(command_id) FROM `command`");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cmd_id = $DBRESULT->fetchRow();
 		
 		$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], htmlentities($ret["command_name"], ENT_QUOTES), "a", $fields);

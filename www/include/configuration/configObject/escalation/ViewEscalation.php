@@ -34,8 +34,6 @@
 	$hostgroup_ary = array(NULL=>NULL);
 	$cmd = "SELECT hg_id, hg_name FROM hostgroup";
 	$DBRESULT = $pearDB->query($cmd);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($hostgroup =& $DBRESULT->fetchRow())
 		$hostgroup_ary[$hostgroup["hg_id"]] = $hostgroup["hg_name"];
 	$DBRESULT->free();
@@ -47,18 +45,12 @@
 				"WHERE h.host_id = hr.host_host_id ".
 				"AND hr.hostgroup_hg_id = '".$_POST["hostgroup_escalation"]."' ";
 		$res = $pearDB->query($cmd);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
 		while($hg =& $res->fetchRow())
 			$hgs[$hg["host_id"]] = $hg["host_name"];
 		$res->free();
 	}
 	else {
 		$res = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER by host_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
 		while($hg =& $res->fetchRow())
 			$hgs[$hg["host_id"]] = $hg["host_name"];
 		$res->free();

@@ -21,8 +21,6 @@
 	$hg = array();
 	if (($o == "c" || $o == "w") && $hg_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$hg = array_map("myDecode", $DBRESULT->fetchRow());
 		
@@ -30,8 +28,6 @@
 		 *  Set HostGroup Childs
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $hosts =& $DBRESULT->fetchRow(); $i++)
 			$hg["hg_hosts"][$i] = $hosts["host_host_id"];
 		$DBRESULT->free();
@@ -43,8 +39,6 @@
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($host =& $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
@@ -54,8 +48,6 @@
 	 */
 	$cgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($cg =& $DBRESULT->fetchRow())
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$DBRESULT->free();

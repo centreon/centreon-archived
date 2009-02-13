@@ -23,8 +23,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('id');
 		$DBRESULT =& $pearDB->query("SELECT name, id FROM traps_vendor WHERE name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$mnftr =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $mnftr["id"] == $id)	
@@ -40,13 +38,9 @@
 		global $pearDB, $oreon;
 		foreach($mnftr as $key=>$value)		{
 			$DBRESULT2 =& $pearDB->query("SELECT name FROM `traps_vendor` WHERE `id` = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$row = $DBRESULT2->fetchRow();
 			
 			$DBRESULT =& $pearDB->query("DELETE FROM traps_vendor WHERE id = '".htmlentities($key, ENT_QUOTES)."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$oreon->CentreonLogAction->insertLog("manufacturer", $key, $row['name'], "d");
 		}
 	}
@@ -55,8 +49,6 @@
 		foreach($mnftr as $key=>$value)	{
 			global $pearDB, $oreon;
 			$DBRESULT =& $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".htmlentities($key, ENT_QUOTES)."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -71,8 +63,6 @@
 				if (testMnftrExistence($name)) {
 					$val ? $rq = "INSERT INTO traps_vendor VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$oreon->CentreonLogAction->insertLog("manufacturer", htmlentities($key, ENT_QUOTES), $name, "a", $fields);
 				}
 			}
@@ -96,8 +86,6 @@
 		$rq .= "description = '".htmlentities($ret["description"], ENT_QUOTES)."' ";
 		$rq .= "WHERE id = '".$id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$fields["name"] = htmlentities($ret["name"], ENT_QUOTES);
 		$fields["alias"] = htmlentities($ret["alias"], ENT_QUOTES);
 		$fields["description"] = htmlentities($ret["description"], ENT_QUOTES);
@@ -121,8 +109,6 @@
 		$rq .= "'".htmlentities($ret["alias"], ENT_QUOTES)."', ";
 		$rq .= "'".htmlentities($ret["description"], ENT_QUOTES)."')";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM traps_vendor");
 		$mnftr_id = $DBRESULT->fetchRow();
 		

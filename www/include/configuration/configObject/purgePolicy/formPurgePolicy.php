@@ -22,8 +22,6 @@
 	$ppol = array();
 	if (($o == "c" || $o == "w") && $purge_policy_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM purge_policy WHERE purge_policy_id = '".$purge_policy_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$ppol = array_map("myDecode", $DBRESULT->fetchRow());
 	}

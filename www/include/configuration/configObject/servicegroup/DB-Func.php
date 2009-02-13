@@ -25,8 +25,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('sg_id');
 		$DBRESULT =& $pearDB->query("SELECT sg_name, sg_id FROM servicegroup WHERE sg_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$sg =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $sg["sg_id"] == $id)	
@@ -42,11 +40,7 @@
 		if (!$sg_id) return;
 		global $pearDB, $oreon;
 		$DBRESULT =& $pearDB->query("UPDATE servicegroup SET sg_activate = '1' WHERE sg_id = '".$sg_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT2 =& $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$sg_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$row = $DBRESULT2->fetchRow();
 		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, $row['sg_name'], "enable");
 	}
@@ -55,11 +49,7 @@
 		if (!$sg_id) return;
 		global $pearDB, $oreon;
 		$DBRESULT =& $pearDB->query("UPDATE servicegroup SET sg_activate = '0' WHERE sg_id = '".$sg_id."'");
-		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT2 =& $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$sg_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$row = $DBRESULT2->fetchRow();
 		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, $row['sg_name'], "disable");
 	}
@@ -68,12 +58,8 @@
 		global $pearDB, $oreon;
 		foreach($serviceGroups as $key=>$value) {
 			$DBRESULT2 =& $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$row = $DBRESULT2->fetchRow();
 			$DBRESULT =& $pearDB->query("DELETE FROM servicegroup WHERE sg_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br />";
 			$oreon->CentreonLogAction->insertLog("servicegroup", $key, $row['sg_name'], "d");
 		}
 	}
@@ -82,8 +68,6 @@
 		global $pearDB, $oreon, $is_admin;
 		foreach($serviceGroups as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["sg_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -99,26 +83,18 @@
 				if (testServiceGroupExistence($sg_name))	{
 					$val ? $rq = "INSERT INTO servicegroup VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print $DBRESULT->getDebugInfo()."<br />";
 					$DBRESULT =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
-					if (PEAR::isError($DBRESULT))
-						print $DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(sg_id)"]))	{
 						
 						$DBRESULT->free();
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-								print $DBRESULT->getDebugInfo()."<br />";
 						$fields["sg_hgServices"] = "";
 						while($service =& $DBRESULT->fetchRow())	{
 							$val = null;
 							foreach ($service as $key2=>$value2)
 								$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 							$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$val.", '".$maxId["MAX(sg_id)"]."')");
-							if (PEAR::isError($DBRESULT2))
-								print $DBRESULT2->getDebugInfo()."<br />";
 							$fields["sg_hgServices"] .= $service["service_service_id"] . ",";
 						}
 						$fields["sg_hgServices"] = trim($fields["sg_hgServices"], ",");
@@ -153,12 +129,8 @@
 		isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "'".$ret["sg_activate"]["sg_activate"]."'" : $rq .= "'0'";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br />";
 			
 		$DBRESULT =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
-		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br />";
 		$sg_id = $DBRESULT->fetchRow();
 		
 		$fields["sg_name"] = htmlentities($ret["sg_name"], ENT_QUOTES);
@@ -185,8 +157,6 @@
 		isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "sg_activate = '".$ret["sg_activate"]["sg_activate"]."' " : $rq .= "sg_activate = '0'";
 		$rq .= "WHERE sg_id = '".$sg_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br />";
 			
 		$fields["sg_name"] = htmlentities($ret["sg_name"], ENT_QUOTES);
 		$fields["sg_alias"] = htmlentities($ret["sg_alias"], ENT_QUOTES);
@@ -204,16 +174,12 @@
 		$rq  = 	"DELETE FROM servicegroup_relation ";
 		$rq .= 	"WHERE servicegroup_sg_id = '".$sg_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT)) 
-			print $DBRESULT->getDebugInfo()."<br />";
 		isset($ret["sg_hServices"]) ? $ret = $ret["sg_hServices"] : $ret = $form->getSubmitValue("sg_hServices");
 		for ($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]) && $ret[$i]){
 				$t = split("\-", $ret[$i]);
 				$rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
 				$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print $DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 		isset($ret["sg_hgServices"]) ? $ret = $ret["sg_hgServices"] : $ret = $form->getSubmitValue("sg_hgServices");
@@ -221,8 +187,6 @@
 			$t = split("\-", $ret[$i]);
 			$rq = "INSERT INTO servicegroup_relation (hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 ?>

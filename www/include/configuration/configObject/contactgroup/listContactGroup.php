@@ -31,8 +31,6 @@
 		$SearchSTR = " WHERE (`cg_name` LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR `cg_alias` LIKE '".htmlentities($search, ENT_QUOTES)."')";		
 
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM `contactgroup` $SearchSTR");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -57,8 +55,6 @@
 	 */
 	$rq = "SELECT cg_id, cg_name, cg_alias, cg_activate FROM contactgroup $SearchSTR ORDER BY cg_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$search = tidySearchKey($search, $advanced_search);
 	
@@ -85,8 +81,6 @@
 		$ctNbr = array();
 		$rq = "SELECT COUNT(*) AS `nbr` FROM `contactgroup_contact_relation` `cgr` WHERE `cgr`.`contactgroup_cg_id` = '".$cg['cg_id']."'";
 		$DBRESULT2 =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$ctNbr = $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 							"RowMenu_select"=>$selectedElements->toHtml(),

@@ -28,8 +28,6 @@
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -61,8 +59,6 @@
 	else
 		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$search = tidySearchKey($search, $advanced_search);
 
@@ -85,14 +81,10 @@
 		/* Get Host Notif Period */
 		$hostTp = NULL;
 		$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$contact["timeperiod_tp_id"]."'");
-		if (PEAR::isError($DBRESULT2)) 
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$hostTp = $DBRESULT2->fetchRow();
 		/* Get Service Notif Period */
 		$svTp = NULL;
 		$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$contact["timeperiod_tp_id2"]."'");
-		if (PEAR::isError($DBRESULT2)) 
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$svTp = $DBRESULT2->fetchRow();		
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),

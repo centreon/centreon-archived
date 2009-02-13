@@ -38,15 +38,11 @@
 	$mnftr_id = -1;
 	if (($o == "c" || $o == "w") && $traps_id)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
 		$DBRESULT->free();
 	}
 	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($rmnftr =& $DBRESULT->fetchRow()){
 		$mnftr[$rmnftr["id"]] = $rmnftr["alias"];
 	}

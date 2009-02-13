@@ -25,22 +25,16 @@
 	$sg = array();
 	if (($o == "c" || $o == "w") && $sg_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		# Set base value
 		$sg = array_map("myDecode", $DBRESULT->fetchRow());
 		
 		# Set ServiceGroup Childs		
 		$DBRESULT =& $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL ORDER BY service_service_id");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for ($i = 0; $host =& $DBRESULT->fetchRow(); $i++)
 			$sg["sg_hServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
 		
 		$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for ($i = 0; $services =& $DBRESULT->fetchRow(); $i++)
 			$sg["sg_hgServices"][$i] = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
 		$DBRESULT->free();
@@ -54,8 +48,6 @@
 	$initName = NULL;
 	
 	$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($host =& $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($host["host_id"]);
 		foreach ($services as $key => $s)
@@ -70,8 +62,6 @@
 									"AND hsr.service_service_id = sv.service_id " .
 									"AND hg.hg_id = hsr.hostgroup_hg_id " .
 									"ORDER BY hg.hg_name, sv.service_description");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($elem =& $DBRESULT->fetchRow())	{
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])

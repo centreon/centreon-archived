@@ -25,8 +25,6 @@
 	$pearDB = new CentreonDB();
 	
 	$DBRESULT =& $pearDB->query("SELECT `host_id`, `host_name` FROM `host` WHERE `host_register` = '0' ORDER BY `host_name`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	/*
 	 *  The first element of the select is empty

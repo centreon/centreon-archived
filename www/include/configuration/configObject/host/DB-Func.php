@@ -22,8 +22,6 @@
 		global $pearDB;
 		
 		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM ns_host_relation WHERE host_host_id = '".getMyHostID(trim($name))."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows() >= 1)	
 			return true;
 		return false;
@@ -36,8 +34,6 @@
 			$id = $form->getSubmitValue('host_id');;
 
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$host =& $DBRESULT->fetchRow();
 		
 		/*
@@ -62,8 +58,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');;
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '0'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$host =& $DBRESULT->fetchRow();
 		
 		/*
@@ -91,12 +85,8 @@
 			$host_arr = array($host_id=>"1");
 		foreach ($host_arr as $key => $value)	{
 			$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '1' WHERE host_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				
 			$DBRESULT2 =& $pearDB->query("SELECT host_name FROM `host` WHERE host_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$row = $DBRESULT2->fetchRow(); 
 			$oreon->CentreonLogAction->insertLog("host", $key, $row['host_name'], "enable");
 		}
@@ -111,11 +101,7 @@
 			$host_arr = array($host_id=>"1");
 		foreach ($host_arr as $key => $value)	{
 			$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '0' WHERE host_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$DBRESULT2 =& $pearDB->query("SELECT host_name FROM `host` WHERE host_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$row = $DBRESULT2->fetchRow(); 
 			$oreon->CentreonLogAction->insertLog("host", $key, $row['host_name'], "disable");
 		}
@@ -127,24 +113,16 @@
 		foreach ($hosts as $key => $value)	{
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr, host WHERE hsr.host_host_id = '".$key."' AND host.host_id = hsr.host_host_id AND host.host_register = '1'";
 			$DBRESULT = & $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			
 			$DBRESULT3 =& $pearDB->query("SELECT host_name FROM `host` WHERE `host_id` = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT3))
-				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 			$hostname = $DBRESULT3->fetchRow();
 			
 			while ($row =& $DBRESULT->fetchRow())
 				if ($row["nbr"] == 1)	{
 					$DBRESULT4 =& $pearDB->query("SELECT service_description FROM `service` WHERE `service_id` = '".$row["service_service_id"]."' LIMIT 1");
-					if (PEAR::isError($DBRESULT4))
-						print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
 					$svcname = $DBRESULT4->fetchRow();
 					
 					$DBRESULT2 =& $pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					$oreon->CentreonLogAction->insertLog("service", $row["service_service_id"], $hostname['host_name']."/".$svcname["service_description"], "d");
 				}
 			
@@ -156,8 +134,6 @@
 				$DBRESULT =& $pearDB->query("DELETE FROM contact_host_relation WHERE host_host_id = '".$key."'");
 			}
 			$oreon->CentreonLogAction->insertLog("host", $key, $hostname['host_name'], "d");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -169,8 +145,6 @@
 		
 		foreach ($hosts as $key => $value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["host_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -186,22 +160,14 @@
 				if (testHostExistence($host_name))	{
 					$val ? $rq = "INSERT INTO host VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$DBRESULT =& $pearDB->query("SELECT MAX(host_id) FROM host");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(host_id)"]))	{
 						#
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						$fields["host_parents"] = "";
 						while($host =& $DBRESULT->fetchRow()){
 							$DBRESULT1 =& $pearDB->query("INSERT INTO host_hostparent_relation VALUES ('', '".$host["host_parent_hp_id"]."', '".$maxId["MAX(host_id)"]."')");	
-							if (PEAR::isError($DBRESULT1))
-								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 							$fields["host_parents"] .= $host["host_parent_hp_id"] . ",";
 						}
 						$fields["host_parents"] = trim($fields["host_parents"], ",");
@@ -215,18 +181,12 @@
 						$serviceNbr = array();
 						# Get all Services link to the Host
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($service =& $DBRESULT->fetchRow())	{
 							# If the Service is link with several Host, we keep this property and don't duplicate it, just create a new relation with the new Host
 							$DBRESULT2 =& $pearDB->query("SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '".$service["service_service_id"]."'");
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 							$mulHostSv = $DBRESULT2->fetchrow();
 							if ($mulHostSv["COUNT(*)"] > 1)	{
 								$DBRESULT3 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$maxId["MAX(host_id)"]."', NULL, '".$service["service_service_id"]."')");
-								if (PEAR::isError($DBRESULT3))
-									print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 							}
 							else	{
 								$serviceArr[$service["service_service_id"]] = $service["service_service_id"];
@@ -239,36 +199,22 @@
 						# Host Template -> Link to the existing Service Template List
 						else	{
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'");
-							if (PEAR::isError($DBRESULT))
-								print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 							while($svs =& $DBRESULT->fetchRow()){
 								$DBRESULT1 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$maxId["MAX(host_id)"]."', NULL, '".$svs["service_service_id"]."')");
-								if (PEAR::isError($DBRESULT1))
-									print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 							}
 						}
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						$fields["host_cgs"] = "";
 						while($Cg =& $DBRESULT->fetchRow()){
 							$DBRESULT1 =& $pearDB->query("INSERT INTO contactgroup_host_relation VALUES ('', '".$maxId["MAX(host_id)"]."', '".$Cg["contactgroup_cg_id"]."')");
-							if (PEAR::isError($DBRESULT1))
-								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 							$fields["host_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
 						}
 						$fields["host_cgs"] = trim($fields["host_cgs"], ",");
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($Hg =& $DBRESULT->fetchRow()){
 							$DBRESULT1 =& $pearDB->query("INSERT INTO hostgroup_relation VALUES ('', '".$Hg["hostgroup_hg_id"]."', '".$maxId["MAX(host_id)"]."')");
-							if (PEAR::isError($DBRESULT1))
-								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 						}
 						$DBRESULT =& $pearDB->query("SELECT * FROM extended_host_information WHERE host_host_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($ehi =& $DBRESULT->fetchRow())	{
 							$val = null;
 							$ehi["host_host_id"] = $maxId["MAX(host_id)"];
@@ -280,17 +226,11 @@
 							}
 							$val ? $rq = "INSERT INTO extended_host_information VALUES (".$val.")" : $rq = null;
 							$DBRESULT2 =& $pearDB->query($rq);
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT nagios_server_id FROM ns_host_relation WHERE host_host_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						$fields["nagios_server_id"] = "";
 						while($Hg =& $DBRESULT->fetchRow()){
 							$DBRESULT1 =& $pearDB->query("INSERT INTO ns_host_relation VALUES ('".$Hg["nagios_server_id"]."', '".$maxId["MAX(host_id)"]."')");
-							if (PEAR::isError($DBRESULT1))
-								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 							$fields["nagios_server_id"] .= $Hg["nagios_server_id"] . ",";
 						}
 						$fields["nagios_server_id"] = trim($fields["nagios_server_id"], ",");
@@ -304,16 +244,12 @@
 						 	 */
 						 	$mTpRq1 = "SELECT * FROM `host_template_relation` WHERE `host_host_id` ='".$key."' ORDER BY `order`";
 						 	$DBRESULT3 =& $pearDB->query($mTpRq1);
-						 	if (PEAR::isError($DBRESULT3))
-								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 							$multiTP_logStr = "";
 							while ($hst =& $DBRESULT3->fetchRow()) {
 								$mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES" .
 											"('".$maxId["MAX(host_id)"]."', '".$hst['host_tpl_id']."', '". $hst['order'] ."')";
 						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
 						 		$multiTP_logStr .= $hst['host_tpl_id'] . ",";
-						 		if (PEAR::isError($DBRESULT4))
-									print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
 							}
 							$multiTP_logStr = trim($multiTP_logStr, ",");
 							$fields["templates"] = $multiTP_logStr;
@@ -322,15 +258,11 @@
 							 */
 							$mTpRq1 = "SELECT * FROM `on_demand_macro_host` WHERE `host_host_id` ='".$key."'";
 						 	$DBRESULT3 =& $pearDB->query($mTpRq1);
-						 	if (PEAR::isError($DBRESULT3))
-								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 							while ($hst =& $DBRESULT3->fetchRow()) {
 								$macName = str_replace("\$", "", $hst["host_macro_name"]);
 								$mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`) VALUES" .
 											"('".$maxId["MAX(host_id)"]."', '\$".$macName."\$', '". $hst['host_macro_value'] ."')";
 						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
-						 		if (PEAR::isError($DBRESULT4))
-									print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
 								$fields["_".strtoupper($macName)."_"] = $hst['host_macro_value'];
 							}
 						 }
@@ -482,8 +414,6 @@
 		// but we try to keep it compatible with Nagios 2 which needs "host_template_model_htm_id" 
 		if (isset($_POST['nbOfSelect']) || $oreon->user->get_version() >= 3) {
 			$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$result = $DBRESULT->fetchRow();
 			$ret["host_template_model_htm_id"] = $result["host_id"];
 			$DBRESULT->free();
@@ -536,8 +466,6 @@
 			isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."'" : $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);		
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(host_id) FROM host");
 		$host_id = $DBRESULT->fetchRow();		
 
@@ -555,8 +483,6 @@
 	 			if (!isset($already_stored[$tplId]) && $tplId) {
 		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id['MAX(host_id)'] .", ". $tplId .", ". $j .")";
 			 		$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$multiTP_logStr .= $tplId . ",";
 					$j++;
 					$already_stored[$tplId] = 1;
@@ -570,8 +496,6 @@
 	 			if (!isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
 		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id['MAX(host_id)'] .", ". $_POST[$tpSelect] .", ". $j .")";
 			 		$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$multiTP_logStr .= $_POST[$tpSelect] . ",";
 					$j++;
 					$already_stored[$_POST[$tpSelect]] = 1;
@@ -599,8 +523,6 @@
 		 			$my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
 		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($my_tab[$macInput]) ."\$', '". $my_tab[$macValue] ."', ". $host_id['MAX(host_id)'] .")";
 			 		$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];	
 					$already_stored[strtolower($my_tab[$macInput])] = 1;
 	 			}			
@@ -718,8 +640,6 @@
 		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	/*
@@ -730,8 +650,6 @@
 	 		 	
 	 	$str = $hst_list;
 	 	$DBRESULT =& $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE host_host_id ='".$hst."'");
-	 	if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 	while ($result =& $DBRESULT->fetchRow()) {
 	 		$str .= ",'" . $result['host_tpl_id'] . "'";
 	 		$str = getHostListInUse ($str, $result['host_tpl_id']);
@@ -769,8 +687,6 @@
 		 		"AND hsr.service_service_id = '". $svc_id ."' " .
 		 		"AND hsr.host_host_id IN (". $hst_list .")";
 		 $DBRESULT =& $pearDB->query($rq);
-		 if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows() >= 1)
 			return true;	 	
 	 	return false;
@@ -790,8 +706,6 @@
 	 							"WHERE svc.service_id = hsr.service_service_id " .
 	 							"AND svc.service_register = '0' " .
 								"AND hsr.host_host_id = '" . $scndHID . "'");
-	 	if (PEAR::isError($DBRESULT3))
-			print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 		while ($svcID =& $DBRESULT3->fetchRow()) {
 			if (!serviceIsInUse($svcID['service_service_id'], $host_list)) {
 				$rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
@@ -800,8 +714,6 @@
 					"AND svc.service_register = '1' " .
 					"AND hsr.host_host_id = '".$hID."'";
 				$DBRESULT4 =& $pearDB->query($rq2);
-				if (PEAR::isError($DBRESULT4))
-					print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";			
 			}			
 		}
 		
@@ -811,16 +723,12 @@
 				"ORDER BY `order`";
 				
 		$DBRESULT =& $pearDB->query($rq);		
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		while ($result =& $DBRESULT->fetchRow()) {			
 			$DBRESULT2 =& $pearDB->query("SELECT service_service_id " .
 	 								"FROM `service` svc, `host_service_relation` hsr " .
 	 								"WHERE svc.service_id = hsr.service_service_id " .
 	 								"AND svc.service_register = '0' " .
 									"AND hsr.host_host_id = '" . $result["host_tpl_id"] . "'");
-	 		if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($svcID =& $DBRESULT2->fetchRow()) {
 				$rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
 						"WHERE hsr.service_service_id = svc.service_id " .
@@ -828,8 +736,6 @@
 						"AND svc.service_register = '1' " .
 						"AND hsr.host_host_id = '".$hID."'";
 				$DBRESULT4 =& $pearDB->query($rq2);
-				if (PEAR::isError($DBRESULT4))
-					print "DB Error : ".$DBRESULT4->getDebugInfo()."<br />";
 			}
 			$antiLoop[$scndHID] = 1;
 			deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"], $host_list, $antiLoop);
@@ -861,8 +767,6 @@
 		// but we try to keep it compatible with Nagios 2 which needs "host_template_model_htm_id" 
 		if (isset($_POST['nbOfSelect'])) {
 			$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$result = $DBRESULT->fetchRow();
 			$ret["host_template_model_htm_id"] = $result["host_id"];
 			$DBRESULT->free();
@@ -945,8 +849,6 @@
 		isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."' " : $rq .= "NULL ";
 		$rq .= "WHERE host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		/*
 		 *  Update multiple templates		 
@@ -958,8 +860,6 @@
 	 		$oldTp = array();
 	 		$newTp = array();	 		
 	 		$DBRESULT =& $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-	 		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 		while ($hst =& $DBRESULT->fetchRow())
 	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];			
 	 		for ($i=0;$i <= $_POST['nbOfSelect']; $i++){
@@ -979,16 +879,12 @@
 	 		}
 	 		
 	 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-	 		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 		$multiTP_logStr = "";
 	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++){
 	 			$tpSelect = "tpSelect_" . $i;
 	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
 		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
 			 		$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$j++;
 					$multiTP_logStr .= $_POST[$tpSelect] . ",";
 					$already_stored[$_POST[$tpSelect]] = 1;
@@ -1011,8 +907,6 @@
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $host_id .")";
 			 		$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];	
 					$already_stored[strtolower($_POST[$macInput])] = 1;
 	 			}			
@@ -1122,8 +1016,6 @@
 		// but we try to keep it compatible with Nagios 2 which needs "host_template_model_htm_id" 
 		if (isset($_POST['nbOfSelect'])) {
 			$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$result = $DBRESULT->fetchRow();
 			$ret["host_template_model_htm_id"] = $result["host_id"];
 			$DBRESULT->free();
@@ -1267,8 +1159,6 @@
 			$rq[strlen($rq)-2] = " ";
 			$rq .= "WHERE host_id = '".$host_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 		
 		/*
@@ -1280,8 +1170,6 @@
 	 		$oldTp = array();
 	 		$newTp = array();	 		
 	 		$DBRESULT =& $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-	 		if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 		while ($hst =& $DBRESULT->fetchRow())
 	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];			
 	 		$multiTP_logStr = "";
@@ -1312,8 +1200,6 @@
 	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
 		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
 			 		$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$j++;
 					$already_stored[$_POST[$tpSelect]] = 1;
 	 			}			
@@ -1329,8 +1215,6 @@
 			
 			$rq = "SELECT host_macro_name FROM `on_demand_macro_host` WHERE `host_host_id`=" . $host_id;
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($mac = $DBRESULT->fetchRow()) {
 				$tmp = str_replace("\$_HOST", "", $mac["host_macro_name"]);
 				$tmp = str_replace("\$", "", $tmp);
@@ -1350,16 +1234,12 @@
 	 					  " WHERE `host_host_id`=" . $host_id .
 	 					  " AND `host_macro_name`='\$_HOST" . $_POST[$macInput] . "\$'";
 			 		$DBRESULT =& $pearDB->query($rq);			 		
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	 			}
 	 			elseif (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {		 			
 		 			$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
 		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $host_id .")";
 			 		$DBRESULT =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";				
 					$already_stored[strtolower($_POST[$macInput])] = 1;
 	 			}
 	 			$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
@@ -1398,8 +1278,6 @@
 			$fields["nagios_server_id"] = $ret["nagios_server_id"];
 		
 		$DBRESULTX =& $pearDB->query("SELECT host_name FROM `host` WHERE host_id='".$host_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULTX))
-			print "DB Error : ".$DBRESULTX->getDebugInfo()."<br />";
 		$row =& $DBRESULTX->fetchRow();
 		$oreon->CentreonLogAction->insertLog("host", $host_id, $row["host_name"], "mc", $fields);
 	}
@@ -1410,8 +1288,6 @@
 		$rq = "DELETE FROM host_hostparent_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["host_parents"]))
 			$ret = $ret["host_parents"];
 		else
@@ -1422,8 +1298,6 @@
 			$rq .= "VALUES ";
 			$rq .= "('".$ret[$i]."', '".$host_id."')";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -1434,8 +1308,6 @@
 		$rq = "SELECT * FROM host_hostparent_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hpars = array();
 		while($arr =& $DBRESULT->fetchRow())
 			$hpars[$arr["host_parent_hp_id"]] = $arr["host_parent_hp_id"];
@@ -1447,8 +1319,6 @@
 				$rq .= "VALUES ";
 				$rq .= "('".$ret[$i]."', '".$host_id."')";
 				$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -1459,8 +1329,6 @@
 		$rq = "DELETE FROM host_hostparent_relation ";
 		$rq .= "WHERE host_parent_hp_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("host_childs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -1469,8 +1337,6 @@
 			$rq .= "VALUES ";
 			$rq .= "('".$host_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -1481,8 +1347,6 @@
 		$rq = "SELECT * FROM host_hostparent_relation ";
 		$rq .= "WHERE host_parent_hp_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hchs = array();
 		while($arr =& $DBRESULT->fetchRow())
 			$hchs[$arr["host_host_id"]] = $arr["host_host_id"];
@@ -1494,8 +1358,6 @@
 				$rq .= "VALUES ";
 				$rq .= "('".$host_id."', '".$ret[$i]."')";
 				$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -1538,8 +1400,6 @@
 		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 
 	function updateHostExtInfos_MC($host_id = null)	{
@@ -1561,8 +1421,6 @@
 			$rq[strlen($rq)-2] = " ";
 			$rq .= "WHERE host_host_id = '".$host_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 		
@@ -1572,8 +1430,6 @@
 		$rq = "DELETE FROM contactgroup_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		isset($ret["host_cgs"]) ? $ret = $ret["host_cgs"] : $ret = $form->getSubmitValue("host_cgs");
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO contactgroup_host_relation ";
@@ -1581,8 +1437,6 @@
 			$rq .= "VALUES ";
 			$rq .= "('".$host_id."', '".$ret[$i]."')";
 			$DBRESULT = $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -1595,8 +1449,6 @@
 		$rq = "DELETE FROM contact_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		isset($ret["host_cs"]) ? $ret = $ret["host_cs"] : $ret = $form->getSubmitValue("host_cs");
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO contact_host_relation ";
@@ -1604,8 +1456,6 @@
 			$rq .= "VALUES ";
 			$rq .= "('".$host_id."', '".$ret[$i]."')";
 			$DBRESULT = $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -1616,8 +1466,6 @@
 		$rq = "SELECT * FROM contactgroup_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cgs = array();
 		while($arr =& $DBRESULT->fetchRow())
 			$cgs[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
@@ -1629,8 +1477,6 @@
 				$rq .= "VALUES ";
 				$rq .= "('".$host_id."', '".$ret[$i]."')";
 				$DBRESULT = $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -1642,8 +1488,6 @@
 		$rq = "SELECT * FROM contact_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cs = array();
 		while($arr =& $DBRESULT->fetchRow())
 			$cs[$arr["contact_id"]] = $arr["contact_id"];
@@ -1655,8 +1499,6 @@
 				$rq .= "VALUES ";
 				$rq .= "('".$host_id."', '".$ret[$i]."')";
 				$DBRESULT = $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -1671,8 +1513,6 @@
 		$rq = "SELECT hostgroup_hg_id FROM hostgroup_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hgsOLD = array();
 		while ($hg =& $DBRESULT->fetchRow())
 			$hgsOLD[$hg["hostgroup_hg_id"]] = $hg["hostgroup_hg_id"];
@@ -1682,8 +1522,6 @@
 			$rq = "SELECT service_service_id FROM host_service_relation ";
 			$rq .= "WHERE hostgroup_hg_id = '".$hg."' AND host_host_id IS NULL";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($sv =& $DBRESULT->fetchRow())
 				$hgSVS[$hg][$sv["service_service_id"]] = $sv["service_service_id"];
 		}
@@ -1691,8 +1529,6 @@
 		$rq = "DELETE FROM hostgroup_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		isset($ret["host_hgs"]) ? $ret = $ret["host_hgs"] : $ret = $form->getSubmitValue("host_hgs");
 		$hgsNEW = array();
 		for($i = 0; $i < count($ret); $i++)	{
@@ -1701,8 +1537,6 @@
 			$rq .= "VALUES ";
 			$rq .= "('".$ret[$i]."', '".$host_id."')";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$hgsNEW[$ret[$i]] = $ret[$i];
 		}
 		# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies, osl
@@ -1715,25 +1549,17 @@
 							$rq = "DELETE FROM escalation_service_relation ";
 							$rq .= "WHERE host_host_id = '".$host_id."' AND service_service_id = '".$sv."'";
 							$DBRESULT =& $pearDB->query($rq);
-							if (PEAR::isError($DBRESULT))
-								print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";						
 							# Delete in dependencies
 							$rq = "DELETE FROM dependency_serviceChild_relation ";
 							$rq .= "WHERE host_host_id = '".$host_id."' AND service_service_id = '".$sv."'";
 							$DBRESULT =& $pearDB->query($rq);
-							if (PEAR::isError($DBRESULT))
-								print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 							$rq = "DELETE FROM dependency_serviceParent_relation ";
 							$rq .= "WHERE host_host_id = '".$host_id."' AND service_service_id = '".$sv."'";
 							$DBRESULT =& $pearDB->query($rq);
-							if (PEAR::isError($DBRESULT))
-								print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 							# Delete in OSL
 							$rq = "DELETE FROM osl_indicator ";
 							$rq .= "WHERE host_id = '".$host_id."' AND service_id = '".$sv."'";
 							$DBRESULT =& $pearDB->query($rq);
-							//if (PEAR::isError($DBRESULT))
-							//	print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 						}
 				}
 		#
@@ -1747,8 +1573,6 @@
 		$rq = "SELECT * FROM hostgroup_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hgs = array();
 		while($arr =& $DBRESULT->fetchRow())
 			$hgs[$arr["hostgroup_hg_id"]] = $arr["hostgroup_hg_id"];
@@ -1760,8 +1584,6 @@
 				$rq .= "VALUES ";
 				$rq .= "('".$ret[$i]."', '".$host_id."')";
 				$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -1778,14 +1600,10 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 		require_once($path."../configObject/service/DB-Func.php");
 	$rq = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2;
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	while ($hTpl = $DBRESULT->fetchRow()) {		
 		$rq2 = "SELECT service_service_id FROM `host_service_relation` WHERE host_host_id = " . $hTpl['host_tpl_id'];
 		$DBRESULT2 =& $pearDB->query($rq2);
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		while ($hTpl2 = $DBRESULT2->fetchRow()) {			
 			$alias =& getMyServiceAlias($hTpl2["service_service_id"]);			
 			if (testServiceExistence ($alias, array(0=>$hID))) {				
@@ -1793,8 +1611,6 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 				$service_id = insertServiceInDB($service);
 				$rq3 = "INSERT INTO host_service_relation (hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) VALUES (NULL, '".$hID."', NULL, '".$service_id."')";
 				$DBRESULT3 =& $pearDB->query($rq3);
-				if (PEAR::isError($DBRESULT3))
-					print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 			}
 		}
 		$antiLoop[$hID2] = 1;
@@ -1823,8 +1639,6 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 						$rq .= "VALUES ";
 						$rq .= "(NULL, '".$host_id."', NULL, '".$service_id."')";
 						$DBRESULT2 =& $pearDB->query($rq);
-						if (PEAR::isError($DBRESULT2))
-							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					}
 				}
 			}
@@ -1847,8 +1661,6 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 							$rq .= "VALUES ";
 							$rq .= "(NULL, '".$host_id."', NULL, '".$service_id."')";
 							$DBRESULT2 =& $pearDB->query($rq);
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 					}
 				}
@@ -1878,8 +1690,6 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 			$rq = "DELETE FROM host_service_relation ";
 			$rq .= "WHERE host_host_id = '".$host_id."'";
 			$DBRESULT2 =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$ret = array();
 			$ret = $form->getSubmitValue("host_svTpls");
 			for($i = 0; $i < count($ret); $i++)	{
@@ -1889,8 +1699,6 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 					$rq .= "VALUES ";
 					$rq .= "(NULL, '".$host_id."', NULL, '".$ret[$i]."')";
 					$DBRESULT2 =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				}
 			}
 		}
@@ -1914,8 +1722,6 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 			$rq = "SELECT * FROM host_service_relation ";
 			$rq .= "WHERE host_host_id = '".$host_id."'";
 			$DBRESULT2 =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$svtpls = array();
 			while($arr =& $DBRESULT2->fetchRow())
 				$svtpls [$arr["service_service_id"]] = $arr["service_service_id"];
@@ -1927,8 +1733,6 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 					$rq .= "VALUES ";
 					$rq .= "(NULL, '".$host_id."', NULL, '".$ret[$i]."')";
 					$DBRESULT2 =& $pearDB->query($rq);
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				}
 			}
 		}
@@ -1944,8 +1748,6 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 		require_once "./include/common/common-Func.php";
 		foreach ($useTpls as $key=>$value){
 			$DBRESULT =& $pearDB->query("UPDATE host SET host_template_model_htm_id = '".getMyHostID($value)."' WHERE host_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}			
 	}
 	
@@ -1959,8 +1761,6 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 		
 		if (isset($ret) && $ret != "" && $ret != 0){
 			$DBRESULT = $pearDB->query("DELETE FROM `ns_host_relation` WHERE `host_host_id` = '".$host_id."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 			$rq = "INSERT INTO `ns_host_relation` ";
 			$rq .= "(`host_host_id`, `nagios_server_id`) ";
@@ -1968,8 +1768,6 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 			$rq .= "('".$host_id."', '".$ret."')";
 			
 			$DBRESULT = $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -1987,16 +1785,12 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 		$ret = $form->getSubmitValue("nagios_server_id");
 		if (isset($ret) && $ret != "" && $ret != 0){
 			$DBRESULT = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$host_id."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 			$rq = "INSERT INTO `ns_host_relation` ";
 			$rq .= "(`host_host_id`, `nagios_server_id`) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$host_id."', '".$ret."')";
 			$DBRESULT = $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}	
 ?>

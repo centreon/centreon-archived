@@ -21,8 +21,6 @@
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -39,16 +37,12 @@
 		
 		# Set Host Service Childs
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation dscr WHERE dscr.dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $service =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hSvChi"][$i] = $service["host_host_id"]."_".$service["service_service_id"];
 		$DBRESULT->free();
 		
 		# Set Host Service Parents
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr WHERE dspr.dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $service =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hSvPar"][$i] = $service["host_host_id"]."_".$service["service_service_id"];
 		$DBRESULT->free();
@@ -64,8 +58,6 @@
 	
 	$hServices = array();
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($elem =& $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key=>$index)	{						

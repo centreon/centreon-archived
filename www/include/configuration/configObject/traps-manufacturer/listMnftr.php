@@ -31,8 +31,6 @@
 		$SearchTool = " WHERE (alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') OR (name LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps_vendor $SearchTool");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -57,8 +55,6 @@
 	 * List of elements - Depends on different criteria
 	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM traps_vendor $SearchTool ORDER BY name, alias LIMIT ".$num * $limit.", ".$limit);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 	
 	/*

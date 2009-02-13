@@ -25,8 +25,6 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('dep_id');
 		$DBRESULT =& $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$dep =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id)	
@@ -58,13 +56,9 @@
 		global $pearDB, $oreon;
 		foreach($dependencies as $key=>$value)	{
 			$DBRESULT2 =& $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			$row = $DBRESULT2->fetchRow();
 			
 			$DBRESULT =& $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$oreon->CentreonLogAction->insertLog("service dependency", $key, $row['dep_name'], "d");
 		}
 	}
@@ -73,8 +67,6 @@
 		foreach($dependencies as $key=>$value)	{
 			global $pearDB, $oreon;
 			$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["dep_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -90,29 +82,19 @@
 					$val ? $rq = "INSERT INTO dependency VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
 					$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(dep_id)"]))	{
 						$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation WHERE dependency_dep_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						$fields["dep_hSvPar"] = "";
 						while($service =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_serviceParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$service["service_service_id"]."', '".$service["host_host_id"]."')");
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 							$fields["dep_hSvPar"] .= $service["service_service_id"] . ",";
 						}
 						$fields["dep_hSvPar"] = trim($fields["dep_hSvPar"], ",");
 						$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$key."'");
-						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						$fields["dep_hSvChi"] = "";
 						while($service =& $DBRESULT->fetchRow())	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_serviceChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$service["service_service_id"]."', '".$service["host_host_id"]."')");
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 							$fields["dep_hSvChi"] .= $service["service_service_id"] . ",";
 						}
 						$fields["dep_hSvChi"] = trim($fields["dep_hSvChi"], ",");
@@ -153,11 +135,7 @@
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$dep_id = $DBRESULT->fetchRow();
 		
 		$fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES);
@@ -197,8 +175,6 @@
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
 		$rq .= "WHERE dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		$fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES);
 		$fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES);
@@ -222,8 +198,6 @@
 		$rq = "DELETE FROM dependency_serviceParent_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["dep_hSvPar"]))
 			$ret1 = $ret["dep_hSvPar"]; 
 		else
@@ -236,8 +210,6 @@
 				$rq .= "VALUES ";
 				$rq .= "('".$dep_id."', '".$exp[1]."', '".$exp[0]."')";
 				$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -249,8 +221,6 @@
 		$rq = "DELETE FROM dependency_serviceChild_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["dep_hSvChi"]))
 			$ret1 = $ret["dep_hSvChi"];
 		else
@@ -263,8 +233,6 @@
 				$rq .= "VALUES ";
 				$rq .= "('".$dep_id."', '".$exp[1]."', '".$exp[0]."')";
 				$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}

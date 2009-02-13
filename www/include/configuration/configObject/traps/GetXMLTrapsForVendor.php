@@ -34,8 +34,6 @@
 		else
 			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
 		
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 		while ($trap =& $DBRESULT->fetchRow()){
 				$buffer->startElement("trap");

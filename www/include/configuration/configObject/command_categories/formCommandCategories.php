@@ -25,8 +25,6 @@
 	$ccdata = array();
 	if (($o == "c" || $o == "w") && $cc_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM `command_categories` WHERE `cmd_category_id` = '".$cc_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		/*
 		 * Set base value
 		 */

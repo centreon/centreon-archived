@@ -63,8 +63,6 @@
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation WHERE $SearchTool host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller'");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h WHERE $SearchTool host_register = '1'");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	$tmp =& $DBRESULT->fetchRow();
 	$DBRESULT->free();
 	$rows = $tmp["COUNT(*)"];
@@ -97,8 +95,6 @@
 	 
 	$nagios_server = array();
 	$DBRESULT =& $pearDB->query("SELECT ns.name, ns.id FROM nagios_server ns"); 
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	while ($relation =& $DBRESULT->fetchRow()) {
 		$nagios_server[$relation["id"]] = $relation["name"];
 	}
@@ -108,8 +104,6 @@
 	$tab_relation = array();
 	$tab_relation_id = array();
 	$DBRESULT =& $pearDB->query("SELECT nhr.host_host_id, nhr.nagios_server_id FROM ns_host_relation nhr"); 
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	while ($relation =& $DBRESULT->fetchRow()) {
 		$tab_relation[$relation["host_host_id"]] = $nagios_server[$relation["nagios_server_id"]];
 		$tab_relation_id[$relation["host_host_id"]] = $relation["nagios_server_id"];
@@ -139,8 +133,6 @@
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation WHERE $SearchTool host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
 	else
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE $SearchTool host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 
 	$search = tidySearchKey($search, $advanced_search);
 	 

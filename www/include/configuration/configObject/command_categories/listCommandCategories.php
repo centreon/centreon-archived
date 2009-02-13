@@ -30,8 +30,6 @@
 	if (isset($search) && $search)
 		$SearchTool = "WHERE (`category_name` LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR `category_alias` LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `command_categories` $SearchTool");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$DBRESULT->free();
@@ -58,8 +56,6 @@
 	 */ 
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM `command_categories` $SearchTool ORDER BY `category_order`, `category_name` LIMIT ".$num * $limit.", ".$limit);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$search = tidySearchKey($search, $advanced_search);
 

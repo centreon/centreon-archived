@@ -28,8 +28,6 @@
 	$mnftr = array();
 	if (($o == "c" || $o == "w") && $id)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".$id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$mnftr = array_map("myDecodeMnftr", $DBRESULT->fetchRow());
 		$DBRESULT->free();

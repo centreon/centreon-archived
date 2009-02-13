@@ -22,8 +22,6 @@
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -40,16 +38,12 @@
 		
 		# Set Host Parents
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $hostP =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hostParents"][$i] = $hostP["host_host_id"];
 		$DBRESULT->free();
 		
 		# Set Host Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $hostC =& $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hostChilds"][$i] = $hostC["host_host_id"];
 		$DBRESULT->free();
@@ -64,8 +58,6 @@
 	 */
 	$hosts = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($host =& $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();

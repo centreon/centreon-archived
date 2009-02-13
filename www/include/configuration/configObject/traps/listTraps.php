@@ -31,8 +31,6 @@
 		$SearchTool = "WHERE traps_oid LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR traps_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps $SearchTool");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -59,8 +57,6 @@
 	 */
 	$rq = "SELECT * FROM traps $SearchTool ORDER BY manufacturer_id, traps_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 
 	/*
@@ -78,8 +74,6 @@
 		$moptions .= "&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$trap['traps_id']."]'></input>";
 		$DBRESULT2 =& $pearDB->query("select alias from traps_vendor where id='".$trap['manufacturer_id']."' LIMIT 1");
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$mnftr =& $DBRESULT2->fetchRow();
 		$DBRESULT2->free();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
