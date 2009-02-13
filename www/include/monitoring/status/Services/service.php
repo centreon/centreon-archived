@@ -60,10 +60,11 @@
 	/*
 	 * set limit & num
 	 */
-	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE key = 'maxViewMonitoring' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
+	$data =& $DBRESULT->fetchRow();
+	$gopt[$data['key']] = myDecode($data['key']);
 
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
 	!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
