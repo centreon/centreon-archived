@@ -60,14 +60,14 @@
 	require_once ("$classdir/centreonLog.class.php");
 	require_once ("$classdir/centreonDB.class.php");
 	
-
 	/*
 	 * Get auth type
 	 */
 	global $pearDB;
 	$pearDB = new CentreonDB();
-	$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-    $generalOptions =& $DBRESULT->fetchRow();
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
+    while ($generalOption =& $DBRESULT->fetchRow())
+    	$generalOptions[$generalOption["key"]] = $generalOption["value"];
 	$DBRESULT->free();
 
 	/*

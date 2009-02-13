@@ -91,12 +91,12 @@
 	}
 	
 	function getSkin($pearDB) {
-		$DBRESULT =& $pearDB->query("SELECT `template` FROM `general_opt` LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'template' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
 		$data =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
-		return "./Themes/".$data["template"]."/";
+		return "./Themes/".$data["value"]."/";
 	}
 	
 ?>

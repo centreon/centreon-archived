@@ -72,9 +72,11 @@
 	/*
 	 * Delete Session Expired
 	 */
-	$DBRESULT =& $pearDB->query("SELECT `session_expire` FROM `general_opt` LIMIT 1");	
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");	
 	$session_expire =& $DBRESULT->fetchRow();
-	$time_limit = time() - ($session_expire["session_expire"] * 60);
+	if (!isset($session_expire["value"]) || !$session_expire["value"])
+		$session_expire["value"] = 2;
+	$time_limit = time() - ($session_expire["value"] * 60);
 
 	$DBRESULT =& $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");	
 
