@@ -35,9 +35,11 @@
 
 	$pearDB = new CentreonDB();
 
-	$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable, ldap_search_user, ldap_search_user_pwd, ldap_search_filter, ldap_search_timeout, ldap_search_limit FROM general_opt LIMIT 1");
-	$ldap_search = array_map("myDecode", $res->fetchRow());
-
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
+	while ($res =& $DBRESULT->fetchRow())
+		$ldap_search[$res["key"]] = myDecode($res["value"]);
+	$DBRESULT->free();
+	
 	$ldap_search_filter = $ldap_search['ldap_search_filter'];
 	$ldap_base_dn = $ldap_search['ldap_base_dn'];
 	$ldap_search_timeout = $ldap_search['ldap_search_timeout'];
@@ -67,11 +69,10 @@
 
 	$connect = true;
 
-	$DBRESULT =& $pearDB->query("SELECT debug_path, debug_ldap_import FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		die($DBRESULT->getMessage());
-
-	$debug = $DBRESULT->fetchRow();
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
+	while ($ldap_auths =& $DBRESULT->fetchRow())
+		$debug[$ldap_auth["key"]] = myDecode($ldap_auth["value"]);
+	$DBRESULT->free();
 
 	$debug_ldap_import = $debug['debug_ldap_import'];
 	$debug_path = $debug['debug_path'];

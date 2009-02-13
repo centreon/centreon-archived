@@ -18,10 +18,10 @@
 	if (!isset($oreon))
 		exit();
 
-	$DBRESULT =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable, ldap_search_user, ldap_search_user_pwd, ldap_search_filter, ldap_search_timeout, ldap_search_limit FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	$ldap_auth = array_map("myDecode", $DBRESULT->fetchRow());
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
+	while ($res =& $DBRESULT->fetchRow())
+		$ldap_auth[$res["key"]] = $res["value"];
+	$DBRESULT->free();
 
 	$attrsText 	= array("size"=>"80");
 	$attrsText2	= array("size"=>"5");

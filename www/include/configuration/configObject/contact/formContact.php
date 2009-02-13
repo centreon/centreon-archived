@@ -80,10 +80,11 @@
 		/*
 		 * Get DLAP auth informations
 		 */
-		$DBRESULT =& $pearDB->query("SELECT ldap_auth_enable FROM general_opt LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'ldap_auth_enable'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$ldap_auth =& $DBRESULT->fetchRow();
+		while ($ldap_auths =& $DBRESULT->fetchRow())
+			$ldap_auth[$ldap_auths["key"]] = myDecode($ldap_auths["value"]);
 		$DBRESULT->free();
 	}
 	
