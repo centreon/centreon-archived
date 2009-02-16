@@ -386,29 +386,49 @@ for ($i = 1; $i <= 2; $i++) { ?>
 	sel2.id = 'l1';
 	sel2.onchange = function() { change_limit(this.value) };
 
-	var _index = 0;
-	for (i = 10; i <= 100 ;i += 10){
-		if (i < _limit)
-			_index++;
+	var _max = 100; 	
+	if (_limit > 100) {
+		_max = 1000;
+	}
+
+	var _index1 = -1;
+	var _index;
+	for (i = 10 ; i <= _max ; i += 10) {
+		if (i > _limit && _index1 < 0) {
+			_index1++;
+			var k2 = document.createElement('option');
+			k2.value = _limit;
+			sel1.appendChild(k2);
+			var l2 = document.createTextNode(_limit);
+			k2.appendChild(l2);
+		}
 		var k = document.createElement('option');
-		k.value= i;
+		k.value = i;
 		sel1.appendChild(k);
 		var l = document.createTextNode(i);
 		k.appendChild(l);
 	}
-	var _index = 0;
-	for (i = 10; i <= 100 ;i += 10){
-		if (i < _limit)
-			_index++;
+	
+	var _index2 = -1;
+	for (i = 10 ; i <= _max ; i += 10) {
+		if (i > _limit && _index2 < 0) {
+			_index2++;
+			var k2 = document.createElement('option');
+			k2.value = _limit;
+			sel2.appendChild(k2);
+			var l2 = document.createTextNode(_limit);
+			k2.appendChild(l2);
+		}
 		var k = document.createElement('option');
-		k.value= i;
+		k.value = i;
 		sel2.appendChild(k);
 		var l = document.createTextNode(i);
 		k.appendChild(l);
 	}
+
 	sel1.selectedIndex = _index;
 	_sel1.appendChild(sel1);
-	sel2.selectedIndex = _index;
+	sel2.selectedIndex = _index2;
 	_sel2.appendChild(sel2);
 }
 
@@ -442,7 +462,7 @@ function mainLoop(){
 
 function set_limit(limit)	{
 	var xhrM = getXhrC();
-	xhrM.open("POST","./include/monitoring/engine/set_session_history.php",true);
+	xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	_var = "sid=<?php echo $sid; ?>&limit="+limit+"&url=<?php echo $url; ?>";
 	xhrM.send(_var);
@@ -450,7 +470,7 @@ function set_limit(limit)	{
 
 function set_search(search)	{
 	var xhrM = getXhrC();
-	xhrM.open("POST","./include/monitoring/engine/set_session_history.php",true);
+	xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	_var = "sid=<?php echo $sid; ?>&search="+search+"&url=<?php echo $url; ?>";
 	xhrM.send(_var);
@@ -458,7 +478,7 @@ function set_search(search)	{
 
 function set_page(page)	{
 	var xhrM = getXhrC();
-	xhrM.open("POST","./include/monitoring/engine/set_session_history.php",true);
+	xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	_var = "sid=<?php echo $sid; ?>&page="+page+"&url=<?php echo $url; ?>";
 	xhrM.send(_var);
