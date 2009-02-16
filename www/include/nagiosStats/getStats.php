@@ -93,15 +93,15 @@
 		unset($options);
 				
 		$title	 = array(	
-					"active_host_check" => _("Host checks"), 
-					"active_host_last" => _("Active hosts"),
+					"active_host_check" => _("Host Check Execution Time"), 
+					"active_host_last" => _("Hosts Actively Checked"),
 					"host_latency" => _("Host check latency"),
-					"active_service_check" => _("Service checks"), 
-					"active_service_last" => _("Active services"), 
+					"active_service_check" => _("Service Check Execution Time"), 
+					"active_service_last" => _("Services Actively Checked"), 
 					"service_latency" => _("Service check latency"), 
 					"cmd_buffer" => _("Commands in buffer"), 
 					"host_states" => _("Host status"), 
-					"service_states" => _("Services status"));
+					"service_states" => _("Service status"));
 	
 		$options = array(	
 					"active_host_check" => "nagios_active_host_execution.rrd", 
@@ -115,13 +115,13 @@
 					"service_states" => "nagios_services_states.rrd");
 	
 		$differentStats = array(	
-					"nagios_active_host_execution.rrd" => array("Used", "High", "Total"), 
-					"nagios_active_host_last.rrd" => array("T1", "T5", "T15", "T60"), 
-					"nagios_active_host_latency.rrd" => array("Used", "High", "Total"), 
-					"nagios_active_service_execution.rrd" => array("Used", "High", "Total"), 
-					"nagios_active_service_last.rrd" => array("T1", "T5", "T15", "T60"), 
-					"nagios_active_service_latency.rrd" => array("Used", "High", "Total"), 
-					"nagios_cmd_buffer.rrd" => array("Used", "High", "Total"), 
+					"nagios_active_host_execution.rrd" => array("Min", "Max", "Average"), 
+					"nagios_active_host_last.rrd" => array("Last_Min", "Last_5_Min", "Last_15_Min", "Last_Hour"), 
+					"nagios_active_host_latency.rrd" => array("Min", "Max", "Average"), 
+					"nagios_active_service_execution.rrd" => array("Min", "Max", "Average"), 
+					"nagios_active_service_last.rrd" => array("Last_Min", "Last_5_Min", "Last_15_Min", "Last_Hour"), 
+					"nagios_active_service_latency.rrd" => array("Min", "Max", "Average"), 
+					"nagios_cmd_buffer.rrd" => array("In_Use", "Max_Used", "Total_Available"), 
 					"nagios_hosts_states.rrd" => array("Up", "Down", "Unreach"), 
 					"nagios_services_states.rrd" => array("Ok", "Warn", "Crit", "Unk"));
 	
@@ -177,7 +177,7 @@
 		 * get all template infos
 		 */
 		 
-		$command_line .= " --interlaced --imgformat PNG --width=400 --height=100 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  --rigid --alt-autoscale-max ";
+		$command_line .= " --interlaced --imgformat PNG --width=500 --height=150 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  --rigid --alt-autoscale-max ";
 				
 		/*
 		 * Init DS template For each curv
@@ -211,8 +211,8 @@
 		 */
 		$cpt = 1;
 		foreach ($metrics as $key => $tm){
-			$command_line .= " LINE1:v".$cpt.$colors[$cpt].":\"".$tm."\"";
-			$command_line .= " GPRINT:v". ($cpt) .":LAST:\"\tLast\:%7.2lf%s\l\"";
+			$command_line .= " LINE1:v".$cpt.$colors[$cpt].":\"".$tm."\"";			
+			$command_line .= " GPRINT:v". ($cpt) .":LAST:\":%7.2lf%s\l\"";
 			$cpt++;
 		}
 		
