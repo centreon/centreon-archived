@@ -48,7 +48,7 @@ form		{padding-bottom:10px;}
 option 		{padding-left:1px;padding-right:1px;}
 
 #header 	{background:url("Images/bg_banner.gif") top repeat-x;height:83px;padding-left:20px;}
-#logo 		{position:absolute;left:15px;top:15px;}
+#logo 		{position:absolute;left:15px;top:10px;}
 
 #logli,#logOut,#date {color:#525252;font-weight:700;position:absolute;} 
 
