@@ -249,7 +249,7 @@
 	$form->addElement('text', 'max_service_check_spread', _("Maximum Service Check Spread"), $attrsText3);
 	$form->addElement('text', 'service_interleave_factor', _("Service Interleave Factor"), $attrsText3);
 	$form->addElement('text', 'max_concurrent_checks', _("Maximum Concurrent Service Checks"), $attrsText3);
-	$form->addElement('text', 'service_reaper_frequency', _("Service Repear Frequency"), $attrsText3);
+	$form->addElement('text', 'service_reaper_frequency', _("Service Reaper Frequency"), $attrsText3);
 	$form->addElement('text', 'host_inter_check_delay_method', _("Host Inter-Check Delay Method"), $attrsText3);
 	$form->addElement('text', 'max_host_check_spread', _("Maximum Host Check Spread"), $attrsText3);
 	$form->addElement('text', 'interval_length', _("Timing Interval Length"), $attrsText3);

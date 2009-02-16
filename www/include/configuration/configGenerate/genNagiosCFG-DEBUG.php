@@ -115,6 +115,13 @@
 			else if ($key == "use_true_regexp_matching" && $value == 2);
 			else if ($key == "service_inter_check_delay_method" && $value == 2);
 			else if ($key == "host_inter_check_delay_method" && $value == 2);
+			else if ($key == "service_reaper_frequency") {
+				if ($oreon->user->get_version() == 2) {
+					$str .= $key."=".$value."\n";
+				} else {
+					$str .= "check_result_reaper_frequency=".$value."\n";
+				}
+			}
 			else if ($key == "global_host_event_handler" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
