@@ -61,7 +61,7 @@
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>html_entity_decode($img["img_name"], ENT_QUOTES),
 						"RowMenu_link"=>"?p=".$p."&o=c&img_id=".$img['img_id'],
-						"RowMenu_dir"=>html_entity_decode($img["dir_name"], ENT_QUOTES),
+						"RowMenu_dir"=>$img["dir_name"],
 						"RowMenu_img"=>html_entity_decode($img["dir_alias"]."/".$img["img_path"], ENT_QUOTES),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}

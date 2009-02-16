@@ -100,7 +100,7 @@
 	#
 	$form->applyFilter('__ALL__', 'myTrim');
 	if ($o == "c")
-		$form->addRule('img_name', $lang['ErrName'], 'required');
+		$form->addRule('img_name', _("Compulsory image name"), 'required');
 	$form->addRule('directories', _("Required Field"), 'required');
 	$form->setRequiredNote(_("Required Field"));
 

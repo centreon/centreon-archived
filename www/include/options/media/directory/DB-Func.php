@@ -100,6 +100,7 @@
 			$ret = $form->getSubmitValues();
 		$ret["dir_alias"] = str_replace(" ", "_", $ret["dir_alias"]);
 		mkdir("./img/media/".$ret["dir_alias"]);
+		touch("./img/media/".$ret["dir_alias"]."/index.html");
 		if (is_dir("./img/media/".$ret["dir_alias"]))	{			
 			$rq = "INSERT INTO view_img_dir ";
 			$rq .= "(dir_name, dir_alias, dir_comment) ";

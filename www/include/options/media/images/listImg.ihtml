@@ -19,7 +19,7 @@
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
-			<td class="ListColHeaderLeft">{$headerMenu_path}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_img}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
