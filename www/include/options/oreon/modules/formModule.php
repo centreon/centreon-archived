@@ -73,6 +73,9 @@
 				if ($module_conf[$name]["lang_files"] && file_exists($lang_file_path))	{
 					include_once($lang_file_path);
 				}
+			
+			# Rebuilds modules in oreon object
+			$oreon->creatModuleList($pearDB);
 				
 			} else
 				$tpl->assign("output4", _("Unable to install module"));
@@ -122,6 +125,7 @@
 									$tpl->assign("output3", _("PHP file included"));
 									include_once($php_file_path);
 								}
+								$oreon->creatModuleList($pearDB);						
 							}
 							else
 								$tpl->assign("output4", _("Unable to install module"));
@@ -131,6 +135,7 @@
 							$redirect =& $form->addElement('hidden', 'o');
 							$redirect->setValue("u");							
 						}
+						
 						if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos") && is_file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt"))	{
 							$infos_streams = file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt");
 							$infos_streams = implode("<br />", $infos_streams);
