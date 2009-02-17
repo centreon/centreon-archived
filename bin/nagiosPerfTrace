@@ -67,16 +67,51 @@ sub trim($) {
 }
 
 sub rrd_process {
-    my($str, $is_localhost) = @_;
+    my($str, $is_localhost, $must_update_ds) = @_;
     my @tab;
     my $match;
     my $interval = 600;
     my $j;
+    my $error;
 
     $str =~ s/\n/:/g;
     @tab = split(/:/, $str);
     chomp(@tab);
     $j = 0;
+    
+    if ($must_update_ds) {
+    	RRDs::tune ($global_cmd_buffer, "--data-source-rename", "Used:In_Use");
+    	RRDs::tune ($global_cmd_buffer, "--data-source-rename", "High:Max_Used");
+    	RRDs::tune ($global_cmd_buffer, "--data-source-rename", "Total:Total_Available");
+    	
+    	RRDs::tune ($global_active_service_latency, "--data-source-rename", "Used:Min");
+    	RRDs::tune ($global_active_service_latency, "--data-source-rename", "High:Max");
+    	RRDs::tune ($global_active_service_latency, "--data-source-rename", "Total:Average");
+    	
+    	RRDs::tune ($global_active_service_execution, "--data-source-rename", "Used:Min");
+    	RRDs::tune ($global_active_service_execution, "--data-source-rename", "High:Max");
+    	RRDs::tune ($global_active_service_execution, "--data-source-rename", "Total:Average");
+    	
+    	RRDs::tune ($global_active_service_last, "--data-source-rename", "T1:Last_Min");
+    	RRDs::tune ($global_active_service_last, "--data-source-rename", "T5:Last_5_Min");
+    	RRDs::tune ($global_active_service_last, "--data-source-rename", "T15:Last_15_Min");
+    	RRDs::tune ($global_active_service_last, "--data-source-rename", "T60:Last_Hour");
+    	
+    	RRDs::tune ($global_active_host_latency, "--data-source-rename", "Used:Min");
+    	RRDs::tune ($global_active_host_latency, "--data-source-rename", "High:Max");
+    	RRDs::tune ($global_active_host_latency, "--data-source-rename", "Total:Average");
+    	
+    	RRDs::tune ($global_active_host_execution, "--data-source-rename", "Used:Min");
+    	RRDs::tune ($global_active_host_execution, "--data-source-rename", "High:Max");
+    	RRDs::tune ($global_active_host_execution, "--data-source-rename", "Total:Average");
+    	
+    	RRDs::tune ($global_active_host_last, "--data-source-rename", "T1:Last_Min");
+    	RRDs::tune ($global_active_host_last, "--data-source-rename", "T5:Last_5_Min");
+    	RRDs::tune ($global_active_host_last, "--data-source-rename", "T15:Last_15_Min");
+    	RRDs::tune ($global_active_host_last, "--data-source-rename", "T60:Last_Hour");
+    }
+    
+    
     foreach $match (@tab) {
 		if ($match =~ /Used\/High\/Total Command Buffers/) {
 		    $tab[$j+1] = trim($tab[$j+1]);
@@ -85,8 +120,11 @@ sub rrd_process {
 				RRDs::create ($global_cmd_buffer, "-s $interval", "DS:In_Use:GAUGE:300:0:U", "DS:Max_Used:GAUGE:300:0:U", "DS:Total_Available:GAUGE:300:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
 		    RRDs::update ($global_cmd_buffer, "--template=In_Use", "N:" . $1);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_cmd_buffer, "--template=Max_Used", "N:" . $2);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_cmd_buffer, "--template=Total_Available", "N:" . $3);
+		    $error = RRDs::error() if RRDs::error();
 		} elsif($match =~ /Active Service Latency/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ [sec|%]/;
@@ -94,8 +132,11 @@ sub rrd_process {
 				RRDs::create ($global_active_service_latency, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
 		    RRDs::update ($global_active_service_latency, "--template=Min", "N:" . $1);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_service_latency, "--template=Max", "N:" . $2);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_service_latency, "--template=Average", "N:" . $3);
+		    $error = RRDs::error() if RRDs::error();
 		} elsif($match =~ /Active Service Execution Time/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ sec/;
@@ -103,8 +144,11 @@ sub rrd_process {
 				RRDs::create ($global_active_service_execution, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
 		    RRDs::update ($global_active_service_execution, "--template=Min", "N:" . $1);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_service_execution, "--template=Max", "N:" . $2);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_service_execution, "--template=Average", "N:" . $3);
+		    $error = RRDs::error() if RRDs::error();
 		} elsif($match =~ /Active Services Last 1\/5\/15\/60 min/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
@@ -112,9 +156,13 @@ sub rrd_process {
 				RRDs::create ($global_active_service_last, "-s $interval", "DS:Last_Min:GAUGE:600:0:U", "DS:Last_5_Min:GAUGE:600:0:U", "DS:Last_15_Min:GAUGE:600:0:U", "DS:Last_Hour:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
 		    RRDs::update ($global_active_service_last, "--template=Last_Min", "N:" . $1);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_service_last, "--template=Last_5_Min", "N:" . $2);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_service_last, "--template=Last_15_Min", "N:" . $3);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_service_last, "--template=Last_Hour", "N:" . $4);
+		    $error = RRDs::error() if RRDs::error();
 		} elsif($match =~ /Services Ok\/Warn\/Unk\/Crit/) {	    
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
@@ -122,9 +170,13 @@ sub rrd_process {
 				RRDs::create ($global_services_states, "-s $interval", "DS:Ok:GAUGE:600:0:U", "DS:Warn:GAUGE:600:0:U", "DS:Unk:GAUGE:600:0:U", "DS:Crit:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
 		    RRDs::update ($global_services_states, "--template=Ok", "N:" . $1);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_services_states, "--template=Warn", "N:" . $2);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_services_states, "--template=Unk", "N:" . $3);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_services_states, "--template=Crit", "N:" . $4);
+		    $error = RRDs::error() if RRDs::error();
 		} elsif($match =~ /Active Host Latency/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ [sec|%]/;
@@ -132,8 +184,11 @@ sub rrd_process {
 				RRDs::create ($global_active_host_latency, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
 		    RRDs::update ($global_active_host_latency, "--template=Min", "N:" . $1);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_host_latency, "--template=Max", "N:" . $2);
-		    RRDs::update ($global_active_host_latency, "--template=Average", "N:" . $3);	    
+		    $error = RRDs::error() if RRDs::error();
+		    RRDs::update ($global_active_host_latency, "--template=Average", "N:" . $3);
+		    $error = RRDs::error() if RRDs::error();	    
 		} elsif($match =~ /Active Host Execution Time/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ sec/;
@@ -141,8 +196,11 @@ sub rrd_process {
 				RRDs::create ($global_active_host_execution, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
 		    RRDs::update ($global_active_host_execution, "--template=Min", "N:" . $1);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_host_execution, "--template=Max", "N:" . $2);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_host_execution, "--template=Average", "N:" . $3);
+		    $error = RRDs::error() if RRDs::error();
 		} elsif($match =~ /Active Hosts Last 1\/5\/15\/60 min/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
@@ -150,9 +208,13 @@ sub rrd_process {
 				RRDs::create ($global_active_host_last, "-s $interval", "DS:Last_Min:GAUGE:600:0:U", "DS:Last_5_Min:GAUGE:600:0:U", "DS:Last_15_Min:GAUGE:600:0:U", "DS:Last_Hour:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
 		    RRDs::update ($global_active_host_last, "--template=Last_Min", "N:" . $1);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_host_last, "--template=Last_5_Min", "N:" . $2);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_host_last, "--template=Last_15_Min", "N:" . $3);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_host_last, "--template=Last_Hour", "N:" . $4);
+		    $error = RRDs::error() if RRDs::error();
 		} elsif($match =~ /Hosts Up\/Down\/Unreach/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
@@ -160,11 +222,15 @@ sub rrd_process {
 				RRDs::create ($global_hosts_states, "-s $interval", "DS:Up:GAUGE:600:0:U", "DS:Down:GAUGE:600:0:U", "DS:Unreach:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
 		    RRDs::update ($global_hosts_states, "--template=Up", "N:" . $1);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_hosts_states, "--template=Down", "N:" . $2);
+		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_hosts_states, "--template=Unreach", "N:" . $3);
+		    $error = RRDs::error() if RRDs::error();
 		}
 		$j++;
-    }
+    }    
+    return $error;
 }
 
 sub check_dir($)	{
@@ -201,12 +267,14 @@ sub get_poller()	{
     my $cfg_dir;
     my $nagiostats;
     my $tmp;
+    my $must_update_ds;
 
     my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
     if (defined($dbh)){
 		$item = $dbh->prepare("SELECT id, ns_ip_address, localhost, nagiostats_bin FROM nagios_server WHERE ns_activate = 1");
 		if (!$item->execute) {die "Error:" . $item->errstr . "\n";}
 		while (($id, $ip, $is_localhost, $nagiostats_bin) = $item->fetchrow_array())	{
+		    $must_update_ds = 0;
 		    $cfg_item = $dbh->prepare("SELECT cfg_dir FROM cfg_nagios WHERE nagios_server_id = " . $id);
 		    if (!$cfg_item->execute) {
 				die "Error:" . $cfg_item->errstr . "\n";
@@ -219,7 +287,10 @@ sub get_poller()	{
 				$nagiostats = `ssh $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
 		    }
 		    check_dir($id);
-		    rrd_process($nagiostats, $is_localhost);
+		    if (rrd_process($nagiostats, $is_localhost, $must_update_ds)) {
+		    	$must_update_ds = 1;
+		    	rrd_process($nagiostats, $is_localhost, $must_update_ds);
+		    }
 		}
     } else {
 		print "\nMysql Database unreachable on host $mysql_host\n";
