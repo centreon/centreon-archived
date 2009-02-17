@@ -498,6 +498,27 @@
  		return $this->actions;
  	}
  	
+ 	
+ 	public function getTopology() {
+ 		$this->checkUpdateACL();
+ 		return $this->topology;
+ 	}
+ 	
+ 	public function getTopologyString() {
+ 		$this->checkUpdateACL();
+ 		$string = ""; 	
+ 		$i = 0;	
+ 		foreach ($this->topology as $key => $value) {
+ 			if ($i)
+ 				$string .= ", ";
+ 			$string .= "'".$key."'";
+ 			$i++;
+ 		}
+ 		if (!$i)
+ 			$string = "''";
+ 		return $string;	
+ 	}
+ 	
  	/*
  	 *  This functions returns a string that forms a condition of a query
  	 *  i.e : " WHERE host_id IN ('1', '2', '3') "
