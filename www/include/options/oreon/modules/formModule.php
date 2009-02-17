@@ -100,7 +100,7 @@
 			$i = 0;
 			$elemArr = array();
 			while (false !== ($filename = readdir($handle)))	{
-				if ($filename != "." && $filename != ".." && strstr($filename, $moduleinfo["name"]."-"))	{
+				if (substr($filename, 0, 1) != "." && strstr($filename, $moduleinfo["name"]."-"))	{
 					include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/conf.php");
 					if ($moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
 						$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
