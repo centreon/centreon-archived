@@ -68,13 +68,21 @@
 	 */
 	include_once $centreon_path . "www/class/centreonACL.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
-	include_once($centreon_path . "www/include/common/common-Func.php");
+	include_once $centreon_path . "www/class/centreonGMT.class.php";
+	
+	include_once $centreon_path . "www/include/common/common-Func.php";
 	
 	/*
 	 * Start XML document root
 	 */
 	$buffer = new CentreonXML();
 	$buffer->startElement("root");	
+ 
+ 	/*
+	 * Init GMT class
+	 */
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession($sid);
  
 	/*
 	 * Security check
@@ -515,8 +523,7 @@
 			$buffer->writeAttribute("show", "true");
 			$buffer->text("0");
 			$buffer->endElement();			
-		}
-		else {
+		} else {
 			$buffer->startElement("first");
 			$buffer->writeAttribute("show", "false");
 			$buffer->text("none");
@@ -528,8 +535,7 @@
 			$buffer->writeAttribute("show", "true");
 			$buffer->text($prev);
 			$buffer->endElement();			
-		}
-		else {
+		} else {
 			$buffer->startElement("prev");
 			$buffer->writeAttribute("show", "false");
 			$buffer->text("none");
@@ -541,8 +547,7 @@
 			$buffer->writeAttribute("show", "true");
 			$buffer->text($next);
 			$buffer->endElement();			
-		}
-		else {
+		} else {
 			$buffer->startElement("next");
 			$buffer->writeAttribute("show", "false");
 			$buffer->text("none");
@@ -556,8 +561,7 @@
 			$buffer->writeAttribute("show", "true");
 			$buffer->text($last);
 			$buffer->endElement();			
-		}
-		else {
+		} else {
 			$buffer->startElement("last");
 			$buffer->writeAttribute("show", "false");
 			$buffer->text("none");
@@ -617,8 +621,8 @@
 				$buffer->writeElement("service_description", $log["service_description"]);				
 			}
 			$buffer->writeElement("class", $tab_class[$cpts % 2]);
-			$buffer->writeElement("date", date(_("Y/m/d"), $log["ctime"]));
-			$buffer->writeElement("time", date(_("H:i:s"), $log["ctime"]));
+			$buffer->writeElement("date", $centreonGMT->getDate(_("Y/m/d"), $log["ctime"]));
+			$buffer->writeElement("time", $centreonGMT->getDate(_("H:i:s"), $log["ctime"]));
 			$buffer->writeElement("output", $log["output"]);
 			$buffer->writeElement("contact", $log["notification_contact"]);
 			$buffer->writeElement("contact_cmd", $log["notification_cmd"]);
