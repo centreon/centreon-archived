@@ -1,0 +1,23 @@
+<div id="forMenuAjax">
+	<div id="{$Menu1ID}">
+		    <div id="{$Menu1Color}">
+		        <ul>
+		        {section name=elem1 loop=$elemArr1}
+		      	{if $elemArr1[elem1].Menu1UrlPopup}
+		      	<li><div id="{$elemArr1[elem1].Menu1ClassImg}"><a href='{$elemArr1[elem1].Menu1UrlPopupOpen}' target="_blank">{$elemArr1[elem1].Menu1Name}</a></div></li>
+		      	{else}
+		      	<li><div id="{$elemArr1[elem1].Menu1ClassImg}"><a href='#' onClick="loadAjax({$elemArr1[elem1].Menu1Page});">{$elemArr1[elem1].Menu1Name}</a></div></li>
+		      	{/if}
+				{/section}
+		        </ul>
+		    </div>
+	</div>
+	<div id="{$Menu2Color}">
+	    <div id="{$Menu2ID}">
+	        {section name=elem2 loop=$elemArr2}
+	            <span class="separator_menu2">{$elemArr2[elem2].Menu2Sep}</span>
+	            <span class="span2">{if $elemArr2[elem2].Menu2UrlPopup}<a href='{$elemArr2[elem2].Menu2UrlPopupOpen}' target="_blank" style="white-space:nowrap;">{$elemArr2[elem2].Menu2Name}</a>{else}<a href='{$elemArr2[elem2].Menu2Url}' style="white-space:nowrap;">{$elemArr2[elem2].Menu2Name}</a>{/if}</span>
+			{/section}
+	    </div>
+	</div>
+</div>

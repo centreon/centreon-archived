@@ -21,8 +21,9 @@
 	/*
 	 * Path to the configuration dir
 	 */
-	$path = "./menu/";
+	$path = "./menu/templates";
 	$user_update_pref = $path. "userMenuPreferences.php";
+
 
 	/*
 	 * Smarty template Init
@@ -41,6 +42,8 @@
 	 * Put the authentification in the URL
 	 */
 	$auth = NULL;
+
+	require_once("./menu/MenuJS.php");
 
 	/*
 	 * block headerHTML
@@ -107,6 +110,7 @@
 	$DBRESULT =& $pearDB->query($rq);
 	for ($i = 0; $DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()); $i++)
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
+								"Menu1Page" => $elem["topology_page"] ,
 								"Menu1Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1UrlPopup" => $elem["topology_popup"],
 								"Menu1UrlPopupOpen" => $elem["topology_url"],
@@ -212,7 +216,7 @@
 	count($elemArr[3]) ? $tpl->assign("elemArr3", $elemArr[3]) : NULL;
 	count($elemArr[4]) ? $tpl->assign("elemArr4", $elemArr[4]) : NULL;
 	$tpl->assign("idParent", $level1.$level2.$level3);
-
+	
 	/*
 	 * Legend icon
 	 */
@@ -239,7 +243,8 @@
 	$tpl->assign('amIadmin', $oreon->user->admin);
 	# Display
 	$tpl->display("BlockHeader.ihtml");
-	$tpl->display("BlockMenuType1.ihtml");	
-	count($elemArr[2]) ? $tpl->display("BlockMenuType2.ihtml") : NULL;
+	$tpl->display("menu.ihtml");
+	//$tpl->display("BlockMenuType1.ihtml");	
+	//count($elemArr[2]) ? $tpl->display("BlockMenuType2.ihtml") : NULL;
 	count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : print '<div id="contener"><!-- begin contener --><table id="Tcontener"><tr><td id="Tmainpage" class="TcTD">';
 ?>
