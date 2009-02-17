@@ -109,7 +109,7 @@ while ($elem =& $DBRESULT->fetchRow()) {
 	$buffer->writeElement("Menu2Name", _($elem["topology_name"]));
 	$buffer->writeElement("Menu2Popup", $elem["topology_popup"] ? "true" : "false");
 	$buffer->endElement();
-	$sep = "|";
+	$sep = "&nbsp;&nbsp;|&nbsp;&nbsp;";
 }
 $buffer->endElement();
 $buffer->endElement();

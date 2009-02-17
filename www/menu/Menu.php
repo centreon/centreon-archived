@@ -22,7 +22,7 @@
 	 * Path to the configuration dir
 	 */
 	$path = "./menu/templates";
-	$user_update_pref = $path. "userMenuPreferences.php";
+	$user_update_pref = "./menu/userMenuPreferences.php";
 
 
 	/*
@@ -139,7 +139,7 @@
 								"Menu2UrlPopupOpen" => $elem["topology_url"].$auth,
 								"Menu2Name" => _($elem["topology_name"]),
 								"Menu2Popup" => $elem["topology_popup"] ? true : false);
-		$sep = "|";
+		$sep = "&nbsp;&nbsp;|&nbsp;&nbsp;";
 	}
 
 	/*

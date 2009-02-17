@@ -160,10 +160,10 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .search_input_found 	{background-color:#99C68E;}
 
 /* Log Options */
-.ajaxOption		{margin:0px 0px -5px 0px;border-collapse:separate;empty-cells:show;background-color:#aeaeee;border: 2px #aeaeee solid;-moz-border-radius:8px;}
-.ajaxOption td 		{padding:2px 4px 2px 4px;}
-.ajaxOption table td	{background-color:#ceceee;}
-.ajaxOption input 	{margin-right:5px;}
+.ajaxOption             {margin:0px 0px -5px 0px;border-collapse:separate;empty-cells:show;background-image:url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x; color:#666;border: 2px #cccccc solid;-moz-border-radius:2px;}
+.ajaxOption td          {padding:2px 4px 2px 4px;}
+.ajaxOption table td    {background-img:url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x; color:#666;}
+.ajaxOption input       {margin-right:5px;}
 
 
 /* Taktical Overview */
