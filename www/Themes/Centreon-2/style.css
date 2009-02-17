@@ -78,7 +78,7 @@ a.infobulle:hover 	{z-index:25;}
 /* Menu 1 */
 
 #menu_1 		{background-image:url("Images/menu_bg.gif");background-position:top left;background-repeat:repeat-x;height:28px;}
-#menu_1 li 		{background:url("Images/menu_r.gif") right no-repeat 0;float:left;height:20px;list-style-type:none;padding-right:1px;text-align:center;}
+#menu_1 li 		{background:url("Images/menu_r.gif") right no-repeat;float:left;height:20px;list-style-type:none;padding-right:1px;text-align:center;}
 #menu_1 li div 	{float:left;height:24px;padding-left:7px;padding-right:3px;padding-top:3px;}
 #menu_1 li a 	{color:#555;font-size:13px;text-decoration:none;}
 #menu1_bgimg_ 	{float:left;}
