@@ -90,7 +90,7 @@
 	 	<tr>
 	 		<td align="center">
 	 			<table class="ListTableSmall">
-	 				<tr><td colspan="3" class="tactical_light_header">{$svc_status}</td></tr>
+	 				<tr><td colspan="3" class="tactical_light_header">{$buffer_usage}</td></tr>
 	 				<tr><td>{$in_use}</td><td>{$max_used}</td><td>{$available}</td></tr>
 	 				<tr class="list_one"><td align="center">{$perfInfo.$key.bu.In_Use}</td><td align="center">{$perfInfo.$key.bu.Max_Used}</td><td align="center">{$perfInfo.$key.bu.Total_Available}</td></tr>
 	 			</table>

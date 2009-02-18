@@ -138,6 +138,7 @@
 	$tpl->assign("available", _("Total Available"));
 	$tpl->assign("in_use", _("In Use"));
 	$tpl->assign("max_used", _("Max Used"));
+	$tpl->assign("buffer_usage", _("Buffer Usage"));
 	
 	if (isset($host_list) && $host_list)
 		$tpl->assign('host_list', $host_list);
