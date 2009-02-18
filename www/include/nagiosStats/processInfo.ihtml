@@ -1,0 +1,54 @@
+<div>
+	<ul id="mainnav">
+	{assign var='cpt' value=0}
+	{foreach from=$tab_server key=key item=item}
+		{assign var='cpt' value=$cpt+1}
+		<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$tab_server[$key]}</a></li>
+	{/foreach}
+	</ul>
+</div>
+<a name="generate">
+{assign var='cpt' value=0}
+{foreach from=$host_list key=key item=item}
+{assign var='cpt2' value=$cpt}
+{assign var='cpt' value=$cpt+1}
+<div id='tab{$cpt}' class='tab'>
+ 	<table class="ListTable">
+	 	<tr class="ListHeader">
+	 		<td class="FormHeader"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$tab_server[$cpt2]}&nbsp;</td>
+	 	</tr>		
+		<tr>
+			<td align="center">
+	 			<table class="ListTableSmall">
+	 				<tr><td colspan=2 class="tactical_light_header">{$processInfoLabel}</td></tr>
+	 				<tr class='list_one'><td>{$str_prog_version}</td><td>{$procInfo.$key.program_version}</td></tr>
+	 				<tr class='list_two'><td>{$str_prog_start_time}</td><td>{$procInfo.$key.program_start_time}</td></tr>
+	 				<tr class='list_one'><td>{$str_last_command_check}</td><td>{$procInfo.$key.last_command_check}</td></tr>
+	 				<tr class='list_two'><td>{$str_last_log_rotation}</td><td>{$procInfo.$key.last_log_rotation}</td></tr>
+	 				<tr class='list_one'><td>{$str_process_id}</td><td>{$procInfo.$key.process_id}</td></tr>
+	 				{assign var=val value=$procInfo.$key.is_currently_running}
+	 				<tr class='list_two'><td>{$str_currently_running}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.notifications_enabled}
+	 				<tr class='list_one'><td>{$str_notifications_enabled}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.active_host_checks_enabled}
+	 				<tr class='list_two'><td>{$str_host_check_execute}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.passive_host_checks_enabled}
+	 				<tr class='list_one'><td>{$str_passive_host_checks_enabled}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.active_service_checks_enabled}
+	 				<tr class='list_two'><td>{$str_service_check_execute}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.passive_service_checks_enabled}
+	 				<tr class='list_one'><td>{$str_passive_service_checks_enabled}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.event_handlers_enabled}
+	 				<tr class='list_two'><td>{$str_event_handlers_enabled}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.obsess_over_hosts}
+	 				<tr class='list_one'><td>{$str_obsess_over_hosts}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.obsess_over_services}
+	 				<tr class='list_two'><td>{$str_obsess_over_services}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.process_performance_data}	 				 
+	 				<tr class='list_one'><td>{$str_process_performance_data}</td><td>{$yes_no_tab.$val}</td></tr>	 				
+	 			</table>
+	 		</td>
+	 	</tr>	 	
+	 </table>
+</div>
+{/foreach}

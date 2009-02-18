@@ -177,7 +177,7 @@
 		 * get all template infos
 		 */
 		 
-		$command_line .= " --interlaced --imgformat PNG --width=500 --height=150 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  --rigid --alt-autoscale-max ";
+		$command_line .= " --interlaced --imgformat PNG --width=400 --height=150 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  --rigid --alt-autoscale-max ";
 				
 		/*
 		 * Init DS template For each curv

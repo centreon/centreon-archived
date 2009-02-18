@@ -1,0 +1,101 @@
+<div>
+	<ul id="mainnav">
+	{assign var='cpt' value=0}
+	{foreach from=$tab_server key=key item=item}
+		{assign var='cpt' value=$cpt+1}
+		<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$tab_server[$key]}</a></li>
+	{/foreach}
+	</ul>
+</div>
+<a name="generate">
+{assign var='cpt' value=0}
+{foreach from=$host_list key=key item=item}
+{assign var='cpt2' value=$cpt}
+{assign var='cpt' value=$cpt+1}
+<div id='tab{$cpt}' class='tab'>
+ 	<table class="ListTable">
+	 	<tr class="ListHeader">
+	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$tab_server[$cpt2]}&nbsp;</td>
+	 	</tr>		
+		<tr>
+			<td align="center">
+	 			<table class="ListTableSmall">
+	 				<tr><td colspan="2" class="tactical_light_header">{$host_actively_checked}</td></tr>
+	 				<tr><td>{$time_frame}</td><td>{$host_checked}</td></tr>
+	 				<tr class="list_one"><td>{$loe1}</td><td align="center">{$perfInfo.$key.hac.Last_minute}</td></tr>
+	 				<tr class="list_two"><td>{$loe5}</td><td align="center">{$perfInfo.$key.hac.Last_5_minutes}</td></tr>
+	 				<tr class="list_one"><td>{$loe15}</td><td align="center">{$perfInfo.$key.hac.Last_15_minutes}</td></tr>
+	 				<tr class="list_two"><td>{$loe60}</td><td align="center">{$perfInfo.$key.hac.Last_hour}</td></tr>
+	 			</table>
+	 		</td>	 		
+	 		<td align="left">
+	 			<table class="ListTableSmall">
+	 				<tr><td colspan="2" class="tactical_light_header">{$service_actively_checked}</td></tr>
+	 				<tr><td>{$time_frame}</td><td>{$svc_checked}</td></tr>
+	 				<tr class="list_one"><td>{$loe1}</td><td align="center">{$perfInfo.$key.sac.Last_minute}</td></tr>
+	 				<tr class="list_two"><td>{$loe5}</td><td align="center">{$perfInfo.$key.sac.Last_5_minutes}</td></tr>
+	 				<tr class="list_one"><td>{$loe15}</td><td align="center">{$perfInfo.$key.sac.Last_15_minutes}</td></tr>
+	 				<tr class="list_two"><td>{$loe60}</td><td align="center">{$perfInfo.$key.sac.Last_hour}</td></tr>
+	 			</table>
+	 		</td>
+	 	</tr>
+	 	<tr>
+			<td align="center">
+	 			<table class="ListTableSmall">
+	 				<tr><td colspan="3" class="tactical_light_header">{$host_exec_time}</td></tr>
+	 				<tr><td>{$Min}</td><td>{$Max}</td><td>{$Avg}</td></tr>
+	 				<tr class="list_one"><td align="center">{$perfInfo.$key.hcet.Min} {$sec}</td><td align="center">{$perfInfo.$key.hcet.Max} {$sec}</td><td align="center">{$perfInfo.$key.hcet.Average} {$sec}</td></tr>	 				
+	 			</table>
+	 		</td>	 		
+	 		<td align="left">
+	 			<table class="ListTableSmall">
+	 				<tr><td colspan="3" class="tactical_light_header">{$svc_exec_time}</td></tr>
+	 				<tr><td>{$Min}</td><td>{$Max}</td><td>{$Avg}</td></tr>
+	 				<tr class="list_one"><td align="center">{$perfInfo.$key.scet.Min} {$sec}</td><td align="center">{$perfInfo.$key.scet.Max} {$sec}</td><td align="center">{$perfInfo.$key.scet.Average} {$sec}</td></tr>	 				
+	 			</table>
+	 		</td>
+	 	</tr>
+	 	<tr>
+			<td align="center">
+	 			<table class="ListTableSmall">
+	 				<tr><td colspan="3" class="tactical_light_header">{$host_latency}</td></tr>
+	 				<tr><td>{$Min}</td><td>{$Max}</td><td>{$Avg}</td></tr>
+	 				<tr class="list_one"><td align="center">{$perfInfo.$key.hcl.Min} {$sec}</td><td align="center">{$perfInfo.$key.hcl.Max} {$sec}</td><td align="center">{$perfInfo.$key.hcl.Average} {$sec}</td></tr>	 				
+	 			</table>
+	 		</td>	 		
+	 		<td align="left">
+	 			<table class="ListTableSmall">
+	 				<tr><td colspan="3" class="tactical_light_header">{$svc_latency}</td></tr>
+	 				<tr><td>{$Min}</td><td>{$Max}</td><td>{$Avg}</td></tr>
+	 				<tr class="list_one"><td align="center">{$perfInfo.$key.scl.Min} {$sec}</td><td align="center">{$perfInfo.$key.scl.Max} {$sec}</td><td align="center">{$perfInfo.$key.scl.Average} {$sec}</td></tr>	 				
+	 			</table>
+	 		</td>
+	 	</tr>
+	 	<tr>
+			<td align="center">
+	 			<table class="ListTableSmall">
+	 				<tr><td colspan="3" class="tactical_light_header">{$host_status}</td></tr>
+	 				<tr><td>{$up}</td><td>{$down}</td><td>{$unreachable}</td></tr>
+	 				<tr class="list_one"><td align="center">{$perfInfo.$key.hs.Up}</td><td align="center">{$perfInfo.$key.hs.Down}</td><td align="center">{$perfInfo.$key.hs.Unreachable}</td></tr>	 				
+	 			</table>
+	 		</td>	 		
+	 		<td align="left">
+	 			<table class="ListTableSmall">
+	 				<tr><td colspan="4" class="tactical_light_header">{$svc_status}</td></tr>
+	 				<tr><td>{$ok}</td><td>{$warning}</td><td>{$critical}</td><td>{$unknown}</td></tr>
+	 				<tr class="list_one"><td align="center">{$perfInfo.$key.ss.OK}</td><td align="center">{$perfInfo.$key.ss.Warning}</td><td align="center">{$perfInfo.$key.ss.Critical}</td><td align="center">{$perfInfo.$key.ss.Unknown}</td></tr>
+	 			</table>
+	 		</td>
+	 	</tr>
+	 	<tr>
+	 		<td align="center">
+	 			<table class="ListTableSmall">
+	 				<tr><td colspan="3" class="tactical_light_header">{$svc_status}</td></tr>
+	 				<tr><td>{$in_use}</td><td>{$max_used}</td><td>{$available}</td></tr>
+	 				<tr class="list_one"><td align="center">{$perfInfo.$key.bu.In_Use}</td><td align="center">{$perfInfo.$key.bu.Max_Used}</td><td align="center">{$perfInfo.$key.bu.Total_Available}</td></tr>
+	 			</table>
+	 		</td>
+	 	</tr>	
+	 </table>
+</div>
+{/foreach}

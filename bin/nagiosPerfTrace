@@ -25,6 +25,8 @@ use warnings;
 use RRDs;
 use DBI;
 
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $data);
+require "@CENTREON_ETC@/conf.pm";
 # Define Var lib dir
 my $VarLib = "@CENTREON_VARLIB@";
 
@@ -58,6 +60,7 @@ my $global_active_host_latency;
 my $global_active_host_execution;
 my $global_active_host_last;
 my $global_hosts_states;
+my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 
 sub trim($) {
     my $string = shift;
@@ -67,13 +70,14 @@ sub trim($) {
 }
 
 sub rrd_process {
-    my($str, $is_localhost, $must_update_ds) = @_;
+    my($str, $is_localhost, $must_update_ds, $ns_id) = @_;
     my @tab;
     my $match;
     my $interval = 600;
     my $j;
     my $error;
-
+	my $query_str;
+	
     $str =~ s/\n/:/g;
     @tab = split(/:/, $str);
     chomp(@tab);
@@ -111,8 +115,8 @@ sub rrd_process {
     	RRDs::tune ($global_active_host_last, "--data-source-rename", "T60:Last_Hour");
     }
     
-    
-    foreach $match (@tab) {
+    $query_str = "";
+    foreach $match (@tab) {		
 		if ($match =~ /Used\/High\/Total Command Buffers/) {
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
@@ -125,6 +129,13 @@ sub rrd_process {
 		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_cmd_buffer, "--template=Total_Available", "N:" . $3);
 		    $error = RRDs::error() if RRDs::error();
+		    
+		    if ($query_str ne "") {
+		    	$query_str .= ", ";
+		    }
+		    $query_str .= "('$ns_id', 'Buffer Usage', 'In_Use', '$1'), ";
+		    $query_str .= "('$ns_id', 'Buffer Usage', 'Max_Used', '$2'), ";
+		    $query_str .= "('$ns_id', 'Buffer Usage', 'Total_Available', '$3') ";		    
 		} elsif($match =~ /Active Service Latency/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ [sec|%]/;
@@ -137,6 +148,13 @@ sub rrd_process {
 		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_service_latency, "--template=Average", "N:" . $3);
 		    $error = RRDs::error() if RRDs::error();
+		    
+		    if ($query_str ne "") {
+		    	$query_str .= ", ";
+		    }
+		    $query_str .= "('$ns_id', 'Service Check Latency', 'Min', '$1'), ";
+		    $query_str .= "('$ns_id', 'Service Check Latency', 'Max', '$2'), ";
+		    $query_str .= "('$ns_id', 'Service Check Latency', 'Average', '$3') ";		    
 		} elsif($match =~ /Active Service Execution Time/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ sec/;
@@ -149,6 +167,13 @@ sub rrd_process {
 		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_service_execution, "--template=Average", "N:" . $3);
 		    $error = RRDs::error() if RRDs::error();
+		    
+		    if ($query_str ne "") {
+		    	$query_str .= ", ";
+		    }
+		    $query_str .= "('$ns_id', 'Service Check Execution Time', 'Min', '$1'), ";
+		    $query_str .= "('$ns_id', 'Service Check Execution Time', 'Max', '$2'), ";
+		    $query_str .= "('$ns_id', 'Service Check Execution Time', 'Average', '$3') ";
 		} elsif($match =~ /Active Services Last 1\/5\/15\/60 min/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
@@ -163,6 +188,14 @@ sub rrd_process {
 		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_service_last, "--template=Last_Hour", "N:" . $4);
 		    $error = RRDs::error() if RRDs::error();
+		    
+		    if ($query_str ne "") {
+		    	$query_str .= ", ";
+		    }
+		    $query_str .= "('$ns_id', 'Service Actively Checked', 'Last_minute', '$1'), ";
+		    $query_str .= "('$ns_id', 'Service Actively Checked', 'Last_5_minutes', '$2'), ";
+		    $query_str .= "('$ns_id', 'Service Actively Checked', 'Last_15_minutes', '$3'), ";
+		    $query_str .= "('$ns_id', 'Service Actively Checked', 'Last_hour', '$4')";
 		} elsif($match =~ /Services Ok\/Warn\/Unk\/Crit/) {	    
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
@@ -177,6 +210,15 @@ sub rrd_process {
 		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_services_states, "--template=Crit", "N:" . $4);
 		    $error = RRDs::error() if RRDs::error();
+		    
+		    if ($query_str ne "") {
+		    	$query_str .= ", ";
+		    }
+		    $query_str .= "('$ns_id', 'Services Status', 'OK', '$1'), ";
+		    $query_str .= "('$ns_id', 'Services Status', 'Warning', '$2'), ";
+		    $query_str .= "('$ns_id', 'Services Status', 'Unknown', '$3'), ";
+		    $query_str .= "('$ns_id', 'Services Status', 'Critical', '$4')";
+		    
 		} elsif($match =~ /Active Host Latency/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ [sec|%]/;
@@ -188,7 +230,14 @@ sub rrd_process {
 		    RRDs::update ($global_active_host_latency, "--template=Max", "N:" . $2);
 		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_host_latency, "--template=Average", "N:" . $3);
-		    $error = RRDs::error() if RRDs::error();	    
+		    $error = RRDs::error() if RRDs::error();
+		    
+		    if ($query_str ne "") {
+		    	$query_str .= ", ";
+		    }
+		    $query_str .= "('$ns_id', 'Host Check Latency', 'Min', '$1'), ";
+		    $query_str .= "('$ns_id', 'Host Check Latency', 'Max', '$2'), ";
+		    $query_str .= "('$ns_id', 'Host Check Latency', 'Average', '$3')";	    
 		} elsif($match =~ /Active Host Execution Time/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ sec/;
@@ -201,6 +250,13 @@ sub rrd_process {
 		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_host_execution, "--template=Average", "N:" . $3);
 		    $error = RRDs::error() if RRDs::error();
+		    
+		    if ($query_str ne "") {
+		    	$query_str .= ", ";
+		    }
+		    $query_str .= "('$ns_id', 'Host Check Execution Time', 'Min', '$1'), ";
+		    $query_str .= "('$ns_id', 'Host Check Execution Time', 'Max', '$2'), ";
+		    $query_str .= "('$ns_id', 'Host Check Execution Time', 'Average', '$3')";
 		} elsif($match =~ /Active Hosts Last 1\/5\/15\/60 min/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
@@ -215,6 +271,14 @@ sub rrd_process {
 		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_active_host_last, "--template=Last_Hour", "N:" . $4);
 		    $error = RRDs::error() if RRDs::error();
+		    
+		    if ($query_str ne "") {
+		    	$query_str .= ", ";
+		    }
+		    $query_str .= "('$ns_id', 'Host Actively Checked', 'Last_minute', '$1'), ";
+		    $query_str .= "('$ns_id', 'Host Actively Checked', 'Last_5_minutes', '$2'), ";
+		    $query_str .= "('$ns_id', 'Host Actively Checked', 'Last_15_minutes', '$3'), ";
+		    $query_str .= "('$ns_id', 'Host Actively Checked', 'Last_hour', '$4')";
 		} elsif($match =~ /Hosts Up\/Down\/Unreach/){
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
@@ -227,9 +291,25 @@ sub rrd_process {
 		    $error = RRDs::error() if RRDs::error();
 		    RRDs::update ($global_hosts_states, "--template=Unreach", "N:" . $3);
 		    $error = RRDs::error() if RRDs::error();
+		    
+		    if ($query_str ne "") {
+		    	$query_str .= ", ";
+		    }
+		    $query_str .= "('$ns_id', 'Hosts Status', 'Up', '$1'), ";
+		    $query_str .= "('$ns_id', 'Hosts Status', 'Down', '$2'), ";
+		    $query_str .= "('$ns_id', 'Hosts Status', 'Unreachable', '$3')";		    
 		}
 		$j++;
-    }    
+    }
+    if (!$error) {
+ 	   my $rq = "DELETE FROM `nagios_stats` WHERE instance_id = '".$ns_id."'";
+	   my $res = $dbh->do($rq);
+	   print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));
+ 	   
+ 	   $rq = "INSERT INTO `nagios_stats` (instance_id, stat_label, stat_key, stat_value) VALUES " . $query_str;
+	   $res = $dbh->do($rq);
+	   print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));
+    }
     return $error;
 }
 
@@ -287,9 +367,9 @@ sub get_poller()	{
 				$nagiostats = `ssh $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
 		    }
 		    check_dir($id);
-		    if (rrd_process($nagiostats, $is_localhost, $must_update_ds)) {
+		    if (rrd_process($nagiostats, $is_localhost, $must_update_ds, $id)) {
 		    	$must_update_ds = 1;
-		    	rrd_process($nagiostats, $is_localhost, $must_update_ds);
+		    	rrd_process($nagiostats, $is_localhost, $must_update_ds, $id);
 		    }
 		}
     } else {
