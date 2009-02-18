@@ -70,7 +70,7 @@
 				<td>&nbsp;</td>	
 				<td>Mathavarajan Sugumaran</td>
 			</tr>
-			tr>	
+			<tr>	
 				<td>&nbsp;</td>	
 				<td>Laurent Pinsivy</td>
 			</tr>
