@@ -340,7 +340,19 @@ CREATE TABLE IF NOT EXISTS `log_action_modification` (
   `action_log_id` int(11) NOT NULL,
   PRIMARY KEY  (`modification_id`),
   KEY `action_log_id` (`action_log_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- 
+-- Structure de la table `nagios_stats`
+-- 
+
+CREATE TABLE IF NOT EXISTS `nagios_stats` (
+  `instance_id` int(11) NOT NULL,
+  `stat_key` varchar(255) NOT NULL,
+  `stat_value` varchar(255) NOT NULL,
+  `stat_label` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 --
 -- Data 

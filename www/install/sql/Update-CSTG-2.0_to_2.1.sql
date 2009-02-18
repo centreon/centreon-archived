@@ -1,3 +1,11 @@
+CREATE TABLE IF NOT EXISTS `nagios_stats` (
+  `instance_id` int(11) NOT NULL,
+  `stat_key` varchar(255) NOT NULL,
+  `stat_value` varchar(255) NOT NULL,
+  `stat_label` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 ALTER TABLE `log` CHANGE `msg_type` `msg_type` INT NULL;
 
 CREATE TABLE IF NOT EXISTS `log_action` (
@@ -10,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `log_action` (
   `log_contact_id` int(11) NOT NULL,
   PRIMARY KEY  (`action_log_id`),
   KEY `log_contact_id` (`log_contact_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE IF NOT EXISTS `log_action_modification` (
@@ -20,5 +28,5 @@ CREATE TABLE IF NOT EXISTS `log_action_modification` (
   `action_log_id` int(11) NOT NULL,
   PRIMARY KEY  (`modification_id`),
   KEY `action_log_id` (`action_log_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
