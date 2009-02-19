@@ -93,7 +93,13 @@
 	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;	
 	
 	?>
+	
 <script type='text/javascript'>
+	
+	<?php
+		require_once ("./include/common/javascript/autologout.php");
+	?>    
+    
     window.onload = function () {
 	<?php
 		
@@ -111,7 +117,9 @@
 			echo $topology_js['init'] ."();";
 		}
 	}
+	print "check_session();";
 	print "\n};\n</script>\n";
+		
 	?>
 <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
 </head>
