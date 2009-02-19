@@ -31,7 +31,7 @@ use File::Copy;
 
 use vars qw($debug $LOG %status $generalcounter $stop $method);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
-use vars qw($con $ssh $scp $installedPath);
+use vars qw($con $ssh $scp $installedPath $timeout);
 
 if (POSIX::getuid() == 0 ) { 
     print  STDERR "You must not execute centcore with root user \n"; exit 1;
@@ -44,8 +44,12 @@ my $LOG = "@CENTREON_LOG@/centcore.log";
 my $PID = "@CENTREON_RUNDIR@/centcore.pid";
 my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
 
+$timeout = 5;
+
 $ssh = "/usr/bin/ssh";
 $scp = "/usr/bin/scp";
+
+$ssh .= " -o ConnectTimeout=$timeout";
 
 my $stop = 1;
 my $debug = 0;
