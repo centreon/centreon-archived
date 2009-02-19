@@ -61,7 +61,7 @@
 		</td>
 		<td class="ListColRight"><xsl:value-of select="a"/></td>
 	    <td class="ListColRight"><xsl:value-of select="lc"/></td>
-	    <td class="ListColCenter"><xsl:value-of select="lsc"/></td>
+	    <td class="ListColRight"><xsl:value-of select="lsc"/></td>
 		<td class="ListColNoWrap"><xsl:value-of select="ou"/></td>
 	</tr>
 </xsl:for-each>
