@@ -178,16 +178,16 @@
 				" no.object_id," .
 				" no.name2 as service_description" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
-					
-	$rq .= ", centreon_acl ";
+	if (!$is_admin)	
+		$rq .= ", centreon_acl ";
 		
 	$rq .= 	" WHERE no.object_id = nss.service_object_id" .
 			" AND (no.name1 NOT LIKE '_Module_%'" .
 			" OR no.name1 LIKE '_Module_Meta')" .
 		  	" AND objecttype_id = 2";
 
-
-	$rq .= 	$access->queryBuilder("AND", "no.name1", "centreon_acl.host_name"). $access->queryBuilder("AND", "no.name2", "centreon_acl.service_description").$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
+	if (!$is_admin)	
+		$rq .= 	$access->queryBuilder("AND", "no.name1", "centreon_acl.host_name"). $access->queryBuilder("AND", "no.name2", "centreon_acl.service_description").$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
 	($o == "meta") ? $rq .= " AND no.name1 = '_Module_Meta'" : $rq .= " AND no.name1 != '_Module_Meta'";
 
