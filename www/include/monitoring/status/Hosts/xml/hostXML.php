@@ -36,15 +36,8 @@
  * 
  */
 
-	/*
-	 * if debug == 0 => Normal, 
-	 * debug == 1 => get use, 
-	 * debug == 2 => log in file (log.xml)
-	 */
-	$debugXML = 0;
-	$buffer = '';
-
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once $centreon_path . "www/class/other.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
@@ -142,14 +135,15 @@
 			" nh.icon_image," .
 			" nh.icon_image_alt" .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh";
-		
-	$rq1 .= ", centreon_acl ";
+	if (!$is_admin)	
+		$rq1 .= ", centreon_acl ";
 		 
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
 			" AND no.name1 NOT LIKE '_Module_%'";
 
-	$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
+	if (!$is_admin)	
+		$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
@@ -168,7 +162,7 @@
 		$rq1 .= " AND no.instance_id = ".$instance;
 
 
-	switch($sort_type){
+	switch ($sort_type){
 		case 'host_name' : $rq1 .= " order by no.name1 ". $order;  break;
 		case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 ";  break;
 		case 'last_state_change' : $rq1 .= " order by nhs.last_state_change ". $order.",no.name1 ";  break;
@@ -197,10 +191,11 @@
 	$buffer->writeElement("limit", $limit);
 	$buffer->writeElement("p", $p);
 	$buffer->endElement();	
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+	
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
+	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 		$color_host = $tab_color_host[$ndo["current_state"]];
 		$passive = 0;
@@ -232,6 +227,7 @@
         $buffer->writeElement("hae", $ndo["active_checks_enabled"]);       
         $buffer->writeElement("hpe", $ndo["passive_checks_enabled"]);
         $buffer->writeElement("ne", $ndo["notifications_enabled"]);
+        $buffer->writeElement("ico", $ndo["icon_image"]);
 		$buffer->endElement();		
 	}
 
