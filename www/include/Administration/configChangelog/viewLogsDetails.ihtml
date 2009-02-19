@@ -1,0 +1,76 @@
+<form name='form' method='POST'>
+<table class="ajaxOption">
+	<tr>
+		<td>{$search_object_str} : <input type='text' name='searchO' value='{$searchO}' /></td>
+		<td>{$search_user_str} : <input type='text' name='searchU' value='{$searchU}' /></td>
+		<td>&nbsp;&nbsp;&nbsp;{$obj_str} : <select name='otype' />{$obj_type}</select></td>
+		<td><input type='submit' name='SearchB' value='Search' /></td>
+	</tr>
+</table>
+<br />
+<table class="ListTable">
+	<tr class="ListHeader">
+		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$date}</td>
+		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$contact_name}</td>
+		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$type}</td>			
+		<td	class="ListColHeaderCenter" style="white-space:nowrap;"></td>			
+	</tr>
+	{assign var='classStyle' value='list_two'}
+	{assign var='firstFlag' value=1}
+	{foreach item=list from=$action}
+		{if $classStyle == 'list_two'}
+			{assign var='classStyle' value='list_one'}
+		{else}
+			{assign var='classStyle' value='list_two'}
+		{/if}
+		<tr class={$classStyle}>
+			<td class="ListColCenter">{$list.action_log_date}</td>
+			<td class="ListColCenter">{$list.log_contact_id}</td>
+			<td class="ListColCenter">{$list.action_type}</td>
+			<td class="ListColCenter">
+			{if $list.action_type == "Create" || $list.action_type == "Change" || $list.action_type == "Massive change"}
+				<table class="ListTable"
+						{if $firstFlag}
+						{assign var='firstFlag' value=0}
+						<tr class="ListHeader">
+							<td class="ListColHeaderCenter" style="white-space:nowrap;">{$field_name}</td>
+							<td class="ListColHeaderCenter" style="white-space:nowrap;">{$before}</td>
+							<td class="ListColHeaderCenter" style="white-space:nowrap;">{$after}</td>
+						</tr>
+						{/if}
+						{assign var='cpt' value=0}						
+						{foreach item=modif from=$modification}
+							{if $modif.action_log_id == $list.action_log_id}
+							<tr>
+								<td class="ListColCenter" width="250">
+									{if $modif.action_log_id == $list.action_log_id}
+										{$modif.field_name}
+									{/if}
+								</td>
+								<td class="ListColCenter" width="200">
+									{if $modif.action_log_id == $list.action_log_id}
+										{$modif.field_value_before}
+									{/if}
+								</td>
+								<td class="ListColCenter" width="200">
+									{if $modif.action_log_id == $list.action_log_id}
+										{$modif.field_value_after}
+									{/if}
+								</td>
+							</tr>
+							{assign var='cpt' value=$cpt+1}
+							{/if}
+						{/foreach}
+						{if $cpt == 0}
+							<tr>
+								<td colspan="3">{$noModifLabel}</td>
+							</tr>
+						{/if}
+				</table>				
+			{/if}		
+			</td>
+		</tr>
+	{/foreach}
+</table>
+{$form.hidden}
+</form>

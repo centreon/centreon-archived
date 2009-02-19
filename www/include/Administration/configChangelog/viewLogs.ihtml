@@ -1,76 +1,34 @@
 <form name='form' method='POST'>
-<table>
-	<tr class="ToolbarTR">
-		<td class="Toolbar_TDSelectAction_Top" width="300"><span class="consol_button">{$objTypeLabel} {$form.o1.html}</span></td>
-		<td class="Toolbar_TDSelectAction_Top" width="auto"><span class="consol_button">{$objNameLabel} {$form.o2.html}</span></td>
-		<!--<td><input type="submit" name="logs" value="Apply" /></td>-->
+<table class="ajaxOption">
+	<tr>
+		<td>{$search_object_str} : <input type='text' name='searchO' value='{$searchO}' /></td>
+		<td>{$search_user_str} : <input type='text' name='searchU' value='{$searchU}' /></td>
+		<td>&nbsp;&nbsp;&nbsp;{$obj_str} : <select name='otype' />{$obj_type}</select></td>
+		<td><input type='submit' name='SearchB' value='Search' /></td>
 	</tr>
 </table>
-{if $display_flag}
-<table class="ListTable">
-	<tr class="ListHeader">
-		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$date}</td>
-		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$contact_name}</td>
-		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$type}</td>			
-		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$logs}{$objName}</td>			
+<br />
+<table class="ListTableSmall">
+	<tr class="ListHeader">				
+		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$type}</td>	
+		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$object_name}</td>
 	</tr>
 	{assign var='classStyle' value='list_two'}
-	{assign var='firstFlag' value=1}
-	{foreach item=list from=$action}
+	{foreach key=key item=item from=$tabz_obj_name}
 		{if $classStyle == 'list_two'}
 			{assign var='classStyle' value='list_one'}
 		{else}
 			{assign var='classStyle' value='list_two'}
 		{/if}
-		<tr class={$classStyle}>
-			<td class="ListColCenter">{$list.action_log_date}</td>
-			<td class="ListColCenter">{$list.log_contact_id}</td>
-			<td class="ListColCenter">{$list.action_type}</td>
-			<td class="ListColCenter">
-			{if $list.action_type == "Create" || $list.action_type == "Change" || $list.action_type == "Massive change"}
-				<table class="ListTable"
-						{if $firstFlag}
-						{assign var='firstFlag' value=0}
-						<tr class="ListHeader">
-							<td class="ListColHeaderCenter" style="white-space:nowrap;">{$field_name}</td>
-							<td class="ListColHeaderCenter" style="white-space:nowrap;">{$before}</td>
-							<td class="ListColHeaderCenter" style="white-space:nowrap;">{$after}</td>
-						</tr>
-						{/if}
-						{assign var='cpt' value=0}						
-						{foreach item=modif from=$modification}
-							{if $modif.action_log_id == $list.action_log_id}
-							<tr>
-								<td class="ListColCenter" width="250">
-									{if $modif.action_log_id == $list.action_log_id}
-										{$modif.field_name}
-									{/if}
-								</td>
-								<td class="ListColCenter" width="200">
-									{if $modif.action_log_id == $list.action_log_id}
-										{$modif.field_value_before}
-									{/if}
-								</td>
-								<td class="ListColCenter" width="200">
-									{if $modif.action_log_id == $list.action_log_id}
-										{$modif.field_value_after}
-									{/if}
-								</td>
-							</tr>
-							{assign var='cpt' value=$cpt+1}
-							{/if}
-						{/foreach}
-						{if $cpt == 0}
-							<tr>
-								<td colspan="3">{$noModifLabel}</td>
-							</tr>
-						{/if}
-				</table>				
-			{/if}		
+		<tr class='{$classStyle}'>
+			<td>
+				<a href="./main.php?p={$p}&object_id={$tabz_obj_id.$key}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$tabz_obj_type.$key}</a>
+			</td>
+			<td>
+				<a href="./main.php?p={$p}&object_id={$tabz_obj_id.$key}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$tabz_obj_name.$key}</a>
 			</td>
 		</tr>
 	{/foreach}
 </table>
-{/if}
 {$form.hidden}
 </form>

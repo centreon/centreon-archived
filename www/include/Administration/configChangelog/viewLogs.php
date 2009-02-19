@@ -17,10 +17,22 @@
 
 	if (!isset ($oreon))
 		exit ();
+	
+	function searchUserName($user_name) {
+		global $pearDB;
+		$str = "";
 		
-	isset($_POST["cmd"]) ? $cmd = $_POST["cmd"] : $cmd = 0;
-	isset($_POST["cmd2"]) ? $cmd2 = $_POST["cmd2"] : $cmd2 = 0;
-
+		$DBRES =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_name LIKE '%".$user_name."%' OR contact_alias LIKE '%".$user_name."%'");
+		while ($row =& $DBRES->fetchRow()) {
+			if ($str != "")
+				$str .= ", ";
+			$str .= "'" . $row['contact_id'] . "'";
+		}
+		if ($str == "")
+			$str = "''";
+		return $str;
+	}
+			
 	/*
 	 * Pear library
 	 */
@@ -40,13 +52,29 @@
 	
 	$pearDBO = new CentreonDB("centstorage");
 	
-	if ($cmd2) {
-		$listAction = array();
-		$listAction = $oreon->CentreonLogAction->listAction($cmd2);
-		$listModification = array();
-		$listModification = $oreon->CentreonLogAction->listmodification($cmd2);
-	}
 	
+	if (isset($_POST["searchO"]))
+		$searchO = $_POST["searchO"];
+	elseif (isset($_GET["searchO"]))
+		$searchO = $_GET["searchO"];
+	else
+		$searchO = NULL;
+		
+	if (isset($_POST["searchU"])) 
+		$searchU = $_POST["searchU"];
+	elseif (isset($_GET["searchU"]))
+		$searchU = $_GET["searchU"];			
+	else
+		$searchU = NULL;
+	
+	if (isset($_POST["otype"])) 
+		$otype = $_POST["otype"];
+	elseif (isset($_GET["otype"]))
+		$otype = $_GET["otype"];		
+	else
+		$otype = NULL;
+ 			
+		
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -54,7 +82,7 @@
 	$tpl->assign("date", _("Date"));
 	$tpl->assign("type", _("Type"));
 	$tpl->assign("object_id", _("Object ID"));
-	$tpl->assign("object_name", _("Object Name"));
+	$tpl->assign("object_name", _("Object"));
 	$tpl->assign("action", _("Action"));
 	$tpl->assign("contact_name", _("Contact Name"));
 	$tpl->assign("field_name", _("Field Name"));
@@ -71,62 +99,94 @@
 	if (isset($listModification))
 		$tpl->assign("modification", $listModification);
 	
-	isset($cmd2) && $cmd2 ? $display_flag = 1 : $display_flag = 0;
-	$tpl->assign("display_flag", $display_flag);
-
+		
 	$objects_type_tab = array();
-	$objects_type_tab = $oreon->CentreonLogAction->listObjecttype();
-	
+	$objects_type_tab = $oreon->CentreonLogAction->listObjecttype();	
+	foreach ($objects_type_tab as $key => $name)
+		$options .= "<option value='$key' ".(($otype == $key) ? 'selected' : "").">$name</option>"; 
+	 
+	$tpl->assign("obj_type", $options);
 	?>
-	<script type="text/javascript">
-	function setO1(_i) {
-		document.forms['form'].elements['cmd'].value = _i;
-		document.forms['form'].elements['o1'].selectedIndex = _i;
-		document.forms['form'].elements['cmd2'].value = 0;
-	}
 	
-	function setO2(_i) {
-		document.forms['form'].elements['cmd2'].value = _i;
-	}
-	</script>
 	<?php
 	
-	if ($cmd) {
-		$DBRESULT = $pearDBO->query("SELECT DISTINCT object_name, object_id FROM log_action WHERE object_type='".$objects_type_tab[$cmd]."' ORDER BY object_id");
-		$objNameTab[0] = _("Please select an object name");
+	if ($searchO || $searchU || $otype) {
+		$query = "SELECT DISTINCT object_name, object_id, object_type FROM log_action ";
+		$where_flag = 1;
+		if ($searchO) {			
+			if ($where_flag)  {
+				$query .= " WHERE ";
+				$where_flag = 0;
+			}
+			else
+				$query .= " AND ";
+			$query .= " object_name LIKE '%".$searchO."%' ";
+		}
+		if ($searchU) {
+			if ($where_flag)  {
+				$query .= " WHERE ";
+				$where_flag = 0;
+			}
+			else
+				$query .= " AND ";
+			$query .= " log_contact_id IN (".searchUserName($searchU).") ";			
+		}
+		if ($otype) {
+			if ($where_flag)  {
+				$query .= " WHERE ";
+				$where_flag = 0;
+			}
+			else
+				$query .= " AND ";
+			$query .= " object_type = '".$objects_type_tab[$otype]."' ";			
+		}
+		$query .= " ORDER BY object_type, object_name";
+		$DBRESULT = $pearDBO->query($query);
+		
+		$tabz_obj_type = array();
+		$tabz_obj_name = array();
+		$tabz_obj_id = array();		
 		while ($res =& $DBRESULT->fetchRow()) {
 			if ($res['object_id']) {
 				$res['object_name'] = str_replace('#S#', "/", $res["object_name"]);
 				$res['object_name'] = str_replace('#BS#', "\\", $res["object_name"]);
-				$objNameTab[$res['object_id']] = $res['object_name']." (id:".$res['object_id'].")";
+				$tabz_obj_id[] = $res['object_id'];
+				$tabz_obj_type[] = $res['object_type'];
+				$tabz_obj_name[] = $res['object_name'];			
 			}
 		}
-	}
+	}	
 	
-	if (isset($cmd2) && $cmd2 && isset($objNameTab))
-		$tpl->assign("objName", $objNameTab[$cmd2]);
-	
-	$attrs = array(	'onchange'=>"javascript: setO1(this.form.elements['o1'].value); submit();");
-    $form->addElement('select', 'o1', NULL, $objects_type_tab, $attrs);
-	$form->setDefaults(array('o1' => NULL));
-	$o1 =& $form->getElement('o1');
-	$o1->setValue(NULL);
-
-	if (isset($objNameTab)) {
-		$attrs = array(	'onchange'=>"javascript: setO2(this.form.elements['o2'].value); submit();");
-	    $form->addElement('select', 'o2', NULL, $objNameTab, $attrs);
-		$form->setDefaults(array('o2' => NULL));
-		$o2 =& $form->getElement('o2');
-		$o2->setValue(NULL);
-	}
 		
-	$form->addElement('hidden', 'cmd', $cmd);
-	$form->addElement('hidden', 'cmd2', $cmd2);	
 	/*
 	 * Apply a template definition
-	 */
+	 */	 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);	
+	$form->accept($renderer);		
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->display("viewLogs.ihtml");
+	$tpl->assign('search_object_str', _("Object"));
+	$tpl->assign('search_user_str', _("User"));
+	$tpl->assign('searchO', $searchO);
+	$tpl->assign('searchU', $searchU);
+	$tpl->assign('obj_str', _("Object"));
+	$tpl->assign('tabz_obj_type', $tabz_obj_type);
+	$tpl->assign('tabz_obj_name', $tabz_obj_name);
+	$tpl->assign('tabz_obj_id', $tabz_obj_id);
+	$tpl->assign('type_id', $otype);
+	$tpl->assign('p', $p);
+	if (isset($_POST['searchO']) || isset($_POST['searchU']) || isset($_POST['otype']) || !isset($_GET['object_id']))
+		$tpl->display("viewLogs.ihtml");
+	else {
+		$listAction = array();
+        $listAction = $oreon->CentreonLogAction->listAction($_GET['object_id']);
+        $listModification = array();
+        $listModification = $oreon->CentreonLogAction->listmodification($_GET['object_id']);
+		
+		if (isset($listAction))
+                $tpl->assign("action", $listAction);
+        if (isset($listModification))
+                $tpl->assign("modification", $listModification);
+		
+		$tpl->display("viewLogsDetails.ihtml");
+	}
 ?>

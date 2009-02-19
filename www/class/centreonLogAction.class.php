@@ -168,7 +168,7 @@ class CentreonLogAction {
 	function listObjecttype() {
 		$object_type_tab = array();
 
-		$object_type_tab[0] = _("Please select an object");
+		$object_type_tab[0] = _("All");
 		$object_type_tab[1] = "command";
 		$object_type_tab[2] = "timeperiod";
 		$object_type_tab[3] = "contact";
