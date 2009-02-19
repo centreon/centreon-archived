@@ -20,10 +20,14 @@
 	$path = "./include/options/session/";	
 	
 	require_once "./include/common/common-Func.php";
+	require_once "./class/centreonMsg.class.php";
 		
 	if (isset($_GET["o"]) && $_GET["o"] == "k"){
 		$pearDB->query("DELETE FROM session WHERE session_id = '".$_GET["session_id"]."'");
-		$msg = _("User kicked");
+		$msg = new CentreonMsg();
+		$msg->setTextStyle("bold");
+		$msg->setText(_("User kicked"));
+		$msg->setTimeOut("3");
 	}	
 
 	# Smarty template Init

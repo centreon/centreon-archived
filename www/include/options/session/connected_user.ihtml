@@ -1,8 +1,5 @@
 <div align="center">
 <form id="Form">
-	{if $msg}
-		<span class="msg">{ $msg }</span>
-	{/if}
 	<table class="ListTableMedium">
 		<tr class="ListHeader">
 			<td class="ListColHeaderLeft">{ $wi_user }</td>

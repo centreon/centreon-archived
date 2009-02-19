@@ -1,10 +1,6 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <div align="center">
 <form id="form" method="POST">
-	{if $msg}
-		<span class="msg">{ $msg }</span>
-		<br />
-	{/if}	
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
 			<td class="Toolbar_TDSelectAction_Top">{$form.o1.html}</td>

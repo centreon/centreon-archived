@@ -19,13 +19,18 @@
 	
 	$path = "./include/options/accessLists/reloadACL/";	
 	
+	
 	require_once "./include/common/common-Func.php";
+	require_once "./class/centreonMsg.class.php";
 	require_once "HTML/QuickForm.php";	
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 		
 	if (isset($_GET["o"]) && $_GET["o"] == "r"){		
 		$pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$_GET["session_id"]."'");
-		$msg = _("User's ACL is reloaded.");
+		$msg = new CentreonMsg();
+		$msg->setTextStyle("bold");
+		$msg->setText(_("ACL reloaded"));
+		$msg->setTimeOut("3");		
 	}	
 	else if (isset($_POST["o"]) && $_POST["o"] == "u") {
 		isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = NULL;
@@ -46,7 +51,9 @@
 			$query .= ")";
 		
 		$pearDB->query($query);
-		$msg = _("User's ACL reloaded.");
+		$msg->setTextStyle("bold");
+		$msg->setText(_("ACL reloaded"));
+		$msg->setTimeOut("3");
 	}
 
 	# Smarty template Init
@@ -99,18 +106,20 @@
 	$attrs = array(
 			'onchange'=>"javascript: " .
 				"if (this.form.elements['o1'].selectedIndex == 1) {" .
-				" 	setO(this.form.elements['o1'].value); submit();}");
+				" 	setO(this.form.elements['o1'].value); submit();} this.form.elements['o1'].selectedIndex = 0");
     $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "u"=>_("Reload ACL")), $attrs);
-	$form->setDefaults(array('o1' => NULL));
-	$o1 =& $form->getElement('o1');
-	$o1->setValue(NULL);
-
+	
+	
 	$attrs = array(
 			'onchange'=>"javascript: " .
 				"if (this.form.elements['o2'].selectedIndex == 1) {" .
-				" 	setO(this.form.elements['o2'].value); submit();}");
+				" 	setO(this.form.elements['o2'].value); submit();} this.form.elements['o1'].selectedIndex = 0");
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "u"=>_("Reload ACL")), $attrs);
-	$form->setDefaults(array('o2' => NULL));
+	
+	
+	$o1 =& $form->getElement('o1');
+	$o1->setValue(NULL);	
+	
 	$o2 =& $form->getElement('o2');
 	$o2->setValue(NULL);
 	
