@@ -3,27 +3,17 @@
 <xsl:template match="//reponse">
 	<table style="padding:5px;margin:5px;">
 		<tr class="ListHeaderPopup">
+			<td rowspan="2">
+				<xsl:element name="img">
+					<xsl:attribute name="src"><xsl:value-of select="ico"/></xsl:attribute>
+				</xsl:element>
+			</td>
 			<td class="ColPopup"><xsl:value-of select="hostname"/></td>
+		</tr>
+		<tr class="ListHeaderPopup">
 			<td class="ColPopup" style="width:100%;text-aling:right;"><xsl:value-of select="address"/></td>
 		</tr>
-		<xsl:comment>
-		<tr class="list_one">
-			<td class="ColPopup"><xsl:value-of select="current_state_name"/></td>
-			<td class="ColPopup">
-				<xsl:attribute name="style">
-					background-color:<xsl:value-of select="current_state/@color"/>;
-    			</xsl:attribute>
-				<xsl:value-of select="current_state"/>
-			</td>
-		</tr>
-		</xsl:comment>
-		<xsl:comment>
-		<tr class='list_separator'><td class="separator" colspan="2">Status</td></tr>
-		</xsl:comment>
 		<tr class='list_two'>
-		<xsl:comment>
-			<td class="ColPopup"><xsl:value-of select="plugin_output_name"/></td>
-		</xsl:comment>
 			<td colspan="2" class="ColPopup">
 				<xsl:attribute name="style">
 					background-color:<xsl:value-of select="current_state/@color"/>;
@@ -104,20 +94,6 @@
 			<td class="ColPopup"><xsl:value-of select="last_time_unreachable/@name"/></td>
 			<td class="ColPopup"><xsl:value-of select="last_time_unreachable"/></td>
 		</tr>
-		<xsl:comment>
-		<tr class='list_one'>
-			<td class="ColPopup"><xsl:value-of select="performance_data_name"/></td>
-			<td class="ColPopup"><xsl:value-of select="performance_data"/></td>
-		</tr>
-		<tr class='list_two'>
-			<td class="ColPopup"><xsl:value-of select="current_attempt/@name"/></td>
-			<td class="ColPopup"><xsl:value-of select="current_attempt"/></td>
-		</tr>
-		<tr class='list_one'>
-			<td class="ColPopup"><xsl:value-of select="is_flapping_name"/></td>
-			<td class="ColPopup"><xsl:value-of select="is_flapping"/></td>
-		</tr>
-		</xsl:comment>
 	</table>
 </xsl:template>
 </xsl:stylesheet>

@@ -36,17 +36,13 @@
  * 
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
-	$debugXML = 0;
-	$buffer = '';
-
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/class/other.class.php";
+	include_once $centreon_path . "www/class/centreonGMT.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
-	include_once $centreon_path."www/class/centreonGMT.class.php";
 	
 	$pearDB = new CentreonDB();
 	$pearDBndo = new CentreonDB("ndo");
@@ -129,15 +125,13 @@
 			" ROUND(nhs.percent_state_change) as percent_state_change," .
 			" nh.notifications_enabled," .
 			" nh.event_handler_enabled," .
-			" nh.icon_image_alt" .
+			" nh.icon_image" .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh" .
 			" WHERE no.object_id = " . $host_id .
 			" AND no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND (no.name1 NOT LIKE '_Module_%'".
 			" OR no.name1 LIKE '_Module_Meta')".
 			" AND no.objecttype_id = 1";
-
-			//" AND no.is_active = 1 AND no.objecttype_id = 1 AND nh.config_type = 1";
 	
 	/*
 	 * Request
@@ -156,9 +150,17 @@
 	$buffer->startElement("reponse");
 	
 	if ($ndo =& $DBRESULT_NDO1->fetchRow()){
+
 		$duration = "";
 		if ($ndo["last_state_change"] > 0)
 			$duration = Duration::toString(time() - $ndo["last_state_change"]);
+
+		if ($ndo["icon_image"] == "")
+			$icon_image = "./img/icones/16x16/server_network.gif";
+		else
+			$icon_image = "./img/media/" . $ndo["icon_image"];		
+		$ndo["icon_image"] = $icon_image;
+
 
 		$last_notification = "N/A";
 		if ($ndo["last_notification"] > 0)
@@ -211,10 +213,13 @@
 		$buffer->writeElement("is_downtime_name", _("In Scheduled Downtime?"));
 		$buffer->writeElement("last_update", get_centreon_date( time()));
 		$buffer->writeElement("last_update_name", _("Last Update"));
+		$buffer->writeElement("ico", $ndo["icon_image"]);
+		
 		$buffer->startElement("last_time_up");
 		$buffer->writeAttribute("name", _("Last time up"));
 		$buffer->text(get_centreon_date( $ndo["last_time_up"]));
 		$buffer->endElement();		
+		
 		$buffer->startElement("last_time_down");
 		$buffer->writeAttribute("name", _("Last time down"));
 		$buffer->text(get_centreon_date( $ndo["last_time_down"]));

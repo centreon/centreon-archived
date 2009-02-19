@@ -129,7 +129,7 @@
 			" DISTINCT no.name1 as host_name," .
 			" nhs.current_state, nhs.problem_has_been_acknowledged, " .
 			" nhs.passive_checks_enabled, nhs.active_checks_enabled, no.object_id, nh.action_url," .
-			" nh.notes_url, nh.notes, nh.address" .
+			" nh.notes_url, nh.notes, nh.address, nh.icon_image, nh.icon_image_alt " .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
 			" WHERE no.object_id = nhs.host_object_id " .
 			" AND nh.host_object_id = no.object_id " .
@@ -222,7 +222,7 @@
 		$rq .= " AND nss.problem_has_been_acknowledged = 0";
 		$rq .= " AND nss.scheduled_downtime_depth = 0";
 	}
-		
+	
 	$rq_pagination = $rq;
 
 	switch ($sort_type){
@@ -318,7 +318,8 @@
 				else
 					$buffer->writeElement("hnu", "none");
 					
-				$buffer->writeElement("hnn", $host_status[$ndo["host_name"]]["notes"]);				
+				$buffer->writeElement("hnn", $host_status[$ndo["host_name"]]["notes"]);	
+				$buffer->writeElement("hico", $host_status[$ndo["host_name"]]["icon_image"]);	
 				$buffer->writeElement("hip", $host_status[$ndo["host_name"]]["address"]);				
 				$buffer->writeElement("hid", $host_status[$ndo["host_name"]]["object_id"]);				
 			}
@@ -342,6 +343,8 @@
 			$buffer->writeElement("ac", $ndo["active_checks_enabled"]);
 			$buffer->writeElement("eh", $ndo["event_handler_enabled"]);
 			$buffer->writeElement("is", $ndo["is_flapping"]);
+			//$buffer->writeElement("ico", $ndo["icon_image"]);
+			//$buffer->writeElement("icoa", $ndo["icon_image_alt"]);
 			$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);			
 			$buffer->writeElement("ha", $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]);
 			$buffer->writeElement("hae", $host_status[$ndo["host_name"]]["active_checks_enabled"]);
