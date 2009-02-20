@@ -1,3 +1,5 @@
+UPDATE `index_data` SET host_name = '_Module_Meta' WHERE host_name = 'Meta_Module';
+
 CREATE TABLE IF NOT EXISTS `nagios_stats` (
   `instance_id` int(11) NOT NULL,
   `stat_key` varchar(255) NOT NULL,
