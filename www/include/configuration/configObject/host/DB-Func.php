@@ -51,6 +51,12 @@
 			return true;
 	}
 	
+	function testHostName ($name = NULL) {		
+		if (preg_match("/^_Module_/", $name))
+			return false;		
+		return true;
+	}
+	
 	function testHostTplExistence ($name = NULL)	{
 		global $pearDB, $form;
 

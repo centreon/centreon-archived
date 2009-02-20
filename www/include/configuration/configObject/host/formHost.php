@@ -644,6 +644,8 @@
 		/*
 		 * Test existence
 		 */
+		$form->registerRule('testModule', 'callback', 'testHostName');
+		$form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
 		$form->registerRule('exist', 'callback', 'testHostExistence');
 		$form->addRule('host_name', _("Name is already in use"), 'exist');		
 		
@@ -672,7 +674,7 @@
 				$form->addRule('host_alias', _("Compulsory Alias"), 'required');
 				$form->addRule('host_address', _("Compulsory Address"), 'required');
 				$form->addRule('host_max_check_attempts', _("Required Field"), 'required');				
-				$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
+				$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');				
 				
 				if (!$form->getSubmitValue("host_cs"))
 					$form->addRule('host_cgs', _("Compulsory Contact Group"), 'required');
