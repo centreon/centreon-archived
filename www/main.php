@@ -38,6 +38,7 @@
  
 	/* 
 	 * Define Local Functions
+	 *   - remove SQL Injection : Thanks to Julien CAYSSOL
 	 */
 
 	function getParameters($str){
