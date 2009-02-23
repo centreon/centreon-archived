@@ -48,7 +48,7 @@
 			$var = $_POST[$str];
 		if ($var == "")
 			$var = NULL;
-		return $var;
+		return htmlentities($var, ENT_QUOTES);
 	}
 
 	
@@ -68,6 +68,10 @@
 	$p = getParameters("p");
 	$o = getParameters("o");
 	$min = getParameters("min");
+	$type = getParameters("type");
+	$search = getParameters("search");
+	$limit = getParameters("limit");
+	$num = getParameters("num");
 	
 	/*
 	 * Include all func
