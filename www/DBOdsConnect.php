@@ -31,10 +31,10 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
+ * SVN : $URL$
  * SVN : $Id$
  * 
- */	
+ */
 	// This file have to be included whenever we want to connect to the DB
 		
 	require_once("DB.php");

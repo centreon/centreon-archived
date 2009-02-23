@@ -31,11 +31,11 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: index.php 7247 2008-12-12 10:56:23Z jmathis $
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
-  
+ 
   	$etc = "@CENTREON_ETC@";
   	$etc = "/etc/centreon/";
   

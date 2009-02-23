@@ -31,8 +31,8 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: htmlHeader.php 7246 2008-12-12 10:55:35Z jmathis $
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
 
