@@ -3,14 +3,16 @@
 <xsl:template match="//reponse">
 	<table style="padding:5px;margin:5px;z-index:15;">
 		<tr class="ListHeaderPopup">
+			<td rowspan="2">
+				<xsl:element name="img">
+					<xsl:attribute name="src"><xsl:value-of select="ico"/></xsl:attribute>
+				</xsl:element>
+			</td>
 			<td class="ColPopup"><xsl:value-of select="hostname"/></td>
-			<td class="ColPopup"><xsl:value-of select="service_description"/></td>
 		</tr>
-		<xsl:comment>
-		<tr class='list_separator'>
-			<td class="separator" colspan="2">Status</td>
+		<tr class="ListHeaderPopup">
+			<td class="ColPopup" style="width:100%;text-aling:right;"><xsl:value-of select="service_description"/></td>
 		</tr>
-		</xsl:comment>
 		<tr class='list_two'>
 			<td colspan="2" class="ColPopup">
 				<xsl:attribute name="style">

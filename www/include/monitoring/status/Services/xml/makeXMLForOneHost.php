@@ -128,7 +128,7 @@
 			" nh.icon_image" .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh" .
 			" WHERE no.object_id = " . $host_id .
-			" AND no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
+			" AND no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id " .
 			" AND (no.name1 NOT LIKE '_Module_%'".
 			" OR no.name1 LIKE '_Module_Meta')".
 			" AND no.objecttype_id = 1";

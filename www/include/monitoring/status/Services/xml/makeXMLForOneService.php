@@ -36,20 +36,21 @@
  * 
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
-	$debugXML = 0;
-	$buffer = '';
-
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/class/other.class.php";
+	include_once $centreon_path . "www/class/centreonGMT.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
+	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
-	include_once $centreon_path . "www/class/centreonGMT.class.php";
 	
-	$pearDB = new CentreonDB();
-	$pearDBndo = new CentreonDB("ndo");
+	/*
+	 * Call DB connector
+	 */
+	$pearDB 	= new CentreonDB();
+	$pearDBndo 	= new CentreonDB("ndo");
 	
 	$ndo_base_prefix = getNDOPrefix();
 
@@ -79,11 +80,12 @@
 	/*
 	 * Init GMT class
 	 */
-	
 	$centreonGMT = new CentreonGMT();
 	$centreonGMT->getMyGMTFromSession($sid);
 	
-
+	/*
+	 * Get General Options
+	 */
 	$general_opt = getStatusColor($pearDB);
 
 	$tab_color_service = array();
@@ -104,7 +106,7 @@
 	$state_type = array("1" => "HARD", "0" => "SOFT");
 
 	/* 
-	 * Get Host status 
+	 * Get Service status 
 	 */
 	$rq1 = "SELECT nss.current_state," .
 			" no.name1 as hostname," .
@@ -129,20 +131,14 @@
 			" nss.perfdata," .
 			" nss.state_type," .
 			" nss.execution_time," .
-			" nss.event_handler_enabled" .
-			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
+			" nss.event_handler_enabled, " .
+			" ns.icon_image " .
+			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns " .
 			" WHERE no.object_id = " . $svc_id .
-			" AND no.object_id = nss.service_object_id " .
+			" AND no.object_id = nss.service_object_id AND ns.service_object_id = no.object_id " .
 			" AND (no.name1 NOT LIKE '_Module_%'".
 			" OR no.name1 LIKE '_Module_Meta')".
 			" AND no.is_active = 1 AND no.objecttype_id = 2";
-	
-	/*
-	 * Request
-	 */
-	
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	
 	
 	/*
 	 * Init Buffer
@@ -152,9 +148,21 @@
 
 	$class = "list_one";
 	$en = array("0" => _("No"), "1" => _("Yes"));
-
+	
+	/*
+	 * Request
+	 */
+	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if ($ndo =& $DBRESULT_NDO1->fetchRow()){
+		
 		$buffer->writeElement("svc_name", $ndo["service_description"]);		
+		
+		if ($ndo["icon_image"] == "")
+			$icon_image = "./img/icones/16x16/gear.gif";
+		else
+			$icon_image = "./img/media/" . $ndo["icon_image"];		
+		$ndo["icon_image"] = $icon_image;
+		
 		$duration = "";
 		if ($ndo["last_state_change"] > 0)
 			$duration = Duration::toString(time() - $ndo["last_state_change"]);
@@ -206,24 +214,31 @@
 		$buffer->writeElement("is_downtime_name", _("In Scheduled Downtime?"));
 		$buffer->writeElement("last_update", get_centreon_date( time()));
 		$buffer->writeElement("last_update_name", _("Last Update"));
+		$buffer->writeElement("ico", $ndo["icon_image"]);
+		
 		$buffer->startElement("last_time_ok");
 		$buffer->writeAttribute("name", _("Last ok time"));
 		$buffer->text(get_centreon_date( $ndo["last_time_ok"]));
 		$buffer->endElement();
+		
 		$buffer->startElement("last_time_warning");
 		$buffer->writeAttribute("name", _("Last warning time"));
 		$buffer->text(get_centreon_date( $ndo["last_time_warning"]));
 		$buffer->endElement();		
+		
 		$buffer->startElement("last_time_unknown");
 		$buffer->writeAttribute("name", _("Last unknown time"));
 		$buffer->text(get_centreon_date( $ndo["last_time_unknown"]));
 		$buffer->endElement();
+		
 		$buffer->startElement("last_time_critical");
 		$buffer->writeAttribute("name", _("Last critical time"));
 		$buffer->text(get_centreon_date( $ndo["last_time_critical"]));
 		$buffer->endElement();
 	} else
 		$buffer->writeElement("infos", "none");			
+	
+	unset($ndo);
 
 	/*
 	 * Translations

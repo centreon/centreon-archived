@@ -25,7 +25,9 @@
 		</td>
 		<td class="ListColLeft">
 			<xsl:element name="img">
-			  	<xsl:attribute name="src">./img/icones/<xsl:value-of select="ico"/></xsl:attribute>
+			  	<xsl:attribute name="src">./img/media/<xsl:value-of select="ico"/></xsl:attribute>
+			  	<xsl:attribute name="width">16</xsl:attribute>
+				<xsl:attribute name="height">16</xsl:attribute>
 			</xsl:element>
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
