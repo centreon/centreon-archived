@@ -66,7 +66,7 @@ option 		{padding-left:1px;padding-right:1px;}
 #linkBar img 	{margin-left:4px;}
 
 .separator 		{font-color:#000;font-style:italic;font-weight:700;}
-.list_separator {background-color:#AFF;}
+.list_separator {text-align:center;background-color:#99CC55;}
 
 /* Info Bulle */
 a.infobulle 		{position:relative;text-decoration:none;z-index:24;}
@@ -255,13 +255,12 @@ width:310px;
 
 /* le contenu de la balise span ne sera visible que pour l'etat a:hover */
 a.infobulle:hover span {
--moz-border-radius:14px;
-background-color:#FFF;
-border:1px gray solid;
+background-color:#6699FF;
+border:1px gray;
 display:block;
 font-weight:none;
 left:2em;
-padding:4px;
+padding:1px;
 position:absolute;
 text-align:justify;
 top:2em;

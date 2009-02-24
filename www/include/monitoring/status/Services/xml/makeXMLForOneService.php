@@ -36,8 +36,7 @@
  * 
  */
 
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/class/other.class.php";
 	include_once $centreon_path . "www/class/centreonGMT.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
@@ -186,7 +185,12 @@
 		$buffer->writeAttribute("name", _("Status Information"));
 		$buffer->text($ndo["output"]);
 		$buffer->endElement();
-		$buffer->writeElement("performance_data", $ndo["perfdata"]);
+		$tab_perf = split(" ", $ndo["perfdata"]);		
+		foreach ($tab_perf as $val) {
+			$buffer->startElement("performance_data");
+			$buffer->writeElement("perf_data", $val);
+			$buffer->endElement();
+		}		
 		$buffer->writeElement("performance_data_name", _("Performance Data"));
 		$buffer->writeElement("state_type", $state_type[$ndo["state_type"]]);
 		$buffer->writeElement("state_type_name", _("State Type"));
