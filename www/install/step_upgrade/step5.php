@@ -31,40 +31,42 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
+ * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/install/steps/step12.php $
+ * SVN : $Id: step12.php 7620 2009-02-24 09:00:01Z jmathis $
  * 
  */
- 	
-	include_once ("@CENTREON_ETC@/centreon.conf.php");
-	include_once ("$centreon_path/www/class/centreonDB.php");
+
+aff_header("Centreon Setup Wizard", "Post-Installation", 5);	?>
+
+<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
+  <tr>
+	<td colspan="2" ><b>End of Update</b></td>
+  </tr>
+  <tr>
+	<td colspan="2"><br />
 	
-	$pearDB = new CentreonDB();
-	
-	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$version =& $DBRESULT->fetchRow();
-	
-	aff_header("Centreon Upgrade Wizard", "Select Version", 3); ?>
-	In order for your Centreon upgrade to function properly, please select the mysql script file.<br /><br />
-	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-      <tr>
-        <th style="padding-left:20px;" colspan="2">Upgrade SQL Scripts</th>
-      </tr>
-	  <tr>
-        <td><b>MySQL Scripts</b></td>
-        <td align="right">
-        	<select name="mysqlscript">
-        	<?php       		
-        		chdir('sql');
-        		foreach (glob("Update-NDO-".$version["value"]."_to_*.sql") as $filename) {
-					echo '<option value="'.$filename.'">'.$filename.'</option>'; }
-        	?>
-        	</select>
-       	</td>
-      </tr>
-	</table>
-	<?php
-	aff_middle();
-	print "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
-	aff_footer();
+	Centreon Update is finished.
+	<br /><br />
+	<b>Self service and commercial Support.</b><br /><br />
+	There are various ways to get information about Centreon ; the documentation, wiki, forum etc...
+	<ul>
+		<li> Centreon WebSite : <a target="_blank" href="http://www.centreon.com">www.centreon.com</a></li>
+		<li> Centreon Forum : <a target="_blank" href="http://forum.centreon.com">forum.centreon.com</a></li></li>
+		<li> Centreon Wiki : <a target="_blank" href="http://doc.centreon.com">doc.centreon.com</a></li>
+	</ul>
+	<br /><p align="justify">
+	If your company needs professional consulting and services for Centreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a  target="_blank" href="http://support.centreon.com">Centreon support center</a></b>.
+	</p>
+	</td>
+  </tr>
+   <tr>
+	<td colspan="2">&nbsp;</td>
+  </tr>
+<?php
+// end last code
+aff_middle();
+$str = "<input class='button' type='submit' name='goto' value='Click here to complete your install' id='button_next' ";
+$str .= " />";
+print $str;
+aff_footer();
 ?>

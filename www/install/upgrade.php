@@ -36,16 +36,20 @@
  * 
  */
  
-	// configuration
-	include_once ("@CENTREON_ETC@/centreon.conf.php");
+	/*
+	 * configuration
+	 */
+	include_once ("/etc/centreon/centreon.conf.php");
 	include_once ("./step_upgrade/functions.php");
 	include_once ("../class/Session.class.php");
 
 	Session::start();
 
-	// Pear Modules Management
+	/*
+	 * Pear Modules Management
+	 */
 	if (file_exists("pear_module.conf.php"))
-	   include_once ("pear_module.conf.php");
+		include_once ("pear_module.conf.php");
 	
 	$DEBUG = 0;
 
@@ -70,13 +74,7 @@
 		include("./step_upgrade/step5.php");
 	} else if (isset($_POST["step"]) && $_POST["step"] == 5){
 		include("./step_upgrade/step6.php");
-	} else if (isset($_POST["step"]) && $_POST["step"] == 6){
-		include("./step_upgrade/step7.php");
-	} else if (isset($_POST["step"]) && $_POST["step"] == 7){
-		include("./step_upgrade/step8.php");
-	} else if (isset($_POST["step"]) && $_POST["step"] == 8){
-		include("./step_upgrade/step9.php");
-	} else if (isset($_POST["step"]) && $_POST["step"] == 9){
-		include("./step_upgrade/step10.php");
-	} exit();
+	} 
+	
+	exit();
 ?>

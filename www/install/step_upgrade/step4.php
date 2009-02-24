@@ -36,64 +36,105 @@
  * 
  */
 
-	include_once ("@CENTREON_ETC@/centreon.conf.php");
-	include_once ("$centreon_path/www/class/centreonDB.php");
+	include_once $centreon_path . "/www/class/centreonDB.class.php";
 	
 	$pearDB = new CentreonDB();
 	
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 	$version =& $DBRESULT->fetchRow();	
+	
 	global $pearDB0;	
 	$pearDBO = new CentreonDB("centstorage");	
+	$pearDBndo 	= new CentreonDB("ndo");
+	
+	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back"))
+		$_SESSION["script"] = $_POST["script"]; 
 
-	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")) {
-		$_SESSION["mysqlscript"] = $_POST["mysqlscript"]; 
-	}
-
-	aff_header("Centreon Setup Wizard", "Updating Centstorage Database", 4);	?>
+	aff_header("Centreon Setup Wizard", "Updating Centreon", 4);	?>
 	<br /><br />
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center"><?php
 	print "<tr><th align='left'>Component</th><th style='text-align: right;'>Status</th></tr>";
+	
+	/*
+	 * Update Centstorage
+	 */
 	print "<tr><td><b>Database &#146;".$conf_centreon['dbcstg']."&#146; : Upgrade</b></td>";
-
-	# get version...	
-	preg_match("/Update-CSTG-".$version["value"]."_to_*.sql/", $_SESSION["mysqlscript"], $matches);
-	if (count($matches))
-		$choose_version = $matches[1];
-
-	if ($pearDB) {
-		$file_sql = file("./sql/".$_SESSION["mysqlscript"]);
-        $str = NULL;
-        for ($i = 0; $i <= count($file_sql) - 1; $i++){
-            $line = $file_sql[$i];
-            if ($line[0] != '#'){
-                $pos = strrpos($line, ";");
-                if ($pos != false) {
-                    $str .= $line;
-                    $str = chop($str);
-                   $DBRESULT = $pearDBO->query($str);
-                    $str = NULL;
-                } else
-                	$str .= $line;
-            }
+	if (file_exists("./sql/centstorage/Update-CSTG-".$_SESSION["script"].".sql")) {
+		$file_sql = file("./sql/centstorage/Update-CSTG-".$_SESSION["script"].".sql");
+        $request = "";
+        if (count($file_sql)) {
+	        foreach ($file_sql as $line)
+	        	if ($line[0] != "#")
+	        		$request .= $line;
+			$DBRES =& $pearDBO->query($request);
+			if (!PEAR::isError($DBRES))
+				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+    		else
+    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+        } else {
+        	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
         }
-		
-		if (!isset($mysql_msg) || !$mysql_msg) {
- 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
-		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
-			$return_false = 1;
-			print "<tr><td colspan='2' align='left'><span class='small'>$mysql_msg</span></td></tr>";
-		}
-		
-		if (isset($choose_version) && file_exists("./php/update-$choose_version.php"))
-			include("./php/update-$choose_version.php");
 	} else {
-		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
-	    $return_false = 1;	?>
-		<tr>
-			<td colspan="2" align="left"><span class="small"><?php echo $mysql_msg; ?></span></td>
-		</tr><?php	
+		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
+	}
+
+	/*
+	 * Update NDO
+	 */	
+	print "<tr><td><b>Database &#146;".$conf_centreon['dbcstg']."&#146; : Upgrade</b></td>";
+	if (file_exists("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql")) {
+		$file_sql = file("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql");
+        $request = "";
+        if (count($file_sql)) {
+	        foreach ($file_sql as $line)
+	        	if ($line[0] != "#")
+	        		$request .= $line;
+			$DBRES =& $pearDBndo->query($request);
+			if (!PEAR::isError($DBRES))
+				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+    		else
+    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+        } else {
+        	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+        }
+	} else {
+		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
+	}
+
+	/*
+	 * Update PHP
+	 */
+	print "<tr><td><b>PHP Script : Upgrade</b></td>";
+	if (file_exists("./php/Update-".$_SESSION["script"].".php")) {
+		if (include_once("./php/Update-".$_SESSION["script"].".php"))
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		else
+			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+	} else {
+		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
+	}
+
+	/*
+	 * Update Centreon
+	 */
+	print "<tr><td><b>Database &#146;".$conf_centreon['db']."&#146; : Upgrade</b></td>";
+	if (file_exists("./sql/centreon/Update-DB-".$_SESSION["script"].".sql")) {
+		$file_sql = file("./sql/centreon/Update-DB-".$_SESSION["script"].".sql");
+        $request = "";
+        if (count($file_sql)) {
+	        foreach ($file_sql as $line)
+	        	if ($line[0] != "#")
+	        		$request .= $line;
+			$DBRES =& $pearDB->query($request);
+			if (!PEAR::isError($DBRES))
+				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+    		else
+    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+        } else {
+        	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+        }
+	} else {
+		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
 	}
 
 	aff_middle();

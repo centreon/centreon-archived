@@ -36,8 +36,7 @@
  * 
  */
  	
-	include_once ("@CENTREON_ETC@/centreon.conf.php");
-	include_once ("$centreon_path/www/class/centreonDB.php");
+	include_once $centreon_path . "/www/class/centreonDB.class.php";
 	
 	$pearDB = new CentreonDB();
 	
@@ -45,7 +44,7 @@
 	$version =& $DBRESULT->fetchRow();
 	
 	aff_header("Centreon Upgrade Wizard", "Select Version", 3); ?>
-	In order for your Centreon upgrade to function properly, please select the mysql script file.<br /><br />
+	In order for your Centreon upgrade to function properly, please select the centreon version you want in which you are.<br /><br />
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
       <tr>
         <th style="padding-left:20px;" colspan="2">Upgrade SQL Scripts</th>
@@ -53,11 +52,15 @@
 	  <tr>
         <td><b>MySQL Scripts</b></td>
         <td align="right">
-        	<select name="mysqlscript">
+        	<select name="script">
         	<?php       		
-        		chdir('sql');
-        		foreach (glob("Update-CSTG-".$version["value"]."_to_*.sql") as $filename) {
-					echo '<option value="'.$filename.'">'.$filename.'</option>'; }
+        		chdir('sql/centreon/');
+        		foreach (glob("Update-DB-".$version["value"]."_to_*.sql") as $filename) {
+					$filenameDisplayed = str_replace("Update-DB-", "", $filename);
+					$filenameDisplayed = str_replace(".sql", "", $filenameDisplayed);
+					$filenameDisplayed2 = str_replace("_", " ", $filenameDisplayed);
+					echo '<option value="'.$filenameDisplayed.'">'.$filenameDisplayed2.'</option>'; 
+				}
         	?>
         	</select>
        	</td>
