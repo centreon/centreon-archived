@@ -47,7 +47,7 @@ class centreonAuth {
 	private $userExists;
 	private $cryptEngine;
 	private $autologin;
-	public $userInfos;
+	public  $userInfos;
 	
 	private $cryptPossibilities;
 	
@@ -77,14 +77,15 @@ class centreonAuth {
     	$this->login = $username;
     	$this->password = $password;
     	$this->pearDB = $pearDB;
+    	$this->autologin = $autologin;
     	/*
     	 * Check User acces
     	 */
-    	$this->checkUser($username, $password, $autologin, $pearDB);
+    	$this->checkUser($username, $password, $pearDB);
     }
 	    
 	private function checkPassword($password) {
-		if ($this->userInfos["contact_auth_type"] == "ldap") {
+		if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
 			
 			/*
 			 * Insert LDAP Class
@@ -99,52 +100,46 @@ class centreonAuth {
 			$this->passwdOk = $authLDAP->checkPassword();
 			$authLDAP->close();
 			
-		} else if ($this->userInfos["contact_auth_type"] == "local") {
-			if ($this->userInfos["contact_passwd"] == $this->myCrypt($password))
+		} else if ($this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
+			if ($this->userInfos["contact_passwd"] == $password && $this->autologin)
+				$this->passwdOk = 1;
+			else if ($this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0)
 				$this->passwdOk = 1;
 			else
 				$this->passwdOk = 0;
 		}
 	}
 	    
-    private function checkUser($username, $password, $autologin, $pearDB) {
-    	if ($autologin == 0) {
-	    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");	    	
-	    	if ($DBRESULT->numRows()) {
-	    		$this->userInfos =& $DBRESULT->fetchRow();
-	    		if ($this->userInfos["contact_oreon"]) {
-					/*
-					 * Check password matching
-					 */
-					$this->getCryptFunction();
-					$this->checkPassword($password);
-
-					if ($this->passwdOk == 1) {
-						$this->CentreonLog->setUID($this->userInfos["contact_id"]);
-						$this->CentreonLog->insertLog(1, "Contact '".$username."' logged in - IP : ".$_SERVER["REMOTE_ADDR"]);
-					} else {
-						$this->CentreonLog->insertLog(1, "Contact '".$username."' doesn't match with password");
-						$this->error = "Invalid user";	
-					}
-				} else {
-					$this->CentreonLog->insertLog(1, "Contact '".$username."' is not enable for reaching centreon");
-					$this->error = "Invalid user";
-				}
-	    	} else {
-	    		$this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");
-	    		$this->error = "Invalid user";
-	    	}
+    private function checkUser($username, $password, $pearDB) {
+    	if ($this->autologin == 0) {
+	    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1"); 	
     	} else {
-	    	/*
-	    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($useralias, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");
-    		if (PEAR::isError($DBRESULT))
-				$this->CentreonLog->insertLog(1, "DB Error : ".$DBRESULT->getDebugInfo(), 1);
-	    	if ($DBRESULT->numRows()) {
-	    		;	
-	    	}
-	    	*/
-	    	;
-	    }
+    		$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");
+    	}	
+    	if ($DBRESULT->numRows()) {
+    		$this->userInfos =& $DBRESULT->fetchRow();
+    		if ($this->userInfos["contact_oreon"]) {
+				/*
+				 * Check password matching
+				 */
+				$this->getCryptFunction();
+				$this->checkPassword($password);
+
+				if ($this->passwdOk == 1) {
+					$this->CentreonLog->setUID($this->userInfos["contact_id"]);
+					$this->CentreonLog->insertLog(1, "Contact '".$username."' logged in - IP : ".$_SERVER["REMOTE_ADDR"]);
+				} else {
+					$this->CentreonLog->insertLog(1, "Contact '".$username."' doesn't match with password");
+					$this->error = "Invalid user";	
+				}
+			} else {
+				$this->CentreonLog->insertLog(1, "Contact '".$username."' is not enable for reaching centreon");
+				$this->error = "Invalid user";
+			}
+    	} else {
+    		$this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");
+    		$this->error = "Invalid user";
+    	}
     }
     
     private function checkPasswd($username, $password, $Crypt) {
