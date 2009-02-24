@@ -92,6 +92,7 @@
 	if (!isset($cas) || !isset($cas["auth_cas_enable"])){	
 		Session::start();
 	}
+	
 	if (isset($_GET["disconnect"])) {
 		
 		if (isset($cas) && isset($cas["auth_cas_enable"]) && $cas["auth_cas_enable"]){
@@ -104,13 +105,15 @@
 		/*
 		 * Init log class
 		 */
-		$CentreonLog = new CentreonUserLog($oreon->user->get_id(), $pearDB);
-		$CentreonLog->insertLog(1, "Contact '".$oreon->user->get_alias()."' logout");
+		if (is_object($oreon)) {
+			$CentreonLog = new CentreonUserLog($oreon->user->get_id(), $pearDB);
+			$CentreonLog->insertLog(1, "Contact '".$oreon->user->get_alias()."' logout");
 		
-		$pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
+			$pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
 		
-		Session::stop();
-		Session::start();
+			Session::stop();
+			Session::start();
+		}
 	}
 	/*
 	 * already connected
@@ -130,7 +133,6 @@
 	}
 	
 	if (isset($_POST["submit"]) || (isset($_GET["autologin"]) && isset($_GET["p"]) && $_GET["autologin"])) {
-	
 		/*
 		 * Init log class
 		 */
@@ -139,6 +141,8 @@
 		/*
 		 * Get Connexion parameters
 		 */
+		isset($_GET["autologin"]) ? $autologin = $_GET["autologin"] : $autologin = 0; 
+		
 		isset($_GET["useralias"]) ? $useraliasG = $_GET["useralias"] : $useraliasG = NULL;
 		isset($_POST["useralias"]) ? $useraliasP = $_POST["useralias"] : $useraliasP = NULL;
 		$useraliasG ? $useralias = $useraliasG : $useralias = $useraliasP;
@@ -179,6 +183,7 @@
 </head>
 <body OnLoad="document.login.useralias.focus();">
 <?php 
+
 	/*
 	 * Check PHP version 
 	 * 
