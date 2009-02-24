@@ -36,8 +36,6 @@
  * 
  */
 
-	header('Content-Type: text/xml');
-	header('Cache-Control: no-cache');
 		
 	//require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once "/etc/centreon/centreon.conf.php";
@@ -69,45 +67,27 @@
 			" AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	
-	switch ($_GET["menu"]) {
-		case "1" : //blue
-			$bg_img = "../Images/menu_bg_blue.gif";
-			$bg_color = "#ebf5ff";
-			break;
-		case "2" : //green
-			$bg_img = "../Images/menu_bg_green.gif";
-			$bg_color = "#DFF9E0";
-			break;
-		case "3" : //pink
-			$bg_img = "../Images/menu_bg_purple.gif";
-			$bg_color = "#ECE5F9";
-			break;
-		case "4" : //red
-			$bg_img = "../Images/menu_bg_red.gif";
-			$bg_color = "#F9EDED";
-			break;
-		case "5" : //yellow
-			$bg_img = "../Images/menu_bg_orange.gif";
-			$bg_color = "#FEF7DB";
-			break;
-		default :
-			$bg_img = "../Images/menu_bg_blue.gif";
-			$bg_color = "#ebf5ff";
-			break;
-	}
+	$rq2 = "SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".$_GET["menu"]."' LIMIT 1";
+	$DBRESULT2 =& $pearDB->query($rq2);
+	$menu_style =& $DBRESULT2->fetchRow();
+	
+	ob_start();
+	require_once $centreon_path . "/www/Themes/Centreon-2/Color/" . $menu_style['css_name'];
+	ob_end_clean();
+	
 	
 	$buffer->startElement("root");
-	$buffer->writeElement("Menu1ID", "menu1_bgcolor");
-	$buffer->writeElement("Menu2ID", "menu2_bgcolor");
+	$buffer->writeElement("Menu1ID", $menu1_bgcolor);
+	$buffer->writeElement("Menu2ID", $menu2_bgcolor);
 	$buffer->writeElement("Menu1Color", "menu_1");
 	$buffer->writeElement("Menu2Color", "menu_2");
-	
+
 	
 	$buffer->startElement("level_1");
 	while ($elem =& $DBRESULT->fetchRow()) {
 		$buffer->startElement("Menu1");
 		$buffer->writeElement("Menu1Page", $elem["topology_id"]);
-		$buffer->writeElement("Menu1ClassImg", $_GET["menu"] == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"]);
+		$buffer->writeElement("Menu1ClassImg", $_GET["menu"] == $elem["topology_page"] ? "Themes/Centreon-2" . substr($menu1_bgimg, 2) : "");
 		$buffer->writeElement("Menu1Url", "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"]);
 		$buffer->writeElement("Menu1UrlPopup", $elem["topology_popup"]);
 		$buffer->writeElement("Menu1UrlPopupOpen", $elem["topology_url"]);
@@ -140,5 +120,7 @@
 	$buffer->endElement();
 	$buffer->endElement();
 	
+	header('Content-Type: text/xml');
+	header('Cache-Control: no-cache');
 	$buffer->output();
 ?>

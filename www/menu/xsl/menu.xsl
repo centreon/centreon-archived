@@ -2,8 +2,8 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="/">
 <xsl:element name="div">
-	<xsl:attribute name="id">		
-		<xsl:value-of select="//Menu1ID"/>				
+	<xsl:attribute name="style">		
+		background-color:<xsl:value-of select="//Menu1ID"/>;				
 	</xsl:attribute>	
 	<xsl:element name="div">
 		<xsl:attribute name="id">		
@@ -13,8 +13,10 @@
 	<ul>
 		<li>
 			<xsl:element name="div">
-				<xsl:attribute name="id">
-					<xsl:value-of select="Menu1ClassImg"/>
+				<xsl:attribute name="style">			
+					background-image: url('<xsl:value-of select="Menu1ClassImg"/>');
+					background-position:top right;
+					background-repeat:repeat-x;
 				</xsl:attribute>
 				<xsl:element name="a">
 					<xsl:attribute name="onclick">
@@ -36,8 +38,8 @@
 		<xsl:value-of select="//Menu2Color"/>				
 	</xsl:attribute>	
 	<xsl:element name="div">
-		<xsl:attribute name="id">		
-			<xsl:value-of select="//Menu2ID"/>				
+		<xsl:attribute name="style">		
+			background-color:<xsl:value-of select="//Menu2ID"/>;				
 		</xsl:attribute>
 		<xsl:for-each select="//Menu2">
 			<xsl:element name="span">
