@@ -53,14 +53,21 @@ var _timeoutID = 0;
 var _on = 1;
 var _resultCache=new Object();
 var _lock_menu = 0;
+var _previous_click = 0;
 
 function loadAjax(p){
-	_lock_menu = 1;
-	var proc = new MenuTransformation();
-	_addrXML_menu = "./menu/xml/menuXML.php?sid="+_sid+"&menu="+p;	
-	proc.setXml(_addrXML_menu)
-	proc.setXslt(_addrXSL_menu)
-	proc.transform("forMenuAjax");
-	_lock_menu = 0;	
+	if (_previous_click != p) {
+		_lock_menu = 1;
+		var proc = new MenuTransformation();
+		_addrXML_menu = "./menu/xml/menuXML.php?sid="+_sid+"&menu="+p;	
+		proc.setXml(_addrXML_menu)
+		proc.setXslt(_addrXSL_menu)
+		proc.transform("forMenuAjax");
+		_lock_menu = 0;
+		_previous_click = p;
+	}
+	else {
+		window.location.replace("./main.php?p="+p);
+	}
 }
 </script>
