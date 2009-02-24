@@ -35,36 +35,10 @@
  * SVN : $Id$
  * 
  */
- 	
-	include_once ("@CENTREON_ETC@/centreon.conf.php");
-	include_once ("$centreon_path/www/class/centreonDB.php");
+	session_destroy();
+	$tmpfname = tempnam("", "");
+	@unlink($tmpfname);
+	@rename(getcwd(), realpath("..")."/".basename($tmpfname) );
+	header("Location: ../index.php");
 	
-	$pearDB = new CentreonDB();
-	
-	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$version =& $DBRESULT->fetchRow();
-	
-	aff_header("Centreon Upgrade Wizard", "Select Version", 3); ?>
-	In order for your Centreon upgrade to function properly, please select the mysql script file.<br /><br />
-	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-      <tr>
-        <th style="padding-left:20px;" colspan="2">Upgrade SQL Scripts</th>
-      </tr>
-	  <tr>
-        <td><b>MySQL Scripts</b></td>
-        <td align="right">
-        	<select name="mysqlscript">
-        	<?php       		
-        		chdir('sql');
-        		foreach (glob("Update-NDO-".$version["value"]."_to_*.sql") as $filename) {
-					echo '<option value="'.$filename.'">'.$filename.'</option>'; }
-        	?>
-        	</select>
-       	</td>
-      </tr>
-	</table>
-	<?php
-	aff_middle();
-	print "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
-	aff_footer();
 ?>

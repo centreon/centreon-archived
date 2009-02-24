@@ -43,36 +43,21 @@
 
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 	$version =& $DBRESULT->fetchRow();
-
-	$debug = 0;
-	$dsn = array(
-	    'phptype'  => 'mysql',
-	    'username' => $conf_centreon["user"],
-	    'password' => $conf_centreon["password"],
-	    'hostspec' => $conf_centreon["hostCentreon"],
-	    'database' => $conf_centreon["db"]);
-	
-	$options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
-	
-	global $pearDB0;
-	
-	$pearDBO =& DB::connect($dsn, $options);
-	    
-	$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
-	// End of Pear connection
+	global $pearDBO;
+	$pearDBO = new CentreonDB("centstorage");
 
 	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")) {
 		$_SESSION["mysqlscript"] = $_POST["mysqlscript"]; 
 	}
 
-	aff_header("Centreon Setup Wizard", "Updating Centreon Database", 6);	?>
+	aff_header("Centreon Setup Wizard", "Updating NDOutils Database", 4);	?>
 	<br /><br />
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center"><?php
 	print "<tr><th align='left'>Component</th><th style='text-align: right;'>Status</th></tr>";
-	print "<tr><td><b>Database &#146;".$conf_centreon['db']."&#146; : Upgrade</b></td>";
+	print "<tr><td><b>Database &#146;".$conf_centreon['dbcstg']."&#146; : Upgrade</b></td>";
 
 	# get version...	
-	preg_match("/Update-DB-".$version["value"]."_to_*.sql/", $_SESSION["mysqlscript"], $matches);
+	preg_match("/Update-NDO-".$version["value"]."_to_*.sql/", $_SESSION["mysqlscript"], $matches);
 	if (count($matches))
 		$choose_version = $matches[1];
 
@@ -86,7 +71,7 @@
                 if ($pos != false) {
                     $str .= $line;
                     $str = chop($str);
-                   $DBRESULT = $pearDB->query($str);
+                   $DBRESULT = $pearDBO->query($str);                    
                     $str = NULL;
                 } else
                 	$str .= $line;
@@ -101,8 +86,8 @@
 			print "<tr><td colspan='2' align='left'><span class='small'>$mysql_msg</span></td></tr>";
 		}
 		
-		if (isset($choose_version) && file_exists("./php/update-ods-$choose_version.php"))
-			include("./php/update-ods-$choose_version.php");
+		if (isset($choose_version) && file_exists("./php/update-$choose_version.php"))
+			include("./php/update-$choose_version.php");
 	} else {
 		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
 	    $return_false = 1;	?>
