@@ -114,7 +114,6 @@
 	$tpl->assign("user_login", $oreon->user->get_alias());
 	$tpl->assign("loggedlabel", _("You are"));
 
-
 	/*
 	 * Fixe ACL
 	 */
@@ -122,7 +121,6 @@
 	$lcaSTR = "";
 	if (!$is_admin)
 		$lcaSTR = "AND topology_page IN (".$oreon->user->lcaTStr.")";
-	
 
 	/*
 	 * Grab elements for level 1
@@ -144,6 +142,14 @@
 	$logDate = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $oreon->user->getMyGMT());
     $logOut = _("Logout");
     $logOutUrl = "index.php?disconnect=1";
+
+	/*
+	 * Define autologin URL
+	 */
+	$userCrypted = md5($oreon->user->userCrypted);
+	$passwdCrypted = $oreon->user->get_passwd();
+	$autoLoginUrl = "p=$p&c=$c&min=$min&autologin=1&useralias=$userCrypted&password=$passwdCrypted";
+	$tpl->assign("autoLoginUrl", $autoLoginUrl);
 
 	/*
 	 * Grab elements for level 2
