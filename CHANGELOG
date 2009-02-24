@@ -1,3 +1,52 @@
+## Centreon 2.0.1
+
+=> Bug 353
+=> Bug 370
+=> Bug 375
+=> Bug 355
+=> fix bug with "&" in url => bug in XML monitoring
+=> fix bug with pagination in ACL page (\'\' in search)
+=> Bug 346
+=> Bug 160
+=> Fix bug with recurcive function getMyHostField => infinit loop in host details page
+=> add comment time instead of entry time in comment page
+=> fix sql queries in meta service page
+=> fix translation problems
+=> change header for translations problems
+=> add timeout for ssh commands in centcore
+=> remove errorwith meta service graphs
+=> fix bug with split in graphs  
+
+## Centreon 2.0
+
+=> enhancement : Add new centreon logo :)
+=> bugfix : remove error with meta in eventlog
+=> bugfix : remove error in eventlog with ACL
+=> bugfix : replace #S# and #BS# in meta metric view
+=> bugfix : remove little error in install.sh : warning when set service centcore.
+=> improve monitoring for using ndo on centreon ndo (faster than nagios svn.)
+
+## Centreon 2.0 RC8
+
+=> bugfix : remove error in ACL
+=> bugfix : remove bug when rescheduling meta graphs
+=> bugfix : remove warning in centACL.php
+=> Enhancement : improve index in centreon_acl table
+=> bugfix : remove error in host massiv change
+=> bugfix remove error in hg duplication 
+
+## Centreon 2.0 RC7
+
+=> 
+=> bugfix : replace macro in check_meta_service
+=> bugfix : do no display disable service in service group in sg tree in graphs
+=> bugfix : remove alert poppup when a non-admin user go on graph directly with graph link (icone)
+=> bugfix : curve template now manage special char in metric name (/ and \)
+=> bugfix : remove error with massiv change and delete in all configuration pages.
+=> bugfix : remove syntaxe error in traphandler
+=> bugfix : replace html special char in password when logging in LDAP.
+
+
 ## Centreon 2.0-RC5
 
 => bugfix : remove bug in escalation generation 
