@@ -36,6 +36,17 @@
  * 
  */
 
+	include_once $centreon_path . "/www/class/centreonDB.class.php";
+	
+	$pearDB = new CentreonDB();
+	
+	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
+	$version =& $DBRESULT->fetchRow();
+	
+	if (count(glob("Update-DB-".$version["value"]."_to_*.sql")))
+		include("./step_upgrade/step3.php");
+	else {
+	
 aff_header("Centreon Setup Wizard", "Post-Installation", 5);	?>
 
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
@@ -62,11 +73,13 @@ aff_header("Centreon Setup Wizard", "Post-Installation", 5);	?>
    <tr>
 	<td colspan="2">&nbsp;</td>
   </tr>
-<?php
-// end last code
-aff_middle();
-$str = "<input class='button' type='submit' name='goto' value='Click here to complete your install' id='button_next' ";
-$str .= " />";
-print $str;
-aff_footer();
+	<?php
+	// end last code
+	aff_middle();
+	$str = "<input class='button' type='submit' name='goto' value='Click here to complete your install' id='button_next' ";
+	$str .= " />";
+	print $str;
+	aff_footer();
+
+	}
 ?>
