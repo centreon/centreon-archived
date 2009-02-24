@@ -69,8 +69,9 @@
 	$sid = $_GET['sid'];
 	
 	$contact_id = check_session($sid, $pearDB);
-	$access = new CentreonAcl($contact_id, $is_admin);
 	$is_admin = isUserAdmin($sid);
+	$access = new CentreonAcl($contact_id, $is_admin);
+	
 		
 	
 	$lca = $access->getHostServices($pearDBndo);		
