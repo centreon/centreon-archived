@@ -57,6 +57,7 @@ class User	{
 	var $groupListStr;
 	var $access;
 	var $log;
+	var $userCrypted;
 	
 	# User LCA
 	# Array with elements ID for loop test
@@ -81,6 +82,7 @@ class User	{
 	  	$this->is_admin = NULL;
 	  	$this->access = new CentreonACL($this->user_id, $this->admin);
 	  	$this->log = new CentreonUserLog($this->user_id, $pearDB);
+  		$this->userCrypted = md5($this->name);
   	}
     
   	public function showDiv($div_name = NULL) {
