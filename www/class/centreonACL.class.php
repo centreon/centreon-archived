@@ -36,6 +36,9 @@
  * 
  */
 
+require_once "@CENTREON_ETC@/centreon.conf.php";
+ require_once $centreon_path . "/www/class/centreonDB.class.php";
+ 
  /*
   *  This class contains the access information of a user 
   */
@@ -56,9 +59,16 @@
  	/*
  	 *  Constructor that takes the user_id
  	 */
- 	function CentreonACL($user_id, $is_admin) { 		
+ 	function CentreonACL($user_id, $is_admin = NULL) { 		
  		$this->userID = $user_id;
- 		$this->admin = $is_admin; 		
+ 		if (!isset($is_admin)) {
+ 			$localPearDB = new CentreonDB();
+ 			$rq = "SELECT contact_admin FROM `contact` WHERE contact_id = '".$user_id."' LIMIT 1";
+ 			$row =& $localPearDB->query($rq);
+ 			$this->admin = $row['contact_admin'];
+ 		}
+ 		else
+ 			$this->admin = $is_admin; 		
  		if (!$this->admin) {
 	 		$this->setAccessGroups();
 	 		$this->setResourceGroups();
