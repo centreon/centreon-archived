@@ -49,7 +49,7 @@ $timeout = 5;
 $ssh = "/usr/bin/ssh";
 $scp = "/usr/bin/scp";
 
-$ssh .= " -o ConnectTimeout=$timeout";
+$ssh .= " -o ConnectTimeout=$timeout ";
 
 my $stop = 1;
 my $debug = 0;
@@ -64,8 +64,9 @@ sub catch_zap {
 }
 
 sub writeLogFile($){
+	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
 	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
-	print LOG time()." - ".$_[0];
+	print LOG "$year/$mon/$day $hour:$min:$sec - ".$_[0];
 	close LOG or warn $!;
 }
 
@@ -237,7 +238,7 @@ sub sendExternalCommand($$){
 
     # check if ip address is defined
     if (defined($server_info->{'ns_ip_address'})){
-		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." 'echo \"".$cmd."\" >> ".$command_file."'\n";
+		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p ".$server_info->{'ssh_port'}." 'echo \"".$cmd."\" >> ".$command_file."'\n";
 		my $stdout = `$cmd`;
 		writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"\n");
 		if (defined($stdout) && $stdout){
@@ -286,22 +287,22 @@ sub GetPerfData($){
 
     my $origin = $distantconnexion.":".$distanttmpperffile;
 
-    writeLogFile("$ssh -q $distantconnexion ls -l $distantperffile 2>> /dev/null | wc -l\n") if ($debug);
-    my $ls = `$ssh -q $distantconnexion ls -l $distantperffile 2>> /dev/null | wc -l`;
+    writeLogFile("$ssh -q $distantconnexion -p ".$server_info->{'ssh_port'}." ls -l $distantperffile 2>> /dev/null | wc -l\n") if ($debug);
+    my $ls = `$ssh -q $distantconnexion -p ".$server_info->{'ssh_port'}." ls -l $distantperffile 2>> /dev/null | wc -l`;
 
     # Check if distant perfdata file 
     if ($ls != 0){
 		# Move perfdata file in temp dir
-		writeLogFile("$ssh -q $distantconnexion mv $distantperffile $distanttmpperffile\n") if ($debug);
-		`$ssh -q $distantconnexion mv $distantperffile $distanttmpperffile`;
+		writeLogFile("$ssh -q $distantconnexion -p ".$server_info->{'ssh_port'}." mv $distantperffile $distanttmpperffile\n") if ($debug);
+		`$ssh -q $distantconnexion -p ".$server_info->{'ssh_port'}." mv $distantperffile $distanttmpperffile`;
 
 		# Get Perfdata file
-		writeLogFile("scp -q $origin $localtmpperffile\n") if ($debug);
-		`$scp -q $origin $localtmpperffile`;
+		writeLogFile("scp -q -P ".$server_info->{'ssh_port'}." $origin $localtmpperffile\n") if ($debug);
+		`$scp -q -P ".$server_info->{'ssh_port'}." $origin $localtmpperffile`;
 	
 		# Remove old perfdata file 
-		# writeLogFile("$ssh -q $distantconnexion rm $distanttmpperffile\n") if ($debug);
-		# `$ssh -q $distantconnexion rm $distanttmpperffile`;
+		# writeLogFile("$ssh -q -p ".$server_info->{'ssh_port'}." $distantconnexion rm $distanttmpperffile\n") if ($debug);
+		# `$ssh -q -p ".$server_info->{'ssh_port'}." $distantconnexion rm $distanttmpperffile`;
 	
 		# Write data from distant poller on local file for centstorage
 		if (-f $localtmpperffile){
@@ -309,7 +310,6 @@ sub GetPerfData($){
 				writeLogFile("cat $localtmpperffile >> $localperffile\n");
 		    }
 		    `cat $localtmpperffile >> $localperffile`;
-		    #`rm -f $localtmpperffile`;
 		}
     }
 }
@@ -342,10 +342,10 @@ sub GetLogFile($){
 		# check if we can do the transfert
 		if (defined($distantconnexion) && defined($distantlogfile)){
 		    # check if log file exists
-		    my $ls = `ssh -q $distantconnexion ls -l $distantlogfile 2>> /dev/null | wc -l`;
+		    my $ls = `ssh -q -p ".$server_info->{'ssh_port'}." $distantconnexion ls -l $distantlogfile 2>> /dev/null | wc -l`;
 		    if ($ls){
 				# Get log file
-				my $ret = `scp -q $distantconnexion:$distantlogfile $locallogfile`;
+				my $ret = `scp -q -P ".$server_info->{'ssh_port'}." $distantconnexion:$distantlogfile $locallogfile`;
 				writeLogFile("Cannot get log file or log file doesn't exists on poller $id") if ($ret);
 		    }
 		}
@@ -376,7 +376,7 @@ sub sendConfigFile($){
 	
 		    # Check sucessfull copy
 		    $md5local = `/usr/bin/md5sum $origin`;
-		    $md5dist  = `ssh $server_info->{'ns_ip_address'} /usr/bin/md5sum $cfg_dir$file`;
+		    $md5dist  = `ssh -p ".$server_info->{'ssh_port'}." $server_info->{'ns_ip_address'} /usr/bin/md5sum $cfg_dir$file`;
 	
 		    my @tab_local = split(' ', $md5local);		
 		    my @tab_dist = split(' ', $md5dist);		
@@ -392,7 +392,7 @@ sub initNagios($$){
     my $id = $_[0];
     my $options = $_[1];
     my $conf = getServerConfig($id);
-    my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." ".$options."\n";
+    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." ".$options."\n";
     print "$options : $cmd\n";
     my $stdout = `$cmd`;
     # Logs Actions
@@ -412,7 +412,7 @@ sub reloadNagios($){
     # /etc/init.d/nagios reload
     #
  
-    my $cmd = "ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." reload\n";
+    my $cmd = "ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." reload\n";
     my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
     undef($conf);
@@ -428,7 +428,7 @@ sub stopNagios($){
     # /etc/init.d/nagios stop
     #
     my $conf = getServerConfig($id);
-    my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." stop\n";
+    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." stop\n";
     my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
     undef($conf);
@@ -445,7 +445,7 @@ sub startNagios($){
     # Reload nagios : 
     # /etc/init.d/nagios start
     #
-    my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." start\n";
+    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." start\n";
     my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
     undef($conf);
@@ -460,7 +460,7 @@ sub testConfig($){
     # $data->{'user'}."@".
     my $data = getServerConfig($id);
     my $distantconnexion = $data->{'ns_ip_address'};
-    my $cmd = "$ssh $distantconnexion sudo ".$data->{'nagios_bin'}." -v $cfg_dir/nagios.cfg";
+    my $cmd = "$ssh -p ".$data->{'ssh_port'}." $distantconnexion sudo ".$data->{'nagios_bin'}." -v $cfg_dir/nagios.cfg";
     my $stdout = `$cmd`;
     undef($cmd);
     undef($data);
