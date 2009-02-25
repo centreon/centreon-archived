@@ -18,9 +18,9 @@
 	if (!isset($oreon))
 		exit();
 
-	#
-	## Database retrieve information for Nagios
-	#
+	/*
+	 * Database retrieve information for Nagios
+	 */
 	$nagios = array();
 	if (($o == "c" || $o == "w") && $server_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$server_id."' LIMIT 1");
@@ -29,29 +29,24 @@
 		$DBRESULT->free();
 	}
 	
-	# nagios servers comes from DB 
+	/*
+	 * nagios servers comes from DB 
+	 */
 	$nagios_servers = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
-	#
 	
-	# End of "database-retrieved" information
-	##########################################################
-	
-	##########################################################
-	# Var information to format the element
-	#
 	$attrsText		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"50");
-	$attrsText3 	= array("size"=>"10");
+	$attrsText3 	= array("size"=>"5");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a poller"));
@@ -60,15 +55,25 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View a poller Configuration"));
 
-	#
-	## Nagios Configuration basic information
-	#
+	/*
+	 * Headers
+	 */
+	$form->addElement('header', 'Server_Informations', _("Server Information"));
+	$form->addElement('header', 'SSH_Informations', _("SSH Information"));
+	$form->addElement('header', 'Nagios_Informations', _("Nagios Information"));
+	$form->addElement('header', 'Misc', _("Miscelenaous"));
+	
+	/*
+	 * Nagios Configuration basic information
+	 */
 	$form->addElement('header', 'information', _("Satellite configuration"));
 	$form->addElement('text', 'name', _("Sattelite Name"), $attrsText);
 	$form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
+	$form->addElement('text', 'ssh_port', _("SSH port"), $attrsText3);
 	$form->addElement('text', 'init_script', _("Nagios Init Script"), $attrsText);
-	$form->addElement('text', 'nagios_bin', _("nagios Binary"), $attrsText);
-	$form->addElement('text', 'nagiostats_bin', _("nagiostats Binary"), $attrsText);
+	$form->addElement('text', 'nagios_bin', _("nagios Binary"), $attrsText2);
+	$form->addElement('text', 'nagiostats_bin', _("nagiostats Binary"), $attrsText2);
+	$form->addElement('text', 'ssh_private_key', _("SSH Private key"), $attrsText2);
 		
 	$Tab = array();
 	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, _("Yes"), '1');
@@ -88,7 +93,9 @@
 		"nagios_bin"=>"/usr/sbin/nagios2",
 		"nagiostats_bin"=>"/usr/sbin/nagiostats",
 		"init_script"=>"/etc/init.d/nagios".$oreon->user->get_version(),
-		"ns_activate"=>'1'));
+		"ns_activate"=>'1', 
+		"ssh_port" => '22', 
+		"ssh_private_key" => '~/.ssh/rsa.id'));
 	} else {
 		if (isset($cfg_server))
 			$form->setDefaults($cfg_server);
@@ -97,25 +104,35 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
-	# Form Rules
+	/*
+	 * Form Rules
+	 */
 	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
 	
-	#End of form definition
-	
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	# Just watch a nagios information
 	if ($o == "w")	{
+		/*
+		 * Just watch a nagios information
+		 */
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$server_id."'"));
 	    $form->setDefaults($nagios);
 		$form->freeze();
-	} else if ($o == "c")	{# Modify a nagios information
+	} else if ($o == "c")	{
+		/*
+		 * Modify a nagios information
+		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($nagios);
-	} else if ($o == "a")	{# Add a nagios information
+	} else if ($o == "a")	{
+		/*
+		 * Add a nagios information
+		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -133,14 +150,15 @@
 	if ($valid)
 		require_once($path."listServers.php");
 	else	{
-		#Apply a template definition
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);	
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);
-		$tpl->assign('Servers_Informations', _("Servers Informations"));
 		$tpl->display("formServers.ihtml");
 	}
 ?>
