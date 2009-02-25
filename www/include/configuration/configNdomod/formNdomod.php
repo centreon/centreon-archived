@@ -44,6 +44,7 @@
 	$attrsText		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"50");
 	$attrsText3 	= array("size"=>"10");
+	$attrsText4 	= array("size"=>"5");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
@@ -66,14 +67,14 @@
 	$form->addElement('select', 'ns_nagios_server', _("Instance Name"), $nagios_servers);
 	$form->addElement('select', 'output_type', _("Interface Type"), array("file"=>"file","tcpsocket"=>"tcpsocket","unixsocket"=>"unixsocket"));
 	$form->addElement('text', 'output', _("Output"), $attrsText);
-	$form->addElement('text', 'tcp_port', _("TCP Port"), $attrsText3);
-	$form->addElement('text', 'output_buffer_items', _("Buffer size of the interface"), $attrsText);
+	$form->addElement('text', 'tcp_port', _("TCP Port"), $attrsText4);
+	$form->addElement('text', 'output_buffer_items', _("Buffer size of the interface"), $attrsText4);
 	$form->addElement('text', 'buffer_file', _("Buffer File"), $attrsText);
-	$form->addElement('text', 'file_rotation_interval', _("Rotation interval"), $attrsText);
+	$form->addElement('text', 'file_rotation_interval', _("Rotation interval"), $attrsText4);
 	$form->addElement('text', 'file_rotation_command', _("Rotation command"), $attrsText);
-	$form->addElement('text', 'file_rotation_timeout', _("Rotation timeout"), $attrsText);
-	$form->addElement('text', 'reconnect_interval', _("Reconnection interval"), $attrsText);
-	$form->addElement('text', 'reconnect_warning_interval', _("Notification interval in case of disconnection"), $attrsText);
+	$form->addElement('text', 'file_rotation_timeout', _("Rotation timeout"), $attrsText4);
+	$form->addElement('text', 'reconnect_interval', _("Reconnection interval"), $attrsText4);
+	$form->addElement('text', 'reconnect_warning_interval', _("Notification interval in case of disconnection"), $attrsText4);
 	$form->addElement('text', 'data_processing_options', _("Data processing options"), $attrsText3);
 	$form->addElement('text', 'config_output_options', _("Output options"), $attrsText3);
 	
