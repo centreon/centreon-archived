@@ -148,7 +148,7 @@
 	 */
 	$userCrypted = $oreon->user->userCrypted;
 	$passwdCrypted = $oreon->user->get_passwd();
-	$autoLoginUrl = "p=$p&c=$c&min=$min&autologin=1&useralias=$userCrypted&password=$passwdCrypted";
+	$autoLoginUrl = "p=$p&o=$o&min=$min&autologin=1&useralias=$userCrypted&password=$passwdCrypted";
 	$tpl->assign("autoLoginUrl", $autoLoginUrl);
 	$tpl->assign("CentreonAutologin", _("Centreon Autologin URL"));
 
