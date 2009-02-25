@@ -60,15 +60,15 @@ sub catch_zap {
 }
 
 sub writeLogFile($){
+	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
 	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
-	print LOG time()." - ".$_[0];
-#	print time()." - ".$_[0];
+	print LOG "$year/$mon/$day $hour:$min:$sec - ".$_[0];
 	close LOG or warn $!;
 }
 
 # checking if pid file exists.
 if (-x $PID){
-	writeLogFile("ods already runnig. can't launch again....\n");
+	writeLogFile("centstorage already runnig. can't launch again....\n");
 	exit(2);
 }
 
