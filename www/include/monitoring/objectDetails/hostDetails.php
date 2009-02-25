@@ -208,6 +208,9 @@
 		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$host_status[$host_name]["last_state_change"], $oreon->user->getMyGMT());
 		$host_status[$host_name]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time(), $oreon->user->getMyGMT());
 
+		if ($host_status[$host_name]["problem_has_been_acknowledged"])
+			$host_status[$host_name]["current_state"] .= "&nbsp;&nbsp;<b>("._("ACKNOWLEDGED").")</b>";
+
 		$tab_status_type = array("1" => "HARD", "0" => "SOFT");
 		$host_status[$host_name]["state_type"] = $tab_status_type[$host_status[$host_name]["state_type"]];
 
