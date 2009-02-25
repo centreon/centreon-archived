@@ -1,57 +1,73 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
- */
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL$
+ * SVN : $Id$
+ * 
+ */	
 
 	if (!isset($oreon))
 		exit();
 
-	
 	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-	
 	while ($opt =& $DBRESULT->fetchRow()) {
 		$gopt[$opt["key"]] = myDecode($opt["value"]);
 	}
-
-	## Database retrieve information for differents elements list we need on the page
-	#
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
 
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
 	$attrsAdvSelect = null;
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Modify General Options"));
-
+	
+	$form->addElement('header', 'host', _("Hosts status colors"));
+	$form->addElement('header', 'service', _("Services status colors"));
+	$form->addElement('header', 'misc', _("Miscelenaous"));
+	
 	$TabColorNameAndLang = array("color_up"=>_("Host UP Color"),
-                                    	"color_down"=>_("Host DOWN Color"),
-                                    	"color_unreachable"=>_("Host UNREACHABLE Color"),
-                                    	"color_ok"=>_("Service OK Color"),
-                                    	"color_warning"=>_("Service WARNING Color"),
-                                    	"color_critical"=>_("Service CRITICAL Color"),
-                                    	"color_pending"=>_("Service PENDING Color"),
-                                    	"color_unknown"=>_("Service UNKNOWN Color"),
+                            	"color_down"=>_("Host DOWN Color"),
+                            	"color_unreachable"=>_("Host UNREACHABLE Color"),
+                            	"color_ok"=>_("Service OK Color"),
+                            	"color_warning"=>_("Service WARNING Color"),
+                            	"color_critical"=>_("Service CRITICAL Color"),
+                            	"color_pending"=>_("Service PENDING Color"),
+                            	"color_unknown"=>_("Service UNKNOWN Color"),
+                            	"color_ack"=>_("Acknowledge host or service Color"),
+                            	"color_downtime"=>_("Downtime host or service Color"),
 					);
 
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
@@ -60,35 +76,34 @@
 		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$nameColor,"size"=>"8","maxlength"=>"7");
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
-		if ($form->validate())	{
+
+		if ($form->validate())
 			$codeColor = $form->exportValue($nameColor);
-		}
-		$attrsText4 	= array("style"=>"width:50px; height:18px; background: ".$codeColor." url() left repeat-x 0px; border-color:".$codeColor.";");
+
+		$attrsText4 	= array("style"=>"width:50px; height:18px; background: ".$codeColor." 0px; border-color:".$codeColor.";");
 		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
+
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
-		if (!$form->validate())	{
+		if (!$form->validate())
 			$form->addElement('button', $nameColor.'_modify', _("Modify"), $attrsText5);
-		}
 	}
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-	#
-	## Form Rules
-	#
+	/*
+	 * Form Rules
+	 */
 	function slash($elem = NULL)	{
 		if ($elem)
 			return rtrim($elem, "/")."/";
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
-	
-	#
-	##End of form definition
-	#
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path.'/colors', $tpl);
 
@@ -97,9 +112,9 @@
 	$subC =& $form->addElement('submit', 'submitC', _("Save"));
 	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
 
-	#
-	##Picker Color JS
-	#
+	/*
+	 * Picker Color JS
+	 */
 	$tpl->assign('colorJS',"
 	<script type='text/javascript'>
 		function popup_color_picker(t,name,title)
@@ -112,16 +127,20 @@
 	</script>
     "
     );
-	#
-	##End of Picker Color
-	#
-
+    
+	/*
+	 * End of Picker Color
+	 */
     $valid = false;
 	if ($form->validate())	{
-		# Update in DB
+		/*
+		 * Update in DB
+		 */
 		updateColorsConfigData($form->getSubmitValue("gopt_id"));
 
-		# Update in Oreon Object
+		/*
+		 * Update in Oreon Object
+		 */
 		$oreon->initOptGen($pearDB);
 		$o = NULL;
    		$valid = true;
@@ -132,9 +151,9 @@
 
 	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=colors'"));
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

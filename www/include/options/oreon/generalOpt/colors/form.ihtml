@@ -4,8 +4,10 @@
 <form {$form.attributes}>
 <table class="ListTable">
 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/colors.gif'>&nbsp;&nbsp;{$genOpt_colors_properties}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.color_up.label}</td><td class="FormRowValue">
-    {$form.color_up.html}&nbsp;&nbsp;{$form.color_up_color.html}&nbsp;&nbsp;{$form.color_up_modify.html}
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.host}</td></tr>
+ 	
+ 	<tr class="list_two"><td class="FormRowField">{$form.color_up.label}</td>
+ 	<td class="FormRowValue">{$form.color_up.html}&nbsp;&nbsp;{$form.color_up_color.html}&nbsp;&nbsp;{$form.color_up_modify.html}
     </td></tr>
 
 	<tr class="list_one"><td class="FormRowField">{$form.color_down.label}</td><td class="FormRowValue">
@@ -16,7 +18,8 @@
     {$form.color_unreachable.html}&nbsp;&nbsp;{$form.color_unreachable_color.html}&nbsp;&nbsp;{$form.color_unreachable_modify.html}
     </td></tr>
 
-	<tr class="list_one"><td class="FormRowField">{$form.color_ok.label}</td><td class="FormRowValue">
+	<tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.service}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField">{$form.color_ok.label}</td><td class="FormRowValue">
     {$form.color_ok.html}&nbsp;&nbsp;{$form.color_ok_color.html}&nbsp;&nbsp;{$form.color_ok_modify.html}
     </td></tr>
 
@@ -34,6 +37,15 @@
 
 	<tr class="list_one"><td class="FormRowField">{$form.color_unknown.label}</td><td class="FormRowValue">
     {$form.color_unknown.html}&nbsp;&nbsp;{$form.color_unknown_color.html}&nbsp;&nbsp;{$form.color_unknown_modify.html}
+    </td></tr>
+    
+    <tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$form.header.misc}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField">{$form.color_ack.label}</td><td class="FormRowValue">
+    {$form.color_ack.html}&nbsp;&nbsp;{$form.color_ack_color.html}&nbsp;&nbsp;{$form.color_ack_modify.html}
+    </td></tr>
+    
+    <tr class="list_one"><td class="FormRowField">{$form.color_downtime.label}</td><td class="FormRowValue">
+    {$form.color_downtime.html}&nbsp;&nbsp;{$form.color_downtime_color.html}&nbsp;&nbsp;{$form.color_downtime_modify.html}
     </td></tr>
 </table>
 {if !$valid}
