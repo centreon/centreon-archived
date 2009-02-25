@@ -24,8 +24,8 @@
 								<tr><td class="SubTacticalDT" style="background-color:#ee9572;">{$HostInact[1]} {$str_disabled}</td></tr>
 								{/if}
 								{if $HostUnhand[1] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:{$color.color_down};font-weight:bold;">{$HostUnhand[1]} {$str_unhandledpb}</td></tr>
-								{/if}								
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_down};font-weight:bold;"><a href={$url_host_unhand}>{$HostUnhand[1]} {$str_unhandledpb}</a></td></tr>
+								{/if}			
 							</table>
 						</td>
 						<td class="SubTacticalDT">
@@ -44,7 +44,7 @@
 								<tr><td class="SubTacticalDT" style="background-color:#339999;">{$HostInact[2]} {$str_disabled}</td></tr>
 								{/if}
 								{if $HostUnhand[2] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:{$color.color_unreachable};font-weight:bold;">{$HostUnhand[2]} {$str_unhandledpb}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_unreachable};font-weight:bold;"><a href={$url_host_unhand}>{$HostUnhand[2]} {$str_unhandledpb}</a></td></tr>
 								{/if}
 							</table>
 						</td>
@@ -141,7 +141,7 @@
 								<tr><td style="background-color:{$color.color_unknown};">{$ServiceStatus.2} {$str_critical}</td></tr>
 								{/if}
 								{if $SvcAck[2] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:#ee9572;">{$SvcAck[2]} {$str_acknowledged}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:#ee9572;"><a href={$url_svc_ack}>{$SvcAck[2]} {$str_acknowledged}</a></td></tr>
 								{/if}
 								{if $SvcInact[2] > 0}
 								<tr><td class="SubTacticalDT" style="background-color:#ee9572;">{$SvcInact[2]} {$str_disabled}</td></tr>
@@ -164,7 +164,7 @@
 								<tr><td style="background-color:{$color.color_unknown};">{$ServiceStatus.1} {$str_warning}</td></tr>
 								{/if}
 								{if $SvcAck[1] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:#ffcc66;">{$SvcAck[1]} {$str_acknowledged}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:#ffcc66;"><a href={$url_svc_ack}>{$SvcAck[1]} {$str_acknowledged}</a></td></tr>
 								{/if}
 								{if $SvcInact[1] > 0}
 								<tr><td class="SubTacticalDT" style="background-color:#ffcc66;">{$SvcInact[1]} {$str_disabled}</td></tr>
@@ -173,7 +173,7 @@
 								<tr><td class="SubTacticalDT" style="background-color:#ffcc66;">{$SvcOnPbHost[1]} {$str_pbhost}</td></tr>
 								{/if}
 								{if $SvcUnhandled[1] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:{$color.color_warning};font-weight:bold;">{$SvcUnhandled[1]} {$str_unhandledpb}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_warning};font-weight:bold;"><a href={$url_svc_unhand}>{$SvcUnhandled[1]} {$str_unhandledpb}</a></td></tr>
 								{/if}
 							</table>
 						</td>
@@ -193,7 +193,7 @@
 								<tr><td style="background-color:{$color.color_unknown};"><a href={$url_unknown}>{$ServiceStatus.3} {$str_unknown}</a></td></tr>
 								{/if}
 								{if $SvcAck[3] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:#cccccc;">{$SvcAck[3]} {$str_acknowledged}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:#cccccc;"><a href={$url_svc_ack}>{$SvcAck[3]} {$str_acknowledged}</a></td></tr>
 								{/if}
 								{if $SvcInact[3] > 0}
 								<tr><td class="SubTacticalDT" style="background-color:#cccccc;">{$SvcInact[3]} {$str_disabled}</td></tr>
@@ -202,7 +202,7 @@
 								<tr><td class="SubTacticalDT" style="background-color:#cccccc;">{$SvcOnPbHost[3]} {$str_pbhost}</td></tr>
 								{/if}
 								{if $SvcUnhandled[3] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:{$color.color_unknown};font-weight:bold;">{$SvcUnhandled[3]} {$str_unhandledpb}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_unknown};font-weight:bold;"><a href={$url_svc_unhand}>{$SvcUnhandled[3]} {$str_unhandledpb}</a></td></tr>
 								{/if}
 							</table>
 						</td>
@@ -220,7 +220,7 @@
 								<tr><td class="SubTacticalDT" style="background-color:#99cccc;">{$SvcOnPbHost[4]} {$str_pbhost}</td></tr>
 								{/if}
 								{if $SvcUnhandled[4] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:{$color.color_pending};font-weight:bold;">{$SvcUnhandled[4]} {$str_unhandledpb}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_pending};font-weight:bold;"><a href={$url_svc_unhand}>{$SvcUnhandled[4]} {$str_unhandledpb}</a></td></tr>
 								{/if}
 							</table>
 						</td>

@@ -115,8 +115,7 @@
         	    $tab_hostprobip[$nbhostpb] = $ndo["address"];
 				$nbhostpb++;				
 			}			
-			$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);
-			
+			$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);			
 			/*
 			 * Get the id's of problem hosts
 			*/			
@@ -384,7 +383,7 @@
 			$tpl->assign("color", $general_opt);
 			$tpl->assign("HostStatus", $hostStatus);
 			$tpl->assign("HostAck", $hostAck);
-			$tpl->assign("HostInact", $hostInactive);
+			$tpl->assign("HostInact", $hostInactive);			
 			$tpl->assign("HostUnhand", $hostUnhand);
 			$tpl->assign("ServiceStatus", $SvcStat);
 			$tpl->assign("SvcAck", $svcAck);
@@ -414,6 +413,9 @@
 			 * URL
 			 */
 			$tpl->assign("url_hostPb", "main.php?p=20103&o=hpb");
+			$tpl->assign("url_host_unhand", "main.php?p=20105&o=h_unhandled");
+			$tpl->assign("url_svc_unhand", "main.php?p=20215&o=svc_unhandled");
+			$tpl->assign("url_svc_ack", "main.php?p=2020402&o=svcOV&acknowledge=1");			
 			$tpl->assign("url_ok", "main.php?p=2020101&o=svc_ok");
 			$tpl->assign("url_critical", "main.php?p=2020202&o=svc_critical");
 			$tpl->assign("url_warning", "main.php?p=2020201&o=svc_warning");
