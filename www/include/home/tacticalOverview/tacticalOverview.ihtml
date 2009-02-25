@@ -2,7 +2,7 @@
 <div id="hostStats">
 	<table>
 		<tr>
-			<td style="font-weight:bold;">&nbsp;::&nbsp;{$str_hosts}</td>
+			<td style="font-weight:bold;background-color:#ffffff;">&nbsp;::&nbsp;{$str_hosts}</td>
 		</tr>
 		<tr>
 			<td style="vertical-align:top;">
@@ -78,10 +78,54 @@
 	</table>
 </div>
 
+<div id="unhandledproblems">
+	<table>
+		<tr>
+			<td style="font-weight:bold;background-color:#ffffff;">&nbsp;::&nbsp;{$str_hostprobunhandled}</td>
+		</tr>
+		<tr>			
+			{if ($nb_hostpb == 0)}
+			<td align="center">{$str_hostprobno_unhandled}</td>
+			{else}
+			<td>
+				<table class="tactical_light_table">
+					<tr style="font-weight:bold;" class="tactical_light_header">
+						<td align=center>{$str_hostprobhostname}</td>
+						<td align=center>{$str_hostprobstatus}</td>
+						<td align=center>{$str_hostprobip}</td>
+						<td align=center>{$str_hostprobduration}</td>
+						<td align=center>{$str_hostproblastcheck}</td>
+						<td align=center style="width:500px;">{$str_hostproboutput}</td>
+					</tr>
+					{assign var="class" value="list_one"}
+					{foreach from=$tb_hostprobname key=k item=hostname}
+					<tr class="{$class}">
+						<td class="ListColLeft" style="white-space:nowrap;"><a href="{$url_hostdetail}{$tb_hostprobname[$k]}">{$tb_hostprobname[$k]}</a></td>
+						{if $tb_hostprobstate[$k] == 1}
+						<td class="ListColCenter" style="background-color:{$color.color_critical};font-weight:bold;white-space:nowrap;" align=center>{$str_down}</td>
+						{/if}
+						<td class="ListColCenter" align=center style="white-space:nowrap;">{$tb_hostprobip[$k]}</td>
+						<td class="ListColRight" align=right style="white-space:nowrap;">{$tb_hostprobduration[$k]}</td>
+						<td class="ListColCenter" align=center style="white-space:nowrap;">{$tb_hostproblast[$k]}</td>
+						<td class="ListColNoWrap" style="width:500px;">{$tb_hostproboutput[$k]}</td>
+					</tr>
+					{if $class == "list_one"}
+						{assign var="class" value="list_two"}
+					{else}
+						{assign var="class" value="list_one"}
+					{/if}
+					{/foreach}					
+				</table>
+				</td>
+			{/if}			
+		</tr>		
+	</table>
+</div><br />
+
 <div id="serviceStats">
 	<table>
 		<tr>
-			<td style="font-weight:bold;">&nbsp;::&nbsp;{$str_services}</td>
+			<td style="font-weight:bold;background-color:#ffffff;">&nbsp;::&nbsp;{$str_services}</td>
 		</tr>
 		<tr>
 			<td style="vertical-align:top;">
@@ -186,7 +230,8 @@
 		</tr>
 	</table>
 </div>
-<div id='unhandledproblems'>
+
+<div id="unhandledproblems">
 	<table>
 		<tr>
 			<td style="font-weight:bold;background-color:#ffffff;">&nbsp;::&nbsp;{$str_unhandled}</td>

@@ -83,6 +83,40 @@
 			
 			$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);
 			
+			// Get Hosts Problems			
+			$rq1 = 	" SELECT DISTINCT obj.name1 , hs.current_state, hs.last_check, hs.output, h.address, unix_timestamp(hs.last_state_change) AS lsc" .
+					" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects obj,  ".$ndo_base_prefix."hosts h " .
+					" WHERE obj.object_id = hs.host_object_id".
+					" AND obj.object_id = h.host_object_id" .
+					" AND obj.is_active = 1 " .
+					$oreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_name_list) .
+					" AND hs.current_state <> 0" .
+					" AND hs.problem_has_been_acknowledged = 0" .
+					" ORDER by hs.current_state";			
+			
+			$DBRESULT_NDOHOSTS =& $pearDBndo->query($rq1);
+			if (PEAR::isError($DBRESULT_NDOHOSTS))
+				print "DB Error : ".$DBRESULT_NDOHOSTS->getDebugInfo()."<br />";
+			
+			$nbhostpb = 0;
+            $tab_hostprobname[$nbhostpb] = "";
+           	$tab_hostprobstate[$nbhostpb] = "";
+            $tab_hostproblast[$nbhostpb] = "";
+            $tab_hostprobduration[$nbhostpb] = "";
+            $tab_hostproboutput[$nbhostpb] = "";
+            $tab_hostprobip[$nbhostpb] = "";
+
+			while ($ndo =& $DBRESULT_NDOHOSTS->fetchRow()) {				
+				$tab_hostprobname[$nbhostpb] = $ndo["name1"];
+	            $tab_hostprobstate[$nbhostpb] = $ndo["current_state"];
+	            $tab_hostproblast[$nbhostpb] = $ndo["last_check"];
+	            $tab_hostprobduration[$nbhostpb] = Duration::toString(time() - $ndo["lsc"]);
+	            $tab_hostproboutput[$nbhostpb] = $ndo["output"];
+        	    $tab_hostprobip[$nbhostpb] = $ndo["address"];
+				$nbhostpb++;				
+			}			
+			$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);
+			
 			/*
 			 * Get the id's of problem hosts
 			*/			
@@ -342,7 +376,7 @@
 			$path = "./include/home/tacticalOverview/";
 		
 			/*
-			 * Smaty template Init
+			 * Smarty template Init
 			 */
 			$tpl = new Smarty();
 			$tpl = initSmartyTpl($path, $tpl);
@@ -364,7 +398,15 @@
 			$tpl->assign("tb_last", $tab_last);
 			$tpl->assign("tb_output", $tab_output);
 			$tpl->assign("tb_duration", $tab_duration);
-			$tpl->assign("tb_ip", $tab_ip);
+			$tpl->assign("tb_ip", $tab_ip);			
+						
+			$tpl->assign("tb_hostprobname", $tab_hostprobname);
+			$tpl->assign("tb_hostprobstate", $tab_hostprobstate);
+			$tpl->assign("tb_hostproblast", $tab_hostproblast);
+			$tpl->assign("tb_hostproboutput", $tab_hostproboutput);
+			$tpl->assign("tb_hostprobduration", $tab_hostprobduration);
+			$tpl->assign("tb_hostprobip", $tab_hostprobip);
+			$tpl->assign("nb_hostpb", $nbhostpb);
 			
 			$tpl->assign("refresh_interval", $oreon->optGen["oreon_refresh"]);
 			
@@ -420,6 +462,18 @@
 			$tpl->assign("str_actions", _("Actions"));
 			$tpl->assign("str_ip", _("IP Address"));
 			
+			/*
+			 *  Strings for hosts problems
+			 */
+			$tpl->assign("str_hostprobunhandled", _("Unhandled Host problems"));
+			$tpl->assign("str_hostprobno_unhandled", _("No unhandled host problem"));
+			$tpl->assign("str_hostprobhostname", _("Host Name"));
+			$tpl->assign("str_hostprobstatus", _("Status"));
+			$tpl->assign("str_hostproblastcheck", _("Last Check"));
+			$tpl->assign("str_hostprobduration", _("Duration"));
+			$tpl->assign("str_hostproboutput", _("Status Output"));
+			$tpl->assign("str_hostprobip", _("IP Address"));
+						
 			/*
 			 * Display tactical
 			 */
