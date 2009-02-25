@@ -178,9 +178,9 @@
 		$tpl->display("viewLogs.ihtml");
 	else {
 		$listAction = array();
-        $listAction = $oreon->CentreonLogAction->listAction($_GET['object_id']);
+        $listAction = $oreon->CentreonLogAction->listAction($_GET['object_id'], $_GET['object_type']);
         $listModification = array();
-        $listModification = $oreon->CentreonLogAction->listmodification($_GET['object_id']);
+        $listModification = $oreon->CentreonLogAction->listModification($_GET['object_id'], $_GET['object_type']);
 		
 		if (isset($listAction))
                 $tpl->assign("action", $listAction);

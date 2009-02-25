@@ -92,12 +92,12 @@ class CentreonLogAction {
 	/*
 	 * returns the list of actions ("create","delete","change","massive change", "enable", "disable")
 	 */
-	function listAction($id) { 
+	function listAction($id, $object_type) { 
 		global $pearDBO;
 		$list_actions = array();
 		$i = 0;
 		
-		$DBRESULT =& $pearDBO->query("SELECT * FROM log_action WHERE object_id ='".$id."' ORDER BY action_log_date DESC");		
+		$DBRESULT =& $pearDBO->query("SELECT * FROM log_action WHERE object_id ='".$id."' AND object_type = '".$object_type."' ORDER BY action_log_date DESC");		
 		
 		while ($data =& $DBRESULT->fetchRow()) {
 			$list_actions[$i]["action_log_id"] = $data["action_log_id"];
@@ -116,7 +116,7 @@ class CentreonLogAction {
 	/*
 	 *  returns list of modifications
 	 */
-	function listModification($id) {
+	function listModification($id, $object_type) {
 		global $pearDBO;
 		$list_modifications = array();
 		$ref = array();
@@ -124,7 +124,8 @@ class CentreonLogAction {
 		$j = 0;
 		$first_ref_flag = 0;
 		
-		$DBRESULT =& $pearDBO->query("SELECT action_log_id, action_log_date, action_type FROM log_action WHERE object_id ='".$id."' ORDER  BY action_log_date ASC");	
+		$DBRESULT =& $pearDBO->query("SELECT action_log_id, action_log_date, action_type FROM log_action WHERE object_id = '".$id."' AND object_type = '".$object_type."' ORDER  BY action_log_date ASC");	
+		
 		while ($row =& $DBRESULT->fetchRow()) {
 			$DBRESULT2 =& $pearDBO->query("SELECT action_log_id,field_name,field_value FROM `log_action_modification` WHERE action_log_id='".$row['action_log_id']."'");			
 			while ($field =& $DBRESULT2->fetchRow()) {

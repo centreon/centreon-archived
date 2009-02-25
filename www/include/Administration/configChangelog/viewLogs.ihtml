@@ -22,10 +22,10 @@
 		{/if}
 		<tr class='{$classStyle}'>
 			<td>
-				<a href="./main.php?p={$p}&object_id={$tabz_obj_id.$key}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$tabz_obj_type.$key}</a>
+				<a href="./main.php?p={$p}&object_type={$tabz_obj_type.$key}&object_id={$tabz_obj_id.$key}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$tabz_obj_type.$key}</a>
 			</td>
 			<td>
-				<a href="./main.php?p={$p}&object_id={$tabz_obj_id.$key}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$tabz_obj_name.$key}</a>
+				<a href="./main.php?p={$p}&object_type={$tabz_obj_type.$key}&object_id={$tabz_obj_id.$key}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$tabz_obj_name.$key}</a>
 			</td>
 		</tr>
 	{/foreach}
