@@ -46,3 +46,5 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 ALTER TABLE `contact` ADD `contact_crypt` CHAR( 10 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'MD5';
 
 UPDATE `topology` SET `topology_url` = './include/Administration/about/about.php' WHERE `topology_url` = './include/options/about/about.php' LIMIT 1;
+
+ALTER TABLE `nagios_server` ADD `ssh_port` INT NULL AFTER `id` , ADD `ssh_private_key` VARCHAR( 255 ) NULL AFTER `ssh_port` ;
