@@ -167,4 +167,9 @@ function _nextLine(div_str) {
 	var my_div = document.getElementById(div_str);	
 	my_div.appendChild(my_br);
 }
+
+function _setTimeout(div_str, sec) {
+	sec *= 1000;
+	setTimeout(function(){new Effect.toggle(div_str)}, sec)
+}
 </script>

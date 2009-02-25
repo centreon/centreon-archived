@@ -52,7 +52,7 @@ class CentreonDB {
 	 *  - ndo
 	 */
     function CentreonDB($db = "centreon", $retry = 3) {
-		include("/etc/centreon/centreon.conf.php");
+		include("@CENTREON_ETC@/centreon.conf.php");
 
 		$this->retry = $retry;				
 		$this->options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);

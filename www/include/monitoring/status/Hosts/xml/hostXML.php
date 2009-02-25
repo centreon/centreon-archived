@@ -36,8 +36,7 @@
  * 
  */
 
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once $centreon_path . "www/class/other.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
