@@ -10,21 +10,21 @@
 	<div id='tab1' class='tab'>
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;{$informations1}&nbsp;</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;{$informations1}&nbsp;</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.description.label}</td><td class="FormRowValue">{$form.description.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;{$informations2}&nbsp;</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/import2.gif'>&nbsp;{$informations2}&nbsp;</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.output_type.label}</td><td class="FormRowValue">{$form.output_type.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.output.label}</td><td class="FormRowValue">{$form.output.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.buffer_file.label}</td><td class="FormRowValue">{$form.buffer_file.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.tcp_port.label}</td><td class="FormRowValue">{$form.tcp_port.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.output_buffer_items.label}</td><td class="FormRowValue">{$form.output_buffer_items.html}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;{$informations3}&nbsp;</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/refresh.gif'>&nbsp;{$informations3}&nbsp;</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.file_rotation_interval.label}</td><td class="FormRowValue">{$form.file_rotation_interval.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.file_rotation_command.label}</td><td class="FormRowValue">{$form.file_rotation_command.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.file_rotation_timeout.label}</td><td class="FormRowValue">{$form.file_rotation_timeout.html}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;{$informations4}&nbsp;</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_forbidden.gif'>&nbsp;{$informations4}&nbsp;</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.reconnect_interval.label}</td><td class="FormRowValue">{$form.reconnect_interval.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.reconnect_warning_interval.label}</td><td class="FormRowValue">{$form.reconnect_warning_interval.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;{$informations5}&nbsp;</td></tr>
