@@ -23,22 +23,22 @@
 		$gopt[$opt["key"]] = myDecode($opt["value"]);
 	}
 	
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-
+	/*
+	 * Style
+	 */	
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
 	$attrsAdvSelect = null;
 
-	## Form begin
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Modify General Options"));
 
-	## Oreon information
+	/*
+	 * information
+	 */
 	$form->addElement('header', 'oreon', _("Centreon information"));
 	$form->addElement('text', 'oreon_path', _("Directory"), $attrsText);
 	$form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsText);
@@ -77,7 +77,19 @@
 	$sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
 	$form->addElement('select', 'problem_sort_order', _("Order sort problems "), $sort_order);
 	
-	## Form Rules
+	//$form->addElement('text', 'enable_autologin', _("Enable Autologin"));
+	//$form->addElement('text', 'display_autologin_shortcut', _("Display Autologin shortcut"));
+	
+	$options1[] = &HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+	$form->addGroup($options1, 'enable_autologin', _("Enable Autologin"), '&nbsp;&nbsp;');
+	
+	$options2[] = &HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+	$form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin shortcut"), '&nbsp;&nbsp;');
+	
+	
+	/*
+	 * Form Rules
+	 */
 	function slash($elem = NULL)	{
 		if ($elem)
 			return rtrim($elem, "/")."/";
@@ -100,9 +112,10 @@
 	$form->addRule('nagios_path_img', _("Can't write in directory"), 'is_writable_path');
 	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
 
-	##End of form definition
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path.'general/', $tpl);
 
@@ -113,10 +126,14 @@
 
     $valid = false;
 	if ($form->validate())	{
-		# Update in DB
+		/*
+		 * Update in DB
+		 */
 		updateGeneralConfigData(1);
 		
-		# Update in Oreon Object
+		/*
+		 * Update in Oreon Object
+		 */
 		$oreon->initOptGen($pearDB);
 		
 		$o = NULL;
@@ -129,13 +146,10 @@
 
 	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
 
-	## Apply a template definition
-
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
+	/*
+	 * Send variable to template
+	 */
+	
 	$tpl->assign('o', $o);
 	$tpl->assign("genOpt_max_page_size", _("Maximum page size"));
 	$tpl->assign("genOpt_expiration_properties", _("Sessions Properties"));
@@ -143,7 +157,19 @@
 	$tpl->assign("genOpt_refresh_properties", _("Refresh Properties"));
 	$tpl->assign("time_sec", _(" seconds "));
 	$tpl->assign("genOpt_display_options", _("Display Options"));
+	$tpl->assign("genOpt_problem_display", _("Problem display properties"));
 	$tpl->assign("genOpt_time_zone", _("Time Zone"));
+	$tpl->assign("genOpt_auth", _("Authentification properties"));
 	$tpl->assign('valid', $valid);
+	
+	/*
+	 * Apply a template definition
+	 */
+	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+	$form->accept($renderer);
+	$tpl->assign('form', $renderer->toArray());
+	
 	$tpl->display("form.ihtml");
 ?>

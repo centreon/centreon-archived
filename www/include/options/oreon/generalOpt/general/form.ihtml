@@ -14,16 +14,24 @@
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$genOpt_expiration_properties}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.session_expire.label}</td><td class="FormRowValue">{$form.session_expire.html}&nbsp;{$time_min}</td></tr>
+	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/refresh.gif'>&nbsp;&nbsp;{$genOpt_refresh_properties}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.oreon_refresh.label}</td><td class="FormRowValue">{$form.oreon_refresh.html}&nbsp;{$time_sec}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr>
  	<tr class="list_two"><td class="FormRowField">{$form.AjaxFirstTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.AjaxFirstTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr> 	
+ 	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_rich_colored.gif'>&nbsp;&nbsp;{$genOpt_display_options}</td></tr>
  	<tr class="list_two"><td class="FormRowField">{$form.template.label}</td><td class="FormRowValue">{$form.template.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
+ 	
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row_delete.gif'>&nbsp;&nbsp;{$genOpt_problem_display}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.problem_sort_order.label}</td><td class="FormRowValue">{$form.problem_sort_order.html}</td></tr>
+	
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/lock.gif'>&nbsp;&nbsp;{$genOpt_auth}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField">{$form.enable_autologin.label}</td><td class="FormRowValue">{$form.enable_autologin.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.display_autologin_shortcut.label}</td><td class="FormRowValue">{$form.display_autologin_shortcut.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$genOpt_time_zone}</td></tr>
  	<tr class="list_one"><td class="FormRowField">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
