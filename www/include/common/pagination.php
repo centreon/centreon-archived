@@ -138,7 +138,7 @@
 	</SCRIPT>
 	<?php
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
-	$selLim =& $form->addElement('select', 'l', _("number per page"), $select, array("onChange" => "setL(this.value);  this.form.submit()"));
+	$selLim =& $form->addElement('select', 'l', _("Rows"), $select, array("onChange" => "setL(this.value);  this.form.submit()"));
 	$selLim->setSelected($limit);
 	
 	/*
