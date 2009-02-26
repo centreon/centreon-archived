@@ -393,7 +393,7 @@ for ($i = 1; $i <= 2; $i++) { ?>
 
 	var _index1 = -1;
 	var _index;
-	for (i = 10 ; i <= _max ; i += 10) {
+	for (i = 10 ; i <= 100 ; i += 10) {
 		if (i > _limit && _index1 < 0) {
 			_index1++;
 			var k2 = document.createElement('option');
@@ -409,8 +409,16 @@ for ($i = 1; $i <= 2; $i++) { ?>
 		k.appendChild(l);
 	}
 	
+	for (i = 200; i <= 500 ; i += 100) {
+		var k = document.createElement('option');
+		k.value = i;
+		sel1.appendChild(k);
+		var l = document.createTextNode(i);
+		k.appendChild(l);
+	}
+	
 	var _index2 = -1;
-	for (i = 10 ; i <= _max ; i += 10) {
+	for (i = 10 ; i <= 100 ; i += 10) {
 		if (i > _limit && _index2 < 0) {
 			_index2++;
 			var k2 = document.createElement('option');
@@ -419,6 +427,14 @@ for ($i = 1; $i <= 2; $i++) { ?>
 			var l2 = document.createTextNode(_limit);
 			k2.appendChild(l2);
 		}
+		var k = document.createElement('option');
+		k.value = i;
+		sel2.appendChild(k);
+		var l = document.createTextNode(i);
+		k.appendChild(l);
+	}
+
+	for (i = 200; i <= 500 ; i += 100) {
 		var k = document.createElement('option');
 		k.value = i;
 		sel2.appendChild(k);
