@@ -51,7 +51,7 @@ class CentreonAuthLDAP {
 		
 		$this->CentreonLog = $CentreonLog;
 		
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_auth_enable')");
+		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_auth_enable', 'ldap_protocol_version')");
 		while ($res =& $DBRESULT->fetchRow())
 			$this->ldapInfos[$res["key"]] = $res["value"];
 		$DBRESULT->free();
@@ -84,7 +84,7 @@ class CentreonAuthLDAP {
 		/*
 		 * Set Protocol version
 		 */
-		ldap_set_option($this->ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+		ldap_set_option($this->ds, LDAP_OPT_PROTOCOL_VERSION, $this->contactInfos['ldap_protocol_version']);
     	ldap_set_option($this->ds, LDAP_OPT_REFERRALS, 0);
 
 		/*
