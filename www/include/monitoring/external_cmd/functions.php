@@ -27,7 +27,6 @@
 	function write_command($cmd, $poller){
 		global $oreon, $key, $pearDB;
 		$str = NULL;
-		$cmd = htmlentities($cmd);
 		$informations = split(";", $key);
 		if ($poller && isPollerLocalhost($pearDB, $poller))
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
