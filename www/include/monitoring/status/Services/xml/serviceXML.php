@@ -31,16 +31,10 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: 
+ * SVN : $URL$
+ * SVN : $Id$ 
  * 
  */
-
-	/*
-	 * if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
-	 */
-	$debugXML = 0;
-	$buffer = '';	
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."www/class/other.class.php";
@@ -102,9 +96,16 @@
 	$centreonGMT->getMyGMTFromSession($sid);
 	
 	/*
-	 * check is admin
+	 * Backup poller selection
 	 */
 	
+	$pearDB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'MONITORING_POLLER_ID' AND `cp_contact_id` = '$user_id'");	
+	$pearDB->query("INSERT INTO `contact_param` SET `cp_key` = 'MONITORING_POLLER_ID', `cp_contact_id` = '$user_id', `cp_value` = '$instance'");	
+	
+	
+	/*
+	 * check is admin
+	 */	
 
 	if (!$is_admin)
 		$_POST["sid"] = $sid;
@@ -162,6 +163,7 @@
 				" DISTINCT no.name1 as host_name," .
 				" nss.process_performance_data," . 
 				" nss.current_state," .
+				" nss.scheduled_downtime_depth," .
 				" nss.output as plugin_output," .
 				" nss.current_check_attempt as current_attempt," .
 				" nss.status_update_time as status_update_time," .
@@ -285,14 +287,16 @@
 				$duration = " - ";
 
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
-
-			if ($tab_status_svc[$ndo["current_state"]] == "CRITICAL"){
-				$ndo["problem_has_been_acknowledged"] == 1 ? $class = "list_four" : $class = "list_down";
+			
+			if ($ndo["scheduled_downtime_depth"] == 1) {
+				$class = "line_downtime";
+			} else if ($tab_status_svc[$ndo["current_state"]] == "CRITICAL"){
+				$ndo["problem_has_been_acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
 			} else {
 				if ($ndo["problem_has_been_acknowledged"] == 1)
-					$class = "list_four";
-			}
-
+					$class = "line_ack";
+			} 
+			
 			$buffer->startElement("l");
 			$buffer->writeAttribute("class", $class);
 			$buffer->writeElement("o", $ct++);

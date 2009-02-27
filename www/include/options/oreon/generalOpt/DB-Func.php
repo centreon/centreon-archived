@@ -158,6 +158,7 @@
 		updateOption($pearDB, "color_ok", isset($ret["color_ok"]) && $ret["color_ok"] != NULL ? htmlentities($ret["color_ok"], ENT_QUOTES): "NULL");
 		updateOption($pearDB, "color_warning", isset($ret["color_warning"]) && $ret["color_warning"] != NULL ? htmlentities($ret["color_warning"], ENT_QUOTES): "NULL");
 		updateOption($pearDB, "color_critical", isset($ret["color_critical"]) && $ret["color_critical"] != NULL ? htmlentities($ret["color_critical"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "color_line_critical", isset($ret["color_line_critical"]) && $ret["color_line_critical"] != NULL ? htmlentities($ret["color_line_critical"], ENT_QUOTES): "NULL");
 		updateOption($pearDB, "color_pending", isset($ret["color_pending"]) && $ret["color_pending"] != NULL ? htmlentities($ret["color_pending"], ENT_QUOTES): "NULL");
 		updateOption($pearDB, "color_unknown", isset($ret["color_unknown"]) && $ret["color_unknown"] != NULL ? htmlentities($ret["color_unknown"], ENT_QUOTES): "NULL ");
 		updateOption($pearDB, "color_ack", isset($ret["color_ack"]) && $ret["color_ack"] != NULL ? htmlentities($ret["color_ack"], ENT_QUOTES): "NULL ");

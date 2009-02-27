@@ -39,6 +39,10 @@
     {$form.color_unknown.html}&nbsp;&nbsp;{$form.color_unknown_color.html}&nbsp;&nbsp;{$form.color_unknown_modify.html}
     </td></tr>
     
+    <tr class="list_one"><td class="FormRowField">{$form.color_line_critical.label}</td><td class="FormRowValue">
+    {$form.color_line_critical.html}&nbsp;&nbsp;{$form.color_line_critical_color.html}&nbsp;&nbsp;{$form.color_line_critical_modify.html}
+    </td></tr>
+    
     <tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$form.header.misc}</td></tr>
  	<tr class="list_one"><td class="FormRowField">{$form.color_ack.label}</td><td class="FormRowValue">
     {$form.color_ack.html}&nbsp;&nbsp;{$form.color_ack_color.html}&nbsp;&nbsp;{$form.color_ack_modify.html}
