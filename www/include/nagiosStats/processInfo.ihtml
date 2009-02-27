@@ -27,7 +27,7 @@
 	 				<tr class='list_two'><td>{$str_last_log_rotation}</td><td>{$procInfo.$key.last_log_rotation}</td></tr>
 	 				<tr class='list_one'><td>{$str_process_id}</td><td>{$procInfo.$key.process_id}</td></tr>
 	 				{assign var=val value=$procInfo.$key.is_currently_running}
-	 				<tr class='list_two'><td>{$str_currently_running}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				<tr class='list_two'><td>{$str_currently_running}</td><td><b>{$yes_no_tab.$val}</b></td></tr>
 	 				{assign var=val value=$procInfo.$key.notifications_enabled}
 	 				<tr class='list_one'><td>{$str_notifications_enabled}</td><td>{$yes_no_tab.$val}</td></tr>
 	 				{assign var=val value=$procInfo.$key.active_host_checks_enabled}
@@ -50,6 +50,8 @@
 	 				<tr class='list_two'><td>{$str_flap_detection}</td><td>{$yes_no_tab.$val}</td></tr>
 	 			</table>
 	 		</td>
+	 		{assign var=val value=$procInfo.$key.is_currently_running}
+	 		{if $val}
 	 		<td align="center">
 	 			<table class="ListTable">
 	 				<tr><td class="tactical_light_header">{$commandLabel}</td></tr>
@@ -137,6 +139,7 @@
 	 				</td></tr>
 	 			</table>
 	 		</td>
+	 		{/if}
 	 	</tr>	 	
 	 </table>	 
 </div>
