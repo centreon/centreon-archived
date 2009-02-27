@@ -144,7 +144,17 @@
 	$tpl->assign("disable_img", "<img src='./img/icones/16x16/delete2.gif'>");
 	$tpl->assign("enable_img", "<img src='./img/icones/16x16/flag_green.gif'>");
 	
-	
+	$action_list = $oreon->user->access->getActions();	
+	$tpl->assign("admin", $oreon->user->admin);
+	$tpl->assign("action_list", $action_list);	
+	$count_actions = 0;
+	foreach ($action_list as $value) {
+		if (preg_match("/^global_/", $value)) {		
+			$count_actions = 1;
+			break;
+		}
+	}	
+	$tpl->assign("count_action", $count_actions);
 	$tpl->display("processInfo.ihtml");
 ?>
 <script type="text/javascript">	

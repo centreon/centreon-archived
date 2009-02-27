@@ -204,6 +204,20 @@
 		$actions[] = "host_checks_for_services";
 		$actions[] = "host_notifications_for_services";
 		
+		# Global Nagios External Commands
+		$actions[] = "global_shutdown";
+		$actions[] = "global_restart";
+		$actions[] = "global_notifications";
+		$actions[] = "global_service_checks";
+		$actions[] = "global_service_passive_checks";
+		$actions[] = "global_host_checks";
+		$actions[] = "global_host_passive_checks";
+		$actions[] = "global_event_handler";
+		$actions[] = "global_flap_detection";
+		$actions[] = "global_service_obsess";
+		$actions[] = "global_host_obsess";
+		$actions[] = "global_perf_data";
+		
 		return $actions;
 	}
 ?>

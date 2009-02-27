@@ -51,12 +51,18 @@
 	 			</table>
 	 		</td>
 	 		{assign var=val value=$procInfo.$key.is_currently_running}
-	 		{if $val}
+	 		{assign var=count value=$count_action}
+	 		{if $val && ($admin || $count)}
 	 		<td align="center">
 	 			<table class="ListTable">
 	 				<tr><td class="tactical_light_header">{$commandLabel}</td></tr>
+	 				{if $admin || $action_list.global_shutdown }
 	 				<tr><td class="list_one">{$shutdown_img}&nbsp;<a href="#" onClick="send_command('SHUTDOWN_PROGRAM', {$key});">{$str_shutdown}</a></td></tr>
-	 				<tr><td class="list_two">{$restart_img}&nbsp;<a href="#" onClick="send_command('RESTART_PROGRAM', {$key});">{$str_restart}</a></td></tr>	 				
+	 				{/if}
+	 				{if $admin || $action_list.global_restart }
+	 				<tr><td class="list_two">{$restart_img}&nbsp;<a href="#" onClick="send_command('RESTART_PROGRAM', {$key});">{$str_restart}</a></td></tr>
+	 				{/if}	 				
+	 				{if $admin || $action_list.global_notifications }
 	 				<tr><td class="list_one">
 	 					{assign var=val value=$procInfo.$key.notifications_enabled}
 	 					{if $val}
@@ -65,6 +71,8 @@
 	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('ENABLE_NOTIFICATIONS', {$key});">{$str_notif_enable}</a>
 	 					{/if}
 	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_service_checks }
 	 				<tr><td class="list_two">
 	 					{assign var=val value=$procInfo.$key.active_service_checks_enabled}
 	 					{if $val}
@@ -73,6 +81,8 @@
 	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('START_EXECUTING_SVC_CHECKS', {$key});">{$str_start_svc_check}</a>
 	 					{/if}
 	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_service_passive_checks }
 	 				<tr><td class="list_one">
 	 					{assign var=val value=$procInfo.$key.passive_service_checks_enabled}
 	 					{if $val}
@@ -81,6 +91,8 @@
 	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('START_ACCEPTING_PASSIVE_SVC_CHECKS', {$key});">{$str_start_passive_svc_check}</a>
 	 					{/if}
 	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_host_checks }
 	 				<tr><td class="list_two">
 	 					{assign var=val value=$procInfo.$key.active_host_checks_enabled}
 	 					{if $val}
@@ -89,6 +101,8 @@
 	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('START_EXECUTING_HOST_CHECKS', {$key});">{$str_start_host_check}</a>
 	 					{/if}
 	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_host_passive_checks }
 	 				<tr><td class="list_one">
 	 					{assign var=val value=$procInfo.$key.passive_host_checks_enabled}
 	 					{if $val}
@@ -97,6 +111,8 @@
 	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('START_ACCEPTING_PASSIVE_HOST_CHECKS', {$key});">{$str_start_passive_host_check}</a>
 	 					{/if}
 	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_event_handler }
 	 				<tr><td class="list_two">
 	 					{assign var=val value=$procInfo.$key.event_handlers_enabled}
 	 					{if $val}
@@ -105,6 +121,8 @@
 	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('ENABLE_EVENT_HANDLERS', {$key});">{$str_handler_enable}</a>
 	 					{/if}
 	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_service_obsess }
 	 				<tr><td class="list_one">
 	 					{assign var=val value=$procInfo.$key.obsess_over_services}
 	 					{if $val}
@@ -113,6 +131,8 @@
 	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('START_OBSESSING_OVER_SVC_CHECKS', {$key});">{$str_start_svc_obsess}</a>
 	 					{/if}
 	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_host_obsess }
 	 				<tr><td class="list_two">
 	 					{assign var=val value=$procInfo.$key.obsess_over_hosts}
 	 					{if $val}
@@ -120,7 +140,9 @@
 	 					{else}
 	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('START_OBSESSING_OVER_HOST_CHECKS', {$key});">{$str_start_host_obsess}</a>
 	 					{/if}
-	 				</td></tr>	 				
+	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_flap_detection }
 	 				<tr><td class="list_one">
 	 					{assign var=val value=$procInfo.$key.flap_detection_enabled}
 	 					{if $val}
@@ -129,6 +151,8 @@
 	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('ENABLE_FLAP_DETECTION', {$key});">{$str_flap_detection_enable}</a>
 	 					{/if}
 	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_perf_data }
 	 				<tr><td class="list_two">
 	 					{assign var=val value=$procInfo.$key.process_performance_data}
 	 					{if $val}
@@ -137,6 +161,7 @@
 	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('ENABLE_PERFORMANCE_DATA', {$key});">{$str_perfdata_enable}</a>
 	 					{/if}
 	 				</td></tr>
+	 				{/if}
 	 			</table>
 	 		</td>
 	 		{/if}

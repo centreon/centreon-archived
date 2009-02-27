@@ -86,27 +86,42 @@
 
 	# Services
 	$form->addElement('checkbox', 'service_checks', _("Enable/Disable Checks for a service"));
-	$form->addElement('checkbox', 'service_notifications', _("Enable/Disabled Notifications for a service"));
+	$form->addElement('checkbox', 'service_notifications', _("Enable/Disable Notifications for a service"));
 	$form->addElement('checkbox', 'service_acknowledgement', _("Acknowledge/Disaknowledge a service"));
 	$form->addElement('checkbox', 'service_schedule_check', _("Re-schedule the next check for a service"));
 	$form->addElement('checkbox', 'service_schedule_downtime', _("Schedule downtime for a service"));
 	$form->addElement('checkbox', 'service_comment', _("Add/Delete a comment for a service"));
 	$form->addElement('checkbox', 'service_event_handler', _("Enable/Disable Event Handler for a service"));
-	$form->addElement('checkbox', 'service_flap_detection', _("Enable/Disable Flap Detection for a service"));
-	$form->addElement('checkbox', 'service_passive_checks', _("Enable/Disabled Accepting passive checks for a service"));
+	$form->addElement('checkbox', 'service_flap_detection', _("Enable/Disable Flap Detection of a service"));
+	$form->addElement('checkbox', 'service_passive_checks', _("Enable/Disable passive checks of a service"));
 	$form->addElement('checkbox', 'service_submit_result', _("Submit result for a service"));	
 	
 	# Hosts
 	$form->addElement('checkbox', 'host_checks', _("Enable/Disable Checks for a host"));
-	$form->addElement('checkbox', 'host_notifications', _("Enable/Disabled Notifications for a host"));
+	$form->addElement('checkbox', 'host_notifications', _("Enable/Disable Notifications for a host"));
 	$form->addElement('checkbox', 'host_acknowledgement', _("Acknowledge/Disaknowledge a host"));
 	$form->addElement('checkbox', 'host_schedule_check', _("Schedule the check for a host"));
 	$form->addElement('checkbox', 'host_schedule_downtime', _("Schedule downtime for a host"));
 	$form->addElement('checkbox', 'host_comment', _("Add/Delete a comment for a host"));
 	$form->addElement('checkbox', 'host_event_handler', _("Enable/Disable Event Handler for a host"));
 	$form->addElement('checkbox', 'host_flap_detection', _("Enable/Disable Flap Detection for a host"));
-	$form->addElement('checkbox', 'host_notifications_for_services', _("Enable/Disabled Notifications for services for a host"));
-	$form->addElement('checkbox', 'host_checks_for_services', _("Enable/Disabled Checks for services for a host"));
+	$form->addElement('checkbox', 'host_notifications_for_services', _("Enable/Disable Notifications services of a host"));
+	$form->addElement('checkbox', 'host_checks_for_services', _("Enable/Disable Checks services of a host"));
+	
+	
+	# Global Nagios External Commands
+	$form->addElement('checkbox', 'global_shutdown', _("Shutdown Nagios"));
+	$form->addElement('checkbox', 'global_restart', _("Restart Nagios"));
+	$form->addElement('checkbox', 'global_notifications', _("Enable/Disable"));
+	$form->addElement('checkbox', 'global_service_checks', _("Enable/Disable service checks"));
+	$form->addElement('checkbox', 'global_service_passive_checks', _("Enable/Disable passive service checks"));
+	$form->addElement('checkbox', 'global_host_checks', _("Enable/Disable host checks"));
+	$form->addElement('checkbox', 'global_host_passive_checks', _("Enable/Disable passive host checks"));
+	$form->addElement('checkbox', 'global_event_handler', _("Enable/Disable Event Handlers"));
+	$form->addElement('checkbox', 'global_flap_detection', _("Enable/Disable Flap Detection"));
+	$form->addElement('checkbox', 'global_service_obsess', _("Enable/Disable Obssessive service checks"));
+	$form->addElement('checkbox', 'global_host_obsess', _("Enable/Disable Obsessive host checks"));
+	$form->addElement('checkbox', 'global_perf_data', _("Enable/Disable Performance Data"));
 	
 	$form->setDefaults(array("hostComment" => 1 ));
 		
@@ -114,6 +129,7 @@
 	$form->addElement('header', 'notification', _("Relations"));
 	$form->addElement('header', 'service_actions', _("Services Actions Access"));
 	$form->addElement('header', 'host_actions', _("Hosts Actions Access"));
+	$form->addElement('header', 'global_actions', _("Global Nagios Actions (External Process Commands)"));
 		
     $ams1 =& $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
