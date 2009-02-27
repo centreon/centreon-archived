@@ -249,6 +249,15 @@
 
 		$optionsURL = "session_id=".session_id()."&host_name=".$host_name."&service_description=".$svc_description;
 
+
+		$DBRES =& $pearDBO->query("SELECT id FROM `index_data` WHERE host_name LIKE '".$host_name."' AND service_description LIKE '".$svc_description."' LIMIT 1");
+		$index_data = 0;
+		if ($DBRES->numRows()) {
+			$row =& $DBRES->fetchRow();
+			$index_data = $row['id'];
+		}
+		$optionsURL2 = "session_id=".session_id()."&index=".$index_data."&service_description=".$svc_description;
+
 		/*
 		 * Assign translations
 		 */
@@ -333,7 +342,10 @@
 		$tpl->assign("host_data", $host_status[$host_name]);
 		$tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
 		$tpl->assign("svc_description", $svc_description);
-
+		
+		$tpl->assign("status_str", _("Status Graph"));
+		$tpl->assign("detailed_graph", _("Detailed Graph"));
+		
 		/*
 		 * Hostgroups Display
 		 */
@@ -365,7 +377,8 @@
 		$tpl->assign("sv_ext_action_url", getMyServiceExtendedInfoField($service_id, "esi_action_url"));
 		$tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
 		$tpl->assign("options", $optionsURL);
-		
+		$tpl->assign("index_data", $index_data);
+		$tpl->assign("options2", $optionsURL2);
 		$tpl->display("serviceDetails.ihtml");
 	}
 ?>
