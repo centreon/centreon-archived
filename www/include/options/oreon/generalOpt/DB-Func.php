@@ -162,6 +162,8 @@
 		updateOption($pearDB, "color_unknown", isset($ret["color_unknown"]) && $ret["color_unknown"] != NULL ? htmlentities($ret["color_unknown"], ENT_QUOTES): "NULL ");
 		updateOption($pearDB, "color_ack", isset($ret["color_ack"]) && $ret["color_ack"] != NULL ? htmlentities($ret["color_ack"], ENT_QUOTES): "NULL ");
 		updateOption($pearDB, "color_downtime", isset($ret["color_downtime"]) && $ret["color_downtime"] != NULL ? htmlentities($ret["color_downtime"], ENT_QUOTES): "NULL ");
+		updateOption($pearDB, "color_host_down", isset($ret["color_host_down"]) && $ret["color_host_down"] != NULL ? htmlentities($ret["color_host_down"], ENT_QUOTES): "NULL ");
+		updateOption($pearDB, "color_host_unreachable", isset($ret["color_host_unreachable"]) && $ret["color_host_unreachable"] != NULL ? htmlentities($ret["color_host_unreachable"], ENT_QUOTES): "NULL ");
 		
 		$oreon->initOptGen($pearDB);
 	}

@@ -57,6 +57,7 @@
 	$form->addElement('header', 'host', _("Hosts status colors"));
 	$form->addElement('header', 'service', _("Services status colors"));
 	$form->addElement('header', 'misc', _("Miscelenaous"));
+	$form->addElement('header', 'hostspec', _("Specifics for hosts"));
 	
 	$TabColorNameAndLang = array("color_up"=>_("Host UP Color"),
                             	"color_down"=>_("Host DOWN Color"),
@@ -68,6 +69,8 @@
                             	"color_unknown"=>_("Service UNKNOWN Color"),
                             	"color_ack"=>_("Acknowledge host or service Color"),
                             	"color_downtime"=>_("Downtime host or service Color"),
+                            	"color_host_down"=>_("Color for host Down (Service view)"),
+                            	"color_host_unreachable"=>_("Color for host Unreachable (Service view)"),
 					);
 
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{

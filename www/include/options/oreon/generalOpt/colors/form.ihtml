@@ -47,6 +47,15 @@
     <tr class="list_one"><td class="FormRowField">{$form.color_downtime.label}</td><td class="FormRowValue">
     {$form.color_downtime.html}&nbsp;&nbsp;{$form.color_downtime_color.html}&nbsp;&nbsp;{$form.color_downtime_modify.html}
     </td></tr>
+    
+    <tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$form.header.hostspec}</td></tr>
+ 	
+ 	<tr class="list_one"><td class="FormRowField">{$form.color_host_down.label}</td><td class="FormRowValue">
+    {$form.color_host_down.html}&nbsp;&nbsp;{$form.color_host_down_color.html}&nbsp;&nbsp;{$form.color_host_down_modify.html}
+    </td></tr>
+    <tr class="list_one"><td class="FormRowField">{$form.color_host_unreachable.label}</td><td class="FormRowValue">
+    {$form.color_host_unreachable.html}&nbsp;&nbsp;{$form.color_host_unreachable_color.html}&nbsp;&nbsp;{$form.color_host_unreachable_modify.html}
+    </td></tr>
 </table>
 {if !$valid}
 	<div id="validForm">
