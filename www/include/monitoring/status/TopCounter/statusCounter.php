@@ -27,6 +27,7 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
+	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
 	/* 
@@ -179,23 +180,23 @@
 		/*
 		 * Create Buffer
 		 */
-		$buffer  = '<?phpxml version="1.0"?>';
-		$buffer .= '<reponse>';
-		$buffer .= '<infos>';
-		$buffer .= '<filetime>'.time().'</filetime>';
-		$buffer .= '</infos>';
-		$buffer .= '<s>';
-		$buffer .= '<o>'.$svc_stat["0"].'</o>';
-		$buffer .= '<w>'.$svc_stat["1"].'</w>';
-		$buffer .= '<c>'.$svc_stat["2"].'</c>';
-		$buffer .= '<un1>'.$svc_stat["3"].'</un1>';
-		$buffer .= '<p1>'.$svc_stat["4"].'</p1>';
-		$buffer .= '<up>'.$host_stat["0"].'</up>';
-		$buffer .= '<d>'.$host_stat["1"].'</d>';
-		$buffer .= '<un2>'.$host_stat["2"].'</un2>';
-		$buffer .= '<p2>'.$host_stat["3"].'</p2>';
-		$buffer .= '</s>';
-		$buffer .= '</reponse>';
+		$buffer = new CentreonXML();
+		$buffer->startElement("reponse");
+		$buffer->startElement("infos");
+		$buffer->writeElement("filetime", time());
+		$buffer->endElement();
+		$buffer->startElement("s");
+		$buffer->writeElement("o", $svc_stat["0"]);
+		$buffer->writeElement("w", $svc_stat["1"]);
+		$buffer->writeElement("c", $svc_stat["2"]);
+		$buffer->writeElement("un1", $svc_stat["3"]);
+		$buffer->writeElement("p1", $svc_stat["4"]);
+		$buffer->writeElement("up", $host_stat["0"]);
+		$buffer->writeElement("d", $host_stat["1"]);
+		$buffer->writeElement("un2", $host_stat["2"]);
+		$buffer->writeElement("p2", $host_stat["3"]);
+		$buffer->endElement();
+		$buffer->endElement();		
 		
 		/*
 		 * send Header
@@ -208,7 +209,7 @@
 		/*
 		 * Display Buffer
 		 */
-		echo $buffer;
+		$buffer->output();
 	}
 	
 	read($sid);
