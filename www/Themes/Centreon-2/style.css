@@ -152,9 +152,6 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .arbo_c 	{display:none;margin-left:50px;padding-top:0;}
 .arbo_d 	{list-style:none;margin-left:16px;padding-top:5px;}
 
-/* Monitoring Side */
-.host_error {-moz-border-radius:8px;background-color:#FD8B46;border:2px #FD8B46 solid;}
-
 /* Search Options */
 .search_input_active 	{background-color:#F778A1;}
 .search_input_found 	{background-color:#99C68E;}
@@ -186,7 +183,18 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 
 /* Line alternate */
 .tab table .ListHeader td {border-top-width:0;}
-.list_one td,.list_two td,.list_three td,.list_four td,.list_lvl_2 td,.list_lvl_1 td,.list_up td,.list_down td,.tab .list_one td,.tab .list_two td,.tab .list_three td,.tab .list_four td,.tab .list_up td,.tab .list_down td,.tab .list_lvl_2 td,.tab .list_lvl_1 td {border-left-style:solid;border-top-style:solid;border-width:0.1px 0 0 0.1px;}
+
+.list_one td,.tab .list_one td,
+.list_two td,.tab .list_two td,
+.list_three td,.tab .list_three td,
+.list_four td, .tab .list_four td,
+.list_lvl_2 td,.tab .list_lvl_2 td,
+.list_lvl_1 td,.tab .list_lvl_1 td,
+.list_up td,.tab .list_up td,
+.list_down td,.tab .list_down td,
+.line_ack td,.tab .line_ack td,
+.line_downtime td, .tab .line_downtime td,
+.list_unreachable td,.tab .list_unreachable td {border-left-style:solid;border-top-style:solid;border-width:0.1px 0 0 0.1px;}
 
 /*
 .limitPage 	{background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-left:4px;padding-top:1px;text-align:left;width:160px;}
@@ -362,4 +370,4 @@ a.infobulle span,.img_volante 		{display:none;position:absolute;z-index:500;}
 
 .FormFooter,.ListColFooter5,.ListColFooter5 a,.ListColFooterCenter,.ListColFooterLeft,.ListColFooterRight 	{font-size:12px;font-weight:700;padding-right:10px;}
 .ListColFooterRight,.ListColRight,.Toolbar_pagelimit {text-align:right;}
-.list_one,.list_two,.list_three,.list_four 		{font-weight:400;vertical-align:middle;}
+.list_one,.list_two,.list_three,.list_four,.line_ack,.line_downtime,.list_unreachable		{font-weight:400;vertical-align:middle;}

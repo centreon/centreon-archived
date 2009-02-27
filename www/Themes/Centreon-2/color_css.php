@@ -35,76 +35,84 @@
  * SVN : $Id$
  * 
  */
+ 
+ 	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once "../../../class/centreonDB.class.php";
+
+	$pearDB = new CentreonDB();
+ 
+ 	/*
+ 	 * Get Options colors
+ 	 */
+ 	$options = array();
+ 	$DBRESULT =& $pearDB->query("SELECT * FROM options");
+ 	while ($res =& $DBRESULT->fetchRow())
+ 		$options[$res["key"]] = $res["value"];
+ 	unset($res);
+ 	
 ?>
 
 .ListTable a:link, #ListTable a:link			{color:<?php print $color2; ?>;}
 .ListTable a:visited, #ListTable a:visited		{color:<?php print $color2; ?>;}
 .ListTable a:hover, #ListTable a:hover			{color:<?php print $color3; ?>;}
 
-/* Form */
 .list_lvl_1{	background-color:<?php print $color4; ?>;}
 .list_lvl_2{	background-color:<?php print $color5; ?>;}
+
 .ListHeader{	background-image:url(<?php print $bg_image_header; ?>);
-	background-position:top left;
-	background-repeat:repeat-x;
-	background-color:<?php print $color6; ?> ;
+				background-position:top left;
+				background-repeat:repeat-x;
+				background-color:<?php print $color6; ?> ;
 }
 
 .ListSubHeader{	
-	background-color:#A9C5F2;
-	font-weight:bold;
-	background-position:top left;
-	}
+				background-color:#A9C5F2;
+				font-weight:bold;
+				background-position:top left;
+}
 
 	
-.ListTable, .ListTableMedium, .ListTableSmall {
-	border-color: <?php print $color6; ?>;
-	}
+.ListTable, .ListTableMedium, .ListTableSmall {border-color: <?php print $color6; ?>;}
 
 .list_lvl_2 td, .list_lvl_1 td{
 	border-top-color: <?php print $color7; ?>;
 	border-left-color: <?php print $color7; ?>;
 	border-bottom-color: <?php print $color7; ?>;
 	border-right-color: <?php print $color7; ?>;
-	}
+}
 
-.list_one td, .list_two td, .list_three td, .list_four td, .list_up td, .list_down td{
+.list_one td, .list_two td, .list_three td, .list_four td, .list_up td, .list_down td, .line_ack td, .line_downtime td, .list_unreachable td{
 	border-top-color: <?php print $color8; ?>;
 	border-left-color: <?php print $color8; ?>;
 	border-bottom-color: <?php print $color8; ?>;
 	border-right-color: <?php print $color8; ?>;
-	}
+}
 
-.tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td, .tab .list_up td, .tab .list_down td{
+.tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td, .tab .list_up td, .tab .list_down td,.tab .line_ack td,.tab .line_downtime td,.tab .list_unreachable td{
 	border-top-color: <?php print $color8; ?>;
 	border-left-color: <?php print $color8; ?>;
 	border-bottom-color: <?php print $color8; ?>;
 	border-right-color: <?php print $color8; ?>;
-	}
+}
 	
 .tab .list_lvl_2 td, .tab .list_lvl_1 td{
 	border-top-color: <?php print $color7; ?>;
 	border-left-color: <?php print $color7; ?>;
 	border-bottom-color: <?php print $color7; ?>;
 	border-right-color: <?php print $color7; ?>;
-	}
+}
 	
 .ListHeader td{
 	border-top-color: <?php print $color9; ?>;
 	border-left-color: <?php print $color9; ?>;
-	}
+}
 
 .ListColFooterRight, .ListColFooterLeft, .ListColFooterCenter{
 	border-top-color: <?php print $color10; ?>;
-	}
+}
 
-.list_one_fixe	{		
-	background-color:<?php print $color_list_1; ?>;
-	} 
-.list_two_fixe {
-	background-color:<?php print $color_list_2; ?>; 
-	}
-
+.list_one_fixe		{	background-color:<?php print $color_list_1; ?>;} 
+.list_two_fixe 		{	background-color:<?php print $color_list_2; ?>;}
 
 .list_one			{	background-color:<?php print $color_list_1; ?>;} 
 .list_one:hover 	{	background-color:<?php print $color_list_1_hover; ?>;}
@@ -121,13 +129,23 @@
 .list_up			{	background-color:<?php print $color_list_up; ?>;}
 .list_up:hover		{	background-color:<?php print $color_list_up_hover; ?>;}
 
-.list_down 			{	background-color:<?php print $color_list_down; ?>;}
-.list_down:hover 	{	background-color:<?php print $color_list_down_hover; ?>;}
+.list_down 			{	background-color:<?php print $options["color_line_critical"]; ?>;}
+.list_down:hover 	{	background-color:<?php print $options["color_line_critical"]; ?>;}
 
-//#page {			color:<?php print $color11; ?>;}
-//#page a{		color:<?php print $color11; ?>;}
+.list_unreachable 			{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
+.list_unreachable:hover 	{	background-color:<?php print $options["color_host_unreachable"]; ?>;}
 
-/*Menu*/
+.line_downtime		{	background-color:<?php print $options["color_downtime"]; ?>;}
+.line_downtime:hover{	background-color:<?php print $options["color_downtime"]; ?>;}
+
+.line_ack			{	background-color:<?php print $options["color_ack"]; ?>;}
+.line_ack:hover		{	background-color:<?php print $options["color_ack"]; ?>;}
+
+/* Monitoring Side */
+.host_error {-moz-border-radius:8px;background-color:<?php print $options["color_host_down"]; ?>;border:2px <?php print $options["color_host_down"]; ?> solid;}
+
+
+/* Menu */
 #menu1_bgimg	{	
 	background-image: url(<?php print $menu1_bgimg; ?>);
 	background-position:top right;
@@ -135,8 +153,6 @@
 	}
 #menu1_bgcolor	{	background-color: <?php print $menu1_bgcolor; ?>;}
 #menu2_bgcolor	{	background-color: <?php print $menu2_bgcolor; ?>;}
-
-
 #menu_2			{	background-color:	<?php print $menu1_bgcolor; ?>;}
 
 .Tmenu3 .top .left 		{	background-color:  <?php print $color1; ?>;}
@@ -144,13 +160,7 @@
 .Tmenu3 .bottom .left 	{	background-color:  <?php print $color1; ?>;}
 .Tmenu3 .bottom .right 	{	background-color:  <?php print $color1; ?>;}
 
-/* General */
-#contener{		/*background-color:<?php print $color1; ?>;*/}
-
-#Tmenu{		/*background-color:<?php print $color1; ?>*/;
-		border-right: 1px solid <?php print $menu1_bgcolor; ?>;
-		}
-
+#Tmenu	{	border-right: 1px solid <?php print $menu1_bgcolor; ?>;}
 #footerline1	{	background-color:<?php print $menu1_bgcolor; ?>;}
 #footerline2	{	background-color:<?php print $footerline2; ?>;}
 
@@ -209,25 +219,12 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 	width:200px;
 	}
 
-.Toolbar_TDSelectAction_Top a{
-	font-family:Arial, Helvetica, Sans-Serif;    font-size:11px;    color:#666;
-	color:<?php print $color13; ?>;
-	}
+.Toolbar_TDSelectAction_Top a {	font-family:Arial, Helvetica, Sans-Serif;font-size:11px;color:<?php print $color13; ?>;}
+.Toolbar_TDSelectAction_Top a:hover {color:<?php print $color14; ?>;}
 
-.Toolbar_TDSelectAction_Top a:hover{
-	color:<?php print $color14; ?>;
-	}
+.Toolbar_TDSelectAction_Bottom a {font-family:Arial, Helvetica, Sans-Serif;font-size:11px;color:<?php print $color13; ?>;}
+.Toolbar_TDSelectAction_Bottom a:hover {color:<?php print $color14; ?>;}
 
-.Toolbar_TDSelectAction_Bottom a{
-	font-family:Arial, Helvetica, Sans-Serif;    font-size:11px;    color:#666;
-	color:<?php print $color13; ?>;
-	}
-.Toolbar_TDSelectAction_Bottom a:hover{
-	color:<?php print $color14; ?>;
-	}
-
-.Toolbar_TableBottom{
-	border-color:<?php print $menu1_bgcolor; ?>;
-	}
+.Toolbar_TableBottom {border-color:<?php print $menu1_bgcolor; ?>;}
 
 #mainnav li{	background-image: url("<?php print $bg_image_header; ?>");}

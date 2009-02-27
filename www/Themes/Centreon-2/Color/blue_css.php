@@ -35,9 +35,6 @@
  * SVN : $Id$
  * 
  */
- 
- 
-require_once "@CENTREON_ETC@/centreon.conf.php";
 
 header("Content-type: text/css");
 
@@ -79,5 +76,5 @@ $color_list_down_hover = "#dfbbbb";
 $bg_image_header = "../Images/bg_header.gif";
 $menu1_bgimg = "../Images/menu_bg_blue.gif";
 
-require_once $centreon_path . "www/Themes/Centreon-2/color_css.php";
+require_once "../color_css.php";
 ?>
