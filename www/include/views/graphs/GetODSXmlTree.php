@@ -364,9 +364,20 @@
 				$selected_host[$tabTMP[2]] = 1;
 			}
 		}
-		
-		print("<tree id='1'>");
-		print("<item nocheckbox='1' call='0' open='1' select='1' child='0' id='RR_0' text='HostGroups' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif'>");
+				
+		$buffer->startElement("tree");
+		$buffer->writeAttribute("id", "1");
+		$buffer->startElement("item");
+		$buffer->writeAttribute("nocheckbox", "1");
+		$buffer->writeAttribute("call", "0");
+		$buffer->writeAttribute("open", "1");
+		$buffer->writeAttribute("select", "1");
+		$buffer->writeAttribute("child", "0");
+		$buffer->writeAttribute("id", "RR_0");
+		$buffer->writeAttribute("text", "HostGroups");
+		$buffer->writeAttribute("im0", "../16x16/clients.gif");
+		$buffer->writeAttribute("im1", "../16x16/clients.gif");
+		$buffer->writeAttribute("im2", "../16x16/clients.gif");		
 	   	
 	   	$hostgroups = getAllHostgroups();
 	   	$i = 0;
@@ -531,11 +542,11 @@
 		/*
 		 * Send Service Group list
 		 */
-		$lcaSG = getLCASG($pearDB);
+		$lcaSG = $access->getServiceGroups();
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
 		while ($SG =& $DBRESULT->fetchRow()){
 		    $i++;			
-			if (SGIsNotEmpty($SG["sg_id"]) && (($is_admin) || ((isset($lcaSG) && isset($lcaSG[$SG["sg_id"]])))))
+			if (SGIsNotEmpty($SG["sg_id"]) && (($is_admin) || ((isset($lcaSG) && isset($lcaSG[$SG["sg_id"]]))))) {
 		       	$buffer->startElement("item");
 		       	$buffer->writeAttribute("child", "1");
 		       	$buffer->writeAttribute("id", "ST_".$SG["sg_id"]);
@@ -543,7 +554,8 @@
 		       	$buffer->writeAttribute("im0", "../16x16/clients.gif");
 		       	$buffer->writeAttribute("im1", "../16x16/clients.gif");
 		       	$buffer->writeAttribute("im2", "../16x16/clients.gif");
-		       	$buffer->endElement();		       				
+		       	$buffer->endElement();
+			}
 		}
 		$DBRESULT->free();
 		$buffer->writeElement("itemtext", "label");

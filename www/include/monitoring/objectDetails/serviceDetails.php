@@ -250,13 +250,13 @@
 		$optionsURL = "session_id=".session_id()."&host_name=".$host_name."&service_description=".$svc_description;
 
 
-		$DBRES =& $pearDBO->query("SELECT id FROM `index_data` WHERE host_name LIKE '".$host_name."' AND service_description LIKE '".$svc_description."' LIMIT 1");
+		$DBRES =& $pearDBO->query("SELECT id FROM `index_data` WHERE host_name LIKE '".$host_name."' AND service_description LIKE '".str_replace("/", "#S#",$svc_description)."' LIMIT 1");
 		$index_data = 0;
 		if ($DBRES->numRows()) {
 			$row =& $DBRES->fetchRow();
 			$index_data = $row['id'];
 		}
-		$optionsURL2 = "session_id=".session_id()."&index=".$index_data."&service_description=".$svc_description;
+		$optionsURL2 = "session_id=".session_id()."&index=".$index_data;
 
 		/*
 		 * Assign translations
@@ -341,6 +341,7 @@
 		$tpl->assign("service_id", getMyServiceID($svc_description, $host["host_id"]));
 		$tpl->assign("host_data", $host_status[$host_name]);
 		$tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
+		$tpl->assign("host_name", $host_name);
 		$tpl->assign("svc_description", $svc_description);
 		
 		$tpl->assign("status_str", _("Status Graph"));
