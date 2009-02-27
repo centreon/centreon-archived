@@ -124,7 +124,7 @@
 	 */
 	if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL"){
 		/* CSV Export */
-		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?sid=".$sid."&host=".$host_id."&service=".$service_id);
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?sid=".$sid."&host=".$host_id."&service=".$service_id."&start=".$start_date."&end=".$end_date);
 		$tpl->assign("link_csv_name", _("Export in CSV format"));
 		/* status colors */
 		$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_undetermined"],1);

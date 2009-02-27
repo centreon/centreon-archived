@@ -123,7 +123,7 @@
 	 */
 	if (isset($id) && $id != "NULL"){
 		 /* CSV export */
-		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_HostGroupLogs.php?sid=".$sid."&hostgroup=".$id);
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_HostGroupLogs.php?sid=".$sid."&hostgroup=".$id."&start=".$start_date."&end=".$end_date);
 		$tpl->assign("link_csv_name", _("Export in CSV format"));
 		/* Status colors */
 		$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_undetermined"],1);

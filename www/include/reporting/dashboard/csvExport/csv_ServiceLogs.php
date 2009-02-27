@@ -74,8 +74,8 @@
 	 * Getting time interval to report
 	 */
 	$dates = getPeriodToReport();
-	$start_date = $dates[0];
-	$end_date = $dates[1];
+	$start_date = $_GET['start'];
+	$end_date = $_GET['end'];
 	$host_name = getHostNameFromId($host_id);
 	$service_description = getServiceDescriptionFromId($service_id);
 	/*
