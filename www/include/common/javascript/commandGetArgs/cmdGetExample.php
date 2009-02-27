@@ -19,7 +19,7 @@
 	# use by ajax
 
 	require_once("@CENTREON_ETC@/centreon.conf.php");
-	require_once($centreon_path."www/class/centreonDB.php");	
+	require_once($centreon_path."www/class/centreonDB.class.php");	
 
 	function myDecodeService($arg)	{
 		$arg = str_replace('#BR#', "\\n", $arg);
