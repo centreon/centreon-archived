@@ -29,7 +29,7 @@
 	}
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path."www/class/centreonDB.php";
+	include_once $centreon_path."www/class/centreonDB.class.php";
 	
 	$pearDB = new CentreonDB();
 	$pearDBO = new CentreonDB("centstorage");

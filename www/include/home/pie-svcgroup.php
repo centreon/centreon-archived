@@ -44,7 +44,7 @@
 
 	$ndo_base_prefix = getNDOPrefix();	
 	
-	include_once($oreonPath . "www/class/centreonDB.php");
+	include_once($oreonPath . "www/class/centreonDB.class.php");
 	
 	$pearDBndo = new CentreonDB("ndo");
 

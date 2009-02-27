@@ -39,7 +39,7 @@
 	$path = "./include/configuration/configObject/service/";
 	
 	#PHP functions	
-	require_once("./class/centreonDB.php");
+	require_once("./class/centreonDB.class.php");
 	
 	$pearDBO = new CentreonDB("centstorage");	
 	

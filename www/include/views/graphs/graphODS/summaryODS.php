@@ -39,7 +39,7 @@
 
 	#PHP functions
 	require_once "./include/common/common-Func.php";
-	require_once("./class/centreonDB.php");
+	require_once("./class/centreonDB.class.php");
 	$pearDBO = new CentreonDB("centstorage");
 
 	if (isset($_GET["o"]) && $_GET["o"] == "vs")
