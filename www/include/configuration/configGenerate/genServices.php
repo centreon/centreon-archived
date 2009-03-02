@@ -18,6 +18,9 @@
 	if (!isset($oreon))
 		exit();
 
+	require_once ("@CENTREON_ETC@/centreon.conf.php");
+	require_once ($centreon_path . "/www/class/centreonService.class.php");
+
 	/*
 	 * Create file
 	 */
@@ -578,19 +581,20 @@
 					/*
 					 * Extended Informations
 					 */
-				
+					$svc_method = new CentreonService($pearDB);
+					
 					$DBRESULT3 =& $pearDB->query("SELECT * FROM extended_service_information esi WHERE esi.service_service_id = '".$service["service_id"]."'");
 					$esi =& $DBRESULT3->fetchRow();
 					if ($field = $esi["esi_notes"])
-						$strTMP .= print_line("notes", $field);
+						$strTMP .= print_line("notes", $svc_method->replaceMacroInString($service["service_id"], $field));
 					if ($field = $esi["esi_notes_url"])
-						$strTMP .= print_line("notes_url", $field);
+						$strTMP .= print_line("notes_url", $svc_method->replaceMacroInString($service["service_id"], $field));
 					if ($field = $esi["esi_action_url"])
-						$strTMP .= print_line("action_url", $field);
+						$strTMP .= print_line("action_url", $svc_method->replaceMacroInString($service["service_id"], $field));
 					if ($field = getMyHostExtendedInfoImage($esi["service_id"], "esi_icon_image"))
-						$strTMP .= print_line("icon_image", $field);
+						$strTMP .= print_line("icon_image", $svc_method->replaceMacroInString($service["service_id"], $field));
 					if ($field = $esi["esi_icon_image_alt"])
-						$strTMP .= print_line("icon_image_alt", $field);
+						$strTMP .= print_line("icon_image_alt", $svc_method->replaceMacroInString($service["service_id"], $field));
 				}
 				
 				$strTMP .= "}\n\n";

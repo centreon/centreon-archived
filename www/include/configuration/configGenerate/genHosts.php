@@ -18,6 +18,9 @@
 	if (!isset($oreon))
 		exit();
 	
+	require_once ("@CENTREON_ETC@/centreon.conf.php");
+	require_once ($centreon_path . "/www/class/centreonHost.class.php");
+	
 	/*
 	 * Create table for host / instance list.
 	 */
@@ -294,27 +297,29 @@
 					}
 				}
 				
+				$host_method = new CentreonHost($pearDB);
+				
 				if ($oreon->user->get_version() >= 3)	{
 					$DBRESULT2 =& $pearDB->query("SELECT * FROM extended_host_information ehi WHERE ehi.host_host_id = '".$host["host_id"]."'");
 					$ehi =& $DBRESULT2->fetchRow();
 					if ($ehi["ehi_notes"])
-						$str .= print_line("notes", $ehi["ehi_notes"]);
+						$str .= print_line("notes", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes"]));
 					if ($ehi["ehi_notes_url"])
-	        			$str .= print_line("notes_url", $ehi["ehi_notes_url"]);
+	        			$str .= print_line("notes_url", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes_url"]));
 					if ($ehi["ehi_action_url"])
-	        			$str .= print_line("action_url", $ehi["ehi_action_url"]);
+	        			$str .= print_line("action_url", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_action_url"]));
 					if ($ehi["ehi_icon_image"])
-	        			$str .= print_line("icon_image", getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1));
+	        			$str .= print_line("icon_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1)));
 					if ($ehi["ehi_icon_image_alt"])
-	        			$str .= print_line("icon_image", $ehi["ehi_icon_image_alt"]);
+	        			$str .= print_line("icon_image", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_icon_image_alt"]));
 					if ($ehi["ehi_vrml_image"])
-	        			$str .= print_line("vrml_image", getMyHostExtendedInfoImage($host["host_id"], "ehi_vrml_image", 1));
+	        			$str .= print_line("vrml_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_vrml_image", 1)));
 					if ($ehi["ehi_statusmap_image"])
-	        			$str .= print_line("statusmap_image", getMyHostExtendedInfoImage($host["host_id"], "ehi_statusmap_image", 1));
+	        			$str .= print_line("statusmap_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_statusmap_image", 1)));
 					if ($ehi["ehi_2d_coords"])
-	        			$str .= print_line("2d_coords", $ehi["ehi_2d_coords"]);
+	        			$str .= print_line("2d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_2d_coords"]));
 					if ($ehi["ehi_3d_coords"])
-	        			$str .= print_line("3d_coords", $ehi["ehi_3d_coords"]);
+	        			$str .= print_line("3d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_3d_coords"]));
 					}
 					$DBRESULT2->free();
 				}
