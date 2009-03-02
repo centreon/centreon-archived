@@ -104,9 +104,9 @@
 	echo "\n";
 	
 	echo _("Service").";"._("OK")."; "._("OK")." Alert;"
-				   ._("Warning")."; "._("Warning")." Alert;"
-				   ._("Unknown")."; "._("Unknown")." Alert;"
+				   ._("Warning")."; "._("Warning")." Alert;"				   
 				   ._("Critical")."; "._("Critical")." Alert;"
+				   ._("Unknown")."; "._("Unknown")." Alert;"
 				   ._("Undetermined").";\n";
 	$hostServicesStats =  getLogInDbForHostSVC($id, $start_date, $end_date, $reportingTimePeriod);
 	foreach ($hostServicesStats as $tab) {
