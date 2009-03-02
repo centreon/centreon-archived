@@ -77,7 +77,7 @@
 	var _first = 1;
 	var _lock = 0;
 	var _instance = 'ALL';
-	var _default_instance = '0';
+	var _default_instance = '<?php echo $default_poller?>';
 	var _nc = 0;
 	var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
 	

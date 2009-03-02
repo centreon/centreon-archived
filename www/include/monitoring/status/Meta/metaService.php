@@ -57,6 +57,7 @@
 	
 	$rows = 10;
 
+	include_once("./include/monitoring/status/Common/default_poller.php");
 	include_once($meta_path."/metaServiceJS.php");
 
 	/*

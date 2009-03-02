@@ -33,6 +33,7 @@
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
 
+	include_once("./include/monitoring/status/Common/default_poller.php");
 	include_once($hg_path."serviceSummaryByHGJS.php");
 
 	# Smarty template Init

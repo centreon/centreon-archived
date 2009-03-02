@@ -96,7 +96,14 @@ function construct_selecteList_ndo_instance(id){
 		var _select = document.createElement("select");
 		_select.name = "select_instance";
 		_select.id = "select_instance";
-		_select.onchange = function() { _instance = this.value; _default_instance = this.selectedIndex; monitoring_refresh(); };
+		_select.onchange = function() { 
+			_instance = this.value; 
+			_default_instance = this.selectedIndex; 
+			monitoring_refresh();
+			xhr = new XMLHttpRequest();
+			xhr.open('GET','./include/monitoring/status/Common/updateContactParam.php?uid=<?php echo $oreon->user->user_id; ?>&instance_id='+this.selectedIndex, true);
+			xhr.send(null);
+		};
 		var k = document.createElement('option');
 		k.value= "ALL";
 		var l = document.createTextNode("ALL");
