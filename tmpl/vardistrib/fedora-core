@@ -37,7 +37,7 @@ LOG_FILE="$LOG_DIR/install_centreon.log"
 ## Don't change values above unless you perfectly understand 
 ## what you are doing.
 ## Centreon temporary directory to work
-TMPDIR="/tmp/centreon-setup"
+TMP_DIR="/tmp/centreon-setup"
 ## default snmp config directory
 SNMP_ETC="/etc/snmp/"
 ## a list of pear modules require by Centreon

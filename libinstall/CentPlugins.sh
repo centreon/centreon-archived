@@ -37,19 +37,19 @@ copyInTempFile 2>>$LOG_FILE
 
 ## Create temporary folder
 log "INFO" "$(gettext "Create working directory")"
-mkdir -p $TMPDIR/final/plugins
-mkdir -p $TMPDIR/work/plugins
+mkdir -p $TMP_DIR/final/plugins
+mkdir -p $TMP_DIR/work/plugins
 
 ## Change Macro in working dir
 flg_error=0
-for FILE in `ls $TMPDIR/src/plugins/src/check*centreon*` \
-	$TMPDIR/src/plugins/src/centreon.pm \
-	$TMPDIR/src/plugins/src/centreon.conf \
-	$TMPDIR/src/plugins/src/check_meta_service \
-	`ls $TMPDIR/src/plugins/src/check_snmp*` \
-	$TMPDIR/src/plugins/src/process-service-perfdata \
-	$TMPDIR/src/plugins/src/submit_host_check_result \
-	$TMPDIR/src/plugins/src/submit_service_check_result; do
+for FILE in `ls $TMP_DIR/src/plugins/src/check*centreon*` \
+	$TMP_DIR/src/plugins/src/centreon.pm \
+	$TMP_DIR/src/plugins/src/centreon.conf \
+	$TMP_DIR/src/plugins/src/check_meta_service \
+	`ls $TMP_DIR/src/plugins/src/check_snmp*` \
+	$TMP_DIR/src/plugins/src/process-service-perfdata \
+	$TMP_DIR/src/plugins/src/submit_host_check_result \
+	$TMP_DIR/src/plugins/src/submit_service_check_result; do
 
 	${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 		-e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
@@ -59,25 +59,25 @@ for FILE in `ls $TMPDIR/src/plugins/src/check*centreon*` \
 		-e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
 		-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 		-e 's|@CENTPLUGINS_TMP@|'"$CENTPLUGINS_TMP"'|g' \
-		"$FILE" > "$TMPDIR/work/plugins/`basename $FILE`"
+		"$FILE" > "$TMP_DIR/work/plugins/`basename $FILE`"
 	[ $? -ne 0 ] && flg_error=1
 done
 check_result $flg_error "$(gettext "Change macros for CentPlugins")"
 
 ## Copy in final dir
 log "INFO" "$(gettext "Copying plugins in final directory")"
-cp -r $TMPDIR/work/plugins/* $TMPDIR/final/plugins >> $LOG_FILE 2>&1
+cp -r $TMP_DIR/work/plugins/* $TMP_DIR/final/plugins >> $LOG_FILE 2>&1
 
 ## Install the plugins
 log "INFO" "$(gettext "Installing the plugins")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-m 755 -p $TMPDIR/final/plugins \
-	$TMPDIR/final/plugins/* $NAGIOS_PLUGIN >> $LOG_FILE 2>&1
+	-m 755 -p $TMP_DIR/final/plugins \
+	$TMP_DIR/final/plugins/* $NAGIOS_PLUGIN >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Installing the plugins")"
 
 ## change right for a specific file
 $INSTALL_DIR/cinstall -f $cinstall_opts -g $NAGIOS_GROUP \
-	-m 664 $TMPDIR/final/plugins/centreon.conf \
+	-m 664 $TMP_DIR/final/plugins/centreon.conf \
 	$NAGIOS_PLUGIN/centreon.conf >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Change right on") centreon.conf"
 

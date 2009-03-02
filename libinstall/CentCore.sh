@@ -45,15 +45,15 @@ copyInTempFile 2>>$LOG_FILE
 
 ## Create temporary folder
 log "INFO" "$(gettext "Create working directory")"
-mkdir -p $TMPDIR/final/bin 
-mkdir -p $TMPDIR/work/bin
-mkdir -p $TMPDIR/work/www/include/configuration/configGenerate
-mkdir -p $TMPDIR/final/www/include/configuration/configGenerate
-mkdir -p $TMPDIR/work/www/include/monitoring/external_cmd
-mkdir -p $TMPDIR/final/www/include/monitoring/external_cmd
+mkdir -p $TMP_DIR/final/bin 
+mkdir -p $TMP_DIR/work/bin
+mkdir -p $TMP_DIR/work/www/include/configuration/configGenerate
+mkdir -p $TMP_DIR/final/www/include/configuration/configGenerate
+mkdir -p $TMP_DIR/work/www/include/monitoring/external_cmd
+mkdir -p $TMP_DIR/final/www/include/monitoring/external_cmd
 [ ! -d $INSTALL_DIR_CENTREON/examples ] && mkdir -p $INSTALL_DIR_CENTREON/examples
 # Copy init.d template in src
-cp -f $BASE_DIR/tmpl/install/centcore.init.d $TMPDIR/src
+cp -f $BASE_DIR/tmpl/install/centcore.init.d $TMP_DIR/src
 
 ###### CentCore binary
 #################################
@@ -67,44 +67,44 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
 	-e 's|@BIN_SSH@|'"$BIN_SSH"'|g' \
 	-e 's|@BIN_SCP@|'"$BIN_SCP"'|g' \
-	$TMPDIR/src/bin/centcore > $TMPDIR/work/bin/centcore
+	$TMP_DIR/src/bin/centcore > $TMP_DIR/work/bin/centcore
 check_result $? "$(gettext "Change CentCore Macro")"
 
 log "INFO" "$(gettext "Copying CentCore binary in final directory")"
-cp $TMPDIR/work/bin/centcore $TMPDIR/final/bin/centcore 2>&1  >> $LOG_FILE
+cp $TMP_DIR/work/bin/centcore $TMP_DIR/final/bin/centcore 2>&1  >> $LOG_FILE
 
 log "INFO" "$(gettext "Copying CentCore in binary directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
-	$TMPDIR/final/bin/centcore $CENTCORE_BINDIR/centcore >> $LOG_FILE 2>&1
+	$TMP_DIR/final/bin/centcore $CENTCORE_BINDIR/centcore >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Copy CentCore in binary directory")"
 
 ## Change CentCore link in CentWeb
 ${SED} -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMPDIR/src/www/include/configuration/configGenerate/formGenerateFiles.php \
-	> $TMPDIR/work/www/include/configuration/configGenerate/formGenerateFiles.php
+	$TMP_DIR/src/www/include/configuration/configGenerate/formGenerateFiles.php \
+	> $TMP_DIR/work/www/include/configuration/configGenerate/formGenerateFiles.php
 
 ${SED} -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMPDIR/src/www/include/monitoring/external_cmd/functions.php \
-	> $TMPDIR/work/www/include/monitoring/external_cmd/functions.php \
+	$TMP_DIR/src/www/include/monitoring/external_cmd/functions.php \
+	> $TMP_DIR/work/www/include/monitoring/external_cmd/functions.php \
 
-cp $TMPDIR/work/www/include/configuration/configGenerate/formGenerateFiles.php\
-	$TMPDIR/final/www/include/configuration/configGenerate/ \
+cp $TMP_DIR/work/www/include/configuration/configGenerate/formGenerateFiles.php\
+	$TMP_DIR/final/www/include/configuration/configGenerate/ \
 	>> $LOG_FILE 2>&1
-cp $TMPDIR/work/www/include/monitoring/external_cmd/functions.php \
-	$TMPDIR/final/www/include/monitoring/external_cmd/ \
+cp $TMP_DIR/work/www/include/monitoring/external_cmd/functions.php \
+	$TMP_DIR/final/www/include/monitoring/external_cmd/ \
 	>> $LOG_FILE 2>&1
 
 $INSTALL_DIR/cinstall $cinstall_opts -f \
 	-u "$WEB_USER" -g "$WEB_GROUP" -m 744 \
-	$TMPDIR/final/www/include/configuration/configGenerate/formGenerateFiles.php \
+	$TMP_DIR/final/www/include/configuration/configGenerate/formGenerateFiles.php \
 	$INSTALL_DIR_CENTREON/www/include/configuration/configGenerate/formGenerateFiles.php \
 	>> $LOG_FILE 2>&1
 
 
 $INSTALL_DIR/cinstall $cinstall_opts -f \
 	-u "$WEB_USER" -g "$WEB_GROUP" -m 744 \
-	$TMPDIR/final/www/include/monitoring/external_cmd/functions.php \
+	$TMP_DIR/final/www/include/monitoring/external_cmd/functions.php \
 	$INSTALL_DIR_CENTREON/www/include/monitoring/external_cmd/functions.php \
 	>> $LOG_FILE 2>&1
 
@@ -130,11 +130,11 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
 	-e 's|@CENTCORE_BINDIR@|'"$CENTCORE_BINDIR"'|g' \
 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
-	$TMPDIR/src/centcore.init.d > $TMPDIR/work/centcore.init.d
+	$TMP_DIR/src/centcore.init.d > $TMP_DIR/work/centcore.init.d
 check_result $? "$(gettext "Replace CentCore init script Macro")"
 
-cp $TMPDIR/work/centcore.init.d $TMPDIR/final/centcore.init.d
-cp $TMPDIR/final/centcore.init.d $INSTALL_DIR_CENTREON/examples/centcore.init.d
+cp $TMP_DIR/work/centcore.init.d $TMP_DIR/final/centcore.init.d
+cp $TMP_DIR/final/centcore.init.d $INSTALL_DIR_CENTREON/examples/centcore.init.d
 
 RC="1"
 if [ "${CENTCORE_INSTALL_INIT:-0}" -eq 1 ] ; then
@@ -146,7 +146,7 @@ fi
 if [ "$RC" -eq "0" ] ; then 
 	log "INFO" "$(gettext "CentCore init script installed")"
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-		$TMPDIR/final/centcore.init.d \
+		$TMP_DIR/final/centcore.init.d \
     $INIT_D/centcore >> $LOG_FILE 2>&1
 	check_result $? "$(gettext "CentCore init script installed")"
 	log "INFO" "$(gettext "CentCore init script installed")"

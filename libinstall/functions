@@ -1685,7 +1685,7 @@ function check_user_nagios()
 	echo -e "$(gettext "Have you create you nagios user ? use this command")"
 	echo -e "useradd -G $NAGIOS_GROUP $NAGIOS_USER \n"
 	echo -e "$(gettext "If you want to force a nagios user name, use (FORCE_)NAGIOS_USER variable(s) in a template file and try 'bash install.sh -f file'")"
-	clean_and_exit
+	clean_and_exit 1
 	
 }
 
@@ -1725,7 +1725,7 @@ function check_group_nagios()
 	echo -e "$(gettext "Have you create you nagios group ? use this command")"
 	echo -e "groupadd $NAGIOS_GROUP \n"
 	echo -e "$(gettext "If you want to force a nagios group name, use (FORCE_)NAGIOS_GROUP variable(s) in a template file and try 'bash install.sh -f file'")"
-	clean_and_exit
+	clean_and_exit 1
 }
 
 #----
@@ -1928,24 +1928,24 @@ function check_group_apache()
 #----
 ## Copy Source directory on temporary working directory
 ## Copy Source directory and prepare work and final
-## @Globals	TMPDIR
+## @Globals	TMP_DIR
 #----
 function copyInTempFile()
 {
 	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www plugins libinstall"
 	# Prepare centreon Plugins
 	echo "$gettext "Preparing Centreon temporary files")"
-	if [ -d $TMPDIR ] ; then
-		echo_passed "$TMPDIR $(gettext "exists, it will be moved...")"
-		mv $TMPDIR $TMPDIR.`date +%Y%m%d-%k%m%S`
+	if [ -d $TMP_DIR ] ; then
+		echo_passed "$TMP_DIR $(gettext "exists, it will be moved...")"
+		mv $TMP_DIR $TMP_DIR.`date +%Y%m%d-%k%m%S`
 	fi
-	mkdir -p $TMPDIR/src
-	mkdir -p $TMPDIR/work
-	mkdir -p $TMPDIR/final
+	mkdir -p $TMP_DIR/src
+	mkdir -p $TMP_DIR/work
+	mkdir -p $TMP_DIR/final
 
 	for folder in $srclistcp ; do
-		log "INFO" "$(gettext "Copy") $BASE_DIR/$folder $TMPDIR/src/"
-		cp -Rf $BASE_DIR/$folder $TMPDIR/src/ 
+		log "INFO" "$(gettext "Copy") $BASE_DIR/$folder $TMP_DIR/src/"
+		cp -Rf $BASE_DIR/$folder $TMP_DIR/src/ 
 	done
 }	
 
@@ -2081,12 +2081,24 @@ function find_OS() {
 #----
 ## use this function to clean and exit centreon install
 ## This function use <@function purge_centreon_tmp_dir> function.
+## TODO: Need to add fonctionnality 
+##      - delete install file
+##      - restore inital rigth
+##      - ...
 #----
 function clean_and_exit() {
+  local trap_sig=${1:-0}
+  if [ $trap_sig -eq 0 ] ; then
+    echo -e "$(gettext "\nTrap interrupt, Centreon'll exit now and clean install")"
+    yes_no_default "$(gettext "Do you really want to quit Centreon install process ? ")" "$no"
+    if [ $? -eq 1 ] ; then 
+      echo "$(gettext "Continue...")"
+      return 1
+    fi
+  fi
 	log "EXIT" "$(gettext "Exit Centreon install")"
-	# Add test to define if sudo file was config and exec clean_sudo
-	#clean_sudo
-	purge_centreon_tmp_dir
+  [ -n "$SUDO_FILE" ] && clean_sudo "$SUDO_FILE" 0
+  purge_centreon_tmp_dir "silent"
 	exit 1
 }
 
@@ -2094,14 +2106,14 @@ function clean_and_exit() {
 ## Check space left for working directory
 ## @return 0	Space ok
 ## @return 1	No Space left
-## @Globals	TMPDIR
+## @Globals	TMP_DIR
 #----
 function check_tmp_disk_space() {
 	local min_space="35584"
 	local free_space=""
 	local tmp_dir=""
 
-	tmp_dir=$(dirname $TMPDIR)
+	tmp_dir=$(dirname $TMP_DIR)
 
 	free_space=$(df -P $tmp_dir | tail -1 | awk '{print $4}')
 
@@ -2115,19 +2127,27 @@ function check_tmp_disk_space() {
 
 #----
 ## Ask to remove all temporaries working directory
+## @param     silent option (silent)
 ## @return 0	remove done
 ## @return 1	don't remove (abort by user)
-## @Globals	TMPDIR, yes
+## @Globals	TMP_DIR, yes
 #----
 function purge_centreon_tmp_dir() {
+  local silent="$1"
 	local not_clean="1"
+  local rc=0
 	while [ $not_clean -ne 0 ] ; do
-		yes_no_default "$(gettext "Do you want me to remove the centreon temporary working space to continue installation ?")" "$yes"
-		if [ "$?" -eq 0 ] ; then 
-			local tmp_base_dir=`dirname $TMPDIR`
-			local tmp_dir=`basename $TMPDIR`
+    if [ "$silent" != "silent" ] ; then
+  		yes_no_default "$(gettext "Do you want me to remove the centreon temporary working space to continue installation ?")" "$yes"
+      rc=$?
+    else
+      rc=0
+    fi
+		if [ "$rc" -eq 0 ] ; then 
+			local tmp_base_dir=`dirname $TMP_DIR`
+			local tmp_dir=`basename $TMP_DIR`
 			find $tmp_base_dir -name "$tmp_dir*" -type d \
-				-exec rm -rf {} \;
+				-exec rm -rf {} \; 
 			not_clean="0"
 		else
 			return 1
@@ -2140,15 +2160,23 @@ function purge_centreon_tmp_dir() {
 ## Clean sudoers file
 ## Generate a file without Centreon config. Need to have a BEGIN and END flags 
 ## file. After that, rewrite sudo file with clean file.
-## @param	0/1 to active a question to clean sudo (not by default)
 ## @param	sudo file
-## @Globals	TMPDIR, LOG_FILE
+## @param	0/1 to active a question to clean sudo (not by default)
+## @Globals	TMP_DIR, LOG_FILE
 #----
 function clean_sudo() {
-	local validate="${1:-0}"
 	local RC="1"
-	local sudo_old="$2"
-	local sudo_clean="$TMPDIR/$sudo_old.clean"
+	local sudo_old="$1"
+	local validate="${2:-0}"
+  if [ ! -d "$TMP_DIR" ] ; then
+    local sudo_clean="/tmp/sudo.clean"
+  else
+	  local sudo_clean="$TMP_DIR/sudo.clean"
+  fi  
+  
+  if ! grep "CENTREON SUDO" $sudo_old &>/dev/null ; then 
+    return 1
+  fi
 
 	${CAT} $sudo_old | \
 	awk 'BEGIN { flag=0; }
@@ -2217,3 +2245,4 @@ function check_result() {
 	fi
 	return 0
 }
+

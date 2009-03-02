@@ -115,6 +115,10 @@ fi
 ## load all functions used in this script
 . $INSTALL_DIR/functions
 
+## Use TRAPs to call clean_and_exit when user press
+## CRTL+C or exec kill -TERM.
+trap clean_and_exit SIGINT SIGTERM
+
 ## Define a default log file
 LOG_FILE=${LOG_FILE:=log\/install_centreon.log}
 
@@ -388,6 +392,9 @@ if [ "$PROCESS_CENTREON_PLUGINS" -eq 1 ] ; then
 	fi
 	. $INSTALL_DIR/CentPlugins.sh
 fi
+
+## Purge working directories
+purge_centreon_tmp_dir "silent"
 
 ${CAT} << __EOT__
 ###############################################################################

@@ -4,7 +4,7 @@
 
 LOG_DIR="$BASE_DIR/log"
 LOG_FILE="$LOG_DIR/install_centreon.log"
-TMPDIR="/tmp/centreon-setup"
+TMP_DIR="/tmp/centreon-setup"
 SNMP_DIR="/etc/snmp/"
 CENTREON_CONF_1_4="/etc/[co][er][ne][to][rn]*.conf"
 DEFAULT_CENTREON_CONF="/etc/centreon/centreon.conf"

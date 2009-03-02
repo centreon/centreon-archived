@@ -119,24 +119,24 @@ check_result $? "$(gettext "Change right on") $NAGIOS_IMG"
 
 ## Copy Web Front Source in final
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
-cp -Rf $TMPDIR/src/www $TMPDIR/final
-cp -Rf $TMPDIR/src/GPL_LIB $TMPDIR/final
+cp -Rf $TMP_DIR/src/www $TMP_DIR/final
+cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
 
 ## Create temporary directory
-mkdir -p $TMPDIR/work/www/install >> "$LOG_FILE" 2>&1
-mkdir -p $TMPDIR/work/cron/reporting >> "$LOG_FILE" 2>&1
-mkdir -p $TMPDIR/final/cron/reporting >> "$LOG_FILE" 2>&1
-mkdir -p $TMPDIR/final/libinstall >> "$LOG_FILE" 2>&1
+mkdir -p $TMP_DIR/work/www/install >> "$LOG_FILE" 2>&1
+mkdir -p $TMP_DIR/work/cron/reporting >> "$LOG_FILE" 2>&1
+mkdir -p $TMP_DIR/final/cron/reporting >> "$LOG_FILE" 2>&1
+mkdir -p $TMP_DIR/final/libinstall >> "$LOG_FILE" 2>&1
 
 ## Install Centreon doc (nagios doc)
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-g $WEB_GROUP -d 755 -m 644 \
-	$TMPDIR/src/doc $INSTALL_DIR_CENTREON/doc >> $LOG_FILE 2>&1
+	$TMP_DIR/src/doc $INSTALL_DIR_CENTREON/doc >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install nagios documentation")"
 
 ## Ticket #372 : add functions/cinstall fonctionnality
-cp -Rf $TMPDIR/src/libinstall/{functions,cinstall,gettext} \
-  $TMPDIR/final/libinstall/ >> "$LOG_FILE" 2>&1
+cp -Rf $TMP_DIR/src/libinstall/{functions,cinstall,gettext} \
+  $TMP_DIR/final/libinstall/ >> "$LOG_FILE" 2>&1
 
 ## Prepare insertBaseConf.sql
 echo -e "$(gettext "In process")"
@@ -161,37 +161,37 @@ ${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 	-e 's|@INIT_D@|'"$INIT_D"'|g' \
 	-e 's|@NDOMOD_BINARY@|'"$NDOMOD_BINARY"'|g' \
 	-e 's|@P1_PL@|'"$NAGIOS_P1_FILE"'|g' \
-	$TMPDIR/src/www/install/insertBaseConf.sql > \
-	$TMPDIR/work/www/install/insertBaseConf.sql
+	$TMP_DIR/src/www/install/insertBaseConf.sql > \
+	$TMP_DIR/work/www/install/insertBaseConf.sql
 check_result $? "$(gettext "Change macros for insertBaseConf.sql")"
 
 ## Copy in final dir
 log "INFO" "$( gettext "Copying www/install/insertBaseConf.sql in final directory")"
-cp $TMPDIR/work/www/install/insertBaseConf.sql \
-	$TMPDIR/final/www/install/insertBaseConf.sql >> "$LOG_FILE" 2>&1
+cp $TMP_DIR/work/www/install/insertBaseConf.sql \
+	$TMP_DIR/final/www/install/insertBaseConf.sql >> "$LOG_FILE" 2>&1
 
 ### Step 2: Change right on Centreon WebFront
 
 ## use this step to change macros on php file...
 echo_info "$(gettext "Change macros for php files")"
 macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@"
-find_macros_in_dir "$macros" "$TMPDIR/src/" "www" "*.php" "file_php_temp"
+find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "*.php" "file_php_temp"
 
 log "INFO" "$(gettext "Apply macros")"
 
 flg_error=0
 ${CAT} "$file_php_temp" | while read file ; do
 	log "MACRO" "$(gettext "Change macro for") : $file"
-	[ ! -d $(dirname $TMPDIR/work/$file) ] && \
-		mkdir -p  $(dirname $TMPDIR/work/$file) >> $LOG_FILE 2>&1
+	[ ! -d $(dirname $TMP_DIR/work/$file) ] && \
+		mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
 		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-		$TMPDIR/src/$file > $TMPDIR/work/$file
+		$TMP_DIR/src/$file > $TMP_DIR/work/$file
 		[ $? -ne 0 ] && flg_error=1
 	log "MACRO" "$(gettext "Copy in final dir") : $file"
-	cp -f $TMPDIR/work/$file $TMPDIR/final/$file >> $LOG_FILE 2>&1 
+	cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1 
 done
 check_result $flg_error "$(gettext "Change macros for php files")"
 
@@ -219,8 +219,8 @@ $INSTALL_DIR/cinstall $cinstall \
 
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
-	-p $TMPDIR/final/www \
-	$TMPDIR/final/www/* $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
+	-p $TMP_DIR/final/www \
+	$TMP_DIR/final/www/* $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install CentWeb (web front of centreon)")"
 
 [ ! -d "$INSTALL_DIR_CENTREON/www/modules" ] && \
@@ -252,13 +252,13 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 log "INFO" "$(gettext "Copying GPL_LIB")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
-	$TMPDIR/final/GPL_LIB $INSTALL_DIR_CENTREON/GPL_LIB >> "$LOG_FILE" 2>&1
+	$TMP_DIR/final/GPL_LIB $INSTALL_DIR_CENTREON/GPL_LIB >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install libraries")"
 
 log "INFO" "$(gettext "Copying libinstall")"
 $INSTALL_DIR/cinstall $cinstall_opts \
   -d 755 -m 755 \
-  $TMPDIR/final/libinstall $INSTALL_DIR_CENTREON/libinstall >> "$LOG_FILE" 2>&1
+  $TMP_DIR/final/libinstall $INSTALL_DIR_CENTREON/libinstall >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Copying libinstall")"
 
 ## Cron stuff
@@ -269,39 +269,39 @@ ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CRONUSER@|'"$NAGIOS_USER"'|g' \
-	$BASE_DIR/tmpl/install/centreon.cron > $TMPDIR/work/centreon.cron
+	$BASE_DIR/tmpl/install/centreon.cron > $TMP_DIR/work/centreon.cron
 check_result $? "$(gettext "Change macros for centreon.cron")"
-cp $TMPDIR/work/centreon.cron $TMPDIR/final/centreon.cron >> "$LOG_FILE" 2>&1
+cp $TMP_DIR/work/centreon.cron $TMP_DIR/final/centreon.cron >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Install centreon.cron")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 644 \
-	$TMPDIR/final/centreon.cron $CRON_D/centreon >> "$LOG_FILE" 2>&1
+	$TMP_DIR/final/centreon.cron $CRON_D/centreon >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install Centreon cron.d file")"
 
 ## cron binary
-cp -R $TMPDIR/src/cron/ $TMPDIR/final/
+cp -R $TMP_DIR/src/cron/ $TMP_DIR/final/
 log "INFO" "$(gettext "Change macros for archiveDayLog")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	$TMPDIR/src/cron/archiveDayLog > \
-	$TMPDIR/work/cron/archiveDayLog
+	$TMP_DIR/src/cron/archiveDayLog > \
+	$TMP_DIR/work/cron/archiveDayLog
 check_result $? "$(gettext "Change macros for archiveDayLog")"
 
-cp -f $TMPDIR/work/cron/archiveDayLog \
-	$TMPDIR/final/cron/archiveDayLog
+cp -f $TMP_DIR/work/cron/archiveDayLog \
+	$TMP_DIR/final/cron/archiveDayLog
 
 log "INFO" "$(gettext "Change macros for centAcl.php")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	$TMPDIR/src/cron/centAcl.php > $TMPDIR/work/cron/centAcl.php
+	$TMP_DIR/src/cron/centAcl.php > $TMP_DIR/work/cron/centAcl.php
 check_result $? "$(gettext "Change macros for centAcl.php")"
 
-cp -f $TMPDIR/work/cron/centAcl.php \
-	$TMPDIR/final/cron/centAcl.php >> "$LOG_FILE" 2>&1
+cp -f $TMP_DIR/work/cron/centAcl.php \
+	$TMP_DIR/final/cron/centAcl.php >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$WEB_GROUP" -d 755 -m 755 \
-	$TMPDIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
+	$TMP_DIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 
 ## Prepare to install all pear modules needed.
