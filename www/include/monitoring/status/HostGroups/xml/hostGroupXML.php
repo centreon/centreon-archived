@@ -42,13 +42,19 @@
 	$debugXML = 0;
 	$buffer = '';
 	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	
+	include_once($centreon_path . "www/class/Session.class.php");
+	include_once($centreon_path . "www/class/Oreon.class.php");	
 	include_once($centreon_path . "www/class/other.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/class/centreonXML.class.php");
 	include_once($centreon_path . "www/class/centreonDB.class.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
-
+			
+	Session::start();
+	$oreon =& $_SESSION["oreon"];
+	
 	$pearDB = new CentreonDB();
 	$pearDBndo = new CentreonDB("ndo");
 
@@ -93,28 +99,35 @@
 	 */
 	$general_opt = getStatusColor($pearDB);
 
-	function get_hosts_status($host_group_id, $status){
+	function get_hosts_status($host_group_id){
 		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $is_admin, $grouplist, $groupnumber, $access;		
 
-		$rq = 	" SELECT count( nhs.host_object_id ) AS nb".
+		$rq = 	" SELECT count( nhs.host_object_id ) AS nb, nhs.current_state AS state" .
 				" FROM " .$ndo_base_prefix."hoststatus nhs".
-				" WHERE nhs.current_state = '".$status."'".
-				" AND nhs.host_object_id IN (" .
+				" WHERE ".
+				" nhs.host_object_id IN (" .
 				"SELECT nhgm.host_object_id FROM ".$ndo_base_prefix."hostgroup_members nhgm, ".$ndo_base_prefix."hosts nh, centreon_acl WHERE nhgm.hostgroup_id =".$host_group_id." AND nh.host_object_id = nhgm.host_object_id " .
-				$access->queryBuilder("AND", "nh.display_name", "centreon_acl.host_name") . $access->queryBuilder("AND", "centreon_acl.group_id", $access->getAccessGroupsString()) . ")";
+				$access->queryBuilder("AND", "nh.display_name", "centreon_acl.host_name") . $access->queryBuilder("AND", "centreon_acl.group_id", $access->getAccessGroupsString()) . ") GROUP BY nhs.current_state";
 
-		$DBRESULT =& $pearDBndo->query($rq);
-		$tab =& $DBRESULT->fetchRow();
-		return($tab["nb"]);
+		$DBRESULT =& $pearDBndo->query($rq);		
+		
+		$tmpArray = array();
+		$tmpArray[0] = 0;
+		$tmpArray[1] = 0;
+		$tmpArray[2] = 0;
+		while ($tab =& $DBRESULT->fetchRow()) {
+			$tmpArray[$tab["state"]] = $tab["nb"];
+		}		
+		return($tmpArray);
 	}
 
-	function get_services_status($host_group_id, $status){
+	function get_services_status($host_group_id){
 		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $instance,$lcaSTR, $is_admin, $grouplist, $access;
 
-		$rq = 			" SELECT count( nss.service_object_id ) AS nb".
+		$rq = 			" SELECT count( nss.service_object_id ) AS nb, nss.current_state AS state".
 						" FROM " .$ndo_base_prefix."servicestatus nss ".
-						" WHERE nss.current_state = '".$status."'".
-						" AND nss.service_object_id".
+						" WHERE ".
+						" nss.service_object_id".
 						" IN (SELECT nno.object_id FROM " .$ndo_base_prefix."objects nno, centreon_acl WHERE nno.objecttype_id = '2' ";
 								
 		$rq .= 	$access->queryBuilder("AND", "nno.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "nno.name2", "centreon_acl.service_description") . $access->queryBuilder("AND", "centreon_acl.group_id", $access->getAccessGroupsString());
@@ -127,10 +140,20 @@
 						" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hostgroup_members nhgm".
 						" WHERE nhgm.hostgroup_id =".$host_group_id.
 						" AND no.object_id = nhgm.host_object_id".")".
-					" )";
+					" ) GROUP BY nss.current_state";
 		$DBRESULT =& $pearDBndo->query($rq);
-		$tab =& $DBRESULT->fetchRow();
-		return($tab["nb"]);
+
+		$tmpArray = array();
+		$tmpArray[0] = 0;
+		$tmpArray[1] = 0;
+		$tmpArray[2] = 0;
+		$tmpArray[3] = 0;
+		$tmpArray[4] = 0;
+
+		while ($tab =& $DBRESULT->fetchRow()) {
+			$tmpArray[$tab["state"]] = $tab["nb"];
+		}
+		return($tmpArray);
 	}
 
 	// check is admin
@@ -196,52 +219,45 @@
 	$buffer->writeElement("num", $num);
 	$buffer->writeElement("limit", $limit);
 	$buffer->writeElement("p", $p);
-	$buffer->endElement();
-	
+	$buffer->endElement();	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
 
 	while ($ndo =& $DBRESULT_NDO1->fetchRow()) 
-	{
-		if (isset($lca["LcaHostGroup"][$ndo["hostgroup_name"]]) || !isset($lca)) {
-			$nb_host_up = 0 + get_hosts_status($ndo["hostgroup_id"], 0);
-			$nb_host_down = 0 + get_hosts_status($ndo["hostgroup_id"], 1);
-			$nb_host_unreachable = 0 + get_hosts_status($ndo["hostgroup_id"], 2);
-	
-			$nb_service_k = 0 + get_services_status($ndo["hostgroup_id"], 0);
-			$nb_service_w = 0 + get_services_status($ndo["hostgroup_id"], 1);
-			$nb_service_c = 0 + get_services_status($ndo["hostgroup_id"], 2);
-			$nb_service_u = 0 + get_services_status($ndo["hostgroup_id"], 3);
-			$nb_service_p = 0 + get_services_status($ndo["hostgroup_id"], 4);
-	
+	{				
+		if (isset($lca["LcaHostGroup"][$ndo["hostgroup_name"]]) || !isset($lca)) {	
+			$nb_host = get_hosts_status($ndo["hostgroup_id"]);
+			$nb_service = get_services_status($ndo["hostgroup_id"]);	
+						
 			$passive = 0;
 			$active = 1;
 			$last_check = " ";
 			$duration = " ";
-	
+		
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
-			if ($nb_host_up || $nb_host_down || $nb_host_unreachable || $nb_service_k || $nb_service_w || $nb_service_c || $nb_service_u || $nb_service_p){
+			
+			if ($nb_host[0] || $nb_host[1] || $nb_host[2] || $nb_service[0] || $nb_service[1] || $nb_service[2] || $nb_service[3] || $nb_service[4]){				
 				$buffer->startElement("l");
 				$buffer->writeAttribute("class", $class);
 				$buffer->writeElement("o", $ct++);
 				$buffer->writeElement("hn", $ndo["hostgroup_name"]);
-				$buffer->writeElement("hu", $nb_host_up);
+				$buffer->writeElement("hu", $nb_host[0]);
 				$buffer->writeElement("huc", $tab_color_host[0]);
-				$buffer->writeElement("hd", $nb_host_down);
+				$buffer->writeElement("hd", $nb_host[1]);
 				$buffer->writeElement("hdc", $tab_color_host[1]);				
-				$buffer->writeElement("hur", $nb_host_unreachable);
+				$buffer->writeElement("hur", $nb_host[2]);
 				$buffer->writeElement("hurc", $tab_color_host[2]);
-				$buffer->writeElement("sk", $nb_service_k);
+				$buffer->writeElement("sk", $nb_service[0]);
 				$buffer->writeElement("skc", $tab_color_service[0]);
-				$buffer->writeElement("sw", $nb_service_w);
+				$buffer->writeElement("sw", $nb_service[1]);
 				$buffer->writeElement("swc", $tab_color_service[1]);
-				$buffer->writeElement("sc", $nb_service_c);
+				$buffer->writeElement("sc", $nb_service[2]);
 				$buffer->writeElement("scc", $tab_color_service[2]);				
-				$buffer->writeElement("su", $nb_service_u);
+				$buffer->writeElement("su", $nb_service[3]);
 				$buffer->writeElement("suc", $tab_color_service[3]);
-				$buffer->writeElement("sp", $nb_service_p);
+				$buffer->writeElement("sp", $nb_service[4]);
 				$buffer->writeElement("spc", $tab_color_service[4]);				
 				$buffer->endElement();				
 			}
