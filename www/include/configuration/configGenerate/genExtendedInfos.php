@@ -22,6 +22,10 @@
 		mkdir($nagiosCFGPath.$tab['id']."/");
 	}
 	
+	require_once ("@CENTREON_ETC@/centreon.conf.php");
+	require_once ($centreon_path . "/www/class/centreonHost.class.php");
+	require_once ($centreon_path . "/www/class/centreonService.class.php");
+	
 	/*
 	 * Host Extended Information
 	 */
@@ -34,6 +38,8 @@
 	$i = 1;
 	$str = NULL;
 	
+	$host_method = new CentreonHost($pearDB);
+	
 	while ($ehi =& $DBRESULT->fetchRow())	{
 		if (isset($host_instance[$ehi["host_id"]]) && isset($ehi["host_id"][$gbArr[2]])) {
 			$flag = 0;
@@ -44,39 +50,39 @@
 				$strTmp .= print_line("host_name", $ehi["host_name"]);
 			
 			if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_notes")){
-				$strTmp .= print_line("notes", $field);
+				$strTmp .= print_line("notes", $host_method->replaceMacroInString($ehi['host_id'], $field));
 				$flag++;
 			}
 			if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_notes_url")){
-				$strTmp .= print_line("notes_url", $field);
+				$strTmp .= print_line("notes_url", $host_method->replaceMacroInString($ehi['host_id'], $field));
 				$flag++;
 			}
 			if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_action_url")){
-				$strTmp .= print_line("action_url", $field);
+				$strTmp .= print_line("action_url", $host_method->replaceMacroInString($ehi['host_id'], $field));
 				$flag++;
 			}
 			if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_icon_image", 1)){
-				$strTmp .= print_line("icon_image", $field);
+				$strTmp .= print_line("icon_image", $host_method->replaceMacroInString($ehi['host_id'], $field));
 				$flag++;
 			}
 			if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_icon_image_alt")){
-				$strTmp .= print_line("icon_image_alt", $field);
+				$strTmp .= print_line("icon_image_alt", $host_method->replaceMacroInString($ehi['host_id'], $field));
 				$flag++;
 			}
 			if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_vrml_image", 1)){
-				$strTmp .= print_line("vrml_image", $field);
+				$strTmp .= print_line("vrml_image", $host_method->replaceMacroInString($ehi['host_id'], $field));
 				$flag++;
 			}
 			if ($field = getMyHostExtendedInfoImage($ehi["host_id"], "ehi_statusmap_image", 1)){
-				$strTmp .= print_line("statusmap_image", $field);
+				$strTmp .= print_line("statusmap_image", $host_method->replaceMacroInString($ehi['host_id'], $field));
 				$flag++;
 			}
 			if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_2d_coords")){
-				$strTmp .= print_line("2d_coords", $field);
+				$strTmp .= print_line("2d_coords", $host_method->replaceMacroInString($ehi['host_id'], $field));
 				$flag++;
 			}
 			if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_3d_coords")){
-				$strTmp .= print_line("3d_coords", $field);
+				$strTmp .= print_line("3d_coords", $host_method->replaceMacroInString($ehi['host_id'], $field));
 				$flag++;
 			}
 			$strTmp .= "}\n\n";
@@ -101,6 +107,8 @@
 	$i = 1;
 	$str = NULL;
 
+	$svc_method = new CentreonService($pearDB);
+
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt FROM service, extended_service_information WHERE service_service_id = service_id AND service_register = '1' AND service_activate = '1'");
 	while ($esi =& $DBRESULT->fetchRow())	{	
 		if (isset($esi["service_id"]) && ($esi["esi_notes"] || $esi["esi_notes_url"] || $esi["esi_action_url"] || $esi["esi_icon_image"] || $esi["esi_icon_image_alt"]))	{			
@@ -123,23 +131,23 @@
 							$flag++;
 						}							
 						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes")){
-							$strTMP .= print_line("notes", $field);
+							$strTMP .= print_line("notes", $svc_method->replaceMacroInString($esi['service_id'], $field));
 							$flag++;
 						}
 						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes_url")){
-							$strTMP .= print_line("notes_url", $field);
+							$strTMP .= print_line("notes_url", $svc_method->replaceMacroInString($esi['service_id'], $field));
 							$flag++;
 						}
 						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_action_url")){
-							$strTMP .= print_line("action_url", $field);
+							$strTMP .= print_line("action_url", $svc_method->replaceMacroInString($esi['service_id'], $field));
 							$flag++;
 						}
 						if ($field = getMyServiceExtendedInfoImage($esi["service_id"], "esi_icon_image")){
-							$strTMP .= print_line("icon_image", $field);
+							$strTMP .= print_line("icon_image", $svc_method->replaceMacroInString($esi['service_id'], $field));
 							$flag++;
 						}
 						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image_alt")){
-							$strTMP .= print_line("icon_image_alt", $field);
+							$strTMP .= print_line("icon_image_alt", $svc_method->replaceMacroInString($esi['service_id'], $field));
 							$flag++;
 						}
 						if ($flag != 0)
