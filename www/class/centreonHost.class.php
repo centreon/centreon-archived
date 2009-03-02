@@ -41,6 +41,7 @@
   */
  class CentreonHost {
  	private $local_pearDB;
+		
  	
  	/*
  	 *  Constructor
@@ -50,9 +51,52 @@
  	}
  	
  	/*
+ 	 *  Method that returns a hostname from host_id
+ 	 */
+ 	public function getHostName($host_id) {
+ 		$rq = "SELECT host_name FROM host WHERE host_id = '".$host_id."' LIMIT 1";
+ 		$DBRES =& $this->local_pearDB->query($rq);
+ 		if (!$DBRES->numRows())
+ 			return NULL;
+ 		$row =& $DBRES->fetchRow(); 		
+ 		return $row['host_name'];
+ 	} 
+ 	 	
+ 	/*
+ 	 *  Method that returns a host alias from host_id
+ 	 */
+ 	public function getHostAlias($host_id) {
+ 		$rq = "SELECT host_alias FROM host WHERE host_id = '".$host_id."' LIMIT 1";
+ 		$DBRES =& $this->local_pearDB->query($rq);
+ 		if (!$DBRES->numRows())
+ 			return NULL;
+ 		$row =& $DBRES->fetchRow(); 		
+ 		return $row['host_alias'];
+ 	}
+ 	
+ 	/*
+ 	 *  Method that returns a host address from host_id
+ 	 */
+ 	public function getHostAddress($host_id) {
+ 		$rq = "SELECT host_address FROM host WHERE host_id = '".$host_id."' LIMIT 1";
+ 		$DBRES =& $this->local_pearDB->query($rq);
+ 		if (!$DBRES->numRows())
+ 			return NULL;
+ 		$row =& $DBRES->fetchRow(); 		
+ 		return $row['host_address'];
+ 	}
+ 	
+ 	/*
  	 *  Returns a string that replaces on demand macros by their values
  	 */
  	public function replaceMacroInString($host_id, $string) { 		 		
+ 		if (preg_match("/$HOSTADDRESS$/", $string))
+ 			$string = str_replace("\$HOSTADDRESS\$", $this->getHostAddress($host_id), $string);
+ 		if (preg_match("/$HOSTNAME$/", $string))
+ 			$string = str_replace("\$HOSTNAME\$", $this->getHostName($host_id), $string); 		
+ 		if (preg_match("/$HOSTALIAS$/", $string))
+ 			$string = str_replace("\$HOSTALIAS\$", $this->getHostAlias($host_id), $string);
+ 		
  		$matches = array();
  		$pattern = '|(\$_HOST[0-9a-zA-Z]+\$)|';
  		preg_match_all($pattern, $string, $matches);

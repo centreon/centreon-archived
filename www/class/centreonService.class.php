@@ -40,7 +40,7 @@
   *  Class that contains various methods for managing services
   */
  class CentreonService {
- 	private $local_pearDB;
+ 	private $local_pearDB; 	
  	
  	/*
  	 *  Constructor
@@ -50,9 +50,23 @@
  	}
  	
  	/*
+ 	 *  Method that returns a host address from host_id
+ 	 */
+ 	public function getServiceDesc($svc_id) {
+ 		$rq = "SELECT service_description FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
+ 		$DBRES =& $this->local_pearDB->query($rq);
+ 		if (!$DBRES->numRows())
+ 			return NULL;
+ 		$row =& $DBRES->fetchRow(); 		
+ 		return $row['service_description'];
+ 	}
+ 	 	
+ 	/*
  	 *  Returns a string that replaces on demand macros by their values
  	 */
- 	public function replaceMacroInString($svc_id, $string) { 		 		
+ 	public function replaceMacroInString($svc_id, $string) { 		 		 		 		
+ 		if (preg_match("/$SERVICEDESC$/", $string))
+ 			$string = str_replace("\$SERVICEDESC\$", $this->getServiceDesc($svc_id), $string); 		
  		$matches = array();
  		$pattern = '|(\$_SERVICE[0-9a-zA-Z]+\$)|';
  		preg_match_all($pattern, $string, $matches);
