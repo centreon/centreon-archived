@@ -17,7 +17,9 @@
 	if (!isset($oreon))
 		exit();
 		
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
@@ -32,7 +34,9 @@
 	$tpl->assign("headerMenu_isinstalled", _("Installed"));
 	$tpl->assign("headerMenu_isvalid", _("Valid for an upgrade"));
 
-	# "Name" case, it's not a module which is installed
+	/*
+	 * "Name" case, it's not a module which is installed
+	 */
 	if ($name)	{
 		$flag = false;
 		include_once("./modules/".$name."/conf.php");
@@ -49,18 +53,24 @@
 
 		$form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
 		if ($form1->validate())	{
-			# Insert Module in DB
+			/*
+			 * Insert Module in DB
+			 */
 			$insert_ok = insertModuleInDB($name, $module_conf[$name]);
 			if ($insert_ok)	{
 				$tpl->assign("output1", _("Module installed and registered"));
-				# SQL insert if need
+				/*
+				 * SQL insert if need
+				 */
 				$sql_file = "install.sql";
 				$sql_file_path = "./modules/".$name."/sql/";
 				if ($module_conf[$name]["sql_files"] && file_exists($sql_file_path.$sql_file))	{
 					$tpl->assign("output2", _("SQL file included"));
 					execute_sql_file($sql_file, $sql_file_path);	
 				}
-				# PHP execution if need
+				/*
+				 * PHP execution if need
+				 */
 				$php_file = "install.php";
 				$php_file_path = "./modules/".$name."/php/".$php_file;
 				if ($module_conf[$name]["php_files"] && file_exists($php_file_path))	{
@@ -68,8 +78,10 @@
 					include_once($php_file_path);
 				}
 				
-			# Load module lang file without re-login
-		    $lang_file_path = "./modules/".$name."/lang/". $oreon->user->get_lang().".php";
+				/*
+				 * Load module lang file without re-login
+				 */
+			    $lang_file_path = "./modules/".$name."/lang/". $oreon->user->get_lang().".php";
 				if ($module_conf[$name]["lang_files"] && file_exists($lang_file_path))	{
 					include_once($lang_file_path);
 				}
@@ -90,9 +102,12 @@
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form1->accept($renderer);
 		$tpl->assign('form1', $renderer->toArray());
-	}
-	# "ID" case, it's an installed module
-	else if ($id)	{
+	} else if ($id)	{
+	
+		/*
+		 * "ID" case, it's an installed module
+		 */
+	
 		$moduleinfo = getModuleInfoInDB(NULL, $id);
 		$elemArr = array();
 		if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE"))	{
@@ -179,8 +194,6 @@
 		$form2->accept($renderer);
 		$tpl->assign('form2', $renderer->toArray());
 	}
-	#
-	##Apply a template definition
-	#
+	
 	$tpl->display("formModule.ihtml");
 ?>

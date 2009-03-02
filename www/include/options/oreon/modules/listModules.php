@@ -56,6 +56,7 @@
 	$tpl->assign("headerMenu_name", 	_("Name"));
 	$tpl->assign("headerMenu_rname", 	_("Real name"));
 	$tpl->assign("headerMenu_release", 	_("Release"));
+	$tpl->assign("headerMenu_infos", 	_("Informations"));
 	$tpl->assign("headerMenu_author", 	_("Author"));
 	$tpl->assign("headerMenu_isinstalled", _("Installed"));
 	$tpl->assign("headerMenu_action", 	_("Actions"));
@@ -69,7 +70,7 @@
 	/*
 	 * Get Modules List
 	 */
-	$handle = opendir("./modules");
+	$handle = opendir("./modules/");
 	
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
@@ -77,7 +78,7 @@
 	$elemArr = array();
 	$i = 0;
 	while (false !== ($filename = readdir($handle)))	{
-		if ($filename != "." && $filename != "..")	{
+		if ($filename != "." && $filename != ".." && $filename != ".SVN" && $filename != ".CSV")	{
 			$moduleinfo = getModuleInfoInDB($filename, NULL);
 			
 			/*
@@ -88,13 +89,35 @@
 										"RowMenu_name"=>$moduleinfo["name"],
 										"RowMenu_rname"=>$moduleinfo["rname"],
 										"RowMenu_release"=>$moduleinfo["mod_release"],
+										"RowMenu_infos"=>$moduleinfo["infos"],
 										"RowMenu_author"=>$moduleinfo["author"],
+										"RowMenu_upgrade" => 0,
 										"RowMenu_isinstalled"=>_("Yes"),
 										"RowMenu_link"=>"?p=".$p."&o=w&id=".$moduleinfo["id"],
 										"RowMenu_link_install"=>NULL,
 										"RowMenu_link_delete"=>"?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=d",
 										"RowMenu_link_upgrade"=>"?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=u");
+				
+				/*
+				 * Check Update
+				 */
+				
+				if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE")) {
+					$handle2 = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
+					$i = 0;
+					while (false !== ($filename2 = readdir($handle2)))	{
+						if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]."-") && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php"))	{
+							include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
+							if ($moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
+								$elemArr[$i]["RowMenu_upgrade"] = 1;
+							}
+						}
+					}
+					closedir($handle2);	
+				}
+				
 				$style != "two" ? $style = "two" : $style = "one";
+				
 				$i++;
 			} else {
 				
@@ -110,6 +133,7 @@
 												"RowMenu_rname"=>$module_conf[$filename]["rname"],
 												"RowMenu_release"=>$module_conf[$filename]["mod_release"],
 												"RowMenu_author"=>$module_conf[$filename]["author"],
+												"RowMenu_infos"=>$module_conf[$filename]["infos"],
 												"RowMenu_isinstalled"=>_("No"),
 												"RowMenu_link"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"],
 												"RowMenu_link_install"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"]."&o=i",

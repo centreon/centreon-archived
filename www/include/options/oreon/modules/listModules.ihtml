@@ -1,7 +1,8 @@
 <table class="ListTable">
 	<tr class="ListHeader">
-		<td class="ListColHeaderCenter">{$headerMenu_name}</td>
-		<td class="ListColHeaderCenter">{$headerMenu_rname}</td>
+		<td class="ListColHeaderLeft">{$headerMenu_name}</td>
+		<td class="ListColHeaderLeft">{$headerMenu_rname}</td>
+		<td class="ListColHeaderCenter">{$headerMenu_infos}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_release}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_author}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_isinstalled}</td>
@@ -9,20 +10,21 @@
 	</tr>
 	{section name=elem loop=$elemArr}
 	<tr class={$elemArr[elem].MenuClass}>
-		<td class="ListColCenter">
+		<td class="ListColLeft">
 			{if $elemArr[elem].RowMenu_link}
 				<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
 			{else}
 				{$elemArr[elem].RowMenu_name}
 			{/if}
 		</td>
-		<td class="ListColCenter">
+		<td class="ListColLeft">
 			{if $elemArr[elem].RowMenu_link}
 				<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_rname}</a>
 			{else}
 				{$elemArr[elem].RowMenu_rname}
 			{/if}
 		</td>
+		<td class="ListColLeft">{$elemArr[elem].RowMenu_infos}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_release}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_author}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_isinstalled}</td>		
@@ -33,7 +35,7 @@
 			{if $elemArr[elem].RowMenu_link_delete}
 				&nbsp;<a href="{$elemArr[elem].RowMenu_link_delete}"  onclick="return confirm('{$confirm_removing}')"><img src='./img/icones/16x16/garbage_empty.gif' title='{$action_delete}' alt='{$action_delete}'></a>&nbsp;
 			{/if}
-			{if $elemArr[elem].RowMenu_link_upgrade}
+			{if $elemArr[elem].RowMenu_link_upgrade && $elemArr[elem].RowMenu_upgrade == 1}
 				&nbsp;<a href="{$elemArr[elem].RowMenu_link_upgrade}"><img src='./img/icones/16x16/gear_replace.gif' title='{$action_upgrade}' alt='{$action_upgrade}'></a>&nbsp;
 			{/if}
 		</td>		
