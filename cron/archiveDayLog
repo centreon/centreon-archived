@@ -59,10 +59,10 @@ use Time::Local;
 
 # Include Centreon DB Configuration Variables
 use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
-require "/etc/centreon/conf.pm";
+require "@CENTREON_ETC@";
 
 # Define Var lib dir
-my $VarLib = "/var/lib/centreon";
+my $VarLib = "@CENTREON_VARLIB@";
 
 # archiveDayLog's lock file
 my $lock_file = $VarLib."/archiveDayLog.lock";
