@@ -246,7 +246,8 @@ CREATE TABLE `log_archive_service` (
 -- 
 
 CREATE TABLE `log_archive_last_status` (
-  `id` int(11) NOT NULL,
+  `host_id` int(11) default NULL,
+  `service_id` int(11) default NULL,
   `host_name` varchar(255) default NULL,
   `service_description` varchar(255) default NULL,
   `status` varchar(255) default NULL,
