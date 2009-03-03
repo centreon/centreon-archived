@@ -750,7 +750,7 @@ sub rebuild_archives($) {
     }
     # archiving logs for each days
     foreach(@days_in_order) {
-    	print $_->{"day_start"}." ".$_->{"day_end"}."\n";
+    	# print $_->{"day_start"}." ".$_->{"day_end"}."\n";
 		archive_day_log($_->{"day_start"}, $_->{"day_end"});
 		undef(%hosts);
 		undef(%services);
