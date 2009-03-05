@@ -301,15 +301,14 @@
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));	
 	if ($oreon->user->get_version() == 3) {
 		include_once("makeJS_formHost.php");	
-		if ($o == "c" || $o == "a" || $o == "mc")
-		{		
-			for($k=0; isset($mTp[$k]); $k++) {?>
+		if ($o == "c" || $o == "a" || $o == "mc") {		
+			for ($k = 0 ; isset($mTp[$k]); $k++) { ?>
 				<script type="text/javascript">
 				tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;		
 				</script> 
 			<?php
 			}
-			for($k=0; isset($od_macro_id[$k]); $k++) {?>
+			for ($k = 0; isset($od_macro_id[$k]); $k++) { ?>
 				<script type="text/javascript">
 				globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
 				globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
@@ -420,7 +419,7 @@
 	
 	$form->addGroup($hostNotifOpt, 'host_notifOpts', _("Notification Options"), '&nbsp;&nbsp;');
 
- 	$hostStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok/Up');
+ 	$hostStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Up');
 	$hostStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down');
 	$hostStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable');
 	$form->addGroup($hostStalOpt, 'host_stalOpts', _("Stalking Options"), '&nbsp;&nbsp;');
@@ -629,9 +628,9 @@
 		$select_pear->setValue($select_str);
 	}
 	
-	#
-	## Form Rules
-	#
+	/*
+	 * Form Rules
+	 */
 	function myReplace()	{
 		global $form;
 		return (str_replace(" ", "_", $form->getSubmitValue("host_name")));
@@ -743,8 +742,17 @@
 	"var _img = document.getElementById(_img_dst + '_img');".
 	"_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );
 	
-
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
+	if ($o != "a" && $o != "c")
+		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
+	else {
+		/*
+		 * Get interval for the good poller.
+		 */
+		$DBRESULT =& $pearDB->query("SELECT `interval_length` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$host["nagios_server_id"][0]."'");
+		$res =& $DBRESULT->fetchRow();
+		$tpl->assign('time_unit', " * ".$res["interval_length"]." "._(" seconds "));
+	}
+		
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
 		$hostObj =& $form->getElement('host_id');

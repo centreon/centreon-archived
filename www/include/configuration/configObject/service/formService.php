@@ -34,10 +34,14 @@
 	if (($o == "c" || $o == "w") && $service_id)	{
 		
 		$DBRESULT =& $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
-		# Set base value
+		/*
+		 * Set base value
+		 */
 		$service = array_map("myDecodeService", $DBRESULT->fetchRow());
 		
-		# Grab hostgroup || host
+		/*
+		 * Grab hostgroup || host
+		 */
 		$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
 		while ($parent =& $DBRESULT->fetchRow())	{
 			if ($parent["host_host_id"])
@@ -46,50 +50,67 @@
 				$service["service_hgPars"][$parent["hostgroup_hg_id"]] = $parent["hostgroup_hg_id"];
 		}
 		
-		# Set Service Notification Options
+		/*
+		 * Set Service Notification Options
+		 */
 		$tmp = explode(',', $service["service_notification_options"]);
 		foreach ($tmp as $key => $value)
 			$service["service_notifOpts"][trim($value)] = 1;
 		
-		# Set Stalking Options
+		/*
+		 * Set Stalking Options
+		 */
 		$tmp = explode(',', $service["service_stalking_options"]);
 		foreach ($tmp as $key => $value)
 			$service["service_stalOpts"][trim($value)] = 1;
 		$DBRESULT->free();
 		
-		# Set Contact Group
+		/*
+		 * Set Contact Group
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$service_id."'");
 		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
 		
-		# Set Contact Group
+		/*
+		 * Set Contact Group
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '".$service_id."'");
 		for ($i = 0; $notifC =& $DBRESULT->fetchRow(); $i++)
 			$service["service_cs"][$i] = $notifC["contact_id"];
 		$DBRESULT->free();
 				
-		# Set Service Group Parents
+		/*
+		 * Set Service Group Parents
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$service_id."'");
 		for ($i = 0; $sg =& $DBRESULT->fetchRow(); $i++)
 			$service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
 		$DBRESULT->free();
 		
-		# Set Traps
+		/*
+		 * Set Traps
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$service_id."'");
 		for ($i = 0; $trap =& $DBRESULT->fetchRow(); $i++)
 			$service["service_traps"][$i] = $trap["traps_id"];
 		$DBRESULT->free();
 		
-		# Set Categories
+		/*
+		 * Set Categories
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
 		for ($i = 0; $service_category =& $DBRESULT->fetchRow(); $i++)
 			$service["service_categories"][$i] = $service_category["sc_id"];
 		$DBRESULT->free();
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
+	
+	
+	/*
+	 * Database retrieve information for differents elements list we need on the page
+	 */
+	
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");

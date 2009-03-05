@@ -1,5 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
+{if $msg_interval}<center><span class='msg'>{$msg_interval}</span></center>{/if}
 <form name='form' method='POST'>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">

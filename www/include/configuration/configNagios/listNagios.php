@@ -63,7 +63,7 @@
 	 * Nagios list
 	 */
 	
-	$DBRESULT =& $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id FROM cfg_nagios $SearchTool ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit);
+	$DBRESULT =& $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id, interval_length FROM cfg_nagios $SearchTool ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	
@@ -90,9 +90,24 @@
 						"RowMenu_instance"=>$nagios_servers[$nagios["nagios_server_id"]],
 						"RowMenu_link"=>"?p=".$p."&o=c&nagios_id=".$nagios['nagios_id'],
 						"RowMenu_desc"=>substr($nagios["nagios_comment"], 0, 40),
+						"RowMenu_interval"=>$nagios["interval_length"],
 						"RowMenu_status"=>$nagios["nagios_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$style != "two" ? $style = "two" : $style = "one";
+	}
+	
+	$interval = -42;
+	foreach ($elemArr as $tab) {
+		if ($interval == -42)
+			$interval = $tab["RowMenu_interval"];
+		else {
+			if ($interval != $tab["RowMenu_interval"]) {
+				$tpl->assign("msg_interval", _("Be carreful : all your Nagios poller haven't the same interval lenght ! This can provide difficulties to configure your services."));
+				break;
+			}
+		}
+	}
+	
 	$tpl->assign("elemArr", $elemArr);
 	
 	/*
