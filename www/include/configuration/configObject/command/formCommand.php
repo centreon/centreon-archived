@@ -1,19 +1,43 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL$
+ * SVN : $Id$
+ * 
  */
+ 
+ 	if (!isset($oreon))
+ 		exit();
  
  	/*
 	 * Form Rules
@@ -28,15 +52,6 @@
 	/*
 	 * Database retrieve information for Command
 	 */
-	function myDecodeCommand($arg) {
-		$arg = html_entity_decode($arg, ENT_QUOTES);
-		$arg = str_replace('#BR#', "\\n", $arg);
-		$arg = str_replace('#T#', "\\t", $arg);
-		$arg = str_replace('#R#', "\\r", $arg);
-		$arg = str_replace('#S#', "/", $arg);
-		$arg = str_replace('#BS#', "\\", $arg);
-		return($arg);
-	}
 	
 	$plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
 	$cmd = array();
@@ -52,11 +67,12 @@
 
 	$resource = array();
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
-	while ($row = $DBRESULT->fetchRow()){
+	while ($row =& $DBRESULT->fetchRow()){
 		$resource[$row["resource_name"]] = $row["resource_name"];
 		if (isset($row["resource_comment"]) && $row["resource_comment"] != "")
 			 $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
 	}
+	unset($row);
 	$DBRESULT->free();
 	
 	/*
@@ -66,6 +82,7 @@
 	$DBRESULT =& $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
 	while ($graphTpl =& $DBRESULT->fetchRow())
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
+	unset($graphTpl);
 	$DBRESULT->free();
 	
 	/*
@@ -75,6 +92,7 @@
 	$DBRESULT =& $pearDB->query("SELECT `macro_name` FROM `nagios_macro` ORDER BY `macro_name`");
 	while ($row =& $DBRESULT->fetchRow())
 		$macros[$row["macro_name"]] = $row["macro_name"];
+	unset($row);
 	$DBRESULT->free();
 	
 	$attrsText 		= array("size"=>"35");
