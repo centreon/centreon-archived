@@ -283,7 +283,7 @@
 	$GMTList = $CentreonGMT->getGMTList();
 	
 	$form->addElement('select', 'host_location', _("GMT / Location"), $GMTList);
-	$form->setDefaults(array('host_location' => NULL));
+	$form->setDefaults(array('host_location' => $oreon->optGen["gmt"]));
 	if (!isset($host["host_location"]))
 		$host["host_location"] = NULL;
 	unset($GMTList);
@@ -649,7 +649,9 @@
 		$form->registerRule('exist', 'callback', 'testHostExistence');
 		$form->addRule('host_name', _("Name is already in use"), 'exist');		
 		
-		# If we are using a Template, no need to check the value, we hope there are in the Template
+		/*
+		 * If we are using a Template, no need to check the value, we hope there are in the Template
+		 */
 		if ((!$form->getSubmitValue("host_template_model_htm_id")) && ($oreon->user->get_version() != 3))	{
 			$form->addRule('host_alias', _("Compulsory Alias"), 'required');
 			$form->addRule('host_address', _("Compulsory Address"), 'required');
@@ -694,34 +696,38 @@
 	}
 	
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
-	#
-	##End of form definition
-	#
-        
-	# Smarty template Init
+	    
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch a host information
 	if ($o == "w")	{
+		/*
+		 * Just watch a host information
+		 */
 		if (!$min)
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$host_id."'"));
 	    $form->setDefaults($host);
 		$form->freeze();
-	}
-	# Modify a host information
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
+		/*
+		 * Modify a host information
+		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($host);
-	}
-	# Add a host information
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
+		/*
+		 * Add a host information
+		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
-	}
-	# Massive Change
-	else if ($o == "mc")	{
+	} else if ($o == "mc")	{
+		/*
+		 * Massive Change
+		 */
 		$subMC =& $form->addElement('submit', 'submitMC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -739,7 +745,6 @@
 	
 
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
-
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
 		$hostObj =& $form->getElement('host_id');
@@ -759,10 +764,13 @@
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
-		require_once($path."listHost.php");
-	else	{
-		#Apply a template definition
+
+	if ($valid && $action["action"]["action"]) {
+		require_once ($path."listHost.php");
+	} else {
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -788,7 +796,6 @@
 
 if ($oreon->user->get_version() == 3 && !$action["action"]["action"] || isset($ok_flag) && !$ok_flag) {
 ?>
-
 <script type="text/javascript">
 		add_select_template();
 		displayExistingMacroHost(<?php echo $k;?>);
