@@ -186,6 +186,9 @@
 			else if ($key == "enable_embedded_perl" && $oreon->user->get_version() == 2);
 			else if ($key == "use_embedded_perl_implicitly" && $oreon->user->get_version() == 2);
 			else if ($key == "debug_level" && $oreon->user->get_version() == 2);
+			else if ($key == "tmp_path" && $oreon->user->get_version() == 2);
+			else if ($key == "check_result_path" && $oreon->user->get_version() == 2);
+			else if ($key == "max_check_result_file_age " && $oreon->user->get_version() == 2);
 			else {
 				$str .= $key."=".$value."\n";
 			}

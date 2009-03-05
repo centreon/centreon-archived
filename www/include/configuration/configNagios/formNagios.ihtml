@@ -36,10 +36,11 @@
 		<tr class="list_two"><td class="FormRowField">{$form.downtime_file.label}</td><td class="FormRowValue">{$form.downtime_file.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.comment_file.label}</td><td class="FormRowValue">{$form.comment_file.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.p1_file.label}</td><td class="FormRowValue">{$form.p1_file.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.temp_path.label}</td><td class="FormRowValue">{$form.temp_path.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.p1_file.label}</td><td class="FormRowValue">{$form.p1_file.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
 
-		<tr class="list_one"><td class="FormRowField">{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
+		<tr class="list_two"><td class="FormRowField">{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row.gif'>&nbsp;&nbsp;Status</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.status_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>
@@ -73,6 +74,14 @@
 		{if $msg.nagios == 3}
 		<tr class="list_one"><td class="FormRowField">{$form.enable_predictive_service_dependency_checks.label}</td><td class="FormRowValue">{$form.enable_predictive_service_dependency_checks.html}</td></tr>
 		{/if}
+		
+		{if $msg.nagios == 3}
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Result Cache</td></tr>	
+		<tr class="list_one"><td class="FormRowField">{$form.check_result_path.label}</td><td class="FormRowValue">{$form.check_result_path.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.max_check_result_file_age.label}</td><td class="FormRowValue">{$form.max_check_result_file_age.html}</td></tr>
+		{/if}
+		
+		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;Event Handler</td></tr>	
 		<tr class="list_one"><td class="FormRowField">{$form.global_host_event_handler.label}</td><td class="FormRowValue">{$form.global_host_event_handler.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.global_service_event_handler.label}</td><td class="FormRowValue">{$form.global_service_event_handler.html}</td></tr>

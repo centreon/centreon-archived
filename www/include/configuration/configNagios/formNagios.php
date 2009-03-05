@@ -87,6 +87,9 @@
 	$form->addElement('text', 'cfg_dir', _("Object Configuration Directory"), $attrsText2);
 	$form->addElement('text', 'object_cache_file', _("Object Cache File"), $attrsText2);
 	$form->addElement('text', 'temp_file', _("Temp File"), $attrsText2);
+	$form->addElement('text', 'temp_path', _("Temp directory"), $attrsText2);
+	$form->addElement('text', 'check_result_path', _("Check result directory"), $attrsText2);
+	$form->addElement('text', 'max_check_result_file_age', _("Max Check Result File Age"), $attrsText3);
 	$form->addElement('text', 'p1_file', _("P1 File"), $attrsText2);
 	
 	/*

@@ -116,7 +116,7 @@
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO cfg_nagios (" .
-				"`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , `object_cache_file` , `temp_file` , " .
+				"`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , `object_cache_file` , `temp_file` , `temp_path` , `check_result_path`, `max_check_result_file_age`" .
 				"`status_file` , `p1_file`, `aggregate_status_updates` , `status_update_interval` , `nagios_user` , `nagios_group` , " .
 				"`enable_notifications` , `execute_service_checks` , `accept_passive_service_checks` , `execute_host_checks` , " .
 				"`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , " .
@@ -146,6 +146,9 @@
 		isset($ret["cfg_dir"]) && $ret["cfg_dir"] != NULL ? $rq .= "'".htmlentities($ret["cfg_dir"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["object_cache_file"]) && $ret["object_cache_file"] != NULL ? $rq .= "'".htmlentities($ret["object_cache_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
        	isset($ret["temp_file"]) && $ret["temp_file"] != NULL ? $rq .= "'".htmlentities($ret["temp_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["temp_path"]) && $ret["temp_path"] != NULL ? $rq .= "'".htmlentities($ret["temp_path"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+       	isset($ret["check_result_path"]) && $ret["check_result_path"] != NULL ? $rq .= "'".htmlentities($ret["check_result_path"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+       	isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != NULL ? $rq .= "'".htmlentities($ret["max_check_result_file_age"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["status_file"]) && $ret["status_file"] != NULL ? $rq .= "'".htmlentities($ret["status_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "'".htmlentities($ret["p1_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["aggregate_status_updates"]["aggregate_status_updates"]) && $ret["aggregate_status_updates"]["aggregate_status_updates"] != 2 ? $rq .= "'".$ret["aggregate_status_updates"]["aggregate_status_updates"]."',  "  : $rq .= "'2', ";
@@ -287,6 +290,9 @@
 		isset($ret["cfg_dir"]) && $ret["cfg_dir"] != NULL ? $rq .= "cfg_dir = '".htmlentities($ret["cfg_dir"], ENT_QUOTES)."',  " : $rq .= "cfg_dir = NULL, ";
         isset($ret["object_cache_file"]) && $ret["object_cache_file"] != NULL ? $rq .= "object_cache_file = '".htmlentities($ret["object_cache_file"], ENT_QUOTES)."',  " : $rq .= "object_cache_file = NULL, ";
        	isset($ret["temp_file"]) && $ret["temp_file"] != NULL ? $rq .= "temp_file = '".htmlentities($ret["temp_file"], ENT_QUOTES)."',  " : $rq .= "temp_file = NULL, ";
+        isset($ret["temp_path"]) && $ret["temp_path"] != NULL ? $rq .= "temp_path = '".htmlentities($ret["temp_path"], ENT_QUOTES)."',  " : $rq .= "temp_path = NULL, ";
+        isset($ret["check_result_path"]) && $ret["check_result_path"] != NULL ? $rq .= "check_result_path = '".htmlentities($ret["check_result_path"], ENT_QUOTES)."',  " : $rq .= "check_result_path = NULL, ";
+        isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != NULL ? $rq .= "max_check_result_file_age = '".htmlentities($ret["max_check_result_file_age"], ENT_QUOTES)."',  " : $rq .= "max_check_result_file_age = NULL, ";
         isset($ret["status_file"]) && $ret["status_file"] != NULL ? $rq .= "status_file = '".htmlentities($ret["status_file"], ENT_QUOTES)."',  " : $rq .= "status_file = NULL, ";
         isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "p1_file = '".htmlentities($ret["p1_file"], ENT_QUOTES)."',  " : $rq .= "p1_file = NULL, ";
         isset($ret["aggregate_status_updates"]["aggregate_status_updates"]) && $ret["aggregate_status_updates"]["aggregate_status_updates"] != 2 ? $rq .= "aggregate_status_updates = '".$ret["aggregate_status_updates"]["aggregate_status_updates"]."',  "  : $rq .= "aggregate_status_updates  = '2', ";
