@@ -259,7 +259,7 @@
 				$command_line .= " ";
 			$command_line .= "\"";
 			if ($tm["ds_last"]){
-				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%7.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%0.0lf%s";
 				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_min"]){
