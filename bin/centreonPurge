@@ -1,0 +1,175 @@
+#! /usr/bin/perl -w
+################################################################################
+# Copyright 2005-2009 MERETHIS
+# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# GPL Licence 2.0.
+# 
+# This program is free software; you can redistribute it and/or modify it under 
+# the terms of the GNU General Public License as published by the Free Software 
+# Foundation ; either version 2 of the License.
+# 
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along with 
+# this program; if not, see <http://www.gnu.org/licenses>.
+# 
+# Linking this program statically or dynamically with other modules is making a 
+# combined work based on this program. Thus, the terms and conditions of the GNU 
+# General Public License cover the whole combination.
+# 
+# As a special exception, the copyright holders of this program give MERETHIS 
+# permission to link this program with independent modules to produce an executable, 
+# regardless of the license terms of these independent modules, and to copy and 
+# distribute the resulting executable under terms of MERETHIS choice, provided that 
+# MERETHIS also meet, for each linked independent module, the terms  and conditions 
+# of the license of that module. An independent module is a module which is not 
+# derived from this program. If you modify this program, you may extend this 
+# exception to your version of the program, but you are not obliged to do so. If you
+# do not wish to do so, delete this exception statement from your version.
+# 
+# For more information : contact@centreon.com
+# 
+# SVN : $URL
+# SVN : $Id :
+#
+####################################################################################
+#
+# Script init
+#
+# This is a purge script for people who use centreon in large environment. Sometimes 
+# purge managed with centstorage is not possible due to laency on MySQL Server.
+# This purge stop daemon ans after finishing purge restart deamon. 
+#
+
+use strict;
+use warnings;
+use DBI;
+use POSIX ":sys_wait_h";
+
+use lib "@RRD_PERL@";
+use RRDs;
+use File::Copy;
+
+my $installedPath = "@CENTREON_PATH@/";
+
+my $LOG = "@CENTREON_LOG@/centstorage.log";
+my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
+
+# Init Globals
+use vars qw($debug $LOG %status $generalcounter);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $mysql_database_ndo);
+use vars qw($con_oreon $con_ods);
+
+$debug = 0;
+my $stop = 0;
+
+# Init value
+my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id, $configuration);
+
+# Init status tab
+%status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
+
+# Include Configuration Data
+require "@CENTREON_ETC@/conf.pm";
+
+sub catch_zap {
+	$stop = 0;
+	writeLogFile("Receiving order to stop...\n");
+}
+
+sub writeLogFile($){
+	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+	print LOG time()." - ".$_[0];
+	close LOG or warn $!;
+}
+
+# checking if pid file exists.
+if (-x $PID){
+	writeLogFile("ods already runnig. can't launch again....\n");
+	exit(2);
+}
+
+# Set signals
+$SIG{INT}  = \&catch_zap;
+
+require $installedPath."lib/misc.pm";
+require $installedPath."lib/purge.pm";
+
+# 
+# Functions
+#
+
+sub CheckMySQLConnexion(){
+	while ((!defined($con_oreon) || !$con_oreon->ping) && (!defined($con_ods) || !$con_ods->ping)){
+		if (!defined($con_oreon) || !$con_oreon->ping) {
+			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+			if (!defined($con_oreon)) {
+				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
+				sleep(2);
+			}
+		} else {
+			sleep(2);
+			undef($con_oreon);
+			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		}
+		if (!defined($con_ods) || !$con_ods->ping) {
+			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+			if (!defined($con_ods)) {
+				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
+				sleep(2);
+			}
+		} else {
+			sleep(2);
+			undef($con_ods);
+			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});	
+		}
+	}
+}
+
+sub CreateConnexionForCentstorage(){
+	my $strgcnx;
+	while (!defined($strgcnx) || !$strgcnx->ping){
+		if (!defined($strgcnx)) {
+			$strgcnx = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+			if (!defined($strgcnx)) {
+				writeLogFile("Error when connecting to database : ".$DBI::errstr."\n");
+				sleep(5);
+			}
+		}
+	}
+	return $strgcnx;
+}
+
+sub CreateConnexionForOreon(){
+	my $oreoncnx;
+	while (!defined($oreoncnx) || !$oreoncnx->ping){
+		if (!defined($oreoncnx)) {
+			$oreoncnx = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+			if (!defined($oreoncnx)) {
+				writeLogFile("Error when connecting to database : ".$DBI::errstr."\n");
+				sleep(5);
+			}
+		}
+	}
+	return $oreoncnx;
+}
+
+#
+# Main Script steps
+#
+
+
+# data Bin purge
+writeLogFile("Begin centstorage.data_bin purge\n");
+purgeMysqlData();
+writeLogFile("Finishing centstorage.data_bin purge\n");
+
+# Drain Mysql and RRD for old values
+
+writeLogFile("Begin old values purges\n");
+CheckMySQLDrain();
+DeleteOldRrdDB();
+writeLogFile("Finishing old values purges\n");
+
