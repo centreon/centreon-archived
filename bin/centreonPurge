@@ -154,9 +154,9 @@ sub CreateConnexionForOreon(){
 #
 
 # Stop centstorage
-`/etc/init.d/centstorage stop`
+`/etc/init.d/centstorage stop`;
 # Stop centcore
-`/etc/init.d/centcore stop`
+`/etc/init.d/centcore stop`;
 
 # data Bin purge
 writeLogFile("Begin centstorage.data_bin purge\n");
@@ -171,7 +171,7 @@ DeleteOldRrdDB();
 writeLogFile("Finishing old values purges\n");
 
 # Start centstorage
-`/etc/init.d/centstorage start`
+`/etc/init.d/centstorage start`;
 # Start centcore
-`/etc/init.d/centcore start`
+`/etc/init.d/centcore start`;
 
