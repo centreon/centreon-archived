@@ -63,13 +63,6 @@ use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_d
 use vars qw($con_oreon $con_ods);
 
 $debug = 0;
-my $stop = 0;
-
-# Init value
-my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id, $configuration);
-
-# Init status tab
-%status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
 
 # Include Configuration Data
 require "@CENTREON_ETC@/conf.pm";
