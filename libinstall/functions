@@ -2097,7 +2097,7 @@ function clean_and_exit() {
     fi
   fi
 	log "EXIT" "$(gettext "Exit Centreon install")"
-  [ -n "$SUDO_FILE" ] && clean_sudo "$SUDO_FILE" 0
+  [ -n "$SUDO_FILE" -a $upgrade -eq 0 ] && clean_sudo "$SUDO_FILE" 0
   purge_centreon_tmp_dir "silent"
 	exit 1
 }
