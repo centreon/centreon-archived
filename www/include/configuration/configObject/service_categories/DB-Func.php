@@ -79,7 +79,7 @@
 	function insertServiceCategorieInDB(){
 		global $pearDB;
 		if (testServiceCategorieExistence($_POST["sc_name"])){
-			$DBRESULT =& $pearDB->query("INSERT INTO `service_categories` (`sc_name` , `sc_description` , `sc_activate` ) VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', '1')");
+			$DBRESULT =& $pearDB->query("INSERT INTO `service_categories` (`sc_name` , `sc_description` , `sc_activate` ) VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', '".$_POST["sc_activate"]["sc_activate"]."')");
 		}
 	}
 	
