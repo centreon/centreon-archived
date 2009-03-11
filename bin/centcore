@@ -73,12 +73,12 @@ sub writeLogFile($){
 my $timeBetween2SyncPerf = 60;
 
 # Starting ODS Engine
-writeLogFile("Starting ODS engine...\n");
+writeLogFile("Starting centCore engine...\n");
 writeLogFile("PID : ".$$."\n");
 
 # checking if pid file exists.
 if (-x $PID){
-	writeLogFile("centcore already running. can't launch again....\n");
+	writeLogFile("centCore already running. can't launch again....\n");
 	exit(2);
 }
 

@@ -62,7 +62,7 @@ sub catch_zap {
 sub writeLogFile($){
 	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
 	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
-	print LOG "$year/$mon/$day $hour:$min:$sec - ".$_[0];
+	print LOG "$year/$mon/$mday $hour:$min:$sec - ".$_[0];
 	close LOG or warn $!;
 }
 
