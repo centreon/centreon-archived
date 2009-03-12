@@ -46,8 +46,8 @@ my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
 
 $timeout = 5;
 
-$ssh = "/usr/bin/ssh";
-$scp = "/usr/bin/scp";
+$ssh = "@BIN_SSH@";
+$scp = "@BIN_SCP@";
 
 $ssh .= " -o ConnectTimeout=$timeout ";
 
