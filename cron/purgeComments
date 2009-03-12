@@ -65,6 +65,6 @@ my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mys
 my $sth2 = $dbh->prepare("DELETE FROM `nagios_comments` WHERE UNIX_TIMESTAMP(`comment_time`) < '$dateMax'");
 if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
-} 
+}
 
 exit();
