@@ -270,7 +270,7 @@
 		$form->addElement('text', 'host_alias', _("Alias"), $attrsText);
 	}
 	$form->addElement('text', 'host_address', _("IP Address / DNS"), $attrsText);
-	$form->addElement('select', 'host_snmp_version', _("Version"), array(NULL=>NULL, 1=>"1", 2=>"2c", 3=>"3"));
+	$form->addElement('select', 'host_snmp_version', _("Version"), array(NULL=>NULL, 1=>"1", "2c"=>"2c", 3=>"3"));
 	$form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
 	
 	/*
