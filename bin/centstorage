@@ -1,24 +1,40 @@
 #! /usr/bin/perl -w
-###################################################################
-# Centreon is developped with GPL Licence 2.0 
-#
-# GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-#
-# Developped by : Julien Mathis - Romain Le Merlus
-#
-###################################################################
-# This program is free software; you can redistfribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+################################################################################
+# Copyright 2005-2009 MERETHIS
+# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# GPL Licence 2.0.
 # 
-#    For information : contact@merethis.com
-####################################################################
+# This program is free software; you can redistribute it and/or modify it under 
+# the terms of the GNU General Public License as published by the Free Software 
+# Foundation ; either version 2 of the License.
+# 
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along with 
+# this program; if not, see <http://www.gnu.org/licenses>.
+# 
+# Linking this program statically or dynamically with other modules is making a 
+# combined work based on this program. Thus, the terms and conditions of the GNU 
+# General Public License cover the whole combination.
+# 
+# As a special exception, the copyright holders of this program give MERETHIS 
+# permission to link this program with independent modules to produce an executable, 
+# regardless of the license terms of these independent modules, and to copy and 
+# distribute the resulting executable under terms of MERETHIS choice, provided that 
+# MERETHIS also meet, for each linked independent module, the terms  and conditions 
+# of the license of that module. An independent module is a module which is not 
+# derived from this program. If you modify this program, you may extend this 
+# exception to your version of the program, but you are not obliged to do so. If you
+# do not wish to do so, delete this exception statement from your version.
+# 
+# For more information : contact@centreon.com
+# 
+# SVN : $Url$
+# SVN : $Id$
+#
+####################################################################################
 #
 # Script init
 #
@@ -38,12 +54,13 @@ my $LOG = "@CENTREON_LOG@/centstorage.log";
 my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
 
 # Init Globals
-use vars qw($debug $LOG %status $generalcounter);
+use vars qw($debug $LOG %status $generalcounter $stop);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $mysql_database_ndo);
 use vars qw($con_oreon $con_ods);
 
+# Init Flags
 $debug = 0;
-my $stop = 0;
+$stop = 0;
 
 # Init value
 my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id, $configuration);
@@ -496,7 +513,7 @@ sub updateRRDDatabase($$$$$){
 	
 	$value =~ s/\,/\./g;
 	$metric_name = replaceMetricSpecialChar($metric_name);
-	RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr($metric_name, 0, 19), $ctime.":".sprintf("%e", $value));
+	RRDs::update($RRDdatabase_path.$metric_id.".rrd" , "--template", substr($metric_name, 0, 19), $ctime.":".sprintf("%e", $value));
 	$ERR = RRDs::error;
 	if ($ERR){
 		writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric_id.".rrd at ".$ctime." -> ".$value." : $ERR\n");
@@ -608,12 +625,10 @@ $lastvalueRecorded = 0;
 
 my $pid  = 0;
 my $timeParser = time();
-my $timePurge = time();
 my $timeSynchro = time();
 my $timeRebuild = time();
 
 my $flagParser = 0;
-my $flagPurge = 0;
 my $flagSynchro = 0;
 my $flagRebuild = 0;
 
@@ -623,19 +638,16 @@ my @tabPID;
 
 # Init Proc table
 my %tabProc;
+
 $tabProc{'parser'} = 0;
-$tabProc{'purge'} = 0;
 $tabProc{'synchro'} = 0;
 $tabProc{'rebuild'} = 0;
 
 sub killProc($){
-#	my $str = " - ". $_[0]." ->";
 	if ($_[0]){
 		if (waitpid($_[0], WNOHANG)){
-#			print $str."0\n";
 			return 0;
 		} else {
-#			print $str.$_[0]."\n";
 			return $_[0];
 		}	
 	}
@@ -665,19 +677,6 @@ if ($pid ne fork()) {
 	            }
 	        	$timeParser = time();
             }
-            if (time() - $timePurge >= 600 && !$tabProc{'purge'}){
-                $tabProc{'purge'} = fork();
-                if (!$tabProc{'purge'}){
-                    writeLogFile("Begin MySQL Purge...\n");
-                    purgeMysqlData();
-                    writeLogFile("End of MySQL Purge...\n");
-                    exit();
-                } else {
-	                my $id = waitpid($tabProc{'purge'}, WNOHANG);
-                }
-       	        $timePurge = time();
-        	}
-        	
             if (time() - $timeSynchro >= 60 && !$tabProc{'synchro'}){
            		$tabProc{'synchro'} = fork();
 		        if (!$tabProc{'synchro'}){
@@ -700,7 +699,6 @@ if ($pid ne fork()) {
            	}
            	
 			$tabProc{'parser'} = killProc($tabProc{'parser'}) if ($tabProc{'parser'});
-			$tabProc{'purge'} = killProc($tabProc{'purge'}) if ($tabProc{'purge'});
 			$tabProc{'synchro'} = killProc($tabProc{'synchro'}) if ($tabProc{'synchro'});
 			$tabProc{'rebuild'} = killProc($tabProc{'rebuild'}) if ($tabProc{'rebuild'});
 			
