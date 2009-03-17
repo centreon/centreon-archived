@@ -31,7 +31,7 @@
 # 
 # For more information : contact@centreon.com
 # 
-# SVN : $Url$
+# SVN : $URL$
 # SVN : $Id$
 #
 ####################################################################################
@@ -394,7 +394,7 @@ sub updateServiceState($$$$){ # Host name, sercvice desc, ctime, index
 	my $index = $_[3];
 
 	my $RRDdatabase_status_path = getRRDdatabase_status_path();	
-	my @tab = (0=>"100",1=>"75",2=>"0",3=>"0");	
+	my @tab = (0=>"100", 1=>"75", 2=>"0", 3=>"0");	
 	
 	my $odscnx = CreateConnexionForCentstorage();
 	my $centcnx= CreateConnexionForOreon();
