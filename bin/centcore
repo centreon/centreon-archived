@@ -498,7 +498,3 @@ writeLogFile("Centcore stop...\n");
 exit();
 
 __END__
-
-
-
-
