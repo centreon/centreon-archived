@@ -31,7 +31,7 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
+ * SVN : $URL$
  * SVN : $Id: centAcl.php 7240 2008-12-11 18:46:04Z jmathis $
  * 
  */
