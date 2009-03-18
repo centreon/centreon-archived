@@ -72,7 +72,7 @@ sub writeLogFile($){
 
 my $timeBetween2SyncPerf = 60;
 
-# Starting ODS Engine
+# Starting centcore Engine
 writeLogFile("Starting centCore engine...\n");
 writeLogFile("PID : ".$$."\n");
 
@@ -115,6 +115,7 @@ while ($stop) {
 		while (<FILE>){
 		    parseRequest($_);
 		}
+		writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
     }
     close(FILE);
     if (defined($timeSyncPerf) && $timeSyncPerf) {
@@ -132,6 +133,9 @@ sub moveCmdFile($){
     my $CMDFILE = $_[0];
     if (move($CMDFILE, $CMDFILE."_read")){
 		return(1);
+    } else {
+		writeLogFile("Cannot move $CMDFILE to ".$CMDFILE."_read");
+		return(0);
     }
 }
 
@@ -141,7 +145,7 @@ sub removeTmpCmdFile($){
 		return(1);
     } else {
 		writeLogFile("Can't remove temporary command file.\n");
-		return 0;
+		return(0);
     }
 }
 
@@ -163,8 +167,6 @@ sub GetAllNagiosServerPerfData(){
 # -------------------
 #      Functions 
 # -------------------
-#
-# Functions
 
 sub getNagiosConfigurationField($$){
     CheckMySQLConnexion();
@@ -178,7 +180,7 @@ sub getNagiosConfigurationField($$){
 
 sub getLocalOptionsField($){
     CheckMySQLConnexion();
-    my $sth2 = $con->prepare("SELECT ".$_[0]." FROM `general_opt` LIMIT 1");
+    my $sth2 = $con->prepare("SELECT `".$_[0]."` FROM `general_opt` LIMIT 1");
     if (!$sth2->execute()) {
 		writeLogFile("Error when getting general options properties : ".$sth2->errstr."\n");
     }
@@ -188,7 +190,7 @@ sub getLocalOptionsField($){
 
 sub getLocalServerID(){
     CheckMySQLConnexion();
-    my $sth2 = $con->prepare("SELECT id FROM `nagios_server` WHERE `localhost` = '1'");
+    my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `localhost` = '1'");
     if (!$sth2->execute()) {
 		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
     }
@@ -197,7 +199,7 @@ sub getLocalServerID(){
 
 sub getServerConfig($){
     CheckMySQLConnexion();
-    my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."' AND ns_activate = '1'");
+    my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."' AND `ns_activate` = '1'");
     if (!$sth2->execute()) {
 		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
     }
@@ -209,8 +211,8 @@ sub CheckMySQLConnexion(){
 		if (!defined($con)) {
 		    $con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 		    if (!defined($con)) {
-			writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
-			sleep(2);
+				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
+				sleep(2);
 		    }
 		} else {
 		    sleep(2);
@@ -381,7 +383,7 @@ sub sendConfigFile($){
 		    my @tab_local = split(' ', $md5local);		
 		    my @tab_dist = split(' ', $md5dist);		
 		    if ($tab_local[0] ne $tab_dist[0]){
-				print "Bad Copy !\n";
+				writeLogFile("Error when copying $cfg_dir$file on distant poller\n");
 		    }
 		}
     }

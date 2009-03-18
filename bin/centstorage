@@ -198,11 +198,15 @@ sub movePerfDataFile($){
 	if (move($PERFDATA, $PERFDATA."_read")){
 		`echo "# New File #" >> $PERFDATA`;
 		return(1);
+	} else {
+		writeLogFile("Cannot move $PERFDATA on $PERFDATA."_read".\n");
+		writeLogFile("Please check acces on $PERFDATA or $PERFDATA."_read".\n");
+		return (0);
 	}
 }
 
 ########################################
-# Get ODS config data  
+# Get centstorage config data  
 ########################################
 
 sub getConfig(){
@@ -657,7 +661,7 @@ if ($pid ne fork()) {
 	  if (!fork()) {
 	  	
 	  	# Starting ODS Engine
-		writeLogFile("Starting ODS engine...\n");
+		writeLogFile("Starting centstorage engine...\n");
 		writeLogFile("PID : ".$$."\n");
 		
 		# Writing PID
@@ -705,7 +709,7 @@ if ($pid ne fork()) {
 			sleep(1);
             $i++;
         }
-    	writeLogFile("Stopping ODS engine...\n");
+    	writeLogFile("Stopping centstorage engine...\n");
 		writeLogFile("Error When removing pid file : $!") if (!unlink($PID));
 	}
     exit 0;
