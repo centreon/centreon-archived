@@ -253,12 +253,26 @@
 					$hostEnb[$host["host_id"]] = 1;											
 			} else if ($oreon->user->get_version() >= 3 && $gotTP) {										
 					$hostEnb[$host["host_id"]] = 1;
-			} else {										
+			} else {	
+				
+				/*
+				 * Contactgroup dependancy
+				 */								
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cghr.contactgroup_cg_id FROM contactgroup_host_relation cghr WHERE cghr.host_host_id = '".$host["host_id"]."'");
-				while($valid = $DBRESULT2->fetchRow())
+				while ($valid =& $DBRESULT2->fetchRow())
 					isset($cgEnb[$valid["contactgroup_cg_id"]]) ? $hostEnb[$host["host_id"]] = 1 : NULL;
 				$DBRESULT2->free();
 				unset($valid);
+				
+				/*
+				 * Contact dependancy
+				 */	
+				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT chr.contact_id FROM contact_host_relation chr WHERE chr.host_host_id = '".$host["host_id"]."'");
+				while ($valid =& $DBRESULT2->fetchRow())
+					isset($cctEnb[$valid["contact_id"]]) ? $hostEnb[$host["host_id"]] = 1 : NULL;
+				$DBRESULT2->free();
+				unset($valid);
+				
 			}
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hg.hg_activate FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hg.hg_id = hgr.hostgroup_hg_id");
 			while($hostGroup = $DBRESULT2->fetchRow())	{
@@ -307,14 +321,29 @@
 				$h = false;
 				$hg = false;
 				$cg = false;
+				$cct = false;
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hsr.host_host_id, hsr.hostgroup_hg_id, cgsr.contactgroup_cg_id FROM contactgroup_service_relation cgsr, host_service_relation hsr WHERE cgsr.service_service_id = '".$service["service_id"]."' AND hsr.service_service_id = '".$service["service_id"]."'");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while ($valid =& $DBRESULT2->fetchRow())	{					
 					isset($hostEnb[$valid["host_host_id"]]) ? $h = true : NULL;					
 					isset($hgEnb[$valid["hostgroup_hg_id"]]) ? $hg = true : NULL;					
 					isset($cgEnb[$valid["contactgroup_cg_id"]]) ? $cg = true : NULL;
+					isset($cctEnb[$valid["contact_id"]]) ? $cct = true : NULL;
 				}
-				($h || $hg) && $cg ? $svEnb[$service["service_id"]] = 1 : NULL;				
 				$DBRESULT2->free();
+				
+				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hsr.host_host_id, hsr.hostgroup_hg_id, csr.contact_id FROM contact_service_relation csr, host_service_relation hsr WHERE csr.service_service_id = '".$service["service_id"]."' AND hsr.service_service_id = '".$service["service_id"]."'");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+				while ($valid =& $DBRESULT2->fetchRow())	{					
+					isset($hostEnb[$valid["host_host_id"]]) ? $h = true : NULL;					
+					isset($hgEnb[$valid["hostgroup_hg_id"]]) ? $hg = true : NULL;					
+					isset($cctEnb[$valid["contact_id"]]) ? $cct = true : NULL;
+				}
+				$DBRESULT2->free();
+				
+				($h || $hg) && ($cg || $cct) ? $svEnb[$service["service_id"]] = 1 : NULL;				
 				unset($valid);
 			}
 		}
