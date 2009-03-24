@@ -62,6 +62,7 @@ my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
 $timeout = 5;
 
 $ssh = "@BIN_SSH@";
+$rsync = "rsync";
 $scp = "@BIN_SCP@";
 
 $ssh .= " -o ConnectTimeout=$timeout ";
@@ -294,6 +295,7 @@ sub GetPerfData($){
     my $distanttmpperffile = $distantperffile."-old";
 
     my $localbasevardir = "@CENTREON_VARLIB@/perfdata/$id";
+
     # check if directory exist
     mkdir "@CENTREON_VARLIB@/perfdata" if (!-d "@CENTREON_VARLIB@/perfdata");
     mkdir $localbasevardir if (!-d $localbasevardir);
@@ -381,28 +383,34 @@ sub sendConfigFile($){
 
     my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
     my $server_info = getServerConfig($id);
-    my ($md5local, $md5dist, $scpe);
+#    my ($md5local, $md5dist, $scpe);
 
-    opendir(DIR, $installedPath."/filesGeneration/nagiosCFG/$id/");
-    while (my $file = readdir(DIR)){
-		if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
-		    my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/$file";
-		    my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir$file";
+    my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/*";
+    my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
+
+    `$rsync --port=".$server_info->{'ssh_port'}." -c $origin $dest`;
 	
-		    my $stdout = `scp $origin $dest`;
+#    opendir(DIR, $installedPath."/filesGeneration/nagiosCFG/$id/");
+#    while (my $file = readdir(DIR)){
+#		if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
+#		    my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/$file";
+#		    my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir$file";
+#	
+#		    my $stdout = `scp $origin $dest`;
 	
 		    # Check sucessfull copy
-		    $md5local = `/usr/bin/md5sum $origin`;
-		    $md5dist  = `ssh -p ".$server_info->{'ssh_port'}." $server_info->{'ns_ip_address'} /usr/bin/md5sum $cfg_dir$file`;
+#		    $md5local = `/usr/bin/md5sum $origin`;
+#		    $md5dist  = `ssh -p ".$server_info->{'ssh_port'}." $server_info->{'ns_ip_address'} /usr/bin/md5sum $cfg_dir$file`;
 	
-		    my @tab_local = split(' ', $md5local);		
-		    my @tab_dist = split(' ', $md5dist);		
-		    if ($tab_local[0] ne $tab_dist[0]){
-				writeLogFile("Error when copying $cfg_dir$file on distant poller\n");
-		    }
-		}
-    }
+#		    my @tab_local = split(' ', $md5local);		
+#		    my @tab_dist = split(' ', $md5dist);		
+#		    if ($tab_local[0] ne $tab_dist[0]){
+#				writeLogFile("Error when copying $cfg_dir$file on distant poller\n");
+#		    }
+#		}
+#   }
     undef($cfg_dir);
+    undef($server_info);
 }
 
 sub initNagios($$){
@@ -429,7 +437,7 @@ sub reloadNagios($){
     # /etc/init.d/nagios reload
     #
  
-    my $cmd = "ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." reload\n";
+    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." reload\n";
     my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
     undef($conf);
