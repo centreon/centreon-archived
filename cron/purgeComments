@@ -43,7 +43,7 @@ use File::stat;
 use Getopt::Long;
 use POSIX;
 
-use vars qw($mysql_user $mysql_passorwd $mysql_host $mysql_db $opt_h $opt_a $data);
+use vars qw($mysql_user $mysql_password $mysql_host $mysql_db $opt_h $opt_a $data);
 
 $mysql_user = "centreon";
 $mysql_password = "";
@@ -62,7 +62,7 @@ my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
 my $dbh = DBI->connect("DBI:mysql:database=".$mysql_db.";host=".$mysql_host, $mysql_user, $mysql_password, {'RaiseError' => 1});
 
 # Comment Purges
-my $sth2 = $dbh->prepare("DELETE FROM `nagios_commenthistory` WHERE UNIX_TIMESTAMP(`comment_time`) < '$dateMax'");
+my $sth2 = $dbh->prepare("DELETE FROM `nagios_comments` WHERE UNIX_TIMESTAMP(`comment_time`) < '$dateMax'");
 if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
 }
