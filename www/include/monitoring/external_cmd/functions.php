@@ -66,7 +66,7 @@
 	function schedule_svc_checks($arg, $forced){
 		global $pearDB, $is_admin, $oreon;
 		$actions = false;		
-		$actions = $oreon->user->access->checkAction("service_checks");
+		$actions = $oreon->user->access->checkAction("service_schedule_checks");
 		
 		if ($actions == true || $is_admin) {
 			$tab_forced = array("0" => "", "1" => "_FORCED");
