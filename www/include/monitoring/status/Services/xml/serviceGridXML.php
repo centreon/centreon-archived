@@ -110,8 +110,8 @@
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `".$ndo_base_prefix."servicestatus` nss, `".$ndo_base_prefix."objects` no";
 				
-		
-		$rq .= ", centreon_acl ";
+		if (!$is_admin)
+			$rq .= ", centreon_acl ";
 					
 		$rq .= 		" WHERE no.object_id = nss.service_object_id".
 					" AND no.name1 NOT LIKE '_Module_%'";					
@@ -171,7 +171,8 @@
 	$rq1 =	  	" SELECT DISTINCT no.name1 as host_name, nhs.current_state" .
 				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs ";
 	
-	$rq1 	.= ", centreon_acl ";
+	if (!$is_admin)
+		$rq1 	.= ", centreon_acl ";
 	
 	$rq1 .=		" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 				" AND no.name1 NOT LIKE '_Module_%'";				

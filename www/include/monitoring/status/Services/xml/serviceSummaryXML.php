@@ -47,7 +47,7 @@
 	include_once($centreon_path . "www/class/other.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/class/centreonXML.class.php");
-		include_once($centreon_path . "www/class/centreonDB.class.php");
+	include_once($centreon_path . "www/class/centreonDB.class.php");
 	include_once($centreon_path . "www/include/monitoring/status/Common/common-Func.php");	
 	include_once($centreon_path . "www/include/common/common-Func.php");
 
@@ -118,8 +118,9 @@
 	$rq1 = 		" SELECT " .
 				" DISTINCT no.name1 as host_name, nhs.current_state" .
 				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs";
-		
-	$rq1 .= ", centreon_acl ";
+
+	if (!$is_admin)	
+		$rq1 .= ", centreon_acl ";
 
 	$rq1 .=	" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 				" AND no.name1 NOT LIKE '_Module_%'";				
@@ -142,7 +143,7 @@
 				")";
 
 	if ($search != "")
-		$rq1 .= " AND no.name1 like '%" . $search . "%' ";	
+		$rq1 .= " AND no.name1 LIKE '%" . $search . "%' ";	
 	
 	$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name").$access->queryBuilder("AND", "group_id", $grouplistStr);
 

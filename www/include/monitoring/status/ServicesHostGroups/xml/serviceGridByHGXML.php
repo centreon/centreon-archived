@@ -84,7 +84,8 @@
 	$rq1 =	  	" SELECT DISTINCT no.object_id id, no.name1 as host_name, nhs.current_state hs, no.name2 svc_name, nss.current_state svcs " .
 				" FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."services ns, ".$ndo_base_prefix."servicestatus nss ";
 		
-	$rq1 .= ", centreon_acl ";
+	if (!$is_admin)
+		$rq1 .= ", centreon_acl ";
 	
 	$rq1 .=  	" WHERE ((no.objecttype_id = '1' AND nhs.host_object_id = no.object_id) OR (no.objecttype_id = '2' AND nss.service_object_id = no.object_id))".				
 				" AND no.name1 NOT LIKE '_Module_%'".

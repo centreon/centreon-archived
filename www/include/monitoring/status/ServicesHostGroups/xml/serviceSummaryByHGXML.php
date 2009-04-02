@@ -82,7 +82,8 @@
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no";
 						
-		$rq .= ", centreon_acl ";
+		if (!$is_admin)
+			$rq .= ", centreon_acl ";
 					
 		$rq .= 		" WHERE no.object_id = nss.service_object_id" .
 					" AND no.name1 NOT LIKE '_Module_%'";					
@@ -138,15 +139,16 @@
 	$rq1 = 			" SELECT DISTINCT no.name1 as host_name, hg.alias, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
 					" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no";
 		
-	$rq1 .= ", centreon_acl ";
-	
+	if (!$is_admin)
+		$rq1 .= ", centreon_acl ";
 	
 	$rq1 .= 		" WHERE hs.host_object_id = hgm.host_object_id".
 					" AND no.object_id = hgm.host_object_id" .
 					" AND hgm.hostgroup_id = hg.hostgroup_id".
 					" AND no.name1 not like '_Module_%'";
 		
-	$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString());
+	if (!$is_admin)
+		$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString());
 	
 	if ($instance != "ALL")
 		$rq1 .= 	" AND no.instance_id = ".$instance;

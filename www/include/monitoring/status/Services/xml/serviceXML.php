@@ -184,8 +184,7 @@
 		$rq .= ", centreon_acl ";
 		
 	$rq .= 	" WHERE no.object_id = nss.service_object_id" .
-			" AND (no.name1 NOT LIKE '_Module_%'" .
-			" OR no.name1 LIKE '_Module_Meta')" .
+			" AND no.name1 NOT LIKE '_Module_%'" .
 		  	" AND objecttype_id = 2";
 
 	if (!$is_admin)	
