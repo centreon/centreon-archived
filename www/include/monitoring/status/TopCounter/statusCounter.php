@@ -133,8 +133,12 @@
 		 * Get Host NDO status 
 		 */		
 		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
-				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects, centreon_acl " .
-				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
+				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects";
+		
+		if (!$is_admin)
+		$rq1 .= " , centreon_acl ";
+		
+		$rq1 .= " WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
 				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 				$access->queryBuilder("AND", $ndo_base_prefix."objects.name1", "centreon_acl.host_name") .				
 				$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr) .				
