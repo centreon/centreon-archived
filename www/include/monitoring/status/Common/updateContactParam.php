@@ -31,20 +31,20 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: 
+ * SVN : $URL$
+ * SVN : $Id$ 
  * 
  */
  
- if (!isset($_GET['uid']) || !isset($_GET['instance_id']))
- 	exit(0);
- 	
- require_once ("/etc/centreon/centreon.conf.php");
- require_once ($centreon_path . "/www/class/centreonDB.class.php");
- 
- $pearDB = new CentreonDB();
- 
- $rq = "UPDATE contact_param SET cp_value = '" .$_GET['instance_id']. "' WHERE cp_key = 'monitoring_default_poller' AND cp_contact_id = '".$_GET['uid']."'";
- $pearDB->query($rq);	
+	if (!isset($_GET['uid']) || !isset($_GET['instance_id']))
+		exit(0);
+		
+	require_once ("@CENTREON_ETC@/centreon.conf.php");
+	require_once ($centreon_path . "/www/class/centreonDB.class.php");
+	
+	$pearDB = new CentreonDB();
+	
+	$rq = "UPDATE contact_param SET cp_value = '" .htmlentities($_GET['instance_id'], ENT_QUOTES). "' WHERE cp_key = 'monitoring_default_poller' AND cp_contact_id = '".htmlentities($_GET['uid'], ENT_QUOTES)."'";
+	$pearDB->query($rq);	
  
  ?>

@@ -37,13 +37,13 @@
  */
  
  
-$rq_cp = "SELECT cp_value FROM contact_param WHERE cp_key = 'monitoring_default_poller' AND cp_contact_id = '" .$oreon->user->user_id. "'";
-$DB_CP = $pearDB->query($rq_cp);
-$row_cp = $DB_CP->fetchRow();
-if ($DB_CP->numRows())
-	$default_poller = $row_cp['cp_value'];
-else {
-	$pearDB->query("INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES ('monitoring_default_poller', '0', '".$oreon->user->user_id."')");
-	$default_poller = "0";
-} 
+	$DBRESULT = $pearDB->query("SELECT cp_value FROM contact_param WHERE cp_key = 'monitoring_default_poller' AND cp_contact_id = '" .$oreon->user->user_id. "'");
+	$row_cp =& $DBRESULT->fetchRow();
+	if ($DBRESULT->numRows())
+		$default_poller = $row_cp['cp_value'];
+	else {
+		$pearDB->query("INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES ('monitoring_default_poller', '0', '".$oreon->user->user_id."')");
+		$default_poller = "0";
+	} 
+
 ?>

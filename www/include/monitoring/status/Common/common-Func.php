@@ -51,6 +51,7 @@
 	function getMyIndexGraph4Service($host_name = NULL, $service_description = NULL, $pearDBO)	{
 		if ((!isset($service_description) || !$service_description ) || (!isset($host_name) || !$host_name)) 
 			return NULL;
+	
 		$DBRESULT =& $pearDBO->query("SELECT id FROM index_data i, metrics m WHERE i.host_name = '".$host_name."' " .
 									"AND m.hidden = '0' " .									
 									"AND i.service_description = '".$service_description."' " .
@@ -80,7 +81,8 @@
 				" SELECT nno.object_id".
 				" FROM " .$ndo_base_prefix."objects nno";		
 		
-		$rq	.=	", centreon_acl";
+		if (!$is_admin)
+			$rq	.=	", centreon_acl";
 		
 		$rq	.=	" WHERE nno.objecttype_id = 2 ";
 				
