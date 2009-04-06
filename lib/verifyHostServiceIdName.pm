@@ -25,15 +25,18 @@ sub getLastRestart(){
 	
 	# Create connection
 	$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	
-	my $sth1_oreon = $con->prepare("SELECT last_restart FROM nagios_server");
-    if (!$sth1_oreon->execute) {
-    	writeLogFile("Error - getLastRestart : " . $sth1_oreon->errstr . "\n");
-    }
-    my $data_oreon = $sth1_oreon->fetchrow_hashref();
-    undef($sth1_oreon);
-   $con->disconnect();
-    return $data_oreon->{'last_restart'};
+	if (defined($con)) {
+		my $sth1_oreon = $con->prepare("SELECT `last_restart` FROM `nagios_server`");
+	    if (!$sth1_oreon->execute()) {
+	    	writeLogFile("Error - getLastRestart : " . $sth1_oreon->errstr . "\n");
+	    }
+	    my $data_oreon = $sth1_oreon->fetchrow_hashref();
+	    undef($sth1_oreon);
+	    $con->disconnect();
+	    return $data_oreon->{'last_restart'};
+	} else {
+		return 0;
+	}
 }
 
 # Get last time restart of nagios
@@ -88,16 +91,31 @@ sub getStorageDir(){
     return $data->{'RRDdatabase_path'};
 }
 
+
+# Get repository of RRDTool db for status
+
+sub getStorageStatusDir() {
+	$con = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	my $sth = $con->prepare("SELECT RRDdatabase_status_path FROM config");
+    if (!$sth->execute) {
+    	writeLogFile("Error - getStorageDir : " . $sth->errstr . "\n");
+   	}
+    my $data = $sth->fetchrow_hashref();
+    undef($sth);
+    $con->disconnect();
+    return $data->{'RRDdatabase_status_path'};
+}
+
 # Delete RRDTool Database if thy were not link with data in ODS DB.
 
 sub DeleteOldRrdDB(){
 	my ($data, %base);
 	$conods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+
+	# Purge metric RRD DB 
 	my $sth = $conods->prepare("SELECT metric_id FROM metrics");
-    if (!$sth->execute) {
-    	writeLogFile("Error:" . $sth->errstr . "\n");
-    }
-    while ($data = $sth->fetchrow_hashref()){
+    writeLogFile("Error:" . $sth->errstr . "\n") if (!$sth->execute);
+    while ($data = $sth->fetchrow_hashref()) {
      	$base{$data->{'metric_id'}.".rrd"} = 1;
     }
     undef($sth);
@@ -119,6 +137,35 @@ sub DeleteOldRrdDB(){
 			}
 		}
 	}
+	undef($data);
+	undef(%base);
+	
+	# Purge status RRD DB 
+	my $sth = $conods->prepare("SELECT id FROM index_data");
+    writeLogFile("Error:" . $sth->errstr . "\n") if (!$sth->execute);
+    while ($data = $sth->fetchrow_hashref()){
+     	$base{$data->{'id'}.".rrd"} = 1;
+    }
+    undef($sth);
+    undef($data);
+    $some_dir = getStorageStatusDir();
+    opendir(DIR, $some_dir) || die "can't opendir $some_dir: $!";
+    my @files = grep { $_ ne '.' and $_ ne '..' } readdir DIR; 
+    closedir DIR;
+    for (@files) {
+		if (!defined($base{$_})){
+			if (-d $some_dir."/".$_){
+				;
+			} else { 
+				if (unlink($some_dir."/".$_)){
+					writeLogFile("Warning : ".$some_dir."/".$_." removed \n");
+				} else {
+					writeLogFile("Error : Unable to remove ".$some_dir.$_ ."\n");
+				}
+			}
+		}
+	}
+
 	$conods->disconnect();
 	undef($some_dir);
 	undef(@files);
