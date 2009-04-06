@@ -139,7 +139,7 @@ cp -Rf $TMP_DIR/src/libinstall/{functions,cinstall,gettext} \
   $TMP_DIR/final/libinstall/ >> "$LOG_FILE" 2>&1
 
 ## Prepare insertBaseConf.sql
-echo -e "$(gettext "In process")"
+#echo -e "$(gettext "In process")"
 ### Step 1:
 ## Change Macro on sql file
 log "INFO" "$(gettext "Change macros for insertBaseConf.sql")"
