@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `nagios_acknowledgements` (
   `persistent_comment` smallint(6) NOT NULL default '0',
   `notify_contacts` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`acknowledgement_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Current and historical host and service acknowledgements';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Current and historical host and service acknowledgements';
 
 -- --------------------------------------------------------
 
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `nagios_commands` (
   `command_line` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`command_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`object_id`,`config_type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Command definitions';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Command definitions';
 
 -- --------------------------------------------------------
 
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `nagios_commenthistory` (
   `deletion_time_usec` int(11) NOT NULL default '0',
   PRIMARY KEY  (`commenthistory_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`comment_time`,`internal_comment_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical host and service comments';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical host and service comments';
 
 -- --------------------------------------------------------
 
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `nagios_comments` (
   `expiration_time` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`comment_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`comment_time`,`internal_comment_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `nagios_configfiles` (
   `configfile_path` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`configfile_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`configfile_type`,`configfile_path`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Configuration files';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Configuration files';
 
 -- --------------------------------------------------------
 
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `nagios_configfilevariables` (
   `varvalue` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`configfilevariable_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`configfile_id`,`varname`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Configuration file variables';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Configuration file variables';
 
 -- --------------------------------------------------------
 
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `nagios_conninfo` (
   `lines_processed` int(11) NOT NULL default '0',
   `entries_processed` int(11) NOT NULL default '0',
   PRIMARY KEY  (`conninfo_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='NDO2DB daemon connection information';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='NDO2DB daemon connection information';
 
 -- --------------------------------------------------------
 
@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `nagios_contactgroups` (
   `alias` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`contactgroup_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`contactgroup_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Contactgroup definitions';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Contactgroup definitions';
 
 -- --------------------------------------------------------
 
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `nagios_contactgroup_members` (
   `contact_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`contactgroup_member_id`),
   UNIQUE KEY `instance_id` (`contactgroup_id`,`contact_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Contactgroup members';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Contactgroup members';
 
 -- --------------------------------------------------------
 
@@ -217,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `nagios_contactnotificationmethods` (
   `command_args` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`contactnotificationmethod_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`contactnotification_id`,`start_time`,`start_time_usec`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Historical record of contact notification methods';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Historical record of contact notification methods';
 
 -- --------------------------------------------------------
 
@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `nagios_contactnotifications` (
   `end_time_usec` int(11) NOT NULL default '0',
   PRIMARY KEY  (`contactnotification_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`contact_object_id`,`start_time`,`start_time_usec`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Historical record of contact notifications';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Historical record of contact notifications';
 
 -- --------------------------------------------------------
 
@@ -270,7 +270,7 @@ CREATE TABLE IF NOT EXISTS `nagios_contacts` (
   `notify_host_downtime` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`contact_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`contact_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Contact definitions';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Contact definitions';
 
 -- --------------------------------------------------------
 
@@ -292,7 +292,7 @@ CREATE TABLE IF NOT EXISTS `nagios_contactstatus` (
   `modified_service_attributes` int(11) NOT NULL default '0',
   PRIMARY KEY  (`contactstatus_id`),
   UNIQUE KEY `contact_object_id` (`contact_object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Contact status';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Contact status';
 
 -- --------------------------------------------------------
 
@@ -308,7 +308,7 @@ CREATE TABLE IF NOT EXISTS `nagios_contact_addresses` (
   `address` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`contact_address_id`),
   UNIQUE KEY `contact_id` (`contact_id`,`address_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Contact addresses';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Contact addresses';
 
 -- --------------------------------------------------------
 
@@ -325,7 +325,7 @@ CREATE TABLE IF NOT EXISTS `nagios_contact_notificationcommands` (
   `command_args` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`contact_notificationcommand_id`),
   UNIQUE KEY `contact_id` (`contact_id`,`notification_type`,`command_object_id`,`command_args`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Contact host and service notification commands';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Contact host and service notification commands';
 
 -- --------------------------------------------------------
 
@@ -344,7 +344,7 @@ CREATE TABLE IF NOT EXISTS `nagios_customvariables` (
   PRIMARY KEY  (`customvariable_id`),
   UNIQUE KEY `object_id_2` (`object_id`,`config_type`,`varname`),
   KEY `varname` (`varname`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Custom variables';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Custom variables';
 
 -- --------------------------------------------------------
 
@@ -363,7 +363,7 @@ CREATE TABLE IF NOT EXISTS `nagios_customvariablestatus` (
   PRIMARY KEY  (`customvariablestatus_id`),
   UNIQUE KEY `object_id_2` (`object_id`,`varname`),
   KEY `varname` (`varname`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Custom variable status information';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Custom variable status information';
 
 -- --------------------------------------------------------
 
@@ -374,7 +374,7 @@ CREATE TABLE IF NOT EXISTS `nagios_customvariablestatus` (
 CREATE TABLE IF NOT EXISTS `nagios_dbversion` (
   `name` varchar(10) NOT NULL default '',
   `version` varchar(10) NOT NULL default ''
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -404,7 +404,7 @@ CREATE TABLE IF NOT EXISTS `nagios_downtimehistory` (
   `was_cancelled` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`downtimehistory_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`object_id`,`entry_time`,`internal_downtime_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical scheduled host and service downtime';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical scheduled host and service downtime';
 
 -- --------------------------------------------------------
 
@@ -433,7 +433,7 @@ CREATE TABLE IF NOT EXISTS `nagios_eventhandlers` (
   `output` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`eventhandler_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`object_id`,`start_time`,`start_time_usec`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Historical host and service event handlers';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Historical host and service event handlers';
 
 -- --------------------------------------------------------
 
@@ -449,7 +449,7 @@ CREATE TABLE IF NOT EXISTS `nagios_externalcommands` (
   `command_name` varchar(128) NOT NULL default '',
   `command_args` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`externalcommand_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical record of processed external commands';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical record of processed external commands';
 
 -- --------------------------------------------------------
 
@@ -472,7 +472,7 @@ CREATE TABLE IF NOT EXISTS `nagios_flappinghistory` (
   `comment_time` datetime NOT NULL default '0000-00-00 00:00:00',
   `internal_comment_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`flappinghistory_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Current and historical record of host and service flapping';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Current and historical record of host and service flapping';
 
 -- --------------------------------------------------------
 
@@ -506,7 +506,7 @@ CREATE TABLE IF NOT EXISTS `nagios_hostchecks` (
   `perfdata` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`hostcheck_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`host_object_id`,`start_time`,`start_time_usec`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical host checks';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical host checks';
 
 -- --------------------------------------------------------
 
@@ -528,7 +528,7 @@ CREATE TABLE IF NOT EXISTS `nagios_hostdependencies` (
   `fail_on_unreachable` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`hostdependency_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`host_object_id`,`dependent_host_object_id`,`dependency_type`,`inherits_parent`,`fail_on_up`,`fail_on_down`,`fail_on_unreachable`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Host dependency definitions';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Host dependency definitions';
 
 -- --------------------------------------------------------
 
@@ -550,7 +550,7 @@ CREATE TABLE IF NOT EXISTS `nagios_hostescalations` (
   `escalate_on_unreachable` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`hostescalation_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`host_object_id`,`timeperiod_object_id`,`first_notification`,`last_notification`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Host escalation definitions';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Host escalation definitions';
 
 -- --------------------------------------------------------
 
@@ -565,7 +565,7 @@ CREATE TABLE IF NOT EXISTS `nagios_hostescalation_contactgroups` (
   `contactgroup_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`hostescalation_contactgroup_id`),
   UNIQUE KEY `instance_id` (`hostescalation_id`,`contactgroup_object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Host escalation contact groups';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Host escalation contact groups';
 
 -- --------------------------------------------------------
 
@@ -580,7 +580,7 @@ CREATE TABLE IF NOT EXISTS `nagios_hostescalation_contacts` (
   `contact_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`hostescalation_contact_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`hostescalation_id`,`contact_object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -596,7 +596,7 @@ CREATE TABLE IF NOT EXISTS `nagios_hostgroups` (
   `alias` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`hostgroup_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`hostgroup_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Hostgroup definitions';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Hostgroup definitions';
 
 -- --------------------------------------------------------
 
@@ -611,7 +611,7 @@ CREATE TABLE IF NOT EXISTS `nagios_hostgroup_members` (
   `host_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`hostgroup_member_id`),
   UNIQUE KEY `instance_id` (`hostgroup_id`,`host_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Hostgroup members';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Hostgroup members';
 
 -- --------------------------------------------------------
 
@@ -682,7 +682,7 @@ CREATE TABLE IF NOT EXISTS `nagios_hosts` (
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`host_object_id`),
   KEY `host_object_id` (`host_object_id`),
   KEY `display_name` (`display_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Host definitions';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Host definitions';
 
 -- --------------------------------------------------------
 
@@ -739,7 +739,7 @@ CREATE TABLE IF NOT EXISTS `nagios_hoststatus` (
   `check_timeperiod_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`hoststatus_id`),
   UNIQUE KEY `object_id` (`host_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Current host status information';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Current host status information';
 
 -- --------------------------------------------------------
 
@@ -754,7 +754,7 @@ CREATE TABLE IF NOT EXISTS `nagios_host_contactgroups` (
   `contactgroup_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`host_contactgroup_id`),
   UNIQUE KEY `instance_id` (`host_id`,`contactgroup_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Host contact groups';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Host contact groups';
 
 -- --------------------------------------------------------
 
@@ -769,7 +769,7 @@ CREATE TABLE IF NOT EXISTS `nagios_host_contacts` (
   `contact_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`host_contact_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`host_id`,`contact_object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -784,7 +784,7 @@ CREATE TABLE IF NOT EXISTS `nagios_host_parenthosts` (
   `parent_host_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`host_parenthost_id`),
   UNIQUE KEY `instance_id` (`host_id`,`parent_host_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Parent hosts';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Parent hosts';
 
 -- --------------------------------------------------------
 
@@ -797,7 +797,7 @@ CREATE TABLE IF NOT EXISTS `nagios_instances` (
   `instance_name` varchar(64) NOT NULL default '',
   `instance_description` varchar(128) NOT NULL default '',
   PRIMARY KEY  (`instance_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Location names of various Nagios installations';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Location names of various Nagios installations';
 
 -- --------------------------------------------------------
 
@@ -816,7 +816,7 @@ CREATE TABLE IF NOT EXISTS `nagios_logentries` (
   `realtime_data` smallint(6) NOT NULL default '0',
   `inferred_data_extracted` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`logentry_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical record of log entries';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical record of log entries';
 
 -- --------------------------------------------------------
 
@@ -840,7 +840,7 @@ CREATE TABLE IF NOT EXISTS `nagios_notifications` (
   `contacts_notified` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`notification_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`object_id`,`start_time`,`start_time_usec`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical record of host and service notifications';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical record of host and service notifications';
 
 -- --------------------------------------------------------
 
@@ -858,7 +858,7 @@ CREATE TABLE IF NOT EXISTS `nagios_objects` (
   PRIMARY KEY  (`object_id`),
   KEY `objecttype_id` (`objecttype_id`,`name1`,`name2`),
   KEY `name1` (`name1`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Current and historical objects of all kinds';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Current and historical objects of all kinds';
 
 -- --------------------------------------------------------
 
@@ -877,7 +877,7 @@ CREATE TABLE IF NOT EXISTS `nagios_processevents` (
   `program_version` varchar(20) NOT NULL default '',
   `program_date` varchar(10) NOT NULL default '',
   PRIMARY KEY  (`processevent_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical Nagios process events';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical Nagios process events';
 
 -- --------------------------------------------------------
 
@@ -913,7 +913,7 @@ CREATE TABLE IF NOT EXISTS `nagios_programstatus` (
   `global_service_event_handler` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`programstatus_id`),
   UNIQUE KEY `instance_id` (`instance_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Current program status information';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Current program status information';
 
 -- --------------------------------------------------------
 
@@ -928,7 +928,7 @@ CREATE TABLE IF NOT EXISTS `nagios_runtimevariables` (
   `varvalue` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`runtimevariable_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`varname`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Runtime variables from the Nagios daemon';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Runtime variables from the Nagios daemon';
 
 -- --------------------------------------------------------
 
@@ -955,7 +955,7 @@ CREATE TABLE IF NOT EXISTS `nagios_scheduleddowntime` (
   `actual_start_time_usec` int(11) NOT NULL default '0',
   PRIMARY KEY  (`scheduleddowntime_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`object_id`,`entry_time`,`internal_downtime_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Current scheduled host and service downtime';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Current scheduled host and service downtime';
 
 -- --------------------------------------------------------
 
@@ -988,7 +988,7 @@ CREATE TABLE IF NOT EXISTS `nagios_servicechecks` (
   `perfdata` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`servicecheck_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`service_object_id`,`start_time`,`start_time_usec`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical service checks';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical service checks';
 
 -- --------------------------------------------------------
 
@@ -1011,7 +1011,7 @@ CREATE TABLE IF NOT EXISTS `nagios_servicedependencies` (
   `fail_on_critical` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`servicedependency_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`service_object_id`,`dependent_service_object_id`,`dependency_type`,`inherits_parent`,`fail_on_ok`,`fail_on_warning`,`fail_on_unknown`,`fail_on_critical`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Service dependency definitions';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Service dependency definitions';
 
 -- --------------------------------------------------------
 
@@ -1034,7 +1034,7 @@ CREATE TABLE IF NOT EXISTS `nagios_serviceescalations` (
   `escalate_on_critical` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`serviceescalation_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`service_object_id`,`timeperiod_object_id`,`first_notification`,`last_notification`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Service escalation definitions';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Service escalation definitions';
 
 -- --------------------------------------------------------
 
@@ -1049,7 +1049,7 @@ CREATE TABLE IF NOT EXISTS `nagios_serviceescalation_contactgroups` (
   `contactgroup_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`serviceescalation_contactgroup_id`),
   UNIQUE KEY `instance_id` (`serviceescalation_id`,`contactgroup_object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Service escalation contact groups';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Service escalation contact groups';
 
 -- --------------------------------------------------------
 
@@ -1064,7 +1064,7 @@ CREATE TABLE IF NOT EXISTS `nagios_serviceescalation_contacts` (
   `contact_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`serviceescalation_contact_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`serviceescalation_id`,`contact_object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1080,7 +1080,7 @@ CREATE TABLE IF NOT EXISTS `nagios_servicegroups` (
   `alias` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`servicegroup_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`servicegroup_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Servicegroup definitions';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Servicegroup definitions';
 
 -- --------------------------------------------------------
 
@@ -1095,7 +1095,7 @@ CREATE TABLE IF NOT EXISTS `nagios_servicegroup_members` (
   `service_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`servicegroup_member_id`),
   UNIQUE KEY `instance_id` (`servicegroup_id`,`service_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Servicegroup members';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Servicegroup members';
 
 -- --------------------------------------------------------
 
@@ -1160,7 +1160,7 @@ CREATE TABLE IF NOT EXISTS `nagios_services` (
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`service_object_id`),
   KEY `host_object_id` (`host_object_id`),
   KEY `service_object_id` (`service_object_id`)  
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Service definitions';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Service definitions';
 
 -- --------------------------------------------------------
 
@@ -1218,7 +1218,7 @@ CREATE TABLE IF NOT EXISTS `nagios_servicestatus` (
   `check_timeperiod_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`servicestatus_id`),
   UNIQUE KEY `object_id` (`service_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Current service status information';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Current service status information';
 
 -- --------------------------------------------------------
 
@@ -1233,7 +1233,7 @@ CREATE TABLE IF NOT EXISTS `nagios_service_contactgroups` (
   `contactgroup_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`service_contactgroup_id`),
   UNIQUE KEY `instance_id` (`service_id`,`contactgroup_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Service contact groups';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Service contact groups';
 
 -- --------------------------------------------------------
 
@@ -1248,7 +1248,7 @@ CREATE TABLE IF NOT EXISTS `nagios_service_contacts` (
   `contact_object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`service_contact_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`service_id`,`contact_object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1271,7 +1271,7 @@ CREATE TABLE IF NOT EXISTS `nagios_statehistory` (
   `last_hard_state` smallint(6) NOT NULL default '-1',
   `output` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`statehistory_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical host and service state changes';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical host and service state changes';
 
 -- --------------------------------------------------------
 
@@ -1294,7 +1294,7 @@ CREATE TABLE IF NOT EXISTS `nagios_systemcommands` (
   `output` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`systemcommand_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`start_time`,`start_time_usec`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical system commands that are executed';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical system commands that are executed';
 
 -- --------------------------------------------------------
 
@@ -1313,7 +1313,7 @@ CREATE TABLE IF NOT EXISTS `nagios_timedeventqueue` (
   `object_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`timedeventqueue_id`),
   KEY `instance_id` (`instance_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Current Nagios event queue';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Current Nagios event queue';
 
 -- --------------------------------------------------------
 
@@ -1336,7 +1336,7 @@ CREATE TABLE IF NOT EXISTS `nagios_timedevents` (
   `deletion_time_usec` int(11) NOT NULL default '0',
   PRIMARY KEY  (`timedevent_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`event_type`,`scheduled_time`,`object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Historical events from the Nagios event queue';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Historical events from the Nagios event queue';
 
 -- --------------------------------------------------------
 
@@ -1352,7 +1352,7 @@ CREATE TABLE IF NOT EXISTS `nagios_timeperiods` (
   `alias` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`timeperiod_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`timeperiod_object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Timeperiod definitions';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Timeperiod definitions';
 
 -- --------------------------------------------------------
 
@@ -1369,4 +1369,4 @@ CREATE TABLE IF NOT EXISTS `nagios_timeperiod_timeranges` (
   `end_sec` int(11) NOT NULL default '0',
   PRIMARY KEY  (`timeperiod_timerange_id`),
   UNIQUE KEY `instance_id` (`timeperiod_id`,`day`,`start_sec`,`end_sec`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Timeperiod definitions';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Timeperiod definitions';
