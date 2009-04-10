@@ -1019,7 +1019,8 @@
 	}
 
 	function getAllMyServiceHosts($service_id = NULL)	{
-		if (!$service_id) return;
+		if (!$service_id) 
+			return;
 		global $pearDB;
 		$hosts = array();
 		$DBRESULT =& $pearDB->query("SELECT host_host_id, hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
@@ -1494,14 +1495,6 @@
 	 *
 	 * @return	string	$conf_ndo["db_prefix"]	(string contains prefix like "nagios_")
 	 */		
-	function getNDOPrefix(){
-		global $pearDB;
-		
-		$DBRESULT =& $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
-		$conf_ndo =& $DBRESULT->fetchRow();
-		unset($DBRESULT);
-		return $conf_ndo["db_prefix"];		
-	}
 	
 	/* Ajax tests */
 	function get_error($motif){
