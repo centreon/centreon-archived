@@ -128,7 +128,7 @@ case "$1" in
     # Test if running directory exist.
     rundir_exist
     echo "Starting Centcore : centcore"
-    su - @NAGIOS_USER@ -c "nice -n $NICE $Bin &"
+    su - @NAGIOS_USER@ -c "nice -n $NICE $Bin >> $DemLog 2>&1 &"
     if [ -d $LockDir ]; then touch $LockDir/$LockFile; fi
     exit 0
     ;;
