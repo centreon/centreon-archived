@@ -9,13 +9,13 @@
 		        	<input type="radio" name="period_choice" />&nbsp;
 	        	</td>
 	        	<td style='white-space:nowrap;'>
-		        	&nbsp;<b>{$form.period.label}</b>&nbsp;{$form.period.html}
+		        	<b>{$form.period.label}</b>&nbsp;{$form.period.html}
 	        	</td>
 				<td style='white-space:nowrap;'>
 					<input type="radio" name="period_choice" value="custom" checked="checked" />
 				</td>
 				<td style='white-space:nowrap;'>
-					&nbsp;<b>{$from}</b>&nbsp;<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="10" />
+					<b>{$from}</b>&nbsp;<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="10" />
 					&nbsp;<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="5" />
 					&nbsp;<b>{$to}</b>&nbsp;<input id="EndDate" name="EndDate" type="text" value="" onclick="displayDatePicker('EndDate', this)" size="10" />
 					&nbsp;<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="5" />&nbsp;
@@ -27,4 +27,4 @@
 		</table>
 	</form>
 </div>
-<div id="graphView4xml">.</div>
+<div id="graphView4xml"></div>

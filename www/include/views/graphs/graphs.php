@@ -223,7 +223,7 @@
 		tree.openItem(nodeId);
 		if (nodeId.substring(0,2) == 'HS' || nodeId.substring(0,2) == 'MS'){
 			var graphView4xml = document.getElementById('graphView4xml');
-			graphView4xml.innerHTML="..graph.." + nodeId;
+			graphView4xml.innerHTML="";
 			graph_4_host(nodeId);
 		}
 	}
