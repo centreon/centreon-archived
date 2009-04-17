@@ -15,20 +15,18 @@
  * For information : contact@centreon.com
  */
 
-	$debugXML = 0;
-	$buffer = '';
-
 	//include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once "/etc/centreon/centreon.conf.php";	
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
-	$pearDB = new CentreonDB();
-	$pearDBndo = new CentreonDB("ndo");
-	$pearDBO = new CentreonDB("centstorage");
+	$pearDB 	= new CentreonDB();
+	$pearDBndo 	= new CentreonDB("ndo");
+	$pearDBO 	= new CentreonDB("centstorage");
 	
 	/* PHP functions */
 	
 	include_once $centreon_path . "www/include/common/common-Func.php";
+	include_once $centreon_path . "www/include/views/graphs/common-Func.php";
 
 	/*
 	 * Include Access Class
@@ -40,56 +38,7 @@
 		header("Content-type: application/xhtml+xml"); 
 	} else {
 		header("Content-type: text/xml"); 
-	} 
-
-	function getMyHostGraphs($host_id = NULL)	{
-		global $pearDBO;
-		if (!isset($host_id))
-			return NULL;
-		$tab_svc = array();
-
-		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `hidden` = '0' AND `trashed` = '0' ORDER BY `service_description`");
-		while ($row =& $DBRESULT->fetchRow())
-			$tab_svc[$row["service_id"]] = 1;
-		return $tab_svc;
 	}
-	
-	function getHostGraphedList()	{
-		global $pearDBO;
-		$tab = array();
-		$DBRESULT =& $pearDBO->query("SELECT `host_id` FROM `index_data` WHERE `hidden` = '0' AND `trashed` = '0' ORDER BY `host_name`");
-		while ($row =& $DBRESULT->fetchRow())
-			$tab[$row["host_id"]] = 1;
-		return $tab;
-	}
-	
-	function checkIfServiceSgIsEn($host_id = NULL, $service_id = NULL)	{
-		global $pearDBO;
-		if (!isset($host_id) || !isset($service_id))
-			return NULL;
-		$tab_svc = array();
-
-		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."' AND `hidden` = '0' AND `trashed` = '0'");
-		$num_row =& $DBRESULT->numRows();
-		$DBRESULT->free();
-		return $num_row;
-	}
-
-	/* 
-	 * if debug == 0 => Normal, debug == 1 => get use, 
-	 * debug == 2 => log in file (log.xml) 
-	 */
-	
-	/* Connect to oreon DB */
-	$dsn = array('phptype'  => 'mysql',
-			     'username' => $conf_centreon['user'],
-			     'password' => $conf_centreon['password'],
-			     'hostspec' => $conf_centreon['hostCentreon'],
-			     'database' => $conf_centreon['db']);
-	$options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
-	
-	$pearDB =& DB::connect($dsn, $options);
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 	global $is_admin, $user_id;
 
@@ -106,9 +55,15 @@
 		exit();
 		
 	$normal_mode = 1;
+	
+	/*
+	 * Get Parameters
+	 */
 	(isset($_GET["mode"])) ? $normal_mode = $_GET["mode"] : $normal_mode = 1;
 	(isset($_GET["id"])) ? $url_var = $_GET["id"] : $url_var = 0;
-
+	(isset($_GET["search"])) ? $search = $_GET["search"] : $search = 0;
+	(isset($_GET["search_host"])) ? $search = $_GET["search_host"] : $search = 0;
+	
 	$type = "root";
 	$id = "0";
 	if (strlen($url_var) > 1){
@@ -116,6 +71,10 @@
 		$type = substr($url_var, 0, 2);
 		$id = substr($url_var, 3, strlen($url_var));
 	}
+	
+	/*
+	 * Initiate XML
+	 */
 	$buffer = new CentreonXML();
 	if ($normal_mode){
 		$i = 0;
@@ -126,7 +85,7 @@
 			/*
 			 * Get Hosts
 			 */
-			$hosts = getMyHostGroupHosts($id);
+			$hosts = getMyHostGroupHosts($id, $search);
 			foreach ($hosts as $host){				
 				if (host_has_one_or_more_GraphService($host)) {
 					if ($is_admin || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host]))) { 
@@ -205,7 +164,10 @@
 			 * Send Service Group list
 			 */
 			$lcaSG = $access->getServiceGroups();
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
+			if ($search != "")
+				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup WHERE `sg_name` LIKE '%$search%' ORDER BY `sg_name`");
+			else
+				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
 			while ($SG =& $DBRESULT->fetchRow()){
 			    $i++;
 				if (SGIsNotEmpty($SG["sg_id"])) {
@@ -245,7 +207,10 @@
 			/*
 			 * Send Host Group list
 			 */
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
+			if ($search != "")
+				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ORDER BY `hg_name`");			
+			else
+				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
 			while ($HG =& $DBRESULT->fetchRow()) {
 				$i++;				
 				if (HG_has_one_or_more_host($HG["hg_id"])){
@@ -263,14 +228,17 @@
 				}
 			}
 			$DBRESULT->free();
+			
 			/*
 			 * Hosts Alone
 			 */
-			
 			$cpt = 0;
 			$str = "";
 			$hostWithGraph = getHostGraphedList();
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' ORDER BY host_name");
+			$searchSTR = "";
+			if ($search != "")
+				$searchSTR = " AND (`host_name` LIKE '%$search%' OR `host_alias` LIKE '%$search%') ";
+			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' $searchSTR ORDER BY host_name");
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
 				if (isset($hostWithGraph[$host["host_id"]])){
@@ -306,7 +274,10 @@
 			 */
 			$cpt = 0;
 			$str = 0;
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
+			if ($search != "")
+				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service WHERE `meta_name` LIKE '%$search%' ORDER BY `meta_name`");
+			else
+				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");	
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
 				$cpt++;
@@ -325,6 +296,9 @@
 			}
 			
 		} else {
+			/*
+			 * Init HostGroups Line
+			 */
 			$buffer->startElement("item");
 			$buffer->writeAttribute("nocheckbox", "1");
 			$buffer->writeAttribute("open", "1");
@@ -338,19 +312,25 @@
 			$buffer->writeAttribute("im2", "../16x16/clients.gif");
 			$buffer->writeElement("itemtext", "label");
 			$buffer->endElement();
-			$buffer->startElement("item");
-			$buffer->writeAttribute("nocheckbox", "1");
-			$buffer->writeAttribute("open", "1");
-			$buffer->writeAttribute("call", "1");
-			$buffer->writeAttribute("id", "RS_0");
-			$buffer->writeAttribute("select", "1");
-			$buffer->writeAttribute("child", "1");
-			$buffer->writeAttribute("text", _("ServiceGroups"));
-			$buffer->writeAttribute("im0", "../16x16/clients.gif");
-			$buffer->writeAttribute("im1", "../16x16/clients.gif");
-			$buffer->writeAttribute("im2", "../16x16/clients.gif");
-			$buffer->writeElement("itemtext", "label");
-			$buffer->endElement();			
+			
+			/*
+			 * Init ServiceGroups Line
+			 */
+			if (getServiceGroupCount($search)) {
+				$buffer->startElement("item");
+				$buffer->writeAttribute("nocheckbox", "1");
+				$buffer->writeAttribute("open", "1");
+				$buffer->writeAttribute("call", "1");
+				$buffer->writeAttribute("id", "RS_0");
+				$buffer->writeAttribute("select", "1");
+				$buffer->writeAttribute("child", "1");
+				$buffer->writeAttribute("text", _("ServiceGroups"));
+				$buffer->writeAttribute("im0", "../16x16/clients.gif");
+				$buffer->writeAttribute("im1", "../16x16/clients.gif");
+				$buffer->writeAttribute("im2", "../16x16/clients.gif");
+				$buffer->writeElement("itemtext", "label");
+				$buffer->endElement();			
+			}
 		}
 	} else {
 		/* 
@@ -378,7 +358,7 @@
 		$buffer->writeAttribute("select", "1");
 		$buffer->writeAttribute("child", "0");
 		$buffer->writeAttribute("id", "RR_0");
-		$buffer->writeAttribute("text", "HostGroups");
+		$buffer->writeAttribute("text", _("HostGroups"));
 		$buffer->writeAttribute("im0", "../16x16/clients.gif");
 		$buffer->writeAttribute("im1", "../16x16/clients.gif");
 		$buffer->writeAttribute("im2", "../16x16/clients.gif");		

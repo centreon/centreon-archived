@@ -36,6 +36,18 @@
  * 
  */
 
+	function getServiceGroupCount($search = NULL)	{
+		global $pearDB;
+
+		if ($search != "")
+			$DBRESULT =& $pearDB->query("SELECT count(sg_id) FROM `servicegroup` WHERE sg_name LIKE '%$search%'");
+		else
+			$DBRESULT =& $pearDB->query("SELECT count(sg_id) FROM `servicegroup`");
+		$num_row =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
+		return $num_row["count(sg_id)"];
+	}
+
 	function getMyHostGraphs($host_id = NULL)	{
 		global $pearDBO;
 		if (!isset($host_id))
