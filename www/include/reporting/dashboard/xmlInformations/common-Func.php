@@ -36,35 +36,23 @@
  * 
  */
  	
-	require_once("@CENTREON_ETC@/centreon.conf.php");
-	require_once($centreon_path."www/class/centreonDB.class.php");
-	 /*
-	  * returns a connection to centstorage database
-	  */
-	function getCentStorageConnection() { 
-		$pearDBO = new CentreonDB("centstorage");
-		return $pearDBO;		
-	}			
-	/*
-	 * returns a connection to centreon database
-	 */
-	function getCentreonConnection() {
-		$pearDB = new CentreonDB();
-		return $pearDB;
-	 }
+	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once $centreon_path."www/class/centreonDB.class.php";
+	
 	/*
 	 * Create a XML node for each day stats (in $row) for a service, a servicegroup, an host or an hostgroup
 	 */
 	function fillBuffer($statesTab, $row, $color) {
 		global $buffer;
+		
 		$statTab = array();
 		$totalTime = 0;
 		$sumTime = 0;
-		foreach($statesTab as $key => $value) {
+		foreach ($statesTab as $key => $value) {
 			if (isset($row[$value."TimeScheduled"])) {
 				$statTab[$value."_T"] = $row[$value."TimeScheduled"];
 				$totalTime += $row[$value."TimeScheduled"];
-			}else
+			} else
 				$statTab[$value."_T"] = 0;
 			if (isset($row[$value."nbEvent"]))
 				$statTab[$value."_A"] = $row[$value."nbEvent"];
@@ -74,12 +62,13 @@
 		}
 		$date_start = $row["date_start"];
 		$date_end = $row["date_end"];
-		foreach($statesTab as $key => $value) {
+		foreach ($statesTab as $key => $value) {
 			if ($totalTime)
 				$statTab[$value."_MP"] = round(($statTab[$value."_T"] / ($totalTime) * 100),2);
 			else
 				$statTab[$value."_MP"] = 0;
 		}
+	
 		/*
 		 * Popup generation for each day
 		 */
@@ -98,7 +87,7 @@
 		$t = $totalTime;
 		$t = round(($t - ($t * 0.11574074074)),2);
 		
-		foreach($statesTab as $key => $value) {
+		foreach ($statesTab as $key => $value) {
 			if ($statTab[$value."_MP"] > 0){
 				$day = date("d", $date_start);
 				$year = date("Y", $date_start);
