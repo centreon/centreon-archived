@@ -4,7 +4,7 @@
 <div>
 	<div id="div2"   valign="top" align='left' >	
 		<form name="formu2">
-		    <table class="ajaxOption" >
+		    <table class="ajaxOption">
 	            <tr>
 	            	<td style="vertical-align:top;"><b><xsl:value-of select="//lang/ty"/></b>
 	            	</td>
@@ -12,18 +12,7 @@
 						<table>
 			               	<tr>
 			               		<td>
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
-										<xsl:attribute name="name">notification</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/notification = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-	               					<xsl:value-of select="//lang/n"/>
-			               		</td>
-			               		<td>
-									<xsl:element name='input'>
+	               					<xsl:element name='input'>
 										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">alert</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
@@ -32,6 +21,17 @@
 										</xsl:if>
 									</xsl:element>
 	               					<xsl:value-of select="//lang/a"/>
+			               		</td>
+			               		<td>
+									<xsl:element name='input'>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="name">oh</xsl:attribute>
+										<xsl:attribute name="type">checkbox</xsl:attribute>
+										<xsl:if test="//infos/oh = 'true'">
+											<xsl:attribute name="checked">checked</xsl:attribute>
+										</xsl:if>
+									</xsl:element>
+	               					<xsl:value-of select="//lang/oh"/>
 			               		</td>
 			               	</tr>
 			               	<tr>
@@ -46,15 +46,24 @@
 									</xsl:element>
 	               					<xsl:value-of select="//lang/e"/>
 			               		</td>
-								<td></td>
+								<td>
+									<xsl:element name='input'>
+										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="name">notification</xsl:attribute>
+										<xsl:attribute name="type">checkbox</xsl:attribute>
+										<xsl:if test="//infos/notification = 'true'">
+											<xsl:attribute name="checked">checked</xsl:attribute>
+										</xsl:if>
+									</xsl:element>
+	               					<xsl:value-of select="//lang/n"/>
+								</td>
 			               	</tr>
 						</table>
 					</td>
-			        <td style="vertical-align:top;"><b><xsl:value-of select="//lang/h"/></b>
-			        </td>
-					<td>
+			        <td>
 						<table style="">
 			               	<tr>
+			               		<td><b><xsl:value-of select="//lang/h"/></b></td>
 			               		<td>
 									<xsl:element name='input'>
 										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
@@ -77,9 +86,7 @@
 									</xsl:element>
 	               					<xsl:value-of select="//lang/do"/>
 			               		</td>
-			               	</tr>
-			               	<tr>
-			               		<td>
+			               		<td colspan="2">
 									<xsl:element name='input'>
 										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
 										<xsl:attribute name="name">unreachable</xsl:attribute>
@@ -90,14 +97,9 @@
 									</xsl:element>
 	               					<xsl:value-of select="//lang/un"/>
 			               		</td>
-								<td></td>
 			               	</tr>
-						</table>
-					</td>
-               		<td style="vertical-align:top;"><b><xsl:value-of select="//lang/s"/></b></td>
-					<td>
-						<table style="">
-			               	<tr>			               	
+			               	<tr>	
+			               		<td><b><xsl:value-of select="//lang/sc"/></b></td>		               	
 			               		<td>
 									<xsl:element name='input'>
 										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
@@ -120,8 +122,6 @@
 									</xsl:element>
 	               					<xsl:value-of select="//lang/w"/>
 			               		</td>
-			               	</tr>
-			               	<tr>
 			               		<td>
 									<xsl:element name='input'>
 										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
@@ -147,23 +147,24 @@
 			               	</tr>
 						</table>
 					</td>
-					<td style="vertical-align:top;"><b><xsl:value-of select="//lang/T"/></b></td>
-					<td>
-						<table>
-			               	<tr>			               	
-			               		<td rowspan="2">
-									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
-										<xsl:attribute name="name">oh</xsl:attribute>
-										<xsl:attribute name="type">checkbox</xsl:attribute>
-										<xsl:if test="//infos/oh = 'true'">
-											<xsl:attribute name="checked">checked</xsl:attribute>
+					<td valign="top">
+						<table style="">
+			               	<tr>
+			               		<td rowspan="2" valign="top"><b><xsl:value-of select="//lang/sch"/></b></td>
+			               		<td>
+			               			<xsl:element name='input'>
+										<xsl:attribute name="name">search_H</xsl:attribute>
+										<xsl:attribute name="type">text</xsl:attribute>
+										<xsl:if test="//infos/search_H = 'true'">
+											<xsl:attribute name="value"><xsl:value-of select="//infos/search_H"/></xsl:attribute>
 										</xsl:if>
 									</xsl:element>
-	               					<xsl:value-of select="//lang/oh"/>
 			               		</td>
 			               	</tr>
-						</table>
+			               	<tr>
+			               		<td></td>
+			               	</tr>
+			            </table>
 					</td>
 				</tr>
 	       	</table>

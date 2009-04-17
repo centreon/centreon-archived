@@ -55,7 +55,8 @@
 	/*
 	 * pearDB init
 	 */ 	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	//include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
@@ -124,6 +125,9 @@
 	(isset($_GET["error"]) 		&& !check_injection($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
 	(isset($_GET["oh"]) 		&& !check_injection($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
 
+	(isset($_GET["search_H"]) 	&& !check_injection($_GET["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($_GET["search_H"])) : $search_H = "VIDE";
+	(isset($_GET["search_S"]) 	&& !check_injection($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
+
 	if ($contact_id){
 		$user_params = get_user_param($contact_id, $pearDB);		
 		
@@ -151,6 +155,11 @@
 			$user_params["log_filter_error"] = 1;
 		if (!isset($user_params["log_filter_alert"]))
 			$user_params["log_filter_alert"] = 1;
+			
+		if (!isset($user_params["search_H"]))
+			$user_params["search_H"] = "";
+		if (!isset($user_params["search_S"]))
+			$user_params["search_S"] = "";
 		
 		$alert = $user_params["log_filter_alert"];
 		$notification = $user_params["log_filter_notif"];
@@ -163,6 +172,9 @@
 		$warning = $user_params["log_filter_svc_warning"];
 		$critical = $user_params["log_filter_svc_critical"];
 		$oh = $user_params["log_filter_oh"];
+		
+		$search_H = $user_params["search_H"];
+		$search_S = $user_params["search_S"];
 	}
 
 	if ($StartDate != "" && $StartTime != ""){
@@ -215,6 +227,8 @@
 	$buffer->writeElement("critical", $critical);
 	$buffer->writeElement("unknown", $unknown);
 	$buffer->writeElement("oh", $oh);
+	$buffer->writeElement("search_H", $search_H);
+	$buffer->writeElement("search_S", $search_S);
 	$buffer->endElement();
 	
 	$msg_type_set = array ();
@@ -635,7 +649,7 @@
 	 * Translation for Menu.
 	 */
 	$buffer->startElement("lang");
-	$buffer->writeElement("ty", _("Type"));
+	$buffer->writeElement("ty", _("Message Type"));
 	$buffer->writeElement("n", _("Notifications"));
 	$buffer->writeElement("a", _("Alerts"));
 	$buffer->writeElement("e", _("Errors"));
@@ -648,14 +662,15 @@
 	$buffer->writeElement("cr", _("Critical"));
 	$buffer->writeElement("uk", _("Unknown"));
 	$buffer->writeElement("oh", _("Hard Only"));
+	$buffer->writeElement("sch", _("Search"));
 	
 	/*
 	 * Translation for tables.
 	 */
 	$buffer->writeElement("d", _("Day"));
 	$buffer->writeElement("t", _("Time"));
-	$buffer->writeElement("h", _("Host"));
-	$buffer->writeElement("s", _("Status"));
+	$buffer->writeElement("h", _("Host Status"));
+	$buffer->writeElement("sc", _("Service Status"));
 	$buffer->writeElement("T", _("Type"));
 	$buffer->writeElement("R", _("Retry"));
 	$buffer->writeElement("o", _("Output"));

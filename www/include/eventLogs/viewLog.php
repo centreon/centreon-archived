@@ -75,11 +75,28 @@
 		$user_params["log_filter_alert"] = 1;
 	if (!isset($user_params["log_filter_oh"]))
 		$user_params["log_filter_oh"] = 1;
+		
+	if (!isset($user_params["search_H"]))
+		$user_params["search_H"] = "";
+	if (!isset($user_params["search_S"]))
+		$user_params["search_S"] = "";
 	
+	/*
+	 * Pear library
+	 */
+	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+
+	/*
+	 * Add QuickSearch ToolBar
+	 */
+	include_once("./include/common/quickSearch.php");
+
 	/*
 	 * Path to the configuration dir
 	 */
 	$path = "./include/eventLogs/";
+	
 
 	/*
 	 * Smarty template Init
@@ -87,11 +104,6 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	/*
-	 * Pear library
-	 */
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	$openid = '0';
 	$open_id_sub = '0';
@@ -186,10 +198,10 @@
     tree.setImagePath("./img/icones/csh_vista/");
     
     //link tree to xml
-    tree.setXMLAutoLoading("./include/common/XmlTree/GetXmlTree.php"); 
+    tree.setXMLAutoLoading("./include/eventLogs/XmlTree/GetXmlTree.php"); 
             
     //load first level of tree
-    tree.loadXML("./include/common/XmlTree/GetXmlTree.php?sid=<?php print session_id(); ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
+    tree.loadXML("./include/eventLogs/XmlTree/GetXmlTree.php?search_host=<?php print $search; ?>&sid=<?php print session_id(); ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 	// system to reload page after link with new url
 	//set function object to call on node select 
@@ -239,8 +251,6 @@
 	function onCheck(){
 		multi = 1;
 		log_4_host(tree.getAllChecked(),'');
-		
-		// if (tree.getAllChecked()){ // OLD ROUTINE
 	}
 		
 	// it's fake methode for using ajax system by default
@@ -276,6 +286,9 @@
 	var _alert 		= <?php echo $user_params["log_filter_alert"]; ?>;
 	
 	var _oh 		= <?php echo $user_params["log_filter_oh"]; ?>;
+
+	var _search_H	= "<?php echo $user_params["search_H"]; ?>";
+	var _search_S	= "<?php echo $user_params["search_S"]; ?>";
 	
 	// Period
 	var currentTime = new Date();
@@ -352,19 +365,24 @@
 		if (document.formu2 && document.formu2.oh)
 			_oh = document.formu2.oh.checked;
 	
+		if (document.formu2 && document.formu2.search_H)
+			_search_H = document.formu2.search_H.checked;
+		if (document.formu2 && document.formu2.search_S)
+			_search_S = document.formu2.search_S.checked;
+			
 		tree.selectItem(id);
 	
 		var proc = new Transformation();
 		var _addrXSL = "./include/eventLogs/log.xsl";
 
 		if (!type){		
-			var _addr = './include/eventLogs/GetXmlLog.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+			var _addr = './include/eventLogs/GetXmlLog.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 			proc.setXml(_addr)
 			proc.setXslt(_addrXSL)
 			proc.transform("logView4xml");
 		} else{
 			openid = document.getElementById('openid').innerHTML;
-			var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+openid+'&sid=<?php echo $sid;?>&export=1';
+			var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+openid+'&sid=<?php echo $sid;?>&export=1';
 			document.location.href = _addr;
 		}
 	}
