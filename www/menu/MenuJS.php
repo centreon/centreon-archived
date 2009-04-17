@@ -43,31 +43,31 @@
 ?>
 <script src="./menu/xsl/xslt.js" type="text/javascript"></script>
 <script>
-var _sid='<?php echo $sid?>';
-var _p='<?php echo $p?>';
-var _o='<?php echo $o?>';
-
-var _addrXML_menu = "./menu/xml/menuXML.php?";
-var _addrXSL_menu = "./menu/xsl/menu.xsl";
-var _timeoutID = 0;
-var _on = 1;
-var _resultCache=new Object();
-var _lock_menu = 0;
-var _previous_click = 0;
-
-function loadAjax(p){
-	if (_previous_click != p) {
-		_lock_menu = 1;
-		var proc = new MenuTransformation();
-		_addrXML_menu = "./menu/xml/menuXML.php?sid="+_sid+"&menu="+p;	
-		proc.setXml(_addrXML_menu)
-		proc.setXslt(_addrXSL_menu)
-		proc.transform("forMenuAjax");
-		_lock_menu = 0;
-		_previous_click = p;
+	var _sid='<?php echo $sid?>';
+	var _p='<?php echo $p?>';
+	var _o='<?php echo $o?>';
+	
+	var _addrXML_menu = "./menu/xml/menuXML.php?";
+	var _addrXSL_menu = "./menu/xsl/menu.xsl";
+	var _timeoutID = 0;
+	var _on = 1;
+	var _resultCache=new Object();
+	var _lock_menu = 0;
+	var _previous_click = 0;
+	
+	function loadAjax(p){
+		if (_previous_click != p) {
+			_lock_menu = 1;
+			var proc = new MenuTransformation();
+			_addrXML_menu = "./menu/xml/menuXML.php?sid="+_sid+"&menu="+p;	
+			proc.setXml(_addrXML_menu)
+			proc.setXslt(_addrXSL_menu)
+			proc.transform("forMenuAjax");
+			_lock_menu = 0;
+			_previous_click = p;
+		}
+		else {
+			window.location.replace("./main.php?p="+p);
+		}
 	}
-	else {
-		window.location.replace("./main.php?p="+p);
-	}
-}
 </script>
