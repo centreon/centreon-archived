@@ -37,39 +37,43 @@
  */
 	
 	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
-	require_once $centreon_path.'www/class/other.class.php';
-	require_once $centreon_path.'www/class/centreonXML.class.php';
-	require_once $centreon_path.'www/include/reporting/dashboard/xmlInformations/common-Func.php';
 	
-	
-	$buffer = new CentreonXML();	
+	require_once $centreon_path."www/include/reporting/dashboard/common-Func.php";
+	require_once $centreon_path."www/class/other.class.php";
+	require_once $centreon_path."www/class/centreonXML.class.php";
+	require_once $centreon_path."www/class/centreonDB.class.php";
+	require_once $centreon_path."www/include/reporting/dashboard/xmlInformations/common-Func.php";
+		
+	$buffer = new CentreonXML();
 	$buffer->startElement("data");	
-	
-	$state["OK"] = _("OK");
-	$state["WARNING"] = _("WARNING");
-	$state["CRITICAL"] = _("CRITICAL");
-	$state["UNKNOWN"] = _("UNKNOWN");
-	$state["UNDETERMINED"] = _("UNDETERMINED");
-	
+
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
+
+	/*
+	 * Initiate Table
+	 */
+	$state 		= array("OK" => _("OK"), "WARNING" => _("WARNING"), "CRITICAL" => _("CRITICAL"), "UNKNOWN" => _("UNKNOWN"), "UNDETERMINED" => _("UNDETERMINED"));
+	$statesTab 	= array("OK", "WARNING", "CRITICAL", "UNKNOWN");
 	
 	if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])){
+		
 		$color = array();
-		$get_color = $_GET["color"];
-
-		foreach ($get_color as $key => $value)
-			$color[$key] = $value;
-
-		$pearDBO = getCentStorageConnection();
-		$request = "SELECT  * FROM `log_archive_service` WHERE host_id = '".$_GET["host_id"]."' AND service_id = ".$_GET["id"]." ORDER BY `date_start` DESC";
-		$DBRESULT =& $pearDBO->query($request);
-		$statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
-		while ($row =& $DBRESULT->fetchRow())
+		foreach ($_GET["color"] as $key => $value) {
+			$color[$key] = htmlentities($value, ENT_QUOTES);
+		}
+	
+		$DBRESULT =& $pearDBO->query("SELECT  * FROM `log_archive_service` WHERE host_id = '".$_GET["host_id"]."' AND service_id = ".$_GET["id"]." ORDER BY `date_start` DESC");		
+		while ($row =& $DBRESULT->fetchRow()) {
 			fillBuffer($statesTab, $row, $color);
+		}
+		$DBRESULT->free();
+		
 	} else {
 		$buffer->writeElement("error", "error");		
 	}
-	$buffer->endElement();	
+	$buffer->endElement();
+	
 	header('Content-Type: text/xml');
 	$buffer->output();
 ?>

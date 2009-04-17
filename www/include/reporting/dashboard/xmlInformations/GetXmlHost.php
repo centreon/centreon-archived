@@ -31,7 +31,7 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
+ * SVN : $URL$
  * SVN : $Id: GetXmlHost.php 7139 2008-11-24 17:19:45Z jmathis $
  * 
  */

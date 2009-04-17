@@ -37,38 +37,40 @@
  */
   	
 	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
-	require_once $centreon_path.'www/class/other.class.php';
-	require_once $centreon_path.'www/class/centreonXML.class.php';
-	require_once $centreon_path.'www/include/reporting/dashboard/xmlInformations/common-Func.php';
 	
+	require_once $centreon_path."www/include/reporting/dashboard/common-Func.php";
+	require_once $centreon_path."www/class/other.class.php";
+	require_once $centreon_path."www/class/centreonXML.class.php";
+	require_once $centreon_path."www/class/centreonDB.class.php";
+	require_once $centreon_path."www/include/reporting/dashboard/xmlInformations/common-Func.php";
+		
 	$buffer = new CentreonXML();
 	$buffer->startElement("data");	
 
-	$state["OK"] = _("OK");
-	$state["WARNING"] = _("WARNING");
-	$state["CRITICAL"] = _("CRITICAL");
-	$state["UNKNOWN"] = _("UNKNOWN");
-	$state["UNDETERMINED"] = _("UNDETERMINED");
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
+
+	/*
+	 * Initiate Table
+	 */
+	$state 		= array("OK" => _("OK"), "WARNING" => _("WARNING"), "CRITICAL" => _("CRITICAL"), "UNKNOWN" => _("UNKNOWN"), "UNDETERMINED" => _("UNDETERMINED"));
+	$statesTab 	= array("OK", "WARNING", "CRITICAL", "UNKNOWN");
 	
 	if (isset($_GET["id"]) && isset($_GET["color"])){
 		$color = array();
-		$get_color = $_GET["color"];
-		foreach ($get_color as $key => $value) {
-			$color[$key] = $value;
+		foreach ($_GET["color"] as $key => $value) {
+			$color[$key] = htmlentities($value, ENT_QUOTES);
 		}
-		$pearDBO = getCentStorageConnection();
-		$pearDB = getCentreonConnection();
+		
 		$str = "";
-		$request = "SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$_GET["id"]."'";
-		$DBRESULT = & $pearDB->query($request);
+		$DBRESULT = & $pearDB->query("SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$_GET["id"]."'");
 		while ($sg =& $DBRESULT->fetchRow()) {
 			if ($str != "")
 				$str .= ", ";
 			$str .= $sg["service_service_id"]; 
 		}
 		unset($sg);
-		unset($DBRESULT);
+		$DBRESULT->free();
 	
 		$request =  'SELECT ' .
 					'date_start, date_end, OKnbEvent, CRITICALnbEvent, WARNINGnbEvent, UNKNOWNnbEvent, ' .
@@ -78,11 +80,13 @@
 					'avg( `CRITICALTimeScheduled` ) as "CRITICALTimeScheduled", ' .
 					'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" ' .
 					'FROM `log_archive_service` WHERE `service_id` IN ('.$str.') group by date_end, date_start order by date_start desc';
-		$res = & $pearDBO->query($request);
-		$statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
-		while ($row =& $res->fetchRow())			
+		$res =& $pearDBO->query($request);
+		while ($row =& $res->fetchRow()) {
 			fillBuffer($statesTab, $row, $color);
-	}else {
+		}
+		$DBRESULT->free();
+		
+	} else {
 		$buffer->writeElement("error", "error");		
 	}
 	$buffer->endElement();	
