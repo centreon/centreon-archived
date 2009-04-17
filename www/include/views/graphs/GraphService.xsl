@@ -278,7 +278,7 @@
 						</xsl:if>
 						<xsl:if test="status = 1">
 							<xsl:element name="img">
-							  	<xsl:attribute name="src">./include/views/graphs/statusGraphs/displayServiceStatus.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
+							  	<xsl:attribute name="src">./include/views/graphs/graphStatus/displayServiceStatus.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 							</xsl:element>
 						</xsl:if>
 					</div> 
