@@ -31,7 +31,7 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
+ * SVN : $URL$
  * SVN : $Id: graphs.php 7206 2008-12-04 08:22:24Z jmathis $
  * 
  */ 
@@ -49,6 +49,11 @@
 	 
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+
+	/*
+	 * Add Quick Search
+	 */
+	require_once "./include/common/quickSearch.php";
 
 	/*
 	 * Smarty template Init
@@ -72,13 +77,17 @@
 	function getGetPostValue($str){
 		$value = NULL;
 		if (isset($_GET[$str]) && $_GET[$str])
-			$value = $_GET[$str];
+			$value = htmlentities($_GET[$str], ENT_QUOTES);
 		if (isset($_POST[$str]) && $_POST[$str])
-			$value = $_POST[$str];		
+			$value = htmlentities($_POST[$str], ENT_QUOTES);
 		return $value;
 	}
-
-	$id = getGetPostValue("id");
+	
+	/*
+	 * Get Arguments
+	 */
+	
+	$id 	= getGetPostValue("id");
 	$id_svc = getGetPostValue("svc_id");
 
 	if (isset($id_svc) && $id_svc){
@@ -112,24 +121,25 @@
 	$form->addElement('header', 'title', _("Choose the source to graph"));
 
 	$periods = array(	""=>"",
-						"10800"=>_("Last 3 Hours"),
-						"21600"=>_("Last 6 Hours"),
-						"43200"=>_("Last 12 Hours"),
-						"86400"=>_("Last 24 Hours"),
-						"172800"=>_("Last 2 Days"),
-						"302400"=>_("Last 4 Days"),
-						"604800"=>_("Last 7 Days"),
-						"1209600"=>_("Last 14 Days"),
-						"2419200"=>_("Last 28 Days"),
-						"2592000"=>_("Last 30 Days"),
-						"2678400"=>_("Last 31 Days"),
-						"5184000"=>_("Last 2 Months"),
-						"10368000"=>_("Last 4 Months"),
-						"15552000"=>_("Last 6 Months"),
-						"31104000"=>_("Last Year"));
-
+						"10800"		=> _("Last 3 Hours"),
+						"21600"		=> _("Last 6 Hours"),
+						"43200"		=> _("Last 12 Hours"),
+						"86400"		=> _("Last 24 Hours"),
+						"172800"	=> _("Last 2 Days"),
+						"259200"	=> _("Last 3 Days"),
+						"302400"	=> _("Last 4 Days"),
+						"432000"	=> _("Last 5 Days"),
+						"604800"	=> _("Last 7 Days"),
+						"1209600"	=> _("Last 14 Days"),
+						"2419200"	=> _("Last 28 Days"),
+						"2592000"	=> _("Last 30 Days"),
+						"2678400"	=> _("Last 31 Days"),
+						"5184000"	=> _("Last 2 Months"),
+						"10368000"	=> _("Last 4 Months"),
+						"15552000"	=> _("Last 6 Months"),
+						"31104000"	=> _("Last Year"));
 	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods);
-
+	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 		
@@ -138,40 +148,38 @@
 	$tpl->assign('to', _(" to "));	
 
 	$tpl->display("graphs.ihtml");
-
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
-<link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src='./include/common/javascript/tool.js'></script>
 <script type="text/javascript">
 
-	var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
-    var headID = document.getElementsByTagName("head")[0];  
-    var cssNode = document.createElement('link');
-    cssNode.type = 'text/css';
-    cssNode.rel = 'stylesheet';
-    cssNode.href = css_file;
-    cssNode.media = 'screen';
+	var css_file 	= './include/common/javascript/codebase/dhtmlxtree.css';
+    var headID 		= document.getElementsByTagName("head")[0];  
+    var cssNode 	= document.createElement('link');
+    cssNode.type 	= 'text/css';
+    cssNode.rel 	= 'stylesheet';
+    cssNode.href 	= css_file;
+    cssNode.media 	= 'screen';
+    
     headID.appendChild(cssNode);
 
-	var multi = <?php echo $multi; ?>;
+	var multi 	= <?php echo $multi; ?>;
   	var _menu_div = document.getElementById("menu_40201");
 
 	tree = new dhtmlXTreeObject("menu_40201","100%","100%","1");
     tree.setImagePath("./img/icones/csh_vista/");
     
     //link tree to xml
-    tree.setXMLAutoLoading("./include/views/graphs/GetODSXmlTree.php");
+    tree.setXMLAutoLoading("./include/views/graphs/GetXmlTree.php");
         
     //load first level of tree
-    tree.loadXML("./include/views/graphs/GetODSXmlTree.php?&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
+    tree.loadXML("./include/views/graphs/GetXmlTree.php?<?php if (isset($search) && $search) print "search=$search"; ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
 
 	// system to reload page after link with new url
 	//set function object to call on node select 
-	tree.attachEvent("onClick",onNodeSelect)
+	tree.attachEvent("onClick", onNodeSelect)
 	
 	//set function object to call on node select 
-	tree.attachEvent("onDblClick",onDblClick)
+	tree.attachEvent("onDblClick", onDblClick)
 	
 	//set function object to call on node select 		
 	tree.attachEvent("onCheck",onCheck)
@@ -342,7 +350,7 @@
 		tree.selectItem(id);
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/GraphService.xsl";
-		var _addrXML = './include/views/graphs/GetODSXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 
 		proc.setXml(_addrXML)
 		proc.setXslt(_addrXSL)
