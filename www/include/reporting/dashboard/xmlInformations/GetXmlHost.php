@@ -38,39 +38,35 @@
 		
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	
-	require_once $centreon_path.'www/include/reporting/dashboard/common-Func.php';
-	require_once $centreon_path.'www/class/other.class.php';
-	require_once $centreon_path.'www/class/centreonXML.class.php';
-	require_once $centreon_path.'www/include/reporting/dashboard/xmlInformations/common-Func.php';
-	
+	require_once $centreon_path."www/include/reporting/dashboard/common-Func.php";
+	require_once $centreon_path."www/class/other.class.php";
+	require_once $centreon_path."www/class/centreonXML.class.php";
+	require_once $centreon_path."www/class/centreonDB.class.php";
+	require_once $centreon_path."www/include/reporting/dashboard/xmlInformations/common-Func.php";
+		
 	$buffer = new CentreonXML();
 	$buffer->startElement("data");	
+
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
 
 	/*
 	 * Definition of status
 	 */
-	$state["UP"] = _("UP");
-	$state["DOWN"] = _("DOWN");
-	$state["UNREACHABLE"] = _("UNREACHABLE");
-	$state["UNDETERMINED"] = _("UNDETERMINED");
-
+	$state 		= array("UP" => _("UP"), "DOWN" => _("DOWN"), "UNREACHABLE" => _("UNREACHABLE"), "UNDETERMINED" => _("UNDETERMINED"));
+	$statesTab 	= array("UP", "DOWN", "UNREACHABLE");
+		
 	if (isset($_GET["id"]) && isset($_GET["color"])){
+
 		$color = array();
-		$get_color = $_GET["color"];
-
-		foreach ($get_color as $key => $value)
-			$color[$key] = $value;
-
-		$pearDBO = getCentStorageConnection();
-
-		$pearDB = getCentreonConnection();
-
-		$rq = 'SELECT  * FROM `log_archive_host` WHERE host_id = ' . $_GET["id"] . ' order by date_start desc';			
-		$DBRESULT = & $pearDBO->query($rq);
-		  $statesTab = array("UP", "DOWN", "UNREACHABLE");
-		  while ($row =& $DBRESULT->fetchRow()) {
-		  	fillBuffer($statesTab, $row, $color);
-		  }
+		foreach ($_GET["color"] as $key => $value) {
+			$color[$key] = htmlentities($value, ENT_QUOTES);
+		}
+		
+		$DBRESULT = & $pearDBO->query("SELECT  * FROM `log_archive_host` WHERE host_id = " . $_GET["id"] . " order by date_start desc");
+		while ($row =& $DBRESULT->fetchRow()) {
+			fillBuffer($statesTab, $row, $color);
+		}
 	} else {
 		$buffer->writeElement("error", "error");		
 	}
