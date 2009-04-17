@@ -649,13 +649,22 @@
 		return NULL;
 	}
 
-	function getMyHostGroupHosts($hg_id = NULL)	{
+	function getMyHostGroupHosts($hg_id = NULL, $searchHost = NULL)	{
 		global $pearDB;
 		
 		if (!$hg_id) 
 			return;
+		
+		$searchSTR = "";
+		if (isset($searchHost) && $searchHost != "")
+			$searchSTR = " AND h.host_name LIKE '%$searchHost%' ";
+		
 		$hosts = array();
-		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr, host h WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ORDER by h.host_name");
+		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id " .
+									"FROM hostgroup_relation hgr, host h " .
+									"WHERE hgr.hostgroup_hg_id = '".$hg_id."' " .
+									"AND h.host_id = hgr.host_host_id $searchSTR " .
+									"ORDER by h.host_name");
 		while ($elem =& $DBRESULT->fetchRow())
 			$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 		$DBRESULT->free();
@@ -1495,6 +1504,19 @@
 	 *
 	 * @return	string	$conf_ndo["db_prefix"]	(string contains prefix like "nagios_")
 	 */		
+	
+	function getNDOPrefix(){
+		global $pearDB;
+		
+		$DBRESULT =& $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
+		if(PEAR::isError($DBRESULT)) {
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		}
+		$conf_ndo =& $DBRESULT->fetchRow();
+		unset($DBRESULT);
+		return $conf_ndo["db_prefix"];		
+	}
+	
 	
 	/* Ajax tests */
 	function get_error($motif){
