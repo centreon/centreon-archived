@@ -130,12 +130,10 @@
 				</td>
 			</tr>
 			<tr>
-
 				<td colspan=2 style=' padding:5px;'>
 					<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
 				</td>
 			</tr>
-
 			</table>
 		</td>
 	</tr>

@@ -186,34 +186,7 @@
 				<td colspan=2 style=' padding:5px;'>
 					<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
 				</td>
-			</tr>
-<!--			<tr>
-				<td colspan=2 style=' padding:5px;'>
-					<table class="ListTable" class="left">
-						<tr class='ListHeader'>
-							<td class="FormHeader"colspan=5>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$logTitle}</td>
-						</tr>
-						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter">&nbsp;</td>
-							<td class="ListColHeaderCenter">{$DateTitle}</td>
-							<td class="ListColHeaderCenter">{$EventTitle}</td>
-							<td class="ListColHeaderCenter">{$hostTitle}</td>
-							<td class="ListColHeaderCenter">{$InformationsTitle}</td>
-						</tr>
-						{foreach item=log from=$tab_log}
-						{if $log.type eq "HOST ALERT" or $log.type eq "CURRENT HOST STATE"}
-						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderCenter"></td>
-							<td class="ListColLeft">{$log.time}</td>
-							<td class="ListColLeft">{$log.status} &nbsp; ({$log.state})</td>
-							<td class="ListColLeft">{$log.host}</td>
-							<td class="ListColNoWrap">{$log.output}</td>
-						</tr>
-						{/if}
-						{/foreach}
-					</table>
-				</td>
-			</tr>-->			
+			</tr>			
 			</table>
 		</td>
 	</tr>
