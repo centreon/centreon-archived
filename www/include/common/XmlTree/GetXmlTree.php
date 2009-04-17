@@ -31,7 +31,7 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
+ * SVN : $URL$
  * SVN : $Id: GetXmlTree.php 7140 2008-11-24 19:48:50Z jmathis $
  * 
  */
@@ -45,9 +45,9 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
-	$pearDB = new CentreonDB();
-	$pearDBO = new CentreonDB("centstorage");
-	$pearDBndo = new CentreonDB("ndo");
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
+	$pearDBndo 	= new CentreonDB("ndo");
 
 	/* 
 	 * PHP functions 
@@ -336,6 +336,7 @@
 		/* 
 		 * direct to ressource (ex: pre-selected by GET)
 		 */
+		
 		$hgs_selected = array();
 		$hosts_selected = array();
 		$svcs_selected = array();
