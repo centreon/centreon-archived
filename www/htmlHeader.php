@@ -68,9 +68,14 @@
 	if (isset($p) && !strcmp($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
 		echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
 
+
+	global $search;
+	
 	$searchStr = "";
-	if (isset($_GET["search"]))
-		$searchStr = "&search_host=".htmlentities($_GET["search"], ENT_QUOTES);
+	if (isset($search))
+		$searchStr = "&search_host=".$search;
+	if (isset($oreon->historySearch[$url]))
+		$searchStr = "&search_host=".$oreon->historySearch[$url];
 
 	print "<script type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?sid=".session_id().$searchStr."'></script>\n";
 
