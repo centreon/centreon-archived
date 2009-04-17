@@ -36,7 +36,8 @@
  * 
  */
  
- 	require_once "@CENTREON_ETC@/centreon.conf.php";
+ 	//require_once "@CENTREON_ETC@/centreon.conf.php";
+ 	require_once "/etc/centreon/centreon.conf.php";
 	require_once "../../../class/centreonDB.class.php";
 
 	$pearDB = new CentreonDB();
@@ -142,7 +143,8 @@
 .line_ack:hover		{	background-color:<?php print $options["color_ack"]; ?>;}
 
 /* Monitoring Side */
-.host_error {-moz-border-radius:8px;background-color:<?php print $options["color_host_down"]; ?>;border:2px <?php print $options["color_host_down"]; ?> solid;}
+.host_down {-moz-border-radius:8px;background-color:<?php print $options["color_host_down"]; ?>;border:2px <?php print $options["color_host_down"]; ?> solid;}
+.host_unreachable {-moz-border-radius:8px;background-color:<?php print $options["color_host_unreachable"]; ?>;border:2px <?php print $options["color_host_unreachable"]; ?> solid;}
 
 
 /* Menu */
