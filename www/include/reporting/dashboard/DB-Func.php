@@ -1,38 +1,77 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL$
+ * SVN : $Id$
+ * 
  */
 
 	
 	/*
 	 * Get all hosts from DB
 	 */
-	function getAllHostsForReporting($is_admin, $lcaHoststr) {
+	function getAllHostsForReporting($is_admin, $lcaHoststr, $search = NULL) {
 		global $pearDB;
 		
+		/*
+		 * ACL
+		 */
 		$lcaSTR = "";
-		$hosts = array("NULL" => "");
 		if (!$is_admin){
 			$lcaSTR = " AND host_id IN (".$lcaHoststr.") ";
 		}	
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_activate = '1' $lcaSTR AND host_register = '1' ORDER BY host_name");
-		while ($row =& $DBRESULT->fetchRow())
+		
+		/*
+		 * Search
+		 */
+		$searchSTR = "";
+		if ($search != "")
+			$searchSTR = " AND (`host_name` LIKE '%$search%' OR `host_alias` LIKE '%$search%')";
+		 
+		/*
+		 * request
+		 */
+		$hosts = array("NULL" => "");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_activate = '1' $lcaSTR $searchSTR AND host_register = '1' ORDER BY host_name");
+		while ($row =& $DBRESULT->fetchRow()) {
 			if (!isset($lca) || isset($lca["LcaHost"][$row['host_name']]))
 				$hosts[$row["host_id"]] = $row["host_name"];
+		}
+		$DBRESULT->free();
+		unset($row);
 		return $hosts;
 	}
+	
 	/*
 	 * returns days of week taken in account for reporting in a string
 	 */
@@ -51,15 +90,20 @@
 			$str = "NULL";
 		return $str;
 	}
+	
 	/*
-	 * Return a table a (which reference is given in parameter) that contains stats on a given host defined by $host_id
+	 * Return a table a (which reference is given in parameter) that 
+	 * contains stats on a given host defined by $host_id
 	 */
 	function getLogInDbForHost($host_id, $start_date, $end_date, $reportTimePeriod){
 		global $pearDBO;
 		
-		# Initialising hosts stats values to 0
+		/*
+		 * Initialising hosts stats values to 0
+		 */
 		foreach(getHostStatsValueName() as $name)
 			$hostStats[$name] = 0;
+		
 		$days_of_week = getReportDaysStr($reportTimePeriod);
 		$rq = "SELECT sum(`UPnbEvent`) as UP_A, sum(`UPTimeScheduled`) as UP_T, ".				
 					" sum(`DOWNnbEvent`) as DOWN_A, sum(`DOWNTimeScheduled`) as DOWN_T, " .
@@ -73,15 +117,19 @@
 		if ($row =& $DBRESULT->fetchRow())
 			$hostStats = $row;
 		
-		#If there where no log in several days for this host, there is no entry in log_archive_host for these days
-		# So the following instructions count these missing days as undetermined time
+		/*
+		 * If there where no log in several days for this host, there is no 
+		 * entry in log_archive_host for these days
+		 * So the following instructions count these missing days as undetermined time
+		 */
 		$timeTab = getTotalTimeFromInterval($start_date, $end_date, $reportTimePeriod);
 		if ($timeTab["reportTime"] > 0) {
 			$hostStats["UNDETERMINED_T"] += $timeTab["reportTime"] - ($hostStats["UP_T"] + $hostStats["DOWN_T"]
 															+ $hostStats["UNREACHABLE_T"] + $hostStats["UNDETERMINED_T"]);
-		}else {
+		} else {
 			$hostStats["UNDETERMINED_T"] = $timeTab["totalTime"];
 		}
+		
 		/*
 		 * Calculate percentage of time (_TP => Total time percentage) for each status 
 		 */
@@ -90,6 +138,7 @@
 		$hostStats["DOWN_TP"] = round($hostStats["DOWN_T"] / $time * 100, 2); 
 		$hostStats["UNREACHABLE_TP"] = round($hostStats["UNREACHABLE_T"] / $time * 100, 2); 
 		$hostStats["UNDETERMINED_TP"] = round($hostStats["UNDETERMINED_T"] / $time * 100, 2);
+		
 		/*
 		 * Calculate percentage of time (_MP => Mean Time percentage) for each status ignoring undetermined time
 		 */
@@ -98,7 +147,7 @@
 			$hostStats["UP_MP"] = 0;
 			$hostStats["DOWN_MP"] = 0;
 			$hostStats["UNREACHABLE_MP"] = 0;
-		}else {
+		} else {
 			$hostStats["UP_MP"] = round($hostStats["UP_T"] / $time * 100, 2); 
 			$hostStats["DOWN_MP"] = round($hostStats["DOWN_T"] / $time * 100, 2); 
 			$hostStats["UNREACHABLE_MP"] = round($hostStats["UNREACHABLE_T"] / $time * 100, 2); 
@@ -118,7 +167,6 @@
 		 * Number Total of alerts 
 		 */
 		$hostStats["TOTAL_ALERTS"] = $hostStats["UP_A"] + $hostStats["DOWN_A"] + $hostStats["UNREACHABLE_A"];
-		
 		return ($hostStats);
 	}
 
@@ -132,7 +180,7 @@
 		$hostStatsLabels = getHostStatsValueName();
 		
 		/* Initialising hostgroup stats to 0 */
-		foreach($hostStatsLabels as $name)
+		foreach ($hostStatsLabels as $name)
 			$hostgroupStats["average"][$name] = 0;
 
 		
@@ -140,14 +188,14 @@
 		
 		/* get availability stats for each host */
 		$count = 0;
-		foreach($hosts_id as $hostId => $host_name) {
+		foreach ($hosts_id as $hostId => $host_name) {
 			$host_stats = array();
 			$host_stats = getLogInDbForHost($hostId, $start_date, $end_date, $reportTimePeriod);
 			$hostgroupStats[$hostId] = $host_stats;
 			$hostgroupStats[$hostId]["NAME"] = $host_name;
 			$hostgroupStats[$hostId]["ID"] = $hostId;
 			
-			foreach($hostStatsLabels as $name)
+			foreach ($hostStatsLabels as $name)
 				$hostgroupStats["average"][$name] += $host_stats[$name];
 			$count++;
 		}
@@ -222,7 +270,7 @@
 				
 		/* initialising all host services stats to 0 */
 		foreach ($services_ids as $id => $description)
-			foreach(getServicesStatsValueName() as $name)
+			foreach (getServicesStatsValueName() as $name)
 				$hostServiceStats[$id][$name] = 0;
 		/*
 		 * $hostServiceStats["average"] will contain services stats average
@@ -327,7 +375,7 @@
 		
 		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED");
 		
-		foreach(getServicesStatsValueName() as $name)
+		foreach (getServicesStatsValueName() as $name)
 			$serviceStats[$name] = 0;
 		$days_of_week = getReportDaysStr($reportTimePeriod);
 		$rq = "SELECT service_id, sum(`OKTimeScheduled`) as OK_T, sum(`OKnbEvent`) as OK_A, ".
@@ -401,21 +449,21 @@
 		$serviceStatsLabels = getServicesStatsValueName();
 		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED");
 		/* Initialising hostgroup stats to 0 */
-		foreach($serviceStatsLabels as $name)
+		foreach ($serviceStatsLabels as $name)
 			$serviceGroupStats["average"][$name] = 0;
 		
 		/* $count count the number of services in servicegroup */
 		$count = 0;
 		$services = getServiceGroupActivateServices($servicegroup_id);
-		foreach($services as $host_service_id => $host_service_name){
-			foreach($serviceStatsLabels as $name) {
+		foreach ($services as $host_service_id => $host_service_name) {
+			foreach ($serviceStatsLabels as $name) {
 				$serviceGroupStats[$host_service_id][$name] = 0;
 			}
 			$servicesStats = array();
 			$res = preg_split("/_/", $host_service_id);
 			$servicesStats = getLogInDbForOneSVC($res[0], $res[1], $start_date, $end_date, $reportTimePeriod);
 
-			if(isset($servicesStats)){
+			if (isset($servicesStats)) {
 				$serviceGroupStats[$host_service_id] = $servicesStats;				
 				$res = preg_split("/_/", $host_service_id);
 				$serviceGroupStats[$host_service_id]["HOST_ID"] = $res[0];
@@ -429,30 +477,38 @@
 			$count++;
 		}
 
-		/* Average time for all status (OK, Critical, Warning, Unknown) */
-			foreach($serviceStatsLabels as $name)
-				if ($name == "OK_T" || $name == "WARNING_T" || $name == "CRITICAL_T" || $name == "UNKNOWN_T" || $name == "UNDETERMINED_T")		
-					if ($count)
-						$serviceGroupStats["average"][$name] /= $count;
-					else
-						$serviceGroupStats["average"][$name] = 0;
+		/*
+		 * Average time for all status (OK, Critical, Warning, Unknown)
+		 */
+		foreach ($serviceStatsLabels as $name) {
+			if ($name == "OK_T" || $name == "WARNING_T" || $name == "CRITICAL_T" || $name == "UNKNOWN_T" || $name == "UNDETERMINED_T")		
+				if ($count)
+					$serviceGroupStats["average"][$name] /= $count;
+				else
+					$serviceGroupStats["average"][$name] = 0;
+		}
+		
 		/*
 		 * Calculate percentage of time (_TP => Total time percentage) for each status 
 		 */
 		$serviceGroupStats["average"]["TOTAL_TIME"] = $serviceGroupStats["average"]["OK_T"] +  $serviceGroupStats["average"]["WARNING_T"]
 						+  $serviceGroupStats["average"]["CRITICAL_T"] +  $serviceGroupStats["average"]["UNKNOWN_T"]
 						+  $serviceGroupStats["average"]["UNDETERMINED_T"];
+		
 		$time = $serviceGroupStats["average"]["TOTAL_TIME"];
-		foreach ($status as $key => $value)
+		foreach ($status as $key => $value) {
 			if ($time)
 				$serviceGroupStats["average"][$value."_TP"] = round($serviceGroupStats["average"][$value."_T"] / $time * 100, 2);
 			else
 				$serviceGroupStats["average"][$value."_TP"] = 0;
+		}
+		
 		/*
 		 * Calculate percentage of time (_MP => Mean Time percentage) for each status ignoring undetermined time
 		 */
 		$serviceGroupStats["average"]["MEAN_TIME"] = $serviceGroupStats["average"]["OK_T"] +  $serviceGroupStats["average"]["WARNING_T"]
 						+ $serviceGroupStats["average"]["CRITICAL_T"]+ $serviceGroupStats["average"]["UNKNOWN_T"];
+		
 		/*
 		 * Calculate total of alerts
 		 */
@@ -463,7 +519,7 @@
 			foreach ($status as $key => $value)
 				if ($value != "UNDETERMINED")
 					$serviceGroupStats["average"][$value."_MP"] = 0;
-		}else {
+		} else {
 			foreach ($status as $key => $value)
 				if ($value != "UNDETERMINED")
 						$serviceGroupStats["average"][$value."_MP"] = round($serviceGroupStats["average"][$value."_T"] / $time * 100, 2);
@@ -475,8 +531,10 @@
 	 */
 	function getServiceGroupActivateServices($sg_id = NULL)	{
 		global $pearDB, $pearDBndo, $oreon;
+		
 		if (!$sg_id) 
 			return;
+		
 		/*
 		 * ServiceGroups by host
 		 */
@@ -511,8 +569,9 @@
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 			$hosts = getMyHostGroupHostsForReporting($elem["hostgroup_hg_id"]);
-			foreach ($hosts as $key => $value)
+			foreach ($hosts as $key => $value) {
 				$svs[$key."_".$elem["service_id"]] =  $value. ":::" . $elem["service_description"];
+			}
 		}
 		$DBRESULT->free();
 		return $svs;
@@ -558,59 +617,77 @@
 		}
 		return $reportingTimePeriod;
 	}
+	
 	/*
 	 * Get all hostgroups linked with at least one host 
 	 */
-	function getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr){
+	function getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search = NULL){
 		global $pearDB, $lcaHoststr, $oreon;
-		$hgs = array("NULL" => "");
-		$lcaStr = "";
 		
-		$query = "SELECT DISTINCT * " .
-				"FROM `hostgroup` " .
-				"WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$oreon->user->access->queryBuilder("WHERE", "host_host_id", $lcaHoststr).") " .
-				$oreon->user->access->queryBuilder("AND", "hg_id", $lcaHostGroupstr) . 	
-				"ORDER BY `hg_name`";
+		$hgs = array("NULL" => "");
+
+		$searchSTR = "";
+		if ($search != "")
+			$searchSTR = " hg_name LIKE '%$search%' AND ";
+
+		$query = 	"SELECT DISTINCT * " .
+					"FROM `hostgroup` " .
+					"WHERE $searchSTR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$oreon->user->access->queryBuilder("WHERE", "host_host_id", $lcaHoststr).") " .
+						$oreon->user->access->queryBuilder("AND", "hg_id", $lcaHostGroupstr) . 	
+					"ORDER BY `hg_name`";
 		$DBRESULT =& $pearDB->query($query);
 		while ($hg =& $DBRESULT->fetchRow())
 			$hgs[$hg["hg_id"]] = $hg["hg_name"];
 		return $hgs;
 	}
+
 	/*
 	 * Get all hosts from hostgroup
 	 */
 	function getMyHostGroupHostsForReporting($hg_id = NULL)	{
-		if (!$hg_id) return;
 		global $pearDB, $is_admin, $lcaHoststr;
+		
+		if (!$hg_id) 
+			return;
+		
 		$lcaStr = "";
-		if (!$is_admin)
-			if ($lcaHoststr != "")
-				$lcaStr = " AND host_id IN (".$lcaHoststr.") ";
+		if (!$is_admin && $lcaHoststr != "")
+			$lcaStr = " AND host_id IN (".$lcaHoststr.") ";
+		
 		$hosts = array();
 		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id, h.host_name FROM hostgroup_relation hgr, host h ".
 									" WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ".$lcaStr." ORDER by h.host_name");
-		while ($elem =& $DBRESULT->fetchRow())
+		while ($elem =& $DBRESULT->fetchRow()) 
 			$hosts[$elem["host_host_id"]] = $elem["host_name"];
 		$DBRESULT->free();
+		unset($elem);
 		return $hosts;
 	}
+	
 	/*
 	 * Get all servicesgroup with at least one service
 	 */
-	 function getAllServicesgroupsForReporting() {
+	 function getAllServicesgroupsForReporting($search = NULL) {
 		global $pearDB, $oreon;
+		
+		$searchSTR = "";
+		if ($search != "")
+			$searchSTR = " sg_name LIKE '%$search%' AND ";
 		
 		$sgStr = $oreon->user->access->getServiceGroupsString();		
 				
 		$sg = array("NULL" => "");
-		$query = "SELECT `sg_name`, `sg_id` FROM `servicegroup` ".
-				"WHERE `sg_id` IN (SELECT `servicegroup_sg_id` FROM `servicegroup_relation`) ". 
-				$oreon->user->access->queryBuilder("AND", "sg_id", $sgStr) .
-				"ORDER BY `sg_name`";
+		$query = 	"SELECT `sg_name`, `sg_id` FROM `servicegroup` ".
+					"WHERE $searchSTR `sg_id` IN (SELECT `servicegroup_sg_id` FROM `servicegroup_relation`) ". 
+						$oreon->user->access->queryBuilder("AND", "sg_id", $sgStr) .
+					"ORDER BY `sg_name`";
 		$DBRESULT =& $pearDB->query($query);
-		while ($elem =& $DBRESULT->fetchRow())
+		while ($elem =& $DBRESULT->fetchRow()) {
 			$sg[$elem["sg_id"]] = $elem["sg_name"];
+		}
 		$DBRESULT->free();
+		unset($elem);
+
 		return $sg;
 	}
 

@@ -31,11 +31,11 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
+ * SVN : $URL$
  * SVN : $Id: common-Func.php 7139 2008-11-24 17:19:45Z jmathis $
  * 
  */
-
+	
 	/*
 	 * return the interval of time which must be reported
 	 */
@@ -60,7 +60,8 @@
 	}
 	
 	/*
-	 * Return a table containing all stats information that will be displayed on dashboard for host and hostgroup
+	 * Return a table containing all stats information that will 
+	 * be displayed on dashboard for host and hostgroup
 	 */
 	function getHostStatsValueName() {
 		return (array("UP_T", "UP_A", "DOWN_T", "DOWN_A", "UNREACHABLE_T", "UNREACHABLE_A", "UNDETERMINED_T",
@@ -68,7 +69,8 @@
 	}
 	
 	/*
-	 * Return a table containing all stats information that will be displayed on dashboard for services and servicegroup
+	 * Return a table containing all stats information that will be 
+	 * displayed on dashboard for services and servicegroup
 	 */
 	function getServicesStatsValueName() {
 		return (array("OK_T", "OK_A", "WARNING_T", "WARNING_A", "CRITICAL_T", "CRITICAL_A", "UNKNOWN_T", "UNKNOWN_A", "UNDETERMINED_T",
@@ -142,7 +144,8 @@
 	}
 	/*
 	 * Return time between two timestamp
-	 * excluding days and time which are not in the parameters defined in menu "Options>General Options>Reporting"
+	 * excluding days and time which are not in the parameters 
+	 * defined in menu "Options>General Options>Reporting"
 	 */
 	function getTotalTimeFromInterval($start, $end, $reportTimePeriod) {
 		$one_day_real_duration = 60 * 60 * 24;
