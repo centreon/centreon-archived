@@ -50,6 +50,11 @@
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
 
+	$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '" . htmlentities($_GET['session'], ENT_QUOTES) . "'");
+	if (!$DBRESULT->numRows())
+		exit();
+	
+
 	/*
 	 * Initiate Table
 	 */

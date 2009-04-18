@@ -37,8 +37,7 @@
  */
  
 	
-	require_once "/etc/centreon/centreon.conf.php";
-	//require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once "@CENTREON_ETC@/centreon.conf.php";
 	
 	require_once $centreon_path."www/include/reporting/dashboard/common-Func.php";
 	require_once $centreon_path."www/class/other.class.php";
@@ -51,6 +50,11 @@
 
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
+
+	$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '" . htmlentities($_GET['session'], ENT_QUOTES) . "'");
+	if (!$DBRESULT->numRows())
+		exit();
+	
 
 	/*
 	 * Definition of status
