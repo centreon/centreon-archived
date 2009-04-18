@@ -33,10 +33,8 @@
 	$i = 1;
 	$str = NULL;
 	while ($hostGroup =& $DBRESULT->fetchRow())	{
-		$BP = false;
 		$strDef = NULL;
 		$HGLinkedToHost = 0;
-		array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
 		
 		/*
 		 * Generate a new Hostgroup
@@ -50,13 +48,13 @@
 				$strDef .= "# ".$cmt."\n";
 		}
 		$strDef .= "define hostgroup{\n";
+		
 		if ($hostGroup["hg_name"])	$strDef .= print_line("hostgroup_name", $hostGroup["hg_name"]);
 		if ($hostGroup["hg_alias"]) $strDef .= print_line("alias", $hostGroup["hg_alias"]);
 		
 		/*
 		 * Host Members
 		 */
-		
 		$host = array();
 		$strTemp = NULL;
 		$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM hostgroup_relation hgr, host WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND hgr.host_host_id = host.host_id ORDER BY `host_name`");
@@ -72,6 +70,24 @@
 			$strDef .= print_line("members", $strTemp);
 		unset($strTemp);
 	
+		/*
+		 * Hostgroup Members
+		 */
+		$hg = array();
+		$strTemp = NULL;
+		$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hostGroup["hg_id"]."' AND hgr.hg_child_id = hg.hg_id ORDER BY `hg_name`");
+		while ($hostgroup =& $DBRESULT2->fetchRow())	{
+			if (isset($gbArr[3][$hostgroup["hg_id"]])){
+				$HGLinkedToHost++;
+				$strTemp != NULL ? $strTemp .= ", ".$hostgroup["hg_name"] : $strTemp = $hostgroup["hg_name"];
+			}
+		}
+		$DBRESULT2->free();
+		unset($hostgroup);
+		if ($strTemp) 
+			$strDef .= print_line("hostgroup_members", $strTemp);
+		unset($strTemp);
+		
 		/*
 		 * Generate only if this hostgroup had a host generate on this nagios instance
 		 */
@@ -92,4 +108,5 @@
 	$DBRESULT->free();
 	unset($str);
 	unset($i);
-	?>
+
+?>
