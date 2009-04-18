@@ -71,7 +71,7 @@
 	}
 
 	(isset($_GET["host_id"]) && $open_id_type == "HH") ? $_GET["host_id"] = $open_id_sub : $_GET["host_id"] = null;
-
+	
 	$id = 1;
 
 	function getGetPostValue($str){
