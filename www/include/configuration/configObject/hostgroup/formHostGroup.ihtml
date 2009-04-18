@@ -10,7 +10,7 @@
 	</div>
 	<div id='tab1' class='tab'>
 	 <table class="ListTable">
-		<tr class="ListHeader"><td class="FormHeader"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title}</td><td style="text-align:right;"><a href="./main.php?p={$p}&min=1&doc=1&page={if $msg.nagios >= 3}configobject.html{/if}{if $msg.nagios <= 2}xodtemplate.html#hostgroup{/if}" target="_blank"  style='cursor:help' alt='{$topdoc}'><img src="./img/icones/16x16/text_code.gif" title="{$topdoc}"></a>&nbsp;&nbsp;</td></tr>
+		<tr class="ListHeader"><td class="FormHeader"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.title}</td><td style="text-align:right;"><a href="./main.php?p={$p}&min=1&doc=1&page={if $msg.nagios >= 3}configobject.html{/if}{if $msg.nagios <= 2}xodtemplate.html#hostgroup{/if}" target="_blank"  style='cursor:help' alt='{$topdoc}'><img src="./img/icones/16x16/text_code.gif" title="{$topdoc}"></a>&nbsp;&nbsp;</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.hg_name.label}</td><td class="FormRowValue">{$form.hg_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.hg_alias.label}</td><td class="FormRowValue">{$form.hg_alias.html}</td></tr>
@@ -18,11 +18,15 @@
 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.relation}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.hg_hosts.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_hosts.html}</p></td></tr>
-		{if $nagios == 1}
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/businessmen.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.hg_cgs.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_cgs.html}</p></td></tr>
-	 	{/if}
-	
+		<tr class="list_one"><td class="FormRowField">{$form.hg_hg.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_hg.html}</p></td></tr>
+		
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.extended}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.hg_notes.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_notes.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.hg_notes_url.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_notes_url.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.hg_action_url.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_action_url.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.hg_icon_image.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_icon_image.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.hg_map_icon_image.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_map_icon_image.html}</p></td></tr>
+		
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.hg_activate.label}</td><td class="FormRowValue">{$form.hg_activate.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.hg_comment.label}</td><td class="FormRowValue">{$form.hg_comment.html}</td></tr>		

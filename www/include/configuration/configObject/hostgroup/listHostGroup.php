@@ -25,10 +25,10 @@
 	 */
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
+	
 	/*
-	 * end quickSearch form
-	 */	
-
+	 * Search
+	 */
 	$SearchTool = NULL;
 	if (isset($search) && $search)	
 		$SearchTool = " WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
@@ -44,20 +44,20 @@
 	/*
 	 *  Smarty template Init
 	 */
-	 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
 	/*
 	 * start header menu
 	 */
-	 
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Description"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_hostAct", _("Enabled Hosts"));
 	$tpl->assign("headerMenu_hostDeact", _("Disabled Hosts"));
+	$tpl->assign("headerMenu_hostgroupAct", _("Enabled HostGroups"));
+	$tpl->assign("headerMenu_hostgroupDeact", _("Disabled HostGroups"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
 	/*
@@ -74,6 +74,7 @@
 	 * Different style between each lines
 	 */
 	$style = "one";
+	
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
@@ -87,15 +88,32 @@
 			$moptions .= "<a href='main.php?p=".$p."&hg_id=".$hg['hg_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$hg['hg_id']."]'></input>";
-		/* Nbr Host */
+		
+		/* 
+		 * Check Nbr of Host / hg 
+		 */
 		$nbrhostAct = array();
 		$nbrhostDeact = array();
+		$nbrhostgroupAct = array();
+		$nbrhostgroupDeact = array();
+		
 		$rq = "SELECT COUNT(*) as nbr FROM hostgroup_relation hgr, host WHERE hostgroup_hg_id = '".$hg['hg_id']."' AND host.host_id = hgr.host_host_id AND host.host_register = '1' AND host.host_activate = '1'";
 		$DBRESULT2 =& $pearDB->query($rq);
 		$nbrhostAct = $DBRESULT2->fetchRow();
+		
 		$rq = "SELECT COUNT(*) as nbr FROM hostgroup_relation hgr, host WHERE hostgroup_hg_id = '".$hg['hg_id']."' AND host.host_id = hgr.host_host_id AND host.host_register = '1' AND host.host_activate = '0'";
 		$DBRESULT2 =& $pearDB->query($rq);
 		$nbrhostDeact = $DBRESULT2->fetchRow();
+		
+		$rq = "SELECT COUNT(*) as nbr FROM hostgroup_hg_relation hgr, hostgroup WHERE hg_parent_id = '".$hg['hg_id']."' AND hostgroup.hg_id = hgr.hg_child_id AND hostgroup.hg_activate = '1'";
+		$DBRESULT2 =& $pearDB->query($rq);
+		$nbrhostgroupAct = $DBRESULT2->fetchRow();
+		
+		$rq = "SELECT COUNT(*) as nbr FROM hostgroup_hg_relation hgr, hostgroup WHERE hg_parent_id = '".$hg['hg_id']."' AND hostgroup.hg_id = hgr.hg_child_id AND hostgroup.hg_activate = '0'";
+		$DBRESULT2 =& $pearDB->query($rq);
+		$nbrhostgroupDeact = $DBRESULT2->fetchRow();
+		
+		
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$hg["hg_name"],
@@ -104,10 +122,16 @@
 						"RowMenu_status"=>$hg["hg_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_hostAct"=>$nbrhostAct["nbr"],
 						"RowMenu_hostDeact"=>$nbrhostDeact["nbr"],
+						"RowMenu_hostgroupAct"=>$nbrhostgroupAct["nbr"],
+						"RowMenu_hostgroupDeact"=>$nbrhostgroupDeact["nbr"],
 						"RowMenu_options"=>$moptions);
+		/*
+		 * Switch color line 
+		 */
 		$style != "two" ? $style = "two" : $style = "one";	
 	}
 	$tpl->assign("elemArr", $elemArr);
+	
 	/*
 	 * Different messages we put in the template
 	 */
