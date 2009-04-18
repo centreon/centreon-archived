@@ -72,9 +72,9 @@
 	global $search;
 	
 	$searchStr = "";
-	if (isset($search))
-		$searchStr = "&search_host=".$search;
-	if (isset($oreon->historySearch[$url]))
+	if (isset($_GET["search"]))
+		$searchStr = "&search_host=".htmlentities($_GET["search"], ENT_QUOTES);
+	if (isset($oreon->historySearch[$url]) && !isset($_GET["search"]))
 		$searchStr = "&search_host=".$oreon->historySearch[$url];
 
 	print "<script type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?sid=".session_id().$searchStr."'></script>\n";
