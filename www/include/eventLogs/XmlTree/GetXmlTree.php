@@ -68,7 +68,6 @@
 		header("Content-type: text/xml"); 
 	} 
 	 
-
 	function getServiceGroupCount($search = NULL)	{
 		global $pearDB;
 
@@ -80,7 +79,6 @@
 		$DBRESULT->free();
 		return $num_row["count(sg_id)"];
 	}
-
 
 	/* 
 	 * if debug == 0 => Normal, 
