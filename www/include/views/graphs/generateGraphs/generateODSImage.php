@@ -24,7 +24,7 @@
 	//include "@CENTREON_ETC@/centreon.conf.php";
 	include "/etc/centreon/centreon.conf.php";
 		
-	require_once './DB-Func.php';
+	require_once "./DB-Func.php";
 	require_once $centreon_path."www/class/centreonDB.class.php";
 	require_once $centreon_path."www/class/Session.class.php";
 	require_once $centreon_path."www/class/Oreon.class.php";
@@ -35,24 +35,7 @@
 
 	require_once $centreon_path."www/include/common/common-Func.php";
 
-	/*
-	 *  Connect to Oreon DB
-	 */ 
-	$dsn = array(
-	    'phptype'  => 'mysql',
-	    'username' => $conf_centreon['user'],
-	    'password' => $conf_centreon['password'],
-	    'hostspec' => $conf_centreon['hostCentreon'],
-	    'database' => $conf_centreon['db'],
-	);
-
-	$options = array(
-	    'debug'       => 2,
-	    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-	);
-
-	$pearDB =& DB::connect($dsn, $options);
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+	$pearDB = new CentreonDB();
 
 	/*
 	 * Verify if start and end date
@@ -65,7 +48,7 @@
 	 * Verify if session is active
 	 */	
 
-	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+	$session =& $pearDB->query("SELECT session_id FROM `session` WHERE session_id = '".htmlentities($_GET["session_id"], ENT_QUOTES)."'");
 	if (!$session->numRows()){
 		$image = imagecreate(250,100);
 		$fond = imagecolorallocate($image,0xEF,0xF2,0xFB);		

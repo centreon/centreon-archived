@@ -41,28 +41,11 @@
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-	$CentreonGMT = new CentreonGMT();
-
 	require_once $centreon_path."www/include/common/common-Func.php";
 
-	$dsn = array(
-	    'phptype'  => 'mysql',
-	    'username' => $conf_centreon['user'],
-	    'password' => $conf_centreon['password'],
-	    'hostspec' => $conf_centreon['hostCentreon'],
-	    'database' => $conf_centreon['db'],
-	);
+	$pearDB = new CentreonDB();
 
-	$options = array(
-	    'debug'       => 2,
-	    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-	);
-
-	$pearDB =& DB::connect($dsn, $options);
-	
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-
-	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+	$session =& $pearDB->query("SELECT session_id FROM `session` WHERE session_id = '".htmlentities($_GET["session_id"], ENT_QUOTES)."'");
 	if (!$session->numRows()){
 		exit;
 	} else {
@@ -71,6 +54,7 @@
 		/*
 	 	 * Get GMT for current user
 	 	 */
+	 	$CentreonGMT = new CentreonGMT();
 	 	$gmt = $CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
 	 	
 		/*
