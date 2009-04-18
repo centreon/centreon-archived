@@ -32,8 +32,11 @@
 		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:if test="hn/@none = 0">
 				<xsl:element name="span">
-					<xsl:if test="hs != 0">
-						<xsl:attribute name="class">host_error</xsl:attribute>
+					<xsl:if test="hs = 1">
+						<xsl:attribute name="class">host_down</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="hs = 2">
+						<xsl:attribute name="class">host_unreachable</xsl:attribute>
 					</xsl:if>
 					<xsl:element name="img">
 						<xsl:attribute name="src">./img/media/<xsl:value-of select="hico"/></xsl:attribute>
@@ -159,7 +162,7 @@
         	<xsl:value-of select="ca"/>
         </td>
         <td class="ListColLeft" >
-        	<xsl:value-of select="po"/>
+        	<xsl:value-of select="po" disable-output-escaping="yes" />
         </td>
 		<xsl:if test="//i/nc = 1">
 			<td class="ListColCenter" style="white-space:nowrap;">
