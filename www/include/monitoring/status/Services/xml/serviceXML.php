@@ -237,13 +237,7 @@
 	}
 
 	$rq .= " LIMIT ".($num * $limit).",".$limit;
-
-	$ct = 0;
-	$flag = 0;
-	
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq_pagination);
-	
-	//print $rq . "\n\n" . $rq_pagination . "\n";
 
 	/* 
 	 * Get Pagination Rows 
@@ -270,6 +264,9 @@
 	
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq);
 	
+	$ct = 0;
+	$flag = 0;
+		
 	while ($ndo =& $DBRESULT_NDO2->fetchRow()) {
 		if (isset($host_status[$ndo["host_name"]])){
 
