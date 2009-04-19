@@ -31,11 +31,11 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: viewHostGroupLog.php 7139 2008-11-24 17:19:45Z jmathis $
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
-
+ 
 	if (!isset($oreon))
 		exit;
 	
