@@ -32,9 +32,10 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL$
- * SVN : $Id: graphs.php 7206 2008-12-04 08:22:24Z jmathis $
+ * SVN : $Id$
  * 
  */ 
+
 	if (!isset($oreon))
 		exit();
 
