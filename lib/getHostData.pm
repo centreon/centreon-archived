@@ -37,14 +37,13 @@
 
 
 # Get host id in oreon Data base.
-# need in paramter : host_name
+# need in paramter : host_name, DBcnx
 
 sub getHostID($$){
 
     my $con = $_[1];
 
     # Request
-    print "SELECT `host_id` FROM `host` WHERE `host_name` = '".$_[0]."' AND `host_register` = '1'\n";
     my $sth2 = $con->prepare("SELECT `host_id` FROM `host` WHERE `host_name` = '".$_[0]."' AND `host_register` = '1'");
     writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
 
@@ -67,15 +66,19 @@ sub getHostName($){
     return 0 if (!$_[0]);
     
     my $con = CreateConnexionForOreon();
+   
     my $sth2 = $con->prepare("SELECT `host_name` FROM `host` WHERE `host_id` = '".$_[0]."' AND `host_register` = '1'");
-    writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
+ 	if (!$sth2->execute) {
+	    writeLogFile("Error:" . $sth2->errstr . "\n");
+	}
+
     my $data_host = $sth2->fetchrow_hashref();
     my $host_name = $data_host->{'host_name'};
     undef($data_host);
     $sth2->finish();
     $con->disconnect();
+    
     return $host_name;
-
 }
 
 1;
