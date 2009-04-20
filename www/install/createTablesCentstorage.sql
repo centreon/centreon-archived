@@ -201,7 +201,7 @@ CREATE TABLE `log_archive_host` (
   KEY `host_index` (`host_id`),
   KEY `date_end_index` (`date_end`),
   KEY `date_start_index` (`date_start`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -237,7 +237,7 @@ CREATE TABLE `log_archive_service` (
   KEY `service_index` (`service_id`),
   KEY `date_end_index` (`date_end`),
   KEY `date_start_index` (`date_start`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -341,7 +341,7 @@ CREATE TABLE IF NOT EXISTS `log_action_modification` (
   `action_log_id` int(11) NOT NULL,
   PRIMARY KEY  (`modification_id`),
   KEY `action_log_id` (`action_log_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Structure de la table `nagios_stats`
@@ -352,7 +352,7 @@ CREATE TABLE IF NOT EXISTS `nagios_stats` (
   `stat_key` varchar(255) NOT NULL,
   `stat_value` varchar(255) NOT NULL,
   `stat_label` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 --
