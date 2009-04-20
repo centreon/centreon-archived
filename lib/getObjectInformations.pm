@@ -30,8 +30,8 @@
 # 
 # For more information : contact@centreon.com
 # 
-# SVN : $URL: http://svn.centreon.com/trunk/centreon/lib/getHostData.pm $
-# SVN : $Id: getHostData.pm 7852 2009-04-20 10:37:54Z jmathis $
+# SVN : $URL$
+# SVN : $Id$
 #
 ####################################################################################
 
