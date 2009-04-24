@@ -256,9 +256,21 @@
 		
 		if (isset($ret["restart"]) && $ret["restart"])	{
 			$stdout = "";
+			
+			/*
+			 * Get Init Script
+			 */
+			$DBRESULT =& $pearDB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
+			$serveurs =& $DBRESULT->fetchrow();
+			unset($DBRESULT);
+			unset($serveurs);
+			if (isset($serveurs["init_script"]))
+				$nagios_init_script = $serveurs["init_script"];
+			else 
+				$nagios_init_script = "/etc/init.d/nagios";
+			
 			$msg_restart = array();
 			foreach ($tab_server as $host){
-				$nagios_init_script = (isset($oreon->optGen["nagios_init_script"]) ? $oreon->optGen["nagios_init_script"]   : "/etc/init.d/nagios" );
 				if ($ret["restart_mode"] == 1){
 					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
