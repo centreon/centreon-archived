@@ -53,6 +53,7 @@ if (POSIX::getuid() == 0 ) {
 }
 
 my $echo = "/bin/echo";
+my $sudo = "sudo";
 
 my $installedPath = "@CENTREON_DIR@";
 my $LOG = "@CENTREON_LOG@/centcore.log";
@@ -417,11 +418,11 @@ sub initNagios($$){
     my $id = $_[0];
     my $options = $_[1];
     my $conf = getServerConfig($id);
-    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." ".$options."\n";
+    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." ".$options."\n";
     print "$options : $cmd\n";
     my $stdout = `$cmd`;
     # Logs Actions
-    writeLogFile("init Script : 'sudo ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ns_ip_address'}." ($id)\n");
+    writeLogFile("init Script : '$sudo ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ns_ip_address'}." ($id)\n");
     writeLogFile("$stdout\n");
     undef($conf);
     undef($cmd);
@@ -437,7 +438,7 @@ sub reloadNagios($){
     # /etc/init.d/nagios reload
     #
  
-    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." reload\n";
+    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." reload\n";
     my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
     undef($conf);
@@ -453,7 +454,7 @@ sub stopNagios($){
     # /etc/init.d/nagios stop
     #
     my $conf = getServerConfig($id);
-    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." stop\n";
+    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." stop\n";
     my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
     undef($conf);
@@ -470,7 +471,7 @@ sub startNagios($){
     # Reload nagios : 
     # /etc/init.d/nagios start
     #
-    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." start\n";
+    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." start\n";
     my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
     undef($conf);
@@ -485,7 +486,7 @@ sub testConfig($){
     # $data->{'user'}."@".
     my $data = getServerConfig($id);
     my $distantconnexion = $data->{'ns_ip_address'};
-    my $cmd = "$ssh -p ".$data->{'ssh_port'}." $distantconnexion sudo ".$data->{'nagios_bin'}." -v $cfg_dir/nagios.cfg";
+    my $cmd = "$ssh -p ".$data->{'ssh_port'}." $distantconnexion $sudo ".$data->{'nagios_bin'}." -v $cfg_dir/nagios.cfg";
     my $stdout = `$cmd`;
     undef($cmd);
     undef($data);
