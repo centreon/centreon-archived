@@ -81,8 +81,6 @@
 				$hostStatus[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 			}
 			
-			$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);
-			
 			// Get Hosts Problems			
 			$rq1 = 	" SELECT DISTINCT obj.name1 , hs.current_state, hs.last_check, hs.output, h.address, unix_timestamp(hs.last_state_change) AS lsc" .
 					" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects obj,  ".$ndo_base_prefix."hosts h " .
