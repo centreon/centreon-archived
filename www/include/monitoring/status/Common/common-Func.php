@@ -40,8 +40,9 @@
 
 	function get_Host_Status($host_name, $pearDBndo, $general_opt){
 		global $ndo_base_prefix;
-		$rq = "SELECT nhs.current_state FROM `" .$ndo_base_prefix."hoststatus` nhs, `" .$ndo_base_prefix."objects` no " .
-			  "WHERE no.object_id = nhs.host_object_id" ;
+		 $rq = "SELECT nhs.current_state FROM `" .$ndo_base_prefix."hoststatus` nhs, `" .$ndo_base_prefix."hosts` nh " . 
+ 	            "WHERE nh.display_name = '".$host_name."'" . 
+ 	            "AND nh.host_object_id = nhs.host_object_id" ; 
 		$DBRESULT =& $pearDBndo->query($rq);
 		$status =& $DBRESULT->fetchRow();
 		unset($DBRESULT);
