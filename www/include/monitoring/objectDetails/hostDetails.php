@@ -150,7 +150,7 @@
 			" nh.address," .
 			" no.name1 as host_name" .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
-			" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
+			" WHERE no.object_id = nhs.host_object_id AND no.object_id = nh.host_object_id AND no.name1 like '".$host_name."'";
 	
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		$ndo2 =& $DBRESULT_NDO->fetchRow();
