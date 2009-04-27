@@ -331,7 +331,7 @@
 		$tpl->assign("en_acknowledge_text", $en_acknowledge_text);
 		$tpl->assign("en_acknowledge", $en_acknowledge);
 		$tpl->assign("actpass", array("0"=>_("Active"), "1"=>_("Passive")));
-		$tpl->assign("harsof", array("0"=>_("Soft"), "1"=>_("Hard")));
+		$tpl->assign("harsof", array("0"=>_("SOFT"), "1"=>_("HARD")));
 		$tpl->assign("status", $status);
 		$tpl->assign("h", $host);
 		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
