@@ -137,7 +137,7 @@
 	if (!$is_admin)	
 		$rq1 .= ", centreon_acl ";
 		 
-	$rq1 .= " WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
+	$rq1 .= " WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id " .
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
 			" AND no.name1 NOT LIKE '_Module_%'";
 
@@ -161,7 +161,7 @@
 		$rq1 .= " AND no.instance_id = ".$instance;
 
 
-	switch ($sort_type){
+	switch ($sort_type) {
 		case 'host_name' : $rq1 .= " order by no.name1 ". $order;  break;
 		case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 ";  break;
 		case 'last_state_change' : $rq1 .= " order by nhs.last_state_change ". $order.",no.name1 ";  break;
