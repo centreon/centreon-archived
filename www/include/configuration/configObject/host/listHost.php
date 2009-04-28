@@ -94,7 +94,7 @@
 	 */
 	 
 	$nagios_server = array();
-	$DBRESULT =& $pearDB->query("SELECT ns.name, ns.id FROM nagios_server ns"); 
+	$DBRESULT =& $pearDB->query("SELECT ns.name, ns.id FROM nagios_server ns ORDER BY ns.name"); 
 	while ($relation =& $DBRESULT->fetchRow()) {
 		$nagios_server[$relation["id"]] = $relation["name"];
 	}
