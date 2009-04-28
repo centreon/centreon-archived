@@ -198,7 +198,7 @@
 		while ($contact =& $DBRESULT->fetchRow())	{
 			if ($oreon->user->get_version() == 2) {
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_activate FROM contactgroup_contact_relation cgcr, contactgroup cg WHERE cgcr.contact_contact_id = '".$contact["contact_id"]."' AND cg.cg_id = cgcr.contactgroup_cg_id");
-				while($contactGroup =& $DBRESULT2->fetchRow())	{
+				while ($contactGroup =& $DBRESULT2->fetchRow())	{
 					if ($contactGroup["cg_activate"])
 						$cctEnb[$contact["contact_id"]] = 1;
 					unset($contactGroup);
@@ -290,7 +290,7 @@
 
 		$hostGroup = array();
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hg.hg_id FROM hostgroup hg WHERE hg.hg_activate = '1'");
-		while($hostGroup =& $DBRESULT->fetchRow())	{						
+		while ($hostGroup =& $DBRESULT->fetchRow())	{						
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hgr.host_host_id, hgr.hostgroup_hg_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."'");
 			while($hostGroup =& $DBRESULT2->fetchRow())
 				array_key_exists($hostGroup["host_host_id"], $hostEnb) ? $hgEnb[$hostGroup["hostgroup_hg_id"]] = 1 : NULL;

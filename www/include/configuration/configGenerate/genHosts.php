@@ -150,11 +150,8 @@
 					$hostGroup = array();
 					$strTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hgr.hostgroup_hg_id = hg.hg_id ORDER BY `hg_name`");
-					while($hostGroup = $DBRESULT2->fetchRow())	{
-						$BP = false;
-						array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
-						
-						if ($BP)
+					while ($hostGroup =& $DBRESULT2->fetchRow())	{
+						if (isset($gbArr[3][$hostGroup["hg_id"]]))
 							$strTemp != NULL ? $strTemp .= ", ".$hostGroup["hg_name"] : $strTemp = $hostGroup["hg_name"];
 					}
 					$DBRESULT2->free();

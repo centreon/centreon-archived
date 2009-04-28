@@ -266,10 +266,7 @@
 								$strTMPTemp = NULL;
 								$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 								while ($contactGroup =& $DBRESULT2->fetchRow())	{
-									$BP = false;
-									array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-									
-									if ($BP)
+									if (isset($gbArr[1][$contactGroup["cg_id"]]))
 										$strTMPTemp != NULL ? $strTMPTemp .= ", ".$contactGroup["cg_name"] : $strTMPTemp = $contactGroup["cg_name"];
 								}
 								$DBRESULT2->free();
@@ -285,9 +282,7 @@
 									$strTMPTemp = NULL;
 									$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id ORDER BY `contact_name`");
 									while ($contact =& $DBRESULT2->fetchRow())	{
-										$BP = false;
-										isset($gbArr[0][$contact["contact_id"]]) ? $BP = true : NULL;					
-										if ($BP)
+										if (isset($gbArr[0][$contact["contact_id"]]))
 											$strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
 									}
 									$DBRESULT2->free();
@@ -433,10 +428,7 @@
 				$strTMPTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM servicegroup_relation sgr, servicegroup sg WHERE sgr.service_service_id = '".$service["service_id"]."' AND sgr.servicegroup_sg_id = sg.sg_id ORDER BY `sg_name`");
 				while($serviceGroup =& $DBRESULT2->fetchRow())	{
-					$BP = false;
-					isset($gbArr[5][$serviceGroup["sg_id"]]) ? $BP = true : NULL;
-					
-					if ($BP)
+					if (isset($gbArr[5][$serviceGroup["sg_id"]]))
 						$strTMPTemp != NULL ? $strTMPTemp .= ", ".$serviceGroup["sg_name"] : $strTMPTemp = $serviceGroup["sg_name"];
 				}
 				$DBRESULT2->free();
@@ -521,10 +513,7 @@
 				$strTMPTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 				while ($contactGroup =& $DBRESULT2->fetchRow())	{
-					$BP = false;
-					array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-					
-					if ($BP)
+					if (isset($gbArr[1][$contactGroup["cg_id"]]))
 						$strTMPTemp != NULL ? $strTMPTemp .= ", ".$contactGroup["cg_name"] : $strTMPTemp = $contactGroup["cg_name"];
 				}
 				$DBRESULT2->free();
@@ -540,9 +529,7 @@
 					$strTMPTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id ORDER BY `contact_name`");
 					while ($contact =& $DBRESULT2->fetchRow())	{
-						$BP = false;
-						isset($gbArr[0][$contact["contact_id"]]) ? $BP = true : NULL;					
-						if ($BP)
+						if (isset($gbArr[0][$contact["contact_id"]]))
 							$strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
 					}
 					$DBRESULT2->free();
