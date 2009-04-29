@@ -146,11 +146,14 @@
 	/*
 	 * Define autologin URL
 	 */
-	$userCrypted = $oreon->user->userCrypted;
-	$passwdCrypted = $oreon->user->get_passwd();
-	$autoLoginUrl = "p=$p&o=$o&min=$min&autologin=1&useralias=$userCrypted&password=$passwdCrypted";
-	$tpl->assign("autoLoginUrl", $autoLoginUrl);
-	$tpl->assign("CentreonAutologin", _("Centreon Autologin URL"));
+	if (isset($oreon->optGen["display_autologin_shortcut"])) {
+		$userCrypted = $oreon->user->userCrypted;
+		$passwdCrypted = $oreon->user->get_passwd();
+		$autoLoginUrl = "p=$p&o=$o&min=$min&autologin=1&useralias=$userCrypted&password=$passwdCrypted";
+		$tpl->assign("autoLoginEnable", $oreon->optGen["display_autologin_shortcut"]);
+		$tpl->assign("autoLoginUrl", $autoLoginUrl);
+		$tpl->assign("CentreonAutologin", _("Centreon Autologin URL"));		
+	}
 
 	/*
 	 * Grab elements for level 2
@@ -179,7 +182,7 @@
 		# grab menu title for each group
 		$DBRESULT_title =& $pearDB->query("SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1");
 		$title = "";
-		if ($title = $DBRESULT_title->fetchRow())
+		if ($title == $DBRESULT_title->fetchRow())
 			$title = _($title["topology_name"]);
 		else
 			$title = _("Main Menu");
