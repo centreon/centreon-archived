@@ -34,7 +34,7 @@
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'ldap_auth_enable'");
 	while ($ldap_auths =& $DBRESULT->fetchRow())
-		$ldap_auth[$ldap_auth["key"]] = myDecode($ldap_auth["value"]);
+		$ldap_auth[$ldap_auths["key"]] = myDecode($ldap_auths["value"]);
 	$DBRESULT->free();
 
 	include("./include/common/checkPagination.php");
