@@ -62,7 +62,7 @@
 	 * Hostgroups comes from DB -> Store in $hosts Array
 	 */
 	
-	$EDITCIOND = "";
+	$EDITCOND = "";
 	if ($o == "w" || $o == "c")
 		$EDITCOND = " WHERE `hg_id` != '".$hg_id."' ";
 	
