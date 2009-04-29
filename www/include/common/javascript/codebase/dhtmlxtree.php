@@ -17,9 +17,11 @@
 	
 	if (function_exists("filter_var")){
 		$search_host = filter_var($_GET["search_host"], FILTER_SANITIZE_SPECIAL_CHARS);
-	} else {
+	} else if (isset($_GET["search_host"])) {
 		$search_host = filter_get($_GET["search_host"]);
-	}	
+	} else {
+		$search_host = "";	
+	}
 	
 ?>
 
