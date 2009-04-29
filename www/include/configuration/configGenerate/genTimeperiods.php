@@ -26,11 +26,11 @@
 	/*
 	 * Generate Standart Timeperiod
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
+	$timeperiods = array();
 	$i = 1;
 	$str = NULL;
-	
-	while ($timePeriod =& $DBRESULT->fetchRow())	{
+	$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
+	while ($timePeriod =& $DBRESULT->fetchRow()) {
 		$ret["comment"] ? ($str .= "# '" . $timePeriod["tp_name"] . "' timeperiod definition " . $i . "\n") : NULL;
 		$str .= "define timeperiod{\n";
 		if ($timePeriod["tp_name"]) 
@@ -53,6 +53,7 @@
 			$str .= print_line("saturday", $timePeriod["tp_saturday"]);
 		$str .= "}\n\n";
 		$i++;
+		$timeperiods[$timePeriod["tp_id"]] = $timePeriod["tp_name"];
 		unset($timePeriod);
 	}	
 	
@@ -95,6 +96,7 @@
 					ComputeGMTTime("saturday", "friday", "sunday", $gmt, $timePeriod["tp_saturday"]);
 				
 				$i++;
+				$timeperiods[$timePeriod["tp_id"]] = $timePeriod["tp_name"];
 				unset($timePeriod);
 				foreach ($Period as $day => $value){
 					if (strlen($PeriodAfter[$day].$Period[$day].$PeriodBefore[$day]))
