@@ -1,20 +1,41 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL: http://svn.centreon.com/branches/centreon-2.0.x/www/include/configuration/configGenerate/formGenerateFiles.php $
+ * SVN : $Id: formGenerateFiles.php 7876 2009-04-24 15:57:07Z jmathis $
+ * 
  */
-
+ 
 	if (!isset($oreon))
 		exit();
 
@@ -30,6 +51,8 @@
 	 *  Get Poller List
 	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$n = $DBRESULT->numRows();
 	/*
 	 * Display null option
@@ -97,39 +120,17 @@
 		foreach ($tab_nagios_server as $key => $value)
 			if ($key && ($res["host"] == 0 || $res["host"] == $key))
 				$host_list[$key] = $value;
-
+				
 		if (isset($ret["gen"]) && $ret["gen"] && ($ret["host"] == 0 || $ret["host"])){
-			/*
-			 * Get commands
-			 */
-			$commands = array();
-			$DBRESULT2 =& $pearDB->query("SELECT command_id, command_name FROM command");
-			while ($command = $DBRESULT2->fetchRow())
-				$commands[$command["command_id"]] = $command["command_name"] ;
-			$DBRESULT2->free();
-			
-			/*
-			 * Get timeperiods
-			 */
-			$timeperiods = array();
-			$DBRESULT2 =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
-			while ($timeperiod =& $DBRESULT2->fetchRow())
-				$timeperiods[$timeperiod["tp_id"]] = $timeperiod["tp_name"];
-			$DBRESULT2->free();
-			
 			/*
 			 * Check dependancies
 			 */
 			$gbArr = manageDependencies();
 			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
+			if (PEAR::isError($DBRESULT_Servers))
+				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
-				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
-					/*
-					 * Check temporary files access
-					 */
-					if (!is_dir($nagiosCFGPath.$tab['id']."/"))
-						mkdir($nagiosCFGPath.$tab['id']."/");
-					
+				if (isset($ret["host"]) && ($tab['id'] == $ret["host"] || $ret["host"] == 0)) {
 					unset($DBRESULT2);
 					require $path."genCGICFG.php";
 					require $path."genNagiosCFG.php";
@@ -142,7 +143,7 @@
 					require $path."genContacts.php";
 					require $path."genContactGroups.php";
 					require $path."genHosts.php";
-					if ($oreon->user->get_version() >= 3)
+					if ($oreon->user->get_version() == 2)
 						require $path."genExtendedInfos.php";
 					require $path."genHostGroups.php";
 					require $path."genServices.php";
@@ -150,53 +151,41 @@
 					require $path."genEscalations.php";
 					require $path."genDependencies.php";
 					require $path."centreon_pm.php";
-				}
-				unset($generatedHG);
-				unset($generatedSG);
-				unset($generatedS);
+					
+					if ($tab['localhost']) {
+						$flag_localhost = $tab['localhost'];
+						if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
+							foreach ($files as $filename)
+								require_once($filename);
+						
+						foreach ($oreon->modules as $key=>$value)
+							if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php"))
+								foreach ($files as $filename)
+									require_once($filename);
+					}
+					unset($generatedHG);
+					unset($generatedSG);
+					unset($generatedS);
+				}		
 			}
-		}
-		
-		$flag_localhost = 0;			
-		/*
-		 * Meta Module Generator engine
-		 */
-		 
-		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `localhost` DESC");
-		while ($tab =& $DBRESULT_Servers->fetchRow()){
-			if (isset($tab['localhost']) && $tab['localhost']) {
-				$flag_localhost = $tab['localhost'];
-				if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
-					foreach ($files as $filename)
-						require_once($filename);
-			}
-		}
-		
-		/*
-		 *  Centreon Modules generator engine
-		 */
-		 
-		if ($flag_localhost)
-			foreach ($oreon->modules as $key=>$value)
-				if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php"))
-					foreach ($files as $filename)
-						require_once($filename);
-		
+		}			
+
 		/*
 		 * Create Server List to restart
 		 */
 		 
 		$tab_server = array();
 		$DBRESULT_Servers =& $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` ORDER BY `localhost` DESC");
+		if (PEAR::isError($DBRESULT_Servers))
+			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
-			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id'])
+			if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id']))
 				$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
 		}
 		
 		/*
 		 * If debug needed
-		 */
-				
+		 */		
 		if (isset($ret["debug"]) && $ret["debug"])	{
 			$DBRESULT_Servers =& $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` LIMIT 1");
 			$nagios_bin = $DBRESULT_Servers->fetchRow();
@@ -229,25 +218,28 @@
 					mkdir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]);
 				copy($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
 			}
-			
 			$msg_copy = array();
 			foreach ($tab_server as $host)
-				if (isset($host['localhost']) && $host['localhost'] == 1){
-					$msg_copy[$host["id"]] = "";
-					foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
-						$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
-						$filename = array_pop(explode("/", $filename));
-						if (!$bool)
-							$msg_copy[$host["id"]] .= display_copying_file($filename, _(" - movement <font color='res'>KO</font>"));
-					}
-					if (strlen($msg_copy[$host["id"]])){
-						$msg_copy[$host["id"]] = "<table border=0 width=300>".$msg_copy[$host["id"]]."</table>";
+				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $host['id']))
+					if (isset($host['localhost']) && $host['localhost'] == 1){
+						$msg_copy[$host["id"]] = "";
+						foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
+							$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
+							$filename = array_pop(explode("/", $filename));
+							if (!$bool)
+								$msg_copy[$host["id"]] .= display_copying_file($filename, _(" - movement <font color='res'>KO</font>"));
+						}
+						if (strlen($msg_copy[$host["id"]])){
+							$msg_copy[$host["id"]] = "<table border=0 width=300>".$msg_copy[$host["id"]]."</table>";
+						} else {
+							$msg_copy[$host["id"]] .= _("<br><b>Centreon : </b>All configuration files copied with success.");
+						}
 					} else {
-						$msg_copy[$host["id"]] = "<br>"._("Centreon : All configuration files copied with success.");
+						passthru("echo 'SENDCFGFILE:".$host['id']."' >> @CENTREON_VARLIB@/centcore.cmd", $return);
+						if (!isset($msg_restart[$host["id"]]))
+							$msg_restart[$host["id"]] = "";
+						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>All configuration will be send to ".$host['name']." by centcore in several minutes.");
 					}
-				} else {
-					passthru("echo 'SENDCFGFILE:".$host['id']."' >> @CENTREON_VARLIB@/centcore.cmd", $return);
-				}
 		}
 		
 		/*
@@ -256,6 +248,8 @@
 		
 		if (isset($ret["restart"]) && $ret["restart"])	{
 			$stdout = "";
+			if (!isset($msg_restart))
+				$msg_restart = array();
 			
 			/*
 			 * Get Init Script
@@ -268,34 +262,47 @@
 				$nagios_init_script = $serveurs["init_script"];
 			else 
 				$nagios_init_script = "/etc/init.d/nagios";
-			
-			$msg_restart = array();
-			foreach ($tab_server as $host){
+							
+			foreach ($tab_server as $host) {
 				if ($ret["restart_mode"] == 1){
 					if (isset($host['localhost']) && $host['localhost'] == 1){
-						$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
+						$msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " reload");
 					} else { 
 						system("echo 'RELOAD:".$host["id"]."' >> @CENTREON_VARLIB@/centcore.cmd");
+						if (!isset($msg_restart[$host["id"]]))
+							$msg_restart[$host["id"]] = "";
+						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A reload signal has been sent to ".$host["name"]."\n");
 					}
 				} else if ($ret["restart_mode"] == 2) {
 					if (isset($host['localhost']) && $host['localhost'] == 1){
-						$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
+						$msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " restart");
 					} else {
 						system("echo \"RESTART:".$host["id"]."\" >> @CENTREON_VARLIB@/centcore.cmd", $return);
+						if (!isset($msg_restart[$host["id"]]))
+							$msg_restart[$host["id"]] = "";
+						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to ".$host["name"]."\n");
 					}
 				} else if ($ret["restart_mode"] == 3)	{
-					require_once("./include/monitoring/external_cmd/functions.php");
-					$_GET["select"] = array(0 => 1);
-					$_GET["cmd"] = 25;
-					require_once("./include/monitoring/external_cmd/cmd.php");
-					$stdout = "EXTERNAL COMMAND: RESTART_PROGRAM;\n";
-					system("echo \"EXTERNALCMD:RESTART_PROGRAM:".$host["id"]."\" >> /usr/local/nagios/var/rw/nagios.cmd");
+					/*
+					 * Require external function files.
+					 */
+					require_once "./include/monitoring/external_cmd/functions.php";
+					write_command(" RESTART_PROGRAM", $host["id"]);
+					if (!isset($msg_restart[$host["id"]]))
+						$msg_restart[$host["id"]] = "";
+					$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to ".$host["name"]."\n");
 				}
 				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
-				$msg_restart[$host["id"]] = "<br />".str_replace ("\n", "<br />", $stdout);	
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
+			
+			foreach ($msg_restart as $key => $str)
+				$msg_restart[$key] = str_replace("\n", "<br>", $str);
 		}
 	}
+
+
 
 	$form->addElement('header', 'status', _("Status"));
 	if (isset($msg_restart) && $msg_restart)
