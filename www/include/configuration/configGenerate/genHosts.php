@@ -43,11 +43,14 @@
 	 
 	
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hosts.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_activate = '1' ORDER BY `host_register`, `host_name`");
+	$DBRESULT =& $pearDB->query("SELECT * " .
+								"FROM host, ns_host_relation " .
+								"WHERE host.host_id = ns_host_relation.host_host_id " .
+								"	AND ns_host_relation.nagios_server_id = '".$tab['id']."' " .
+								"	AND host_activate = '1' ORDER BY `host_register`, `host_name`");
 	$host = array();
 	$i = 1;
 	$str = NULL;
-	
 	while ($host =& $DBRESULT->fetchRow())	{
 		if (isset($host_instance[$host["host_id"]]) || $host["host_register"] == 0) {			
 			if (isset($gbArr[2][$host["host_id"]]) || !$host["host_register"])	{								
@@ -72,10 +75,7 @@
 				if (!$host["host_register"] && $host["host_name"])	
 					$str .= print_line("name", $host["host_name"]);
 				else
-					if ($host["host_name"]) $str .= print_line("host_name", $host["host_name"]);									
-				/*
-				 * Get Template Model Relation
-				 */
+					if ($host["host_name"]) $str .= print_line("host_name", $host["host_name"]);
 				
 				/*
 				 *  For Nagios 3 ::: Multi Templates
