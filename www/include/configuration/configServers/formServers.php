@@ -69,11 +69,14 @@
 	$form->addElement('header', 'information', _("Satellite configuration"));
 	$form->addElement('text', 'name', _("Sattelite Name"), $attrsText);
 	$form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
-	$form->addElement('text', 'ssh_port', _("SSH port"), $attrsText3);
 	$form->addElement('text', 'init_script', _("Nagios Init Script"), $attrsText);
+
 	$form->addElement('text', 'nagios_bin', _("nagios Binary"), $attrsText2);
 	$form->addElement('text', 'nagiostats_bin', _("nagiostats Binary"), $attrsText2);
+	$form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
+
 	$form->addElement('text', 'ssh_private_key', _("SSH Private key"), $attrsText2);
+	$form->addElement('text', 'ssh_port', _("SSH port"), $attrsText3);
 		
 	$Tab = array();
 	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, _("Yes"), '1');
