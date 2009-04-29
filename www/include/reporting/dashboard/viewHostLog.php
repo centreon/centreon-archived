@@ -140,7 +140,7 @@
 	/*
 	 * Ajax TimeLine and CSV export initialization 
 	 */
-	if (isset($id) && $id != ""){
+	if (isset($id) && $id != "NULL"){
 		/*
 		 * CSV export
 		 */
