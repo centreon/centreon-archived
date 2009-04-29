@@ -1,5 +1,4 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
 <form name='form' method='POST'>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
@@ -39,9 +38,7 @@
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
 		{/section}
-
 	</table>
-
 	<table class="ToolbarTable">
 		<tr>
 			<td class="Toolbar_TDSelectAction_Bottom">
@@ -56,9 +53,7 @@
 			{/php}
 		</tr>
 	</table>
-
 <input type='hidden' name='o' id='o' value='42'>
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
