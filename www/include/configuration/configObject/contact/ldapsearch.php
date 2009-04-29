@@ -22,13 +22,12 @@
  	require_once("../../../../$classdir/Oreon.class.php");
  	require_once("../../../../$classdir/centreonXML.class.php");
  	require_once("../../../../$classdir/centreonDB.class.php");
+ 	require_once("../../../../$classdir/centreonLDAP.class.php");
 
  	Session::start();
 
 	if (!isset($_SESSION["oreon"])) {
-		// Quick dirty protection
 		header("Location: ../../../../index.php");
-		//exit();
 	} else {
 		$oreon =& $_SESSION["oreon"];
 	}
@@ -45,6 +44,7 @@
 	$ldap_search_timeout = $ldap_search['ldap_search_timeout'];
 	$ldap_search_limit = $ldap_search['ldap_search_limit'];
 	$ldap_login_attrib = $ldap_search['ldap_login_attrib'];
+	$ldap_protocol_version = $ldap_search['ldap_protocol_version'];
 
 	if (isset($_GET["ldap_search_filter"]) && ($_GET["ldap_search_filter"]!= "undefined") )
 		$ldap_search_filter = $_GET["ldap_search_filter"];
@@ -94,7 +94,7 @@
  	$ds = @ldap_connect($ldapuri . $ldap_search['ldap_host'].":".$ldap_search['ldap_port']);
 
 
-	@ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+	@ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, $ldap_protocol_version);
 	@ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 
 	if ($debug_ldap_import == 1)
@@ -162,7 +162,7 @@
 		if ($number_returned) {
 			$buffer->startElement("reponse");
 			$buffer->writeElement("entries", $number_returned);			
-			for ($i=0 ; $i < $number_returned ; $i++) {
+			for ($i = 0 ; $i < $number_returned ; $i++) {
 				if (isset($info[$i]["givenname"])){
 					$isvalid = "0";
 					
