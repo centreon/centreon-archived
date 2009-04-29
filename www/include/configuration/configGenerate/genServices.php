@@ -331,7 +331,7 @@
 										$strTMP .= print_line("notes_url", $field);
 									if ($field = $esi["esi_action_url"])
 										$strTMP .= print_line("action_url", $field);
-									if ($field = getMyHostExtendedInfoImage($esi["service_id"], "esi_icon_image"))
+									if ($field = getMyServiceExtendedInfoImage($service["service_id"], "esi_icon_image"))
 										$strTMP .= print_line("icon_image", $field);
 									if ($field = $esi["esi_icon_image_alt"])
 										$strTMP .= print_line("icon_image_alt", $field);
@@ -578,7 +578,7 @@
 						$strTMP .= print_line("notes_url", $svc_method->replaceMacroInString($service["service_id"], $field));
 					if ($field = $esi["esi_action_url"])
 						$strTMP .= print_line("action_url", $svc_method->replaceMacroInString($service["service_id"], $field));
-					if ($field = getMyHostExtendedInfoImage($esi["service_id"], "esi_icon_image"))
+					if ($field = getMyServiceExtendedInfoField($service["service_id"], "esi_icon_image"))
 						$strTMP .= print_line("icon_image", $svc_method->replaceMacroInString($service["service_id"], $field));
 					if ($field = $esi["esi_icon_image_alt"])
 						$strTMP .= print_line("icon_image_alt", $svc_method->replaceMacroInString($service["service_id"], $field));
