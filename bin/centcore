@@ -67,6 +67,7 @@ $rsync = "rsync";
 $scp = "@BIN_SCP@";
 
 $ssh .= " -o ConnectTimeout=$timeout ";
+$rsyn .= " --contimeout=$timeout ";
 
 my $stop = 1;
 my $debug = 0;
@@ -256,7 +257,7 @@ sub sendExternalCommand($$){
     my $server_info = getServerConfig($id);
 
     # check if ip address is defined
-    if (defined($server_info->{'ns_ip_address'})){
+    if (defined($server_info->{'ns_ip_address'})) {
 		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p ".$server_info->{'ssh_port'}." 'echo \"".$cmd."\" >> ".$command_file."'\n";
 		my $stdout = `$cmd`;
 		writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"\n");
@@ -384,32 +385,13 @@ sub sendConfigFile($){
 
     my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
     my $server_info = getServerConfig($id);
-#    my ($md5local, $md5dist, $scpe);
 
     my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/*";
     my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
 
-    `$rsync --port=".$server_info->{'ssh_port'}." -c $origin $dest`;
+	# Send data with rsync
+    `$rsync --delete-after --port=".$server_info->{'ssh_port'}." -c $origin $dest`;
 	
-#    opendir(DIR, $installedPath."/filesGeneration/nagiosCFG/$id/");
-#    while (my $file = readdir(DIR)){
-#		if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
-#		    my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/$file";
-#		    my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir$file";
-#	
-#		    my $stdout = `scp $origin $dest`;
-	
-		    # Check sucessfull copy
-#		    $md5local = `/usr/bin/md5sum $origin`;
-#		    $md5dist  = `ssh -p ".$server_info->{'ssh_port'}." $server_info->{'ns_ip_address'} /usr/bin/md5sum $cfg_dir$file`;
-	
-#		    my @tab_local = split(' ', $md5local);		
-#		    my @tab_dist = split(' ', $md5dist);		
-#		    if ($tab_local[0] ne $tab_dist[0]){
-#				writeLogFile("Error when copying $cfg_dir$file on distant poller\n");
-#		    }
-#		}
-#   }
     undef($cfg_dir);
     undef($server_info);
 }
@@ -419,60 +401,10 @@ sub initNagios($$){
     my $options = $_[1];
     my $conf = getServerConfig($id);
     my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." ".$options."\n";
-    print "$options : $cmd\n";
     my $stdout = `$cmd`;
+
     # Logs Actions
     writeLogFile("init Script : '$sudo ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ns_ip_address'}." ($id)\n");
-    writeLogFile("$stdout\n");
-    undef($conf);
-    undef($cmd);
-    undef($stdout);
-}
-
-sub reloadNagios($){
-    my $id = $_[0];
-    
-    my $conf = getServerConfig($id);   
-    # 
-    # Reload nagios : 
-    # /etc/init.d/nagios reload
-    #
- 
-    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." reload\n";
-    my $stdout = `$cmd`;
-    writeLogFile("$stdout\n");
-    undef($conf);
-    undef($cmd);
-    undef($stdout);
-}
-
-sub stopNagios($){
-    my $id = $_[0];
-    
-    # 
-    # Reload nagios : 
-    # /etc/init.d/nagios stop
-    #
-    my $conf = getServerConfig($id);
-    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." stop\n";
-    my $stdout = `$cmd`;
-    writeLogFile("$stdout\n");
-    undef($conf);
-    undef($cmd);
-    undef($stdout);
-}
-
-sub startNagios($){
-    my $id = $_[0];
-    
-    my $conf = getServerConfig($id);
-
-    # 
-    # Reload nagios : 
-    # /etc/init.d/nagios start
-    #
-    my $cmd = "$ssh -p ".$conf->{'ssh_port'}." ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." start\n";
-    my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
     undef($conf);
     undef($cmd);
@@ -496,7 +428,7 @@ sub testConfig($){
 }
 
 sub parseRequest($){
-    if (!$_[0]){
+    if (!$_[0]) {
 		return ;
     }
     # 
@@ -514,6 +446,12 @@ sub parseRequest($){
 		sendConfigFile($1);
     } elsif ($_[0] =~ /TEST\:([0-9]*)/){
 		testConfig($1);
+    } elsif ($_[0] =~ /SYNCTRAP\:([0-9]*)/){
+		;
+    } elsif ($_[0] =~ /SYNCPLUGINS\:([0-9]*)/){
+		;
+    } elsif ($_[0] =~ /SYNCARCHIVES\:([0-9]*)/){
+		;
     } elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:(.*)/){
 		sendExternalCommand($1, $2);
     }
