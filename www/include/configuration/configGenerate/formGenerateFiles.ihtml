@@ -12,7 +12,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.restart.html}&nbsp;{$form.restart.label}</td><td class="FormRowValue">{$form.restart_mode.label}&nbsp;{$form.restart_mode.html}</td></tr>
 	</table>
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
-	<br /><br />
+	<br /><br /><br /><br />
 	{if $msg_debug || $msg_copy || msg_restart }
 	<div>
 		<ul id="mainnav">
