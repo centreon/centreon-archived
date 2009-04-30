@@ -1230,6 +1230,7 @@ CREATE TABLE IF NOT EXISTS `giv_graphs_template` (
   `default_tpl1` enum('0','1') default NULL,
   `stacked` enum('0','1') default NULL,
   `split_component` enum('0','1') default '0',
+  `scaled` enum('0','1') NULL default '1',
   `comment` text,
   PRIMARY KEY  (`graph_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

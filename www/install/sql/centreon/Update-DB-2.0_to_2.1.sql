@@ -1,3 +1,7 @@
+ALTER TABLE session ADD update_acl ENUM('0','1') NOT NULL;
+
+ALTER TABLE giv_graphs_template ADD scaled ENUM('0','1') NULL DEFAULT '1' AFTER split_component;
+
 UPDATE `topology` SET topology_name = 'By Status' WHERE topology_name = 'Services Details' AND topology_parent = '202' AND topology_page IS NULL;
 UPDATE `topology` SET topology_name = 'By Host' WHERE topology_name = 'Details' AND topology_parent = '202' AND topology_page IS NULL;
 UPDATE `topology` SET topology_name = 'By Host Group' WHERE topology_name = 'Hosts Groups' AND topology_parent = '202' AND topology_page IS NULL;
@@ -51,8 +55,9 @@ CREATE TABLE `acl_group_actions_relations` (
   KEY `acl_group_id` (`acl_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES (NULL, 'Logs', NULL, 5, 508, 11, 1, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES (NULL, 'Configuration', './img/icones/16x16/text_code.gif', 508, 50801, 10, 80, './include/administration/configChangelog/viewLogs.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES (NULL, 'Logs', NULL, 5, 508, 11, 1, './include/Administration/configChangelog/viewLogs.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES (NULL, 'Configuration', './img/icones/16x16/text_code.gif', 508, 50801, 10, 80, './include/Administration/configChangelog/viewLogs.php', NULL, '0', '0', '1', NULL, NULL, NULL);
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES (NULL, 'Unhandled Problems', './img/icones/16x16/server_network_problem.gif', 201, 20105, 5, 1, './include/monitoring/status/monitoringHost.php', '&o=h_unhandled', NULL, NULL, '1', NULL, NULL, NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 20105, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
