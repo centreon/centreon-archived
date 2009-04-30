@@ -1,3 +1,17 @@
+UPDATE `topology` SET topology_name = 'By Status' WHERE topology_name = 'Services Details' AND topology_parent = '202' AND topology_page IS NULL;
+UPDATE `topology` SET topology_name = 'By Host' WHERE topology_name = 'Details' AND topology_parent = '202' AND topology_page IS NULL;
+UPDATE `topology` SET topology_name = 'By Host Group' WHERE topology_name = 'Hosts Groups' AND topology_parent = '202' AND topology_page IS NULL;
+UPDATE `topology` SET topology_name = 'By Service Group' WHERE topology_name = 'Services Groups' AND topology_parent = '202' AND topology_page IS NULL;
+
+DELETE FROM `topology` WHERE topology_page = '20203' AND topology_name = 'Grids';
+DELETE FROM `topology` WHERE topology_page = '20208' AND topology_name = 'Grids';
+DELETE FROM `topology` WHERE topology_page = '20211' AND topology_name = 'Grids';
+DELETE FROM `topology` WHERE topology_parent = '20203';
+DELETE FROM `topology` WHERE topology_parent = '20208';
+DELETE FROM `topology` WHERE topology_parent = '20211';
+
+UPDATE `topology` SET topology_name = 'Details' WHERE topology_name = 'Overview' AND topology_page IN ('20204', '20209', '20212');
+
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Performance Info', './img/icones/16x16/document_gear.gif', '102', '10203', '10', '1', './include/nagiosStats/performanceInfo.php', NULL, NULL, NULL, '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Process Info', './img/icones/16x16/calculator.gif', '102', '10202', '10', '1', './include/nagiosStats/processInfo.php', NULL, NULL, NULL, '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Graphs', './img/icones/16x16/oszillograph.gif', '102', '10201', '10', '1', './include/nagiosStats/nagiosStats.php', NULL, NULL, NULL, '1', NULL, NULL, NULL);
