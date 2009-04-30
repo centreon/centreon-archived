@@ -183,7 +183,7 @@
 		$DBRESULT_title =& $pearDB->query("SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1");
 		$title = "";
 		$topoName = $DBRESULT_title->fetchRow();
-		if ($title == $topoName['topology_name'])
+		if ($DBRESULT_title->numRows())
 			$title = _($topoName['topology_name']);
 		else
 			$title = _("Main Menu");
