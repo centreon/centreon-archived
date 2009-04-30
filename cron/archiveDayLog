@@ -704,7 +704,7 @@ sub rebuild_archives($) {
     $dbh->do("TRUNCATE TABLE `log_archive_last_status`");
     
     # Getting first log and last log times
-    my $query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `log` ORDER BY `ctime` ASC";
+    my $query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `log`";
     my $sth = $dbh->prepare($query);
     $sth->execute;
     my ($start, $end) = (0,0);
