@@ -169,7 +169,7 @@
 	$tpl->assign('search_user_str', _("User"));
 	$tpl->assign('searchO', $searchO);
 	$tpl->assign('searchU', $searchU);
-	$tpl->assign('obj_str', _("Object"));
+	$tpl->assign('obj_str', _("Object Type"));
 	$tpl->assign('tabz_obj_type', $tabz_obj_type);
 	$tpl->assign('tabz_obj_name', $tabz_obj_name);
 	$tpl->assign('tabz_obj_id', $tabz_obj_id);
