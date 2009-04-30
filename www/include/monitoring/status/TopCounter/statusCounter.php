@@ -43,7 +43,7 @@
 		$_GET[$key] = htmlentities($value, ENT_QUOTES);
 	}
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";	
+	include_once "/etc/centreon/centreon.conf.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
@@ -151,7 +151,7 @@
 		/* 
 		 * Get Host NDO status 
 		 */		
-		$rq1 = 	" SELECT count(".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
 				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects";
 		
 		if (!$is_admin)
@@ -168,7 +168,7 @@
 		$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
 
 		while ($ndo =& $DBRESULT_NDO1->fetchRow())
-			$host_stat[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."objects.name1)"];
+			$host_stat[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
 		$DBRESULT_NDO1->free();
 		
 		/* 
