@@ -101,7 +101,8 @@
 	
 		
 	$objects_type_tab = array();
-	$objects_type_tab = $oreon->CentreonLogAction->listObjecttype();	
+	$objects_type_tab = $oreon->CentreonLogAction->listObjecttype();
+	$options = "";	
 	foreach ($objects_type_tab as $key => $name)
 		$options .= "<option value='$key' ".(($otype == $key) ? 'selected' : "").">$name</option>"; 
 	 
@@ -109,7 +110,10 @@
 	?>
 	
 	<?php
-	
+	$tabz_obj_type = array();
+	$tabz_obj_name = array();
+	$tabz_obj_id = array();
+		
 	if ($searchO || $searchU || $otype) {
 		$query = "SELECT DISTINCT object_name, object_id, object_type FROM log_action ";
 		$where_flag = 1;
@@ -143,9 +147,6 @@
 		$query .= " ORDER BY object_type, object_name";
 		$DBRESULT = $pearDBO->query($query);
 		
-		$tabz_obj_type = array();
-		$tabz_obj_name = array();
-		$tabz_obj_id = array();		
 		while ($res =& $DBRESULT->fetchRow()) {
 			if ($res['object_id']) {
 				$res['object_name'] = str_replace('#S#', "/", $res["object_name"]);
