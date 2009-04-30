@@ -65,7 +65,7 @@
 	}
 	
 	function get_services_status($host_name, $status){
-		global $pearDBndo, $ndo_base_prefix, $general_opt, $o, $is_admin, $groupnumber;
+		global $pearDBndo, $ndo_base_prefix, $general_opt, $o, $is_admin, $groupnumber, $oreon;
 
 		$rq = 	" SELECT count( nss.service_object_id ) AS nb".
 				" FROM " .$ndo_base_prefix."servicestatus nss".
@@ -86,8 +86,9 @@
 			$rq	.=	", centreon_acl";
 		
 		$rq	.=	" WHERE nno.objecttype_id = 2 ";
-				
-		$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
+
+		if (!$is_admin)				
+			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().")";
 
 		$rq .=	" AND nno.name1 = '".$host_name."')";		
 		
