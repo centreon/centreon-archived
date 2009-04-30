@@ -39,12 +39,10 @@
 	$debug = 0;
 	$flag_reset = 0;
 	
-	foreach ($_GET as $key => $value){
-		$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-		$value = filter_var($value, INPUT_GET);	
-		$_GET[$key] = $value;
+	foreach ($_GET as $key => $value) {
+		$_GET[$key] = htmlentities($value, ENT_QUOTES);
 	}
-	
+
 	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
@@ -104,7 +102,7 @@
 	$grouplistStr = $access->getAccessGroupsString(); 
 	
 	function restore_session($statistic_service = 'null', $statistic_host = 'null'){
-		global $pearDB;
+		global $pearDB, $sid;
 		if (isset($statistic_service) && !is_null($statistic_service)){
 			$sql = 	" UPDATE session SET " .
 					" s_nbHostsUp = '".$statistic_host["UP"]."'," .
@@ -116,7 +114,7 @@
 					" s_nbServicesCritical = '".$statistic_service["CRITICAL"]."'," .
 					" s_nbServicesUnknown = '".$statistic_service["UNKNOWN"]."'," .
 					" s_nbServicesPending = '".$statistic_service["PENDING"]."'" .
-					" WHERE session_id = '".$_POST["sid"]."'";
+					" WHERE session_id = '".$sid."'";
 			$DBRESULT =& $pearDB->query($sql);			
 		}
 	}
@@ -153,25 +151,24 @@
 		/* 
 		 * Get Host NDO status 
 		 */		
-		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+		$rq1 = 	" SELECT count(".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
 				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects";
 		
 		if (!$is_admin)
-		$rq1 .= " , centreon_acl ";
+			$rq1 .= " , centreon_acl ";
 		
 		$rq1 .= " WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
 				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 				$access->queryBuilder("AND", $ndo_base_prefix."objects.name1", "centreon_acl.host_name") .				
 				$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr) .				
-				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state";
 		
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		
 		$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
 
 		while ($ndo =& $DBRESULT_NDO1->fetchRow())
-			$host_stat[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
+			$host_stat[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."objects.name1)"];
 		$DBRESULT_NDO1->free();
 		
 		/* 
@@ -185,13 +182,13 @@
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
 					" AND centreon_acl.group_id IN (".$grouplistStr.") ".
-					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
+					" AND no.is_active = 1 GROUP BY nss.current_state";
 		else
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 					" WHERE no.object_id = nss.service_object_id".
 					" AND no.name1 NOT LIKE '_Module_%' ".
-					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";			
+					" AND no.is_active = 1 GROUP BY nss.current_state";			
 		
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 		
