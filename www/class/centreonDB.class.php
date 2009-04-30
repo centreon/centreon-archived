@@ -44,6 +44,7 @@ class CentreonDB {
 	private $privatePearDB;
 	private $dsn;
 	private $options;
+	private $centreon_path;
 	
 	/*
 	 *  Constructor only accepts 1 parameter which can be :
@@ -52,8 +53,10 @@ class CentreonDB {
 	 *  - ndo
 	 */
     function CentreonDB($db = "centreon", $retry = 3) {
-		include("@CENTREON_ETC@/centreon.conf.php");
+		//include("@CENTREON_ETC@/centreon.conf.php");
+		include("/etc/centreon/centreon.conf.php");
 
+		$this->centreon_path = $centreon_path;
 		$this->retry = $retry;				
 		$this->options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 		switch (strtolower($db)) {
@@ -77,6 +80,12 @@ class CentreonDB {
 				break;
 		}		
     }
+    
+	private function displayConnectionErrorPage() {
+		echo "<img src='./img/centreon.gif'><br/>";
+		echo "<b>" . _("Connection failed, please contact your administrator") . "</b>";		
+		exit;
+	}    
     
     /*
      *  Get info to connect to Centreon DB
@@ -136,7 +145,9 @@ class CentreonDB {
 			$i++;
 		}
 		if ($i == $this->retry) {
-			$oreon->user->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");			
+			if (isset($oreon->user))
+				$oreon->user->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");
+			$this->displayConnectionErrorPage();
 		}
 		else	
 			$this->privatePearDB->setFetchMode(DB_FETCHMODE_ASSOC);
