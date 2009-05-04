@@ -144,7 +144,7 @@
 				</table>
 				<br />
 			</td>
-			<td style='width:20px;'>&nbsp;</td>
+			<td style='width:5px;'>&nbsp;</td>
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
@@ -224,12 +224,7 @@
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/wrench.gif">&nbsp;{$m_mon_tools}</td>
 					</tr>
-				{if $lcaTopo.6 || $lcaTopo.70101 || $lcaTopo.20201 || $lcaTopo.40210}
-					{if $lcaTopo.6}
-					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./main.php?p=6&host_id={$h.host_id}&o=c'>{$m_mon_configure} {$h.host_name}</a></td>
-					</tr>
-					{/if}
+				{if $lcaTopo.70101 || $lcaTopo.20201 || $lcaTopo.40210}
 					{if $url_id && $lcaTopo.7}
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href='./main.php?p=70101&o=t&host_id={$h.host_id}'>{$m_mon_view_identity_file} {$h.host_name}</a></td>
@@ -247,10 +242,10 @@
 					{/if}
 				{/if}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href="#ping" name="ping" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_ping} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href="#ping" name="ping" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">&#9679;&nbsp;{$m_mon_tools_ping} {$h.host_name}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href="#tracert" name="tracert" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_tracert} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href="#tracert" name="tracert" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">&#9679;&nbsp;{$m_mon_tools_tracert} {$h.host_name}</a></td>
 					</tr>
 					{if $h_ext_action_url}
 					<tr class='list_one'>
@@ -258,7 +253,33 @@
 					</tr>
 					{/if}
 				</table>
-				<br>
+				<br />
+				<table class="ListTable">
+					<tr class='ListHeader'>
+						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/shortcut.gif">&nbsp;{$shortcut}</td>
+					</tr>
+				{if $lcaTopo.6}
+					<tr class='list_two'>
+						<td class="ListColLeft"><a href='./main.php?p=6&host_id={$h.host_id}&o=c'>&#9679;&nbsp;{$Tips3} {$h.host_name}</a></td>
+					</tr>
+				{/if}
+				{if $lcaTopo.20201}
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&search{$h.host_name}&search_host=1&search_service=0'>&#9679;&nbsp;{$Tips1}</a></td>
+					</tr>
+				{/if}
+				{if $lcaTopo.4}
+					<tr class='list_two'>
+						<td class="ListColLeft"><a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>&#9679;&nbsp;{$Tips2}</a></td>
+					</tr>
+				{/if}
+				{if $lcaTopo.307}
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href='./main.php?p=307&host={$h.host_id}'>&#9679;&nbsp;{$Tips4}</a></td>
+					</tr>
+				{/if}
+				</table>
+				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/link.gif">&nbsp;{$links}</td>

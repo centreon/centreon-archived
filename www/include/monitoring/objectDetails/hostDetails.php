@@ -1,18 +1,39 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL$
+ * SVN : $Id$
+ * 
  */
  
 	if (!isset($oreon))
@@ -255,7 +276,6 @@
 		$tpl->assign("m_mon_event_handler", _("Event Handler"));
 		$tpl->assign("m_mon_flap_detection", _("Flap Detection"));
 		$tpl->assign("m_mon_services_en_acknowledge", _("Acknowledge Enabled :"));
-		$tpl->assign("m_mon_tips", _("Tips"));
 		$tpl->assign("m_mon_tools", _("Tools"));		
 		$tpl->assign("cmt_host_name", _("Host Name"));
 		$tpl->assign("cmt_entry_time", _("Entry Time"));
@@ -264,7 +284,6 @@
 		$tpl->assign("cmt_persistent", _("Persistent"));
 		$tpl->assign("cmt_actions", _("Actions"));
 		$tpl->assign("options", _("Options"));
-		$tpl->assign("m_mon_configure", _("Manage"));
 		$tpl->assign("m_mon_view_identity_file", _("View identity file"));
 		$tpl->assign("m_mon_all_services", _("View all services of "));
 		$tpl->assign("m_mon_all_graphs", _("View all graphs of "));
@@ -287,6 +306,15 @@
 		$tpl->assign("seconds", _("seconds"));
 		$tpl->assign("links", _("Links"));
 
+		/*
+		 * Add Tips
+		 */
+		$tpl->assign("shortcut", _("Shortcuts"));
+		$tpl->assign("Tips1", _("View all services of this host"));
+		$tpl->assign("Tips2", _("View all graphs of this host"));
+		$tpl->assign("Tips3", _("Manage"));
+		$tpl->assign("Tips4", _("View report of this host"));
+		
 		/*
 		 * if user is admin, allActions is true, 
 		 * else we introduce all actions allowed for user
