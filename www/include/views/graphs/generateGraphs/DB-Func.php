@@ -35,10 +35,7 @@
  * SVN : $Id$
  * 
  */
-<<<<<<< .mine
 
-=======
->>>>>>> .r7936
 	function getRRDToolPath($pearDBO){
 		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_path FROM config LIMIT 1");
 		$config =& $DBRESULT->fetchRow();
