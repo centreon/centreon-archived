@@ -1,18 +1,39 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL$
+ * SVN : $Id$
+ * 
  */
 
 	if (!isset($oreon))
@@ -51,7 +72,7 @@
 		$host_name = $_GET["host_name"];
 		$svc_description = $_GET["service_description"];
 	} else {
-		foreach ($_GET["select"] as $key => $value )
+		foreach ($_GET["select"] as $key => $value)
 			$tab_data = split(";", $key);
 		$host_name = $tab_data[0];
 		$svc_description = $tab_data[1];
@@ -73,7 +94,7 @@
 			$hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
 		$DBRESULT->free();
 	
-		$service_id = getMyServiceID($_GET["service_description"], $host_id);
+		$service_id = getMyServiceID($svc_description, $host_id);
 	
 		if (isset($service_id) && $service_id) {
 			$proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
@@ -129,7 +150,7 @@
 	
 		$tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	
-		while ($ndo =& $DBRESULT_NDO->fetchRow()){
+		while ($ndo =& $DBRESULT_NDO->fetchRow()) {
 			if ($ndo["service_description"] == $svc_description)
 				$service_status[$host_name."_".$svc_description] = $ndo;
 	
@@ -153,16 +174,13 @@
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		$ndo2 =& $DBRESULT_NDO->fetchRow();
 		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
-	
-		if (!isset($_GET["service_description"]))
-			$_GET["service_description"] = $svc_description;
-			
+		
 		$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		$host =& $DBRESULT->fetchrow();
 		$host_id = getMyHostID($host["host_name"]);
 		$DBRESULT->free();
 		
-		$service_id = getMyServiceID($_GET["service_description"], $host_id);
+		$service_id = getMyServiceID($svc_description, $host_id);
 		$total_current_attempts = getMyServiceField($service_id, "service_max_check_attempts");
 
 		$path = "./include/monitoring/objectDetails/";
@@ -376,10 +394,11 @@
 		 */
 		
 		$tpl->assign("Tips1", _("Configure service"));
-		$tpl->assign("Tips2", _("Go to service graphs pages"));
 		$tpl->assign("Tips3", _("View all graphs of hosts"));
 		$tpl->assign("Tips4", _("View reporting of host"));
 		$tpl->assign("Tips5", _("View reporting of service"));
+		$tpl->assign("Tips6", _("View Host status page"));
+		$tpl->assign("Tips7", _("View all service status of"));
 
 		/*
 		 * Ext informations
