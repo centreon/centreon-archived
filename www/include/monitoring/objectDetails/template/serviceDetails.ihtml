@@ -217,25 +217,25 @@
 				{if $lcaTopo.602}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/wrench.gif">&nbsp;{$m_mon_tips}</td>
+						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/shortcut.gif">&nbsp;{$shortcut}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./main.php?p=602&service_id={$service_id}&o=c'>{$Tips1} "{$svc_description}"</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=602&service_id={$service_id}&o=c'>&#9679;&nbsp;{$Tips1} "{$svc_description}"</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./main.php?p=201&o=hd&host_name={$h.host_name}'>{$Tips6}</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=201&o=hd&host_name={$h.host_name}'>&#9679;&nbsp;{$Tips6}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&search{$h.host_name}&search_host=1&search_service=0'>{$Tips7} "{$h.host_name}"</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&search{$h.host_name}&search_host=1&search_service=0'>&#9679;&nbsp;{$Tips7} "{$h.host_name}"</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>{$Tips3} "{$h.host_name}"</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>&#9679;&nbsp;{$Tips3} "{$h.host_name}"</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./main.php?p=307&host={$h.host_id}'>{$Tips4} "{$h.host_name}"</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=307&host={$h.host_id}'>&#9679;&nbsp;{$Tips4} "{$h.host_name}"</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./main.php?p=30702&period=yesterday&start=&end=&host_id={$h.host_id}&item={$service_id}'>{$Tips5} "{$svc_description}"</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=30702&period=yesterday&start=&end=&host_id={$h.host_id}&item={$service_id}'>&#9679;&nbsp;{$Tips5} "{$svc_description}"</a></td>
 					</tr>
 				</table>
 				{/if}

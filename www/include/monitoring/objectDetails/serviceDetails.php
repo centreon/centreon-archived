@@ -301,7 +301,6 @@
 		$tpl->assign("m_mon_percent_state_change", _("Percent State Change"));
 		$tpl->assign("m_mon_downtime_sc", _("In Scheduled Downtime?"));
 		$tpl->assign("m_mon_last_update", _("Last Update"));
-		$tpl->assign("m_mon_tips", _("Tips"));
 		$tpl->assign("m_mon_tools", _("Tools"));
 		$tpl->assign("m_mon_service_command", _("Service Commands"));
 		$tpl->assign("m_mon_check_this_service", _("Checks for this service"));
@@ -392,13 +391,13 @@
 		/*
 		 * Tips translations
 		 */
-		
+		$tpl->assign("shortcut", _("Shortcuts"));
 		$tpl->assign("Tips1", _("Configure service"));
-		$tpl->assign("Tips3", _("View all graphs of hosts"));
+		$tpl->assign("Tips3", _("View all graphs of host"));
 		$tpl->assign("Tips4", _("View reporting of host"));
 		$tpl->assign("Tips5", _("View reporting of service"));
 		$tpl->assign("Tips6", _("View Host status page"));
-		$tpl->assign("Tips7", _("View all service status of"));
+		$tpl->assign("Tips7", _("View all service status of host"));
 
 		/*
 		 * Ext informations
