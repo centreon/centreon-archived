@@ -27,9 +27,8 @@
 	
 	$attrsText = array("size"=>"35");
 
-	$query = "SELECT * FROM `options` WHERE `key` IN ('patch_type_stable', 'patch_type_RC', 'patch_type_patch', 'patch_type_secu', 'patch_type_beta', 'patch_url_service', 'patch_url_download', 'patch_path_download')";
-	$DBRESULT =& $pearDB->query($query);
-	while ($result =& $DBRESULT->fecthRow()) {
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
+	while ($result =& $DBRESULT->fetchRow()) {
 		$gopt[$result["key"]] = myDecode($result["value"]);
 	}
 	$DBRESULT->free();	
