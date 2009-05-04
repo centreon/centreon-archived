@@ -63,6 +63,23 @@
 
 	include_once($path_sch."serviceScheduleJS.php");
 
+	/*
+	 * ACL Actions
+	 */
+	$GroupListofUser = array();
+	$GroupListofUser = $oreon->user->access->getAccessGroups();
+
+	$allActions = false;
+	// Get list of actions allowed for user
+	if (count($GroupListofUser) > 0 && $is_admin == 0) {
+		$authorized_actions = array();
+		$authorized_actions = $oreon->user->access->getActions();
+	} else {
+	 	// if user is admin, or without ACL, he cans perform all actions
+		$allActions = true;
+	}
+
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path_sch, $tpl, "/templates/");
@@ -95,43 +112,35 @@
 	</SCRIPT>
 	<?php
 
+
+	$action_list = array();
+	$action_list[]	=	_("More actions...");
+	
+	/*
+	 * Showing actions allowed for current user
+	 */
+	if (isset($authorized_actions) && $allActions == false){		
+		foreach ($authorized_actions as $action_name) {
+			if ($action_name == "service_schedule_check" || $allActions == true) 
+				$action_list[3] = _("Schedule immediate check");
+			if ($action_name == "service_schedule_check" || $allActions == true) 
+				$action_list[4] = _("Schedule immediate check (Forced)");
+		}
+	} else {
+		$action_list[3] = _("Schedule immediate check");
+		$action_list[4] = _("Schedule immediate check (Forced)");	
+	}
+
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
-    $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."), 
-													"3"		=>	_("Verification Check"), 
-													"4"		=>	_("Verification Check (Forced)"), 
-													"70" 	=> 	_("Services : Acknowledge"), 
-													"71" 	=> 	_("Services : Disacknowledge"),
-													"80" 	=> 	_("Services : Enable Notification"), 
-													"81" 	=> 	_("Services : Disable Notification"),
-													"90" 	=> 	_("Services : Enable Check"), 
-													"91" 	=> 	_("Services : Disable Check"),
-													"72" 	=> 	_("Hosts : Acknowledge"),
-													"73" 	=> 	_("Hosts : Disacknowledge"), 
-													"82" 	=> 	_("Hosts : Enable Notification"),
-													"83" 	=> 	_("Hosts : Disable Notification"),
-													"92" 	=> 	_("Hosts : Enable Check"),
-													"93" 	=> 	_("Hosts : Disable Check")), $attrs);
+    $form->addElement('select', 'o1', NULL, $action_list, $attrs);
 
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
 
 	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();");
-    $form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."), 
-													"3"		=>	_("Verification Check"), 
-													"4"		=>	_("Verification Check (Forced)"), 
-													"70" 	=> 	_("Services : Acknowledge"), 
-													"71" 	=> 	_("Services : Disacknowledge"),
-													"80" 	=> 	_("Services : Enable Notification"), 
-													"81" 	=> 	_("Services : Disable Notification"),
-													"90" 	=> 	_("Services : Enable Check"), 
-													"91" 	=> 	_("Services : Disable Check"),
-													"72" 	=> 	_("Hosts : Acknowledge"),
-													"73" 	=> 	_("Hosts : Disacknowledge"), 
-													"82" 	=> 	_("Hosts : Enable Notification"),
-													"83" 	=> 	_("Hosts : Disable Notification"),
-													"92" 	=> 	_("Hosts : Enable Check"),
-													"93" 	=> 	_("Hosts : Disable Check")), $attrs);
+    $form->addElement('select', 'o2', NULL, $action_list, $attrs);
+     
 	$form->setDefaults(array('o2' => NULL));
 	$o2 =& $form->getElement('o2');
 	$o2->setValue(NULL);

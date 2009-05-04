@@ -1,7 +1,7 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
-<input name="o" value="svc" type="hidden">
+<input name="o" value="svcSch" type="hidden">
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
 		<td class="Toolbar_TDSelectAction_Top" width="300">
@@ -11,16 +11,17 @@
 			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
 			<span class="consol_button" id="instance_selected"></span>
+			<span class="consol_button">{$form.o1.html}</span>
 			<input name="p" value="{$p}" type="hidden">
 		</td>
 		<td id="pagination1" class="ToolbarPagination"></td>
 		<td id="sel1" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>
-<div id="forAjax">...</div>
+<div id="forAjax"></div>
 <table class="ToolbarTable">
-	<tr>
-		<td class="Toolbar_TDSelectAction_Bottom" width="300"><input name="p" value="{$p}" type="hidden"></td>
+	<tr class="ToolbarTR">
+		<td class="Toolbar_TDSelectAction_Bottom" width="300"><span class="consol_button">{$form.o2.html}</span><input name="p" value="{$p}" type="hidden"></td>
 		<td id="pagination2" class="ToolbarPagination"></td>
 		<td id="sel2" class="Toolbar_pagelimit"></td>
 	</tr>
