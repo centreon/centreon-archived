@@ -1,3 +1,5 @@
+UPDATE `topoloy` SET topology_name = 'Downtime' WHERE topology_name = 'downtime' AND topology_parent = '203';
+
 ALTER TABLE session ADD update_acl ENUM('0','1') NOT NULL;
 
 ALTER TABLE giv_graphs_template ADD scaled ENUM('0','1') NULL DEFAULT '1' AFTER split_component;
