@@ -52,6 +52,7 @@
 		<td class="FormRowValue">{$form.col_bot.html}&nbsp;&nbsp;{$form.col_bot_color.html}&nbsp;&nbsp;{$form.col_bot_modify.html}</td>
 	</tr>
 	<tr class="list_two"><td class="FormRowField">{$form.split_component.label}</td><td class="FormRowValue">{$form.split_component.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.scaled.label}</td><td class="FormRowValue">{$form.scaled.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
 	{if $o == "a" || $o == "c"}

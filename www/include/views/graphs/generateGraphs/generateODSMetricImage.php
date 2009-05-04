@@ -129,6 +129,12 @@
 				
 		$metric_ODS["metric_name"] = str_replace("#S#", "/", $metric_ODS["metric_name"]);
 		$metric_ODS["metric_name"] = str_replace("#BS#", "\\", $metric_ODS["metric_name"]);
+
+		$gprint_scale_cmd = "%s"; 
+ 	    if (!$GraphTemplate["scaled"]){ 
+ 	    	$gprint_scale_cmd = ""; 
+ 	        $command_line .= " -X0 "; 
+ 		}          
 				
 		$base = "";
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
@@ -264,19 +270,19 @@
 				$command_line .= " ";
 			$command_line .= "\"";
 			if ($tm["ds_last"]){
-				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%0.0lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%7.2lf".($gprint_scale_cmd);
 				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_min"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%7.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%7.2lf".($gprint_scale_cmd); 
 				$tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_max"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%7.2lf%s";
+				 $command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%7.2lf".($gprint_scale_cmd); 
 				$tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_average"]){
-				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%7.2lf%s\\l\"";
+				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%7.2lf".($gprint_scale_cmd)."\\l\""; 
 			}
 			$cpt++;
 			if (isset($tm["warn"]) && $tm["warn"] != 0)

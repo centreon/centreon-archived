@@ -137,6 +137,14 @@
 		$index_data_ODS["service_description"] = str_replace("#S#", "/", $index_data_ODS["service_description"]);
 		$index_data_ODS["service_description"] = str_replace("#BS#", "\\", $index_data_ODS["service_description"]);
 		
+		$gprint_scale_cmd = "%s"; 
+ 		if ($GraphTemplate["scaled"] == "0"){ 
+ 	    	# Disable y-axis scaling 
+ 			$command_line .= " -X0 "; 
+ 	        # Suppress Scaling in Text Output 
+ 	        $gprint_scale_cmd = ""; 
+ 	    } 
+		
 		$base = "";
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
 			$base = "-b ".$GraphTemplate["base"];
@@ -286,19 +294,19 @@
 				$command_line .= " ";
 				$command_line .= "\"";
 			if ($tm["ds_last"]){
-				$command_line .= " GPRINT:v".($cpt).":LAST:\"Last\:%0.0lf%s";
+				$command_line .= " GPRINT:v".($cpt).":LAST:\"Last\:%7.2lf".($gprint_scale_cmd);
 				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_min"]){
-				$command_line .= " GPRINT:v".($cpt).":MIN:\"Min\:%7.2lf%s";
+				$command_line .= " GPRINT:v".($cpt).":MIN:\"Min\:%7.2lf".($gprint_scale_cmd);
 				$tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_max"]){
-				$command_line .= " GPRINT:v".($cpt).":MAX:\"Max\:%7.2lf%s";
+				$command_line .= " GPRINT:v".($cpt).":MAX:\"Max\:%7.2lf".($gprint_scale_cmd); 
 				$tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_average"]){
-				$command_line .= " GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf%s\\l\"";
+				$command_line .= " GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf".($gprint_scale_cmd)."\\l\"";
 			}
 			$cpt++;
 		}
