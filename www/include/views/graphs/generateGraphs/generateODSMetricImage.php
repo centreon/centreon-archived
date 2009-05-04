@@ -35,15 +35,14 @@
  * SVN : $Id$
  * 
  */ 
- 	//header('Content-Type: image/png');
+
+ 	header('Content-Type: image/png');
  	
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 	
-	//include "@CENTREON_ETC@/centreon.conf.php";
-	include "/etc/centreon/centreon.conf.php";
-	
+	include "@CENTREON_ETC@/centreon.conf.php";
 	
 	require_once './DB-Func.php';
 	require_once $centreon_path."www/class/centreonDB.class.php";
@@ -65,7 +64,7 @@
 
 	$pearDB = new CentreonDB();
 
-	$session =& $pearDB->query("SELECT session_id FROM `session` WHERE session_id = '".htmlentities($_GET["session_id"], ENT_QUOTES)."'");
+	$session =& $pearDB->query("SELECT session_id, user_id FROM `session` WHERE session_id = '".htmlentities($_GET["session_id"], ENT_QUOTES)."'");
 	if (!$session->numRows()){
 		exit;
 	} else {
