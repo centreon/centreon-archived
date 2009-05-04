@@ -75,7 +75,7 @@
 	</div>	
 	<span id="linkBar"></span>
 	<span id="logli">
-		<img src='./img/icones/16x16/text_code.gif' alt="{$Documentation}" />&nbsp;<a href='./main.php?p={$p}&amp;doc=1&amp;page=toc.html' title='{$Documentation}'>{$Documentation}</a>&nbsp;-&nbsp;{$loggedlabel}&nbsp;<a href="./main.php?p=50104&o=c">{$user_login}</a>&nbsp;{if $autoLoginEnable }<a href='./index.php?{$autoLoginUrl}'><img src='./img/icones/16x16/lock_preferences.gif' title='{$CentreonAutologin}'></a>&nbsp;{/if}<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif" alt="{$Logout}"/></a>&nbsp;<a href="{$LogOutUrl}">{$Logout}</a>&nbsp;
+		<img src='./img/icones/16x16/help.gif' alt="{$Documentation}" />&nbsp;<a href='./main.php?p={$p}&amp;doc=1&amp;page=toc.html' title='{$Documentation}'>{$Documentation}</a>&nbsp;-&nbsp;{$loggedlabel}&nbsp;<a href="./main.php?p=50104&o=c">{$user_login}</a>&nbsp;{if $autoLoginEnable }<a href='./index.php?{$autoLoginUrl}'><img src='./img/icones/16x16/lock_preferences.gif' title='{$CentreonAutologin}'></a>&nbsp;{/if}<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif" alt="{$Logout}"/></a>&nbsp;<a href="{$LogOutUrl}">{$Logout}</a>&nbsp;
 	</span>	
 	<div id="date">{$Date}</div>
 	<div id="centreonMsg"></div>
