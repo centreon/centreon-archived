@@ -96,17 +96,6 @@
 						<td class="ListColLeft">{$service_data.last_update}</td>
 					</tr>
 				</table>
-				<br />
-				{if $flag_graph}
-				<table class="ListTable">
-					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>{$status_str}</td>
-					</tr>
-					<tr class='list_one'>
-						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/statusGraphs/displayServiceStatus.php?{$options}"></td>
-					</tr>					
-				</table>			
-				{/if}	
 				<br />			
 				{if $index_data}
 				<table class="ListTable">
@@ -118,8 +107,19 @@
 					</tr>
 				</table>
 				{/if}
+				<br />
+				{if $flag_graph}
+				<table class="ListTable">
+					<tr class='ListHeader'>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$status_str}</td>
+					</tr>
+					<tr class='list_one'>
+						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/statusGraphs/displayServiceStatus.php?{$options}"></td>
+					</tr>					
+				</table>			
+				{/if}	
 			</td>
-			<td style='width:20px;'>&nbsp;</td>
+			<td style='width:5px;'>&nbsp;</td>
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
@@ -219,8 +219,20 @@
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/wrench.gif">&nbsp;{$m_mon_tips}</td>
 					</tr>
-					<tr>
-						<td class="ListColLeft"><a href='./main.php?p=602&service_id={$service_id}&o=c'>Configure {$svc_description}</a></td>
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href='./main.php?p=602&service_id={$service_id}&o=c'>{$Tips1} "{$svc_description}"</a></td>
+					</tr>
+					<tr class='list_two'>
+						<td class="ListColLeft"><a href='./main.php?p=4&mode=0&svc_id={$h.host_name};{$svc_description}'>{$Tips2}</a></td>
+					</tr>
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>{$Tips3} "{$h.host_name}"</a></td>
+					</tr>
+					<tr class='list_two'>
+						<td class="ListColLeft"><a href='./main.php?p=307&host={$h.host_id}'>{$Tips4} "{$h.host_name}"</a></td>
+					</tr>
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href='./main.php?p=30702&period=yesterday&start=&end=&host_id={$h.host_id}&item={$service_id}'>{$Tips5} "{$svc_description}"</a></td>
 					</tr>
 				</table>
 				{/if}

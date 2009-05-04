@@ -92,7 +92,9 @@
 		$tab_status = array();
 			
 	
-		/* start ndo service info */
+		/*
+		 * start ndo service info
+		 */
 		$rq =	"SELECT " .
 				" nss.current_state," .
 				" nss.output as plugin_output," .
@@ -128,8 +130,8 @@
 		$tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	
 		while ($ndo =& $DBRESULT_NDO->fetchRow()){
-			if($ndo["service_description"] == $svc_description)
-				$service_status[$host_name."_".$svc_description]= $ndo;
+			if ($ndo["service_description"] == $svc_description)
+				$service_status[$host_name."_".$svc_description] = $ndo;
 	
 			if (!isset($tab_status[$ndo["current_state"]]))
 				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
@@ -151,15 +153,15 @@
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		$ndo2 =& $DBRESULT_NDO->fetchRow();
 		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
-		/* end ndo host detail */
-	
 	
 		if (!isset($_GET["service_description"]))
 			$_GET["service_description"] = $svc_description;
 			
-		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
-		$host =& $res->fetchrow();
+		$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
+		$host =& $DBRESULT->fetchrow();
 		$host_id = getMyHostID($host["host_name"]);
+		$DBRESULT->free();
+		
 		$service_id = getMyServiceID($_GET["service_description"], $host_id);
 		$total_current_attempts = getMyServiceField($service_id, "service_max_check_attempts");
 
@@ -236,7 +238,7 @@
 			$service_status[$host_name."_".$svc_description]["current_state"] .= "&nbsp;&nbsp;<b>("._("ACKNOWLEDGED").")</b>";
 
 		if (isset($ndo) && $ndo) {
-			foreach ($tab_host_service[$host_name] as $key_name => $s){
+			foreach ($tab_host_service[$host_name] as $key_name => $s) {
 				if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
 					$tab_status[$service_status[$host_name."_".$key_name]["current_state"]] = 0;
 				$tab_status[$service_status[$host_name."_".$key_name]["current_state"]]++;
@@ -368,6 +370,16 @@
 			$tpl->assign("proc_warning", $proc_warning);
 		if (isset($proc_critical) && $proc_critical)
 			$tpl->assign("proc_critical", $proc_critical);
+		
+		/*
+		 * Tips translations
+		 */
+		
+		$tpl->assign("Tips1", _("Configure service"));
+		$tpl->assign("Tips2", _("Go to service graphs pages"));
+		$tpl->assign("Tips3", _("View all graphs of hosts"));
+		$tpl->assign("Tips4", _("View reporting of host"));
+		$tpl->assign("Tips5", _("View reporting of service"));
 
 		/*
 		 * Ext informations
