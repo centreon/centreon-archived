@@ -283,8 +283,8 @@
 			//calcul auto de la hauteur de l'ecran client
 			var h = screen.availHeight;
 			
-			if (h - tempY < span.offsetHeight) {
-				span.style.top = '-'+ span.offsetHeight +'px';
+			if (h - tempY < span.offsetHeight || (tempY + 570) > h) {
+				span.style.top = '-350px';
 			}
 			viewDebugInfo('Display span_'+id);
 		}
@@ -296,22 +296,24 @@
 		} else {
 			viewDebugInfo('Recup span_'+id);
 			var span = document.getElementById('span_'+id);
-			var proc_popup = new Transformation();
-			var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
-			var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForService.xsl";
-			proc_popup.setXml(_addrXMLSpan);
-			proc_popup.setXslt(_addrXSLSpan);
-			proc_popup.transform('span_'+id);
 		
 			// calcul auto de la largeur de l'ecran client
 			var l = screen.availWidth;
 			
 			//calcul auto de la hauteur de l'ecran client
 			var h = screen.availHeight;
-		
-			if (h - tempY < span.offsetHeight){
-				span.style.top = '-'+ span.offsetHeight +'px';
+			
+			if (h - tempY < span.offsetHeight || (tempY + 600) > h){				
+				span.style.top = '-380px';
 			}
+		
+			var proc_popup = new Transformation();
+			var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
+			var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForService.xsl";
+			proc_popup.setXml(_addrXMLSpan);
+			proc_popup.setXslt(_addrXSLSpan);
+			proc_popup.transform('span_'+id);
+					
 			viewDebugInfo('Display span_'+id);
 		}
 	}
