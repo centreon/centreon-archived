@@ -58,13 +58,7 @@
 	
 	$is_admin = isUserAdmin($_GET["sid"]);
 	$access = new CentreonACL($user_id, $is_admin);
-	$topoStr = $access->getTopologyString();
-	
-	$rq = "SELECT * " .
-			"FROM topology " .
-			"WHERE topology_parent IS NULL ".$access->queryBuilder("AND", "topology_page", $topoStr) .
-			" AND topology_show = '1' ORDER BY topology_order";
-	$DBRESULT =& $pearDB->query($rq);
+	$topoStr = $access->getTopologyString();	
 	
 	$rq2 = "SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".$_GET["menu"]."' LIMIT 1";
 	$DBRESULT2 =& $pearDB->query($rq2);
@@ -80,7 +74,12 @@
 	$buffer->writeElement("Menu2ID", $menu2_bgcolor);
 	$buffer->writeElement("Menu1Color", "menu_1");
 	$buffer->writeElement("Menu2Color", "menu_2");
-
+	
+	$rq = "SELECT * " .
+			"FROM topology " .
+			"WHERE topology_parent IS NULL ".$access->queryBuilder("AND", "topology_page", $topoStr) .
+			" AND topology_show = '1' ORDER BY topology_order";
+	$DBRESULT =& $pearDB->query($rq);
 	
 	$buffer->startElement("level_1");
 	while ($elem =& $DBRESULT->fetchRow()) {
@@ -110,7 +109,7 @@
 		$buffer->writeElement("Menu2Sep", $sep);
 		$buffer->writeElement("Menu2Url", "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"]);
 		$buffer->writeElement("Menu2UrlPopup", $elem["topology_popup"]);
-		$buffer->writeElement("Menu2UrlPopupOpen", $elem["topology_url"].$auth);
+		$buffer->writeElement("Menu2UrlPopupOpen", $elem["topology_url"]);
 		$buffer->writeElement("Menu2Name", _($elem["topology_name"]));
 		$buffer->writeElement("Menu2Popup", $elem["topology_popup"] ? "true" : "false");
 		$buffer->endElement();
