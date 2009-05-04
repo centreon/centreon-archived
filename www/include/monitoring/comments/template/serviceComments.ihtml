@@ -1,4 +1,3 @@
-<a href={$host_comment_link}>{$view_host_comments}</a>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>		
 <form name="form" method='GET'>
 <table class="ListTable">
@@ -8,12 +7,10 @@
 		{/php}
 </tr>
 <tr class='ListHeader'>
-	<td colspan="2">&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$cmt_service_comment}</td>
-	{if !$nb_comments_svc}
-	<td align='right' colspan="2">
+	<td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$cmt_service_comment}</td>	
+	<td align='right'>
 		{if $msgs}<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
-	</td>
-	{/if}
+	</td>	
 </tr>
 </table>
 <br />

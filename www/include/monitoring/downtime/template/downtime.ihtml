@@ -1,4 +1,3 @@
-<a href={$svc_dtm_link}>{$view_svc_dtm}</a>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name="form" action="" method='GET'>
 <hidden name="p" value='{$p}'>
@@ -10,11 +9,9 @@
 		</tr>
 		<tr class='ListHeader'>			
 			<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$dtm_host_downtime}</td>
-			{if !$nb_downtime_host}
 			<td align='right'>
 				{if $msgh}<a href="{$msgh.addL}">{$msgh.addT}</a>{/if}
-			</td>
-			{/if}
+			</td>			
 		</tr>
 	</table>
 	<br />
