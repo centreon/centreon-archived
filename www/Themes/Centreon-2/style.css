@@ -130,11 +130,12 @@ div.pagination 		{margin-left:40%;}
 
 
 div.uptodate,div.updateSecu,div.update,div.update_readme,div.update_output,div.graph_footer,div.left_menu {margin:3px;padding:3px;}
-div.uptodate,div.updateSecu,div.update,div.update_readme,div.graph_footer,div.left_menu,div.menuLeft {-moz-border-radius:4px;}
+div.uptodate,div.updateSecu,div.update,div.update_readme,div.graph_footer,div.left_menu,div.menuLeft,div.updateError{-moz-border-radius:4px;}
 
 div.uptodate 	{background-color:#DFF9E0;border:1px #ADC7A1 solid;}
 div.updateSecu 	{background-color:#F9EDED;border:1px #E3858C solid;}
 div.update 	{background-color:#FEF7DB;border:1px #FDC11E solid;}
+div.updateError	{background-color:#fa6f6c;border:1px #AEAEAE solid;}
 div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE solid;}
 
 
