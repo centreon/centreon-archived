@@ -100,19 +100,23 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
-	
 		var h = document.getElementById('last_state_change');
 		h.innerHTML = '<?php echo _("Duration")?>';
 	  	h.indice = 'last_state_change';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-	
+		
 		var h = document.getElementById('last_check');
 		h.innerHTML = '<?php echo _("Last Check")?>';
 	  	h.indice = 'last_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
+		var h = document.getElementById('current_check_attempt');
+		h.innerHTML = '<?php echo _("Tries")?>';
+	  	h.indice = 'current_check_attempt';
+	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('plugin_output');
 		h.innerHTML = '<?php echo _("Status information")?>';

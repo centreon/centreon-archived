@@ -31,8 +31,8 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: 
+ * SVN : $URL$
+ * SVN : $Id$ 
  * 
  */
 
@@ -92,6 +92,7 @@
 	$tpl->assign("mon_host", _("Hosts"));
 	$tpl->assign("mon_status", _("Status"));
 	$tpl->assign("mon_ip", _("IP"));
+	$tpl->assign("mon_tries", _("Tries"));
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));

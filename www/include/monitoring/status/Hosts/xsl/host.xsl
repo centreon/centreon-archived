@@ -10,6 +10,7 @@
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="ip"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_check"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_check_attempt"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>	
 	</tr>
 	<xsl:for-each select="//l">
@@ -61,12 +62,12 @@
 			<xsl:attribute name="style">
 				background-color:<xsl:value-of select="hc"/>;
 			</xsl:attribute>
-
 			<xsl:value-of select="cs"/>
 		</td>
 		<td class="ListColRight"><xsl:value-of select="a"/></td>
 	    <td class="ListColRight"><xsl:value-of select="lc"/></td>
 	    <td class="ListColRight"><xsl:value-of select="lsc"/></td>
+	    <td class="ListColCenter"><xsl:value-of select="tr"/></td>
 		<td class="ListColNoWrap"><xsl:value-of select="ou"/></td>
 	</tr>
 </xsl:for-each>
