@@ -11,14 +11,13 @@
 			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
 			<span class="consol_button" id="instance_selected"></span>
-			<span class="consol_button">{$form.o1.html}</span>
 			<input name="p" value="{$p}" type="hidden">
 		</td>
 		<td id="pagination1" class="ToolbarPagination"></td>
 		<td id="sel1" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>
-<div id="forAjax">...</div>
+<div id="forAjax"></div>
 <table class="ToolbarTable">
 	<tr>
 		<td class="Toolbar_TDSelectAction_Top" width="330">{$form.o2.html}<input name="p" value="{$p}" type="hidden"></td>

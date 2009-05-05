@@ -31,32 +31,35 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: 
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
 
 	/*
-	 * if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	 * if debug == 0 => Normal, 
+	 * debug == 1 => get use, 
+	 * debug == 2 => log in file (log.xml)
 	 */
 	$debugXML = 0;
 	$buffer = '';
 	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	
-	include_once($centreon_path . "www/class/Session.class.php");
-	include_once($centreon_path . "www/class/Oreon.class.php");	
-	include_once($centreon_path . "www/class/other.class.php");
-	include_once($centreon_path . "www/class/centreonACL.class.php");
-	include_once($centreon_path . "www/class/centreonXML.class.php");
-	include_once($centreon_path . "www/class/centreonDB.class.php");
-	include_once($centreon_path . "www/include/common/common-Func.php");
+	include_once $centreon_path . "www/class/Session.class.php";
+	include_once $centreon_path . "www/class/Oreon.class.php";	
+	include_once $centreon_path . "www/class/other.class.php";
+	include_once $centreon_path . "www/class/centreonACL.class.php";
+	include_once $centreon_path . "www/class/centreonXML.class.php";
+	include_once $centreon_path . "www/class/centreonDB.class.php";
+	include_once $centreon_path . "www/include/common/common-Func.php";
 			
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 	
-	$pearDB = new CentreonDB();
-	$pearDBndo = new CentreonDB("ndo");
+	$pearDB 	= new CentreonDB();
+	$pearDBndo 	= new CentreonDB("ndo");
 
 	$ndo_base_prefix = getNDOPrefix();
 	
@@ -97,7 +100,7 @@
 	/*
 	 * Get Status Colors
 	 */
-	$general_opt = getStatusColor($pearDB);
+	$general_opt =& $oreon->optGen;
 
 	function get_hosts_status($host_group_id){
 		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $is_admin, $grouplist, $groupnumber, $access;		
@@ -156,7 +159,9 @@
 		return($tmpArray);
 	}
 
-	// check is admin
+	/*
+	 * check is admin
+	 */
 	$is_admin = isUserAdmin($sid);
 
 	if (!$is_admin)
@@ -186,30 +191,50 @@
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
 
-	/* Get Host status */
-	$rq1 = 	" SELECT " .
-			" no.name1 as hostgroup_name," .
-			" hg.hostgroup_id" .
-			" FROM " .$ndo_base_prefix."hostgroups hg, ".$ndo_base_prefix."objects no, centreon_acl ".
-			" WHERE no.object_id = hg.hostgroup_object_id AND hg.alias != 'meta_hostgroup'";
+	/*
+	 * Get Host Status request
+	 */
+	$stats = array();
+	$rq1 = 	"SELECT nhg.alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
+			"FROM ".$ndo_base_prefix."hostgroup_members nhgm " .
+					"INNER JOIN ".$ndo_base_prefix."objects noo ON (noo.object_id = nhgm.host_object_id ) " .
+					"INNER JOIN ".$ndo_base_prefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
+					"INNER JOIN ".$ndo_base_prefix."objects no ON (noo.name1 = no.name1) " .
+					"INNER JOIN nagios_hoststatus nhs on (nhs.host_object_id = no.object_id) " .
+			"WHERE no.objecttype_id = 1 " .
+			"GROUP BY nhg.alias, nhs.current_state";
+	$DBRESULT =& $pearDBndo->query($rq1);
+	while ($ndo =& $DBRESULT->fetchRow()) {
+		if (!isset($stats[$ndo["alias"]]))
+			$stats[$ndo["alias"]] = array("h" => array(1=>0,2=>0,3=>0), "s" => array(1=>0,2=>0,3=>0,3=>0,4=>0));
+		$stats[$ndo["alias"]]["h"][$ndo["current_state"]] = $ndo["nb"];
+	}
 
-	if ($search != "")
-		$rq1 .= 	" AND no.name1 like '%" . $search . "%' ";
-	
-	if ($instance != "ALL")
-		$rq1 .= 	" AND no.instance_id = ".$instance;
-	$rq1 .= 		" group by no.name1 ";
-	$rq1 .= 		" order by no.name1 ". $order;
+	/*
+	 * Get Services request
+	 */
 
-	$rq_pagination = $rq1;
+	$rq2 = 	"SELECT nhg.alias, nss.current_state, count( nss.service_object_id ) AS nb" .
+			"FROM nagios_hostgroup_members nhgm " .
+				"INNER JOIN nagios_objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
+				"INNER JOIN nagios_hostgroups nhg ON nhgm.hostgroup_id = nhg.hostgroup_id " .
+				"INNER JOIN nagios_objects no ON ( noo.name1 = no.name1 ) " .
+				"INNER JOIN nagios_servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
+			"WHERE no.objecttype_id = 2 " .
+			"GROUP BY nhg.alias, nss.current_state;";
+	$DBRESULT =& $pearDBndo->query($rq1);
+	while ($ndo =& $DBRESULT->fetchRow()) {
+		$stats[$ndo["alias"]]["s"][$ndo["current_state"]] = $ndo["nb"];
+	}
+
+	$numRows = 4;
 
 	/* 
 	 * Get Pagination Rows 
 	 */
-	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	$numRows = $DBRESULT_PAGINATION->numRows();
+	$numRows = count($stats[$ndo["alias"]]);
 
-	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+	//$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 
 	$buffer = new CentreonXML();
@@ -220,13 +245,41 @@
 	$buffer->writeElement("limit", $limit);
 	$buffer->writeElement("p", $p);
 	$buffer->endElement();	
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
 
-	while ($ndo =& $DBRESULT_NDO1->fetchRow()) 
-	{				
+	foreach ($stats as $name => $stat ) {
+		if ((isset($lca["LcaHostGroup"][$name]) || !isset($lca)) && $name != "meta_hostgroup") {	
+			$class == "list_one" ? $class = "list_two" : $class = "list_one";
+			if (count($stat["h"])) {
+				$buffer->startElement("l");
+				$buffer->writeAttribute("class", $class);
+				$buffer->writeElement("o", $ct++);
+				$buffer->writeElement("hn", $name);
+				$buffer->writeElement("hu", $stat["h"][0]);
+				$buffer->writeElement("huc", $tab_color_host[0]);
+				$buffer->writeElement("hd", $stat["h"][1]);
+				$buffer->writeElement("hdc", $tab_color_host[1]);				
+				$buffer->writeElement("hur", $stat["h"][2]);
+				$buffer->writeElement("hurc", $tab_color_host[2]);
+				$buffer->writeElement("sk", $stat["s"][0]);
+				$buffer->writeElement("skc", $tab_color_service[0]);
+				$buffer->writeElement("sw", $stat["s"][1]);
+				$buffer->writeElement("swc", $tab_color_service[1]);
+				$buffer->writeElement("sc", $stat["s"][2]);
+				$buffer->writeElement("scc", $tab_color_service[2]);				
+				$buffer->writeElement("su", $stat["s"][3]);
+				$buffer->writeElement("suc", $tab_color_service[3]);
+				$buffer->writeElement("sp", $stat["s"][4]);
+				$buffer->writeElement("spc", $tab_color_service[4]);				
+				$buffer->endElement();			
+			}
+		}
+	}
+	
+	/*
+	while ($ndo =& $DBRESULT_NDO1->fetchRow()) {
 		if (isset($lca["LcaHostGroup"][$ndo["hostgroup_name"]]) || !isset($lca)) {	
 			$nb_host = get_hosts_status($ndo["hostgroup_id"]);
 			$nb_service = get_services_status($ndo["hostgroup_id"]);	
@@ -263,7 +316,7 @@
 			}
 		}
 	}
-
+*/
 	if (!$ct)
 		$buffer->writeElement("infos", "none");		
 
