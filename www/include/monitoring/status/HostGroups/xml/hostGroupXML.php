@@ -135,6 +135,14 @@
 
 
 	/*
+	 * Prepare search string
+	 */
+
+	$searchStr = "";
+	if ($search != "")
+		$searchStr = " AND nhg.alias LIKE '%$search%' ";
+
+	/*
 	 * Get Host Status request
 	 */
 	$stats = array();
@@ -144,7 +152,7 @@
 					"INNER JOIN ".$ndo_base_prefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
 					"INNER JOIN ".$ndo_base_prefix."objects no ON (noo.name1 = no.name1) " .
 					"INNER JOIN nagios_hoststatus nhs on (nhs.host_object_id = no.object_id) " .
-			"WHERE no.objecttype_id = 1 " .
+			"WHERE no.objecttype_id = 1 $searchStr" .
 			"GROUP BY nhg.alias, nhs.current_state";
 	$DBRESULT =& $pearDBndo->query($rq1);
 	while ($ndo =& $DBRESULT->fetchRow()) {
@@ -156,26 +164,23 @@
 	/*
 	 * Get Services request
 	 */
-
-	$rq2 = 	"SELECT nhg.alias, nss.current_state, count( nss.service_object_id ) AS nb" .
+	$rq2 = 	"SELECT nhg.alias, nss.current_state, count( nss.service_object_id ) AS nb " .
 			"FROM nagios_hostgroup_members nhgm " .
 				"INNER JOIN nagios_objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
-				"INNER JOIN nagios_hostgroups nhg ON nhgm.hostgroup_id = nhg.hostgroup_id " .
+				"INNER JOIN nagios_hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
 				"INNER JOIN nagios_objects no ON ( noo.name1 = no.name1 ) " .
 				"INNER JOIN nagios_servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
 			"WHERE no.objecttype_id = 2 " .
-			"GROUP BY nhg.alias, nss.current_state;";
-	$DBRESULT =& $pearDBndo->query($rq1);
+			"GROUP BY nhg.alias, nss.current_state";
+	$DBRESULT =& $pearDBndo->query($rq2);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		$stats[$ndo["alias"]]["s"][$ndo["current_state"]] = $ndo["nb"];
 	}
 
-	$numRows = 4;
-
 	/* 
 	 * Get Pagination Rows 
 	 */
-	$numRows = count($stats[$ndo["alias"]]);
+	$numRows = count($stats);
 
 	$buffer = new CentreonXML();
 	$buffer->startElement("reponse");
@@ -189,10 +194,10 @@
 	$ct = 0;
 	$flag = 0;
 
-	foreach ($stats as $name => $stat ) {
+	foreach ($stats as $name => $stat) {
 		if ((isset($lca["LcaHostGroup"][$name]) || !isset($lca)) && $name != "meta_hostgroup") {	
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
-			if (count($stat["h"])) {
+			if (isset($stat["h"]) && count($stat["h"])) {
 				$buffer->startElement("l");
 				$buffer->writeAttribute("class", $class);
 				$buffer->writeElement("o", $ct++);
