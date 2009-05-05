@@ -38,6 +38,7 @@
 	while ($res =& $DBRESULT->fetchRow())
 		$ldap_search[$res["key"]] = myDecode($res["value"]);
 	$DBRESULT->free();
+	$debug =& $ldap_search; 
 	
 	$ldap_search_filter = $ldap_search['ldap_search_filter'];
 	$ldap_base_dn = $ldap_search['ldap_base_dn'];
@@ -68,12 +69,7 @@
 		$ldap_search_limit = $_POST["ldap_search_limit"];
 
 	$connect = true;
-
-	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-	while ($ldap_auths =& $DBRESULT->fetchRow())
-		$debug[$ldap_auth["key"]] = myDecode($ldap_auth["value"]);
-	$DBRESULT->free();
-
+	
 	$debug_ldap_import = $debug['debug_ldap_import'];
 	$debug_path = $debug['debug_path'];
 
@@ -88,7 +84,6 @@
 	else
 		$ldapuri = "ldap://" ;
 
-	//print $ldapuri . $ldap_search['ldap_host']." :: ".$ldap_search['ldap_port'] . " :: " .$ldap_search['ldap_search_user']. " :: " . $ldap_search['ldap_search_user_pwd'] . "<br />";
 	if ($debug_ldap_import == 1)
 		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : URI : " . $ldapuri . $ldap_search['ldap_host'].":".$ldap_search['ldap_port'] ."\n", 3, $debug_path."ldapsearch.log");
  	$ds = @ldap_connect($ldapuri . $ldap_search['ldap_host'].":".$ldap_search['ldap_port']);
