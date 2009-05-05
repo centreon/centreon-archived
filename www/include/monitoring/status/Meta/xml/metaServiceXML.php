@@ -250,7 +250,7 @@
 		$buffer->writeElement("o", $ct++);
 		$buffer->writeElement("f", $flag);		
 		$buffer->writeElement("ppd", $ndo["process_performance_data"]);
-		$buffer->writeElemen("sd", $dataMeta['meta_name']);
+		$buffer->writeElement("sd", $dataMeta['meta_name']);
 		$buffer->writeElement("svc_id", $ndo["object_id"]);
 						
 		$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
