@@ -80,12 +80,12 @@
  		}
  		if ($str_local != "") {
  			$str_local = "echo " . $str_local . " >> " . $oreon->Nagioscfg["command_file"];			
- 			passthru($str_local, &$return_local);
+ 			passthru($str_local, $return_local);
  		}
  		if ($str_remote != "") {
  			$str_remote = "echo " . $str_remote . " >> /var/lib/centreon/centcore.cmd";
  			//$str_remote = "echo " . $str_remote . " >> @CENTREON_VARLIB@/centcore.cmd";
- 			passthru($str_remote, &$return_remote);	
+ 			passthru($str_remote, $return_remote);	
  		}
  		return ($str_local + $str_remote);
  	}
