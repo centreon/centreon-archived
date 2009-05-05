@@ -467,7 +467,28 @@ sub initNagios($$){
     undef($stdout);
 }
 
-sub testConfig($){
+sub syncTraps($) {
+	my $id = $_[0];
+	my $port = 22;
+	
+    # Get configuration
+    my $ns_server = getServerConfig($id);
+	
+	if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'} != "") {
+        $port = $ns_server->{'ssh_port'};
+    }
+	
+	if ($id == 0) {
+		`$rsync --port=$port -c /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+		my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
+	    if ($ls > 1) {
+			`$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+		}
+		
+	}
+}
+
+sub testConfig($) {
     my $id = $_[0];
 
     my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
@@ -480,6 +501,46 @@ sub testConfig($){
     undef($distantconnexion);
     writeLogFile("$stdout\n");
     undef($cfg_dir);
+}
+
+sub syncArchives($) {
+	my $id = $_[0];
+	my $port = 22;
+#	my $varlib = "@VARLIB_CENTREON@";
+	my $varlib = "/var/lib/centreon";
+	
+    # Check MySQL Connexion
+    CheckMySQLConnexion()
+    
+    # Get configuration
+    my $ns_server = getServerConfig($id);
+	
+	if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'} != "") {
+        $port = $ns_server->{'ssh_port'};
+    }
+	
+	if ($id == 0) {
+		
+		if (! -d "$varlib/log/".$ns_server->{'id'}."/archives/") {
+			if (! -d "$varlib/log/".$ns_server->{'id'}) {
+				mkdir "$varlib/log/".$ns_server->{'id'};
+			}
+			if (! -d "$varlib/log/".$ns_server->{'id'}."/archives/") {
+				mkdir "$varlib/log/".$ns_server->{'id'}."/archives/";
+			}
+		}
+		my $sth = $con->prepare("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `id` = '".$id."'");
+		if ($sth->execute()) {
+			my $data = $sth->fetchrow_hashref();
+
+			# Archive Sync
+			`$rsync --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/* $varlib/log/$ns_server->{'id'}/archives/`;
+			unset($data);
+		} else {
+			print "Can't get archive path for service ".$ns_server->{'id'}." (".$ns_server->{'ns_address_ip'}.") -> ".$sth3->$sth2->errstr;
+		}		
+
+	}
 }
 
 sub parseRequest($){
@@ -504,11 +565,11 @@ sub parseRequest($){
 	# Experimental
 	testConfig($1);
     } elsif ($_[0] =~ /SYNCTRAP\:([0-9]*)/){
-	;
+		syncTraps($1);
     } elsif ($_[0] =~ /SYNCPLUGINS\:([0-9]*)/){
 	;
     } elsif ($_[0] =~ /SYNCARCHIVES\:([0-9]*)/){
-	;
+		syncArchives($1);
     } elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:(.*)/){
 	sendExternalCommand($1, $2);
     }
