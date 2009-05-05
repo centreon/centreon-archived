@@ -109,7 +109,7 @@ function reloadStatusCounter(_relaod_time,_sid){
 				document.getElementById('service_warning').innerHTML = '';
 				var _text_service_warning = document.createTextNode(_statistic_service_warning);
 				var _linkservice_warning = document.createElement("a");
-			  	_linkservice_warning.href = 'main.php?p=20202&o=svc_warning';
+			  	_linkservice_warning.href = 'main.php?p=20201&o=svc_warning';
 				_linkservice_warning.appendChild(_text_service_warning);
 				document.getElementById('service_warning').appendChild(_linkservice_warning);
 				
@@ -117,7 +117,7 @@ function reloadStatusCounter(_relaod_time,_sid){
 				document.getElementById('service_critical').innerHTML = '';
 				var _text_service_critical = document.createTextNode(_statistic_service_critical);
 				var _linkservice_critical = document.createElement("a");
-			  	_linkservice_critical.href = 'main.php?p=20202&o=svc_critical';
+			  	_linkservice_critical.href = 'main.php?p=20201&o=svc_critical';
 				_linkservice_critical.appendChild(_text_service_critical);
 				document.getElementById('service_critical').appendChild(_linkservice_critical);
 				
@@ -125,7 +125,7 @@ function reloadStatusCounter(_relaod_time,_sid){
 				document.getElementById('service_unknown').innerHTML = '';
 				var _text_service_unknown = document.createTextNode(_statistic_service_unknown);
 				var _linkservice_unknown = document.createElement("a");
-			  	_linkservice_unknown.href = 'main.php?p=20202&o=svc_unknown';
+			  	_linkservice_unknown.href = 'main.php?p=20201&o=svc_unknown';
 				_linkservice_unknown.appendChild(_text_service_unknown);
 				document.getElementById('service_unknown').appendChild(_linkservice_unknown);
 				
