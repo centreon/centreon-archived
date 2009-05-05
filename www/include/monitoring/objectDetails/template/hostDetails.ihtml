@@ -278,6 +278,11 @@
 						<td class="ListColLeft"><a href='./main.php?p=307&host={$h.host_id}'>&#9679;&nbsp;{$Tips4}</a></td>
 					</tr>
 				{/if}
+				{if $lcaTopo.203}
+					<!--<tr class='list_one'>
+						<td class="ListColLeft"><a href='./main.php?p=203&mode=0&id=HH_{$h.host_id}_1'>&#9679;&nbsp;{$Tips4}</a></td>
+					</tr>-->
+				{/if}
 				</table>
 				<br />
 				<table class="ListTable">
