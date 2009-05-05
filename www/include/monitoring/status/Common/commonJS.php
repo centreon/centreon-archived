@@ -390,68 +390,61 @@ for ($i = 1; $i <= 2; $i++) { ?>
 	
 	var sel2 = document.createElement('select');
 	sel2.name = 'l';
-	sel2.id = 'l1';
+	sel2.id = 'l2';
 	sel2.onchange = function() { change_limit(this.value) };
 
-	var _max = 100; 	
+	var _max = 100;
 	if (_limit > 100) {
 		_max = 1000;
 	}
-
-	var _index1 = -1;
+	
 	var _index;
-	for (i = 10 ; i <= 100 ; i += 10) {
-		if (i > _limit && _index1 < 0) {
-			_index1++;
-			var k2 = document.createElement('option');
-			k2.value = _limit;
-			sel1.appendChild(k2);
-			var l2 = document.createTextNode(_limit);
-			k2.appendChild(l2);
+	for (i = 10, j = 0 ; i <= 100 ; i += 10, j++) {		
+		var k = document.createElement('option');
+		k.value = i;		
+		sel1.appendChild(k);
+		if (_limit == i) {
+			_index = j;
 		}
+		var l = document.createTextNode(i);
+		k.appendChild(l);
+	}	
+	for (i = 200; i <= 500 ; i += 100, j++) {
 		var k = document.createElement('option');
 		k.value = i;
 		sel1.appendChild(k);
+		if (_limit == i) {
+			_index = j;
+		}
 		var l = document.createTextNode(i);
 		k.appendChild(l);
 	}
 	
-	for (i = 200; i <= 500 ; i += 100) {
+	for (i = 10, j = 0; i <= 100 ; i += 10, j++) {
 		var k = document.createElement('option');
 		k.value = i;
-		sel1.appendChild(k);
-		var l = document.createTextNode(i);
-		k.appendChild(l);
-	}
-	
-	var _index2 = -1;
-	for (i = 10 ; i <= 100 ; i += 10) {
-		if (i > _limit && _index2 < 0) {
-			_index2++;
-			var k2 = document.createElement('option');
-			k2.value = _limit;
-			sel2.appendChild(k2);
-			var l2 = document.createTextNode(_limit);
-			k2.appendChild(l2);
+		sel2.appendChild(k);
+		if (_limit == i) {
+			_index = j;
 		}
-		var k = document.createElement('option');
-		k.value = i;
-		sel2.appendChild(k);
 		var l = document.createTextNode(i);
 		k.appendChild(l);
 	}
-
-	for (i = 200; i <= 500 ; i += 100) {
+	for (i = 200; i <= 500 ; i += 100, j++) {
 		var k = document.createElement('option');
 		k.value = i;
 		sel2.appendChild(k);
+		if (_limit == i) {
+			_index = j;
+		}
 		var l = document.createTextNode(i);
 		k.appendChild(l);
 	}
 
 	sel1.selectedIndex = _index;
 	_sel1.appendChild(sel1);
-	sel2.selectedIndex = _index2;
+	
+	sel2.selectedIndex = _index;
 	_sel2.appendChild(sel2);
 }
 
