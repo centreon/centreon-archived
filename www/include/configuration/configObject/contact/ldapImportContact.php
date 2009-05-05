@@ -20,7 +20,7 @@
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
 	while ($res =& $DBRESULT->fetchRow())
-		$ldap_auth[$res["key"]] = $res["value"];
+		$ldap_auth[$res["key"]] = html_entity_decode($res["value"]);
 	$DBRESULT->free();
 
 	$attrsText 	= array("size"=>"80");
