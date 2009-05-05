@@ -1,29 +1,84 @@
-/*
+
 .defaultTreeTable{
 			margin : 0px;
 			padding : 0px;
 			border : 0px;
 }
-*/
-/*
-.containerTableStyle { overflow : auto; position:relative; top:0; font-size : 12px;}
-.containerTableStyleRTL span { direction: rtl; unicode-bidi: bidi-override;  }
-.containerTableStyleRTL { direction: rtl; overflow : auto; position:relative; top:0; font-size : 12px;}
-*/
-.standartTreeRow{	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif; 	font-size : 12px; -moz-user-select: none;  }
-.selectedTreeRow{ background-color : navy; color:white; font-family : Verdana, Geneva, Arial, Helvetica, sans-serif; 		font-size : 12px;  -moz-user-select: none; }
-.dragAndDropRow{ background-color : navy; color:white; }
-.standartTreeRow_lor{	text-decoration:underline; background-color : #FFFFF0; font-family : Verdana, Geneva, Arial, Helvetica, sans-serif; 	font-size : 12px; -moz-user-select: none; }
-.selectedTreeRow_lor{   text-decoration:underline; background-color : navy; color:white; font-family : Verdana, Geneva, Arial, Helvetica, sans-serif; 		font-size : 12px;  -moz-user-select: none; }
 
-.standartTreeImage{ width:18px; height:18px;  overflow:hidden; border:0; padding:0; margin:0;
-font-size:1px; }
-.hiddenRow { width:1px;   overflow:hidden;  }
-.dragSpanDiv,.dragSpanDiv td{ 	font-size : 12px; 	background-color:white; }
+.containerTableStyle { 
+	overflow : auto; 
+	position:relative; 
+	top:0; 
+	font-size : 11px;
+}
+.containerTableStyleRTL span { 
+	direction: rtl; 
+	unicode-bidi: bidi-override;  
+}
+.containerTableStyleRTL { 
+	direction: rtl; 
+	overflow : auto; 
+	position:relative; 
+	top:0; 
+	font-size : 11px;
+}
 
 
-.selectionBox{
-background-color: #FFFFCC;
+
+
+.standartTreeRow	{	
+	font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	text-align:left;
+	-moz-user-select: none;  
+}
+.selectedTreeRow	{
+	background-color:navy;
+	color:white;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size : 11px;
+	-moz-user-select: none;
+}
+.dragAndDropRow	{ 
+	background-color : navy;
+	color:white;
+}
+.standartTreeRow_lor{	
+	text-decoration:underline;
+	background-color : #FFFFF0;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size : 11px;
+	-moz-user-select: none;
+}
+.selectedTreeRow_lor{
+	text-decoration:underline;
+	background-color : navy;
+	color:white;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size : 11px;
+	-moz-user-select: none;
+}
+.standartTreeImage{ 
+	width:18px;	
+	height:18px; 
+	overflow:hidden;
+	border:0;
+	padding:0;
+	margin:0;
+	font-size:11px;
+}
+.hiddenRow {
+	width:1px;
+	overflow:hidden;
+}
+
+.dragSpanDiv,.dragSpanDiv td	{ 	
+	font-size : 11px; 
+	background-color:white; 
+}
+
+.selectionBox	{
+	background-color: #FFFFCC;
 }
 .selectionBar {
 	top:0;
@@ -35,31 +90,32 @@ background-color: #FFFFCC;
 }
 
 .intreeeditRow{
-  width:100%; font-size:8pt; height:16px; border:1px solid silver; padding:0; margin:0;
-  -moz-user-select:  text;   
+  	width:100%;
+  	font-size:8pt;
+  	height:16px;
+  	border:1px solid silver;
+  	padding:0;
+  	margin:0;
+  	-moz-user-select:  text;   
 }
 .dhx_tree_textSign{
-   font-size:8pt;
-   font-family:monospace;
-   width:21px;
-   color:black;
-   padding:0px;
-   margin:0px;
-   cursor:pointer;
-   text-align: center;
+   	font-size:8pt;
+   	font-family:monospace;
+   	width:21px;
+   	color:black;
+   	padding:0px;
+   	margin:0px;
+   	cursor:pointer;
+   	text-align: center;
 }
 .dhx_tree_opacity{
-    opacity:0;
+	opacity:0;
     -moz-opacity:0;
     filter:alpha(opacity=0);
 }
 .dhx_bg_img_fix{
-width:18px;
-height:18px;
-background-repeat: no-repeat;
-background-position: center;
-background-position-x: center;
-background-position-y: center;
+	width:16px;
+	height:16px;
+	background-repeat: no-repeat;
+	background-position: center;
 }
-
-
