@@ -35,6 +35,7 @@
 .selectedTreeRow	{
 	background-color:navy;
 	color:white;
+	text-align:left;
 	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size : 11px;
 	-moz-user-select: none;
@@ -106,7 +107,7 @@
    	padding:0px;
    	margin:0px;
    	cursor:pointer;
-   	text-align: center;
+   	text-align: left;
 }
 .dhx_tree_opacity{
 	opacity:0;
