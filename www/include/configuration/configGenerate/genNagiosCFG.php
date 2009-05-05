@@ -64,8 +64,8 @@
 				$str .= "cfg_file=".$nagios["cfg_dir"].$cfg.".cfg\n";
 			}
 		# Include for Module the cfg file
-		if (isset($oreon->modules["CentQos"]))
-			if ($oreon->modules["CentQos"]["gen"] && $files = glob("./modules/CentQos/generate_files/*.php"))
+		foreach ($oreon->modules as $name => $tab2)
+			if ($oreon->modules[$name]["gen"] && $files = glob("./modules/$name/generate_files/*.php"))
 				foreach ($files as $filename)	{
 					$cfg = NULL;
 					$file =& basename($filename);

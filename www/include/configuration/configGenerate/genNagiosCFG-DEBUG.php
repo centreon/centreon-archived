@@ -57,7 +57,7 @@
 	/*
 	 * Include for Meta Service the cfg file
 	 */
-	if (isset($tab['localhost']) && $tab['localhost'])
+	if (isset($tab['localhost']) && $tab['localhost']) {
 		if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
 			foreach ($files as $filename)	{
 				$cfg = NULL;
@@ -66,16 +66,17 @@
 				$cfg .= $file[0];
 				$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
 			}
-	# Include for Module the cfg file
-	if (isset($oreon->modules["CentQos"]) && isset($tab['localhost']) && $tab['localhost'])
-		if ($oreon->modules["CentQos"]["gen"] && $files = glob("./modules/CentQos/generate_files/*.php"))
-			foreach ($files as $filename)	{
-				$cfg = NULL;
-				$file =& basename($filename);
-				$file = explode(".", $file);
-				$cfg .= $file[0];
-				$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
-			}
+		# Include for Module the cfg file
+		foreach ($oreon->modules as $name => $tab2)
+			if ($oreon->modules[$name]["gen"] && $files = glob("./modules/$name/generate_files/*.php"))
+				foreach ($files as $filename)	{
+					$cfg = NULL;
+					$file =& basename($filename);
+					$file = explode(".", $file);
+					$cfg .= $file[0];
+					$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
+				}
+	}
 	$str .= "resource_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/resource.cfg\n";
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key=>$value)	{
