@@ -15,8 +15,6 @@
  * For information : contact@centreon.com
  */
 
-	ini_set('display_errors', 1);
-
 	if (!isset($oreon))
 		exit();
 	
@@ -57,10 +55,48 @@
 	$DBRESULT->free();
 	unset($h);
 	
+	/*
+	 * Create HG Cache
+	 */
+	$hgCache = array();
+	$DBRESULT2 =& $pearDB->query("SELECT hgr.hostgroup_hg_id, hgr.host_host_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.hostgroup_hg_id = hg.hg_id");
+	while ($hg =& $DBRESULT2->fetchRow()) {
+		if (!isset($hgCache[$hg["host_host_id"]]))
+			$hgCache[$hg["host_host_id"]] = array();
+		$hgCache[$hg["host_host_id"]][$hg["hostgroup_hg_id"]] = $hg["hg_name"];
+	}
+	$DBRESULT->free();
+	unset($hg);
+
+	/*
+	 * Create Contact Cache 
+	 */
+	$cctCache = array();
+	$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name, chr.host_host_id FROM contact_host_relation chr, contact c WHERE chr.contact_id = c.contact_id");
+	while ($contact =& $DBRESULT2->fetchRow())	{
+		if (!isset($cctCache[$contact["host_host_id"]]))
+			$cctCache[$contact["host_host_id"]] = array();
+		$cctCache[$contact["host_host_id"]][$contact["contact_id"]] = $contact["contact_name"];
+	}
+	$DBRESULT->free();
+	unset($contact);		
+
+	/*
+	 * Create Cache for CG
+	 */
+	$cgCache = array();
+	$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name, chr.host_host_id FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
+	while ($cg =& $DBRESULT2->fetchRow())	{
+		if (!isset($cgCache[$cg["host_host_id"]]))
+			$cgCache[$cg["host_host_id"]] = array();
+		$cgCache[$cg["host_host_id"]][$cg["cg_id"]] = $cg["cg_name"];
+		
+	}
+	$DBRESULT->free();
+	unset($cg);		
 	
 	/******************************************************
 	 * Template Generation
-	 * 
 	 ******************************************************/
 		
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hosts.cfg", $oreon->user->get_name());
@@ -128,47 +164,26 @@
 				$str .= print_line("alias", $host["host_alias"]);
 			if ($host["host_address"])	
 				$str .= print_line("address", $host["host_address"]);
-			
 			if ($host["host_register"] == 1)
-				$str .= print_line("#location", $host["host_location"]);
-			
+				$str .= print_line("#location", $host["host_location"]);			
 			if ($host["host_snmp_community"])
 				$str .= print_line("_SNMPCOMMUNITY", $host["host_snmp_community"]);
 			if ($host["host_snmp_version"])
 				$str .= print_line("_SNMPVERSION", $host["host_snmp_version"]);
 			
-			/* 
-			 * Get Parents List for this host
-			 */
-	
-			$hostParent = array();
-			$strTemp = NULL;
-			$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
-			while($hostParent = $DBRESULT2->fetchRow())	{
-				$DBRESULT3 =& $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$hostParent["host_id"]."' AND nagios_server_id = '".$tab['id']."'");
-				if (verifyIfMustBeGenerated($host["host_id"], $gbArr[2], $ret) && $DBRESULT3->numRows())
-					$strTemp != NULL ? $strTemp .= ", ".$hostParent["host_name"] : $strTemp = $hostParent["host_name"];
-			}
-			$DBRESULT2->free();
-			
-			if ($strTemp) 
-				$str .= print_line("parents", $strTemp);
-			unset($hostParent);
-			unset($strTemp);
-	
 			/*
 			 * Hostgroups relation
 			 */
 			if ($oreon->user->get_version() >= 2)	{
-				$hostGroup = array();
-				$strTemp = NULL;
-				$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hgr.hostgroup_hg_id = hg.hg_id ORDER BY `hg_name`");
-				while ($hostGroup =& $DBRESULT2->fetchRow())	{
-					if (isset($gbArr[3][$hostGroup["hg_id"]]))
-						$strTemp != NULL ? $strTemp .= ", ".$hostGroup["hg_name"] : $strTemp = $hostGroup["hg_name"];
+				$strTemp = "";
+				if (isset($hgCache[$host["host_id"]])) {
+					foreach ($hgCache[$host["host_id"]] as $hgs) {
+						if ($strTmp != "") {
+							$strTmp .= ",";
+						}
+						$strTmp .= $hgs;
+					}					
 				}
-				$DBRESULT2->free();
-				unset($hostGroup);
 				if ($strTemp) 
 					$str .= print_line("hostgroups", $strTemp);
 				unset($strTemp);
@@ -194,8 +209,6 @@
 			/*
 			 * Check Period
 			 */
-			 
-			 
 			if ($host["host_register"] == 1) {
 				if ((!isset($host["timeperiod_tp_id"]) && $host["host_location"] != 0)) {
 					$host["timeperiod_tp_id"] = getMyHostField($host["host_id"], "timeperiod_tp_id");
@@ -219,7 +232,6 @@
 			if ($host["command_command_id2"])
 				$str .= print_line("event_handler", $commands[$host["command_command_id2"]].$host["command_command_id_arg2"]);
 	
-			
 			if ($host["host_event_handler_enabled"] != 2) 
 				$str .= print_line("event_handler_enabled", $host["host_event_handler_enabled"] == 1 ? "1": "0");
 			if ($host["host_low_flap_threshold"]) 
@@ -236,38 +248,35 @@
 				$str .= print_line("retain_nonstatus_information", $host["host_retain_nonstatus_information"] == 1 ? "1": "0");
 			
 			/*
-			 * Nagios V2 : contactGroups relation
+			 * Nagios V2 & V3 : contactGroups relation
 			 */
-			
-			$contactGroup = array();
-			$strTemp = NULL;
-			$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-			while ($contactGroup =& $DBRESULT2->fetchRow())	{				
-				if (isset($gbArr[1][$contactGroup["cg_id"]]))
-					$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
+			$strTemp = "";
+			if (isset($cgCache[$host["host_id"]])) {
+				foreach ($cgCache[$host["host_id"]] as $cg) {
+					if ($strTemp != "")
+						$strTemp .= ",";
+					$strTemp .= $cg;
+				}
+				if ($strTemp) 
+					$str .= print_line("contact_groups", $strTemp);
+				unset($strTemp);
 			}
-			$DBRESULT2->free();
-			unset($contactGroup);
-			if ($strTemp) 
-				$str .= print_line("contact_groups", $strTemp);
-			unset($strTemp);
 			
 			/*
 			 * Nagios V3 : contacts relation
 			 */
-			if ($oreon->user->get_version() >= 3)	{
-				$contact = array();
+			if ($oreon->user->get_version() >= 3) {				
 				$strTemp = NULL;
-				$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_host_relation chr, contact c WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contact_id = c.contact_id ORDER BY `contact_name`");
-				while ($contact =& $DBRESULT2->fetchRow())	{				
-					if (isset($gbArr[0][$contact["contact_id"]]))
-						$strTemp != NULL ? $strTemp .= ", ".$contact["contact_name"] : $strTemp = $contact["contact_name"];
+				if (isset($cctCache[$host["host_id"]])) {
+					foreach ($cctCache[$host["host_id"]] as $contact) {
+						if ($strTemp != "")
+							$strTemp .= ",";
+						$strTemp .= $contact;
+					}
+					if ($strTemp) 
+						$str .= print_line("contacts", $strTemp);
+					unset($strTemp);
 				}
-				$DBRESULT2->free();
-				unset($contact);
-				if ($strTemp) 
-					$str .= print_line("contacts", $strTemp);
-				unset($strTemp);
 			}
 			
 			if ($host["host_notification_interval"] != NULL) 
@@ -283,12 +292,11 @@
 			} 
 			if ($host["timeperiod_tp_id2"])
 				$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location_tp"] : ""));
-		
 			if ($host["host_notification_options"]) 
 				$str .= print_line("notification_options", $host["host_notification_options"]);
-			if ($host["host_notifications_enabled"] != 2) 
+			if ($host["host_notifications_enabled"] != 2)
 				$str .= print_line("notifications_enabled", $host["host_notifications_enabled"] == 1 ? "1": "0");
-			if ($host["host_stalking_options"]) 
+			if ($host["host_stalking_options"])
 				$str .= print_line("stalking_options", $host["host_stalking_options"]);
 			if (!$host["host_register"]) 
 				$str .= print_line("register", "0");
@@ -418,7 +426,6 @@
 				/* 
 				 * Get Parents List for this host
 				 */
-
 				$hostParent = array();
 				$strTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
@@ -438,15 +445,15 @@
 				 * Hostgroups relation
 				 */
 				if ($oreon->user->get_version() >= 2)	{
-					$hostGroup = array();
-					$strTemp = NULL;
-					$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hgr.hostgroup_hg_id = hg.hg_id ORDER BY `hg_name`");
-					while ($hostGroup =& $DBRESULT2->fetchRow())	{
-						if (isset($gbArr[3][$hostGroup["hg_id"]]))
-							$strTemp != NULL ? $strTemp .= ", ".$hostGroup["hg_name"] : $strTemp = $hostGroup["hg_name"];
+					$strTemp = "";
+					if (isset($hgCache[$host["host_id"]])) {
+						foreach ($hgCache[$host["host_id"]] as $hgs) {
+							if ($strTemp != "") {
+								$strTemp .= ",";
+							}
+							$strTemp .= $hgs;
+						}					
 					}
-					$DBRESULT2->free();
-					unset($hostGroup);
 					if ($strTemp) 
 						$str .= print_line("hostgroups", $strTemp);
 					unset($strTemp);
@@ -472,8 +479,6 @@
 				/*
 				 * Check Period
 				 */
-				 
-				 
 				if ($host["host_register"] == 1) {
 					if ((!isset($host["timeperiod_tp_id"]) && $host["host_location"] != 0)) {
 						$host["timeperiod_tp_id"] = getMyHostField($host["host_id"], "timeperiod_tp_id");
@@ -496,7 +501,6 @@
 				$host["command_command_id_arg2"] = removeSpecialChar($host["command_command_id_arg2"]);
 				if ($host["command_command_id2"])
 					$str .= print_line("event_handler", $commands[$host["command_command_id2"]].$host["command_command_id_arg2"]);
-
 				
 				if ($host["host_event_handler_enabled"] != 2) 
 					$str .= print_line("event_handler_enabled", $host["host_event_handler_enabled"] == 1 ? "1": "0");
@@ -514,38 +518,35 @@
 					$str .= print_line("retain_nonstatus_information", $host["host_retain_nonstatus_information"] == 1 ? "1": "0");
 				
 				/*
-				 * Nagios V2 : contactGroups relation
+				 * Nagios V2 & V3 : contactGroups relation
 				 */
-				
-				$contactGroup = array();
-				$strTemp = NULL;
-				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-				while ($contactGroup =& $DBRESULT2->fetchRow())	{				
-					if (isset($gbArr[1][$contactGroup["cg_id"]]))
-						$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
+				$strTemp = "";
+				if (isset($cgCache[$host["host_id"]])) {
+					foreach ($cgCache[$host["host_id"]] as $cg) {
+						if ($strTemp != "")
+							$strTemp .= ",";
+						$strTemp .= $cg;
+					}
+					if ($strTemp) 
+						$str .= print_line("contact_groups", $strTemp);
+					unset($strTemp);
 				}
-				$DBRESULT2->free();
-				unset($contactGroup);
-				if ($strTemp) 
-					$str .= print_line("contact_groups", $strTemp);
-				unset($strTemp);
 				
 				/*
 				 * Nagios V3 : contacts relation
 				 */
-				if ($oreon->user->get_version() >= 3)	{
-					$contact = array();
-					$strTemp = NULL;
-					$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_host_relation chr, contact c WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contact_id = c.contact_id ORDER BY `contact_name`");
-					while ($contact =& $DBRESULT2->fetchRow())	{				
-						if (isset($gbArr[0][$contact["contact_id"]]))
-							$strTemp != NULL ? $strTemp .= ", ".$contact["contact_name"] : $strTemp = $contact["contact_name"];
+				if ($oreon->user->get_version() >= 3) {				
+					$strTemp = "";
+					if (isset($cctCache[$host["host_id"]])) {
+						foreach ($cctCache[$host["host_id"]] as $contact) {
+							if ($strTemp != "")
+								$strTemp .= ",";
+							$strTemp .= $contact;
+						}
+						if ($strTemp) 
+							$str .= print_line("contacts", $strTemp);
+						unset($strTemp);
 					}
-					$DBRESULT2->free();
-					unset($contact);
-					if ($strTemp) 
-						$str .= print_line("contacts", $strTemp);
-					unset($strTemp);
 				}
 				
 				if ($host["host_notification_interval"] != NULL) 
@@ -560,8 +561,7 @@
 					}
 				} 
 				if ($host["timeperiod_tp_id2"])
-					$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location_tp"] : ""));
-			
+					$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location_tp"] : ""));			
 				if ($host["host_notification_options"]) 
 					$str .= print_line("notification_options", $host["host_notification_options"]);
 				if ($host["host_notifications_enabled"] != 2) 
@@ -608,16 +608,14 @@
 	        			$str .= print_line("2d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_2d_coords"]));
 					if ($ehi["ehi_3d_coords"])
 	        			$str .= print_line("3d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_3d_coords"]));
-					}
-					$DBRESULT2->free();
 				}
-				$str .= "}\n\n";
-				$i++;
+				$DBRESULT2->free();			
 			}
+			$str .= "}\n\n";
+			$i++;
 		}
-				
-		unset($host);
-		
+	}
+	unset($host);	
 	
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/hosts.cfg");
 	fclose($handle);
