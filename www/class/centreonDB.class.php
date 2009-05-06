@@ -35,7 +35,10 @@
  * SVN : $Id$
  * 
  */
-
+ 
+/*
+ * Integrate Pear Class
+ */
 require_once ("DB.php");
 
 class CentreonDB {		
@@ -45,6 +48,7 @@ class CentreonDB {
 	private $dsn;
 	private $options;
 	private $centreon_path;
+	private $log;
 	
 	/*
 	 *  Constructor only accepts 1 parameter which can be :
@@ -52,10 +56,13 @@ class CentreonDB {
 	 *  - centstorage
 	 *  - ndo
 	 */
-    function CentreonDB($db = "centreon", $retry = 3) {
+    function CentreonDB($db = "centreon", $retry = 3) {	
+		
 		//include("@CENTREON_ETC@/centreon.conf.php");
-		include("/etc/centreon/centreon.conf.php");
-
+		require "/etc/centreon/centreon.conf.php";
+			
+		require_once $centreon_path."/www/class/centreonLog.class.php";
+	
 		$this->centreon_path = $centreon_path;
 		$this->retry = $retry;				
 		$this->options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
@@ -78,7 +85,8 @@ class CentreonDB {
 				$this->connectToCentreon($conf_centreon);
 				$this->connect();
 				break;
-		}		
+		}
+		$this->log = new CentreonLog();	
     }
     
 	private function displayConnectionErrorPage() {
@@ -136,7 +144,6 @@ class CentreonDB {
      *  The connection is established here
      */
     public function connect() {    	    	    	
-    	global $oreon;
     	
     	$this->privatePearDB =& DB::connect($this->dsn, $this->options);
 		$i = 0;
@@ -145,12 +152,11 @@ class CentreonDB {
 			$i++;
 		}
 		if ($i == $this->retry) {
-			if (isset($oreon->user))
-				$oreon->user->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");
+			$this->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");
 			$this->displayConnectionErrorPage();
-		}
-		else	
+		} else {	
 			$this->privatePearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+		}
     }
     
     /*
@@ -172,7 +178,7 @@ class CentreonDB {
     	
     	$DBRES = $this->privatePearDB->query($query_string);
     	if (PEAR::isError($DBRES))
-    		$oreon->user->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
+    		$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
     	return $DBRES;
     }
 }

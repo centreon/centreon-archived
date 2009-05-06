@@ -100,4 +100,51 @@ class CentreonUserLog {
 	
 }
 
+class CentreonLog {
+
+	private $errorType;
+	private $path;
+	
+	/*
+	 * Constructor
+	 */
+	public function CentreonUserLog ($uid, $pearDB) {
+		
+		$this->uid = $uid;
+		$this->errorType = array();
+		
+		/*
+		 * Init log Directory
+		 */
+		$this->path = "/usr/local/centreon/log/";
+		
+		$this->errorType[1] = $this->path."/error-login-";
+		$this->errorType[2] = $this->path."/error-sql-";
+		$this->errorType[3] = $this->path."/error-ldap-";
+	}
+	
+	/*
+	 * Function for writing logs
+	 */		
+	public function insertLog($id, $str, $print = 0, $page = 0, $option = 0) {
+		/*
+		 * Construct alerte message
+		 */
+		$string = date("H:i")."|$page|$option|$str";
+		
+		/*
+		 * Display error on Standard exit
+		 */
+		if ($print) {
+			print $str;
+		}
+		
+		/*
+		 * print Error in log file.
+		 */
+		exec("echo \"".$string."\" >> ".$this->errorType[$id].date("Y-m-d").".log");
+	}
+	
+}
+
 ?>
