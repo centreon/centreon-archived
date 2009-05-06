@@ -1934,7 +1934,7 @@ function copyInTempFile()
 {
 	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www plugins libinstall"
 	# Prepare centreon Plugins
-	echo "$gettext "Preparing Centreon temporary files")"
+	echo "$(gettext "Preparing Centreon temporary files")"
 	if [ -d $TMP_DIR ] ; then
 		echo_passed "$TMP_DIR $(gettext "exists, it will be moved...")"
 		mv $TMP_DIR $TMP_DIR.`date +%Y%m%d-%k%m%S`
