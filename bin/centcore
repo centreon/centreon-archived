@@ -137,29 +137,9 @@ my $timeNagiosLogs = 0;
 
 my $difTime = 0;
 
-while ($stop) {  
-    # Select Wait
-    if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
-	while (<FILE>){
-	    parseRequest($_);
-	}
-	writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
-    }
-    close(FILE);
-    if (defined($timeSyncPerf) && $timeSyncPerf) {
-	$difTime = time() - $timeSyncPerf;
-    }
-    if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
-	# Get PerfData on Nagios Poller
-	GetAllNagiosServerPerfData();		
-	$timeSyncPerf = time();
-    }
-    sleep(1);
-}
-
 sub moveCmdFile($){
     my $CMDFILE = $_[0];
-    if (!move($CMDFILE, $CMDFILE."_read")){
+    if (move($CMDFILE, $CMDFILE."_read")){
 	return(1);
     } else {
 	writeLogFile("Cannot move $CMDFILE to ".$CMDFILE."_read");
@@ -170,10 +150,10 @@ sub moveCmdFile($){
 sub removeTmpCmdFile($){
     my $CMDFILE = $_[0];
     if (unlink($CMDFILE."_read")){
-		return(1);
+	return(1);
     } else {
-		writeLogFile("Can't remove temporary command file.\n");
-		return(0);
+	writeLogFile("Can't remove temporary command file.\n");
+	return(0);
     }
 }
 
@@ -538,7 +518,7 @@ sub syncArchives($) {
 	    writeLogFile("$rsync --port=$port -c ".$ns_server->{'ns_ip_address'}.":".$data->{'log_archive_path'}."/*.log $varlib/log/".$ns_server->{'id'}."/archives/") if ($debug);
 
 	    writeLogFile("Synchronize archives for poller $id");
-	    `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $varlib/log/$ns_server->{'id'}/archives/`;
+	    `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $varlib/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
 	    undef($data);
 	    writeLogFile("Sync over for poller $id");
 
@@ -591,6 +571,30 @@ sub parseRequest($){
     } elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:(.*)/){
 	sendExternalCommand($1, $2);
     }
+}
+
+# Begin centcore 
+
+while ($stop) {  
+    # Select Wait
+    if ( -f $cmdFile) {
+	if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
+	    while (<FILE>){
+		parseRequest($_);
+	    }
+	    writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
+	}
+	close(FILE);
+    }
+    if (defined($timeSyncPerf) && $timeSyncPerf) {
+	$difTime = time() - $timeSyncPerf;
+    }
+    if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
+	# Get PerfData on Nagios Poller
+	GetAllNagiosServerPerfData();		
+	$timeSyncPerf = time();
+    }
+    sleep(1);
 }
 
 unlink($PID);
