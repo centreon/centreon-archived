@@ -158,10 +158,10 @@
 	$tpl->display("processInfo.ihtml");
 ?>
 <script type="text/javascript">	
-	
+	var _sid = '<?php echo session_id();?>';
 	var glb_confirm = '<?php  echo _("Submit command"); ?>';
 	
-	function send_command(cmd, poller) {
+	function send_command(cmd, poller, div_id, str) {		
 		if (!confirm(glb_confirm + " " + cmd + "?")) {
 			return 0;
 		}
@@ -172,23 +172,30 @@
 	    {
 	        xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 	    }
-	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd); };
-	   	xhr_cmd.open("GET", "./include/nagiosStats/processCommands.php?cmd=" + cmd + "&poller=" + poller, true);
+	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, poller, div_id); };
+	   	xhr_cmd.open("GET", "./include/nagiosStats/processCommands.php?cmd=" + cmd + "&poller=" + poller + "&sid=" + _sid + "&str=" + str, true);
     	xhr_cmd.send(null);
 	}
 	
-	function display_result(xhr_cmd) {
+	function display_result(xhr_cmd, poller, div_id) {
 		if (xhr_cmd.readyState != 4 && xhr_cmd.readyState != "complete")
-			return(0);
+			return(0);			
 		var msg_result;		
 		var docXML= xhr_cmd.responseXML;
 		var items_state = docXML.getElementsByTagName("result");
 		var received_command = docXML.getElementsByTagName("cmd");
-		var state = items_state.item(0).firstChild.data;
+		var img_flag = docXML.getElementsByTagName("img_flag");
+		var items_switch = docXML.getElementsByTagName("switch_cmd");
+		var items_str = docXML.getElementsByTagName("switch_str");
+		var state = items_state.item(0).firstChild.data;		
+		var img_src = img_flag.item(0).firstChild.data;
+		var switch_cmd = items_switch.item(0).firstChild.data;
+		var switch_str = items_str.item(0).firstChild.data;
 		var executed_command = received_command.item(0).firstChild.data;
 		
 		if (state == "0") {
-			 msg_result = executed_command + ' sent';
+			 msg_result = executed_command + ' sent';			 
+			 document.getElementById(div_id).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + switch_cmd + "\", " + poller + ", \""+ div_id +"\", \"" + switch_str + "\")'>"+ switch_str +"</a>";
 		}
 		else {
 			 msg_result = 'Failed ' + executed_command;
@@ -196,6 +203,7 @@
 		<?php
 		require_once "./class/centreonMsg.class.php";
 		?>
+		_clear("centreonMsg");
 		_setTextStyle("centreonMsg", "bold");	
 		_setText("centreonMsg", msg_result);
 		_nextLine("centreonMsg");
