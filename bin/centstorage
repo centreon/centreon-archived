@@ -48,19 +48,10 @@ use lib "@RRD_PERL@";
 use RRDs;
 use File::Copy;
 
-my $installedPath = "@CENTREON_PATH@/";
-
-my $LOG = "@CENTREON_LOG@/centstorage.log";
-my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
-
 # Init Globals
-use vars qw($debug $LOG %status $generalcounter $stop);
+use vars qw($debug $LOG %status $generalcounter);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $mysql_database_ndo);
 use vars qw($con_oreon $con_ods);
-
-# Init Flags
-$debug = 0;
-$stop = 0;
 
 # Init value
 my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id, $configuration);
@@ -68,25 +59,33 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 # Init status tab
 %status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
 
+$debug = 0;
+my $stop = 0;
+
+my $LOG = "@CENTREON_LOG@/centstorage.log";
+my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
+
+my $installedPath = "@CENTREON_PATH@/";
+
 # Include Configuration Data
 require "@CENTREON_ETC@/conf.pm";
 
 sub catch_zap {
-	$stop = 0;
-	writeLogFile("Receiving order to stop...\n");
+    $stop = 0;
+    writeLogFile("Receiving order to stop...\n");
 }
 
 sub writeLogFile($){
-	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
-	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
-	print LOG "$year/$mon/$mday $hour:$min:$sec - ".$_[0];
-	close LOG or warn $!;
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
+    open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+    print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
+    close LOG or warn $!;
 }
 
 # checking if pid file exists.
 if (-x $PID){
-	writeLogFile("centstorage already runnig. can't launch again....\n");
-	exit(2);
+    writeLogFile("centstrorage already runnig. can't launch again....\n");
+    exit(2);
 }
 
 # Set signals
@@ -94,8 +93,7 @@ $SIG{INT}  = \&catch_zap;
 
 require $installedPath."lib/misc.pm";
 require $installedPath."lib/purge.pm";
-require $installedPath."lib/getHostData.pm";
-require $installedPath."lib/getServiceData.pm";
+require $installedPath."lib/getObjectInformations.pm";
 require $installedPath."lib/identifyService.pm";
 require $installedPath."lib/verifyHostServiceIdName.pm";
 require $installedPath."lib/identifyMetric.pm";
@@ -103,7 +101,7 @@ require $installedPath."lib/updateFunctions.pm";
 
 sub CheckMySQLConnexion(){
 	while ((!defined($con_oreon) || !$con_oreon->ping) && (!defined($con_ods) || !$con_ods->ping)){
-		if (!defined($con_oreon)) {
+		if (!defined($con_oreon) || !$con_oreon->ping) {
 			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 			if (!defined($con_oreon)) {
 				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
@@ -114,7 +112,7 @@ sub CheckMySQLConnexion(){
 			undef($con_oreon);
 			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 		}
-		if (!defined($con_ods)) {
+		if (!defined($con_ods) || !$con_ods->ping) {
 			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 			if (!defined($con_ods)) {
 				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
@@ -174,19 +172,20 @@ sub CreateConnexionForNDO(){
 # return perfdata file path
 ########################################
 
-sub getPerfDataFile(){
-	my ($filename, $sth2, $data, $con_ods);
-	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	$sth2 = $con_ods->prepare("SELECT perfdata_file FROM config");
-	if (!$sth2->execute){
-		writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");
-	}
-	$data = $sth2->fetchrow_hashref();
-	undef($sth2);
-	$filename = $data->{'perfdata_file'};
-	undef($data);
-	undef($con_ods);
-	return $filename;
+sub getPerfDataFile($){
+    my ($filename, $sth2, $data, $con);
+    $con = $_[0];
+    $sth2 = $con->prepare("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `localhost` = '1'");
+    if (!$sth2->execute){
+	writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");
+	return "";
+    }
+    $data = $sth2->fetchrow_hashref();
+    $filename = $data->{'nagios_perfdata'};
+    undef($sth2);
+    undef($data);
+    undef($con);
+    return $filename;
 }
 
 ########################################
@@ -194,98 +193,104 @@ sub getPerfDataFile(){
 ########################################
 
 sub movePerfDataFile($){
-	my $PERFDATA = $_[0];
-	if (move($PERFDATA, $PERFDATA."_read")){
-		`echo "# New File #" >> $PERFDATA`;
-		return(1);
-	} else {
-		writeLogFile("Cannot move $PERFDATA to $PERFDATA."_read".\n");
-		writeLogFile("Please check acces on $PERFDATA or $PERFDATA."_read".\n");
-		return (0);
-	}
+    my $PERFDATA = $_[0];
+    if (copy($PERFDATA, $PERFDATA."_read")){
+	writeLogFile("Error When removing service-perfdata file for swap : $!") if (!unlink($PERFDATA));
+	`echo "# New File #" >> $PERFDATA`;
+	undef($PERFDATA);
+	return(1);
+    }
 }
 
 ########################################
-# Get centstorage config data  
+# Get ODS config data  
 ########################################
 
 sub getConfig(){
-	my ($sth2, $data, $con_ods);
-	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	$sth2 = $con_ods->prepare("SELECT auto_drop,drop_file,perfdata_file FROM config");
-	writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
-	$data = $sth2->fetchrow_hashref();	
-	undef($sth2);
-	undef($con_ods);
-	return($data);
+    my ($sth2, $data, $con_ods);
+    $con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+    $sth2 = $con_ods->prepare("SELECT auto_drop,drop_file,perfdata_file FROM config");
+    writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
+    $data = $sth2->fetchrow_hashref();	
+    undef($sth2);
+    undef($con_ods);
+    return($data);
 }
 
 sub GetPerfData(){
-	# Init Var
-	my ($line_tab, $sth2, $data, $flag_drop, $sleeptime);
-	use vars qw($con_oreon $con_ods);
-	
-	CheckMySQLConnexion();				
-	my $PFDT = getPerfDataFile();
-	
-	if (-r $PFDT || -r $PFDT.".bckp"){
-		# Move perfdata File befor reading		
-		# Penser a lire le fichier de backup !
-		CheckMySQLConnexion();
-		if (movePerfDataFile($PFDT) && open(PFDT, "< $PFDT"."_read")){
-			$data = getConfig();
-			$PFDT = $data->{'perfdata_file'};
-			$flag_drop = 1;
-			if ($data->{'auto_drop'} == 1 && defined($data->{'drop_file'})){
-				if (!open(DROP, ">> ".$data->{'drop_file'})){
-					$flag_drop = 0;
-					writeLogFile("can't write in ".$data->{'drop_file'}." : $!");
-				}
-			} else {
-				$flag_drop = 0;
-			}
-			undef($data);
-			while (<PFDT>){
-				#print $_;
-				#if (!$stop){
-				#	writeLogFile("can't write in ".$installedPath."var/service-perfdata.bckp : $!") if (!open(BCKP, ">> ".$installedPath."/var/service-perfdata.bckp"));
-				#	while (<PFDT>){
-				#		print BCKP $_;
-				#	}
-				#	return;
-				#}
-			 	if (!m/^\#.*/){
-					print DROP $_  if ($flag_drop == 1);
-			    	@line_tab = split('\t');
-			    	$line_tab[2] =~ s/\\/\#BS\#/g;
-			    	$line_tab[2] =~ s/\//\#S\#/g;
-			    	if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "\n")){
-						CheckMySQLConnexion();
-						checkAndUpdate(@line_tab);
-					}
-					undef($line_tab);
-				}
-			}
-			close(PFDT);
-			# Remove Read File
-			writeLogFile("Error When removing service-perfdata file : $!") if (!unlink($PFDT."_read"));
-				
-			# Drop Data
-			close(DROP) if ($flag_drop == 1);
-			undef($line_tab);
-			undef($flag_drop);
-		} else {
-			writeLogFile("Error When writing data in tmp read file : $!");
+    # Init Var
+    my ($line_tab, $sth2, $data, $flag_drop, $sleeptime);
+    use vars qw($con_oreon $con_ods %host %service $dataBinInfo $counterData);
+
+    $counterData = 0;
+    $dataBinInfo = "";
+
+    CheckMySQLConnexion();				
+    my $PFDT = getPerfDataFile($con_oreon);
+
+    if (-r $PFDT || -r $PFDT.".bckp"){
+	# Move perfdata File befor reading		
+	# Penser a lire le fichier de backup !
+	CheckMySQLConnexion();
+	if (movePerfDataFile($PFDT) && open(PFDT, "< $PFDT"."_read")){
+	    $data = getConfig();
+	    $PFDT = $data->{'perfdata_file'};
+	    $flag_drop = 1;
+	    if ($data->{'auto_drop'} == 1 && defined($data->{'drop_file'})){
+		if (!open(DROP, ">> ".$data->{'drop_file'})){
+		    $flag_drop = 0;
+		    writeLogFile("can't write in ".$data->{'drop_file'}." : $!");
 		}
-		my $i,
-		$sleeptime = getSleepTime();
-		for ($i = 0; $i <= $sleeptime && $stop; $i++){
-			sleep(1);	
+	    } else {
+		$flag_drop = 0;
+	    }
+	    undef($data);
+	    while (<PFDT>) {
+		if (!m/^\#.*/){
+		    print DROP $_  if ($flag_drop == 1);
+		    @line_tab = split('\t');
+		    $line_tab[2] =~ s/\\/\#BS\#/g;
+		    $line_tab[2] =~ s/\//\#S\#/g;
+		    if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "\n")){
+			CheckMySQLConnexion();
+			checkAndUpdate(@line_tab);
+		    }
+		    undef($line_tab);
+
+		    if ($counterData >= 50) {
+			my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES $dataBinInfo");
+			if (!$sth1->execute) {
+			    writeLogFile("Error:" . $sth1->errstr . "\n");
+			}
+			undef($sth1);
+			$dataBinInfo = "";
+			$counterData = 0;
+		    }
 		}
-		undef($sleeptime);
-		undef($i);
+	    }
+	    close(PFDT);
+
+	    # Insert last Data
+	    my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES $dataBinInfo");
+	    if (!$sth1->execute) {
+		writeLogFile("Error:" . $sth1->errstr . "\n");
+	    }
+	    undef($sth1);
+
+	    # Remove Read File
+	    writeLogFile("Error When removing service-perfdata file : $!") if (!unlink($PFDT."_read"));
+
+	    # Drop Data
+	    close(DROP) if ($flag_drop == 1);
+	    undef($line_tab);
+	    undef($flag_drop);
+	} else {
+	    writeLogFile("Error When writing data in tmp read file : $!");
 	}
-	$con_oreon->disconnect();
+    }
+    undef($dataBinInfo);
+    undef($counterData);
+    $con_oreon->disconnect();
     $con_ods->disconnect();
 } 
 
@@ -297,23 +302,19 @@ sub GetPerfData(){
 ########################################
 
 sub CheckRestart(){
-	my ($last_restart_stt, $last_restart, $sth2, $data, $y);
-	use vars qw($con_oreon $con_ods);
-	$y = 1;
-	# CheckMySQLConnexion();
-	$last_restart = getLastRestart();
-	$last_restart_stt = getLastRestartInMemory();
-	if (!$last_restart_stt || $last_restart ne $last_restart_stt){
-		check_HostServiceID();
-		if (getPurgeConfig()){
-			CheckMySQLDrain();
-			DeleteOldRrdDB();
-		}
-		saveLastRestartInMemory($last_restart);
+    my ($last_restart_stt, $last_restart, $sth2, $data, $y);
+    use vars qw($con_oreon $con_ods);
+
+    $last_restart = getLastRestart();
+    $last_restart_stt = getLastRestartInMemory();
+    if (!$last_restart_stt || $last_restart ne $last_restart_stt){
+	check_HostServiceID();
+	if (getPurgeConfig()){
+	    CheckMySQLDrain();
+	    DeleteOldRrdDB();
 	}
-#	$con_oreon->disconnect();
-#    $con_ods->disconnect();
-	$y++;
+	saveLastRestartInMemory($last_restart);
+    }
 }
 
 ########################################
@@ -321,301 +322,278 @@ sub CheckRestart(){
 ########################################
 
 sub purgeMysqlData(){
-	my $con_ods= CreateConnexionForCentstorage();
-	my $sth2 = $con_ods->prepare("SELECT * FROM config");	
-	writeLogFile("Error when getting len_storage_mysql properties : ".$sth2->errstr."\n")if (!$sth2->execute());
-	my $data = $sth2->fetchrow_hashref();
-	if (defined($data->{'len_storage_mysql'}) && $data->{'len_storage_mysql'} ne 0){
-		my $delete_limit = time() - 60 * 60 * 24 * $data->{'len_storage_mysql'};
-		$sth2 = $con_ods->prepare("DELETE FROM data_bin WHERE ctime < '".$delete_limit."'");
-		writeLogFile("Error when purging Mysql data  : ".$sth2->errstr."\n")if (!$sth2->execute());
-	}
-	$sth2->finish();
-	undef($sth2);
-	$con_ods->disconnect();
+    my $con_ods= CreateConnexionForCentstorage();
+    my $sth2 = $con_ods->prepare("SELECT `len_storage_mysql` FROM config");	
+    writeLogFile("Error when getting len_storage_mysql properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+    my $data = $sth2->fetchrow_hashref();
+    if (defined($data->{'len_storage_mysql'}) && $data->{'len_storage_mysql'} ne 0){
+	my $delete_limit = time() - 60 * 60 * 24 * $data->{'len_storage_mysql'};
+	$sth2 = $con_ods->prepare("DELETE FROM data_bin WHERE ctime < '".$delete_limit."'");
+	writeLogFile("Error when purging Mysql data  : ".$sth2->errstr."\n")if (!$sth2->execute());
+    }
+    $sth2->finish();
+    undef($sth2);
+    $con_ods->disconnect();
 }
 
 sub checkAndUpdate($){
-	my $data_service;
-	my $valueRecorded;
-	if ($_[5]){
-		if ($_[1] =~ /[a-zA-Z]*_Module/){
-			@data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
-			if (defined($data_service[0]) && $data_service[0] ne 0) {
-				$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]); # perfdata index status time type counter rebuild
-			}
-		} else {
-			@data_service = identify_service($_[1], $_[2]); # return index_id and storage
-			# Update status 
-			updateServiceState($line_tab[1], $line_tab[2], $line_tab[0], $data_service[0]);
-			if (defined($data_service[0]) && $data_service[0] ne 0) {
-				$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]); # perfdata index status time type counter rebuild
-			}
-		}
-	}
-	undef(@data_service);
-}
-
-sub getModulesInterval($){
-	my $service_description = $_[0];
-	my $interval;
-	$service_description =~ /([a-zA-Z0-9]*)_[0-9]*/;
-	if ($1 eq "meta"){
-		my $service_description =~ /meta_([0-9]*)/; 
-		my $sth_interval = $con_oreon->prepare("SELECT normal_check_interval FROM meta_service WHERE meta_id = '".$1."'");
-		if (!$sth_interval->execute) {writeLogFile("Error when getting metrics interval for Meta : " . $sth_interval->errstr . "\n");}
-		my $meta_conf = $sth_interval->fetchrow_hashref();
-		if (defined($meta_conf->{'normal_check_interval'}) && $meta_conf->{'normal_check_interval'}){
-			$interval = $meta_conf->{'normal_check_interval'} * getIntervalLenght();
-		} else {
-			$interval = 2 * getIntervalLenght();
-		}
-		undef($meta_conf);
-		undef($sth_interval);
-	} elsif ($1 eq "osl") {
-		$service_description =~ /osl_([0-9]*)/; 
-		my $sth_interval = $con_oreon->prepare("SELECT normal_check_interval FROM osl WHERE osl_id = '".$1."'");
-		if (!$sth_interval->execute) {writeLogFile("Error when getting metrics interval for osl : " . $sth_interval->errstr . "\n");}
-		my $osl_conf = $sth_interval->fetchrow_hashref();
-		if (defined($osl_conf->{'normal_check_interval'}) && $osl_conf->{'normal_check_interval'}){
-			$interval = $osl_conf->{'normal_check_interval'} * getIntervalLenght();
-		} else {
-			$interval = 2 * getIntervalLenght();
-		}
-		undef($osl_conf);
-		undef($sth_interval);
+    my $data_service;
+    my $valueRecorded;
+    if ($_[5]){
+	if ($_[1] =~ /_Module_[a-zA-Z]*/){
+	    @data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
+	    if (defined($data_service[0]) && $data_service[0] ne 0) {
+		$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]); # perfdata index status time type counter rebuild
+	    }
 	} else {
-		$interval = 90;
+	    @data_service = identify_service($_[1], $_[2]); # return index_id and storage
+
+	    # Update status 
+	    updateServiceState($line_tab[1], $line_tab[2], $line_tab[0], $data_service[0],  $line_tab[4]);
+
+	    if (defined($data_service[0]) && $data_service[0] ne 0) {
+		$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]); # perfdata index status time type counter rebuild
+	    }
 	}
-	return $interval;
+    }
+    undef(@data_service);
 }
 
-sub updateServiceState($$$$){ # Host name, sercvice desc, ctime, index
-	my $interval = 4000;
-	my $nb_value;
-	my $interval_length;
+sub getModulesInterval($$){
+    my $service_description = $_[0];
+    $con_oreon = $_[1];
+    my $interval;
+    $service_description =~ /([a-zA-Z0-9]*)_([0-9]*)/;
+    if ($1 eq "meta"){
+	my $sth_interval = $con_oreon->prepare("SELECT normal_check_interval FROM meta_service WHERE meta_id = '".$2."'");
 
-	my $index = $_[3];
+	if (!$sth_interval->execute) {
+	    writeLogFile("Error when getting metrics interval for Meta : " . $sth_interval->errstr . "\n");
+	}
+	my $meta_conf = $sth_interval->fetchrow_hashref();
+	if (defined($meta_conf->{'normal_check_interval'}) && $meta_conf->{'normal_check_interval'}){
+	    $interval = $meta_conf->{'normal_check_interval'} * getIntervalLenght();
+	} else {
+	    $interval = 2 * getIntervalLenght();
+	}
+	undef($meta_conf);
+	undef($sth_interval);
+    } elsif ($1 eq "ba") {
+	my $sth_interval = $con_oreon->prepare("SELECT normal_check_interval FROM mod_bam WHERE ba_id = '".$2."'");
+	if (!$sth_interval->execute) {
+	    writeLogFile("Error when getting metrics interval for QOS : " . $sth_interval->errstr . "\n");
+	}
+	my $osl_conf = $sth_interval->fetchrow_hashref();
+	if (defined($osl_conf->{'normal_check_interval'}) && $osl_conf->{'normal_check_interval'}){
+	    $interval = $osl_conf->{'normal_check_interval'} * getIntervalLenght();
+	} else {
+	    $interval = 2 * getIntervalLenght();
+	}
+	undef($osl_conf);
+	undef($sth_interval);
+    } else {
+	$interval = 90;
+    }
+    return $interval;
+}
 
-	my $RRDdatabase_status_path = getRRDdatabase_status_path();	
-	my @tab = (0=>"100", 1=>"75", 2=>"0", 3=>"0");	
-	
-	my $odscnx = CreateConnexionForCentstorage();
-	my $centcnx= CreateConnexionForOreon();
-	
-	my $service_description = removeSpecialCharInMetric($_[2]);
-	
-	my $sth = $centcnx->prepare("SELECT `db_name`, `db_prefix`, `db_user`, `db_pass`, `db_host` FROM `cfg_ndo2db` LIMIT 1;");
-	writeLogFile("Error when getting informations about ndo connexions : ".$sth->errstr."\n") if (!$sth->execute);
-	my $conf = $sth->fetchrow_hashref();
-	
-	# Set NDO Prefix  
-	my $ndo_prefix = $conf->{"db_prefix"};
-	
-	$_[1] =~ s/#S#/\//g;
-	$_[1] =~ s/#BS#/\\/g;
-	
-	# Connect To NDO DB
-	my $ndocnx = DBI->connect("DBI:mysql:database=".$conf->{"db_name"}.";host=".$conf->{"db_host"}, $conf->{"db_user"}, $conf->{"db_pass"}, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});		
-	my $reqH = "(SELECT `host_object_id` FROM `nagios_hosts` WHERE `display_name` = '".$_[0]."' LIMIT 1)";
-	my $reqS = "(SELECT `service_object_id` FROM `nagios_services` WHERE `display_name` = '".$_[1]."' AND `host_object_id` = ($reqH) LIMIT 1)";
-	my $req = "SELECT `last_hard_state` FROM `nagios_servicestatus` WHERE `service_object_id` = $reqS";
-	
-	my $sth2 = $ndocnx->prepare($req);
-	writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."\n") if (!$sth2->execute);
-	my $hard_state = $sth2->fetchrow_hashref();
-	
-	# Get Hard State
-	my $status = $hard_state->{"last_hard_state"};
-	$sth2->finish();
-	$ndocnx->disconnect();
-		
-	if (defined($status)){
-		if ($status eq 0){
-			$status = 100;
-		} elsif ($status eq 1){
-			$status = 75;
-		} elsif ($status eq 2){
-			$status = 0;
-		} elsif ($status eq 3){
-			undef($status);
-		}
-	}
-	
-	if (!-d $RRDdatabase_status_path){
-		writeLogFile("Directory ".$RRDdatabase_status_path." does not exists. Trying to create it....\n");
-		if (!mkdir($RRDdatabase_status_path, "775")) {
-			writeLogFile("Can't create ".$RRDdatabase_status_path." : permission denied\n");	
-		} else {
-			writeLogFile($RRDdatabase_status_path." Created\n");
-		}
-	}
-	
-	# call function to check if DB exist and else create it
-	if (defined($index) && defined($status) && $_[2]){
-		if (-e $RRDdatabase_status_path."/".$index.".rrd"){
-			updateRRDDatabase($RRDdatabase_status_path, $index, "status", $_[2], $status);
-		} else {
-			my $begin = time() - 200000;
-			$interval = getServiceCheckIntervalWithSVCid($index);
-			$interval = 3 if (!defined($interval));
-			$interval = getIntervalLenght() * $interval;
-			my $interval_hb = $interval * 2;
-			$nb_value = getLenStorageDB() / $interval;
+sub updateServiceState($$$$$) { # Host name, sercvice desc, ctime, index, status
+    my $interval = 4000;
+    my $nb_value;
+    my $interval_length;
 
-			createRRDDatabase($RRDdatabase_status_path, $index, $begin, $interval, "status", $nb_value);
-			tuneRRDDatabase($RRDdatabase_status_path, $index, "status", $interval_hb);
-			updateRRDDatabase($RRDdatabase_status_path,$index, "status", $_[2], $status);
-			undef($begin);
-		}
+    # Set Index
+    my $index = $_[3];
+    # Set Hard State
+    my $status = $_[4];
+
+    my $RRDdatabase_status_path = getRRDdatabase_status_path();	
+    my @tab = (0=>"100", 1=>"75", 2=>"0", 3=>"0");	
+
+    if (defined($status)){
+	if ($status eq "OK"){
+	    $status = 100;
+	} elsif ($status eq "WARNING"){
+	    $status = 75;
+	} elsif ($status eq "CRITICAL"){
+	    $status = 0;
+	} elsif ($status eq "UNKNOWN"){
+	    undef($status);
 	}
+    }
+
+    # Check if RRD DB Directory is available.
+    if (checkDBDirectory($RRDdatabase_status_path) == 0) {
+	writeLogFile("Data droped....\n");
+	return 0;
+    }
+
+    # call function to check if DB exist and else create it
+    if (defined($index) && defined($status) && $_[2]){
+	if (-e $RRDdatabase_status_path."/".$index.".rrd"){
+	    updateRRDDatabase($RRDdatabase_status_path, $index, "status", $_[2], $status);
+	} else {
+	    my $begin = time() - 200000;
+	    $interval = getServiceCheckIntervalWithSVCid($index) * getIntervalLenght($con_oreon);
+#	    $interval = 3 if (!defined($interval));
+#	    $interval = getIntervalLenght() * $interval;
+	    my $interval_hb = $interval * 2;
+	    $nb_value = getLenStorageDB() / $interval;
+
+	    createRRDDatabase($RRDdatabase_status_path, $index, $begin, $interval, "status", $nb_value);
+	    tuneRRDDatabase($RRDdatabase_status_path, $index, "status", $interval_hb);
+	    updateRRDDatabase($RRDdatabase_status_path,$index, "status", $_[2], $status);
+
+	    undef($begin);
+	}
+    }
 }
 
 sub replaceMetricSpecialChar($){
-	my $metric_name = $_[0];
-	$metric_name =~ s/\//slash\_/g;
-	$metric_name =~ s/\\/bslash\_/g;
-	$metric_name =~ s/\#S\#/slash\_/g;
-	$metric_name =~ s/\#BS\#/bslash\_/g;
-	return $metric_name;
+    my $metric_name = $_[0];
+    $metric_name =~ s/\//slash\_/g;
+    $metric_name =~ s/\\/bslash\_/g;
+    $metric_name =~ s/\#S\#/slash\_/g;
+    $metric_name =~ s/\#BS\#/bslash\_/g;
+    return $metric_name;
 }
 
 sub createRRDDatabase($$$$$$){
-	my ($ERR, $RRDdatabase_path, $metric_id, $begin, $metric_name, $interval, $my_len_storage_rrd);
-	($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd) = @_;
-	$metric_name = replaceMetricSpecialChar($metric_name);
-	RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric_name, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".$my_len_storage_rrd);
-	$ERR = RRDs::error;
-	if ($ERR) {
-		writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");
-	}
-	undef($ERR);
+    my ($ERR, $RRDdatabase_path, $metric_id, $begin, $metric_name, $interval, $my_len_storage_rrd);
+    ($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd) = @_;
+    $metric_name = replaceMetricSpecialChar($metric_name);
+    RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric_name, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".$my_len_storage_rrd);
+    $ERR = RRDs::error;
+    if ($ERR) {
+	writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");
+    }
+    undef($ERR);
 }
 
 sub tuneRRDDatabase($$$$){
-	my ($ERR, $RRDdatabase_path, $metric_id ,$metric_name, $interval_hb);
-	($RRDdatabase_path, $metric_id ,$metric_name, $interval_hb) = @_;
-	$metric_name = replaceMetricSpecialChar($metric_name);
-	RRDs::tune($RRDdatabase_path.$metric_id.".rrd", "-h", substr($metric_name, 0, 19).":".$interval_hb);
-	$ERR = RRDs::error;
-	if ($ERR){
-		writeLogFile("ERROR while tunning operation on ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");
-	}
-	undef($ERR);
+    my ($ERR, $RRDdatabase_path, $metric_id ,$metric_name, $interval_hb);
+    ($RRDdatabase_path, $metric_id ,$metric_name, $interval_hb) = @_;
+    $metric_name = replaceMetricSpecialChar($metric_name);
+    RRDs::tune($RRDdatabase_path.$metric_id.".rrd", "-h", substr($metric_name, 0, 19).":".$interval_hb);
+    $ERR = RRDs::error;
+    if ($ERR){
+	writeLogFile("ERROR while tunning operation on ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");
+    }
+    undef($ERR);
 }
 
 sub removeOldRRDDatabase($$$$){
-	my ($RRDdatabase_path, $metric_id, $interval, $my_len_storage_rrd);
-	($RRDdatabase_path, $metric_id, $interval, $my_len_storage_rrd) = @_;
-	system("rm -Rf  ".$RRDdatabase_path.$metric_id.".rrd");
-	writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric_id.".rrd (interval : $interval - Len : $my_len_storage_rrd)\n");		
+    my ($RRDdatabase_path, $metric_id, $interval, $my_len_storage_rrd);
+    ($RRDdatabase_path, $metric_id, $interval, $my_len_storage_rrd) = @_;
+    system("rm -Rf  ".$RRDdatabase_path.$metric_id.".rrd");
+    writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric_id.".rrd (interval : $interval - Len : $my_len_storage_rrd)\n");		
 }
 
 sub updateRRDDatabase($$$$$){
-	my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value) = @_;
-	my $ERR;
-	
-	$value =~ s/\,/\./g;
-	$metric_name = replaceMetricSpecialChar($metric_name);
-	RRDs::update($RRDdatabase_path.$metric_id.".rrd" , "--template", substr($metric_name, 0, 19), $ctime.":".sprintf("%e", $value));
-	$ERR = RRDs::error;
-	if ($ERR){
-		writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric_id.".rrd at ".$ctime." -> ".$value." : $ERR\n");
-	}
-	undef($ERR);
+    my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value) = @_;
+    my $ERR;
+
+    $value =~ s/\,/\./g;
+    $metric_name = replaceMetricSpecialChar($metric_name);
+    RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr($metric_name, 0, 19), $ctime.":".sprintf("%e", $value));
+    $ERR = RRDs::error;
+    if ($ERR){
+	writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric_id.".rrd at ".$ctime." -> ".$value." : $ERR\n");
+    }
+    undef($ERR);
 }
 
 sub CheckRebuild(){
-	use vars qw($con_oreon $con_ods);
-	my ($RRDdatabase_path, $RRDdatabase_status_path, $len_storage_rrd, $svc_mst_be_rbld);
-	my ($data, $ERR, $flag, $metric, $cpt);
-	
-	# ---------------------------------------------
-	# enable db connexion
-	my $con_ods = CreateConnexionForCentstorage();
-	my $con_oreon = CreateConnexionForOreon();
-	
-	# ---------------------------------------------
-	# Rebuild database
-	$RRDdatabase_path = getRRDdatabase_path();
-	$RRDdatabase_status_path = getRRDdatabase_status_path();
-	$len_storage_rrd = getLenStorageDB();
-	
-	my $sth2 = $con_ods->prepare("SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'");
-	writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."\n") if (!$sth2->execute);
-	while ($svc_mst_be_rbld = $sth2->fetchrow_hashref()){
-	
-		my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
-		writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
-		undef($sth);
-		
-		writeLogFile("Rebuild Graphs for Services : ".$svc_mst_be_rbld->{'id'}."\n");
-		
-		# -----------------------------------------------------
-		# Get check interval for this service
-		my $interval;
-		my $sth_interval;
-		if ($svc_mst_be_rbld->{'host_name'} =~ /([a-zA-Z0-9]*)_Module/){
-			$interval = getModulesInterval($svc_mst_be_rbld->{'service_description'});
-		} else {
-			$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * getIntervalLenght();
-		}
-		$interval = 330 if (!defined($interval));
-		
-		my $interval_hb = $interval * 2;
-		my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
-		if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "\n");}
-		
-		writeLogFile("ERROR : can t rebuild... interval = 0 (time unit : ".getIntervalLenght().")\n") if ($interval == 0);
-		my $sth4;
-		if ($interval != 0){
-			while ($metric = $sth3->fetchrow_hashref()){
-				# Replace Special chars
-				$metric->{'metric_name'} = replaceMetricSpecialChar($metric->{'metric_name'});
-				writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}.".rrd\n");					
-				
-				# Get All Data
-				$sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
-				writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "\n") if (!$sth4->execute);
-				
-				for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
-					if (!$flag){
-						# Calculate first entry in database					
-						my $begin = $data->{'ctime'} - 200;
-						
-						my $my_len_storage_rrd = $len_storage_rrd / $interval;
-						
-						removeOldRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $interval, $my_len_storage_rrd);
-						
-						# Create DB
-						createRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $begin, $interval, $metric->{'metric_name'}, $my_len_storage_rrd);
-						tuneRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $interval_hb);
-						
-						undef($begin);
-						undef($my_len_storage_rrd);
-						$flag++;
-					}
-					updateRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $data->{'ctime'}, $data->{'value'});				
-				}
-				undef($sth4);
-				# -----------------------------------------------------
-			}
-		}
-		undef($interval);
-		undef($sth3);
-		$sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
-		writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
-		undef($sth);
-		undef($cpt);
-		undef($metric);
+    use vars qw($con_oreon $con_ods);
+    my ($RRDdatabase_path, $RRDdatabase_status_path, $len_storage_rrd, $svc_mst_be_rbld);
+    my ($data, $ERR, $flag, $metric, $cpt);
+
+    # ---------------------------------------------
+    # enable db connexion
+    my $con_ods = CreateConnexionForCentstorage();
+    my $con_oreon = CreateConnexionForOreon();
+
+    # ---------------------------------------------
+    # Rebuild database
+    $RRDdatabase_path = getRRDdatabase_path();
+    $RRDdatabase_status_path = getRRDdatabase_status_path();
+    $len_storage_rrd = getLenStorageDB();
+
+    my $sth2 = $con_ods->prepare("SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'");
+    writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."\n") if (!$sth2->execute);
+    while ($svc_mst_be_rbld = $sth2->fetchrow_hashref()){
+
+	my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
+	writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
+	undef($sth);
+
+	writeLogFile("Rebuild Graphs for Services : ".$svc_mst_be_rbld->{'id'}."\n");
+
+	# -----------------------------------------------------
+	# Get check interval for this service
+	my $interval;
+	my $sth_interval;
+	if ($svc_mst_be_rbld->{'host_name'} =~ /_Module_([a-zA-Z0-9]*)/){
+	    $interval = getModulesInterval($svc_mst_be_rbld->{'service_description'}, $con_oreon);
+	} else {
+	    $interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * getIntervalLenght();
 	}
-	$sth2->finish();
-	undef($flag);
-	undef($svc_mst_be_rbld);
-	undef($sth2);
-	undef($data);
-	if (defined($con_oreon)){
-		$con_oreon->disconnect();
+	$interval = 330 if (!defined($interval));
+
+	my $interval_hb = $interval * 2;
+	my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
+	if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "\n");}
+
+	writeLogFile("ERROR : can t rebuild... interval = 0 (time unit : ".getIntervalLenght().")\n") if ($interval == 0);
+	my $sth4;
+	if ($interval != 0){
+	    while ($metric = $sth3->fetchrow_hashref()){
+				# Replace Special chars
+		$metric->{'metric_name'} = replaceMetricSpecialChar($metric->{'metric_name'});
+		writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}.".rrd\n");					
+
+				# Get All Data
+		$sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
+		writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "\n") if (!$sth4->execute);
+
+		for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
+		    if (!$flag){
+			# Calculate first entry in database					
+			my $begin = $data->{'ctime'} - 200;
+
+			my $my_len_storage_rrd = $len_storage_rrd / $interval;
+
+			removeOldRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $interval, $my_len_storage_rrd);
+
+			# Create DB
+			createRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $begin, $interval, $metric->{'metric_name'}, $my_len_storage_rrd);
+			tuneRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $interval_hb);
+
+			undef($begin);
+			undef($my_len_storage_rrd);
+			$flag++;
+		    }
+		    updateRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $data->{'ctime'}, $data->{'value'});				
+		}
+		undef($sth4);
+				# -----------------------------------------------------
+	    }
+	}
+	undef($interval);
+	undef($sth3);
+	$sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
+	writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
+	undef($sth);
+	undef($cpt);
+	undef($metric);
+    }
+    $sth2->finish();
+    undef($flag);
+    undef($svc_mst_be_rbld);
+    undef($sth2);
+    undef($data);
+    if (defined($con_oreon)){
+	$con_oreon->disconnect();
     }
     if (defined($con_ods)){
      	$con_ods->disconnect();
@@ -642,78 +620,105 @@ my @tabPID;
 
 # Init Proc table
 my %tabProc;
-
 $tabProc{'parser'} = 0;
 $tabProc{'synchro'} = 0;
 $tabProc{'rebuild'} = 0;
 
 sub killProc($){
-	if ($_[0]){
+    my $str = " - ". $_[0]." ->";
+    if ($_[0]){
 		if (waitpid($_[0], WNOHANG)){
-			return 0;
+		    print $str."0\n";
+		    return 0;
 		} else {
-			return $_[0];
+		    print $str.$_[0]."\n";
+		    return $_[0];
 		}	
+    }
+}
+
+# Writing PID
+sub writepid($) {
+	if (!defined($_[0]) || $_[0] == 0) {
+		writeLogFile("Cannot write pid file");
 	}
+	open (PID, ">> ".$PID) || print "can't write PID : $!";
+	print PID $_[0] ;
+	close PID or warn $!;
+}
+
+# Write in log file that program is starting
+sub signalstartprogram() {
+	# Starting centstrorage Engine
+	writeLogFile("Starting centstrorage engine...\n");
+	writeLogFile("PID : ".$$."\n");
+}
+
+# Write in log file that program is stoping
+sub signastopprogram() {
+	writeLogFile("Stopping centstrorage engine...\n");
+    if (!unlink($PID)) {
+		writeLogFile("Error When removing pid file : $!") ;
+    }
 }
 
 if ($pid ne fork()) {
-	  if (!fork()) {
-	  	
-	  	# Starting ODS Engine
-		writeLogFile("Starting centstorage engine...\n");
-		writeLogFile("PID : ".$$."\n");
+
+    # Fork 
+    if (!fork()) {
+    	
+		signalstartprogram();
+		writepid($$);
 		
-		# Writing PID
-		open (PID, ">> ".$PID) || print "can't write PID : $!";
-		print PID $$ ;
-		close PID or warn $!;
-	    my $i = 0;
-	    while ($stop){
-	    	if (time() - $timeParser >= 30 && !$tabProc{'parser'}){
-            	my $timeP = time() - $timeParser;
-	            $tabProc{'parser'} = fork();
-	            if (!$tabProc{'parser'}){
-                	GetPerfData();
-	                exit();
-	            } else {
-	               	my $id = waitpid($tabProc{'parser'}, WNOHANG);
-	            }
-	        	$timeParser = time();
-            }
-            if (time() - $timeSynchro >= 60 && !$tabProc{'synchro'}){
-           		$tabProc{'synchro'} = fork();
-		        if (!$tabProc{'synchro'}){
-    	         	CheckRestart();
-                    exit();
-	            } else {
-		           my $id = waitpid($tabProc{'synchro'}, WNOHANG);
-	            }
-		        $timeSynchro = time();
-	       	}
-            if (time() - $timeRebuild >= 120 && !$tabProc{'rebuild'}){
-	        	$tabProc{'rebuild'} = fork();
-	            if (!$tabProc{'rebuild'}){
-	            	CheckRebuild();
+		my $i = 0;
+		while ($stop) {
+		    if (time() - $timeParser >= 15 && !$tabProc{'parser'}) {
+	            my $timeP = time() - $timeParser;
+				$tabProc{'parser'} = fork();
+				if (!$tabProc{'parser'}){
+				    GetPerfData();
+				    exit();
+				} else {
+				    my $id = waitpid($tabProc{'parser'}, WNOHANG);
+				}
+				$timeParser = time();
+			}    
+	        if (time() - $timeSynchro >= 60 && !$tabProc{'synchro'}) {
+				$tabProc{'synchro'} = fork();
+				if (!$tabProc{'synchro'}){
+				    CheckRestart();
 		            exit();
-	            } else {
-		          	my $id = waitpid($tabProc{'rebuild'}, WNOHANG);
-	            }
-	            $timeRebuild = time();
-           	}
-           	
-			$tabProc{'parser'} = killProc($tabProc{'parser'}) if ($tabProc{'parser'});
-			$tabProc{'synchro'} = killProc($tabProc{'synchro'}) if ($tabProc{'synchro'});
-			$tabProc{'rebuild'} = killProc($tabProc{'rebuild'}) if ($tabProc{'rebuild'});
-			
-			sleep(1);
+				} else {
+				    my $id = waitpid($tabProc{'synchro'}, WNOHANG);
+				}
+				$timeSynchro = time();
+		    }
+	        if (time() - $timeRebuild >= 120 && !$tabProc{'rebuild'}) {
+				$tabProc{'rebuild'} = fork();
+				if (!$tabProc{'rebuild'}){
+				    CheckRebuild();
+				    exit();
+				} else {
+				    my $id = waitpid($tabProc{'rebuild'}, WNOHANG);
+				}
+				$timeRebuild = time();
+		    }
+		    
+		    $tabProc{'parser'}  = killProc($tabProc{'parser'}) if ($tabProc{'parser'});
+		    $tabProc{'synchro'} = killProc($tabProc{'synchro'}) if ($tabProc{'synchro'});
+		    $tabProc{'rebuild'} = killProc($tabProc{'rebuild'}) if ($tabProc{'rebuild'});
+		    
+		    sleep(1);
             $i++;
-        }
-    	writeLogFile("Stopping centstorage engine...\n");
-		writeLogFile("Error When removing pid file : $!") if (!unlink($PID));
-	}
+		}
+
+    	signalstopprogram();
+    }
     exit 0;
 } 
 
 waitpid($pid, 0);
 exit(1);
+
+__END__
+
