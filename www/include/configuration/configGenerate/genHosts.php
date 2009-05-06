@@ -81,7 +81,7 @@
 				 *  For Nagios 3 ::: Multi Templates
 				 */
 				if ($oreon->user->get_version() >= 3) {
-					$rq = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id=" . $host["host_id"] . " ORDER BY `order`";
+					$rq = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $host["host_id"] . " ORDER BY `order`";
 					$DBRESULT2 =& $pearDB->query($rq);
 					$tpl_str = "";
 					$first_on_list = 1;
