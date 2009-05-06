@@ -330,6 +330,9 @@ sub GetPerfData($){
 		writeLogFile("cat $localtmpperffile >> $localperffile");
 	    }
 	    `cat $localtmpperffile >> $localperffile`;
+	    if (!unlink($localtmpperffile)) {
+		writeLogFile("Cannot Remove performance data file : $localtmpperffile");
+	    }
 	}
 #    }
 #    undef($ls);
