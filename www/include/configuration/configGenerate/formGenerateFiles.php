@@ -146,6 +146,7 @@
 					if ($oreon->user->get_version() == 2)
 						require $path."genExtendedInfos.php";
 					require $path."genHostGroups.php";
+					require $path."genServiceTemplates.php";
 					require $path."genServices.php";
 					require $path."genServiceGroups.php";
 					require $path."genEscalations.php";
