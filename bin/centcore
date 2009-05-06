@@ -46,7 +46,7 @@ use File::Copy;
 
 use vars qw($debug $LOG %status $generalcounter $stop $method);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
-use vars qw($con $ssh $scp $rsync $installedPath $timeout);
+use vars qw($con $ssh $scp $rsync $rsyncWT $installedPath $timeout);
 
 if (POSIX::getuid() == 0 ) { 
     print  STDERR "You must not execute centcore with root user \n"; exit 1;
@@ -69,6 +69,7 @@ $timeout = 5;
 
 #$ssh = "@BIN_SSH@";
 $rsync = "rsync";
+$rsyncWT = $rsync;
 #$scp = "@BIN_SCP@";
 
 $ssh = "/usr/bin/ssh";
@@ -504,43 +505,60 @@ sub testConfig($) {
 }
 
 sub syncArchives($) {
-	my $id = $_[0];
-	my $port = 22;
+    my $id = $_[0];
+    my $port = 22;
 #	my $varlib = "@VARLIB_CENTREON@";
-	my $varlib = "/var/lib/centreon";
-	
+    my $varlib = "/var/lib/centreon";
+    
     # Check MySQL Connexion
-    CheckMySQLConnexion()
+    CheckMySQLConnexion();
     
     # Get configuration
     my $ns_server = getServerConfig($id);
-	
-	if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'} != "") {
-        $port = $ns_server->{'ssh_port'};
+    
+    if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'} != "") {
+	$port = $ns_server->{'ssh_port'};
     }
-	
-	if ($id == 0) {
-		
-		if (! -d "$varlib/log/".$ns_server->{'id'}."/archives/") {
-			if (! -d "$varlib/log/".$ns_server->{'id'}) {
-				mkdir "$varlib/log/".$ns_server->{'id'};
-			}
-			if (! -d "$varlib/log/".$ns_server->{'id'}."/archives/") {
-				mkdir "$varlib/log/".$ns_server->{'id'}."/archives/";
-			}
-		}
-		my $sth = $con->prepare("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `id` = '".$id."'");
-		if ($sth->execute()) {
-			my $data = $sth->fetchrow_hashref();
-
-			# Archive Sync
-			`$rsync --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/* $varlib/log/$ns_server->{'id'}/archives/`;
-			unset($data);
-		} else {
-			print "Can't get archive path for service ".$ns_server->{'id'}." (".$ns_server->{'ns_address_ip'}.") -> ".$sth3->$sth2->errstr;
-		}		
-
+    
+    if ($id != 0) {
+	# Sync Archive for one poller
+	if (! -d "$varlib/log/".$ns_server->{'id'}."/archives/") {
+	    if (! -d "$varlib/log/".$ns_server->{'id'}) {
+		mkdir "$varlib/log/".$ns_server->{'id'};
+	    }
+	    if (! -d "$varlib/log/".$ns_server->{'id'}."/archives/") {
+		mkdir "$varlib/log/".$ns_server->{'id'}."/archives/";
+	    }
 	}
+	my $sth = $con->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$id."' AND `nagios_activate` = '1'");
+	if ($sth->execute()) {
+	    my $data = $sth->fetchrow_hashref();
+
+	    # Archive Sync
+	    writeLogFile("$rsync --port=$port -c ".$ns_server->{'ns_ip_address'}.":".$data->{'log_archive_path'}."/*.log $varlib/log/".$ns_server->{'id'}."/archives/") if ($debug);
+
+	    writeLogFile("Synchronize archives for poller $id");
+	    `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $varlib/log/$ns_server->{'id'}/archives/`;
+	    undef($data);
+	    writeLogFile("Sync over for poller $id");
+
+	} else {
+	    print "Can't get archive path for poller ".$ns_server->{'id'}." (".$ns_server->{'ns_address_ip'}.") -> ".$sth->errstr;
+	}
+    } else {
+	# synchronize Archives for all pollers
+	my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
+	if (!$sth2->execute) {
+	    die "Error:" . $sth2->errstr . "\n";
+	} else { 
+	    while (my $server = $sth2->fetchrow_hashref()) {
+		writeLogFile("Receive Order to synchronize all archive of all pollers");
+		syncArchives($server->{'id'});
+		undef($server);
+	    }
+	    undef($sth2);
+	}
+    }
 }
 
 sub parseRequest($){
