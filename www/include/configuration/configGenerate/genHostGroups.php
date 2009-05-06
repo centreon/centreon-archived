@@ -23,23 +23,36 @@
 	}
 	
 	/*
+	 * Create a GHG Cache
+	 */
+	$ghgCache = array();
+	$DBRESULT =& $pearDB->query("SELECT hg_parent_id, hg_child_id, hg_name FROM `hostgroup`, `hostgroup_hg_relation` WHERE hostgroup_hg_relation.hg_child_id = hostgroup.hg_id");
+	while ($ghg =& $DBRESULT->fetchRow()) {
+		if (!isset($ghgCache[$ghg["hg_parent_id"]]))
+			$ghgCache[$ghg["hg_parent_id"]] = array();
+		$ghgCache[$ghg["hg_parent_id"]][$ghg["hg_child_id"]] = $ghg["hg_name"];
+	}
+	$DBRESULT->free();
+	unset($ghg);
+	
+	/*
 	 * Create table to liste generated hostGroups
 	 */
 	 
 	$generatedHG = array();
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostgroups.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY `hg_name`");
-	$hostGroup = array();
+
 	$i = 1;
 	$str = NULL;
+	$hostGroup = array();
+	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY `hg_name`");
 	while ($hostGroup =& $DBRESULT->fetchRow())	{
 		$strDef = NULL;
 		$HGLinkedToHost = 0;
 		
 		/*
 		 * Generate a new Hostgroup
-		 */
-		
+		 */		
 		$ret["comment"] ? ($strDef .= "# '" . $hostGroup["hg_name"] . "' hostgroup definition " . $i . "\n") : NULL;
 		if ($ret["comment"] && $hostGroup["hg_comment"])	{
 			$comment = array();
@@ -49,64 +62,42 @@
 		}
 		$strDef .= "define hostgroup{\n";
 		
-		if ($hostGroup["hg_name"])	$strDef .= print_line("hostgroup_name", $hostGroup["hg_name"]);
-		if ($hostGroup["hg_alias"]) $strDef .= print_line("alias", $hostGroup["hg_alias"]);
+		if ($hostGroup["hg_name"])	
+			$strDef .= print_line("hostgroup_name", $hostGroup["hg_name"]);
+		if ($hostGroup["hg_alias"]) 
+			$strDef .= print_line("alias", $hostGroup["hg_alias"]);
 		
-		/*
-		 * Host Members
-		 */
-		$host = array();
-		$strTemp = NULL;
-		$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM hostgroup_relation hgr, host WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND hgr.host_host_id = host.host_id ORDER BY `host_name`");
-		while($host =& $DBRESULT2->fetchRow())	{
-			if (isset($gbArr[2][$host["host_id"]]) && isset($host_instance[$host["host_id"]])){
-				$HGLinkedToHost++;
-				$strTemp != NULL ? $strTemp .= ", ".$host["host_name"] : $strTemp = $host["host_name"];
-			}
-		}
-		$DBRESULT2->free();
-		unset($host);
-		if ($strTemp) 
-			$strDef .= print_line("members", $strTemp);
-		unset($strTemp);
-	
 		/*
 		 * Hostgroup Members
 		 */
-		$hg = array();
-		$strTemp = NULL;
-		$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hostGroup["hg_id"]."' AND hgr.hg_child_id = hg.hg_id ORDER BY `hg_name`");
-		while ($hostgroup =& $DBRESULT2->fetchRow())	{
-			if (isset($gbArr[3][$hostgroup["hg_id"]])){
+		
+		$strTemp = "";
+		if (isset($ghgCache[$hostGroup["hg_id"]])) {
+			foreach ($ghgCache[$hostGroup["hg_id"]] as $child_name) {
+				if ($strTemp != "")
+					$strTemp .= ",";
+				$strTemp .= $child_name;
 				$HGLinkedToHost++;
-				$strTemp != NULL ? $strTemp .= ", ".$hostgroup["hg_name"] : $strTemp = $hostgroup["hg_name"];
 			}
+			if ($strTemp) 
+				$strDef .= print_line("hostgroup_members", $strTemp);
 		}
-		$DBRESULT2->free();
-		unset($hostgroup);
-		if ($strTemp) 
-			$strDef .= print_line("hostgroup_members", $strTemp);
-		unset($strTemp);
 		
 		/*
 		 * Generate only if this hostgroup had a host generate on this nagios instance
 		 */
-		 
-		if ($HGLinkedToHost){
-			$generatedHG[$hostGroup["hg_id"]] = $hostGroup["hg_name"];
-			$str .= $strDef;
-			$str .= "}\n\n";
-		}
-		$strDef = "";
-		$HGLinkedToHost = 0;
-		unset($strDef);
+		$generatedHG[$hostGroup["hg_id"]] = $hostGroup["hg_name"];
+		$str .= $strDef;
+		$str .= "}\n\n";
+
 		$i++;
 		unset($hostGroup);
+		unset($strDef);
 	}
+
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/hostgroups.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);
 	unset($i);
-
 ?>
