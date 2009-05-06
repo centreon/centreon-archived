@@ -39,6 +39,36 @@ $DBRESULT =& $pearDB->query("SELECT session_id FROM session WHERE session.sessio
 if (!$DBRESULT->numRows())
 	exit();
 
+switch ($cmd) {
+	case "SHUTDOWN_PROGRAM" : $action_name = "global_shutdown"; break;
+	case "RESTART_PROGRAM" : $action_name = "global_restart"; break;
+	case "DISABLE_NOTIFICATIONS" : $action_name = "global_notifications"; break;
+	case "ENABLE_NOTIFICATIONS" : $action_name = "global_notifications"; break;
+	case "STOP_EXECUTING_SVC_CHECKS" : $action_name = "global_service_checks"; break;
+	case "START_EXECUTING_SVC_CHECKS" : $action_name = "global_service_checks"; break;
+	case "STOP_ACCEPTING_PASSIVE_SVC_CHECKS" : $action_name = "global_service_passive_checks"; break;
+	case "START_ACCEPTING_PASSIVE_SVC_CHECKS" : $action_name = "global_service_passive_checks"; break;
+	case "STOP_EXECUTING_HOST_CHECKS" : $action_name = "global_host_checks"; break;
+	case "START_EXECUTING_HOST_CHECKS" : $action_name = "global_host_checks"; break;
+	case "STOP_ACCEPTING_PASSIVE_HOST_CHECKS" : $action_name = "global_host_passive_checks"; break;
+	case "START_ACCEPTING_PASSIVE_HOST_CHECKS" : $action_name = "global_host_passive_checks"; break;
+	case "DISABLE_EVENT_HANDLERS" : $action_name = "global_event_handler"; break;
+	case "ENABLE_EVENT_HANDLERS" : $action_name = "global_event_handler"; break;
+	case "STOP_OBSESSING_OVER_SVC_CHECKS" : $action_name = "global_service_obsess"; break;
+	case "START_OBSESSING_OVER_SVC_CHECKS" : $action_name = "global_service_obsess"; break;
+	case "STOP_OBSESSING_OVER_HOST_CHECKS" : $action_name = "global_host_obsess"; break;
+	case "START_OBSESSING_OVER_HOST_CHECKS" : $action_name = "global_host_obsess"; break;
+	case "DISABLE_FLAP_DETECTION" : $action_name = "global_flap_detection"; break;
+	case "ENABLE_FLAP_DETECTION" : $action_name = "global_flap_detection"; break;
+	case "DISABLE_PERFORMANCE_DATA" : $action_name = "global_perf_data"; break;
+	case "ENABLE_PERFORMANCE_DATA" : $action_name = "global_perf_data"; break;
+	default : $action_name = ""; break;
+}
+
+if (!$oreon->user->access->checkAction($action_name))
+	exit();	
+
+
 $command = new CentreonExternalCommand($oreon);
 $command->set_process_command($cmd, $poller);
 $result = $command->write();
