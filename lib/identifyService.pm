@@ -41,16 +41,18 @@ sub identify_service($$){
 
     # Check MySQL Connexion
     CheckMySQLConnexion();
-        
+
     while (!$con_ods->ping){;}
     if ($con_ods->ping) {
 	my $sth1 = $con_ods->prepare("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
-	if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-	
+	if (!$sth1->execute) {
+	    writeLogFile("Error:" . $sth1->errstr . "\n");
+	}
+
 	# IF service unknown, insert it.
 	if ($sth1->rows() == 0) {
 	    if ($_[0] && $_[1]) {
-		
+
 		# Get Host_id FROM host_name
 		$host_id = getHostID($_[0], $con_oreon);
 
@@ -98,26 +100,28 @@ sub identify_service($$){
 }
 
 sub identify_hidden_service($$){
-	CheckMySQLConnexion();
-	while (!$con_ods->ping){;}
-	if ($con_ods->ping){
-		my $sth1 = $con_ods->prepare("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
-	    if (!$sth1->execute) {writeLogFile("Error : " . $sth1->errstr . "\n");}
-	    # IF service unknown, insert it.
-	    if ($sth1->rows() == 0){
-			if ($_[0] && $_[1]){
-				$sth1 = $con_ods->prepare("INSERT INTO `index_data` (`host_name`, `service_description`, `special`) VALUES ('".$_[0]."', '".$_[1]."', '1')");
-				if (!$sth1->execute) {writeLogFile("Error : " . $sth1->errstr . "\n");}
-				undef($sth1);
-			}
-		    $sth1 = $con_ods->prepare("SELECT id, storage_type FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
-		    if (!$sth1->execute) {writeLogFile("Error : " . $sth1->errstr . "\n");}
+    CheckMySQLConnexion();
+    while (!$con_ods->ping){;}
+    if ($con_ods->ping){
+	my $sth1 = $con_ods->prepare("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
+	if (!$sth1->execute) {writeLogFile("Error : " . $sth1->errstr . "\n");}
+	# IF service unknown, insert it.
+	if ($sth1->rows() == 0){
+	    if ($_[0] && $_[1]){
+		$sth1 = $con_ods->prepare("INSERT INTO `index_data` (`host_name`, `service_description`, `special`) VALUES ('".$_[0]."', '".$_[1]."', '1')");
+		if (!$sth1->execute) {
+		    writeLogFile("Error : " . $sth1->errstr . "\n");
+		}
+		undef($sth1);
 	    }
-	    my $data = $sth1->fetchrow_hashref();
-	    undef($sth1);
-	    my @data_return = ($data->{'id'}, $data->{'storage_type'}, $data->{'must_be_rebuild'});
-	    undef($data);
-	    return @data_return;
+	    $sth1 = $con_ods->prepare("SELECT id, storage_type FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
+	    if (!$sth1->execute) {writeLogFile("Error : " . $sth1->errstr . "\n");}
 	}
+	my $data = $sth1->fetchrow_hashref();
+	undef($sth1);
+	my @data_return = ($data->{'id'}, $data->{'storage_type'}, $data->{'must_be_rebuild'});
+	undef($data);
+	return @data_return;
+    }
 }
 1;

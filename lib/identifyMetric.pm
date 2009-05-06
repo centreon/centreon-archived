@@ -48,17 +48,6 @@ sub removeBackSpace($){
     return $_[0];
 }
 
-sub getGeneralConfig(){
-    my $con_ods = CreateConnexionForCentstorage();
-    # Get conf Data
-    my $sth1 = $con_ods->prepare("SELECT * FROM `config`");
-    writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
-    my $configuration = $sth1->fetchrow_hashref();
-    $sth1->finish();
-    $con_ods->disconnect();
-    return $configuration;
-}
-
 sub putSpecialCharInMetric($){
     $_[0] =~ s/#S#/\//g;
     $_[0] =~ s/#BS#/\\/g;
@@ -91,6 +80,7 @@ sub insertMetrics($$$$$$$){
 
 sub updateMetricInformation($$$$$){
     my ($id, $warn, $crit, $min, $max) = @_;
+
     if ($warn ne "" || $crit ne "" || $min ne "" || $max ne ""){
 	my $str = "";
 	$str .= "`warn` = '".$warn."'" if ($warn ne "");
@@ -113,19 +103,22 @@ sub updateMetricInformation($$$$$){
     }		   	
 }
 
-sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
+#
+# perfdata index status time type counter rebuild
+#
+sub identify_metric($$$$$$$$){ 
     my (@data, $begin, $just_insert, $generalcounter);
+    my $configuration = $_[7];
     $generalcounter = $_[5];
     $just_insert = 0;
+
 
     my $con_ods = CreateConnexionForCentstorage();
     my $con_oreon = CreateConnexionForOreon();
 
-    # Get All Configuration values   				
-    $configuration = getGeneralConfig();
-
     # Cut perfdata    	
     my $metric = removeBackSpace($_[0]);
+ 
     while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\ ]+)\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)\s?/g){
 	if (!defined($3)){$3 = "";}
 	if (!defined($4)){$4 = "";}
@@ -139,6 +132,7 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 	    $cpt++;
 	    $x++;
 	}
+	
 	@data = ($1, $2, $3, $4, $5, $6, $7); # metric, value, unit, warn, critical, min, max
 	if ($1 && defined($2)){			
 	    # Check if metric is known...
@@ -160,7 +154,9 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 	    # Update metric attributs
 	    if ($just_insert || ($metric->{'unit_name'} ne $data[2])){
 		my $sth1 = $con_ods->prepare("UPDATE `metrics` SET `unit_name` = '".$data[2]."', `warn` = '".$data[3]."', `crit` = '".$data[4]."', `min` = '".$data[5]."', `max` = '".$data[6]."' WHERE `metric_id` = '".$metric->{'metric_id'}."'");
-		writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
+		if (!$sth1->execute) {
+		    writeLogFile("Error:" . $sth1->errstr . "\n");
+		}
 		undef($sth1);
 	    }
 
@@ -168,9 +164,11 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 
 	    # Check Storage Type
 	    # O -> BD Mysql & 1 -> RRDTool
+
 	    $begin = $_[3] - 200;
-	    if (defined($data[1])){
-		if (defined($_[4]) && $_[4] eq 1 && $_[6] eq 0){
+
+	    if (defined($data[1])) {
+		if (defined($_[4]) && $_[4] eq 0 && $_[6] eq 0){
 		    updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
 		} elsif (defined($_[4]) && $_[4] eq 2) { 
 		    updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
@@ -183,7 +181,7 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
     }
     undef($begin);
     return $generalcounter;
-		    }
+}
 
 # identifier la metric
 # meed arguments 
@@ -193,72 +191,67 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 # - timestamp
 # - storage_type
 
-sub identify_hidden_metric($$$$$$$){ # perfdata index status time type counter rebuild
-	my (@data, $begin, $just_insert, $generalcounter);
-	
-	CheckMySQLConnexion();
-	
-	$generalcounter = $_[5];
-	return $generalcounter if ($_[1] eq 0);
+sub identify_hidden_metric($$$$$$$$){ # perfdata index status time type counter rebuild
+    my (@data, $begin, $just_insert, $generalcounter);
+    my $configuration = $_[7];
+
+    CheckMySQLConnexion();
+
+    $generalcounter = $_[5];
+    return $generalcounter if ($_[1] eq 0);
     $just_insert = 0;   				
-	# Get conf Data
-	my $sth1 = $con_ods->prepare("SELECT * FROM `config`");
-	if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-	my $configuration = $sth1->fetchrow_hashref();
-	undef($sth1);
-	
+
     foreach my $tab (split(' ', $_[0])){	
     	# Cut perfdata    	
-		if ($tab =~ /([a-zA-Z0-9\_\-\/\\]+)\=([0-9\.\,]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)/){
-		    if (!defined($3)){$3 = "";}			
-		    if (!defined($4)){$4 = "";}			
-		    if (!defined($5)){$5 = "";}	
-		    @data = ($1, $2, $3, $4, $5); # metric, value, unit, warn, critical
-		}
-		if ($1 && defined($2)){			
-			# Check if metric is known...
-			$data[0] =~ s/\//#S#/g;
-			my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
-			if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-			
-			if ($sth1->rows() eq 0){
-				$just_insert = 1;   				
-				undef($sth1);
+	if ($tab =~ /([a-zA-Z0-9\_\-\/\\]+)\=([0-9\.\,]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)/){
+	    if (!defined($3)){$3 = "";}			
+	    if (!defined($4)){$4 = "";}			
+	    if (!defined($5)){$5 = "";}	
+	    @data = ($1, $2, $3, $4, $5); # metric, value, unit, warn, critical
+	}
+	if ($1 && defined($2)){			
+	    # Check if metric is known...
+	    $data[0] =~ s/\//#S#/g;
+	    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
+	    if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+
+	    if ($sth1->rows() eq 0){
+		$just_insert = 1;   				
+		undef($sth1);
 				# Si pas connue -> insert
-			   	my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`) VALUES ('".$_[1]."', '".$data[0]."', '".$data[2]."')");
-			    if (!$sth2->execute){writeLogFile("Error:" . $sth2->errstr . "\n");}
-			    undef($sth2);
-			    # Get ID
-			   	$sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
-				if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-			}
-			my $metric = $sth1->fetchrow_hashref();
-			undef($sth1);
-			
-		   	if ($just_insert || ($metric->{'unit_name'} ne $data[2])){
-		   		my $sth1 = $con_ods->prepare("UPDATE `metrics` SET `unit_name` = '".$data[2]."' WHERE `metric_id` = '".$metric->{'metric_id'}."'");
-		    	if (!$sth1->execute){writeLogFile("Error:" . $sth1->errstr . "\n");}
-		    	undef($sth1);
-		   	}
-			
-			# Check Storage Type
-			# O -> BD Mysql & 1 -> RRDTool
-			$begin = $_[3] - 200;
-			if (defined($data[1])){
-				if (defined($_[4]) && $_[4] eq 1){
-					updateRRDDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});$generalcounter++;
-					$generalcounter++;
-				} elsif (defined($_[4]) && $_[4] eq 0) {   # Insert Data In Mysql 
-					updateMysqlDBforHiddenSVC($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
-					$generalcounter++;
-				} else {
-					updateRRDDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});					
-					updateMysqlDBforHiddenSVC($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});	
-					$generalcounter++;
-				}
-			}
-			$just_insert = 0;
+		my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`) VALUES ('".$_[1]."', '".$data[0]."', '".$data[2]."')");
+		if (!$sth2->execute){writeLogFile("Error:" . $sth2->errstr . "\n");}
+		undef($sth2);
+		# Get ID
+		$sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
+		if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+	    }
+	    my $metric = $sth1->fetchrow_hashref();
+	    undef($sth1);
+
+	    if ($just_insert || ($metric->{'unit_name'} ne $data[2])){
+		my $sth1 = $con_ods->prepare("UPDATE `metrics` SET `unit_name` = '".$data[2]."' WHERE `metric_id` = '".$metric->{'metric_id'}."'");
+		if (!$sth1->execute){
+		    writeLogFile("Error:" . $sth1->errstr . "\n");
 		}
+		undef($sth1);
+	    }
+
+	    # Check Storage Type
+	    # O -> BD Mysql & 1 -> RRDTool
+	    $begin = $_[3] - 200;
+	    if (defined($data[1])){
+		if (defined($_[4]) && $_[4] eq 0 && $_[6] eq 0){
+		    updateRRDDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
+		    $generalcounter++;
+		} elsif (defined($_[4]) && $_[4] eq 2) { 
+		    updateRRDDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
+		    updateMysqlDBforHiddenSVC($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});	
+		    $generalcounter++;
+		}
+	    }
+	    $just_insert = 0;
+	}
     }
     undef($tab);
     undef(@data);

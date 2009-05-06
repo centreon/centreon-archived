@@ -1,39 +1,23 @@
-################################################################################
-# Copyright 2005-2009 MERETHIS
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
-# GPL Licence 2.0.
-# 
-# This program is free software; you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
-# Foundation ; either version 2 of the License.
-# 
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-# PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along with 
-# this program; if not, see <http://www.gnu.org/licenses>.
-# 
-# Linking this program statically or dynamically with other modules is making a 
-# combined work based on this program. Thus, the terms and conditions of the GNU 
-# General Public License cover the whole combination.
-# 
-# As a special exception, the copyright holders of this program give MERETHIS 
-# permission to link this program with independent modules to produce an executable, 
-# regardless of the license terms of these independent modules, and to copy and 
-# distribute the resulting executable under terms of MERETHIS choice, provided that 
-# MERETHIS also meet, for each linked independent module, the terms  and conditions 
-# of the license of that module. An independent module is a module which is not 
-# derived from this program. If you modify this program, you may extend this 
-# exception to your version of the program, but you are not obliged to do so. If you
-# do not wish to do so, delete this exception statement from your version.
-# 
-# For more information : contact@centreon.com
-# 
-# SVN : $URL$
-# SVN : $Id$
+###################################################################
+# Centreon is developped with GPL Licence 2.0 
 #
-####################################################################################
+# GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+#
+# Developped by : Julien Mathis - jmathis@merethis.com
+#
+###################################################################
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+#    For information : contact@merethis.com
+####################################################################
 
 sub getIntervalLenght($){
     my $con_oreon = $_[0];
@@ -49,17 +33,23 @@ sub getIntervalLenght($){
 }
 
 sub checkDBDirectory($) {
-    if (!-d $_[0]){
-        writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
-        if (!mkdir($_[0], "775")) {
-            writeLogFile("Can't create ".$_[0]." : permission denied\n");
-	    return 0;
-	} else {
-            writeLogFile($_[0]." Created\n");
-	    return 1;
+    if (defined($_[0])) {
+	if (!-d $_[0]){
+	    writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
+	    if (!mkdir($_[0], "775")) {
+		writeLogFile("Can't create ".$_[0]." : permission denied\n");
+		return 0;
+	    } else {
+		writeLogFile($_[0]." Created\n");
+		return 1;
+	    }
 	}
+	return 1;
+    } else {
+	writeLogFile("Directory name empty...");
+	return 0;
     }
-    return 1;
+    
 }
 
 # Update RRDTool DB with data
@@ -70,6 +60,7 @@ sub updateRRDDB($$$$$$$$) {
     my $interval = 4000;
     my $nb_value;
     my $interval_length;
+    my $begin;
 
     if (checkDBDirectory($_[0]) == 0) {
 	writeLogFile("Data droped....\n");
@@ -81,10 +72,9 @@ sub updateRRDDB($$$$$$$$) {
 	updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3]);
     } else {
 	if ($_[0] && $_[1] && $_[5]) {
-	    my $begin = $_[4] - 200000;
 
+	    $begin = $_[4] - 200000;
 	    $interval = getServiceCheckInterval($_[1], $con_ods) * getIntervalLenght($con_oreon);
-#	    $interval = getIntervalLenght($con_oreon) * $interval;
 	    $interval_hb = $interval * 2;
 	    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 
