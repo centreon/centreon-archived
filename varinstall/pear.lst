@@ -11,7 +11,6 @@ HTML_Table::1.6.1
 Archive_Tar::1.1
 Auth_SASL::1.0.1
 Console_Getopt::1.2
-Image_GraphViz::1.1.0
 Net_SMTP::1.2.8
 Net_Socket::1.0.1
 Net_Traceroute::0.21::alpha
