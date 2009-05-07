@@ -36,7 +36,7 @@
  * 
  */
  
- require_once "/etc/centreon/centreon.conf.php";  
+ require_once "@CENTREON_ETC@/centreon.conf.php";  
  require_once $centreon_path . "/www/class/centreonDB.class.php";
  require_once $centreon_path . "/www/include/common/common-Func.php";
  /*
@@ -106,15 +106,15 @@
  	 */
  	private function setExternalCommandList() {
  		# Services Actions
-		$this->actions["service_checks"] = "";
-		$this->actions["service_notifications"] = "";
+		$this->actions["service_checks"] = "ENABLE_SVC_CHECK|DISABLE_SVC_CHECK";
+		$this->actions["service_notifications"] = "ENABLE_SVC_NOTIFICATIONS|DISABLE_SVC_NOTIFICATIONS";
 		$this->actions["service_acknowledgement"] = "";
-		$this->actions["service_schedule_check"] = "";
+		$this->actions["service_schedule_check"] = "SCHEDULE_SVC_CHECK|SCHEDULE_FORCED_SVC_CHECK";
 		$this->actions["service_schedule_downtime"] = "";
 		$this->actions["service_comment"] = "";
-		$this->actions["service_event_handler"] = "";
-		$this->actions["service_flap_detection"] = "";
-		$this->actions["service_passive_checks"] = "";
+		$this->actions["service_event_handler"] = "ENABLE_SVC_EVENT_HANDLER|DISABLE_SVC_EVENT_HANDLER";
+		$this->actions["service_flap_detection"] = "ENABLE_SVC_FLAP_DETECTION|DISABLE_SVC_FLAP_DETECTION";
+		$this->actions["service_passive_checks"] = "ENABLE_PASSIVE_SVC_CHECKS|DISABLE_PASSIVE_SVC_CHECKS";
 		$this->actions["service_submit_result"] = "";
 		
 		# Hosts Actions

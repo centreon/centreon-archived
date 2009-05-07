@@ -50,7 +50,7 @@
  	}
  	
  	/*
- 	 *  Method that returns a host address from host_id
+ 	 *  Method that returns service description from service_id
  	 */
  	public function getServiceDesc($svc_id) {
  		$rq = "SELECT service_description FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
@@ -59,6 +59,18 @@
  			return NULL;
  		$row =& $DBRES->fetchRow(); 		
  		return $row['service_description'];
+ 	}
+ 	
+ 	/*
+ 	 *  Method that returns the id of a service
+ 	 */
+ 	public function getServiceId($svc_desc) {
+ 		$rq = "SELECT service_id FROM service WHERE service_description = '".$svc_desc."' LIMIT 1";
+ 		$DBRES =& $this->local_pearDB->query($rq);
+ 		if (!$DBRES->numRows())
+ 			return NULL;
+ 		$row =& $DBRES->fetchRow(); 		
+ 		return $row['service_id'];
  	}
  	 	
  	/*

@@ -19,19 +19,22 @@ require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once $centreon_path . "/www/class/centreonExternalCommand.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once $centreon_path . "/www/class/centreonHost.class.php";
+require_once $centreon_path . "/www/class/centreonService.class.php";
 require_once $centreon_path . "/www/class/centreonACL.class.php";
 require_once $centreon_path . "/www/class/Session.class.php";
 require_once $centreon_path . "/www/class/Oreon.class.php";
 require_once $centreon_path . "/www/class/centreonXML.class.php";
   
 Session::start();
-if (!isset($_SESSION["oreon"]) || !isset($_GET["host_id"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]))
+if (!isset($_SESSION["oreon"]) || !isset($_GET["host_id"]) || !isset($_GET["svc_id"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]))
 	exit();
 
 $oreon =& $_SESSION["oreon"];
 $pearDB = new CentreonDB();
 $hostObj = new CentreonHost($pearDB);
+$svcObj = new CentreonService($pearDB);
 $host_id = $_GET["host_id"];
+$svc_id = $_GET["svc_id"];
 $poller = $hostObj->getHostPollerId($host_id);
 $cmd = $_GET["cmd"];
 $sid = $_GET["sid"];
@@ -52,38 +55,28 @@ $cmd = $cmd_list[$cmd];
 
 $tab = split("\|", $cmd);
 
-if (preg_match(_("/Enable/"), $str) && !preg_match(_("/services/"), $str)) {
+if (preg_match(_("/Enable/"), $str)) {
 	$img_flag = "<img src='./img/icones/16x16/element_previous.gif'>";	
 	$switch_str = str_replace(_("Enable"), _("Disable"), $str);	
 	$cmd = $tab[0];	
 }
-elseif (preg_match(_("/Enable/"), $str) && preg_match(_("/services/"), $str)) {
-	$img_flag = "<img src='./img/icones/16x16/element_next.gif'>";
-	$switch_str = $str;
-	$cmd = $tab[0];	
-}
-elseif (preg_match(_("/Disable/"), $str) && !preg_match(_("/services/"), $str)) {
+elseif (preg_match(_("/Disable/"), $str)) {
 	$img_flag = "<img src='./img/icones/16x16/element_next.gif'>";	
 	$switch_str = str_replace(_("Disable"), _("Enable"), $str);
 	$cmd = $tab[1];	
 }
-elseif (preg_match(_("/Disable/"), $str) && preg_match(_("/services/"), $str)) {
-	$img_flag = "<img src='./img/icones/16x16/element_previous.gif'>";	
+elseif ($str == _("Re-schedule the next check for this service")) {
+	$img_flag = "<img src='./img/icones/16x16/undo.gif'>";	
+	$switch_str = $str;
+	$cmd = $tab[0];	
+}
+elseif ($str == _("Re-schedule the next check for this service (forced)")) {
+	$img_flag = "<img src='./img/icones/16x16/undo.gif'>";
 	$switch_str = $str;
 	$cmd = $tab[1];	
 }
-elseif ($str == _("Schedule an immediate check of all services on this host")) {
-	$img_flag = "<img src='./img/icones/16x16/undo.gif'>";	
-	$switch_str = str_replace(_("Disable"), _("Enable"), $str);
-	$cmd = $tab[0];	
-}
-elseif ($str == _("Schedule an immediate check of all services on this host (forced)")) {
-	$img_flag = "<img src='./img/icones/16x16/undo.gif'>";
-	$switch_str = str_replace(_("Disable"), _("Enable"), $str);
-	$cmd = $tab[1];	
-}
 
-$cmd .= ";" . $hostObj->getHostName($host_id);
+$cmd .= ";" . $hostObj->getHostName($host_id) . ";" . $svcObj->getServiceDesc($svc_id);
 $command->set_process_command($cmd, $poller);
 
 $result = $command->write();

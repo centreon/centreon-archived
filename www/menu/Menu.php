@@ -170,7 +170,7 @@
 								"Menu2UrlPopupOpen" => $elem["topology_url"].$auth,
 								"Menu2Name" => _($elem["topology_name"]),
 								"Menu2Popup" => $elem["topology_popup"] ? true : false);
-		$sep = "&nbsp;&nbsp;|&nbsp;&nbsp;";
+		$sep = "&nbsp;|&nbsp;";
 	}
 
 	/*
