@@ -112,15 +112,78 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 --
 -- Contenu de la table `general_opt`
 --
-
-INSERT INTO `options` (`key`, `value`) VALUES ('patch_type_stable', 'Y');
-INSERT INTO `options` (`key`, `value`) VALUES ('patch_type_RC', 'Y');
-INSERT INTO `options` (`key`, `value`) VALUES ('patch_type_patch', 'Y');
-INSERT INTO `options` (`key`, `value`) VALUES ('patch_type_secu', 'Y');
-INSERT INTO `options` (`key`, `value`) VALUES ('patch_type_beta', 'Y');
-INSERT INTO `options` (`key`, `value`) VALUES ('patch_url_service', 'http://update.centreon.com/version.php');
-INSERT INTO `options` (`key`, `value`) VALUES ('patch_url_download', 'http://update.centreon.com/patch/');
-INSERT INTO `options` (`key`, `value`) VALUES ('patch_path_download', '/tmp/');
+INSERT INTO `options` (`key`, `value`) VALUES 
+('ldap_host', NULL),
+('ldap_port', NULL),
+('ldap_base_dn', NULL),
+('ldap_login_attrib', NULL),
+('ldap_ssl', NULL),
+('ldap_auth_enable', NULL),
+('ldap_search_user', NULL),
+('ldap_search_user_pwd', NULL),
+('ldap_search_filter','(&(objectClass=person)(cn=*))'),
+('ldap_search_timeout','60'),
+('ldap_search_limit','60'),
+('ldap_protocol_version','3'),
+('color_up','#19EE11'),
+('color_down','#F91E05'),
+('color_unreachable','#82CFD8'),
+('color_ok','#13EB3A'),
+('color_warning','#F8C706'),
+('color_critical','#F91D05'),
+('color_pending','#2AD1D4'),
+('color_unknown','#DCDADA'),
+('oreon_path','@INSTALL_DIR_CENTREON@'),
+('oreon_web_path','/centreon/'),
+('oreon_refresh','60'),
+('session_expire','120'),
+('maxViewMonitoring','100'),
+('maxViewConfiguration','30'),
+('AjaxTimeReloadMonitoring','15'),
+('AjaxTimeReloadStatistic','15'),
+('AjaxFirstTimeReloadMonitoring','0'),
+('AjaxFirstTimeReloadStatistic','0'),
+('template','Centreon-2'),
+('gmt','1'),
+('problem_sort_type','last_state_change'),
+('problem_sort_order','ASC'),
+('nagios_path','@INSTALL_DIR_NAGIOS@'),
+('nagios_path_bin','@NAGIOS_BINARY@'),
+('nagios_init_script','@NAGIOS_INIT_SCRIPT@'),
+('nagios_path_img','@NAGIOS_IMG@/'),
+('nagios_path_plugins','@NAGIOS_PLUGIN@/'),
+('nagios_version','3'),
+('mailer_path_bin','@BIN_MAIL@'),
+('snmp_community','public'),
+('snmp_version','1'),
+('snmp_trapd_path_conf','/etc/snmp/centreon_traps/'),
+('snmptt_unknowntrap_log_file','snmptrapd.log'),
+('snmpttconvertmib_path_bin','@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib'),
+('perl_library_path','/usr/local/lib'),
+('rrdtool_path_bin','/usr/bin/rrdtool'),
+('rrdtool_version','1.2'),
+('debug_path','@INSTALL_DIR_CENTREON@/log/'),
+('debug_auth','0'),
+('debug_nagios_import','0'),
+('debug_rrdtool','0'),
+('debug_ldap_import','0'),
+('debug_inventory','0'),
+('color_ack','#FAED60'),
+('color_host_down','#FCC22A'),
+('color_host_unreachable','#9CD9F1'),
+('color_line_critical','#F96461'),
+('color_downtime','#FBC5E8'),
+('patch_type_RC','Y'),
+('patch_type_stable','Y'),
+('patch_type_RC','Y'),
+('patch_type_patch','Y'),
+('patch_type_secu','Y'),
+('patch_type_beta','Y'),
+('patch_url_service','http://update.centreon.com/version.php'),
+('patch_url_download','http://update.centreon.com/patch/'),
+('patch_path_download','/tmp/'),
+('enable_autologin','0'),
+('display_autologin_shortcut','1');
 
 INSERT INTO `general_opt` (`gopt_id`, `nagios_path`, `nagios_path_bin`, `nagios_init_script`, `nagios_path_img`, `nagios_path_plugins`, `nagios_version`, `snmp_community`, `snmp_version`, `snmpttconvertmib_path_bin`, `perl_library_path`, `snmp_trapd_path_conf`, `mailer_path_bin`, `rrdtool_path_bin`, `rrdtool_version`, `oreon_path`, `oreon_web_path`, `oreon_refresh`, `color_up`, `color_down`, `color_unreachable`, `color_ok`, `color_warning`, `color_critical`, `color_pending`, `color_unknown`, `color_undetermined`, `session_expire`, `perfparse_installed`, `graph_preferencies`, `maxViewMonitoring`, `maxViewConfiguration`, `AjaxTimeReloadMonitoring`, `AjaxTimeReloadStatistic`, `AjaxFirstTimeReloadMonitoring`, `AjaxFirstTimeReloadStatistic`, `template`, `problem_sort_type`, `problem_sort_order`, `ldap_host`, `ldap_port`, `ldap_base_dn`, `ldap_login_attrib`, `ldap_ssl`, `ldap_search_user`, `ldap_search_user_pwd`, `ldap_search_filter`, `ldap_search_timeout`, `ldap_search_limit`, `ldap_auth_enable`, `debug_path`, `debug_auth`, `debug_nagios_import`, `debug_rrdtool`, `debug_ldap_import`, `debug_inventory`, `gmt`, `patch_type_stable`, `patch_type_RC`, `patch_type_patch`, `patch_type_secu`, `patch_type_beta`, `patch_url_service`, `patch_url_download`, `patch_path_download`, `ndo_activate`, `snmptt_unknowntrap_log_file`) VALUES(1, '@INSTALL_DIR_NAGIOS@', '@NAGIOS_BINARY@', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_IMG@/', '@NAGIOS_PLUGIN@/', '2', 'public', '1', '@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib', '/usr/local/lib', '/etc/snmp/centreon_traps/', '@BIN_MAIL@', '@BIN_RRDTOOL@', '1.2', '@INSTALL_DIR_CENTREON@/', '/centreon/', 60, '#19EE11', '#F91E05', '#82CFD8', '#13EB3A', '#F8C706', '#F91D05', '#2AD1D4', '#D4D5CC', '#CCCCCC', 120, '0', 1, 50, 20, 15, 15, 0, 0, 'Centreon-2', 'last_state_change', 'ASC', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '60', '60', '0', '@INSTALL_DIR_CENTREON@/log/', NULL, NULL, NULL, NULL, NULL, 1, 'Y', 'Y', 'Y', 'Y', 'Y', 'http://update.centreon.com/version.php', 'http://update.centreon.com/patch/', '/tmp/', '1', 'snmptrapd.log');
 
