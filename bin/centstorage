@@ -242,8 +242,6 @@ sub getGeneralConfig(){
     }
     my $config = $sth1->fetchrow_hashref();
     $sth1->finish();
-    writeLogFile("Conf2 : ".$config->{'RRDdatabase_path'});
-    
     return $config;
 }
 
