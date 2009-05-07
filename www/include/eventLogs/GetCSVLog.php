@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL
- * SVN : $Id: GetCSVLog.php 7205 2008-12-04 08:19:31Z jmathis $
+ * SVN : $Id$
  * 
  */
  	 

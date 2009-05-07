@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL
- * SVN : $Id: viewLog.php 7215 2008-12-05 16:29:33Z jmathis $
+ * SVN : $Id$
  * 
  */
   
