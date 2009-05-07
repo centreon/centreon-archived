@@ -87,6 +87,30 @@
  	}
  	
  	/*
+ 	 *  Method that returns the id of a host
+ 	 */
+ 	public function getHostId($host_name) {
+ 		$rq = "SELECT host_id FROM host WHERE host_name = '".$host_name."' LIMIT 1";
+ 		$DBRES =& $this->local_pearDB->query($rq);
+ 		if (!$DBRES->numRows())
+ 			return NULL;
+ 		$row =& $DBRES->fetchRow(); 		
+ 		return $row['host_id'];
+ 	}
+ 	
+ 	/*
+ 	 * Method that returns the poller id that monitors the host
+ 	 */
+ 	public function getHostPollerId($host_id) {
+ 		$rq = "SELECT nagios_server_id FROM ns_host_relation WHERE host_host_id = '".$host_id."' LIMIT 1";
+ 		$DBRES =& $this->local_pearDB->query($rq);
+ 		if (!$DBRES->numRows())
+ 			return NULL;
+ 		$row =& $DBRES->fetchRow(); 		
+ 		return $row['nagios_server_id']; 		
+ 	}
+ 	
+ 	/*
  	 *  Returns a string that replaces on demand macros by their values
  	 */
  	public function replaceMacroInString($host_id, $string) { 		 		
