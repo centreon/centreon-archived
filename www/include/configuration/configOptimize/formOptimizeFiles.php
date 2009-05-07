@@ -18,25 +18,46 @@
 	if (!isset($oreon))
 		exit();
 
-	# Get Poller List
+	/*
+	 * Get Poller List
+	 */
 	$tab_nagios_server = array("0" => "All Nagios Servers");
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `name`");
-	while ($nagios =& $DBRESULT->fetchRow())
+	while ($nagios =& $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
+	}
+	$DBRESULT->free();
 	
-	$host_list = array();
-	$tab_server = array();
-	$cpt = 0;
-	foreach ($tab_nagios_server as $key => $value)
-		if ($key && ($res["host"] == 0 || $res["host"] == $key)){
-			$host_list[$key] = $value;
-			$tab_server[$cpt] = $value;
-			$cpt++;
-		}
+	/*
+	 * Display all servers list
+	 */
+	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
+	$n = $DBRESULT->numRows();
+	/*
+	 * Display null option
+	 */
+	if ($n > 1)
+		$tab_nagios_server = array(-1 => "");
 	
-	#
-	## Form begin
-	#
+	/*
+	 * Display all servers list
+	 */
+	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++) {
+		$tab_nagios_server[$nagios['id']] = $nagios['name'];
+		$host_list[$nagios['id']] = $nagios['name'];
+	}
+	$DBRESULT->free();
+	
+	/*
+	 * Display all server options
+	 */
+	if ($n > 1) {
+		$tab_nagios_server[0] = _("All Nagios Servers");
+	}
+
+	/*
+	 * Form begin
+	 */
 	$attrSelect = array("style" => "width: 220px;");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
@@ -49,15 +70,6 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, _("No"), '0');
 	$form->addGroup($tab, 'optimize', _("Run Optimisation test (-s)"), '&nbsp;');
 	$form->setDefaults(array('optimize' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, _("No"), '0');
-	$form->addGroup($tab, 'restart', _("Restart Nagios"), '&nbsp;');
-	$form->setDefaults(array('restart' => '0'));
-	
-	$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
-	$form->addElement('select', 'restart_mode', _("Restart Nagios"), $tab_restart_mod, $attrSelect);
-	$form->setDefaults(array('restart_mode' => '2'));
 	
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -76,12 +88,13 @@
 		$ret = $form->getSubmitValues();		
 
 		$DBRESULT_Servers =& $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` LIMIT 1");
-		$nagios_bin = $DBRESULT_Servers->fetchRow();
+		$nagios_bin =& $DBRESULT_Servers->fetchRow();
 		$DBRESULT_Servers->free();
 
-		$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
 		$msg_optimize = array();
+		
 		$cpt = 1;
+		$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
 			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){		
 				$stdout = shell_exec("sudo ".$nagios_bin["nagios_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
@@ -99,7 +112,9 @@
 	if (isset($tab_server) && $tab_server)
 		$tpl->assign('tab_server', $tab_server);
 
-	# Apply a template definition
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
