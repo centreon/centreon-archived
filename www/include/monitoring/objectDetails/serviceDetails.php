@@ -455,11 +455,11 @@
 		var executed_command = received_command.item(0).firstChild.data;
 		
 		if (state == "0") {
-			 msg_result = executed_command + ' sent';			 
+			 msg_result = 'Command sent';			 
 			 document.getElementById(div_id).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + cmd + "\", \""+ div_id +"\", \"" + switch_str + "\")'>"+ switch_str +"</a>";
 		}
 		else {
-			 msg_result = 'Failed ' + executed_command;
+			 msg_result = 'Failed to send' + executed_command;
 		}
 		<?php
 		require_once "./class/centreonMsg.class.php";
