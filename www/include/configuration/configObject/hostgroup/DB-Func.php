@@ -94,7 +94,7 @@
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = NULL;
 				$rq = NULL;
-				foreach ($row as $key2=>$value2)	{
+				foreach ($row as $key2 => $value2)	{
 					$key2 == "hg_name" ? ($hg_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 					if ($key2 != "hg_id")
