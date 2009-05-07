@@ -39,7 +39,8 @@
 	if (!isset($oreon))
 		exit();
 
-	require_once ("@CENTREON_ETC@/centreon.conf.php");
+	//require_once ("@CENTREON_ETC@/centreon.conf.php");
+	require_once ("/etc/centreon/centreon.conf.php");
 	require_once ($centreon_path . "/www/class/centreonService.class.php");
 
 	/*
@@ -55,12 +56,25 @@
 	$DBRESULT2->free();
 	unset($cg);
 
+	/*
+	 * Initiate Service Template Cache
+	 */
+	$svcTplCache = array();
+
+	/*
+	 * Initiate checkPeriod Cache
+	 */
+	$cpCache = array();
+
+	/*
+	 * Initiate notifPeriod Cache
+	 */
+	$npCache = array();
 
 	/*
 	 * Create file
 	 */
-
-	$handle = create_file($nagiosCFGPath.$tab['id']."/services.cfg", $oreon->user->get_name());
+	$handle = create_file($nagiosCFGPath.$tab['id']."/serviceTemplates.cfg", $oreon->user->get_name());
 	
 	/*
 	 * Get Service List
@@ -80,6 +94,12 @@
 		$service["service_alias"] 		= convertServiceSpecialChar($service["service_alias"]);
 		
 		if (isset($gbArr[4][$service["service_id"]])) {
+			
+			/*
+			 * Fill the cache of template
+			 */
+			$svcTplCache[$service["service_id"]] = $service["service_description"]; 
+			
 			/*
 			 *  Can merge multiple Host or HostGroup Definition
 			 */
@@ -97,7 +117,9 @@
 			$strTMP .= "define service{\n";
 
 			if ($service["service_description"]) 
-				$strTMP .= print_line("service_description", $service["service_description"]);
+				$strTMP .= print_line("name", $service["service_description"]);
+			if ($service["service_alias"]) 
+				$strTMP .= print_line("service_description", $service["service_alias"]);
 			
 			/*
 			 * Template Model Relation
@@ -150,9 +172,13 @@
 			/*
 			 * Check Period
 			 */
-			
-			if ($service["timeperiod_tp_id"])
+			if ($service["timeperiod_tp_id"]) {
 				$strTMP .= print_line("check_period", $timeperiods[$service["timeperiod_tp_id"]]);
+				$cpCache[$service["service_id"]] = array("tp" => $service["timeperiod_tp_id"], "tpl" => $service["service_template_model_stm_id"]);
+			} else {
+				$cpCache[$service["service_id"]] = array("tpl" => $service["service_template_model_stm_id"]);
+			}
+					
 			if ($service["service_parallelize_check"] != 2) 
 				$strTMP .= print_line("parallelize_check", $service["service_parallelize_check"] == 1 ? "1": "0");
 			if ($service["service_obsess_over_service"] != 2)
@@ -185,8 +211,13 @@
 			/*
 			 * Notifications
 			 */
-			if ($service["timeperiod_tp_id2"])
+			if ($service["timeperiod_tp_id2"]) {
 				$strTMP .= print_line("notification_period", $timeperiods[$service["timeperiod_tp_id2"]]);
+				$npCache[$service["service_id"]] = array("tp" => $service["timeperiod_tp_id2"], "tpl" => $service["service_template_model_stm_id"]);
+			} else {
+				$npCache[$service["service_id"]] = array("tpl" => $service["service_template_model_stm_id"]);
+			}
+			
 			if ($service["service_notification_interval"] != NULL) 
 				$strTMP .= print_line("notification_interval", $service["service_notification_interval"]);
 			if ($service["service_notification_options"]) 
@@ -281,7 +312,7 @@
 		}
 	}
 	unset($service);
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/services.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/serviceTemplates.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);
