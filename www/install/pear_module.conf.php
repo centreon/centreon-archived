@@ -126,13 +126,12 @@ $pear_module[17]["name"] = "Image_Graph";
 $pear_module[17]["version"] = "0.7.1";
 $pear_module[17]["file"] = "Image_Graph-0.7.1.tgz";
 $pear_module[17]["path"] = "Image/Graph.php";
-*/
+
 $pear_module[18]["name"] = "Image_GraphViz";
 $pear_module[18]["version"] = "1.1.0";
 $pear_module[18]["file"] = "Image_GraphViz-1.1.0.tgz";
 $pear_module[18]["path"] = "Image/GraphViz.php";
 
-/*
 $pear_module[19]["name"] = "Mail";
 $pear_module[19]["version"] = "1.1.9";
 $pear_module[19]["file"] = "Mail-1.1.9.tgz";
