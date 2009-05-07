@@ -51,20 +51,20 @@
 	 *  Get Poller List
 	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$n = $DBRESULT->numRows();
 	/*
 	 * Display null option
 	 */
 	if ($n > 1)
 		$tab_nagios_server = array(-1 => "");
+	
 	/*
 	 * Display all servers list
 	 */
 	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++)
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 	$DBRESULT->free();
+	
 	/*
 	 * Display all server options
 	 */
