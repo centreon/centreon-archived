@@ -167,18 +167,22 @@ ADD `hg_action_url` VARCHAR( 255 ) NULL AFTER `hg_notes_url` ,
 ADD `hg_icon_image` INT NULL AFTER `hg_action_url` ,
 ADD `hg_map_icon_image` INT NULL AFTER `hg_icon_image` ;
 
-CREATE TABLE `centreon`.`hostgroup_hg_relation` (
+CREATE TABLE `hostgroup_hg_relation` (
 `hgr_id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
 `hg_parent_id` INT NULL ,
 `hg_child_id` INT NULL
 ) ENGINE = InnoDB;
 
-ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_parent_id` ) REFERENCES `centreon`.`hostgroup` (
+ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_parent_id` ) REFERENCES `hostgroup` (
 `hg_id`
 ) ON DELETE CASCADE ;
 
-ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_child_id` ) REFERENCES `centreon`.`hostgroup` (
+ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_child_id` ) REFERENCES `hostgroup` (
 `hg_id`
 ) ON DELETE CASCADE ;
+
+alter table nagios_server add nagios_perfdata VARCHAR( 255 ) NULL;
+update nagios_server set nagios_perfdata = '/usr/local/nagios/var/service-perfdata';
+
 
 
