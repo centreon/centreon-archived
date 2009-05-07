@@ -33,7 +33,9 @@
 		foreach ($comment as $cmt)
 			$str .= "# ".$cmt."\n";
 	}
+	$str .= "cfg_file=".$nagios["cfg_dir"]."hostTemplates.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."hosts.cfg\n";
+	$str .= "cfg_file=".$nagios["cfg_dir"]."serviceTemplates.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."services.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."misccommands.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."checkcommands.cfg\n";
