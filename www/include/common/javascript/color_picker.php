@@ -1,41 +1,62 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL$
+ * SVN : $Id$
+ * 
  */
- 
-$n = "";
-$name = "";
-$title = "";
-
-function filter_get($str){
-	if (preg_match("/([a-zA-Z0-9\_\-\%\ ]*)/", $str, $matches))
-		return $matches[1];
-	return NULL;	
-}
-
-if (function_exists("filter_var")){
-	$n = filter_var($_GET["n"], FILTER_SANITIZE_SPECIAL_CHARS);
-	$name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
-	$title = filter_var($_GET["title"], FILTER_SANITIZE_SPECIAL_CHARS);
-} else {
-	$n = filter_get($_GET["n"]);
-	$name = filter_get($_GET["name"]);
-	$title = filter_get($_GET["title"]);
-}
-$name1 = $n."";
-$name2 = $n."_color";
+  
+	$n = "";
+	$name = "";
+	$title = "";
+	
+	function filter_get($str){
+		if (preg_match("/([a-zA-Z0-9\_\-\%\ ]*)/", $str, $matches))
+			return $matches[1];
+		return NULL;	
+	}
+	
+	if (function_exists("filter_var")){
+		$n = filter_var($_GET["n"], FILTER_SANITIZE_SPECIAL_CHARS);
+		$name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
+		$title = filter_var($_GET["title"], FILTER_SANITIZE_SPECIAL_CHARS);
+	} else {
+		$n = filter_get($_GET["n"]);
+		$name = filter_get($_GET["name"]);
+		$title = filter_get($_GET["title"]);
+	}
+	$name1 = $n."";
+	$name2 = $n."_color";
 
 ?>
 <html>

@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  * SVN : $URL$
- * SVN : $Id: GetXmlTree.php 7140 2008-11-24 19:48:50Z jmathis $
+ * SVN : $Id$
  * 
  */
  
