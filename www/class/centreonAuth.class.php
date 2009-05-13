@@ -100,7 +100,8 @@ class centreonAuth {
 			$this->passwdOk = $authLDAP->checkPassword();
 			$authLDAP->close();
 			
-		} else if ($this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
+		} else if ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
+			
 			if ($this->userInfos["contact_passwd"] == $password && $this->autologin)
 				$this->passwdOk = 1;
 			else if ($this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0)
@@ -152,17 +153,21 @@ class centreonAuth {
      */
 
     private function getCryptFunction() {
-  		switch ($this->userInfos["contact_crypt"]) {
-  			case 1 : 
-  				return "MD5";
-  				break;
-  			case 2 : 
-  				return "SHA1";
-  				break;
-  			default : 
-  				return "MD5";
-  				break;
-  		}
+		if (isset($this->userInfos["contact_crypt"])) {
+	  		switch ($this->userInfos["contact_crypt"]) {
+	  			case 1 : 
+	  				return "MD5";
+	  				break;
+	  			case 2 : 
+	  				return "SHA1";
+	  				break;
+	  			default : 
+	  				return "MD5";
+	  				break;
+	  		}
+		} else {
+			return "MD5";
+		}
   	}
 
 	/*
