@@ -62,19 +62,18 @@ aff_header("Centreon Setup Wizard", "DataBase Verification", 7);
     <th align="left">Component</th>
     <th style="text-align: right;">Status</th>
   </tr>
-   <tr>
+  <tr>
     <td><b>MySQL version</b></td>
   <?php
 	$res = connexion('root', (isset($_SESSION["pwdroot"]) ? $_SESSION["pwdroot"] : '' ) , $_SESSION["dbLocation"]) ;
 	$mysql_msg = $res['1'];
 
 	if ($mysql_msg == '') {
-
 		$requete = "SELECT VERSION() AS mysql_version;";
 		if ($DEBUG) print $requete . "<br />";
 		$result = mysql_query($requete, $res['0']);
 		$row = mysql_fetch_assoc($result);
-		if(preg_match("/^(4\.1|5\.)/", $row['mysql_version'])){
+		if (preg_match("/^(4\.1|5\.)/", $row['mysql_version'])){
 			echo '<td align="right"><b><span class="go">OK ('.$row['mysql_version'].')</b></td></tr>';
 		} else {
 			echo '<td align="right"><b><span class="stop">CRITICAL ('.$row['mysql_version'].')</b></td></tr>';
@@ -88,6 +87,32 @@ aff_header("Centreon Setup Wizard", "DataBase Verification", 7);
 	<tr>
     	<td colspan="2" align="right"><?php echo $mysql_msg; ?></td>
 	</tr>
+  <tr>
+    <td><b>MySQL InnoDB Engine status</b></td>
+  <?php
+	$res = connexion('root', (isset($_SESSION["pwdroot"]) ? $_SESSION["pwdroot"] : '' ) , $_SESSION["dbLocation"]) ;
+	$mysql_msg = $res['1'];
+
+	if ($mysql_msg == '') {
+		$requete = "show variables where Variable_name LIKE 'have_innodb';";
+		if ($DEBUG) print $requete . "<br />";
+		$result = mysql_query($requete, $res['0']);
+		$row = mysql_fetch_assoc($result);
+		if ($row['Value'] == "YES") {
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		} else {
+			echo '<td align="right"><b><span class="stop">CRITICAL</b></td></tr>';
+			$mysql_msg = "MySQL InnoDB Engine Must be enable";
+			$return_false = 1;
+		}
+	} else {
+  		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
+		$return_false = 1;
+	} ?>
+	<tr>
+    	<td colspan="2" align="right"><?php echo $mysql_msg; ?></td>
+	</tr>
+
 </table>
 <?php
 aff_middle();
