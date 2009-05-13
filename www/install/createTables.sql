@@ -1314,6 +1314,18 @@ CREATE TABLE IF NOT EXISTS `hostgroup` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `hostgroup_hg_relation`
+--
+
+CREATE TABLE `hostgroup_hg_relation` (
+  `hgr_id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+  `hg_parent_id` INT NULL ,
+  `hg_child_id` INT NULL
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `hostgroup_relation`
 --
 
@@ -2183,6 +2195,13 @@ ALTER TABLE `host`
 ALTER TABLE `hostgroup_relation`
   ADD CONSTRAINT `hostgroup_relation_ibfk_1` FOREIGN KEY (`hostgroup_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `hostgroup_relation_ibfk_2` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `hostgroup_hg_relation`
+--
+ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_parent_id` ) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE ;
+ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_child_id` ) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE ;
+
 
 --
 -- Contraintes pour la table `host_hostparent_relation`
