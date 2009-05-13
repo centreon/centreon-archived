@@ -106,7 +106,6 @@
         isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != NULL ? $rq .= "'".htmlentities($ret["ssh_private_key"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["ns_activate"]["ns_activate"]) && $ret["ns_activate"]["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]["ns_activate"]."'  "  : $rq .= "NULL)";
        	$rq .= ")";
-       	print $rq;
        	$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM `nagios_server`");
 		$ndomod_id = $DBRESULT->fetchRow();
@@ -135,7 +134,6 @@
         isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != NULL ? $rq .= "ssh_private_key = '".htmlentities($ret["ssh_private_key"], ENT_QUOTES)."',  " : $rq .= "ssh_private_key = NULL, ";
         $rq .= "ns_activate = '".$ret["ns_activate"]["ns_activate"]."' ";
 		$rq .= "WHERE id = '".$id."'";
-		print $rq;
 		$DBRESULT =& $pearDB->query($rq);
 	}
 ?>
