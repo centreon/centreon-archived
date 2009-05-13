@@ -290,7 +290,7 @@
 				{/if}
 				{if $lcaTopo.20201}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&search{$h.host_name}&search_host=1&search_service=0'>&#9679;&nbsp;{$Tips1}</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&search={$h.host_name}&search_host=1&search_service=0'>&#9679;&nbsp;{$Tips1}</a></td>
 					</tr>
 				{/if}
 				{if $lcaTopo.4}
