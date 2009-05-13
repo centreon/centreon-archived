@@ -279,7 +279,7 @@ sub GetPerfData(){
 	    while (<PFDT>) {
 		if (!m/^\#.*/) {
 		    print DROP $_  if ($flag_drop == 1);
-		    
+		    $_ =~ s/\n//g;
 		    @line_tab = prepardPerfdataParsed($_);
 		    if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "")){
 			checkAndUpdate(@line_tab, $configOptions);
