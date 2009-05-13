@@ -36,6 +36,16 @@
  * 
  */
 
+if (!isset($_SESSION["nameOreonDB"])) {
+	$_SESSION["nameOreonDB"] = "centreon";
+}
+if (!isset($_SESSION["nameOdsDB"])) {
+	$_SESSION["nameOdsDB"] = "centstorage";
+}
+if (!isset($_SESSION["nameStatusDB"])) {
+	$_SESSION["nameStatusDB"] = "centstatus";
+}
+
 aff_header("Centreon Setup Wizard", "DataBase Configuration", 6);
 if (isset($passwd_error) && $passwd_error)
 	print "<center><b><span class=\"stop\">$passwd_error</span></b></center><br />";
