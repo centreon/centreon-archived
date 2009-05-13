@@ -50,7 +50,7 @@
 	$str .= "cfg_file=".$nagios["cfg_dir"]."escalations.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."dependencies.cfg\n";	
 	
-	if ($oreon->user->get_version() >= 3)	{
+	if ($oreon->user->get_version() == 2)	{
 		$str .= "cfg_file=".$nagios["cfg_dir"]."hostextinfo.cfg\n";
 		$str .= "cfg_file=".$nagios["cfg_dir"]."serviceextinfo.cfg\n";
 	}

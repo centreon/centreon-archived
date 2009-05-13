@@ -139,7 +139,7 @@
 	$str = "";
 	if ($oreon->CentreonGMT->used() == 1) {
 		foreach ($hostGenerated as $host_id => $host_name) {
-			$svcList = getMyHostServices($host_id);
+			$svcList = getMyHostActivatedServices($host_id);
 			foreach ($svcList as $svc_id => $svc_name) {
 				
 				$DBRESULT =& $pearDB->query("SELECT * FROM `service` WHERE `service_id` = '$svc_id' ORDER BY `service_description`");

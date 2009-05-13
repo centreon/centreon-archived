@@ -143,6 +143,7 @@
 					require $path."genContacts.php";
 					require $path."genContactGroups.php";
 					require $path."genHosts.php";
+					require $path."genHostTemplates.php";
 					if ($oreon->user->get_version() == 2)
 						require $path."genExtendedInfos.php";
 					require $path."genHostGroups.php";
