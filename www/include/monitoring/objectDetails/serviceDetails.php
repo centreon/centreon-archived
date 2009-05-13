@@ -148,7 +148,7 @@
 				" no.name1 as host_name," .
 				" no.name2 as service_description" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
+				" WHERE no.object_id = nss.service_object_id AND no.name1 LIKE '".$host_name."' AND no.name2 LIKE '$svc_description'";
 	
 		$DBRESULT_NDO =& $pearDBndo->query($rq);		
 	

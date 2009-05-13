@@ -103,7 +103,7 @@
 						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$detailed_graph}</td>
 					</tr>
 					<tr class='list_one'>					
-						<td class="ListColCenter" colspan="2"><a href="./main.php?p=4&mode=0&svc_id={$host_name};{$svc_description}"><img src="./include/views/graphs/graphODS/generateImages/generateODSImage.php?{$options2}"></a></td>
+						<td class="ListColCenter" colspan="2"><a href="./main.php?p=4&mode=0&svc_id={$host_name};{$svc_description}"><img src="./include/views/graphs/generateGraphs/generateODSImage.php?{$options2}"></a></td>
 					</tr>
 				</table>
 				{/if}
@@ -114,7 +114,7 @@
 						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$status_str}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/statusGraphs/displayServiceStatus.php?{$options}"></td>
+						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/graphStatus/displayServiceStatus.php?{$options}"></td>
 					</tr>					
 				</table>			
 				{/if}	
