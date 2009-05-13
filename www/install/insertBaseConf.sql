@@ -133,7 +133,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('color_critical','#F91D05'),
 ('color_pending','#2AD1D4'),
 ('color_unknown','#DCDADA'),
-('oreon_path','@INSTALL_DIR_CENTREON@'),
+('oreon_path','@INSTALL_DIR_CENTREON@/'),
 ('oreon_web_path','/centreon/'),
 ('oreon_refresh','60'),
 ('session_expire','120'),

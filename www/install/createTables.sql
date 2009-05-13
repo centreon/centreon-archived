@@ -1513,6 +1513,9 @@ CREATE TABLE IF NOT EXISTS `nagios_server` (
   `init_script` varchar(255) default NULL,
   `nagios_bin` varchar(255) default NULL,
   `nagiostats_bin` varchar(255) default NULL,
+  `nagios_perfdata` varchar(255) default NULL,
+  `ssh_port` int(11) default NULL,
+  `ssh_private_key` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
