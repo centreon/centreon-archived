@@ -55,14 +55,13 @@
 	/*
 	 * pearDB init
 	 */ 	
-	//include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once("/etc/centreon/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
-	$pearDB = new CentreonDB();
-	$pearDBO = new CentreonDB("centstorage");
-	$pearDBndo = new CentreonDB("ndo");	
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
+	$pearDBndo 	= new CentreonDB("ndo");	
 	
 	/*
 	 * Include Access Class
@@ -80,19 +79,18 @@
 	$buffer->startElement("root");	
  
  	/*
+	 * Security check
+	 */	
+	(isset($_GET["lang"]) 	&& !check_injection($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"], ENT_QUOTES) : $lang_ = "-1";
+	(isset($_GET["id"]) 	&& !check_injection($_GET["id"])) ? $openid = htmlentities($_GET["id"], ENT_QUOTES) : $openid = "-1";
+	(isset($_GET["sid"]) 	&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES) : $sid = "-1";
+ 
+ 	/*
 	 * Init GMT class
 	 */
 	$centreonGMT = new CentreonGMT();
 	$centreonGMT->getMyGMTFromSession($sid);
  
-	/*
-	 * Security check
-	 */	
-	 
-	(isset($_GET["lang"]) 	&& !check_injection($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"]) : $lang_ = "-1";
-	(isset($_GET["id"]) 	&& !check_injection($_GET["id"])) ? $openid = htmlentities($_GET["id"]) : $openid = "-1";
-	(isset($_GET["sid"]) 	&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES) : $sid = "-1";
-
 	$contact_id = check_session($sid, $pearDB);
 	
 	$is_admin = isUserAdmin($sid);
