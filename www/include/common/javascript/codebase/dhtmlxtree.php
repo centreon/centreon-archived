@@ -15,7 +15,7 @@
 		$sid = filter_get($_GET["sid"]);
 	}	
 	
-	if (function_exists("filter_var")){
+	if (function_exists("filter_var") && isset($_GET["search_host"])){
 		$search_host = filter_var($_GET["search_host"], FILTER_SANITIZE_SPECIAL_CHARS);
 	} else if (isset($_GET["search_host"])) {
 		$search_host = filter_get($_GET["search_host"]);
