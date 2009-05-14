@@ -9,7 +9,7 @@ INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.1');
 -- Contenu de la table `nagios_server`
 --
 
-INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`) VALUES(1, 'Poller Principal', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@');
+INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`) VALUES(1, 'Central', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@');
 
 --
 -- Contenu de la table `cfg_cgi`
@@ -184,8 +184,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('patch_path_download','/tmp/'),
 ('enable_autologin','0'),
 ('display_autologin_shortcut','1');
-
-INSERT INTO `general_opt` (`gopt_id`, `nagios_path`, `nagios_path_bin`, `nagios_init_script`, `nagios_path_img`, `nagios_path_plugins`, `nagios_version`, `snmp_community`, `snmp_version`, `snmpttconvertmib_path_bin`, `perl_library_path`, `snmp_trapd_path_conf`, `mailer_path_bin`, `rrdtool_path_bin`, `rrdtool_version`, `oreon_path`, `oreon_web_path`, `oreon_refresh`, `color_up`, `color_down`, `color_unreachable`, `color_ok`, `color_warning`, `color_critical`, `color_pending`, `color_unknown`, `color_undetermined`, `session_expire`, `perfparse_installed`, `graph_preferencies`, `maxViewMonitoring`, `maxViewConfiguration`, `AjaxTimeReloadMonitoring`, `AjaxTimeReloadStatistic`, `AjaxFirstTimeReloadMonitoring`, `AjaxFirstTimeReloadStatistic`, `template`, `problem_sort_type`, `problem_sort_order`, `ldap_host`, `ldap_port`, `ldap_base_dn`, `ldap_login_attrib`, `ldap_ssl`, `ldap_search_user`, `ldap_search_user_pwd`, `ldap_search_filter`, `ldap_search_timeout`, `ldap_search_limit`, `ldap_auth_enable`, `debug_path`, `debug_auth`, `debug_nagios_import`, `debug_rrdtool`, `debug_ldap_import`, `debug_inventory`, `gmt`, `patch_type_stable`, `patch_type_RC`, `patch_type_patch`, `patch_type_secu`, `patch_type_beta`, `patch_url_service`, `patch_url_download`, `patch_path_download`, `ndo_activate`, `snmptt_unknowntrap_log_file`) VALUES(1, '@INSTALL_DIR_NAGIOS@', '@NAGIOS_BINARY@', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_IMG@/', '@NAGIOS_PLUGIN@/', '2', 'public', '1', '@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib', '/usr/local/lib', '/etc/snmp/centreon_traps/', '@BIN_MAIL@', '@BIN_RRDTOOL@', '1.2', '@INSTALL_DIR_CENTREON@/', '/centreon/', 60, '#19EE11', '#F91E05', '#82CFD8', '#13EB3A', '#F8C706', '#F91D05', '#2AD1D4', '#D4D5CC', '#CCCCCC', 120, '0', 1, 50, 20, 15, 15, 0, 0, 'Centreon-2', 'last_state_change', 'ASC', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '60', '60', '0', '@INSTALL_DIR_CENTREON@/log/', NULL, NULL, NULL, NULL, NULL, 1, 'Y', 'Y', 'Y', 'Y', 'Y', 'http://update.centreon.com/version.php', 'http://update.centreon.com/patch/', '/tmp/', '1', 'snmptrapd.log');
 
 --
 -- Contenu de la table `giv_components_template`
