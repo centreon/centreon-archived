@@ -57,10 +57,10 @@
 	 			<table class="ListTable">
 	 				<tr><td class="tactical_light_header">{$commandLabel}</td></tr>
 	 				{if $admin || $action_list.global_shutdown }
-	 				<tr><td class="list_one" id="shutdown_{$key}">{$shutdown_img}&nbsp;<a href="#" onClick="send_command('SHUTDOWN_PROGRAM', {$key}, 'shutdown_{$key}', '$str_shutdown');">{$str_shutdown}</a></td></tr>
+	 				<tr><td class="list_one" id="shutdown_{$key}">{$shutdown_img}&nbsp;<a href="#" onClick="send_command('SHUTDOWN_PROGRAM', {$key}, 'shutdown_{$key}', '{$str_shutdown}');">{$str_shutdown}</a></td></tr>
 	 				{/if}
 	 				{if $admin || $action_list.global_restart }
-	 				<tr><td class="list_two" id="restart_{$key}">{$restart_img}&nbsp;<a href="#" onClick="send_command('RESTART_PROGRAM', {$key}, 'restart_{$key}', '$str_restart');">{$str_restart}</a></td></tr>
+	 				<tr><td class="list_two" id="restart_{$key}">{$restart_img}&nbsp;<a href="#" onClick="send_command('RESTART_PROGRAM', {$key}, 'restart_{$key}', '{$str_restart}');">{$str_restart}</a></td></tr>
 	 				{/if}	 				
 	 				{if $admin || $action_list.global_notifications }
 	 				<tr><td class="list_one" id="notif_{$key}">
