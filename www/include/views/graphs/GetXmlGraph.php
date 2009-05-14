@@ -40,13 +40,17 @@
 	} else {
 		header("Content-type: text/xml"); 
 	} 
-		
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once "/etc/centreon/centreon.conf.php";
+	
+	/*
+	 * Include Config file
+	 */	
+	include_once "@CENTREON_ETC@/centreon.conf.php";
+	
 	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
-		
+	include_once $centreon_path . "www/class/centreonGMT.class.php";
+			
 	$pearDB 	= new CentreonDB();
 	$pearDBndo 	= new CentreonDB("ndo");
 	$pearDBO 	= new CentreonDB("centstorage");
@@ -92,24 +96,28 @@
 	$is_admin = isUserAdmin($sid);
 	$access = new CentreonAcl($contact_id, $is_admin);
 	
-		
-	
 	$lca = $access->getHostServices($pearDBndo);		
 
-	(isset($_GET["sid"]) 			&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"]) : $sid = "-1";
-	(isset($_GET["template_id"]) 	&& !check_injection($_GET["template_id"])) ? $template_id = htmlentities($_GET["template_id"]) : $template_id = "1";
-	(isset($_GET["split"]) 			&& !check_injection($_GET["split"])) ? $split = htmlentities($_GET["split"]) : $split = "0";
-	(isset($_GET["status"]) 		&& !check_injection($_GET["status"])) ? $status = htmlentities($_GET["status"]) : $status = "0";
-	(isset($_GET["warning"]) 		&& !check_injection($_GET["warning"])) ? $warning = htmlentities($_GET["warning"]) : $warning = "0";
-	(isset($_GET["critical"]) 		&& !check_injection($_GET["critical"])) ? $critical = htmlentities($_GET["critical"]) : $critical = "0";
-	(isset($_GET["StartDate"])		&& !check_injection($_GET["StartDate"])) ? $StartDate = htmlentities($_GET["StartDate"]) : $StartDate = "";
-	(isset($_GET["EndDate"]) 		&& !check_injection($_GET["EndDate"])) ? $EndDate = htmlentities($_GET["EndDate"]) : $EndDate = "";
-	(isset($_GET["StartTime"]) 		&& !check_injection($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"]) : $StartTime = "";
-	(isset($_GET["EndTime"]) 		&& !check_injection($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) :$EndTime = "";
-	(isset($_GET["multi"]) 			&& !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
+	(isset($_GET["sid"]) 			&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES) : $sid = "-1";
+	(isset($_GET["template_id"]) 	&& !check_injection($_GET["template_id"])) ? $template_id = htmlentities($_GET["template_id"], ENT_QUOTES) : $template_id = "1";
+	(isset($_GET["split"]) 			&& !check_injection($_GET["split"])) ? $split = htmlentities($_GET["split"], ENT_QUOTES) : $split = "0";
+	(isset($_GET["status"]) 		&& !check_injection($_GET["status"])) ? $status = htmlentities($_GET["status"], ENT_QUOTES) : $status = "0";
+	(isset($_GET["warning"]) 		&& !check_injection($_GET["warning"])) ? $warning = htmlentities($_GET["warning"], ENT_QUOTES) : $warning = "0";
+	(isset($_GET["critical"]) 		&& !check_injection($_GET["critical"])) ? $critical = htmlentities($_GET["critical"], ENT_QUOTES) : $critical = "0";
+	(isset($_GET["StartDate"])		&& !check_injection($_GET["StartDate"])) ? $StartDate = htmlentities($_GET["StartDate"], ENT_QUOTES) : $StartDate = "";
+	(isset($_GET["EndDate"]) 		&& !check_injection($_GET["EndDate"])) ? $EndDate = htmlentities($_GET["EndDate"], ENT_QUOTES) : $EndDate = "";
+	(isset($_GET["StartTime"]) 		&& !check_injection($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"], ENT_QUOTES) : $StartTime = "";
+	(isset($_GET["EndTime"]) 		&& !check_injection($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"], ENT_QUOTES) :$EndTime = "";
+	(isset($_GET["multi"]) 			&& !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"], ENT_QUOTES) : $multi = "-1";
 	(isset($_GET["id"])) ? 			$openid = htmlentities($_GET["id"]) : $openid = "-1";
-	(isset($_GET["period"]) 		&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
+	(isset($_GET["period"]) 		&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"], ENT_QUOTES) : $auto_period = "-1";
 	
+	/*
+ 	 * Get GMT for current user
+ 	 */
+ 	$CentreonGMT = new CentreonGMT();
+ 	$CentreonGMT->getMyGMTFromSession($sid);
+	$gmt = $CentreonGMT->getMyGMTForRRD();
 	/*
 	 * Check if period is a period by duration or a time range.
 	 */
@@ -128,14 +136,16 @@
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
 		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
+		$start += $gmt * 60 * 60;
 	}
 	
 	if ($EndDate !=  "" && $EndTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
 		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
+		$end += $gmt * 60 * 60;
 	}
-	
+			
 	/*
 	 * Defined Default period
 	 */
@@ -156,8 +166,9 @@
  
 	$graphTs = array( NULL => NULL );
 	$DBRESULT =& $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
-	while ($graphT =& $DBRESULT->fetchRow())
+	while ($graphT =& $DBRESULT->fetchRow()) {
 		$graphTs[$graphT["graph_id"]] = $graphT["name"];
+	}
 	$DBRESULT->free();
 
 	$i = 0;
@@ -249,7 +260,7 @@
 			$tab = split("_", $openid);
 			if (isset($tab[2]) && $tab[2])
 				$tab_real_id[$tab[0] ."_". $tab[1]."_".$tab[2]] = $openid;
-			else
+			else if (isset($tab[1]) && $tab[1])
 				$tab_real_id[$tab[0] ."_". $tab[1]] = $openid;
 		}
 	}
@@ -599,7 +610,6 @@
 	/*
 	 * LANG
 	 */
-		
 	$buffer->startElement("lang");
 	$buffer->writeElement("giv_gg_tpl", _("Template"));
 	$buffer->writeElement("advanced", _("Options"));
