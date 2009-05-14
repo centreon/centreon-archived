@@ -17,10 +17,10 @@
 	 	<tr class="ListHeader">
 	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$tab_server[$cpt2]}&nbsp;</td>
 	 	</tr>		
-		<tr>
+		<tr valign="top">
 			<td align="center">
 	 			<table class="ListTable">
-	 				<tr><td colspan=2 class="tactical_light_header">{$processInfoLabel}</td></tr>
+	 				<tr><td colspan=2 class="tactical_light_header"><b>{$processInfoLabel}</b></td></tr>
 	 				<tr class='list_one'><td>{$str_prog_version}</td><td>{$procInfo.$key.program_version}</td></tr>
 	 				<tr class='list_two'><td>{$str_prog_start_time}</td><td>{$procInfo.$key.program_start_time}</td></tr>
 	 				<tr class='list_one'><td>{$str_last_command_check}</td><td>{$procInfo.$key.last_command_check}</td></tr>
@@ -55,7 +55,7 @@
 	 		{if $val && ($admin || $count)}
 	 		<td align="center">
 	 			<table class="ListTable">
-	 				<tr><td class="tactical_light_header">{$commandLabel}</td></tr>
+	 				<tr><td class="tactical_light_header"><b>{$commandLabel}</b></td></tr>
 	 				{if $admin || $action_list.global_shutdown }
 	 				<tr><td class="list_one" id="shutdown_{$key}">{$shutdown_img}&nbsp;<a href="#" onClick="send_command('SHUTDOWN_PROGRAM', {$key}, 'shutdown_{$key}', '{$str_shutdown}');">{$str_shutdown}</a></td></tr>
 	 				{/if}

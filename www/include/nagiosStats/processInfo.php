@@ -23,6 +23,13 @@
 	require_once 'HTML/QuickForm.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	require_once "./class/centreonDB.class.php";	
+	require_once "./class/centreonGMT.class.php";	
+
+	/*
+	 * Init GMT class
+	 */
+	$centreonGMT = new CentreonGMT();
+	$centreonGMT->getMyGMTFromSession(session_id());
 
 	unset($tpl);
 	unset($path);
@@ -44,14 +51,44 @@
 						
 	while ($nagios =& $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];		
+		
 		$DBRESULT2 =& $pearDBndo->query("SELECT instance_id FROM `".$ndo_base_prefix."instances` WHERE instance_name LIKE '".$nagios['instance_name']."'");
 		$row =& $DBRESULT2->fetchRow();
+		$DBRESULT2->free();
+		
 		$instance_id = $row['instance_id'];
 		if ($instance_id) {
-			$DBRESULT3 =& $pearDBndo->query("SELECT * FROM `". $ndo_base_prefix . "programstatus` pm, `". $ndo_base_prefix . "processevents` p WHERE pm.instance_id = '".$instance_id."' AND p.instance_id = '".$instance_id."' LIMIT 1");
-			$procInfo[$nagios['id']] =& $DBRESULT3->fetchRow();
+			
+			$DBRESULT3 =& $pearDBndo->query(
+					"SELECT program_version, programstatus_id, " .
+					"pp.instance_id, UNIX_TIMESTAMP(status_update_time),  UNIX_TIMESTAMP(program_start_time),  UNIX_TIMESTAMP(program_end_time), " .
+					"is_currently_running, ps.process_id, daemon_mode, UNIX_TIMESTAMP(last_command_check), " .
+					"UNIX_TIMESTAMP(last_log_rotation), notifications_enabled, active_service_checks_enabled, passive_service_checks_enabled, " .
+					"active_host_checks_enabled, passive_host_checks_enabled, event_handlers_enabled, flap_detection_enabled, " .
+					"failure_prediction_enabled, process_performance_data, obsess_over_hosts, obsess_over_services, " .
+					"modified_host_attributes, modified_service_attributes, global_host_event_handler, global_service_event_handler " .
+					"FROM `". $ndo_base_prefix . "programstatus` ps, `". $ndo_base_prefix . "processevents` pp WHERE ps.instance_id = '".$instance_id."' AND pp.instance_id = '".$instance_id."' LIMIT 1");
+						
+			$data =& $DBRESULT3->fetchRow();
+			
+			/*
+			 * Convert Date
+			 */
+			if ($data["UNIX_TIMESTAMP(last_log_rotation)"] != 0)
+				$data['last_log_rotation'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(last_log_rotation)"]);
+			else
+				$data['last_log_rotation'] = "N/A";
+				
+			$data['program_start_time'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(program_start_time)"]);
+			$data['program_end_time'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(program_end_time)"]);
+			$data['last_command_check'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(last_command_check)"]);
+			
+			$procInfo[$nagios['id']] = $data;
+			$DBRESULT3->free();
 		}		
 	}	
+	$DBRESULT->free();
+	
 	$host_list = array();
 	$tab_server = array();
 	$cpt = 0;
@@ -66,7 +103,6 @@
 	/*
 	 * Smarty template Init
 	 */
-	 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./");	
 	
