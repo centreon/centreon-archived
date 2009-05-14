@@ -34,7 +34,7 @@
  * SVN : $URL$
  * SVN : $Id$
  * 
- */	
+ */
 
 	if (!isset($oreon))
 		exit();

@@ -31,8 +31,8 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: listGroupConfig.php 7166 2008-11-27 23:18:15Z jmathis $
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
  

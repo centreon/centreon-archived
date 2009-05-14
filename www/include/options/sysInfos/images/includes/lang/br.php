@@ -17,7 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// $Id: br.php,v 1.14 2005/12/07 15:02:11 bigmichi1 Exp $
+// $Id$
 // Translated by Álvaro Reguly - alvaro at reguly dot net
 //
 $text['title']          = 'Informações do Sistema';

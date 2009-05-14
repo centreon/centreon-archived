@@ -17,7 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-// $Id: class.SunOS.inc.php,v 1.15 2005/12/07 05:09:39 bigmichi1 Exp $
+// $Id$
 
 echo "<center><b>Note: The SunOS version of phpSysInfo is work in progress, some things currently don't work";
 

@@ -17,7 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-// $Id: class.BSD.common.inc.php,v 1.34 2005/12/09 19:30:48 bigmichi1 Exp $
+// $Id$
 
 class bsd_common {
   var $dmesg; 

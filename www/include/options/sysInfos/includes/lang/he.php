@@ -17,7 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// $Id: he.php,v 1.12 2005/12/07 15:02:11 bigmichi1 Exp $
+// $Id$
 $charset                = 'windows-1255';
 $text_dir               = 'rtl';
 $text['title']          = 'מידע על המערכת';

@@ -17,7 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-// $Id: config.php.new,v 1.15 2005/11/30 05:14:49 bigmichi1 Exp $
+// $Id$
 
 // if $webpath set to an value it will be possible to include phpsysinfo with a simple include() statement in other scripts
 // but the structure in the phpsysinfo directory can't be changed

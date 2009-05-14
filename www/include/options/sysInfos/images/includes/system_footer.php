@@ -17,7 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// $Id: system_footer.php,v 1.44 2005/12/10 12:30:19 bigmichi1 Exp $
+// $Id$
 //
 if (!defined('IN_PHPSYSINFO')) {
     die("No Hacking");

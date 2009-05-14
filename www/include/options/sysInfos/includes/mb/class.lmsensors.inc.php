@@ -17,7 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-// $Id: class.lmsensors.inc.php,v 1.16 2005/11/27 20:38:15 bigmichi1 Exp $
+// $Id$
 if (!defined('IN_PHPSYSINFO')) {
     die("No Hacking");
 }

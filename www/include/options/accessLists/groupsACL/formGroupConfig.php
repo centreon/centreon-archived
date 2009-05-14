@@ -31,10 +31,11 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: formGroupConfig.php 7139 2008-11-24 17:19:45Z jmathis $
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
+
 	#
 	## Database retrieve information for Contact
 	#

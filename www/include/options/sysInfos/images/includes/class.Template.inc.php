@@ -11,7 +11,7 @@
   * any later version.                                                       *
   \**************************************************************************/
 
-  /* $Id: class.Template.inc.php,v 1.5 2005/11/26 13:01:24 bigmichi1 Exp $ */
+  /* $Id$ */
 
 	class Template
 	{
