@@ -736,7 +736,8 @@
 		$fields["command_command_id2"] = $ret["command_command_id2"];
 		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		$fields["service_description"] = htmlentities($ret["service_description"], ENT_QUOTES);
-		$fields["service_alias"] = htmlentities($ret["service_alias"], ENT_QUOTES);
+		if (isset($fields["service_alias"]))
+			$fields["service_alias"] = htmlentities($ret["service_alias"], ENT_QUOTES);
 		$fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
 		$fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
 		$fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
@@ -758,7 +759,8 @@
 		$fields["service_notifOpts"] = "";
 		if (isset($ret["service_notifOpts"]))
 			$fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
-		$fields["service_notifications_enabled"] = $fields["service_notifications_enabled"]["service_notifications_enabled"];
+		if (isset($fields["service_notifications_enabled"]))
+			$fields["service_notifications_enabled"] = $fields["service_notifications_enabled"]["service_notifications_enabled"];
 		$fields["service_stalOpts"] = "";
 		if (isset($ret["service_stalOpts"]))
 			$fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
