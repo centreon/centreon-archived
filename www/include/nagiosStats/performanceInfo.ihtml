@@ -21,21 +21,21 @@
 			<td align="center">
 	 			<table class="ListTableSmall">
 	 				<tr><td colspan="2" class="tactical_light_header">{$host_actively_checked}</td></tr>
-	 				<tr><td>{$time_frame}</td><td>{$host_checked}</td></tr>
-	 				<tr class="list_one"><td>{$loe1}</td><td align="center">{$perfInfo.$key.hac.Last_minute}</td></tr>
-	 				<tr class="list_two"><td>{$loe5}</td><td align="center">{$perfInfo.$key.hac.Last_5_minutes}</td></tr>
-	 				<tr class="list_one"><td>{$loe15}</td><td align="center">{$perfInfo.$key.hac.Last_15_minutes}</td></tr>
-	 				<tr class="list_two"><td>{$loe60}</td><td align="center">{$perfInfo.$key.hac.Last_hour}</td></tr>
+	 				<tr><td align="center">{$time_frame}</td><td align="center">{$host_checked}</td></tr>
+	 				<tr class="list_one"><td align="center">{$loe1}</td><td align="center">{$perfInfo.$key.hac.Last_minute}</td></tr>
+	 				<tr class="list_two"><td align="center">{$loe5}</td><td align="center">{$perfInfo.$key.hac.Last_5_minutes}</td></tr>
+	 				<tr class="list_one"><td align="center">{$loe15}</td><td align="center">{$perfInfo.$key.hac.Last_15_minutes}</td></tr>
+	 				<tr class="list_two"><td align="center">{$loe60}</td><td align="center">{$perfInfo.$key.hac.Last_hour}</td></tr>
 	 			</table>
 	 		</td>	 		
 	 		<td align="left">
 	 			<table class="ListTableSmall">
 	 				<tr><td colspan="2" class="tactical_light_header">{$service_actively_checked}</td></tr>
-	 				<tr><td>{$time_frame}</td><td>{$svc_checked}</td></tr>
-	 				<tr class="list_one"><td>{$loe1}</td><td align="center">{$perfInfo.$key.sac.Last_minute}</td></tr>
-	 				<tr class="list_two"><td>{$loe5}</td><td align="center">{$perfInfo.$key.sac.Last_5_minutes}</td></tr>
-	 				<tr class="list_one"><td>{$loe15}</td><td align="center">{$perfInfo.$key.sac.Last_15_minutes}</td></tr>
-	 				<tr class="list_two"><td>{$loe60}</td><td align="center">{$perfInfo.$key.sac.Last_hour}</td></tr>
+	 				<tr><td align="center">{$time_frame}</td><td align="center">{$svc_checked}</td></tr>
+	 				<tr class="list_one"><td align="center">{$loe1}</td><td align="center">{$perfInfo.$key.sac.Last_minute}</td></tr>
+	 				<tr class="list_two"><td align="center">{$loe5}</td><td align="center">{$perfInfo.$key.sac.Last_5_minutes}</td></tr>
+	 				<tr class="list_one"><td align="center">{$loe15}</td><td align="center">{$perfInfo.$key.sac.Last_15_minutes}</td></tr>
+	 				<tr class="list_two"><td align="center">{$loe60}</td><td align="center">{$perfInfo.$key.sac.Last_hour}</td></tr>
 	 			</table>
 	 		</td>
 	 	</tr>
@@ -43,14 +43,14 @@
 			<td align="center">
 	 			<table class="ListTableSmall">
 	 				<tr><td colspan="3" class="tactical_light_header">{$host_exec_time}</td></tr>
-	 				<tr><td>{$Min}</td><td>{$Max}</td><td>{$Avg}</td></tr>
+	 				<tr><td align="center">{$Min}</td><td align="center">{$Max}</td><td align="center">{$Avg}</td></tr>
 	 				<tr class="list_one"><td align="center">{$perfInfo.$key.hcet.Min} {$sec}</td><td align="center">{$perfInfo.$key.hcet.Max} {$sec}</td><td align="center">{$perfInfo.$key.hcet.Average} {$sec}</td></tr>	 				
 	 			</table>
 	 		</td>	 		
 	 		<td align="left">
 	 			<table class="ListTableSmall">
 	 				<tr><td colspan="3" class="tactical_light_header">{$svc_exec_time}</td></tr>
-	 				<tr><td>{$Min}</td><td>{$Max}</td><td>{$Avg}</td></tr>
+	 				<tr><td align="center">{$Min}</td><td align="center">{$Max}</td><td align="center">{$Avg}</td></tr>
 	 				<tr class="list_one"><td align="center">{$perfInfo.$key.scet.Min} {$sec}</td><td align="center">{$perfInfo.$key.scet.Max} {$sec}</td><td align="center">{$perfInfo.$key.scet.Average} {$sec}</td></tr>	 				
 	 			</table>
 	 		</td>
@@ -59,14 +59,14 @@
 			<td align="center">
 	 			<table class="ListTableSmall">
 	 				<tr><td colspan="3" class="tactical_light_header">{$host_latency}</td></tr>
-	 				<tr><td>{$Min}</td><td>{$Max}</td><td>{$Avg}</td></tr>
+	 				<tr><td align="center">{$Min}</td><td align="center">{$Max}</td><td align="center">{$Avg}</td></tr>
 	 				<tr class="list_one"><td align="center">{$perfInfo.$key.hcl.Min} {$sec}</td><td align="center">{$perfInfo.$key.hcl.Max} {$sec}</td><td align="center">{$perfInfo.$key.hcl.Average} {$sec}</td></tr>	 				
 	 			</table>
 	 		</td>	 		
 	 		<td align="left">
 	 			<table class="ListTableSmall">
 	 				<tr><td colspan="3" class="tactical_light_header">{$svc_latency}</td></tr>
-	 				<tr><td>{$Min}</td><td>{$Max}</td><td>{$Avg}</td></tr>
+	 				<tr><td align="center">{$Min}</td><td align="center">{$Max}</td><td align="center">{$Avg}</td></tr>
 	 				<tr class="list_one"><td align="center">{$perfInfo.$key.scl.Min} {$sec}</td><td align="center">{$perfInfo.$key.scl.Max} {$sec}</td><td align="center">{$perfInfo.$key.scl.Average} {$sec}</td></tr>	 				
 	 			</table>
 	 		</td>
@@ -75,14 +75,14 @@
 			<td align="center">
 	 			<table class="ListTableSmall">
 	 				<tr><td colspan="3" class="tactical_light_header">{$host_status}</td></tr>
-	 				<tr><td>{$up}</td><td>{$down}</td><td>{$unreachable}</td></tr>
+	 				<tr><td align="center">{$up}</td><td align="center">{$down}</td><td align="center">{$unreachable}</td></tr>
 	 				<tr class="list_one"><td align="center">{$perfInfo.$key.hs.Up}</td><td align="center">{$perfInfo.$key.hs.Down}</td><td align="center">{$perfInfo.$key.hs.Unreachable}</td></tr>	 				
 	 			</table>
 	 		</td>	 		
 	 		<td align="left">
 	 			<table class="ListTableSmall">
 	 				<tr><td colspan="4" class="tactical_light_header">{$svc_status}</td></tr>
-	 				<tr><td>{$ok}</td><td>{$warning}</td><td>{$critical}</td><td>{$unknown}</td></tr>
+	 				<tr><td align="center">{$ok}</td><td align="center">{$warning}</td><td align="center">{$critical}</td><td align="center">{$unknown}</td></tr>
 	 				<tr class="list_one"><td align="center">{$perfInfo.$key.ss.OK}</td><td align="center">{$perfInfo.$key.ss.Warning}</td><td align="center">{$perfInfo.$key.ss.Critical}</td><td align="center">{$perfInfo.$key.ss.Unknown}</td></tr>
 	 			</table>
 	 		</td>
@@ -91,7 +91,7 @@
 	 		<td align="center">
 	 			<table class="ListTableSmall">
 	 				<tr><td colspan="3" class="tactical_light_header">{$buffer_usage}</td></tr>
-	 				<tr><td>{$in_use}</td><td>{$max_used}</td><td>{$available}</td></tr>
+	 				<tr><td align="center">{$in_use}</td><td align="center">{$max_used}</td><td align="center">{$available}</td></tr>
 	 				<tr class="list_one"><td align="center">{$perfInfo.$key.bu.In_Use}</td><td align="center">{$perfInfo.$key.bu.Max_Used}</td><td align="center">{$perfInfo.$key.bu.Total_Available}</td></tr>
 	 			</table>
 	 		</td>
