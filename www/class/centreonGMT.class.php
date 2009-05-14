@@ -110,7 +110,7 @@ class CentreonGMT{
 		 */
 		if (!isset($gmt))
 			$gmt = $this->myGMT;
-			
+
 		if (isset($date) && isset($gmt)) {
 			$date += $gmt * 60 * 60;
 			return date($format, $date);
