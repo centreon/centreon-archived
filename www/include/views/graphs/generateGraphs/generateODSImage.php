@@ -42,6 +42,9 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 
+	/*
+	 * Include config file
+	 */
 	include "@CENTREON_ETC@/centreon.conf.php";
 		
 	require_once "./DB-Func.php";
@@ -61,7 +64,7 @@
 	 * Verify if start and end date
 	 */	
 
-	(!isset($_GET["start"])) ? $start = time() - (60*60*48) : $start = $_GET["start"];
+	(!isset($_GET["start"])) ? $start = time() - 120 - (60*60*48) : $start = $_GET["start"] - 120;
 	(!isset($_GET["end"])) ? $end = time() - 120 : $end = $_GET["end"] - 120;
 
 	/*
@@ -316,8 +319,8 @@
 		/*
 		 * Add Timezone for current user.
 		 */
-		 
-		$command_line = "export TZ='UTC".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+		 //".$CentreonGMT->getMyGMTForRRD()."
+		$command_line = "export TZ='UTC-2' ; ".$command_line;
 	
 		$command_line = escape_command("$command_line");
 		if ($oreon->optGen["debug_rrdtool"] == "1")

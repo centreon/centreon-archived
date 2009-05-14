@@ -42,6 +42,9 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 	
+	/*
+	 * Include config file
+	 */
 	include "@CENTREON_ETC@/centreon.conf.php";
 	
 	require_once './DB-Func.php';
@@ -54,7 +57,7 @@
 	 * Verify if start and end date
 	 */	
 
-	(!isset($_GET["start"])) ? $start = time() - (60*60*48) : $start = $_GET["start"];
+	(!isset($_GET["start"])) ? $start = time() - 120 - (60*60*48) : $start = $_GET["start"]- 120;
 	(!isset($_GET["end"])) ? $end = time() - 120 : $end = $_GET["end"] - 120;
 	
 	Session::start();
