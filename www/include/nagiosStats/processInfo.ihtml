@@ -49,6 +49,7 @@
 	 				{assign var=val value=$procInfo.$key.flap_detection_enabled}	 				 
 	 				<tr class='list_two'><td>{$str_flap_detection}</td><td>{$yes_no_tab.$val}</td></tr>
 	 			</table>
+	 			<br>
 	 		</td>
 	 		{assign var=val value=$procInfo.$key.is_currently_running}
 	 		{assign var=count value=$count_action}
