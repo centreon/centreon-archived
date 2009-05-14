@@ -152,6 +152,8 @@
 		$tab_final[$hg["alias"]][$hg["name1"]] = $tab_finalH[$hg["name1"]];
 	}
 	
+	$class = "list_one";
+	$ct = 0;
 	$hg = "";
 	if (isset($tab_final))
 		foreach ($tab_final as $hg_name => $tab_host) {
