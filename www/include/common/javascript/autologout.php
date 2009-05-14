@@ -35,10 +35,9 @@
  * SVN : $Id$
  * 
  */
- ?>
+?>
 
-function check_session()
-{
+function check_session() {
 	call_XMLHttpReq2();
 }
 
@@ -51,7 +50,7 @@ function call_XMLHttpReq2() {
         xhr2 = new ActiveXObject("Microsoft.XMLHTTP");
     }
     //on définit l'appel de la fonction au retour serveur
-    if(xhr2==null)
+    if (xhr2==null)
      alert("Le web browser ne supporte pas l'AJAX.");
     xhr2.onreadystatechange = function() { change_status(xhr2); };
     
@@ -67,10 +66,10 @@ function change_status(xhr2) {
 	var items_state = docXML.getElementsByTagName("state");
 	var state = items_state.item(0).firstChild.data;
 			
-	if(state == "ok") {
+	if (state == "ok") {
 		;
-	} else if(state == "nok") {
-		window.location.replace("./main.php");	
+	} else if (state == "nok") {
+		window.location.replace("./index.php");	
 	}
 	setTimeout("check_session()", tm_out);
 }
