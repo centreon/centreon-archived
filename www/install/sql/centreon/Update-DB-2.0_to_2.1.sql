@@ -185,3 +185,6 @@ INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$_HOSTSNMP
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$_HOSTLOCATION$');
 
 update nagios_server SET `name` = (SELECT instance_name FROM cfg_ndomod WHERE nagios_server.id = cfg_ndomod.ns_nagios_server);
+
+update topology set topology_name = 'Global Health' WHERE topology_page = '10102';
+
