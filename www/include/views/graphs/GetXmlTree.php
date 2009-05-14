@@ -36,6 +36,9 @@
  * 
  */
 	
+	/*
+	 * Include config file
+	 */
 	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	
 	include_once $centreon_path . "www/class/centreonDB.class.php";
@@ -107,9 +110,9 @@
 			 * Get Hosts
 			 */
 			$hosts = getMyHostGroupHosts($id, $search);
-			foreach ($hosts as $host){				
+			foreach ($hosts as $host) {
 				if (host_has_one_or_more_GraphService($host)) {
-					if ($is_admin || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host]))) { 
+					if ($is_admin || (!$is_admin && isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host]))) { 
 				        $buffer->startElement("item");
 				        $buffer->writeAttribute("child", "1");
 				        $buffer->writeAttribute("id", "HH_".$host."_".$id);
