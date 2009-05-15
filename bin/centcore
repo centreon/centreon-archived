@@ -400,7 +400,7 @@ sub sendConfigFile($){
     my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
     my $server_info = getServerConfig($id);
 
-    my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/*";
+    my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/";
     my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
     
     if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'} != "") {
@@ -408,7 +408,7 @@ sub sendConfigFile($){
     }
     
     # Send data with rsync
-    `$rsync --remove-source-files --port=$port -c $origin $dest`;
+    `$rsync -c --del --port=$port $origin $dest`;
 
     undef($cfg_dir);
     undef($server_info);
@@ -521,7 +521,7 @@ sub syncArchives($) {
 	    writeLogFile("$rsync --port=$port -c ".$ns_server->{'ns_ip_address'}.":".$data->{'log_archive_path'}."/*.log $varlib/log/".$ns_server->{'id'}."/archives/") if ($debug);
 
 	    writeLogFile("Synchronize archives for poller $id");
-	    `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $varlib/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
+	    `$rsyncWT -c --del --port=$port $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $varlib/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
 	    undef($data);
 	    writeLogFile("Sync over for poller $id");
 
