@@ -110,13 +110,12 @@
 	$tpl->assign("svc_checked", _("Services Checked"));
 	$tpl->assign("host_checked", _("Hosts Checked"));
 	
-	$tpl->assign("host_exec_time", _("Hosts Check Execution Time"));
-	$tpl->assign("svc_exec_time", _("Service Check Execution Time"));
-	$tpl->assign("host_latency", _("Host Check Check Latency"));
-	$tpl->assign("svc_latency", _("Service Check Check Latency"));
+	$tpl->assign("exec_time", _("Check Execution Time"));
+	$tpl->assign("latency", _("Check Latency"));
+	$tpl->assign("status", _("Status"));
 	
-	$tpl->assign("host_status", _("Hosts Status"));
-	$tpl->assign("svc_status", _("Services Status"));
+	$tpl->assign("Hosts", _("Hosts"));
+	$tpl->assign("Services", _("Services"));
 	
 	$tpl->assign("Min", _("Min"));
 	$tpl->assign("Max", _("Max"));
