@@ -1,6 +1,6 @@
 <form {$form.attributes}>
-<table class="ListTable">
-	<tr class="ListHeader"><td class="FormHeader">&nbsp;&nbsp;{$form.start.label}&nbsp;&nbsp;{$form.start.html}</td></tr>
+<table class="ajaxOption">
+	<tr><td>&nbsp;&nbsp;<b>{$form.start.label}</b>&nbsp;&nbsp;{$form.start.html}</td></tr>
 </table>
 <br>
 <div>
