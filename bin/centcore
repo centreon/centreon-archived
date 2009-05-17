@@ -38,22 +38,23 @@
 #
 # Script init
 #
+
 use strict;
 use POSIX qw(mkfifo);
 use DBI;
-
 use File::Copy;
 
 use vars qw($debug $LOG %status $generalcounter $stop $method);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
-use vars qw($con $ssh $scp $rsync $rsyncWT $installedPath $timeout);
+use vars qw($con $ssh $scp $rsync $rsyncWT $echo $sudo $installedPath $timeout);
 
 if (POSIX::getuid() == 0 ) { 
     print  STDERR "You must not execute centcore with root user \n"; exit 1;
 }
 
-my $echo = "/bin/echo";
-my $sudo = "sudo";
+$timeout = 5;
+
+
 
 my $installedPath = "/usr/local/centreon";
 my $LOG = "/usr/local/centreon/log/centcore.log";
@@ -65,16 +66,17 @@ my $cmdFile = "/var/lib/centreon/centcore.cmd";
 #my $PID = "@CENTREON_RUNDIR@/centcore.pid";
 #my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
 
-$timeout = 5;
-
+$echo = "/bin/echo";
 #$ssh = "@BIN_SSH@";
+#$scp = "@BIN_SCP@";
 $rsync = "rsync";
 $rsyncWT = $rsync;
-#$scp = "@BIN_SCP@";
+$sudo = "sudo";
 
 $ssh = "/usr/bin/ssh";
 $scp = "/usr/bin/scp";
 
+# Add Options
 $ssh .= " -o ConnectTimeout=$timeout ";
 $rsync .= " --timeout=$timeout ";
 
@@ -94,6 +96,12 @@ sub catch_zap {
 sub writeLogFile($){
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
     open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+
+	# Add initial 0 if value is under 10
+    $hour = "0".$hour if ($hour);
+    $min = "0".$min if ($min);
+    $sec = "0".$sec if ($sec);
+
     print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
     close LOG or warn $!;
 }
@@ -101,12 +109,12 @@ sub writeLogFile($){
 my $timeBetween2SyncPerf = 60;
 
 # Starting centcore Engine
-writeLogFile("Starting centCore engine...");
+writeLogFile("Starting centcore engine...");
 writeLogFile("PID : ".$$);
 
 # checking if pid file exists.
 if (-x $PID){
-    writeLogFile("centCore already running. can't launch again....");
+    writeLogFile("centcore already running. can't launch again....");
     exit(2);
 }
 
@@ -161,11 +169,11 @@ sub GetAllNagiosServerPerfData(){
     CheckMySQLConnexion();
     my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `localhost` = '0' AND `ns_activate` = '1'");
     if (!$sth2->execute()) {
-	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
     }
     while (my $data = $sth2->fetchrow_hashref()){
-	GetPerfData($data->{'id'});
-	GetLogFile($data->{'id'});
+		GetPerfData($data->{'id'});
+		GetLogFile($data->{'id'});
     }
     $sth2->finish();
     $con->disconnect();
@@ -180,7 +188,7 @@ sub getNagiosConfigurationField($$){
     CheckMySQLConnexion();
     my $sth2 = $con->prepare("SELECT ".$_[1]." FROM `cfg_nagios` WHERE `nagios_server_id` = '".$_[0]."'");
     if (!$sth2->execute()) {
-	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
     }
     my $data = $sth2->fetchrow_hashref();
     return $data->{$_[1]};
@@ -190,7 +198,7 @@ sub getLocalOptionsField($){
     CheckMySQLConnexion();
     my $sth2 = $con->prepare("SELECT `value` FROM `options` WHERE `key` LIKE '".$_[0]."' LIMIT 1");
     if (!$sth2->execute()) {
-	writeLogFile("Error when getting general options properties : ".$sth2->errstr."\n");
+		writeLogFile("Error when getting general options properties : ".$sth2->errstr."\n");
     }
     my $data = $sth2->fetchrow_hashref();
     return $data->{$_[0]};
@@ -200,7 +208,7 @@ sub getLocalServerID(){
     CheckMySQLConnexion();
     my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `localhost` = '1'");
     if (!$sth2->execute()) {
-	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
     }
     return $sth2->fetchrow_hashref();
 }
@@ -209,7 +217,7 @@ sub getServerConfig($){
     CheckMySQLConnexion();
     my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."' AND `ns_activate` = '1'");
     if (!$sth2->execute()) {
-	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
     }
     return $sth2->fetchrow_hashref();
 }
@@ -247,7 +255,7 @@ sub sendExternalCommand($$){
     my $server_info = getServerConfig($id);
 
     if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'} != "") {
-	$port = $server_info->{'ssh_port'};
+		$port = $server_info->{'ssh_port'};
     }
 
     # check if ip address is defined
@@ -297,7 +305,7 @@ sub GetPerfData($){
     my $distantconnexion = $server_info->{'ns_ip_address'};
 
     if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'} != "") {
-	$port = $server_info->{'ssh_port'};
+		$port = $server_info->{'ssh_port'};
     }
 
     # Where is perfdata file on this poller 
@@ -310,15 +318,7 @@ sub GetPerfData($){
     mkdir "$VARLIB/perfdata" if (!-d "$VARLIB/perfdata");
     mkdir $localbasevardir if (!-d $localbasevardir);
 
-    my $localhost_id = getLocalServerID(); 
     my $localtmpperffile = "$localbasevardir/service-perfdata";
-    my $localperffile = getNagiosConfigurationField($localhost_id->{'id'}, "service_perfdata_file");
-
-#    writeLogFile("$ssh -q $distantconnexion -p $port ls -l $distantperffile 2>> /dev/null | wc -l") if ($debug);
-#    my $ls = `$ssh -q $distantconnexion -p $port ls -l $distantperffile 2>> /dev/null | wc -l`;
-
-    # Check if distant perfdata file 
-#    if ($ls != 0){
 
 	# Get Perfdata file
 	writeLogFile("$rsync -d --remove-source-files --port=$port $distantconnexion:$distantperffile $localtmpperffile") if ($debug);
@@ -327,15 +327,13 @@ sub GetPerfData($){
 	# Write data from distant poller on local file for centstorage
 	if (-f $localtmpperffile){
 	    if ($debug) {
-		writeLogFile("cat $localtmpperffile >> $localperffile");
+			writeLogFile("cat $localtmpperffile >> $localperffile");
 	    }
 	    `cat $localtmpperffile >> $localperffile`;
 	    if (!unlink($localtmpperffile)) {
-		writeLogFile("Cannot Remove performance data file : $localtmpperffile");
+			writeLogFile("Cannot Remove performance data file : $localtmpperffile");
 	    }
 	}
-#    }
-#    undef($ls);
 }
 
 sub GetLogFile($){
@@ -350,13 +348,13 @@ sub GetLogFile($){
     my $server_info = getServerConfig($id);
     
     if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'}) {
-	$port = $server_info->{'ssh_port'};
+		$port = $server_info->{'ssh_port'};
     }
     
     # Check configuration
     my $distantconnexion = $server_info->{'ns_ip_address'};
     if (!defined($distantconnexion)) {
-	writeLogFile("IP address not defined for poller $id\n");	
+		writeLogFile("IP address not defined for poller $id\n");	
     }
 
     # Set local directory
@@ -369,22 +367,22 @@ sub GetLogFile($){
     # Get logs if dir exists
     if (-d $localDir){
 
-	# Get distant log file path
-	my $distantlogfile = getNagiosConfigurationField($id, "log_file");;
-	my $locallogfile = $localDir."nagios.log";
-
-	# check if we can do the transfert
-	if (defined($distantconnexion) && defined($distantlogfile)) {
-
-	    # Get file with rsync
-	    my $res = `$rsync -c --port=$port $distantconnexion:$distantlogfile $locallogfile 2>> /dev/null`;
-	    writeLogFile("$rsync -c --port=$port $distantconnexion:$distantlogfile $locallogfile 2>> /dev/null") if ($debug);
-	    if ($? ne 0) {
-		writeLogFile("Cannot get log file or log file doesn't exists on poller $id");
-	    }
-   	}
+		# Get distant log file path
+		my $distantlogfile = getNagiosConfigurationField($id, "log_file");;
+		my $locallogfile = $localDir."nagios.log";
+	
+		# check if we can do the transfert
+		if (defined($distantconnexion) && defined($distantlogfile)) {
+	
+		    # Get file with rsync
+		    my $res = `$rsync -c --port=$port $distantconnexion:$distantlogfile $locallogfile 2>> /dev/null`;
+		    writeLogFile("$rsync -c --port=$port $distantconnexion:$distantlogfile $locallogfile 2>> /dev/null") if ($debug);
+		    if ($? ne 0) {
+				writeLogFile("Cannot get log file or log file doesn't exists on poller $id");
+		    }
+	   	}
     } else {
-	writeLogFile("Unable to create $localDir. Can get nagios log file for poller $id\n");
+		writeLogFile("Unable to create $localDir. Can get nagios log file for poller $id\n");
     }
 }
 
@@ -436,11 +434,11 @@ sub initNagios($$){
     }
     
     if (defined($conf->{'ns_ip_address'}) && $conf->{'ns_ip_address'}) {
-	# Launch command
-	$cmd = "$ssh -p $port ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." ".$options."\n";
-	$stdout = `$cmd`;
+		# Launch command
+		$cmd = "$ssh -p $port ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." ".$options."\n";
+		$stdout = `$cmd`;
     } else {
-	writeLogFile("Cannot $options Nagios for poller $id");
+		writeLogFile("Cannot $options Nagios for poller $id");
     }
 	
     # Logs Actions
@@ -504,101 +502,141 @@ sub syncArchives($) {
     }
     
     if ($id != 0) {
-	# Sync Archive for one poller
-	if (! -d "$varlib/log/".$ns_server->{'id'}."/archives/") {
-	    if (! -d "$varlib/log/".$ns_server->{'id'}) {
-		mkdir "$varlib/log/".$ns_server->{'id'};
-	    }
-	    if (! -d "$varlib/log/".$ns_server->{'id'}."/archives/") {
-		mkdir "$varlib/log/".$ns_server->{'id'}."/archives/";
-	    }
-	}
-	my $sth = $con->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$id."' AND `nagios_activate` = '1'");
-	if ($sth->execute()) {
-	    my $data = $sth->fetchrow_hashref();
-
-	    # Archive Sync
-	    writeLogFile("$rsync --port=$port -c ".$ns_server->{'ns_ip_address'}.":".$data->{'log_archive_path'}."/*.log $varlib/log/".$ns_server->{'id'}."/archives/") if ($debug);
-
-	    writeLogFile("Synchronize archives for poller $id");
-	    `$rsyncWT -c --del --port=$port $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $varlib/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
-	    undef($data);
-	    writeLogFile("Sync over for poller $id");
-
-	} else {
-	    print "Can't get archive path for poller ".$ns_server->{'id'}." (".$ns_server->{'ns_address_ip'}.") -> ".$sth->errstr;
-	}
+		# Sync Archive for one poller
+		if (! -d "$varlib/log/".$ns_server->{'id'}."/archives/") {
+		    if (! -d "$varlib/log/".$ns_server->{'id'}) {
+				mkdir "$varlib/log/".$ns_server->{'id'};
+		    }
+		    if (! -d "$varlib/log/".$ns_server->{'id'}."/archives/") {
+				mkdir "$varlib/log/".$ns_server->{'id'}."/archives/";
+		    }
+		}
+		my $sth = $con->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$id."' AND `nagios_activate` = '1'");
+		if ($sth->execute()) {
+		    my $data = $sth->fetchrow_hashref();
+	
+		    # Archive Sync
+		    writeLogFile("$rsync --port=$port -c ".$ns_server->{'ns_ip_address'}.":".$data->{'log_archive_path'}."/*.log $varlib/log/".$ns_server->{'id'}."/archives/") if ($debug);
+	
+		    writeLogFile("Synchronize archives for poller $id");
+		    `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $varlib/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
+		    undef($data);
+		    writeLogFile("Sync over for poller $id");
+	
+		} else {
+		    print "Can't get archive path for poller ".$ns_server->{'id'}." (".$ns_server->{'ns_address_ip'}.") -> ".$sth->errstr;
+		}
     } else {
-	# synchronize Archives for all pollers
-	my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
-	if (!$sth2->execute) {
-	    die "Error:" . $sth2->errstr . "\n";
-	} else { 
-	    while (my $server = $sth2->fetchrow_hashref()) {
-		writeLogFile("Receive Order to synchronize all archive of all pollers");
-		syncArchives($server->{'id'});
-		undef($server);
-	    }
-	    undef($sth2);
-	}
+		# synchronize Archives for all pollers
+		my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
+		if (!$sth2->execute) {
+		    die "Error:" . $sth2->errstr . "\n";
+		} else { 
+		    while (my $server = $sth2->fetchrow_hashref()) {
+				writeLogFile("Receive Order to synchronize all archives of all pollers");
+				syncArchives($server->{'id'});
+				undef($server);
+		    }
+		    undef($sth2);
+		}
     }
 }
 
 sub parseRequest($){
     if (!$_[0]) {
-	return ;
+		return ;
     }
 
     # 
     # Checks keys for launching commands
     # 
     if ($_[0] =~ /RESTART\:([0-9]*)/){
-	initNagios($1, "restart");
+		initNagios($1, "restart");
     } elsif ($_[0] =~ /RELOAD\:([0-9]*)/){
-	initNagios($1, "reload");
+		initNagios($1, "reload");
     } elsif ($_[0] =~ /START\:([0-9]*)/){
-	initNagios($1, "start");
+		initNagios($1, "start");
     } elsif ($_[0] =~ /STOP\:([0-9]*)/){
-	initNagios($1, "stop");
+		initNagios($1, "stop");
     } elsif ($_[0] =~ /SENDCFGFILE\:([0-9]*)/){
-	sendConfigFile($1);
+		sendConfigFile($1);
     } elsif ($_[0] =~ /TEST\:([0-9]*)/){
-	# Experimental
-	testConfig($1);
+		# Experimental
+		testConfig($1);
     } elsif ($_[0] =~ /SYNCTRAP\:([0-9]*)/){
 		syncTraps($1);
     } elsif ($_[0] =~ /SYNCPLUGINS\:([0-9]*)/){
-	;
+		;
     } elsif ($_[0] =~ /SYNCARCHIVES\:([0-9]*)/){
 		syncArchives($1);
     } elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:(.*)/){
-	sendExternalCommand($1, $2);
+		sendExternalCommand($1, $2);
     }
 }
+
+# Write in log file that program is starting
+sub signalstartprogram() {
+	# Starting centcore Engine
+	writeLogFile("Starting centcore engine...");
+	writeLogFile("PID : ".$$."");
+}
+
+# Write in log file that program is stoping
+sub signalstopprogram() {
+    writeLogFile("Stopping centcore engine...");
+    if (!unlink($PID)) {
+		writeLogFile("Error When removing pid file : $!") ;
+    }
+}
+
+# Writing PID
+sub writepid($) {
+	if (!defined($_[0]) || $_[0] == 0) {
+		writeLogFile("Cannot write pid file");
+	}
+	open (PID, ">> ".$PID) || print "can't write PID : $!";
+	print PID $_[0] ;
+	close PID or warn $!;
+}
+
 
 # Begin centcore 
+my $pid  = 0;
 
-while ($stop) {  
-    # Select Wait
-    if ( -f $cmdFile) {
-	if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
-	    while (<FILE>){
-		parseRequest($_);
+if ($pid ne fork()) {
+
+	signalstartprogram();
+	writepid($$);
+
+	while ($stop) {  
+
+	    if ( -f $cmdFile) {
+			if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
+			    while (<FILE>){
+				parseRequest($_);
+			    }
+			    writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
+			}
+			close(FILE);
 	    }
-	    writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
+	    if (defined($timeSyncPerf) && $timeSyncPerf) {
+			$difTime = time() - $timeSyncPerf;
+		}
+	    if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
+			# Get PerfData on Nagios Poller
+			GetAllNagiosServerPerfData();		
+			$timeSyncPerf = time();
+	    }
+	    sleep(1);
 	}
-	close(FILE);
-    }
-    if (defined($timeSyncPerf) && $timeSyncPerf) {
-	$difTime = time() - $timeSyncPerf;
-    }
-    if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
-	# Get PerfData on Nagios Poller
-	GetAllNagiosServerPerfData();		
-	$timeSyncPerf = time();
-    }
-    sleep(1);
+    
+    signalstopprogram();
+    exit 0;
 }
+
+waitpid($pid, 0);
+exit(1);
+
 
 unlink($PID);
 writeLogFile("Centcore stop...");

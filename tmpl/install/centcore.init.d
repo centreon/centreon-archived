@@ -49,42 +49,38 @@
 
 ### BEGIN INIT INFO Redhat
 # chkconfig: - 70 30
-# description: Centreon Data Storage
+# description: Centreon Core
 # processname: centcore
 # config:
 # pidfile:
 ### END INIT INFO
 
-
-status_centcore ()
-{
+status_centcore () {
     if test ! -f $RunFile; then
-	echo "No lock file found in $RunFile"
-	return 1
+		echo "No lock file found in $RunFile"
+		return 1
     fi
     PID=`head -n 1 $RunFile`
     if ps -p $PID; then
-	return 0
+		return 0
     else
-	return 1
+		return 1
     fi
     return 1
 }
 
 
-killproc_centcore ()
-{
+killproc_centcore () {
     if test ! -f $RunFile; then
-	echo "No lock file found in $RunFile"
-	return 1
+		echo "No lock file found in $RunFile"
+		return 1
     fi    
     PID=`head -n 1 $RunFile`
     kill -s INT $PID
 }
 
 # Create RunDir if not exit
-rundir_exist()
-{
+rundir_exist() {
 [ -e ${centstorageRunDir} ] || \
         install -d -o@NAGIOS_USER@ -m750 ${centstorageRunDir}
 }
@@ -126,77 +122,78 @@ fi
 case "$1" in
 
     start)
-    # Check lock file
-    if test -f $RunFile; then
-	echo "Error : $RunFile already Exists."
-	ISRUNNING=`ps -edf | grep $Bin | grep -v grep | wc -l `
-	if [ $ISRUNNING = 0 ]
-	    then
-	    echo "But no centcore process runnig"
-	    rm -f $RunFile
-	    echo "Removing centcore pid file"
-	else 
-	    exit 1
-	fi
-    fi
-    # Test if running directory exist.
-    rundir_exist
-    echo "Starting Centcore : centcore"
-    su - @NAGIOS_USER@ -c "nice -n $NICE $Bin >> $DemLog 2>&1 &"
-    if [ -d $LockDir ]; then touch $LockDir/$LockFile; fi
-    exit 0
+	    # Check lock file
+	    if test -f $RunFile; then
+		echo "Error : $RunFile already Exists."
+		ISRUNNING=`ps -edf | grep $Bin | grep -v grep | wc -l `
+		if [ $ISRUNNING = 0 ]
+		    then
+		    echo "But no centcore process runnig"
+		    rm -f $RunFile
+		    echo "Removing centcore pid file"
+		else 
+		    exit 1
+		fi
+	    fi
+	    # Test if running directory exist.
+	    rundir_exist
+	    echo "Starting Centcore"
+	    su - @NAGIOS_USER@ -c "nice -n $NICE $Bin >> $DemLog 2>&1"
+	    if [ -d $LockDir ]; then 
+	    	touch $LockDir/$LockFile; 
+	    fi
+	    exit 0
     ;;
     
     stop)
-    echo "Stopping Centcore : centcore"
-    killproc_centcore centcore
-    
-    echo -n 'Waiting for centcore to exit .'
-    for i in `seq 20` ; do
-	if status_centcore > /dev/null; then
-	    echo -n '.'
-	    sleep 1
-	else
-	    break
-	fi
-    done
-    if status_centcore > /dev/null; then
-	echo ''
-	echo 'Warning - running centcore did not exit in time'
-    else
-	echo ' done.'
-    fi
+	    echo "Stopping Centcore"
+	    killproc_centcore centcore
+	    
+	    echo -n 'Waiting for centcore to exit .'
+	    for i in `seq 20` ; do
+			if status_centcore > /dev/null; then
+			    echo -n '.'
+			    sleep 1
+			else
+			    break
+			fi
+	    done
+	    if status_centcore > /dev/null; then
+			echo ''
+			echo 'Warning - running centcore did not exit in time'
+		    else
+			echo ' done.'
+	    fi
     ;;
     
     status)
-    status_centcore centcore
+	    status_centcore centcore
     ;;
     
     restart)
-    $0 stop
-    $0 start
+	    $0 stop
+	    $0 start
     ;;
     
     reload|force-reload)
     if test ! -f $RunFile; then
-	$0 start
+		$0 start
     else
-	PID=`head -n 1 $RunFile`
-	if status_centcore > /dev/null; then
-	    killproc_centcore centcore -HUP
-	    echo "done"
-	else
-	    $0 stop
-	    $0 start
-	fi
+		PID=`head -n 1 $RunFile`
+		if status_centcore > /dev/null; then
+		    killproc_centcore centcore -HUP
+		    echo "done"
+		else
+		    $0 stop
+		    $0 start
+		fi
     fi
     ;;
     
     *)
-    echo "Usage: centcore {start|stop|restart|reload|force-reload|status}"
-    exit 1
+	    echo "Usage: centcore {start|stop|restart|reload|force-reload|status}"
+    	exit 1
     ;;
     
 esac
 # End of this script
-
