@@ -49,40 +49,37 @@
 
 ### BEGIN INIT INFO Redhat
 # chkconfig: - 71 31
-# description: Centreon Core
+# description: Centreon Storage
 # processname: centcore
 # config:
 # pidfile:
 ### END INIT INFO
 
-status_centstorage()
-{
+status_centstorage() {
     if test ! -f $centstorageRunFile; then
-	echo "No lock file found in $centstorageRunFile"
-	return 1
+		echo "No lock file found in $centstorageRunFile"
+		return 1
     fi
     centstoragePID=`head -n 1 $centstorageRunFile`
     if ps -p $centstoragePID; then
-	return 0
+		return 0
     else
-	return 1
+		return 1
     fi
     return 1
 }
 
-killproc_centstorage()
-{
+killproc_centstorage() {
     if test ! -f $centstorageRunFile; then
-	echo "No lock file found in $centstorageRunFile"
-	return 1
+		echo "No lock file found in $centstorageRunFile"
+		return 1
     fi    
     centstoragePID=`head -n 1 $centstorageRunFile`
     kill -s INT $centstoragePID
 }
 
 # Create RunDir if not exit
-rundir_exist()
-{
+rundir_exist() {
 [ -e ${centstorageRunDir} ] || \
         install -d -o@NAGIOS_USER@ -m750 ${centstorageRunDir}
 }
@@ -123,76 +120,75 @@ fi
 # See how we were called.
 case "$1" in
     start)
-	# Check lock file
-    if test -f $centstorageRunFile; then
-	echo "Error : $centstorageRunFile already Exists."
-	NDcentstorageRUNNING=`ps -edf | grep $centstorageBin | grep -v grep | wc -l `
-	if [ $NDcentstorageRUNNING = 0 ]
-	    then
-	    echo "But no centstorage process runnig"
-	    rm -f $centstorageRunFile
-	    echo "Removing centstorage pid file"
-	else 
-	    exit 1
-	fi
-    fi
-    # Test if running directory exist.
-    rundir_exist
-    echo "Starting centstorage Collector : centstorage"
-    su - @NAGIOS_USER@ -c "$Bin >> $centstorageDemLog 2>&1"
-    if [ -d $centstorageLockDir ]; then 
-    	touch $centstorageLockDir/$centstorageLockFile; 
-    fi
-    exit 0
+		# Check lock file
+	    if test -f $centstorageRunFile; then
+			echo "Error : $centstorageRunFile already Exists."
+			NDcentstorageRUNNING=`ps -edf | grep $centstorageBin | grep -v grep | wc -l `
+			if [ $NDcentstorageRUNNING = 0 ] ; then
+			    echo "But no centstorage process runnig"
+			    rm -f $centstorageRunFile
+			    echo "Removing centstorage pid file"
+			else 
+			    exit 1
+			fi
+	    fi
+	    # Test if running directory exist.
+	    rundir_exist
+	    echo "Starting centstorage Collector : centstorage"
+	    su - @NAGIOS_USER@ -c "$Bin >> $centstorageDemLog 2>&1"
+	    if [ -d $centstorageLockDir ]; then 
+	    	touch $centstorageLockDir/$centstorageLockFile; 
+	    fi
+	    exit 0
     ;;
     
     stop)
-    echo "Stopping centreon data collector Collector : centstorage"
-    killproc_centstorage centstorage
-    echo -n 'Waiting for centstorage to exit .'
-    for i in `seq 20` ; do
-	if status_centstorage > /dev/null; then
-	    echo -n '.'
-	    sleep 1
-	else
-	    break
-	fi
-    done
-    if status_centstorage > /dev/null; then
-	echo ''
-	echo 'Warning - running centstorage did not exit in time'
-    else
-	echo ' done.'
-    fi
+		echo "Stopping centreon data collector Collector : centstorage"
+		killproc_centstorage centstorage
+		echo -n 'Waiting for centstorage to exit .'
+		for i in `seq 20` ; do
+		if status_centstorage > /dev/null; then
+		    echo -n '.'
+		    sleep 1
+		else
+		    break
+		fi
+		done
+		if status_centstorage > /dev/null; then
+			echo ''
+			echo 'Warning - running centstorage did not exit in time'
+		else
+			echo ' done.'
+		fi
     ;;
     
     status)
-    status_centstorage centstorage
+	    status_centstorage centstorage
     ;;
     
     restart)
-    $0 stop
-    $0 start
+	    $0 stop
+	    $0 start
     ;;
     
     reload|force-reload)
-    if test ! -f $centstorageRunFile; then
-	$0 start
-    else
-	centstoragePID=`head -n 1 $centstorageRunFile`
-	if status_centstorage > /dev/null; then
-	    killproc_centstorage centstorage -HUP
-	    echo "done"
-	else
-	    $0 stop
-	    $0 start
-	fi
-    fi
+	    if test ! -f $centstorageRunFile; then
+			$0 start
+		    else
+			centstoragePID=`head -n 1 $centstorageRunFile`
+			if status_centstorage > /dev/null; then
+			    killproc_centstorage centstorage -HUP
+			    echo "done"
+			else
+			    $0 stop
+			    $0 start
+			fi
+	    fi
     ;;
     
     *)
-    echo "Usage: centstorage {start|stop|restart|reload|status}"
-    exit 1
+	    echo "Usage: centstorage {start|stop|restart|reload|status}"
+	    exit 1
     ;;
     
 esac
