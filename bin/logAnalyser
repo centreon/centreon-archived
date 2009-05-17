@@ -153,8 +153,7 @@ sub parseFile ($$) {
     	close(FILE);
     }
     
-    # Decide if we have to read the nagios.log from the begining 
-	
+    # Decide if we have to read the nagios.log from the begining
     if ($CTime ne $lastCTime && $CTime ne 0 & $lastCTime ne 0){
     	$last_line_read = 0;
     } else {

@@ -389,14 +389,14 @@ sub get_poller()	{
 		    }
 		}
     } else {
-		print "\nMysql Database unreachable on host $mysql_host\n";
+		print "Mysql Database unreachable on host $mysql_host\n";
     }
 }
 
 if (!-e $global_prefix){
     system("mkdir " . $global_prefix);
     system("chown @NAGIOS_USER@:@NAGIOS_GROUP@ " . $global_prefix);
-    system("chmod 775 " . $global_prefix);
+    system("chmod 755 " . $global_prefix);
 }
 
 get_poller();
