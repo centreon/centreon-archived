@@ -89,7 +89,7 @@ sub catch_zap {
 }
 
 # checking if pid file exists.
-if (-x $PID){
+if (-x $PID) {
     writeLogFile("centstrorage already runnig. can't launch again....");
     exit(2);
 }
@@ -707,53 +707,53 @@ if ($pid ne fork()) {
 
     # Fork 
     if (!fork()) {
-    	
-	signalstartprogram();
-	writepid($$);
-	
-	my $i = 0;
-	while ($stop) {
-	    if (time() - $timeParser >= 15 && !$tabProc{'parser'}) {
-		my $timeP = time() - $timeParser;
-		$tabProc{'parser'} = fork();
-		if (!$tabProc{'parser'}){
-		    writeLogFile("begin parsing");
-		    GetPerfData();
-		    writeLogFile("end parsing");
-		    exit();
-		} else {
-		    my $id = waitpid($tabProc{'parser'}, WNOHANG);
-		}
-		$timeParser = time();
-	    }    
-	    if (time() - $timeSynchro >= 60 && !$tabProc{'synchro'}) {
-		$tabProc{'synchro'} = fork();
-		if (!$tabProc{'synchro'}){
-		    CheckRestart();
-		    exit();
-		} else {
-		    my $id = waitpid($tabProc{'synchro'}, WNOHANG);
-		}
-		$timeSynchro = time();
-	    }
-	    if (time() - $timeRebuild >= 120 && !$tabProc{'rebuild'}) {
-		$tabProc{'rebuild'} = fork();
-		if (!$tabProc{'rebuild'}){
-		    CheckRebuild();
-		    exit();
-		} else {
-		    my $id = waitpid($tabProc{'rebuild'}, WNOHANG);
-		}
-		$timeRebuild = time();
-	    }
-	    
-	    $tabProc{'parser'}  = killProc($tabProc{'parser'}) if ($tabProc{'parser'});
-	    $tabProc{'synchro'} = killProc($tabProc{'synchro'}) if ($tabProc{'synchro'});
-	    $tabProc{'rebuild'} = killProc($tabProc{'rebuild'}) if ($tabProc{'rebuild'});
-	    
-	    sleep(1);
+	    	
+		signalstartprogram();
+		writepid($$);
+		
+		my $i = 0;
+		while ($stop) {
+		    if (time() - $timeParser >= 15 && !$tabProc{'parser'}) {
+				my $timeP = time() - $timeParser;
+				$tabProc{'parser'} = fork();
+				if (!$tabProc{'parser'}){
+				    writeLogFile("begin parsing");
+				    GetPerfData();
+				    writeLogFile("end parsing");
+				    exit();
+				} else {
+				    my $id = waitpid($tabProc{'parser'}, WNOHANG);
+				}
+				$timeParser = time();
+		    }    
+		    if (time() - $timeSynchro >= 60 && !$tabProc{'synchro'}) {
+				$tabProc{'synchro'} = fork();
+				if (!$tabProc{'synchro'}){
+				    CheckRestart();
+				    exit();
+				} else {
+				    my $id = waitpid($tabProc{'synchro'}, WNOHANG);
+				}
+				$timeSynchro = time();
+		    }
+		    if (time() - $timeRebuild >= 120 && !$tabProc{'rebuild'}) {
+				$tabProc{'rebuild'} = fork();
+				if (!$tabProc{'rebuild'}){
+				    CheckRebuild();
+				    exit();
+				} else {
+				    my $id = waitpid($tabProc{'rebuild'}, WNOHANG);
+				}
+				$timeRebuild = time();
+		    }
+		    
+		    $tabProc{'parser'}  = killProc($tabProc{'parser'}) if ($tabProc{'parser'});
+		    $tabProc{'synchro'} = killProc($tabProc{'synchro'}) if ($tabProc{'synchro'});
+		    $tabProc{'rebuild'} = killProc($tabProc{'rebuild'}) if ($tabProc{'rebuild'});
+		    
+		    sleep(1);
             $i++;
-	}
+		}
 	
     	signalstopprogram();
     }
