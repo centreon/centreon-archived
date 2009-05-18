@@ -118,8 +118,10 @@
 		 */
 		
 		if (isset($_GET["flagperiod"]) && $_GET["flagperiod"] == 0) {
-			$start 	= $CentreonGMT->getUTCDate($start);
-			$end 	= $CentreonGMT->getUTCDate($end);
+			if ($CentreonGMT->used()) {
+				$start 	= $CentreonGMT->getUTCDate($start);
+				$end 	= $CentreonGMT->getUTCDate($end);
+			}
 		}
 		
 		$command_line = " graph - --start=".$start." --end=".$end;
@@ -319,8 +321,8 @@
 		/*
 		 * Add Timezone for current user.
 		 */
-		 //".$CentreonGMT->getMyGMTForRRD()."
-		$command_line = "export TZ='UTC-2' ; ".$command_line;
+		if ($CentreonGMT->used())
+			$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
 	
 		$command_line = escape_command("$command_line");
 		if ($oreon->optGen["debug_rrdtool"] == "1")
