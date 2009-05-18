@@ -40,7 +40,7 @@
 	} else {
 		header("Content-type: text/xml"); 
 	} 
-	
+
 	/*
 	 * Include Config file
 	 */	
@@ -136,14 +136,16 @@
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
 		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
-		$start += $gmt * 60 * 60;
+		if ($CentreonGMT->used())
+			$start += $gmt * 60 * 60;
 	}
 	
 	if ($EndDate !=  "" && $EndTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
 		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
-		$end += $gmt * 60 * 60;
+		if ($CentreonGMT->used())
+			$end += $gmt * 60 * 60;
 	}
 			
 	/*
