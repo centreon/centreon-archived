@@ -232,16 +232,18 @@
 			$DBRESULT->free();
 		}
 	} else {
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM escalation_hostgroup_relation ehgr, hostgroup hg WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."' AND hg.hg_id = ehgr.hostgroup_hg_id");
-		
-		$hg = array();
-		$strTemp = NULL;
-		while ($hg =& $DBRESULT2->fetchRow()) {
-			if ($gbArr[3][$hg["hg_id"]])
-				$strTemp != NULL ? $strTemp .= ", ".$hg["hg_name"] : $strTemp = $hg["hg_name"];
+		if (isset($escalation)) {
+			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM escalation_hostgroup_relation ehgr, hostgroup hg WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."' AND hg.hg_id = ehgr.hostgroup_hg_id");
+			
+			$hg = array();
+			$strTemp = NULL;
+			while ($hg =& $DBRESULT2->fetchRow()) {
+				if ($gbArr[3][$hg["hg_id"]])
+					$strTemp != NULL ? $strTemp .= ", ".$hg["hg_name"] : $strTemp = $hg["hg_name"];
+			}
+			$DBRESULT2->free();
 		}
-		$DBRESULT2->free();
-		
+				
 		if (isset($strTemp)) {
 			$ret["comment"] ? ($str .= "# '".$escalation["esc_name"]."' host (group) escalation definition ".$i."\n") : NULL;	
 			if (isset($ret["comment"]) == true && isset($escalation["esc_comment"]) == true) {
