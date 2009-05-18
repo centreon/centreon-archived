@@ -46,7 +46,7 @@ class CentreonGMT{
 		/*
 		 * Define Table of GMT line
 		 */
-		$this->listGTM = array(null=>null);
+		$this->listGTM = array(null => null);
 		
 		$this->listGTM['-12'] = -12;
 		$this->listGTM['-11'] = -11;
@@ -77,7 +77,15 @@ class CentreonGMT{
 		/*
 		 * Flag activ / inactiv
 		 */
-		$this->use = 1;
+		$this->use = $this->checkGMTStatus();
+	}
+	
+	function checkGMTStatus() {
+		global $pearDB;
+		
+		$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE `key` = 'enable_gmt'");
+		$result =& $DBRESULT->fetchRow();
+		return ($result["value"]);
 	}
 	
 	function used(){
@@ -110,12 +118,16 @@ class CentreonGMT{
 		 */
 		if (!isset($gmt))
 			$gmt = $this->myGMT;
-
-		if (isset($date) && isset($gmt)) {
-			$date += $gmt * 60 * 60;
-			return date($format, $date);
+		
+		if ($this->use) {
+			if (isset($date) && isset($gmt)) {
+				$date += $gmt * 60 * 60;
+				return date($format, $date);
+			} else {
+				return "";	
+			}
 		} else {
-			return "";	
+			return date($format, $date);
 		}
 	}
 	
@@ -125,12 +137,16 @@ class CentreonGMT{
 		 */
 		if (!isset($gmt))
 			$gmt = $this->myGMT;
-			
-		if (isset($date) && isset($gmt)) {
-			$date += -1 * ($gmt * 60 * 60);
-			return $date;
+		
+		if ($this->use) {
+			if (isset($date) && isset($gmt)) {
+				$date += -1 * ($gmt * 60 * 60);
+				return $date;
+			} else {
+				return "";	
+			}			
 		} else {
-			return "";	
+			return $date;
 		}
 	}
 	
