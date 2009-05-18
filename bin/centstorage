@@ -717,9 +717,7 @@ if ($pid ne fork()) {
 				my $timeP = time() - $timeParser;
 				$tabProc{'parser'} = fork();
 				if (!$tabProc{'parser'}){
-				    writeLogFile("begin parsing");
 				    GetPerfData();
-				    writeLogFile("end parsing");
 				    exit();
 				} else {
 				    my $id = waitpid($tabProc{'parser'}, WNOHANG);
