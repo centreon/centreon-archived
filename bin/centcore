@@ -54,8 +54,6 @@ if (POSIX::getuid() == 0 ) {
 
 $timeout = 5;
 
-
-
 my $installedPath = "/usr/local/centreon";
 my $LOG = "/usr/local/centreon/log/centcore.log";
 my $PID = "/var/run/centreon/centcore.pid";
@@ -98,19 +96,15 @@ sub writeLogFile($){
     open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
 
 	# Add initial 0 if value is under 10
-    $hour = "0".$hour if ($hour);
-    $min = "0".$min if ($min);
-    $sec = "0".$sec if ($sec);
+    $hour = "0".$hour if ($hour < 10);
+    $min = "0".$min if ($min < 10);
+    $sec = "0".$sec if ($sec < 10);
 
     print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
     close LOG or warn $!;
 }
 
 my $timeBetween2SyncPerf = 60;
-
-# Starting centcore Engine
-writeLogFile("Starting centcore engine...");
-writeLogFile("PID : ".$$);
 
 # checking if pid file exists.
 if (-x $PID){
@@ -122,11 +116,6 @@ sub killChild(){
     ;#print "Kill : $$ -> OK\n";
 }
 
-# Writing PID
-open (PID, ">> ".$PID) || print "can't write PID : $!";
-print PID $$ ;
-close PID or warn $!;
-
 # Set signals
 $SIG{'INT'}  	= \&catch_zap;
 $SIG{'CHLD'} 	= \&killChild;
@@ -136,6 +125,7 @@ $SIG{'CHLD'} 	= \&killChild;
 sub parseRequest($);
 sub GetAllNagiosServerPerfData();
 sub moveCmdFile($);
+sub syncArchives($);
 
 # Add the handles for our programs into the readset.
 # In other words, we're keeping track of these handles.
@@ -237,6 +227,24 @@ sub CheckMySQLConnexion() {
     }
 }
 
+sub getPerfDataFile($$){
+    my ($filename, $sth2, $data, $con, $poller_id);
+    $con = $_[0];
+	$poller_id = $_[1];
+	    
+    $sth2 = $con->prepare("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `id` = '$poller_id'");
+    if (!$sth2->execute) {
+		writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "");
+		return "";
+    }
+    $data = $sth2->fetchrow_hashref();
+    $filename = $data->{'nagios_perfdata'};
+    undef($sth2);
+    undef($data);
+    undef($con);
+    return $filename;
+}
+
 #
 # Send an external command on a remote server.
 # Param : id_remote_server, external command
@@ -254,7 +262,7 @@ sub sendExternalCommand($$){
     # Get server informations
     my $server_info = getServerConfig($id);
 
-    if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'} != "") {
+    if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'}) {
 		$port = $server_info->{'ssh_port'};
     }
 
@@ -297,6 +305,8 @@ sub GetPerfData($){
     my $id = $_[0];
     my $port = 22;
 
+	CheckMySQLConnexion();
+
 #    my $VARLIB = "@CENTREON_VARLIB@";
     my $VARLIB = "/var/lib/centreon/";
 
@@ -304,12 +314,12 @@ sub GetPerfData($){
     my $server_info = getServerConfig($id);
     my $distantconnexion = $server_info->{'ns_ip_address'};
 
-    if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'} != "") {
+    if (defined($server_info->{'ssh_port'}) && !$server_info->{'ssh_port'}) {
 		$port = $server_info->{'ssh_port'};
     }
 
     # Where is perfdata file on this poller 
-    my $distantperffile = getNagiosConfigurationField($id, "service_perfdata_file");
+    my $distantperffile = getPerfDataFile($con, $id);
 
     # Build destination directory reserved for this poller
     my $localbasevardir = "$VARLIB/perfdata/$id";
@@ -319,20 +329,26 @@ sub GetPerfData($){
     mkdir $localbasevardir if (!-d $localbasevardir);
 
     my $localtmpperffile = "$localbasevardir/service-perfdata";
+	
+	my $localperffile = getPerfDataFile($con, getLocalServerID());
 
 	# Get Perfdata file
-	writeLogFile("$rsync -d --remove-source-files --port=$port $distantconnexion:$distantperffile $localtmpperffile") if ($debug);
-	`$rsync -d --remove-source-files --port=$port $distantconnexion:$distantperffile $localtmpperffile 2>> /dev/null`;
-
-	# Write data from distant poller on local file for centstorage
-	if (-f $localtmpperffile){
-	    if ($debug) {
-			writeLogFile("cat $localtmpperffile >> $localperffile");
-	    }
-	    `cat $localtmpperffile >> $localperffile`;
-	    if (!unlink($localtmpperffile)) {
-			writeLogFile("Cannot Remove performance data file : $localtmpperffile");
-	    }
+	if (!defined($distantperffile)) {
+		writeLogFile("Cannot get perfdata file. Unkown perfdata file on poller $id");
+	} else {
+		writeLogFile("$rsync -d --remove-source-files --port=$port $distantconnexion:$distantperffile $localtmpperffile") if ($debug);
+		`$rsync -d --remove-source-files --port=$port $distantconnexion:$distantperffile $localtmpperffile 2>> /dev/null`;
+	
+		# Write data from distant poller on local file for centstorage
+		if (-f $localtmpperffile){
+		    if ($debug) {
+				writeLogFile("cat $localtmpperffile >> $localperffile");
+		    }
+		    `cat $localtmpperffile >> $localperffile`;
+		    if (!unlink($localtmpperffile)) {
+				writeLogFile("Cannot Remove performance data file : $localtmpperffile");
+		    }
+		}
 	}
 }
 
@@ -341,6 +357,7 @@ sub GetLogFile($){
     my $id = $_[0];
     my $port = 22; 
     my $debug = 1;
+    
 #    my $VARLIB = "@CENTREON_VARLIB@";
     my $VARLIB = "/var/lib/centreon/";
 
@@ -429,7 +446,7 @@ sub initNagios($$){
     # Get configuration
     my $conf = getServerConfig($id);
 
-    if (defined($conf->{'ssh_port'}) && $conf->{'ssh_port'} != "") {
+    if (defined($conf->{'ssh_port'}) && $conf->{'ssh_port'}) {
         $port = $conf->{'ssh_port'};
     }
     
@@ -456,7 +473,7 @@ sub syncTraps($) {
     # Get configuration
     my $ns_server = getServerConfig($id);
 	
-	if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'} != "") {
+	if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'}) {
         $port = $ns_server->{'ssh_port'};
     }
 	
@@ -497,8 +514,8 @@ sub syncArchives($) {
     # Get configuration
     my $ns_server = getServerConfig($id);
     
-    if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'} != "") {
-	$port = $ns_server->{'ssh_port'};
+    if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'}) {
+		$port = $ns_server->{'ssh_port'};
     }
     
     if ($id != 0) {
@@ -518,10 +535,10 @@ sub syncArchives($) {
 		    # Archive Sync
 		    writeLogFile("$rsync --port=$port -c ".$ns_server->{'ns_ip_address'}.":".$data->{'log_archive_path'}."/*.log $varlib/log/".$ns_server->{'id'}."/archives/") if ($debug);
 	
-		    writeLogFile("Synchronize archives for poller $id");
+		    writeLogFile("Start Synchronizing archives for poller $id");
 		    `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $varlib/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
 		    undef($data);
-		    writeLogFile("Sync over for poller $id");
+		    writeLogFile("Synchronize over for poller $id");
 	
 		} else {
 		    print "Can't get archive path for poller ".$ns_server->{'id'}." (".$ns_server->{'ns_address_ip'}.") -> ".$sth->errstr;
@@ -547,9 +564,8 @@ sub parseRequest($){
 		return ;
     }
 
-    # 
     # Checks keys for launching commands
-    # 
+
     if ($_[0] =~ /RESTART\:([0-9]*)/){
 		initNagios($1, "restart");
     } elsif ($_[0] =~ /RELOAD\:([0-9]*)/){
@@ -605,32 +621,36 @@ my $pid  = 0;
 
 if ($pid ne fork()) {
 
-	signalstartprogram();
-	writepid($$);
-
-	while ($stop) {  
-
-	    if ( -f $cmdFile) {
-			if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
-			    while (<FILE>){
-				parseRequest($_);
-			    }
-			    writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
+    # Fork 
+    if (!fork()) {
+	
+		signalstartprogram();
+		writepid($$);
+	
+		while ($stop) {  
+	
+		    if ( -f $cmdFile) {
+				if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
+				    while (<FILE>){
+						parseRequest($_);
+				    }
+				    writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
+				}
+				close(FILE);
+		    }
+		    if (defined($timeSyncPerf) && $timeSyncPerf) {
+				$difTime = time() - $timeSyncPerf;
 			}
-			close(FILE);
-	    }
-	    if (defined($timeSyncPerf) && $timeSyncPerf) {
-			$difTime = time() - $timeSyncPerf;
+		    if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
+				# Get PerfData on Nagios Poller
+				GetAllNagiosServerPerfData();		
+				$timeSyncPerf = time();
+		    }
+		    sleep(1);
 		}
-	    if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
-			# Get PerfData on Nagios Poller
-			GetAllNagiosServerPerfData();		
-			$timeSyncPerf = time();
-	    }
-	    sleep(1);
+	    
+	    signalstopprogram();
 	}
-    
-    signalstopprogram();
     exit 0;
 }
 
