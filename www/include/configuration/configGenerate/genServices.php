@@ -337,7 +337,322 @@
 		}
 		
 	} else {
-		
+		$DBRESULT =& $pearDB->query("SELECT * FROM service WHERE `service_activate` = '1' AND `service_register` = '1' ORDER BY `service_register`, `service_description`");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$service = array();
+		$i = 1;
+		$str = NULL;
+		while ($service =& $DBRESULT->fetchRow())	{
+			$LinkedToHost = 0;
+			$strDef = "";
+			
+			$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
+			$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
+			$service["service_alias"] = str_replace('#S#', "/", $service["service_alias"]);
+			$service["service_alias"] = str_replace('#BS#', "\\", $service["service_alias"]);
+			
+			if (isset($gbArr[4][$service["service_id"]]))	{
+				/*
+				 *  Can merge multiple Host or HostGroup Definition
+				 */
+				$strTMP = NULL;
+				$parent = false;
+				$ret["comment"] ? ($strTMP .= "# '" . $service["service_description"] . "' service definition " . $i . "\n") : NULL;
+				if ($ret["comment"] && $service["service_comment"])	{
+					$comment = array();
+					$comment = explode("\n", $service["service_comment"]);
+					foreach ($comment as $cmt)
+						$strTMP .= "# ".$cmt."\n";
+				}
+				$strTMP .= "define service{\n";
+				if ($service["service_register"])	{
+					/*
+					 * HostGroup Relation
+					 */
+					$hostGroup = array();
+					$strTMPTemp = NULL;
+					$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM host_service_relation hsr, hostgroup hg WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.hostgroup_hg_id = hg.hg_id");
+					if (PEAR::isError($DBRESULT2))
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+					while ($hostGroup =& $DBRESULT2->fetchRow())	{
+						$BP = false;
+						if (isset($generatedHG[$hostGroup["hg_id"]]) && $generatedHG[$hostGroup["hg_id"]]){
+							$parent = true;
+							$strTMPTemp != NULL ? $strTMPTemp .= ", ".$hostGroup["hg_name"] : $strTMPTemp = $hostGroup["hg_name"];
+							$LinkedToHost++;
+						}
+					}
+					$DBRESULT2->free();
+					if ($strTMPTemp) 
+						$strTMP .= print_line("hostgroup_name", $strTMPTemp);
+					unset($hostGroup);
+					unset($strTMPTemp);
+					
+					if (!$parent)	{
+						/*
+						 * Host Relation
+						 */
+						$host = array();
+						$strTMPTemp = NULL;
+						$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_service_relation hsr, host WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.host_host_id = host.host_id");
+						if (PEAR::isError($DBRESULT2))
+							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+						while ($host =& $DBRESULT2->fetchRow())	{
+							$BP = false;
+							isset($gbArr[2][$host["host_id"]]) ? $BP = true : NULL;
+							
+							if ($BP)	{
+								$parent = true;
+								if (isHostOnThisInstance($host["host_id"], $tab['id'])){
+									$strTMPTemp != NULL ? $strTMPTemp .= ", ".$host["host_name"] : $strTMPTemp = $host["host_name"];
+									$LinkedToHost++;
+								}
+							}
+						}
+						$DBRESULT2->free();
+						if ($strTMPTemp) $strTMP .= print_line("host_name", $strTMPTemp);
+						unset($host);
+					}
+					unset($strTMPTemp);
+				}
+				
+				if ($service["service_description"]) 
+					$strTMP .= print_line("service_description", $service["service_description"]);
+				
+				/*
+				 * Template Model Relation
+				 */
+				if ($service["service_template_model_stm_id"]) {
+					$strTMP .= print_line("use", convertServiceSpecialChar($svcTplCache[$service["service_template_model_stm_id"]]));
+				}
+				
+				if (isset($sgCache[$service["service_id"]])) {
+					$strTMPTemp = "";
+					foreach ($sgCache[$service["service_id"]] as $sg_name) {
+						if ($strTMPTemp != "") 
+							$strTMPTemp .= ",";
+						$strTMPTemp .= $sg_name;
+					}
+					if ($strTMPSG) 
+						$strTMP .= print_line("servicegroups", $strTMPSG);
+					unset($strTMPSG);
+				}
+				
+				/*
+				 * Service Group
+				 */
+				if (isset($sgCache[$service["service_id"]])) {
+					$strTMPTemp = "";
+					foreach ($sgCache[$service["service_id"]] as $sg_name) {
+						if ($strTMPTemp != "") 
+							$strTMPTemp .= ",";
+						$strTMPTemp .= $sg_name;
+					}
+					if ($strTMPSG) 
+						$strTMP .= print_line("servicegroups", $strTMPSG);
+					unset($strTMPSG);
+				}
+
+
+				if ($service["service_is_volatile"] != 2) 
+					$strTMP .= print_line("is_volatile", $service["service_is_volatile"] == 1 ? "1": "0");
+			
+				/*
+				 * Check Command
+				 */
+				$command = NULL;
+				$command = getMyCheckCmdParam($service["service_id"]);
+				if ($command)
+					$strTMP .= print_line("check_command", $command);
+				
+				
+				if ($service["service_max_check_attempts"] != NULL) 
+					$strTMP .= print_line("max_check_attempts", $service["service_max_check_attempts"]);
+				if ($service["service_normal_check_interval"] != NULL) 
+					$strTMP .= print_line("normal_check_interval", $service["service_normal_check_interval"]);
+				if ($service["service_retry_check_interval"] != NULL) 
+					$strTMP .= print_line("retry_check_interval", $service["service_retry_check_interval"]);
+				if ($service["service_active_checks_enabled"] != 2) 
+					$strTMP .= print_line("active_checks_enabled", $service["service_active_checks_enabled"] == 1 ? "1": "0");
+				if ($service["service_passive_checks_enabled"] != 2) 
+					$strTMP .= print_line("passive_checks_enabled", $service["service_passive_checks_enabled"] == 1 ? "1": "0");
+				
+				/*
+				 * Check Period
+				 */
+				if (isset($service["timeperiod_tp_id"]) && $service["timeperiod_tp_id"])
+					$strTMP .= print_line("check_period", $timeperiods[$service["timeperiod_tp_id"]]);
+
+				if ($service["service_parallelize_check"] != 2) 
+					$strTMP .= print_line("parallelize_check", $service["service_parallelize_check"] == 1 ? "1": "0");
+				if ($service["service_obsess_over_service"] != 2) 
+					$strTMP .= print_line("obsess_over_service", $service["service_obsess_over_service"] == 1 ? "1": "0");
+				if ($service["service_check_freshness"] != 2) 
+					$strTMP .= print_line("check_freshness", $service["service_check_freshness"] == 1 ? "1": "0");
+				if ($service["service_freshness_threshold"] != NULL) 	
+					$strTMP .= print_line("freshness_threshold", $service["service_freshness_threshold"]);
+				
+				/*
+				 * Event_handler
+				 */
+				 
+				$command = array();
+				$service["command_command_id_arg2"] = str_replace('#BR#', "\\n", $service["command_command_id_arg2"]);
+				$service["command_command_id_arg2"] = str_replace('#T#', "\\t", $service["command_command_id_arg2"]);
+				$service["command_command_id_arg2"] = str_replace('#R#', "\\r", $service["command_command_id_arg2"]);
+				$service["command_command_id_arg2"] = str_replace('#S#', "/", $service["command_command_id_arg2"]);
+				$service["command_command_id_arg2"] = str_replace('#BS#', "\\", $service["command_command_id_arg2"]);
+				
+				if ($service["command_command_id2"])
+					$strTMP .= print_line("event_handler", $commands[$service["command_command_id2"]].$service["command_command_id_arg2"]);
+				
+				if ($service["service_event_handler_enabled"] != 2) 
+					$strTMP .= print_line("event_handler_enabled", $service["service_event_handler_enabled"] == 1 ? "1": "0");
+				if ($service["service_low_flap_threshold"] != NULL) 
+					$strTMP .= print_line("low_flap_threshold", $service["service_low_flap_threshold"]);
+				if ($service["service_high_flap_threshold"] != NULL) 
+					$strTMP .= print_line("high_flap_threshold", $service["service_high_flap_threshold"]);
+				if ($service["service_flap_detection_enabled"] != 2) 
+					$strTMP .= print_line("flap_detection_enabled", $service["service_flap_detection_enabled"] == 1 ? "1": "0");
+				if ($service["service_process_perf_data"] != 2) 
+					$strTMP .= print_line("process_perf_data", $service["service_process_perf_data"] == 1 ? "1": "0");
+				if ($service["service_retain_status_information"] != 2) 
+					$strTMP .= print_line("retain_status_information", $service["service_retain_status_information"] == 1 ? "1": "0");
+				if ($service["service_retain_nonstatus_information"] != 2) 
+					$strTMP .= print_line("retain_nonstatus_information", $service["service_retain_nonstatus_information"] == 1 ? "1": "0");
+				if ($service["service_notification_interval"] != NULL) 
+					$strTMP .= print_line("notification_interval", $service["service_notification_interval"]);
+				
+				if (isset($service["timeperiod_tp_id2"]) && $service["timeperiod_tp_id2"])
+					$strTMP .= print_line("notification_period", $timeperiods[$service["timeperiod_tp_id2"]]);
+				
+				if ($service["service_notification_options"]) 
+					$strTMP .= print_line("notification_options", $service["service_notification_options"]);
+				if ($service["service_notifications_enabled"] != 2) 
+					$strTMP .= print_line("notifications_enabled", $service["service_notifications_enabled"] == 1 ? "1": "0");
+				
+				/*
+				 * Contact Group Relation
+				 */
+				
+				if (isset($cgSCache[$service["service_id"]])) {
+					$strTMPTemp = "";
+					foreach ($cgSCache[$service["service_id"]] as $cg_name) {
+						if ($strTMPTemp != "") 
+							$strTMPTemp .= ",";
+						$strTMPTemp .= $cg_name;
+					}
+					if ($strTMPTemp) 
+						$strTMP .= print_line("contact_groups", $strTMPTemp);
+					unset($strTMPTemp);
+				}
+				
+				/*
+				 * Contact Relation only for Nagios 3
+				 */
+				if ($oreon->user->get_version() >= 3) {
+					if (isset($cctSCache[$service["service_id"]])) {
+						$strTMPTemp = "";
+						foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
+							if ($strTMPTemp != "") 
+								$strTMPTemp .= ",";
+							$strTMPTemp .= $cct_name;
+						}
+						if ($strTMPTemp) 
+							$strTMP .= print_line("contacts", $strTMPTemp);
+						unset($strTMPTemp);
+					}
+				}
+				
+				/*
+				 * Contact Group Relation
+				 */
+				
+				if (isset($cgSCache[$service["service_id"]])) {
+					$strTMPTemp = "";
+					foreach ($cgSCache[$service["service_id"]] as $cg_name) {
+						if ($strTMPTemp != "") 
+							$strTMPTemp .= ",";
+						$strTMPTemp .= $cg_name;
+					}
+					if ($strTMPTemp) 
+						$strTMP .= print_line("contact_groups", $strTMPTemp);
+					unset($strTMPTemp);
+				}
+				
+				/*
+				 * Contact Relation only for Nagios 3
+				 */
+				if ($oreon->user->get_version() >= 3) {
+					if (isset($cctSCache[$service["service_id"]])) {
+						$strTMPTemp = "";
+						foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
+							if ($strTMPTemp != "") 
+								$strTMPTemp .= ",";
+							$strTMPTemp .= $cct_name;
+						}
+						if ($strTMPTemp) 
+							$strTMP .= print_line("contacts", $strTMPTemp);
+						unset($strTMPTemp);
+					}
+				}
+				if ($service["service_stalking_options"]) 
+					$strTMP .= print_line("stalking_options", $service["service_stalking_options"]);
+				if (!$service["service_register"]) 
+					$strTMP .= print_line("register", "0");
+				
+				if (isset($service["service_register"]) && $service["service_register"] == 0){
+					$DBRESULT_TEMP =& $pearDB->query("SELECT host_name FROM host, host_service_relation WHERE `service_service_id` = '".$service["service_id"]."' AND `host_id` = `host_host_id`");
+					if (PEAR::isError($DBRESULT_TEMP))
+						print "DB Error : ".$DBRESULT_TEMP->getDebugInfo()."<br />";
+					while($template_link =& $DBRESULT_TEMP->fetchRow())
+						$strTMP .= print_line(";TEMPLATE-HOST-LINK", $template_link["host_name"]);
+					unset($template_link);
+					unset($DBRESULT_TEMP);
+				}
+				
+				if ($oreon->user->get_version() >= 3) {
+					/*
+					 * On-demand macros
+					 */
+					if (isset($macroCache[$service['service_id']])) {
+						foreach ($macroCache[$service['service_id']] as $key => $value) {
+							$mac_name = str_replace("\$_SERVICE", "_", $key);
+							$mac_name = str_replace("\$", "", $mac_name);
+							$strTMP .= print_line($mac_name, $value);
+						}
+					}
+				
+					/*
+					 * Extended Informations
+					 */
+					
+					if (isset($esiCache[$service["service_id"]])) {
+						foreach ($esiCache[$service["service_id"]] as $esi) {
+							if (isset($esi["notes"]) && $esi["notes"])
+								$strTMP .= print_line("notes", $esi["notes"]);
+							if (isset($esi["notes_url"]) && $esi["notes_url"])
+								$strTMP .= print_line("notes_url", $esi["notes_url"]);
+							if (isset($esi["action_url"]) && $esi["action_url"])
+								$strTMP .= print_line("action_url", $esi["action_url"]);
+							if (isset($exi["icon_image"]) && $exi["icon_image"])
+								$strTMP .= print_line("icon_image", $exi["icon_image"]);
+							if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
+								$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);	
+						}
+					}
+				}
+				
+				$strTMP .= "}\n\n";
+				if (!$service["service_register"] || $LinkedToHost)	{
+					$i++;
+					$str .= $strTMP;
+				}
+				unset($parent);
+				unset($strTMPTemp);
+			}
+		}
 	}
 	
 	unset($service);
