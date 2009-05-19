@@ -123,6 +123,14 @@ sub parseFile ($$) {
 	
     my $historyFile = "$VarLib/log/$instance/.history";
      
+    if (!-f "$VarLib/log/") {
+        mkdir("$VarLib/log/");
+    }
+
+    if (!-f "$VarLib/log/$instance") {
+        mkdir("$VarLib/log/$instance");
+    } 
+     
     # Get History Flag
    	if (!open(FILE, $historyFile)){
 		print "Cannot open file : $historyFile (READ)\n";
