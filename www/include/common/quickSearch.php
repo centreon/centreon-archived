@@ -57,16 +57,23 @@
 	$search = mysql_real_escape_string($search);
 	
 	if (isset($search) && $search)
-		$attrsText = array("size"=>"25", "id"=>"input_search", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;");
+		$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;");
 	else
-		$attrsText = array("size"=>"25", "id"=>"input_search", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;");
+		$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;");
+	
+	$attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;");
+	
+	$attrsSubmit = array("style"=>"display:none;");
 	
 	if (!isset($limit))
 		$limit = 20;
 	
-	$tab = array ("search" => $search, "p"=>$p, "o"=>$o, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
+	$tab = array ("search" => $search, "search_service" => $search_service, "p"=>$p, "o"=>$o, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
 	
 	$form_search->addElement('text', 'search', _("Quick Search"), $attrsText);
+	if (isset($FlagSearchService) && $FlagSearchService)
+		$form_search->addElement('text', 'search_service', _("Quick Search"), $attrsText2);
+	$form_search->addElement('submit', 'submit', _("Go"), $attrsSubmit);
 	$form_search->addElement('hidden', 'p');
 	$form_search->addElement('hidden', 'limit');
 	$form_search->addElement('hidden', 'list');
@@ -99,6 +106,7 @@
 	$tpl->assign('form_search', $renderer->toArray());
 	$tpl->assign('p', $p);
 	$tpl->assign("displayHSOptions", $displayHSOptions);
-
+	if (isset($FlagSearchService) && $FlagSearchService)
+		$tpl->assign("FlagSearchService", $FlagSearchService);
 	$tpl->display("quickSearch.ihtml");
 ?>
