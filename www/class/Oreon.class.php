@@ -52,6 +52,7 @@ class Oreon	{
 	var $status_graph_host;
 	var $historyPage;
   	var $historySearch;
+  	var $historySearchService;
 	var $historyLimit;
   	var $search_type_service;
 	var $search_type_host;
@@ -116,6 +117,7 @@ class Oreon	{
 	function createHistory(){
   		$this->historyPage = array();
   		$this->historySearch = array();
+  		$this->historySearchService = array();
   		$this->historyLimit = array();
   		$this->search_type_service = 1;
   		$this->search_type_host = 1;
