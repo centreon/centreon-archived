@@ -549,8 +549,11 @@
 	}
 
 	function getMyHostExtendedInfoImage($host_id = NULL, $field, $flag1stLevel = NULL)	{
-		if (!$host_id) return;
 		global $pearDB, $oreon;
+		
+		if (!$host_id) 	
+			return;
+			
 		if ($oreon->user->get_version() < 3) {
 			while(1)	{
 				$DBRESULT =& $pearDB->query("SELECT h.host_template_model_htm_id, ".$field." FROM host h, extended_host_information ehi WHERE h.host_id = '".$host_id."' AND ehi.host_host_id = h.host_id LIMIT 1");
@@ -568,8 +571,7 @@
 						return NULL;
 				}
 			}
-		}
-		elseif ($oreon->user->get_version() >= 3 && isset($flag1stLevel) && $flag1stLevel) {
+		} elseif ($oreon->user->get_version() >= 3 && isset($flag1stLevel) && $flag1stLevel) {
 			$rq = "SELECT ehi.".$field." " .
 					"FROM extended_host_information ehi " .
 					"WHERE ehi.host_host_id = '".$host_id."' LIMIT 1";								
@@ -586,8 +588,7 @@
 					return $result_field;
 			}
 			return NULL;
-		}
-		elseif ($oreon->user->get_version() >= 3) {
+		} elseif ($oreon->user->get_version() >= 3) {
 			$rq = "SELECT host_tpl_id " .
 				"FROM host_template_relation " .
 				"WHERE host_host_id = '".$host_id."' " .
@@ -611,6 +612,20 @@
 				}
 			}
 			return NULL;
+		}
+	}
+	
+	function getImageFilePath($image_id)	{
+		global $pearDB, $oreon;
+		
+		if (!$image_id) 	
+			return;
+			
+		if (isset($image_id) && $image_id)	{
+			$DBRESULT2 =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = ".$image_id." AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+			$row2 =& $DBRESULT2->fetchRow();
+			if (isset($row2["dir_alias"]) && isset($row2["img_path"]) && $row2["dir_alias"] && $row2["img_path"])
+				return $row2["dir_alias"]."/".$row2["img_path"];
 		}
 	}
 
@@ -983,7 +998,7 @@
 		return $hSvs;
 	}
 	
-	function getMyHostActiveServices($host_id = NULL)	{
+	function getMyHostActiveServices($host_id = NULL, $search = NULL)	{
 		global $pearDB;
 		
 		if (!$host_id) 
@@ -991,10 +1006,14 @@
 		
 		$hSvs = array();
 		
+		$searchSTR = "";
+		if (isset($search) && $search)
+			$searchSTR = " AND `service_description` LIKE '%$search%'";
+		
 		/*
 		 * Get Services attached to hosts
 		 */
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_activate = '1'");
+		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_activate = '1' $searchSTR");
 		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
@@ -1007,7 +1026,7 @@
 		 */
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-				" AND service_id = hsr.service_service_id AND service_activate = '1'");
+				" AND service_id = hsr.service_service_id AND service_activate = '1' $searchSTR ");
 		while ($elem =& $DBRESULT->fetchRow()) {
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
@@ -1439,7 +1458,6 @@
 		global $pearDBO;
 		if (is_numeric($host) && is_numeric($service)){
 			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$host."' AND service_id = '".$service."'");
-			
 			if($DBRESULT->numRows() > 0)
 				return true;
 		}
@@ -1453,11 +1471,11 @@
 	}
 	
 	function host_has_one_or_more_GraphService($host_id){
-		global $pearDBO, $lca;
+		global $pearDBO, $lca, $is_admin;
 	
 		$services = getMyHostServices($host_id);
 		foreach ($services as $svc_id => $svc_name)
-			if (service_has_graph($host_id, $svc_id) && isset($lca["LcaHost"][$host_id][$svc_id]))
+			if (service_has_graph($host_id, $svc_id) && ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_id][$svc_id]))))
 				return true;
 		return false;	
 	}
