@@ -188,3 +188,4 @@ update nagios_server SET `name` = (SELECT instance_name FROM cfg_ndomod WHERE na
 
 update topology set topology_name = 'Global Health' WHERE topology_page = '10102';
 
+UPDATE `informations` SET `value` = '2.1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0.2' LIMIT 1;

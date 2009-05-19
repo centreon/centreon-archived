@@ -64,13 +64,21 @@
         $request = "";
         if (count($file_sql)) {
 	        foreach ($file_sql as $line)
-	        	if ($line[0] != "#")
-	        		$request .= $line;
-			$DBRES =& $pearDBO->query($request);
+	        	if ($line[0] != "#" && $line[0] != "-") {
+	        		$pos = strrpos($line, ";");
+                	if ($pos != false) {
+                    	$str .= $line;
+                    	$str = rtrim($str);
+                    	$str = str_replace(";", "", $str);                    
+                   	$DBRES = $pearDBO->query($str);
+                    $str = NULL;
+                } else
+                	$str .= $line;
+	        }	        	
 			if (!PEAR::isError($DBRES))
 				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
     		else
-    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';    			    		
         } else {
         	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
         }
@@ -81,19 +89,33 @@
 	/*
 	 * Update NDO
 	 */	
-	print "<tr><td><b>Database &#146;".$conf_centreon['dbcstg']."&#146; : Upgrade</b></td>";
+	$DBRESULT =& $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	$confNDO = $DBRESULT->fetchRow();
+	unset($DBRESULT);	
+	
+	print "<tr><td><b>Database &#146;".$confNDO['db_name']."&#146; : Upgrade</b></td>";
 	if (file_exists("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql")) {
 		$file_sql = file("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql");
         $request = "";
         if (count($file_sql)) {
 	        foreach ($file_sql as $line)
-	        	if ($line[0] != "#")
-	        		$request .= $line;
-			$DBRES =& $pearDBndo->query($request);
+	        	if ($line[0] != "#" && $line[0] != "-") {
+	        		$pos = strrpos($line, ";");
+                	if ($pos != false) {
+                    	$str .= $line;
+                    	$str = rtrim($str);
+                    	$str = str_replace(";", "", $str);                    
+                   	$DBRES = $pearDBndo->query($str);
+                    $str = NULL;
+                	} else
+                		$str .= $line;
+	        	}
 			if (!PEAR::isError($DBRES))
 				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
     		else
-    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';    			    		
         } else {
         	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
         }
@@ -123,9 +145,17 @@
         $request = "";
         if (count($file_sql)) {
 	        foreach ($file_sql as $line)
-	        	if ($line[0] != "#")
-	        		$request .= $line;
-			$DBRES =& $pearDB->query($request);
+	        	if ($line[0] != "#" && $line[0] != "-") {
+	        		$pos = strrpos($line, ";");
+                	if ($pos != false) {
+                    	$str .= $line;
+                    	$str = rtrim($str);
+                    	$str = str_replace(";", "", $str);                    
+                   	$DBRES = $pearDB->query($str);
+                    $str = NULL;
+                	} else
+                		$str .= $line;
+	        	}
 			if (!PEAR::isError($DBRES))
 				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
     		else
