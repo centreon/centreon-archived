@@ -43,7 +43,7 @@
 	/*
 	 * Init Flag
 	 */
-		
+
 	$displayHSOptions = 0;
 	
 	$form_search = new HTML_QuickForm('quickSearchForm', 'GET', "?p=".$p."&o=".$o);
@@ -53,8 +53,13 @@
 		$search = $oreon->historySearch[$url];
 	else
 		$search = NULL; 
-	
+		
 	$search = mysql_real_escape_string($search);
+	
+	if (!isset($search_service))
+		$search_service = "";
+	else
+		$search_service = mysql_real_escape_string($search_service);
 	
 	if (isset($search) && $search)
 		$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;");
