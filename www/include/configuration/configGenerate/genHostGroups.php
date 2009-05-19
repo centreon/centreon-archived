@@ -83,6 +83,15 @@
 				$strDef .= print_line("hostgroup_members", $strTemp);
 		}
 		
+		if ($hostGroup["hg_notes"])	
+			$strDef .= print_line("notes", $hostGroup["hg_notes"]);
+		if ($hostGroup["hg_notes_url"])	
+			$strDef .= print_line("notes_url", $hostGroup["hg_notes_url"]);
+		if ($hostGroup["hg_action_url"])	
+			$strDef .= print_line("action_url", $hostGroup["hg_action_url"]);
+		if ($hostGroup["hg_icon_image"])	
+			$strDef .= print_line("icon_image", getImageFilePath($hostGroup["hg_icon_image"]));
+		
 		/*
 		 * Generate only if this hostgroup had a host generate on this nagios instance
 		 */
