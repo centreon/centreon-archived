@@ -76,8 +76,14 @@
 		$searchStr = "&search_host=".htmlentities($_GET["search"], ENT_QUOTES);
 	if (isset($oreon->historySearch[$url]) && !isset($_GET["search"]))
 		$searchStr = "&search_host=".$oreon->historySearch[$url];
-
-	print "<script type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?sid=".session_id().$searchStr."'></script>\n";
+	
+	$searchStrSVC = "";
+	if (isset($_GET["search_service"]))
+		$searchStrSVC = "&search_service=".htmlentities($_GET["search_service"], ENT_QUOTES);
+	else if (isset($oreon->historySearchService[$url]) && !isset($_GET["search_service"]))
+		$searchStr = "&search_service=".$oreon->historySearchService[$url];
+		
+	print "<script type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?sid=".session_id().$searchStr.$searchStrSVC."'></script>\n";
 
 	/*
 	 * include javascript
