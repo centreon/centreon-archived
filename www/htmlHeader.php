@@ -69,7 +69,7 @@
 		echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
 
 
-	global $search;
+	global $search, $search_service;
 	
 	$searchStr = "";
 	if (isset($_GET["search"]))
@@ -78,10 +78,13 @@
 		$searchStr = "&search_host=".$oreon->historySearch[$url];
 	
 	$searchStrSVC = "";
-	if (isset($_GET["search_service"]))
+	if (isset($_GET["search_service"])) {
 		$searchStrSVC = "&search_service=".htmlentities($_GET["search_service"], ENT_QUOTES);
-	else if (isset($oreon->historySearchService[$url]) && !isset($_GET["search_service"]))
+		$search_service = htmlentities($_GET["search_service"], ENT_QUOTES);
+	} else if (isset($oreon->historySearchService[$url]) && !isset($_GET["search_service"])) {
+		$search_service = $oreon->historySearchService[$url];
 		$searchStr = "&search_service=".$oreon->historySearchService[$url];
+	}
 		
 	print "<script type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?sid=".session_id().$searchStr.$searchStrSVC."'></script>\n";
 
