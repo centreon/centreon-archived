@@ -1,3 +1,6 @@
+UPDATE `topology` SET topology_url = 'http://wiki.centreon.com/' WHERE topology_page = '50604' AND topology_name = 'Wiki';
+UPDATE `topology` SET topology_url = 'http://support.centreon.com/' WHERE topology_page = '50607' AND topology_name = 'Support';
+
 INSERT INTO `options` (`key`, `value`) SELECT 'nagios_path', nagios_path FROM `general_opt`;
 INSERT INTO `options` (`key`, `value`) SELECT 'nagios_path_bin', nagios_path_bin FROM `general_opt`;
 INSERT INTO `options` (`key`, `value`) SELECT 'nagios_init_script', nagios_init_script FROM `general_opt`;
