@@ -111,6 +111,7 @@
 	(isset($_GET["multi"]) 			&& !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"], ENT_QUOTES) : $multi = "-1";
 	(isset($_GET["id"])) ? 			$openid = htmlentities($_GET["id"]) : $openid = "-1";
 	(isset($_GET["period"]) 		&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"], ENT_QUOTES) : $auto_period = "-1";
+	(isset($_GET["search_service"]) 		&& !check_injection($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = "";
 	
 	/*
  	 * Get GMT for current user
@@ -214,7 +215,7 @@
 				
 			} else if ($type == 'HH')	{
 				
-				$services = getMyHostServices($id);
+				$services = getMyHostActiveServices($id, $search_service);
 				foreach ($services as $svc_id => $svc_name)	{
 					if (service_has_graph($id, $svc_id) 
 						&& (($is_admin) 

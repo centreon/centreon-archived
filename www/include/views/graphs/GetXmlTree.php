@@ -39,7 +39,7 @@
 	/*
 	 * Include config file
 	 */
-	include_once "@CENTREON_ETC@/centreon.conf.php";	
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
@@ -87,6 +87,7 @@
 	(isset($_GET["id"])) ? $url_var = $_GET["id"] : $url_var = 0;
 	(isset($_GET["search"])) ? $search = $_GET["search"] : $search = 0;
 	(isset($_GET["search_host"])) ? $search = $_GET["search_host"] : $search = 0;
+	(isset($_GET["search_service"])) ? $search_service = $_GET["search_service"] : $search_service = 0;
 	
 	$type = "root";
 	$id = "0";
@@ -150,10 +151,10 @@
 			 */
 			$tab_value = split("_", $id);
 			$id = $tab_value[0];
-			$services = getMyHostActiveServices($id);
+			$services = getMyHostActiveServices($id, $search_service);
 			$graphList = getMyHostGraphs($id);
 		    $host_name = getMyHostName($id);
-		    foreach ($services as $svc_id => $svc_name){
+		    foreach ($services as $svc_id => $svc_name) {
 				if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) && isset($lca["LcaHost"][$id]) && isset($lca["LcaHost"][$id][$svc_id]))) {
 			        $buffer->startElement("item");
 			        $buffer->writeAttribute("child", "0");
@@ -259,6 +260,7 @@
 			$cpt = 0;
 			$str = "";
 			$hostWithGraph = getHostGraphedList();
+			
 			$searchSTR = "";
 			if ($search != "")
 				$searchSTR = " AND (`host_name` LIKE '%$search%' OR `host_alias` LIKE '%$search%') ";

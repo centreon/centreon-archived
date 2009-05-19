@@ -54,6 +54,7 @@
 	/*
 	 * Add Quick Search
 	 */
+	$FlagSearchService = 1;
 	require_once "./include/common/quickSearch.php";
 
 	/*
@@ -90,7 +91,7 @@
 	
 	$id 	= getGetPostValue("id");
 	$id_svc = getGetPostValue("svc_id");
-
+	
 	if (isset($id_svc) && $id_svc){
 		$id = "";
 		$tab_svcs = explode(",", $id_svc);
@@ -173,7 +174,7 @@
     tree.setXMLAutoLoading("./include/views/graphs/GetXmlTree.php");
         
     //load first level of tree
-    tree.loadXML("./include/views/graphs/GetXmlTree.php?<?php if (isset($search) && $search) print "search=$search"; ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
+    tree.loadXML("./include/views/graphs/GetXmlTree.php?<?php if (isset($search) && $search) print "search=$search"."&"; ?><?php if (isset($search_service) && $search_service) print "search_service=$search_service"."&"; ?>id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
 
 	// system to reload page after link with new url
 	//set function object to call on node select 
@@ -351,7 +352,7 @@
 		tree.selectItem(id);
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/GraphService.xsl";
-		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
 
 		proc.setXml(_addrXML)
 		proc.setXslt(_addrXSL)
