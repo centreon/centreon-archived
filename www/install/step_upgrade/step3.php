@@ -44,7 +44,7 @@
 	$version =& $DBRESULT->fetchRow();
 	
 	aff_header("Centreon Upgrade Wizard", "Select Version", 3); ?>
-	In order for your Centreon upgrade to function properly, please select the centreon version you want in which you are.<br /><br />
+	In order for your Centreon upgrade to work properly, please select the appropriate Centreon upgrade script.<br /><br />
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
       <tr>
         <th style="padding-left:20px;" colspan="2">Upgrade SQL Scripts</th>
