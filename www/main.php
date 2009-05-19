@@ -218,6 +218,10 @@
 			$oreon->historySearch[$url] = $_GET["search"];
 		if (isset($_POST["search"]))
 			$oreon->historySearch[$url] = $_POST["search"];
+		if (isset($_GET["search_service"]))
+			$oreon->historySearchService[$url] = $_GET["search_service"];
+		if (isset($_POST["search_service"]))
+			$oreon->historySearchService[$url] = $_POST["search_service"];
 		if (isset($_GET["limit"]))
 			$oreon->historyLimit[$url] = $_GET["limit"];
 		if (isset($_POST["limit"]))
