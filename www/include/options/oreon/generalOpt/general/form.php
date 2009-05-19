@@ -78,7 +78,7 @@
 	$form->addElement('text', 'AjaxFirstTimeReloadStatistic', _("First Refresh delay for statistics"), $attrsText2);
 	$form->addElement('text', 'AjaxFirstTimeReloadMonitoring', _("First Refresh delay for monitoring"), $attrsText2);
 
-	$form->addElement('text', 'gmt', _("Default GMT"), $attrsText2);
+	$form->addElement('text', 'gmt', _("Default timezone"), $attrsText2);
 
 	$templates = array();
 	if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
@@ -111,7 +111,7 @@
 	$form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin shortcut"), '&nbsp;&nbsp;');
 	
 	$options3[] = &HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
-	$form->addGroup($options3, 'enable_gmt', _("Enable GMT/Timezone management"), '&nbsp;&nbsp;');
+	$form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
 	
 	/*
 	 * Form Rules

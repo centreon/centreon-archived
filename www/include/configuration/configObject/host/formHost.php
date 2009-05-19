@@ -282,7 +282,7 @@
 	
 	$GMTList = $CentreonGMT->getGMTList();
 	
-	$form->addElement('select', 'host_location', _("GMT / Location"), $GMTList);
+	$form->addElement('select', 'host_location', _("Timezone / Location"), $GMTList);
 	$form->setDefaults(array('host_location' => $oreon->optGen["gmt"]));
 	if (!isset($host["host_location"]))
 		$host["host_location"] = NULL;

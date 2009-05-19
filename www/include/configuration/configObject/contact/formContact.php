@@ -197,7 +197,7 @@
 	$CentreonGMT = new CentreonGMT();
 	
 	$GMTList = $CentreonGMT->getGMTList();
-	$form->addElement('select', 'contact_location', _("GMT / Location"), $GMTList);
+	$form->addElement('select', 'contact_location', _("Timezone / Location"), $GMTList);
 	$form->setDefaults(array('contact_location' => '0'));
 	if (!isset($cct["contact_location"]))
 		$cct["contact_location"] = 0;
