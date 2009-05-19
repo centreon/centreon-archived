@@ -148,23 +148,7 @@
 						</table>
 					</td>
 					<td valign="top">
-						<table style="">
-			               	<tr>
-			               		<td rowspan="2" valign="top"><b><xsl:value-of select="//lang/sch"/></b></td>
-			               		<td>
-			               			<xsl:element name='input'>
-										<xsl:attribute name="name">search_H</xsl:attribute>
-										<xsl:attribute name="type">text</xsl:attribute>
-										<xsl:if test="//infos/search_H = 'true'">
-											<xsl:attribute name="value"><xsl:value-of select="//infos/search_H"/></xsl:attribute>
-										</xsl:if>
-									</xsl:element>
-			               		</td>
-			               	</tr>
-			               	<tr>
-			               		<td></td>
-			               	</tr>
-			            </table>
+						
 					</td>
 				</tr>
 	       	</table>

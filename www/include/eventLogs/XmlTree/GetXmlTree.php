@@ -159,7 +159,7 @@
 			 */
 			$tab_id = split('_', $id);
 			$id = $tab_id[0];
-			$services = getMyHostActiveServices($id);
+			$services = getMyHostActiveServices($id, htmlentities($_GET["search_service"], ENT_QUOTES));
 			foreach ($services as $svc_id => $svc_name) {
 				if ($is_admin || (isset($lca["LcaHost"][$id]) && isset($lca["LcaHost"][$id][$svc_id]))) {
 			    	$buffer->startElement("item");

@@ -55,7 +55,8 @@
 	/*
 	 * pearDB init
 	 */ 	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	//include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
@@ -125,6 +126,7 @@
 
 	(isset($_GET["search_H"]) 	&& !check_injection($_GET["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($_GET["search_H"])) : $search_H = "VIDE";
 	(isset($_GET["search_S"]) 	&& !check_injection($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
+	(isset($_GET["search_service"]) 		&& !check_injection($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = "";
 
 	if ($contact_id){
 		$user_params = get_user_param($contact_id, $pearDB);		
@@ -324,7 +326,7 @@
 					$host_name = getMyHostName($h_id);
 					if ((isset($lca["LcaHost"][$host_name]) && !$is_admin) || $is_admin) {
 					   $tab_host_name[] = $host_name;
-					   $tab_svc[$host_name] = getMyHostActiveServices($h_id);
+					   $tab_svc[$host_name] = getMyHostActiveServices($h_id, $search_service);
 					}
 				}
 			} else if ($type == 'ST'){
@@ -339,7 +341,7 @@
 			} else if ($type == "HH") {
 				$host_name = getMyHostName($id);
 				$tab_host_name[] = $host_name;
-				$tmp_tab = getMyHostActiveServices($id);
+				$tmp_tab = getMyHostActiveServices($id, $search_service);
 				foreach ($tmp_tab as $key => $value)
 					if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$value])) || $is_admin)
 						$tab_svc[$host_name][$key] = $value;
@@ -440,7 +442,7 @@
 			$req .= ")";
 		} else if($type == "HS") {
 			$service_description = getMyServiceName($id);
-			$host_id = getMyHostActivateService($id);
+			$host_id = getMyHostActivateService($id, $search_service);
 			$host_name = getMyHostName($host_id);
 			
 			$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` like '".$host_name."'";
