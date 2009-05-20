@@ -321,7 +321,6 @@
 		 * if user is admin, allActions is true, 
 		 * else we introduce all actions allowed for user
 		 */
-		$tpl->assign("acl_allActions", $allActions);
 		if (isset($authorized_actions))
 			$tpl->assign("aclAct", $authorized_actions);
 			
@@ -338,7 +337,8 @@
 		$tpl->assign("status", $status);
 		$tpl->assign("en_acknowledge_text", $en_acknowledge_text);
 		$tpl->assign("en_acknowledge", $en_acknowledge);
-		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
+		$tpl->assign("admin", $is_admin);
+		$tpl->assign("lcaTopo", $oreon->user->access->topology);
 		$tpl->assign("h", $hostDB);
 		$tpl->assign("url_id", $url_id);
 		$tpl->assign("m_mon_ticket", "Open Ticket");
@@ -421,11 +421,11 @@
 		var executed_command = received_command.item(0).firstChild.data;
 		
 		if (state == "0") {
-			 msg_result = 'Command sent';			 
+			 msg_result = executed_command + ' sent';			 
 			 document.getElementById(div_id).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + cmd + "\", \""+ div_id +"\", \"" + switch_str + "\")'>"+ switch_str +"</a>";
 		}
 		else {
-			 msg_result = 'Failed to send' + executed_command;
+			 msg_result = 'Failed ' + executed_command;
 		}
 		<?php
 		require_once "./class/centreonMsg.class.php";

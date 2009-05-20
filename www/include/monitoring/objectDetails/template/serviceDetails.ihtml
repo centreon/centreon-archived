@@ -125,70 +125,70 @@
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/gear.gif">&nbsp;{$m_mon_service_command}</td>
 					</tr>
-						{if $aclAct.service_checks || $acl_allActions == true}
+						{if $aclAct.service_checks || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft" id="service_checks">
 									{$img_en[$service_data.active_checks_enabled]}&nbsp;<a href="#" onClick="send_command('service_checks', 'service_checks', '{$en_inv_text[$service_data.active_checks_enabled]} {$m_mon_check_this_service}');">{$en_inv_text[$service_data.active_checks_enabled]} {$m_mon_check_this_service}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_schedule_check || $acl_allActions == true}
+						{if $aclAct.service_schedule_check || $admin == true}
 							<tr class='list_two'>
 								<td class="ListColLeft" id="service_schedule_check">
 									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('service_schedule_check', 'service_schedule_check', '{$m_mon_schedule}');">{$m_mon_schedule}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_schedule_check || $acl_allActions == true}
+						{if $aclAct.service_schedule_check || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft" id="service_schedule_check_forced">
 									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('service_schedule_check', 'service_schedule_check_forced', '{$m_mon_schedule_force}');">{$m_mon_schedule_force}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_submit_result || $acl_allActions == true}
+						{if $aclAct.service_submit_result || $admin == true}
 							<tr class='list_two'>
 								<td class="ListColLeft">
 									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./main.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_submit_passive}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_passive_checks || $acl_allActions == true}					
+						{if $aclAct.service_passive_checks || $admin == true}					
 							<tr class='list_one'>
 								<td class="ListColLeft" id="service_passive_checks">
 									{$img_en[$service_data.passive_checks_enabled]}&nbsp;<a href="#" onClick="send_command('service_passive_checks', 'service_passive_checks', '{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}');">{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_notifications || $acl_allActions == true}
+						{if $aclAct.service_notifications || $admin == true}
 							<tr class='list_two'>
 								<td class="ListColLeft" id="service_notifications">
 									{$img_en[$service_data.notifications_enabled]}&nbsp;<a href="#" onClick="send_command('service_notifications', 'service_notifications', '{$en_inv_text[$service_data.notifications_enabled]} {$m_mon_notification_service}');">{$en_inv_text[$service_data.notifications_enabled]} {$m_mon_notification_service}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_schedule_downtime || $acl_allActions == true}
+						{if $aclAct.service_schedule_downtime || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft">
 									<img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='./main.php?p=20305&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_downtime}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_comment || $acl_allActions == true}
+						{if $aclAct.service_comment || $admin == true}
 							<tr class='list_two'>
 								<td class="ListColLeft">
 									<img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='./main.php?p=20306&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_event_handler || $acl_allActions == true}
+						{if $aclAct.service_event_handler || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft" id="service_event_handler">
 									{$img_en[$service_data.event_handler_enabled]}&nbsp;<a href="#" onClick="send_command('service_event_handler', 'service_event_handler', '{$en_inv_text[$service_data.event_handler_enabled]} {$m_mon_event_handler}');">{$en_inv_text[$service_data.event_handler_enabled]} {$m_mon_event_handler}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_flap_detection || $acl_allActions == true}
+						{if $aclAct.service_flap_detection || $admin == true}
 							<tr class='list_two'>
 								<td class="ListColLeft" id="service_flap_detection">
 									{$img_en[$service_data.flap_detection_enabled]}&nbsp;<a href="#" onClick="send_command('service_flap_detection', 'service_flap_detection', '{$en_inv_text[$service_data.flap_detection_enabled]} {$m_mon_flap_detection}');">{$en_inv_text[$service_data.flap_detection_enabled]} {$m_mon_flap_detection}</a>
@@ -196,7 +196,7 @@
 							</tr>
 						{/if}
 						{if $service_data.current_state != OK}
-								{if $aclAct.service_acknowledgement || $acl_allActions == true}	
+								{if $aclAct.service_acknowledgement || $admin == true}	
 									<tr class='list_one'>
 										<td class="ListColLeft">
 											{$img_en[$service_data.problem_has_been_acknowledged]}&nbsp;<a href='./main.php?p={$p}&o=svcak&cmd=15&host_name={$h.host_name}&service_description={$svc_description}&en={$en_acknowledge[$service_data.problem_has_been_acknowledged]}'>{$en_acknowledge_text[$service_data.problem_has_been_acknowledged]}</a>
@@ -236,31 +236,41 @@
 					</tr>
 				</table>
 				<br />
-				{if $lcaTopo.602}
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/shortcut.gif">&nbsp;{$shortcut}</td>
 					</tr>
+					{if $lcaTopo.602 || $admin == 1}
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href='./main.php?p=602&service_id={$service_id}&o=c'>&#9679;&nbsp;{$Tips1} "{$svc_description}"</a></td>
 					</tr>
+					{/if}
+					{if $lcaTopo.201 || $admin == 1}
 					<tr class='list_two'>
 						<td class="ListColLeft"><a href='./main.php?p=201&o=hd&host_name={$h.host_name}'>&#9679;&nbsp;{$Tips6}</a></td>
 					</tr>
+					{/if}
+					{if $lcaTopo.20201 || $admin == 1}
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&search{$h.host_name}&search_host=1&search_service=0'>&#9679;&nbsp;{$Tips7} "{$h.host_name}"</a></td>
 					</tr>
+					{/if}
+					{if $lcaTopo.4 || $admin == 1}
 					<tr class='list_two'>
 						<td class="ListColLeft"><a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>&#9679;&nbsp;{$Tips3} "{$h.host_name}"</a></td>
 					</tr>
+					{/if}
+					{if $lcaTopo.307 || $admin == 1}
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href='./main.php?p=307&host={$h.host_id}'>&#9679;&nbsp;{$Tips4} "{$h.host_name}"</a></td>
 					</tr>
+					{/if}
+					{if $lcaTopo.30702 || $admin == 1}
 					<tr class='list_two'>
 						<td class="ListColLeft"><a href='./main.php?p=30702&period=yesterday&start=&end=&host_id={$h.host_id}&item={$service_id}'>&#9679;&nbsp;{$Tips5} "{$svc_description}"</a></td>
 					</tr>
+					{/if}
 				</table>
-				{/if}
 				{if $sv_ext_action_url}		
 				<br />
 				<table class="ListTable">

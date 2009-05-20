@@ -43,7 +43,8 @@
 	include_once("./class/centreonHost.class.php");
 	include_once("./class/centreonService.class.php");
 	
-	$pearDBndo = new CentreonDB("ndo");
+	$pearDBndo 	= new CentreonDB("ndo");
+	
 	$hostObj = new CentreonHost($pearDB);
 	$svcObj = new CentreonService($pearDB);
 
@@ -148,7 +149,7 @@
 				" no.name1 as host_name," .
 				" no.name2 as service_description" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-				" WHERE no.object_id = nss.service_object_id AND no.name1 LIKE '".$host_name."' AND no.name2 LIKE '$svc_description'";
+				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
 	
 		$DBRESULT_NDO =& $pearDBndo->query($rq);		
 	
@@ -357,7 +358,8 @@
 		$tpl->assign("harsof", array("0"=>_("SOFT"), "1"=>_("HARD")));
 		$tpl->assign("status", $status);
 		$tpl->assign("h", $host);
-		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
+		$tpl->assign("admin", $is_admin);
+		$tpl->assign("lcaTopo", $oreon->user->access->topology);
 		$tpl->assign("count_comments_svc", count($tabCommentServices));
 		$tpl->assign("tab_comments_svc", $tabCommentServices);
 		$tpl->assign("flag_graph", service_has_graph($host["host_id"], getMyServiceID($svc_description, $host["host_id"])));
@@ -455,11 +457,11 @@
 		var executed_command = received_command.item(0).firstChild.data;
 		
 		if (state == "0") {
-			 msg_result = 'Command sent';			 
+			 msg_result = executed_command + ' sent';			 
 			 document.getElementById(div_id).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + cmd + "\", \""+ div_id +"\", \"" + switch_str + "\")'>"+ switch_str +"</a>";
 		}
 		else {
-			 msg_result = 'Failed to send' + executed_command;
+			 msg_result = 'Failed ' + executed_command;
 		}
 		<?php
 		require_once "./class/centreonMsg.class.php";
