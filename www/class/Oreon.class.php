@@ -101,9 +101,7 @@ class Oreon	{
 		$this->poller = 0;
 	}
 	
-	
-	
-	function creatModuleList($pearDB){
+	function creatModuleList($pearDB) {
 		$this->modules = array();
 		$DBRESULT =& $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
 		while ($result =& $DBRESULT->fetchRow()){
@@ -114,7 +112,7 @@ class Oreon	{
 		$DBRESULT->free();
 	}
 	
-	function createHistory(){
+	function createHistory() {
   		$this->historyPage = array();
   		$this->historySearch = array();
   		$this->historySearchService = array();
@@ -123,7 +121,7 @@ class Oreon	{
   		$this->search_type_host = 1;
   	}
 	
-	function initNagiosCFG($pearDB = NULL)	{
+	function initNagiosCFG($pearDB = NULL) {
 		
 		if (!$pearDB)	
 			return;
