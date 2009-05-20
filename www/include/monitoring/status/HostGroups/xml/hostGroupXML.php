@@ -177,6 +177,10 @@
 		$stats[$ndo["alias"]]["s"][$ndo["current_state"]] = $ndo["nb"];
 	}
 
+	if ($order == "DESC")
+		ksort($stats);
+	else
+		krsort($stats);
 	/* 
 	 * Get Pagination Rows 
 	 */
