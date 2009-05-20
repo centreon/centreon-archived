@@ -36,20 +36,26 @@
  * 
  */
  	
- 	
- 	
 	include_once "DB.php";
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path."/www/DBconnect.php";
-	include_once $centreon_path."/www/DBNDOConnect.php";
 	include_once $centreon_path."/cron/centAcl-Func.php";
+	include_once $centreon_path."/www/class/centreonDB.class.php";
 	
 	/*
 	 * Init values
 	 */
-	
 	$debug = 0;
 		
+	/*
+	 * Init DB connections
+	 */
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
+	$pearDBndo 	= new CentreonDB("ndo");
+	
+	/*
+	 * Begin to build ACL
+	 */
 	$tabGroups = array();
 	$DBRESULT1 =& $pearDB->query(	"SELECT DISTINCT acl_groups.acl_group_id, acl_resources.acl_res_id " .
 									"FROM acl_res_group_relations, `acl_groups`, `acl_resources` " .
@@ -79,7 +85,6 @@
 		/*
 		 * Select 
 		 */
-				
 		$DBRESULT2 =& $pearDB->query("SELECT `acl_resources`.`acl_res_id` FROM `acl_res_group_relations`, `acl_resources` " .
 									"WHERE `acl_res_group_relations`.`acl_group_id` = '".$acl_group_id."' " .
 									"AND `acl_res_group_relations`.acl_res_id = `acl_resources`.acl_res_id " .
