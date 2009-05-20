@@ -37,7 +37,6 @@
  */
  
   	$etc = "@CENTREON_ETC@";
-  	$etc = "/etc/centreon/";
   
 	if (!file_exists("$etc/centreon.conf.php") && is_dir('./install'))
 		header("Location: ./install/setup.php");
