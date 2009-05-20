@@ -62,19 +62,13 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 $debug = 0;
 my $stop = 1;
 
-#my $LOG = "@CENTREON_LOG@/centstorage.log";
-#my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
+my $LOG = "@CENTREON_LOG@/centstorage.log";
+my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
 
-my $LOG = "/usr/local/centreon/log/centstorage.log";
-my $PID = "/var/run/centreon/centstorage.pid";
-
-
-#my $installedPath = "@CENTREON_PATH@/";
-my $installedPath = "/usr/local/centreon/";
+my $installedPath = "@CENTREON_PATH@/";
 
 # Include Configuration Data
-#require "@CENTREON_ETC@/conf.pm";
-require "/etc/centreon/conf.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 sub writeLogFile($){
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
