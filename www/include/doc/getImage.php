@@ -36,26 +36,14 @@
  * 
  */
  
-
-	if (function_exists("filter_var")) {
-		$img = filter_var($_GET["img"], FILTER_SANITIZE_SPECIAL_CHARS);
-		$img = filter_var($img, INPUT_GET);
-
-		$lang = filter_var($_GET["lang"], FILTER_SANITIZE_SPECIAL_CHARS);
-		$lang = filter_var($lang, INPUT_GET);
-
-		$version = filter_var($_GET["version"], FILTER_SANITIZE_SPECIAL_CHARS);
-		$version = filter_var($version, INPUT_GET);
-	}
-	else if (function_exists("filter_get")) {
+	if (function_exists("filter_get")) {
 		$img = filter_var($_GET["img"]);
 		$lang = filter_var($_GET["lang"]);
 		$version = filter_var($_GET["version"]);
-	}
-	else {
-		$img = $_GET["img"];
-		$lang = $_GET["lang"];
-		$version = $_GET["version"];
+	} else {
+		$img = htmlentities($_GET["img"], ENT_QUOTES);
+		$lang = htmlentities($_GET["lang"], ENT_QUOTES);
+		$version = htmlentities($_GET["version"], ENT_QUOTES);
 	}
 
 	$tab_images = split("/", $img);

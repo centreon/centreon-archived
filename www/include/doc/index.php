@@ -51,6 +51,9 @@
 		$page = $_GET["page"];
 	}
 
+	if (strstr($page, "http:"))
+		header("Location: $page");
+
 	$tab_pages = split("/", $page);
 	foreach ($tab_pages as $value)
 		$page = $value;
@@ -80,23 +83,23 @@
 	$flag_end = 0;
 	print "<div style='padding=20px'>";
 
-	$doc = fopen("../doc/".$oreon->user->get_version()."/".$lang."/".$page, "r");	
-	while ($line = fgets($doc)){
-		if ($flag_begin && !$flag_end){
-			$line = preg_replace("/href\=\"/", "href=\"./main.php?p=$p&doc=1&page=", $line);
-			$line = preg_replace("/page\=\#/", "page=".$_GET["page"]."#", $line);
-			$line = preg_replace("/\<ul\>/", "<ul style=\"padding-left:40px;\">", $line);
-			$line = preg_replace("/\<li\>/", "<li style=\"padding-left:30px;\">", $line);
-			$line = preg_replace("/\<strong\>/", "<strong style=\"padding-left:20px;\">", $line);
-			$line = preg_replace("/\<p\>/", "<p style=\"text-align:justify;padding-left:20px;padding-right:10px;padding-top:5px;padding-bottom:10px;\">", $line);
-			$line = preg_replace("/\<img src\=\"images\//", "<img src=\"./include/doc/getImage.php?lang=".$oreon->user->get_lang()."&version=".$oreon->user->get_version()."&img=", $line);
-			$line = preg_replace("/\<table border\=\"0\"/", "<table border=\"1\"", $line);
-			print $line;
+	if ($doc = fopen("../doc/".$oreon->user->get_version()."/".$lang."/".$page, "r"))	
+		while ($line = fgets($doc)){
+			if ($flag_begin && !$flag_end){
+				$line = preg_replace("/href\=\"/", "href=\"./main.php?p=$p&doc=1&page=", $line);
+				$line = preg_replace("/page\=\#/", "page=".$_GET["page"]."#", $line);
+				$line = preg_replace("/\<ul\>/", "<ul style=\"padding-left:40px;\">", $line);
+				$line = preg_replace("/\<li\>/", "<li style=\"padding-left:30px;\">", $line);
+				$line = preg_replace("/\<strong\>/", "<strong style=\"padding-left:20px;\">", $line);
+				$line = preg_replace("/\<p\>/", "<p style=\"text-align:justify;padding-left:20px;padding-right:10px;padding-top:5px;padding-bottom:10px;\">", $line);
+				$line = preg_replace("/\<img src\=\"images\//", "<img src=\"./include/doc/getImage.php?lang=".$oreon->user->get_lang()."&version=".$oreon->user->get_version()."&img=", $line);
+				$line = preg_replace("/\<table border\=\"0\"/", "<table border=\"1\"", $line);
+				print $line;
+			}
+			if (preg_match("/\<body[.]*/", $line))
+				$flag_begin = 1;
+			if (preg_match("/\<\/body[.]*/", $line))
+				$flag_end = 1;
 		}
-		if (preg_match("/\<body[.]*/", $line))
-			$flag_begin = 1;
-		if (preg_match("/\<\/body[.]*/", $line))
-			$flag_end = 1;
-	}
 	print "</div>";
 ?>
