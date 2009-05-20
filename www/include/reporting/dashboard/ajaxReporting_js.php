@@ -36,7 +36,7 @@
  * 
  */
 	
-	require_once "/etc/centreon/centreon.conf.php";
+	require_once "@CENTREON_ETC@/centreon.conf.php";
 	
 	if ($type == "Service") {
 		$arg = "id=".$service_id."&host_id=".$host_id;

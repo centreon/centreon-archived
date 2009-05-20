@@ -58,8 +58,7 @@ class CentreonDB {
 	 */
     function CentreonDB($db = "centreon", $retry = 3) {	
 		
-		//include("@CENTREON_ETC@/centreon.conf.php");
-		require "/etc/centreon/centreon.conf.php";
+		include("@CENTREON_ETC@/centreon.conf.php");
 			
 		require_once $centreon_path."/www/class/centreonLog.class.php";
 	

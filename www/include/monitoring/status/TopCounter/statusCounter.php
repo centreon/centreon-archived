@@ -43,7 +43,7 @@
 		$_GET[$key] = htmlentities($value, ENT_QUOTES);
 	}
 
-	include_once "/etc/centreon/centreon.conf.php";	
+	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";

@@ -39,7 +39,7 @@
 	/*
 	 * configuration
 	 */
-	include_once ("/etc/centreon/centreon.conf.php");
+	include_once ("@CENTREON_ETC@/centreon.conf.php");
 	include_once ("./step_upgrade/functions.php");
 	include_once ("../class/Session.class.php");
 
