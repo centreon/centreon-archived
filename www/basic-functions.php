@@ -51,11 +51,19 @@
 	
 	function get_child($id_page, $lcaTStr){
 		global $pearDB;
-		$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-				FROM topology 
-				WHERE  topology_page IN ($lcaTStr) 
-				AND topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
-				ORDER BY topology_order, topology_group "; 
+		
+		if ($lcaTStr != "")
+			$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+					FROM topology 
+					WHERE  topology_page IN ($lcaTStr) 
+					AND topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
+					ORDER BY topology_order, topology_group "; 
+		else
+			$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+					FROM topology 
+					WHERE  topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
+					ORDER BY topology_order, topology_group "; 
+			
 		$DBRESULT =& $pearDB->query($rq);		
 		$redirect =& $DBRESULT->fetchRow();
 		return $redirect;
@@ -74,11 +82,18 @@
 
 	function get_my_first_allowed_root_menu($lcaTStr){
 		global $pearDB;
-		$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-				FROM topology 
-				WHERE topology_page IN ($lcaTStr) 
-				AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
-				LIMIT 1"; 
+		
+		if ($lcaTStr !=  "")
+			$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+					FROM topology 
+					WHERE topology_page IN ($lcaTStr) 
+					AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
+					LIMIT 1"; 
+		else
+			$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+					FROM topology 
+					WHERE topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
+					LIMIT 1";
 		$DBRESULT =& $pearDB->query($rq);
 		$root_menu = array();
 		if ($DBRESULT->numRows())
