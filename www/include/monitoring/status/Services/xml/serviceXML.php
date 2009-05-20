@@ -37,6 +37,7 @@
  */
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
+	
 	include_once $centreon_path."www/class/other.class.php";
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonACL.class.php";
@@ -45,9 +46,9 @@
 	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";	
 	include_once $centreon_path."www/include/common/common-Func.php";
 
-	$pearDB = new CentreonDB();
-	$pearDBO = new CentreonDB("centstorage");
-	$pearDBndo = new CentreonDB("ndo");
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
+	$pearDBndo 	= new CentreonDB("ndo");
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
@@ -82,7 +83,7 @@
 	(isset($_GET["sort_type"]) 	&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "host_name";
 	(isset($_GET["search_type_host"]) 		&& !check_injection($_GET["search_type_host"])) ? $search_type_host = htmlentities($_GET["search_type_host"]) : $search_type_host = 1;
 	(isset($_GET["search_type_service"])	&& !check_injection($_GET["search_type_service"])) ? $search_type_service = htmlentities($_GET["search_type_service"]) : $search_type_service = 1;
-	(isset($_GET["order"]) 		&& !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
+	(isset($_GET["order"]) 		&& !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $order = "ASC";
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 	(isset($_GET["o"]) 			&& !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) 			&& !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
@@ -91,14 +92,12 @@
 	/*
 	 * Init GMT class
 	 */
-	
 	$centreonGMT = new CentreonGMT();
 	$centreonGMT->getMyGMTFromSession($sid);
 	
 	/*
 	 * Backup poller selection
 	 */
-	
 	$pearDB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'MONITORING_POLLER_ID' AND `cp_contact_id` = '$user_id'");	
 	$pearDB->query("INSERT INTO `contact_param` SET `cp_key` = 'MONITORING_POLLER_ID', `cp_contact_id` = '$user_id', `cp_value` = '$instance'");	
 	
@@ -126,6 +125,7 @@
 	/* 
 	 * Get Host status 
 	 */
+	
 	$rq1 = "SELECT " .
 			" DISTINCT no.name1 as host_name," .
 			" nhs.current_state, nhs.problem_has_been_acknowledged, " .
@@ -160,7 +160,7 @@
 	 * Get Service status
 	 */
 	$rq =		" SELECT " .
-				" DISTINCT no.name1 as host_name," .
+				" no.name1 as host_name," .
 				" nss.process_performance_data," . 
 				" nss.current_state," .
 				" nss.scheduled_downtime_depth," .
@@ -227,23 +227,147 @@
 	$rq_pagination = $rq;
 
 	switch ($sort_type){
-		case 'host_name' : $rq .= " order by no.name1 ". $order.",no.name2 "; break;
-		case 'service_description' : $rq .= " order by no.name2 ". $order.",no.name1 "; break;
-		case 'current_state' : $rq .= " order by nss.current_state ". $order.",no.name1,no.name2 "; break;
-		case 'last_state_change' : $rq .= " order by nss.last_state_change ". $order.",no.name1,no.name2 "; break;
-		case 'last_check' : $rq .= " order by nss.last_check ". $order.",no.name1,no.name2 "; break;
-		case 'current_attempt' : $rq .= " order by nss.current_check_attempt ". $order.",no.name1,no.name2 "; break;
-		default : $rq .= " order by no.name1 ". $order; break;
+		case 'host_name' : 
+			$rq_sorte = " ORDER BY host_name ". $order.", service_description"; 
+			break;
+		case 'service_description' : 
+			$rq_sorte = " ORDER BY service_description ". $order.", host_name "; 
+			break;
+		case 'current_state' : 
+			$rq_sorte = " ORDER BY nss.current_state ". $order.", host_name, service_description ";
+			break;
+		case 'last_state_change' : 
+			$rq_sorte = " ORDER BY nss.last_state_change ". $order.", host_name, service_description "; 
+			break;
+		case 'last_check' : 
+			$rq_sorte = " ORDER BY nss.last_check ". $order.", host_name, service_description "; 
+			break;
+		case 'current_attempt' : 
+			$rq_sorte = " ORDER BY nss.current_check_attempt ". $order.", host_name, service_description "; 
+			break;
+		default : 
+			$rq_sorte = " ORDER BY host_name ". $order; 
+			break;
 	}
 
-	$rq .= " LIMIT ".($num * $limit).",".$limit;
-	$DBRESULT_NDO2 =& $pearDBndo->query($rq_pagination);
+	$rq_limit = " LIMIT ".($num * $limit).",".$limit;
+
+	/*
+	 * SELECT A.*, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.flap_detection_enabled 
+	 * FROM (SELECT  no.name1 as host_name,  no.object_id, no.name2 as service_description, ns.notes, ns.notes_url, ns.action_url 
+	 * 			FROM  nagios_objects no, nagios_services ns 
+	 * 			WHERE  no.object_id = ns.service_object_id 
+	 * 				AND no.name1 NOT LIKE '_Module_%' 
+	 * 				AND objecttype_id = 2 
+	 * 				AND no.name1 != '_Module_Meta' 
+	 * 				AND EXISTS (	SELECT 1 
+	 * 								FROM nagios_servicestatus 
+	 * 								WHERE no.object_id = service_object_id 
+	 * 								AND current_state != 0 
+	 *							) order by no.name1,no.name2  LIMIT 0,50
+	 *		) A, nagios_servicestatus nss 
+	 * WHERE A.object_id = nss.service_object_id 
+	 * ORDER BY nss.last_state_change ASC, host_name, service_description;
+	 */
+
+	$ArgNeeded = "A.*, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.scheduled_downtime_depth, nss.flap_detection_enabled";
+
+	$ACLDBName = "";
+	if (!$is_admin)
+		$ACLDBName = ", centreon_acl ";
+
+	$ACLCondition = "";
+	if (!$is_admin)
+		$ACLCondition = " AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description ";
+
+
+	/*
+	 * Prepare current_state condition
+	 */
+
+	$rq_state = "";
+	
+	if ($o == "svcpb")
+		$rq_state = " AND nss.current_state != 0";
+	if ($o == "svc_ok")
+		$rq_state = " AND nss.current_state = 0 ";
+	if ($o == "svc_warning")
+		$rq_state = " AND nss.current_state = 1 ";
+	if ($o == "svc_critical")
+		$rq_state = " AND nss.current_state = 2 ";
+	if ($o == "svc_unknown")
+		$rq_state = " AND nss.current_state = 3 ";
+	
+	if ($o == "svc_unhandled") {
+		$rq_state .= " AND nss.current_state != 0";
+		$rq_state .= " AND nss.state_type = 1";
+		$rq_state .= " AND nss.problem_has_been_acknowledged = 0";
+		$rq_state .= " AND nss.scheduled_downtime_depth = 0";
+	}
+
+	$searchHost = "";
+	if ($search_type_host && $search) {
+		if ($search_type_service && $search)
+			$searchHost .= " AND (";
+		else
+			$searchHost .= " AND ";
+		$searchHost .= "no.name1 LIKE '%$search%' ";
+	}
+	
+	$searchService = "";
+	if ($search_type_service && $search) {
+		if ($search_type_host && $search)
+			$searchService .= " OR ";
+		else
+			$searchService .= " AND ";
+		$searchService .= " no.name2 LIKE '%$search%' ";
+		if ($search_type_host && $search)
+			$searchService .= ")";
+	}
+	
+	$rq3 = 	"SELECT 1 FROM nagios_servicestatus WHERE no.object_id = service_object_id  ";
+	
+	//print $rq3;
+	
+	$rq1 = 	"SELECT $ArgNeeded " .
+		 	"FROM (";
+	
+	$rq1Full = 	"SELECT count(nss.current_state) " .
+		 	"FROM (";
+	
+	$rq2Full = 	"SELECT no.name1 as host_name, no.object_id, no.name2 as service_description, " .
+			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts FROM  nagios_objects no, nagios_services ns $ACLDBName" .
+			"WHERE no.object_id = ns.service_object_id " .
+			"	AND no.name1 NOT LIKE '_Module_%' " .
+			"	$searchHost $searchService $ACLCondition " .
+			"	AND objecttype_id = 2 " .
+			"	AND EXISTS ($rq3)" .
+			"	) A, " .
+		 	"nagios_servicestatus nss WHERE A.object_id = nss.service_object_id $rq_state ";
+
+	$rq2 = 	"SELECT no.name1 as host_name, no.object_id, no.name2 as service_description, " .
+			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts FROM  nagios_objects no, nagios_services ns $ACLDBName" .
+			"WHERE no.object_id = ns.service_object_id " .
+			"	AND no.name1 NOT LIKE '_Module_%' " .
+			"	$searchHost $searchService $ACLCondition " .
+			"	AND objecttype_id = 2 " .
+			"	AND EXISTS ($rq3)" .
+			"	) A, " .
+		 	"nagios_servicestatus nss WHERE A.object_id = nss.service_object_id $rq_state $rq_sorte $rq_limit ";
+
+	$rq = $rq1 . $rq2;
+	
+	$rq_pagination = $rq1Full . $rq2Full;
 
 	/* 
 	 * Get Pagination Rows 
 	 */
 	
-	$numRows = $DBRESULT_NDO2->numRows();
+	$DBRESULT =& $pearDBndo->query($rq_pagination);
+	$data = $DBRESULT->fetchRow();
+	$numRows = $data["count(nss.current_state)"];
+	$DBRESULT->free();
+	unset($data);
 	
 	/*
 	 * Create Buffer
@@ -336,7 +460,7 @@
 			$buffer->writeElement("sc", $color_service);
 			$buffer->writeElement("cs", $tab_status_svc[$ndo["current_state"]]);
 			$buffer->writeElement("po", $ndo["plugin_output"]);
-			$buffer->writeElement("ca", $ndo["current_attempt"]);
+			$buffer->writeElement("ca", $ndo["current_attempt"]."/".$ndo["max_check_attempts"]);
 			$buffer->writeElement("ne", $ndo["notifications_enabled"]);
 			$buffer->writeElement("pa", $ndo["problem_has_been_acknowledged"]);
 			$buffer->writeElement("pc", $ndo["passive_checks_enabled"]);			
