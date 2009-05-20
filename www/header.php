@@ -62,8 +62,13 @@
 	require_once "$classdir/Oreon.class.php";	
 	require_once SMARTY_DIR."Smarty.class.php";
 
-	$pearDB = new CentreonDB();
-	$pearDBO = new CentreonDB("centstorage");
+	/*
+	 * Create DB Connection
+	 *  - centreon
+	 *  - centstorage
+	 */
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
 
 	ini_set("session.gc_maxlifetime", "31536000");
 
@@ -101,16 +106,13 @@
 	/*
 	 * Init differents elements we need in a lot of pages
 	 */
-	unset($oreon->user->lcaTopo);
-	unset($oreon->user->lcaTStr);
-	$oreon->user->createLCA($pearDB);
 	unset($oreon->Nagioscfg);
 	$oreon->initNagiosCFG($pearDB);
 	unset($oreon->optGen);
 	$oreon->initOptGen($pearDB);
 
 	if (!$p){
-		$root_menu = get_my_first_allowed_root_menu($oreon->user->lcaTStr);
+		$root_menu = get_my_first_allowed_root_menu($oreon->user->access->topologyStr);
 		if (isset($root_menu["topology_page"])) 
 			$p = $root_menu["topology_page"]; 
 		else 

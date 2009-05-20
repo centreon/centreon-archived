@@ -52,11 +52,9 @@
 		return htmlentities($var, ENT_QUOTES);
 	}
 
-	
  	/*
  	 * Purge Values 
  	 */
- 	 
 	if (function_exists('filter_var')){	
 		foreach ($_GET as $key => $value){
 			if (!is_array($value)){
@@ -94,13 +92,12 @@
 	
 	/*
 	 * Init URL
-	 */
-	 
+	 */ 
 	$url = "";
 	if (!isset($_GET["doc"])){
-		if ($oreon->user->access->page($p)){
+		if ($oreon->user->access->page($p)) {
 			if ($redirect["topology_page"] < 100){
-				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
+				$ret = get_child($redirect["topology_page"], $oreon->user->access->topologyStr);
 				if (!$ret['topology_page']){
 					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
@@ -108,7 +105,7 @@
 					} else
 						$url = "./alt_error.php";
 				} else {
-					$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);
+					$ret2 = get_child($ret['topology_page'], $oreon->user->access->topologyStr);
 					if ($ret2["topology_url_opt"])	{
 						if (!$o) {
 							$tab = split("\=", $ret2["topology_url_opt"]);
@@ -128,7 +125,7 @@
 					}
 				}
 			} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
-				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
+				$ret = get_child($redirect["topology_page"], $oreon->user->access->topologyStr);
 				if (!$ret['topology_page']){
 					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
@@ -150,7 +147,7 @@
 						$url = "./alt_error.php";
 				}
 			} else if ($redirect["topology_page"] >= 1000) {
-				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
+				$ret = get_child($redirect["topology_page"], $oreon->user->access->topologyStr);
 				if (!$ret['topology_page']){
 					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
@@ -164,7 +161,9 @@
 					} else
 						$url = "./alt_error.php";
 				}
-			}
+			} 
+		} else {
+			$url = "./alt_error.php";
 		}
 	} else
 		$url = "./include/doc/index.php";
