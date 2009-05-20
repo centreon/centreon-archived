@@ -31,10 +31,11 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: 
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
+ 
 	/*
 	 * if debug == 0 => Normal, 
 	 * debug == 1 => get use, 
