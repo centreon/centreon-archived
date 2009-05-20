@@ -31,8 +31,8 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id: metric.php 7146 2008-11-25 10:13:21Z jmathis $
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
 	#
