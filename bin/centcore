@@ -54,25 +54,17 @@ if (POSIX::getuid() == 0 ) {
 
 $timeout = 5;
 
-my $installedPath = "/usr/local/centreon";
-my $LOG = "/usr/local/centreon/log/centcore.log";
-my $PID = "/var/run/centreon/centcore.pid";
-my $cmdFile = "/var/lib/centreon/centcore.cmd";
-
-#my $installedPath = "@CENTREON_DIR@";
-#my $LOG = "@CENTREON_LOG@/centcore.log";
-#my $PID = "@CENTREON_RUNDIR@/centcore.pid";
-#my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
+my $installedPath = "@CENTREON_DIR@";
+my $LOG = "@CENTREON_LOG@/centcore.log";
+my $PID = "@CENTREON_RUNDIR@/centcore.pid";
+my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
 
 $echo = "/bin/echo";
-#$ssh = "@BIN_SSH@";
-#$scp = "@BIN_SCP@";
+$ssh = "@BIN_SSH@";
+$scp = "@BIN_SCP@";
 $rsync = "rsync";
 $rsyncWT = $rsync;
 $sudo = "sudo";
-
-$ssh = "/usr/bin/ssh";
-$scp = "/usr/bin/scp";
 
 # Add Options
 $ssh .= " -o ConnectTimeout=$timeout ";
