@@ -314,18 +314,17 @@
 					 */
 					
 					if (isset($esiCache[$service["service_id"]])) {
-						foreach ($esiCache[$service["service_id"]] as $esi) {
-							if (isset($esi["notes"]) && $esi["notes"])
-								$strTMP .= print_line("notes", $esi["notes"]);
-							if (isset($esi["notes_url"]) && $esi["notes_url"])
-								$strTMP .= print_line("notes_url", $esi["notes_url"]);
-							if (isset($esi["action_url"]) && $esi["action_url"])
-								$strTMP .= print_line("action_url", $esi["action_url"]);
-							if (isset($exi["icon_image"]) && $exi["icon_image"])
-								$strTMP .= print_line("icon_image", $exi["icon_image"]);
-							if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
-								$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);	
-						}
+						$esi =& $esiCache[$service["service_id"]];
+						if (isset($esi["notes"]) && $esi["notes"])
+							$strTMP .= print_line("notes", $esi["notes"]);
+						if (isset($esi["notes_url"]) && $esi["notes_url"])
+							$strTMP .= print_line("notes_url", $esi["notes_url"]);
+						if (isset($esi["action_url"]) && $esi["action_url"])
+							$strTMP .= print_line("action_url", $esi["action_url"]);
+						if (isset($exi["icon_image"]) && $exi["icon_image"])
+							$strTMP .= print_line("icon_image", $exi["icon_image"]);
+						if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
+							$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);	
 					}
 				}
 				$strTMP .= "}\n\n";
@@ -629,18 +628,17 @@
 					 */
 					
 					if (isset($esiCache[$service["service_id"]])) {
-						foreach ($esiCache[$service["service_id"]] as $esi) {
-							if (isset($esi["notes"]) && $esi["notes"])
-								$strTMP .= print_line("notes", $esi["notes"]);
-							if (isset($esi["notes_url"]) && $esi["notes_url"])
-								$strTMP .= print_line("notes_url", $esi["notes_url"]);
-							if (isset($esi["action_url"]) && $esi["action_url"])
-								$strTMP .= print_line("action_url", $esi["action_url"]);
-							if (isset($exi["icon_image"]) && $exi["icon_image"])
-								$strTMP .= print_line("icon_image", $exi["icon_image"]);
-							if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
-								$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);	
-						}
+						$esi =& $esiCache[$service["service_id"]];
+						if (isset($esi["notes"]) && $esi["notes"])
+							$strTMP .= print_line("notes", $esi["notes"]);
+						if (isset($esi["notes_url"]) && $esi["notes_url"])
+							$strTMP .= print_line("notes_url", $esi["notes_url"]);
+						if (isset($esi["action_url"]) && $esi["action_url"])
+							$strTMP .= print_line("action_url", $esi["action_url"]);
+						if (isset($exi["icon_image"]) && $exi["icon_image"])
+							$strTMP .= print_line("icon_image", $exi["icon_image"]);
+						if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
+							$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);	
 					}
 				}
 				
