@@ -120,7 +120,7 @@
 
 	$lcaSTR = "";
 	if (!$is_admin)
-		$lcaSTR = "AND topology_page IN (".$oreon->user->lcaTStr.")";
+		$lcaSTR = "AND topology_page IN (".$oreon->user->access->topologyStr.")";
 
 	/*
 	 * Grab elements for level 1
@@ -239,6 +239,11 @@
 	$tpl->assign("Menu4ID", "menu4_bgcolor");
 	$tpl->assign("connected_users", _("Connected"));
 	$tpl->assign("main_menu", _("Main Menu"));
+	
+	/*
+	 * Send ACL Topology in template
+	 */
+	$tpl->assign("topology", $oreon->user->access->topology);
 
 	/*
 	 * Assign for Smarty Template
