@@ -32,7 +32,7 @@
 	{if $form.nagios_server_id.label}
 	<tr class="list_one"><td class="FormRowField">{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
 	{/if}
-	{if $tpl == 0}
+	{if $tpl == 0 && $tzUsed}
 	<tr class="list_two"><td class="FormRowField">{$form.host_location.label}</td><td class="FormRowValue">{$form.host_location.html}</td></tr>
 	{/if}
 	{if $msg.nagios >= 2 && $msg.nagios < 3}

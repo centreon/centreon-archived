@@ -202,7 +202,6 @@
 	if (!isset($cct["contact_location"]))
 		$cct["contact_location"] = 0;
 	unset($GMTList);
-	unset($CentreonGMT);
 	
    	$auth_type = array();
    	$auth_type["local"] = "local";
@@ -406,6 +405,7 @@
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+		$tpl->assign("tzUsed", $CentreonGMT->used());
 		if ($oreon->optGen['ldap_auth_enable'])
 			$tpl->assign('ldap', $oreon->optGen['ldap_auth_enable'] );
 		$tpl->display("formContact.ihtml");

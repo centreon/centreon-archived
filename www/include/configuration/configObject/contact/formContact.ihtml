@@ -26,7 +26,9 @@
 		<tr class="list_two"><td class="FormRowField">{$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
+		{if $tzUsed}
 		<tr class="list_one"><td class="FormRowField">{$form.contact_location.label}</td><td class="FormRowValue">{$form.contact_location.html}</td></tr>
+		{/if}
 		<!--<tr class="list_one"><td class="FormRowField">{$form.contact_type_msg.label}</td><td class="FormRowValue">{$form.contact_type_msg.html}</td></tr>-->
 		<tr class="list_one"><td class="FormRowField">{$form.contact_admin.label}</td><td class="FormRowValue">{$form.contact_admin.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.contact_auth_type.label}</td><td class="FormRowValue">{$form.contact_auth_type.html}</td></tr>

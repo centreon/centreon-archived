@@ -287,11 +287,8 @@
 	if (!isset($host["host_location"]))
 		$host["host_location"] = NULL;
 	unset($GMTList);
-	unset($CentreonGMT);
-
 
 	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
-
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);	
 	$form->addElement('text', 'host_parallel_template', _("Host Multiple Templates"), $hTpls);
 	?>
@@ -798,7 +795,7 @@
 		$tpl->assign("add_mtp_label", _("Add a template"));
 		$tpl->assign("k", $k);
 		$tpl->assign("tpl", 0);
-		
+		$tpl->assign("tzUsed", $CentreonGMT->used());
 		$tpl->display("formHost.ihtml");
 	}
 
