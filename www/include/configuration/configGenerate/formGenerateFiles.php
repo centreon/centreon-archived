@@ -31,8 +31,8 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL: http://svn.centreon.com/branches/centreon-2.0.x/www/include/configuration/configGenerate/formGenerateFiles.php $
- * SVN : $Id: formGenerateFiles.php 7876 2009-04-24 15:57:07Z jmathis $
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
  
