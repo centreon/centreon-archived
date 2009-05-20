@@ -385,7 +385,6 @@
 
 	$host_prev = "";
 	$class = "list_one";
-	
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq);
 	
 	$ct = 0;
@@ -469,6 +468,17 @@
 			$buffer->writeElement("is", $ndo["is_flapping"]);
 			//$buffer->writeElement("ico", $ndo["icon_image"]);
 			//$buffer->writeElement("icoa", $ndo["icon_image_alt"]);
+			
+			if (!isset($ndo["notes"]) || $ndo["notes"] == "")
+				$ndo["notes"] = $ndo["notes_url"];
+			$buffer->writeElement("sn", $ndo["notes"]);
+			if ($ndo["notes_url"] != "") {
+				$buffer->writeElement("snu", $ndo["notes_url"]);
+			} else {
+				$buffer->writeElement("snu", 'none');
+			}
+			
+			
 			$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);			
 			$buffer->writeElement("ha", $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]);
 			$buffer->writeElement("hae", $host_status[$ndo["host_name"]]["active_checks_enabled"]);

@@ -103,6 +103,16 @@
 			</xsl:element>
 		</td>
 		<td class="ListColRight">
+			<xsl:if test="snu != 'none'">
+				<xsl:element name="a">
+				  	<xsl:attribute name="classe">infobulle</xsl:attribute>
+				  	<xsl:attribute name="href"><xsl:value-of select="snu"/></xsl:attribute>
+						<xsl:element name="img">
+						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+						  	<xsl:attribute name="title">HTTP Link : <xsl:value-of select="sn"/></xsl:attribute>
+						</xsl:element>
+				</xsl:element>
+			</xsl:if>
 			<xsl:if test="pa = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
