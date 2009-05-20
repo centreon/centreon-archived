@@ -61,14 +61,6 @@
 	if (count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
 		$authorized_actions = $oreon->user->access->getActions();
-		if (count($authorized_actions) == 0) 
-			$allActions = true;
-	} else {
-	 	/*
-	 	 * if user is admin, or without ACL, 
-	 	 * he cans perform all actions
-	 	 */
-		$allActions = true;
 	}
 
 	$ndo_base_prefix = getNDOPrefix();
@@ -338,7 +330,6 @@
 		 * if user is admin, allActions is true, 
 		 * else we introduce all actions allowed for user
 		 */
-		$tpl->assign("acl_allActions", $allActions);
 		if (isset($authorized_actions))
 			$tpl->assign("aclAct", $authorized_actions);
 		
