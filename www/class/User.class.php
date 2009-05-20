@@ -77,10 +77,17 @@ class User	{
 		$this->passwd = $user["contact_passwd"];
 		$this->admin = $user["contact_admin"];
 		$this->version = $nagios_version;
-	  	$this->lcaTopo = array();
 	  	$this->gmt = $user["contact_location"];
 	  	$this->is_admin = NULL;
+	  	/*
+	  	 * Initiate ACL
+	  	 */
 	  	$this->access = new CentreonACL($this->user_id, $this->admin);
+	  	$this->lcaTopo =& $this->access->topology;
+	  	$this->lcaTStr =& $this->access->topologyStr;
+	  	/*
+	  	 * Initiate Log Class
+	  	 */
 	  	$this->log = new CentreonUserLog($this->user_id, $pearDB);
   		$this->userCrypted = md5($this->alias);
   	}
@@ -133,96 +140,7 @@ class User	{
 		}
 		$this->is_admin = 0;
 	}
-  	
-  	/*
-  	 * Init topology restriction reference for centreon
-  	 * Create a liste of page who user has access
-  	 */
-  
-  	function createLCA($pearDB = NULL)	{
-	  	$have_an_lca = 0;
-	  	$num = 0;
-	  	$i = 0;
-	   	if (!$pearDB)
-	  		return; 
-	  	
-	  	$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$this->user_id."'");		
-		
-		if ($num = $res1->numRows())	{
-			for ($str = "", $i = 0; $group = $res1->fetchRow() ; $i++)	{
-				if ($str != "")
-					$str .= ", ";
-				$str .= $group["acl_group_id"];
-			}
-		}
-	  	
-	  	$str_topo = "";
-	  	
-	  	if ($this->admin || $i == 0){
-			$this->lcaTopo = $this->getAllTopology($pearDB);
-	  	} else {  		
-			
-			$DBRESULT =& $pearDB->query(	"SELECT DISTINCT acl_topology_id " .
-											"FROM `acl_group_topology_relations`, `acl_topology`, `acl_topology_relations` " .
-											"WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id " .
-											"AND acl_group_topology_relations.acl_group_id IN ($str) " .
-											"AND acl_topology.acl_topo_activate = '1'");
-			
-			if (!$DBRESULT->numRows()){
-				
-				$DBRESULT2 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
-				for ($str_topo = ""; $topo = $DBRESULT2->fetchRow(); )
-					if (isset($topo["topology_page"]))
-						$this->lcaTopo[$topo["topology_page"]] = 1;
-				unset($str_topo);
-				$DBRESULT2->free();
-				
-			} else {
-				while ($topo_group = $DBRESULT->fetchRow()){
-					$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
-			  										"FROM `acl_topology_relations`, acl_topology " .
-			  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
-			  												"AND acl_topology.acl_topo_activate = '1' " .
-			  												"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
-			  		
-			  		$count = 0;
-			  		while ($topo_page =& $DBRESULT2->fetchRow()){
-			  			$have_an_lca = 1;
-			  			if ($str_topo != "")
-			  				$str_topo .= ", ";
-			  			$str_topo .= $topo_page["topology_topology_id"];
-			  			$count++;
-			  		}
-			  		$DBRESULT2->free();
-		  		}
-		  		unset($topo_group);
-		  		unset($topo_page);
-		  		$count ? $ACL = "topology_id IN ($str_topo) AND ": $ACL = "";
-		  		unset($DBRESULT);
-		  		$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");	
-				
-				while ($topo_page =& $DBRESULT->fetchRow())						
-					$this->lcaTopo[$topo_page["topology_page"]] = 1;
-				unset($topo_page);
-				$DBRESULT->free();
-				
-			}
-			unset($DBRESULT);
-	  	}
-	
-	  	$this->lcaTStr = '';
-	  	foreach ($this->lcaTopo as $key => $tmp){
-	  		if (isset($key) && $key){
-		  		if ($this->lcaTStr != "")
-		  			$this->lcaTStr .= ", ";
-		  		$this->lcaTStr .= $key;
-	  		}
-	  	}
-	  	unset($key);
-	  	if (!$this->lcaTStr) 
-	  		$this->lcaTStr = "\'\'";  	
-  	}
-  
+  	  
   // Get
   
   function get_id(){
