@@ -282,7 +282,8 @@ check_result $? "$(gettext "Install Centreon cron.d file")"
 ## cron binary
 cp -R $TMP_DIR/src/cron/ $TMP_DIR/final/
 log "INFO" "$(gettext "Change macros for archiveDayLog")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+${SED}  -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+		-e 's|@CENTREON_VAR@|'"$CENTREON_VARLIB"'|g' \
 	$TMP_DIR/src/cron/archiveDayLog > \
 	$TMP_DIR/work/cron/archiveDayLog
 check_result $? "$(gettext "Change macros for archiveDayLog")"

@@ -215,6 +215,7 @@ ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTSTORAGE_LIB@|'"$CENTSTORAGE_RRD"'|g' \
 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
 	-e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
+	-e 's|@CENTREON_VAR@|'"$CENTREON_VARLIB"'|g' \
 	$TMP_DIR/src/bin/nagiosPerfTrace > $TMP_DIR/work/bin/nagiosPerfTrace
 check_result $? "$(gettext "Change macros for nagiosPerfTrace")"
 
