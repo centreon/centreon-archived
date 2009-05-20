@@ -36,8 +36,8 @@
  * 
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
- require_once $centreon_path . "/www/class/centreonDB.class.php";
+	require_once "@CENTREON_ETC@/centreon.conf.php";
+ 	require_once $centreon_path . "/www/class/centreonDB.class.php";
  
  /*
   *  This class contains the access information of a user 
@@ -54,21 +54,23 @@ require_once "@CENTREON_ETC@/centreon.conf.php";
  	private $hostGroupsFilter = array();
  	private $serviceGroupsFilter = array();
  	private $serviceCategoriesFilter = array();
- 	private $topology = array();
+ 	public  $topology = array();
+ 	public  $topologyStr = "";
  	
  	/*
  	 *  Constructor that takes the user_id
  	 */
  	function CentreonACL($user_id, $is_admin = NULL) { 		
  		$this->userID = $user_id;
+ 		
  		if (!isset($is_admin)) {
  			$localPearDB = new CentreonDB();
  			$rq = "SELECT contact_admin FROM `contact` WHERE contact_id = '".$user_id."' LIMIT 1";
  			$row =& $localPearDB->query($rq);
  			$this->admin = $row['contact_admin'];
- 		}
- 		else
+ 		} else
  			$this->admin = $is_admin; 		
+ 		
  		if (!$this->admin) {
 	 		$this->setAccessGroups();
 	 		$this->setResourceGroups();
@@ -76,6 +78,7 @@ require_once "@CENTREON_ETC@/centreon.conf.php";
 	 		$this->setServiceGroups();
 	 		$this->setServiceCategories();
 	 		$this->setTopology();
+	 		$this->getACLStr();
 	 		$this->setActions();
  		} 		
  	}
@@ -91,13 +94,13 @@ require_once "@CENTREON_ETC@/centreon.conf.php";
 	 	$this->serviceCategories = array();	 	
 	 	$this->actions = array();
 	 	$this->topology = array();
-	 	
 	 	$this->setAccessGroups();
  		$this->setResourceGroups();
  		$this->setHostGroups();
  		$this->setServiceGroups();
  		$this->setServiceCategories();
  		$this->setTopology();
+ 		$this->getACLStr();
  		$this->setActions();
  	}
  	
@@ -232,56 +235,84 @@ require_once "@CENTREON_ETC@/centreon.conf.php";
  	 */
  	private function setTopology()	{
 	  	global $pearDB;
-	  		  		  	
-	  	$str_topo = "";
-		$DBRESULT =& $pearDB->query(	"SELECT DISTINCT acl_topology_id " .
-										"FROM `acl_group_topology_relations`, `acl_topology`, `acl_topology_relations` " .
-										"WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id " .
-										"AND acl_group_topology_relations.acl_group_id IN (". $this->getAccessGroupsString() .")" .
-										"AND acl_topology.acl_topo_activate = '1'");
-												
-		if (!$DBRESULT->numRows()){				
-			$DBRESULT2 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
-			for ($str_topo = ""; $topo = $DBRESULT2->fetchRow(); )
-				if (isset($topo["topology_page"]))
-					$this->topology[$topo["topology_page"]] = 1;
-			unset($str_topo);
-			$DBRESULT2->free();
-		} 
-		else {
-			while ($topo_group = $DBRESULT->fetchRow()) {
-				$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
-		  										"FROM `acl_topology_relations`, acl_topology " .
-		  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
-												"AND acl_topology.acl_topo_activate = '1' " .
-												"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
-				
-				$count = 0;
-				while ($topo_page =& $DBRESULT2->fetchRow()){				
-					if ($str_topo != "")
-						$str_topo .= ", ";
-					$str_topo .= $topo_page["topology_topology_id"];
-			 		$count++;
-				}
+	  	
+	  	if (count($this->accessGroups) > 0) {
+	  	 	/*
+	  	 	 * If user is in an access group
+	  	 	 */
+		  	$str_topo = "";
+			$DBRESULT =& $pearDB->query(	"SELECT DISTINCT acl_topology_id " .
+											"FROM `acl_group_topology_relations`, `acl_topology`, `acl_topology_relations` " .
+											"WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id " .
+											"AND acl_group_topology_relations.acl_group_id IN (". $this->getAccessGroupsString() .")" .
+											"AND acl_topology.acl_topo_activate = '1'");
+													
+			if (!$DBRESULT->numRows()){				
+				$DBRESULT2 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
+				for ($str_topo = ""; $topo = $DBRESULT2->fetchRow(); )
+					if (isset($topo["topology_page"]))
+						$this->topology[$topo["topology_page"]] = 1;
+				unset($str_topo);
 				$DBRESULT2->free();
+			} else {
+				while ($topo_group = $DBRESULT->fetchRow()) {
+					$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
+			  										"FROM `acl_topology_relations`, acl_topology " .
+			  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
+													"AND acl_topology.acl_topo_activate = '1' " .
+													"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
+					
+					$count = 0;
+					while ($topo_page =& $DBRESULT2->fetchRow()){				
+						if ($str_topo != "")
+							$str_topo .= ", ";
+						$str_topo .= $topo_page["topology_topology_id"];
+				 		$count++;
+					}
+					$DBRESULT2->free();
+				}
+				unset($topo_group);
+				unset($topo_page);
+				$count ? $ACL = "topology_id IN ($str_topo) AND " : $ACL = "";
+				unset($DBRESULT);
+				$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");	
+				
+				while ($topo_page =& $DBRESULT->fetchRow())						
+					$this->topology[$topo_page["topology_page"]] = 1;
+				unset($topo_page);
+				$DBRESULT->free();
 			}
-			unset($topo_group);
-			unset($topo_page);
-			$count ? $ACL = "topology_id IN ($str_topo) AND ": $ACL = "";
-			unset($DBRESULT);
-			$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");	
-			
-			while ($topo_page =& $DBRESULT->fetchRow())						
-				$this->topology[$topo_page["topology_page"]] = 1;
-			unset($topo_page);
-			$DBRESULT->free();
-		}
-		unset($DBRESULT);	  	
+			unset($DBRESULT);	  	
+	  	} else  {
+	  		/*
+	  		 * If user isn't in an access group
+	  		 */
+	  		$this->topology[1] = 1;
+	  		$this->topology[101] = 1;
+	  		$this->topology[10101] = 1;
+	  	}
  	}
  	
  	/*
  	 *  Getter functions
  	 */
+ 	 
+ 	/*
+ 	 * Get ACL by string
+ 	 */
+ 	public function getACLStr() {
+ 		
+	  	foreach ($this->topology as $key => $tmp) {
+	  		if (isset($key) && $key) {
+		  		if ($this->topologyStr != "")
+		  			$this->topologyStr .= ", ";
+				$this->topologyStr .= $key;
+	  		}
+	  	}
+	  	unset($key);
+	  	if (!$this->topologyStr) 
+	  		$this->topologyStr = "\'\'";
+ 	} 
  	 
  	/*
  	 *  Access groups Getter
@@ -571,8 +602,9 @@ require_once "@CENTREON_ETC@/centreon.conf.php";
 	 */
 	 public function page($p) {
 	 	$this->checkUpdateACL();
-	 	if ($this->admin || isset($this->topology[$p]))
-	 		return 1;	 	
+	 	if ($this->admin || isset($this->topology[$p])) {
+	 		return 1;
+	 	}
 	 	return 0;
 	 }
 	 
