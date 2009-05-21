@@ -23,8 +23,8 @@
 			<td class="ListColHeaderLeft">&nbsp;{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostAct}</td>
 			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostDeact}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostgroupAct}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostgroupDeact}</td>
+			<!--<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostgroupAct}</td>
+			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostgroupDeact}</td>-->
 			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">&nbsp;{$headerMenu_options}</td>
 		</tr>

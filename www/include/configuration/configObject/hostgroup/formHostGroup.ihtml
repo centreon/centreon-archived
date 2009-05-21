@@ -18,7 +18,7 @@
 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.relation}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.hg_hosts.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_hosts.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.hg_hg.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_hg.html}</p></td></tr>
+		<!--<tr class="list_one"><td class="FormRowField">{$form.hg_hg.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_hg.html}</p></td></tr>-->
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.extended}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.hg_notes.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_notes.html}</p></td></tr>
