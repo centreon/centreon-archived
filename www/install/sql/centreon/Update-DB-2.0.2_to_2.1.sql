@@ -73,6 +73,7 @@ INSERT INTO `options` (`key`, `value`) SELECT 'snmptt_unknowntrap_log_file', snm
 DELETE FROM `topology` WHERE topology_page = '2020201';
 DELETE FROM `topology` WHERE topology_page = '2020202';
 DELETE FROM `topology` WHERE topology_page = '2020203';
+
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Warning', NULL, 20201, 2020102, 20, NULL, './include/monitoring/status/monitoringService.php', '&o=svc_warning', '0', '0', '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Critical', NULL, 20201, 2020103, 30, NULL, './include/monitoring/status/monitoringService.php', '&o=svc_critical', '0', '0', '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Unknown', NULL, 20201, 2020104, 40, NULL, './include/monitoring/status/monitoringService.php', '&o=svc_unknown', '0', '0', '1', NULL, NULL, NULL);
@@ -158,7 +159,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 20215, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 
 ALTER TABLE `contact` ADD `contact_crypt` CHAR( 10 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'MD5';
-
 UPDATE `topology` SET `topology_url` = './include/Administration/about/about.php' WHERE `topology_url` = './include/options/about/about.php' LIMIT 1;
 
 ALTER TABLE `nagios_server` ADD `ssh_port` INT NULL AFTER `id` , ADD `ssh_private_key` VARCHAR( 255 ) NULL AFTER `ssh_port` ;
@@ -178,17 +178,14 @@ CREATE TABLE `hostgroup_hg_relation` (
 ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_parent_id` ) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE ;
 ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_child_id` ) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE ;
 
-alter table nagios_server add nagios_perfdata VARCHAR( 255 ) NULL;
-update nagios_server set nagios_perfdata = '/usr/local/nagios/var/service-perfdata';
-
-
+ALTER TABLE nagios_server ADD nagios_perfdata VARCHAR( 255 ) NULL;
+UPDATE nagios_server SET nagios_perfdata = '/usr/local/nagios/var/service-perfdata';
 
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$_HOSTSNMPCOMMUNITY$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$_HOSTSNMPVERSION$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$_HOSTLOCATION$');
 
-update nagios_server SET `name` = (SELECT instance_name FROM cfg_ndomod WHERE nagios_server.id = cfg_ndomod.ns_nagios_server);
+UPDATE nagios_server SET `name` = (SELECT instance_name FROM cfg_ndomod WHERE nagios_server.id = cfg_ndomod.ns_nagios_server);
+UPDATE topology SET topology_name = 'Global Health' WHERE topology_page = '10102';
 
-update topology set topology_name = 'Global Health' WHERE topology_page = '10102';
-
-UPDATE `informations` SET `value` = '2.1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0.2' LIMIT 1;
+UPDATE `informations` SET `value` = '2.1-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0.2' LIMIT 1;
