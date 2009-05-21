@@ -69,7 +69,7 @@
 		
 		$color = array();
 		foreach ($_GET["color"] as $key => $value) {
-			$color[$key] = htmlentitie($value, ENT_QUOTES);
+			$color[$key] = htmlentities($value, ENT_QUOTES);
 		}
 		
 		$str = "";
