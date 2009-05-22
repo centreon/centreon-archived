@@ -432,9 +432,10 @@
 							$strTMPTemp .= ",";
 						$strTMPTemp .= $sg_name;
 					}
-					if ($strTMPSG) 
+					if (isset($strTMPSG) && $strTMPSG) {
 						$strTMP .= print_line("servicegroups", $strTMPSG);
-					unset($strTMPSG);
+						unset($strTMPSG);
+					}
 				}
 				
 				/*
@@ -447,9 +448,10 @@
 							$strTMPTemp .= ",";
 						$strTMPTemp .= $sg_name;
 					}
-					if ($strTMPSG) 
+					if (isset($strTMPSG) && $strTMPSG) {
 						$strTMP .= print_line("servicegroups", $strTMPSG);
-					unset($strTMPSG);
+						unset($strTMPSG);
+					}
 				}
 
 
