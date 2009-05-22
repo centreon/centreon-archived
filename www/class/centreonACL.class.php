@@ -76,11 +76,11 @@
 	 		$this->setResourceGroups();
 	 		$this->setHostGroups();
 	 		$this->setServiceGroups();
-	 		$this->setServiceCategories();
-	 		$this->setTopology();
+	 		$this->setServiceCategories();	 		
 	 		$this->getACLStr();
 	 		$this->setActions();
- 		} 		
+ 		}
+ 		$this->setTopology();
  	}
  	
  	/*
@@ -236,60 +236,68 @@
  	private function setTopology()	{
 	  	global $pearDB;
 	  	
-	  	if (count($this->accessGroups) > 0) {
-	  	 	/*
-	  	 	 * If user is in an access group
-	  	 	 */
-		  	$str_topo = "";
-			$DBRESULT =& $pearDB->query(	"SELECT DISTINCT acl_topology_id " .
-											"FROM `acl_group_topology_relations`, `acl_topology`, `acl_topology_relations` " .
-											"WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id " .
-											"AND acl_group_topology_relations.acl_group_id IN (". $this->getAccessGroupsString() .")" .
-											"AND acl_topology.acl_topo_activate = '1'");
-													
-			if (!$DBRESULT->numRows()){				
-				$DBRESULT2 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
-				for ($str_topo = ""; $topo = $DBRESULT2->fetchRow(); )
-					if (isset($topo["topology_page"]))
-						$this->topology[$topo["topology_page"]] = 1;
-				unset($str_topo);
-				$DBRESULT2->free();
-			} else {
-				while ($topo_group = $DBRESULT->fetchRow()) {
-					$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
-			  										"FROM `acl_topology_relations`, acl_topology " .
-			  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
-													"AND acl_topology.acl_topo_activate = '1' " .
-													"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
-					
-					$count = 0;
-					while ($topo_page =& $DBRESULT2->fetchRow()){				
-						if ($str_topo != "")
-							$str_topo .= ", ";
-						$str_topo .= $topo_page["topology_topology_id"];
-				 		$count++;
-					}
+	  	if ($this->admin) {	  	
+ 			$query = "SELECT topology_page FROM topology WHERE topology_page IS NOT NULL";
+ 			$DBRES =& $pearDB->query($query);
+ 			while ($row =& $DBRES->fetchRow())
+ 				$this->topology[$row['topology_page']] = 1;
+ 		}	  	
+	  	else {
+		  	if (count($this->accessGroups) > 0) {
+		  	 	/*
+		  	 	 * If user is in an access group
+		  	 	 */
+			  	$str_topo = "";
+				$DBRESULT =& $pearDB->query(	"SELECT DISTINCT acl_topology_id " .
+												"FROM `acl_group_topology_relations`, `acl_topology`, `acl_topology_relations` " .
+												"WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id " .
+												"AND acl_group_topology_relations.acl_group_id IN (". $this->getAccessGroupsString() .")" .
+												"AND acl_topology.acl_topo_activate = '1'");
+														
+				if (!$DBRESULT->numRows()){				
+					$DBRESULT2 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
+					for ($str_topo = ""; $topo = $DBRESULT2->fetchRow(); )
+						if (isset($topo["topology_page"]))
+							$this->topology[$topo["topology_page"]] = 1;
+					unset($str_topo);
 					$DBRESULT2->free();
+				} else {
+					while ($topo_group = $DBRESULT->fetchRow()) {
+						$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
+				  										"FROM `acl_topology_relations`, acl_topology " .
+				  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
+														"AND acl_topology.acl_topo_activate = '1' " .
+														"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
+						
+						$count = 0;
+						while ($topo_page =& $DBRESULT2->fetchRow()){				
+							if ($str_topo != "")
+								$str_topo .= ", ";
+							$str_topo .= $topo_page["topology_topology_id"];
+					 		$count++;
+						}
+						$DBRESULT2->free();
+					}
+					unset($topo_group);
+					unset($topo_page);
+					$count ? $ACL = "topology_id IN ($str_topo) AND " : $ACL = "";
+					unset($DBRESULT);
+					$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");	
+					
+					while ($topo_page =& $DBRESULT->fetchRow())						
+						$this->topology[$topo_page["topology_page"]] = 1;
+					unset($topo_page);
+					$DBRESULT->free();
 				}
-				unset($topo_group);
-				unset($topo_page);
-				$count ? $ACL = "topology_id IN ($str_topo) AND " : $ACL = "";
-				unset($DBRESULT);
-				$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");	
-				
-				while ($topo_page =& $DBRESULT->fetchRow())						
-					$this->topology[$topo_page["topology_page"]] = 1;
-				unset($topo_page);
-				$DBRESULT->free();
-			}
-			unset($DBRESULT);	  	
-	  	} else  {
-	  		/*
-	  		 * If user isn't in an access group
-	  		 */
-	  		$this->topology[1] = 1;
-	  		$this->topology[101] = 1;
-	  		$this->topology[10101] = 1;
+				unset($DBRESULT);	  	
+		  	} else  {
+		  		/*
+		  		 * If user isn't in an access group
+		  		 */
+		  		$this->topology[1] = 1;
+		  		$this->topology[101] = 1;
+		  		$this->topology[10101] = 1;
+		  	}
 	  	}
  	}
  	
@@ -566,16 +574,18 @@
  		return $this->topology;
  	}
  	
- 	public function getTopologyString() {
+ 	public function getTopologyString() { 		
  		$this->checkUpdateACL();
  		$string = ""; 	
- 		$i = 0;	
+ 		$i = 0;
+ 		
  		foreach ($this->topology as $key => $value) {
  			if ($i)
  				$string .= ", ";
  			$string .= "'".$key."'";
  			$i++;
  		}
+ 		 		
  		if (!$i)
  			$string = "''";
  		return $string;	
