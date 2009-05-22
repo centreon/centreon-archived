@@ -120,7 +120,7 @@
 
 	$lcaSTR = "";
 	if (!$is_admin)
-		$lcaSTR = "AND topology_page IN (".$oreon->user->access->topologyStr.")";
+		$lcaSTR = "AND topology_page IN (".$oreon->user->access->getTopologyString().")";
 
 	/*
 	 * Grab elements for level 1
