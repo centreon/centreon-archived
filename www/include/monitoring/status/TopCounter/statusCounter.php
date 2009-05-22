@@ -145,8 +145,12 @@
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 
-		$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");		
-		$general_opt =& $DBRESULT_OPT->fetchRow();
+		$query = "SELECT `key`, `value` FROM `options` WHERE `key` LIKE 'color_%'";
+		$DBRESULT_OPT =& $pearDB->query($query);		
+		$general_opt = array();
+		while ($rowz =& $DBRESULT_OPT->fetchRow()) {
+			$general_opt[$rowz['key']] = $rowz['value'];
+		}
 	
 		/* 
 		 * Get Host NDO status 
