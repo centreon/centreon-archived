@@ -218,7 +218,7 @@
 					$plg_tmp = return_plugin($rep."/".$filename, $handle[$rep]);
 					$plugins = array_merge($plugins, $plg_tmp);
 					unset($plg_tmp);
-				} else if (!isset($is_not_a_plugin[$filename]) && substr($filename, -1)!= "~"){
+				} else if (!isset($is_not_a_plugin[$filename]) && substr($filename, -1)!= "~" && substr($filename, -1) != "#"){
 					$key = substr($rep."/".$filename, strlen($oreon->optGen["nagios_path_plugins"]));
 					$plugins[$key] = $key;
 				}
