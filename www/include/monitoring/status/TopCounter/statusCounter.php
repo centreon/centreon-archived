@@ -160,7 +160,8 @@
 		$rq1 .= " WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
 				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 				$access->queryBuilder("AND", $ndo_base_prefix."objects.name1", "centreon_acl.host_name") .				
-				$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr) .				
+				$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr) .
+				" AND " . $ndo_base_prefix. "objects.name1 NOT LIKE '_Module_%' " .				
 				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state";
 		
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
