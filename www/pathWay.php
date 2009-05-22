@@ -121,7 +121,7 @@
 	}
 	$tabPath = $tmp;
 
-	if (isset($oreon->user->lcaTopo[$p])){	
+	if ($oreon->user->access->page($p)){	
 		$flag = '<img src="./img/icones/8x14/pathWayBlueStart.gif" class="imgPathWay">&nbsp;';
 		foreach ($tabPath as $cle => $valeur){
 			echo $flag;
