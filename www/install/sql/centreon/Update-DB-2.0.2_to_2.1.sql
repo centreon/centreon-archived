@@ -1,3 +1,9 @@
+INSERT INTO `options` (`key`, `value`) VALUES ('color_line_critical','#F96461');
+INSERT INTO `options` (`key`, `value`) VALUES ('color_downtime','#FBC5E8');
+INSERT INTO `options` (`key`, `value`) VALUES ('color_host_down','#FCC22A');
+INSERT INTO `options` (`key`, `value`) VALUES ('color_host_unreachable','#9CD9F1');
+INSERT INTO `options` (`key`, `value`) VALUES ('color_ack','#FAED60');
+
 UPDATE `topology` SET topology_url = 'http://wiki.centreon.com/' WHERE topology_page = '50604' AND topology_name = 'Wiki';
 UPDATE `topology` SET topology_url = 'http://support.centreon.com/' WHERE topology_page = '50607' AND topology_name = 'Support';
 
@@ -68,7 +74,6 @@ INSERT INTO `options` (`key`, `value`) SELECT 'patch_url_download', patch_url_do
 INSERT INTO `options` (`key`, `value`) SELECT 'patch_path_download', patch_path_download FROM `general_opt`;
 INSERT INTO `options` (`key`, `value`) SELECT 'ndo_activate', ndo_activate FROM `general_opt`;
 INSERT INTO `options` (`key`, `value`) SELECT 'snmptt_unknowntrap_log_file', snmptt_unknowntrap_log_file FROM `general_opt`;
-
 
 DELETE FROM `topology` WHERE topology_page = '2020201';
 DELETE FROM `topology` WHERE topology_page = '2020202';

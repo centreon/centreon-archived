@@ -65,7 +65,7 @@
                             	"color_ok"=>_("Service OK Color"),
                             	"color_warning"=>_("Service WARNING Color"),
                             	"color_critical"=>_("Service CRITICAL Color"),
-                            	"color_line_critical"=>_("Color line for Service CRITICAL"),
+                            	"color_line_critical"=>_("Row Color for Service CRITICAL"),
 								"color_pending"=>_("Service PENDING Color"),
                             	"color_unknown"=>_("Service UNKNOWN Color"),
                             	"color_ack"=>_("Acknowledge host or service Color"),
