@@ -145,7 +145,7 @@
 	 */
 	$DBRESULT =& $pearDB->query("SELECT value FROM `options` WHERE key = 'template' LIMIT 1");
 	$data = $DBRESULT->fetchRow();
-	$skin = "./Themes/".$data["template"]."/";
+	$skin = "./Themes/".$data["value"]."/";
 
 	$tab_file_css = array();
 	$i = 0;
