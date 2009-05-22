@@ -626,24 +626,53 @@
 	  *  
 	  */
 	 public function getHostServices($pearDBndo, $host_id = NULL) {		
+		global $pearDB;
+		
 		$tab = array();
 		if (!isset($host_id)) {
-			if ($this->admin)
-				$query = "SELECT host_id, service_id FROM centreon_acl";
-			else
+			if ($this->admin) {
+				$query = "SELECT s.service_id, h.host_id FROM host_service_relation hsr, host h, service s " .
+						"WHERE hsr.service_service_id = s.service_id " .
+						"AND s.service_activate = '1' " .
+						"AND hsr.host_host_id = h.host_id " .
+						"AND h.host_activate = '1'";
+				$DBRESULT =& $pearDB->query($query);
+				while ($row =& $DBRESULT->fetchRow())
+					$tab[$row['host_id']][$row['service_id']] = 1;
+			}
+			else {
 				$query = "SELECT host_id, service_id FROM centreon_acl WHERE group_id IN (".$this->getAccessGroupsString().")";
-			$DBRESULT =& $pearDBndo->query($query);
-			while ($row =& $DBRESULT->fetchRow())
-				$tab[$row['host_id']][$row['service_id']] = 1;
+				$DBRESULT =& $pearDBndo->query($query);
+				while ($row =& $DBRESULT->fetchRow())
+					$tab[$row['host_id']][$row['service_id']] = 1;
+			}
 		}
 		else {
-			if ($this->admin)
-				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_id = '".$host_id."'";
-			else
+			if ($this->admin) {
+				$query = "SELECT s.service_id, s.service_description, h.host_id FROM host_service_relation hsr, host h, service s " .
+						"WHERE hsr.service_service_id = s.service_id " .
+						"AND s.service_activate = '1' " .
+						"AND hsr.host_host_id = h.host_id " .
+						"AND h.host_activate = '1' " .
+						"AND h.host_id = '".$host_id."'";
+				$DBRESULT =& $pearDB->query($query);				
+				while ($row =& $DBRESULT->fetchRow()) {
+					$row['service_description'] = str_replace("#S#", "/", $row['service_description']);
+					$row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
+					$tab[$row['service_id']] = $row['service_description'];
+				}
+			}
+			else {
 				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_id = '".$host_id."' AND group_id IN (".$this->getAccessGroupsString().")";
-			$DBRESULT =& $pearDBndo->query($query);
-			while ($row =& $DBRESULT->fetchRow())
-				$tab[$row['service_id']] = $row['service_description'];
+				$DBRESULT =& $pearDBndo->query($query);
+				$row['service_description'] = str_replace("#S#", "/", $row['service_description']);
+				$row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
+				while ($row =& $DBRESULT->fetchRow()) {
+					$row['service_description'] = str_replace("#S#", "/", $row['service_description']);
+					$row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
+					$tab[$row['service_id']] = $row['service_description'];
+				}
+			}
 		}		
 		return $tab;
 	 }
