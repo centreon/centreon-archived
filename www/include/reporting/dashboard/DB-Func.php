@@ -295,7 +295,8 @@
 			  "GROUP BY `service_id`";
 		$DBRESULT =& $pearDBO->query($rq);
 		while ($row = $DBRESULT->fetchRow()){
-			$hostServiceStats[$row["service_id"]] = $row;
+			if (isset($hostServiceStats[$row["service_id"]]))
+				$hostServiceStats[$row["service_id"]] = $row;
 		}
 		$i = 0;
 		foreach ($services_ids as $id => $description) {
