@@ -151,7 +151,7 @@
 					"INNER JOIN ".$ndo_base_prefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
 					"INNER JOIN ".$ndo_base_prefix."objects no ON (noo.name1 = no.name1) " .
 					"INNER JOIN nagios_hoststatus nhs on (nhs.host_object_id = no.object_id) " .
-			"WHERE no.objecttype_id = 1 $searchStr" .
+			"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 $searchStr " .
 			"GROUP BY nhg.alias, nhs.current_state";
 	$DBRESULT =& $pearDBndo->query($rq1);
 	while ($ndo =& $DBRESULT->fetchRow()) {
@@ -169,7 +169,7 @@
 				"INNER JOIN nagios_hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
 				"INNER JOIN nagios_objects no ON ( noo.name1 = no.name1 ) " .
 				"INNER JOIN nagios_servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
-			"WHERE no.objecttype_id = 2 " .
+			"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2 $searchStr " .
 			"GROUP BY nhg.alias, nss.current_state";
 	$DBRESULT =& $pearDBndo->query($rq2);
 	while ($ndo =& $DBRESULT->fetchRow()) {
