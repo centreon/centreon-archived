@@ -233,8 +233,10 @@
 
 	function insertContact($ret = array())	{
 		global $form, $pearDB, $oreon;
+	
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+	
 		$rq = "INSERT INTO `contact` ( " .
 				"`contact_id` , `timeperiod_tp_id` , `timeperiod_tp_id2` , `contact_name` , " .
 				"`contact_alias` , `contact_passwd` , `contact_lang` , " .
@@ -280,11 +282,19 @@
 		$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
 		$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
 		$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
-		$fields["contact_type_msg"] = $ret["contact_type_msg"];
+		
+		if(isset($ret["contact_type_msg"]))
+			$fields["contact_type_msg"] = $ret["contact_type_msg"];
+	
 		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
 		$fields["contact_auth_type"] = $ret["contact_auth_type"];
-		$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
-		$fields["contact_location"] = $ret["contact_location"];
+	
+		if (isset($ret["contact_ldap_dn"]))
+			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
+	
+		if (isset($ret["contact_location"]))
+			$fields["contact_location"] = $ret["contact_location"];
+		
 		$fields["contact_hostNotifCmds"] = implode(",", $ret["contact_hostNotifCmds"]);
 		$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
 		$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
