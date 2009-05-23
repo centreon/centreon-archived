@@ -44,7 +44,7 @@
 	$version =& $DBRESULT->fetchRow();
 	
 	if (count(glob("Update-DB-".$version["value"]."_to_*.sql")))
-		include("./step_upgrade/step3.php");
+		include("./step_upgrade/step4.php");
 	else {
 	
 aff_header("Centreon Setup Wizard", "Post-Installation", 5);	?>

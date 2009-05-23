@@ -37,7 +37,7 @@
  */
 
 
-aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
+aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">
   	<tr>
     	<th align="left">Component</th>
