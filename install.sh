@@ -399,15 +399,15 @@ purge_centreon_tmp_dir "silent"
 ${CAT} << __EOT__
 ###############################################################################
 #                                                                             #
-#      Go to the URL : http://your-server/centreon/                           #
-#                   	to finish the setup                                   #
+#                 Go to the URL : http://your-server/centreon/                #
+#                   	     to finish the setup                              #
 #                                                                             #
-#                    Report bugs at http://trac.centreon.com                  #
+#                  Report bugs at http://forge.centreon.com                   #
 #                                                                             #
-#                           Thanks for using Centreon.                        #
-#                             -----------------------                         #
+#                         Thanks for using Centreon.                          #
+#                          -----------------------                            #
 #                        Contact : infos@centreon.com                         #
-#                            http://www.centreon.com                          #
+#                          http://www.centreon.com                            #
 #                                                                             #
 ###############################################################################
 __EOT__

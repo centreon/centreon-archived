@@ -1105,9 +1105,9 @@ function is_single() {
 ## @Globals	line, DIR_APACHE_CONF, LOG_FILE, silent_install
 #----
 function configureApache() {
-	echo -e "$line"
+	echo -e "\n$line"
 	echo -e "\t$(gettext "Configure Apache server")"
-	echo -e "$line\n\n"
+	echo -e "$line"
 
 	local write_config="0"
 	local dir_conf="$1"
@@ -1299,9 +1299,9 @@ function is_suspect_conf_sudo() {
 ## @return 0	end
 #----
 function configureSUDO(){
-	echo -e "$line"
+	echo -e "\n$line"
 	echo -e "\t$(gettext "Configure Sudo")"
-	echo -e "$line\n\n"
+	echo -e "$line"
     	local no_force_sudo="0"
 	local dir_conf="$1"
 	# Generate a sudo config in directory
@@ -1346,9 +1346,9 @@ function configureSUDO(){
 #----
 function createConfFile()
 {
-	echo -e "$line"
+	echo -e "\n$line"
 	echo -e "\t\t$(gettext "Centreon Post Install")"
-	echo -e "$line\n\n"
+	echo -e "$line"
 
 	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
 	# Reinit file if exist	
