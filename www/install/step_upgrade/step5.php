@@ -31,8 +31,8 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/install/steps/step12.php $
- * SVN : $Id: step12.php 7620 2009-02-24 09:00:01Z jmathis $
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
 
@@ -41,45 +41,137 @@
 	$pearDB = new CentreonDB();
 	
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$version =& $DBRESULT->fetchRow();
+	$version =& $DBRESULT->fetchRow();	
 	
-	if (count(glob("Update-DB-".$version["value"]."_to_*.sql")))
-		include("./step_upgrade/step3.php");
-	else {
+	global $pearDB0;	
+	$pearDBO = new CentreonDB("centstorage");	
+	$pearDBndo 	= new CentreonDB("ndo");
 	
-aff_header("Centreon Setup Wizard", "Post-Installation", 5);	?>
+	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back"))
+		$_SESSION["script"] = $_POST["script"]; 
 
-<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-  <tr>
-	<td colspan="2" ><b>End of Update</b></td>
-  </tr>
-  <tr>
-	<td colspan="2"><br />
-	
-	Centreon Update is finished.
+	aff_header("Centreon Setup Wizard", "Updating Centreon", 4);	?>
 	<br /><br />
-	<b>Self service and commercial Support.</b><br /><br />
-	There are various ways to get information about Centreon ; the documentation, wiki, forum etc...
-	<ul>
-		<li> Centreon WebSite : <a target="_blank" href="http://www.centreon.com">www.centreon.com</a></li>
-		<li> Centreon Forum : <a target="_blank" href="http://forum.centreon.com">forum.centreon.com</a></li></li>
-		<li> Centreon Wiki : <a target="_blank" href="http://doc.centreon.com">doc.centreon.com</a></li>
-	</ul>
-	<br /><p align="justify">
-	If your company needs professional consulting and services for Centreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a  target="_blank" href="http://support.centreon.com">Centreon support center</a></b>.
-	</p>
-	</td>
-  </tr>
-   <tr>
-	<td colspan="2">&nbsp;</td>
-  </tr>
-	<?php
-	// end last code
+	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center"><?php
+	print "<tr><th align='left'>Component</th><th style='text-align: right;'>Status</th></tr>";
+	
+	/*
+	 * Update Centstorage
+	 */
+	print "<tr><td><b>Database &#146;".$conf_centreon['dbcstg']."&#146; : Upgrade</b></td>";
+	if (file_exists("./sql/centstorage/Update-CSTG-".$_SESSION["script"].".sql")) {
+		$file_sql = file("./sql/centstorage/Update-CSTG-".$_SESSION["script"].".sql");
+        $request = "";
+        if (count($file_sql)) {
+	        foreach ($file_sql as $line)
+	        	if ($line[0] != "#" && $line[0] != "-") {
+	        		$pos = strrpos($line, ";");
+                	if ($pos != false) {
+                    	$str .= $line;
+                    	$str = rtrim($str);
+                    	$str = str_replace(";", "", $str);                    
+                   	$DBRES = $pearDBO->query($str);
+                    $str = NULL;
+                } else
+                	$str .= $line;
+	        }	        	
+			if (!PEAR::isError($DBRES))
+				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+    		else
+    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';    			    		
+        } else {
+        	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+        }
+	} else {
+		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
+	}
+
+	/*
+	 * Update NDO
+	 */	
+	$DBRESULT =& $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	$confNDO = $DBRESULT->fetchRow();
+	unset($DBRESULT);	
+	
+	print "<tr><td><b>Database &#146;".$confNDO['db_name']."&#146; : Upgrade</b></td>";
+	if (file_exists("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql")) {
+		$file_sql = file("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql");
+        $request = "";
+        if (count($file_sql)) {
+	        foreach ($file_sql as $line)
+	        	if ($line[0] != "#" && $line[0] != "-") {
+	        		$pos = strrpos($line, ";");
+                	if ($pos != false) {
+                    	$str .= $line;
+                    	$str = rtrim($str);
+                    	$str = str_replace(";", "", $str);                    
+                   	$DBRES = $pearDBndo->query($str);
+                    $str = NULL;
+                	} else
+                		$str .= $line;
+	        	}
+			if (!PEAR::isError($DBRES))
+				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+    		else
+    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';    			    		
+        } else {
+        	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+        }
+	} else {
+		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
+	}
+
+	/*
+	 * Update PHP
+	 */
+	print "<tr><td><b>PHP Script : Upgrade</b></td>";
+	if (file_exists("./php/Update-".$_SESSION["script"].".php")) {
+		if (include_once("./php/Update-".$_SESSION["script"].".php"))
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		else
+			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+	} else {
+		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
+	}
+
+	/*
+	 * Update Centreon
+	 */
+	print "<tr><td><b>Database &#146;".$conf_centreon['db']."&#146; : Upgrade</b></td>";
+	if (file_exists("./sql/centreon/Update-DB-".$_SESSION["script"].".sql")) {
+		$file_sql = file("./sql/centreon/Update-DB-".$_SESSION["script"].".sql");
+        $request = "";
+        if (count($file_sql)) {
+	        foreach ($file_sql as $line)
+	        	if ($line[0] != "#" && $line[0] != "-") {
+	        		$pos = strrpos($line, ";");
+                	if ($pos != false) {
+                    	$str .= $line;
+                    	$str = rtrim($str);
+                    	$str = str_replace(";", "", $str);                    
+                   	$DBRES = $pearDB->query($str);
+                    $str = NULL;
+                	} else
+                		$str .= $line;
+	        	}
+			if (!PEAR::isError($DBRES))
+				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+    		else
+    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+        } else {
+        	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+        }
+	} else {
+		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
+	}
+
 	aff_middle();
-	$str = "<input class='button' type='submit' name='goto' value='Click here to complete your install' id='button_next' ";
+	$str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' ";
+	if (isset($return_false) && $return_false)
+		$str .= " disabled";
 	$str .= " />";
 	print $str;
 	aff_footer();
-
-	}
 ?>
