@@ -1200,7 +1200,6 @@ function prepare_apache_config() {
 ##
 	
 Alias /centreon $INSTALL_DIR_CENTREON/www/
-#Alias /centreon/ $INSTALL_DIR_CENTREON/www/
 <Directory "$INSTALL_DIR_CENTREON/www">
     Options Indexes
     AllowOverride AuthConfig Options
