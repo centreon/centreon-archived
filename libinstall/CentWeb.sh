@@ -307,7 +307,9 @@ check_result $? "$(gettext "Install cron directory")"
 
 ## Prepare to install all pear modules needed.
 # use check_pear.php script
+echo "\n$line"
 echo -e "$(gettext "Pear Modules")"
+echo "$line"
 pear_module="0"
 while [ "$pear_module" -eq 0 ] ; do 
 	check_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
