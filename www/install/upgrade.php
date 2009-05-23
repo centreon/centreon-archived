@@ -74,6 +74,8 @@
 		include("./step_upgrade/step5.php");
 	} else if (isset($_POST["step"]) && $_POST["step"] == 5){
 		include("./step_upgrade/step6.php");
+	} else if (isset($_POST["step"]) && $_POST["step"] == 6){
+		include("./step_upgrade/step7.php");
 	} 
 	
 	exit();
