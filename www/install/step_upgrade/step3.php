@@ -35,39 +35,124 @@
  * SVN : $Id$
  * 
  */
- 	
-	include_once $centreon_path . "/www/class/centreonDB.class.php";
-	
-	$pearDB = new CentreonDB();
-	
-	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$version =& $DBRESULT->fetchRow();
-	
-	aff_header("Centreon Upgrade Wizard", "Select Version", 3); ?>
-	In order for your Centreon upgrade to work properly, please select the appropriate Centreon upgrade script.<br /><br />
-	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-      <tr>
-        <th style="padding-left:20px;" colspan="2">Upgrade SQL Scripts</th>
-      </tr>
-	  <tr>
-        <td><b>MySQL Scripts</b></td>
-        <td align="right">
-        	<select name="script">
-        	<?php       		
-        		chdir('sql/centreon/');
-        		foreach (glob("Update-DB-".$version["value"]."_to_*.sql") as $filename) {
-					$filenameDisplayed = str_replace("Update-DB-", "", $filename);
-					$filenameDisplayed = str_replace(".sql", "", $filenameDisplayed);
-					$filenameDisplayed2 = str_replace("_", " ", $filenameDisplayed);
-					echo '<option value="'.$filenameDisplayed.'">'.$filenameDisplayed2.'</option>'; 
-				}
-        	?>
-        	</select>
-       	</td>
-      </tr>
-	</table>
-	<?php
-	aff_middle();
-	print "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
-	aff_footer();
+
+
+aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">
+  	<tr>
+    	<th align="left">Component</th>
+    	<th style="text-align: right;">Status</th>
+  	</tr>
+  	<tr>
+   		<td><b>PHP Version 5.x</b></td>
+    	<td align="right"><?php
+			$php_version = phpversion();
+	       	if(str_replace(".", "", $php_version) < "500" ){
+	         	echo "<b><span class=stop>Invalid version ($php_version) Installed</span></b>";
+			  	$return_false = 1;
+	       	} else {
+	          	echo "<b><span class=go>OK (ver $php_version)</span></b>";
+	       	}?>
+     	</td>
+  </tr>
+  <tr>
+    	<td><b>PHP Extension</b></td>
+    	<td align="right">&nbsp;</td>
+  </tr>
+  <tr>
+    	<td><b>&nbsp;&nbsp;&nbsp;MySQL</b></td>
+    	<td align="right"><?php
+			if (extension_loaded('mysql')) {
+          		echo '<b><span class="go">OK</font></b>';
+			} else {
+				echo '<b><span class="stop">Critical: mysql.so not loaded in php.ini</font></b>';
+		    	$return_false = 1;
+			}?>
+		</td>
+  </tr>
+  <tr>
+    	<td><b>&nbsp;&nbsp;&nbsp;GD</b></td>
+    	<td align="right"><?php
+			if (extension_loaded('gd')) {
+          		echo '<b><span class="go">OK</font></b>';
+			} else {
+				echo '<b><span class="stop">Critical: gd.so not loaded in php.ini</font></b>';
+		    	$return_false = 1;
+			}?>
+		</td>
+  </tr>
+  <tr>
+    	<td><b>&nbsp;&nbsp;&nbsp;LDAP</b></td>
+    	<td align="right"><?php
+			if (extension_loaded('ldap')) {
+          		echo '<b><span class="go">OK</font></b>';
+			} else {
+				echo '<b><span class="warning">Warning: ldap.so not loaded in php.ini</font></b>';
+		    	//$return_false = 1;
+			}?>
+		</td>
+  </tr>
+  <tr>
+    	<td><b>&nbsp;&nbsp;&nbsp;SNMP</b></td>
+    	<td align="right"><?php
+			if (extension_loaded('snmp'))
+          		echo '<b><span class="go">OK</font></b>';
+			else {
+				echo '<b><span class="warning">Warning: snmp.so not loaded in php.ini</font></b>';
+		   	 	//$return_false = 1;
+			}?>
+		</td>
+  </tr>
+  <tr>
+    	<td><b>&nbsp;&nbsp;&nbsp;XML</b></td>
+    	<td align="right"><?php
+			if (extension_loaded('xml'))
+          		echo '<b><span class="go">OK</font></b>';
+			else
+				echo '<b><span class="warning">Warning: xml.so not loaded in php.ini</font></b>';?>
+		</td>
+  </tr>
+  <tr>
+    	<td><b>&nbsp;&nbsp;&nbsp;PHP-POSIX</b></td>
+    	<td align="right"><?php
+			if (function_exists('posix_getpwuid'))
+          		echo '<b><span class="go">OK</font></b>';
+			else {
+				echo '<b><span class="stop">Critical: php-posix functions are not installed</font></b>';
+				$return_false = 1;	
+			}?>
+		</td>
+  </tr>
+  <tr>
+		<td><b>&nbsp;&nbsp;&nbsp;PEAR</b></td>
+    	<td align="right"><?php
+    		$tab_path = split(":", get_include_path());
+    		$ok = 0;
+    		foreach ($tab_path as $path){
+    			if (file_exists($path. '/PEAR.php')){
+    				$_SESSION["include_path"] = $path;
+    				$ok = 1;
+    			}
+    		}
+    		
+			if ($ok){
+				echo '<b><span class="go">OK</font></b>';
+			} else {
+				echo '<b><span class="stop">Warning: PHP Pear not found <br />'. $pear_path . '/PEAR.php</font></b>';
+			    $return_false = 1;
+			}?>
+		</td>
+  </tr>
+</table>
+<?php
+aff_middle();
+$str = '';
+if (isset($return_false))
+	$str = "<input class='button' type='submit' name='Recheck' value='Recheck' />";
+$str .= "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next'";
+if ($return_false)
+	$str .= " disabled";
+$str .= " />";
+print $str;
+aff_footer();
 ?>
