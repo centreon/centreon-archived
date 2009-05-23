@@ -9,7 +9,7 @@
 #################################
 # SVN: $Id$
 
-echo "$line"
+echo "\n$line"
 echo -e "\t$(gettext "Start CentPlugins Installation")"
 echo "$line"
 

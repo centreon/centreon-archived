@@ -12,7 +12,7 @@
 # debug ?
 #set -x 
 
-echo "$line"
+echo "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo "$line"
 
