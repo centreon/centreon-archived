@@ -192,7 +192,7 @@ ${CAT} << __EOT__
 #                         Centreon (www.centreon.com)                         #
 #                          Thanks for using Centreon                          #
 #                                                                             #
-#                                    v$version                                   #
+#                                    v$version                                     #
 #                                                                             #
 #                             infos@oreon-project.org                         #
 #                                                                             #
