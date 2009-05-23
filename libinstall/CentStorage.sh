@@ -9,9 +9,9 @@
 #################################
 # SVN: $Id$
 
-echo "\n$line"
+echo -e "\n$line"
 echo -e "\t$(gettext "Start CentStorage Installation")"
-echo "$line"
+echo -e "$line"
 
 ###### Check disk space
 check_tmp_disk_space

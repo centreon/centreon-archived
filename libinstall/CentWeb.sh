@@ -12,9 +12,9 @@
 # debug ?
 #set -x 
 
-echo "\n$line"
+echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
-echo "$line"
+echo -e "$line"
 
 ###### check space ton tmp dir
 check_tmp_disk_space
