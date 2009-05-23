@@ -47,7 +47,7 @@
 		include("./step_upgrade/step4.php");
 	else {
 	
-aff_header("Centreon Setup Wizard", "Post-Installation", 5);	?>
+aff_header("Centreon Setup Wizard", "Post-Installation", 6);	?>
 
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
   <tr>

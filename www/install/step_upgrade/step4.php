@@ -43,7 +43,7 @@
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 	$version =& $DBRESULT->fetchRow();
 	
-	aff_header("Centreon Upgrade Wizard", "Select Version", 3); ?>
+	aff_header("Centreon Upgrade Wizard", "Select Version", 4); ?>
 	In order for your Centreon upgrade to work properly, please select the appropriate Centreon upgrade script.<br /><br />
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
       <tr>

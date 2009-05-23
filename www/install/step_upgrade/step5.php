@@ -50,7 +50,7 @@
 	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back"))
 		$_SESSION["script"] = $_POST["script"]; 
 
-	aff_header("Centreon Setup Wizard", "Updating Centreon", 4);	?>
+	aff_header("Centreon Setup Wizard", "Updating Centreon", 5);	?>
 	<br /><br />
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center"><?php
 	print "<tr><th align='left'>Component</th><th style='text-align: right;'>Status</th></tr>";
