@@ -143,7 +143,7 @@
 	/*
 	 * Skin path
 	 */
-	$DBRESULT =& $pearDB->query("SELECT value FROM `options` WHERE key = 'template' LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT value FROM `options` WHERE `key` = 'template' LIMIT 1");
 	$data = $DBRESULT->fetchRow();
 	$skin = "./Themes/".$data["value"]."/";
 
