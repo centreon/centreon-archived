@@ -188,6 +188,7 @@ ${CAT} "$file_php_temp" | while read file ; do
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
 		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		$TMP_DIR/src/$file > $TMP_DIR/work/$file
 		[ $? -ne 0 ] && flg_error=1
 	log "MACRO" "$(gettext "Copy in final dir") : $file"
