@@ -11,11 +11,9 @@ To use Centreon, you need to have on your server :
 - php-pear
 - php-snmp
 - php-posix
-- php-gd
 - php-ldap (if you would like to use LDAP authentification)
 - gd-devel
 - libpng
-- libpng-devel
 - perl-config-IniFiles
 - perl-Crypt-DES
 - perl-Digest-HMAC
@@ -26,23 +24,28 @@ To use Centreon, you need to have on your server :
 - perl-rrdtool
 - perl-Socket6
 
+---------------------------------------------------------------------------------------------------
 FRANCAIS :
 ----------
 
 Pour installer Centreon sans mise à jour :
 
-	Lancer la commande "bash install.sh"
+	Lancer la commande "bash install.sh -i "
 
-Pour mettre à jour Centreon (<2.0) :
-
-	TODO
-
-Pour mettre à jour Centreon (>2.0) :
+Pour mettre à jour Centreon ( > 2.0) :
 
 	Lancer "bash install.sh -u /repertoire/etc/centreon"
 	
 	Avec en argument le répertoire où se trouve 
-	vos fichier "instCent*.conf"
+	vos fichiers "instCent*.conf"
+
+    Pour la mise à jour de la version 2.0.X vers 2.1.X, il faut donner les droits 
+    à l'utilisateur centreon au niveau de MySQL pour qu'il puisse effectuer des 
+    changements de schemas. Pour cela, lancer la commande suivante :
+	
+	prenons "nagios" comme nom de la base NDO.
+	
+	mysql> GRANT ALTER ON nagios.* to 'centreon'@'localhost';  FLUSH PRIVILEGES;
 
 Pour installer en utilisant un template pré-defini :
 
@@ -59,6 +62,7 @@ messages supplémentaires à destination du fichier de log.
 Par défaut, le fichier de log se trouve dans le répetoire du même nom
 à la base des sources.
 
+---------------------------------------------------------------------------------------------------
 ENGLISH :
 ---------
 
@@ -66,10 +70,29 @@ For install only :
 
 	Launch "./install.sh"
 
+For update Centreon ( > 2.0) :
+
+	Launch "bash install.sh -u /directory/etc/centreon"
+	
+	-u argument is the directy where you can find configuration
+	files "instCent*.conf".
+	
+	For updating centreon 2.0.X to 2.1.X, please give Centreon MySQL user right for 
+	modifying database schema. In order give access, launch the following commande line :
+	
+	Here "nagios" is the name of NDO Database.
+	
+	mysql> GRANT ALTER ON nagios.* to 'centreon'@'localhost';  FLUSH PRIVILEGES;
+
+---------------------------------------------------------------------------------------------------
+
 For more information :
+
 - mail infos@centreon.com
-- visit Centreon's forum http://forum.centreon.com
-- visit Centreon's Wiki http://doc.centreon.com
+- visit Centreon Website http://www.centreon.com
+- visit Centreon forge http://forge.centreon.com
+- visit Centreon forum http://forum.centreon.com
+- visit Centreon Wiki http://doc.centreon.com
 
 Thanks for using Centreon.
 
