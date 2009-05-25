@@ -151,7 +151,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .arbo_a li 	{list-style:none;margin-left:0;padding-left:0;padding-top:1px;}
 .arbo_b 	{display:none;margin-left:40px;padding-top:1px;}
 .arbo_c 	{display:none;margin-left:50px;padding-top:0;}
-.arbo_d 	{list-style:none;margin-left:16px;padding-top:5px;}
+.arbo_d 	{display:none;list-style:none;margin-left:30px;padding-top:5px;}
 
 /* Search Options */
 .search_input_active 	{background-color:#F778A1;}
