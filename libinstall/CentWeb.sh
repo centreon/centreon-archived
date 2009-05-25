@@ -53,7 +53,6 @@ locate_init_d
 locate_php_bin
 locate_perl
 locate_centreon_logdir
-
 locate_centpluginstraps_bindir
 
 ## Config apache
@@ -175,7 +174,7 @@ cp $TMP_DIR/work/www/install/insertBaseConf.sql \
 
 ## use this step to change macros on php file...
 echo_info "$(gettext "Change macros for php files")"
-macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@"
+macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@"
 find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "*.php" "file_php_temp"
 
 log "INFO" "$(gettext "Apply macros")"
