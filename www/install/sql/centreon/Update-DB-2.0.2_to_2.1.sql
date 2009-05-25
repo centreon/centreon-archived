@@ -184,7 +184,7 @@ ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_parent_id` ) REFERENCE
 ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_child_id` ) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE ;
 
 ALTER TABLE nagios_server ADD nagios_perfdata VARCHAR( 255 ) NULL;
-UPDATE nagios_server SET nagios_perfdata = '/usr/local/nagios/var/service-perfdata';
+UPDATE nagios_server SET nagios_perfdata = (SELECT service_perfdata_file FROM cfg_nagios WHERE nagios_activate = '1' );
 
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$_HOSTSNMPCOMMUNITY$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$_HOSTSNMPVERSION$');
