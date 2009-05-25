@@ -766,9 +766,7 @@
 		/*
 		 * Get interval for the good poller.
 		 */
-		$DBRESULT =& $pearDB->query("SELECT `interval_length` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$host["nagios_server_id"][0]."'");
-		$res =& $DBRESULT->fetchRow();
-		$tpl->assign('time_unit', " * ".$res["interval_length"]." "._(" seconds "));
+		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
 	}
 		
 	$valid = false;
