@@ -156,8 +156,11 @@
 				/*
 				 * Adjust host_location and time period name
 				 */
-				 $gmt = $gmtCache[$host_id];
-	 			
+				if (isset($gmtCache[$host_id]))
+					 $gmt = $gmtCache[$host_id];
+				else
+					$gmt = 0;
+					 			
 	 			/*
 	 			 * Begin service definition
 	 			 */
