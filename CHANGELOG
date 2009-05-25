@@ -1,3 +1,44 @@
+## Centreon 2.1
+
+=> add Timezone Management in check period for hosts and services
+=> add Timezone Management in notifications period for hosts and services
+=> add Timezone Management for user view
+=> add Configuration changelog
+=> add Action ACL
+=> add update current user ACL view
+=> Improve MySQL request in monitoring
+=> Improve Centstorage status DB generation
+=> add unhandled view in service monitoring page
+=> add unhandled view in host monitoring page
+=> add search in treeviews
+=> add custom colors for host/service acknowledgement status in monitoring
+=> add custom colors for host/service downtime status in monitoring
+=> add new menu ajax for a better navigation
+=> add shortcut for autologin
+=> improve LDAP management
+=> add user login/logout log
+=> add log for sql requets.
+=> improve generation for configuration files (for example : 2000 hosts and 15000 sevices => befor 198 sec => now 17 sec)
+=> improve restart message 
+=> add toolbar with activity message (loading, messsage sent...)
+=> add ajax for external command in object details in monitoring
+=> add nagios poller interface (nagios style)
+=> add env var view for nagios poller
+
+## Centreon 2.0.2
+
+=> Bugfix #586
+=> Bugfix #408
+=> Bugfix #392
+=> Bugfix #417
+=> Bugfix #436
+=> Reporting : CSV export now takes correct timeperiod parameters
+=> Reporting : fixes bug that occured when hosts/services were renamed
+=> ACL : ServiceGroups are no longer restrictions, they grant access to resources instead
+=> Enhanced generation of configuration files
+=> New Centreon logo
+=> CSS menu is fixed (delimiters are back)
+
 ## Centreon 2.0.1
 
 => Bug 353
