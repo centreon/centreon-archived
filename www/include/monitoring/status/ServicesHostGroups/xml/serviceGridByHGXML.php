@@ -98,21 +98,78 @@
     $tab_color_host = array(0 => $general_opt["color_up"], 1 => $general_opt["color_down"], 2 => $general_opt["color_unreachable"]);
 
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
+	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE", NULL => "");
 
 	/* Get Host status */
 
-	$rq1 =	  	" SELECT DISTINCT no.object_id id, no.name1 as host_name, nhs.current_state hs, no.name2 svc_name, nss.current_state svcs " .
-				" FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."services ns, ".$ndo_base_prefix."servicestatus nss ";
+	$rq1 = 			" SELECT DISTINCT hg.alias, no.object_id id, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state hs".
+					" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no";
 		
 	if (!$is_admin)
 		$rq1 .= ", centreon_acl ";
 	
-	$rq1 .=  	" WHERE ((no.objecttype_id = '1' AND nhs.host_object_id = no.object_id) OR (no.objecttype_id = '2' AND nss.service_object_id = no.object_id))".				
+	$rq1 .= 		" WHERE hs.host_object_id = hgm.host_object_id".
+					" AND no.object_id = hgm.host_object_id" .
+					" AND hgm.hostgroup_id = hg.hostgroup_id".
+					" AND no.name1 not like '_Module_%'";
+		
+	if (!$is_admin)
+		$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString());
+	
+	if ($instance != "ALL")
+		$rq1 .= 	" AND no.instance_id = ".$instance;
+	
+	if ($o == "svcSumHG_ack_0") {
+		$rq1 .= 	" AND no.name1 IN (" .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0)";
+	}
+	if ($o == "svcSumHG_ack_1"){
+		$rq1 .= 	" AND no.name1 IN (" .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0)";
+	}
+		
+	if ($search != "")
+		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+		
+	$rq_pagination = $rq1;
+
+	/* 
+	 * Get Pagination Rows
+	 */
+	 
+	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
+	$numRows = $DBRESULT_PAGINATION->numRows();
+
+	$rq1 .= " ORDER BY hg.alias ";
+	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+
+	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+	$tabH = array();
+	$tab_finalH = array();
+	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
+		if (!isset($tab_finalH[$ndo["alias"]])) {	
+			$tab_finalH[$ndo["alias"]] = array($ndo["host_name"] => array());
+		}
+		$tab_finalH[$ndo["alias"]][$ndo["host_name"]]["cs"] = $ndo["hs"];			
+		$tab_finalH[$ndo["alias"]][$ndo["host_name"]]["tab_svc"] = array();
+		$tabH[$ndo["id"]] = 1;
+	}
+	$DBRESULT_NDO1->free();
+	
+	/* Get Services status */
+
+	$rq1 =	  	" SELECT DISTINCT no.object_id id, no.name1 as host_name, no.name2 svc_name, nss.current_state svcs " .
+				" FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns, ".$ndo_base_prefix."servicestatus nss ";
+		
+	if (!$is_admin)
+		$rq1 .= ", centreon_acl ";
+	
+	$rq1 .=  	" WHERE no.objecttype_id = '2' AND nss.service_object_id = no.object_id ".				
 				" AND no.name1 NOT LIKE '_Module_%'".
 				" AND no.is_active = 1";
 
-	
 	$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND","no.name2", "centreon_acl.service_description") . $access->queryBuilder("AND", "group_id", $grouplistStr);
 	
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
@@ -125,18 +182,22 @@
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
-	
-	$rq_pagination = $rq1;
-	
-	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	$numRows = $DBRESULT_PAGINATION->numRows();
 
-	switch ($sort_type){
-			case 'current_state' : $rq1 .= " ORDER BY hs.current_state ". $order.",no.name1, no.name2 "; break;
-			default : $rq1 .= " ORDER BY no.name1, no.name2 ". $order; break;
+	$tabService = array();
+	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
+		if (!isset($tabService[$ndo["host_name"]]))
+			$tabService[$ndo["host_name"]] = array();
+		if (!isset($tabService[$ndo["host_name"]]))
+			$tabService[$ndo["host_name"]] = array("tab_svc" => array());
+		$tabService[$ndo["host_name"]]["tab_svc"][$ndo["svc_name"]] = $ndo["svcs"];
 	}
-	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
-
+	$DBRESULT_NDO1->free();
+	
+	/*
+	 * Begin XML Generation
+	 */
+	
 	$buffer = new CentreonXML();
 	$buffer->startElement("reponse");
 	$buffer->startElement("i");
@@ -148,38 +209,14 @@
 	$buffer->writeElement("p", $p);	
 	$o == "svcOVHG" ? $buffer->writeElement("s", "1") : $buffer->writeElement("s", "0");
 	$buffer->endElement();
-		
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	$tabH = array();
-	$tab_finalH = array();
-	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
-		if (!$ndo["svc_name"] && !isset($tabH[$ndo["id"]])) {
-			$tab_finalH[$ndo["host_name"]]["cs"] = $ndo["hs"];			
-			$tab_finalH[$ndo["host_name"]]["tab_svc"] = array();
-			$tabH[$ndo["id"]] = 1;
-		} 
-		if ($ndo["svc_name"]) {
-			if (!isset($tab_finalH[$ndo["host_name"]]))
-				$tab_finalH[$ndo["host_name"]] = array("tab_svc" => array());
-			$tab_finalH[$ndo["host_name"]]["tab_svc"][$ndo["svc_name"]] = $ndo["svcs"];
-		}
-	}
-	
-	$tab_final = array();
-	$DBRESULT =& $pearDBndo->query("SELECT object_id, no.name1, no.name2, no.objecttype_id, nhg.alias FROM nagios_objects no, nagios_hostgroups nhg, nagios_hostgroup_members nhgm WHERE no.objecttype_id = '1' AND no.name2 IS NULL AND no.is_active = 1 AND nhg.hostgroup_id = nhgm.hostgroup_id AND nhgm.host_object_id = no.object_id ORDER BY nhg.alias, no.name1");
-	while ($hg =& $DBRESULT->fetchRow()) {
-		if (isset($tab_final[$hg["alias"]][$hg["name1"]]))
-			$tab_final[$hg["alias"]][$hg["name1"]] = array();
-		$tab_final[$hg["alias"]][$hg["name1"]] = $tab_finalH[$hg["name1"]];
-	}
-	
+
 	$class = "list_one";
 	$ct = 0;
 	$hg = "";
-	if (isset($tab_final))
-		foreach ($tab_final as $hg_name => $tab_host) {
+	if (isset($tab_finalH))
+		foreach ($tab_finalH as $hg_name => $tab_host) {
 			foreach ($tab_host as $host_name => $tab) {
-				if (count($tab["tab_svc"])) {
+				if (isset($tabService[$host_name]["tab_svc"]) && count($tabService[$host_name]["tab_svc"])) {
 					$class == "list_one" ? $class = "list_two" : $class = "list_one";
 					if (isset($hg_name) && $hg != $hg_name){
 						if ($hg != "")
@@ -190,19 +227,21 @@
 					}
 					$buffer->startElement("l");
 					$buffer->writeAttribute("class", $class);					
-					foreach ($tab["tab_svc"] as $svc => $state) {						
-						$buffer->startElement("svc");
-						$buffer->writeElement("sn", $svc);
-						$buffer->writeElement("sc", $tab_color_service[$state]);
-						$buffer->endElement();						
-					}
-					$buffer->writeElement("o", $ct++);
+					if (isset($tabService[$host_name]["tab_svc"]))
+						foreach ($tabService[$host_name]["tab_svc"] as $svc => $state) {						
+							$buffer->startElement("svc");
+							$buffer->writeElement("sn", $svc);
+							$buffer->writeElement("sc", $tab_color_service[$state]);
+							$buffer->endElement();						
+						}
+					$buffer->writeElement("o", $ct);
 					$buffer->writeElement("hn", $host_name);
 					$buffer->writeElement("hs", $tab_status_host[$tab["cs"]]);
 					$buffer->writeElement("hc", $tab_color_host[$tab["cs"]]);					
 					$buffer->endElement();					
 				}
 			}
+			$ct++;
 		}
 	$buffer->endElement();
 	/* end */
