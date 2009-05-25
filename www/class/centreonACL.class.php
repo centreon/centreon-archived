@@ -37,7 +37,7 @@
  */
 
 	require_once "@CENTREON_ETC@/centreon.conf.php";
- 	require_once $centreon_path . "/www/class/centreonDB.class.php";
+	require_once $centreon_path . "/www/class/centreonDB.class.php";
  
  /*
   *  This class contains the access information of a user 
@@ -71,16 +71,17 @@
  		} else
  			$this->admin = $is_admin; 		
  		
+		$this->setTopology();
+ 		$this->getACLStr();
+ 		
  		if (!$this->admin) {
 	 		$this->setAccessGroups();
 	 		$this->setResourceGroups();
 	 		$this->setHostGroups();
 	 		$this->setServiceGroups();
 	 		$this->setServiceCategories();	 		
-	 		$this->getACLStr();
 	 		$this->setActions();
  		}
- 		$this->setTopology();
  	}
  	
  	/*
@@ -241,8 +242,7 @@
  			$DBRES =& $pearDB->query($query);
  			while ($row =& $DBRES->fetchRow())
  				$this->topology[$row['topology_page']] = 1;
- 		}	  	
-	  	else {
+ 		} else {
 		  	if (count($this->accessGroups) > 0) {
 		  	 	/*
 		  	 	 * If user is in an access group
@@ -262,7 +262,7 @@
 					unset($str_topo);
 					$DBRESULT2->free();
 				} else {
-					while ($topo_group = $DBRESULT->fetchRow()) {
+					while ($topo_group =& $DBRESULT->fetchRow()) {
 						$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
 				  										"FROM `acl_topology_relations`, acl_topology " .
 				  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
@@ -282,8 +282,8 @@
 					unset($topo_page);
 					$count ? $ACL = "topology_id IN ($str_topo) AND " : $ACL = "";
 					unset($DBRESULT);
-					$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");	
 					
+					$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");
 					while ($topo_page =& $DBRESULT->fetchRow())						
 						$this->topology[$topo_page["topology_page"]] = 1;
 					unset($topo_page);
@@ -309,12 +309,11 @@
  	 * Get ACL by string
  	 */
  	public function getACLStr() {
- 		
-	  	foreach ($this->topology as $key => $tmp) {
+ 		foreach ($this->topology as $key => $tmp) {
 	  		if (isset($key) && $key) {
 		  		if ($this->topologyStr != "")
 		  			$this->topologyStr .= ", ";
-				$this->topologyStr .= $key;
+		  		$this->topologyStr .= "'".$key."'";
 	  		}
 	  	}
 	  	unset($key);

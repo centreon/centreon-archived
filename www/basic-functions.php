@@ -83,7 +83,7 @@
 	function get_my_first_allowed_root_menu($lcaTStr){
 		global $pearDB;
 		
-		if ($lcaTStr !=  "")
+		if ($lcaTStr != "")
 			$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
 					FROM topology 
 					WHERE topology_page IN ($lcaTStr) 

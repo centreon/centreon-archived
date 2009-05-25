@@ -56,7 +56,10 @@
 	/*
 	 * Include
 	 */
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	//require_once "@CENTREON_ETC@/centreon.conf.php";
+	
+	require_once "/etc/centreon/centreon.conf.php";
+	
 	require_once "$classdir/centreonDB.class.php";
 	require_once "$classdir/Session.class.php";
 	require_once "$classdir/Oreon.class.php";	
@@ -112,7 +115,7 @@
 	$oreon->initOptGen($pearDB);
 
 	if (!$p){
-		$root_menu = get_my_first_allowed_root_menu($oreon->user->access->topologyStr);
+		$root_menu = get_my_first_allowed_root_menu($oreon->user->access->topolo	gyStr);
 		if (isset($root_menu["topology_page"])) 
 			$p = $root_menu["topology_page"]; 
 		else 
