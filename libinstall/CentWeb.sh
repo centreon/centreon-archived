@@ -52,6 +52,7 @@ locate_cron_d
 locate_init_d
 locate_php_bin
 locate_perl
+locate_centreon_logdir
 
 locate_centpluginstraps_bindir
 
