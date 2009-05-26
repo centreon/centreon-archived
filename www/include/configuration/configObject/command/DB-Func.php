@@ -39,14 +39,16 @@
 	if (!isset ($oreon))
 		exit ();
 
-	function myDecodeCommand($arg) {
-		$arg = html_entity_decode($arg, ENT_QUOTES);
-		$arg = str_replace('#BR#', "\\n", $arg);
-		$arg = str_replace('#T#', "\\t", $arg);
-		$arg = str_replace('#R#', "\\r", $arg);
-		$arg = str_replace('#S#', "/", $arg);
-		$arg = str_replace('#BS#', "\\", $arg);
-		return($arg);
+	if (function_exists("myDecodeCommand")) {
+		function myDecodeCommand($arg) {
+			$arg = html_entity_decode($arg, ENT_QUOTES);
+			$arg = str_replace('#BR#', "\\n", $arg);
+			$arg = str_replace('#T#', "\\t", $arg);
+			$arg = str_replace('#R#', "\\r", $arg);
+			$arg = str_replace('#S#', "/", $arg);
+			$arg = str_replace('#BS#', "\\", $arg);
+			return($arg);
+		}
 	}
 
 	function testCmdExistence ($name = NULL)	{
