@@ -3,10 +3,6 @@ INSERT INTO `options` (`key`, `value`) VALUES ('color_downtime','#FBC5E8');
 INSERT INTO `options` (`key`, `value`) VALUES ('color_host_down','#FCC22A');
 INSERT INTO `options` (`key`, `value`) VALUES ('color_host_unreachable','#9CD9F1');
 INSERT INTO `options` (`key`, `value`) VALUES ('color_ack','#FAED60');
-
-UPDATE `topology` SET topology_url = 'http://wiki.centreon.com/' WHERE topology_page = '50604' AND topology_name = 'Wiki';
-UPDATE `topology` SET topology_url = 'http://support.centreon.com/' WHERE topology_page = '50607' AND topology_name = 'Support';
-
 INSERT INTO `options` (`key`, `value`) SELECT 'nagios_path', nagios_path FROM `general_opt`;
 INSERT INTO `options` (`key`, `value`) SELECT 'nagios_path_bin', nagios_path_bin FROM `general_opt`;
 INSERT INTO `options` (`key`, `value`) SELECT 'nagios_init_script', nagios_init_script FROM `general_opt`;
@@ -75,6 +71,10 @@ INSERT INTO `options` (`key`, `value`) SELECT 'patch_path_download', patch_path_
 INSERT INTO `options` (`key`, `value`) SELECT 'ndo_activate', ndo_activate FROM `general_opt`;
 INSERT INTO `options` (`key`, `value`) SELECT 'snmptt_unknowntrap_log_file', snmptt_unknowntrap_log_file FROM `general_opt`;
 
+UPDATE `topology` SET topology_url = 'http://wiki.centreon.com/' WHERE topology_page = '50604' AND topology_name = 'Wiki';
+UPDATE `topology` SET topology_url = 'http://support.centreon.com/' WHERE topology_page = '50607' AND topology_name = 'Support';
+
+
 DELETE FROM `topology` WHERE topology_page = '2020201';
 DELETE FROM `topology` WHERE topology_page = '2020202';
 DELETE FROM `topology` WHERE topology_page = '2020203';
@@ -86,10 +86,6 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2020103, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2020104, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 10201, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 10202, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 10203, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
-
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Hosts', './img/icones/16x16/document_gear.gif', '20306', '2030601', '10', '1', './include/monitoring/comments/comments.php', '&o=vh', NULL, NULL, '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Services', './img/icones/16x16/document_gear.gif', '20306', '2030602', '10', '1', './include/monitoring/comments/comments.php', '&o=vs', NULL, NULL, '1', NULL, NULL, NULL);
 
@@ -97,8 +93,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Services', './img/icones/16x16/document_gear.gif', '20305', '2030502', '10', '1', './include/monitoring/downtime/downtime.php', '&o=vs', NULL, NULL, '1', NULL, NULL, NULL);
 
 UPDATE `topology` SET topology_name = 'Downtime' WHERE topology_name = 'downtime' AND topology_parent = '203';
-
-ALTER TABLE session ADD update_acl ENUM('0','1') NOT NULL;
 
 ALTER TABLE giv_graphs_template ADD scaled ENUM('0','1') NULL DEFAULT '1' AFTER split_component;
 
@@ -119,6 +113,10 @@ UPDATE `topology` SET topology_name = 'Details' WHERE topology_name = 'Overview'
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Performance Info', './img/icones/16x16/document_gear.gif', '102', '10203', '10', '1', './include/nagiosStats/performanceInfo.php', NULL, NULL, NULL, '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Process Info', './img/icones/16x16/calculator.gif', '102', '10202', '10', '1', './include/nagiosStats/processInfo.php', NULL, NULL, NULL, '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Graphs', './img/icones/16x16/oszillograph.gif', '102', '10201', '10', '1', './include/nagiosStats/nagiosStats.php', NULL, NULL, NULL, '1', NULL, NULL, NULL);
+
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 10201, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 10202, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 10203, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
 
 INSERT INTO `topology`(topology_name, topology_icone, topology_parent, topology_page, topology_order, topology_group, topology_url, topology_show) VALUES  ('Reload ACL', './img/icones/16x16/refresh.gif', '502', '50205', '50', '1', './include/options/accessLists/reloadACL/reloadACL.php', '1');
 ALTER TABLE `session` ADD update_acl ENUM('0', '1') ;
@@ -184,7 +182,7 @@ ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_parent_id` ) REFERENCE
 ALTER TABLE `hostgroup_hg_relation` ADD FOREIGN KEY ( `hg_child_id` ) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE ;
 
 ALTER TABLE nagios_server ADD nagios_perfdata VARCHAR( 255 ) NULL;
-UPDATE nagios_server SET nagios_perfdata = (SELECT service_perfdata_file FROM cfg_nagios WHERE nagios_activate = '1' );
+UPDATE nagios_server SET nagios_perfdata = (SELECT service_perfdata_file FROM cfg_nagios WHERE nagios_activate = '1' LIMIT 1);
 
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$_HOSTSNMPCOMMUNITY$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$_HOSTSNMPVERSION$');
