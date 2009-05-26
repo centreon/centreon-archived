@@ -436,9 +436,7 @@ INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(3, '3co
 INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(4, 'Linksys', 'Linksys', '');
 INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(6, 'Dell', 'Dell', '');
 INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(7, 'Generic', 'Generic', 'References Generic Traps');
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(8, 'Apache', 'Apache', '');
 INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(9, 'Zebra', 'Zebra', '');
-INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(10, 'SQL-Server', 'SQL-Server', '');
 INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(11, 'HP-Compaq', 'HP and Compaq Systems', '');
 
 --
