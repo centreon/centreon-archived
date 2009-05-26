@@ -39,7 +39,7 @@
 	if (!isset ($oreon))
 		exit ();
 
-	if (function_exists("myDecodeCommand")) {
+	if (!function_exists("myDecodeCommand")) {
 		function myDecodeCommand($arg) {
 			$arg = html_entity_decode($arg, ENT_QUOTES);
 			$arg = str_replace('#BR#', "\\n", $arg);
