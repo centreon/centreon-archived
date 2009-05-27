@@ -214,7 +214,8 @@
 		$buffer->writeElement("current_notification_number_name", _("Current Notification Number"));
 		$buffer->writeElement("percent_state_change", $ndo["percent_state_change"]);		
 		$buffer->writeElement("percent_state_change_name", _("Percent State Change"));
-		$buffer->writeElement("is_downtime", $en[$ndo["scheduled_downtime_depth"]]);
+		$ndo["scheduled_downtime_depth"] ? $tmpStr = $en["1"] : $tmpStr = $en["0"];
+		$buffer->writeElement("is_downtime", $tmpStr);
 		$buffer->writeElement("is_downtime_name", _("In Scheduled Downtime?"));
 		$buffer->writeElement("last_update", get_centreon_date( time()));
 		$buffer->writeElement("last_update_name", _("Last Update"));
