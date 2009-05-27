@@ -43,7 +43,7 @@
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 	$version =& $DBRESULT->fetchRow();
 	
-	if (count(glob("Update-DB-".$version["value"]."_to_*.sql")))
+	if (count(glob("./sql/centreon/Update-DB-".$version["value"]."_to_*.sql")))
 		include("./step_upgrade/step4.php");
 	else {
 	
