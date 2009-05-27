@@ -5,9 +5,9 @@
 <form name="formu">
 	<table class="ajaxOption">
         <tr>
-        	<td><input type="radio" name="period_choice" value="auto">&nbsp;&nbsp;<b>{$form.period.label}</b>&nbsp;&nbsp;{$form.period.html}</td>
+        	<td><input type="radio" name="period_choice" value="auto" {if $period_type}checked{/if}>&nbsp;&nbsp;<b>{$form.period.label}</b>&nbsp;&nbsp;{$form.period.html}</td>
 			<td>
-				<input type="radio" name="period_choice" value="custom" checked>
+				<input type="radio" name="period_choice" value="custom" {if !$period_type}checked{/if}>
 				&nbsp;&nbsp;<b>{$From}</b>
 				&nbsp;&nbsp;<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="8" />
 				&nbsp;<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="5" />
