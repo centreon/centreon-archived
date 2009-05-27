@@ -259,11 +259,11 @@
 			$DBRESULT =& $pearDB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
 			$serveurs =& $DBRESULT->fetchrow();
 			unset($DBRESULT);
-			unset($serveurs);
 			if (isset($serveurs["init_script"]))
 				$nagios_init_script = $serveurs["init_script"];
 			else 
 				$nagios_init_script = "/etc/init.d/nagios";
+			unset($serveurs);
 							
 			foreach ($tab_server as $host) {
 				if ($ret["restart_mode"] == 1){
