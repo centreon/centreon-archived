@@ -123,7 +123,7 @@ sub DeleteOldRrdDB(){
     undef($data);
     $some_dir = getStorageDir();
     opendir(DIR, $some_dir) || die "can't opendir $some_dir: $!";
-    my @files = grep { $_ ne '.' and $_ ne '..' } readdir DIR; 
+    @files = grep { $_ ne '.' and $_ ne '..' } readdir DIR; 
     closedir DIR;
     for (@files) {
 		if (!defined($base{$_})){
