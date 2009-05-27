@@ -1,4 +1,13 @@
-## Centreon 2.1
+## Centreon 2.1-RC2
+
+=> fix problem with colors in eventlogs
+=> fix problem with multi version upgrade
+=> improve nagios statistics graphs color
+=> fix problem with data in nagios statistics graphs
+=> fix problem with sql upgrade script
+=> change color of configuration and administration tab
+
+## Centreon 2.1-RC1
 
 => add Timezone Management in check period for hosts and services
 => add Timezone Management in notifications period for hosts and services
