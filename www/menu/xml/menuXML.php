@@ -42,10 +42,22 @@
 	require_once $centreon_path."/www/class/centreonXML.class.php";
 	require_once $centreon_path."/www/class/centreonACL.class.php";
 	require_once $centreon_path."/www/include/common/common-Func.php";
+	require_once $centreon_path."/www/class/Oreon.class.php";
+	require_once $centreon_path."/www/class/Session.class.php";
 	
 	if (!isset($_GET["sid"]) || !isset($_GET["menu"]))
 		exit();
-		
+	
+	session_start();
+	$oreon = $_SESSION['oreon'];
+	$locale = $oreon->user->get_lang();
+	putenv("LANG=$locale");
+	setlocale(LC_ALL, $locale);
+	bindtextdomain("messages", $centreon_path . "/www/locale/");
+	bind_textdomain_codeset("messages", "UTF-8");
+	textdomain("messages");
+	$mlang = $oreon->user->get_lang();	
+	
 	global $pearDB;
 	
 	$pearDB = new CentreonDB();
