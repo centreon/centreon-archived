@@ -125,8 +125,7 @@
 	 * Assign values
 	 */		
 	$tpl->assign("perfInfo", $perfInfo); 
-	$tpl->assign("service_actively_checked", _("Services Actively Checked"));
-	$tpl->assign("host_actively_checked", _("Hosts Actively Checked"));	
+	$tpl->assign("host_actively_checked", _("Actively Checked"));	
 	$tpl->assign("time_frame", _("Time Frame"));
 	$tpl->assign("svc_checked", _("Services Checked"));
 	$tpl->assign("host_checked", _("Hosts Checked"));
