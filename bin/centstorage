@@ -294,11 +294,13 @@ sub GetPerfData(){
 	    close(PFDT);
 
 	    # Insert last Data
-	    my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES $dataBinInfo");
-	    if (!$sth1->execute) {
-		writeLogFile("Error:" . $sth1->errstr . "");
-	    }
-	    undef($sth1);
+		if ($dataBinInfo ne "") {
+			my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES $dataBinInfo");
+			if (!$sth1->execute) {
+			writeLogFile("Error:" . $sth1->errstr . "");
+			}
+			undef($sth1);
+		}
 
 	    # Remove Read File
 	    if (!unlink($PFDT."_read")) {
