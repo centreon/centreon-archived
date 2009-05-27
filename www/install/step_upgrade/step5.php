@@ -63,6 +63,7 @@
 		$file_sql = file("./sql/centstorage/Update-CSTG-".$_SESSION["script"].".sql");
         $request = "";
         if (count($file_sql)) {
+	       	$str = "";
 	        foreach ($file_sql as $line)
 	        	if ($line[0] != "#" && $line[0] != "-") {
 	        		$pos = strrpos($line, ";");
