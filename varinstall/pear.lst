@@ -1,4 +1,4 @@
-PEAR::1.5.0
+PEAR::1.4.9
 DB::1.7.6
 DB_DataObject::1.8.4
 DB_DataObject_FormBuilder::1.0.0RC4::beta
