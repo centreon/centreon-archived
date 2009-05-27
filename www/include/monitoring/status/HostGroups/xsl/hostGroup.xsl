@@ -79,7 +79,7 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="suc"/>;
     						</xsl:attribute>
-						<xsl:value-of select="su"/>&#160;PENDING
+						<xsl:value-of select="su"/>&#160;UNKNOWN
 						</span>&#160;
 					</xsl:if>
 					<xsl:if test="sp >= 1">
