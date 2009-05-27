@@ -9,7 +9,7 @@ INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.1-RC1');
 -- Contenu de la table `nagios_server`
 --
 
-INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`) VALUES(1, 'Central', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@');
+INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`, `nagios_perfdata`) VALUES(1, 'Central', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@', '@NAGIOS_VAR@/service-perfdata');
 
 --
 -- Contenu de la table `cfg_cgi`
@@ -106,8 +106,8 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(2, 2, 'green_css.php');
 INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(3, 3, 'yellow_css.php');
 INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(4, 4, 'red_css.php');
-INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(5, 5, 'pink_css.php');
-INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(6, 6, 'pink_css.php');
+INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(5, 5, 'blue_css.php');
+INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(6, 6, 'blue_css.php');
 
 --
 -- Contenu de la table `general_opt`
