@@ -39,7 +39,7 @@
 	/*
 	 * configuration
 	 */
-	include_once ("@CENTREON_ETC@/centreon.conf.php");
+	include_once ("/etc/centreon/centreon.conf.php");
 	include_once ("./step_upgrade/functions.php");
 	include_once ("../class/Session.class.php");
 
@@ -66,7 +66,7 @@
 		include("./step_upgrade/step1.php");
 	} else if (isset($_POST["step"]) && $_POST["step"] == 1){
 		include("./step_upgrade/step2.php");
-	} else if (isset($_POST["step"]) && $_POST["step"] == 2){
+	} else if (isset($_POST["step"]) && ($_POST["step"] == 2 || ($_POST["step"] == 3 && isset($_POST["Recheck"])))) {
 		include("./step_upgrade/step3.php");
 	} else if (isset($_POST["step"]) && $_POST["step"] == 3){
 		include("./step_upgrade/step4.php");

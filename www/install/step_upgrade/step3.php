@@ -36,8 +36,10 @@
  * 
  */
 
+$return_false = 0;
 
 aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
+
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">
   	<tr>
     	<th align="left">Component</th>
@@ -149,7 +151,7 @@ aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
 <?php
 aff_middle();
 $str = '';
-if (isset($return_false))
+if ($return_false)
 	$str = "<input class='button' type='submit' name='Recheck' value='Recheck' />";
 $str .= "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next'";
 if ($return_false)
