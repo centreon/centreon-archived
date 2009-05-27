@@ -605,18 +605,12 @@
 			 * Color initialisation for services and hosts status
 			 */
 			$color = '';
-			if ($log["msg_type"] == 0 || $log["msg_type"] == 2)
-				$color = $tab_color_service[$log["status"]];
-			if ($log["msg_type"] == 1 || $log["msg_type"] == 3)
-				$color = $tab_color_host[$log["status"]];
+			if (isset($log["status"]))
+            	$color = $tab_color[$log["status"]];
 	
 			/*
 			 * Variable initialisation to color "INITIAL STATE" on envent logs
 			 */
-	        if ($log["msg_type"] == 8)
-	        	$color = $tab_color_service[$log["status"]];
-	        if ($log["msg_type"] == 9)
-	        	$color = $tab_color_host[$log["status"]];
 	        if ($log["output"] == "" && $log["status"] != "")
 	        	$log["output"] = "INITIAL STATE";
 	
