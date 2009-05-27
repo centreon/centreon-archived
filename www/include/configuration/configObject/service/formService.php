@@ -364,6 +364,7 @@
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
+	$form->addElement('text', 'service_first_notification_delay', _("First notification delay"), $attrsText2);
 	$form->addElement('text', 'service_notification_interval', _("Notification Interval"), $attrsText2);
 	$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
 

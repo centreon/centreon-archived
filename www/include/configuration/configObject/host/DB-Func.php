@@ -451,7 +451,7 @@
 			"host_name, host_alias, host_address, host_max_check_attempts, host_check_interval, host_active_checks_enabled, " .
 			"host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host, host_check_freshness, host_freshness_threshold, " .
 			"host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
-			"host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, " .
+			"host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay, " .
 			"host_notification_options, host_notifications_enabled, host_first_notification_delay, host_stalking_options, host_snmp_community, " .
 			"host_snmp_version, host_location, host_comment, host_register, host_activate) " .
 			"VALUES ( ";
@@ -481,6 +481,7 @@
 			isset($ret["host_retain_status_information"]["host_retain_status_information"]) && $ret["host_retain_status_information"]["host_retain_status_information"] != 2 ? $rq .= "'".$ret["host_retain_status_information"]["host_retain_status_information"]."', " : $rq .= "'2', ";
 			isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]) && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2 ? $rq .= "'".$ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]."', " : $rq .= "'2', ";
 			isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != NULL ? $rq .= "'".$ret["host_notification_interval"]."', " : $rq .= "NULL, ";
+			isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != NULL ? $rq .= "'".$ret["host_first_notification_delay"]."', " : $rq .= "NULL, ";
 			isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_notifOpts"]))."', " : $rq .= "NULL, ";
 			isset($ret["host_notifications_enabled"]["host_notifications_enabled"]) && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2 ? $rq .= "'".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', " : $rq .= "'2', ";
 			isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] ? $rq .= "'".$ret["host_first_notification_delay"]."', " : $rq .= " NULL, ";
@@ -584,6 +585,7 @@
 		$fields["host_retain_status_information"] = $ret["host_retain_status_information"]["host_retain_status_information"];
 		$fields["host_retain_nonstatus_information"] = $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"];
 		$fields["host_notification_interval"] = $ret["host_notification_interval"];
+		$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
 		$fields["host_notifOpts"] = "";
 		if (isset($ret["host_notifOpts"]))
 			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));
@@ -854,6 +856,8 @@
 		isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]) && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2 ? $rq .= "'".$ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]."', " : $rq .= "'2', ";
 		$rq .= "host_notification_interval = ";
 		isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != NULL ? $rq .= "'".$ret["host_notification_interval"]."', " : $rq .= "NULL, ";
+		$rq .= "host_first_notification_delay = ";
+		isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != NULL ? $rq .= "'".$ret["host_first_notification_delay"]."', " : $rq .= "NULL, ";
 		$rq .= "host_notification_options = ";
 		isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_notifOpts"]))."', " : $rq .= "NULL, ";
 		$rq .= "host_notifications_enabled = ";
@@ -969,6 +973,7 @@
 		$fields["host_retain_status_information"] = $ret["host_retain_status_information"]["host_retain_status_information"];
 		$fields["host_retain_nonstatus_information"] = $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"];
 		$fields["host_notification_interval"] = $ret["host_notification_interval"];
+		$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
 		$fields["host_notifOpts"] = "";
 		if (isset($ret["host_notifOpts"]))
 			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));

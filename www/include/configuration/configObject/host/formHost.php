@@ -396,7 +396,7 @@
 	if ($o != "mc")
 		$form->setDefaults(array('host_notifications_enabled' => '2'));
 	
-	$form->addElement('text', 'host_first_notification_interval', _("First notification interval"), $attrsText2);
+	$form->addElement('text', 'host_first_notification_delay', _("First notification delay"), $attrsText2);
 	
 	if ($o == "mc")	{
 		$mc_mod_hcg = array();
