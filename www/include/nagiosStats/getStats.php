@@ -204,8 +204,12 @@
 		 * Init DS template For each curv
 		 */
 		
-		$colors = array("1"=>"#19EE11", "2"=>"#82CFD8", "3"=>"#F8C706", "4"=>"#F8C706");
-		
+		$colors = array("Min"=>"#19EE11", "Max"=>"#F91E05", "Average"=>"#2AD1D4", 
+						"Last_Min"=>"#2AD1D4", "Last_5_Min"=>"#13EB3A", "Last_15_Min"=>"#F8C706",
+						"Last_Hour"=>"#F91D05", "Up"=>"#19EE11", "Down"=>"#F91E05",
+						"Unreach"=>"#2AD1D4", "Ok"=>"#13EB3A", "Warn"=>"#F8C706",
+						"Crit"=>"#F91D05", "Unk"=>"#2AD1D4", "In_Use"=>"#13EB3A",
+						"Max_Used"=>"#F91D05", "Total_Available"=>"#2AD1D4");
 		$metrics = $differentStats[$options[$_GET["key"]]];
 		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_nagios_stats_path FROM config");
 		$nagios_stats =& $DBRESULT->fetchRow();
@@ -232,7 +236,7 @@
 		 */
 		$cpt = 1;
 		foreach ($metrics as $key => $tm){
-			$command_line .= " LINE1:v".$cpt.$colors[$cpt].":\"".$tm."\"";			
+			$command_line .= " LINE1:v".$cpt.$colors[$tm].":\"".$tm."\"";
 			$command_line .= " GPRINT:v". ($cpt) .":LAST:\"\:%7.2lf%s\l\"";
 			$cpt++;
 		}
