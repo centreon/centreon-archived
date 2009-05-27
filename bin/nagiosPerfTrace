@@ -139,11 +139,7 @@ sub rrd_process {
 		    if (!-e $global_cmd_buffer) {
 				RRDs::create ($global_cmd_buffer, "-s $interval", "DS:In_Use:GAUGE:300:0:U", "DS:Max_Used:GAUGE:300:0:U", "DS:Total_Available:GAUGE:300:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
-		    RRDs::update ($global_cmd_buffer, "--template=In_Use", "N:" . $1);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_cmd_buffer, "--template=Max_Used", "N:" . $2);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_cmd_buffer, "--template=Total_Available", "N:" . $3);
+		    RRDs::update ($global_cmd_buffer, "--template", "In_Use:Max_Used:Total_Available", "N:" . $1 . ":" . $2 . ":" . $3);
 		    $error = RRDs::error() if RRDs::error();
 		    
 		    if ($query_str ne "") {
@@ -158,11 +154,7 @@ sub rrd_process {
 		    if (!-e $global_active_service_latency)	{
 				RRDs::create ($global_active_service_latency, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
-		    RRDs::update ($global_active_service_latency, "--template=Min", "N:" . $1);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_service_latency, "--template=Max", "N:" . $2);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_service_latency, "--template=Average", "N:" . $3);
+		    RRDs::update ($global_active_service_latency, "--template", "Min:Max:Average", "N:" . $1 . ":" . $2 . ":" . $3);
 		    $error = RRDs::error() if RRDs::error();
 		    
 		    if ($query_str ne "") {
@@ -177,11 +169,7 @@ sub rrd_process {
 		    if (!-e $global_active_service_execution) {
 				RRDs::create ($global_active_service_execution, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
-		    RRDs::update ($global_active_service_execution, "--template=Min", "N:" . $1);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_service_execution, "--template=Max", "N:" . $2);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_service_execution, "--template=Average", "N:" . $3);
+		    RRDs::update ($global_active_service_execution, "--template", "Min:Max:Average", "N:" . $1 . ":" . $2 . ":" . $3);
 		    $error = RRDs::error() if RRDs::error();
 		    
 		    if ($query_str ne "") {
@@ -196,13 +184,7 @@ sub rrd_process {
 		    if (!-e $global_active_service_last) {
 				RRDs::create ($global_active_service_last, "-s $interval", "DS:Last_Min:GAUGE:600:0:U", "DS:Last_5_Min:GAUGE:600:0:U", "DS:Last_15_Min:GAUGE:600:0:U", "DS:Last_Hour:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
-		    RRDs::update ($global_active_service_last, "--template=Last_Min", "N:" . $1);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_service_last, "--template=Last_5_Min", "N:" . $2);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_service_last, "--template=Last_15_Min", "N:" . $3);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_service_last, "--template=Last_Hour", "N:" . $4);
+		    RRDs::update ($global_active_service_last, "--template", "Last_Min:Last_5_Min:Last_15_Min:Last_Hour", "N:" . $1 . ":" . $2 . ":" . $3 . ":" . $4);
 		    $error = RRDs::error() if RRDs::error();
 		    
 		    if ($query_str ne "") {
@@ -218,13 +200,7 @@ sub rrd_process {
 		    if (!-e $global_services_states) {
 				RRDs::create ($global_services_states, "-s $interval", "DS:Ok:GAUGE:600:0:U", "DS:Warn:GAUGE:600:0:U", "DS:Unk:GAUGE:600:0:U", "DS:Crit:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
-		    RRDs::update ($global_services_states, "--template=Ok", "N:" . $1);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_services_states, "--template=Warn", "N:" . $2);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_services_states, "--template=Unk", "N:" . $3);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_services_states, "--template=Crit", "N:" . $4);
+		    RRDs::update ($global_services_states, "--template", "Ok:Warn:Unk:Crit", "N:" . $1 . ":" . $2 . ":" . $3 . ":" . $4);
 		    $error = RRDs::error() if RRDs::error();
 		    
 		    if ($query_str ne "") {
@@ -241,11 +217,7 @@ sub rrd_process {
 		    if (!-e $global_active_host_latency) {
 				RRDs::create ($global_active_host_latency, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
-		    RRDs::update ($global_active_host_latency, "--template=Min", "N:" . $1);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_host_latency, "--template=Max", "N:" . $2);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_host_latency, "--template=Average", "N:" . $3);
+		    RRDs::update ($global_active_host_latency, "--template", "Min:Max:Average", "N:" . $1 . ":" . $2 . ":" . $3);
 		    $error = RRDs::error() if RRDs::error();
 		    
 		    if ($query_str ne "") {
@@ -260,11 +232,7 @@ sub rrd_process {
 		    if (!-e $global_active_host_execution) {
 				RRDs::create ($global_active_host_execution, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
-		    RRDs::update ($global_active_host_execution, "--template=Min", "N:" . $1);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_host_execution, "--template=Max", "N:" . $2);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_host_execution, "--template=Average", "N:" . $3);
+		    RRDs::update ($global_active_host_execution, "--template", "Min:Max:Average", "N:" . $1 . ":" . $2 . ":" . $3);
 		    $error = RRDs::error() if RRDs::error();
 		    
 		    if ($query_str ne "") {
@@ -279,13 +247,7 @@ sub rrd_process {
 		    if (!-e $global_active_host_last) {
 				RRDs::create ($global_active_host_last, "-s $interval", "DS:Last_Min:GAUGE:600:0:U", "DS:Last_5_Min:GAUGE:600:0:U", "DS:Last_15_Min:GAUGE:600:0:U", "DS:Last_Hour:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
-		    RRDs::update ($global_active_host_last, "--template=Last_Min", "N:" . $1);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_host_last, "--template=Last_5_Min", "N:" . $2);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_host_last, "--template=Last_15_Min", "N:" . $3);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_active_host_last, "--template=Last_Hour", "N:" . $4);
+		    RRDs::update ($global_active_host_last, "--template", "Last_Min:Last_5_Min:Last_15_Min:Last_Hour", "N:" . $1 . ":" . $2 . ":" . $3 . ":" . $4);
 		    $error = RRDs::error() if RRDs::error();
 		    
 		    if ($query_str ne "") {
@@ -301,11 +263,7 @@ sub rrd_process {
 		    if (!-e $global_hosts_states) {
 				RRDs::create ($global_hosts_states, "-s $interval", "DS:Up:GAUGE:600:0:U", "DS:Down:GAUGE:600:0:U", "DS:Unreach:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:1200", "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400");
 		    }
-		    RRDs::update ($global_hosts_states, "--template=Up", "N:" . $1);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_hosts_states, "--template=Down", "N:" . $2);
-		    $error = RRDs::error() if RRDs::error();
-		    RRDs::update ($global_hosts_states, "--template=Unreach", "N:" . $3);
+		    RRDs::update ($global_hosts_states, "--template", "Up:Down:Unreach", "N:" . $1 . ":" . $2 . ":" . $3);
 		    $error = RRDs::error() if RRDs::error();
 		    
 		    if ($query_str ne "") {
