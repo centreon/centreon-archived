@@ -108,8 +108,10 @@ aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
     	<td align="right"><?php
 			if (extension_loaded('xmlwriter'))
           		echo '<b><span class="go">OK</font></b>';
-			else
-				echo '<b><span class="warning">Warning: xml.so not loaded in php.ini</font></b>';?>
+			else {
+				echo '<b><span class="warning">Warning: xmlwriter.so not loaded in php.ini</font></b>';
+				$return_false = 1;	
+			}	?>
 		</td>
   </tr>
   <tr>
