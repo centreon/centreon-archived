@@ -123,10 +123,12 @@ trap clean_and_exit SIGINT SIGTERM
 LOG_FILE=${LOG_FILE:=log\/install_centreon.log}
 
 ## Valid if you are root 
-USERID=`id -u`
-if [ "$USERID" != "0" ]; then
-    echo -e "$(gettext "You must exec with root user")"
-    exit 1
+if [ "${FORCE_NO_ROOT:-0}" -eq 0 ]; then
+	USERID=i$(id -u)
+	if [ "$USERID" != "0" ]; then
+	    echo -e "$(gettext "You must exec with root user")"
+	    exit 1
+	fi
 fi
 
 _tmp_install_opts="0"
