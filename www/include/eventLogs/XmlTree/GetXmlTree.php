@@ -53,6 +53,19 @@
 	 * PHP functions 
 	 */
 	include_once $centreon_path . "www/include/common/common-Func.php";
+	
+	require_once ($centreon_path . "www/class/Session.class.php");
+	require_once ($centreon_path . "www/class/Oreon.class.php");
+	
+	Session::start();
+	$oreon =& $_SESSION["oreon"];
+	$locale = $oreon->user->get_lang();
+	putenv("LANG=$locale");
+	setlocale(LC_ALL, $locale);
+	bindtextdomain("messages", $centreon_path . "/www/locale/");
+	bind_textdomain_codeset("messages", "UTF-8");
+	textdomain("messages");
+	
 
 	/*
 	 * Include Access Class
@@ -328,7 +341,7 @@
 			$buffer->writeAttribute("select", "1");
 			$buffer->writeAttribute("child", "1");
 			$buffer->writeAttribute("id", "RR_0");
-			$buffer->writeAttribute("text", "HostGroups");
+			$buffer->writeAttribute("text", _(" Host Groups "));
 			$buffer->writeAttribute("im0", "../16x16/clients.gif");
 			$buffer->writeAttribute("im1", "../16x16/clients.gif");
 			$buffer->writeAttribute("im2", "../16x16/clients.gif");	
@@ -346,7 +359,7 @@
 				$buffer->writeAttribute("select", "1");
 				$buffer->writeAttribute("child", "1");
 				$buffer->writeAttribute("id", "RS_0");
-				$buffer->writeAttribute("text", _("ServiceGroups"));
+				$buffer->writeAttribute("text", _("Service Groups"));
 				$buffer->writeAttribute("im0", "../16x16/clients.gif");
 				$buffer->writeAttribute("im1", "../16x16/clients.gif");
 				$buffer->writeAttribute("im2", "../16x16/clients.gif");	
@@ -506,7 +519,7 @@
 		$buffer->startElement("item");
 		$buffer->writeAttribute("child", "1");
 		$buffer->writeAttribute("id", "HO_0");
-		$buffer->writeAttribute("text", _("Orphan hosts"));
+		$buffer->writeAttribute("text", _("Orphan Hosts"));
 		$buffer->writeAttribute("im0", "../16x16/server_network.gif");
 		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
