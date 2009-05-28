@@ -47,14 +47,16 @@
 
 	if ($o == "w" && $command_id)	{
 
-		function myDecodeCommand($arg)	{
-			$arg = html_entity_decode($arg, ENT_QUOTES);
-			$arg = str_replace('#BR#', "\\n", $arg);
-			$arg = str_replace('#T#', "\\t", $arg);
-			$arg = str_replace('#R#', "\\r", $arg);
-			$arg = str_replace('#S#', "/", $arg);
-			$arg = str_replace('#BS#', "\\", $arg);
-			return($arg);
+		if (!function_exists("myDecodeCommand")) {
+			function myDecodeCommand($arg)	{
+				$arg = html_entity_decode($arg, ENT_QUOTES);
+				$arg = str_replace('#BR#', "\\n", $arg);
+				$arg = str_replace('#T#', "\\t", $arg);
+				$arg = str_replace('#R#', "\\r", $arg);
+				$arg = str_replace('#S#', "/", $arg);
+				$arg = str_replace('#BS#', "\\", $arg);
+				return($arg);
+			}
 		}
 
 		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
