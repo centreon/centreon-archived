@@ -101,6 +101,7 @@
 		$file_sql = file("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql");
         $request = "";
         if (count($file_sql)) {
+	        $str = "";
 	        foreach ($file_sql as $line)
 	        	if ($line[0] != "#" && $line[0] != "-") {
 	        		$pos = strrpos($line, ";");
@@ -145,6 +146,7 @@
 		$file_sql = file("./sql/centreon/Update-DB-".$_SESSION["script"].".sql");
         $request = "";
         if (count($file_sql)) {
+	        $str = "";
 	        foreach ($file_sql as $line)
 	        	if ($line[0] != "#" && $line[0] != "-") {
 	        		$pos = strrpos($line, ";");
