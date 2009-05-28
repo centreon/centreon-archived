@@ -41,6 +41,13 @@
 	
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
+	$locale = $oreon->user->get_lang();
+	putenv("LANG=$locale");
+	setlocale(LC_ALL, $locale);
+	bindtextdomain("messages", $centreon_path . "/www/locale/");
+	bind_textdomain_codeset("messages", "UTF-8");
+	textdomain("messages");
+	$mlang = $oreon->user->get_lang();
 	
 	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/class/centreonDB.class.php";
@@ -130,6 +137,6 @@
 	$g->pie_slice_colours($color);
 
 	$g->set_tool_tip( '#val#%' );
-	$g->title( _('Services'), '{font-size:18px; color: #424242}' );
+	$g->title( _(' Services '), '{font-size:18px; color: #424242}' );
 	echo $g->render();
 ?>
