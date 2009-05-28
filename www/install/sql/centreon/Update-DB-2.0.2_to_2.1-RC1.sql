@@ -130,6 +130,8 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 UPDATE `topology` SET `topology_order` = '5' WHERE `topology`.`topology_page` = '50203' LIMIT 1 ;
 
+UPDATE `topology` SET `topology_name` = 'Host Problems' WHERE `topology_name` = 'Hosts Problems';
+
 CREATE TABLE `acl_actions` (
   `acl_action_id` int(11) NOT NULL auto_increment,
   `acl_action_name` varchar(255) default NULL,
