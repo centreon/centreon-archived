@@ -45,12 +45,9 @@ copyInTempFile 2>>$LOG_FILE
 
 ## Create temporary folder
 log "INFO" "$(gettext "Create working directory")"
-mkdir -p $TMP_DIR/final/bin 
-mkdir -p $TMP_DIR/work/bin
-mkdir -p $TMP_DIR/work/www/include/configuration/configGenerate
-mkdir -p $TMP_DIR/final/www/include/configuration/configGenerate
-mkdir -p $TMP_DIR/work/www/include/monitoring/external_cmd
-mkdir -p $TMP_DIR/final/www/include/monitoring/external_cmd
+mkdir -p $TMP_DIR/{work,final}/bin 
+mkdir -p $TMP_DIR/{work,final}/www/include/configuration/configGenerate
+mkdir -p $TMP_DIR/{work,final}/www/include/monitoring/external_cmd
 [ ! -d $INSTALL_DIR_CENTREON/examples ] && mkdir -p $INSTALL_DIR_CENTREON/examples
 # Copy init.d template in src
 cp -f $BASE_DIR/tmpl/install/centcore.init.d $TMP_DIR/src
@@ -137,11 +134,11 @@ cp $TMP_DIR/work/centcore.init.d $TMP_DIR/final/centcore.init.d
 cp $TMP_DIR/final/centcore.init.d $INSTALL_DIR_CENTREON/examples/centcore.init.d
 
 RC="1"
-if [ "${CENTCORE_INSTALL_INIT:-0}" -eq 1 ] ; then
-	RC="0"
-else
+if [ ! "${CENTCORE_INSTALL_INIT}" ] ; then
 	yes_no_default "$(gettext "Do you want me to install CentCore init script ?")"
 	RC="$?"
+elif [ "${CENTCORE_INSTALL_INIT}" -eq 1 ] ; then
+	RC="0"
 fi
 if [ "$RC" -eq "0" ] ; then 
 	log "INFO" "$(gettext "CentCore init script installed")"
@@ -151,11 +148,11 @@ if [ "$RC" -eq "0" ] ; then
 	check_result $? "$(gettext "CentCore init script installed")"
 	log "INFO" "$(gettext "CentCore init script installed")"
 	RC="1"
-	if [ "${CENTCORE_INSTALL_RUNLVL:-0}" -eq 1 ] ; then
-		RC="0"
-	else
+	if [ ! "${CENTCORE_INSTALL_RUNLVL}" ] ; then
 		yes_no_default "$(gettext "Do you want me to install CentCore run level ?")"
 		RC="$?"
+	elif [ "${CENTCORE_INSTALL_RUNLVL}" -eq 1 ] ; then
+		RC="0"
 	fi
 	if [ "$RC" -eq "0" ] ; then
 		install_init_service "centcore" | tee -a $LOG_FILE

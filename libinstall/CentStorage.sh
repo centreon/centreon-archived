@@ -156,11 +156,11 @@ cp $TMP_DIR/final/centstorage.init.d \
 	$INSTALL_DIR_CENTREON/examples/centstorage.init.d
 
 RC="1"
-if [ "${CENTSTORAGE_INSTALL_INIT:-0}" -eq 1 ] ; then 
-	RC="0"	
-else
+if [ ! "${CENTSTORAGE_INSTALL_INIT}" ] ; then 
 	yes_no_default "$(gettext "Do you want me to install CentStorage init script ?")"
 	RC="$?"
+elif [ "${CENTSTORAGE_INSTALL_INIT}" -eq 1 ] ; then 
+	RC="0"
 fi
 if [ "$RC" -eq "0" ] ; then 
 	log "INFO" "$(gettext "CentStorage init script installed")"
@@ -169,11 +169,11 @@ if [ "$RC" -eq "0" ] ; then
 		$INIT_D/centstorage >> $LOG_FILE 2>&1
 	check_result $? "$(gettext "CentStorage init script installed")"
 	RC="1"
-	if [ "${CENTSTORAGE_INSTALL_RUNLVL:-0}" -eq 1 ] ; then
-		RC="1"
-	else
+	if [ ! "${CENTSTORAGE_INSTALL_RUNLVL}" ] ; then
 		yes_no_default "$(gettext "Do you want me to install CentStorage run level ?")"
 		RC="$?"
+	elif [ ! "${CENTSTORAGE_INSTALL_RUNLVL}" -eq 1 ] ; then
+		RC="0"
 	fi
 	if [ "$RC" -eq "0" ] ; then
 		install_init_service "centstorage" | tee -a $LOG_FILE
