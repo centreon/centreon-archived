@@ -167,7 +167,7 @@
         	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
         }
 	} else {
-		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
+		echo '<td align="right"><b><span class="go">PASS</span></b></td></tr>';
 	}
 
 	aff_middle();
