@@ -414,7 +414,7 @@ sub sendConfigFile($){
     }
     
     # Send data with rsync
-    `$rsync -c --del --port=$port $origin $dest`;
+    `$rsync -c -r --port=$port $origin $dest`;
 
     undef($cfg_dir);
     undef($server_info);
