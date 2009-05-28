@@ -2132,21 +2132,21 @@ function check_tmp_disk_space() {
 ## @Globals	TMP_DIR, yes
 #----
 function purge_centreon_tmp_dir() {
-  local silent="$1"
+	local silent="$1"
 	local not_clean="1"
-  local rc=0
+	local rc="0"
 	while [ $not_clean -ne 0 ] ; do
-    if [ "$silent" != "silent" ] ; then
-  		yes_no_default "$(gettext "Do you want me to remove the centreon temporary working space to continue installation ?")" "$yes"
-      rc=$?
-    else
-      rc=0
-    fi
-		if [ "$rc" -eq 0 ] ; then 
+		if [ "$silent" != "silent" ] ; then
+  			yes_no_default "$(gettext "Do you want me to remove the centreon temporary working space to continue installation ?")" "$yes"
+			rc=$?
+		else
+			rc=0
+		fi
+		if [ $rc -eq 0 ] ; then 
 			local tmp_base_dir=`dirname $TMP_DIR`
 			local tmp_dir=`basename $TMP_DIR`
 			find $tmp_base_dir -name "$tmp_dir*" -type d \
-				-exec rm -rf {} \; 
+				-exec rm -rf {} \; 2>/dev/null
 			not_clean="0"
 		else
 			return 1
