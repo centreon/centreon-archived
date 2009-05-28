@@ -6,6 +6,13 @@
 => fix problem with data in nagios statistics graphs
 => fix problem with sql upgrade script
 => change color of configuration and administration tab
+=> remove problem with duplicate function require
+=> fix bug with init script for nagios path
+=> improve translation 
+=> add option -p (snmp port) on SNMP plugins 
+=> fix pb with HG pages (toolbar more action not working for enable / disable)
+=> remove warning on centstorage
+=> fix problem wit --del on centcore for rsync
 
 ## Centreon 2.1-RC1
 
