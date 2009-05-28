@@ -18,7 +18,7 @@
 				&nbsp;
 			</td>			
 			<td>
-				<input type="button" name="graph" value="Apply" onClick="apply_period();">
+				<input type="button" name="graph" value="{$Apply}" onClick="apply_period();">
 			</td>
 			<td>
 				&nbsp;&nbsp;<a href="javascript:log_4_host(this, '', 'CSV')"><img src="./img/icones/16x16/text_binary_csv.gif" alt="export CSV"/></a>

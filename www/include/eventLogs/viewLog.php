@@ -186,6 +186,7 @@
 	$tpl->assign('period_type', $user_params['log_period_type']);
 	$tpl->assign('From', _("From"));
 	$tpl->assign('To', _("To"));
+	$tpl->assign('Apply', _("Apply"));
 	$tpl->display("viewLog.ihtml");
 
 ?><link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
