@@ -181,7 +181,7 @@
 	
 	
 	/*
-	 * Contact Nagios Server comes from DB -> Store in $nsServer Array
+	 * Nagios Server comes from DB -> Store in $nsServer Array
 	 */
 	
 	$nsServers = array();
