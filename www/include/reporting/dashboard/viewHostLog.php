@@ -124,6 +124,7 @@
 		$tpl->assign("end", $end_date);
 		$tpl->assign("resumeTitle", _("Host state"));
 		$tpl->assign("host_id", $id);
+		$tpl->assign("Alert", _("Alert"));
 	}
 	
 	/*
