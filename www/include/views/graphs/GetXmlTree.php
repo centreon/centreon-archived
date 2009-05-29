@@ -52,6 +52,19 @@
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	include_once $centreon_path . "www/include/views/graphs/common-Func.php";
 
+	/* Tanslation */
+	require_once ($centreon_path . "www/class/Session.class.php");
+	require_once ($centreon_path . "www/class/Oreon.class.php");
+	
+	Session::start();
+	$oreon =& $_SESSION["oreon"];
+	$locale = $oreon->user->get_lang();
+	putenv("LANG=$locale");
+	setlocale(LC_ALL, $locale);
+	bindtextdomain("messages", $centreon_path . "/www/locale/");
+	bind_textdomain_codeset("messages", "UTF-8");
+	textdomain("messages");
+
 	/*
 	 * Include Access Class
 	 */
