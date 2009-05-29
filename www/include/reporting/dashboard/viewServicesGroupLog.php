@@ -126,6 +126,7 @@
 		$tpl->assign('resumeTitle', _("Services group state"));
 		$formPeriod->setDefaults(array('period' => $period));
 		$tpl->assign('id', $id);
+		$tpl->assign('Alert', _("Alert"));
 	}
 	$tpl->assign('p', $p);
 

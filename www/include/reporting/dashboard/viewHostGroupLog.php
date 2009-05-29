@@ -134,6 +134,7 @@
 		$tpl->assign('period', $period);
 		$formPeriod->setDefaults(array('period' => $period));
 		$tpl->assign('id', $id);
+		$tpl->assign('Alert', _("Alert"));
 	}
 
 	/*

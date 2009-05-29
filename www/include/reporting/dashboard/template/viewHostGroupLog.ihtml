@@ -135,16 +135,16 @@
 							<td colspan=2 class="ListColHeaderCenter">{$states.UNREACHABLE}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$states.UNDETERMINED}</td>
 						</tr>
-						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter" colspan="2"></td>
-							<td class="ListColHeaderCenter">%</td>
-							<td class="ListColHeaderCenter">Alert</td>
-							<td class="ListColHeaderCenter">%</td>
-							<td class="ListColHeaderCenter">Alert</td>
-							<td class="ListColHeaderCenter">%</td>
-							<td class="ListColHeaderCenter">Alert</td>
-							<td class="ListColHeaderCenter">%</td>
-						</tr>
+						 <tr class='list_lvl_1'>
+                            <td class="ListColHeaderCenter" colspan="2"></td>
+                            <td class="ListColHeaderCenter">%</td>
+                            <td class="ListColHeaderCenter">{$Alert}</td>
+                            <td class="ListColHeaderCenter">%</td>
+                            <td class="ListColHeaderCenter">{$Alert}</td>
+                            <td class="ListColHeaderCenter">%</td>
+                            <td class="ListColHeaderCenter">{$Alert}</td>
+                            <td class="ListColHeaderCenter">%</td>
+                        </tr>
 						{foreach item=tb from=$components}
 						<tr class={cycle values="list_two, list_one"}>
 							<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.NAME}</a></td>							

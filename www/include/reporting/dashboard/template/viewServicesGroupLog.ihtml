@@ -142,18 +142,18 @@
 							<td class="ListColHeaderCenter">{$PendingTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter">{$hostTitle}</td>
-							<td class="ListColHeaderCenter">{$serviceTitle}</td>							
-							<td class="ListColHeaderCenter">%</td>
-							<td class="ListColHeaderCenter">Alert</td>
-							<td class="ListColHeaderCenter">%</td>
-							<td class="ListColHeaderCenter">Alert</td>
-							<td class="ListColHeaderCenter">%</td>
-							<td class="ListColHeaderCenter">Alert</td>
-							<td class="ListColHeaderCenter">%</td>
-							<td class="ListColHeaderCenter">Alert</td>
-							<td class="ListColHeaderCenter">%</td>
-						</tr>
+                            <td class="ListColHeaderCenter">{$hostTitle}</td>
+                            <td class="ListColHeaderCenter">{$serviceTitle}</td>
+                            <td class="ListColHeaderCenter">%</td>
+                            <td class="ListColHeaderCenter">{$Alert}</td>
+                            <td class="ListColHeaderCenter">%</td>
+                            <td class="ListColHeaderCenter">{$Alert}</td>
+                            <td class="ListColHeaderCenter">%</td>
+                            <td class="ListColHeaderCenter">{$Alert}</td>
+                            <td class="ListColHeaderCenter">%</td>
+                            <td class="ListColHeaderCenter">{$Alert}</td>
+                            <td class="ListColHeaderCenter">%</td>
+                        </tr>
 						{foreach item=tb from=$components}
 						<tr class={cycle values="list_two, list_one"}>
 							<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.HOST_ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.HOST_NAME}</a></td>
