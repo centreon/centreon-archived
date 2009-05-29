@@ -455,11 +455,13 @@
 		}
 		$rq = "INSERT INTO service " .
 				"(service_template_model_stm_id, command_command_id, timeperiod_tp_id, command_command_id2, timeperiod_tp_id2, " .
-				"service_description, service_alias, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, " .
+				"service_description, service_alias, service_is_volatile, service_max_check_attempts, service_normal_check_interval, " .
+				"service_retry_check_interval, service_active_checks_enabled, " .
 				"service_passive_checks_enabled, service_parallelize_check, service_obsess_over_service, service_check_freshness, service_freshness_threshold, " .
 				"service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
-				"service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, service_first_notification_interval, " .
-				"service_notification_options, service_notifications_enabled, service_stalking_options, service_comment, command_command_id_arg, command_command_id_arg2, service_register, service_activate) " .
+				"service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, " .
+				"service_notification_options, service_notifications_enabled, service_stalking_options, service_first_notification_delay ,service_comment, command_command_id_arg, command_command_id_arg2, " .
+				"service_register, service_activate) " .
 				"VALUES ( ";
 				isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL ? $rq .= "'".$ret["service_template_model_stm_id"]."', ": $rq .= "NULL, ";
 				isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";
@@ -486,10 +488,10 @@
 				isset($ret["service_retain_status_information"]["service_retain_status_information"]) && $ret["service_retain_status_information"]["service_retain_status_information"] != 2 ? $rq .= "'".$ret["service_retain_status_information"]["service_retain_status_information"]."', " : $rq .= "'2', ";
 				isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]) && $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"] != 2 ? $rq .= "'".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', " : $rq .= "'2', ";
 				isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL ? $rq .= "'".$ret["service_notification_interval"]."', " : $rq .= "NULL, ";
-				isset($ret["service_first_notification_interval"]) && $ret["service_first_notification_interval"] != NULL ? $rq .= "'".$ret["service_first_notification_interval"]."', " : $rq .= "NULL, ";
 				isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_notifOpts"]))."', " : $rq .= "NULL, ";
 				isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
 				isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
+				isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= "NULL, ";
 				
 				if (isset($ret["service_comment"]) && $ret["service_comment"])	{
 					$ret["service_comment"] = str_replace('/', "#S#", $ret["service_comment"]);
@@ -555,7 +557,7 @@
 		$fields["service_retain_status_information"] = $ret["service_retain_status_information"]["service_retain_status_information"];
 		$fields["service_retain_nonstatus_information"] = $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
 		$fields["service_notification_interval"] = $ret["service_notification_interval"];
-		$fields["service_first_notification_interval"] = $ret["service_first_notification_interval"];
+		$fields["service_first_notification_delay"] = $ret["service_first_notification_delay"];
 		$fields["service_notifOpts"] = "";
 		if (isset($ret["service_notifOpts"]))
 			$fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
@@ -710,12 +712,12 @@
 		isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]) && $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"] != 2 ? $rq .= "'".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', " : $rq .= "'2', ";
 		$rq .= "service_notification_interval = ";
 		isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL ? $rq .= "'".$ret["service_notification_interval"]."', " : $rq .= "NULL, ";
-		$rq .= "service_first_notification_interval = ";
-		isset($ret["service_first_notification_interval"]) && $ret["service_first_notification_interval"] != NULL ? $rq .= "'".$ret["service_first_notification_interval"]."', " : $rq .= "NULL, ";
 		$rq .= "service_notification_options = ";
 		isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_notifOpts"]))."', " : $rq .= "NULL, ";
 		$rq .= "service_notifications_enabled = ";
 		isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
+		$rq .= "service_first_notification_delay = ";
+		isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != 2 ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= " NULL, ";
 		$rq .= "service_stalking_options = ";
 		isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
 		
@@ -781,7 +783,7 @@
 		$fields["service_retain_status_information"] = $ret["service_retain_status_information"]["service_retain_status_information"];
 		$fields["service_retain_nonstatus_information"] = $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
 		$fields["service_notification_interval"] = $ret["service_notification_interval"];
-		$fields["service_first_notification_interval"] = $ret["service_first_notification_interval"];
+		$fields["service_first_notification_delay"] = $ret["service_first_notification_delay"];
 		$fields["service_notifOpts"] = "";
 		if (isset($ret["service_notifOpts"]))
 			$fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
