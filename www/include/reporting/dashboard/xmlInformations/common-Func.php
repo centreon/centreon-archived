@@ -39,6 +39,20 @@
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path."www/class/centreonDB.class.php";
 	
+	/* Translation */
+	require_once ($centreon_path . "www/class/Session.class.php");
+	require_once ($centreon_path . "www/class/Oreon.class.php");
+	
+	Session::start();
+	$oreon =& $_SESSION["oreon"];
+	$locale = $oreon->user->get_lang();
+	putenv("LANG=$locale");
+	setlocale(LC_ALL, $locale);
+	bindtextdomain("messages", $centreon_path . "/www/locale/");
+	bind_textdomain_codeset("messages", "UTF-8");
+	textdomain("messages");
+	
+	
 	/*
 	 * Create a XML node for each day stats (in $row) for a service, a servicegroup, an host or an hostgroup
 	 */
@@ -72,8 +86,11 @@
 		/*
 		 * Popup generation for each day
 		 */
+		$Day = _("Day");
+        $Duration = _("Duration");
+        $Alert = _("Alert");
 		$detailPopup = '{table class=bulleDashtab}';
-		$detailPopup .= '	{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $date_start) .' --  Duration: '.Duration::toString($totalTime).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
+	 	$detailPopup .= '{tr}{td class=bulleDashleft colspan=3}'.$Day.': '. date("d/m/Y", $date_start) .' --  '.$Duration.': '.Duration::toString($totalTime).'{/td}{td class=bulleDashleft }'.$Alert.'{/td}{/tr}';
 		foreach($statesTab as $key => $value) {
 			$detailPopup .= '	{tr}' .
 							'		{td class=bulleDashleft style="background:'.$color[$value].';"  }'._($value).':{/td}' .
