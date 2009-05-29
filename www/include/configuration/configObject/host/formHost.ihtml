@@ -30,7 +30,7 @@
 	<tr class="list_one"><td class="FormRowField">{$form.host_address.label}</td><td class="FormRowValue">{$form.host_address.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.host_snmp_community.label} && {$form.host_snmp_version.label}</td><td class="FormRowValue">{$form.host_snmp_community.html}&nbsp;&nbsp;{$form.host_snmp_version.html}</td></tr>
 	{if $form.nagios_server_id.label}
-	<tr class="list_one"><td class="FormRowField">{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
 	{/if}
 	{if $tpl == 0 && $tzUsed}
 	<tr class="list_two"><td class="FormRowField">{$form.host_location.label}</td><td class="FormRowValue">{$form.host_location.html}</td></tr>
@@ -118,7 +118,7 @@
 	<tr class="list_one"><td class="FormRowField">{$form.host_notification_interval.label}</td><td class="FormRowValue">{$form.host_notification_interval.html}{$time_unit}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_notifOpts.label}</td><td class="FormRowValue">{$form.host_notifOpts.html}</td></tr>	
-	<tr class="list_two"><td class="FormRowField">{$form.host_first_notification_interval.label}</td><td class="FormRowValue">{$form.host_first_notification_interval.html} {$time_unit}</td></tr>	
+	<tr class="list_two"><td class="FormRowField">{$form.host_first_notification_delay.label}</td><td class="FormRowValue">{$form.host_first_notification_delay.html} {$time_unit}</td></tr>	
 	{if $o == "a" || $o == "c"}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
 	{/if}
