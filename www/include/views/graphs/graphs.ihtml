@@ -21,7 +21,7 @@
 					&nbsp;<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="5" />&nbsp;
 				</td>
 				<td style='white-space:nowrap;'>
-					<input type="button" name="graph" value="Apply" onClick="apply_period();" />
+					<input type="button" name="graph" value="{$Apply}" onClick="apply_period();" />
 				</td>
 			</tr>
 		</table>
