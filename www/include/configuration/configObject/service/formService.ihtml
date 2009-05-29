@@ -77,7 +77,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.service_notification_interval.label}</td><td class="FormRowValue">{$form.service_notification_interval.html}&nbsp;{$time_unit}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_notifOpts.label}</td><td class="FormRowValue">{$form.service_notifOpts.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.service_first_notification_delay.label}</td><td class="FormRowValue">{$form.service_first_notification_delay.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_first_notification_delay.label}</td><td class="FormRowValue">{$form.service_first_notification_delay.html}&nbsp;{$time_unit}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
