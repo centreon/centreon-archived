@@ -148,6 +148,7 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('from', _(" From "));
 	$tpl->assign('to', _(" to "));	
+	$tpl->assign('Apply', _("Apply"));	
 
 	$tpl->display("graphs.ihtml");
 ?>
