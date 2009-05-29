@@ -717,7 +717,7 @@
 		$rq .= "service_notifications_enabled = ";
 		isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
 		$rq .= "service_first_notification_delay = ";
-		isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != 2 ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= " NULL, ";
+		isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= " NULL, ";
 		$rq .= "service_stalking_options = ";
 		isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
 		
