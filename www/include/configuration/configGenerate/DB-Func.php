@@ -37,9 +37,23 @@
  */
  
  	/*
- 	 * Get Contact Group
+ 	 * Create Service Template Cache
  	 */
-
+	
+	function getMyServiceTPInCache($service_id = NULL, $cache)	{
+		if (!$service_id) 
+			return;
+		
+		while (1) {
+			if (isset($cache[$service_id]["tp"])) {
+				return $cache[$service_id]["tp"];
+			} else if (isset($cache[$service_id]["tpl"])) {
+				$service_id = $cache[$service_id]["tpl"];
+			} else {
+				break;
+			}
+		}
+	}
 
 	/*
 	 * Get contact List

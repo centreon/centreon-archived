@@ -116,21 +116,6 @@
 	 * Create file
 	 */
 	$handle = create_file($nagiosCFGPath.$tab['id']."/services.cfg", $oreon->user->get_name());
-	
-	function getMyServiceTPInCache($service_id = NULL, $cache)	{
-		if (!$service_id) 
-			return;
-		
-		while (1) {
-			if (isset($cache[$service_id]["tp"])) {
-				return $cache[$service_id]["tp"];
-			} else if (isset($cache[$service_id]["tpl"])) {
-				$service_id = $cache[$service_id]["tpl"];
-			} else {
-				break;
-			}
-		}
-	}
 
 	/*
 	 * Get Service List
