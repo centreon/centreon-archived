@@ -163,7 +163,7 @@
 	$form->addElement('header', 	'extended', _("Extended Information"));
 	$form->addElement('text', 		'hg_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 		'hg_notes_url', _("Notes URL"), $attrsTextLong);
-	$form->addElement('text', 		'hg_action_url', _("Notes URL"), $attrsTextLong);
+	$form->addElement('text', 		'hg_action_url', _("Action URL"), $attrsTextLong);
 	$form->addElement('select', 	'hg_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('hg_icon_image',this.form.elements['hg_icon_image'].value)"));
 	$form->addElement('select', 	'hg_map_icon_image', _("Map Icon"), $extImg, array("onChange"=>"showLogo('hg_map_icon_image',this.form.elements['hg_map_icon_image'].value)"));
 	
