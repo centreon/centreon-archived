@@ -494,15 +494,17 @@
 		
 		## Part 35
 		$debugLevel = array();
-		$debugLevel["-1"]= "Log everything";
-		$debugLevel["0"]= "Log nothing (default)";
-		$debugLevel["1"]= "Function enter/exit information";
-		$debugLevel["2"]= "Config information";
-		$debugLevel["4"]= "Process information";
-		$debugLevel["8"]= "Scheduled event information";
-		$debugLevel["16"]= "Host/service check information";
-		$debugLevel["32"]= "Notification information";
-		$debugLevel["64"]= "Event broker information";
+		$debugLevel["-1"]= _("Log everything");
+		$debugLevel["0"]= _("Log nothing (default)");
+		$debugLevel["1"]= _("Function enter/exit information");
+		$debugLevel["2"]= _("Config information");
+		$debugLevel["4"]= _("Process information");
+		$debugLevel["8"]= _("Scheduled event information");
+		$debugLevel["16"]= _("Host/service check information");
+		$debugLevel["32"]= _("Notification information");
+		$debugLevel["64"]= _("Event broker information");
+		$debugLevel["256"]= _("Commands information");
+		$debugLevel["2048"]= _("Macros information");
 		$form->addElement('select', 'debug_level', _("Debug Level"), $debugLevel);
 	
 		## Part 36
@@ -575,9 +577,6 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
-	#
-	## Form Rules
-	#
 	function slash($elem = NULL)	{
 		if ($elem)
 			return rtrim($elem, "/")."/";
@@ -630,7 +629,9 @@
 	if ($valid && $action["action"]["action"])
 		require_once($path."listNagios.php");
 	else	{
-		#Apply a template definition
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
