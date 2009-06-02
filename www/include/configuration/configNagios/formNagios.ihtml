@@ -28,10 +28,10 @@
 		<tr class="list_two"><td class="FormRowField">{$form.nagios_activate.label}</td><td class="FormRowValue">{$form.nagios_activate.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Folders</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$Folders}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.cfg_dir.label}</td><td class="FormRowValue">{$form.cfg_dir.html}</td></tr>
 
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Files</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$Files}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.downtime_file.label}</td><td class="FormRowValue">{$form.downtime_file.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.comment_file.label}</td><td class="FormRowValue">{$form.comment_file.html}</td></tr>
@@ -47,7 +47,7 @@
 		<tr class="list_two"><td class="FormRowField">{$form.aggregate_status_updates.label}</td><td class="FormRowValue">{$form.aggregate_status_updates.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.status_update_interval.label}</td><td class="FormRowValue">{$form.status_update_interval.html}&nbsp;{$Seconds}</td></tr>
 
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;External Commandes</td></tr>	
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$ExternalCommandes}</td></tr>	
 		<tr class="list_one"><td class="FormRowField">{$form.check_external_commands.label}</td><td class="FormRowValue">{$form.check_external_commands.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.command_check_interval.label}</td><td class="FormRowValue">{$form.command_check_interval.html}&nbsp;{$Seconds}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
