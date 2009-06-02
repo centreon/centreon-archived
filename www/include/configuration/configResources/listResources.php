@@ -71,14 +71,15 @@
 	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
-	$tpl->assign("headerMenu_desc", _("Description"));
+	$tpl->assign("headerMenu_values", _("Values"));
+	$tpl->assign("headerMenu_comment", _("Description"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
 	/*
 	 * resources list
 	 */
-	$rq = "SELECT resource_id, resource_name, resource_line, resource_activate FROM cfg_resource $SearchTool ORDER BY resource_name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT * FROM cfg_resource $SearchTool ORDER BY resource_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -106,7 +107,8 @@
 								"RowMenu_select"=>$selectedElements->toHtml(),
 								"RowMenu_name"=>$resource["resource_name"],
 								"RowMenu_link"=>"?p=".$p."&o=c&resource_id=".$resource['resource_id'],
-								"RowMenu_desc"=>substr($resource["resource_line"], 0, 40),
+								"RowMenu_values"=>substr($resource["resource_line"], 0, 40),
+								"RowMenu_comment"=>substr($resource["resource_comment"], 0, 40),
 								"RowMenu_status"=>$resource["resource_activate"] ? _("Enabled") :  _("Disabled"),
 								"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	
