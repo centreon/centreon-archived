@@ -33,7 +33,7 @@
 		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lock_new.gif'>&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/lock_ok.gif'>&nbsp;&nbsp;{$form.header.Host_infos}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img src='./img/icones/16x16/server_network.gif'>&nbsp;{$form.acl_hosts.label}</td><td class="FormRowValue">{$form.acl_hosts.html}</td></tr>
-	 	<tr class="list_two"><td class="FormRowField"><img src='./img/icones/16x16/clients.gif'>&nbsp;{$form.acl_hostgroup.label}</td><td class="FormRowValue">{$form.acl_hostgroup.html}</td></tr>
+	 	<tr class="list_one"><td class="FormRowField"><img src='./img/icones/16x16/clients.gif'>&nbsp;{$form.acl_hostgroup.label}</td><td class="FormRowValue">{$form.acl_hostgroup.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img src='./img/icones/16x16/warning.gif'>&nbsp;{$form.acl_hostexclude.label}</td><td class="FormRowValue">{$form.acl_hostexclude.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.services}</td></tr>	 	
 		<tr class="list_two"><td class="FormRowField">{$form.acl_sc.label}</td><td class="FormRowValue">{$form.acl_sc.html}</td></tr>	
