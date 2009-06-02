@@ -149,9 +149,10 @@
 		}
 	}
 	function deleteServiceInDB ($services = array())	{
-		global $pearDB;
-		global $oreon;
-		foreach($services as $key=>$value)	{
+		global $pearDB, $oreon;
+
+		foreach ($services as $key => $value)	{
+
 			$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_template_model_stm_id = '".$key."'");
 			while ($row =& $DBRESULT->fetchRow())	{
 				$DBRESULT2 =& $pearDB->query("UPDATE service SET service_template_model_stm_id = NULL WHERE service_id = '".$row["service_id"]."'");
@@ -166,9 +167,6 @@
 				$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
 				$DBRESULT =& $pearDB->query("DELETE FROM contact_service_relation WHERE service_service_id = '".$key."'");
 			}
-			$files = glob($oreon->optGen["oreon_rrdbase_path"]."*_".$key.".rrd");
-			foreach ($files as $filename)
-				unlink ($filename);
 		}
 	}
 	
