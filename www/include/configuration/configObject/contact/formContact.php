@@ -246,11 +246,9 @@
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable', array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery', array('id' => 'hRecovery', 'onClick' => 'uncheckAllH(this);'));
 	
-	if ($oreon->user->get_version() >= 2) {
-		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping', array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
-		if ($oreon->user->get_version() >= 3) {
-			$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled', array('id' => 'hScheduled', 'onClick' => 'uncheckAllS(this);'));
-		}
+	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping', array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
+	if ($oreon->user->get_version() >= 3) {
+		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled', array('id' => 'hScheduled', 'onClick' => 'uncheckAllS(this);'));
 	}
 	
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
