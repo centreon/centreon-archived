@@ -134,7 +134,8 @@
 	 */
 	
 	$attrsText 		= array("size"=>"30");
-	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
+	$attrsText2 	= array("size"=>"60");
+	$attrsAdvSelect = array("style" => "width: 200px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"80");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
@@ -154,9 +155,9 @@
 	 */
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('header', 'hostgroups', _("Hosts Groups Shared"));
-	$form->addElement('header', 'services', _("Services Categories Shared"));
+	$form->addElement('header', 'services', _("Services Filters"));
 	$form->addElement('text',	'acl_res_name', _("ACL Definition"), $attrsText);
-	$form->addElement('text', 	'acl_res_alias', _("Alias"), $attrsText);
+	$form->addElement('text', 	'acl_res_alias', _("Alias"), $attrsText2);
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'acl_res_activate', null, _("Enabled"), '1');
@@ -164,39 +165,58 @@
 	$form->addGroup($tab, 'acl_res_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('acl_res_activate' => '1'));
 
-
+	/*
+	 * Contact implied
+	 */
+	$form->addElement('header', 'contacts_infos', _("People linked to this Access list"));
+	
     $ams1 =& $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$form->addElement('header', 'Host_infos', _("Shared Hosts Informations"));
-	
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hosts', _("Hosts Access"), $hosts, $attrsAdvSelect);
+	$form->addElement('header', 'Host_infos', _("Shared Resouces"));
+	$form->addElement('header', 'help', _("Help"));
+	$form->addElement('header', 'HSharedExplain', _("<b><i>Help :</i></b> In this tab, you will be able to select hosts and hostgroups that you want to shared to people present in group selected on the previous tab. You have also the possibilty to exclude host on selected hostgroup. You can also do filters on selected hosts services. If you select a service category, user will only see only services of the selected categories."));
+	/*
+	 * Hosts
+	 */
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hosts', _("Hosts available"), $hosts, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', _("Exclude hosts on hosts groups"), $hosttoexcludes, $attrsAdvSelect);
+	/*
+	 * Host Groups
+	 */
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostgroup', _("Hosts groups available"), $hostgroups, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hostgroup', _("Hosts Groups Access"), $hostgroups, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', _("Exclude hosts on selected hosts groups"), $hosttoexcludes, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
+	/*
+	 * Host Filters
+	 */
 	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', _("Services Categories Access"), $service_categories, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 
+	/*
+	 * Service Groups Add
+	 */
+	$form->addElement('header', 'SSharedExplain', _(""));
+	
 	$ams2 =& $form->addElement('advmultiselect', 'acl_sg', _("Services Groups"), $service_groups, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
@@ -218,7 +238,6 @@
 	/*
 	 * Form Rules
 	 */
-	 
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('lca_name', _("Required"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
@@ -230,27 +249,29 @@
 	 */ 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-
-	/*
-	 * Just watch a LCA information
-	 */
-	if ($o == "w")	{
+	
+	if ($o == "w") {
+		/*
+		 * Just watch a LCA information
+		 */
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&acl_id=".$acl_id."'"));
 	    $form->setDefaults($acl);
 		$form->freeze();
-	} else if ($o == "c"){ # Modify a LCA information
+	} else if ($o == "c"){ 
+		/*
+		 * Modify a LCA information
+		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Delete"));
 	    $form->setDefaults($acl);
-	} else if ($o == "a"){	# Add a LCA information
+	} else if ($o == "a") {
+		/*
+		 *  Add a LCA information
+		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Delete"));
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&lca_id=".$acl_id, "changeT"=>_("Modify")));
-
-	$tpl->assign("sort1", _("General Information"));
-	$tpl->assign("sort2", _("Resources"));
-	$tpl->assign("sort3", _("Topology"));
 
 	$valid = false;
 	if ($form->validate())	{
@@ -265,13 +286,18 @@
 		if ($valid && $action["action"]["action"])
 			require_once("listsResourcesAccess.php");
 		else	{
-			#Apply a template definition
+			/*
+			 * Apply a template definition
+			 */
 			$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 			$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 			$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 			$form->accept($renderer);
 			$tpl->assign('form', $renderer->toArray());
 			$tpl->assign('o', $o);
+			$tpl->assign("sort1", _("General Information"));
+			$tpl->assign("sort2", _("Hosts Resources"));
+			$tpl->assign("sort3", _("Services Resources"));
 			$tpl->display("formResourcesAccess.ihtml");
 		}
 	}
