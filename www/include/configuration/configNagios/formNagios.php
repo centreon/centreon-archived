@@ -645,6 +645,7 @@
 		$tpl->assign('sort5', _("Tuning"));		
 		$tpl->assign('sort6', _("Admin"));
 		$tpl->assign('sort7', _("Debug"));
+		$tpl->assign('Status', _("Status"));
 		$tpl->assign("Seconds", _("Seconds"));
 		$tpl->assign("Minutes", _("Minutes"));
 		$tpl->assign("Bytes", _("Bytes"));

@@ -42,7 +42,7 @@
 
 		<tr class="list_two"><td class="FormRowField">{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row.gif'>&nbsp;&nbsp;Status</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row.gif'>&nbsp;&nbsp;{$Status}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.status_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.aggregate_status_updates.label}</td><td class="FormRowValue">{$form.aggregate_status_updates.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.status_update_interval.label}</td><td class="FormRowValue">{$form.status_update_interval.html}&nbsp;{$Seconds}</td></tr>
