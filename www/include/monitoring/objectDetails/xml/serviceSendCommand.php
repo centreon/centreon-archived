@@ -47,10 +47,18 @@ require_once $centreon_path . "/www/class/Oreon.class.php";
 require_once $centreon_path . "/www/class/centreonXML.class.php";
   
 Session::start();
+$oreon =& $_SESSION["oreon"];
+
 if (!isset($_SESSION["oreon"]) || !isset($_GET["host_id"]) || !isset($_GET["svc_id"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]))
 	exit();
 
-$oreon =& $_SESSION["oreon"];
+$locale = $oreon->user->get_lang();
+putenv("LANG=$locale");
+setlocale(LC_ALL, $locale);
+bindtextdomain("messages", $centreon_path."/www/locale/");
+bind_textdomain_codeset("messages", "UTF-8");
+textdomain("messages");
+
 $pearDB = new CentreonDB();
 $hostObj = new CentreonHost($pearDB);
 $svcObj = new CentreonService($pearDB);

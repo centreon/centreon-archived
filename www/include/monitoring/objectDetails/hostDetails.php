@@ -378,6 +378,7 @@
 <script type="text/javascript">	
 	var _sid = '<?php echo session_id();?>';
 	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
+	var command_sent = '<?php echo _("Command sent"); ?>';
 	var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
 	
 	function send_command(cmd, div_id, str) {
@@ -411,7 +412,7 @@
 		var executed_command = received_command.item(0).firstChild.data;
 		
 		if (state == "0") {
-			 msg_result = executed_command + ' sent';			 
+			 msg_result = command_sent;			 
 			 document.getElementById(div_id).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + cmd + "\", \""+ div_id +"\", \"" + switch_str + "\")'>"+ switch_str +"</a>";
 		}
 		else {
