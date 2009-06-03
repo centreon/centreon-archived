@@ -148,4 +148,22 @@ echo _("Logs");
 echo _("Reload ACL");
 echo _("Performance Info");
 echo _("Process Info");
+
+/* List select on Administration -> Log */
+
+echo _("command");
+echo _("timeperiod");
+echo _("contact");
+echo _("contactgroup");
+echo _("host");
+echo _("hostgroup");
+echo _("service");
+echo _("servicegroup");
+echo _("snmp traps");
+echo _("escalation");
+echo _("host dependency");
+echo _("hostgroup dependency");
+echo _("service dependency");
+echo _("servicegroup dependency");
+
 ?>
