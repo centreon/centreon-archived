@@ -224,7 +224,7 @@
 				"WHERE a.acl_action_id = agar.acl_action_id " .
 				"AND agar.acl_action_id = ar.acl_action_rule_id " .
 				"AND a.acl_action_activate = '1'" .				
-				"AND agar.acl_group_id IN (".$this->getAccessGroupsString().")";			
+				"AND agar.acl_group_id IN (".$this->getAccessGroupsString().")";	
 		$DBRESULT =& $pearDB->query($query);
 		while ($row =& $DBRESULT->fetchRow())
 			$this->actions[$row['acl_action_name']] = $row['acl_action_name'];		
@@ -351,7 +351,7 @@
  			$i++;
  		}
  		if (!$i)
- 			$string = "''";
+ 			$string = "'0'";
  		return $string;
  	}
  	
