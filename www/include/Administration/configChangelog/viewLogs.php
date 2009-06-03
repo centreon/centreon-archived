@@ -124,8 +124,10 @@
 	$objects_type_tab = array();
 	$objects_type_tab = $oreon->CentreonLogAction->listObjecttype();
 	$options = "";	
-	foreach ($objects_type_tab as $key => $name)
+	foreach ($objects_type_tab as $key => $name) {
+		$name = _("$name");
 		$options .= "<option value='$key' ".(($otype == $key) ? 'selected' : "").">$name</option>"; 
+	}
 	 
 	$tpl->assign("obj_type", $options);
 	?>
