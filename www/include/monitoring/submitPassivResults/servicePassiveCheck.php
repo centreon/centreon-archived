@@ -79,14 +79,14 @@
 		}
 		
 		$form->addElement('select', 'host_name', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
-		$form->addElement('select', 'service_description', _("Services"), $services);
+		$form->addElement('select', 'service_description', _("Service"), $services);
 	   	
 		$form->addRule('host_name', _("Required Field"), 'required');
 		$form->addRule('service_description', _("Required Field"), 'required');
 	
 		$return_code = array("0" => "OK","1" => "WARNING", "3" => "UNKNOWN", "2" => "CRITICAL");
 	
-		$form->addElement('select', 'return_code', 'checkResult',$return_code);
+		$form->addElement('select', 'return_code', _("Check result"),$return_code);
 		$form->addElement('text', 'output', _("Check output"), array("size"=>"100"));
 		$form->addElement('text', 'dataPerform', _("Performance data"), array("size"=>"100"));
 	

@@ -115,7 +115,7 @@
 			$redirect->setValue($o);
 		    
 		    $selHost =& $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
-			$selSv =& $form->addElement('select', 'service_id', _("Services"), $services);
+			$selSv =& $form->addElement('select', 'service_id', _("Service"), $services);
 		    $form->addElement('checkbox', 'persistant', _("Fixed"));
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 			
