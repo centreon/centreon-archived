@@ -186,6 +186,15 @@
 	$tpl->assign('o', $o);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
+	$tpl->assign("Metric", _("Metric"));
+	$tpl->assign("Unit", _("Unit"));
+	$tpl->assign("Warning", _("Warning"));
+	$tpl->assign("Critical", _("Critical"));
+	$tpl->assign("Min", _("Min"));
+	$tpl->assign("Max", _("Max"));
+	$tpl->assign("NumberOfValues", _("Number of values"));
+	$tpl->assign("Hidden", _("Hidden"));
+	$tpl->assign("Locked", _("Locked"));
 	
 	$tpl->assign("data", $data);
 	

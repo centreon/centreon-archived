@@ -237,6 +237,14 @@
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
 	$tpl->assign("data", $data);
+	$tpl->assign("Host", _("Host"));
+	$tpl->assign("Service", _("Service"));
+	$tpl->assign("Metrics", _("Metrics"));
+	$tpl->assign("RebuildWaiting", _("Rebuild Waiting"));
+	$tpl->assign("Hidden", _("Hidden"));
+	$tpl->assign("Locked", _("Locked"));
+	$tpl->assign("StorageType", _("Storage Type"));
+	$tpl->assign("Actions", _("Actions"));
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	

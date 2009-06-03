@@ -17,15 +17,15 @@
 	<table class="ListTable">
 	 	<tr class="ListHeader">
 	 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-	 		<td class="ListColLeft">Metric</td>
-	 		<td class="ListColCenter">Unit&eacute;</td>
-	 		<td class="ListColCenter">Warning</td>
-	 		<td class="ListColCenter">Critical</td>
-	 		<td class="ListColCenter">Min</td>
-	 		<td class="ListColCenter">Max</td>
-	 		<td class="ListColCenter">Nombre de Valeurs</td>
-	 		<td class="ListColCenter">Hidden</td>
-	 		<td class="ListColCenter">Locked</td>
+	 		<td class="ListColLeft">{$Metric}</td>
+	 		<td class="ListColCenter">{$Unit}</td>
+	 		<td class="ListColCenter">{$Warning}</td>
+	 		<td class="ListColCenter">{$Critical}</td>
+	 		<td class="ListColCenter">{$Min}</td>
+	 		<td class="ListColCenter">{$Max}</td>
+	 		<td class="ListColCenter">{$NumberOfValues}</td>
+	 		<td class="ListColCenter">{$Hidden}</td>
+	 		<td class="ListColCenter">{$Locked}</td>
 	 	</tr>
 		{foreach item=d from=$data}
 		<tr class="{$d.class}">

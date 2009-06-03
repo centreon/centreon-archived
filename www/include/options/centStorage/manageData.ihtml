@@ -17,14 +17,14 @@
 	<table class="ListTable">
 	 	<tr class="ListHeader">
 	 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-	 		<td class="ListColLeft">Host</td>
-	 		<td class="ListColCenter">Service</td>
-	 		<td class="ListColCenter">Metrics</td>
-	 		<td class="ListColCenter">Rebuild Waiting</td>
-	 		<td class="ListColCenter">Hidden</td>
-	 		<td class="ListColCenter">Locked</td>
-	 		<td class="ListColCenter">Storage Type</td>
-	 		<!--<td class="ListColRight">Actions</td>-->
+	 		<td class="ListColLeft">{$Host}</td>
+	 		<td class="ListColCenter">{$Service}</td>
+	 		<td class="ListColCenter">{$Metrics}</td>
+	 		<td class="ListColCenter">{$RebuildWaiting}</td>
+	 		<td class="ListColCenter">{$Hidden}</td>
+	 		<td class="ListColCenter">{$Locked}</td>
+	 		<td class="ListColCenter">{$StorageType}</td>
+	 		<!--<td class="ListColRight">{$Actions}</td>-->
 	 	</tr>
 	 	{assign var='host_name' value=''}
 		{foreach item=d from=$data}
