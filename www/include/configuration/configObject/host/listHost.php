@@ -312,7 +312,7 @@
 	 * create Poller Select
 	 */
 	
-	$options = "<option value='0'>All Pollers</option>";
+	$options = "<option value='0'>"._("All Pollers")."</option>";
 	foreach ($nagios_server as $key => $name)
 		$options .= "<option value='$key' ".(($poller == $key) ? 'selected' : "").">$name</option>"; 
 	 
@@ -320,5 +320,8 @@
 	unset($options);
 
 	$tpl->assign('form', $renderer->toArray());
+	$tpl->assign('Hosts', _("Hosts"));
+	$tpl->assign('Poller', _("Poller"));
+	$tpl->assign('Search', _("Search"));
 	$tpl->display("listHost.ihtml");
 ?>

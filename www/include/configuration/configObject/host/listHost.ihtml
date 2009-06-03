@@ -2,9 +2,9 @@
 <form name='form' method='POST'>
 <table class="ajaxOption">
 	<tr>
-		<td>Hosts : <input type='text' name='searchH' value='{$search}' /></td>
-		<td>&nbsp;&nbsp;-&nbsp;Poller : <select name='poller' />{$poller}</select></td>
-		<td><input type='submit' name='SearchB' value='Search' /></td>
+		<td>{$Hosts} : <input type='text' name='searchH' value='{$search}' /></td>
+        <td>&nbsp;&nbsp;-&nbsp;{$Poller} : <select name='poller' />{$poller}</select></td>
+        <td><input type='submit' name='SearchB' value='{$Search}' /></td>
 	</tr>
 </table>
 <br>
