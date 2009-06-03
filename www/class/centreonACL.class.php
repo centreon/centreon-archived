@@ -71,9 +71,6 @@
  		} else
  			$this->admin = $is_admin; 		
  		
-		$this->setTopology();
- 		$this->getACLStr();
- 		
  		if (!$this->admin) {
 	 		$this->setAccessGroups();
 	 		$this->setResourceGroups();
@@ -82,6 +79,10 @@
 	 		$this->setServiceCategories();	 		
 	 		$this->setActions();
  		}
+
+		$this->setTopology();
+ 		$this->getACLStr();
+ 		
  	}
  	
  	/*
