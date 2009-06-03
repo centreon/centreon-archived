@@ -37,7 +37,6 @@
  */
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	
 	include_once $centreon_path."www/class/other.class.php";
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonACL.class.php";
@@ -159,73 +158,6 @@
 	/* 
 	 * Get Service status
 	 */
-	$rq =		" SELECT " .
-				" no.name1 as host_name," .
-				" nss.process_performance_data," . 
-				" nss.current_state," .
-				" nss.scheduled_downtime_depth," .
-				" nss.output as plugin_output," .
-				" nss.current_check_attempt as current_attempt," .
-				" nss.status_update_time as status_update_time," .
-				" unix_timestamp(nss.last_state_change) as last_state_change," .
-				" unix_timestamp(nss.last_check) as last_check," .
-				" unix_timestamp(nss.next_check) as next_check," .
-				" nss.notifications_enabled," .
-				" nss.problem_has_been_acknowledged," .
-				" nss.passive_checks_enabled," .
-				" nss.active_checks_enabled," .
-				" nss.event_handler_enabled," .
-				" nss.is_flapping," .
-				" nss.flap_detection_enabled," .
-				" no.object_id," .
-				" no.name2 as service_description" .
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
-	if (!$is_admin)	
-		$rq .= ", centreon_acl ";
-		
-	$rq .= 	" WHERE no.object_id = nss.service_object_id" .
-			" AND no.name1 NOT LIKE '_Module_%'" .
-		  	" AND objecttype_id = 2";
-
-	if (!$is_admin)	
-		$rq .= 	$access->queryBuilder("AND", "no.name1", "centreon_acl.host_name"). $access->queryBuilder("AND", "no.name2", "centreon_acl.service_description").$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
-
-	($o == "meta") ? $rq .= " AND no.name1 = '_Module_Meta'" : $rq .= " AND no.name1 != '_Module_Meta'";
-
-	if ($instance != "ALL")
-		$rq .= " AND no.instance_id = ".$instance;
-
-	if (isset($host_name) && $host_name != "")
-		$rq .= " AND no.name1 like '%" . $host_name . "%'  ";
-
-	if ($search_type_host && $search_type_service && $search){
-		$rq .= " AND ( no.name1 like '%" . $search . "%' OR no.name2 like '%" . $search . "%' OR nss.output like '%" . $search . "%') ";
-	} else if (!$search_type_service && $search_type_host && $search){
-		$rq .= " AND no.name1 like '%" . $search . "%'";
-	} else if ($search_type_service && !$search_type_host && $search){
-		$rq .= " AND no.name2 like '%" . $search . "%'";
-	}
-	
-	if ($o == "svcpb")
-		$rq .= " AND nss.current_state != 0";
-	if ($o == "svc_ok")
-		$rq .= " AND nss.current_state = 0 ";
-	if ($o == "svc_warning")
-		$rq .= " AND nss.current_state = 1 ";
-	if ($o == "svc_critical")
-		$rq .= " AND nss.current_state = 2 ";
-	if ($o == "svc_unknown")
-		$rq .= " AND nss.current_state = 3 ";
-	
-	if ($o == "svc_unhandled") {
-		$rq .= " AND nss.current_state != 0";
-		$rq .= " AND nss.state_type = '1'";
-		$rq .= " AND nss.problem_has_been_acknowledged = 0";
-		$rq .= " AND nss.scheduled_downtime_depth = 0";
-	}
-	
-	$rq_pagination = $rq;
-
 	switch ($sort_type){
 		case 'host_name' : 
 			$rq_sorte = " ORDER BY host_name ". $order.", service_description"; 
@@ -278,7 +210,7 @@
 
 	$ACLCondition = "";
 	if (!$is_admin)
-		$ACLCondition = " AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description ";
+		$ACLCondition = " AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND group_id IN ($grouplistStr)";
 
 
 	/*
@@ -335,7 +267,7 @@
 	$rq1Full = 	"SELECT count(nss.current_state) " .
 		 	"FROM (";
 	
-	$rq2Full = 	"SELECT no.name1 as host_name, no.object_id, no.name2 as service_description, " .
+	$rq2Full = 	"SELECT DISTINCT no.name1 as host_name, no.object_id, no.name2 as service_description, " .
 			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts FROM  nagios_objects no, nagios_services ns $ACLDBName" .
 			"WHERE no.object_id = ns.service_object_id " .
 			"	AND no.name1 NOT LIKE '_Module_%' " .
@@ -345,7 +277,7 @@
 			"	) A, " .
 		 	"nagios_servicestatus nss WHERE A.object_id = nss.service_object_id $rq_state ";
 
-	$rq2 = 	"SELECT no.name1 as host_name, no.object_id, no.name2 as service_description, " .
+	$rq2 = 	"SELECT DISTINCT no.name1 as host_name, no.object_id, no.name2 as service_description, " .
 			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts FROM  nagios_objects no, nagios_services ns $ACLDBName" .
 			"WHERE no.object_id = ns.service_object_id " .
 			"	AND no.name1 NOT LIKE '_Module_%' " .
