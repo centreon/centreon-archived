@@ -79,13 +79,13 @@
 		$tpl->assign('authorlabel', _("Alias"));
 		$tpl->assign('authoralias', $oreon->user->get_alias());
 	
-		$ckbx[] =& $form->addElement('checkbox', 'notify', 'notify');
+		$ckbx[] =& $form->addElement('checkbox', 'notify', _("notify"));
 		$ckbx[0]->setChecked(false);
 		
-		$ckbx1[] =& $form->addElement('checkbox', 'sticky', 'sticky');
+		$ckbx1[] =& $form->addElement('checkbox', 'sticky', _("sticky"));
 		$ckbx1[0]->setChecked(true);
 		
-		$ckbx2[] =& $form->addElement('checkbox', 'persistent', 'persistent');
+		$ckbx2[] =& $form->addElement('checkbox', 'persistent', _("persistent"));
 		$ckbx2[0]->setChecked(true);
 		
 		$form->addElement('hidden', 'host_name', $host_name);
@@ -99,7 +99,7 @@
 		
 		$form->applyFilter('__ALL__', 'myTrim');
 		
-		$form->addElement('textarea', 'comment', 'comment', array("rows"=>"7", "cols"=>"100"));
+		$form->addElement('textarea', 'comment', _("comment"), array("rows"=>"7", "cols"=>"100"));
 		$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 		$form->setJsWarnings(_("Invalid information entered"),_("Please correct these fields"));
 		
