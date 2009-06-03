@@ -263,5 +263,8 @@
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
+	$tpl->assign('Hosts', _("Hosts"));
+	$tpl->assign('Services', _("Services"));
+	$tpl->assign('Search', _("Search"));
 	$tpl->display("listService.ihtml");
 ?>
