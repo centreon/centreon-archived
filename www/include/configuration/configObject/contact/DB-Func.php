@@ -297,7 +297,8 @@
 		
 		$fields["contact_hostNotifCmds"] = implode(",", $ret["contact_hostNotifCmds"]);
 		$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
-		$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
+		if (isset($ret["contact_cgNotif"]))
+			$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
 		$oreon->CentreonLogAction->insertLog("contact", $contact_id["MAX(contact_id)"], $ret["contact_name"], "a", $fields);
 		
 		return ($contact_id["MAX(contact_id)"]);
