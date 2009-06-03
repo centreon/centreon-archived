@@ -256,12 +256,9 @@
 												"AND acl_topology.acl_topo_activate = '1'");
 														
 				if (!$DBRESULT->numRows()){				
-					$DBRESULT2 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
-					for ($str_topo = ""; $topo = $DBRESULT2->fetchRow(); )
-						if (isset($topo["topology_page"]))
-							$this->topology[$topo["topology_page"]] = 1;
-					unset($str_topo);
-					$DBRESULT2->free();
+					$this->topology[1] = 1;
+			  		$this->topology[101] = 1;
+			  		$this->topology[10101] = 1;
 				} else {
 					while ($topo_group =& $DBRESULT->fetchRow()) {
 						$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
