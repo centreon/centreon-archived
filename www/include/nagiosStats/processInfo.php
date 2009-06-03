@@ -128,7 +128,7 @@
 	$tpl = initSmartyTpl($path, $tpl, "./");	
 	
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);		
-	$yes_no_tab = array("0" => "No", "1" => "Yes");
+	$yes_no_tab = array("0" => _("No"), "1" => _("Yes"));
 	
 	/*
 	 * Assign values
