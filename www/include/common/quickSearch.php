@@ -67,11 +67,11 @@
 		$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;");
 	
 	if (isset($search_service) && $search_service) {
-		$attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;", "title" => "Service Description Search Key");
-		$attrsText["title"] = "Host Name Search Key";
+		$attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;", "title" => _("Service Description Search Key"));
+		$attrsText["title"] = _("Host Name Search Key");
 	} else {
-		$attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;", "title" => "Service Description Search Key");
-		$attrsText["title"] = "Host Name Search Key";
+		$attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;", "title" => _("Service Description Search Key"));
+		$attrsText["title"] = _("Host Name Search Key");
 	}
 	$attrsSubmit = array("style"=>"display:none;");
 	
