@@ -131,21 +131,21 @@
 	
 			h.innerHTML = '<?php echo _("Hosts"); ?>';
 		  	h.indice = 'host_name';
-		  	h.title = '<?php echo _("Sort by host name"); ?>';
+		  	h.title = "<?php echo _("Sort by host name"); ?>";
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 	
 			var h = document.getElementById('service_description');
 			h.innerHTML = '<?php echo _("Services"); ?>';
 		  	h.indice = 'service_description';
-		  	h.title = '<?php echo _("Sort by service description"); ?>';
+		  	h.title = "<?php echo _("Sort by service description"); ?>";
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 	
 			var h = document.getElementById('current_state');
 			h.innerHTML = '<?php echo _("Status"); ?>';
 		  	h.indice = 'current_state';
-		  	h.title = '<?php echo _("Sort by status"); ?>';
+		  	h.title = "<?php echo _("Sort by status"); ?>";
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 	

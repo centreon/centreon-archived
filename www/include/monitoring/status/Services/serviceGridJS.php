@@ -92,13 +92,13 @@ function set_header_title(){
 		var h = document.getElementById('host_name');
 		h.innerHTML = '<?php echo _("Hosts")?>';
 	  	h.indice = 'host_name';
-	  	h.title = '<?php echo _("Sort by Host Name"); ?>';
+	  	h.title = "<?php echo _("Sort by Host Name"); ?>";
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		
 		if (document.getElementById('current_state')){
 			var h = document.getElementById('current_state');
-			h.innerHTML = '<?php echo _("Status")?>';
+			h.innerHTML = "<?php echo _("Status")?>";
 		  	h.indice = 'current_state';
 		  	h.title = '<?php echo _("Sort by Status"); ?>';
 		  	h.onclick=function(){change_type_order(this.indice)};
