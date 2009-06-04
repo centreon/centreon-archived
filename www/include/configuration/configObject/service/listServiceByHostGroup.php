@@ -190,8 +190,6 @@
 		$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") * $time_min;
 		$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") * $time_min;
 		
-		$tplStr = decodeObjectNames($tplStr);
-		
 		$elemArr[$i] = array(	"MenuClass"=>"list_".($service["nbr"]>1 ? "three" : $style),
 								"RowMenu_select"=>$selectedElements->toHtml(),
 								"RowMenu_name"=>$service["hg_name"],
