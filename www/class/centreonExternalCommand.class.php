@@ -106,42 +106,96 @@
  	 */
  	private function setExternalCommandList() {
  		# Services Actions
-		$this->actions["service_checks"] = "ENABLE_SVC_CHECK|DISABLE_SVC_CHECK";
-		$this->actions["service_notifications"] = "ENABLE_SVC_NOTIFICATIONS|DISABLE_SVC_NOTIFICATIONS";
+		$this->actions["service_checks"][0] = "ENABLE_SVC_CHECK";
+		$this->actions["service_checks"][1] = "DISABLE_SVC_CHECK";
+
+		$this->actions["service_notifications"][0] = "ENABLE_SVC_NOTIFICATIONS";
+		$this->actions["service_notifications"][1] = "DISABLE_SVC_NOTIFICATIONS";
+
 		$this->actions["service_acknowledgement"] = "";
-		$this->actions["service_schedule_check"] = "SCHEDULE_SVC_CHECK|SCHEDULE_FORCED_SVC_CHECK";
+
+		$this->actions["service_schedule_check"][0] = "SCHEDULE_SVC_CHECK";
+		$this->actions["service_schedule_check"][1] = "SCHEDULE_FORCED_SVC_CHECK";
+
 		$this->actions["service_schedule_downtime"] = "";
+
 		$this->actions["service_comment"] = "";
-		$this->actions["service_event_handler"] = "ENABLE_SVC_EVENT_HANDLER|DISABLE_SVC_EVENT_HANDLER";
-		$this->actions["service_flap_detection"] = "ENABLE_SVC_FLAP_DETECTION|DISABLE_SVC_FLAP_DETECTION";
-		$this->actions["service_passive_checks"] = "ENABLE_PASSIVE_SVC_CHECKS|DISABLE_PASSIVE_SVC_CHECKS";
+
+		$this->actions["service_event_handler"][0] = "ENABLE_SVC_EVENT_HANDLER";
+		$this->actions["service_event_handler"][1] = "DISABLE_SVC_EVENT_HANDLER";
+		
+		$this->actions["service_flap_detection"][0] = "ENABLE_SVC_FLAP_DETECTION";
+		$this->actions["service_flap_detection"][1] = "DISABLE_SVC_FLAP_DETECTION";
+
+		$this->actions["service_passive_checks"][0] = "ENABLE_PASSIVE_SVC_CHECKS";
+		$this->actions["service_passive_checks"][1] = "DISABLE_PASSIVE_SVC_CHECKS";
+		
 		$this->actions["service_submit_result"] = "";
 		
 		# Hosts Actions
-		$this->actions["host_checks"] = "ENABLE_HOST_CHECK|DISABLE_HOST_CHECK";
-		$this->actions["host_notifications"] = "ENABLE_HOST_NOTIFICATIONS|DISABLE_HOST_NOTIFICATIONS";
+		$this->actions["host_checks"][0] = "ENABLE_HOST_CHECK";
+		$this->actions["host_checks"][1] = "DISABLE_HOST_CHECK";
+		
+		$this->actions["host_notifications"][0] = "ENABLE_HOST_NOTIFICATIONS";
+		$this->actions["host_notifications"][1] = "DISABLE_HOST_NOTIFICATIONS";
+		
 		$this->actions["host_acknowledgement"] = "";
-		$this->actions["host_schedule_check"] = "SCHEDULE_HOST_SVC_CHECKS|SCHEDULE_FORCED_HOST_SVC_CHECKS";
+				
+		$this->actions["host_schedule_check"][0] = "SCHEDULE_HOST_SVC_CHECKS";
+		$this->actions["host_schedule_check"][1] = "SCHEDULE_FORCED_HOST_SVC_CHECKS";
+		
 		$this->actions["host_schedule_downtime"] = "";
+		
 		$this->actions["host_comment"] = "";
-		$this->actions["host_event_handler"] = "ENABLE_HOST_EVENT_HANDLER|DISABLE_HOST_EVENT_HANDLER";
-		$this->actions["host_flap_detection"] = "ENABLE_HOST_FLAP_DETECTION|DISABLE_HOST_FLAP_DETECTION";
-		$this->actions["host_checks_for_services"] = "ENABLE_HOST_SVC_CHECKS|DISABLE_HOST_SVC_CHECKS";
-		$this->actions["host_notifications_for_services"] = "ENABLE_HOST_SVC_NOTIFICATIONS|DISABLE_HOST_SVC_NOTIFICATIONS";
+		
+		$this->actions["host_event_handler"][0] = "ENABLE_HOST_EVENT_HANDLER";
+		$this->actions["host_event_handler"][1]	= "DISABLE_HOST_EVENT_HANDLER";
+		
+		$this->actions["host_flap_detection"][0] = "ENABLE_HOST_FLAP_DETECTION";
+		$this->actions["host_flap_detection"][1] = "DISABLE_HOST_FLAP_DETECTION";
+		
+		$this->actions["host_checks_for_services"][0] = "ENABLE_HOST_SVC_CHECKS";
+		$this->actions["host_checks_for_services"][1] = "DISABLE_HOST_SVC_CHECKS";
+		
+		$this->actions["host_notifications_for_services"][0] = "ENABLE_HOST_SVC_NOTIFICATIONS";
+		$this->actions["host_notifications_for_services"][1] = "DISABLE_HOST_SVC_NOTIFICATIONS";
 		
 		# Global Nagios External Commands
-		$this->actions["global_shutdown"] = "SHUTDOWN_PROGRAM";
-		$this->actions["global_restart"] = "RESTART_PROGRAM";
-		$this->actions["global_notifications"] = "ENABLE_NOTIFICATIONS|DISABLE_NOTIFICATIONS";
-		$this->actions["global_service_checks"] = "START_EXECUTING_SVC_CHECKS|STOP_EXECUTING_SVC_CHECKS";
-		$this->actions["global_service_passive_checks"] = "START_ACCEPTING_PASSIVE_SVC_CHECKS|STOP_ACCEPTING_PASSIVE_SVC_CHECKS";
-		$this->actions["global_host_checks"] = "START_EXECUTING_HOST_CHECKS|STOP_EXECUTING_HOST_CHECKS";
-		$this->actions["global_host_passive_checks"] = "START_ACCEPTING_PASSIVE_HOST_CHECKS|STOP_ACCEPTING_PASSIVE_HOST_CHECKS";
-		$this->actions["global_event_handler"] = "ENABLE_EVENT_HANDLERS|DISABLE_EVENT_HANDLERS";
-		$this->actions["global_flap_detection"] = "ENABLE_FLAP_DETECTION|DISABLE_FLAP_DETECTION";
-		$this->actions["global_service_obsess"] = "START_OBSESSING_OVER_SVC_CHECKS|STOP_OBSESSING_OVER_SVC_CHECKS";
-		$this->actions["global_host_obsess"] = "START_OBSESSING_OVER_HOST_CHECKS|STOP_OBSESSING_OVER_HOST_CHECKS";
-		$this->actions["global_perf_data"] = "ENABLE_PERFORMANCE_DATA|DISABLE_PERFORMANCE_DATA";		
+		$this->actions["global_shutdown"][0] = "SHUTDOWN_PROGRAM";
+		$this->actions["global_shutdown"][1] = "SHUTDOWN_PROGRAM";
+		
+		$this->actions["global_restart"][0] = "RESTART_PROGRAM";
+		$this->actions["global_restart"][1] = "RESTART_PROGRAM";
+		
+		$this->actions["global_notifications"][0] = "ENABLE_NOTIFICATIONS";
+		$this->actions["global_notifications"][1] = "DISABLE_NOTIFICATIONS";
+		
+		$this->actions["global_service_checks"][0] = "START_EXECUTING_SVC_CHECKS";
+		$this->actions["global_service_checks"][1] = "STOP_EXECUTING_SVC_CHECKS";
+		
+		$this->actions["global_service_passive_checks"][0] = "START_ACCEPTING_PASSIVE_SVC_CHECKS";
+		$this->actions["global_service_passive_checks"][1] = "STOP_ACCEPTING_PASSIVE_SVC_CHECKS";
+		
+		$this->actions["global_host_checks"][0] = "START_EXECUTING_HOST_CHECKS";
+		$this->actions["global_host_checks"][1] = "STOP_EXECUTING_HOST_CHECKS";
+		
+		$this->actions["global_host_passive_checks"][0] = "START_ACCEPTING_PASSIVE_HOST_CHECKS";
+		$this->actions["global_host_passive_checks"][1] = "STOP_ACCEPTING_PASSIVE_HOST_CHECKS";
+		
+		$this->actions["global_event_handler"][0] = "ENABLE_EVENT_HANDLERS";
+		$this->actions["global_event_handler"][1] = "DISABLE_EVENT_HANDLERS";
+		
+		$this->actions["global_flap_detection"][0] = "ENABLE_FLAP_DETECTION";
+		$this->actions["global_flap_detection"][1] = "DISABLE_FLAP_DETECTION";
+		
+		$this->actions["global_service_obsess"][0] = "START_OBSESSING_OVER_SVC_CHECKS";
+		$this->actions["global_service_obsess"][1] = "STOP_OBSESSING_OVER_SVC_CHECKS";
+		
+		$this->actions["global_host_obsess"][0] = "START_OBSESSING_OVER_HOST_CHECKS";
+		$this->actions["global_host_obsess"][1] = "STOP_OBSESSING_OVER_HOST_CHECKS";
+		
+		$this->actions["global_perf_data"][0] = "ENABLE_PERFORMANCE_DATA";		
+		$this->actions["global_perf_data"][1] = "DISABLE_PERFORMANCE_DATA";
  	}
  	
  	/*
@@ -150,6 +204,7 @@
  	public function getExternalCommandList() { 		
  		return $this->actions;
  	}
+
  }
  
 ?>
