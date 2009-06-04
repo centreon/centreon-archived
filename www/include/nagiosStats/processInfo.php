@@ -161,45 +161,74 @@
 	$tpl->assign("str_flap_detection", _("Flap detection enabled?"));
 	$tpl->assign("yes_no_tab", $yes_no_tab); 
 	
+	
+	$str_shutdown = _("Shutdown the Nagios process");
+	$str_restart = _("Restart the Nagios process");
+	$str_notif_enable = _("Enable notifications");
+	$str_notif_disable = _("Disable notifications");
+	$str_start_svc_check = _("Start executing service checks");
+	$str_stop_svc_check = _("Stop executing service checks");
+	$str_start_passive_svc_check = _("Start accepting passive service checks");
+	$str_stop_passive_svc_check = _("Stop accepting passive service checks");
+	$str_start_host_check = _("Start executing host checks");
+	$str_stop_host_check = _("Stop executing host checks");
+	$str_start_passive_host_check = _("Start accepting passive host checks");
+	$str_stop_passive_host_check = _("Stop accepting passive host checks");
+	$str_handler_enable = _("Enable event handlers");
+	$str_handler_disable = _("Disable event handlers");
+	$str_start_host_obsess = _("Start obsessing over hosts");
+	$str_stop_host_obsess = _("Stop obsessing over hosts");
+	$str_start_svc_obsess = _("Start obsessing over services");
+	$str_stop_svc_obsess = _("Stop obsessing over services");
+	$str_flap_detection_enable = _("Enable flap detection");
+	$str_flap_detection_disable = _("Disable flap detection");
+	$str_perfdata_enable = _("Enable performance data");
+	$str_perfdata_disable = _("Disable performance data");
+	
 	/* Process commands */
 	$tpl->assign("commandLabel", _("Process Commands"));
-	$tpl->assign("str_shutdown", _("Shutdown the Nagios process"));
-	$tpl->assign("str_restart", _("Restart the Nagios process"));
+	$tpl->assign("str_shutdown", $str_shutdown);
+	$tpl->assign("str_restart", $str_restart);
 	
-	$tpl->assign("str_notif_enable", _("Enable notifications"));
-	$tpl->assign("str_notif_disable", _("Disable notifications"));
+	$tpl->assign("str_notif_enable", $str_notif_enable);
+	$tpl->assign("str_notif_disable", $str_notif_disable);
 	
-	$tpl->assign("str_start_svc_check", _("Start executing service checks"));
-	$tpl->assign("str_stop_svc_check", _("Stop executing service checks"));
+	$tpl->assign("str_start_svc_check", $str_start_svc_check);
+	$tpl->assign("str_stop_svc_check", $str_stop_svc_check);
 	
-	$tpl->assign("str_start_passive_svc_check", _("Start accepting passive service checks"));
-	$tpl->assign("str_stop_passive_svc_check", _("Stop accepting passive service checks"));
+	$tpl->assign("str_start_passive_svc_check", $str_start_passive_svc_check);
+	$tpl->assign("str_stop_passive_svc_check", $str_stop_passive_svc_check);
 	
-	$tpl->assign("str_start_host_check", _("Start executing host checks"));
-	$tpl->assign("str_stop_host_check", _("Stop executing host checks"));
+	$tpl->assign("str_start_host_check", $str_start_host_check);
+	$tpl->assign("str_stop_host_check", $str_stop_host_check);
 	
-	$tpl->assign("str_start_passive_host_check", _("Start accepting passive host checks"));
-	$tpl->assign("str_stop_passive_host_check", _("Stop accepting passive host checks"));
+	$tpl->assign("str_start_passive_host_check", $str_start_passive_host_check);
+	$tpl->assign("str_stop_passive_host_check", $str_stop_passive_host_check);
 	
-	$tpl->assign("str_handler_enable", _("Enable event handlers"));
-	$tpl->assign("str_handler_disable", _("Disable event handlers"));
+	$tpl->assign("str_handler_enable", $str_handler_enable);
+	$tpl->assign("str_handler_disable", $str_handler_disable);
 	
-	$tpl->assign("str_start_host_obsess", _("Start obsessing over hosts"));
-	$tpl->assign("str_stop_host_obsess", _("Stop obsessing over hosts"));
+	$tpl->assign("str_start_host_obsess", $str_start_host_obsess);
+	$tpl->assign("str_stop_host_obsess", $str_stop_host_obsess);
 	
-	$tpl->assign("str_start_svc_obsess", _("Start obsessing over services"));
-	$tpl->assign("str_stop_svc_obsess", _("Stop obsessing over services"));
+	$tpl->assign("str_start_svc_obsess", $str_start_svc_obsess);
+	$tpl->assign("str_stop_svc_obsess", $str_stop_svc_obsess);
 	
-	$tpl->assign("str_flap_detection_enable", _("Enable flap detection"));
-	$tpl->assign("str_flap_detection_disable", _("Disable flap detection"));
+	$tpl->assign("str_flap_detection_enable", $str_flap_detection_enable);
+	$tpl->assign("str_flap_detection_disable", $str_flap_detection_disable);
 	
-	$tpl->assign("str_perfdata_enable", _("Enable performance data"));
-	$tpl->assign("str_perfdata_disable", _("Disable performance data"));
+	$tpl->assign("str_perfdata_enable", $str_perfdata_enable);
+	$tpl->assign("str_perfdata_disable", $str_perfdata_disable);
 	
-	$tpl->assign("shutdown_img", "<img src='./img/icones/16x16/stop.gif'>");
-	$tpl->assign("restart_img", "<img src='./img/icones/16x16/refresh.gif'>");
-	$tpl->assign("disable_img", "<img src='./img/icones/16x16/delete2.gif'>");
-	$tpl->assign("enable_img", "<img src='./img/icones/16x16/flag_green.gif'>");
+	$shutdown_img = "<img src='./img/icones/16x16/stop.gif'>";
+	$restart_img = "<img src='./img/icones/16x16/refresh.gif'>";
+	$disable_img = "<img src='./img/icones/16x16/delete2.gif'>";
+	$enable_img = "<img src='./img/icones/16x16/flag_green.gif'>";
+	
+	$tpl->assign("shutdown_img", $shutdown_img);
+	$tpl->assign("restart_img", $restart_img);
+	$tpl->assign("disable_img", $disable_img);
+	$tpl->assign("enable_img", $enable_img);
 	
 	$action_list = $oreon->user->access->getActions();	
 	$tpl->assign("admin", $oreon->user->admin);
@@ -216,10 +245,99 @@
 ?>
 <script type="text/javascript">	
 	var _sid = '<?php echo session_id();?>';
-	var glb_confirm = '<?php  echo _("Submit command"); ?>';
+	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
 	
-	function send_command(cmd, poller, div_id, str) {		
-		if (!confirm(glb_confirm + " " + cmd + "?")) {
+	var labels = new Array();
+	
+	labels['global_shutdown'] = new Array();	
+	labels['global_shutdown'][0] = "<?php echo $str_shutdown;?>";
+	labels['global_shutdown'][1] = "<?php echo $str_shutdown;?>";
+	labels['global_shutdown'][2] = "<?php echo $shutdown_img;?>";
+	labels['global_shutdown'][3] = "<?php echo $shutdown_img;?>";
+	
+	labels['global_restart'] = new Array();
+	labels['global_restart'][0] = "<?php echo $str_restart;?>";	
+	labels['global_restart'][1] = "<?php echo $str_restart;?>";
+	labels['global_restart'][2] = "<?php echo $restart_img;?>";
+	labels['global_restart'][3] = "<?php echo $restart_img;?>";
+	
+	labels['global_notifications'] = new Array();
+	labels['global_notifications'][0] = "<?php echo $str_notif_enable;?>";
+	labels['global_notifications'][1] = "<?php echo $str_notif_disable;?>";
+	labels['global_notifications'][2] = "<?php echo $enable_img;?>";
+	labels['global_notifications'][3] = "<?php echo $disable_img;?>";
+	
+	labels['global_service_checks'] = new Array();
+	labels['global_service_checks'][0] = "<?php echo $str_start_svc_check;?>";
+	labels['global_service_checks'][1] = "<?php echo $str_stop_svc_check;?>";
+	labels['global_service_checks'][2] = "<?php echo $enable_img;?>";
+	labels['global_service_checks'][3] = "<?php echo $disable_img;?>";
+	
+	labels['global_service_passive_checks'] = new Array();
+	labels['global_service_passive_checks'][0] = "<?php echo $str_start_passive_svc_check;?>";
+	labels['global_service_passive_checks'][1] = "<?php echo $str_stop_passive_svc_check;?>";
+	labels['global_service_passive_checks'][2] = "<?php echo $enable_img;?>";
+	labels['global_service_passive_checks'][3] = "<?php echo $disable_img;?>";
+	
+	labels['global_host_checks'] = new Array();
+	labels['global_host_checks'][0] = "<?php echo $str_start_host_check;?>";
+	labels['global_host_checks'][1] = "<?php echo $str_stop_host_check;?>";
+	labels['global_host_checks'][2] = "<?php echo $enable_img;?>";
+	labels['global_host_checks'][3] = "<?php echo $disable_img;?>";
+	
+	labels['global_host_passive_checks'] = new Array();
+	labels['global_host_passive_checks'][0] = "<?php echo $str_start_passive_host_check;?>";
+	labels['global_host_passive_checks'][1] = "<?php echo $str_stop_passive_host_check;?>";
+	labels['global_host_passive_checks'][2] = "<?php echo $enable_img;?>";
+	labels['global_host_passive_checks'][3] = "<?php echo $disable_img;?>";
+	
+	labels['global_event_handler'] = new Array();
+	labels['global_event_handler'][0] = "<?php echo $str_handler_enable;?>";
+	labels['global_event_handler'][1] = "<?php echo $str_handler_disable;?>";
+	labels['global_event_handler'][2] = "<?php echo $enable_img;?>";
+	labels['global_event_handler'][3] = "<?php echo $disable_img;?>";
+	
+	labels['global_service_obsess'] = new Array();
+	labels['global_service_obsess'][0] = "<?php echo $str_start_svc_obsess;?>";
+	labels['global_service_obsess'][1] = "<?php echo $str_stop_svc_obsess;?>";
+	labels['global_service_obsess'][2] = "<?php echo $enable_img;?>";
+	labels['global_service_obsess'][3] = "<?php echo $disable_img;?>";
+	
+	labels['global_host_obsess'] = new Array();
+	labels['global_host_obsess'][0] = "<?php echo $str_start_host_obsess;?>";
+	labels['global_host_obsess'][1] = "<?php echo $str_stop_host_obsess;?>";
+	labels['global_host_obsess'][2] = "<?php echo $enable_img;?>";
+	labels['global_host_obsess'][3] = "<?php echo $disable_img;?>";
+	
+	labels['global_flap_detection'] = new Array();
+	labels['global_flap_detection'][0] = "<?php echo $str_flap_detection_enable;?>";
+	labels['global_flap_detection'][1] = "<?php echo $str_flap_detection_disable;?>";
+	labels['global_flap_detection'][2] = "<?php echo $enable_img;?>";
+	labels['global_flap_detection'][3] = "<?php echo $disable_img;?>";
+	
+	labels['global_perf_data'] = new Array();
+	labels['global_perf_data'][0] = "<?php echo $str_perfdata_enable;?>";
+	labels['global_perf_data'][1] = "<?php echo $str_perfdata_disable;?>";
+	labels['global_perf_data'][2] = "<?php echo $enable_img;?>";
+	labels['global_perf_data'][3] = "<?php echo $disable_img;?>";
+	
+	
+	function isdigit(c) {return(c >= '0' && c <= '9');}
+		
+	function atoi(s){
+  		var t = 0;
+  		
+  		for(var i = 0; i < s.length; i++){
+    		var c = s.charAt(i);
+    		if(!isdigit(c)) return t;
+    		else t = t*10 + (c-'0');
+  		}
+  		return t;
+	}
+	
+	
+	function send_command(cmd, actiontype, poller) {		
+		if (!confirm(glb_confirm)) {
 			return 0;
 		}
 		if (window.XMLHttpRequest) { 
@@ -229,8 +347,8 @@
 	    {
 	        xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 	    }
-	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, poller, div_id); };
-	   	xhr_cmd.open("GET", "./include/nagiosStats/processCommands.php?cmd=" + cmd + "&poller=" + poller + "&sid=" + _sid + "&str=" + str, true);
+	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, poller, cmd + '_' + poller); };
+	   	xhr_cmd.open("GET", "./include/nagiosStats/processCommands.php?cmd=" + cmd + "&poller=" + poller + "&sid=" + _sid + "&type=" + actiontype, true);
     	xhr_cmd.send(null);
 	}
 	
@@ -240,22 +358,22 @@
 		var msg_result;		
 		var docXML= xhr_cmd.responseXML;
 		var items_state = docXML.getElementsByTagName("result");
-		var received_command = docXML.getElementsByTagName("cmd");
-		var img_flag = docXML.getElementsByTagName("img_flag");
-		var items_switch = docXML.getElementsByTagName("switch_cmd");
-		var items_str = docXML.getElementsByTagName("switch_str");
-		var state = items_state.item(0).firstChild.data;		
-		var img_src = img_flag.item(0).firstChild.data;
-		var switch_cmd = items_switch.item(0).firstChild.data;
-		var switch_str = items_str.item(0).firstChild.data;
+		var received_command = docXML.getElementsByTagName("cmd");		
+		var acttype = docXML.getElementsByTagName("actiontype");
+		var state = items_state.item(0).firstChild.data;						
 		var executed_command = received_command.item(0).firstChild.data;
+		var actiontype = acttype.item(0).firstChild.data;
+		var img_src;
+		
+		var tmp = atoi(actiontype) + 2;
+		img_src= labels[executed_command][tmp];
 		
 		if (state == "0") {
 			 msg_result = 'Command sent';			 
-			 document.getElementById(div_id).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + switch_cmd + "\", " + poller + ", \""+ div_id +"\", \"" + switch_str + "\")'>"+ switch_str +"</a>";
+			 document.getElementById(div_id).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + executed_command + "\", " + actiontype + ", \""+ poller +"\")'>"+ labels[executed_command][actiontype] +"</a>";
 		}
 		else {
-			 msg_result = 'Failed to send' + executed_command;
+			 msg_result = 'Failed to send command';
 		}
 		<?php
 		require_once "./class/centreonMsg.class.php";
