@@ -97,6 +97,15 @@ viewDebugInfo('set header..');
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
+		if (document.getElementById('host_state')){
+			var h = document.getElementById('host_state');
+			h.innerHTML = '<?php echo _("Status")?>';
+		  	h.indice = 'host_state';
+		  	h.title = '<?php echo _("Sort by Status"); ?>';
+		  	h.onclick=function(){change_type_order(this.indice)};
+			h.style.cursor = "pointer";
+		}	
+	
 		var h = document.getElementById('services');
 		h.innerHTML = '<?php echo _("Services")?>';
 	  	h.indice = 'services';

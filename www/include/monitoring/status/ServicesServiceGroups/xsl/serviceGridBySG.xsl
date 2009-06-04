@@ -14,7 +14,7 @@
 			<tr class='ListHeader'>
 				<td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name" width="150"></td>
 				<xsl:if test="//i/s = 1">
-					<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="40">Status</td>
+					<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="40"></td>
 				</xsl:if>
 				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
 			</tr>
