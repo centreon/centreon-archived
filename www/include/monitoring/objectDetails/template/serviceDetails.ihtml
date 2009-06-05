@@ -1,3 +1,4 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <div>
 	<table class="ListTable">
 		<tr class='ListHeader'>
@@ -128,21 +129,21 @@
 						{if $aclAct.service_checks || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft" id="service_checks">
-									{$img_en[$service_data.active_checks_enabled]}&nbsp;<a href="#" onClick="send_command('service_checks', 'service_checks', '{$en_inv_text[$service_data.active_checks_enabled]} {$m_mon_check_this_service}');">{$en_inv_text[$service_data.active_checks_enabled]} {$m_mon_check_this_service}</a>
+									{$img_en[$service_data.active_checks_enabled]}&nbsp;<a href="#" onClick="send_command('service_checks', '{$en_inv[$service_data.active_checks_enabled]}');">{$en_inv_text[$service_data.active_checks_enabled]} {$m_mon_check_this_service}</a>
 								</td>
 							</tr>
 						{/if}
 						{if $aclAct.service_schedule_check || $admin == true}
 							<tr class='list_two'>
 								<td class="ListColLeft" id="service_schedule_check">
-									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('service_schedule_check', 'service_schedule_check', '{$m_mon_schedule}');">{$m_mon_schedule}</a>
+									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('service_schedule_check', '0');">{$m_mon_schedule}</a>
 								</td>
 							</tr>
 						{/if}
 						{if $aclAct.service_schedule_check || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft" id="service_schedule_check_forced">
-									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('service_schedule_check', 'service_schedule_check_forced', '{$m_mon_schedule_force}');">{$m_mon_schedule_force}</a>
+									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('service_schedule_check', '1', '{$m_mon_schedule_force}');">{$m_mon_schedule_force}</a>
 								</td>
 							</tr>
 						{/if}
@@ -156,14 +157,14 @@
 						{if $aclAct.service_passive_checks || $admin == true}					
 							<tr class='list_one'>
 								<td class="ListColLeft" id="service_passive_checks">
-									{$img_en[$service_data.passive_checks_enabled]}&nbsp;<a href="#" onClick="send_command('service_passive_checks', 'service_passive_checks', '{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}');">{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}</a>
+									{$img_en[$service_data.passive_checks_enabled]}&nbsp;<a href="#" onClick="send_command('service_passive_checks', '{$en_inv[$service_data.passive_checks_enabled]}');">{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}</a>
 								</td>
 							</tr>
 						{/if}
 						{if $aclAct.service_notifications || $admin == true}
 							<tr class='list_two'>
 								<td class="ListColLeft" id="service_notifications">
-									{$img_en[$service_data.notifications_enabled]}&nbsp;<a href="#" onClick="send_command('service_notifications', 'service_notifications', '{$en_inv_text[$service_data.notifications_enabled]} {$m_mon_notification_service}');">{$en_inv_text[$service_data.notifications_enabled]} {$m_mon_notification_service}</a>
+									{$img_en[$service_data.notifications_enabled]}&nbsp;<a href="#" onClick="send_command('service_notifications', '{$en_inv[$service_data.notifications_enabled]}');">{$en_inv_text[$service_data.notifications_enabled]} {$m_mon_notification_service}</a>
 								</td>
 							</tr>
 						{/if}
@@ -184,14 +185,14 @@
 						{if $aclAct.service_event_handler || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft" id="service_event_handler">
-									{$img_en[$service_data.event_handler_enabled]}&nbsp;<a href="#" onClick="send_command('service_event_handler', 'service_event_handler', '{$en_inv_text[$service_data.event_handler_enabled]} {$m_mon_event_handler}');">{$en_inv_text[$service_data.event_handler_enabled]} {$m_mon_event_handler}</a>
+									{$img_en[$service_data.event_handler_enabled]}&nbsp;<a href="#" onClick="send_command('service_event_handler', '{$en_inv[$service_data.event_handler_enabled]}');">{$en_inv_text[$service_data.event_handler_enabled]} {$m_mon_event_handler}</a>
 								</td>
 							</tr>
 						{/if}
 						{if $aclAct.service_flap_detection || $admin == true}
 							<tr class='list_two'>
 								<td class="ListColLeft" id="service_flap_detection">
-									{$img_en[$service_data.flap_detection_enabled]}&nbsp;<a href="#" onClick="send_command('service_flap_detection', 'service_flap_detection', '{$en_inv_text[$service_data.flap_detection_enabled]} {$m_mon_flap_detection}');">{$en_inv_text[$service_data.flap_detection_enabled]} {$m_mon_flap_detection}</a>
+									{$img_en[$service_data.flap_detection_enabled]}&nbsp;<a href="#" onClick="send_command('service_flap_detection', '{$en_inv[$service_data.flap_detection_enabled]}');">{$en_inv_text[$service_data.flap_detection_enabled]} {$m_mon_flap_detection}</a>
 								</td>
 							</tr>
 						{/if}

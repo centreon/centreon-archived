@@ -48,26 +48,18 @@ require_once $centreon_path . "/www/class/centreonXML.class.php";
   
 Session::start();
 $oreon =& $_SESSION["oreon"];
-
-if (!isset($_SESSION["oreon"]) || !isset($_GET["host_id"]) || !isset($_GET["svc_id"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]))
+if (!isset($_SESSION["oreon"]) || !isset($_GET["host_id"]) || !isset($_GET["service_id"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]) || !isset($_GET["actiontype"]))
 	exit();
-
-$locale = $oreon->user->get_lang();
-putenv("LANG=$locale");
-setlocale(LC_ALL, $locale);
-bindtextdomain("messages", $centreon_path."/www/locale/");
-bind_textdomain_codeset("messages", "UTF-8");
-textdomain("messages");
 
 $pearDB = new CentreonDB();
 $hostObj = new CentreonHost($pearDB);
 $svcObj = new CentreonService($pearDB);
 $host_id = $_GET["host_id"];
-$svc_id = $_GET["svc_id"];
+$svc_id = $_GET["service_id"];
 $poller = $hostObj->getHostPollerId($host_id);
 $cmd = $_GET["cmd"];
 $sid = $_GET["sid"];
-$str = $_GET["str"];
+$act_type = $_GET["actiontype"];
 
 $pearDB = new CentreonDB();
 
@@ -80,43 +72,19 @@ if (!$oreon->user->access->checkAction($cmd))
 $command = new CentreonExternalCommand($oreon);
 $cmd_list = $command->getExternalCommandList();
 
-$cmd = $cmd_list[$cmd];
+$send_cmd = $cmd_list[$cmd][$act_type];
 
-$tab = split("\|", $cmd);
-
-if (preg_match(_("/Enable/"), $str)) {
-	$img_flag = "<img src='./img/icones/16x16/element_previous.gif'>";	
-	$switch_str = str_replace(_("Enable"), _("Disable"), $str);	
-	$cmd = $tab[0];	
-}
-elseif (preg_match(_("/Disable/"), $str)) {
-	$img_flag = "<img src='./img/icones/16x16/element_next.gif'>";	
-	$switch_str = str_replace(_("Disable"), _("Enable"), $str);
-	$cmd = $tab[1];	
-}
-elseif ($str == _("Re-schedule the next check for this service")) {
-	$img_flag = "<img src='./img/icones/16x16/undo.gif'>";	
-	$switch_str = $str;
-	$cmd = $tab[0];	
-}
-elseif ($str == _("Re-schedule the next check for this service (forced)")) {
-	$img_flag = "<img src='./img/icones/16x16/undo.gif'>";
-	$switch_str = $str;
-	$cmd = $tab[1];	
-}
-
-$cmd .= ";" . $hostObj->getHostName($host_id) . ";" . $svcObj->getServiceDesc($svc_id);
-$command->set_process_command($cmd, $poller);
-
+$send_cmd .= ";" . $hostObj->getHostName($host_id) . ";" . $svcObj->getServiceDesc($svc_id);
+$command->set_process_command($send_cmd, $poller);
+$act_type ? $return_type = 0 : $return_type = 1;
 $result = $command->write();
 $buffer = new CentreonXML();
 $buffer->startElement("root");
 	$buffer->writeElement("result", $result);
 	$buffer->writeElement("cmd", $cmd);
-	$buffer->writeElement("img_flag", $img_flag);	
-	$buffer->writeElement("switch_str", $switch_str);
+	$buffer->writeElement("actiontype", $return_type);
 $buffer->endElement();
-header('Content-type: text/xml; charset=iso-8859-1');
+header('Content-type: text/xml; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');
 $buffer->output();
 ?>

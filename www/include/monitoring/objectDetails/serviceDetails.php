@@ -207,7 +207,7 @@
 		$en_acknowledge_text= array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge 	= array("1" => "0", "0" => "1");
 		$en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
-		$en_inv	 			= array("1" => "0", "0" => "1");
+		$en_inv	 			= array("1" => "1", "0" => "0");
 		$en_inv_text 		= array("1" => _("Disable"), "0" => _("Enable"));
 		$color_onoff 		= array("1" => "#00ff00", "0" => "#ff0000");
 		$color_onoff_inv 	= array("0" => "#00ff00", "1" => "#ff0000");
@@ -304,7 +304,7 @@
 		$tpl->assign("m_mon_schedule", _("Re-schedule the next check for this service"));
 		$tpl->assign("m_mon_schedule_force", _("Re-schedule the next check for this service (forced)"));
 		$tpl->assign("m_mon_submit_passive", _("Submit result for this service"));
-		$tpl->assign("m_mon_accept_passive", _("Accepting passive checks for this service"));
+		$tpl->assign("m_mon_accept_passive", _("Passive checks for this service"));
 		$tpl->assign("m_mon_notification_service", _("Notifications for this service"));
 		$tpl->assign("m_mon_schedule_downtime", _("Schedule downtime for this service"));
 		$tpl->assign("m_mon_schedule_comment", _("Add a comment for this service"));
@@ -325,6 +325,17 @@
 		$tpl->assign("secondes", _("secondes"));
 		$tpl->assign("m_mon_ticket", "Open Ticket");
 		$tpl->assign("links", _("Links"));
+		
+		$str_check_svc_enable = _("Enable Checks for this service");
+		$str_check_svc_disable = _("Disable Checks for this service");
+		$str_notif_svc_enable = _("Enable Notifications for this service");
+		$str_notif_svc_disable = _("Disable Notifications for this service");		
+		$str_handler_svc_enable = _("Enable Event handler for this service");
+		$str_handler_svc_disable = _("Disable Event handler for this service");
+		$str_flap_svc_enable = _("Enable Flap detection fot this service");
+		$str_flap_svc_disable = _("Disable Flap detection fot this service");
+		$str_passive_svc_enable = _("Enable Passive checks for this service");
+		$str_passive_svc_disable = _("Disable Passive checks for this service");
 		
 		/*
 		 * if user is admin, allActions is true, 
@@ -415,10 +426,42 @@
 	var _sid = '<?php echo session_id();?>';
 	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
 	var command_sent = '<?php echo _("Command sent"); ?>';
+	var command_failure = "<?php echo _("Failed to execute command");?>";
 	var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
 	var svc_id = '<?php echo $svcObj->getServiceId($svc_description);?>';
+	var labels = new Array();
 	
-	function send_command(cmd, div_id, str) {
+	labels['service_checks'] = new Array();	
+	labels['service_checks'][0] = "<?php echo $str_check_svc_enable;?>";
+	labels['service_checks'][1] = "<?php echo $str_check_svc_disable;?>";
+	labels['service_checks'][2] = "<?php echo $img_en[0];?>";
+	labels['service_checks'][3] = "<?php echo $img_en[1];?>";
+	
+	labels['service_notifications'] = new Array();	
+	labels['service_notifications'][0] = "<?php echo $str_notif_svc_enable;?>";
+	labels['service_notifications'][1] = "<?php echo $str_notif_svc_disable;?>";
+	labels['service_notifications'][2] = "<?php echo $img_en[0];?>";
+	labels['service_notifications'][3] = "<?php echo $img_en[1];?>";
+	
+	labels['service_event_handler'] = new Array();	
+	labels['service_event_handler'][0] = "<?php echo $str_handler_svc_enable;?>";
+	labels['service_event_handler'][1] = "<?php echo $str_handler_svc_disable;?>";
+	labels['service_event_handler'][2] = "<?php echo $img_en[0];?>";
+	labels['service_event_handler'][3] = "<?php echo $img_en[1];?>";
+	
+	labels['service_flap_detection'] = new Array();	
+	labels['service_flap_detection'][0] = "<?php echo $str_flap_svc_enable;?>";
+	labels['service_flap_detection'][1] = "<?php echo $str_flap_svc_disable;?>";
+	labels['service_flap_detection'][2] = "<?php echo $img_en[0];?>";
+	labels['service_flap_detection'][3] = "<?php echo $img_en[1];?>";		
+	
+	labels['service_passive_checks'] = new Array();	
+	labels['service_passive_checks'][0] = "<?php echo $str_passive_svc_enable;?>";
+	labels['service_passive_checks'][1] = "<?php echo $str_passive_svc_disable;?>";
+	labels['service_passive_checks'][2] = "<?php echo $img_en[0];?>";
+	labels['service_passive_checks'][3] = "<?php echo $img_en[1];?>";
+	
+	function send_command(cmd, actiontype) {
 		if (!confirm(glb_confirm)) {
 			return 0;
 		}
@@ -429,31 +472,33 @@
 	    {
 	        xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 	    }
-	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, div_id, cmd); };
-	   	xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&svc_id=" + svc_id + "&sid=" + _sid + "&str=" + str, true);
+	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
+	   	xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&service_id=" + svc_id + "&sid=" + _sid + "&actiontype=" + actiontype, true);
     	xhr_cmd.send(null);
 	}
 	
-	function display_result(xhr_cmd, div_id, cmd) {
+	function display_result(xhr_cmd, cmd) {
 		if (xhr_cmd.readyState != 4 && xhr_cmd.readyState != "complete")
 			return(0);			
 		var msg_result;		
 		var docXML= xhr_cmd.responseXML;
 		var items_state = docXML.getElementsByTagName("result");
 		var received_command = docXML.getElementsByTagName("cmd");
-		var img_flag = docXML.getElementsByTagName("img_flag");
-		var items_str = docXML.getElementsByTagName("switch_str");
+		var acttype = docXML.getElementsByTagName("actiontype");
 		var state = items_state.item(0).firstChild.data;		
-		var img_src = img_flag.item(0).firstChild.data;		
-		var switch_str = items_str.item(0).firstChild.data;
+		var actiontype = acttype.item(0).firstChild.data;
 		var executed_command = received_command.item(0).firstChild.data;
 		
 		if (state == "0") {
-			 msg_result = command_sent;			 
-			 document.getElementById(div_id).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + cmd + "\", \""+ div_id +"\", \"" + switch_str + "\")'>"+ switch_str +"</a>";
+			 msg_result = command_sent;
+			  if (cmd == "service_checks" || cmd == "service_notifications" || cmd == "service_event_handler" || cmd == "service_flap_detection" || cmd == "service_passive_checks") {
+			 	var tmp = atoi(actiontype) + 2;
+				img_src= labels[executed_command][tmp];	
+			 	document.getElementById(cmd).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"+ labels[executed_command][actiontype] +"</a>";
+			  }
 		}
 		else {
-			 msg_result = 'Failed ' + executed_command;
+			 msg_result = command_failure;
 		}
 		<?php
 		require_once "./class/centreonMsg.class.php";
