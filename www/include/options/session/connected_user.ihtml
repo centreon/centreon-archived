@@ -11,7 +11,7 @@
 		</tr>
 		{foreach name=outer item=sd from=$session_data }
 		<tr class="{$sd.class}">
-			<td class="ListColLeft">{if $sd.admin == 1}<img src='./img/icones/16x16/guard.gif'>{else}<img src='./img/icones/16x16/user1.gif'>{/if}&nbsp;&nbsp;<a href='./main.php?p=60302&o=w&contact_id={$sd.user_id}'>{$sd.user_alias}</a></td>
+			<td class="ListColLeft">{if $sd.admin == 1}<img src='./img/icones/16x16/guard.gif'>{else}<img src='./img/icones/16x16/user1.gif'>{/if}&nbsp;&nbsp;<a href='./main.php?p=60301&o=w&contact_id={$sd.user_id}'>{$sd.user_alias}</a></td>
 			<td class="ListColCenter">{$sd.ip_address}</td>
 			<td class="ListColCenter">{$sd.topology_icone}</td>
 			<td class="ListColCenter"><a href='./main.php?p={$sd.current_page}'>{$sd.topology_name}</a></td>
