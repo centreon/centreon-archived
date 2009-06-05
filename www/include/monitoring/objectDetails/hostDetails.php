@@ -305,7 +305,7 @@
 		$str_handler_host_enable = _("Enable Event handler for this host");
 		$str_handler_host_disable = _("Disable Event handler for this host");
 		$str_flap_host_enable = _("Enable Flap detection fot this host");
-		$str_flap_host_disable = _("Enable Flap detection fot this host");
+		$str_flap_host_disable = _("Disable Flap detection fot this host");
 
 		/*
 		 * Add Tips
@@ -409,7 +409,7 @@
 	labels['host_event_handler'][3] = "<?php echo $img_en[1];?>";
 	
 	labels['host_flap_detection'] = new Array();	
-	labels['host_flap_detection'][0] = "<?php echo $str_flapr_host_enable;?>";
+	labels['host_flap_detection'][0] = "<?php echo $str_flap_host_enable;?>";
 	labels['host_flap_detection'][1] = "<?php echo $str_flap_host_disable;?>";
 	labels['host_flap_detection'][2] = "<?php echo $img_en[0];?>";
 	labels['host_flap_detection'][3] = "<?php echo $img_en[1];?>";

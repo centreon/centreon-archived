@@ -182,7 +182,7 @@
 					{if $aclAct.host_notifications_for_services || $admin == 1}	
 						<tr class='list_one'>
 							<td class="ListColLeft" id="host_notifications_for_services">
-								<img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href="#" onClick="send_command('host_notifications_for_services', '0');">{$m_mon_disable_not_all_services}</a>
+								<img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href="#" onClick="send_command('host_notifications_for_services', '1');">{$m_mon_disable_not_all_services}</a>
 							</td>
 						</tr>
 					{/if}
@@ -210,7 +210,7 @@
 					{if $aclAct.host_checks_for_services || $admin == 1}	
 						<tr class='list_one'>
 							<td class="ListColLeft" id="host_checks_for_services">
-								<img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href="#" onClick="send_command('host_checks_for_services', '0');">{$m_mon_diable_check_all_svc}</a>
+								<img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href="#" onClick="send_command('host_checks_for_services', '1');">{$m_mon_diable_check_all_svc}</a>
 							</td>
 						</tr>
 					{/if}
