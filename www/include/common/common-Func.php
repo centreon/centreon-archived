@@ -1386,9 +1386,12 @@
 	# Nagios Images
 	function return_image_list($mode = 0, $rep = NULL, $full = true, $origin_path = NULL) {
 		global $pearDB;
+		
 		$images = array();
+		
 		if ($full)
-			$images = array(NULL=>NULL);
+			$images = array(NULL => NULL);
+		
 		$is_not_an_image = array(".","..","README","readme","LICENCE","licence");
 		$is_a_valid_image = array(
 			0 => array('png'=>'png'),
@@ -1400,20 +1403,18 @@
 		$dir_name = NULL;
 		$dir_name2 = NULL;
 		$cpt = 1;
-		while($elem =& $DBRESULT->fetchRow())	{
+		while ($elem =& $DBRESULT->fetchRow())	{
 			$dir_name = $elem["dir_name"];
 			if ($dir_name2 != $dir_name)	{
 				$dir_name2 = $dir_name;
 				$images["REP_".$cpt] = $dir_name;
 				$cpt++;
 			}
-			//else	{
 			$ext = NULL;
 			$pinfo = pathinfo($elem["img_path"]);
 			if (isset($pinfo["extension"]) && isset($is_a_valid_image[$mode][$pinfo["extension"]]))
 				$ext = "&nbsp;(".$pinfo["extension"].")";
-			$images[$elem["img_id"]] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$elem["img_name"].$ext;
-			//}
+			$images[$elem["img_id"]] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".html_entity_decode($elem["img_name"], ENT_NOQUOTES).$ext;
 		}
 		return ($images);
 	}
