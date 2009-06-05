@@ -204,7 +204,7 @@
 		$en_acknowledge_text 	= array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this host"));
 		$en_acknowledge 		= array("1" => "0", "0" => "1");
 
-		$en_inv 				= array("1" => "0", "0" => "1");
+		$en_inv 				= array("1" => "1", "0" => "0");
 		$en_inv_text 			= array("1" => _("Disable"), "0" => _("Enable"));
 		$color_onoff 			= array("1" => "#00ff00", "0" => "#ff0000");
 		$color_onoff_inv 		= array("0" => "#00ff00", "1" => "#ff0000");
@@ -298,6 +298,15 @@
 		$tpl->assign("seconds", _("seconds"));
 		$tpl->assign("links", _("Links"));
 
+		$str_check_host_enable = _("Enable Checks for this host");
+		$str_check_host_disable = _("Disable Checks for this host");
+		$str_notif_host_enable = _("Enable Notifications for this host");
+		$str_notif_host_disable = _("Disable Notifications for this host");		
+		$str_handler_host_enable = _("Enable Event handler for this host");
+		$str_handler_host_disable = _("Disable Event handler for this host");
+		$str_flap_host_enable = _("Enable Flap detection fot this host");
+		$str_flap_host_disable = _("Enable Flap detection fot this host");
+
 		/*
 		 * Add Tips
 		 */
@@ -323,7 +332,6 @@
 		$tpl->assign("color_onoff", $color_onoff);
 		$tpl->assign("color_onoff_inv", $color_onoff_inv);
 		$tpl->assign("en_disable", $en_disable);
-		$tpl->assign("img_en", $img_en);
 		$tpl->assign("status", $status);
 		$tpl->assign("en_acknowledge_text", $en_acknowledge_text);
 		$tpl->assign("en_acknowledge", $en_acknowledge);
@@ -374,14 +382,39 @@
 		$tpl->display("hostDetails.ihtml");
 	}
 ?>
-
 <script type="text/javascript">	
 	var _sid = '<?php echo session_id();?>';
 	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
 	var command_sent = '<?php echo _("Command sent"); ?>';
+	var command_failure = "<?php echo _("Failed to execute command");?>";
 	var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
+	var labels = new Array();
 	
-	function send_command(cmd, div_id, str) {
+	labels['host_checks'] = new Array();	
+	labels['host_checks'][0] = "<?php echo $str_check_host_enable;?>";
+	labels['host_checks'][1] = "<?php echo $str_check_host_disable;?>";
+	labels['host_checks'][2] = "<?php echo $img_en[0];?>";
+	labels['host_checks'][3] = "<?php echo $img_en[1];?>";
+	
+	labels['host_notifications'] = new Array();	
+	labels['host_notifications'][0] = "<?php echo $str_notif_host_enable;?>";
+	labels['host_notifications'][1] = "<?php echo $str_notif_host_disable;?>";
+	labels['host_notifications'][2] = "<?php echo $img_en[0];?>";
+	labels['host_notifications'][3] = "<?php echo $img_en[1];?>";
+	
+	labels['host_event_handler'] = new Array();	
+	labels['host_event_handler'][0] = "<?php echo $str_handler_host_enable;?>";
+	labels['host_event_handler'][1] = "<?php echo $str_handler_host_disable;?>";
+	labels['host_event_handler'][2] = "<?php echo $img_en[0];?>";
+	labels['host_event_handler'][3] = "<?php echo $img_en[1];?>";
+	
+	labels['host_flap_detection'] = new Array();	
+	labels['host_flap_detection'][0] = "<?php echo $str_flapr_host_enable;?>";
+	labels['host_flap_detection'][1] = "<?php echo $str_flap_host_disable;?>";
+	labels['host_flap_detection'][2] = "<?php echo $img_en[0];?>";
+	labels['host_flap_detection'][3] = "<?php echo $img_en[1];?>";
+	
+	function send_command(cmd, actiontype) {		
 		if (!confirm(glb_confirm)) {
 			return 0;
 		}
@@ -392,31 +425,33 @@
 	    {
 	        xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 	    }
-	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, div_id, cmd); };
-	   	xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&sid=" + _sid + "&str=" + str, true);
+	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
+	   	xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&sid=" + _sid + "&actiontype=" + actiontype, true);
     	xhr_cmd.send(null);
 	}
 	
-	function display_result(xhr_cmd, div_id, cmd) {
+	function display_result(xhr_cmd, cmd) {
 		if (xhr_cmd.readyState != 4 && xhr_cmd.readyState != "complete")
 			return(0);			
 		var msg_result;		
 		var docXML= xhr_cmd.responseXML;
 		var items_state = docXML.getElementsByTagName("result");
 		var received_command = docXML.getElementsByTagName("cmd");
-		var img_flag = docXML.getElementsByTagName("img_flag");
-		var items_str = docXML.getElementsByTagName("switch_str");
-		var state = items_state.item(0).firstChild.data;		
-		var img_src = img_flag.item(0).firstChild.data;		
-		var switch_str = items_str.item(0).firstChild.data;
+		var acttype = docXML.getElementsByTagName("actiontype");
+		var state = items_state.item(0).firstChild.data;				
 		var executed_command = received_command.item(0).firstChild.data;
-		
+		var actiontype = acttype.item(0).firstChild.data;
+				
 		if (state == "0") {
 			 msg_result = command_sent;			 
-			 document.getElementById(div_id).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + cmd + "\", \""+ div_id +"\", \"" + switch_str + "\")'>"+ switch_str +"</a>";
+			 if (cmd == "host_checks" || cmd == "host_notifications" || cmd == "host_event_handler" || cmd == "host_flap_detection") {
+				var tmp = atoi(actiontype) + 2;
+				img_src= labels[executed_command][tmp];		
+			 	document.getElementById(cmd).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"+ labels[executed_command][actiontype] +"</a>";
+			 }
 		}
 		else {
-			 msg_result = 'Failed ' + executed_command;
+			 msg_result = command_failure;
 		}
 		<?php
 		require_once "./class/centreonMsg.class.php";

@@ -319,22 +319,7 @@
 	labels['global_perf_data'][0] = "<?php echo $str_perfdata_enable;?>";
 	labels['global_perf_data'][1] = "<?php echo $str_perfdata_disable;?>";
 	labels['global_perf_data'][2] = "<?php echo $enable_img;?>";
-	labels['global_perf_data'][3] = "<?php echo $disable_img;?>";
-	
-	
-	function isdigit(c) {return(c >= '0' && c <= '9');}
-		
-	function atoi(s){
-  		var t = 0;
-  		
-  		for(var i = 0; i < s.length; i++){
-    		var c = s.charAt(i);
-    		if(!isdigit(c)) return t;
-    		else t = t*10 + (c-'0');
-  		}
-  		return t;
-	}
-	
+	labels['global_perf_data'][3] = "<?php echo $disable_img;?>";	
 	
 	function send_command(cmd, actiontype, poller) {		
 		if (!confirm(glb_confirm)) {

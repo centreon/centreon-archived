@@ -86,4 +86,17 @@ function DisplayHidden(id) {
 	}
 }
 
+function isdigit(c) {return(c >= '0' && c <= '9');}
+		
+function atoi(s){
+	var t = 0;
+ 		
+	for(var i = 0; i < s.length; i++){
+   		var c = s.charAt(i);
+   		if(!isdigit(c)) return t;
+   		else t = t*10 + (c-'0');
+	}
+	return t;
+}
+
 //  End -->
