@@ -97,7 +97,8 @@
 	}
 	
 	function getStatusColor($pearDB){
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('color_ok','color_warning','color_critical','color_unknown','color_pending','color_up','color_down','color_unreachable')");
+		$colors = array();
+		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` LIKE 'color%'");
 		while ($c =& $DBRESULT->fetchRow())
 			$colors[$c["key"]] = myDecode($c["value"]);
 		$DBRESULT->free();
