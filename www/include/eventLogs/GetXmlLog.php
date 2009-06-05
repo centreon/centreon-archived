@@ -617,9 +617,13 @@
 			 * Color initialisation for services and hosts status
 			 */
 			$color = '';
-			if (isset($log["status"]))
-            	$color = $tab_color[$log["status"]];
-	
+            if (isset($log["status"])) {
+               if (isset($tab_color_service[$log["status"]]))
+                  $color = $tab_color_service[$log["status"]];
+               else if (isset($tab_color_host[$log["status"]]))
+                  $color = $tab_color_host[$log["status"]];
+            }
+
 			/*
 			 * Variable initialisation to color "INITIAL STATE" on envent logs
 			 */
