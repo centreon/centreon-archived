@@ -117,6 +117,7 @@
 
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
+	$state_type = array("1" => "H", "0" => "S");
 
 	/* Get Host status */
 	$rq1 = 	" SELECT DISTINCT no.name1, nhs.current_state," .
@@ -134,6 +135,7 @@
 			" nh.icon_image," .
 			" nh.icon_image_alt," .
 			" nhs.max_check_attempts," .
+			" nhs.state_typeZ," .
 			" nhs.current_check_attempt" .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh";
 	if (!$is_admin)	
@@ -230,7 +232,7 @@
         $buffer->writeElement("hae", $ndo["active_checks_enabled"]);       
         $buffer->writeElement("hpe", $ndo["passive_checks_enabled"]);
         $buffer->writeElement("ne", $ndo["notifications_enabled"]);
-        $buffer->writeElement("tr", $ndo["current_check_attempt"]."/".$ndo["max_check_attempts"]);
+        $buffer->writeElement("tr", $ndo["current_check_attempt"]."/".$ndo["max_check_attempts"]." (".$state_type[$ndo["state_type"]].")");
         $buffer->writeElement("ico", $ndo["icon_image"]);
 		$buffer->endElement();		
 	}
