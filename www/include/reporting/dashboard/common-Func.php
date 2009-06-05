@@ -130,16 +130,24 @@
 		$year = date("Y",$time);
 		$month = date("m",$time);
 		$end_time = mktime(0, 0, 0, $month, $day, $year);
-		if ($end != "") {
-			list($m,$d,$y) = split('/',$end);
+
+		if (is_numeric($end)) {
+			$end_time = $end;
+		} else if (isset($end) && $end != "") {
+			list($m, $d ,$y) = split('/', $end);
 			$end = mktime(24, 0, 0, $m, $d, $y);
 			if ($end < $end_time)
 				$end_time = $end;
 		}
-		list($m,$d,$y) = split('/',$start);
-		$start_time = mktime(0, 0, 0, $m, $d, $y);
+		if (!is_numeric($start) && isset($start) && $start != "") {
+			list($m, $d, $y) = split('/', $start);
+			$start_time = mktime(0, 0, 0, $m, $d, $y);
+		} else
+			$start_time = $start;
+			
 		if ($start_time >= $end_time)
 			$start_time = $end_time - (60 * 60 * 24);
+
 		return (array($start_time, $end_time));
 	}
 	/*
