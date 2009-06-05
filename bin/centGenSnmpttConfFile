@@ -52,13 +52,16 @@ require "@CENTREON_ETC@/conf.pm";
 
 sub getPath($) {
     my $dbh = shift;
-    my $sth = $dbh->prepare("Select `snmp_trapd_path_conf` FROM `general_opt`");
+    my $sth = $dbh->prepare("SELECT * FROM `options` WHERE `key` LIKE 'snmp_trapd_path_conf'");
     $sth->execute();
-    my $path = $sth->fetchrow_array();
+    my $pathRes = $sth->fetchrow_hashref();
     undef($sth);
-    $path .= "/" if (!($path =~ /\/$/));
-    $path = "/etc/snmp/" if (!$path);
-    return $path;
+    
+    if (!($pathRes->{'value'} =~ /\/$/)) {
+    	return $pathRes->{'value'};
+    } else {
+    	return "/etc/snmp/";
+    }
 }
 
 sub main() {
@@ -68,11 +71,11 @@ sub main() {
     my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
     my $confFiles_path = getPath($dbh);
 
-    my $sth = $dbh->prepare("SELECT `oreon_path` FROM `general_opt` LIMIT 1");
+    my $sth = $dbh->prepare("SELECT * FROM `options` WHERE `key` LIKE 'oreon_path'");
     $sth->execute();
-    my @conf = $sth->fetchrow_array();
+    my $conf = $sth->fetchrow_hashref();
     $sth->finish();
-    my $NAGIOS_TRAPS = $conf[0]."bin/";
+    my $NAGIOS_TRAPS = $conf->{'value'}."bin/";
 
     $sth = $dbh->prepare("SELECT `id`, `name` FROM `traps_vendor`");
     $sth->execute();
