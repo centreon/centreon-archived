@@ -79,6 +79,7 @@
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	$data = array();
 	$color = array();
+	$legend = array();
 	$counter = 0;
 	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 		$data[] = $ndo["cnt"];

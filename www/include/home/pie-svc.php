@@ -99,6 +99,9 @@
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 	
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+	$data = array();
+	$color = array();
+	$legend = array();
 	$counter = 0;
 	while ($ndo =& $DBRESULT_NDO2->fetchRow()){
 		$data[] = $ndo["count(nss.current_state)"];
