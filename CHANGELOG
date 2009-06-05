@@ -1,3 +1,16 @@
+## Centreon 2.1-RC3
+
+=> fix: error on host configuration page
+=> fix: error on service configuration page
+=> fix: error with color of status in eventlog
+=> enhancement: add status type on host and service monitoring page
+=> fix: remove hardcoded path in install
+=> fix: remove error in DB class
+=> fix: remove error durint shelle install
+=> fix: remove problems with accents in image management pages
+=> fix: remove warning in csv export of reporting
+
+
 ## Centreon 2.1-RC2
 
 => fix problem with colors in eventlogs
