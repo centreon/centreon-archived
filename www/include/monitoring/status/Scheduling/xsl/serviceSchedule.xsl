@@ -85,7 +85,7 @@
 		</td>
 		<td class="ListColRight">
 			<xsl:element name="a">
-			  	<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/>&amp;submitC=Grapher</xsl:attribute>
+			  	<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
 					</xsl:element>
