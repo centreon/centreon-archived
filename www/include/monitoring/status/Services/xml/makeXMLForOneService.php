@@ -41,9 +41,20 @@
 	include_once $centreon_path . "www/class/centreonGMT.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
-	
+	include_once $centreon_path . "www/class/Session.class.php";
+	include_once $centreon_path . "www/class/Oreon.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
+	session_start();
+	$oreon = $_SESSION['oreon'];
+	
+	
+	$locale = $oreon->user->get_lang();
+	putenv("LANG=$locale");
+	setlocale(LC_ALL, $locale);
+	bindtextdomain("messages", $centreon_path."www/locale/");
+	bind_textdomain_codeset("messages", "UTF-8");
+	textdomain("messages");
 	
 	/*
 	 * Call DB connector
@@ -258,7 +269,7 @@
 
 	$buffer->endElement();
 
-	header('Content-type: text/xml; charset=iso-8859-1');
+	header('Content-type: text/xml;  charset=utf-8');
 	header('Cache-Control: no-cache, must-revalidate');	
 	$buffer->output();
 ?>
