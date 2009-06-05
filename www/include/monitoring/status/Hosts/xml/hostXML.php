@@ -135,7 +135,7 @@
 			" nh.icon_image," .
 			" nh.icon_image_alt," .
 			" nhs.max_check_attempts," .
-			" nhs.state_typeZ," .
+			" nhs.state_type," .
 			" nhs.current_check_attempt" .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh";
 	if (!$is_admin)	
