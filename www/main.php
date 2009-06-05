@@ -36,6 +36,8 @@
  * 
  */
  
+ 	ini_set("display_errors", "Off");
+ 
 	/* 
 	 * Define Local Functions
 	 *   - remove SQL Injection : Thanks to Julien CAYSSOL
