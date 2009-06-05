@@ -61,12 +61,13 @@
 
 		$query = "UPDATE session SET update_acl = '1' WHERE user_id IN (";
 		$i = 0;		
-		foreach ($sel as $key => $val) {
-			if ($i) 
-				$query .= ", ";
-			$query .= "'".$key."'";
-			$i++;
-		}
+		if (isset($sel))
+			foreach ($sel as $key => $val) {
+				if ($i) 
+					$query .= ", ";
+				$query .= "'".$key."'";
+				$i++;
+			}
 		if (!$i)
 			$query .= "'')";
 		else
