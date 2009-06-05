@@ -326,10 +326,10 @@
 				$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 				$buffer->writeAttribute("im2", "../16x16/server_network.gif");	
 		        $buffer->endElement();
-		       	if (!$cpt)
-		       		$buffer->endElement();
 		       	$cpt++;
-			}						
+			}
+			if ($cpt)
+				$buffer->endElement();						
 		} else {
 			/*
 			 * Display HG
