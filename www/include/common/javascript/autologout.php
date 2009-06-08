@@ -64,10 +64,12 @@ function change_status(xhr2) {
 		return(0);
 	var docXML= xhr2.responseXML;
 	var items_state = docXML.getElementsByTagName("state");
+	var items_time = docXML.getElementsByTagName("time");
 	var state = items_state.item(0).firstChild.data;
+	var currentTime = items_time.item(0).firstChild.data;
 			
 	if (state == "ok") {
-		;
+		document.getElementById('date').innerHTML = currentTime;
 	} else if (state == "nok") {
 		window.location.replace("./index.php");	
 	}

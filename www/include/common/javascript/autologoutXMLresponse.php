@@ -37,9 +37,17 @@
  */
 
 	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once $centreon_path . "www/class/Session.class.php";
+	require_once $centreon_path . "www/class/Oreon.class.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
-	require_once $centreon_path . "www/class/centreonXML.class.php";
+	require_once $centreon_path . "www/class/centreonXML.class.php";	
+	require_once $centreon_path . "www/class/centreonGMT.class.php";
 	
+	session_start();
+	$oreon = $_SESSION['oreon'];
+	
+	$currentTime = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $oreon->user->getMyGMT());
+		
 	$pearDB = new CentreonDB();
 
 	$buffer = new CentreonXML();
@@ -48,8 +56,12 @@
 	$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '" . htmlentities($_GET['sid'], ENT_QUOTES) . "'");
 	if ($DBRESULT->numRows())
 		$buffer->writeElement("state", "ok");
+	
 	else
 		$buffer->writeElement("state", "nok");
+	
+		$buffer->writeElement("time", $currentTime);
+	
 	$buffer->endElement();
 
 	header('Content-Type: text/xml');
