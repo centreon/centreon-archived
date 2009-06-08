@@ -166,14 +166,30 @@
 
 
 	switch ($sort_type) {
-		case 'host_name' : $rq1 .= " order by no.name1 ". $order;  break;
-		case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 ";  break;
-		case 'last_state_change' : $rq1 .= " order by nhs.last_state_change ". $order.",no.name1 ";  break;
-		case 'last_check' : $rq1 .= " order by nhs.last_check ". $order.",no.name1 ";  break;
-		case 'current_check_attempt' : $rq1 .= " order by nhs.current_check_attempt ". $order.",no.name1 ";  break;
-		case 'ip' : $rq1 .= " order by nh.address ". $order.",no.name1 ";  break;
-		case 'plugin_output' : $rq1 .= " order by nhs.output ". $order.",no.name1 ";  break;
-		default : $rq1 .= " order by no.name1 ";  break;
+		case 'host_name' : 
+			$rq1 .= " order by no.name1 ". $order; 
+			break;
+		case 'current_state' : 
+			$rq1 .= " order by nhs.current_state ". $order.",no.name1 ";
+			break;
+		case 'last_state_change' : 
+			$rq1 .= " order by nhs.last_state_change ". $order.",no.name1 ";  
+			break;
+		case 'last_check' : 
+			$rq1 .= " order by nhs.last_check ". $order.",no.name1 ";  
+			break;
+		case 'current_check_attempt' : 
+			$rq1 .= " order by nhs.current_check_attempt ". $order.",no.name1 ";  
+			break;
+		case 'ip' : 
+			$rq1 .= " order by nh.address ". $order.",no.name1 ";
+			break;
+		case 'plugin_output' : 
+			$rq1 .= " order by nhs.output ". $order.",no.name1 ";
+			break;
+		default : 
+			$rq1 .= " order by no.name1 ";
+			break;
 	}
 
 	$rq_pagination = $rq1;
