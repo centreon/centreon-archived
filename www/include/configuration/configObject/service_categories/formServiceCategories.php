@@ -38,32 +38,72 @@
  
 	if (!isset($oreon))
 		exit();
-	#
-	## Database retrieve information for Contact
-	#
+	
+	/*
+	 * Database retrieve information for Contact
+	 */
 	$cct = array();
 	if (($o == "c" || $o == "w") && $sc_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '".$sc_id."' LIMIT 1");
-		# Set base value
+		/*
+		 * Set base value
+		 */
 		$sc = array_map("myDecode", $DBRESULT->fetchRow());
+		$DBRESULT->free();
+		
+		$sc["sc_svc"] = array();
+		$sc["sc_svcTpl"] = array();
+		$DBRESULT =& $pearDB->query("SELECT scr.service_service_id, s.service_register FROM service_categories_relation scr, service s WHERE s.service_id = scr.service_service_id AND scr.sc_id = '$sc_id'");
+		while ($res =& $DBRESULT->fetchRow()) {
+			if ($res["service_register"] == 1)
+				$sc["sc_svc"][] = $res["service_service_id"];
+			if ($res["service_register"] == 0)
+				$sc["sc_svcTpl"][] = $res["service_service_id"];
+		}
 		$DBRESULT->free();
 	}
 	
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
+	/*
+	 * Get Service Available
+	 */
+	$hServices = array();
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	while ($elem =& $DBRESULT->fetchRow())	{
+		$services = getMyHostServices($elem["host_id"]);
+		foreach ($services as $key => $index)	{						
+			$index = str_replace('#S#', "/", $index);
+			$index = str_replace('#BS#', "\\", $index);
+			$hServices[$key] = $elem["host_name"]." / ".$index;
+		}
+	}
+	
+	/*
+	 * Get Service Template Available
+	 */
+	$hServices = array();
+	$DBRESULT =& $pearDB->query("SELECT service_alias, service_description, service_id FROM service WHERE service_register = '0' ORDER BY service_alias");
+	while ($elem =& $DBRESULT->fetchRow())	{
+		$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
+		$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
+		$elem["service_alias"] = str_replace('#S#', "/", $elem["service_alias"]);
+		$elem["service_alias"] = str_replace('#BS#', "\\", $elem["service_alias"]);
+		$hServicesTpl[$elem["service_id"]] = $elem["service_description"] . " (".$elem["service_alias"].")";
+	}
+	$DBRESULT->free();
+	
+	
+	/*
+	 * Define Template
+	 */
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"60");
-	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
+	$attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Service Category"));
@@ -72,12 +112,29 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View a Service Category"));
 	
-	# Contact basic information
+	/*
+	 * Contact basic information
+	 */
 	$form->addElement('header', 'information', _("Information"));
+	$form->addElement('header', 'links', _("Relations"));
 
-	# No possibility to change name and alias, because there's no interest
+	/*
+	 * No possibility to change name and alias, because there's no interest
+	 */
 	$form->addElement('text', 'sc_name', _("Name"), $attrsText);
 	$form->addElement('text', 'sc_description', _("Description"), $attrsText);
+
+	$ams1 =& $form->addElement('advmultiselect', 'sc_svc', _("Hosts Services Description"), $hServices, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setElementTemplate($template);
+	echo $ams1->getElementJs(false);
+	
+	$ams1 =& $form->addElement('advmultiselect', 'sc_svcTpl', _("Services Template Description"), $hServicesTpl, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setElementTemplate($template);
+	echo $ams1->getElementJs(false);
 
 	$sc_activate[] = &HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Enabled"), '1');
 	$sc_activate[] = &HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Disabled"), '0');
@@ -102,8 +159,9 @@
 		$select_pear->setValue($select_str);
 	}
 	
-	# Form Rules
-	
+	/*
+	 * Form Rules
+	 */
 	function myReplace()	{
 		global $form;
 		$ret = $form->getSubmitValues();
@@ -119,28 +177,33 @@
 	
 	$form->registerRule('existName', 'callback', 'testServiceCategorieExistence');
 	$form->addRule('sc_name', _("Name is already in use"), 'existName');
-	
-	
+		
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
-	# End of form definition
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch a service_categories information
 	if ($o == "w")	{
+		/*
+		 * Just watch a service_categories information
+		 */
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
 	    $form->setDefaults($cct);
 		$form->freeze();
 	} else if ($o == "c")	{
-		# Modify a service_categories information
+		/*
+		 * Modify a service_categories information
+		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($sc);
 	} else if ($o == "a")	{
-		# Add a service_categories information
+		/*
+		 * Add a service_categories information
+		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -162,7 +225,9 @@
 	if ($valid && $action["action"]["action"])
 		require_once($path."listServiceCategories.php");
 	else	{
-		#Apply a template definition
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
