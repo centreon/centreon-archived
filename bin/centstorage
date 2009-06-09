@@ -418,7 +418,7 @@ sub getModulesInterval($$){
     } elsif ($1 eq "ba") {
 	my $sth_interval = $con_oreon->prepare("SELECT normal_check_interval FROM mod_bam WHERE ba_id = '".$2."'");
 	if (!$sth_interval->execute) {
-	    writeLogFile("Error when getting metrics interval for QOS : " . $sth_interval->errstr . "");
+	    writeLogFile("Error when getting metrics interval for BAM : " . $sth_interval->errstr . "");
 	}
 	my $osl_conf = $sth_interval->fetchrow_hashref();
 	if (defined($osl_conf->{'normal_check_interval'}) && $osl_conf->{'normal_check_interval'}){
@@ -620,7 +620,7 @@ sub CheckRebuild(){
 	undef($interval);
 	undef($sth3);
 	$sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
-	writeLogFile("Error when getting perfdata file : " . $sth->errstr . "") if (!$sth->execute);
+	writeLogFile("Error when updating rebuild flag for service ". $svc_mst_be_rbld->{'id'} ." : " . $sth->errstr . "") if (!$sth->execute);
 	undef($sth);
 	undef($cpt);
 	undef($metric);
