@@ -81,13 +81,13 @@
 	 * Get Service Template Available
 	 */
 	$hServices = array();
-	$DBRESULT =& $pearDB->query("SELECT service_alias, service_description, service_id FROM service WHERE service_register = '0' ORDER BY service_alias");
+	$DBRESULT =& $pearDB->query("SELECT service_alias, service_description, service_id FROM service WHERE service_register = '0' ORDER BY service_alias, service_description");
 	while ($elem =& $DBRESULT->fetchRow())	{
 		$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 		$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 		$elem["service_alias"] = str_replace('#S#', "/", $elem["service_alias"]);
 		$elem["service_alias"] = str_replace('#BS#', "\\", $elem["service_alias"]);
-		$hServicesTpl[$elem["service_id"]] = $elem["service_description"] . " (".$elem["service_alias"].")";
+		$hServicesTpl[$elem["service_id"]] = $elem["service_alias"] . " (".$elem["service_description"].")";
 	}
 	$DBRESULT->free();
 	

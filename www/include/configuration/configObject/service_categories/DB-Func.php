@@ -102,11 +102,13 @@
 		if (testServiceCategorieExistence($_POST["sc_name"])){
 			$DBRESULT =& $pearDB->query("INSERT INTO `service_categories` (`sc_name` , `sc_description` , `sc_activate` ) VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', '".$_POST["sc_activate"]["sc_activate"]."')");
 		}
+		updateServiceCategoriesServices(htmlentities($_POST["sc_id"], ENT_QUOTES));
 	}
 	
 	function updateServiceCategorieInDB(){
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE `service_categories` SET `sc_name` = '".$_POST["sc_name"]."' , `sc_description` = '".$_POST["sc_description"]."' , `sc_activate` = '".$_POST["sc_activate"]["sc_activate"]."' WHERE `sc_id` = '".$_POST["sc_id"]."'");
+		updateServiceCategoriesServices(htmlentities($_POST["sc_id"], ENT_QUOTES));
 	}
 	
 	function deleteServiceCategorieInDB($sc_id = NULL){
@@ -115,6 +117,20 @@
 		foreach ($select as $key => $value){
 			$DBRESULT =& $pearDB->query("DELETE FROM `service_categories` WHERE `sc_id` = '".$key."'");
 		}
+	}
+	
+	function updateServiceCategoriesServices($sc_id)	{
+		global $pearDB, $form;
+
+		if (!$sc_id) 
+			return;
+
+		$DBRESULT =& $pearDB->query("DELETE FROM service_categories_relation WHERE sc_id = '".$sc_id."' AND service_service_id IN (SELECT service_id FROM service WHERE service_register = '0')");
+		if (isset($_POST["sc_svcTpl"]))
+			foreach ($_POST["sc_svcTpl"] as $key)	{
+				$rq = "INSERT INTO service_categories_relation (service_service_id, sc_id) VALUES ('".$key."', '".$sc_id."')";
+				$DBRESULT =& $pearDB->query($rq);
+			}
 	}
 
 ?>
