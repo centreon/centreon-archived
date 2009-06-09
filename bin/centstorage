@@ -409,9 +409,9 @@ sub getModulesInterval($$){
 	}
 	my $meta_conf = $sth_interval->fetchrow_hashref();
 	if (defined($meta_conf->{'normal_check_interval'}) && $meta_conf->{'normal_check_interval'}){
-	    $interval = $meta_conf->{'normal_check_interval'} * getIntervalLenght();
+	    $interval = $meta_conf->{'normal_check_interval'} * getIntervalLenght($con_oreon);
 	} else {
-	    $interval = 2 * getIntervalLenght();
+	    $interval = 2 * getIntervalLenght($con_oreon);
 	}
 	undef($meta_conf);
 	undef($sth_interval);
@@ -422,9 +422,9 @@ sub getModulesInterval($$){
 	}
 	my $osl_conf = $sth_interval->fetchrow_hashref();
 	if (defined($osl_conf->{'normal_check_interval'}) && $osl_conf->{'normal_check_interval'}){
-	    $interval = $osl_conf->{'normal_check_interval'} * getIntervalLenght();
+	    $interval = $osl_conf->{'normal_check_interval'} * getIntervalLenght($con_oreon);
 	} else {
-	    $interval = 2 * getIntervalLenght();
+	    $interval = 2 * getIntervalLenght($con_oreon);
 	}
 	undef($osl_conf);
 	undef($sth_interval);
@@ -474,7 +474,7 @@ sub updateServiceState($$$$$$) {
 	    my $begin = time() - 200000;
 	    $interval = getServiceCheckIntervalWithSVCid($index) * getIntervalLenght($con_oreon);
 #	    $interval = 3 if (!defined($interval));
-#	    $interval = getIntervalLenght() * $interval;
+#	    $interval = getIntervalLenght($con_oreon) * $interval;
 	    my $interval_hb = $interval * 2;
 	    $nb_value = getLenStorageDB() / $interval;
 
@@ -574,7 +574,7 @@ sub CheckRebuild(){
 	if ($svc_mst_be_rbld->{'host_name'} =~ /_Module_([a-zA-Z0-9]*)/){
 	    $interval = getModulesInterval($svc_mst_be_rbld->{'service_description'}, $con_oreon);
 	} else {
-	    $interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * getIntervalLenght();
+	    $interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * getIntervalLenght($con_oreon);
 	}
 	$interval = 330 if (!defined($interval));
 
@@ -582,7 +582,7 @@ sub CheckRebuild(){
 	my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
 	if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "");}
 
-	writeLogFile("ERROR : can t rebuild... interval = 0 (time unit : ".getIntervalLenght().")") if ($interval == 0);
+	writeLogFile("ERROR : can t rebuild... interval = 0 (time unit : ".getIntervalLenght($con_oreon).")") if ($interval == 0);
 	my $sth4;
 	if ($interval != 0){
 	    while ($metric = $sth3->fetchrow_hashref()){
