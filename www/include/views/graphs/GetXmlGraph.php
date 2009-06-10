@@ -503,7 +503,7 @@
 			if (($GraphTemplate["split_component"] == 1 && !isset($_GET["split"])) || (isset($_GET["split"]) && $_GET["split"]["split"] == 1))
 				$split = 1;
 		
-			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' ORDER BY `metric_name`");
+			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' AND hidden = '0' ORDER BY `metric_name`");
 			$counter = 0;
 			while ($metrics_ret =& $DBRESULT2->fetchRow()){			
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#S#", "/", $metrics_ret["metric_name"]);
