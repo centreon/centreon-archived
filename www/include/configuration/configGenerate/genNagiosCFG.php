@@ -200,18 +200,17 @@
 			else if ($key == "debug_verbosity" && ($value == 2 || $oreon->user->get_version() == 2));
 			else if ($key == "cached_host_check_horizon" && $oreon->user->get_version() == 2);
 			else if ($key == "cached_service_check_horizon" && $oreon->user->get_version() == 2);
-			else if ($key == "additional_freshness_latency" && $oreon->user->get_version() == 2);
-			else if ($key == "debug_level" && $oreon->user->get_version() == 2);
+			else if ($key == "additional_freshness_latency" && $oreon->user->get_version() == 2);			
 			else if ($key == "max_debug_file_size" && $oreon->user->get_version() == 2);
 			else if ($key == "debug_file" && $oreon->user->get_version() == 2);
 			else if ($key == "downtime_file" && $oreon->user->get_version() == 3);
 			else if ($key == "comment_file" && $oreon->user->get_version() == 3);
 			else if ($key == "enable_embedded_perl" && $oreon->user->get_version() == 2);
-			else if ($key == "use_embedded_perl_implicitly" && $oreon->user->get_version() == 2);
-			else if ($key == "debug_level" && $oreon->user->get_version() == 2);
+			else if ($key == "use_embedded_perl_implicitly" && $oreon->user->get_version() == 2);			
 			else if ($key == "tmp_path" && $oreon->user->get_version() == 2);
 			else if ($key == "check_result_path" && $oreon->user->get_version() == 2);
 			else if ($key == "max_check_result_file_age " && $oreon->user->get_version() == 2);
+			else if ($key == "debug_level_opt");
 			else {
 				$str .= $key."=".$value."\n";
 			}

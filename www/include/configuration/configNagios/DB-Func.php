@@ -157,7 +157,7 @@
 				"`service_perfdata_file_template` , `host_perfdata_file_mode` , `service_perfdata_file_mode` , `host_perfdata_file_processing_interval` , " .
 				"`service_perfdata_file_processing_interval` , `host_perfdata_file_processing_command` , `service_perfdata_file_processing_command` , " .
 				"`check_for_orphaned_services` , `check_service_freshness` , `service_freshness_check_interval` , `cached_host_check_horizon`, `cached_service_check_horizon` , `additional_freshness_latency` , " .
-				"`check_host_freshness` , `host_freshness_check_interval` , `date_format` , `illegal_object_name_chars` , `illegal_macro_output_chars` ,`use_large_installation_tweaks` , `free_child_process_memory` , `child_processes_fork_twice` , `debug_file` , `debug_level` , `debug_verbosity` , `max_debug_file_size` , " .
+				"`check_host_freshness` , `host_freshness_check_interval` , `date_format` , `illegal_object_name_chars` , `illegal_macro_output_chars` ,`use_large_installation_tweaks` , `free_child_process_memory` , `child_processes_fork_twice` , `debug_file` , `debug_level` , `debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , " .
 				"`enable_environment_macros` , `use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, `broker_module`, `event_broker_options` , `enable_embedded_perl` , `use_embedded_perl_implicitly` ) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
@@ -265,7 +265,13 @@
         isset($ret["free_child_process_memory"]["free_child_process_memory"]) && $ret["free_child_process_memory"]["free_child_process_memory"] != 2 ? $rq .= "'".$ret["free_child_process_memory"]["free_child_process_memory"]."',  " : $rq .= "'2', ";
         isset($ret["child_processes_fork_twice"]["child_processes_fork_twice"]) && $ret["child_processes_fork_twice"]["child_processes_fork_twice"] != 2 ? $rq .= "'".$ret["child_processes_fork_twice"]["child_processes_fork_twice"]."',  " : $rq .= "'2', ";
         isset($ret["debug_file"]) && $ret["debug_file"] != NULL ? $rq .= "'".htmlentities($ret["debug_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["debug_level"]) && $ret["debug_level"] != NULL ? $rq .= "'".htmlentities($ret["debug_level"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        $level = 0;        
+        if (isset($ret["nagios_debug_level"]) && $ret["nagios_debug_level"] != NULL) {        	        	
+        	foreach ($ret["nagios_debug_level"] as $key => $value)
+        		$level += $key;
+        }
+        $rq .= "'.$level.', ";
+        isset($ret["nagios_debug_level"]) && $ret["nagios_debug_level"] != NULL ? $rq .= "'".implode(",", array_keys($ret["nagios_debug_level"]))."',  " : $rq .= "'0', ";
         isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2 ? $rq .= "'".$ret["debug_verbosity"]["debug_verbosity"]."',  " : $rq .= "'2', ";
         isset($ret["max_debug_file_size"]) && $ret["max_debug_file_size"] != NULL ? $rq .= "'".htmlentities($ret["max_debug_file_size"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["enable_environment_macros"]["enable_environment_macros"]) && $ret["enable_environment_macros"]["enable_environment_macros"] != 2 ? $rq .= "'".$ret["enable_environment_macros"]["enable_environment_macros"]."',  " : $rq .= "'2', ";
@@ -419,8 +425,15 @@
 		isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "enable_embedded_perl   = '".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "enable_embedded_perl   = '2', ";
 		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "use_embedded_perl_implicitly   = '".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."',  " : $rq .= "use_embedded_perl_implicitly   = '2', ";
 		
-		isset($ret["debug_file"]) && $ret["debug_file"] != NULL ? $rq .= "debug_file = '".htmlentities($ret["debug_file"], ENT_QUOTES)."',  " : $rq .= "debug_file = NULL, ";
-		isset($ret["debug_level"]) && $ret["debug_level"] != NULL ? $rq .= "debug_level = '".$ret["debug_level"]."',  " : $rq .= "debug_level = NULL, ";
+		isset($ret["debug_file"]) && $ret["debug_file"] != NULL ? $rq .= "debug_file = '".htmlentities($ret["debug_file"], ENT_QUOTES)."',  " : $rq .= "debug_file = NULL, ";		
+		$level = 0;        
+        if (isset($ret["nagios_debug_level"]) && $ret["nagios_debug_level"] != NULL) {        	        	        	
+        	foreach ($ret["nagios_debug_level"] as $key => $value) {
+        		$level += $key;        		
+        	}
+        }        
+        $rq .= "debug_level = '".$level."', ";
+		isset($ret["nagios_debug_level"]) && $ret["nagios_debug_level"] != NULL ? $rq .= "debug_level_opt = '".implode(",", array_keys($ret["nagios_debug_level"]))."',  " : $rq .= "debug_level = NULL, ";
 		isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2 ? $rq .= "debug_verbosity   = '".$ret["debug_verbosity"]["debug_verbosity"]."',  " : $rq .= "debug_verbosity   = '2', ";
 		isset($ret["max_debug_file_size"]) && $ret["max_debug_file_size"] != NULL ? $rq .= "max_debug_file_size = '".htmlentities($ret["max_debug_file_size"], ENT_QUOTES)."',  " : $rq .= "max_debug_file_size = NULL, ";
 		

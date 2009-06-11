@@ -402,6 +402,7 @@ CREATE TABLE IF NOT EXISTS `cfg_nagios` (
   `use_embedded_perl_implicitly` enum('0','1','2') default NULL,
   `debug_file` varchar(255) default NULL,
   `debug_level` int(11) default NULL,
+  `debug_level_opt` varchar(200) default '0',
   `debug_verbosity` enum('0','1','2') default NULL,
   `max_debug_file_size` int(11) default NULL,
   PRIMARY KEY  (`nagios_id`),

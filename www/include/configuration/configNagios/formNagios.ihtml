@@ -256,7 +256,7 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$Debug}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$DebugConfiguration}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.debug_file.label}</td><td class="FormRowValue">{$form.debug_file.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.debug_level.label}</td><td class="FormRowValue">{$form.debug_level.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.nagios_debug_level.label}</td><td class="FormRowValue">{$form.nagios_debug_level.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.debug_verbosity.label}</td><td class="FormRowValue">{$form.debug_verbosity.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.max_debug_file_size.label}</td><td class="FormRowValue">{$form.max_debug_file_size.html}&nbsp;{$Bytes}</td></tr>
 			

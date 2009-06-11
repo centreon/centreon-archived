@@ -46,6 +46,13 @@
 		# Set base value
 		$nagios = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();
+		
+		$tmp = explode(',', $nagios["debug_level_opt"]);
+		$nagios_d = array();	
+		foreach ($tmp as $key => $value) {
+			$nagios_d["nagios_debug_level"][$value] = 1;
+		}
+		
 	}
 
 	/*
@@ -505,7 +512,14 @@
 		$debugLevel["64"]= _("Event broker information");
 		$debugLevel["256"]= _("Commands information");
 		$debugLevel["2048"]= _("Macros information");
-		$form->addElement('select', 'debug_level', _("Debug Level"), $debugLevel);
+		foreach ($debugLevel as $key => $val) {
+			if ($key == "-1" || $key == "0")
+				$debugCheck[] = &HTML_QuickForm::createElement('checkbox', $key, '&nbsp;', $val, array("id"=>"debug".$key, "onClick"=>"unCheckOthers(this.id);"));
+			else
+				$debugCheck[] = &HTML_QuickForm::createElement('checkbox', $key, '&nbsp;', $val, array("id"=>"debug".$key, "onClick"=>"unCheckAllAndNaught();"));			
+		}
+		$form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');		
+		$form->setDefaults($nagios_d);
 	
 		## Part 36
 		$nagTab = array();
@@ -678,3 +692,28 @@
 		$tpl->display("formNagios.ihtml");
 	}
 ?>
+<script type="text/javascript">
+function unCheckOthers(id) {
+	if (id == "debug-1") {
+		document.getElementById("debug0").checked = false;
+	}
+	else if (id == "debug0") {
+		document.getElementById("debug-1").checked = false;
+	}
+	
+	document.getElementById("debug1").checked = false;
+	document.getElementById("debug2").checked = false;
+	document.getElementById("debug4").checked = false;
+	document.getElementById("debug8").checked = false;
+	document.getElementById("debug16").checked = false;
+	document.getElementById("debug32").checked = false;
+	document.getElementById("debug64").checked = false;
+	document.getElementById("debug256").checked = false;
+	document.getElementById("debug2048").checked = false;
+}
+
+function unCheckAllAndNaught() {
+	document.getElementById("debug-1").checked = false;
+	document.getElementById("debug0").checked = false;
+}
+</script>
