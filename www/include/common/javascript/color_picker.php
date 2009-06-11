@@ -67,7 +67,7 @@ body	{ font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; bac
 td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; background-color:#FFFFFF}
 .table_black_border {border-style:solid; border-width:1px; border-color:#000000;}
 </style>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript">
 	
 // D�pos� par Frosty sur www.toutjavascript.com

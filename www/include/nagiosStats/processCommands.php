@@ -84,7 +84,7 @@ $type ? $type = 0 : $type = 1;
 $buffer->writeElement("actiontype", $type);
 
 $buffer->endElement();
-header('Content-type: text/xml; charset=iso-8859-1');
+header('Content-type: text/xml; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');
 $buffer->output();
 ?>

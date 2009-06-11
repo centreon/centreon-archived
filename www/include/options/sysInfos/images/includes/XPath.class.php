@@ -5025,7 +5025,7 @@ class XPathEngine extends XPathBase {
    *
    * It makes use of the get_html_translation_table(HTML_ENTITIES) php library 
    * call, so is limited in the same ways.  At the time of writing this seemed
-   * be restricted to iso-8859-1
+   * be restricted to utf-8
    *
    * ### Provide an option that will do this by default.
    *

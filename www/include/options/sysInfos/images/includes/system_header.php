@@ -26,7 +26,7 @@ if (!defined('IN_PHPSYSINFO')) {
 
 header("Cache-Control: no-cache, must-revalidate");
 if (!isset($charset)) {
-  $charset = 'iso-8859-1';
+  $charset = 'utf-8';
 } 
 
 setlocale (LC_ALL, $text['locale']);

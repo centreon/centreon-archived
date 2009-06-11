@@ -241,7 +241,7 @@
 	 * End buffer
 	 */
 	$buffer->endElement();
-	header('Content-type: text/xml; charset=iso-8859-1');
+	header('Content-type: text/xml; charset=utf-8');
 	header('Cache-Control: no-cache, must-revalidate');	
 	
 	/*

@@ -97,7 +97,7 @@ require('./sysinfo/includes/xml/hardware.php');
 require('./sysinfo/includes/xml/memory.php');
 require('./sysinfo/includes/xml/filesystems.php');
 
-$xml = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
+$xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 $xml .= "<!DOCTYPE phpsysinfo SYSTEM \"phpsysinfo.dtd\">\n\n";
 $xml .= created_by();
 $xml .= "<phpsysinfo>\n";

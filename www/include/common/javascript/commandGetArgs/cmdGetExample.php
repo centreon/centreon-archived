@@ -50,7 +50,7 @@
 		return html_entity_decode($arg, ENT_QUOTES);
 	}	
 	
-	header('Content-type: text/html; charset=iso-8859-1');
+	header('Content-type: text/html; charset=utf-8');
 
 	$pearDB = new CentreonDB();
 

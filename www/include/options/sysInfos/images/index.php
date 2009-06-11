@@ -123,7 +123,7 @@ if ($lng == 'browser') {
   }
 }
 
-$charset = 'iso-8859-1';
+$charset = 'utf-8';
 $lng = basename($lng);
 if (file_exists(APP_ROOT . '/includes/lang/' . $lng . '.php')) {
     require_once(APP_ROOT . '/includes/lang/' . $lng . '.php'); // get our language include
@@ -163,7 +163,7 @@ require_once(APP_ROOT . '/includes/xml/hddtemp.php');
 
 
 
-$xml = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
+$xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 $xml .= "<!DOCTYPE phpsysinfo SYSTEM \"phpsysinfo.dtd\">\n\n";
 $xml .= created_by();
 $xml .= "<phpsysinfo>\n";
