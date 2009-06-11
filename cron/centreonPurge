@@ -50,10 +50,10 @@ use POSIX ":sys_wait_h";
 
 use File::Copy;
 
-my $installedPath = "/usr/local/centreon/";
+my $installedPath = "@CENTREON_PATH@/";
 
-my $LOG = "/var/log/centreon/centreon-purge.log";
-my $PID = "/var/run/centreon/centreon-purge.pid";
+my $LOG = "@CENTREON_LOG@/centreon-purge.log";
+my $PID = "@CENTREON_RUNDIR@/centreon-purge.pid";
 
 # Init Globals
 use vars qw($debug $LOG %status $generalcounter);
@@ -63,7 +63,7 @@ use vars qw($con_oreon $con_ods);
 $debug = 0;
 
 # Include Configuration Data
-require "/etc/centreon/conf.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 sub writeLogFile($){
 	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
