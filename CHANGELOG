@@ -1,7 +1,9 @@
 ## Centreon 2.1-RC4
 
 => fix: generation of SNMP traps definition files
-
+=> fix: nagios debug_level works
+=> fix: AJAXed div's were not translated
+=> enhancement : new CentreonLang class that manages user's language and charset
 
 ## Centreon 2.1-RC3
 
