@@ -52,15 +52,17 @@ require "@CENTREON_ETC@/conf.pm";
 
 sub getPath($) {
     my $dbh = shift;
-    my $sth = $dbh->prepare("SELECT * FROM `options` WHERE `key` LIKE 'snmp_trapd_path_conf'");
-    $sth->execute();
+    my $sth = $dbh->prepare("SELECT * FROM `options` WHERE `key` LIKE 'snmp_trapd_path_conf'") 
+		or die "Couldn't prepare 'get snmp_trapd_path_conf' statement: ". $dbh->errstr;
+    $sth->execute()
+		or die "Couldn't execute 'get snmp_trapd_path_conf' statement: " . $sth->errstr;
     my $pathRes = $sth->fetchrow_hashref();
     undef($sth);
     
-    if (!($pathRes->{'value'} =~ /\/$/)) {
+    if (($pathRes->{'value'} =~ /\/$/)) {
     	return $pathRes->{'value'};
     } else {
-    	return "/etc/snmp/";
+    	return "/etc/snmp/centreon_traps/";
     }
 }
 
@@ -68,21 +70,28 @@ sub main() {
     print "Generating SNMPTT configuration files...\n";
     my ($nbMan, $nbTraps) = (0,0);
 
-    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1}) 
+		or die "Couldn't connect to database: " . DBI->errstr;
     my $confFiles_path = getPath($dbh);
 
-    my $sth = $dbh->prepare("SELECT * FROM `options` WHERE `key` LIKE 'oreon_path'");
-    $sth->execute();
+    my $sth = $dbh->prepare("SELECT * FROM `options` WHERE `key` LIKE 'oreon_path'")
+		or die "Couldn't prepare 'get opreon_path' statement: " . $dbh->errstr;
+    $sth->execute()
+		or die "Couldn't execute 'get opreon_path' statement: " . $sth->errstr;
     my $conf = $sth->fetchrow_hashref();
     $sth->finish();
     my $NAGIOS_TRAPS = $conf->{'value'}."bin/";
 
-    $sth = $dbh->prepare("SELECT `id`, `name` FROM `traps_vendor`");
-    $sth->execute();
+    $sth = $dbh->prepare("SELECT `id`, `name` FROM `traps_vendor`")
+		or die "Couldn't prepare 'get id and name' statement: " . $dbh->errstr;
+    $sth->execute()
+		or die "Couldn't execute 'get id and name' statement: " . $sth->errstr;
     my $snmpttIni = "";
     while (my ($man_id, $man_name) = $sth->fetchrow_array()) {
-		my $sth2 = $dbh->prepare("SELECT `traps_name`, `traps_oid`, `traps_status`, `traps_args`, `traps_comments` FROM `traps` WHERE `manufacturer_id` = '$man_id'");
-		$sth2->execute();
+		my $sth2 = $dbh->prepare("SELECT `traps_name`, `traps_oid`, `traps_status`, `traps_args`, `traps_comments` FROM `traps` WHERE `manufacturer_id` = '$man_id'")
+			or die "Couldn't prepare 'get traps information' statement: " . $dbh->errstr;
+		$sth2->execute()
+			or die "Couldn't execute 'get traps information' statement: " . $sth->errstr;
 		if (!open(FILE, "> ".$confFiles_path."snmptt-".$man_name.".conf")) {
 		    print "Cannot open ".$confFiles_path."snmptt-".$man_name.".conf in write mode - Export aborded\n";
 		    exit;
