@@ -59,6 +59,7 @@
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	
 	require_once "$classdir/centreonDB.class.php";
+	require_once "$classdir/centreonLang.class.php";
 	require_once "$classdir/Session.class.php";
 	require_once "$classdir/Oreon.class.php";	
 	require_once SMARTY_DIR."Smarty.class.php";
@@ -175,12 +176,6 @@
 	/*
 	 * Init Language 
 	 */
-	
-	$locale = $oreon->user->get_lang();
-	putenv("LANG=$locale");
-	setlocale(LC_ALL, $locale);
-	bindtextdomain("messages", "./locale/");
-	bind_textdomain_codeset("messages", "UTF-8"); 
-	textdomain("messages");
-    $mlang = $oreon->user->get_lang();
+	$centreonLang = new CentreonLang($centreon_path, $oreon);
+	$centreonLang->bindLang();
 ?>

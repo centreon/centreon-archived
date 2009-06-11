@@ -74,6 +74,7 @@ class User	{
 		$this->alias = html_entity_decode($user["contact_alias"], ENT_QUOTES);
 		$this->email = html_entity_decode($user["contact_email"], ENT_QUOTES);
 		$this->lang = $user["contact_lang"];
+		$this->charset = "UTF-8";
 		$this->passwd = $user["contact_passwd"];
 		$this->admin = $user["contact_admin"];
 		$this->version = $nagios_version;

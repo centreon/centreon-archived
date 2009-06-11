@@ -41,11 +41,19 @@
 	include_once $centreon_path . "www/class/centreonGMT.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
+	include_once $centreon_path . "www/class/Session.class.php";
+	include_once $centreon_path . "www/class/Oreon.class.php";
+	include_once $centreon_path . "www/class/centreonLang.class.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
-	
+	session_start();
+	$oreon = $_SESSION['oreon'];
+		
 	$pearDB = new CentreonDB();
 	$pearDBndo = new CentreonDB("ndo");
+		
+	$centreonlang = new CentreonLang($centreon_path, $oreon);
+	$centreonlang->bindLang();
 	
 	$ndo_base_prefix = getNDOPrefix();
 	
