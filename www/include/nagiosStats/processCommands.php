@@ -42,19 +42,12 @@ require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once $centreon_path . "/www/class/Session.class.php";
 require_once $centreon_path . "/www/class/Oreon.class.php";
 require_once $centreon_path . "/www/class/centreonXML.class.php";
-  
+
 Session::start();
 if (!isset($_SESSION["oreon"]) || !isset($_GET["poller"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]) || !isset($_GET["type"]))
 	exit();
 
 $oreon =& $_SESSION["oreon"];
-
-$locale = $oreon->user->get_lang();
-putenv("LANG=$locale");
-setlocale(LC_ALL, $locale);
-bindtextdomain("messages", $centreon_path."www/locale/");
-bind_textdomain_codeset("messages", "UTF-8");
-textdomain("messages");
 
 $poller = $_GET["poller"];
 $cmd = $_GET["cmd"];

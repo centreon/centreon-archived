@@ -47,6 +47,7 @@ class User	{
 	var $passwd;
 	var $email;
 	var $lang;
+	var $charset;
 	var $version;
 	var $admin;
 	var $limit;
