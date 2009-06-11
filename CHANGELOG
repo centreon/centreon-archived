@@ -1,3 +1,8 @@
+## Centreon 2.1-RC4
+
+=> fix: generation of SNMP traps definition files
+
+
 ## Centreon 2.1-RC3
 
 => fix: error on host configuration page
