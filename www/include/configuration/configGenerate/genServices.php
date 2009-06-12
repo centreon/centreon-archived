@@ -46,7 +46,7 @@
 	 * Build cache for CG
 	 */
 	$cgSCache = array();
-	$DBRESULT2 =& $pearDB->query("SELECT csr.service_service_id, cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
+	$DBRESULT =& $pearDB->query("SELECT csr.service_service_id, cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 	while ($cg =& $DBRESULT->fetchRow()) {
 		if (!isset($cgSCache[$cg["service_service_id"]]))
 			$cgSCache[$cg["service_service_id"]] = array();
@@ -65,7 +65,7 @@
 			$cctSCache[$contact["service_service_id"]] = array();
 		$cctSCache[$contact["service_service_id"]][$contact["contact_id"]] = $contact["contact_name"];
 	}
-	$DBRESULT->free();
+	$DBRESULT2->free();
 	unset($contact);
 
 	/*
@@ -520,39 +520,7 @@
 				if ($service["service_notifications_enabled"] != 2) 
 					$strTMP .= print_line("notifications_enabled", $service["service_notifications_enabled"] == 1 ? "1": "0");
 				
-				/*
-				 * Contact Group Relation
-				 */
-				
-				if (isset($cgSCache[$service["service_id"]])) {
-					$strTMPTemp = "";
-					foreach ($cgSCache[$service["service_id"]] as $cg_name) {
-						if ($strTMPTemp != "") 
-							$strTMPTemp .= ",";
-						$strTMPTemp .= $cg_name;
-					}
-					if ($strTMPTemp) 
-						$strTMP .= print_line("contact_groups", $strTMPTemp);
-					unset($strTMPTemp);
-				}
-				
-				/*
-				 * Contact Relation only for Nagios 3
-				 */
-				if ($oreon->user->get_version() >= 3) {
-					if (isset($cctSCache[$service["service_id"]])) {
-						$strTMPTemp = "";
-						foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
-							if ($strTMPTemp != "") 
-								$strTMPTemp .= ",";
-							$strTMPTemp .= $cct_name;
-						}
-						if ($strTMPTemp) 
-							$strTMP .= print_line("contacts", $strTMPTemp);
-						unset($strTMPTemp);
-					}
-				}
-				
+								
 				/*
 				 * Contact Group Relation
 				 */
