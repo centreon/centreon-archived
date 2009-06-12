@@ -74,19 +74,19 @@
 
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
-				" WHERE no.object_id = nss.service_object_id" ;
+				" WHERE no.object_id = nss.service_object_id " ;
 
 		if ($instance != "ALL")
 			$rq .= " AND no.instance_id = ".$instance;
 
-		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
-			$rq .= " AND nss.current_state != 0" ;
+		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcOVSG_ack_0")
+			$rq .= " AND nss.current_state != 0 " ;
 
 		if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0")
-			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
+			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0 " ;
 
 		if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
-			$rq .= " AND nss.problem_has_been_acknowledged = 1" ;
+			$rq .= " AND nss.problem_has_been_acknowledged = 1 " ;
 
 		$rq .= " AND no.object_id" .
 				" IN (" .
