@@ -538,15 +538,26 @@
 		$macro_on_demand = array();
 		global $nbr;
 		global $oreon;
+		global $pearDB;
 		global $debug_nagios_import;
 		global $debug_path;
-		if (isset($tmpConf["host_name"]) && testHostExistence($tmpConf["host_name"]) || isset($tmpConf["name"]) && testHostTplExistence($tmpConf["name"]))	{
+		//if (isset($tmpConf["host_name"]) && testHostExistence($tmpConf["host_name"]) || isset($tmpConf["name"]) && testHostTplExistence($tmpConf["name"]))	{
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ."\n", 3, $debug_path."cfgimport.log");
 			$counter = 0;
 			foreach ($tmpConf as $key=>$value)	{
 				switch($key)	{
-					case "use" : $use = trim($tmpConf[$key]); /*unset ($tmpConf[$key])*/; break;
+					case "use" : $use = trim($tmpConf[$key]);
+								$tmp = explode(",", $use);
+								foreach ($tmp as $value) {
+									if (!hostTemplateExists($value)) {									
+										$pearDB->query("INSERT INTO `host` (host_name, host_register) VALUES ('".$value."', '0')");
+										$DBRES =& $pearDB->query("SELECT MAX(host_id) FROM `host` WHERE host_register = '0' LIMIT 1");
+										$row =& $DBRES->fetchRow();
+										$pearDB->query("INSERT INTO `extended_host_information` (host_host_id) VALUES ('".$row['MAX(host_id)']."')");									
+									}
+								}
+								break;
 					case "name" : $tmpConf["host_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "alias" : $tmpConf["host_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "address" : $tmpConf["host_address"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -664,17 +675,33 @@
 			$tmpConf["ehi_vrml_image"] = NULL;
 			$tmpConf["ehi_statusmap_image"] = NULL;
 			$tmpConf["ehi_2d_coords"] = NULL;
-			$tmpConf["ehi_3d_coords"] = NULL;			
-			$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
+			$tmpConf["ehi_3d_coords"] = NULL;
+			
+			if ($tmpConf["host_register"]["host_register"]) {				
+				if (!hostExists($tmpConf['host_name'])) {
+					$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);				
+				}
+				else {				
+					$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);					
+				}
+			}
+			else {				
+				if (!hostTemplateExists($tmpConf['host_name'])) {									
+					$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
+				}
+				else {														
+					$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
+				}
+			}
 			$useTpl[1] = $use;
 			isset($tmpConf["host_parentsTMP"]) ? $useTpl[2] = $tmpConf["host_parentsTMP"] : NULL;
 			$nbr["h"] += 1;
 			return $useTpl;
-		} else {
-			if ($debug_nagios_import == 1)
-				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ." already exist. Skip !\n", 3, $debug_path."cfgimport.log");
+		//} else {
+		//	if ($debug_nagios_import == 1)
+		//		error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ." already exist. Skip !\n", 3, $debug_path."cfgimport.log");
 
-		}
+		//}
 	}
 
 	function insertHostExtInfoCFG($tmpConf = array())	{
