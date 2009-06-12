@@ -692,7 +692,7 @@
 	} else if ($o == "c")	{
 		# Modify a service information
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$res =& $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);"));
 	    $form->setDefaults($service);
 	} else if ($o == "a")	{
 		# Add a service information

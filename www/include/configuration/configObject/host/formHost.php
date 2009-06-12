@@ -733,7 +733,7 @@
 		 * Modify a host information
 		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$res =& $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);"));
 	    $form->setDefaults($host);
 	} else if ($o == "a")	{
 		/*
