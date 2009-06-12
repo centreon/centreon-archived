@@ -107,18 +107,18 @@
 			$rq .= ", centreon_acl ";
 					
 		$rq .= 		" WHERE no.object_id = nss.service_object_id" .
-					" AND no.name1 NOT LIKE '_Module_%'";					
+					" AND no.name1 NOT LIKE '_Module_%' ";					
 		
 		$grouplistStr = $access->getAccessGroupsString(); 
 		$rq .= 	$access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "no.name2", "centreon_acl.service_description") . $access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
-		if	($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
+		if	($o == "svcgridHG_pb" || $o == "svcSumHG_pb")
 			$rq .= 	" AND nss.current_state != 0" ;
 
-		if ($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
+		if ($o == "svcgridHG_ack_0" || $o == "svcSumHG_ack_0")
 			$rq .= 	" AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
 
-		if ($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
+		if ($o == "svcgridHG_ack_1" || $o == "svcSumHG_ack_1")
 			$rq .= 	" AND nss.problem_has_been_acknowledged = 1" ;
 
 		$rq .= 		" AND no.object_id" .
@@ -166,7 +166,7 @@
 	$rq1 .= 		" WHERE hs.host_object_id = hgm.host_object_id".
 					" AND no.object_id = hgm.host_object_id" .
 					" AND hgm.hostgroup_id = hg.hostgroup_id".
-					" AND no.name1 not like '_Module_%'";
+					" AND no.name1 not like '_Module_%' ";
 		
 	if (!$is_admin)
 		$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString());

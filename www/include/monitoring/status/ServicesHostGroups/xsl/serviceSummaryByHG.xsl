@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-
 <xsl:template match="/">
-	<xsl:for-each select="//hg">
 	<table class="ListTable">
+	<tr class='ListHeader'>
+			<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"  width="200"></td>
+			<xsl:if test="//i/s = 1">
+				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="40">Status</td>
+			</xsl:if>
+			<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
+	</tr>
+	<xsl:for-each select="//hg">
 		<tr class='list_lvl_1'>
 			<xsl:if test="//i/s = 1">
 			<td colspan="4">
@@ -15,14 +21,7 @@
 				<xsl:value-of select="hgn"/>
 			</td>
 			</xsl:if>
-		</tr>
-		<tr class='ListHeader'>
-			<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"  width="200"></td>
-			<xsl:if test="//i/s = 1">
-				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="40">Status</td>
-			</xsl:if>
-			<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
-		</tr>
+		</tr>	
 		<xsl:for-each select="l">
 		<tr>
 			<xsl:attribute name="id">trStatus</xsl:attribute>
@@ -114,9 +113,8 @@
 				</xsl:if>
 			</td>
 		</tr>
-	</xsl:for-each>
-	</table>
-<br/>
+	</xsl:for-each>	
 </xsl:for-each>
+</table>
 </xsl:template>
 </xsl:stylesheet>

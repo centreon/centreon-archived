@@ -167,16 +167,16 @@
 		$rq1 .= ", centreon_acl ";
 	
 	$rq1 .=  	" WHERE no.objecttype_id = '2' AND nss.service_object_id = no.object_id ".				
-				" AND no.name1 NOT LIKE '_Module_%'".
-				" AND no.is_active = 1";
+				" AND no.name1 NOT LIKE '_Module_%' ".
+				" AND no.is_active = 1 ";
 
 	$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND","no.name2", "centreon_acl.service_description") . $access->queryBuilder("AND", "group_id", $grouplistStr);
 	
-	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
+	if ($o == "svcgrid_pb" || $o == "svcOVHG_pb" || $o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0")
 		$rq1 .= " AND nss.current_state != 0 ";
-	if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1")
+	if ($o == "svcgrid_ack_1" || $o == "svcOVHG_ack_1")
 		$rq1 .= "AND nss.problem_has_been_acknowledged = 1";
-	if ($o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
+	if ($o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0")
 		$rq1 .= "AND nss.problem_has_been_acknowledged = 0";
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
