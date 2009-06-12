@@ -82,6 +82,12 @@
 	unset($serviceGroup);
 	
 	/*
+	 * Init Generated SG
+	 */
+	$SGFilled = array();
+	
+	
+	/*
 	 * Build cache for Macro
 	 */
 	$macroCache = array();
@@ -363,7 +369,7 @@
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while ($hostGroup =& $DBRESULT2->fetchRow())	{
 						$BP = false;
-						if (isset($generatedHG[$hostGroup["hg_id"]]) && $generatedHG[$hostGroup["hg_id"]]){
+						if (isset($generatedHG[$hostGroup["hg_id"]]) && $generatedHG[$hostGroup["hg_id"]] && isset($HGFilled[$hostGroup["hg_id"]])){
 							$parent = true;
 							$strTMPTemp != NULL ? $strTMPTemp .= ", ".$hostGroup["hg_name"] : $strTMPTemp = $hostGroup["hg_name"];
 							$LinkedToHost++;

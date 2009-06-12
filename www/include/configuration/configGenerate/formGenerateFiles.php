@@ -149,8 +149,8 @@
 					require $path."genHostGroups.php";
 					require $path."genServiceTemplates.php";
 					require $path."genServices.php";
-					require $path."genServiceGroups.php";
 					require $path."genEscalations.php";
+					require $path."genServiceGroups.php";
 					require $path."genDependencies.php";
 					require $path."centreon_pm.php";
 					

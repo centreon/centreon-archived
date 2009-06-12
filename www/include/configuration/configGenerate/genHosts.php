@@ -87,6 +87,11 @@
 	}
 	$DBRESULT->free();
 	unset($hg);
+	
+	/*
+	 * Init Table for filled HG
+	 */
+	$HGFilled = array();
 
 	/*
 	 * Create Contact Cache 
@@ -239,6 +244,7 @@
 								$strTemp .= ",";
 							}
 							$strTemp .= $hgs;
+							$HGFilled[$hgs] = $hgs;
 						}					
 					}
 					if ($strTemp) 
