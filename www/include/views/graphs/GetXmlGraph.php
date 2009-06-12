@@ -564,14 +564,16 @@
 				if ($split == 0){
 					$buffer->startElement("metricsTab");					
 					$flag = 0;
+					$str = "";
 					foreach ($metrics as $id => $metric)	{
-						if(isset($_GET["metric"]) && $_GET["metric"][$id] == 1){
-							if ($flag)
-								$buffer->text("&amp;");
-							$flag = 1;
-							$buffer->text("metric[".$id."]=1");							
-						}
+						if (isset($_GET["metric"]) && $_GET["metric"][$id] == 1){
+                        	if ($flag)
+                            	$str .= "&amp;";
+                            $flag = 1;
+                            $str .= "metric[".$id."]";
+                        }
 					}
+					$buffer->text($str);
 					$buffer->endElement();					
 				} else	{
 					$buffer->writeElement("metricsTab", "..");					
