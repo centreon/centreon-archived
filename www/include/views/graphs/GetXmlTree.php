@@ -226,7 +226,7 @@
 			 */
 			$cpt = 0;
 			$str = 0;
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
+			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service WHERE `meta_activate = '1' `ORDER BY `meta_name`");
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
 				$buffer->startElement("item");
@@ -312,9 +312,9 @@
 			$cpt = 0;
 			$str = 0;
 			if ($search != "")
-				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service WHERE `meta_name` LIKE '%$search%' ORDER BY `meta_name`");
+				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service WHERE `meta_name` LIKE '%$search%' AND `meta_activate` = '1' ORDER BY `meta_name`");
 			else
-				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");	
+				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
 				$cpt++;
@@ -531,7 +531,7 @@
 		 */
 		$cpt = 0;
 		$str = 0;
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
 		while ($MS =& $DBRESULT->fetchRow()){
 			$i++;
 			$cpt++;
