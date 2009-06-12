@@ -115,7 +115,7 @@
 		$tpl->assign("msg", $msg);
 		
 	$tpl->assign("session_data", $session_data);
-	$tpl->assign("wi_user", _("Connectd users"));
+	$tpl->assign("wi_user", _("Connected users"));
 	$tpl->assign("wi_where", _("Position"));	
 	$tpl->assign("actions", _("Reload ACL"));
 	$tpl->assign("distant_location", _("IP Address"));
