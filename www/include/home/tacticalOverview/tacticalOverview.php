@@ -59,8 +59,8 @@
 	require_once './include/common/common-Func.php';	
 	require_once './class/centreonDB.class.php';
 	
-	global $pearDB;
-	global $pearDBndo;
+	global $pearDB, $pearDBndo;
+	
 	$pearDB = new CentreonDB();
 	$pearDBndo = new CentreonDB("ndo");	
 	

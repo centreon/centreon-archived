@@ -104,6 +104,9 @@
 						{if $tb_hostprobstate[$k] == 1}
 						<td class="ListColCenter" style="background-color:{$color.color_critical};font-weight:bold;white-space:nowrap;" align=center>{$str_down}</td>
 						{/if}
+						{if $tb_hostprobstate[$k] == 2}
+						<td class="ListColCenter" style="background-color:{$color.color_unreachable};font-weight:bold;white-space:nowrap;" align=center>{$str_unreachable}</td>
+						{/if}
 						<td class="ListColCenter" align=center style="white-space:nowrap;">{$tb_hostprobip[$k]}</td>
 						<td class="ListColRight" align=right style="white-space:nowrap;">{$tb_hostprobduration[$k]}</td>
 						<td class="ListColCenter" align=center style="white-space:nowrap;">{$tb_hostproblast[$k]}</td>
