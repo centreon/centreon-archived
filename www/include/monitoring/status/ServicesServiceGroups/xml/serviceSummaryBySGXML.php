@@ -87,9 +87,9 @@
 
 		$rq = 	"SELECT no.name1, no.name2 as service_name, nss.current_state" .
 			 	" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
-				" WHERE no.object_id = nss.service_object_id" ;					
+				" WHERE no.object_id = nss.service_object_id " ;					
 
-		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb")
+		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb" || $o == "svcSumSG_ack_0")
 			$rq .= 	" AND nss.current_state != 0" ;
 
 		if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0" || $o == "svcSumSG_ack_0")
@@ -138,13 +138,13 @@
 			" WHERE ss.service_object_id = sgm.service_object_id".
 			" AND no.object_id = sgm.service_object_id" .
 			" AND sgm.servicegroup_id = sg.servicegroup_id".
-			" AND no.is_active = 1";
+			" AND no.is_active = 1 ";
 		
 	$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
 
 
-	if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb")
-		$rq1 .= " AND no.name1 IN (" .
+	if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb" || $o == "svcSumSG_ack_0")
+		$rq1 .= " AND ss.current_state != 0 AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
 
@@ -155,7 +155,7 @@
 				")";
 
 	if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1" || $o == "svcSumSG_ack_1")
-		$rq1 .= " AND no.name1 IN (" .
+		$rq1 .= " AND ss.problem_has_been_acknowledged = 1 AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
 				")";
@@ -192,6 +192,7 @@
 	$buffer->endElement();
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+	
 	$class = "list_one";
 	$flag = 0;
 
