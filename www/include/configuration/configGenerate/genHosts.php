@@ -216,9 +216,9 @@
 				$hostParent = array();
 				$strTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
-				while($hostParent = $DBRESULT2->fetchRow())	{
+				while ($hostParent =& $DBRESULT2->fetchRow())	{
 					$DBRESULT3 =& $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$hostParent["host_id"]."' AND nagios_server_id = '".$tab['id']."'");
-					if (verifyIfMustBeGenerated($host["host_id"], $gbArr[2], $ret) && $DBRESULT3->numRows())
+					if (verifyIfMustBeGenerated($hostParent["host_id"], $gbArr[2], $ret) && $DBRESULT3->numRows())
 						$strTemp != NULL ? $strTemp .= ", ".$hostParent["host_name"] : $strTemp = $hostParent["host_name"];
 				}
 				$DBRESULT2->free();

@@ -515,12 +515,8 @@
 	
 	function verifyIfMustBeGenerated($id, $gbArr, $ret){
 		$BP = false;
-		//if ($ret["level"]["level"] == 1)
-			array_key_exists($id, $gbArr) ? $BP = true : NULL;
-		/*else if ($ret["level"]["level"] == 2)
-			array_key_exists($id, $gbArr) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 3)
-			$BP = true;	*/
+		if (isset($gbArr[$id]))
+			$BP = true;	
 		return $BP;
 	}
 	
