@@ -42,7 +42,6 @@
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
-	
 
 	// -----------------------------------------------------
 	$value =& $_GET["value"];
@@ -82,6 +81,7 @@
 	$g->pie_slice_colours($color);
 
 	$g->set_tool_tip( '#val#%' );
+	
 	if (isset($_GET["service_name"]) && isset($_GET["host_name"]))
 		$g->title( $_GET["service_name"] . " on " . $_GET["host_name"], '{font-size:15px; color: #424242}' );
 	else if (isset($_GET["host_name"]))

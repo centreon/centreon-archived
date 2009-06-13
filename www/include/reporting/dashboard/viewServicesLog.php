@@ -57,7 +57,14 @@
 	$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
 
 	$host_name = getMyHostName($host_id);
-	$items  = $oreon->user->access->getHostServices($pearDBndo, $host_id);	
+	$items  = $oreon->user->access->getHostServices($pearDBndo, $host_id);
+
+	$itemsForUrl = array();
+	foreach ($items as $key => $value) {
+		$itemsForUrl[str_replace(":", "%3A", $key)] = str_replace(":", "%3A", $value);
+	}
+	$service_name = $itemsForUrl[$service_id];
+		
 	$select =& $form->addElement('select', 'item', _("Service"), $items, array("onChange" =>"this.form.submit();"));
 	$form->addElement('hidden', 'period', $period);
 	$form->addElement('hidden', 'start', $get_date_start);
@@ -104,7 +111,7 @@
 		 * Exporting variables for ihtml
 		 */
 		$tpl->assign('host_name', $host_name);
-		$tpl->assign('name', $items[$service_id]);
+		$tpl->assign('name', $itemsForUrl[$service_id]);
 		$tpl->assign('pie_chart_get_str', $pie_chart_get_str);
 		$tpl->assign('totalAlert', $serviceStats["TOTAL_ALERTS"]);
 		$tpl->assign('totalTime',  $serviceStats["TOTAL_TIME_F"]);
