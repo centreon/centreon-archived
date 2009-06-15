@@ -338,7 +338,7 @@ sub get_poller()	{
 				$nagiostats = `$nagiostats_bin`;
 		    } else {
 				$tmp = $cfg_dir->{'cfg_dir'};
-				$nagiostats = `ssh $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
+				$nagiostats = `ssh -o ConnectTimeout=5 $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
 		    }
 		    check_dir($id);
 		    if (rrd_process($nagiostats, $is_localhost, $must_update_ds, $id)) {
