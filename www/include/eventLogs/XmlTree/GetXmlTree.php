@@ -394,7 +394,7 @@
 			$id_full = split('_', $id);
 			$id = $id_full[0];
 			$buffer->startElement("idfull");
-			$buffer->text(print_r($id_full));
+			///$buffer->text(print_r($id_full));
 			$buffer->endElement();			
 			
 			if ($type == "HH") {
@@ -468,7 +468,7 @@
 	    		if (isset($hgs_selected[$hg_id]))
 	    			$buffer->writeAttribute("checked", "1");
 	    		$buffer->writeAttribute("child", "1");
-	    		$buffer->writeAtrtibute("id", "HG_".$hg_id);
+	    		$buffer->writeAttribute("id", "HG_".$hg_id);
 	    		$buffer->writeAttribute("text", $hg_name);
 	    		$buffer->writeAttribute("im0", "../16x16/clients.gif");
 	    		$buffer->writeAttribute("im1", "../16x16/clients.gif");
@@ -477,7 +477,7 @@
 				/*
 				 * Hosts
 				 */
-				if ($hg_open){
+				if (isset($hg_open) && $hg_open){
 					$hosts = getMyHostGroupHosts($hg_id);
 					foreach ($hosts as $host_id => $host_name){
 						$buffer->startElement("item");
