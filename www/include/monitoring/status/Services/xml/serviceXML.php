@@ -36,7 +36,8 @@
  * 
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path."www/class/other.class.php";
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonACL.class.php";
@@ -184,24 +185,6 @@
 	}
 
 	$rq_limit = " LIMIT ".($num * $limit).",".$limit;
-
-	/*
-	 * SELECT A.*, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.flap_detection_enabled 
-	 * FROM (SELECT  no.name1 as host_name,  no.object_id, no.name2 as service_description, ns.notes, ns.notes_url, ns.action_url 
-	 * 			FROM  nagios_objects no, nagios_services ns 
-	 * 			WHERE  no.object_id = ns.service_object_id 
-	 * 				AND no.name1 NOT LIKE '_Module_%' 
-	 * 				AND objecttype_id = 2 
-	 * 				AND no.name1 != '_Module_Meta' 
-	 * 				AND EXISTS (	SELECT 1 
-	 * 								FROM nagios_servicestatus 
-	 * 								WHERE no.object_id = service_object_id 
-	 * 								AND current_state != 0 
-	 *							) order by no.name1,no.name2  LIMIT 0,50
-	 *		) A, nagios_servicestatus nss 
-	 * WHERE A.object_id = nss.service_object_id 
-	 * ORDER BY nss.last_state_change ASC, host_name, service_description;
-	 */
 
 	$ArgNeeded = "A.*, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.state_type as state_type, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.scheduled_downtime_depth, nss.flap_detection_enabled";
 
@@ -399,16 +382,17 @@
 			$buffer->writeElement("ac", $ndo["active_checks_enabled"]);
 			$buffer->writeElement("eh", $ndo["event_handler_enabled"]);
 			$buffer->writeElement("is", $ndo["is_flapping"]);
+			$buffer->writeElement("dtm", $ndo["scheduled_downtime_depth"]);
 			
 			if (!isset($ndo["notes"]) || $ndo["notes"] == "")
 				$ndo["notes"] = $ndo["notes_url"];
 			$buffer->writeElement("sn", $ndo["notes"]);
+			
 			if ($ndo["notes_url"] != "") {
 				$buffer->writeElement("snu", $ndo["notes_url"]);
 			} else {
 				$buffer->writeElement("snu", 'none');
 			}
-			
 			
 			$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);			
 			$buffer->writeElement("ha", $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]);

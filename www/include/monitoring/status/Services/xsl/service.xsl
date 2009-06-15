@@ -113,6 +113,12 @@
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>
+			<xsl:if test="dtm = 1">
+					<xsl:element name="img">
+					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
+					  	<xsl:attribute name="title">Service is currently on Downtime</xsl:attribute>
+					</xsl:element>
+			</xsl:if>
 			<xsl:if test="pa = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
