@@ -136,7 +136,8 @@
 			" nh.icon_image_alt," .
 			" nhs.max_check_attempts," .
 			" nhs.state_type," .
-			" nhs.current_check_attempt" .
+			" nhs.current_check_attempt, " .
+			" nhs.scheduled_downtime_depth" .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh";
 	if (!$is_admin)	
 		$rq1 .= ", centreon_acl ";
@@ -245,6 +246,7 @@
         $buffer->writeElement("ace", $ndo["active_checks_enabled"]);
         $buffer->writeElement("lsc", ($duration ? $duration : "N/A"));      
         $buffer->writeElement("ha", $ndo["problem_has_been_acknowledged"]);
+        $buffer->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);
         $buffer->writeElement("hae", $ndo["active_checks_enabled"]);       
         $buffer->writeElement("hpe", $ndo["passive_checks_enabled"]);
         $buffer->writeElement("ne", $ndo["notifications_enabled"]);

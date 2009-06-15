@@ -37,6 +37,11 @@
 			</xsl:element>
 		</td>
 		<td class="ListColLeft">
+			<xsl:if test="hdtm = 1">
+					<xsl:element name="img">
+					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
+					</xsl:element>
+			</xsl:if>
 			<xsl:if test="ha = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
