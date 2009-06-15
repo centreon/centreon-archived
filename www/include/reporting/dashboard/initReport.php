@@ -98,18 +98,18 @@
 	 */
 	$oreon->optGen["color_undetermined"] = "#F0F0F0";
 
-	$tpl->assign('style_ok', 				"class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
-	$tpl->assign('style_ok_alert', 			"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_ok"]."'");
-	$tpl->assign('style_warning' , 			"class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'");
+	$tpl->assign('style_ok', 		"class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
+	$tpl->assign('style_ok_alert', 		"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_ok"]."'");
+	$tpl->assign('style_warning' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'");
 	$tpl->assign('style_warning_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_warning"]."'");
-	$tpl->assign('style_critical' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'");
+	$tpl->assign('style_critical' , 	"class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'");
 	$tpl->assign('style_critical_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_critical"]."'");
-	$tpl->assign('style_unknown' , 			"class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'");
+	$tpl->assign('style_unknown' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'");
 	$tpl->assign('style_unknown_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_unknown"]."'");
-	$tpl->assign('style_pending' , 			"class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'");
+	$tpl->assign('style_pending' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'");
 	$tpl->assign('style_pending_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_undetermined"]."'");
 
-	$tpl->assign('actualTitle', _(" Actual "));
+	$tpl->assign('actualTitle', _("Actual"));
 
 	$tpl->assign('serviceTitle', _("Service"));
 	$tpl->assign('hostTitle', _("Host name"));
@@ -133,7 +133,8 @@
 	$tpl->assign('EventTitle', _("Event"));
 	$tpl->assign('InformationsTitle', _("Info"));
 
-	$tpl->assign('periodTitle', _("Period Selection"));
+	$tpl->assign('periodTitle', _("Reporting Period"));
+	$tpl->assign('periodORlabel', _("or"));
 	$tpl->assign('logTitle', _("Today's Host log"));
 	$tpl->assign('svcTitle', _("State Breakdowns For Host Services"));
 
@@ -186,7 +187,7 @@
   	 */
 	$lcaHoststr 	= $oreon->user->access->getHostsString("ID", $pearDBndo);
 	$lcaHostGroupstr = $oreon->user->access->getHostGroupsString();
-	$lcaSvcstr 		= $oreon->user->access->getServicesString("ID", $pearDBndo);
+	$lcaSvcstr 	= $oreon->user->access->getServicesString("ID", $pearDBndo);
 	
 	/* 
 	 * setting variables for link with services
@@ -207,13 +208,10 @@
 	 * Period Selection form
 	 */
 	$formPeriod = new HTML_QuickForm('FormPeriod', 'post', "?p=".$p);
-	$formPeriod->addElement('select', 'period', _("Predefined : "), $periodList);
+	$formPeriod->addElement('select', 'period', "", $periodList, array("onchange"=>"resetFields([this.form.StartDate, this.form.EndDate])"));
 	$formPeriod->addElement('hidden', 'timeline', "1");
-	$formPeriod->addElement('header', 'title', _("Custom selection"));
-	$formPeriod->addElement('text', 'start', _("Begin date"));
-	$formPeriod->addElement('button', "startD", _("Modify"), array("onclick"=>"displayDatePicker('start')"));
-	$formPeriod->addElement('text', 'end', _("End date"));
-	$formPeriod->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
-	$formPeriod->addElement('submit', 'submit', _("View"));
-	$formPeriod->setDefaults(array('period' => $period, "start" => $get_date_start, "end" => $get_date_end));
+	$formPeriod->addElement('text', 'StartDate', _("From"), array("onclick"=>"displayDatePicker('StartDate')", "size"=>10));
+	$formPeriod->addElement('text', 'EndDate', _("to"), array("onclick"=>"displayDatePicker('EndDate')", "size"=>10));
+	$formPeriod->addElement('submit', 'submit', _("Apply"));
+	$formPeriod->setDefaults(array('period' => $period, "StartDate" => $get_date_start, "EndDate" => $get_date_end));
 ?>

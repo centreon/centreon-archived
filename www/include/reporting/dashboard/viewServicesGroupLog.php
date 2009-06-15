@@ -58,7 +58,7 @@
 	$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
 	
 	$items = getAllServicesgroupsForReporting($search);
-	$form->addElement('select', 'item', _("Services Group"), $items, array("onChange" =>"this.form.submit();"));
+	$form->addElement('select', 'item', _("Service Group"), $items, array("onChange" =>"this.form.submit();"));
 	$form->addElement('hidden', 'period', $period);
 	$form->addElement('hidden', 'start', $get_date_start);
 	$form->addElement('hidden', 'end', $get_date_end);
@@ -116,14 +116,14 @@
 		}
 		
 		$tpl->assign("components", $servicesgroupFinalStats);
-		$tpl->assign('period_name', _(" From "));
+		$tpl->assign('period_name', _("From"));
 		$tpl->assign('date_start', date("d/m/Y H:i",$start_date));
-		$tpl->assign('to', _(" To "));
+		$tpl->assign('to', _("to"));
 		$tpl->assign('date_end', date("d/m/Y H:i",$end_date));
 		$tpl->assign('period', $period);
 		$tpl->assign('start', $start_date);
 		$tpl->assign('end', $end_date);
-		$tpl->assign('resumeTitle', _("Services group state"));
+		$tpl->assign('resumeTitle', _("Service group state"));
 		$formPeriod->setDefaults(array('period' => $period));
 		$tpl->assign('id', $id);
 		$tpl->assign('Alert', _("Alert"));

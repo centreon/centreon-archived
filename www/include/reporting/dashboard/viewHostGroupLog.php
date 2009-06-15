@@ -64,7 +64,7 @@
 	$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
 	
 	$items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search);
-	$select =& $form->addElement('select', 'item', _("Hosts Group"), $items, array("onChange" =>"this.form.submit();"));
+	$select =& $form->addElement('select', 'item', _("Host Group"), $items, array("onChange" =>"this.form.submit();"));
 	
 	$form->addElement('hidden', 'period', $period);
 	$form->addElement('hidden', 'start', $get_date_start);

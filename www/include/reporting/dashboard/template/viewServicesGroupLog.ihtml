@@ -49,24 +49,16 @@
 			<!-- period selection -->
 			<tr>
 				<td style='padding:5px;vertical-align:top;'><form {$formPeriod.attributes}>
-					<table class="ListTable">
-						<tr class='ListHeader'>
-							<td colspan=2>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle}</td>
-						</tr>
-						<tr class="list_two">
-					        <td class="ListColHeaderLeft"></td>
-				        	<td class="ListColHeaderCenter">{$formPeriod.period.html}{$formPeriod.hidden}</td>
-				        </tr>
-						<tr class='list_one'>
-							<td rowspan="3" class="ListColHeaderLeft"><b>{$formPeriod.header.title}</b></td>
-							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod.start.label} : </b>{$formPeriod.start.html}&nbsp;&nbsp;{$formPeriod.startD.html}</span></td>
-						</tr>
-						<tr class="list_one">
-							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod.end.label} : </b>{$formPeriod.end.html}&nbsp;&nbsp;{$formPeriod.endD.html}</span></td>
-						</tr>
-						</tr>
-						<tr class="list_one">
-							<td class="ListColHeaderCenter">{$formPeriod.submit.html}{$formPeriod.hidden}</td>
+					<table class="ajaxOption">
+						<tr>
+							<td>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle} : </td>
+				        		<td>{$formPeriod.period.html}{$formPeriod.hidden}</td>
+							<td>&nbsp;{$periodORlabel}&nbsp;</td>
+							<td>
+								{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
+								{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
+							</td>
+							<td>{$formPeriod.submit.html}{$formPeriod.hidden}</td>
 						</tr>
 					</table>
 					</form>

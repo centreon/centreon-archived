@@ -84,9 +84,6 @@
 	if (!isset($user_params['log_filter_period']))
 		$user_params['log_filter_period'] = "";
 	
-	if (!isset($user_params['log_period_type']))
-		$user_params['log_period_type'] = "0";
-	
 	/*
 	 * Pear library
 	 */
@@ -154,7 +151,7 @@
 	/*
 	 * Form begin
 	 */
-	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
+	$form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);
 	$form->addElement('header', 'title', _("Choose the source"));
 
 	$periods = array(	""=>"",
@@ -174,17 +171,21 @@
 						"15552000"=>_("Last 6 Months"),
 						"31104000"=>_("Last Year"));
 
-	$sel =& $form->addElement('select', 'period', _("Select Period"), $periods);
+	$sel =& $form->addElement('select', 'period', _("Log Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])")); 
+	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "onclick"=>"displayDatePicker('StartDate', this)", "size"=>8)); 
+	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5)); 
+	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "onclick"=>"displayDatePicker('EndDate', this)", "size"=>8)); 
+	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "onclick"=>"displayTimePicker('EndTime', this)", "size"=>5)); 
+	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()")); 
 
 	$form->setDefaults(array("period"=>$user_params['log_filter_period']));
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('period_type', $user_params['log_period_type']);
 	$tpl->assign('From', _("From"));
 	$tpl->assign('To', _("To"));
-	$tpl->assign('Apply', _("Apply"));
+	$tpl->assign('periodORlabel', _("or"));
 	$tpl->display("viewLog.ihtml");
 
 ?><link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
@@ -309,40 +310,31 @@
 	var EndDate='';
 	var StartTime='';
 	var EndTime='';
-	var period_type;
 
-
-	StartDate= "<?php echo date("m/d/Y"); ?>";
-	EndDate= "<?php echo date("m/d/Y"); ?>";						
-	StartTime= "<?php echo date("H:i", (time() - 60*60*6)); ?>";
-	EndTime= "<?php echo date("H:i"); ?>";
-
-	if (document.formu && !document.formu.period_choice[1].checked)	{
-		period = document.formu.period.value;
-		period_type = 1;
-	} else {		
-		period_type = 0;		
+	if (document.FormPeriod && document.FormPeriod.period.value!="")	{
+		period = document.FormPeriod.period.value;
 	}
 
-	document.formu.StartDate.value = StartDate;
-	document.formu.EndDate.value = EndDate;
-	document.formu.StartTime.value = StartTime;
-	document.formu.EndTime.value = EndTime;
+	if (document.FormPeriod && document.FormPeriod.period.value==""){
+		document.FormPeriod.StartDate.value = StartDate;
+		document.FormPeriod.EndDate.value = EndDate;
+		document.FormPeriod.StartTime.value = StartTime;
+		document.FormPeriod.EndTime.value = EndTime;
+	}
 
 
 	function log_4_host(id, formu, type){	
-		if (document.formu && !document.formu.period_choice[1].checked)	{
-			period = document.formu.period.value;
-			period_type = 1;
-		} else if(document.formu)	{
-			period = '';			
-			period_type = 0;
+		if (document.FormPeriod) {
+		    if (document.FormPeriod.period.value!="")	{
+			period = document.FormPeriod.period.value;
+		    } else {
+			period = '';
+			StartDate = document.FormPeriod.StartDate.value;
+			EndDate = document.FormPeriod.EndDate.value;
+			StartTime = document.FormPeriod.StartTime.value;
+			EndTime = document.FormPeriod.EndTime.value;
+		    }
 		}
-		StartDate = document.formu.StartDate.value;
-		EndDate = document.formu.EndDate.value;
-		StartTime = document.formu.StartTime.value;
-		EndTime = document.formu.EndTime.value;
-	
 	
 		// type
 		if (document.formu2 && document.formu2.notification)
@@ -368,15 +360,15 @@
 		if (document.formu2 && document.formu2.unknown)
 			_unknown = document.formu2.unknown.checked;
 	
-		if (document.formu && document.formu.StartDate.value != "")
-			StartDate = document.formu.StartDate.value;
-		if (document.formu && document.formu.EndDate.value != "")
-			EndDate = document.formu.EndDate.value;
+		if (document.FormPeriod && document.FormPeriod.StartDate.value != "")
+			StartDate = document.FormPeriod.StartDate.value;
+		if (document.FormPeriod && document.FormPeriod.EndDate.value != "")
+			EndDate = document.FormPeriod.EndDate.value;
 	
-		if (document.formu && document.formu.StartTime.value != "")
-			StartTime = document.formu.StartTime.value;
-		if (document.formu && document.formu.EndTime.value != "")
-			EndTime = document.formu.EndTime.value;
+		if (document.FormPeriod && document.FormPeriod.StartTime.value != "")
+			StartTime = document.FormPeriod.StartTime.value;
+		if (document.FormPeriod && document.FormPeriod.EndTime.value != "")
+			EndTime = document.FormPeriod.EndTime.value;
 		
 		if (document.formu2 && document.formu2.oh)
 			_oh = document.formu2.oh.checked;
@@ -392,13 +384,13 @@
 		var _addrXSL = "./include/eventLogs/log.xsl";
 
 		if (!type){		
-			var _addr = './include/eventLogs/GetXmlLog.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period_type='+period_type+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
+			var _addr = './include/eventLogs/GetXmlLog.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
 			proc.setXml(_addr)
 			proc.setXslt(_addrXSL)
 			proc.transform("logView4xml");
 		} else{
 			openid = document.getElementById('openid').innerHTML;
-			var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period_type='+period_type+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+openid+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
+			var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+openid+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
 			document.location.href = _addr;
 		}
 	}

@@ -550,6 +550,24 @@ function datePickerClosed(dateField)
 }
 
 */
+
+function datePickerClosed(changedField) { 
+    if (changedField.name=='start' || changedField.name=='end' 
+	|| changedField.name=='StartDate'
+	|| changedField.name=='StartTime'
+	|| changedField.name=='EndDate'
+	|| changedField.name=='EndTime' ) { 
+        document.FormPeriod.period.value=''; 
+    } 
+}
+
+function resetFields(fields) {
+    for(i=0;i<fields.length;i++ ) {
+	fields[i].value="";
+    }
+}
+
+
 function updateDateField(dateFieldName, dateString)
 {
 	if (document.getElementsByName (dateFieldName).item(1))

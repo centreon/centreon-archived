@@ -119,7 +119,7 @@
 	/*
 	 * Form begin
 	 */
-	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
+	$form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);
 	$form->addElement('header', 'title', _("Choose the source to graph"));
 
 	$periods = array(	""=>"",
@@ -140,14 +140,20 @@
 						"10368000"	=> _("Last 4 Months"),
 						"15552000"	=> _("Last 6 Months"),
 						"31104000"	=> _("Last Year"));
-	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods);
+	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
+	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "onclick"=>"displayDatePicker('StartDate', this)", "size"=>10));
+	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5));
+	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "onclick"=>"displayDatePicker('EndDate', this)", "size"=>10));
+	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "onclick"=>"displayTimePicker('EndTime', this)", "size"=>5));
+	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));	
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 		
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('from', _(" From "));
-	$tpl->assign('to', _(" to "));	
+	$tpl->assign('periodORlabel', _("or"));
+	$tpl->assign('from', _("From"));
+	$tpl->assign('to', _("to"));	
 	$tpl->assign('Apply', _("Apply"));	
 
 	$tpl->display("graphs.ihtml");
@@ -251,8 +257,8 @@
 	var StartTime = '';
 	var EndTime = '';
 
-	if (document.formu && !document.formu.period_choice[1].checked)	{
-		period = document.formu.period.value;
+	if (document.FormPeriod && !document.FormPeriod.period_choice[1].checked)	{
+		period = document.FormPeriod.period.value;
 	} else {
 		if (currentTime.getMinutes() <= 9){
 			_zero_min = '0';
@@ -289,25 +295,25 @@
 		}
 	}
 
-	if (document.formu){
-		document.formu.StartDate.value = StartDate;
-		document.formu.EndDate.value = EndDate;
-		document.formu.StartTime.value = StartTime;
-		document.formu.EndTime.value = EndTime;
+	if (document.FormPeriod){
+		document.FormPeriod.StartDate.value = StartDate;
+		document.FormPeriod.EndDate.value = EndDate;
+		document.FormPeriod.StartTime.value = StartTime;
+		document.FormPeriod.EndTime.value = EndTime;
 	}
 
 	function graph_4_host(id, multi)	{
 		if (!multi)
 			multi = 0;
 		
-		if (document.formu && !document.formu.period_choice[1].checked){
-			period = document.formu.period.value;
-		} else if(document.formu) {
+		if (document.FormPeriod && !document.FormPeriod.period_choice[1].checked){
+			period = document.FormPeriod.period.value;
+		} else if(document.FormPeriod) {
 			period = '';
-			StartDate = document.formu.StartDate.value;
-			EndDate = document.formu.EndDate.value;
-			StartTime = document.formu.StartTime.value;
-			EndTime = document.formu.EndTime.value;
+			StartDate = document.FormPeriod.StartDate.value;
+			EndDate = document.FormPeriod.EndDate.value;
+			StartTime = document.FormPeriod.StartTime.value;
+			EndTime = document.FormPeriod.EndTime.value;
 		}
 
 		// Metrics

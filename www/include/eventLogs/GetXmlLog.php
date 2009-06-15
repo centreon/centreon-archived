@@ -139,9 +139,6 @@
 	(isset($_GET["search_S"]) 	&& !check_injection($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
 	(isset($_GET["search_service"]) 		&& !check_injection($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = "";
 
-	if (isset($_GET['period_type']) && !check_injection($_GET['period_type']))
-		set_user_param($contact_id, $pearDB, 'log_period_type', $_GET['period_type']);
-
 	if ($contact_id){
 		$user_params = get_user_param($contact_id, $pearDB);		
 		

@@ -2,28 +2,19 @@
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <div id="div1">
-	<form name="formu">
+	<form {$form.attributes}>
 		<table class="ajaxOption">
 	        <tr>
 	        	<td style='white-space:nowrap;'>
-		        	<input type="radio" name="period_choice" />&nbsp;
+		        	<b>{$form.period.label} : </b>&nbsp;{$form.period.html}
 	        	</td>
-	        	<td style='white-space:nowrap;'>
-		        	<b>{$form.period.label}</b>&nbsp;{$form.period.html}
-	        	</td>
-				<td style='white-space:nowrap;'>
-					<input type="radio" name="period_choice" value="custom" checked="checked" />
-				</td>
-				<td style='white-space:nowrap;'>
-					<b>{$from}</b>&nbsp;<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="10" />
-					&nbsp;<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="5" />
-					&nbsp;<b>{$to}</b>&nbsp;<input id="EndDate" name="EndDate" type="text" value="" onclick="displayDatePicker('EndDate', this)" size="10" />
-					&nbsp;<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="5" />&nbsp;
-				</td>
-				<td style='white-space:nowrap;'>
-					<input type="button" name="graph" value="{$Apply}" onClick="apply_period();" />
-				</td>
-			</tr>
+			<td style='white-space:nowrap;'> {$periodORlabel} </td>
+			<td style='white-space:nowrap;'>
+				&nbsp;{$from}&nbsp;{$form.StartDate.html}&nbsp;{$form.StartTime.html}
+				{$to}&nbsp;{$form.EndDate.html}&nbsp;{$form.EndTime.html}&nbsp;
+			</td>
+			<td style='white-space:nowrap;'>{$form.graph.html}</td>
+		</tr>
 		</table>
 	</form>
 </div>
