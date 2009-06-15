@@ -65,7 +65,7 @@
 	if (isset($_POST["start"])) {		
 		$form->setDefaults(array('start' => $_POST["start"]));
 	} else {
-		$form->setDefaults(array('start' => "Today"));
+		$form->setDefaults(array('start' => "today"));
 	}
 
 	/*
