@@ -285,7 +285,7 @@ width:310px;
 
 /* le contenu de la balise span ne sera visible que pour l'etat a:hover */
 a.infobulle:hover span {
-background-color:#D8D8DD;
+background-color:#808080;
 border:1px gray;
 display:block;
 font-weight:none;
