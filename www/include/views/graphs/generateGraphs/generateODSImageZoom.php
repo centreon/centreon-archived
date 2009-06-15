@@ -153,7 +153,7 @@
 		if (!isset($GraphTemplate["vertical_label"]) || $GraphTemplate["vertical_label"] == "")
 			$GraphTemplate["vertical_label"] = "";		
 		$command_line .= " --interlaced $base --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
-		if ($oreon->optGen["rrdtool_version"] == "1.2")
+		if ($oreon->optGen["rrdtool_version"] != "1.0")
 			$command_line .= " --slope-mode ";
 
 		# Init Graph Template Value
