@@ -406,6 +406,8 @@
 		$tpl->assign("Tips5", _("View reporting of service"));
 		$tpl->assign("Tips6", _("View Host status page"));
 		$tpl->assign("Tips7", _("View all service status of host"));
+		$tpl->assign("Tips8", _("View all logs of host"));
+		$tpl->assign("Tips9", _("View all logs of service"));
 
 		/*
 		 * Ext informations

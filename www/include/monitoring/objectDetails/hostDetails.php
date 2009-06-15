@@ -315,6 +315,7 @@
 		$tpl->assign("Tips2", _("View all graphs of this host"));
 		$tpl->assign("Tips3", _("Manage"));
 		$tpl->assign("Tips4", _("View report of this host"));
+		$tpl->assign("Tips5", _("View logs of this host"));
 		
 		/*
 		 * if user is admin, allActions is true, 

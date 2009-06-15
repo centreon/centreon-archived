@@ -294,6 +294,11 @@
 						<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&search={$h.host_name}&search_host=1&search_service=0'>&#9679;&nbsp;{$Tips1}</a></td>
 					</tr>
 				{/if}
+				{if $lcaTopo.203 || $admin == 1}
+					<tr class='list_two'>
+						<td class="ListColLeft"><a href='./main.php?p=203&mode=0&id=HH_{$h.host_id}_01'>&#9679;&nbsp;{$Tips5} "{$h.host_name}"</a></td>
+					</tr>
+				{/if}
 				{if $lcaTopo.4 || $admin == 1}
 					<tr class='list_two'>
 						<td class="ListColLeft"><a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>&#9679;&nbsp;{$Tips2}</a></td>
