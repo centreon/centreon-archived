@@ -38,41 +38,37 @@
 	if (!isset($oreon))
 		exit;
 
-	#
-	## Database retrieve information
-	#
 	$compo = array();
 	if (($o == "c" || $o == "w") && $compo_id)	{
 		$res =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$compo_id."' LIMIT 1");
-		# Set base value
+		/*
+		 * Set base value
+		 */
 		$compo = array_map("myDecode", $res->fetchRow());
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# Graphs comes from DB -> Store in $graphs Array
+	
+ 
+	/*
+	 * Graphs comes from DB -> Store in $graphs Array
+	 */
 	$graphs = array();
 	$res =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	while ($graph =& $res->fetchRow())
 		$graphs[$graph["graph_id"]] = $graph["name"];
 	$res->free();
 
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
-	
+	/*
+	 * Define Styles
+	 */
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"10");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'ftitle', _("Add a Data Source Template"));
@@ -81,8 +77,9 @@
 	else if ($o == "w")
 		$form->addElement('header', 'ftitle', _("View a Data Source Template"));
 
-	# Basic information
-	
+	/*
+	 *  Basic information
+	 */
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('header', 'color', _("Colors"));
 	$form->addElement('header', 'legend', _("Legend"));
@@ -98,12 +95,16 @@
 
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
 		$nameLang = $val;
-		isset($compo[$nameColor]) ?	$codeColor = $compo[$nameColor] : $codeColor = NULL;
+		if ($nameColor == "ds_color_area") {
+			isset($compo[$nameColor]) ?	$codeColor = $compo[$nameColor] : $codeColor = "#FFFFFF";
+		} else if ($nameColor == "ds_color_line")
+			isset($compo[$nameColor]) ?	$codeColor = $compo[$nameColor] : $codeColor = "#0000FF";
+		
 		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"9","maxlength"=>"7");
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
 		
-		$attrsText4 	= array("style"=>"width:50px; height:18px; background: ".$codeColor." url() left repeat-x 0px; border-color:".$codeColor.";");
+		$attrsText4 	= array("style"=>"width:50px; height:18px; background-color: ".$codeColor."; border-color:".$codeColor.";");
 		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
 		
@@ -121,14 +122,12 @@
 	$form->addElement('checkbox', 'ds_last', _("Print Last Value"));
 	$form->addElement('checkbox', 'ds_invert', _("Invert"));
 	$form->addElement('checkbox', 'default_tpl1', _("Default Centreon Graph Template"));
-	
 	$form->addElement('select', 'ds_tickness', _("Thickness"), array("1"=>"1", "2"=>"2", "3"=>"3"));
-
 	$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
-	#
-	## Components linked with
-	#
+	/*
+	 * Components linked with
+	 */
 	$form->addElement('header', 'graphs', _("Graph Choice"));
     $ams1 =& $form->addElement('advmultiselect', 'compo_graphs', _("Graph List"), $graphs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
@@ -146,9 +145,9 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-	#
-	## Form Rules
-	#
+	/*
+	 * Form Rules
+	 */
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('name', _("Compulsory Name"), 'required');
 	$form->addRule('ds_name', _("Required Field"), 'required');
@@ -160,39 +159,42 @@
 	$form->addRule('name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
-	#
-	##End of form definition
-	#
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch
 	if ($o == "w")	{
+		/*
+		 * Just watch
+		 */
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&compo_id=".$compo_id."'"));
 	    $form->setDefaults($compo);
 		$form->freeze();
-	}
-	# Modify
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
+		/*
+		 * Modify
+		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Delete"));
 	    $form->setDefaults($compo);
-	}
-	# Add
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
+		/*
+		 * Add
+		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Delete"));
+		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_line" => "#0000FF"));
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&compo_id=".$compo_id, "changeT"=>_("Modify")));
 
 	$tpl->assign("sort1", _("Properties"));
 	$tpl->assign("sort2", _("Graphs"));
 
-	#
-	##Picker Color JS
-	#
+	/*
+	 * Picker Color JS
+	 */
 	$tpl->assign('colorJS',"
 	<script type='text/javascript'>
 		function popup_color_picker(t,name,title)
@@ -205,10 +207,7 @@
 	</script>
     "
     );
-	#
-	##End of Picker Color
-	#
-
+	
 	$valid = false;
 	if ($form->validate())	{
 		$compoObj =& $form->getElement('compo_id');
@@ -225,7 +224,9 @@
 	if ($valid && $action["action"]["action"])
 		require_once("listComponentTemplates.php");
 	else	{
-		#Apply a template definition
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
