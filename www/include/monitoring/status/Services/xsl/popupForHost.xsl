@@ -26,7 +26,7 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="duration_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="duration"/></td>
 		</tr>
-		<tr class='list_one'>
+		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type"/></td>
 		</tr>
@@ -53,11 +53,11 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="check_execution_time_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="check_execution_time"/> s</td>
 		</tr>
-		<tr class='list_one'>
+		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="is_downtime_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="is_downtime"/></td>
 		</tr>
-		<tr class='list_two'>
+		<tr class='list_one'>
 			<td class="ColPopup">&#160;<xsl:value-of select="last_update_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="last_update"/></td>
 		</tr>
