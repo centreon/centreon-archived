@@ -36,8 +36,7 @@
  * 
  */
 
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."www/class/other.class.php";
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonACL.class.php";
@@ -129,7 +128,7 @@
 	
 	$rq1 = "SELECT " .
 			" DISTINCT no.name1 as host_name," .
-			" nhs.current_state, nhs.problem_has_been_acknowledged, " .
+			" nhs.current_state, nhs.problem_has_been_acknowledged, nhs.scheduled_downtime_depth, " .
 			" nhs.passive_checks_enabled, nhs.active_checks_enabled, no.object_id, nh.action_url," .
 			" nh.notes_url, nh.notes, nh.address, nh.icon_image, nh.icon_image_alt " .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
@@ -357,10 +356,11 @@
 				else
 					$buffer->writeElement("hnu", "none");
 					
-				$buffer->writeElement("hnn", $host_status[$ndo["host_name"]]["notes"]);	
-				$buffer->writeElement("hico", $host_status[$ndo["host_name"]]["icon_image"]);	
-				$buffer->writeElement("hip", $host_status[$ndo["host_name"]]["address"]);				
-				$buffer->writeElement("hid", $host_status[$ndo["host_name"]]["object_id"]);				
+				$buffer->writeElement("hnn", $host_status[$ndo["host_name"]]["notes"]);
+				$buffer->writeElement("hico", $host_status[$ndo["host_name"]]["icon_image"]);
+				$buffer->writeElement("hip", $host_status[$ndo["host_name"]]["address"]);
+				$buffer->writeElement("hdtm", $host_status[$ndo["host_name"]]["scheduled_downtime_depth"]);
+				$buffer->writeElement("hid", $host_status[$ndo["host_name"]]["object_id"]);
 			}
 
 			$buffer->writeElement("ppd", $ndo["process_performance_data"]);
