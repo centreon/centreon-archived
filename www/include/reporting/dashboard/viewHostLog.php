@@ -67,8 +67,8 @@
 	$hosts = getAllHostsForReporting($is_admin, $lcaHoststr, $search);
 	$selHost =& $formHost->addElement('select', 'host', _("Host"), $hosts, array("onChange" =>"this.form.submit();"));
 	$formHost->addElement('hidden', 'period', $period);
-	$formHost->addElement('hidden', 'start', $get_date_start);
-	$formHost->addElement('hidden', 'end', $get_date_end);
+	$formHost->addElement('hidden', 'StartDate', $get_date_start);
+	$formHost->addElement('hidden', 'EndDate', $get_date_end);
 	if (isset($id))
 		$formHost->setDefaults(array('host' => $id));
 	
@@ -115,13 +115,11 @@
 		$tpl->assign("summary",  $hostStats);
 		$tpl->assign("components_avg", array_pop($hostServicesStats));
 		$tpl->assign("components", $hostServicesStats);
-		$tpl->assign("period_name", _(" From "));
-		$tpl->assign("date_start", date("d/m/Y H:i",$start_date));
-		$tpl->assign("to", _(" To "));
-		$tpl->assign("date_end", date("d/m/Y H:i",$end_date));
+		$tpl->assign("period_name", _("From"));
+		$tpl->assign("date_start", date(_("d/m/Y H:i"),$start_date));
+		$tpl->assign("to", _("to"));
+		$tpl->assign("date_end", date(_("d/m/Y H:i"),$end_date));
 		$tpl->assign("period", $period);
-		$tpl->assign("start", $start_date);
-		$tpl->assign("end", $end_date);
 		$tpl->assign("resumeTitle", _("Host state"));
 		$tpl->assign("host_id", $id);
 		$tpl->assign("Alert", _("Alert"));

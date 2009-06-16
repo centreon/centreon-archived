@@ -67,8 +67,8 @@
 		
 	$select =& $form->addElement('select', 'item', _("Service"), $items, array("onChange" =>"this.form.submit();"));
 	$form->addElement('hidden', 'period', $period);
-	$form->addElement('hidden', 'start', $get_date_start);
-	$form->addElement('hidden', 'end', $get_date_end);
+	$form->addElement('hidden', 'StartDate', $get_date_start);
+	$form->addElement('hidden', 'EndDate', $get_date_end);
 	$form->addElement('hidden', 'p', $p);
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -116,10 +116,10 @@
 		$tpl->assign('totalAlert', $serviceStats["TOTAL_ALERTS"]);
 		$tpl->assign('totalTime',  $serviceStats["TOTAL_TIME_F"]);
 		$tpl->assign('summary',  $serviceStats);
-		$tpl->assign('from', _(" From "));
-		$tpl->assign('date_start', date("d/m/Y H:i", $start_date));
-		$tpl->assign('to', _(" to "));
-		$tpl->assign('date_end', date("d/m/Y H:i", $end_date));
+		$tpl->assign('from', _("From"));
+		$tpl->assign('date_start', date(_("d/m/Y H:i"), $start_date));
+		$tpl->assign('to', _("to"));
+		$tpl->assign('date_end', date(_("d/m/Y H:i"), $end_date));
 		$tpl->assign('resumeTitle', _("Service state"));
 		$formPeriod->setDefaults(array('period' => $period));
 		$tpl->assign('id', $service_id);

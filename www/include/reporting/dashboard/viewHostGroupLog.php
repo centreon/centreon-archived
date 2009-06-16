@@ -67,8 +67,8 @@
 	$select =& $form->addElement('select', 'item', _("Host Group"), $items, array("onChange" =>"this.form.submit();"));
 	
 	$form->addElement('hidden', 'period', $period);
-	$form->addElement('hidden', 'start', $get_date_start);
-	$form->addElement('hidden', 'end', $get_date_end);
+	$form->addElement('hidden', 'StartDate', $get_date_start);
+	$form->addElement('hidden', 'EndDate', $get_date_end);
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
@@ -124,12 +124,10 @@
 		}
 
 		$tpl->assign("components", $hostgroupFinalStats);
-		$tpl->assign('period_name', _(" From "));
-		$tpl->assign('date_start', date("d/m/Y H:i",$start_date));
-		$tpl->assign('to', _(" To "));
-		$tpl->assign('date_end', date("d/m/Y H:i", $end_date));
-		$tpl->assign('start', $start_date);
-		$tpl->assign('end', $end_date);
+		$tpl->assign('period_name', _("From"));
+		$tpl->assign('date_start', date(_("d/m/Y H:i"),$start_date));
+		$tpl->assign('to', _("to"));
+		$tpl->assign('date_end', date(_("d/m/Y H:i"), $end_date));
 		$tpl->assign('resumeTitle', _("Hosts group state"));
 		$tpl->assign('period', $period);
 		$formPeriod->setDefaults(array('period' => $period));

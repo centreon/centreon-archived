@@ -194,9 +194,9 @@
 	 */
 	$period = (isset($_POST["period"])) ? $_POST["period"] : ""; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
-	$get_date_start = (isset($_POST["start"])) ? $_POST["start"] : "";
+	$get_date_start = (isset($_POST["StartDate"])) ? $_POST["StartDate"] : "";
 	$get_date_start = (isset($_GET["start"])) ? $_GET["start"] : $get_date_start;
-	$get_date_end = (isset($_POST["end"])) ? $_POST["end"] : "";
+	$get_date_end = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
 	$get_date_end = (isset($_GET["end"])) ? $_GET["end"] : $get_date_end;
 	if ($get_date_start == "" && $get_date_end == "" && $period == "")
 		$period = "yesterday";
@@ -208,10 +208,10 @@
 	 * Period Selection form
 	 */
 	$formPeriod = new HTML_QuickForm('FormPeriod', 'post', "?p=".$p);
-	$formPeriod->addElement('select', 'period', "", $periodList, array("onchange"=>"resetFields([this.form.StartDate, this.form.EndDate])"));
+	$formPeriod->addElement('select', 'period', "", $periodList, array("onchange"=>"resetFields([this.form.StartDate, this.form.EndDate]);this.form.submit();"));
 	$formPeriod->addElement('hidden', 'timeline', "1");
 	$formPeriod->addElement('text', 'StartDate', _("From"), array("onclick"=>"displayDatePicker('StartDate')", "size"=>10));
 	$formPeriod->addElement('text', 'EndDate', _("to"), array("onclick"=>"displayDatePicker('EndDate')", "size"=>10));
-	$formPeriod->addElement('submit', 'submit', _("Apply"));
+	$formPeriod->addElement('submit', 'button', _("Apply"));
 	$formPeriod->setDefaults(array('period' => $period, "StartDate" => $get_date_start, "EndDate" => $get_date_end));
 ?>

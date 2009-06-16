@@ -18,7 +18,7 @@
 				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$hostTitle}&nbsp;:&nbsp;&nbsp;<input type=text value="{$host_name}" name="host_name" disabled>
 				<b>{$formItem.item.label}:</b>&nbsp;&nbsp;{$formItem.item.html}
 				{$formItem.hidden}
-			&nbsp;&nbsp;&nbsp;{$from}{$date_start} {$to} {$date_end} - {$infosTitle}
+			&nbsp;&nbsp;&nbsp;{$from} {$date_start} {$to} {$date_end} - {$infosTitle}
 			</form>
 		</td>
 		<td>
@@ -55,7 +55,7 @@
 								{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
 								{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
 							</td>
-							<td>{$formPeriod.submit.html}{$formPeriod.hidden}</td>
+							<td>{$formPeriod.button.html}{$formPeriod.hidden}</td>
 						</tr>
 					</table>
 					</form>

@@ -44,9 +44,9 @@
 		$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 		$end_date = 0;
 		$start_date = 0;
-		$start_date = (isset($_POST["start"])) ? $_POST["start"] : "";
+		$start_date = (isset($_POST["StartDate"])) ? $_POST["StartDate"] : "";
 		$start_date = (isset($_GET["start"])) ? $_GET["start"] : $start_date;
-		$end_date = (isset($_POST["end"])) ? $_POST["end"] : "";
+		$end_date = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
 		$end_date = (isset($_GET["end"])) ? $_GET["end"] : $end_date;
 		$interval = array(0, 0);
 		if ($period == "" && $start_date != "") {

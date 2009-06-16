@@ -17,7 +17,7 @@
 			<form {$formItem.attributes} style="margin:0px;padding:0px;">
 				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$formItem.item.label}:&nbsp;&nbsp;{$formItem.item.html}{$formItem.hidden}
 				{if $date_start != 0}
-					&nbsp;&nbsp;&nbsp;{$period_name}{$date_start} {$to} {$date_end}
+					&nbsp;&nbsp;&nbsp;{$period_name} {$date_start} {$to} {$date_end}
 				{/if}
 			</form>
 		</td>
@@ -59,7 +59,7 @@
 									{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
 									{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
 							</td>
-							<td>{$formPeriod.submit.html}{$formPeriod.hidden}</td>
+							<td>{$formPeriod.button.html}{$formPeriod.hidden}</td>
 						</tr>
 					</table>
 					</form>
