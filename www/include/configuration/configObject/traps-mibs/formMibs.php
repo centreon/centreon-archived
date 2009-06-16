@@ -91,7 +91,7 @@
 	/*
 	 * Just watch a Command information
 	 */
-	$subA =& $form->addElement('submit', 'submit', _("Export"));
+	$subA =& $form->addElement('submit', 'submit', _("Load"));
 	$form->addElement('header', 'status',_("Status"));
 	$valid = false;
 	$msg = NULL;
