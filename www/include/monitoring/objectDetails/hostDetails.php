@@ -241,9 +241,9 @@
 				$status .= "&value[".$key."]=".$value;
 
 		$tpl->assign("m_mon_host", _("Host"));
-		$tpl->assign("m_mon_host_info", _("Host Information"));
+		$tpl->assign("m_mon_host_info", _("Status Details"));
 		$tpl->assign("m_mon_host_status", _("Host Status"));
-		$tpl->assign("m_mon_host_status_info", _("Status Information"));
+		$tpl->assign("m_mon_host_status_info", _("Status information"));
 		$tpl->assign("m_mon_performance_data", _("Performance Data"));
 		$tpl->assign("m_mon_current_attempt", _("Current Attempt"));
 		$tpl->assign("m_mon_state_type", _("State Type"));
@@ -281,7 +281,7 @@
 		$tpl->assign("m_mon_all_graphs", _("View all graphs of "));
 		$tpl->assign("m_mon_tools_ping", _("Ping"));
 		$tpl->assign("m_mon_tools_tracert", _("Tracert"));
-		$tpl->assign("hosts_command", _("Hosts Command"));
+		$tpl->assign("hosts_command", _("Host Commands"));
 		$tpl->assign("m_mon_check_this_host", _("Checks for this host"));
 		$tpl->assign("m_mon_notify_this_host", _("Notifications for this host"));
 		$tpl->assign("m_mon_SCH_downtime", _("Schedule downtime for this host"));
@@ -316,7 +316,7 @@
 		$tpl->assign("Tips3", _("Manage"));
 		$tpl->assign("Tips4", _("View report of this host"));
 		$tpl->assign("Tips5", _("View logs of this host"));
-		
+
 		/*
 		 * if user is admin, allActions is true, 
 		 * else we introduce all actions allowed for user
@@ -345,7 +345,7 @@
 		/*
 		 * Hostgroups Display
 		 */
-		$tpl->assign("hostgroups_label", _("Hosts Groups"));
+		$tpl->assign("hostgroups_label", _("Member of Host Groups"));
 		if (isset($hostGroups))
 			$tpl->assign("hostgroups", $hostGroups);
 		

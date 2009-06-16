@@ -22,7 +22,7 @@
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$m_mon_services}</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$m_mon_status_info}</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColLeft">{$m_mon_services_status}</td>

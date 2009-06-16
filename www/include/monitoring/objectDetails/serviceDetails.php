@@ -278,10 +278,11 @@
 		/*
 		 * Assign translations
 		 */
-		$tpl->assign("m_mon_services", _("Services"));
+		$tpl->assign("m_mon_services", _("Service"));
+		$tpl->assign("m_mon_status_info", _("Status Details"));
 		$tpl->assign("m_mon_on_host", _("on host"));
-		$tpl->assign("m_mon_services_status", _("Services Status"));
-		$tpl->assign("m_mon_host_status_info", _("Status Information"));
+		$tpl->assign("m_mon_services_status", _("Service Status"));
+		$tpl->assign("m_mon_host_status_info", _("Status information"));
 		$tpl->assign("m_mon_performance_data", _("Performance Data"));
 		$tpl->assign("m_mon_services_attempt", _("Current Attempt"));
 		$tpl->assign("m_mon_services_state", _("State Type"));
@@ -377,7 +378,7 @@
 		/*
 		 * Hostgroups Display
 		 */
-		$tpl->assign("hostgroups_label", _("Hosts Groups"));
+		$tpl->assign("hostgroups_label", _("Host Groups"));
 		if (isset($hostGroups))
 			$tpl->assign("hostgroups", $hostGroups);
 	
