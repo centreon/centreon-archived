@@ -257,7 +257,7 @@
 	var StartTime = '';
 	var EndTime = '';
 
-	if (document.FormPeriod.period.value != ""))	{
+	if (document.FormPeriod.period.value != "")	{
 		period = document.FormPeriod.period.value;
 	} else {
 		if (currentTime.getMinutes() <= 9){
@@ -306,7 +306,7 @@
 		if (!multi)
 			multi = 0;
 		
-		if (document.FormPeriod.period.value != "")) {
+		if (document.FormPeriod.period.value != "") {
 			period = document.FormPeriod.period.value;
 		} else if(document.FormPeriod) {
 			period = '';
