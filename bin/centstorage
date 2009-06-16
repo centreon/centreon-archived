@@ -449,21 +449,23 @@ sub updateServiceState($$$$$$) {
     my @tab = (0=>"100", 1=>"75", 2=>"0", 3=>"0");	
 
     if (defined($status)){
-	if ($status eq "OK"){
-	    $status = 100;
-	} elsif ($status eq "WARNING"){
-	    $status = 75;
-	} elsif ($status eq "CRITICAL"){
-	    $status = 0;
-	} elsif ($status eq "UNKNOWN"){
-	    undef($status);
-	}
+		if ($status eq "OK"){
+		    $status = 100;
+		} elsif ($status eq "WARNING"){
+		    $status = 75;
+		} elsif ($status eq "CRITICAL"){
+		    $status = 0;
+		} elsif ($status eq "UNKNOWN"){
+		    undef($status);
+		} else {
+			;
+		}
     }
 
     # Check if RRD DB Directory is available.
     if (checkDBDirectory($configuration->{'RRDdatabase_status_path'}) == 0) {
-	writeLogFile("Data droped....");
-	return 0;
+		writeLogFile("Data droped....");
+		return 0;
     }
 
     # call function to check if DB exist and else create it
