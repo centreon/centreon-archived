@@ -41,7 +41,9 @@
 		
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
-		
+	
+	$tabStatus = array(0 => _("OK"), 1 => _("Warinig"), 2 => _("Critical"), 3 => _("Unknown"), 4 => _("Pending"));
+	
 	/*
 	 * start quickSearch form
 	 */
@@ -69,6 +71,7 @@
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("OID"));
+	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_manufacturer", _("Vendor Name"));
 	$tpl->assign("headerMenu_args", _("Output Message"));
 	$tpl->assign("headerMenu_options", _("Options"));
@@ -97,14 +100,15 @@
 		$DBRESULT2 =& $pearDB->query("select alias from traps_vendor where id='".$trap['manufacturer_id']."' LIMIT 1");
 		$mnftr =& $DBRESULT2->fetchRow();
 		$DBRESULT2->free();
-		$elemArr[$i] = array("MenuClass"=>"list_".$style,
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>myDecode($trap["traps_name"]),
-						"RowMenu_link"=>"?p=".$p."&o=c&traps_id=".$trap['traps_id'],
-						"RowMenu_desc"=>myDecode(substr($trap["traps_oid"], 0, 40)),
-						"RowMenu_args"=>myDecode($trap["traps_args"]),
-						"RowMenu_manufacturer"=>myDecode($mnftr["alias"]),
-						"RowMenu_options"=>$moptions);
+		$elemArr[$i] = array("MenuClass" => "list_".$style,
+						"RowMenu_select" => $selectedElements->toHtml(),
+						"RowMenu_name" => myDecode($trap["traps_name"]),
+						"RowMenu_link" => "?p=".$p."&o=c&traps_id=".$trap['traps_id'],
+						"RowMenu_desc" => myDecode(substr($trap["traps_oid"], 0, 40)),
+						"RowMenu_status" => $tabStatus[$trap["traps_status"]],
+						"RowMenu_args" => myDecode($trap["traps_args"]),
+						"RowMenu_manufacturer" => myDecode($mnftr["alias"]),
+						"RowMenu_options" => $moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);

@@ -1,5 +1,4 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
 <form name='form' method='POST'>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
@@ -8,7 +7,6 @@
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}">{$msg.addT}</a>
 			</td>
-
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
@@ -21,6 +19,7 @@
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_status}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_manufacturer}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_args}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
@@ -30,6 +29,7 @@
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_manufacturer}</td>
 			<td class="ListColLeft">{$elemArr[elem].RowMenu_args}</td>
 			<td class="ListColRight" align="right">{$elemArr[elem].RowMenu_options}</td>
@@ -37,7 +37,6 @@
 		{/section}
 	
 	</table>
-
 	<table class="ToolbarTable">
 		<tr>
 			<td class="Toolbar_TDSelectAction_Bottom">
@@ -51,9 +50,7 @@
 			{/php}
 		</tr>
 	</table>
-
 <input type='hidden' name='o' id='o' value='42'>
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>
