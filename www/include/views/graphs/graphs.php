@@ -257,7 +257,7 @@
 	var StartTime = '';
 	var EndTime = '';
 
-	if (document.FormPeriod && !document.FormPeriod.period_choice[1].checked)	{
+	if (document.FormPeriod.period.value != ""))	{
 		period = document.FormPeriod.period.value;
 	} else {
 		if (currentTime.getMinutes() <= 9){
@@ -265,8 +265,8 @@
 		}
 
 		if (currentTime.getHours() >= 12){
-			StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
-			EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
+			StartDate 	= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
+			EndDate 	= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
 
 			if ((currentTime.getHours()- 12) <= 9){
 				_zero_hour = '0';					
@@ -295,7 +295,7 @@
 		}
 	}
 
-	if (document.FormPeriod){
+	if (document.FormPeriod) {
 		document.FormPeriod.StartDate.value = StartDate;
 		document.FormPeriod.EndDate.value = EndDate;
 		document.FormPeriod.StartTime.value = StartTime;
@@ -306,7 +306,7 @@
 		if (!multi)
 			multi = 0;
 		
-		if (document.FormPeriod && !document.FormPeriod.period_choice[1].checked){
+		if (document.FormPeriod.period.value != "")) {
 			period = document.FormPeriod.period.value;
 		} else if(document.FormPeriod) {
 			period = '';
@@ -315,6 +315,13 @@
 			StartTime = document.FormPeriod.StartTime.value;
 			EndTime = document.FormPeriod.EndTime.value;
 		}
+
+		if (StartTime == "") {
+       		StartTime = "00:00";
+        }
+        if (EndTime == "") {
+        	EndTime = "23:59";
+        }
 
 		// Metrics
 		var _metrics ="";
