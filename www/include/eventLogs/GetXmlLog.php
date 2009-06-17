@@ -138,6 +138,7 @@
 	(isset($_GET["search_H"]) 	&& !check_injection($_GET["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($_GET["search_H"])) : $search_H = "VIDE";
 	(isset($_GET["search_S"]) 	&& !check_injection($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
 	(isset($_GET["search_service"]) 		&& !check_injection($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = "";
+	(isset($_GET["export"]) 		&& !check_injection($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES) : $export = 0;
 
 	if ($contact_id){
 		$user_params = get_user_param($contact_id, $pearDB);		
@@ -215,6 +216,19 @@
 	$tab_class 			= array("0" => "list_one", "1" => "list_two");
 	$tab_status_host 	= array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 	$tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN");
+
+	/*
+	 * Create IP Cache
+	 */
+	if ($export) {
+		$HostCache = array();
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_address FROM host WHERE host_register = '1'");
+		while ($h =& $DBRESULT->fetchRow()) {
+			$HostCache[$h["host_name"]] = $h["host_address"];
+		}
+		$DBRESULT->free();
+	} 
+	
 
 	$logs = array();	
 
@@ -641,6 +655,8 @@
 				unset($meta);
 			} else {
 				$buffer->writeElement("host_name", $log["host_name"]);
+				if ($export)
+					$buffer->writeElement("address", $HostCache[$log["host_name"]]);
 				$buffer->writeElement("service_description", $log["service_description"]);				
 			}
 			$buffer->writeElement("class", $tab_class[$cpts % 2]);

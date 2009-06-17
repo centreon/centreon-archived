@@ -63,6 +63,7 @@
 			
 	require_once $centreon_path . "www/class/other.class.php";
 	require_once $centreon_path . "www/include/common/common-Func.php";	
+
 	
 	// save of the XML flow in $flux
 	$csv_flag = 1; //setting the csv_flag variable to change limit in SQL request of getODSXmlLog.php when CSV exporting
@@ -94,9 +95,9 @@
 	echo ";".$xml->infos->ok.";".$xml->infos->warning.";".$xml->infos->critical.";".$xml->infos->unknown."\n";
 	echo "\n";
 	
-	echo _("Day").";"._("Time").";"._("Host").";".";"._("Status").";"._("Type").";"._("Retry").";"._("Output").";"._("Contact").";"._("Cmd")."\n";
+	echo _("Day").";"._("Time").";"._("Host").";"._("Address").";"._("Status").";"._("Type").";"._("Retry").";"._("Output").";"._("Contact").";"._("Cmd")."\n";
 	foreach ($xml->line as $line) {
-		echo $line->date.";".$line->time.";".$line->host_name.";".$line->service_description.";".$line->status.";".$line->type.";".$line->retry.";".$line->output.";".$line->contact.";".$line->contact_cmd."\n";
+		echo $line->date.";".$line->time.";".$line->host_name.";".$line->address.";".$line->service_description.";".$line->status.";".$line->type.";".$line->retry.";".$line->output.";".$line->contact.";".$line->contact_cmd."\n";
 	}
 	
 	?>
