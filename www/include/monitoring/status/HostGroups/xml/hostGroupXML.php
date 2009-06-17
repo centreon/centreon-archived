@@ -197,8 +197,21 @@
 	$ct = 0;
 	$flag = 0;
 
+	if (!$is_admin)
+		$acl = $access->getHostGroups();
+       
+    $convertTable = array();
+    $convertID = array();
+    $DBRESULT =& $pearDB->query("SELECT hg_id, hg_alias, hg_name FROM hostgroup");
+    while ($hg =& $DBRESULT->fetchRow()){
+      $convertTable[$hg["hg_name"]] = $hg["hg_alias"];
+          $convertID[$hg["hg_alias"]] = $hg["hg_id"];
+    }
+    $DBRESULT->free();
+    
+    
 	foreach ($stats as $name => $stat) {
-		if ((isset($lca["LcaHostGroup"][$name]) || !isset($lca)) && $name != "meta_hostgroup") {	
+		if ((isset($acl[$convertID[$convertTable[$name]]]) || !isset($acl)) && $name != "meta_hostgroup") {
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
 			if (isset($stat["h"]) && count($stat["h"])) {
 				$buffer->startElement("l");
