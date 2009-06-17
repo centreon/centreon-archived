@@ -191,7 +191,11 @@ sub getLocalServerID(){
     if (!$sth2->execute()) {
 		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
     }
-    return $sth2->fetchrow_hashref();
+    my $data = $sth2->fetchrow_hashref();
+    if ($debug) {
+        writeLogFile("Local Server ID : ".$data->{'id'}."\n");
+    }
+    return $data->{'id'};
 }
 
 sub getServerConfig($){
@@ -298,8 +302,7 @@ sub GetPerfData($){
 
 	CheckMySQLConnexion();
 
-#    my $VARLIB = "@CENTREON_VARLIB@";
-    my $VARLIB = "/var/lib/centreon/";
+    my $VARLIB = "@CENTREON_VARLIB@";
 
     # Get Server Infos
     my $server_info = getServerConfig($id);
@@ -349,8 +352,7 @@ sub GetLogFile($){
     my $port = 22; 
     my $debug = 1;
     
-#    my $VARLIB = "@CENTREON_VARLIB@";
-    my $VARLIB = "/var/lib/centreon/";
+    my $VARLIB = "@CENTREON_VARLIB@";
 
     # Get Server informations
     my $server_info = getServerConfig($id);
@@ -496,8 +498,7 @@ sub testConfig($) {
 sub syncArchives($) {
     my $id = $_[0];
     my $port = 22;
-#	my $varlib = "@VARLIB_CENTREON@";
-    my $varlib = "/var/lib/centreon";
+	my $varlib = "@VARLIB_CENTREON@";
     
     # Check MySQL Connexion
     CheckMySQLConnexion();
