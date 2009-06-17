@@ -198,10 +198,45 @@
 			if ($svc_SG)
 				foreach ($svc_SG as $key => $value)
 					$tab_services[$key] = $value;
-		} else {
+		} elseif (hostIsAuthorized($host_id, $groupstr)){
 			$tab_services = $tab_svc;	
 		}
 	  	return $tab_services;
+	}
+	
+	function hostIsAuthorized($host_id, $group_id) {
+		global $pearDB;
+		
+		$query = "SELECT rhr.host_host_id " .
+				"FROM acl_resources_host_relations rhr, acl_resources res, acl_res_group_relations rgr " .
+				"WHERE rhr.acl_res_id = res.acl_res_id " .
+				"AND res.acl_res_id = rgr.acl_res_id " .
+				"AND rgr.acl_group_id = '".$group_id."' " .
+				"AND rhr.host_host_id = '".$host_id."' " .
+				"AND res.acl_res_activate = '1'";
+		$DBRES =& $pearDB->query($query);
+		if (PEAR::isError($DBRES))
+			print "DB Error : ".$DBRES->getDebugInfo()."<br />";
+		if ($DBRES->numRows())
+			return true;
+		
+		$query2 = "SELECT hgr.host_host_id FROM " .
+				"hostgroup_relation hgr, acl_resources_hg_relations rhgr, acl_resources res, acl_res_group_relations rgr " .
+				"WHERE rhgr.acl_res_id = res.acl_res_id " .
+				"AND res.acl_res_id = rgr.acl_res_id " .
+				"AND rgr.acl_group_id = '".$group_id."' " .
+				"AND hgr.hostgroup_hg_id = rhgr.hg_hg_id " .
+				"AND hgr.host_host_id = '".$host_id."' " .
+				"AND res.acl_res_activate = '1' " .
+				"AND hgr.host_host_id NOT IN (SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = rhgr.acl_res_id)";
+		
+		$DBRES2 =& $pearDB->query($query2);
+		if (PEAR::isError($DBRES2))
+			print "DB Error : ".$DBRES2->getDebugInfo()."<br />";
+		if ($DBRES2->numRows())
+			return true;				
+		
+		return false;
 	}
 	
 	function getMyHostServicesByName2($host_id = NULL)	{
