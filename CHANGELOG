@@ -4,6 +4,9 @@
 => fix: nagios debug_level works
 => fix: AJAXed div's were not translated
 => enhancement : new CentreonLang class that manages user's language and charset
+=> fix: remove problem with generation of service by hostgroup
+=> fix: remove problem with ACL and function getHostService
+=> fix: remove ACL in hostgroups
 
 ## Centreon 2.1-RC3
 
