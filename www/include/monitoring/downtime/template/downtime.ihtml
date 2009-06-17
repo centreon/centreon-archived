@@ -1,12 +1,14 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name="form" action="" method='GET'>
-<hidden name="p" value='{$p}'>
-	<table class="ListTable">
+	<hidden name="p" value='{$p}'>
+	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}
 		</tr>
+	</table>
+	<table class="ListTable">
 		<tr class='ListHeader'>			
 			<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$dtm_host_downtime}</td>
 			<td align='right'>
@@ -48,8 +50,8 @@
 	{else}
 	<center><b>{$no_host_dtm}</b></center>
 	{/if}
-	<table class="ListTable">
-	<tr class="ToolbarTR">
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}

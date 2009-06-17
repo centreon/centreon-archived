@@ -80,8 +80,7 @@
 				"AND obj.name2 IS NOT NULL " .
 				"AND obj.object_id = dtm.object_id " .
 				"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."'";				
-	}
-	else {
+	} else {
 		$rq3 =	"SELECT COUNT(*) " .
 				"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj, centreon_acl " .
 				"WHERE obj.name1 IS NOT NULL " .
@@ -89,11 +88,13 @@
 				"AND obj.object_id = dtm.object_id " .
 				"AND obj.name1 = centreon_acl.host_name " . 
 				"AND obj.name2 = centreon_acl.service_description " . 
+				"AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
 				"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."'";				
 	}
 	$DBRES =& $pearDBndo->query($rq3);
 	$rows =& $DBRES->fetchRow();
 	$rows = $rows['COUNT(*)'];	
+	
 	include("./include/common/checkPagination.php");
 	
 	/*
@@ -116,6 +117,7 @@
 				"AND obj.object_id = dtm.object_id " .
 				"AND obj.name1 = centreon_acl.host_name " . 
 				"AND obj.name2 = centreon_acl.service_description " . 
+				"AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
 				"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
 				"ORDER BY dtm.actual_start_time DESC " .
 				"LIMIT ".$num * $limit.", ".$limit;

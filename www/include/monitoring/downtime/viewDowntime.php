@@ -40,7 +40,7 @@
 		exit();
 		
 	include_once $centreon_path."www/class/centreonGMT.class.php";
-	include("./include/common/autoNumLimit.php");
+	include_once "./include/common/autoNumLimit.php";
 
 	/*
 	 * Init GMT class
@@ -71,7 +71,8 @@
 
 	$tab_downtime_host = array();	
 
-	$hostStr = $oreon->user->access->getHostsString("ID", $pearDBndo);
+	$hostStr = $oreon->user->access->getHostsString("NAME", $pearDBndo);
+
 	/* Pagination Hosts */
 	$rq2 =	"SELECT COUNT(*) " .
 			"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
@@ -83,10 +84,11 @@
 	$DBRES =& $pearDBndo->query($rq2);
 	$rows =& $DBRES->fetchRow();
 	$rows = $rows['COUNT(*)'];	
+	$DBRES->free();
+	
 	include("./include/common/checkPagination.php");
 
-
-	/*
+	/************************************
 	 * Hosts Downtimes
 	 */
 	$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
@@ -105,6 +107,7 @@
 		$tab_downtime_host[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_start_time"])." ";
 		$tab_downtime_host[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_end_time"])." ";
 	}
+	$DBRESULT_NDO->free();
 	unset($data);	
 
 	

@@ -1,13 +1,15 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name="form" action="" method='GET'>
 <hidden name="p" value='{$p}'>	
-	<table class="ListTable">
-	<tr class="ToolbarTR">
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}
-	</tr>
-	<tr class='ListHeader'>
+		</tr>
+	</table>
+	<table class="ListTable">
+		<tr class='ListHeader'>
 		<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$dtm_service_downtime}</td>		
 		<td align='right'>
 			{if $msgs}<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
@@ -50,8 +52,8 @@
 	{else}
 	<center><b>{$no_svc_dtm}</b></center>
 	{/if}
-	<table class="ListTable">
-	<tr class="ToolbarTR">
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}
