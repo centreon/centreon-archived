@@ -39,7 +39,8 @@
 	if (!isset($oreon))
 		exit();
 
-	require_once ("@CENTREON_ETC@/centreon.conf.php");
+	//require_once ("@CENTREON_ETC@/centreon.conf.php");
+	require_once ("/etc/centreon/centreon.conf.php");
 	require_once ($centreon_path . "/www/class/centreonService.class.php");
 
 	/*
@@ -368,8 +369,7 @@
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 					while ($hostGroup =& $DBRESULT2->fetchRow())	{
-						$BP = false;
-						if (isset($generatedHG[$hostGroup["hg_id"]]) && $generatedHG[$hostGroup["hg_id"]] && isset($HGFilled[$hostGroup["hg_id"]])){
+						if (isset($generatedHG[$hostGroup["hg_id"]]) && $generatedHG[$hostGroup["hg_id"]] && isset($HGFilled[$hostGroup["hg_name"]])){
 							$parent = true;
 							$strTMPTemp != NULL ? $strTMPTemp .= ", ".$hostGroup["hg_name"] : $strTMPTemp = $hostGroup["hg_name"];
 							$LinkedToHost++;
@@ -403,7 +403,8 @@
 							}
 						}
 						$DBRESULT2->free();
-						if ($strTMPTemp) $strTMP .= print_line("host_name", $strTMPTemp);
+						if ($strTMPTemp) 
+							$strTMP .= print_line("host_name", $strTMPTemp);
 						unset($host);
 					}
 					unset($strTMPTemp);
