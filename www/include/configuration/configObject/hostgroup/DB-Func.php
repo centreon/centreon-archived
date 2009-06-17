@@ -217,15 +217,27 @@
 		if (isset($ret["hg_hg"]))
 			$fields["hg_hg"] = implode(",", $ret["hg_hg"]);
 
+
+		if (!$oreon->user->admin) {
+			$resource_list = $oreon->user->access->getAccessGroups();
+			if (count($resource_list)) {
+				foreach ($resource_list as $res_id => $res_name)	{			
+					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$hg_id["MAX(hg_id)"]."')");
+				}
+				unset($resource_list);
+			}
+		}
+
 		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id["MAX(hg_id)"], htmlentities($ret["hg_name"], ENT_QUOTES), "a", $fields);
-		
+				
 		return ($hg_id["MAX(hg_id)"]);
 	}
 	
 	function updateHostGroup($hg_id)	{
+		global $form, $pearDB, $oreon;
+
 		if (!$hg_id) 
 			return;
-		global $form, $pearDB, $oreon;
 		
 		$ret = array();
 		$ret = $form->getSubmitValues();
@@ -271,6 +283,19 @@
 			$fields["hg_hosts"] = implode(",", $ret["hg_hosts"]);
 		if (isset( $ret["hg_hg"]))
 			$fields["hg_hg"] = implode(",", $ret["hg_hg"]);
+		
+		if (!$oreon->user->admin) {
+			print "OK";
+			$resource_list = $oreon->user->access->getAccessGroups();
+			print_r($resource_list);
+			if (count($resource_list)) {
+				foreach ($resource_list as $res_id)	{			
+					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$hg_id["MAX(hg_id)"]."')");
+				}
+				unset($resource_list);
+			}
+		}
+		
 	
 		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id, htmlentities($ret["hg_name"], ENT_QUOTES), "c", $fields);
 	}
