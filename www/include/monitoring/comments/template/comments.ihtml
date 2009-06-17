@@ -1,15 +1,17 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>	
-	<form name='form' method='POST'>
+<form name='form' method='POST'>
 	<hidden name="p" value='{$p}'>	
-	<table class="ListTable">
-	<tr class="ToolbarTR">
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}
-	</tr>
-	<tr class='ListHeader'>
-		<td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$cmt_host_comment}</td>		
-		<td align='right'>{if $msgh}<a href="{$msgh.addL}">{$msgh.addT}{/if}</a></td>		
+		</tr>
+	</table>
+	<table class="ListTable">
+		<tr class='ListHeader'>
+		<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$cmt_host_comment}</td>		
+		<td align='right'>{if $msgh}<a href="{$msgh.addL}">{$msgh.addT}</a>{/if}</td>		
 	</tr>
 	</table>
 	<br />	
@@ -42,12 +44,12 @@
 	{else}
 	<center><b>{$no_host_comments}</b></center>
 	{/if}
-	<table class="ListTable">
-	<tr class="ToolbarTR">
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}
-	</tr>
+		</tr>
 	</table>
 	<input type='hidden' id='limit' name='limit' value='{$limit}'>
 	{$form.hidden}

@@ -39,12 +39,11 @@
 		exit();
 
 	include_once $centreon_path."www/class/centreonGMT.class.php";
-	include("./include/common/autoNumLimit.php");
+	include_once "./include/common/autoNumLimit.php";
 	
 	/*
 	 * Init GMT class
-	 */
-	
+	 */	
 	$centreonGMT = new CentreonGMT();
 	$centreonGMT->getMyGMTFromSession(session_id());
 
@@ -75,28 +74,45 @@
 	
 	$acl_host_list = $oreon->user->access->getHostsString("NAME", $pearDBndo);
 	/* Pagination Hosts */
-	$rq2 =	" SELECT COUNT(*) FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-			"WHERE obj.name1 IS NOT NULL " .
-			"AND obj.name2 IS NULL " .
-			"AND obj.object_id = cmt.object_id " .
-			$oreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
-			"AND cmt.expires = 0";
+	if ($is_admin) {
+		$rq2 =	"SELECT COUNT(*) FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+				"WHERE obj.name1 IS NOT NULL " .
+				"AND obj.name2 IS NULL " .
+				"AND obj.object_id = cmt.object_id " .
+				"AND cmt.expires = 0";
+	} else {
+		$rq2 =	"SELECT COUNT(*) FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj, centreon_acl " .
+				"WHERE obj.name1 IS NOT NULL " .
+				"AND obj.name2 IS NULL " .
+				"AND obj.object_id = cmt.object_id " .
+				$oreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
+				"AND cmt.expires = 0";		
+	}
 	$DBRES =& $pearDBndo->query($rq2);
 	$rows =& $DBRES->fetchRow();
-	$rows = $rows['COUNT(*)'];	
+	$rows = $rows['COUNT(*)'];
+	
 	include("./include/common/checkPagination.php");
 		
 	/*
 	 * Hosts Comments
 	 */
-	$rq2 =	" SELECT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-			"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-			"WHERE obj.name1 IS NOT NULL " .
-			"AND obj.name2 IS NULL " .
-			"AND obj.object_id = cmt.object_id " .
-			$oreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
-			"AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
-	
+	if ($is_admin) {
+		$rq2 =	"SELECT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+				"WHERE obj.name1 IS NOT NULL " .
+				"AND obj.name2 IS NULL " .
+				"AND obj.object_id = cmt.object_id " .
+				"AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
+	} else {
+		$rq2 =	"SELECT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+				"WHERE obj.name1 IS NOT NULL " .
+				"AND obj.name2 IS NULL " .
+				"AND obj.object_id = cmt.object_id " .
+				$oreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
+				" AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;		
+	}	
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_comments_host[$i] = $data;
@@ -118,12 +134,9 @@
 	
 	
 	$tpl->assign("p", $p);
-	$tpl->assign("tab_comments_host", $tab_comments_host);	
-
-	$tpl->assign("nb_comments_host", count($tab_comments_host));	
-
-	$tpl->assign("no_host_comments", _("No Comment for hosts."));	
-
+	$tpl->assign("tab_comments_host", $tab_comments_host);
+	$tpl->assign("nb_comments_host", count($tab_comments_host));
+	$tpl->assign("no_host_comments", _("No Comment for hosts."));
 	$tpl->assign("cmt_host_name", _("Host Name"));	
 	$tpl->assign("cmt_entry_time", _("Entry Time"));
 	$tpl->assign("cmt_author", _("Author"));

@@ -1,20 +1,22 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>		
 <form name="form" method='GET'>
-<table class="ListTable">
-<tr class="ToolbarTR">
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
 		{php}
 		   include('./include/common/pagination.php');
 		{/php}
-</tr>
-<tr class='ListHeader'>
-	<td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$cmt_service_comment}</td>	
-	<td align='right'>
-		{if $msgs}<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
-	</td>	
-</tr>
-</table>
-<br />
-{if $nb_comments_svc} 
+		</tr>
+	</table>
+	<table class="ListTable">
+		<tr class='ListHeader'>
+		<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$cmt_service_comment}</td>		
+		<td align='right'>
+			{if $msgs}<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
+		</td>		
+	</tr>
+	</table>
+	<br />
+	{if $nb_comments_svc} 
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -45,12 +47,12 @@
 	{else}
 	<center><b>{$no_svc_comments}</b></center>
 	{/if}
-	<table class="ListTable">
-	<tr class="ToolbarTR">
-		{php}
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
+			{php}
 		   include('./include/common/pagination.php');
 		{/php}
-	</tr>
+		</tr>
 	</table>
 	<input type='hidden' id='limit' name='limit' value='{$limit}'>
 	{$form.hidden}
