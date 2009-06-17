@@ -219,22 +219,14 @@
 
 		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id["MAX(hg_id)"], htmlentities($ret["hg_name"], ENT_QUOTES), "a", $fields);
 		
-		if (!$is_admin) {
-			$group_list = getGroupListofUser($pearDB);
-			$resource_list = getResourceACLList($group_list);
-			if (count($resource_list)) {
-				foreach ($resource_list as $res_id)	{			
-					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$hg_id["MAX(hg_id)"]."')");
-				}
-				unset($resource_list);
-			}
-		}
 		return ($hg_id["MAX(hg_id)"]);
 	}
 	
 	function updateHostGroup($hg_id)	{
-		if (!$hg_id) return;
+		if (!$hg_id) 
+			return;
 		global $form, $pearDB, $oreon;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE hostgroup SET ";
