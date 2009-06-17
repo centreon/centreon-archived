@@ -646,15 +646,16 @@
 				$DBRESULT =& $pearDB->query($query);
 				while ($row =& $DBRESULT->fetchRow())
 					$tab[$row['host_id']][$row['service_id']] = 1;
+				$DBRESULT->free();
 			}
 			else {
 				$query = "SELECT host_id, service_id FROM centreon_acl WHERE group_id IN (".$this->getAccessGroupsString().")";
 				$DBRESULT =& $pearDBndo->query($query);
 				while ($row =& $DBRESULT->fetchRow())
 					$tab[$row['host_id']][$row['service_id']] = 1;
+				$DBRESULT->free();
 			}
-		}
-		else {
+		} else {
 			if ($this->admin) {
 				$query = "SELECT s.service_id, s.service_description, h.host_id FROM host_service_relation hsr, host h, service s " .
 						"WHERE hsr.service_service_id = s.service_id " .
@@ -668,8 +669,22 @@
 					$row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
 					$tab[$row['service_id']] = $row['service_description'];
 				}
-			}
-			else {
+				$DBRESULT->free();
+					
+				/*
+				 * Get Services attached to hostgroups
+				 */
+				$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+						" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+						" AND service_id = hsr.service_service_id");
+				while ($elem =& $DBRESULT->fetchRow()){
+					$elem["service_description"] = str_replace("#S#", "/", $elem["service_description"]);
+					$elem["service_description"] = str_replace("#BS#", "\\", $elem["service_description"]);
+					$tab[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
+				}
+				$DBRESULT->free();
+				
+			} else {
 				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_id = '".$host_id."' AND group_id IN (".$this->getAccessGroupsString().")";
 				$DBRESULT =& $pearDBndo->query($query);
 				$row['service_description'] = str_replace("#S#", "/", $row['service_description']);
@@ -679,6 +694,7 @@
 					$row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
 					$tab[$row['service_id']] = $row['service_description'];
 				}
+				$DBRESULT->free();
 			}
 		}		
 		return $tab;
