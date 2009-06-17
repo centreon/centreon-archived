@@ -124,7 +124,7 @@ LOG_FILE=${LOG_FILE:=log\/install_centreon.log}
 
 ## Valid if you are root 
 if [ "${FORCE_NO_ROOT:-0}" -ne 0 ]; then
-	USERID=i$(id -u)
+	USERID=$(id -u)
 	if [ "$USERID" != "0" ]; then
 	    echo -e "$(gettext "You must exec with root user")"
 	    exit 1
