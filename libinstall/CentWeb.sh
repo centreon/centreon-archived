@@ -235,7 +235,7 @@ check_result $? "$(gettext "Install CentWeb (web front of centreon)")"
 		$INSTALL_DIR_CENTREON/www/img/media >> "$LOG_FILE" 2>&1
 
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -g "$WEB_GROUP" -d 775 \
+	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 \
 	$CENTREON_GENDIR/filesGeneration/nagiosCFG >> "$LOG_FILE" 2>&1
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
@@ -243,7 +243,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	ln -s $CENTREON_GENDIR/filesGeneration $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
 
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -g "$WEB_GROUP" -d 775 -v \
+	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -v \
 	$CENTREON_GENDIR/filesUpload/nagiosCFG >> "$LOG_FILE" 2>&1
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
@@ -302,7 +302,7 @@ cp -f $TMP_DIR/work/cron/centAcl.php \
 
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$NAGIOS_USER" -g "$WEB_GROUP" -d 755 -m 755 \
+	-u "$NAGIOS_USER" -g "$WEB_GROUP" -d 755 -m 644 \
 	$TMP_DIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 

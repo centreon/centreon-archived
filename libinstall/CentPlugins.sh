@@ -71,7 +71,7 @@ cp -r $TMP_DIR/work/plugins/* $TMP_DIR/final/plugins >> $LOG_FILE 2>&1
 ## Install the plugins
 log "INFO" "$(gettext "Installing the plugins")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-m 755 -p $TMP_DIR/final/plugins \
+	-m 644 -p $TMP_DIR/final/plugins \
 	$TMP_DIR/final/plugins/* $NAGIOS_PLUGIN >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Installing the plugins")"
 
@@ -83,7 +83,7 @@ check_result $? "$(gettext "Change right on") centreon.conf"
 
 log "INFO" "$(gettext "Install temporary directory for plugins") : $CENTPLUGINS_TMP"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 -v \
+	-u $NAGIOS_USER -g $NAGIOS_GROUP -d 755 -v \
 	$CENTPLUGINS_TMP >> $LOG_FILE 2>&1
 echo_success "$(gettext "CentPlugins is installed")"
 

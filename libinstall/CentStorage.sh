@@ -72,7 +72,7 @@ cp $TMP_DIR/work/www/install/createTablesCentstorage.sql \
 
 ## Copy CreateTablesCentStorage.sql in INSTALL_DIR_CENTREON
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -g "$WEB_GROUP" -m 755 \
+	-u "$WEB_USER" -g "$WEB_GROUP" -m 644 \
 	$TMP_DIR/final/www/install/createTablesCentstorage.sql \
 	$INSTALL_DIR_CENTREON/www/install/createTablesCentstorage.sql \
 	>> $LOG_FILE 2>&1
@@ -127,7 +127,7 @@ check_result $? "$(gettext "Install CentStorage binary")"
 ## Copy lib for CentStorage
 log "INFO" "$(gettext "Install library for centstorage")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-g "$NAGIOS_GROUP" -m 766 \
+	-g "$NAGIOS_GROUP" -m 644 \
 	$TMP_DIR/final/lib $INSTALL_DIR_CENTREON/lib >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install library for centstorage")"
 

@@ -93,14 +93,14 @@ cp $TMP_DIR/work/www/include/monitoring/external_cmd/functions.php \
 	>> $LOG_FILE 2>&1
 
 $INSTALL_DIR/cinstall $cinstall_opts -f \
-	-u "$WEB_USER" -g "$WEB_GROUP" -m 744 \
+	-u "$WEB_USER" -g "$WEB_GROUP" -m 644 \
 	$TMP_DIR/final/www/include/configuration/configGenerate/formGenerateFiles.php \
 	$INSTALL_DIR_CENTREON/www/include/configuration/configGenerate/formGenerateFiles.php \
 	>> $LOG_FILE 2>&1
 
 
 $INSTALL_DIR/cinstall $cinstall_opts -f \
-	-u "$WEB_USER" -g "$WEB_GROUP" -m 744 \
+	-u "$WEB_USER" -g "$WEB_GROUP" -m 644 \
 	$TMP_DIR/final/www/include/monitoring/external_cmd/functions.php \
 	$INSTALL_DIR_CENTREON/www/include/monitoring/external_cmd/functions.php \
 	>> $LOG_FILE 2>&1
