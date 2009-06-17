@@ -82,6 +82,7 @@
 			 * Database retrieve information for differents
 			 * elements list we need on the page
 			 */	
+			
 			$query = "SELECT host_id, host_name " .
 					"FROM `host` " .
 					"WHERE host_register = '1' " .

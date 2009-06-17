@@ -75,10 +75,9 @@
 			if (isset($service_id))
 				$data["service_id"] = $service_id;
 				
-			
-			#
-			## Database retrieve information for differents elements list we need on the page
-			#
+			/*
+			 * Database retrieve information for differents elements list we need on the page
+			 */
 			$hosts = array(NULL => NULL);
 			$query = "SELECT host_id, host_name " .
 					"FROM `host` " .
@@ -94,23 +93,21 @@
 			$services = array(NULL => NULL);
 			if (isset($host_id))
 				$services = $oreon->user->access->getHostServices($pearDBndo, $host_id);
-		
+			
 			$debug = 0;
 			$attrsTextI		= array("size"=>"3");
 			$attrsText 		= array("size"=>"30");
 			$attrsTextarea 	= array("rows"=>"7", "cols"=>"100");
 			
-			#
-			## Form begin
-			#
-			
+			/*
+			 * Form begin
+			 */		
 			$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 			$form->addElement('header', 'title', _("Add a Service downtime"));
 			
-			#
-			## Indicator basic information
-			#
-			
+			/*
+			 * Indicator basic information
+			 */			
 			$redirect =& $form->addElement('hidden', 'o');
 			$redirect->setValue($o);
 		    
@@ -142,11 +139,15 @@
 				AddSvcDowntime($_POST["host_id"], $_POST["service_id"],  $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
 		    	require_once("viewServiceDowntime.php");
 			} else {
-				# Smarty template Init
+				/*
+				 * Smarty template Init
+				 */
 				$tpl = new Smarty();
 				$tpl = initSmartyTpl($path, $tpl, "template/");
 		
-				#Apply a template definition
+				/*
+				 * Apply a template definition
+				 */
 				$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 				$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 				$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
