@@ -155,7 +155,7 @@ sub getServiceInformations($$$)	{
     
     $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable` FROM `traps` WHERE `traps_oid` = '$_[1]'");
     $sth->execute();
-    my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_svc_enable,$traps_execution_command_enable) = $sth->fetchrow_array();
+    my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable) = $sth->fetchrow_array();
     exit if (!defined $trap_id);
     $sth->finish();
 
