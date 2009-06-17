@@ -207,11 +207,11 @@
 		$en_acknowledge_text= array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge 	= array("1" => "0", "0" => "1");
 		$en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
-		$en_inv	 			= array("1" => "1", "0" => "0");
+		$en_inv	 		= array("1" => "1", "0" => "0");
 		$en_inv_text 		= array("1" => _("Disable"), "0" => _("Enable"));
 		$color_onoff 		= array("1" => "#00ff00", "0" => "#ff0000");
 		$color_onoff_inv 	= array("0" => "#00ff00", "1" => "#ff0000");
-		$img_en 			= array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
+		$img_en 		= array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
 
 		/*
 		 * Ajust data for beeing displayed in template
@@ -323,7 +323,7 @@
 		$tpl->assign("cmt_author", _("Author"));
 		$tpl->assign("cmt_comment", _("Comments"));
 		$tpl->assign("cmt_persistent", _("Persistent"));
-		$tpl->assign("secondes", _("secondes"));
+		$tpl->assign("secondes", _("seconds"));
 		$tpl->assign("m_mon_ticket", "Open Ticket");
 		$tpl->assign("links", _("Links"));
 		
@@ -333,8 +333,8 @@
 		$str_notif_svc_disable = _("Disable Notifications for this service");		
 		$str_handler_svc_enable = _("Enable Event handler for this service");
 		$str_handler_svc_disable = _("Disable Event handler for this service");
-		$str_flap_svc_enable = _("Enable Flap detection fot this service");
-		$str_flap_svc_disable = _("Disable Flap detection fot this service");
+		$str_flap_svc_enable = _("Enable Flap detection for this service");
+		$str_flap_svc_disable = _("Disable Flap detection for this service");
 		$str_passive_svc_enable = _("Enable Passive checks for this service");
 		$str_passive_svc_disable = _("Disable Passive checks for this service");
 		

@@ -304,8 +304,8 @@
 		$str_notif_host_disable = _("Disable Notifications for this host");		
 		$str_handler_host_enable = _("Enable Event handler for this host");
 		$str_handler_host_disable = _("Disable Event handler for this host");
-		$str_flap_host_enable = _("Enable Flap detection fot this host");
-		$str_flap_host_disable = _("Disable Flap detection fot this host");
+		$str_flap_host_enable = _("Enable Flap detection for this host");
+		$str_flap_host_disable = _("Disable Flap detection for this host");
 
 		/*
 		 * Add Tips
