@@ -498,7 +498,7 @@ sub testConfig($) {
 sub syncArchives($) {
     my $id = $_[0];
     my $port = 22;
-	my $varlib = "@VARLIB_CENTREON@";
+	my $varlib = "@CENTREON_VARLIB@";
     
     # Check MySQL Connexion
     CheckMySQLConnexion();
