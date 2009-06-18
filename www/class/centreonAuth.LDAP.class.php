@@ -84,7 +84,7 @@ class CentreonAuthLDAP {
 		/*
 		 * Set Protocol version
 		 */
-		ldap_set_option($this->ds, LDAP_OPT_PROTOCOL_VERSION, $this->contactInfos['ldap_protocol_version']);
+		ldap_set_option($this->ds, LDAP_OPT_PROTOCOL_VERSION, $this->ldapInfos['ldap_protocol_version']);
     	ldap_set_option($this->ds, LDAP_OPT_REFERRALS, 0);
 
 		/*
@@ -106,6 +106,10 @@ class CentreonAuthLDAP {
 			switch (ldap_errno($this->ds)) {
 				case 0:
 					$this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
+				   	return 1;
+				   	break;
+				case 2:
+					$this->CentreonLog->insertLog(3, "LDAP AUTH : Protocol Error ");
 				   	return 1;
 				   	break;
 				case -1:
