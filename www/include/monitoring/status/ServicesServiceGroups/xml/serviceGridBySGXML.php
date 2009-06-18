@@ -199,24 +199,25 @@
 				$buffer->endElement();				
 			}
 			$sg = $tab["alias"];
+			$h = "";
 			$buffer->startElement("sg");
 			$buffer->writeElement("sgn", $tab["alias"]);
 			$buffer->writeElement("o", $ct);			
 		}
 		$ct++;
 
-		//if ($h != $tab["host_name"]){
+		if ($h != $tab["host_name"]){
 			if ($h != "" && $flag)
 				$buffer->endElement();
 			$flag = 1;
-			$h = $tab["host_name"];
+			$h = $tab["host_name"];			
 			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
 			$buffer->startElement("h");
 			$buffer->writeAttribute("class", $class);
 			$buffer->writeElement("hn", $tab["host_name"]);
 			$buffer->writeElement("hs", $tab_status_host[$hs]);
 			$buffer->writeElement("hc", $tab_color_host[$hs]);			
-		//}
+		}
 		$buffer->startElement("svc");
 		$buffer->writeElement("sn", $tab["service_description"]);
 		$buffer->writeElement("sc", $tab_color_service[$tab["current_state"]]);
