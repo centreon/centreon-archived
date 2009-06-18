@@ -203,8 +203,8 @@
 	$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 
 	while ($tab =& $DBRESULT_NDO1->fetchRow()){
-		($class == "list_one") ? $class = "list_two" : $class = "list_one";		
-		if (isset($hs) && $flag) {
+		($class == "list_one") ? $class = "list_two" : $class = "list_one";
+		if (($h != "" && $h != $tab["host_name"]) || ($sg != $tab["alias"] && $sg != "")) {						
 			$buffer->startElement("h");
 			$buffer->writeAttribute("class", $class);
 			$buffer->writeElement("hn", $h);
@@ -218,10 +218,11 @@
 			$buffer->endElement();
 		}
 		if ($sg != $tab["alias"]){
+			$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 			if ($flag)
 				$buffer->endElement();				
 			$sg = $tab["alias"];
-			$buffer->startElement("sg");
+			$buffer->startElement("sg");			
 			$buffer->writeElement("sgn", $tab["alias"]);
 			$buffer->writeElement("o", $ct);			
 			$flag = 1;
