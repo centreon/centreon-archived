@@ -186,14 +186,11 @@
 	$flag = 0;
 
 	$sg = "";
-	$h = "";
-	$flag = 0;
-
+	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	while ($tab =& $DBRESULT_NDO1->fetchRow()){
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
-		if ($sg != $tab["alias"]){
-			$flag = 0;
+		if ($sg != $tab["alias"]){	
 			if ($sg != "") {
 				$buffer->endElement();
 				$buffer->endElement();				
@@ -204,19 +201,14 @@
 			$buffer->writeElement("o", $ct);			
 		}
 		$ct++;
-
-		if ($h != $tab["host_name"]){
-			if ($h != "" && $flag)
-				$buffer->endElement();
-			$flag = 1;
-			$h = $tab["host_name"];
-			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
-			$buffer->startElement("h");
-			$buffer->writeAttribute("class", $class);
-			$buffer->writeElement("hn", $tab["host_name"]);
-			$buffer->writeElement("hs", $tab_status_host[$hs]);
-			$buffer->writeElement("hc", $tab_color_host[$hs]);			
-		}
+	
+		$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
+		$buffer->startElement("h");
+		$buffer->writeAttribute("class", $class);
+		$buffer->writeElement("hn", $tab["host_name"]);
+		$buffer->writeElement("hs", $tab_status_host[$hs]);
+		$buffer->writeElement("hc", $tab_color_host[$hs]);			
+		
 		$buffer->startElement("svc");
 		$buffer->writeElement("sn", $tab["service_description"]);
 		$buffer->writeElement("sc", $tab_color_service[$tab["current_state"]]);
