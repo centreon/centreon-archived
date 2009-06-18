@@ -114,22 +114,22 @@
 					" AND no.name1 not like '_Module_%'";
 		
 	if (!$is_admin)
-		$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString());
+		$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString("NAME"));
 	
 	if ($instance != "ALL")
 		$rq1 .= 	" AND no.instance_id = ".$instance;
 	
-	if ($o == "svcSumHG_ack_0") {
+	if ($o == "svcOVHG_ack_0") {
 		$rq1 .= 	" AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0)";
 	}
-	if ($o == "svcSumHG_ack_1"){
+	if ($o == "svcOVHG_ack_1"){
 		$rq1 .= 	" AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0)";
 	}
-		
+	
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 		
@@ -246,9 +246,6 @@
 	$buffer->endElement();
 	/* end */
 
-	if (!$ct)
-		$buffer->writeElement("infos", "none");		
-	$buffer->endElement();
 	
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
