@@ -205,7 +205,7 @@
 		}
 		$ct++;
 
-		if ($h != $tab["host_name"]){
+		//if ($h != $tab["host_name"]){
 			if ($h != "" && $flag)
 				$buffer->endElement();
 			$flag = 1;
@@ -216,7 +216,7 @@
 			$buffer->writeElement("hn", $tab["host_name"]);
 			$buffer->writeElement("hs", $tab_status_host[$hs]);
 			$buffer->writeElement("hc", $tab_color_host[$hs]);			
-		}
+		//}
 		$buffer->startElement("svc");
 		$buffer->writeElement("sn", $tab["service_description"]);
 		$buffer->writeElement("sc", $tab_color_service[$tab["current_state"]]);
