@@ -156,7 +156,7 @@
 	$DBRESULT =& $pearDBndo->query($rq1);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		if (!isset($stats[$ndo["alias"]]))
-			$stats[$ndo["alias"]] = array("h" => array(1=>0,2=>0,3=>0), "s" => array(1=>0,2=>0,3=>0,3=>0,4=>0));
+			$stats[$ndo["alias"]] = array("h" => array(0=>0,1=>0,2=>0,3=>0), "s" => array(0=>0,1=>0,2=>0,3=>0,3=>0,4=>0));
 		$stats[$ndo["alias"]]["h"][$ndo["current_state"]] = $ndo["nb"];
 	}
 
@@ -204,14 +204,13 @@
     $convertID = array();
     $DBRESULT =& $pearDB->query("SELECT hg_id, hg_alias, hg_name FROM hostgroup");
     while ($hg =& $DBRESULT->fetchRow()){
-      $convertTable[$hg["hg_name"]] = $hg["hg_alias"];
-          $convertID[$hg["hg_alias"]] = $hg["hg_id"];
+		$convertTable[$hg["hg_name"]] = $hg["hg_alias"];
+	    $convertID[$hg["hg_alias"]] = $hg["hg_id"];
     }
     $DBRESULT->free();
     
-    
 	foreach ($stats as $name => $stat) {
-		if ((isset($acl[$convertID[$convertTable[$name]]]) || !isset($acl)) && $name != "meta_hostgroup") {
+		if (((isset($convertTable[$name]) && isset($convertID[$convertTable[$name]]) && isset($acl[$convertID[$convertTable[$name]]])) || (!isset($acl))) && $name != "meta_hostgroup") {
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
 			if (isset($stat["h"]) && count($stat["h"])) {
 				$buffer->startElement("l");
