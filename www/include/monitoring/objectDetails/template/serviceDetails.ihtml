@@ -243,7 +243,7 @@
 					</tr>
 					{if $lcaTopo.602 || $admin == 1}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./main.php?p=602&service_id={$service_id}&o=c'>&#9679;&nbsp;{$Tips1} "{$svc_description}"</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=60201&service_id={$service_id}&o=c'>&#9679;&nbsp;{$Tips1} "{$svc_description}"</a></td>
 					</tr>
 					{/if}
 					{if $lcaTopo.201 || $admin == 1}
