@@ -262,28 +262,42 @@
 		isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL ? $rq .= "'".$ret["contact_type_msg"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_activate"]["contact_activate"]) && $ret["contact_activate"]["contact_activate"] != NULL ? $rq .= "'".$ret["contact_activate"]["contact_activate"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL ? $rq .= "'".$ret["contact_auth_type"]."', ": $rq .= "'local', ";
-		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".$ret["contact_ldap_dn"]."' ": $rq .= "NULL, ";
+		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".$ret["contact_ldap_dn"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."' ": $rq .= "NULL ";
 		$rq .= ")";
+		
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(contact_id) FROM contact");
 		$contact_id = $DBRESULT->fetchRow();
 		
-		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
-		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-		$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES);
-		$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES);
-		$fields["contact_passwd"] = md5($ret["contact_passwd"]);
-		$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES);
-		$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
-		$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
-		$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES);
-		$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES);
-		$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
-		$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
-		$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
+		if (isset($ret["timeperiod_tp_id"]))
+			$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
+		if (isset( $ret["timeperiod_tp_id2"]))
+			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
+		if (isset($ret["contact_name"]))
+			$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES);
+		if (isset($ret["contact_alias"]))
+			$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES);
+		if (isset($ret["contact_passwd"]))
+			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+		if (isset($ret["contact_lang"]))
+			$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES);
+		if (isset($ret["contact_hostNotifOpts"]))
+			$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
+		if (isset($ret["contact_svNotifOpts"]))
+			$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
+		if (isset($ret["contact_email"]))
+			$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES);
+		if (isset($ret["contact_pager"]))
+			$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES);
+		if (isset($ret["contact_comment"]))
+			$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
+		if (isset($ret["contact_oreon"]["contact_oreon"]))
+			$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
+		if (isset($ret["contact_admin"]["contact_admin"]))
+			$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
 		
-		if(isset($ret["contact_type_msg"]))
+		if (isset($ret["contact_type_msg"]))
 			$fields["contact_type_msg"] = $ret["contact_type_msg"];
 	
 		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
@@ -294,9 +308,10 @@
 	
 		if (isset($ret["contact_location"]))
 			$fields["contact_location"] = $ret["contact_location"];
-		
-		$fields["contact_hostNotifCmds"] = implode(",", $ret["contact_hostNotifCmds"]);
-		$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
+		if (isset($ret["contact_hostNotifCmds"]))
+			$fields["contact_hostNotifCmds"] = implode(",", $ret["contact_hostNotifCmds"]);
+		if (isset($ret["contact_svNotifCmds"]))
+			$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
 		if (isset($ret["contact_cgNotif"]))
 			$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
 		$oreon->CentreonLogAction->insertLog("contact", $contact_id["MAX(contact_id)"], $ret["contact_name"], "a", $fields);
