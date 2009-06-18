@@ -203,8 +203,8 @@
 	$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 
 	while ($tab =& $DBRESULT_NDO1->fetchRow()){
-		($class == "list_one") ? $class = "list_two" : $class = "list_one";
-		if ($h != $tab["host_name"] && $h != "") {
+		($class == "list_one") ? $class = "list_two" : $class = "list_one";		
+		if (isset($hs) && $flag) {
 			$buffer->startElement("h");
 			$buffer->writeAttribute("class", $class);
 			$buffer->writeElement("hn", $h);
@@ -237,21 +237,21 @@
 		$nb_service[$tab["current_state"]]++;
 		$sg = $tab["alias"];
 	}
-
-	$buffer->startElement("h");
-	$buffer->writeAttribute("class", $class);
-	$buffer->writeElement("hn", $h);
-	$buffer->writeElement("hs", $tab_status_host[$hs]);
-	$buffer->writeElement("hc", $tab_color_host[$hs]);
-	$buffer->writeElement("sk", $nb_service[0]);
-	$buffer->writeElement("sw", $nb_service[1]);
-	$buffer->writeElement("sc", $nb_service[2]);
-	$buffer->writeElement("su", $nb_service[3]);
-	$buffer->writeElement("sp", $nb_service[4]);
-	$buffer->endElement();
-	$buffer->endElement();
-	$buffer->endElement();
-	
+	if (isset($hs)) {
+		$buffer->startElement("h");
+		$buffer->writeAttribute("class", $class);
+		$buffer->writeElement("hn", $h);
+		$buffer->writeElement("hs", $tab_status_host[$hs]);
+		$buffer->writeElement("hc", $tab_color_host[$hs]);
+		$buffer->writeElement("sk", $nb_service[0]);
+		$buffer->writeElement("sw", $nb_service[1]);
+		$buffer->writeElement("sc", $nb_service[2]);
+		$buffer->writeElement("su", $nb_service[3]);
+		$buffer->writeElement("sp", $nb_service[4]);
+		$buffer->endElement();
+		$buffer->endElement();
+		$buffer->endElement();
+	}
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
