@@ -142,7 +142,7 @@
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	$numRows = $DBRESULT_PAGINATION->numRows();
 
-	$rq1 .= " ORDER BY hg.alias ";
+	$rq1 .= " ORDER BY $sort_type $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
@@ -182,6 +182,8 @@
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
+
+	$rq1 .= " ORDER BY $sort_type  $order";
 
 	$tabService = array();
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);

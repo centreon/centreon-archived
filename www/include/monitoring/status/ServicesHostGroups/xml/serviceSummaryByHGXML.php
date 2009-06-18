@@ -98,7 +98,7 @@
 	 
 	function get_services($host_name){
 		
-		global $pearDBndo, $pearDB, $ndo_base_prefix, $general_opt, $o, $instance, $is_admin, $groupnumber, $grouplist, $access;
+		global $pearDBndo, $pearDB, $ndo_base_prefix, $general_opt, $o, $instance, $is_admin, $groupnumber, $grouplist, $access, $sort_type, $order;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no";
@@ -131,7 +131,7 @@
 					" )";
 		
 		if($instance != "ALL")
-			$rq .= " AND no.instance_id = ".$instance;
+			$rq .= " AND no.instance_id = ".$instance;		
 
 		$DBRESULT =& $pearDBndo->query($rq);
 		$tab = array();
@@ -197,7 +197,7 @@
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	$numRows = $DBRESULT_PAGINATION->numRows();
 
-	$rq1 .= " ORDER BY hg.alias";
+	$rq1 .= " ORDER BY $sort_type $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	$buffer = new CentreonXML();
