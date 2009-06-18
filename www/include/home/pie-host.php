@@ -37,7 +37,7 @@
  */
  
  	include_once("@CENTREON_ETC@/centreon.conf.php");
-	require_once ($centreon_path . "www/class/Session.class.php");
+ 	require_once ($centreon_path . "www/class/Session.class.php");
 	require_once ($centreon_path . "www/class/Oreon.class.php");
 	require_once ($centreon_path . "www/class/centreonLang.class.php");
 
@@ -72,7 +72,6 @@
 			$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .	
 			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	$data = array();
 	$color = array();
