@@ -261,14 +261,14 @@
 						<td class="ListColLeft"><a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>&#9679;&nbsp;{$Tips3} "{$h.host_name}"</a></td>
 					</tr>
 					{/if}
-					{if $lcaTopo.203 || $admin == 1}
+					{if $lcaTopo.20301 || $admin == 1}
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./main.php?p=203&mode=0&id=HH_{$h.host_id}_01'>&#9679;&nbsp;{$Tips8} "{$h.host_name}"</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=20301&mode=0&id=HH_{$h.host_id}_01'>&#9679;&nbsp;{$Tips8} "{$h.host_name}"</a></td>
 					</tr>
 					{/if}
-					{if $lcaTopo.203 || $admin == 1}
+					{if $lcaTopo.20301 || $admin == 1}
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./main.php?p=203&mode=0&id=HS_{$service_id}_{$h.host_id}'>&#9679;&nbsp;{$Tips9} "{$svc_description}"</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=20301&mode=0&id=HS_{$service_id}_{$h.host_id}'>&#9679;&nbsp;{$Tips9} "{$svc_description}"</a></td>
 					</tr>
 					{/if}
 					{if $lcaTopo.307 || $admin == 1}
