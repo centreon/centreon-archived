@@ -71,7 +71,7 @@ cp -r $TMP_DIR/work/plugins/* $TMP_DIR/final/plugins >> $LOG_FILE 2>&1
 ## Install the plugins
 log "INFO" "$(gettext "Installing the plugins")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-m 644 -p $TMP_DIR/final/plugins \
+	-m 755 -p $TMP_DIR/final/plugins \
 	$TMP_DIR/final/plugins/* $NAGIOS_PLUGIN >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Installing the plugins")"
 
