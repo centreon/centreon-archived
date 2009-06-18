@@ -124,6 +124,7 @@
 		$type = substr($url_var, 0, 2);
 		$id = substr($url_var, 3, strlen($url_var));
 	}
+	
 	$buffer = new CentreonXML();
 	if ($normal_mode){
 		$i = 0;
@@ -415,7 +416,7 @@
 					foreach($hgs as $hg_id => $hg_name)
 						$hgs_open[$hg_id] = $hg_name;
 				}				
-			} else if($type == "HS"){ // svc + host_parent + hg_parent
+			} else if ($type == "HS"){ // svc + host_parent + hg_parent
 				// svc
 				$svcs_selected[$id] = getMyServiceName($id);
 				$svcs_selected[$id] = getMyServiceName($id);
@@ -437,13 +438,13 @@
 					foreach($hgs as $hg_id => $hg_name)
 						$hgs_open[$hg_id] = $hg_name;
 				}			
-			} else if($type == "HG"){ // HG + hostS_child + svcS_child
+			} else if ($type == "HG"){ // HG + hostS_child + svcS_child
 				
 				$hgs_selected[$id] = getMyHostGroupName($id);
 				$hgs_open[$id] = getMyHostGroupName($id);
 	
 				$hosts = getMyHostGroupHosts($id);
-				foreach($hosts as $host_id) {
+				foreach ($hosts as $host_id) {
 					$host_name = getMyHostName($host_id);
 					$hosts_open[$host_id] = $host_name;
 					$hosts_selected[$host_id] = $host_name;
@@ -455,13 +456,26 @@
 				}
 			}
 		}
-	
+		
+		$buffer->startElement("item");
+		$buffer->writeAttribute("nocheckbox", "1");
+		$buffer->writeAttribute("open", "1");
+		$buffer->writeAttribute("call", "1");
+		$buffer->writeAttribute("select", "1");
+		$buffer->writeAttribute("child", "1");
+		$buffer->writeAttribute("id", "RR_0");
+		$buffer->writeAttribute("text", _(" Host Groups "));
+		$buffer->writeAttribute("im0", "../16x16/clients.gif");
+		$buffer->writeAttribute("im1", "../16x16/clients.gif");
+		$buffer->writeAttribute("im2", "../16x16/clients.gif");
+		
 		$hostgroups = getAllHostgroups();
-		foreach($hostgroups as $hg_id => $hg_name){
+		foreach ($hostgroups as $hg_id => $hg_name){
 			/*
 			 * Hostgroups
 			 */
-			if (HG_has_one_or_more_host($hg_id)){
+			
+			if (HG_has_one_or_more_host($hg_id)) {
 	    		$buffer->startElement("item");
 	    		if (isset($hgs_open[$hg_id]))
 	    			$buffer->writeAttribute("open", "1");
@@ -477,17 +491,21 @@
 				/*
 				 * Hosts
 				 */
-				if (isset($hg_open) && $hg_open){
+				if (isset($hgs_open) && isset($hgs_open[$hg_id]) && $hgs_open[$hg_id]) {
 					$hosts = getMyHostGroupHosts($hg_id);
 					foreach ($hosts as $host_id => $host_name){
+						
 						$buffer->startElement("item");
+			    		
 			    		if (isset($hosts_open[$host_id]))
 			    			$buffer->writeAttribute("open", "1");
+			    		
 			    		if (isset($hosts_selected[$host_id]))
 			    			$buffer->writeAttribute("checked", "1");
+			    		
 			    		$buffer->writeAttribute("child", "1");
-			    		$buffer->writeAtrtibute("id", "HH_".$host_id."_".$hg_id);
-			    		$buffer->writeAttribute("text", getMyHostName($host_id));
+			    		$buffer->writeAttribute("id", "HH_".$host_id."_".$hg_id);
+			    		$buffer->writeAttribute("text", getMyHostName($host_id) . $host_id);
 			    		$buffer->writeAttribute("im0", "../16x16/server_network.gif");
 			    		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 			    		$buffer->writeAttribute("im2", "../16x16/server_network.gif");		        		
@@ -495,14 +513,14 @@
 						/*
 						 * Services
 						 */
-						if($host_open){
+						if ((isset($hosts_open[$host_id]) && $hosts_open[$host_id]) || (isset($hosts_selected[$host_id]) && $hosts_selected[$host_id]) ) {
 							$services = getMyHostServices($host_id);
-							foreach($services as $svc_id => $svc_name)	{//$tab_id = split(",",$openid);
+							foreach($services as $svc_id => $svc_name)	{
 					           	$buffer->startElement("item");					    		
 					    		if (isset($svcs_selected[$svc_id]))
 					    			$buffer->writeAttribute("checked", "1");
 					    		$buffer->writeAttribute("child", "0");
-					    		$buffer->writeAtrtibute("id", "HS_".$svc_id."_".$host_id."_".$hg_id);
+					    		$buffer->writeAttribute("id", "HS_".$svc_id."_".$host_id."_".$hg_id);
 					    		$buffer->writeAttribute("text", $svc_name);
 					    		$buffer->writeAttribute("im0", "../16x16/gear.gif");
 					    		$buffer->writeAttribute("im1", "../16x16/gear.gif");
@@ -514,8 +532,14 @@
 					}
 				}
 				$buffer->endElement();
+				
 			}
+			
 		}
+		$buffer->endElement();
+		/*
+		 * Orphan Hosts
+		 */
 		$buffer->startElement("item");
 		$buffer->writeAttribute("child", "1");
 		$buffer->writeAttribute("id", "HO_0");
@@ -523,7 +547,25 @@
 		$buffer->writeAttribute("im0", "../16x16/server_network.gif");
 		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
-		$buffer->endElement();		
+		$buffer->endElement();
+		
+		/*
+		 * Display SG
+		 */
+		$buffer->startElement("item");
+		$buffer->writeAttribute("nocheckbox", "1");
+		$buffer->writeAttribute("open", "1");
+		$buffer->writeAttribute("call", "1");
+		$buffer->writeAttribute("select", "1");
+		$buffer->writeAttribute("child", "1");
+		$buffer->writeAttribute("id", "RS_0");
+		$buffer->writeAttribute("text", _("Service Groups"));
+		$buffer->writeAttribute("im0", "../16x16/clients.gif");
+		$buffer->writeAttribute("im1", "../16x16/clients.gif");
+		$buffer->writeAttribute("im2", "../16x16/clients.gif");	
+		$buffer->writeElement("itemtext", "label");		
+		$buffer->endElement();
+		$buffer->endElement();
 	}
 	$buffer->endElement();
 	$buffer->output();
