@@ -58,7 +58,7 @@
 					background-color:<xsl:value-of select="//sk" />
 				</xsl:attribute>
 				<xsl:element name="a">
-			  		<xsl:attribute name="href">main.php?o=svc_ok&amp;p=2020202&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
+			  		<xsl:attribute name="href">main.php?o=svc_ok&amp;p=20201&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:value-of select="sk"/> OK
 				</xsl:element>
 				</span>&#160;
@@ -69,7 +69,7 @@
 					background-color:<xsl:value-of select="//sw" />
 				</xsl:attribute>
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?o=svc_warning&amp;p=2020202&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?o=svc_warning&amp;p=20201&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
 					<xsl:value-of select="sw"/> WARNING
 				</xsl:element>
 			</span>&#160;
@@ -80,7 +80,7 @@
 					background-color:<xsl:value-of select="//sc" />
 				</xsl:attribute>
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?o=svc_critical&amp;p=2020202&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?o=svc_critical&amp;p=20201&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
 					<xsl:value-of select="sc"/> CRITICAL
 				</xsl:element>
 			</span>&#160;
@@ -91,7 +91,7 @@
 					background-color:<xsl:value-of select="//su" />
 				</xsl:attribute>
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?o=svc_unknown&amp;p=2020202&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?o=svc_unknown&amp;p=20201&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
 					<xsl:value-of select="su"/> UNKNOWN
 				</xsl:element>
 			</span>&#160;
@@ -102,7 +102,7 @@
 					background-color:<xsl:value-of select="//sp" />
 				</xsl:attribute>
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?o=svc_pending&amp;p=2020202&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?o=svc_pending&amp;p=20201&amp;search=<xsl:value-of select="hn"/></xsl:attribute>
 					<xsl:value-of select="sp"/> PENDING
 				</xsl:element>
 			</span>
