@@ -108,9 +108,7 @@ class CentreonLog {
 	/*
 	 * Constructor
 	 */
-	public function CentreonUserLog ($uid, $pearDB) {
-		
-		$this->uid = $uid;
+	public function CentreonLog () {		
 		$this->errorType = array();
 		
 		/*
