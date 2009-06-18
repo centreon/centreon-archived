@@ -36,7 +36,7 @@ deconcept.SWFObject = function(swf, id, w, h, ver, c, quality, xiRedirectUrl, re
 	if(redirectUrl) { this.setAttribute('redirectUrl', redirectUrl); }
 }
 deconcept.SWFObject.prototype = {
-	useExpressInstall: function(path) {
+	useExpressInstall: function(path) {		
 		this.xiSWFPath = !path ? "expressinstall.swf" : path;
 		this.setAttribute('useExpressInstall', true);
 	},
@@ -71,7 +71,7 @@ deconcept.SWFObject.prototype = {
 		return variablePairs;
 	},
 	getSWFHTML: function() {
-		var swfNode = "";
+		var swfNode = "";		
 		if (navigator.plugins && navigator.mimeTypes && navigator.mimeTypes.length) { // netscape plugin architecture
 			if (this.getAttribute("doExpressInstall")) {
 				this.addVariable("MMplayerType", "PlugIn");
@@ -84,7 +84,7 @@ deconcept.SWFObject.prototype = {
 			var pairs = this.getVariablePairs().join("&");
 			 if (pairs.length > 0){ swfNode += 'flashvars="'+ pairs +'"'; }
 			swfNode += '/>';
-		} else { // PC IE
+		} else { // PC IE						
 			if (this.getAttribute("doExpressInstall")) {
 				this.addVariable("MMplayerType", "ActiveX");
 				this.setAttribute('swf', this.xiSWFPath);
@@ -98,27 +98,32 @@ deconcept.SWFObject.prototype = {
 			var pairs = this.getVariablePairs().join("&");
 			if(pairs.length > 0) {swfNode += '<param name="flashvars" value="'+ pairs +'" />';}
 			swfNode += "</object>";
-		}
+		}		
 		return swfNode;
 	},
 	write: function(elementId){
-		if(this.getAttribute('useExpressInstall')) {
+		if(this.getAttribute('useExpressInstall')) {						
 			// check to see if we need to do an express install
-			var expressInstallReqVer = new deconcept.PlayerVersion([6,0,65]);
-			if (this.installedVer.versionIsValid(expressInstallReqVer) && !this.installedVer.versionIsValid(this.getAttribute('version'))) {
-				this.setAttribute('doExpressInstall', true);
+			var expressInstallReqVer = new deconcept.PlayerVersion([6,0,65]);			
+			if (this.installedVer.versionIsValid(expressInstallReqVer) && !this.installedVer.versionIsValid(this.getAttribute('version'))) {												
+				this.setAttribute('doExpressInstall', true);				
 				this.addVariable("MMredirectURL", escape(this.getAttribute('xiRedirectUrl')));
 				document.title = document.title.slice(0, 47) + " - Flash Player Installation";
 				this.addVariable("MMdoctitle", document.title);
 			}
-		}
-		if(this.skipDetect || this.getAttribute('doExpressInstall') || this.installedVer.versionIsValid(this.getAttribute('version'))){
+		}		
+		if(this.skipDetect || this.getAttribute('doExpressInstall') || this.installedVer.versionIsValid(this.getAttribute('version'))){						
 			var n = (typeof elementId == 'string') ? document.getElementById(elementId) : elementId;
-			n.innerHTML = this.getSWFHTML();
+			n.innerHTML = this.getSWFHTML();			
 			return true;
-		}else{
-			if(this.getAttribute('redirectUrl') != "") {
+		}else{			
+			if(this.getAttribute('redirectUrl') != "") {				
 				document.location.replace(this.getAttribute('redirectUrl'));
+			}
+			if(this.getAttribute('xiRedirectUrl') != "") {
+				var n = (typeof elementId == 'string') ? document.getElementById(elementId) : elementId;
+				n.innerHTML = "This content requires the Adobe Flash Player. <a href='http://www.macromedia.com/go/getflash/'>Get Flash</a>.";
+				return true;
 			}
 		}
 		return false;
@@ -168,7 +173,7 @@ deconcept.SWFObjectUtil.getPlayerVersion = function(){
 		if (axo != null) {
 			PlayerVersion = new deconcept.PlayerVersion(axo.GetVariable("$version").split(" ")[1].split(","));
 		}
-	}
+	}		
 	return PlayerVersion;
 }
 deconcept.PlayerVersion = function(arrVersion){
