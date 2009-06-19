@@ -236,7 +236,7 @@
 	
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		print_r($_POST);
+		
 		$rq = "INSERT INTO `contact` ( " .
 				"`contact_id` , `timeperiod_tp_id` , `timeperiod_tp_id2` , `contact_name` , " .
 				"`contact_alias` , `contact_passwd` , `contact_lang` , " .
