@@ -268,7 +268,7 @@
 		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".$ret["contact_ldap_dn"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."' ": $rq .= "NULL ";
 		$rq .= ")";
-		print $rq;
+		
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(contact_id) FROM contact");
 		$contact_id = $DBRESULT->fetchRow();
