@@ -39,8 +39,7 @@
 	/*
 	 * Include config file
 	 */
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
@@ -483,6 +482,7 @@
 	    			$buffer->writeAttribute("checked", "1");
 	    		$buffer->writeAttribute("child", "1");
 	    		$buffer->writeAttribute("id", "HG_".$hg_id);
+	    		$buffer->writeAttribute("nocheckbox", "1");
 	    		$buffer->writeAttribute("text", $hg_name);
 	    		$buffer->writeAttribute("im0", "../16x16/clients.gif");
 	    		$buffer->writeAttribute("im1", "../16x16/clients.gif");
