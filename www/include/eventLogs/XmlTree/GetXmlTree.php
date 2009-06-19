@@ -482,6 +482,7 @@
 	    		if (isset($hgs_selected[$hg_id]))
 	    			$buffer->writeAttribute("checked", "1");
 	    		$buffer->writeAttribute("child", "1");
+	    		$buffer->writeAttribute("nocheckbox", "1");
 	    		$buffer->writeAttribute("id", "HG_".$hg_id);
 	    		$buffer->writeAttribute("text", $hg_name);
 	    		$buffer->writeAttribute("im0", "../16x16/clients.gif");
