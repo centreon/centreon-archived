@@ -125,7 +125,7 @@
 				
 				if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE")) {
 					$handle2 = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
-					$i = 0;
+					//$i = 0;
 					while (false !== ($filename2 = readdir($handle2)))	{
 						if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]."-") && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php"))	{
 							include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
