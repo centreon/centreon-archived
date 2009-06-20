@@ -50,7 +50,7 @@
 						</td>
 						<td class="SubTacticalDT">
 							<table>
-								<tr><td class="SubTableTactical" style="background-color:{$color.color_up};font-weight:bold;">{$HostStatus[0]} {$str_up}</td></tr>
+								<tr><td class="SubTableTactical" style="background-color:{$color.color_up};font-weight:bold;"><a href={$url_hostOK}>{$HostStatus[0]} {$str_up}</a></td></tr>
 								{if $HostInact[0] > 0}
 								<tr><td class="SubTacticalDT" style="background-color:#ccff99;">{$HostInact[0]} {$str_disabled}</td></tr>
 								{/if}
@@ -153,7 +153,7 @@
 								<tr><td class="SubTacticalDT" style="background-color:#ee9572;">{$SvcOnPbHost[2]} {$str_pbhost}</td></tr>
 								{/if}
 								{if $SvcUnhandled[2] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:{$color.color_critical};font-weight:bold;">{$SvcUnhandled[2]} {$str_unhandledpb}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_critical};font-weight:bold;"><a href={$url_svc_unhand}>{$SvcUnhandled[2]} {$str_unhandledpb}</a></td></tr>
 								{/if}
 							</table>
 						</td>

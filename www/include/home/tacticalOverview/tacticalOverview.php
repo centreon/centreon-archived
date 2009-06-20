@@ -431,14 +431,15 @@
 			/*
 			 * URL
 			 */
-			$tpl->assign("url_hostPb",     "main.php?p=20103&o=hpb");
-			$tpl->assign("url_host_unhand","main.php?p=20105&o=h_unhandled");
-			$tpl->assign("url_svc_unhand", "main.php?p=20215&o=svc_unhandled");
-			$tpl->assign("url_svc_ack",    "main.php?p=2020402&o=svcOV&acknowledge=1");			
-			$tpl->assign("url_ok",         "main.php?p=2020101&o=svc_ok");
-			$tpl->assign("url_critical",   "main.php?p=2020103&o=svc_critical");
-			$tpl->assign("url_warning",    "main.php?p=2020102&o=svc_warning");
-			$tpl->assign("url_unknown",    "main.php?p=2020104&o=svc_unknown");
+			$tpl->assign("url_hostPb",     "main.php?p=20103&o=hpb&search=");
+			$tpl->assign("url_hostOK",     "main.php?p=20103&o=h&search=");
+			$tpl->assign("url_host_unhand","main.php?p=20105&o=h_unhandled&search=");
+			$tpl->assign("url_svc_unhand", "main.php?p=20215&o=svc_unhandled&search=");
+			$tpl->assign("url_svc_ack",    "main.php?p=2020402&o=svcOV&acknowledge=1&search=");
+			$tpl->assign("url_ok",         "main.php?p=2020101&o=svc_ok&search=");
+			$tpl->assign("url_critical",   "main.php?p=2020103&o=svc_critical&search=");
+			$tpl->assign("url_warning",    "main.php?p=2020102&o=svc_warning&search=");
+			$tpl->assign("url_unknown",    "main.php?p=2020104&o=svc_unknown&search=");
 			$tpl->assign("url_hostdetail", "main.php?p=201&o=hd&host_name=");
 			$tpl->assign("url_svcdetail",  "main.php?p=202&o=svcd&host_name=");
 			$tpl->assign("url_svcdetail2", "&service_description=");
