@@ -342,7 +342,7 @@
 			$buffer->writeAttribute("select", "1");
 			$buffer->writeAttribute("child", "1");
 			$buffer->writeAttribute("id", "RR_0");
-			$buffer->writeAttribute("text", _(" Host Groups "));
+			$buffer->writeAttribute("text", _("Host Groups"));
 			$buffer->writeAttribute("im0", "../16x16/clients.gif");
 			$buffer->writeAttribute("im1", "../16x16/clients.gif");
 			$buffer->writeAttribute("im2", "../16x16/clients.gif");	
@@ -464,7 +464,7 @@
 		$buffer->writeAttribute("select", "1");
 		$buffer->writeAttribute("child", "1");
 		$buffer->writeAttribute("id", "RR_0");
-		$buffer->writeAttribute("text", _(" Host Groups "));
+		$buffer->writeAttribute("text", _("Host Groups"));
 		$buffer->writeAttribute("im0", "../16x16/clients.gif");
 		$buffer->writeAttribute("im1", "../16x16/clients.gif");
 		$buffer->writeAttribute("im2", "../16x16/clients.gif");
@@ -506,7 +506,7 @@
 			    		
 			    		$buffer->writeAttribute("child", "1");
 			    		$buffer->writeAttribute("id", "HH_".$host_id."_".$hg_id);
-			    		$buffer->writeAttribute("text", getMyHostName($host_id) . $host_id);
+			    		$buffer->writeAttribute("text", getMyHostName($host_id));
 			    		$buffer->writeAttribute("im0", "../16x16/server_network.gif");
 			    		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 			    		$buffer->writeAttribute("im2", "../16x16/server_network.gif");		        		
