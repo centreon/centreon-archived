@@ -312,7 +312,7 @@
 		 */
 		$tpl->assign("shortcut", _("Shortcuts"));
 		$tpl->assign("Tips1", _("View all services of this host"));
-		$tpl->assign("Tips2", _("View all graphs of this host"));
+		$tpl->assign("Tips2", _("View graphs of this host"));
 		$tpl->assign("Tips3", _("Manage"));
 		$tpl->assign("Tips4", _("View report of this host"));
 		$tpl->assign("Tips5", _("View logs of this host"));

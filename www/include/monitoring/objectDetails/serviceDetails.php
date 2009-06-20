@@ -402,13 +402,13 @@
 		 */
 		$tpl->assign("shortcut", _("Shortcuts"));
 		$tpl->assign("Tips1", _("Configure service"));
-		$tpl->assign("Tips3", _("View all graphs of host"));
-		$tpl->assign("Tips4", _("View reporting of host"));
-		$tpl->assign("Tips5", _("View reporting of service"));
-		$tpl->assign("Tips6", _("View Host status page"));
-		$tpl->assign("Tips7", _("View all service status of host"));
-		$tpl->assign("Tips8", _("View all logs of host"));
-		$tpl->assign("Tips9", _("View all logs of service"));
+		$tpl->assign("Tips3", _("View graphs of host"));
+		$tpl->assign("Tips4", _("View report of host"));
+		$tpl->assign("Tips5", _("View report of service"));
+		$tpl->assign("Tips6", _("View host status page"));
+		$tpl->assign("Tips7", _("View status of all services on host"));
+		$tpl->assign("Tips8", _("View logs of host"));
+		$tpl->assign("Tips9", _("View logs of service"));
 
 		/*
 		 * Ext informations
