@@ -49,9 +49,11 @@
 		$end_date = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
 		$end_date = (isset($_GET["end"])) ? $_GET["end"] : $end_date;
 		$interval = array(0, 0);
+		if ($period == "" && $start_date == "" && $end_date == "")
+			$period = "yesterday";
 		if ($period == "" && $start_date != "") {
 			$interval = getDateSelect_customized($start_date, $end_date);
-		}else {
+		} else {
 			$interval = getDateSelect_predefined($period);
 		}
 		$start_date = $interval[0];
