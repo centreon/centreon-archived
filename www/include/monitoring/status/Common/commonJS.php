@@ -286,7 +286,7 @@ function pagination_changed(){
 	if (_num >= page_max && _numRows && _num > 0){
 		viewDebugInfo('!!num!!'+_num);
 		viewDebugInfo('!!max!!'+page_max);
-		_num = page_max - 1;
+		_num = Number(page_max) - 1;
 		viewDebugInfo('new:'+_num);
 		monitoring_refresh();
 	}
@@ -294,8 +294,8 @@ function pagination_changed(){
 	var p = getVar('p');
 	var o = getVar('o');
 	var search = '' + getVar('search');
-	var _numnext = _num + 1;
-	var _numprev = _num - 1;
+	var _numnext = Number(_num) + 1;
+	var _numprev = Number(_num) - 1;
 
 <?php	
 	for ($i = 1; $i <= 2; $i++) { ?>
@@ -307,25 +307,26 @@ function pagination_changed(){
 	var _linkaction_right<?php echo $i; ?> = document.createElement("a");
 	_linkaction_right<?php echo $i; ?>.href = '#' ;
 	_linkaction_right<?php echo $i; ?>.indice = _numnext;
-	_linkaction_right<?php echo $i; ?>.onclick=function(){change_page(this.indice)}
+	_linkaction_right<?php echo $i; ?>.onclick=function(){change_page(Number(this.indice))}
+	alert(_numnext + ' --- '+_num);
 	_linkaction_right<?php echo $i; ?>.appendChild(_img_next<?php echo $i; ?>);
 
 	var _linkaction_last<?php echo $i; ?> = document.createElement("a");
 	_linkaction_last<?php echo $i; ?>.href = '#' ;
 	_linkaction_last<?php echo $i; ?>.indice = page_max - 1;
-	_linkaction_last<?php echo $i; ?>.onclick=function(){change_page(this.indice)}
+	_linkaction_last<?php echo $i; ?>.onclick=function(){change_page(Number(this.indice))}
 	_linkaction_last<?php echo $i; ?>.appendChild(_img_last<?php echo $i; ?>);
 
 	var _linkaction_first<?php echo $i; ?> = document.createElement("a");
 	_linkaction_first<?php echo $i; ?>.href = '#' ;
 	_linkaction_first<?php echo $i; ?>.indice = 0;
-	_linkaction_first<?php echo $i; ?>.onclick=function(){change_page(this.indice)}
+	_linkaction_first<?php echo $i; ?>.onclick=function(){change_page(Number(this.indice))}
 	_linkaction_first<?php echo $i; ?>.appendChild(_img_first<?php echo $i; ?>);
 
 	var _linkaction_left<?php echo $i; ?> = document.createElement("a");
 	_linkaction_left<?php echo $i; ?>.href = '#' ;
 	_linkaction_left<?php echo $i; ?>.indice = _numprev;
-	_linkaction_left<?php echo $i; ?>.onclick=function(){change_page(this.indice)}
+	_linkaction_left<?php echo $i; ?>.onclick=function(){change_page(Number(this.indice))}
 	_linkaction_left<?php echo $i; ?>.appendChild(_img_previous<?php echo $i; ?>);
 
 	var _pagination<?php echo $i; ?> = document.getElementById('pagination<?php echo $i; ?>');
