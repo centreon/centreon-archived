@@ -308,7 +308,6 @@ function pagination_changed(){
 	_linkaction_right<?php echo $i; ?>.href = '#' ;
 	_linkaction_right<?php echo $i; ?>.indice = _numnext;
 	_linkaction_right<?php echo $i; ?>.onclick=function(){change_page(Number(this.indice))}
-	alert(_numnext + ' --- '+_num);
 	_linkaction_right<?php echo $i; ?>.appendChild(_img_next<?php echo $i; ?>);
 
 	var _linkaction_last<?php echo $i; ?> = document.createElement("a");
