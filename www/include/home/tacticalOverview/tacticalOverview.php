@@ -103,7 +103,7 @@
 			}
 			
 			// Get Hosts Problems			
-			$rq1 = 	" SELECT DISTINCT obj.name1 , hs.current_state, hs.last_check, hs.output, h.address, unix_timestamp(hs.last_state_change) AS lsc" .
+			$rq1 = 	" SELECT DISTINCT obj.name1 , hs.current_state, unix_timestamp(hs.last_check) AS last_check, hs.output, h.address, unix_timestamp(hs.last_state_change) AS lsc" .
 					" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects obj,  ".$ndo_base_prefix."hosts h " .
 					" WHERE obj.object_id = hs.host_object_id".
 					" AND obj.object_id = h.host_object_id" .
@@ -128,12 +128,14 @@
 			while ($ndo =& $DBRESULT_NDOHOSTS->fetchRow()) {				
 				$tab_hostprobname[$nbhostpb] = $ndo["name1"];
 	            $tab_hostprobstate[$nbhostpb] = $ndo["current_state"];
-	            $tab_hostproblast[$nbhostpb] = $ndo["last_check"];
+	            $tab_hostproblast[$nbhostpb] = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $oreon->user->getMyGMT());
 	            $tab_hostprobduration[$nbhostpb] = Duration::toString(time() - $ndo["lsc"]);
 	            $tab_hostproboutput[$nbhostpb] = $ndo["output"];
         	    $tab_hostprobip[$nbhostpb] = $ndo["address"];
 				$nbhostpb++;				
-			}			
+			}
+			$DBRESULT_NDOHOSTS->free();
+			
 			$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);			
 			/*
 			 * Get the id's of problem hosts
@@ -151,11 +153,13 @@
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 			
 			$pbCount = 0;
-			while ($ndo =& $DBRESULT_NDO1->fetchRow())
+			while ($ndo =& $DBRESULT_NDO1->fetchRow()) {
 				if ($ndo["current_state"] != 0){
 					$hostPb[$pbCount] = $ndo["host_object_id"];			
 					$pbCount++;
 				}
+			}
+			$DBRESULT_NDO1->free();
 			
 			/*
 			 * Get Host Ack  UP(0), DOWN(1),  UNREACHABLE(2)
@@ -175,6 +179,7 @@
 				$hostAck[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
 				$hostUnhand[$ndo["current_state"]] -= $hostAck[$ndo["current_state"]]; 
 			}
+			$DBRESULT_NDO1->free();
 
 			/*
 			 * Get Host inactive objects
@@ -194,7 +199,7 @@
 				$hostInactive[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 				$hostUnhand[$ndo["current_state"]] -= $hostInactive[$ndo["current_state"]];				
 			}
-			 
+			$DBRESULT_NDO1->free();
 			 
 			/*
 			 * Get Host Unrea Not Unhandled
@@ -223,9 +228,11 @@
 			
 			$SvcStat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		
-			while ($ndo =& $DBRESULT_NDO2->fetchRow())
+			while ($ndo =& $DBRESULT_NDO2->fetchRow()) {
 				$SvcStat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
-	
+			} 
+			$DBRESULT_NDO2->free();
+			
 			/*
 			 * Get on pb host
 			*/
@@ -260,6 +267,7 @@
 						if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
 							$onPbHost[$ndo["current_state"]]++;
 			}
+			$DBRESULT_NDO1->free();
 		
 			
 			/*
@@ -288,9 +296,10 @@
 			$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 			
 			$svcAck = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-			while ($ndo =& $DBRESULT_NDO1->fetchRow())
+			while ($ndo =& $DBRESULT_NDO1->fetchRow()) {
 				$svcAck[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.object_id)"];
-			
+			}
+			$DBRESULT_NDO1->free();
 			/*
 			 * Get Services Inactive objects
 			 */
@@ -313,20 +322,22 @@
 			$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 			
 			$svcInactive = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-			while($ndo =& $DBRESULT_NDO2->fetchRow())
+			while ($ndo =& $DBRESULT_NDO2->fetchRow()) {
 				$svcInactive[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
-	
+			}
+			$DBRESULT_NDO2->free();
+			
+			
 			/*
 			 * Get Undandled Services
 			 */
-			
 			$svcUnhandled = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 			for ($i=0; $i<=4; $i++)
 				$svcUnhandled[$i] = $SvcStat[$i] - $svcAck[$i] - $svcInactive[$i] - $onPbHost[$i];			
 			 
 			/*
 			 * Get problem table
-			*/
+			 */
 			if (!$is_admin)
 				$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
 						" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht" .
@@ -374,7 +385,7 @@
 						$is_unhandled = 0;
 				}
 	
-				if ($is_unhandled){
+				if ($is_unhandled) {
 					$tab_hostname[$j] = $ndo["name1"];
 					$tab_svcname[$j] = $ndo["name2"];
 					$tab_state[$j] = $ndo["current_state"];
@@ -389,6 +400,8 @@
 					$j++;
 				}
 			}
+			$DBRESULT_NDO1->free();
+			
 			$nb_pb = $j;
 			 
 			$path = "./include/home/tacticalOverview/";
