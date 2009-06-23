@@ -449,13 +449,13 @@ sub updateServiceState($$$$$$) {
     my @tab = (0=>"100", 1=>"75", 2=>"0", 3=>"0");	
 
     if (defined($status)){
-		if ($status eq "OK"){
+		if ($status ~= "/OK/"){
 		    $status = 100;
-		} elsif ($status eq "WARNING"){
+		} elsif ($status ~= "/WARNING/"){
 		    $status = 75;
-		} elsif ($status eq "CRITICAL"){
+		} elsif ($status ~= "/CRITICAL/"){
 		    $status = 0;
-		} elsif ($status eq "UNKNOWN"){
+		} elsif ($status ~= "/UNKNOWN/"){
 		    undef($status);
 		} else {
 			;
@@ -470,22 +470,22 @@ sub updateServiceState($$$$$$) {
 
     # call function to check if DB exist and else create it
     if (defined($index) && defined($status) && $_[2]){
-	if (-e $configuration->{'RRDdatabase_status_path'}."/".$index.".rrd"){
-	    updateRRDDatabase($configuration->{'RRDdatabase_status_path'}, $index, "status", $_[2], $status);
-	} else {
-	    my $begin = time() - 200000;
-	    $interval = getServiceCheckIntervalWithSVCid($index) * getIntervalLenght($con_oreon);
-#	    $interval = 3 if (!defined($interval));
-#	    $interval = getIntervalLenght($con_oreon) * $interval;
-	    my $interval_hb = $interval * 2;
-	    $nb_value = getLenStorageDB() / $interval;
-
-	    createRRDDatabase($configuration->{'RRDdatabase_status_path'}, $index, $begin, $interval, "status", $nb_value);
-	    tuneRRDDatabase($configuration->{'RRDdatabase_status_path'}, $index, "status", $interval_hb);
-	    updateRRDDatabase($configuration->{'RRDdatabase_status_path'}, $index, "status", $_[2], $status);
-
-	    undef($begin);
-	}
+		if (-e $configuration->{'RRDdatabase_status_path'}."/".$index.".rrd"){
+		    updateRRDDatabase($configuration->{'RRDdatabase_status_path'}, $index, "status", $_[2], $status);
+		} else {
+		    my $begin = time() - 200000;
+		    $interval = getServiceCheckIntervalWithSVCid($index) * getIntervalLenght($con_oreon);
+	#	    $interval = 3 if (!defined($interval));
+	#	    $interval = getIntervalLenght($con_oreon) * $interval;
+		    my $interval_hb = $interval * 2;
+		    $nb_value = getLenStorageDB() / $interval;
+	
+		    createRRDDatabase($configuration->{'RRDdatabase_status_path'}, $index, $begin, $interval, "status", $nb_value);
+		    tuneRRDDatabase($configuration->{'RRDdatabase_status_path'}, $index, "status", $interval_hb);
+		    updateRRDDatabase($configuration->{'RRDdatabase_status_path'}, $index, "status", $_[2], $status);
+	
+		    undef($begin);
+		}
     }
 }
 
