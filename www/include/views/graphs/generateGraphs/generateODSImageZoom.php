@@ -310,9 +310,9 @@
 		
 		/*
 		 * Add Timezone for current user.
-		 */
-		 
-		$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+		 */	 
+		if ($CentreonGMT->used())
+			$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
 	
 		/*
 		 * Escape Special Chars
