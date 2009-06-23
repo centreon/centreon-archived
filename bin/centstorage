@@ -449,13 +449,13 @@ sub updateServiceState($$$$$$) {
     my @tab = (0=>"100", 1=>"75", 2=>"0", 3=>"0");	
 
     if (defined($status)){
-		if ($status ~= "/OK/"){
+		if ($status =~ /OK/){
 		    $status = 100;
-		} elsif ($status ~= "/WARNING/"){
+		} elsif ($status =~ /WARNING/){
 		    $status = 75;
-		} elsif ($status ~= "/CRITICAL/"){
+		} elsif ($status =~ /CRITICAL/){
 		    $status = 0;
-		} elsif ($status ~= "/UNKNOWN/"){
+		} elsif ($status =~ /UNKNOWN/){
 		    undef($status);
 		} else {
 			;
