@@ -52,7 +52,7 @@ sub checkDBDirectory($) {
     if (defined($_[0])) {
 	if (!-d $_[0]){
 	    writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
-	    if (!mkdir($_[0], "0000")) {
+	    if (!mkdir($_[0], 0775)) {
 		writeLogFile("Can't create ".$_[0]." : permission denied\n");
 		return 0;
 	    } else {
