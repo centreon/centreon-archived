@@ -147,13 +147,13 @@
 		global $pearDB, $oreon;
 		
 		foreach ($hosts as $key => $value)	{
-			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr, host WHERE hsr.host_host_id = '".$key."' AND host.host_id = hsr.host_host_id AND host.host_register = '1'";
+			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id) AS nbr, hsr.service_service_id FROM host_service_relation hsr, host WHERE hsr.host_host_id = '".$key."' AND host.host_id = hsr.host_host_id AND host.host_register = '1'";
 			$DBRESULT = & $pearDB->query($rq);
 			
 			$DBRESULT3 =& $pearDB->query("SELECT host_name FROM `host` WHERE `host_id` = '".$key."' LIMIT 1");
 			$hostname = $DBRESULT3->fetchRow();
 			
-			while ($row =& $DBRESULT->fetchRow())
+			while ($row =& $DBRESULT->fetchRow()) {
 				if ($row["nbr"] == 1)	{
 					$DBRESULT4 =& $pearDB->query("SELECT service_description FROM `service` WHERE `service_id` = '".$row["service_service_id"]."' LIMIT 1");
 					$svcname = $DBRESULT4->fetchRow();
@@ -161,7 +161,7 @@
 					$DBRESULT2 =& $pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
 					$oreon->CentreonLogAction->insertLog("service", $row["service_service_id"], $hostname['host_name']."/".$svcname["service_description"], "d");
 				}
-			
+			}
 			
 			$DBRESULT =& $pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
 			if ($oreon->user->get_version() >= 3) {
@@ -433,6 +433,7 @@
 	
 	function insertHost($ret, $macro_on_demand = NULL)	{
 		global $form, $pearDB, $oreon, $is_admin;
+		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL)		{
@@ -510,8 +511,8 @@
 		$host_id = $DBRESULT->fetchRow();		
 
 		/*
- 		**  Insert multiple templates
- 		*/
+ 		 *  Insert multiple templates
+ 		 */
  		$multiTP_logStr = "";
  		if (isset($ret["use"]) && $ret["use"]){
  			$already_stored = array();
@@ -572,56 +573,100 @@
 		/*
 		 *  Logs
 		 */
-		$fields["command_command_id"] = $ret["command_command_id"];
-		$fields["command_command_id_arg1"] = $ret["command_command_id_arg1"];
-		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
-		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-		$fields["command_command_id2"] = $ret["command_command_id2"];
-		$fields["command_command_id_arg2"] = $ret["command_command_id_arg2"];
-		$fields["host_name"] = htmlentities($ret["host_name"], ENT_QUOTES);
-		$fields["host_alias"] = htmlentities($ret["host_alias"], ENT_QUOTES);
-		$fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES);
-		$fields["host_max_check_attempts"] = $ret["host_max_check_attempts"];
-		$fields["host_check_interval"] = $ret["host_check_interval"];
-		$fields["host_active_checks_enabled"] = $ret["host_active_checks_enabled"]["host_active_checks_enabled"];
-		$fields["host_passive_checks_enabled"] = $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"];
-		$fields["host_checks_enabled"] = $ret["host_checks_enabled"]["host_checks_enabled"];
-		$fields["host_obsess_over_host"] = $ret["host_obsess_over_host"]["host_obsess_over_host"];
-		$fields["host_check_freshness"] = $ret["host_check_freshness"]["host_check_freshness"];
-		$fields["host_freshness_threshold"] = $ret["host_freshness_threshold"];
-		$fields["host_event_handler_enabled"] = $ret["host_event_handler_enabled"]["host_event_handler_enabled"];
-		$fields["host_low_flap_threshold"] = $ret["host_low_flap_threshold"];
-		$fields["host_high_flap_threshold"] = $ret["host_high_flap_threshold"];
-		$fields["host_flap_detection_enabled"] = $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"];
-		$fields["host_process_perf_data"] = $ret["host_process_perf_data"]["host_process_perf_data"];
-		$fields["host_retain_status_information"] = $ret["host_retain_status_information"]["host_retain_status_information"];
-		$fields["host_retain_nonstatus_information"] = $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"];
-		$fields["host_notification_interval"] = $ret["host_notification_interval"];
-		$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
+		if (isset($ret["command_command_id"]))
+			$fields["command_command_id"] = $ret["command_command_id"];
+		if (isset($ret["command_command_id_arg1"]))
+			$fields["command_command_id_arg1"] = $ret["command_command_id_arg1"];
+		if (isset($ret["timeperiod_tp_id"]))
+			$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
+		if (isset($ret["timeperiod_tp_id2"]))
+			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
+		if (isset($ret["command_command_id2"]))
+			$fields["command_command_id2"] = $ret["command_command_id2"];
+		if (isset($ret["command_command_id_arg2"]))
+			$fields["command_command_id_arg2"] = $ret["command_command_id_arg2"];
+		if (isset($ret["host_name"]))
+			$fields["host_name"] = htmlentities($ret["host_name"], ENT_QUOTES);
+		if (isset($ret["host_alias"]))
+			$fields["host_alias"] = htmlentities($ret["host_alias"], ENT_QUOTES);
+		if (isset($ret["host_address"]))
+			$fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES);
+		if (isset($ret["host_max_check_attempts"]))
+			$fields["host_max_check_attempts"] = $ret["host_max_check_attempts"];
+		if (isset($ret["host_check_interval"]))
+			$fields["host_check_interval"] = $ret["host_check_interval"];
+		if (isset($ret["host_active_checks_enabled"]))
+			$fields["host_active_checks_enabled"] = $ret["host_active_checks_enabled"]["host_active_checks_enabled"];
+		if (isset($ret["host_passive_checks_enabled"]))
+			$fields["host_passive_checks_enabled"] = $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"];
+		if (isset($ret["host_checks_enabled"]))
+			$fields["host_checks_enabled"] = $ret["host_checks_enabled"]["host_checks_enabled"];
+		if (isset($ret["host_obsess_over_host"]))
+			$fields["host_obsess_over_host"] = $ret["host_obsess_over_host"]["host_obsess_over_host"];
+		if (isset($ret["host_check_freshness"]))
+			$fields["host_check_freshness"] = $ret["host_check_freshness"]["host_check_freshness"];
+		if (isset($ret["host_freshness_threshold"]))
+			$fields["host_freshness_threshold"] = $ret["host_freshness_threshold"];
+		if (isset($ret["host_event_handler_enabled"]))
+			$fields["host_event_handler_enabled"] = $ret["host_event_handler_enabled"]["host_event_handler_enabled"];
+		if (isset($ret["host_low_flap_threshold"]))
+			$fields["host_low_flap_threshold"] = $ret["host_low_flap_threshold"];
+		if (isset($ret["host_high_flap_threshold"]))
+			$fields["host_high_flap_threshold"] = $ret["host_high_flap_threshold"];
+		if (isset($ret["host_flap_detection_enabled"]))
+			$fields["host_flap_detection_enabled"] = $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"];
+		if (isset($ret["host_process_perf_data"]))
+			$fields["host_process_perf_data"] = $ret["host_process_perf_data"]["host_process_perf_data"];
+		if (isset($ret["host_retain_status_information"]))
+			$fields["host_retain_status_information"] = $ret["host_retain_status_information"]["host_retain_status_information"];
+		if (isset($ret["host_retain_nonstatus_information"]))
+			$fields["host_retain_nonstatus_information"] = $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"];
+		if (isset($ret["host_notification_interval"]))
+			$fields["host_notification_interval"] = $ret["host_notification_interval"];
+		if (isset($ret["host_first_notification_delay"]))
+			$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
 		$fields["host_notifOpts"] = "";
 		if (isset($ret["host_notifOpts"]))
 			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));
-		$fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
-		$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
+		if (isset($ret["host_notifications_enabled"]))
+			$fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
+		if (isset($ret["host_first_notification_delay"]))
+			$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
 		$fields["host_stalOpts"] = "";
 		if (isset($ret["host_stalOpts"]))
 			$fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
-		$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES);
-		$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES);
-		$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES);
-		$fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES);
-		$fields["host_register"] = $ret["host_register"]["host_register"];
-		$fields["host_activate"] = $ret["host_activate"]["host_activate"];
-		$fields["templates"] = $multiTP_logStr;
-		$fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES);
-		$fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES);
-		$fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES);
-		$fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES);
-		$fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES);
-		$fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES);
-		$fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES);
-		$fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES);
-		$fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES);
+		if (isset($ret["host_snmp_community"]))
+			$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES);
+		if (isset($ret["host_snmp_version"]))
+			$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES);
+		if (isset($ret["host_location"]))
+			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES);
+		if (isset($ret["host_comment"]))
+			$fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES);
+		if (isset($ret["host_register"]))
+			$fields["host_register"] = $ret["host_register"]["host_register"];
+		if (isset($ret["host_activate"]))
+			$fields["host_activate"] = $ret["host_activate"]["host_activate"];
+		if (isset($ret["templates"]))
+			$fields["templates"] = $multiTP_logStr;
+		if (isset($ret["ehi_notes"]))
+			$fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES);
+		if (isset($ret["ehi_notes_url"]))
+			$fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES);
+		if (isset($ret["ehi_action_url"]))
+			$fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES);
+		if (isset($ret["ehi_icon_image"]))
+			$fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES);
+		if (isset($ret["ehi_icon_image_alt"]))
+			$fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES);
+		if (isset($ret["ehi_vrml_image"]))
+			$fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES);
+		if (isset($ret["ehi_statusmap_image"]))
+			$fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES);
+		if (isset($ret["ehi_2d_coords"]))
+			$fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES);
+		if (isset($ret["ehi_3d_coords"]))
+			$fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES);
 		$fields["host_parents"] = "";
 		if (isset($ret["host_parents"]))
 			$fields["host_parents"] = implode(",", $ret["host_parents"]);
@@ -695,6 +740,7 @@
 	 		$str .= ",'" . $result['host_tpl_id'] . "'";
 	 		$str = getHostListInUse ($str, $result['host_tpl_id']);
 	 	}
+	 	$DBRESULT->free();
 	 	return $str;
 	 }
 	 
@@ -757,6 +803,7 @@
 				$DBRESULT4 =& $pearDB->query($rq2);
 			}			
 		}
+		$DBRESULT3->free();
 		
 		$rq = "SELECT host_tpl_id " .
 				"FROM host_template_relation " .
@@ -778,9 +825,11 @@
 						"AND hsr.host_host_id = '".$hID."'";
 				$DBRESULT4 =& $pearDB->query($rq2);
 			}
+			$DBRESULT4->free();
 			$antiLoop[$scndHID] = 1;
 			deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"], $host_list, $antiLoop);
-		}	
+		}
+		$DBRESULT->free();	
 	}
 	
 	function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
