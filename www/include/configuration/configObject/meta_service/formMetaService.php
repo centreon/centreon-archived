@@ -155,7 +155,7 @@
 	$form->addElement('header', 'information', _("General Information"));
 
 	$form->addElement('text', 'meta_name', _("Meta Service Name"), $attrsText);
-	$form->addElement('text', 'meta_display', _("Display format"), $attrsText);
+	$form->addElement('text', 'meta_display', _("Output format string (printf-style)"), $attrsText);
 	$form->addElement('text', 'warning', _("Warning Level"), $attrsText2);
 	$form->addElement('text', 'critical', _("Critical Level"), $attrsText2);
 	$form->addElement('select', 'calcul_type', _("Calculation Type"), $calType);
@@ -166,7 +166,7 @@
 	$form->addGroup($tab, 'meta_select_mode', _("Selection Mode"), '<br />');
 	$form->setDefaults(array('meta_select_mode' => array('meta_select_mode'=>'1')));
 
-	$form->addElement('text', 'regexp_str', _("SQL matching"), $attrsText);
+	$form->addElement('text', 'regexp_str', _("SQL LIKE-clause expression"), $attrsText);
 	$form->addElement('select', 'metric', _("Metric"), $metrics);
 
 	/*
