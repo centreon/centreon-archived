@@ -97,7 +97,7 @@
 					$str .= "cfg_file=".$nagios["cfg_dir"].$cfg.".cfg\n";
 				}
 	}
-	$str .= "resource_file=".$nagios["cfg_dir"]."/resource.cfg\n";
+	$str .= "resource_file=".$nagios["cfg_dir"]."resource.cfg\n";
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key => $value)	{
 		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{	

@@ -100,7 +100,7 @@
 					$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
 				}
 	}
-	$str .= "resource_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/resource.cfg\n";
+	$str .= "resource_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."resource.cfg\n";
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key=>$value)	{
 		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{	
