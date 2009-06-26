@@ -76,8 +76,8 @@
 		$services = array(NULL => NULL);
 		$services = getMyHostServices($host_id);
 		foreach ($services as $key => $value)	{
-			$value2 = str_replace("#S#", "/", $value);			
-			$value2 = str_replace("#BS#", "\\", $value2);			
+			$value2 = str_replace("/", "#S#", $value);
+			$value2 = str_replace("\\", "#BS#", $value2);
 			$DBRESULT =& $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name FROM metrics m, index_data i WHERE i.host_name = '".getMyHostName($host_id)."' AND i.service_description = '".$value2."' and i.id=m.index_id ORDER BY metric_name, unit_name");
 			while ($metricSV =& $DBRESULT->fetchRow())	{
 				$services1[$key] = $value;
