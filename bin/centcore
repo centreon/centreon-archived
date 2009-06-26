@@ -330,8 +330,8 @@ sub GetPerfData($){
 	if (!defined($distantperffile)) {
 		writeLogFile("Cannot get perfdata file. Unkown perfdata file on poller $id");
 	} else {
-		writeLogFile("$rsync -d --remove-source-files --port=$port $distantconnexion:$distantperffile $localtmpperffile") if ($debug);
-		`$rsync -d --remove-source-files --port=$port $distantconnexion:$distantperffile $localtmpperffile 2>> /dev/null`;
+		writeLogFile("$rsync -d --remove-sent-files --protocol=25 --port=$port $distantconnexion:$distantperffile $localtmpperffile") if ($debug);
+		`$rsync -d --remove-sent-files --protocol=25 --port=$port $distantconnexion:$distantperffile $localtmpperffile 2>> /dev/null`;
 	
 		# Write data from distant poller on local file for centstorage
 		if (-f $localtmpperffile){
