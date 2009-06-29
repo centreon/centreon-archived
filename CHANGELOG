@@ -1,3 +1,15 @@
+## Centreon 2.1-RC5
+
+=> fix: remove warning in censtorage
+=> fix: remove warning in cencore
+=> fix: english wording
+=> fix: remove ldap import pb
+=> fix: change scaled problem by default
+=> fix: slope mode in graph is enabled by default
+=> fix: fix date period selection in reporting
+=> fix: #965
+=> fix: #986
+
 ## Centreon 2.1-RC4
 
 => fix: generation of SNMP traps definition files
