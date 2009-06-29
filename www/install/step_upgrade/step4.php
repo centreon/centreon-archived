@@ -38,36 +38,41 @@
  	
 	include_once $centreon_path . "/www/class/centreonDB.class.php";
 	
-	$pearDB = new CentreonDB();
+	if (count(glob("Update-DB-".$version["value"]."_to_*.sql")) == 0) {
+        require_once("./step_upgrade/step6.php");
+    } else {
 	
-	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$version =& $DBRESULT->fetchRow();
-	
-	aff_header("Centreon Upgrade Wizard", "Select Version", 4); ?>
-	In order for your Centreon upgrade to work properly, please select the appropriate Centreon upgrade script.<br /><br />
-	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-      <tr>
-        <th style="padding-left:20px;" colspan="2">Upgrade SQL Scripts</th>
-      </tr>
-	  <tr>
-        <td><b>MySQL Scripts</b></td>
-        <td align="right">
-        	<select name="script">
-        	<?php       		
-        		chdir('sql/centreon/');
-        		foreach (glob("Update-DB-".$version["value"]."_to_*.sql") as $filename) {
-					$filenameDisplayed = str_replace("Update-DB-", "", $filename);
-					$filenameDisplayed = str_replace(".sql", "", $filenameDisplayed);
-					$filenameDisplayed2 = str_replace("_", " ", $filenameDisplayed);
-					echo '<option value="'.$filenameDisplayed.'">'.$filenameDisplayed2.'</option>'; 
-				}
-        	?>
-        	</select>
-       	</td>
-      </tr>
-	</table>
-	<?php
-	aff_middle();
-	print "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
-	aff_footer();
+		$pearDB = new CentreonDB();
+		
+		$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
+		$version =& $DBRESULT->fetchRow();
+		
+		aff_header("Centreon Upgrade Wizard", "Select Version", 4); ?>
+		In order for your Centreon upgrade to work properly, please select the appropriate Centreon upgrade script.<br /><br />
+		<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
+	      <tr>
+	        <th style="padding-left:20px;" colspan="2">Upgrade SQL Scripts</th>
+	      </tr>
+		  <tr>
+	        <td><b>MySQL Scripts</b></td>
+	        <td align="right">
+	        	<select name="script">
+	        	<?php       		
+	        		chdir('sql/centreon/');
+	        		foreach (glob("Update-DB-".$version["value"]."_to_*.sql") as $filename) {
+						$filenameDisplayed = str_replace("Update-DB-", "", $filename);
+						$filenameDisplayed = str_replace(".sql", "", $filenameDisplayed);
+						$filenameDisplayed2 = str_replace("_", " ", $filenameDisplayed);
+						echo '<option value="'.$filenameDisplayed.'">'.$filenameDisplayed2.'</option>'; 
+					}
+	        	?>
+	        	</select>
+	       	</td>
+	      </tr>
+		</table>
+		<?php
+		aff_middle();
+		print "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
+		aff_footer();	
+	}
 ?>
