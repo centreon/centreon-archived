@@ -223,8 +223,13 @@ sub prepardPerfdataParsed($) {
     
     @line_tab = split('\t', $str);
     undef($str);
-    $line_tab[2] =~ s/\\/\#BS\#/g;
-    $line_tab[2] =~ s/\//\#S\#/g;
+
+    # Purge Variable
+    if (defined($line_tab[2])) {
+        $line_tab[2] =~ s/\\/\#BS\#/g;
+        $line_tab[2] =~ s/\//\#S\#/g;
+    }
+
     return @line_tab;
 }
 
