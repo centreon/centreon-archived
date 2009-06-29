@@ -66,11 +66,10 @@
 	       	$str = "";
 	        foreach ($file_sql as $line)
 	        	if ($line[0] != "#" && $line[0] != "-") {
-	        		$pos = strrpos($line, ";");
+	        		$pos = strrpos($line, ";\n");
                 	if ($pos != false) {
                     	$str .= $line;
                     	$str = rtrim($str);
-                    	$str = str_replace(";", "", $str);                    
                    	$DBRES = $pearDBO->query($str);
                     $str = NULL;
                 } else
@@ -104,11 +103,10 @@
 	        $str = "";
 	        foreach ($file_sql as $line)
 	        	if ($line[0] != "#" && $line[0] != "-") {
-	        		$pos = strrpos($line, ";");
+	        		$pos = strrpos($line, ";\n");
                 	if ($pos != false) {
                     	$str .= $line;
                     	$str = rtrim($str);
-                    	$str = str_replace(";", "", $str);                    
                    	$DBRES = $pearDBndo->query($str);
                     $str = NULL;
                 	} else
@@ -149,11 +147,10 @@
 	        $str = "";
 	        foreach ($file_sql as $line)
 	        	if ($line[0] != "#" && $line[0] != "-") {
-	        		$pos = strrpos($line, ";");
+	        		$pos = strrpos($line, ";\n");
                 	if ($pos != false) {
                     	$str .= $line;
                     	$str = rtrim($str);
-                    	$str = str_replace(";", "", $str);                    
                    	$DBRES = $pearDB->query($str);
                     $str = NULL;
                 	} else
