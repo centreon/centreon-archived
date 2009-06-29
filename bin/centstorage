@@ -73,6 +73,12 @@ require "@CENTREON_ETC@/conf.pm";
 sub writeLogFile($){
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
     open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+   
+   	# Add initial 0 if value is under 10
+    $hour = "0".$hour if ($hour < 10);
+    $min = "0".$min if ($min < 10);
+    $sec = "0".$sec if ($sec < 10);
+   	
     print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
     close LOG or warn $!;
 }
