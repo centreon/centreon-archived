@@ -6,12 +6,12 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$genOpt_nagios_version}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.nagios_version.label}</td><td class="FormRowValue">{$form.nagios_version.html}</td></tr>
 	
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$genOpt_nagios_init_script}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.nagios_init_script.label}</td><td class="FormRowValue">{$form.nagios_init_script.html}</td></tr>
+		<!-- <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$genOpt_nagios_init_script}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.nagios_init_script.label}</td><td class="FormRowValue">{$form.nagios_init_script.html}</td></tr> --!>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$genOpt_nagios_direstory}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.nagios_path.label}</td><td class="FormRowValue">{$form.nagios_path.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.nagios_path_bin.label}</td><td class="FormRowValue">{$form.nagios_path_bin.html}</td></tr>
+		<!-- <tr class="list_one"><td class="FormRowField">{$form.nagios_path.label}</td><td class="FormRowValue">{$form.nagios_path.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.nagios_path_bin.label}</td><td class="FormRowValue">{$form.nagios_path_bin.html}</td></tr> --!>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_path_img.label}</td><td class="FormRowValue">{$form.nagios_path_img.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
 	
