@@ -126,7 +126,11 @@
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
 	
 	$form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
-	$form->setDefaults(array('command_type' => '2'));
+	if ($type != "")	
+		$form->setDefaults(array('command_type' => $type));
+	else
+		$form->setDefaults(array('command_type' => '2'));
+		
 	$form->addElement('text', 'command_name', _("Command Name"), $attrsText);
 	$form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
 	$form->addElement('text', 'command_hostaddress', _("\$HOSTADDRESS\$"), $attrsText);

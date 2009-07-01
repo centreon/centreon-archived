@@ -176,7 +176,7 @@
 	/*
 	 * Different messages we put in the template
 	 */
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a&type=".htmlentities($_GET['type'], ENT_QUOTES), "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
 	$redirectType = $form->addElement('hidden', 'type');
 	$redirectType->setValue($type);
