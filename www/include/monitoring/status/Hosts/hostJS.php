@@ -77,6 +77,8 @@ var _default_instance = '<?php echo $default_poller?>';
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
+var _selectedElem = new Array();
+
 function set_header_title(){
 
 	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
@@ -207,4 +209,57 @@ function goM(_time_reload,_sid,_o){
 	_on = 1;
 	set_header_title();
 }
+
+function putInSelectedElem(id) {
+	_selectedElem[id] = id;
+}
+
+function removeFromSelectedElem(id) {
+	if (typeof(_selectedElem[id]) != 'undefined') {
+    	_selectedElem[id] = undefined;
+    }
+}
+
+function cmdCallback(cmd) {
+	var keyz;
+
+	_cmd = cmd;
+    _getVar = "";
+    if (cmd != '72') {
+		return 1;
+    }
+    else {
+    	for (keyz in _selectedElem) {
+        	if (keyz == _selectedElem[keyz]) {
+            	_getVar += '&select[' + keyz + ']=1';
+            }
+        }
+        Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: 'Acknowledgement'});
+        return 0;
+    }
+}
+
+function send_the_command() {
+	if (window.XMLHttpRequest) {
+    	xhr_cmd = new XMLHttpRequest();
+    }
+    else if (window.ActiveXObject)
+    {
+    	xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    var comment = document.getElementById('popupComment').value;
+    var sticky = document.getElementById('sticky').checked;
+    var persistent = document.getElementById('persistent').checked;
+    var notify = document.getElementById('notify').checked;
+    var ackhostservice = 0;
+    if (document.getElementById('ackhostservice')) {
+    	ackhostservice = document.getElementById('ackhostservice').checked;
+    }
+    var author = document.getElementById('author').value;
+
+    xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+    xhr_cmd.send(null);
+	Modalbox.hide();
+}
+
 </SCRIPT>

@@ -191,14 +191,14 @@
 		$action_list[93] = _("Hosts : Disable Check");		
 	}
 	
-	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
+	$attrs = array( 'onchange'=>"javascript: if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
     $form->addElement('select', 'o1', NULL, $action_list, $attrs);
 
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
 
-	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();");
+	$attrs = array( 'onchange'=>"javascript: if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
     $form->addElement('select', 'o2', NULL, $action_list, $attrs);
 	$form->setDefaults(array('o2' => NULL));
 	$o2 =& $form->getElement('o2');

@@ -68,8 +68,14 @@ function checkUncheckAll(theElement) {
       	if (theForm[z].type == 'checkbox' && theForm[z].disabled == '0'){
 		  	if (theForm[z].checked) {
 				theForm[z].checked = false;
+				if (typeof(_selectedElem) != 'undefined') {
+					removeFromSelectedElem(theForm[z].id);
+				}
 		   	} else {
 		  		theForm[z].checked = true;
+		  		if (typeof(_selectedElem) != 'undefined') {
+					putInSelectedElem(theForm[z].id);
+				}
 			}
 		}
 	}

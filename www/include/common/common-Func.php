@@ -135,6 +135,20 @@
 		return $tpl;
 	}
 
+	function initSmartyTplForPopup($path = NULL, $tpl = NULL, $subDir = NULL, $centreon_path = NULL)	{
+		if (!$tpl)
+			return;
+		$tpl->template_dir = $path . $subDir;
+		$tpl->compile_dir = "$centreon_path/GPL_LIB/SmartyCache/compile";
+		$tpl->config_dir = "$centreon_path/GPL_LIB/SmartyCache/config";
+		$tpl->cache_dir = "$centreon_path/GPL_LIB/SmartyCache/cache";
+
+		$tpl->caching = 0;
+		$tpl->compile_check = true;
+		$tpl->force_compile = true;
+		return $tpl;
+	}
+
 	function initSmartyTplForLogs($path = NULL, $tpl = NULL)	{
 		if (!$tpl)
 			return;
