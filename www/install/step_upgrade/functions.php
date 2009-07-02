@@ -52,7 +52,6 @@
 	   <title><?php print $str; ?></title>
 	   <link rel="shortcut icon" href="../img/favicon.ico">
 	   <link rel="stylesheet" href="./install.css" type="text/css">
-	   <SCRIPT language='javascript' src='../include/javascript/functions.js'></SCRIPT>
 	   <SCRIPT language='javascript'>
 		function LicenceAccepted(){
 			var theForm     = document.forms[0];

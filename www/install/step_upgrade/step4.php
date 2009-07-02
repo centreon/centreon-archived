@@ -38,15 +38,17 @@
  	
 	include_once $centreon_path . "/www/class/centreonDB.class.php";
 	
+	chdir('sql/centreon/');
+	    
+	$pearDB = new CentreonDB();
+		
+	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
+	$version =& $DBRESULT->fetchRow();        		
+	
 	if (count(glob("Update-DB-".$version["value"]."_to_*.sql")) == 0) {
         require_once("./step_upgrade/step6.php");
     } else {
 	
-		$pearDB = new CentreonDB();
-		
-		$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-		$version =& $DBRESULT->fetchRow();
-		
 		aff_header("Centreon Upgrade Wizard", "Select Version", 4); ?>
 		In order for your Centreon upgrade to work properly, please select the appropriate Centreon upgrade script.<br /><br />
 		<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
@@ -58,7 +60,6 @@
 	        <td align="right">
 	        	<select name="script">
 	        	<?php       		
-	        		chdir('sql/centreon/');
 	        		foreach (glob("Update-DB-".$version["value"]."_to_*.sql") as $filename) {
 						$filenameDisplayed = str_replace("Update-DB-", "", $filename);
 						$filenameDisplayed = str_replace(".sql", "", $filenameDisplayed);
