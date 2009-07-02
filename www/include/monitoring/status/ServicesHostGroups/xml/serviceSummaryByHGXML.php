@@ -174,6 +174,13 @@
 	if ($instance != "ALL")
 		$rq1 .= 	" AND no.instance_id = ".$instance;
 	
+	
+	if	($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
+		$rq1 .= " AND no.name1 IN (" .
+				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+				" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
+	}
+	
 	if ($o == "svcSumHG_ack_0") {
 		$rq1 .= 	" AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
