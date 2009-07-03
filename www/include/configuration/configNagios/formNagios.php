@@ -673,7 +673,7 @@
         $tpl->assign('CachedCheck', _("Cached Check"));
         $tpl->assign('MiscOptions', _("Misc Options"));
         $tpl->assign('LoggingOptions', _("Logging Options"));
-        $tpl->assign('Timouts', _("Timouts"));
+        $tpl->assign('Timouts', _("Timeouts"));
         $tpl->assign('Archives', _("Archives"));
         $tpl->assign('StatesRetention', _("States Retention"));
         $tpl->assign('NDO', _("NDO"));
