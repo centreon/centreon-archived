@@ -138,7 +138,7 @@
 	$form->addRule('purge_policy_bin', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testPurgePolicyExistence');
 	$form->addRule('purge_policy_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	#
 	##End of form definition

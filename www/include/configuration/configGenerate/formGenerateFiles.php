@@ -229,7 +229,7 @@
 							$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
 							$filename = array_pop(explode("/", $filename));
 							if (!$bool)
-								$msg_copy[$host["id"]] .= display_copying_file($filename, _(" - movement <font color='res'>KO</font>"));
+								$msg_copy[$host["id"]] .= display_copying_file($filename, " - "._("movement")."<font color='res'>KO</font>");
 						}
 						if (strlen($msg_copy[$host["id"]])){
 							$msg_copy[$host["id"]] = "<table border=0 width=300>".$msg_copy[$host["id"]]."</table>";

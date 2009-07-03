@@ -667,7 +667,7 @@
 			$form->addRule('service_hPars', _("HostGroup or Host Required"), 'required');
 		$form->registerRule('exist', 'callback', 'testServiceExistence');
 		$form->addRule('service_description', _("This description is in conflict with another one that is already defined in the selected relation(s)"), 'exist');
-		$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+		$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 	} else if ($o == "mc")	{
 		if ($form->getSubmitValue("submitMC"))
 			$from_list_menu = false;
@@ -711,7 +711,7 @@
 	$tpl->assign("sort4", _("Service Extended Info"));
 	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign('javascript', "<script type='text/javascript'>function showLogo(_img_dst, _value) {var _img = document.getElementById(_img_dst + '_img');_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );		
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
+	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 	$tpl->assign("p", $p);
 	
 	$valid = false;

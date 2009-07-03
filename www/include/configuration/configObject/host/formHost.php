@@ -712,7 +712,7 @@
 			$from_list_menu = true;
 	}
 	
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 	    
 	/*
 	 * Smarty template Init
@@ -761,12 +761,12 @@
 	"_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );
 	
 	if ($o != "a" && $o != "c")
-		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
+		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 	else {
 		/*
 		 * Get interval for the good poller.
 		 */
-		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
+		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 	}
 		
 	$valid = false;

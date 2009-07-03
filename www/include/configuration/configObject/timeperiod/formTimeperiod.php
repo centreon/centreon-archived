@@ -111,7 +111,7 @@
 	$form->addRule('tp_alias', _("Compulsory Alias"), 'required');
 	$form->registerRule('exist', 'callback', 'testTPExistence');
 	$form->addRule('tp_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	# 
 	##End of form definition

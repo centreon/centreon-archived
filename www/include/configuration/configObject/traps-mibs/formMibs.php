@@ -66,7 +66,7 @@
 	 * Init Formulary
 	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', _("Load a MIB"));
+	$form->addElement('header', 'title', _("Import SNMP traps from MIB file"));
 
 	/*
 	 * Manufacturer information
@@ -80,7 +80,7 @@
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('mnftr', _("Compulsory Name"), 'required');
 	$form->addRule('filename', _("Compulsory Name"), 'required');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	/*
 	 * Smarty template Init
@@ -91,7 +91,7 @@
 	/*
 	 * Just watch a Command information
 	 */
-	$subA =& $form->addElement('submit', 'submit', _("Load"));
+	$subA =& $form->addElement('submit', 'submit', _("Import"));
 	$form->addElement('header', 'status',_("Status"));
 	$valid = false;
 	$msg = NULL;

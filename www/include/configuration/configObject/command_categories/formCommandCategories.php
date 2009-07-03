@@ -115,7 +115,7 @@
 	$form->registerRule('existName', 'callback', 'testCommandCategorieExistence');
 	$form->addRule('category_name', _("Name is already in use"), 'existName');
 	
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	/*
 	 * Smarty template Init

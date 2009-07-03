@@ -605,7 +605,7 @@
 	$tpl->assign('javascript', "<script type='text/javascript'>function showLogo(_img_dst, _value) {".
 	"var _img = document.getElementById(_img_dst + '_img');".
 	"_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
+	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{

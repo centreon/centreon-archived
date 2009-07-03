@@ -185,7 +185,7 @@
 		if ($debug) {
 			$time_end = microtime_float2(); 
 			$now = $time_end - $time_start; 
-			print round($now,3) . _(" seconds \n");
+			print round($now,3) . " " . _("seconds") . "\n";
 		}
 		
 		if (count($tabElem)){

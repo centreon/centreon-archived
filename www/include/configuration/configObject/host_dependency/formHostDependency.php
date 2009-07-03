@@ -173,7 +173,7 @@
 	$form->addRule('dep_hostChilds', _("Circular Definition"), 'cycle');
 	$form->registerRule('exist', 'callback', 'testHostDependencyExistence');
 	$form->addRule('dep_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 
 	/*

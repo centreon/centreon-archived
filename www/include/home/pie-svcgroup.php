@@ -220,7 +220,7 @@
 	$g->x_axis_colour( '#909090', '#ADB5C7' );
 	$g->y_axis_colour( '#909090', '#ADB5C7' );
 	
-	$g->set_tool_tip( _(' Availability of services from the group ') . '#x_label# : #val# %' );
+	$g->set_tool_tip( _('Availability of services from the group') . ' #x_label# : #val# %' );
 	
 	$g->set_x_labels(array($strnameY));
 	$g->set_y_max( 100 );

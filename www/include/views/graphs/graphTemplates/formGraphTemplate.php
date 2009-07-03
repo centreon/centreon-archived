@@ -188,7 +188,7 @@
 	$form->addRule('title', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 
 	/*

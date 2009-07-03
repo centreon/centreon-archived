@@ -162,7 +162,7 @@
 	$form->addRule('dep_msChilds', _("Circular Definition"), 'cycle');
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('dep_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	#
 	##End of form definition

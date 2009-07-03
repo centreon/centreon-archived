@@ -168,7 +168,7 @@
 	$form->addRule('cgi_comment', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testCgiExistence');
 	$form->addRule('cgi_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>" . _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 	
 	# 
 	##End of form definition

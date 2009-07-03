@@ -129,7 +129,7 @@
 	 * Components linked with
 	 */
 	$form->addElement('header', 'graphs', _("Graph Choice"));
-    $ams1 =& $form->addElement('advmultiselect', 'compo_graphs', _("Graph List"), $graphs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'compo_graphs', _("Graph List"), $graphs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -153,11 +153,11 @@
 	$form->addRule('ds_name', _("Required Field"), 'required');
 	$form->addRule('ds_legend', _("Required Field"), 'required');
 	$form->addRule('ds_color_line', _("Required Field"), 'required');
-    $form->addRule('ds_color_area', _("Required Field"), 'required');
+	$form->addRule('ds_color_area', _("Required Field"), 'required');
 
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	/*
 	 * Smarty template Init
@@ -170,7 +170,7 @@
 		 * Just watch
 		 */
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&compo_id=".$compo_id."'"));
-	    $form->setDefaults($compo);
+		$form->setDefaults($compo);
 		$form->freeze();
 	} else if ($o == "c")	{
 		/*
@@ -178,7 +178,7 @@
 		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Delete"));
-	    $form->setDefaults($compo);
+		$form->setDefaults($compo);
 	} else if ($o == "a")	{
 		/*
 		 * Add

@@ -291,7 +291,7 @@
 	$form->addRule('dep_hostChilds', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('esc_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 	
 	# 
 	##End of form definition
@@ -327,7 +327,7 @@
 	$tpl->assign("sort5", _("Meta Services Escalation"));
 	$tpl->assign("sort6", _("Servicegroups Escalation"));
 	
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
+	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 	
 	$valid = false;
 	if ($form->validate())	{

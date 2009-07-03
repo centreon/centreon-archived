@@ -146,7 +146,7 @@
 	$form->addRule('traps_args', _("Compulsory Name"), 'required');
 	$form->registerRule('exist', 'callback', 'testTrapExistence');
 	$form->addRule('traps_oid', _("A same Oid element already exists"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	#
 	##End of form definition

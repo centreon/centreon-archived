@@ -211,7 +211,7 @@
 	$form->addRule('perfparse_comment', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('perfparse_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>" . _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 	
 	# 
 	##End of form definition

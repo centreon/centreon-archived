@@ -190,7 +190,7 @@
 	$form->addRule('acl_groups', _("Compulsory Groups"), 'required');
 	$form->registerRule('exist', 'callback', 'testActionExistence');
 	$form->addRule('acl_action_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	# End of form definition
 

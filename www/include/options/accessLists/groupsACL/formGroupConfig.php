@@ -124,7 +124,7 @@
 	$form->addRule('acl_group_alias', _("Compulsory Alias"), 'required');
 	$form->registerRule('exist', 'callback', 'testGroupExistence');
 	$form->addRule('acl_group_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	# End of form definition
 
