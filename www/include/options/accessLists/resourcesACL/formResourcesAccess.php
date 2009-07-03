@@ -215,7 +215,7 @@
 	/*
 	 * Service Groups Add
 	 */
-	$form->addElement('header', 'SSharedExplain', _(""));
+	$form->addElement('header', 'SSharedExplain', "");
 	
 	$ams2 =& $form->addElement('advmultiselect', 'acl_sg', _("Services Groups"), $service_groups, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
