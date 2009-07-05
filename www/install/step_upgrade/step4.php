@@ -46,6 +46,7 @@
 	$version =& $DBRESULT->fetchRow();        		
 	
 	if (count(glob("Update-DB-".$version["value"]."_to_*.sql")) == 0) {
+    	chdir("../..");
         require_once("./step_upgrade/step6.php");
     } else {
 	
