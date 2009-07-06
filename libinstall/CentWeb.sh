@@ -315,17 +315,20 @@ pear_module="0"
 while [ "$pear_module" -eq 0 ] ; do 
 	check_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
 	if [ "$?" -ne 0 ] ; then
-		yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
-		if [ "$?" -eq 0 ] ; then
-			upgrade_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
-			install_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
-		else
-			pear_module="1"
-		fi
-	else 
-		echo_success "$(gettext "All PEAR modules")" "$ok"
-		pear_module="1"
-	fi
+    if [ "${PEAR_AUTOINST:-0}" -eq 0 ]; then
+  		yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
+      [ "$?" -eq 0 ] && PEAR_AUTOINST=1
+    fi
+  	if [ "$PEAR_AUTOINST" -eq 1 ] ; then
+  		upgrade_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
+  		install_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
+  	else
+  			pear_module="1"
+  	fi
+ 	else 
+  	echo_success "$(gettext "All PEAR modules")" "$ok"
+ 		pear_module="1"
+ 	fi
 done
 
 ## Create configfile for web install
