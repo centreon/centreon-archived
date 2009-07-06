@@ -64,11 +64,11 @@
 	# Var information to format the element
 	#
 	
-	$attrsText 		= array("size"=>"30");
+	$attrsText 	= array("size"=>"30");
 	$attrsText2 	= array("size"=>"6");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$template 	= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin
@@ -95,7 +95,7 @@
 	$form->addElement('text', 'lower_limit', _("Lower Limit"), $attrsText2);
 	$form->addElement('text', 'upper_limit', _("Upper Limit"), $attrsText2);
 	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
-	$form->addElement('text', 'base', _("Base"), $attrsText2);
+	$form->addElement('select', 'base', _("Base"), array("1000"=>"1000", "1024"=>"1024"));
 	
 	$periods = array(	"10800"=>_("Last 3 Hours"),
 						"21600"=>_("Last 6 Hours"),
