@@ -229,6 +229,42 @@ check_result $? "$(gettext "Install nagiosPerfTrace")"
 
 #echo_success "$(gettext "Set nagiosPerfTrace properties")" "$ok"
 
+## purgeLogs
+log "INFO" "$(gettext "Change macros for purgeLogs")"
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	$TMP_DIR/src/cron/purgeLogs > $TMP_DIR/work/cron/purgeLogs
+check_result $? "$(gettext "Change macros for purgeLogs")"
+
+cp $TMP_DIR/work/cron/purgeLogs $TMP_DIR/final/cron/purgeLogs >> $LOG_FILE 2>&1
+log "INFO" "$(gettext "Install purgeLogs")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
+	$TMP_DIR/final/cron/purgeLogs \
+	$INSTALL_DIR_CENTREON/purgeLogs >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install purgeLogs")"
+
+#echo_success "$(gettext "Set purgeLogs properties")" "$ok"
+
+## purgeCentstorage
+log "INFO" "$(gettext "Change macros for purgeCentstorage")"
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@CENTREON_PATH@|'"$CENTREON_PATH"'|g' \
+	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	$TMP_DIR/src/cron/purgeCentstorage > $TMP_DIR/work/cron/purgeCentstorage
+check_result $? "$(gettext "Change macros for purgeCentstorage")"
+
+cp $TMP_DIR/work/cron/purgeLogs $TMP_DIR/final/cron/purgeCentstorage >> $LOG_FILE 2>&1
+log "INFO" "$(gettext "Install purgeCentstorage")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
+	$TMP_DIR/final/cron/purgeCentstorage \
+	$INSTALL_DIR_CENTREON/purgeCentstorage >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install purgeCentstorage")"
+
+#echo_success "$(gettext "Set purgeCentstorage properties")" "$ok"
+
 ## cron file 
 log "INFO" "$(gettext "Change macros for centstorage.cron")"
 ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \

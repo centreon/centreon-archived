@@ -53,7 +53,6 @@ use File::Copy;
 my $installedPath = "@CENTREON_PATH@/";
 
 my $LOG = "@CENTREON_LOG@/centreon-purge.log";
-my $PID = "@CENTREON_RUNDIR@/centreon-purge.pid";
 
 # Init Globals
 use vars qw($debug $LOG %status $generalcounter);
@@ -66,9 +65,16 @@ $debug = 0;
 require "@CENTREON_ETC@/conf.pm";
 
 sub writeLogFile($){
-	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
-	print LOG time()." - ".$_[0];
-	close LOG or warn $!;
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
+    open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+   
+   	# Add initial 0 if value is under 10
+    $hour = "0".$hour if ($hour < 10);
+    $min = "0".$min if ($min < 10);
+    $sec = "0".$sec if ($sec < 10);
+   	
+    print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
+    close LOG or warn $!;
 }
 
 # checking if pid file exists.
