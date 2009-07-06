@@ -51,6 +51,8 @@ mkdir -p $TMP_DIR/final/www/install
 mkdir -p $TMP_DIR/work/www/install
 mkdir -p $TMP_DIR/final/bin
 mkdir -p $TMP_DIR/work/bin
+mkdir -p $TMP_DIR/final/cron
+mkdir -p $TMP_DIR/work/cron
 [ ! -d $INSTALL_DIR_CENTREON/examples ] && \
 	mkdir -p $INSTALL_DIR_CENTREON/examples
 cp -f $BASE_DIR/tmpl/install/centstorage.init.d $TMP_DIR/src
