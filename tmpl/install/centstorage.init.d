@@ -157,8 +157,10 @@ case "$1" in
 		if status_centstorage > /dev/null; then
 			echo ''
 			echo 'Warning - running centstorage did not exit in time'
+			exit 1
 		else
 			echo ' done.'
+			exit 0
 		fi
     ;;
     
