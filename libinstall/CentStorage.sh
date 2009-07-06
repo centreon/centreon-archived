@@ -287,10 +287,11 @@ check_result $? "$(gettext "Install centreonPurge.sh")"
 #echo_success "$(gettext "Set purgeCentstorage properties")" "$ok"
 
 
-## cron file 
+## cron file
 log "INFO" "$(gettext "Change macros for centstorage.cron")"
 ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
+	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CRONUSER@|'"$NAGIOS_USER"'|g' \
 	$BASE_DIR/tmpl/install/centstorage.cron > $TMP_DIR/work/centstorage.cron
