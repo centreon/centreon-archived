@@ -31,14 +31,19 @@
 # 
 # For more information : contact@centreon.com
 # 
-# SVN : $URL:  $
-# SVN : $Id:  $
+# SVN : $URL$
+# SVN : $Id$
 #
 ####################################################################################
 
 sudo /etc/init.d/centstorage stop
+
+# Wait a little 
 sleep 10
-/usr/local/centreon/bin/centreonPurge
+
+/usr/local/centreon/cron/purgeCentstorage
+/usr/local/centreon/cron/purgeLogs
+
 sudo /etc/init.d/centstorage start
 
 exit 0
