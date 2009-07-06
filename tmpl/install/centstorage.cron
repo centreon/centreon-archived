@@ -46,3 +46,5 @@ CRONTAB_EXEC_USER=""
 # Cron for tracing Nagios Poller Performances
 */5 * * * * @CRONUSER@ @CENTSTORAGE_BINDIR@/nagiosPerfTrace >> @CENTREON_LOG@/nagiosPerfTrace.log 2>&1
 
+# Cron for databin and logs purge
+0 2 * * * @CRONUSER@ @PHP_BIN@/centreonPurge.sh >> @CENTREON_LOG@/centreonPurge.log 2>&1
