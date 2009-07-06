@@ -57,6 +57,12 @@ while (-e "$lock_file") {
 $pid = getpgrp(0);
 `echo $pid > $lock_file`;
 
+sub writeLogFile($){
+	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+	print LOG time()." - ".$_[0];
+	close LOG or warn $!;
+}
+
 # Init MySQL Connexion
 my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 
@@ -64,7 +70,7 @@ my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql
 my $retention;
 my $sth_config = $dbh->prepare("SELECT `archive_retention` FROM `config`");
 if (!$sth_config->execute) {
-	die "Error:" . $sth_config->errstr . "\n";
+	print "Error:" . $sth_config->errstr . "\n";
 } else {
 	my $data = $sth_config->fetchrow_hashref();
 	$retention = $data->{'archive_retention'};
@@ -72,13 +78,13 @@ if (!$sth_config->execute) {
 	undef($data);
 }
 
-if ($retention ne 0){
+if (defined($retention) && $retention ne 0){
     my $last_log = time() - ($retention * 24 * 60 * 60);
   	
   	# Drop Database
     my $res = $dbh->do("DELETE FROM `log` WHERE `ctime` < '$last_log'");
     if (!defined($res)) {
-    	die "SQL UPDATE Error : DELETE FROM `log` WHERE `ctime` < '$last_log'\n";
+    	print "SQL UPDATE Error : DELETE FROM `log` WHERE `ctime` < '$last_log'\n";
     }
     undef($res);
 }
