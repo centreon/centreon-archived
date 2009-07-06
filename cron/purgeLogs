@@ -1,0 +1,87 @@
+#! /usr/bin/perl -w
+################################################################################
+# Copyright 2005-2009 MERETHIS
+# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# GPL Licence 2.0.
+# 
+# This program is free software; you can redistribute it and/or modify it under 
+# the terms of the GNU General Public License as published by the Free Software 
+# Foundation ; either version 2 of the License.
+# 
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along with 
+# this program; if not, see <http://www.gnu.org/licenses>.
+# 
+# Linking this program statically or dynamically with other modules is making a 
+# combined work based on this program. Thus, the terms and conditions of the GNU 
+# General Public License cover the whole combination.
+# 
+# As a special exception, the copyright holders of this program give MERETHIS 
+# permission to link this program with independent modules to produce an executable, 
+# regardless of the license terms of these independent modules, and to copy and 
+# distribute the resulting executable under terms of MERETHIS choice, provided that 
+# MERETHIS also meet, for each linked independent module, the terms  and conditions 
+# of the license of that module. An independent module is a module which is not 
+# derived from this program. If you modify this program, you may extend this 
+# exception to your version of the program, but you are not obliged to do so. If you
+# do not wish to do so, delete this exception statement from your version.
+# 
+# For more information : contact@centreon.com
+# 
+# SVN : $URL: http://svn.centreon.com/trunk/centreon/cron/purgeLogs $
+# SVN : $Id: logAnalyser 8104 2009-05-19 16:15:04Z jmathis $
+#
+####################################################################################
+
+use strict;
+use warnings;
+use DBI;
+use Getopt::Long;
+use POSIX;
+
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $data);
+
+require "@CENTREON_ETC@/conf.pm";
+
+my $VarLib = "@CENTREON_VARLIB@";
+
+# logAnalyser's lock file
+my $lock_file = "$VarLib/logAnalyser.lock";
+my $pid;
+while (-e "$lock_file") {
+	sleep(1);
+}
+$pid = getpgrp(0);
+`echo $pid > $lock_file`;
+
+# Init MySQL Connexion
+my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
+
+# Get conf Data
+my $retention;
+my $sth_config = $dbh->prepare("SELECT `archive_retention` FROM `config`");
+if (!$sth_config->execute) {
+	die "Error:" . $sth_config->errstr . "\n";
+} else {
+	my $data = $sth_config->fetchrow_hashref();
+	$retention = $data->{'archive_retention'};
+	$sth_config->finish();
+	undef($data);
+}
+
+if ($retention ne 0){
+    my $last_log = time() - ($retention * 24 * 60 * 60);
+  	
+  	# Drop Database
+    my $res = $dbh->do("DELETE FROM `log` WHERE `ctime` < '$last_log'");
+    if (!defined($res)) {
+    	die "SQL UPDATE Error : DELETE FROM `log` WHERE `ctime` < '$last_log'\n";
+    }
+    undef($res);
+}
+$dbh->disconnect();
+`rm -rf $lock_file`;
+exit;
