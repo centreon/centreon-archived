@@ -243,7 +243,7 @@ log "INFO" "$(gettext "Install purgeLogs")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
 	$TMP_DIR/final/cron/purgeLogs \
-	$INSTALL_DIR_CENTREON/purgeLogs >> $LOG_FILE 2>&1
+	$INSTALL_DIR_CENTREON/cron/purgeLogs >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install purgeLogs")"
 
 #echo_success "$(gettext "Set purgeLogs properties")" "$ok"
@@ -263,7 +263,7 @@ log "INFO" "$(gettext "Install purgeCentstorage")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
 	$TMP_DIR/final/cron/purgeCentstorage \
-	$INSTALL_DIR_CENTREON/purgeCentstorage >> $LOG_FILE 2>&1
+	$INSTALL_DIR_CENTREON/cron/purgeCentstorage >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install purgeCentstorage")"
 
 #echo_success "$(gettext "Set purgeCentstorage properties")" "$ok"
@@ -281,7 +281,7 @@ log "INFO" "$(gettext "Install centreonPurge.sh")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
 	$TMP_DIR/final/cron/centreonPurge.sh \
-	$INSTALL_DIR_CENTREON/centreonPurge.sh >> $LOG_FILE 2>&1
+	$INSTALL_DIR_CENTREON/cron/centreonPurge.sh >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install centreonPurge.sh")"
 
 #echo_success "$(gettext "Set purgeCentstorage properties")" "$ok"
