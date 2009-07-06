@@ -251,6 +251,7 @@ log "INFO" "$(gettext "Change macros for purgeCentstorage")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_PATH@|'"$CENTREON_PATH"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
 	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 	$TMP_DIR/src/cron/purgeCentstorage > $TMP_DIR/work/cron/purgeCentstorage
 check_result $? "$(gettext "Change macros for purgeCentstorage")"
@@ -264,6 +265,25 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 check_result $? "$(gettext "Install purgeCentstorage")"
 
 #echo_success "$(gettext "Set purgeCentstorage properties")" "$ok"
+
+## centreonPurge.sh
+log "INFO" "$(gettext "Change macros for centreonPurge.sh")"
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@CENTREON_PATH@|'"$CENTREON_PATH"'|g' \
+	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	$TMP_DIR/src/cron/purgeCentstorage > $TMP_DIR/work/cron/centreonPurge.sh
+check_result $? "$(gettext "Change macros for centreonPurge.sh")"
+
+cp $TMP_DIR/work/cron/purgeLogs $TMP_DIR/final/cron/centreonPurge.sh >> $LOG_FILE 2>&1
+log "INFO" "$(gettext "Install centreonPurge.sh")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
+	$TMP_DIR/final/cron/centreonPurge.sh \
+	$INSTALL_DIR_CENTREON/centreonPurge.sh >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install centreonPurge.sh")"
+
+#echo_success "$(gettext "Set purgeCentstorage properties")" "$ok"
+
 
 ## cron file 
 log "INFO" "$(gettext "Change macros for centstorage.cron")"
