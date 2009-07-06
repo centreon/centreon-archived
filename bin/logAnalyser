@@ -418,13 +418,6 @@ if (!$sth2->execute) {
     $sth2->finish();
 }
 
-if ($retention ne 0){
-    my $last_log = time() - ($retention * 24 * 60 * 60);
-  	
-  	# Drop Database
-    my $res = $dbh->do("DELETE FROM `log` WHERE `ctime` < '$last_log'");
-    if (!defined($res)) {die "SQL UPDATE Error : DELETE FROM `log` WHERE `ctime` < '$last_log'\n";}
-}
 $dbh->disconnect();
 $dbhoreon->disconnect();
 $cmdtmp = `rm -rf $lock_file`;
