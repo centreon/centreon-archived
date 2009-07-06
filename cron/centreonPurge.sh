@@ -39,17 +39,17 @@
 sudo /etc/init.d/centstorage stop
 
 # Wait a little 
-sleep 20
+sleep 10
 
-@CENTREON_PATH@/cron/purgeCentstorage
-
-# Wait a little 
-sleep 20
-
-@CENTREON_PATH@/cron/purgeLogs
+@CENTREON_PATH@/cron/purgeCentstorage >> @CENTREON_LOG@/centreon-purge.log 2>&1
 
 # Wait a little 
-sleep 20
+sleep 10
+
+@CENTREON_PATH@/cron/purgeLogs >> @CENTREON_LOG@/logAnalyzer-purge.log 2>&1
+
+# Wait a little 
+sleep 10
 
 sudo /etc/init.d/centstorage start
 

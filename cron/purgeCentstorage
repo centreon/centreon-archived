@@ -48,11 +48,10 @@ use warnings;
 use DBI;
 use POSIX ":sys_wait_h";
 
-use File::Copy;
-
 my $installedPath = "@CENTREON_PATH@/";
 
 my $LOG = "@CENTREON_LOG@/centreon-purge.log";
+my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
 
 # Init Globals
 use vars qw($debug $LOG %status $generalcounter);
@@ -138,58 +137,21 @@ sub CreateConnexionForCentstorage(){
 
 sub purgeMysqlData(){
     my $con_ods = CreateConnexionForCentstorage();
-    my $sth2 = $con_ods->prepare("SELECT * FROM config");
+    my $sth2 = $con_ods->prepare("SELECT len_storage_mysql FROM config");
     writeLogFile("Error when getting len_storage_mysql properties : ".$sth2->errstr."\n")if (!$sth2->execute());
     my $data = $sth2->fetchrow_hashref();
-    if (defined($data->{'len_storage_mysql'}) && $data->{'len_storage_mysql'} ne 0){
-	my $delete_limit = time() - 60 * 60 * 24 * $data->{'len_storage_mysql'};
-	$sth2 = $con_ods->prepare("DELETE FROM data_bin WHERE ctime < '".$delete_limit."'");
-	writeLogFile("Error when purging Mysql data  : ".$sth2->errstr."\n")if (!$sth2->execute());
+    if (defined($data->{'len_storage_mysql'}) && $data->{'len_storage_mysql'} ne 0) {
+		my $delete_limit = time() - 60 * 60 * 24 * $data->{'len_storage_mysql'};
+		if ($debug) {
+			print "DELETE FROM data_bin WHERE ctime < '".$delete_limit."'";
+		}
+		$sth2 = $con_ods->prepare("DELETE FROM data_bin WHERE ctime < '".$delete_limit."'");
+		writeLogFile("Error when purging Mysql data  : ".$sth2->errstr."\n")if (!$sth2->execute());
     }
     $sth2->finish();
     undef($sth2);
     $con_ods->disconnect();
 }
-
-sub DeleteOldRrdDB(){
-    my ($data, %base);
-    my $conods = CreateConnexionForCentstorage();
-    
-    my $sth = $conods->prepare("SELECT metric_id FROM metrics");
-    if (!$sth->execute) {
-		writeLogFile("Error:" . $sth->errstr . "\n");
-    }
-    
-    # Fill buffer
-    while ($data = $sth->fetchrow_hashref()){
-		$base{$data->{'metric_id'}.".rrd"} = 1;
-    }
-    undef($sth);
-    undef($data);
-    
-    my $some_dir = getStorageDir($conods);
-    opendir(DIR, $some_dir) || die "can't opendir $some_dir: $!";
-    my @files = grep { $_ ne '.' and $_ ne '..' } readdir DIR; 
-    closedir DIR;
-    for (@files) {
-		if (!defined($base{$_})){
-		    if (-d $some_dir."/".$_){
-				;
-		    } else { 
-				if (unlink($some_dir."/".$_)){
-			  	  writeLogFile("Warning : ".$some_dir."/".$_." removed \n");
-				} else {
-			  	  writeLogFile("Error : Unable to remove ".$some_dir.$_ ."\n");
-				}
-		    }
-		}
-    }
-    undef($some_dir);
-    undef(@files);
-    undef($data);
-    undef(%base);
-}
-
 
 sub CreateConnexionForOreon(){
     my $oreoncnx;
@@ -243,9 +205,6 @@ sub getStorageDir($){
 
 # data Bin purge
 writeLogFile("Begin centstorage.data_bin purge\n");
-
-# Purge DB RRDTool
-DeleteOldRrdDB();
 
 # Purge All bin data
 purgeMysqlData();
