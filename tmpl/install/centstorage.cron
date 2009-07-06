@@ -47,4 +47,4 @@ CRONTAB_EXEC_USER=""
 */5 * * * * @CRONUSER@ @CENTSTORAGE_BINDIR@/nagiosPerfTrace >> @CENTREON_LOG@/nagiosPerfTrace.log 2>&1
 
 # Cron for databin and logs purge
-0 2 * * * @CRONUSER@ @INSTALL_DIR_CENTREON@/centreonPurge.sh >> @CENTREON_LOG@/centreonPurge.log 2>&1
+0 2 * * * @CRONUSER@ @INSTALL_DIR_CENTREON@/cron/centreonPurge.sh >> @CENTREON_LOG@/centreonPurge.log 2>&1
