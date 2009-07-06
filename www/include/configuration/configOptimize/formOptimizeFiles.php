@@ -119,6 +119,7 @@
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
 			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){		
 				$stdout = shell_exec("sudo ".$nagios_bin["nagios_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
+				$stdout = htmlentities($stdout, ENT_QUOTES);
 				$msg_optimize[$cpt] = str_replace ("\n", "<br />", $stdout);
 				$cpt++;
 			}
