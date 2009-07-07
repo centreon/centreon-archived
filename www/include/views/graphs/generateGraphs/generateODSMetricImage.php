@@ -133,7 +133,7 @@
 		$metric_ODS["metric_name"] = str_replace("#BS#", "\\", $metric_ODS["metric_name"]);
 
 		$gprint_scale_cmd = "%s"; 
- 	    if (!$GraphTemplate["scaled"]){ 
+ 	    if ($GraphTemplate["scaled"] == "0"){ 
  	    	$gprint_scale_cmd = ""; 
  	        $command_line .= " -X0 "; 
  		}          

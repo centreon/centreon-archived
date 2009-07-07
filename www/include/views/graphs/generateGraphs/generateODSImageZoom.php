@@ -137,7 +137,7 @@
 		$index_data_ODS["service_description"] = str_replace("#BS#", "\\", $index_data_ODS["service_description"]);
 		
 		$gprint_scale_cmd = "%s"; 
- 		if (!$GraphTemplate["scaled"]){ 
+ 		if ($GraphTemplate["scaled"] == "0"){ 
  			$gprint_scale_cmd = ""; 
  		    $command_line .= " -X0 "; 
  	    } 
