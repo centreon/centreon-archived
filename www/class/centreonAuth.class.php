@@ -85,12 +85,14 @@ class centreonAuth {
     }
 	    
 	private function checkPassword($password) {
+		global $centreon_path;
+		
 		if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
 			
 			/*
 			 * Insert LDAP Class
 			 */
-			include_once ("/usr/local/centreon/www/class/centreonAuth.LDAP.class.php");
+			include_once ($centreon_path."/www/class/centreonAuth.LDAP.class.php");
 			$this->CentreonLog->insertLog(1, "ok : ".$this->password);
 			/*
 			 * Create Class
