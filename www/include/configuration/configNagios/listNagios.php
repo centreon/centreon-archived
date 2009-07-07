@@ -124,7 +124,7 @@
 			$interval = $tab["RowMenu_interval"];
 		else {
 			if ($interval != $tab["RowMenu_interval"]) {
-				$tpl->assign("msg_interval", _("Be carreful : all your Nagios poller haven't the same interval lenght ! This can provide difficulties to configure your services."));
+				$tpl->assign("msg_interval", _("Be careful: the interval lenght is different between your Nagios pollers! This can lead to difficulties in configuring your services."));
 				break;
 			}
 		}

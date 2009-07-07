@@ -140,7 +140,7 @@
 	$form->addElement('checkbox', 'global_host_passive_checks', _("Enable/Disable passive host checks"));
 	$form->addElement('checkbox', 'global_event_handler', _("Enable/Disable Event Handlers"));
 	$form->addElement('checkbox', 'global_flap_detection', _("Enable/Disable Flap Detection"));
-	$form->addElement('checkbox', 'global_service_obsess', _("Enable/Disable Obssessive service checks"));
+	$form->addElement('checkbox', 'global_service_obsess', _("Enable/Disable Obsessive service checks"));
 	$form->addElement('checkbox', 'global_host_obsess', _("Enable/Disable Obsessive host checks"));
 	$form->addElement('checkbox', 'global_perf_data', _("Enable/Disable Performance Data"));
 	
