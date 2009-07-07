@@ -39,13 +39,15 @@
 use strict;
 use warnings;
 use DBI;
-use File::stat;
-use Getopt::Long;
 use POSIX;
 
 use vars qw($mysql_user $mysql_password $mysql_host $mysql_db $mysql_db_centreon $opt_h $opt_a $data);
 
 my %Relations;
+
+################################################################################
+# Configuration
+################################################################################
 
 $mysql_user = "root";
 $mysql_password = "";
@@ -53,9 +55,14 @@ $mysql_host = "127.0.0.1";
 $mysql_db = "nagios";
 $mysql_db_centreon = "centreon";
 
+my $centcore_file = "/var/lib/centreon/centcore.cmd";
+my $nagios_file = "/usr/local/nagios/var/rw/nagios.cmd";
+
 # Retention in days
 my $retention = 60;
  
+################################################################################ 
+
 my $dateMax = time() - $retention * 60 * 60 * 24;
 
 ## Init Date
@@ -86,9 +93,7 @@ while (my $relation = $sth1->fetchrow_hashref()) {
     $Relations{$relation->{'host_name'}} = $relation->{'nagios_server_id'};
 }
 
-
 # Comment Purges
-#my $sth2 = $dbh->prepare("DELETE FROM `nagios_comments` WHERE UNIX_TIMESTAMP(`comment_time`) < '$dateMax'");
 my $sth2 = $dbh->prepare("SELECT internal_comment_id, no.name1, no.name2 FROM `nagios_comments` cmt, `nagios_objects` no WHERE cmt.object_id = no.object_id");
 if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
@@ -99,23 +104,27 @@ while (my $comments = $sth2->fetchrow_hashref()) {
     # check if it's a service or a host
     # 
     if (defined($comments->{'name2'})) {
-	# Check if we have to send external command to poller by centcore
-	if ($Relations{$comments->{'name1'}} == $localhost->{'id'}) {
-	    # Nagios is on localhost
-	    print "[".time()."] DEL_SVC_COMMENT;".$comments->{'internal_comment_id'}."\n";
-	} else {
-	    # Nagios is on a poller
-	    print "EXTERNAL_CMD:".$Relations{$comments->{'name1'}}.":[".time()."] DEL_SVC_COMMENT;".$comments->{'internal_comment_id'}."\n";
-	}
+		# Check if we have to send external command to poller by centcore
+		if ($Relations{$comments->{'name1'}} == $localhost->{'id'}) {
+		    # Nagios is on localhost
+		    my $str = "echo \"[".time()."] DEL_SVC_COMMENT;".$comments->{'internal_comment_id'}."\n\" >> $nagios_file";
+			`$str`;
+		} else {
+		    # Nagios is on a poller
+		    my $str = "echo \"EXTERNAL_CMD:".$Relations{$comments->{'name1'}}.":[".time()."] DEL_SVC_COMMENT;".$comments->{'internal_comment_id'}."\n\" >> $centcore_file";
+			`$str`;
+		}
     } else {
-	# Check if we have to send external command to poller by centcore
-	if ($Relations{$comments->{'name1'}} == $localhost->{'id'}) {
-	    # Nagios is on localhost
-	    print "[".time()."] DEL_HOST_COMMENT;".$comments->{'internal_comment_id'}."\n";
-	} else {
-	    # Nagios is on a poller
-	    print "EXTERNAL_CMD:".$Relations{$comments->{'name1'}}.":[".time()."] DEL_HOST_COMMENT;".$comments->{'internal_comment_id'}."\n";    
-	}
+		# Check if we have to send external command to poller by centcore
+		if ($Relations{$comments->{'name1'}} == $localhost->{'id'}) {
+		    # Nagios is on localhost
+		    my $str = "echo \"[".time()."] DEL_HOST_COMMENT;".$comments->{'internal_comment_id'}."\n\" >> $nagios_file";
+			`$str`;
+		} else {
+		    # Nagios is on a poller
+		   	my $str = "echo \"EXTERNAL_CMD:".$Relations{$comments->{'name1'}}.":[".time()."] DEL_HOST_COMMENT;".$comments->{'internal_comment_id'}."\n\" >> $centcore_file";    
+			`$str`;
+		}
     }
 }
 exit();
