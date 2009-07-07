@@ -94,7 +94,7 @@ while (my $relation = $sth1->fetchrow_hashref()) {
 }
 
 # Comment Purges
-my $sth2 = $dbh->prepare("SELECT internal_comment_id, no.name1, no.name2 FROM `nagios_comments` cmt, `nagios_objects` no WHERE cmt.object_id = no.object_id");
+my $sth2 = $dbh->prepare("SELECT internal_comment_id, no.name1, no.name2 FROM `nagios_comments` cmt, `nagios_objects` no WHERE cmt.object_id = no.object_id AND UNIX_TIMESTAMP(cmt.entry_time) < '$dateMax'");
 if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
 }
