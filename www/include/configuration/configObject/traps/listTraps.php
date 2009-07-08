@@ -42,7 +42,7 @@
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
 	
-	$tabStatus = array(0 => _("OK"), 1 => _("Warinig"), 2 => _("Critical"), 3 => _("Unknown"), 4 => _("Pending"));
+	$tabStatus = array(0 => _("OK"), 1 => _("Warning"), 2 => _("Critical"), 3 => _("Unknown"), 4 => _("Pending"));
 	
 	/*
 	 * start quickSearch form
