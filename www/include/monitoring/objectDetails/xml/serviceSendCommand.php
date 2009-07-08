@@ -74,7 +74,7 @@ $cmd_list = $command->getExternalCommandList();
 
 $send_cmd = $cmd_list[$cmd][$act_type];
 
-$hName = str_replace("#S#", "/", $svcObj->getHostName($host_id));
+$hName = str_replace("#S#", "/", $hostObj->getHostName($host_id));
 $hName = str_replace("#BS#", "\\", $hName);
 $svcDesc = str_replace("#S#", "/", $svcObj->getServiceDesc($svc_id));
 $svcDesc = str_replace("#BS#", "\\", $svcDesc);

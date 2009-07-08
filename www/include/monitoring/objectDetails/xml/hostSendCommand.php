@@ -71,7 +71,7 @@ $cmd_list = $command->getExternalCommandList();
 
 $send_cmd = $cmd_list[$cmd][$act_type];
 
-$hName = str_replace("#S#", "/", $svcObj->getHostName($host_id));
+$hName = str_replace("#S#", "/", $hostObj->getHostName($host_id));
 $hName = str_replace("#BS#", "\\", $hName);
 
 $send_cmd .= ";" . $hName;
