@@ -119,12 +119,11 @@
 		$tpl->assign('from', _("From"));
 		$tpl->assign('date_start', date(_("d/m/Y H:i"), $start_date));
 		$tpl->assign('to', _("to"));
-		$tpl->assign('date_end', date(_("d/m/Y H:i"), $end_date));
-		$tpl->assign('resumeTitle', _("Service state"));
+		$tpl->assign('date_end', date(_("d/m/Y H:i"), $end_date));		
 		$formPeriod->setDefaults(array('period' => $period));
 		$tpl->assign('id', $service_id);
 	}
-	
+	$tpl->assign('resumeTitle', _("Service state"));	
 	$tpl->assign('p', $p);
 	
 	/*

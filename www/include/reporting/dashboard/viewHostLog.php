@@ -119,11 +119,11 @@
 		$tpl->assign("date_start", date(_("d/m/Y H:i"),$start_date));
 		$tpl->assign("to", _("to"));
 		$tpl->assign("date_end", date(_("d/m/Y H:i"),$end_date));
-		$tpl->assign("period", $period);
-		$tpl->assign("resumeTitle", _("Host state"));
+		$tpl->assign("period", $period);		
 		$tpl->assign("host_id", $id);
 		$tpl->assign("Alert", _("Alert"));
 	}
+	$tpl->assign("resumeTitle", _("Host state"));
 	
 	/*
 	 * Rendering Forms
