@@ -74,7 +74,13 @@ $cmd_list = $command->getExternalCommandList();
 
 $send_cmd = $cmd_list[$cmd][$act_type];
 
-$send_cmd .= ";" . $hostObj->getHostName($host_id) . ";" . $svcObj->getServiceDesc($svc_id);
+$hName = str_replace("#S#", "/", $svcObj->getHostName($host_id));
+$hName = str_replace("#BS#", "\\", $hName);
+$svcDesc = str_replace("#S#", "/", $svcObj->getServiceDesc($svc_id));
+$svcDesc = str_replace("#BS#", "\\", $svcDesc);
+
+$send_cmd .= ";" . $hName . ";" . $svcDesc . "";
+
 $command->set_process_command($send_cmd, $poller);
 $act_type ? $return_type = 0 : $return_type = 1;
 $result = $command->write();

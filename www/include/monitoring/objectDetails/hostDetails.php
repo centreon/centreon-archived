@@ -381,6 +381,10 @@
 		$tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
 
 		$tpl->display("hostDetails.ihtml");
+		$host_name = str_replace("/", "#S#", $host_name);
+        $host_name = str_replace("\\", "#BS#", $host_name);
+        $svc_description = str_replace("/", "#S#", $svc_description);
+        $svc_description = str_replace("\\", "#BS#", $svc_description);
 	}
 ?>
 <script type="text/javascript">	
