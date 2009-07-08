@@ -44,8 +44,8 @@
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	
-	if (isset($_GET["plugin_dir"]) && $_GET["plugin_dir"])
-		$dir = $_GET["plugin_dir"];
+	if (isset($_POST["plugin_dir"]) && $_POST["plugin_dir"])
+		$dir = $_POST["plugin_dir"];
 	else
 		$dir = "";
 	
