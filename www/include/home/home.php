@@ -73,8 +73,10 @@
 		
 		// Displaying a Smarty Template
 		$template = new Smarty();
-		$template = initSmartyTpl($path, $template, "./");			
-		$template -> assign("session", session_id());
-		$template -> display("home.ihtml");
+		$template = initSmartyTpl($path, $template, "./");
+		$template->assign("session", session_id());
+		$template->assign("host_label", _("Hosts"));
+		$template->assign("svc_label", _("Services"));
+		$template->display("home.ihtml");
 	}
 ?>

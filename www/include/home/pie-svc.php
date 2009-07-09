@@ -117,7 +117,7 @@
 	
 	include_once($centreon_path.'/www/lib/ofc-library/open-flash-chart.php' );
 	$g = new graph();
-	$g->bg_colour = '#F3F6F6';
+	$g->bg_colour = '#FFFFFF';
 	//
 	// PIE chart, 60% alpha
 	//
@@ -137,6 +137,6 @@
 	$g->pie_slice_colours($color);
 
 	$g->set_tool_tip( '#val#%' );
-	$g->title( " " . _('Services') . " ", '{font-size:18px; color: #424242}' );
+	//$g->title( " " . _('Services') . " ", '{font-size:18px; color: #424242}' );
 	echo $g->render();
 ?>

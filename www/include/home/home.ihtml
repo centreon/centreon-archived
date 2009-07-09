@@ -3,6 +3,14 @@
 		<tr>
 			<td>
 				<table class="ListTable">
+					<tr class="ListHeader">
+						<td align="center">
+							{$host_label}
+						</td>
+						<td align="center">
+							{$svc_label}
+						</td>						
+					</tr>
 					<tr>
 						<td>{php}
 								include_once './lib/ofc-library/open_flash_chart_object.php';
