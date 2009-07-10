@@ -134,7 +134,7 @@
 	
 	function execute_sql_file($name = NULL, $sql_file_path = NULL)	{
 		if (!$sql_file_path || !$name)	return;
-		global $pearDB;
+		global $pearDB, $conf_centreon;
 		$sql_stream = file($sql_file_path.$name);
         $str = NULL;
         for ($i = 0; $i <= count($sql_stream) - 1; $i++)	{
@@ -144,6 +144,7 @@
                 if ($pos != false)      {
                     $str .= $line;
                     $str = chop ($str);
+                    $str = str_replace("@DB_CENTSTORAGE@", $conf_centreon['dbcstg'], $str);
                     $DBRESULT =& $pearDB->query($str);
                     $str = NULL;
                 }
