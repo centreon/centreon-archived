@@ -79,7 +79,8 @@ $hName = str_replace("#BS#", "\\", $hName);
 $svcDesc = str_replace("#S#", "/", $svcObj->getServiceDesc($svc_id));
 $svcDesc = str_replace("#BS#", "\\", $svcDesc);
 
-$send_cmd .= ";" . $hName . ";" . $svcDesc . "";
+$send_cmd .= ";" . $hName . ";" . $svcDesc . ";" . time();
+
 
 $command->set_process_command($send_cmd, $poller);
 $act_type ? $return_type = 0 : $return_type = 1;
