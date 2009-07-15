@@ -93,7 +93,7 @@ class centreonAuth {
 			 * Insert LDAP Class
 			 */
 			include_once ($centreon_path."/www/class/centreonAuth.LDAP.class.php");
-			$this->CentreonLog->insertLog(1, "ok : ".$this->password);
+
 			/*
 			 * Create Class
 			 */
