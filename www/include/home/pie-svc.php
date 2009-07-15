@@ -113,7 +113,11 @@
 	 */
 	
 	foreach ($data as $key => $value)
-		$data[$key] = round($value / $counter * 100, 2);
+	{
+		$value = round($value / $counter * 100, 2);
+	  	$value = str_replace(",", ".", $value);
+	  	$data[$key] = $value;
+	}
 	
 	include_once($centreon_path.'/www/lib/ofc-library/open-flash-chart.php' );
 	$g = new graph();
