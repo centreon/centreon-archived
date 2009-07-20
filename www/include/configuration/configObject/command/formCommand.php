@@ -126,7 +126,8 @@
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
 	
 	$form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
-	if ($type != "")	
+
+	if (isset($type) && $type != "")
 		$form->setDefaults(array('command_type' => $type));
 	else
 		$form->setDefaults(array('command_type' => '2'));
