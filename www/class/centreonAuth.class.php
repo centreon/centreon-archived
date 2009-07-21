@@ -81,9 +81,9 @@ class centreonAuth {
     	/*
     	 * Check User acces
     	 */
-    	$this->checkUser($username, $password, $pearDB);
+    	$this->checkUser($username, $password);
     }
-	    
+	
 	private function checkPassword($password) {
 		global $centreon_path;
 		
@@ -100,6 +100,7 @@ class centreonAuth {
 			$authLDAP = new CentreonAuthLDAP($this->pearDB, $this->CentreonLog, $this->login, $this->password, $this->userInfos);
 			$authLDAP->connect();
 			$this->passwdOk = $authLDAP->checkPassword();
+			$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".md5($this->password)."' WHERE `contact_alias` = '".$this->login."' LIMIT 1"); 	
 			$authLDAP->close();
 			
 		} else if ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
@@ -113,11 +114,11 @@ class centreonAuth {
 		}
 	}
 	    
-    private function checkUser($username, $password, $pearDB) {
+    private function checkUser($username, $password) {
     	if ($this->autologin == 0) {
-	    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1"); 	
+	    	$DBRESULT =& $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1"); 	
     	} else {
-    		$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");
+    		$DBRESULT =& $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");
     	}	
     	if ($DBRESULT->numRows()) {
     		$this->userInfos =& $DBRESULT->fetchRow();
@@ -143,11 +144,6 @@ class centreonAuth {
     		$this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");
     		$this->error = "Invalid user";
     	}
-    }
-    
-    private function checkPasswd($username, $password, $Crypt) {
-    	$DBRESULT =& $pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($useralias, ENT_QUOTES)."' AND `contact_password` = '".htmlentities($password, ENT_QUOTES)."' LIMIT 1");    	
-    	$this->$DBRESULT->fetchRow();
     }
 
 	/*
