@@ -70,7 +70,7 @@ aff_header("Centreon Setup Wizard", "Centreon Configuration File", 10);	?>
        	</td>
 	</tr>
   	<tr>
-    	<td>&nbsp;&nbsp;&nbsp;<?php echo $conf_centreon["centreon_dir"]; ?></td>
+    	<td>&nbsp;&nbsp;&nbsp;<?php echo $conf_centreon["centreon_etc"]; ?></td>
     	<td align="right"><b><?php echo $msg ;	?></b></td>
   	</tr>
 
