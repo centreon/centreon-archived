@@ -49,6 +49,7 @@
 	if ($num < 0)
 		$num = 0;
 ?>
+<script type="text/javascript" src="./include/common/javascript/scriptaculous/dragdrop.js"></script>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
 	var _debug = 0;
@@ -80,6 +81,7 @@
 	var _default_instance = '<?php echo $default_poller?>';
 	var _nc = 0;
 	var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
+	var _popup_no_comment_msg = '<?php echo _("Please enter a comment"); ?>';
 	
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
@@ -421,6 +423,10 @@
 	        	xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 	    	}
 		var comment = document.getElementById('popupComment').value;
+		if (comment == "") {
+			alert(_popup_no_comment_msg);
+			return 0;
+		}
 		var sticky = document.getElementById('sticky').checked;
 		var persistent = document.getElementById('persistent').checked;
 		var notify = document.getElementById('notify').checked;
@@ -433,5 +439,9 @@
 	   	xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
     		xhr_cmd.send(null);
 		Modalbox.hide();		
+	}
+	
+	function my_test(id) {		
+		new Draggable(id, { revert : true });
 	}
 </SCRIPT>

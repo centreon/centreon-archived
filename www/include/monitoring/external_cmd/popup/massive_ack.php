@@ -84,6 +84,8 @@
 	
 	$attr =  array("rows"=>"4", "cols"=>"80", "id"=>"popupComment");
 	$form->addElement('textarea', 'comment', 'comment', $attr);
+	$def_tab = array("comment" => sprintf(_("Acknowledged by %s"), $oreon->user->alias));
+	$form->setDefaults($def_tab);
 	
 	$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 	$form->setJsWarnings(_("Invalid information entered"),_("Please correct these fields"));

@@ -74,6 +74,7 @@ var _first = 1;
 var _lock = 0;
 var _instance = 'ALL';
 var _default_instance = '<?php echo $default_poller?>';
+var _popup_no_comment_msg = '<?php echo _("Please enter a comment"); ?>';
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
@@ -248,6 +249,10 @@ function send_the_command() {
     	xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
     }
     var comment = document.getElementById('popupComment').value;
+    if (comment == "") {
+		alert(_popup_no_comment_msg);
+		return 0;
+	}
     var sticky = document.getElementById('sticky').checked;
     var persistent = document.getElementById('persistent').checked;
     var notify = document.getElementById('notify').checked;
