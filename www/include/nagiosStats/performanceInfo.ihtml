@@ -16,7 +16,8 @@
  	<table class="ListTable">
 	 	<tr class="ListHeader">
 	 		<td class="FormHeader" valign='top' colspan="4"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$tab_server[$cpt2]}&nbsp;</td>
-	 	</tr>		
+	 	</tr>
+	 	{if $empty_stats[$key] == 0}
 		<tr>
 			<td align="center" colspan="2">
 	 			<table class="ListTable">
@@ -66,7 +67,12 @@
 	 		</td>
 	 		<td colspan="3">&nbsp;
 	 		</td>
-	 	</tr>	
+	 	</tr>
+	 	{else}
+	 	<tr>
+	 		<td align="center"><b>{$empty_stats_label}</b></td>
+	 	</tr>
+	 	{/if}
 	 </table>
 </div>
 {/foreach}

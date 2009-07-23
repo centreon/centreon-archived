@@ -61,10 +61,12 @@
 								"WHERE ndomod.activate = '1' " .
 								"AND ndomod.ns_nagios_server = n.id " .
 								"ORDER BY n.localhost DESC");
-	$perfInfo = array();					
+	$perfInfo = array();
+	$empty_stats = array();				
 	while ($nagios =& $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];		
 		if ($nagios['id']) {
+			$empty_stats[$nagios['id']] = 1;
 			$DBRESULT3 =& $pearDBO->query("SELECT * FROM `nagios_stats` WHERE instance_id = '".$nagios['id']."'");
 			while ($row =& $DBRESULT3->fetchRow()) {
 				switch($row['stat_label']) {
@@ -95,6 +97,7 @@
 					case "Buffer Usage" :
 						$perfInfo[$row['instance_id']]["bu"][$row['stat_key']] = $row['stat_value'];
 						break;
+					$empty_stats[$nagios['id']] = 0;
 				}
 				$perfInfo[$row['instance_id']][$row['stat_key']] = $row['stat_value'];
 			}
@@ -158,6 +161,9 @@
 	$tpl->assign("in_use", _("In Use"));
 	$tpl->assign("max_used", _("Max Used"));
 	$tpl->assign("buffer_usage", _("Buffer Usage"));
+	
+	$tpl->assign("empty_stats", $empty_stats);	
+	$tpl->assign("empty_stats_label", _("No stats available for this poller. Is it currently running?"));	
 	
 	if (isset($host_list) && $host_list)
 		$tpl->assign('host_list', $host_list);
