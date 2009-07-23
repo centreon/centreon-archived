@@ -27,10 +27,19 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="duration"/></td>
 		</tr>
 		<tr class='list_two'>
+			<td class="ColPopup">&#160;<xsl:value-of select="current_state_name"/></td>
+			<td class="ColPopup">
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="current_state/@color"/>;
+				</xsl:attribute>
+				&#160;<xsl:value-of select="current_state"/>
+			</td>
+		</tr>
+		<tr class='list_one'>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type"/></td>
 		</tr>
-		<tr class='list_one'>
+		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="percent_state_change_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="percent_state_change"/> %</td>
 		</tr>
