@@ -1073,6 +1073,7 @@ CREATE TABLE IF NOT EXISTS `extended_host_information` (
   `ehi_2d_coords` varchar(200) default NULL,
   `ehi_3d_coords` varchar(200) default NULL,
   PRIMARY KEY  (`ehi_id`),
+  UNIQUE KEY `host_host_id` (`host_host_id`),
   KEY `host_index` (`host_host_id`),
   KEY `extended_host_information_ibfk_2` (`ehi_icon_image`),
   KEY `extended_host_information_ibfk_3` (`ehi_vrml_image`),
