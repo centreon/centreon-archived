@@ -61,10 +61,18 @@
 	else
 		$search_service = mysql_real_escape_string($search_service);
 	
-	if (isset($search) && $search)
-		$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active_host", "style" => "padding-top:1px;padding-bottom:1px;");
-	else
-		$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_host", "style" => "padding-top:1px;padding-bottom:1px;");
+	if (isset($search) && $search) {
+		if ($p == "4" || $p == "402" || $p == "203")	
+			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active_host", "style" => "padding-top:1px;padding-bottom:1px;");
+		else
+			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;");
+	}
+	else {
+		if ($p == "4" || $p == "402" || $p == "203")
+			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_host", "style" => "padding-top:1px;padding-bottom:1px;");
+		else
+			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;");
+	}
 	
 	if (isset($search_service) && $search_service) {
 		$attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input_active_service", "style" => "padding-top:1px;padding-bottom:1px;", "title" => _("Service Description Search Key"));

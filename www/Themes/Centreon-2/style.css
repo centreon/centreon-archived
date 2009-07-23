@@ -180,6 +180,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .search_input_service 	{padding:2px 2px 3px 18px; background: #FFFFFF url("../../img/icones/16x16/gear.gif") no-repeat scroll 1px 0px;}
 .search_input_active_service 	{padding:2px 2px 3px 18px; background: #F778A1 url("../../img/icones/16x16/gear.gif") no-repeat scroll 1px 0px;}
 
+.search_input_active	{background-color:#F778A1;}
 .search_input_found 	{background-color:#99C68E;}
 
 /* Log Options */
