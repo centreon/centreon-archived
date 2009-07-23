@@ -96,9 +96,9 @@
 						break;
 					case "Buffer Usage" :
 						$perfInfo[$row['instance_id']]["bu"][$row['stat_key']] = $row['stat_value'];
-						break;
-					$empty_stats[$nagios['id']] = 0;
+						break;					
 				}
+				$empty_stats[$nagios['id']] = 0;
 				$perfInfo[$row['instance_id']][$row['stat_key']] = $row['stat_value'];
 			}
 		}		
