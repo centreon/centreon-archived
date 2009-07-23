@@ -56,10 +56,8 @@
 	
 	if ($oreon->user->access->checkAction("service_comment")) {			
 		$LCA_error = 0;
-		
-		if (!$is_admin)
-			$lcaHostByName = getLcaHostByName($pearDB);
 				
+		
 		isset($_GET["host_id"]) ? $cG = $_GET["host_id"] : $cG = NULL;
 		isset($_POST["host_id"]) ? $cP = $_POST["host_id"] : $cP = NULL;	
 		$cG ? $host_id = $cG : $host_id = $cP;
