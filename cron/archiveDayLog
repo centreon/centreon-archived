@@ -623,6 +623,33 @@ sub archive_day_log ($$) {
 	insert_services_stats_in_db($start_time, $end_time);
 }
 
+
+#####################################################
+# function that checks if the log is already built
+#####################################################
+
+sub check_date($$$) {
+	my ($day, $month, $year) = (shift, shift, shift);
+	my $tmp_file = $VarLib . "/archiveDayLog.last";
+	my $last;
+	my $now;
+	my $write_cmd;
+	
+	$now = $day.$month.$year;
+	if (-e "$tmp_file") {
+    	chomp($last = `cat $tmp_file`);
+    	$write_cmd = `echo $now > $tmp_file`;
+   		if ($now == $last) {
+   			return 0;
+   		}
+   		else {
+   			return 1;
+   		}
+	}
+	$write_cmd = `echo $now > $tmp_file`;
+	return 1;
+}
+
 ############################################################################################################
 # Main function parse parameters 
 # and select to build archive for one day log or to rebuild all archives
@@ -683,8 +710,10 @@ sub main {
     } else {
 		# building archive for last past dat
 		my ($day,$month,$year) = (localtime(time))[3,4,5];
-		my $yesterday_real_start =  timelocal(0,0,0,$day,$month,$year) - (60 * 60 * 24);
-		archive_day_log($yesterday_real_start + $time_period{"day_start_time"}, $yesterday_real_start + $time_period{"day_end_time"});
+		if (check_date($day, $month, $year)) {		
+			my $yesterday_real_start =  timelocal(0,0,0,$day,$month,$year) - (60 * 60 * 24);
+			archive_day_log($yesterday_real_start + $time_period{"day_start_time"}, $yesterday_real_start + $time_period{"day_end_time"});
+		}
     }
     if ($options{"debug"}) {
 		display_services_stats;
