@@ -823,6 +823,7 @@
 		if (isset($ret["service_traps"]))
 			$fields["service_traps"] = implode(",", $ret["service_traps"]);
 		$oreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id, htmlentities($ret["service_description"], ENT_QUOTES)), "c", $fields);
+		$oreon->user->access->updateACL();
 	}
 	
 	function updateService_MC($service_id = null)	{
