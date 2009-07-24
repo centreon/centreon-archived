@@ -36,7 +36,7 @@
  * 
  */
  
-class centreonAuth {
+class CentreonAuth {
 
 	/*
 	 * Declare Values
@@ -71,7 +71,7 @@ class centreonAuth {
 	/*
 	 * Constructor
 	 */
-    function centreonAuth($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1) {
+    function CentreonAuth($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1) {
     	$this->cryptPossibilities = array('MD5', 'SHA1');
     	$this->CentreonLog =& $CentreonLog;
     	$this->login = $username;
