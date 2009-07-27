@@ -87,6 +87,11 @@ class CentreonAuth {
 	private function checkPassword($password) {
 		global $centreon_path;
 		
+		if (strlen($password) == 0 || $password == "") {
+        	$this->passwdOk = 0;
+            return;
+        }
+		
 		if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
 			
 			/*
@@ -104,7 +109,6 @@ class CentreonAuth {
 			$authLDAP->close();
 			
 		} else if ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
-			
 			if ($this->userInfos["contact_passwd"] == $password && $this->autologin)
 				$this->passwdOk = 1;
 			else if ($this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0)
