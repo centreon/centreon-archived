@@ -202,8 +202,8 @@
         <td class="ListColCenter" style="white-space:nowrap;">
         	<xsl:value-of select="lc"/>
         </td>
-        <td class="ListColCenter">
-        	<xsl:value-of select="ca" style="white-space:nowrap;"/>
+        <td class="ListColCenter" style="white-space:nowrap;">
+        	<xsl:value-of select="ca"/>
         </td>
         <td class="ListColLeft" >
         	<xsl:value-of select="po" disable-output-escaping="yes" />
