@@ -99,7 +99,7 @@
 	$elemArr = array();
 	$i = 0;
 	while (false !== ($filename = readdir($handle)))	{
-		if ($filename != "." && $filename != ".." && $filename != ".SVN" && $filename != ".CSV")	{
+		if ($filename != "." && $filename != ".." && $filename != ".SVN" && $filename != ".svn" && $filename != ".CSV")	{
 			$moduleinfo = getModuleInfoInDB($filename, NULL);
 			
 			/*
