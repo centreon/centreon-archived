@@ -1,12 +1,24 @@
-Please view "INSTALL" for more information.
+Upgrade from 2.0.x
+=====================
+Before Web upgrade
+---------------------
+As MySQL root user, grant some additional privileges to user Centreon user
+#~> mysql -u root [-p]
+#mysql~> GRANT ALTER ON ndo.* TO 'centreon'@'localhost';
+(ndo database, centreon user and host names could differ depending on your settings)
 
-if you are performing an update from Centreon-2.0.1 or an older version:
-Once the web update finished, you will have to execute follow the steps bellow to rebuild Centreon reporting statistics :
+After Web upgrade
+---------------------
 1) 	Modify the logs retention period in Centreon interface : Administration > Options > Centstorage > Options > Logs retention duration
 	The retention duration must cover the oldest nagios log archive file in the folder nagios/var/archives/
 
-2) 	then execute the following command lines in Centreon folder :
+2) 	then execute the following command lines in Centreon directory :
 	# ./bin/logAnalyser -a
 	# ./cron/archiveDayLog -r
 
 3) reset the logs retention period to the previous value
+
+
+More
+=====================
+Read "INSTALL" for more information.

@@ -1,3 +1,22 @@
+## Centreon 2.1-RC7
+Adds icons in Eventlogs & Graph views search bars
+=> Bugfix #1040 : ArchiveDayLog scripted could be executed twice in a day because of an NTP sync
+=> Bugfix #1038 : Entered LDAP passwords were logged in a log file in case of a login failure 
+=> Bugfix #1032 : Incorrect values in flash charts due to translations
+=> Bugfix #1023 : New Acknowledgement System
+=> Bugfix #1021 : Nagios files were generated even on de activated pollers
+
+## Centreon 2.1-RC6
+Fixes a lot of wordings
+=> Task #1009 :  [Configuration] > [Commands] : Better behavior of forms 
+=> Bugfix #1001 : Centstorage => Incorrect masks applied on created directories
+=> Bugfix #999 : GMT Bug (period not defined)
+=> Bugfix #998 : Pagination bug
+=> Bugfix #950 : Bug in Centstorage
+=> Bugfix #925 : Removes spaces in beginning and end of translatable strings
+=> Bugfix #340 : Configuration generator problems
+=> Bugfix #379 : Meta Services bugs
+
 ## Centreon 2.1-RC5
 
 => fix: remove warning in censtorage
