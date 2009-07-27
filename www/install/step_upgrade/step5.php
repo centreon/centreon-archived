@@ -64,18 +64,20 @@
         $request = "";
         if (count($file_sql)) {
 	       	$str = "";
-	        foreach ($file_sql as $line)
+	        foreach ($file_sql as $line) {
 	        	if ($line[0] != "#" && $line[0] != "-") {
-	        		$pos = strrpos($line, ";\n");
+	        		$pos = strrpos($line, ";");
                 	if ($pos != false) {
                     	$str .= $line;
                     	$str = rtrim($str);
-                   	$DBRES = $pearDBO->query($str);
-                    $str = NULL;
-                } else
-                	$str .= $line;
+                    
+                   		$DBRES = $pearDBO->query($str);
+                    	$str = NULL;
+               		} else
+                		$str .= $line;
+	        	}
 	        }	        	
-			if (!PEAR::isError($DBRES))
+			if (isset($DBRES) && !PEAR::isError($DBRES))
 				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
     		else
     			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';    			    		
@@ -103,7 +105,7 @@
 	        $str = "";
 	        foreach ($file_sql as $line)
 	        	if ($line[0] != "#" && $line[0] != "-") {
-	        		$pos = strrpos($line, ";\n");
+	        		$pos = strrpos($line, ";");
                 	if ($pos != false) {
                     	$str .= $line;
                     	$str = rtrim($str);
@@ -112,7 +114,7 @@
                 	} else
                 		$str .= $line;
 	        	}
-			if (!PEAR::isError($DBRES))
+			if (isset($DBRES) && !PEAR::isError($DBRES))
 				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
     		else
     			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';    			    		
@@ -145,18 +147,19 @@
         $request = "";
         if (count($file_sql)) {
 	        $str = "";
-	        foreach ($file_sql as $line)
+	        foreach ($file_sql as $line) {
 	        	if ($line[0] != "#" && $line[0] != "-") {
-	        		$pos = strrpos($line, ";\n");
+	        		$pos = strrpos($line, ";");
                 	if ($pos != false) {
                     	$str .= $line;
                     	$str = rtrim($str);
-                   	$DBRES = $pearDB->query($str);
-                    $str = NULL;
+ 	                  	$DBRES =& $pearDB->query($str);
+    	                $str = NULL;
                 	} else
                 		$str .= $line;
 	        	}
-			if (!PEAR::isError($DBRES))
+	        }
+			if (isset($DBRES) && !PEAR::isError($DBRES))
 				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
     		else
     			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
