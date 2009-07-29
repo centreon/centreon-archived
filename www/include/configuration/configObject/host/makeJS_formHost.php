@@ -109,6 +109,10 @@ function displaySelectedTp(){
 		  	}			    
 		}			
 		
+		if (_o == "w") {			
+			selectElem.disabled = true;
+		}
+		
 		tabElem.className = "ListTableMultiTp";		
 		tdElem.className = "FormRowValue";
 		
@@ -129,7 +133,9 @@ function displaySelectedTp(){
 				}
 			}
 		}
-		tdElem.appendChild(imgElem);
+		if (_o != "w") {
+			tdElem.appendChild(imgElem);
+		}
 		trElem.appendChild(tdElem);
 		tbodyElem.appendChild(trElem);
 	}			
@@ -226,7 +232,7 @@ function get_select_options() {
 /*
  * This function is called when user clicks on the 'add' button
  */
-function add_select_template(){	
+function add_select_template(o){	
 	xhr = null;
 	if (window.XMLHttpRequest) {     
         xhr = new XMLHttpRequest();
@@ -236,7 +242,7 @@ function add_select_template(){
         
     if (xhr == null)
      	alert("AJAX is not supported");
-    
+     _o = o;
     xhr.onreadystatechange = function() { get_select_options(); };
     <?php
     if ($o == "a" || $o == "mc")
@@ -352,7 +358,12 @@ function displayExistingMacroHost(max){
 		valueElem.name = 'macroValue_' + globalj;
 		valueElem.value = globalMacroTabValue[globalj];		
 		tdElem2.appendChild(valueElem);	
-			
+		
+		if (_o == "w") {
+			keyElem.disabled = true;
+			valueElem.disabled = true;
+		}
+		
 		imgElem.src = "./img/icones/16x16/delete.gif";
 		imgElem.id = globalj;
 		imgElem.onclick = function(){
@@ -368,8 +379,10 @@ function displayExistingMacroHost(max){
 		}
 		tdElem3.appendChild(imgElem);		
 		trElem.appendChild(tdElem1);
-		trElem.appendChild(tdElem2);
-		trElem.appendChild(tdElem3);			
+		trElem.appendChild(tdElem2);		
+		if (_o != "w") {
+			trElem.appendChild(tdElem3);
+		}				
 		globalj++;
 		tbodyElem.appendChild(trElem);
 		tabElem.appendChild(tbodyElem);

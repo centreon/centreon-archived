@@ -782,7 +782,7 @@
 				if ($value)
 					updateHostInDB($value, true);
 		}
-		$o = NULL;
+		$o = "w";
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
@@ -821,7 +821,7 @@
 if ($oreon->user->get_version() == 3 && !$action["action"]["action"] || isset($ok_flag) && !$ok_flag) {
 ?>
 <script type="text/javascript">
-		add_select_template();
+		add_select_template('<?php echo $o;?>');
 		displayExistingMacroHost(<?php echo $k;?>);
 </script>
 <?php } ?>
