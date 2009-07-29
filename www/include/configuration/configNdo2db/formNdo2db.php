@@ -199,7 +199,7 @@
 		$tpl->assign('ndo2db_access', _("Ndo2db execution access"));
 		$tpl->assign('Database_Information_for_ndo2db', _("Database Information for ndo2db"));
 		$tpl->assign('Retention_Informations_For_Ndo2db', _("Retention Informations For Ndo2db"));
-		$tpl->assign('seconds', _("seconds"));
+		$tpl->assign('minutes', _("minutes"));
 		$tpl->assign('sort1', _("General"));		
 		$tpl->assign('sort2', _("Database"));		
 		$tpl->assign('sort3', _("Retention"));
