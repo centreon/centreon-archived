@@ -128,7 +128,7 @@
 							<td colspan=2 class="ListColHeaderCenter">{$states.UNDETERMINED}</td>
 						</tr>
 						 <tr class='list_lvl_1'>
-                            <td class="ListColHeaderCenter" colspan="2"></td>
+                            <td class="ListColHeaderCenter"></td>
                             <td class="ListColHeaderCenter">%</td>
                             <td class="ListColHeaderCenter">{$Alert}</td>
                             <td class="ListColHeaderCenter">%</td>
