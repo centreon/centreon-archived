@@ -74,6 +74,9 @@
 			$rq = "SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$key."'";
 			$DBRESULT =& $pearDB->query($rq);
 			$dir_alias =& $DBRESULT->fetchRow();
+			$fileTab = scandir("./img/media/" . $dir_alias["dir_alias"]);
+			foreach ($fileTab as $fileName)
+				unlink("./img/media/" . $dir_alias["dir_alias"] . "/" . $fileName);
 			rmdir("./img/media/".$dir_alias["dir_alias"]);
 			if (!is_dir("./img/media/".$dir_alias["dir_alias"]))	{
 				$DBRESULT =& $pearDB->query("DELETE FROM view_img_dir WHERE dir_id = '".$key."'");
@@ -170,6 +173,17 @@
 		if (!$dir_id) return;
 		global $form;
 		global $pearDB;
+		
+		$rq = "SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$dir_id."' LIMIT 1";
+		$DBRES =& $pearDB->query($rq);
+		$row =& $DBRES->fetchRow();
+		$dir_alias = $row['dir_alias'];
+		
+		$fileTab = scandir("./img/media/".$dir_alias);
+		foreach ($fileTab as $fileName) {
+			unlink("./img/media/".$dir_alias."/".$fileName);			
+		}		
+		
 		$rq = "DELETE FROM view_img_dir_relation ";
 		$rq .= "WHERE dir_dir_parent_id = '".$dir_id."'";
 		$DBRESULT =& $pearDB->query($rq);
@@ -178,6 +192,12 @@
 		else
 			$ret = $form->getSubmitValue("dir_imgs");
 		for($i = 0; $i < count($ret); $i++)	{
+			$rq = "SELECT img_path FROM view_img WHERE img_id = '".$ret[$i]."' LIMIT 1";
+			$DBRES =& $pearDB->query($rq);
+			$row2 =& $DBRES->fetchRow();
+			$file_name = $row2['img_path'];
+			
+			copy("./img/media/".$file_name, "./img/media/".$dir_alias."/".$file_name);
 			$rq = "INSERT INTO view_img_dir_relation ";
 			$rq .= "(dir_dir_parent_id, img_img_id) ";
 			$rq .= "VALUES ";

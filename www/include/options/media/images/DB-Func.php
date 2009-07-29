@@ -62,11 +62,13 @@
 		if (!$img_path && !$dir_alias) {
 			foreach ($imgs as $key => $value)	{
 				$DBRESULT =& $pearDB->query("SELECT dir_alias, img_path FROM view_img, view_img_dir, view_img_dir_relation WHERE img_id = '".$key."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id");
-				$img_path =& $DBRESULT->fetchRow();
-				if (is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))
-					unlink("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]);
-				if (!is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))	{
-					$pearDB->query("DELETE FROM view_img WHERE img_id = '".$key."'");
+				while ($img_path =& $DBRESULT->fetchRow()) {
+					if (is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))
+						unlink("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]);
+					if (!is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))	{
+						$pearDB->query("DELETE FROM view_img WHERE img_id = '".$key."'");
+						$pearDB->query("DELETE FROM view_img_dir_relation WHERE img_img_id = '".$key."'");
+					}					
 				}
 			}
 		} else {
@@ -79,6 +81,7 @@
 				unlink("./img/media/".$dir_alias."/".$img_path);
 			if (isset($img_id["img_id"]) && $img_id && !is_file("./img/media/".$dir_alias."/".$img_path))	{
 				$pearDB->query("DELETE FROM view_img WHERE img_id = '".$img_id["img_id"]."'");
+				$pearDB->query("DELETE FROM view_img_dir_relation WHERE img_img_id = '".$img_id["img_id"]."'");
 			}
 		}
 	}
@@ -116,9 +119,11 @@
 			 if (!is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))	{
 				$DBRESULT =& $pearDB->query("SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$ret["directories"]."'");
 				$dir_alias =& $DBRESULT->fetchRow();			
-				$file->moveUploadedFile("./img/media/".$img_path["dir_alias"]);
+				$file->moveUploadedFile("./img/media/");				
 				$fDataz =& $file->getValue();
-				rename("./img/media/".$img_path["dir_alias"]."/".$fDataz["name"], "./img/media/".$img_path["dir_alias"]."/".str_replace(" ", "_", $fDataz["name"]));
+				$new_file_name = str_replace(" ", "_", $fDataz["name"]);	
+				rename("./img/media/".$fDataz["name"], "./img/media/".$new_file_name);
+				copy("./img/media/".$new_file_name, "./img/media/".$img_path["dir_alias"]."/".$new_file_name);
 				# Delete space in image name
 				$fDataz["name"] = str_replace(" ", "_", $fDataz["name"]);
 				if (is_file("./img/media/".$img_path["dir_alias"]."/".$fDataz["name"]))	{
@@ -207,10 +212,11 @@
 			$fDataz =& $file->getValue();
 			if (stristr($fDataz["type"], "image") && !is_file("./img/media/".$dir_alias["dir_alias"]."/".str_replace(" ", "_", $fDataz["name"])))	{
 				# Moove image in 'media' directory
-				$file->moveUploadedFile("./img/media/".$dir_alias["dir_alias"]);
-				rename("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"], "./img/media/".$dir_alias["dir_alias"]."/".str_replace(" ", "_", $fDataz["name"]));
-				# Delete space in image name
-				$fDataz["name"] = str_replace(" ", "_", $fDataz["name"]);
+				$file->moveUploadedFile("./img/media/");				
+				$new_file_name = str_replace(" ", "_", $fDataz["name"]);	
+				rename("./img/media/".$fDataz["name"], "./img/media/".$new_file_name);
+				copy("./img/media/".$new_file_name, "./img/media/".$dir_alias["dir_alias"]."/".$new_file_name);
+				
 				if (is_file("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"]))	{
 					# Manage name
 					$pinfo = pathinfo("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"]);
