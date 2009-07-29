@@ -109,6 +109,6 @@
 	
 	$g->pie_slice_colours($color);
 	$g->set_tool_tip( '#val#%' );
-	$g->title( " ", '{font-size:18px; color: #424242}' );
+	//$g->title( " ", '{font-size:18px; color: #424242}' );
 	echo $g->render();
 ?>
