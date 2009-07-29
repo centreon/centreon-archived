@@ -210,11 +210,12 @@
 	}
 		
 	function multipleServiceInDB ($services = array(), $nbrDup = array(), $host = NULL, $descKey = 1, $hostgroup = NULL, $hPars = array(), $hgPars = array())	{
+		global $pearDB, $oreon;
+	
 		# $descKey param is a flag. If 1, we know we have to rename description because it's a traditionnal duplication. If 0, we don't have to, beacause we duplicate services for an Host duplication
 		# Foreach Service
 		$maxId["MAX(service_id)"] = NULL;
 		foreach($services as $key=>$value)	{
-			global $pearDB, $oreon;
 			# Get all information about it
 			$DBRESULT =& $pearDB->query("SELECT * FROM service WHERE service_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();			
