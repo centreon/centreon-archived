@@ -193,7 +193,9 @@
 				<tr class="ListHeader">
 					<td class="ListColLeft">{$form.macroName.label}</td>
 					<td class="ListColCenter">{$form.macroValue.label}</td>
+					{if $o != "w"}
 					<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBlankInput();"></td>
+					{/if}
 				</tr>
 			</table>
 		</td>

@@ -731,7 +731,7 @@
 			$hPars =& $form->getElement('service_hPars');
 			$hPars->setValue(array());
 		}
-		$o = NULL;
+		$o = "w";
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
@@ -768,7 +768,7 @@
 	if ($oreon->user->get_version() == 3 && !$action["action"]["action"]){
 ?>
 <script type="text/javascript">		
-		displayExistingMacroSvc(<?php echo$k;?>);
+		displayExistingMacroSvc(<?php echo$k;?>, '<?php echo $o;?>');
 </script>
 <?php
 	}

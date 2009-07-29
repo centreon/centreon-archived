@@ -104,7 +104,7 @@ function addBlankInput() {
  * Function for displaying existing macro
  */
 
-function displayExistingMacroSvc(max){
+function displayExistingMacroSvc(max, o){
 	for (var i=0; i < max; i++) {
 		var keyElem = document.createElement('input');
 		var valueElem = document.createElement('input');
@@ -112,6 +112,8 @@ function displayExistingMacroSvc(max){
 		var tabElem = document.getElementById('macroTable');
 		var trElem = document.createElement('tr');
 		var tbodyElem = document.createElement('tbody');
+		
+		_o = o;
 		
 		trElem.id = "trElem_" + globalj;
 		if (trMacroClassFlag) {
@@ -140,6 +142,11 @@ function displayExistingMacroSvc(max){
 		valueElem.value = globalMacroTabValue[globalj];		
 		tdElem2.appendChild(valueElem);	
 		
+		if (_o == "w") {
+			keyElem.disabled = true;
+			valueElem.disabled = true;
+		}
+		
 		imgElem.src = "./img/icones/16x16/delete.gif";
 		imgElem.id = globalj;
 		imgElem.onclick = function(){
@@ -155,7 +162,9 @@ function displayExistingMacroSvc(max){
 		tdElem3.appendChild(imgElem);		
 		trElem.appendChild(tdElem1);
 		trElem.appendChild(tdElem2);
-		trElem.appendChild(tdElem3);			
+		if (_o != "w") {
+			trElem.appendChild(tdElem3);
+		}		
 		globalj++;
 		tbodyElem.appendChild(trElem);
 		tabElem.appendChild(tbodyElem);
