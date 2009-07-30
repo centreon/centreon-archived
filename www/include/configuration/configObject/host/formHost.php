@@ -304,7 +304,8 @@
 	$GMTList = $CentreonGMT->getGMTList();
 	
 	$form->addElement('select', 'host_location', _("Timezone / Location"), $GMTList);
-	$form->setDefaults(array('host_location' => $oreon->optGen["gmt"]));
+	if ($o != "mc")
+		$form->setDefaults(array('host_location' => $oreon->optGen["gmt"]));
 	if (!isset($host["host_location"]))
 		$host["host_location"] = NULL;
 	unset($GMTList);
@@ -312,6 +313,14 @@
 	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);	
 	$form->addElement('text', 'host_parallel_template', _("Host Multiple Templates"), $hTpls);
+	
+	if ($o == "mc")	{
+		$mc_mod_tplp = array();
+		$mc_mod_tplp[] = &HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Incremental"), '0');
+		$mc_mod_tplp[] = &HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_tplp, 'mc_mod_tplp', _("Update options"), '&nbsp;');
+		$form->setDefaults(array('mc_mod_tplp'=>'0'));
+	}
 	?>
 	<script type="text/javascript" src="lib/wz_tooltip/wz_tooltip.js"></script>
 	<?php
@@ -782,8 +791,13 @@
 				if ($value)
 					updateHostInDB($value, true);
 		}
+<<<<<<< .mine
+		$o = "w";		
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));		
+=======
 		$o = "w";
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
+>>>>>>> .r8733
 		$form->freeze();
 		$valid = true;
 	}

@@ -367,6 +367,7 @@
 			updateHostContactGroup($host_id);
 			updateHostContact($host_id);
 		}
+		
 		# Function for updating host hg
 		# 1 - MC with deletion of existing hg
 		# 2 - MC with addition of new hg
@@ -388,6 +389,7 @@
 			updateHostTemplateService_MC($host_id);
 		else
 			updateHostTemplateService($host_id);
+		
 		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
 			if (isset($ret["host_template_model_htm_id"]))
 				createHostTemplateService($host_id, $ret["host_template_model_htm_id"]);
@@ -395,6 +397,9 @@
 				createHostTemplateService($host_id);
 		}
 		
+		/*
+		 * Host extended information 
+		 */
 		if ($from_MC)
 			updateHostExtInfos_MC($host_id);
 		else
@@ -409,7 +414,7 @@
 	}	
 	
 	function insertHostInDB ($ret = array(), $macro_on_demand = NULL)	{
-		global $oreon;
+		global $oreon, $form;
 		
 		$host_id = insertHost($ret, $macro_on_demand);
 		updateHostHostParent($host_id, $ret);
@@ -420,11 +425,11 @@
 		updateHostTemplateService($host_id, $ret);
 		updateNagiosServerRelation($host_id, $ret);
 		$oreon->user->access->updateACL();
-		global $form;
+		
 		$ret = $form->getSubmitValues();		
 		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"] && $ret["host_template_model_htm_id"] && $oreon->user->get_version() < 3)
 			createHostTemplateService($host_id, $ret["host_template_model_htm_id"]);
-		elseif(isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"] && $oreon->user->get_version() >= 3) {			
+		else if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"] && $oreon->user->get_version() >= 3) {			
 			createHostTemplateService($host_id);
 		}
 		insertHostExtInfos($host_id, $ret);
@@ -825,11 +830,10 @@
 						"AND hsr.host_host_id = '".$hID."'";
 				$DBRESULT4 =& $pearDB->query($rq2);
 			}
-			$DBRESULT4->free();
 			$antiLoop[$scndHID] = 1;
 			deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"], $host_list, $antiLoop);
 		}
-		$DBRESULT->free();	
+		$DBRESULT->free();
 	}
 	
 	function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
@@ -986,8 +990,7 @@
 	 			}			
 	 		}
 	 		$multiTP_logStr = trim($multiTP_logStr, ",");
-		}
-		elseif (isset($ret["use"]) && $ret["use"]){			 		
+		} elseif (isset($ret["use"]) && $ret["use"]){			 		
  			$already_stored = array();
  			$tplTab = split(",", $ret["use"]);
  			$j = 0;
@@ -1305,9 +1308,9 @@
 	 			}
 	 		}
 	 		
-	 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
-	 		{ 			
+	 		if (isset($_POST['mc_mod_tplp']['mc_mod_tplp']) && $_POST['mc_mod_tplp']['mc_mod_tplp'] == 1)
+		 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++) { 			
 	 			$tpSelect = "tpSelect_" . $i; 		
 	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
 		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
@@ -1574,8 +1577,11 @@
 	
 	# For massive change. We just add the new list if the elem doesn't exist yet
 	function updateHostContactGroup_MC($host_id, $ret = array())	{
-		if (!$host_id) return;
 		global $form, $pearDB;
+		
+		if (!$host_id) 
+			return;
+		
 		$rq = "SELECT * FROM contactgroup_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
@@ -1596,8 +1602,11 @@
 	
 	# For massive change. We just add the new list if the elem doesn't exist yet
 	function updateHostContact_MC($host_id, $ret = array())	{
-		if (!$host_id) return;
 		global $form, $pearDB;
+		
+		if (!$host_id) 
+			return;
+		
 		$rq = "SELECT * FROM contact_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
@@ -1618,9 +1627,11 @@
 	
 	
 	function updateHostHostGroup($host_id, $ret = array())	{
-		if (!$host_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
+		
+		if (!$host_id) 
+			return;
+		
 		# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies, osl
 		# Get initial Hostgroup list to make a diff after deletion
 		$rq = "SELECT hostgroup_hg_id FROM hostgroup_relation ";
@@ -1701,35 +1712,35 @@
 		}
 	}
 
-function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
-	global $pearDB, $path, $oreon;
-	
-	if (isset($antiLoop[$hID2]) && $antiLoop[$hID2]) {		
-		return 0;	
-	}
-	if (file_exists($path."../service/DB-Func.php"))
-		require_once($path."../service/DB-Func.php");
-	else if (file_exists($path."../configObject/service/DB-Func.php"))
-		require_once($path."../configObject/service/DB-Func.php");
-	$rq = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2;
-	$DBRESULT =& $pearDB->query($rq);
-
-	while ($hTpl = $DBRESULT->fetchRow()) {		
-		$rq2 = "SELECT service_service_id FROM `host_service_relation` WHERE host_host_id = " . $hTpl['host_tpl_id'];
-		$DBRESULT2 =& $pearDB->query($rq2);
-		while ($hTpl2 = $DBRESULT2->fetchRow()) {			
-			$alias =& getMyServiceAlias($hTpl2["service_service_id"]);			
-			if (testServiceExistence ($alias, array(0=>$hID))) {				
-				$service = array("service_template_model_stm_id" => $hTpl2["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
-				$service_id = insertServiceInDB($service);
-				$rq3 = "INSERT INTO host_service_relation (hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) VALUES (NULL, '".$hID."', NULL, '".$service_id."')";
-				$DBRESULT3 =& $pearDB->query($rq3);
-			}
+	function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
+		global $pearDB, $path, $oreon;
+		
+		if (isset($antiLoop[$hID2]) && $antiLoop[$hID2]) {		
+			return 0;	
 		}
-		$antiLoop[$hID2] = 1;
-		generateHostServiceMultiTemplate($hID, $hTpl['host_tpl_id'], $antiLoop);
+		if (file_exists($path."../service/DB-Func.php"))
+			require_once($path."../service/DB-Func.php");
+		else if (file_exists($path."../configObject/service/DB-Func.php"))
+			require_once($path."../configObject/service/DB-Func.php");
+		$rq = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2;
+		$DBRESULT =& $pearDB->query($rq);
+	
+		while ($hTpl = $DBRESULT->fetchRow()) {		
+			$rq2 = "SELECT service_service_id FROM `host_service_relation` WHERE host_host_id = " . $hTpl['host_tpl_id'];
+			$DBRESULT2 =& $pearDB->query($rq2);
+			while ($hTpl2 = $DBRESULT2->fetchRow()) {			
+				$alias =& getMyServiceAlias($hTpl2["service_service_id"]);			
+				if (testServiceExistence ($alias, array(0=>$hID))) {				
+					$service = array("service_template_model_stm_id" => $hTpl2["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
+					$service_id = insertServiceInDB($service);
+					$rq3 = "INSERT INTO host_service_relation (hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) VALUES (NULL, '".$hID."', NULL, '".$service_id."')";
+					$DBRESULT3 =& $pearDB->query($rq3);
+				}
+			}
+			$antiLoop[$hID2] = 1;
+			generateHostServiceMultiTemplate($hID, $hTpl['host_tpl_id'], $antiLoop);
+		}
 	}
-}
 
 	function createHostTemplateService($host_id = null, $htm_id = NULL)	{
 		if (!$host_id) return;
@@ -1790,8 +1801,11 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 	}
 	
 	function updateHostTemplateService($host_id = null)	{
-		if (!$host_id) return;
 		global $form, $pearDB, $oreon, $path;
+
+		if (!$host_id) 
+			return;
+		
 		if (file_exists($path."../service/DB-Func.php"))
 			require_once($path."../service/DB-Func.php");
 		else if (file_exists($path."../service/DB-Func.php"))
@@ -1822,8 +1836,11 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 	}
 	
 	function updateHostTemplateService_MC($host_id = null)	{
-		if (!$host_id) return;
 		global $form, $pearDB, $oreon, $path;
+		
+		if (!$host_id) 
+			return;
+		
 		if (file_exists($path."../service/DB-Func.php"))
 			require_once($path."../service/DB-Func.php");
 		else if (file_exists($path."../service/DB-Func.php"))
@@ -1831,15 +1848,16 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 		
 		$DBRESULT =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."'");
 		$row =& $DBRESULT->fetchRow();
-		if ($row["host_register"] == 0) 	{
-			$rq = "SELECT * FROM host_service_relation ";
-			$rq .= "WHERE host_host_id = '".$host_id."'";
-			$DBRESULT2 =& $pearDB->query($rq);
+		if ($row["host_register"] == 0) {
+
+			$DBRESULT2 =& $pearDB->query("SELECT * FROM host_service_relation WHERE host_host_id = '".$host_id."'");
+
 			$svtpls = array();
-			while($arr =& $DBRESULT2->fetchRow())
+			while ($arr =& $DBRESULT2->fetchRow())
 				$svtpls [$arr["service_service_id"]] = $arr["service_service_id"];
+
 			$ret = $form->getSubmitValue("host_svTpls");
-			for($i = 0; $i < count($ret); $i++)	{
+			for ($i = 0; $i < count($ret); $i++)	{
 				if (!isset($svtpls[$ret[$i]]))	{
 					$rq = "INSERT INTO host_service_relation ";
 					$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
@@ -1848,17 +1866,20 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 					$DBRESULT2 =& $pearDB->query($rq);
 				}
 			}
-		}
-		else if ($oreon->user->get_version() >= 3){
+		} else if ($oreon->user->get_version() >= 3) {
 			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
 				generateHostServiceMultiTemplate($host_id, $host_id);
 		}
 	}
 
 	function updateHostTemplateUsed($useTpls = array())	{
-		if(!count($useTpls)) return;
 		global $pearDB;
+		
+		if(!count($useTpls)) 
+			return;
+		
 		require_once "./include/common/common-Func.php";
+		
 		foreach ($useTpls as $key=>$value){
 			$DBRESULT =& $pearDB->query("UPDATE host SET host_template_model_htm_id = '".getMyHostID($value)."' WHERE host_id = '".$key."'");
 		}			
@@ -1898,12 +1919,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
 		$ret = $form->getSubmitValue("nagios_server_id");
 		if (isset($ret) && $ret != "" && $ret != 0){
 			$DBRESULT = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$host_id."'");
-		
-			$rq = "INSERT INTO `ns_host_relation` ";
-			$rq .= "(`host_host_id`, `nagios_server_id`) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$host_id."', '".$ret."')";
-			$DBRESULT = $pearDB->query($rq);
+			$DBRESULT = $pearDB->query("INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) VALUES ('".$host_id."', '".$ret."')");
 		}
 	}	
 ?>
