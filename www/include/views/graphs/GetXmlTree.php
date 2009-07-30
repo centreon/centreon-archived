@@ -226,7 +226,7 @@
 			 */
 			$cpt = 0;
 			$str = 0;
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service WHERE `meta_activate = '1' `ORDER BY `meta_name`");
+			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
 				$buffer->startElement("item");
