@@ -344,6 +344,8 @@
 				
 				if ($host["host_notification_interval"] != NULL) 
 					$str .= print_line("notification_interval", $host["host_notification_interval"]);
+				if ($host["host_first_notification_delay"] != NULL) 
+					$str .= print_line("first_notification_delay", $host["host_first_notification_delay"]);
 				
 				/*
 				 * Timeperiod name

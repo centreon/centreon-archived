@@ -253,7 +253,9 @@
 					$strTMP .= print_line("notification_options", $service["service_notification_options"]);
 				if ($service["service_notifications_enabled"] != 2) 
 					$strTMP .= print_line("notifications_enabled", $service["service_notifications_enabled"] == 1 ? "1": "0");
-				
+				if ($service["service_first_notification_delay"] != NULL) 
+					$strTMP .= print_line("first_notification_delay", $service["service_first_notification_delay"]);
+					
 				/*
 				 * Contact Group Relation
 				 */
@@ -519,7 +521,9 @@
 					$strTMP .= print_line("retain_nonstatus_information", $service["service_retain_nonstatus_information"] == 1 ? "1": "0");
 				if ($service["service_notification_interval"] != NULL) 
 					$strTMP .= print_line("notification_interval", $service["service_notification_interval"]);
-				
+				if ($service["service_first_notification_delay"] != NULL) 
+					$strTMP .= print_line("first_notification_delay", $service["service_first_notification_delay"]);
+					
 				if (isset($service["timeperiod_tp_id2"]) && $service["timeperiod_tp_id2"])
 					$strTMP .= print_line("notification_period", $timeperiods[$service["timeperiod_tp_id2"]]);
 				
