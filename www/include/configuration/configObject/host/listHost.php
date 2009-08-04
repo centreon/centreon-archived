@@ -223,13 +223,13 @@
 	}
 	
 	/*
-	 * Header title for same name - Ajust pattern lenght with (0, 4) param
+	 * Header title for same name - Ajust pattern lenght with (0, 3) param
 	 */
 	
 	$pattern = NULL;
 	for ($i = 0; $i < count($elemArr); $i++)	{
 		# Searching for a pattern wich n+1 elem
-		if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 4)) && !$pattern)	{
+		if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 3)) && !$pattern)	{
 			for ($j = 0; isset($elemArr[$i]["RowMenu_name"][$j]); $j++)	{
 				if (isset($elemArr[$i+1]["RowMenu_name"][$j]) && $elemArr[$i+1]["RowMenu_name"][$j] == $elemArr[$i]["RowMenu_name"][$j])
 					;
@@ -237,13 +237,18 @@
 					break;
 			}
 			$pattern = substr($elemArr[$i]["RowMenu_name"], 0, $j);
+                        if ($pos = strrpos($pattern, "_") && $pos >= 3 && $j > $pos+2) {
+			        $pattern = substr($pattern, 0, $pos);
+			} else if ($pos = strrpos($pattern, "-") && $pos >= 3 && $j > $pos+2) {
+			        $pattern = substr($pattern, 0, $pos);
+			}
 		}
 		if (strstr($elemArr[$i]["RowMenu_name"], $pattern))
 			$elemArr[$i]["pattern"] = $pattern;
 		else	{
 			$elemArr[$i]["pattern"] = NULL;
 			$pattern = NULL;
-			if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 4)) && !$pattern)	{
+			if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 3)) && !$pattern)	{
 				for ($j = 0; isset($elemArr[$i]["RowMenu_name"][$j]); $j++)	{
 					if (isset($elemArr[$i+1]["RowMenu_name"][$j]) && $elemArr[$i+1]["RowMenu_name"][$j] == $elemArr[$i]["RowMenu_name"][$j])
 						;

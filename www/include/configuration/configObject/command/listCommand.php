@@ -134,7 +134,7 @@
 	}
 	
 	/*
-	 * Header title for same name - Ajust pattern lenght with (0, 6) param
+	 * Header title for same name - Ajust pattern lenght with (0, limitMatch) param
 	 */
 	$pattern = NULL;
 	$limitMatch = 20;
@@ -152,6 +152,11 @@
 					break;
 			}
 			$pattern = substr($elemArr[$i]["RowMenu_name"], 0, $j);
+			if ($pos = strrpos($pattern, "_") && $pos > 3 && $j > $pos+2) {
+			    $pattern = substr($pattern, 0, $pos);
+			} else if ($pos = strrpos($pattern, "-") && $pos > 3 && $j > $pos+2) {
+			    $pattern = substr($pattern, 0, $pos);
+			}
 		}
 		
 		if (strstr($elemArr[$i]["RowMenu_name"], $pattern))
