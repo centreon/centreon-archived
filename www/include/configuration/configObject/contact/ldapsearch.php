@@ -52,6 +52,7 @@
 		$oreon =& $_SESSION["oreon"];
 	}
 
+	global $buffer;
 	$pearDB = new CentreonDB();
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
