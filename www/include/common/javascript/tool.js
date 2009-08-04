@@ -20,6 +20,7 @@
 function toggleCheckAll(theElement, id){	
 	var a = document.getElementById(id);
 
+	// enable/disable all subnodes of id
 	for (var i = 0; document.getElementById(id+'_'+i) ;i++){
 		var b = document.getElementById(id+'_'+i);
 		if (a.checked)
@@ -41,6 +42,32 @@ function toggleCheckAll(theElement, id){
 					d.checked = false;
 			}
 		}
+	}
+	// enable/disable upper nodes of id
+	var node = id;
+	var pos = node.lastIndexOf("_");
+	var upnode;
+	var elem, elem_up;
+	while (pos>0) {
+	    upnode = node.substr(0, pos);
+	    elem = document.getElementById(node);
+	    elem_up = document.getElementById(upnode);
+	    if (elem.checked) {
+		elem_up.checked = true;
+	    } else {
+		var enabled = false;
+		for(var k = 0; document.getElementById(upnode+'_'+k) ;k++){
+		    var elem_sub = document.getElementById(upnode+'_'+k);
+			if (elem_sub.checked) {
+			    enabled = true;
+			    break;
+			}
+		}
+		if (!enabled)
+		    elem_up.checked = false;
+	    }
+	    node = upnode;
+	    pos = node.lastIndexOf("_");
 	}
 }					
 		
