@@ -249,7 +249,7 @@
 		  	 	 * If user is in an access group
 		  	 	 */
 			  	$str_topo = "";
-				$DBRESULT =& $pearDB->query(	"SELECT DISTINCT acl_topology_id " .
+				$DBRESULT =& $pearDB->query(	"SELECT DISTINCT acl_group_topology_relations.acl_topology_id " .
 												"FROM `acl_group_topology_relations`, `acl_topology`, `acl_topology_relations` " .
 												"WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id " .
 												"AND acl_group_topology_relations.acl_group_id IN (". $this->getAccessGroupsString() .")" .
