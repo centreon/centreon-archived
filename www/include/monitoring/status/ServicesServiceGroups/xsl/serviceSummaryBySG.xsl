@@ -37,7 +37,7 @@
 						</xsl:element>
 				</xsl:element>
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?p=40201&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?p=40201&amp;svc_id=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
 						</xsl:element>
