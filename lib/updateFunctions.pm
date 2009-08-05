@@ -38,7 +38,9 @@
 sub getIntervalLenght($){
     my $con_oreon = $_[0];
     my $sth = $con_oreon->prepare("SELECT `interval_length` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-    if (!$sth->execute) {writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");}
+    if (!$sth->execute) {
+	writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");
+    }
     my @data = $sth->fetchrow_hashref();
     undef($sth);
     if (defined($interval)) {
@@ -92,6 +94,8 @@ sub updateRRDDB($$$$$$$$) {
 	    $begin = $_[4] - 200000;
 	    $interval = getServiceCheckInterval($_[1], $con_ods) * getIntervalLenght($con_oreon);
 	    $interval_hb = $interval * 2;
+
+	    # Caclulate number of value 
 	    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 
 	    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value);
@@ -112,6 +116,22 @@ sub updateMysqlDB($$$$) {
 	$dataBinInfo .= ", ";
     }
     $dataBinInfo .= "('".$_[0]."', '".$_[1]."', '".$_[2]."', '".$_[3]."')";
+}
+
+#
+#
+# $metric_id $connexion
+sub getServiceDescFromIndex($$) {
+    my $index = $_[0];
+    my $cnx = $_[1];
+
+    my $sth1 = $cnx->prepare("SELECT service_description FROM `metrics` m, `index_data` i WHERE i.id = m.index_id AND m.metric_id = '".$index."'");
+    if (!$sth1->execute){
+	writeLogFile("Error with requeste to get service dscr (getServiceDescFromIndex) : ".$sth1->errstr);
+    }
+    my $data = $sth1->fetchrow_hashref();
+    undef($sth1);
+    return $data->{'service_description'}
 }
 
 # Update RRDTool DB for modules with data
@@ -135,11 +155,11 @@ sub updateRRDDBforHiddenSVC($$$$$$$$) {
 	if ($_[0] && $_[1] && $_[5]){
 	    my $begin = $_[4] - 200000;
 	    CheckMySQLConnexion();
-	    $interval = 1;
-	    $interval = getIntervalLenght($con_oreon) * $interval;
+
+	    $interval = getModulesInterval(getServiceDescFromIndex($_[1], $con_ods), $con_oreon);
 	    $interval_hb = $interval * 2;
-	    undef($data);
-	    undef($sth2);
+	    
+	    # Caclulate number of value 
 	    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 
 	    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value);

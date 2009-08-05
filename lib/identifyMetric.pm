@@ -147,10 +147,13 @@ sub identify_metric($$$$$$$$){
 
 		# Get ID
 		$sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
-		if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+		if (!$sth1->execute) {
+		    writeLogFile("Error:" . $sth1->errstr . "\n");
+		}
 	    }
 	    my $metric = $sth1->fetchrow_hashref();
 	    $sth1->finish();
+
 	    # Update metric attributs
 	    if ($just_insert || ($metric->{'unit_name'} ne $data[2])){
 		my $sth1 = $con_ods->prepare("UPDATE `metrics` SET `unit_name` = '".$data[2]."', `warn` = '".$data[3]."', `crit` = '".$data[4]."', `min` = '".$data[5]."', `max` = '".$data[6]."' WHERE `metric_id` = '".$metric->{'metric_id'}."'");

@@ -53,6 +53,11 @@ if (POSIX::getuid() == 0 ) {
 }
 
 #######################################
+# Initiate options
+my $debug = 0;
+$timeout = 5; 
+
+#######################################
 # Configure Paths
 
 my $installedPath = "@CENTREON_DIR@";
@@ -75,11 +80,6 @@ $rsync	.= " --timeout=$timeout ";
 $scp	.= " -o ConnectTimeout=$timeout ";
 
 #######################################
-# Initiate options
-my $debug = 0;
-$timeout = 5; 
-
-#######################################
 # Initiate Flag : 
 # Never change this options. 
 #
@@ -88,8 +88,7 @@ my $cfg;
 
 #######################################
 # Include Configuration Data
-#require "@CENTREON_ETC@/conf.pm";
-require "/etc/centreon/conf.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 sub catch_zap {
     $stop = 0;
@@ -363,7 +362,7 @@ sub GetPerfData($){
 
     my $localtmpperffile = "$localbasevardir/service-perfdata";
     my $localperffile = getPerfDataFile($con, getLocalServerID());
-    my $move_cmd = "rm -f $distantperffile_buffer 2> /dev/null; mv $distantperffile $distantperffile_buffer 2> /dev/null";
+    my $move_cmd = "rm -f $distantperffile_buffer 2> /dev/null; cp $distantperffile $distantperffile_buffer 2> /dev/null ; echo \"# New File\" > $distantperffile";
     
     # Get Perfdata file
     if (!defined($distantperffile)) {
@@ -457,7 +456,7 @@ sub GetLogFile($){
 		# Get file with rsync
 		my $cmd = "$scp -P $port $distantconnexion:$distantlogfile $locallogfile 2>> /dev/null";
 		`$cmd`;
-		writeLogFile($cmd);
+		writeLogFile($cmd) if ($debug);
 		if ($? ne 0) {
 		    writeLogFile("Cannot get log file or log file doesn't exists on poller $id");
 		}
