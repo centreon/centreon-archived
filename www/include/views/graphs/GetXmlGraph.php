@@ -344,7 +344,9 @@
 			}
 			$DBRESULT2->free();
 			
-			# verify if metrics in parameter is for this index
+			/*
+			 * verify if metrics in parameter is for this index
+			 */
 			$metrics_active =& $_GET["metric"];
 			$pass = 0;
 			if (isset($metrics_active))

@@ -91,6 +91,7 @@
 	
 	$id 	= getGetPostValue("id");
 	$id_svc = getGetPostValue("svc_id");
+	$meta 	= getGetPostValue("meta");
 	
 	if (isset($id_svc) && $id_svc){
 		$id = "";
@@ -99,6 +100,12 @@
 			$tmp = explode(";", $svc);
 			if (!isset($tmp[1])) {
 				$id .= "HH_" . getMyHostID($tmp[0]).",";
+			} if (isset($tmp[0]) && $tmp[0] == "") {
+				$DBRESULT =& $pearDB->query("SELECT `meta_id` FROM meta_service WHERE meta_name = '".$tmp[1]."'");
+				$res =& $DBRESULT->fetchRow();
+				$DBRESULT->free();
+				$id .= "MS_".$res["meta_id"].",";
+				$meta = 1;
 			} else {
 				$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
 			}
@@ -181,7 +188,7 @@
     tree.setXMLAutoLoading("./include/views/graphs/GetXmlTree.php");
         
     //load first level of tree
-    tree.loadXML("./include/views/graphs/GetXmlTree.php?<?php if (isset($search) && $search) print "search=$search"."&"; ?><?php if (isset($search_service) && $search_service) print "search_service=$search_service"."&"; ?>id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
+    tree.loadXML("./include/views/graphs/GetXmlTree.php?<?php if (isset($meta) && $meta) print "meta=$meta"."&"; ?><?php if (isset($search) && $search) print "search=$search"."&"; ?><?php if (isset($search_service) && $search_service) print "search_service=$search_service"."&"; ?>id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
 
 	// system to reload page after link with new url
 	//set function object to call on node select 
@@ -302,13 +309,17 @@
 		document.FormPeriod.EndTime.value = EndTime;
 	}
 
-	function graph_4_host(id, multi)	{
+	function graph_4_host(id, multi, pStart, pEnd)	{
 		if (!multi)
 			multi = 0;
-		
-		if (document.FormPeriod.period.value != "") {
+				
+		if (pStart && pEnd){
+			period = pEnd - pStart;			
+		}
+		else if (document.FormPeriod.period.value != "") {
 			period = document.FormPeriod.period.value;
-		} else if(document.FormPeriod) {
+		} 		
+		else if(document.FormPeriod) {
 			period = '';
 			StartDate = document.FormPeriod.StartDate.value;
 			EndDate = document.FormPeriod.EndDate.value;

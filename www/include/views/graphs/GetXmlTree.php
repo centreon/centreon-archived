@@ -94,11 +94,12 @@
 	/*
 	 * Get Parameters
 	 */
-	(isset($_GET["mode"])) ? $normal_mode = $_GET["mode"] : $normal_mode = 1;
-	(isset($_GET["id"])) ? $url_var = $_GET["id"] : $url_var = 0;
-	(isset($_GET["search"])) ? $search = $_GET["search"] : $search = 0;
-	(isset($_GET["search_host"])) ? $search = $_GET["search_host"] : $search = 0;
-	(isset($_GET["search_service"])) ? $search_service = $_GET["search_service"] : $search_service = 0;
+	(isset($_GET["mode"])) ? $normal_mode = htmlentities($_GET["mode"], ENT_QUOTES) : $normal_mode = 1;
+	(isset($_GET["meta"])) ? $meta = htmlentities($_GET["meta"], ENT_QUOTES) : $meta = 0;
+	(isset($_GET["id"])) ? $url_var = htmlentities($_GET["id"], ENT_QUOTES) : $url_var = 0;
+	(isset($_GET["search"])) ? $search = htmlentities($_GET["search"], ENT_QUOTES) : $search = 0;
+	(isset($_GET["search_host"])) ? $search = htmlentities($_GET["search_host"], ENT_QUOTES) : $search = 0;
+	(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = 0;
 	
 	$type = "root";
 	$id = "0";
@@ -253,7 +254,8 @@
 			       	if ($is_admin || (isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_id"]]))) {
 				       	$buffer->startElement("item");
 						$buffer->writeAttribute("child", "1");
-						$buffer->writeAttribute("nocheckbox", "1");
+						//if (!$search && !$search_host && !$search_service)
+							$buffer->writeAttribute("nocheckbox", "1");
 						$buffer->writeAttribute("id", "HG_".$HG["hg_id"]);
 						$buffer->writeAttribute("text", $HG["hg_name"]);
 						$buffer->writeAttribute("im0", "../16x16/clients.gif");
@@ -394,7 +396,6 @@
 			$id_full = split('_', $id);
 			$id = $id_full[0];
 			$buffer->startElement("idfull");
-			///$buffer->text(print_r($id_full));
 			$buffer->endElement();			
 			
 			if ($type == "HH") {
@@ -453,6 +454,11 @@
 					foreach($services as $svc_id => $svc_name)
 						$svcs_selected[$svc_id] = $svc_name;
 				}
+			} else if ($type == "MS"){ // Meta Services
+				/*
+				 * Init Table
+				 */
+				$meta_checked[$id] = $id;				
 			}
 		}
 		
@@ -536,7 +542,7 @@
 			}
 			
 		}
-		$buffer->endElement();
+		
 		/*
 		 * Orphan Hosts
 		 */
@@ -544,9 +550,45 @@
 		$buffer->writeAttribute("child", "1");
 		$buffer->writeAttribute("id", "HO_0");
 		$buffer->writeAttribute("text", _("Orphan Hosts"));
+		$buffer->writeAttribute("nocheckbox", "1");
 		$buffer->writeAttribute("im0", "../16x16/server_network.gif");
 		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+		$buffer->endElement();
+		
+		/*
+		 * Meta Services
+		 */
+		$buffer->startElement("item");
+		$buffer->writeAttribute("child", "1");
+		if (isset($meta_checked))
+			$buffer->writeAttribute("open", "1");
+		$buffer->writeAttribute("id", "MT_0");
+		$buffer->writeAttribute("text", _("Meta Services"));
+		$buffer->writeAttribute("nocheckbox", "1");
+		$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+		
+		if (isset($meta_checked) && count($meta_checked)) {
+			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
+			while ($MS =& $DBRESULT->fetchRow()){
+				$buffer->startElement("item");
+				$buffer->writeAttribute("child", "0");
+				if (isset($meta_checked[$MS["meta_id"]]))
+					$buffer->writeAttribute("checked", "1");
+				$buffer->writeAttribute("id", "MS_".$MS["meta_id"]);
+				$buffer->writeAttribute("text", $MS["meta_name"]);
+				$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+				$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+				$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+				$buffer->endElement();				
+			}
+			$DBRESULT->free();
+			unset($MS);
+		}		
+		$buffer->endElement();
+		
 		$buffer->endElement();
 		
 		/*

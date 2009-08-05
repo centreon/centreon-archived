@@ -175,7 +175,7 @@
 	<div>
 		<table class="ListTable">
 			<tr class="list_one">
-				<td class='ListColLeft' valign="top" align='center'> <xsl:value-of select="name"/></td>	
+				<td class='ListColLeft' valign="top" align='center'><xsl:value-of select="name"/></td>	
 				<td style="text-align:right;width:42px;">
 					<xsl:element name="a">
 						<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
@@ -259,7 +259,7 @@
 			    	<div id="imggraph">
 						<xsl:if test="split = 0">
 							<xsl:element name="a">
-							<xsl:attribute name="onClick">multi=0;graph_4_host('SS_<xsl:value-of select="opid"/>', ''); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">multi=0;graph_4_host('<xsl:value-of select="opid"/>', ''); return false;</xsl:attribute>
 							<xsl:attribute name="href">#</xsl:attribute>
 								<xsl:element name="img">
 								  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateODSImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
