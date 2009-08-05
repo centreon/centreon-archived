@@ -42,23 +42,15 @@
 			background-color:<xsl:value-of select="//Menu2ID"/>;				
 		</xsl:attribute>
 		<xsl:for-each select="//Menu2">
-			<xsl:element name="span">
-				<xsl:attribute name="class">
-					separator_menu2		
-				</xsl:attribute>
+			<xsl:element name="span2">
+				<xsl:attribute name="class">separator_menu2</xsl:attribute>
 				<xsl:value-of select="Menu2Sep"/>
 			</xsl:element>
-			<xsl:element name="span">
-				<xsl:attribute name="class">
-					span2					
-				</xsl:attribute>
+			<xsl:element name="span2">
+				<xsl:attribute name="class">span2</xsl:attribute>
 				<xsl:element name="a">
-					<xsl:attribute name="href">
-						<xsl:value-of select="Menu2Url"/>
-					</xsl:attribute>
-					<xsl:attribute name="style">
-						white-space:nowrap;
-					</xsl:attribute>
+					<xsl:attribute name="href"><xsl:value-of select="Menu2Url"/></xsl:attribute>
+					<xsl:attribute name="style">white-space:nowrap;</xsl:attribute>
 					<xsl:value-of select="Menu2Name"/>
 				</xsl:element>	
 			</xsl:element>
