@@ -107,7 +107,7 @@ function displaySelectedTp(){
 		    if (tab[globalk] == id) {
 				optionElem.selected = true;
 		  	}			    
-		}			
+		}					
 		
 		if (_o == "w") {			
 			selectElem.disabled = true;
@@ -120,9 +120,9 @@ function displaySelectedTp(){
 		
 		imgElem = document.createElement("img");
 		imgElem.id = globalk;
-		imgElem.src = "./img/icones/16x16/delete.gif";			
+		imgElem.src = "./img/icones/16x16/delete.gif";
 		imgElem.title = '<?php echo _("Delete");?>';
-		imgElem.onclick = function(){				
+		imgElem.onclick = function(){
 			var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
 			if (response) {										
 		    	if (navigator.appName == "Microsoft Internet Explorer") {
@@ -242,7 +242,7 @@ function add_select_template(o){
         
     if (xhr == null)
      	alert("AJAX is not supported");
-     _o = o;
+    _o = o;
     xhr.onreadystatechange = function() { get_select_options(); };
     <?php
     if ($o == "a" || $o == "mc")
