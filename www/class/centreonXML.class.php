@@ -68,12 +68,16 @@
   	/*
   	 *  Simply puts text
   	 */
-  	public function text($txt, $cdata = true) {
+  	public function text($txt, $cdata = true, $encode = true) {
   		$txt = preg_replace('/[\x00-\x19\x7F]/', "", $txt);
-  		if ($cdata)
-  			$this->buffer->writeCData(utf8_encode(html_entity_decode($txt)));
-  		else
-  			$this->buffer->text(utf8_encode(html_entity_decode($txt)));
+  		if ($encode == false) {
+  			$this->buffer->writeCData($txt);
+  		} else {
+	  		if ($cdata)
+	  			$this->buffer->writeCData(utf8_encode(html_entity_decode($txt)));
+	  		else
+	  			$this->buffer->text(utf8_encode(html_entity_decode($txt)));  			
+  		}
   	}
   	
   	/*
