@@ -379,9 +379,7 @@
 				unset($service_description);
 			} else if ($type == "MS") {
 				if ($id != 0) {
-					$tmp["svc_name"] = "meta_".$id;
-					$tmp["host_name"] = "_Module_Meta";
-					$tab_svc[] = $tmp;
+					$tab_svc["_Module_Meta"][$id] = "meta_".$id;
 				}
 			}
 		}
@@ -711,8 +709,7 @@
 	 */
 	if ($period != "-1") {
 		set_user_param($contact_id, $pearDB, "log_filter_period", $period);
-	}
-	else {
+	} else {
 		set_user_param($contact_id, $pearDB, "log_filter_period", "0");
 	}
 ?>

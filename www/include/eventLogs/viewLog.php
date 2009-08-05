@@ -122,21 +122,26 @@
 	} else {
 		$id = 1;
 	}
-	
+		
 	if (isset($_POST["id"])){
 		$id = $_POST["id"];
 	}
-	
-	if (isset($_POST["svc_id"]) && $_POST["svc_id"]){
-		$id = "";
-		$id_svc = $_POST["svc_id"];
-		$tab_svcs = explode(",", $id_svc);
-		foreach ($tab_svcs as $svc){
-			$tmp = explode(";", $svc);
-			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
+
+	if (strncmp("MS", $id, 2)) {
+		$meta = 0;
+		if (isset($id) && $id){
+			$id = "";
+			$id_svc = $id;
+			$tab_svcs = explode(",", $id_svc);
+			foreach ($tab_svcs as $svc){
+				$tmp = explode(";", $svc);
+				$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
+			}
 		}
-	}
-	
+	} else {
+		$meta = 1;
+	}	
+
 	$id_log = "'RR_0'";
 	$multi =0;
 	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
@@ -171,7 +176,7 @@
 						"15552000"=>_("Last 6 Months"),
 						"31104000"=>_("Last Year"));
 
-	$sel =& $form->addElement('select', 'period', _("Log Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])")); 
+	$form->addElement('select', 'period', _("Log Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])")); 
 	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "onclick"=>"displayDatePicker('StartDate', this)", "size"=>8)); 
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5)); 
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "onclick"=>"displayDatePicker('EndDate', this)", "size"=>8)); 
@@ -211,7 +216,7 @@
     tree.setXMLAutoLoading("./include/eventLogs/XmlTree/GetXmlTree.php"); 
             
     //load first level of tree
-    tree.loadXML("./include/eventLogs/XmlTree/GetXmlTree.php?search_host=<?php print $search; ?><?php if (isset($search_service) && $search_service) print "&search_service=$search_service"; ?>&sid=<?php print session_id(); ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
+    tree.loadXML("./include/eventLogs/XmlTree/GetXmlTree.php?<?php if (isset($meta) && $meta) print "meta=$meta"."&"; ?>search_host=<?php print $search; ?><?php if (isset($search_service) && $search_service) print "&search_service=$search_service"; ?>&sid=<?php print session_id(); ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 	// system to reload page after link with new url
 	//set function object to call on node select 
@@ -323,7 +328,7 @@
 	}
 
 
-	function log_4_host(id, formu, type){	
+	function log_4_host(id, formu, type){			
 		if (document.FormPeriod) {
 		    if (document.FormPeriod.period.value!="")	{
 			period = document.FormPeriod.period.value;
@@ -388,7 +393,7 @@
 			proc.setXml(_addr)
 			proc.setXslt(_addrXSL)
 			proc.transform("logView4xml");
-		} else{
+		} else{			
 			var openid = document.getElementById('openid').innerHTML;
 			var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+openid+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
 			document.location.href = _addr;

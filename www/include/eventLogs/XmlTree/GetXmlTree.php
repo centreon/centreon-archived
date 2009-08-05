@@ -304,9 +304,9 @@
 			 * Request build
 			 */
 			if ($search_host != "")
-				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service WHERE `meta_name` LIKE '%$search_host%' ORDER BY `meta_name`");
+				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_name` LIKE '%$search_host%' ORDER BY `meta_name`");
 			else
-				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
+				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service ORDER BY `meta_name`");
 			
 			while ($MS =& $DBRESULT->fetchRow()){
 				if (!$cpt) {
@@ -454,6 +454,11 @@
 					foreach($services as $svc_id => $svc_name)
 						$svcs_selected[$svc_id] = $svc_name;
 				}
+			} else if ($type == "MS"){ // Meta Services
+				/*
+				 * Init Table
+				 */
+				$meta_checked[$id] = $id;				
 			}
 		}
 		
@@ -533,21 +538,55 @@
 					}
 				}
 				$buffer->endElement();
-				
 			}
-			
 		}
-		$buffer->endElement();
+		
 		/*
 		 * Orphan Hosts
 		 */
 		$buffer->startElement("item");
 		$buffer->writeAttribute("child", "1");
 		$buffer->writeAttribute("id", "HO_0");
+		$buffer->writeAttribute("nocheckbox", "1");
 		$buffer->writeAttribute("text", _("Orphan Hosts"));
 		$buffer->writeAttribute("im0", "../16x16/server_network.gif");
 		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+		$buffer->endElement();
+		
+		/*
+		 * Meta Services
+		 */
+		$buffer->startElement("item");
+		$buffer->writeAttribute("child", "1");
+		if (isset($meta_checked))
+			$buffer->writeAttribute("open", "1");
+		$buffer->writeAttribute("id", "MT_0");
+		$buffer->writeAttribute("text", _("Meta Services"));
+		$buffer->writeAttribute("nocheckbox", "1");
+		$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+		
+		if (isset($meta_checked) && count($meta_checked)) {
+			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
+			while ($MS =& $DBRESULT->fetchRow()){
+				$buffer->startElement("item");
+				$buffer->writeAttribute("child", "0");
+				if (isset($meta_checked[$MS["meta_id"]]))
+					$buffer->writeAttribute("checked", "1");
+				$buffer->writeAttribute("id", "MS_".$MS["meta_id"]);
+				$buffer->writeAttribute("text", $MS["meta_name"]);
+				$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+				$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+				$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+				$buffer->endElement();				
+			}
+			$DBRESULT->free();
+			unset($MS);
+		}		
+		$buffer->endElement();
+		
 		$buffer->endElement();
 		
 		/*
