@@ -4,8 +4,7 @@
 <xsl:template match="/">
 <table class="ListTable">
 	<tr class='ListHeader'>
-		<td></td>
-		<td class="ListColPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 		<td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
 		<td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
@@ -23,18 +22,8 @@
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
   		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
-		<td>			
-			<xsl:element name="div">		
-				<xsl:attribute name="id"><xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
-				<xsl:element name="img">
-						<xsl:attribute name="src">./img/misc/grippy.png</xsl:attribute>					
-						<xsl:attribute name="class">draggable</xsl:attribute>
-						<xsl:attribute name="onmousedown">my_test('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');</xsl:attribute>
-				</xsl:element>
-			</xsl:element>
-		</td>
-		<td class="ListColPicker">		
-			<xsl:element name="input">				
+		<td class="ListColPicker">
+			<xsl:element name="input">
 				<xsl:attribute name="type">checkbox</xsl:attribute>
 				<xsl:attribute name="value">1</xsl:attribute>
 				<xsl:attribute name="id"><xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
@@ -47,7 +36,7 @@
 						removeFromSelectedElem('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');
 					}
 				</xsl:attribute>
-			</xsl:element>			
+			</xsl:element>
 		</td>
 		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:if test="hn/@none = 0">

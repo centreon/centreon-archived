@@ -43,7 +43,7 @@
 
 	require_once ($centreon_path . "www/class/centreonHost.class.php");
 	require_once ($centreon_path . "www/class/centreonDB.class.php");
-	
+
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	isset($_GET["service_description"]) ? $service_description = $_GET["service_description"] : $service_description = NULL;
 	isset($_GET["cmd"]) ? $cmd = $_GET["cmd"] : $cmd = NULL;
@@ -53,14 +53,13 @@
 	$pearDBndo = new CentreonDB("ndo");
 	
 	# HOST LCA
-	$flag_acl = 0;
 	if (!$is_admin){
 		$host_id = $hObj->getHostId($host_name);
 		$serviceTab = $oreon->user->access->getHostServices($pearDBndo, $host_id);		
 		foreach ($serviceTab as $value) {
 			if ($value == $service_description)
 				$flag_acl = 1;
-		}	
+		}
 	}
 	
 	if ($is_admin || ($flag_acl && !$is_admin)){

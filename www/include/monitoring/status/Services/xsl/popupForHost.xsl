@@ -14,7 +14,7 @@
 			<td colspan="2" class="ColPopup">
 				<xsl:attribute name="style">
 					background-color:<xsl:value-of select="current_state/@color"/>;
-    			</xsl:attribute>
+    			</xsl:attribute>				
 				<b><xsl:value-of select="plugin_output"/></b>
 			</td>
 		</tr>
