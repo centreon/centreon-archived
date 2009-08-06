@@ -1,18 +1,39 @@
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
+ * Copyright 2005-2009 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation ; either version 2 of the License.
  * 
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ * 
+ * For more information : contact@centreon.com
+ * 
+ * SVN : $URL
+ * SVN : $Id
+ * 
  */
 
 	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
@@ -69,8 +90,7 @@
 	$groupnumber = count($grouplist);
 	
 	function get_services($host_name){
-		global $pearDBndo,$ndo_base_prefix, $lcaSGStr, $instance;
-		global $general_opt, $o;
+		global $pearDBndo,$ndo_base_prefix, $lcaSGStr, $instance, $general_opt, $o;
 
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
@@ -126,12 +146,15 @@
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
-	$rq1 = "SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
-			" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
-			" WHERE ss.service_object_id = sgm.service_object_id".
-			" AND no.object_id = sgm.service_object_id" .
-			" AND sgm.servicegroup_id = sg.servicegroup_id" .
-			" AND no.is_active = 1 AND no.objecttype_id = 2";
+	/*
+	 * Prepare pagination
+	 */
+	$rq1 = "SELECT DISTINCT no.name1 as host_name, sg.alias".
+		" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
+		" WHERE ss.service_object_id = sgm.service_object_id".
+		" AND no.object_id = sgm.service_object_id" .
+		" AND sgm.servicegroup_id = sg.servicegroup_id" .
+		" AND no.is_active = 1 AND no.objecttype_id = 2";
 	
 	$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
 
@@ -146,25 +169,100 @@
 
 	if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
-				")";
+			" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+			" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
+			")";
 	if ($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
 
-
-	$rq_pagination = $rq1;
-	/* Get Pagination Rows */
-	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	$numRows = $DBRESULT_PAGINATION->numRows();
-	/* End Pagination Rows */
-
-
-	$rq1 .= " ORDER BY sg.alias, host_name " . $order;
-
-	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
-
+	$DBRESULT_PAGINATION =& $pearDBndo->query($rq1);
+	$numRows = 0;
+	while ($row =& $DBRESULT_PAGINATION->fetchRow()) {
+	      $numRows++;
+	}	
+	$DBRESULT_PAGINATION->free();
+	
+	if ($numRows) {
+	
+		$rq1 = "SELECT DISTINCT sg.alias, no.name1 as host_name".
+		" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
+		" WHERE ss.service_object_id = sgm.service_object_id".
+		" AND no.object_id = sgm.service_object_id" .
+		" AND sgm.servicegroup_id = sg.servicegroup_id" .
+		" AND no.is_active = 1 AND no.objecttype_id = 2";
+	
+		$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
+	
+		if ($instance != "ALL")
+			$rq1 .= " AND no.instance_id = ".$instance;
+	
+		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
+			$rq1 .= " AND ss.current_state != 0" ;
+	
+		if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0")
+			$rq1 .= " AND ss.current_state != 0 AND ss.problem_has_been_acknowledged = 0" ;
+	
+		if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
+			$rq1 .= " AND no.name1 IN (" .
+				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
+				")";
+		if ($search != ""){
+			$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+		}
+		$rq1 .= " ORDER BY sg.alias, host_name " . $order;
+		$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+	
+		$DBRESULT_PAGINATION =& $pearDBndo->query($rq1);
+		$host_table = array();
+		while ($row =& $DBRESULT_PAGINATION->fetchRow()) {
+		      $host_table[$row["host_name"]] = $row["host_name"];
+		}	
+		$DBRESULT_PAGINATION->free();
+		
+		/*
+		 * Create Host list string
+		 */
+		$hostList = "";
+		foreach ($host_table as $host_name) {
+			if ($hostList != "")
+			   $hostList .= ",";
+			$hostList .= "'".$host_name."'";
+		}
+		
+		/*
+		 * Prepare Finale Request
+		 */
+		$rq1 =	"SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
+			" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
+			" WHERE ss.service_object_id = sgm.service_object_id".
+			" AND no.object_id = sgm.service_object_id" .
+			" AND sgm.servicegroup_id = sg.servicegroup_id" .
+			" AND no.name1 IN ($hostList)" .
+			" AND no.is_active = 1 AND no.objecttype_id = 2";
+		
+		$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
+	
+		if ($instance != "ALL")
+			$rq1 .= " AND no.instance_id = ".$instance;
+	
+		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
+			$rq1 .= " AND ss.current_state != 0" ;
+	
+		if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0")
+			$rq1 .= " AND ss.current_state != 0 AND ss.problem_has_been_acknowledged = 0" ;
+	
+		if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
+			$rq1 .= " AND no.name1 IN (" .
+				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
+					")";
+		if ($search != ""){
+			$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+		}
+		$rq1 .= " ORDER BY sg.alias, host_name " . $order;
+	}
 	/*
 	 * Init Buffer
 	 */
@@ -188,9 +286,8 @@
 	$sg = "";
 	$h = "";
 	$flag = 0;
-
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	while ($tab =& $DBRESULT_NDO1->fetchRow()){
+	while ($tab =& $DBRESULT_NDO1->fetchRow() && $numRows){
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 		if ($sg != $tab["alias"]){
 			$flag = 0;
