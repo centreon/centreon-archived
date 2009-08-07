@@ -756,17 +756,19 @@
 			}
 		}
 		$DBRESULT =& $pearDB->query(" SELECT `service_id`, `service_description` ".
-									" FROM `service`, `host_service_relation` hsr,  `hostgroup_relation` hgr".
-									" WHERE hsr.`host_host_id` = '".$host_id."' ".$lcaStr." AND hsr.service_service_id = service_id ".
-										" AND service_activate = '1'");
+						" FROM `service`, `host_service_relation` hsr".
+						" WHERE hsr.`host_host_id` = '".$host_id."' ".$lcaStr." AND hsr.service_service_id = service_id ".
+						" AND service_activate = '1'");
 		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
 			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES);
 		}
 		$DBRESULT->free();
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+		// Uncomment following lines if you want to see services that are now disabled
+		/*
+		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr" .
+				" WHERE hsr.host_host_id = '".$host_id."' " .
 				" AND service_id = hsr.service_service_id");
 		while ($elem =& $DBRESULT->fetchRow()){
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
@@ -774,6 +776,7 @@
 			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
 		}
 		$DBRESULT->free();
+		*/
 		asort($hSvs);
 		return $hSvs;
 	}
