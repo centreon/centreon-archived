@@ -11,7 +11,7 @@
 	<div>
 		<ul id="mainnav">
 		{assign var='cpt' value=0}
-		{foreach from=$host_list key=key item=item}
+		{foreach from=$msg_optimize key=key item=item}
 			{if $msg_optimize[$key]}
 			{assign var='cpt' value=$cpt+1}
 			<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$host_list[$key]}</a></li>
@@ -21,7 +21,7 @@
 	</div>
 	<a name="generate">
 	{assign var='cpt' value=0}
-	{foreach from=$host_list key=key item=item}
+	{foreach from=$msg_optimize key=key item=item}
 	{if $msg_optimize[$key]}
 	{assign var='cpt' value=$cpt+1}
 	<div id='tab{$cpt}' class='tab'>

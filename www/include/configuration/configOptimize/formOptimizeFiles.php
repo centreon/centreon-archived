@@ -39,11 +39,16 @@
 	if (!isset($oreon))
 		exit();
 
+
+	/*
+	 * Display all server options
+	 */
+	$tab_nagios_server = array(0 => _("All Nagios Servers"));
+
 	/*
 	 * Get Poller List
 	 */
-	$tab_nagios_server = array("0" => "All Nagios Servers");
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `name`");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
 	while ($nagios =& $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 	}
@@ -52,29 +57,17 @@
 	/*
 	 * Display all servers list
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` DESC");
 	$n = $DBRESULT->numRows();
+
 	/*
-	 * Display null option
-	 */
-	if ($n > 1)
-		$tab_nagios_server = array(-1 => "");
-	
-	/*
-	 * Display all servers list
+	 * create all servers list
 	 */
 	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++) {
-		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 		$host_list[$nagios['id']] = $nagios['name'];
 	}
 	$DBRESULT->free();
 	
-	/*
-	 * Display all server options
-	 */
-	if ($n > 1) {
-		$tab_nagios_server[0] = _("All Nagios Servers");
-	}
 
 	/*
 	 * Form begin
@@ -84,7 +77,7 @@
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Nagios Configuration Files Export"));
 	$form->addElement('header', 'infos', _("Implied Server"));
-    $form->addElement('select', 'host', _("Nagios Server"), $tab_nagios_server, $attrSelect);
+	$form->addElement('select', 'host', _("Nagios Server"), $tab_nagios_server, $attrSelect);
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, _("Yes"), '1');
@@ -108,19 +101,19 @@
 	if ($form->validate())	{
 		$ret = $form->getSubmitValues();		
 
-		$DBRESULT_Servers =& $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` LIMIT 1");
+		$DBRESULT_Servers =& $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `ns_activate` = '1' LIMIT 1");
 		$nagios_bin =& $DBRESULT_Servers->fetchRow();
 		$DBRESULT_Servers->free();
 
 		$msg_optimize = array();
 		
 		$cpt = 1;
-		$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
+		$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
-			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){		
+			if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])){		
 				$stdout = shell_exec("sudo ".$nagios_bin["nagios_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
 				$stdout = htmlentities($stdout, ENT_QUOTES);
-				$msg_optimize[$cpt] = str_replace ("\n", "<br />", $stdout);
+				$msg_optimize[$tab['id']] = str_replace ("\n", "<br />", $stdout);
 				$cpt++;
 			}
 		}
