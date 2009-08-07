@@ -83,10 +83,14 @@
   	/*
   	 *  Creates a tag and writes data
   	 */
-  	public function writeElement($element_tag, $element_value) {
+  	public function writeElement($element_tag, $element_value, $encode = 1) {
   		$this->startElement($element_tag);
   		$element_value = preg_replace('/[\x00-\x19\x7F]/', "", $element_value);
-  		$this->buffer->writeCData(utf8_encode(html_entity_decode($element_value)));
+		if ($encode)
+	  		$this->buffer->writeCData(utf8_encode(html_entity_decode($element_value)));
+  		else
+  			$this->buffer->writeCData(html_entity_decode($element_value));
+  		
   		$this->endElement();
   	}
   	
