@@ -261,7 +261,7 @@
 		if ($search != ""){
 			$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 		}
-		$rq1 .= " ORDER BY sg.alias, host_name " . $order;
+		$rq1 .= " ORDER BY sg.alias, host_name, service_description " . $order;
 	}
 	/*
 	 * Init Buffer
