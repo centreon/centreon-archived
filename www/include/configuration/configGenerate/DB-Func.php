@@ -379,7 +379,6 @@
 					isset($hostEnb[$valid["host_host_id"]]) ? $h = true : NULL;					
 					isset($hgEnb[$valid["hostgroup_hg_id"]]) ? $hg = true : NULL;					
 					isset($cgEnb[$valid["contactgroup_cg_id"]]) ? $cg = true : NULL;
-					isset($cctEnb[$valid["contact_id"]]) ? $cct = true : NULL;
 				}
 				$DBRESULT2->free();
 				unset($valid);
