@@ -98,7 +98,7 @@
 		$buffer->writeElement("Menu1Url", "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"]);
 		$buffer->writeElement("Menu1UrlPopup", $elem["topology_popup"]);
 		$buffer->writeElement("Menu1UrlPopupOpen", $elem["topology_url"]);
-		$buffer->writeElement("Menu1Name", _($elem["topology_name"]));
+		$buffer->writeElement("Menu1Name", _($elem["topology_name"]), 0);
 		$buffer->writeElement("Menu1Popup", $elem["topology_popup"] ? "true" : "false");
 		$buffer->endElement();
 		
@@ -119,7 +119,7 @@
 		$buffer->writeElement("Menu2Url", "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"]);
 		$buffer->writeElement("Menu2UrlPopup", $elem["topology_popup"]);
 		$buffer->writeElement("Menu2UrlPopupOpen", $elem["topology_url"]);
-		$buffer->writeElement("Menu2Name", _($elem["topology_name"]));
+		$buffer->writeElement("Menu2Name", _($elem["topology_name"]), 0);
 		$buffer->writeElement("Menu2Popup", $elem["topology_popup"] ? "true" : "false");
 		$buffer->endElement();
 		$sep = "&nbsp;&nbsp;|&nbsp;&nbsp;";
