@@ -3,7 +3,7 @@
 <xsl:template match="/">
 <table class="ListTable">
 	<tr class='ListHeader'>
-		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"  width="200"></td>
+		<td colspan="2" class="ListColHeaderLeft" style="white-space:nowrap;" id="host_name"  width="200"></td>
 			<xsl:if test="//i/s = 1">
 				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="40">Status</td>
 			</xsl:if>
@@ -37,7 +37,7 @@
 						</xsl:element>
 				</xsl:element>
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?p=40201&amp;svc_id=<xsl:value-of select="hn"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?p=40201&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
 						</xsl:element>
