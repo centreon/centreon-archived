@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS `acl_actions_rules` (
   `aar_id` int(11) NOT NULL auto_increment,
   `acl_action_rule_id` int(11) default NULL,
   `acl_action_name` varchar(255) default NULL,
-  PRIMARY KEY  (`aar_id`)
+  PRIMARY KEY  (`aar_id`),
+  KEY `acl_action_rule_id` (`acl_action_rule_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -117,8 +118,11 @@ CREATE TABLE IF NOT EXISTS `acl_resources_hg_relations` (
   `arhge_id` int(11) NOT NULL auto_increment,
   `hg_hg_id` int(11) default NULL,
   `acl_res_id` int(11) default NULL,
-  PRIMARY KEY  (`arhge_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  PRIMARY KEY  (`arhge_id`),
+  KEY `hg_hg_id` (`hg_hg_id`),
+  KEY `acl_res_id` (`acl_res_id`),
+  KEY `hg_hg_id_2` (`hg_hg_id`,`acl_res_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -149,6 +153,21 @@ CREATE TABLE IF NOT EXISTS `acl_resources_host_relations` (
   KEY `host_host_id` (`host_host_id`),
   KEY `acl_res_id` (`acl_res_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `acl_resources_meta_relations`
+--
+
+CREATE TABLE IF NOT EXISTS `acl_resources_meta_relations` (
+  `armse_id` int(11) NOT NULL auto_increment,
+  `meta_id` int(11) default NULL,
+  `acl_res_id` int(11) default NULL,
+  PRIMARY KEY  (`armse_id`),
+  KEY `meta_id` (`meta_id`),
+  KEY `acl_res_id` (`acl_res_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -190,9 +209,11 @@ CREATE TABLE IF NOT EXISTS `acl_resources_sg_relations` (
   `asgr` int(11) NOT NULL auto_increment,
   `sg_id` int(11) default NULL,
   `acl_res_id` int(11) default NULL,
-  PRIMARY KEY  (`asgr`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
+  PRIMARY KEY  (`asgr`),
+  KEY `sg_id` (`sg_id`),
+  KEY `acl_res_id` (`acl_res_id`),
+  KEY `sg_id_2` (`sg_id`,`acl_res_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 -- --------------------------------------------------------
 
 --
@@ -219,7 +240,8 @@ CREATE TABLE IF NOT EXISTS `acl_topology` (
   `acl_topo_name` varchar(255) default NULL,
   `acl_topo_alias` varchar(255) default NULL,
   `acl_topo_activate` enum('0','1') default NULL,
-  PRIMARY KEY  (`acl_topo_id`)
+  PRIMARY KEY  (`acl_topo_id`), 
+  KEY `acl_topo_id` (`acl_topo_id`,`acl_topo_activate`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1727,7 +1749,8 @@ CREATE TABLE IF NOT EXISTS `topology_JS` (
   `PathName_js` text,
   `Init` text,
   PRIMARY KEY  (`id_t_js`),
-  KEY `id_page` (`id_page`)
+  KEY `id_page` (`id_page`),
+  KEY `id_page_2` (`id_page`,`o`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -2259,3 +2282,32 @@ ALTER TABLE `traps`
 ALTER TABLE `traps_service_relation`
   ADD CONSTRAINT `traps_service_relation_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `traps_service_relation_ibfk_3` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table acl_resources_meta_relations
+--
+
+ALTER TABLE `acl_resources_meta_relations` ADD FOREIGN KEY ( `meta_id` ) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE ;
+ALTER TABLE `acl_resources_meta_relations` ADD FOREIGN KEY ( `acl_res_id` ) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE ;
+
+--
+-- Contraintes pour la table acl_actions_rules
+--
+
+ALTER TABLE `acl_actions_rules` ADD CONSTRAINT `acl_actions_rules_ibfk_1` FOREIGN KEY (`acl_action_rule_id`) REFERENCES `acl_actions` (`acl_action_id`) ON DELETE CASCADE;
+
+
+--
+-- Contraintes pour la table acl_resources_hg_relations
+--
+
+ALTER TABLE `acl_resources_hg_relations` ADD FOREIGN KEY ( `hg_hg_id` ) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE ;
+ALTER TABLE `acl_resources_hg_relations` ADD FOREIGN KEY ( `acl_res_id` ) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE ;
+
+--
+-- Contraintes pour la table acl_resources_sg_relations
+--
+
+ALTER TABLE `acl_resources_sg_relations` ADD FOREIGN KEY ( `sg_id` ) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE ;
+ALTER TABLE `acl_resources_sg_relations` ADD FOREIGN KEY ( `acl_res_id` ) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE ;
+
