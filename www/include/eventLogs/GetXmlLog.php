@@ -56,6 +56,7 @@
 	 * pearDB init
 	 */ 	
 	include_once("@CENTREON_ETC@/centreon.conf.php");
+	
 	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
