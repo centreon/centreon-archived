@@ -56,6 +56,8 @@
  	private $serviceCategoriesFilter = array();
  	public  $topology = array();
  	public  $topologyStr = "";
+ 	private $metaServices = array();
+ 	private $metaServiceStr = "";
  	
  	/*
  	 *  Constructor that takes the user_id
@@ -76,7 +78,8 @@
 	 		$this->setResourceGroups();
 	 		$this->setHostGroups();
 	 		$this->setServiceGroups();
-	 		$this->setServiceCategories();	 		
+	 		$this->setServiceCategories();
+	 		$this->setMetaServices();	
 	 		$this->setActions();
  		}
 
@@ -101,6 +104,7 @@
  		$this->setHostGroups();
  		$this->setServiceGroups();
  		$this->setServiceCategories();
+ 		$this->setMetaServices();
  		$this->setTopology();
  		$this->getACLStr();
  		$this->setActions();
@@ -213,6 +217,27 @@
  			$this->serviceCategoriesFilter[$row['acl_res_id']][$row['sc_id']] = $row['sc_id'];
  		}
  	}	
+  	
+  	/*
+ 	 *  Access meta Setter
+ 	 */
+ 	
+ 	private function setMetaServices() {
+ 		global $pearDB;
+ 		
+ 		$query = "SELECT ms.meta_id, ms.meta_name, arsr.acl_res_id " .
+ 				"FROM meta_service ms, acl_resources_meta_relations arsr " .
+ 				"WHERE ms.meta_id = arsr.meta_id " .
+ 				"AND arsr.acl_res_id IN (".$this->getResourceGroupsString().") ";
+ 		$DBRESULT =& $pearDB->query($query);
+ 		$this->metaServiceStr = "";
+ 		while ($row =& $DBRESULT->fetchRow()) {
+ 			$this->metaServices[$row['meta_id']] = $row['meta_name'];
+ 			if ($this->metaServiceStr != "")
+ 				$this->metaServiceStr .= ",";
+ 			$this->metaServiceStr .= "'".$row['meta_id']."'";
+ 		}
+ 	}
   	
  	/*
  	 *  Actions Setter
@@ -751,11 +776,27 @@
 	 	return ($tab);
 	 }
 	 
-	 /* Function that sets the changed flag to 1 for the cron centAcl.php */
+	 /* 
+	  * Function that sets the changed flag to 1 for the cron centAcl.php 
+	  */
 	 public function updateACL(){
 		global $pearDB;
 
 		$DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");		
 	}
- }
- ?>
+	
+	/*
+	 * Funtion that return only metaservice table
+	 */
+	public function getMetaServices() {
+		return $this->metaServices;
+	}
+
+	/*
+	 * Function that return Metaservice list ('', '', '')
+	 */
+	public function getMetaServiceString() {
+		return $this->metaServiceStr;
+	}
+}
+?>
