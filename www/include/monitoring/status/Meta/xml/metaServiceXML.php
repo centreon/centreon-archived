@@ -36,11 +36,16 @@
  * 
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	/*
+	 * if debug == 0 => Normal, 
+	 * debug == 1 => get use, 
+	 * debug == 2 => log in file (log.xml)
+	 */
 	$debugXML = 0;
 	$buffer = '';
 	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	//include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
 	include_once($centreon_path."www/class/centreonXML.class.php");
@@ -48,9 +53,9 @@
 	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";	
 	include_once($centreon_path."www/include/common/common-Func.php");
 
-	$pearDB = new CentreonDB();
-	$pearDBO = new CentreonDB("centstorage");
-	$pearDBndo = new CentreonDB("ndo");
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
+	$pearDBndo 	= new CentreonDB("ndo");
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
@@ -59,7 +64,7 @@
 	 * security check 2/2 
 	 */
 	 
-	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])) {
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
@@ -71,14 +76,10 @@
 	/*
 	 * Get Acl Group list
 	 */
-	// check is admin
 	$is_admin = isUserAdmin($sid);
 	$user_id = getUserIdFromSID($sid);
 	$access = new CentreonACL($user_id, $is_admin);
-	$grouplist = $access->getAccessGroups();
-	$grouplistStr = $access->getAccessGroupsString();
-	$groupnumber = count($grouplist);	
-
+	
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) 		&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
@@ -129,25 +130,23 @@
 				" no.object_id," .
 				" no.name2 as service_description" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
-				
-	$rq .= ", centreon_acl ";
-				
-		
+	if (!$is_admin)
+		$rq .= ", centreon_acl ";
+		 
 	$rq .= 	" WHERE no.object_id = nss.service_object_id".				
-				" AND no.name1 LIKE '_Module_Meta'" .
-				" AND no.is_active = 1" .
-			  	" AND objecttype_id = 2";
+			" AND no.name1 LIKE '_Module_Meta'" .
+			" AND no.is_active = 1" .
+		  	" AND objecttype_id = 2";
 
-	$rq .= 	$access->queryBuilder("AND", "no.name1", "centreon_acl.host_name"). $access->queryBuilder("AND", "no.name2", "centreon_acl.service_description") .$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);	
-
-	($o == "meta") ? $rq .= " AND no.name1 = '_Module_Meta'" : $rq .= " AND no.name1 != '_Module_Meta'";
-
-	if ($instance != "ALL")
-		$rq .= " AND no.instance_id = ".$instance;
-
-	if (isset($host_name) && $host_name != "")
-		$rq .= " AND no.name1 like '%" . $host_name . "%'  ";
-
+	if (!$is_admin) {
+		$ACLString = "";
+		foreach ($access->getMetaServices() as $key => $empty) {
+			if ($ACLString != "")
+				$ACLString .= ",";
+			$ACLString .= "'meta_".$key."'";
+		}
+		$rq .= " AND no.name2 IN (".$ACLString.") ";
+	}	
 	if ($search_type_host && $search_type_service && $search){
 		$rq .= " AND ( no.name1 like '%" . $search . "%' OR no.name2 like '%" . $search . "%' OR nss.output like '%" . $search . "%') ";
 	} else if (!$search_type_service && $search_type_host && $search){
@@ -157,7 +156,7 @@
 	}
 	
 	if ($o == "svcpb")
-		$rq .= " AND nss.current_state != 0";//  AND nss.current_state != 3 ";
+		$rq .= " AND nss.current_state != 0";
 	if ($o == "svc_ok")
 		$rq .= " AND nss.current_state = 0 ";
 	if ($o == "svc_warning")
