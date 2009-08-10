@@ -44,8 +44,8 @@
 	$debugXML = 0;
 	$buffer = '';
 	
-	include_once("/etc/centreon/centreon.conf.php");
-	//include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");
+	
 	include_once($centreon_path."www/class/other.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
 	include_once($centreon_path."www/class/centreonXML.class.php");
@@ -130,9 +130,7 @@
 				" no.object_id," .
 				" no.name2 as service_description" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
-	if (!$is_admin)
-		$rq .= ", centreon_acl ";
-		 
+			 
 	$rq .= 	" WHERE no.object_id = nss.service_object_id".				
 			" AND no.name1 LIKE '_Module_Meta'" .
 			" AND no.is_active = 1" .
@@ -145,7 +143,7 @@
 				$ACLString .= ",";
 			$ACLString .= "'meta_".$key."'";
 		}
-		$rq .= " AND no.name2 IN (".$ACLString.") ";
+		$rq .= " AND no.name2 IN (".$ACLString.") AND no.name1 LIKE '_Module_Meta' ";
 	}	
 	if ($search_type_host && $search_type_service && $search){
 		$rq .= " AND ( no.name1 like '%" . $search . "%' OR no.name2 like '%" . $search . "%' OR nss.output like '%" . $search . "%') ";
