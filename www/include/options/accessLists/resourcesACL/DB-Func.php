@@ -111,6 +111,7 @@
 		updateHostexcludes($acl_id);
 		updateServiceCategories($acl_id);
 		updateServiceGroups($acl_id);
+		updateMetaServices($acl_id);
 	}	
 	
 	function insertLCAInDB ()	{
@@ -121,6 +122,7 @@
 		updateHostexcludes($acl_id);
 		updateServiceCategories($acl_id);
 		updateServiceGroups($acl_id);
+		updateMetaServices($acl_id);
 		return ($acl_id);
 	}
 	
@@ -241,5 +243,19 @@
 			}
 	}
 	
+	function updateMetaServices($acl_id = null)	{
+		global $form, $pearDB;
+		if (!$acl_id) 
+			return;
+		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_meta_relations WHERE acl_res_id = '".$acl_id."'");
+		$ret = array();
+		$ret = $form->getSubmitValue("acl_meta");
+		if (isset($ret))
+			foreach ($ret as $key => $value){
+				if (isset($value))	{
+					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) VALUES ('".$acl_id."', '".$value."')");
+				}
+			}
+	}
 
 ?>

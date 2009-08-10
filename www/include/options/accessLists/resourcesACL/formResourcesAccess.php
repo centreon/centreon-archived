@@ -89,6 +89,13 @@
 			for ($i = 0; $sg =& $DBRESULT->fetchRow(); $i++)
 				$acl["acl_sg"][$i] = $sg["sg_id"];
 		$DBRESULT->free();
+		
+		# Set Meta Services relations
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = '".$acl_id."'");
+		if ($DBRESULT->numRows())
+			for ($i = 0; $ms =& $DBRESULT->fetchRow(); $i++)
+				$acl["acl_meta"][$i] = $ms["meta_id"];
+		$DBRESULT->free();
 
 	}
 
@@ -126,6 +133,12 @@
 	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
 	while ($sg =& $DBRESULT->fetchRow())
 		$service_groups[$sg["sg_id"]] = $sg["sg_name"];
+	$DBRESULT->free();
+	
+	$meta_services = array();
+	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
+	while ($ms =& $DBRESULT->fetchRow())
+		$meta_services[$ms["meta_id"]] = $ms["meta_name"];
 	$DBRESULT->free();
 	
 	
@@ -216,8 +229,17 @@
 	 * Service Groups Add
 	 */
 	$form->addElement('header', 'SSharedExplain', "");
-	
 	$ams2 =& $form->addElement('advmultiselect', 'acl_sg', _("Services Groups"), $service_groups, $attrsAdvSelect);
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setElementTemplate($template);
+	echo $ams2->getElementJs(false);
+	
+	/*
+	 * Meta Services
+	 */
+	$form->addElement('header', 'MSSharedExplain', "");
+	$ams2 =& $form->addElement('advmultiselect', 'acl_meta', _("Meta Services"), $meta_services, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
@@ -298,6 +320,7 @@
 			$tpl->assign("sort1", _("General Information"));
 			$tpl->assign("sort2", _("Hosts Resources"));
 			$tpl->assign("sort3", _("Services Resources"));
+			$tpl->assign("sort4", _("Meta Services"));
 			$tpl->display("formResourcesAccess.ihtml");
 		}
 	}

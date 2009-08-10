@@ -6,6 +6,7 @@
 	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
 	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
 	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
+	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
 </ul>
 </div>
 <div id="validFormTop">
@@ -48,6 +49,15 @@
 		<tr class="list_one"><td class="FormRowField">{$form.acl_sg.label}</td><td class="FormRowValue">{$form.acl_sg.html}</td></tr>	
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/help.gif'>&nbsp;&nbsp;{$form.header.help}</td></tr>
 		<tr class="list_one"><td class="FormRowValue" colspan="2">{$form.header.SSharedExplain}</td></tr>		
+	</table>
+</div>
+<div id='tab4' class="tab">
+	 <table class="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lock_new.gif'>&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/lock_ok.gif'>&nbsp;&nbsp;{$form.header.Host_infos}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.acl_meta.label}</td><td class="FormRowValue">{$form.acl_meta.html}</td></tr>	
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/help.gif'>&nbsp;&nbsp;{$form.header.help}</td></tr>
+		<tr class="list_one"><td class="FormRowValue" colspan="2">{$form.header.MSSharedExplain}</td></tr>		
 	</table>
 </div>
 <div id="validForm">
