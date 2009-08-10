@@ -227,7 +227,10 @@
 			 */
 			$cpt = 0;
 			$str = 0;
-			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
+			if ($is_admin)
+				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
+			else
+				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' AND `meta_id` IN (".$access->getMetaServiceString().") ORDER BY `meta_name`");
 			while ($MS =& $DBRESULT->fetchRow()){
 				$i++;
 				$buffer->startElement("item");
@@ -321,7 +324,7 @@
 				$i++;
 				$cpt++;
 			}
-			if ($cpt && $is_admin){
+			if ($cpt){
 				$buffer->startElement("item");
 				$buffer->writeAttribute("child", "1");
 				$buffer->writeAttribute("id", "MT_0");
@@ -333,7 +336,6 @@
 				$buffer->text($str);
 				$buffer->endElement();				
 			}
-			
 		} else {
 			/*
 			 * Init HostGroups Line
