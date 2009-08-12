@@ -273,8 +273,8 @@
 	$buffer->writeElement("numrows", $numRows);
 	$buffer->writeElement("num", $num);
 	$buffer->writeElement("limit", $limit);
-	$buffer->writeElement("host_name", _("Hosts"));
-	$buffer->writeElement("services", _("Services"));
+	$buffer->writeElement("host_name", _("Hosts"), 0);
+	$buffer->writeElement("services", _("Services"), 0);
 	$buffer->writeElement("p", $p);	
 	($o == "svcOVSG") ? $buffer->writeElement("s", "1")  : $buffer->writeElement("s", "0");
 	$buffer->endElement();

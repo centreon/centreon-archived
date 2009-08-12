@@ -673,33 +673,33 @@
 	 * Translation for Menu.
 	 */
 	$buffer->startElement("lang");
-	$buffer->writeElement("ty", _("Message Type"));
-	$buffer->writeElement("n", _("Notifications"));
-	$buffer->writeElement("a", _("Alerts"));
-	$buffer->writeElement("e", _("Errors"));
-	$buffer->writeElement("s", _("Status"));
-	$buffer->writeElement("do", _("Down"));
-	$buffer->writeElement("up", _("Up"));
-	$buffer->writeElement("un", _("Unreachable"));
-	$buffer->writeElement("w", _("Warning"));
-	$buffer->writeElement("ok", _("Ok"));
-	$buffer->writeElement("cr", _("Critical"));
-	$buffer->writeElement("uk", _("Unknown"));
-	$buffer->writeElement("oh", _("Hard Only"));
-	$buffer->writeElement("sch", _("Search"));
+	$buffer->writeElement("ty", _("Message Type"), 0);
+	$buffer->writeElement("n", _("Notifications"), 0);
+	$buffer->writeElement("a", _("Alerts"), 0);
+	$buffer->writeElement("e", _("Errors"), 0);
+	$buffer->writeElement("s", _("Status"), 0);
+	$buffer->writeElement("do", _("Down"), 0);
+	$buffer->writeElement("up", _("Up"), 0);
+	$buffer->writeElement("un", _("Unreachable"), 0);
+	$buffer->writeElement("w", _("Warning"), 0);
+	$buffer->writeElement("ok", _("Ok"), 0);
+	$buffer->writeElement("cr", _("Critical"), 0);
+	$buffer->writeElement("uk", _("Unknown"), 0);
+	$buffer->writeElement("oh", _("Hard Only"), 0);
+	$buffer->writeElement("sch", _("Search"), 0);
 	
 	/*
 	 * Translation for tables.
 	 */
-	$buffer->writeElement("d", _("Day"));
-	$buffer->writeElement("t", _("Time"));
-	$buffer->writeElement("h", _("Host/Service"));
-	$buffer->writeElement("sc", _("Service Status"));
-	$buffer->writeElement("T", _("Type"));
-	$buffer->writeElement("R", _("Retry"));
-	$buffer->writeElement("o", _("Output"));
-	$buffer->writeElement("c", _("Contact"));
-	$buffer->writeElement("C", _("Command"));
+	$buffer->writeElement("d", _("Day"), 0);
+	$buffer->writeElement("t", _("Time"), 0);
+	$buffer->writeElement("h", _("Host/Service"), 0);
+	$buffer->writeElement("sc", _("Service Status"), 0);
+	$buffer->writeElement("T", _("Type"), 0);
+	$buffer->writeElement("R", _("Retry"), 0);
+	$buffer->writeElement("o", _("Output"), 0);
+	$buffer->writeElement("c", _("Contact"), 0);
+	$buffer->writeElement("C", _("Command"), 0);
 	
 	$buffer->endElement();
 	$buffer->endElement();

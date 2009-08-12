@@ -612,12 +612,12 @@
 	 * LANG
 	 */
 	$buffer->startElement("lang");
-	$buffer->writeElement("giv_gg_tpl", _("Template"));
-	$buffer->writeElement("advanced", _("Options"));
-	$buffer->writeElement("giv_split_component", _("Split Components"));
-	$buffer->writeElement("status", _("Display Status"));
-	$buffer->writeElement("warning", _("Warning"));
-	$buffer->writeElement("critical", _("Critical"));
+	$buffer->writeElement("giv_gg_tpl", _("Template"), 0);
+	$buffer->writeElement("advanced", _("Options"), 0);
+	$buffer->writeElement("giv_split_component", _("Split Components"), 0);
+	$buffer->writeElement("status", _("Display Status"), 0);
+	$buffer->writeElement("warning", _("Warning"), 0);
+	$buffer->writeElement("critical", _("Critical"), 0);
 	$buffer->endElement();		
 	
 	/*

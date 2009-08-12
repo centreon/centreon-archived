@@ -182,43 +182,43 @@
 		$buffer->writeAttribute("color", $tab_color_host[$ndo["current_state"]]);
 		$buffer->text($tab_status_host[$ndo["current_state"]]);
 		$buffer->endElement();
-		$buffer->writeElement("current_state_name", _("Host Status"));
+		$buffer->writeElement("current_state_name", _("Host Status"), 0);
 		$buffer->startElement("plugin_output");
 		$buffer->writeAttribute("name", _("Status Information"));
 		$buffer->text($ndo["output"]);
 		$buffer->endElement();
 		$buffer->writeElement("performance_data", $ndo["perfdata"]);
-		$buffer->writeElement("performance_data_name", _("Performance Data"));
+		$buffer->writeElement("performance_data_name", _("Performance Data"), 0);
 		$buffer->startElement("current_attempt");
 		$buffer->writeAttribute("name", _("Current Attempt"));
 		$buffer->text($ndo["current_check_attempt"]);
 		$buffer->endElement();
 		$buffer->writeElement("state_type", $state_type[$ndo["state_type"]]);
-		$buffer->writeElement("state_type_name", _("State Type"));
+		$buffer->writeElement("state_type_name", _("State Type"), 0);
 		$buffer->writeElement("last_check", get_centreon_date($ndo["last_check"]));				
-		$buffer->writeElement("last_check_name", _("Last Check"));						
+		$buffer->writeElement("last_check_name", _("Last Check"), 0);						
 		$buffer->writeElement("next_check", get_centreon_date($ndo["next_check"]));
-		$buffer->writeElement("next_check_name", _("Next Check"));		
+		$buffer->writeElement("next_check_name", _("Next Check"), 0);		
 		$buffer->writeElement("check_latency", $ndo["latency"]);
-		$buffer->writeElement("check_latency_name", _("Latency"));
+		$buffer->writeElement("check_latency_name", _("Latency"), 0);
 		$buffer->writeElement("check_execution_time", $ndo["execution_time"]);		
-		$buffer->writeElement("check_execution_time_name", _("Execution Time"));
+		$buffer->writeElement("check_execution_time_name", _("Execution Time"), 0);
 		$buffer->writeElement("last_state_change", get_centreon_date($ndo["last_state_change"]));
-		$buffer->writeElement("last_state_change_name", _("Last State Change"));
+		$buffer->writeElement("last_state_change_name", _("Last State Change"), 0);
 		$buffer->writeElement("duration", $duration);
-		$buffer->writeElement("duration_name", _("Current State Duration"));
+		$buffer->writeElement("duration_name", _("Current State Duration"), 0);
 		$buffer->writeElement("last_notification", get_centreon_date($last_notification));
-		$buffer->writeElement("last_notification_name", _("Last Notification"));
+		$buffer->writeElement("last_notification_name", _("Last Notification"), 0);
 		$buffer->writeElement("next_notification", get_centreon_date($next_notification));
-		$buffer->writeElement("next_notification_name", _("Next Notification"));
+		$buffer->writeElement("next_notification_name", _("Next Notification"), 0);
 		$buffer->writeElement("current_notification_number", $ndo["current_notification_number"]);
-		$buffer->writeElement("current_notification_number_name", _("Current Notification Number"));
+		$buffer->writeElement("current_notification_number_name", _("Current Notification Number"), 0);
 		$buffer->writeElement("percent_state_change", $ndo["percent_state_change"]);
-		$buffer->writeElement("percent_state_change_name", _("Percent State Change"));		
+		$buffer->writeElement("percent_state_change_name", _("Percent State Change"), 0);		
 		$buffer->writeElement("is_downtime", $en[$ndo["scheduled_downtime_depth"]]);
-		$buffer->writeElement("is_downtime_name", _("In Scheduled Downtime?"));
+		$buffer->writeElement("is_downtime_name", _("In Scheduled Downtime?"), 0);
 		$buffer->writeElement("last_update", get_centreon_date( time()));
-		$buffer->writeElement("last_update_name", _("Last Update"));
+		$buffer->writeElement("last_update_name", _("Last Update"), 0);
 		$buffer->writeElement("ico", $ndo["icon_image"]);
 		
 		$buffer->startElement("last_time_up");
@@ -241,9 +241,9 @@
 	/*
 	 * Translations
 	 */
-	$buffer->writeElement("tr1", _("Check information"));
-	$buffer->writeElement("tr2", _("Notification information"));
-	$buffer->writeElement("tr3", _("Last Status Change"));		
+	$buffer->writeElement("tr1", _("Check information"), 0);
+	$buffer->writeElement("tr2", _("Notification information"), 0);
+	$buffer->writeElement("tr3", _("Last Status Change"), 0);		
 					
 	/*
 	 * End buffer
