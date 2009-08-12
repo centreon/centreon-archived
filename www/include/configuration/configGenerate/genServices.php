@@ -162,7 +162,8 @@
 				/*
                  * Write service_id
                  */
-                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
+                if ($oreon->user->get_version() >= 3)
+	                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
 				
 				/*
 				 * Template Model Relation
@@ -424,7 +425,8 @@
 				/*
                  * Write service_id
                  */
-                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
+                if ($oreon->user->get_version() >= 3)
+	                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
 				
 				/*
 				 * Template Model Relation

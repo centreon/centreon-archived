@@ -209,7 +209,8 @@
 				/*
                  * Write Host_id
                  */
-                $str .= print_line("_HOST_ID", $host["host_id"]);
+                if ($oreon->user->get_version() >= 3)
+	                $str .= print_line("_HOST_ID", $host["host_id"]);
                 
 				if ($host["host_register"] == 1)
 					$str .= print_line("#location", $host["host_location"]);
