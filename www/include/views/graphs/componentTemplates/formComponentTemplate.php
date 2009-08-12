@@ -58,6 +58,20 @@
 	$res->free();
 
 	/*
+	 * List of known data sources
+	 */
+
+	$datasources = array();
+	$DBRESULT =& $pearDBO->query("SELECT DISTINCT `metric_name`, `unit_name` FROM `metrics` ORDER BY `metric_name`");
+	while ($row =& $DBRESULT->fetchRow()){
+		$datasources[$row["metric_name"]] = $row["metric_name"];
+		if (isset($row["unit_name"]) && $row["unit_name"] != "")
+			 $datasources[$row["metric_name"]] .= " (".$row["unit_name"].")";
+	}
+	unset($row);
+	$DBRESULT->free();
+
+	/*
 	 * Define Styles
 	 */
 	$attrsText 		= array("size"=>"30");
@@ -90,6 +104,7 @@
 	
 	$form->addElement('select', 'ds_order', _("Order"), $orders);
 	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
+	$form->addElement('select', 'datasources', null, $datasources);
 	
 	$TabColorNameAndLang = array("ds_color_line"=>_("Line color"),"ds_color_area"=>_("Area color"));
 
@@ -203,6 +218,14 @@
 			var height = 300;
 			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name+'&title='+title, 'cp', 'resizable=no, location=no, width='
 						+width+', height='+height+', menubar=no, status=yes, scrollbars=no, menubar=no');
+		}
+		function insertValueQuery(elem) 
+		{
+		    var myQuery = document.Form.ds_name;
+		    if(elem == 1)	{
+			var myListBox = document.Form.datasources;
+			document.Form.ds_name.value = myListBox.value;
+		    }
 		}
 	</script>
     "
