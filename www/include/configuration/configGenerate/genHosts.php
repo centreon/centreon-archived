@@ -206,7 +206,11 @@
 					$str .= print_line("alias", $host["host_alias"]);
 				if ($host["host_address"])	
 					$str .= print_line("address", $host["host_address"]);
-				
+				/*
+                 * Write Host_id
+                 */
+                $str .= print_line("_HOST_ID", $host["host_id"]);
+                
 				if ($host["host_register"] == 1)
 					$str .= print_line("#location", $host["host_location"]);
 				

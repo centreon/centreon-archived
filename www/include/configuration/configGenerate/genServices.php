@@ -160,6 +160,11 @@
 				$strTMP .= print_line("service_description", convertServiceSpecialChar($service["service_description"]));
 				
 				/*
+                 * Write service_id
+                 */
+                $str .= print_line("_SERVICE_ID", $service["service_id"]);
+				
+				/*
 				 * Template Model Relation
 				 */
 				if ($service["service_template_model_stm_id"]) {
@@ -415,6 +420,11 @@
 				
 				if ($service["service_description"]) 
 					$strTMP .= print_line("service_description", $service["service_description"]);
+				
+				/*
+                 * Write service_id
+                 */
+                $str .= print_line("_SERVICE_ID", $service["service_id"]);
 				
 				/*
 				 * Template Model Relation
