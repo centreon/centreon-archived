@@ -48,6 +48,13 @@
 	}
 
 	/*
+	 * Init Centcore Pipre
+	 */
+	$centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
+	if ($centcore_pipe == "/centcore.cmd")
+		$centcore_pipe = "/var/lib/centcore.cmd";
+
+	/*
 	 *  Get Poller List
 	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
@@ -126,7 +133,7 @@
 			 * Check dependancies
 			 */
 			$gbArr = manageDependencies();
-			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
+			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
 			if (PEAR::isError($DBRESULT_Servers))
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
@@ -177,7 +184,7 @@
 		 */
 		 
 		$tab_server = array();
-		$DBRESULT_Servers =& $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` ORDER BY `localhost` DESC");
+		$DBRESULT_Servers =& $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
 		if (PEAR::isError($DBRESULT_Servers))
 			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
@@ -238,7 +245,7 @@
 							$msg_copy[$host["id"]] .= _("<br><b>Centreon : </b>All configuration files copied with success.");
 						}
 					} else {
-						passthru("echo 'SENDCFGFILE:".$host['id']."' >> @CENTREON_VARLIB@/centcore.cmd", $return);
+						passthru("echo 'SENDCFGFILE:".$host['id']."' >> $centcore_pipe", $return);
 						if (!isset($msg_restart[$host["id"]]))
 							$msg_restart[$host["id"]] = "";
 						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>All configuration will be send to ".$host['name']." by centcore in several minutes.");
@@ -271,7 +278,7 @@
 					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " reload");
 					} else { 
-						system("echo 'RELOAD:".$host["id"]."' >> @CENTREON_VARLIB@/centcore.cmd");
+						system("echo 'RELOAD:".$host["id"]."' >> $centcore_pipe");
 						if (!isset($msg_restart[$host["id"]]))
 							$msg_restart[$host["id"]] = "";
 						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A reload signal has been sent to ".$host["name"]."\n");
@@ -280,7 +287,7 @@
 					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " restart");
 					} else {
-						system("echo \"RESTART:".$host["id"]."\" >> @CENTREON_VARLIB@/centcore.cmd", $return);
+						system("echo \"RESTART:".$host["id"]."\" >> $centcore_pipe", $return);
 						if (!isset($msg_restart[$host["id"]]))
 							$msg_restart[$host["id"]] = "";
 						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to ".$host["name"]."\n");

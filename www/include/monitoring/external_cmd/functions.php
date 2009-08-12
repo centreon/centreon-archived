@@ -47,14 +47,23 @@
 
 	function write_command($cmd, $poller){
 		global $oreon, $key, $pearDB;
+		
 		$str = NULL;
+		
+		/*
+		 * Destination is centcore pipe path
+		 */
+		$destination = "@CENTREON_VARLIB@/centcore.cmd";
+		if ($destination == "/centcore.cmd")
+			$destination = "/var/lib/centcore.cmd";
+		
 		$informations = split(";", $key);
 		if ($poller && isPollerLocalhost($pearDB, $poller))
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
 		else if (isHostLocalhost($pearDB, $informations[0]))
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
 		else
-			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . "@CENTREON_VARLIB@/centcore.cmd";
+			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . $destination;
 		return passthru($str);
 	}
 
