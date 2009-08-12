@@ -3,14 +3,15 @@
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/exchange.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.command_name.label}</td><td class="FormRowValue">{$form.command_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.command_line.label}</td><td class="FormRowValue">{$form.command_line.html}&nbsp;
-		     				&nbsp;<img alt='{$cmd_help}' title='{$cmd_help}' src='./img/icones/16x16/about.gif' onClick="window.open('main.php?p=60706&command_id={$command_id}&o=h&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">		
-		</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.command_type.label}</td><td class="FormRowValue">{$form.command_type.html}</td></tr>
-
-		<tr class="list_two"><td class="FormRowField">{$form.command_id1.label}</td><td class="FormRowValue">{$form.command_id1.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.command_id1.label}</td><td class="FormRowValue">{$form.command_id1.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.command_id2.label}</td><td class="FormRowValue">{$form.command_id2.html}</td></tr>
+{if $command_name}
+		<tr class="list_one"><td class="FormRowField">{$form.command_line.label}</td><td class="FormRowValue">{$form.command_line.html}&nbsp;
+			&nbsp;<img alt='{$cmd_help}' title='{$cmd_help}' src='./img/icones/16x16/about.gif' onClick="window.open('main.php?p=60706&command_id={$command_id}&o=h&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">
+		</td></tr>
+{/if}
+
+
 	</table>
 	{$form.hidden}
 </form>

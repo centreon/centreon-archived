@@ -84,21 +84,27 @@
 	$DBRESULT->free();
 
 
-	$attrsText 		= array("size"=>"35");
+	$attrsText 	= array("size"=>"35");
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"80");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', _("View a Command"));
+	$form->addElement('header', 'title', _("View command definition"));
 
 	/*
 	 * Command information
 	 */
-	if ($cmd["command_type"] == "1")
-		$form->addElement('header', 'information', _("Notification"));
-	else if ($cmd["command_type"] == "2")
-		$form->addElement('header', 'information', _("Check"));
-	else
-		$form->addElement('header', 'information', _("Information"));
+	if ($cmd["command_type"] == "1") {
+		$form->addElement('header', 'information', _("Notification command"));
+		$elemname = "command_id2";
+	} else if ($cmd["command_type"] == "2") {
+		$form->addElement('header', 'information', _("Check command"));
+		$elemname = "command_id2";
+	} else if ($cmd["command_type"] == "3") {
+		$form->addElement('header', 'information', _("Information command"));
+	} else {
+		$form->addElement('header', 'information', _("No command selected"));
+	}
+	
 	
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
@@ -115,9 +121,11 @@
 	/*
 	 * Command Select
 	 */
-    $form->addElement('select', 'command_id1', _("Check"), $checkCmds, array("onChange"=>"this.form.submit()"));
-    $form->addElement('select', 'command_id2', _("Notif"), $notifCmds, array("onChange"=>"this.form.submit()"));
+	$form->addElement('select', 'command_id1', _("Check"), $checkCmds, array("onChange"=>"this.form.submit()"));
+	$form->addElement('select', 'command_id2', _("Notif"), $notifCmds, array("onChange"=>"this.form.submit()"));
 	$form->setConstants(array("command_name"=>$cmd["command_name"], "command_line"=>$cmd["command_line"], "command_type"=>$cmd["command_type"]["command_type"]));
+	
+	$form->setDefaults(array("command_id1"=>$cmd["command_id"]));
   	
   	/*
   	 * Further informations
