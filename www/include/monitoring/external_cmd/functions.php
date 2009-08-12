@@ -55,7 +55,7 @@
 		 */
 		$destination = "@CENTREON_VARLIB@/centcore.cmd";
 		if ($destination == "/centcore.cmd")
-			$destination = "/var/lib/centcore.cmd";
+			$destination = "/var/lib/centreon/centcore.cmd";
 		
 		$informations = split(";", $key);
 		if ($poller && isPollerLocalhost($pearDB, $poller))
