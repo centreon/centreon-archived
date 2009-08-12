@@ -162,7 +162,7 @@
 				/*
                  * Write service_id
                  */
-                $str .= print_line("_SERVICE_ID", $service["service_id"]);
+                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
 				
 				/*
 				 * Template Model Relation
@@ -424,7 +424,7 @@
 				/*
                  * Write service_id
                  */
-                $str .= print_line("_SERVICE_ID", $service["service_id"]);
+                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
 				
 				/*
 				 * Template Model Relation
