@@ -381,7 +381,7 @@ sub GetPerfData($){
 	if (-f $localtmpperffile){
 	    # Concat poller perfdata to central perfdata.
 	    writeLogFile("cat $localtmpperffile >> $localperffile") if ($debug);
-	    `cat $localtmpperffile >> $localperffile 2>&1 >> /dev/null`;
+	    `cat $localtmpperffile >> $localperffile`;
 
 	    # Remove old file
 	    if (!unlink($localtmpperffile)) {
