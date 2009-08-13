@@ -356,9 +356,6 @@
 	
 			$id_full = split('_', $id);
 			$id = $id_full[0];
-			$buffer->startElement("idfull");
-			$buffer->text(print_r($id_full));
-			$buffer->endElement();			
 			
 			if ($type == "HH") {
 				/*

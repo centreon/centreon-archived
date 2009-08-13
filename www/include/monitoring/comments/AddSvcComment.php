@@ -56,7 +56,6 @@
 	
 	if ($oreon->user->access->checkAction("service_comment")) {			
 		$LCA_error = 0;
-				
 		
 		isset($_GET["host_id"]) ? $cG = $_GET["host_id"] : $cG = NULL;
 		isset($_POST["host_id"]) ? $cP = $_POST["host_id"] : $cP = NULL;	

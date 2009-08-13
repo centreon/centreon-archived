@@ -377,12 +377,12 @@ function displayExistingMacroHost(max){
 				}
 			}
 		}
-		tdElem3.appendChild(imgElem);		
+		tdElem3.appendChild(imgElem);
 		trElem.appendChild(tdElem1);
-		trElem.appendChild(tdElem2);		
+		trElem.appendChild(tdElem2);
 		if (_o != "w") {
 			trElem.appendChild(tdElem3);
-		}				
+		}			
 		globalj++;
 		tbodyElem.appendChild(trElem);
 		tabElem.appendChild(tbodyElem);

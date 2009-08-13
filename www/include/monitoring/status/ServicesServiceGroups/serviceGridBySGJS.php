@@ -85,12 +85,11 @@ var _default_instance = '<?php echo $default_poller?>';
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
 function set_header_title(){
-viewDebugInfo('set header..');
 
-	var _img_asc = mk_img('./img/icones/7x7/sort_asc.gif', "asc");
-	var _img_desc = mk_img('./img/icones/7x7/sort_desc.gif', "desc");
+	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
+	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
 
-	if(document.getElementById('host_name')){
+	if (document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
 		h.innerHTML = '<?php echo _("Hosts")?>';
 	  	h.indice = 'host_name';
@@ -112,7 +111,7 @@ viewDebugInfo('set header..');
 	
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
-		if(_order == 'ASC')
+		if (_order == 'ASC')
 			_linkaction_asc.appendChild(_img_asc);
 		else
 			_linkaction_asc.appendChild(_img_desc);
@@ -121,8 +120,6 @@ viewDebugInfo('set header..');
 		h.appendChild(_linkaction_asc);
 	}
 }
-
-
 
 function monitoring_refresh()	{
 	_tmp_on = _on;
@@ -166,18 +163,17 @@ function initM(_time_reload,_sid,_o){
 		_divdebug.appendChild(_debugtable);
 		_header = document.getElementById('header');
 		_header.appendChild(_divdebug);
-//		viewDebugInfo('--INIT Debug--');
 	}
 
-	if(_first){
+	if (_first){
 		mainLoop();
 		_first = 0;
 	}
 
 	_time=<?php echo $time?>;
 	
-	if(_on)
-	goM(_time_reload,_sid,_o);
+	if (_on)
+		goM(_time_reload,_sid,_o);
 }
 
 function goM(_time_reload,_sid,_o){

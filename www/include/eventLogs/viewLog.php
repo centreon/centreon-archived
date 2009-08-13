@@ -126,8 +126,22 @@
 	if (isset($_POST["id"])){
 		$id = $_POST["id"];
 	}
+	
+	/*
+	 * From Monitoring
+	 */
+	if (isset($_POST["svc_id"])) {
+		$services = split(",", $_POST["svc_id"]);		
+		foreach ($services as $str) {
+			$buf_svc = split(";", $str);
+			$id .= "HS_" . getMyServiceID($buf_svc[1], getMyHostID($buf_svc[0])).",";
+		}
+	}
 
-	if (strncmp("MS", $id, 2)) {
+	/*
+	 * From Graphs
+	 */
+	if (!strncmp("MS", $id, 2)) {
 		$meta = 0;
 		if (isset($id) && $id){
 			$id = "";
@@ -140,7 +154,7 @@
 		}
 	} else {
 		$meta = 1;
-	}	
+	}
 
 	$id_log = "'RR_0'";
 	$multi =0;

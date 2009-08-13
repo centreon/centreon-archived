@@ -791,13 +791,8 @@
 				if ($value)
 					updateHostInDB($value, true);
 		}
-<<<<<<< .mine
 		$o = "w";		
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));		
-=======
-		$o = "w";
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
->>>>>>> .r8733
 		$form->freeze();
 		$valid = true;
 	}

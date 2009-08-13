@@ -66,7 +66,6 @@
 	bind_textdomain_codeset("messages", "UTF-8");
 	textdomain("messages");
 	
-
 	/*
 	 * Include Access Class
 	 */
@@ -303,11 +302,17 @@
 			/*
 			 * Request build
 			 */
-			if ($search_host != "")
-				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_name` LIKE '%$search_host%' ORDER BY `meta_name`");
-			else
-				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service ORDER BY `meta_name`");
-			
+			if ($is_admin) {
+				if ($search_host != "") 
+					$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_name` LIKE '%$search_host%' ORDER BY `meta_name`");
+				else
+					$DBRESULT =& $pearDB->query("SELECT * FROM meta_service ORDER BY `meta_name`");
+			} else {
+				if ($search_host != "") 
+					$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_name` LIKE '%$search_host%' AND `meta_id` IN (".$access->getMetaServiceString().") ORDER BY `meta_name`");
+				else
+					$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_id` IN (".$access->getMetaServiceString().") ORDER BY `meta_name`");
+			}
 			while ($MS =& $DBRESULT->fetchRow()){
 				if (!$cpt) {
 					$buffer->startElement("item");
@@ -389,14 +394,9 @@
 		foreach ($tab_id as $openid) {
 			$type = substr($openid, 0, 2);
 			$id = substr($openid, 3, strlen($openid));
-	
-			$buffer->writeElement("id", $id);			
-	
+			
 			$id_full = split('_', $id);
 			$id = $id_full[0];
-			$buffer->startElement("idfull");
-			///$buffer->text(print_r($id_full));
-			$buffer->endElement();			
 			
 			if ($type == "HH") {
 				/*
@@ -435,8 +435,10 @@
 					$hgs_open[$id_full[2]] = getMyHostGroupName($id_full[2]);
 				else {
 					$hgs = getMyHostGroups($host_id);
-					foreach($hgs as $hg_id => $hg_name)
-						$hgs_open[$hg_id] = $hg_name;
+					if (isset($hgs)) {
+						foreach($hgs as $hg_id => $hg_name)
+							$hgs_open[$hg_id] = $hg_name;
+					}
 				}			
 			} else if ($type == "HG"){ // HG + hostS_child + svcS_child
 				
@@ -569,7 +571,10 @@
 		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
 		
 		if (isset($meta_checked) && count($meta_checked)) {
-			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
+			if ($is_admin)
+				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
+			else
+				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' AND `meta_id` IN (".$access->getMetaServiceString().") ORDER BY `meta_name`");
 			while ($MS =& $DBRESULT->fetchRow()){
 				$buffer->startElement("item");
 				$buffer->writeAttribute("child", "0");

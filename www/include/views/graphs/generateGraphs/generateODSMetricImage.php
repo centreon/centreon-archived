@@ -103,11 +103,22 @@
 		$DBRESULT->free();
 		
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
-			$host_id = getMyHostID($index_data_ODS["host_name"]);
-			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
-			$template_id = getDefaultGraph($svc_id, 1);
-		} else
+			if ($index_data_ODS["host_name"] != "_Module_Meta") {
+				$host_id = getMyHostID($index_data_ODS["host_name"]);
+				$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
+				$template_id = getDefaultGraph($svc_id, 1);			
+			} else {
+				$tab = split("_", $index_data_ODS["service_description"]);
+				$DBRESULT =& $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
+				$tempRes =& $DBRESULT->fetchRow();
+				$DBRESULT->free();
+				$template_id = $tempRes["graph_id"];
+				unset($tempRes);
+				unset($tab);
+			}
+		} else {
 			$template_id = $_GET["template_id"];
+		}
 		
 		if (isset($_GET["flagperiod"]) && $_GET["flagperiod"] == 0) {
 			$start 	= $CentreonGMT->getUTCDate($start);
@@ -141,8 +152,13 @@
 		$base = "";
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
 			$base = "-b ".$GraphTemplate["base"];
-				
-		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]." metric ".$metric_ODS["metric_name"] ."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+		
+		if ($index_data_ODS["host_name"] != "_Module_Meta")
+			$title = $index_data_ODS["service_description"]." "._("graph on")." ".$index_data_ODS["host_name"];
+		else
+			$title = _("Graph")." ".$index_data_ODS["service_description"] ;
+		
+		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 --title='$title metric ".$metric_ODS["metric_name"] ."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		if ($oreon->optGen["rrdtool_version"] != "1.0")
 			$command_line .= " --slope-mode ";
 		

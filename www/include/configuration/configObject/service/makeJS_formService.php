@@ -141,7 +141,7 @@ function displayExistingMacroSvc(max, o){
 		valueElem.name = 'macroValue_' + globalj;
 		valueElem.value = globalMacroTabValue[globalj];		
 		tdElem2.appendChild(valueElem);	
-		
+				
 		if (_o == "w") {
 			keyElem.disabled = true;
 			valueElem.disabled = true;
@@ -164,7 +164,7 @@ function displayExistingMacroSvc(max, o){
 		trElem.appendChild(tdElem2);
 		if (_o != "w") {
 			trElem.appendChild(tdElem3);
-		}		
+		}
 		globalj++;
 		tbodyElem.appendChild(trElem);
 		tabElem.appendChild(tbodyElem);

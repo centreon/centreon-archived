@@ -85,7 +85,7 @@
  			$str_local = "echo " . $str_local . " >> " . $oreon->Nagioscfg["command_file"];			
  			passthru($str_local, $return_local);
  		}
- 		if ($str_remote != "") { 			 			
+ 		if ($str_remote != "") {
  			$str_remote = "echo " . $str_remote . " >> @CENTREON_VARLIB@/centcore.cmd";
  			passthru($str_remote, $return_remote);	
  		}

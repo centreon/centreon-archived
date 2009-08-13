@@ -36,18 +36,17 @@ function goToLog(_input_name, _id){
 	var _idValue = document.createElement("input");
 	_idValue.type ='text';
 	_idValue.value = tab;
-	_idValue.name = _id;//'svc_id';
+	_idValue.name = _id;
 	_form.appendChild(_idValue);
 	myHeader.appendChild(_form);
 
-	if(document.forms['goToLogByPost']){
+	if (document.forms['goToLogByPost']){
 		document.forms['goToLogByPost'].submit();	
 	}
 }
 
 function goToGraph(_input_name, _id){
-	var tab = getCheckedList(_input_name, _id);
-//	document.location.href='main.php?p=40201&mode=0&'+_id+'=' +tab;  	
+	var tab = getCheckedList(_input_name, _id); 	
 	myHeader = document.getElementById("header");
 
 	var _form = document.createElement("form");
@@ -58,11 +57,11 @@ function goToGraph(_input_name, _id){
 	var _idValue = document.createElement("input");
 	_idValue.type ='text';
 	_idValue.value = tab;
-	_idValue.name = _id;//'svc_id';
+	_idValue.name = _id;
 	_form.appendChild(_idValue);
 	myHeader.appendChild(_form);
 
-	if(document.forms['goToGraphByPost']){
+	if (document.forms['goToGraphByPost']){
 		document.forms['goToGraphByPost'].submit();	
 	}
 }
@@ -115,7 +114,6 @@ function create_IDCard_link(_input_name, _id){
 	_linkaction_IDCard.onclick=function(){goToIDCard(_input_name, _id)}
 	_linkaction_IDCard.appendChild(_img_IDCard);
 	return(_linkaction_IDCard);
-
 }
 
 function create_monitoring_link(_input_name, _id){
@@ -125,4 +123,4 @@ function create_monitoring_link(_input_name, _id){
 	_linkaction_Monitoring.onclick=function(){goToMonitoring(_input_name, _id)}
 	_linkaction_Monitoring.appendChild(_img_Monitoring);
 	return(_linkaction_Monitoring);
-	}
+}

@@ -185,7 +185,8 @@
 			$id .= "_".$tab_tmp[$i];
 		array_push($tab_id, $type.$id);
 	} else {
-		$buffer->writeElement("opid", $openid);		
+		$buffer->writeElement("opid", $openid);
+		$buffer->writeElement("splitvalue", $_GET["split"]);	
 		$tab_tmp = split(",", $openid);
 		foreach ($tab_tmp as $openid) {
 			$tab_tmp = split("_", $openid);
@@ -276,6 +277,7 @@
 
 	foreach ($tab_real_id as $key => $openid) {
 		$bad_value = 0;	
+		$split = 0;
 		$tab_tmp = split("_", $openid);
 		
 		if (isset($tab_tmp[2]) && $tab_tmp[2])

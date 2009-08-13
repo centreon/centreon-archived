@@ -189,7 +189,7 @@
 	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
-	$rq1 .= " ORDER BY $sort_type  $order";
+	$rq1 .= " ORDER BY $sort_type, svc_name  $order";
 
 	$tabService = array();
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);

@@ -323,12 +323,12 @@ function displayIMG(index, s_id, id)	{
         PcH = false;
     }
     if ( PcH ){
-		_img = mk_img('include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index+'&time=<?php print time(); ?>');
+		_img = mk_img('include/views/graphs/generateGraphs/generateODSImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index+'&time=<?php print time(); ?>');
 		Pdiv.appendChild(_img);
 		var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
 		var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
 		var posy = tempY + 10;
-		if(h - tempY < 420){
+		if (h - tempY < 420) {
 			posy = tempY-310;
 		}
 		Pdiv.style.display = "block";

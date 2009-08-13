@@ -285,9 +285,7 @@
 			$fields["hg_hg"] = implode(",", $ret["hg_hg"]);
 		
 		if (!$oreon->user->admin) {
-			print "OK";
 			$resource_list = $oreon->user->access->getAccessGroups();
-			print_r($resource_list);
 			if (count($resource_list)) {
 				foreach ($resource_list as $res_id)	{			
 					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$hg_id["MAX(hg_id)"]."')");

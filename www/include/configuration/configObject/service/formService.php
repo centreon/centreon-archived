@@ -768,7 +768,7 @@
 	if ($oreon->user->get_version() == 3 && !$action["action"]["action"]){
 ?>
 <script type="text/javascript">		
-		displayExistingMacroSvc(<?php echo$k;?>, '<?php echo $o;?>');
+		displayExistingMacroSvc(<?php echo $k;?>, '<?php echo $o;?>');
 </script>
 <?php
 	}

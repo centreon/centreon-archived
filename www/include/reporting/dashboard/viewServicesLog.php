@@ -123,7 +123,7 @@
 		$formPeriod->setDefaults(array('period' => $period));
 		$tpl->assign('id', $service_id);
 	}
-	$tpl->assign('resumeTitle', _("Service state"));	
+	$tpl->assign('resumeTitle', _("Service state"));
 	$tpl->assign('p', $p);
 	
 	/*

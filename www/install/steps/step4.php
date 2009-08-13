@@ -108,17 +108,6 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 		</td>
   </tr>
   <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;SNMP</b></td>
-    	<td align="right"><?php
-			if (extension_loaded('snmp'))
-          		echo '<b><span class="go">OK</font></b>';
-			else {
-				echo '<b><span class="warning">Warning: snmp.so not loaded in php.ini</font></b>';
-		   	 	//$return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
     	<td><b>&nbsp;&nbsp;&nbsp;XML Writer</b></td>
     	<td align="right"><?php
 			if (extension_loaded('xmlwriter'))
@@ -140,7 +129,6 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 			}?>
 		</td>
   </tr>
-  
   <tr>
 		<td><b>&nbsp;&nbsp;&nbsp;PEAR</b></td>
     	<td align="right"><?php

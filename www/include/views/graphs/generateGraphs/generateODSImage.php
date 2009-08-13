@@ -105,14 +105,26 @@
 		
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
 		$index_data_ODS =& $DBRESULT->fetchRow();
-		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
-			$host_id = getMyHostID($index_data_ODS["host_name"]);
-			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
-			$template_id = getDefaultGraph($svc_id, 1);
-		} else
-			$template_id = $_GET["template_id"];
 		$DBRESULT->free();	
-
+		
+		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
+			if ($index_data_ODS["host_name"] != "_Module_Meta") {
+				$host_id = getMyHostID($index_data_ODS["host_name"]);
+				$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
+				$template_id = getDefaultGraph($svc_id, 1);			
+			} else {
+				$tab = split("_", $index_data_ODS["service_description"]);
+				$DBRESULT =& $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
+				$tempRes =& $DBRESULT->fetchRow();
+				$DBRESULT->free();
+				$template_id = $tempRes["graph_id"];
+				unset($tempRes);
+				unset($tab);
+			}
+		} else {
+			$template_id = $_GET["template_id"];
+		}
+		
 		/*
 		 * Create command line
 		 */
@@ -154,7 +166,12 @@
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
 			$base = "-b ".$GraphTemplate["base"];
 		
-		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+		if ($index_data_ODS["host_name"] != "_Module_Meta")
+			$title = $index_data_ODS["service_description"]." "._("graph on")." ".$index_data_ODS["host_name"];
+		else
+			$title = _("Graph")." ".$index_data_ODS["service_description"] ;
+				
+		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 --title='".$title."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 
 		if ($oreon->optGen["rrdtool_version"] != "1.0")
 			$command_line .= " --slope-mode ";
@@ -196,6 +213,7 @@
 		while ($metric_activate =& $DBRESULT->fetchRow()){
 			$metrics_activate[$metric_activate["metric_id"]] = $metric_activate["metric_id"];
 		}
+		$DBRESULT->free();
 				
 		/*
 		 * Init DS template For each curv

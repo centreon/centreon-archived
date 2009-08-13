@@ -36,6 +36,21 @@
  * 
  */
 
+	include_once $centreon_path . "/www/class/centreonDB.class.php";
+    
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
+	$pearDBndo 	= new CentreonDB("ndo");
+		
+	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
+	$version =& $DBRESULT->fetchRow();
+
+	$DBRESULT =& $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	$confNDO =& $DBRESULT->fetchRow();
+	$DBRESULT->free();
+
 $return_false = 0;
 
 aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
@@ -90,18 +105,6 @@ aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
           		echo '<b><span class="go">OK</font></b>';
 			} else {
 				echo '<b><span class="warning">Warning: ldap.so not loaded in php.ini</font></b>';
-		    	//$return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;SNMP</b></td>
-    	<td align="right"><?php
-			if (extension_loaded('snmp'))
-          		echo '<b><span class="go">OK</font></b>';
-			else {
-				echo '<b><span class="warning">Warning: snmp.so not loaded in php.ini</font></b>';
-		   	 	//$return_false = 1;
 			}?>
 		</td>
   </tr>
@@ -138,11 +141,21 @@ aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
     				$ok = 1;
     			}
     		}
-    		
 			if ($ok){
 				echo '<b><span class="go">OK</font></b>';
 			} else {
 				echo '<b><span class="stop">Warning: PHP Pear not found <br />'. $pear_path . '/PEAR.php</font></b>';
+			    $return_false = 1;
+			}?>
+		</td>
+  </tr>
+  <tr>
+		<td><b>MySQL access</b></td>
+    	<td align="right"><?php
+    		if ($pearDBndo->hasGrants("ALTER")){
+				echo '<b><span class="go">OK</font></b>';
+			} else {
+				echo '<b><span class="stop">Critical: User for NDO must have Alter permissions on NDO table</font></b>';
 			    $return_false = 1;
 			}?>
 		</td>

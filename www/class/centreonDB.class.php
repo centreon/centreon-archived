@@ -180,5 +180,30 @@ class CentreonDB {
     		$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
     	return $DBRES;
     }
+    
+    /*
+     * Check NDO user grants
+     */
+
+	public function hasGrants($grant = "") {
+		if ($grant == "")
+			return 0;
+		
+		$db_name = str_replace("_", "\\\_", $this->dsn["database"]);
+        $db_name = str_replace("-", "\\\-", $db_name); 
+		 
+		$DBRESULT =& $this->query("show grants"); 
+		while ($result =& $DBRESULT->fetchRow()) {
+			foreach ($result as $key => $value)
+				;
+			$expr = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `".$db_name."`.\*/";				
+			if (preg_match($expr, $value, $matches)) {
+				if ($matches[1] == "ALL PRIVILEGES" || strstr($matches[1], $grant)) {
+					return 1;
+				}
+			}
+		}
+	}
+
 }
 ?>

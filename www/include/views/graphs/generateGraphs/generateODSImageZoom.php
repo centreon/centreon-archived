@@ -104,13 +104,25 @@
 		 
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
 		$index_data_ODS =& $DBRESULT->fetchRow();
+		$DBRESULT->free();
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
-			$host_id = getMyHostID($index_data_ODS["host_name"]);
-			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);	
-			$template_id = getDefaultGraph($svc_id, 1);
-		} else
+			if ($index_data_ODS["host_name"] != "_Module_Meta") {
+				$host_id = getMyHostID($index_data_ODS["host_name"]);
+				$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
+				$template_id = getDefaultGraph($svc_id, 1);			
+			} else {
+				$tab = split("_", $index_data_ODS["service_description"]);
+				$DBRESULT =& $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
+				$tempRes =& $DBRESULT->fetchRow();
+				$DBRESULT->free();
+				$template_id = $tempRes["graph_id"];
+				unset($tempRes);
+				unset($tab);
+			}
+		} else {
 			$template_id = $_GET["template_id"];
-		$DBRESULT->free();	
+		}
+		
 
 		# get all template infos
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
@@ -146,13 +158,18 @@
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
 			$base = "-b ".$GraphTemplate["base"];
 		
+		if ($index_data_ODS["host_name"] != "_Module_Meta")
+			$title = $index_data_ODS["service_description"]." "._("graph on")." ".$index_data_ODS["host_name"];
+		else
+			$title = _("Graph")." ".$index_data_ODS["service_description"] ;
+		
 		if (!isset($GraphTemplate["width"]) || $GraphTemplate["width"] == "")
 			$GraphTemplate["width"] = 600;
 		if (!isset($GraphTemplate["height"]) || $GraphTemplate["height"] == "")
 			$GraphTemplate["height"] = 200;
 		if (!isset($GraphTemplate["vertical_label"]) || $GraphTemplate["vertical_label"] == "")
 			$GraphTemplate["vertical_label"] = "";		
-		$command_line .= " --interlaced $base --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+		$command_line .= " --interlaced $base --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='$title' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		if ($oreon->optGen["rrdtool_version"] != "1.0")
 			$command_line .= " --slope-mode ";
 

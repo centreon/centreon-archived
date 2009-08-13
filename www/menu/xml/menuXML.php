@@ -35,7 +35,6 @@
  * SVN : $Id$
  * 
  */
-
 		
 	require_once "@CENTREON_ETC@/centreon.conf.php";	
 	require_once $centreon_path."/www/class/centreonDB.class.php";	
@@ -49,28 +48,50 @@
 	if (!isset($_GET["sid"]) || !isset($_GET["menu"]))
 		exit();
 	
+	/*
+	 * Create MySQL connector
+	 */
+	$pearDB = new CentreonDB();
+	global $pearDB;
+	
+	/*
+	 * Check Session existence
+	 */
+	$session =& $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities($_GET["sid"], ENT_QUOTES)."'");
+	if (!$session->numRows()){
+		$buffer = new CentreonXML();
+		$buffer->startElement("root");
+		$buffer->endElement();
+		header('Content-Type: text/xml');
+		header('Cache-Control: no-cache');
+		$buffer->output();
+		exit;
+	}
+	
 	session_start();
 	$oreon = $_SESSION['oreon'];
 	
 	$centreonLang = new CentreonLang($centreon_path, $oreon);
 	$centreonLang->bindLang();	
 	
-	global $pearDB;
-	
-	$pearDB = new CentreonDB();
+	/*
+	 * Init XML class
+	 */
 	$buffer = new CentreonXML();
 	
-	$user_id = getUserIdFromSID($_GET["sid"]);
+	$user_id = getUserIdFromSID(htmlentities($_GET["sid"], ENT_QUOTES));
 	
 	if (!$user_id)
 		exit();
 	
-	$is_admin = isUserAdmin($_GET["sid"]);
+	$is_admin = isUserAdmin(htmlentities($_GET["sid"], ENT_QUOTES));
 	$access = new CentreonACL($user_id, $is_admin);
 	$topoStr = $access->getTopologyString();	
 	
-	$rq2 = "SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".$_GET["menu"]."' LIMIT 1";
-	$DBRESULT2 =& $pearDB->query($rq2);
+	/*
+	 * Get CSS
+	 */
+	$DBRESULT2 =& $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".htmlentities($_GET["menu"], ENT_QUOTES)."' LIMIT 1");
 	$menu_style =& $DBRESULT2->fetchRow();
 	
 	ob_start();
@@ -84,7 +105,7 @@
 	$buffer->writeElement("Menu1Color", "menu_1");
 	$buffer->writeElement("Menu2Color", "menu_2");
 	
-	$rq = "SELECT * " .
+	$rq = 	"SELECT * " .
 			"FROM topology " .
 			"WHERE topology_parent IS NULL ".$access->queryBuilder("AND", "topology_page", $topoStr) .
 			" AND topology_show = '1' ORDER BY topology_order";
@@ -101,7 +122,6 @@
 		$buffer->writeElement("Menu1Name", _($elem["topology_name"]), 0);
 		$buffer->writeElement("Menu1Popup", $elem["topology_popup"] ? "true" : "false");
 		$buffer->endElement();
-		
 	}
 	$buffer->endElement();
 	

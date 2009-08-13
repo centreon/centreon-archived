@@ -125,8 +125,8 @@
 		$tpl->assign('id', $id);
 		$tpl->assign('Alert', _("Alert"));
 	}
-	$tpl->assign('p', $p);
 	$tpl->assign('resumeTitle', _("Service group state"));
+	$tpl->assign('p', $p);
 
 	/*
 	 * Rendering forms

@@ -47,10 +47,10 @@
 	$time = time();
 
 	$obis = $o;
-	if(isset($_GET["problem"]))
-	$obis .= '_pb';
-	if(isset($_GET["acknowledge"]))
-	$obis .= '_ack_' . $_GET["acknowledge"];
+	if (isset($_GET["problem"]))
+		$obis .= '_pb';
+	if (isset($_GET["acknowledge"]))
+		$obis .= '_ack_' . $_GET["acknowledge"];
 		
 ?>
 <script type="text/javascript">
@@ -107,10 +107,9 @@ function set_header_title(){
 		h.innerHTML = '<?php echo _("Services")?>';
 	  	h.indice = 'service_description';
 	
-	
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
-		if(_order == 'ASC')
+		if (_order == 'ASC')
 			_linkaction_asc.appendChild(_img_asc);
 		else
 			_linkaction_asc.appendChild(_img_desc);
@@ -119,8 +118,6 @@ function set_header_title(){
 		h.appendChild(_linkaction_asc);
 	}
 }
-
-
 
 function monitoring_refresh()	{
 	_tmp_on = _on;
@@ -164,7 +161,6 @@ function initM(_time_reload,_sid,_o){
 		_divdebug.appendChild(_debugtable);
 		_header = document.getElementById('header');
 		_header.appendChild(_divdebug);
-//		viewDebugInfo('--INIT Debug--');
 	}
 
 	if(_first){
@@ -174,8 +170,8 @@ function initM(_time_reload,_sid,_o){
 
 	_time=<?php echo $time?>;
 	
-	if(_on)
-	goM(_time_reload,_sid,_o);
+	if (_on)
+		goM(_time_reload,_sid,_o);
 }
 
 function goM(_time_reload,_sid,_o){
