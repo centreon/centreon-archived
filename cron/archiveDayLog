@@ -623,7 +623,6 @@ sub archive_day_log ($$) {
 	insert_services_stats_in_db($start_time, $end_time);
 }
 
-
 #####################################################
 # function that checks if the log is already built
 #####################################################
@@ -708,12 +707,12 @@ sub main {
 		# rebuiling all archives from log table
 		rebuild_archives(\%time_period);
     } else {
-		# building archive for last past dat
+		# building archive for last past dat		
 		my ($day,$month,$year) = (localtime(time))[3,4,5];
-		if (check_date($day, $month, $year)) {		
+		if (check_date($day, $month, $year)) {			
 			my $yesterday_real_start =  timelocal(0,0,0,$day,$month,$year) - (60 * 60 * 24);
 			archive_day_log($yesterday_real_start + $time_period{"day_start_time"}, $yesterday_real_start + $time_period{"day_end_time"});
-		}
+		}		
     }
     if ($options{"debug"}) {
 		display_services_stats;
