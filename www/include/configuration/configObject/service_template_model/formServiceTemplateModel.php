@@ -572,7 +572,7 @@
 		$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
 		
 		include_once("include/configuration/configObject/service/makeJS_formService.php");	
-		if ($o == "c" || $o == "a" || $o == "mc")
+		if ($o == "c" || $o == "a" || $o == "mc" || $min)
 		{			
 			for ($k=0; isset($od_macro_id[$k]); $k++) {?>				
 				<script type="text/javascript">
@@ -692,7 +692,7 @@
 				if ($value)
 					updateServiceInDB($value, true);
 		}
-		$o = NULL;
+		$o = "w";
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
@@ -719,9 +719,9 @@
 		$tpl->assign("topdoc", _("Documentation"));
 		$tpl->assign("seconds", _("seconds"));
 		
-		$tpl->display("formService.ihtml");
+		$tpl->display("formService.ihtml");		
 	}
 ?>
-<script type="text/javascript">		
-		displayExistingMacroSvc(<?php echo $k;?>);
+<script type="text/javascript">				
+		displayExistingMacroSvc(<?php echo $k;?>, '<?php echo $o;?>');
 </script>
