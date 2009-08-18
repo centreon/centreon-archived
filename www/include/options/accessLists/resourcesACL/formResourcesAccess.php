@@ -167,8 +167,8 @@
 	 * LCA basic information
 	 */
 	$form->addElement('header', 'information', _("General Information"));
-	$form->addElement('header', 'hostgroups', _("Hosts Groups Shared"));
-	$form->addElement('header', 'services', _("Services Filters"));
+	$form->addElement('header', 'hostgroups', _("Host Groups Shared"));
+	$form->addElement('header', 'services', _("Service Filters"));
 	$form->addElement('text',	'acl_res_name', _("ACL Definition"), $attrsText);
 	$form->addElement('text', 	'acl_res_alias', _("Alias"), $attrsText2);
 
@@ -189,7 +189,7 @@
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$form->addElement('header', 'Host_infos', _("Shared Resouces"));
+	$form->addElement('header', 'Host_infos', _("Shared Resources"));
 	$form->addElement('header', 'help', _("Help"));
 	$form->addElement('header', 'HSharedExplain', _("<b><i>Help :</i></b> In this tab, you will be able to select hosts and hostgroups that you want to shared to people present in group selected on the previous tab. You have also the possibilty to exclude host on selected hostgroup. You can also do filters on selected hosts services. If you select a service category, user will only see only services of the selected categories."));
 	/*
@@ -204,13 +204,13 @@
 	/*
 	 * Host Groups
 	 */
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hostgroup', _("Hosts groups available"), $hostgroups, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostgroup', _("Host groups available"), $hostgroups, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', _("Exclude hosts on selected hosts groups"), $hosttoexcludes, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', _("Exclude hosts from selected hosts groups"), $hosttoexcludes, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
@@ -219,7 +219,7 @@
 	/*
 	 * Host Filters
 	 */
-	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', _("Services Categories Access"), $service_categories, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', _("Service Categories Access"), $service_categories, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
@@ -318,8 +318,8 @@
 			$tpl->assign('form', $renderer->toArray());
 			$tpl->assign('o', $o);
 			$tpl->assign("sort1", _("General Information"));
-			$tpl->assign("sort2", _("Hosts Resources"));
-			$tpl->assign("sort3", _("Services Resources"));
+			$tpl->assign("sort2", _("Host Resources"));
+			$tpl->assign("sort3", _("Service Resources"));
 			$tpl->assign("sort4", _("Meta Services"));
 			$tpl->display("formResourcesAccess.ihtml");
 		}
