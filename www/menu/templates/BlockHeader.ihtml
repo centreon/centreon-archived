@@ -80,5 +80,3 @@
 	<div id="date">{$Date}</div>
 	<div id="centreonMsg"></div>
 </div>
-
-
