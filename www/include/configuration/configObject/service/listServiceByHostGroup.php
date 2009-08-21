@@ -83,22 +83,62 @@
 	else
 		$search_type_host = NULL;
 
+	
+	if ($search && (!isset($searchH) && !isset($searchS))) {
+		$searchH = $search;
+		$searchS = $search;
+	}
+	
+	if (!isset($search_type_service) && !isset($search_type_host)){
+		$search_type_host = 1;
+		$oreon->search_type_host = 1;
+		$search_type_service = 1;
+		$oreon->search_type_service = 1;
+	}
+	
 	$rows = 0;
-	$tmp = NULL;
+	$tmp = "";
+	$tab_buffer = array();
 	/*
 	 * Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
 	 */
-	if (isset($search) && $search != "") {
-		$search = str_replace('/', "#S#", $search);
-		$search = str_replace('\\', "#BS#", $search);
-	
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND (sv.service_description LIKE '%$search%')");
-		
-		while ($service =& $DBRESULT->fetchRow()){
-			$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
-			$rows++;
+	if (isset($searchS) || isset($searchH))	{
+		$searchH = str_replace('/', "#S#", $searchH);
+		$searchH = str_replace('\\', "#BS#", $searchH);
+		$searchS = str_replace('/', "#S#", $searchS);
+		$searchS = str_replace('\\', "#BS#", $searchS);
+		if ($search_type_service && !$search_type_host) {
+			/* 
+			 * Service only search
+			 */
+			$locale_query = "SELECT DISTINCT hg.hg_id, sv.service_id, sv.service_description, sv.service_template_model_stm_id FROM service sv, hostgroup hg, hostgroup_relation hgr, host_service_relation hgsr WHERE (sv.service_alias LIKE '%".$searchS."%' OR sv.service_description LIKE '%".$searchS."%') AND hgsr.host_host_id IS NULL AND hgsr.hostgroup_hg_id = hg.hg_id AND hgsr.service_service_id = sv.service_id AND sv.service_register = '1' AND sv.service_activate = '1'";
+			$DBRESULT =& $pearDB->query($locale_query);
+			while ($service = $DBRESULT->fetchRow()){
+				if (!isset($tab_buffer[$service["service_id"]]))
+					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
+				$tab_buffer[$service["service_id"]] = $service["service_id"];
+				$rows++;
+			}
+		} else if (!$search_type_service && $search_type_host)	{
+			/* 
+			 * Host only search
+			 */
+			$locale_query = "SELECT DISTINCT hg.hg_id, hg.hg_name, hg.hg_alias, sv.service_id, sv.service_description, sv.service_template_model_stm_id FROM service sv, hostgroup hg, hostgroup_relation hgr, host_service_relation hgsr WHERE (hg.hg_name LIKE '%".$searchH."%' OR hg.hg_alias LIKE '%".$searchH."%') AND hgsr.host_host_id IS NULL AND hgsr.hostgroup_hg_id=hg.hg_id AND hgsr.service_service_id = sv.service_id AND sv.service_register = '1' AND sv.service_activate = '1'";
+			$DBRESULT =& $pearDB->query($locale_query);
+			while ($service = $DBRESULT->fetchRow()) {			         
+				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
+				$rows++;				
+			}
+		} else {
+			$locale_query = "SELECT hg.hg_id, sv.service_id, sv.service_description, sv. service_template_model_stm_id FROM service sv, host_service_relation hgsr, hostgroup hg WHERE ((hg.hg_name LIKE '%".$searchH."%' OR hg_alias LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hgsr.host_host_id IS NULL AND hgsr.hostgroup_hg_id=hg.hg_id AND sv.service_register = '1' AND hgsr.service_service_id = sv.service_id ";
+			$DBRESULT =& $pearDB->query($locale_query);
+			while ($service = $DBRESULT->fetchRow()) {			         
+				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
+				$rows++;
+			}
 		}
 	} else {
+		/* show all */
 		$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		$rows = $DBRESULT->numRows();
 	}
@@ -128,7 +168,7 @@
 	/*
 	 * HostGroup/service list
 	 */
-	if ($search) {
+	if ($searchH || $searchS) {
 		$rq = 	"SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
 				"WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, " .
 				"sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
@@ -142,13 +182,14 @@
 	} else {
 		$rq = 	"SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
 				"WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, " .
-				"sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name 
+				"sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name " .
 				"FROM service sv, hostgroup hg, host_service_relation hsr " .
 				"WHERE sv.service_register = '1' " .
 						"AND hsr.service_service_id = sv.service_id " .
 						"AND hg.hg_id = hsr.hostgroup_hg_id " .
 						"ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	}
+	
 	$DBRESULT =& $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
@@ -169,19 +210,17 @@
 	$elemArr = array();
 	$fgHostgroup = array("value"=>NULL, "print"=>NULL);
 	
-	$search = str_replace('#S#', "/", $search);
-	$search = str_replace('#BS#', "\\", $search);
 	
-	for ($i = 0; $service =& $DBRESULT->fetchRow(); $i++) {
+	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 		$fgHostgroup["value"] != $service["hg_name"] ? ($fgHostgroup["print"] = true && $fgHostgroup["value"] = $service["hg_name"]) : $fgHostgroup["print"] = false;
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");
 		$moptions = "";
 		if ($service["service_activate"])
-			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&searchH=".$searchH."&searchS=".$searchS."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>";
 		else
-			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&searchH=".$searchH."&searchS=".$searchS."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>";
 
-		$moptions .= "&nbsp;";
+		$moptions .= "&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$service['service_id']."]'></input>";
 
 		/*
@@ -281,10 +320,19 @@
 	/*
 	 * Apply a template definition
 	 */
+	
+	$searchH = str_replace("#S#", "/", $searchH);
+	$searchH = str_replace("#BS#", "\\", $searchH);
+	$searchS = str_replace("#S#", "/", $searchS);
+	$searchS = str_replace("#BS#", "\\", $searchS);
+	
+	$tpl->assign("searchH", (isset($searchH) ? $searchH : NULL));
+	$tpl->assign("searchS", (isset($searchS) ? $searchS : NULL));
+	 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('Hosts', _("Hosts"));
+	$tpl->assign('Hosts', _("Host groups"));
 	$tpl->assign('Services', _("Services"));
 	$tpl->assign('Search', _("Search"));
 	$tpl->display("listService.ihtml");
