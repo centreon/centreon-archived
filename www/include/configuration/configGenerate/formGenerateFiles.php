@@ -133,6 +133,10 @@
 			 * Check dependancies
 			 */
 			$gbArr = manageDependencies();
+			
+			/*
+			 * Request id and host type.
+			 */
 			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
 			if (PEAR::isError($DBRESULT_Servers))
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
@@ -156,21 +160,28 @@
 					require $path."genHostGroups.php";
 					require $path."genServiceTemplates.php";
 					require $path."genServices.php";
-					require $path."genEscalations.php";
 					require $path."genServiceGroups.php";
+					require $path."genEscalations.php";
 					require $path."genDependencies.php";
 					require $path."centreon_pm.php";
 					
 					if ($tab['localhost']) {
 						$flag_localhost = $tab['localhost'];
+						/*
+						 * Meta Services Generation
+						 */
 						if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
 							foreach ($files as $filename)
 								require_once($filename);
 						
-						foreach ($oreon->modules as $key=>$value)
+						/*
+						 * Module Generation
+						 */
+						foreach ($oreon->modules as $key => $value) {
 							if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php"))
 								foreach ($files as $filename)
 									require_once($filename);
+						}
 					}
 					unset($generatedHG);
 					unset($generatedSG);

@@ -404,11 +404,9 @@
 			}	
 		$DBRESULT->free();
 	} else {
-		while ($escalation =& $DBRESULT->fetchRow())	{
-			
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
-			
+		while ($escalation =& $DBRESULT->fetchRow()) {			
 			$sg = array(); 
+			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
 			while ($sg =& $DBRESULT2->fetchRow()) {
 				if (isset($gbArr[5][$sg["sg_id"]]) && isset($generatedSG[$sg["sg_id"]]))
 					$strTemp != NULL ? $strTemp .= ", ".$sg["sg_name"] : $strTemp = $sg["sg_name"];
@@ -422,9 +420,8 @@
 					$comment = array();
 					$comment = explode("\n", $escalation["esc_comment"]);
 					
-					foreach ($comment as $cmt) {
+					foreach ($comment as $cmt)
 						$str .= "# ".$cmt."\n";
-					}
 				}
 				
 				$str .= "define serviceescalation{\n";
@@ -433,16 +430,11 @@
 				$cg = array();
 				$strTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
-				
-				while($cg =& $DBRESULT2->fetchRow()) {
-					$BP = false;			
-					array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
-					
-					if($BP) {
+				while ($cg =& $DBRESULT2->fetchRow()) {
+					if (isset($gbArr[1][$cg["cg_id"]])) {
 						$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
 					}
-				}
-				
+				}				
 				$DBRESULT2->free();
 				
 				if (isset($strTemp)) 
@@ -467,7 +459,6 @@
 		$DBRESULT->free();	
 	}
 
-
 	/*
 	 * PART 4 -Escalation for all Services	
 	 */	 
@@ -484,7 +475,6 @@
 					$strDef = "";
 									
 					if (isset($gbArr[2][$escalation["host_host_id"]])) {
-
 						$ret["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;						
 						if (isset($ret["comment"]) && isset($escalation["esc_comment"]))	{
 							$comment = array();
@@ -495,7 +485,7 @@
 						
 						$strDef .= "define serviceescalation{\n";			
 						$strDef .= print_line("host_name", getMyHostName($escalation["host_host_id"]));										
-						if (isset($host_instance[$escalation["host_host_id"]]))					
+						if (isset($host_instance[$escalation["host_host_id"]]))
 							$generated++;
 						
 						$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);

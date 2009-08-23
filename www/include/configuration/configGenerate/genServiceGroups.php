@@ -39,6 +39,7 @@
 	if (!isset($oreon))
 		exit();
 	
+	global $generatedSG;
 	$generatedSG = array();
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/servicegroups.cfg", $oreon->user->get_name());
@@ -48,12 +49,10 @@
 	$i = 1;
 	$str = NULL;
 	while ($serviceGroup = $DBRESULT->fetchRow())	{
-		$BP = false;
 		$generated = 0;
 		$strDef = "";
-		array_key_exists($serviceGroup["sg_id"], $gbArr[5]) ? $BP = true : NULL;
-		
-		if ($BP)	{
+
+		if (isset($gbArr[5][$serviceGroup["sg_id"]])) {
 			$ret["comment"] ? ($strDef .= "# '" . $serviceGroup["sg_name"] . "' servicegroup definition " . $i . "\n") : NULL;
 			if ($ret["comment"] && $serviceGroup["sg_comment"])	{
 				$comment = array();
@@ -65,8 +64,10 @@
 			$serviceGroup["sg_name"] = str_replace("#S#", "/", $serviceGroup["sg_name"]);
 			$serviceGroup["sg_name"] = str_replace("#BS#", "\\", $serviceGroup["sg_name"]);
 			
-			if ($serviceGroup["sg_name"])  $strDef .= print_line("servicegroup_name", $serviceGroup["sg_name"]);
-			if ($serviceGroup["sg_alias"]) $strDef .= print_line("alias", $serviceGroup["sg_alias"]);
+			if ($serviceGroup["sg_name"])  
+				$strDef .= print_line("servicegroup_name", $serviceGroup["sg_name"]);
+			if ($serviceGroup["sg_alias"]) 
+				$strDef .= print_line("alias", $serviceGroup["sg_alias"]);
 			
 			// Service members
 			$service = array();
@@ -79,7 +80,7 @@
 									"AND service.service_activate = '1' " .
 									"AND host.host_activate = '1' " .
 									"AND  servicegroup_relation.host_host_id IS NOT NULL");
-			while($service =& $DBRESULT2->fetchRow()){
+			while ($service =& $DBRESULT2->fetchRow()){
 				if (isset($gbArr[4][$service["service_id"]]))	{				
 					if ($service["host_id"])	{
 						if (isset($gbArr[2][$service["host_id"]]) && isset($host_instance[$service["host_id"]])){
