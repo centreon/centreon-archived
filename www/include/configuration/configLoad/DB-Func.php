@@ -364,7 +364,7 @@
 				$get = true;
 			} else if ($get)	{
 				if (preg_match($regexp, $str, $regs)){
-					if ($regs[1] == ";TEMPLATE-HOST-LINK"){
+					if ($regs[1] == ";TEMPLATE-HOST-LINK" || $regs[1] == "#TEMPLATE-HOST-LINK"){
 						if (!isset($tmpConf[$regs[1]]))
 							$tmpConf[$regs[1]] = array();
 						$tmpConf[$regs[1]][trim($regs[2])] = trim($regs[2]);
@@ -1152,9 +1152,11 @@
 				# Add link with host template
 				if (isset($tab_link_tpl))
 					foreach ($tab_link_tpl as $tkey => $tvalue){
-						$host_host_id = getMyHostID($tvalue);						
-						if ($host_host_id) {
-							$DBRESULT_TEMP =& $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
+						foreach ($tvalue as $template_link_name) {
+							$host_host_id = getMyHostID($template_link_name);						
+							if ($host_host_id) {
+								$DBRESULT_TEMP =& $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
+							}
 						}
 					}			
 			}
