@@ -64,7 +64,7 @@
 	 */
 	$ndo_base_prefix = getNDOPrefix();
 	$tab_nagios_server = array();
-	$DBRESULT =& $pearDB->query("SELECT ndomod.id, ndomod.instance_name, n.name " .
+	$DBRESULT =& $pearDB->query("SELECT n.id, ndomod.instance_name, n.name " .
 								"FROM `cfg_ndomod` ndomod, `nagios_server` n " .
 								"WHERE ndomod.activate = '1' " .
 								"AND ndomod.ns_nagios_server = n.id " .
