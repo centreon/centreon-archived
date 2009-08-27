@@ -196,7 +196,7 @@ ${CAT} << __EOT__
 #                                                                             #
 #                                    v$version                                     #
 #                                                                             #
-#                             infos@oreon-project.org                         #
+#                               infos@centreon.com                            #
 #                                                                             #
 #                   Make sure you have installed and configured               #
 #                   sudo - sed - php - apache - rrdtool - mysql               #
