@@ -71,6 +71,10 @@
  	public function write() {
  		global $oreon;
  		
+ 		$varlib = "@CENTREON_VARLIB@";
+ 		if ($varlib == "")
+ 			$varlib = "/var/lib/centreon";
+ 		
  		$str_local = "";
  		$str_remote = "";
  		$return_local = 0;
@@ -86,7 +90,7 @@
  			passthru($str_local, $return_local);
  		}
  		if ($str_remote != "") {
- 			$str_remote = "echo " . $str_remote . " >> @CENTREON_VARLIB@/centcore.cmd";
+ 			$str_remote = "echo " . $str_remote . " >> $varlib/centcore.cmd";
  			passthru($str_remote, $return_remote);	
  		}
  		return ($return_local + $return_remote);
