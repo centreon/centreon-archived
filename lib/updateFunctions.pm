@@ -39,11 +39,11 @@ sub getIntervalLenght($){
     my $con_oreon = $_[0];
     my $sth = $con_oreon->prepare("SELECT `interval_length` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
     if (!$sth->execute) {
-	writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");
+		writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");
     }
-    my @data = $sth->fetchrow_hashref();
+    my $data = $sth->fetchrow_hashref();
     undef($sth);
-    if (defined($interval)) {
+    if (defined($data)) {
 	return $data->{'interval_length'};
     } else {
 	return 60;
