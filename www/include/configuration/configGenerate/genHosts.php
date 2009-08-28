@@ -70,7 +70,7 @@
 	while ($h =& $DBRESULT->fetchRow()) {
 		if (!isset($templateCache[$h["host_host_id"]]))
 			$templateCache[$h["host_host_id"]] = array();
-		$templateCache[$h["host_host_id"]][$h["order"]] = $h["host_name"]; 
+		$templateCache[$h["host_host_id"]][] = $h["host_name"]; 
 	}
 	$DBRESULT->free();
 	unset($h);
