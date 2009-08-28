@@ -61,6 +61,7 @@ class CentreonDB {
 		include("@CENTREON_ETC@/centreon.conf.php");
 			
 		require_once $centreon_path."/www/class/centreonLog.class.php";
+		$this->log = new CentreonLog();
 	
 		$this->centreon_path = $centreon_path;
 		$this->retry = $retry;				
@@ -84,8 +85,7 @@ class CentreonDB {
 				$this->connectToCentreon($conf_centreon);
 				$this->connect();
 				break;
-		}
-		$this->log = new CentreonLog();	
+		}		
     }
     
 	private function displayConnectionErrorPage() {
