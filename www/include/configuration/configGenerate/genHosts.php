@@ -188,8 +188,9 @@
 							$tpl_str .= $host_template;
 						}
 					}
-					if (isset($tpl_str) && $tpl_str != "")
+					if (isset($tpl_str) && $tpl_str != "") 
 						$str .= print_line("use", $tpl_str);
+					unset($tpl_str);
 				} else if ($host["host_template_model_htm_id"]) {			
 					/*
 					 *  For Nagios 1 & 2
