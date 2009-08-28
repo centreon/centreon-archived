@@ -338,12 +338,24 @@
 											"('".$maxId["MAX(service_id)"]."', '". $sv['sc_id'] ."')";
 						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
 							}
+							
+							/*
+							 *  get svc desc
+							 */							
+							$query = "SELECT service_description FROM service WHERE service_id = '".$maxId["MAX(service_id)"]."' LIMIT 1";
+							$DBRES =& $pearDB->query($query);
+							if ($DBRES->numRows()) {
+								$row =& $DBRES->fetchRow();
+								$description = $row['service_description'];								
+								$description = str_replace("#S#", "/", $description);
+								$description = str_replace("#BS#", "\\", $description);
+								$oreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], getHostServiceCombo($maxId["MAX(service_id)"], $description), "a", $fields);							
+							}
 						}
 					}
 				}
 			}
-		}
-		$oreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], getHostServiceCombo($maxId["MAX(service_id)"], $service_description), "a", $fields);
+		}		
 		return ($maxId["MAX(service_id)"]);
 	}
 	
@@ -609,7 +621,8 @@
 			$fields["service_categories"] = implode(",", $ret["service_categories"]);
 		$fields["service_traps"] = "";
 		if (isset($ret["service_traps"]))
-			$fields["service_traps"] = implode(",", $ret["service_traps"]);		
+			$fields["service_traps"] = implode(",", $ret["service_traps"]);
+		$oreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id["MAX(service_id)"], htmlentities($ret["service_description"], ENT_QUOTES)), "a", $fields);
 		return (array("service_id" => $service_id["MAX(service_id)"], "fields" => $fields));
 	}
 	
