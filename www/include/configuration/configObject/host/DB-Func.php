@@ -1731,10 +1731,10 @@
 			while ($hTpl2 = $DBRESULT2->fetchRow()) {			
 				$alias =& getMyServiceAlias($hTpl2["service_service_id"]);			
 				if (testServiceExistence ($alias, array(0=>$hID))) {				
-					$service = array("service_template_model_stm_id" => $hTpl2["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
+					$service = array("service_template_model_stm_id" => $hTpl2["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1) , "service_hPars" => array("0" => $hID));
 					$service_id = insertServiceInDB($service);
-					$rq3 = "INSERT INTO host_service_relation (hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) VALUES (NULL, '".$hID."', NULL, '".$service_id."')";
-					$DBRESULT3 =& $pearDB->query($rq3);
+					//$rq3 = "INSERT INTO host_service_relation (hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) VALUES (NULL, '".$hID."', NULL, '".$service_id."')";
+					//$DBRESULT3 =& $pearDB->query($rq3);
 				}
 			}
 			$antiLoop[$hID2] = 1;

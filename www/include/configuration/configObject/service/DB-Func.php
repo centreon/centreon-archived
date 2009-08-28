@@ -43,13 +43,19 @@
 		global $pearDB;
 		if ($service_id == NULL || $service_description == NULL)
 			return;
-		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM `host_service_relation` WHERE service_service_id='".$service_id."'");
-		$row =& $DBRESULT->fetchRow();
-		$DBRESULT2 =& $pearDB->query("SELECT host_name FROM `host` WHERE host_id='".$row['host_host_id']."'");
-		$row2 =& $DBRESULT2->fetchRow();
-		if ($DBRESULT->numRows() > 1)
-			$combo = "-/" . $service_description;
-		$combo = $row2["host_name"] . "/" . $service_description;
+		
+		$query = "SELECT h.host_name " .
+				"FROM host h, host_service_relation hsr " .
+				"WHERE h.host_id = hsr.host_host_id " .
+				"AND hsr.service_service_id = '".$service_id."' LIMIT 1";		
+		$DBRES =& $pearDB->query($query);
+		if (!$DBRES->numRows())
+			$combo = "- / " . $service_description;
+		else {
+			$row =& $DBRES->fetchRow();
+			$combo = $row['host_name'] . " / ". $service_description;
+		}
+				
 		return $combo;
 	}
 
@@ -416,8 +422,10 @@
 	
 	function insertServiceInDB ($ret = array(), $macro_on_demand = NULL)	{
 		global $oreon;
-		
-		$service_id = insertService($ret, $macro_on_demand);
+				
+		$tmp_fields = array();
+		$tmp_fields = insertService($ret, $macro_on_demand);
+		$service_id = $tmp_fields['service_id'];
 		updateServiceContactGroup($service_id, $ret);
 		updateServiceContact($service_id, $ret);
 		updateServiceHost($service_id, $ret);
@@ -426,6 +434,8 @@
 		updateServiceTrap($service_id, $ret);
 		updateServiceCategories($service_id, $ret);
 		$oreon->user->access->updateACL();
+		$fields = $tmp_fields['fields'];
+		$oreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, htmlentities($fields["service_description"], ENT_QUOTES)), "a", $fields);
 		return ($service_id);
 	}
 	
@@ -599,9 +609,8 @@
 			$fields["service_categories"] = implode(",", $ret["service_categories"]);
 		$fields["service_traps"] = "";
 		if (isset($ret["service_traps"]))
-			$fields["service_traps"] = implode(",", $ret["service_traps"]);
-		$oreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id["MAX(service_id)"], htmlentities($ret["service_description"], ENT_QUOTES)), "a", $fields);
-		return ($service_id["MAX(service_id)"]);
+			$fields["service_traps"] = implode(",", $ret["service_traps"]);		
+		return (array("service_id" => $service_id["MAX(service_id)"], "fields" => $fields));
 	}
 	
 	function insertServiceExtInfos($service_id = null, $ret)	{
