@@ -68,7 +68,7 @@
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_path", _("Path"));
 	$tpl->assign("headerMenu_size", _("Size"));
-	$tpl->assign("headerMenu_options", _("Options"));
+	$tpl->assign("headerMenu_date", _("Last modified"));
 
 	# List of elements - Depends on different criteria
 	
@@ -85,21 +85,22 @@
 	foreach ($plugin_list as $name => $path) {
 		if (!$search || ($search && stristr($name, $search))) {
 			if ($i >= $begin && $i < $end){
-				$cmd["command_id"] = 1;
-				$selectedElements =& $form->addElement('checkbox', "select[".$cmd['command_id']."]");	
-				$moptions = "<a href='main.php?p=".$p."&command_id=".$cmd['command_id']."&o=d&select[".$cmd['command_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>";
+				$cmd["command_id"] = 1;				
 				$path = str_replace('#BR#', "\\n", $path);
 				$path = str_replace('#T#', "\\t", $path);
 				$path = str_replace('#R#', "\\r", $path);
 				$path = str_replace('#S#', "/", $path);
 				$path = str_replace('#BS#', "\\", $path);
-				$elemArr[$i_real] = array("MenuClass"=>"list_".$style, 
-								"RowMenu_select"=>$selectedElements->toHtml(),
+				
+				$tab = stat($oreon->optGen["nagios_path_plugins"].$dir.$path);
+				$mdate = date("d-m-Y H:i", $tab["mtime"]);
+				
+				$elemArr[$i_real] = array("MenuClass"=>"list_".$style, 								
 								"RowMenu_name" => substr($name, 1),
 								"RowMenu_num" => $i,
 								"RowMenu_size" => round(filesize($oreon->optGen["nagios_path_plugins"].$dir.$path) / 1024,2),
 								"RowMenu_path" => str_replace("//", "/", $dir.$path),
-								"RowMenu_options"=>$moptions);
+								"RowMenu_date"=>$mdate);
 				$style != "two" ? $style = "two" : $style = "one";
 				$i_real++;
 			}
@@ -143,20 +144,16 @@
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .				
 				"");
 	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "d"=>_("Delete")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 		
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .				
 				"");
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
