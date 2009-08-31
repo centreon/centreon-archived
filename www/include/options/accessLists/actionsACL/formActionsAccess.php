@@ -133,7 +133,7 @@
 	# Global Nagios External Commands
 	$form->addElement('checkbox', 'global_shutdown', _("Shutdown Nagios"));
 	$form->addElement('checkbox', 'global_restart', _("Restart Nagios"));
-	$form->addElement('checkbox', 'global_notifications', _("Enable/Disable"));
+	$form->addElement('checkbox', 'global_notifications', _("Enable/Disable notifications"));
 	$form->addElement('checkbox', 'global_service_checks', _("Enable/Disable service checks"));
 	$form->addElement('checkbox', 'global_service_passive_checks', _("Enable/Disable passive service checks"));
 	$form->addElement('checkbox', 'global_host_checks', _("Enable/Disable host checks"));
