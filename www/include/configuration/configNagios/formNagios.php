@@ -510,8 +510,8 @@
 		$debugLevel["16"]= _("Host/service check information");
 		$debugLevel["32"]= _("Notification information");
 		$debugLevel["64"]= _("Event broker information");
-		$debugLevel["256"]= _("Commands information");
-		$debugLevel["2048"]= _("Macros information");
+		//$debugLevel["256"]= _("Commands information");
+		//$debugLevel["2048"]= _("Macros information");
 		foreach ($debugLevel as $key => $val) {
 			if ($key == "-1" || $key == "0")
 				$debugCheck[] = &HTML_QuickForm::createElement('checkbox', $key, '&nbsp;', $val, array("id"=>"debug".$key, "onClick"=>"unCheckOthers(this.id);"));
@@ -708,8 +708,8 @@ function unCheckOthers(id) {
 	document.getElementById("debug16").checked = false;
 	document.getElementById("debug32").checked = false;
 	document.getElementById("debug64").checked = false;
-	document.getElementById("debug256").checked = false;
-	document.getElementById("debug2048").checked = false;
+	//document.getElementById("debug256").checked = false;
+	//document.getElementById("debug2048").checked = false;
 }
 
 function unCheckAllAndNaught() {
