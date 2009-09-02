@@ -123,18 +123,23 @@
 	while ($sg =& $DBRESULT->fetchRow()) {
 		if ($str != "")
 			$str .= ", ";
-		$str .= $sg["service_service_id"]; 
+		$str .= "'".$sg["service_service_id"]."'"; 
 	}
+	if ($str == "")
+		$str = "''";
 	unset($sg);
 	unset($DBRESULT);
 
-	$request =  'SELECT `date_start`, `date_end`, sum(`OKnbEvent`) as OKnbEvent, sum(`CRITICALnbEvent`) as CRITICALnbEvent,'.
-				' sum(`WARNINGnbEvent`) as WARNINGnbEvent, sum(`UNKNOWNnbEvent`) as UNKNOWNnbEvent, '.
-				'avg( `OKTimeScheduled` ) as "OKTimeScheduled", '.
-				'avg( `WARNINGTimeScheduled` ) as "WARNINGTimeScheduled", '.
-				'avg( `UNKNOWNTimeScheduled` ) as "UNKNOWNTimeScheduled", '.
-				'avg( `CRITICALTimeScheduled` ) as "CRITICALTimeScheduled" '.
-				'FROM `log_archive_service` WHERE `service_id` IN ('.$str.') group by `date_end`, `date_start` order by `date_start` desc';
+	$request =  "SELECT `date_start`, `date_end`, sum(`OKnbEvent`) as OKnbEvent, sum(`CRITICALnbEvent`) as CRITICALnbEvent,".
+				" sum(`WARNINGnbEvent`) as WARNINGnbEvent, sum(`UNKNOWNnbEvent`) as UNKNOWNnbEvent, ".
+				"avg( `OKTimeScheduled` ) as OKTimeScheduled, ".
+				"avg( `WARNINGTimeScheduled` ) as WARNINGTimeScheduled, ".
+				"avg( `UNKNOWNTimeScheduled` ) as UNKNOWNTimeScheduled, ".
+				"avg( `CRITICALTimeScheduled` ) as CRITICALTimeScheduled ".
+				"FROM `log_archive_service` WHERE `service_id` IN (".$str.") " .
+				"AND `date_start` >= '".$start_date."' " .
+				"AND `date_end` <= '".$end_date."' " .
+				"GROUP BY `date_end`, `date_start` order by `date_start` desc";
 	$res = & $pearDBO->query($request);
 	$statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
 	while ($row =& $res->fetchRow()){

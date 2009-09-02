@@ -128,7 +128,12 @@
 		 _("Up")." "._("Time").";"._("Up").";"._("Up")." "._("Alert").";".
 		 _("Down")." "._("Time").";"._("Down").";"._("Down")." "._("Alert").";".
 		 _("Unreachable")." "._("Time").";"._("Unreachable").";"._("Unreachable")." "._("Alert").";\n";
-	$rq = 'SELECT  * FROM `log_archive_host` WHERE `host_id` = '.$id.' ORDER BY `date_start` desc';			
+	$rq = "SELECT  * " .
+			"FROM `log_archive_host` " .
+			"WHERE `host_id` = '".$id."' " .
+			"AND `date_start` >= '".$start_date."' " .
+			"AND `date_end` <= '".$end_date."' " .
+			"ORDER BY `date_start` desc";			
 	$DBRESULT = & $pearDBO->query($rq);
 	while ($row =& $DBRESULT->fetchRow()) {
 			$duration = $row["UPTimeScheduled"] + $row["DOWNTimeScheduled"] + $row["UNREACHABLETimeScheduled"];

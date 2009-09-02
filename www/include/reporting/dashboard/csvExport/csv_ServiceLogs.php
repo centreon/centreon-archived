@@ -108,7 +108,12 @@
 				   ._("Unknown")." "._("Time")."; "._("Unknown").";"._("Unknown")." Alert;"
 				   ._("Critical")." "._("Time")."; "._("Critical").";"._("Critical")." Alert;\n";
 
-	$request = "SELECT  * FROM `log_archive_service` WHERE `host_id` = '".$host_id."' AND `service_id` = ".$service_id." ORDER BY `date_start` DESC";
+	$request = "SELECT  * FROM `log_archive_service` " .
+			"WHERE `host_id` = '".$host_id."' " .
+			"AND `service_id` = '".$service_id."' " .
+			"AND `date_start` >= '".$start_date."' " .
+			"AND `date_end` <= '".$end_date."' " .
+			"ORDER BY `date_start` DESC";
 	$DBRESULT =& $pearDBO->query($request);
 	while ($row =& $DBRESULT->fetchRow()) {
 		$duration = $row["date_end"] - $row["date_start"];
