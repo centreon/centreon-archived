@@ -183,7 +183,7 @@
 		$svc_SG 	= getACLSGForHost2($pearDB, $host_id, $groupstr);
 		
 		$tab_services = array();
-		if (count($tab_cat) || count($svc_SG)){
+		if (count($tab_cat)){
 			if ($tab_svc) {
 				foreach ($tab_svc as $svc_descr => $svc_id){
 					$tmp = getServiceTemplateList3($svc_id);
@@ -194,12 +194,14 @@
 						}
 					}
 				}
-			}
-			if ($svc_SG)
-				foreach ($svc_SG as $key => $value)
-					$tab_services[$key] = $value;
+			}			
 		} elseif (hostIsAuthorized($host_id, $groupstr)){
-			$tab_services = $tab_svc;	
+			$tab_services = $tab_svc;
+			if ($svc_SG) {
+				foreach ($svc_SG as $key => $value) {
+					$tab_services[$key] = $value;
+				}
+			}	
 		}
 	  	return $tab_services;
 	}
