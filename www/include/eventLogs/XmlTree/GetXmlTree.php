@@ -78,17 +78,65 @@
 	} else {
 		header("Content-type: text/xml"); 
 	} 
+	
+	function getMyServiceGroupActivateServicesSearch($id, $search) {
+		global $pearDB;
+		
+		$search = str_replace("/", "#S#", $search);
+		$search = str_replace("\\", "#BS#", $search);
+		
+		if ($search != "") {
+			$data = array();
+			$query = "SELECT * " .
+					"FROM servicegroup_relation sgr, service s " .
+					"WHERE sgr.service_service_id = s.service_id " .
+					"AND s.service_description LIKE '%".$search."%'";
+			$DBRES =& $pearDB->query($query);
+			while ($row =& $DBRES->fetchRow()) {
+				$data[$row['host_host_id'] . "_" . $row['service_service_id']] = 1; 
+			}
+		}
+		else {
+			$data =  getMyServiceGroupActivateServices($id);
+		}
+		return ($data);
+	}
 	 
 	function getServiceGroupCount($search = NULL)	{
 		global $pearDB;
 
-		if ($search != "")
-			$DBRESULT =& $pearDB->query("SELECT count(sg_id) FROM `servicegroup` WHERE sg_name LIKE '%$search%'");
-		else
-			$DBRESULT =& $pearDB->query("SELECT count(sg_id) FROM `servicegroup`");
-		$num_row =& $DBRESULT->fetchRow();
-		$DBRESULT->free();
-		return $num_row["count(sg_id)"];
+		if ($search != "") {
+			$query = "SELECT * " .
+					"FROM servicegroup_relation sgr, host h " .
+					"WHERE sgr.host_host_id = h.host_id " .
+					"AND h.host_name LIKE '%".$search."%'";			
+		}
+		else {			
+			$query = "SELECT sg_id FROM `servicegroup`";			
+		}
+		$DBRES =& $pearDB->query($query);
+		return ($DBRES->numRows());
+	}
+
+	function getServiceGroupSearch($search = NULL)	{
+		global $pearDB;
+
+		$tab = array();
+		if ($search != "") {
+			$query = "SELECT * " .
+					"FROM servicegroup sg, servicegroup_relation sgr, host h " .
+					"WHERE sgr.host_host_id = h.host_id " .
+					"AND h.host_name LIKE '%".$search."%' " .
+					"AND sg.sg_id = sgr.servicegroup_sg_id";			
+		}
+		else {			
+			$query = "SELECT sg_id FROM `servicegroup`";			
+		}
+		$DBRES =& $pearDB->query($query);
+		while ($row =& $DBRES->fetchRow()) {
+			$tab[$row['sg_id']] = 1;
+		}		
+		return $tab;
 	}
 
 	/* 
@@ -112,9 +160,10 @@
 		exit();
 	
 	$normal_mode = 1;
-	(isset($_GET["mode"])) ? $normal_mode = $_GET["mode"] : $normal_mode = 1;
-	(isset($_GET["id"])) ? $url_var = $_GET["id"] : $url_var = 0;
-	(isset($_GET["search_host"])) ? $search_host = $_GET["search_host"] : $search_host = "";
+	(isset($_GET["mode"])) ? $normal_mode = htmlentities($_GET["mode"], ENT_QUOTES) : $normal_mode = 1;
+	(isset($_GET["id"])) ? $url_var = htmlentities($_GET["id"], ENT_QUOTES) : $url_var = 0;
+	(isset($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"], ENT_QUOTES) : $search_host = "";
+	(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = "";
 
 	$type = "root";
 	$id = "0";
@@ -151,7 +200,7 @@
 			/*
 			 * Send Service/host list for a SG 
 			 */
-			$data = getMyServiceGroupActivateServices($id);
+			$data = getMyServiceGroupActivateServicesSearch($id, $search_service);
 			foreach ($data as $key => $value){
 				$tab_value = split("_", $key);
 				$host_name = getMyHostName($tab_value[0]);
@@ -171,7 +220,7 @@
 			 */
 			$tab_id = split('_', $id);
 			$id = $tab_id[0];
-			$services = getMyHostActiveServices($id, htmlentities($_GET["search_service"], ENT_QUOTES));
+			$services = getMyHostActiveServices($id, $search_service);
 			foreach ($services as $svc_id => $svc_name) {
 				if ($is_admin || (isset($lca["LcaHost"][$id]) && isset($lca["LcaHost"][$id][$svc_id]))) {
 			    	$buffer->startElement("item");
@@ -216,10 +265,11 @@
 			 * Send Service Group list
 			 */
 			$lcaSG = $access->getServiceGroups();
+			$searchSG = getServiceGroupSearch($search_host);
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
 			while ($SG =& $DBRESULT->fetchRow()){
 			    $i++;
-				if ($is_admin || (isset($lca["LcaSG"]) && isset($lca["LcaSG"][$SG["sg_id"]]))){ 					
+				if (($is_admin || (isset($lca["LcaSG"]) && isset($lca["LcaSG"][$SG["sg_id"]]))) && isset($searchSG[$SG['sg_id']])){ 					
 					$buffer->startElement("item");
 						$buffer->writeAttribute("child", "1");
 						$buffer->writeAttribute("text", $SG["sg_name"]);
@@ -583,9 +633,8 @@
 			$cpt++;
 		}
 		if ($cpt)
-			$buffer->endElement();
+			$buffer->endElement(); 
 				
-		
 		/*
 		 * Meta Services
 		 */
