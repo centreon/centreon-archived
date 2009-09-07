@@ -345,8 +345,8 @@
 							$query = "SELECT service_description FROM service WHERE service_id = '".$maxId["MAX(service_id)"]."' LIMIT 1";
 							$DBRES =& $pearDB->query($query);
 							if ($DBRES->numRows()) {
-								$row =& $DBRES->fetchRow();
-								$description = $row['service_description'];								
+								$row2 =& $DBRES->fetchRow();
+								$description = $row2['service_description'];								
 								$description = str_replace("#S#", "/", $description);
 								$description = str_replace("#BS#", "\\", $description);
 								$oreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], getHostServiceCombo($maxId["MAX(service_id)"], $description), "a", $fields);							
