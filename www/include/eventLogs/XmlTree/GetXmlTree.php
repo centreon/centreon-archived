@@ -90,7 +90,8 @@
 			$query = "SELECT * " .
 					"FROM servicegroup_relation sgr, service s " .
 					"WHERE sgr.service_service_id = s.service_id " .
-					"AND s.service_description LIKE '%".$search."%'";
+					"AND s.service_description LIKE '%".$search."%' " .
+					"AND sgr.servicegroup_sg_id = '".$id."'";
 			$DBRES =& $pearDB->query($query);
 			while ($row =& $DBRES->fetchRow()) {
 				$data[$row['host_host_id'] . "_" . $row['service_service_id']] = 1; 
