@@ -114,11 +114,11 @@
  	 *  Returns a string that replaces on demand macros by their values
  	 */
  	public function replaceMacroInString($host_id, $string) { 		 		
- 		if (preg_match("/$HOSTADDRESS$/", $string))
+		if (strpos($string, "\$HOSTADDRESS$"))
  			$string = str_replace("\$HOSTADDRESS\$", $this->getHostAddress($host_id), $string);
- 		if (preg_match("/$HOSTNAME$/", $string))
+		if (strpos($string, "\$HOSTNAME$"))
  			$string = str_replace("\$HOSTNAME\$", $this->getHostName($host_id), $string); 		
- 		if (preg_match("/$HOSTALIAS$/", $string))
+		if (strpos($string, "\$HOSTALIAS$"))
  			$string = str_replace("\$HOSTALIAS\$", $this->getHostAlias($host_id), $string);
  		
  		$matches = array();
