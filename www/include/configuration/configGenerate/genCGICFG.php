@@ -60,7 +60,8 @@
 			$str .= "# ".$cmt."\n";
 	}
 	foreach ($cgi as $key=>$value)	{
-		if ($value && $key != "cgi_id" && $key != "cgi_name" && $key != "cgi_comment" && $key != "cgi_activate")	{	
+		if ($value && $key != "cgi_id" && $key != "cgi_name" && $key != "cgi_comment" && $key != "cgi_activate") {
+			$value = str_replace("\r\n", ",", $value);
 			$str .= $key."=".$value."\n";
 		}
 	}
