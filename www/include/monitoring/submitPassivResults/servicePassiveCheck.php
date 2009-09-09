@@ -70,7 +70,7 @@
 		require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
 		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-		$form->addElement('header', 'title', 'Command Options');
+		$form->addElement('header', 'title', _("Command Options"));
 
 		$hosts = array($host_name=>$host_name);
 

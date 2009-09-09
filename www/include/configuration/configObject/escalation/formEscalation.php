@@ -195,15 +195,15 @@
 	if ($oreon->user->get_version() >= 2)	{
 		$form->addElement('select', 'escalation_period', _("Escalation Period"), $tps);
 		$tab = array();
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'd');
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'u');
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'r');
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Up"));
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
 		$form->addGroup($tab, 'escalation_options1', _("Hosts Escalation Options"), '&nbsp;&nbsp;');
 		$tab = array();
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'w');
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'u');
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'c');
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'r');
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Up"));
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
 		$form->addGroup($tab, 'escalation_options2', _("Services Escalation Options"), '&nbsp;&nbsp;');
 	}
 	$form->addElement('textarea', 'esc_comment', _("Comments"), $attrsTextarea);

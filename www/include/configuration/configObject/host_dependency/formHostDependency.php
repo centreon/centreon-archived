@@ -116,20 +116,20 @@
 		$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
 	}
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok/Up', array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down', array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable', array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"), array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
 	if ($oreon->user->get_version() >= 2)
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending', array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);'));
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"), array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);'));
 	$form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 	if ($oreon->user->get_version() >= 2)	{
 		$tab = array();
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Up');
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down');
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable');
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending');
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Up"));
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
+		$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
 		$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 	}
 

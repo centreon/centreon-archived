@@ -175,11 +175,11 @@
 	 * Part 5
 	 */
 	$nagTab = array();
- 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'n', 'n');
- 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'h', 'h');
- 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'd', 'd');
- 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'w', 'w');
- 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'm', 'm');
+ 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'n', _("None"));
+ 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'h', _("Hourly"));
+ 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'd', _("Daily"));
+ 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'w', _("Weekly"));
+ 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, 'm', _("Monthly"));
 	$form->addGroup($nagTab, 'log_rotation_method', _("Log Rotation Method"), '&nbsp;&nbsp;');
 	$form->addElement('text', 'log_archive_path', _("Log Archive Path"), $attrsText2);
 	
@@ -367,13 +367,13 @@
 	$form->addElement('textarea', 'host_perfdata_file_template', _("Host Performance Data File Template"), $attrsTextarea);
 	$form->addElement('textarea', 'service_perfdata_file_template', _("Service Performance Data File Template"), $attrsTextarea);
 	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, 'a', 'a');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, 'w', 'w');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, 'a', _("Append"));
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, 'w', _("Write"));
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'host_perfdata_file_mode', _("Host Performance Data File Mode"), '&nbsp;');
 	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, 'a', 'a');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, 'w', 'w');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, 'a', _("Append"));
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, 'w', _("Write"));
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'service_perfdata_file_mode', _("Service Performance Data File Mode"), '&nbsp;');
 	$form->addElement('text', 'host_perfdata_file_processing_interval', _("Host Performance Data File Processing Interval"), $attrsText3);

@@ -68,17 +68,17 @@
 
 	$form = new HTML_QuickForm('select_form', 'GET', 'main.php');
 
-	$form->addElement('header', 'title', 'Command Options');
+	$form->addElement('header', 'title', _("Command Options"));
 
 	$tpl->assign('authorlabel', _("Alias"));
 	$tpl->assign('authoralias', $oreon->user->get_alias());
 
-	$form->addElement('checkbox', 'notify', 'notify');
-	$form->addElement('checkbox', 'sticky', 'sticky');
-	$chckbox[] =& $form->addElement('checkbox', 'persistent', 'persistent');
+	$form->addElement('checkbox', 'notify', _("notify"));
+	$form->addElement('checkbox', 'sticky', _("sticky"));
+	$chckbox[] =& $form->addElement('checkbox', 'persistent', _("persistent"));
 	$chckbox[0]->setChecked(true);
 
-	$form->addElement('checkbox', 'ackhostservice', 'Acknowledge services attached to hosts');
+	$form->addElement('checkbox', 'ackhostservice', _("Acknowledge services attached to hosts"));
 
 	$form->addElement('hidden', 'author', $oreon->user->get_alias(), array("id"=>"author"));
 	

@@ -116,10 +116,10 @@
 	# Form2
 	
 	$form2 = new HTML_QuickForm('form', 'POST', "?p=".$p);
-	$form2->addElement('submit', 'create', "Create");
-	$form2->addElement('text', 'new_dir', "Create New Directory");
+	$form2->addElement('submit', 'create', _("Create"));
+	$form2->addElement('text', 'new_dir', _("Create New Directory"));
 	$file =& $form2->addElement('file', 'filename', _("File (zip, tar or cfg)"));
-	$form2->addElement('submit', 'load', "Load");
+	$form2->addElement('submit', 'load', _("Load"));
 	
 	if (isset($_GET["filename"]))
 		print $_GET["filename"];

@@ -106,8 +106,8 @@
 							2021302 => 1, 2021303 => 1);
 
 	if (isset($tabQuickSearch[$p])) {
-		$form_search->addElement('advcheckbox', 'search_type_host', 	'host', 	'', 'class=mini_checkbox');
-		$form_search->addElement('advcheckbox', 'search_type_service', 	'service', 	'', 'class=mini_checkbox');		
+		$form_search->addElement('advcheckbox', 'search_type_host', 	_("host"), 	'', 'class=mini_checkbox');
+		$form_search->addElement('advcheckbox', 'search_type_service', 	_("service"), 	'', 'class=mini_checkbox');		
 		$displayHSOptions = 1;
 	}	
 	$form_search->setDefaults($tab);

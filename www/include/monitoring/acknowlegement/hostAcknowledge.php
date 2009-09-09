@@ -66,7 +66,7 @@
 		
 		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	
-		$form->addElement('header', 'title', 'Command Options');
+		$form->addElement('header', 'title', _("Command Options"));
 	
 		$tpl->assign('hostlabel', _("Host Name"));
 		$tpl->assign('hostname', $host_name);
@@ -74,10 +74,10 @@
 		$tpl->assign('authorlabel', _("Alias"));
 		$tpl->assign('authoralias', $oreon->user->get_alias());
 	
-		$ckbx[] =& $form->addElement('checkbox', 'notify', 'notify');
+		$ckbx[] =& $form->addElement('checkbox', 'notify', _("notify"));
 		$ckbx[0]->setChecked(true);
 			
-		$ckbx1[] =& $form->addElement('checkbox', 'persistent', 'persistent');
+		$ckbx1[] =& $form->addElement('checkbox', 'persistent', _("persistent"));
 		$ckbx1[0]->setChecked(true);
 	
 		$form->addElement('hidden', 'host_name', $host_name);
@@ -88,7 +88,7 @@
 		$form->addElement('hidden', 'en', $en);
 		
 		$attr =  array("rows"=>"4", "cols"=>"80");
-		$form->addElement('textarea', 'comment', 'comment', $attr);
+		$form->addElement('textarea', 'comment', _("comment"), $attr);
 		
 		$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 		$form->setJsWarnings(_("Invalid information entered"),_("Please correct these fields"));

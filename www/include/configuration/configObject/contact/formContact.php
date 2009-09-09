@@ -242,16 +242,16 @@
 	 * Host notifications
 	 */
 	$form->addElement('header', 'hostNotification', _("Host"));
- 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down', array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable', array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery', array('id' => 'hRecovery', 'onClick' => 'uncheckAllH(this);'));
+ 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'hRecovery', 'onClick' => 'uncheckAllH(this);'));
 	
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping', array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
 	if ($oreon->user->get_version() >= 3) {
-		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled', array('id' => 'hScheduled', 'onClick' => 'uncheckAllS(this);'));
+		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'hScheduled', 'onClick' => 'uncheckAllS(this);'));
 	}
 	
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
+	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
 	$form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Hosts Notification Options"), '&nbsp;&nbsp;');
     $form->addElement('select', 'timeperiod_tp_id', _("Host Notification Period"), $notifTps);
 	
@@ -273,19 +273,19 @@
 	 * Service notifications
 	 */
 	$form->addElement('header', 'serviceNotification', _("Service"));
- 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning', array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);'));
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown', array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);'));
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical', array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);'));
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery', array('id' => 'sRecovery', 'onClick' => 'uncheckAllS(this);'));
+ 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"), array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"), array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"), array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'sRecovery', 'onClick' => 'uncheckAllS(this);'));
 	
 	if ($oreon->user->get_version() >= 2) {
-		$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping', array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);'));
+		$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);'));
 			if ($oreon->user->get_version() >= 3) {
-				$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', 'Downtime Scheduled', array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);'));
+				$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);'));
 			}
 	}
 	
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None', array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
 	$form->addGroup($svNotifOpt, 'contact_svNotifOpts', _("Services Notification Options"), '&nbsp;&nbsp;');
     $form->addElement('select', 'timeperiod_tp_id2', _("Services Notification Period"), $notifTps);
  	if ($o == "mc")	{
