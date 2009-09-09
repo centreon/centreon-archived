@@ -32,6 +32,9 @@ locate_centreon_installdir
 locate_centreon_logdir
 locate_centreon_etcdir
 locate_centreon_generationdir
+locate_centreon_varlib
+locate_centreon_logdir
+locate_centpluginstraps_bindir
 
 ## Config pre-require
 # define all necessary variables.
@@ -52,8 +55,6 @@ locate_cron_d
 locate_init_d
 locate_php_bin
 locate_perl
-locate_centreon_logdir
-locate_centpluginstraps_bindir
 
 ## Config apache
 check_httpd_directory
