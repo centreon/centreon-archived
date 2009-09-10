@@ -226,7 +226,7 @@
 				$services = getMyServiceGroupServices($id);
 				foreach ($services as $svc_id => $svc_name)	{ 
 					$tab_tmp = split("_", $svc_id);
-					if (service_has_graph($tab_tmp[0], $tab_tmp[1]) && (($is_admin) || (!$is_admin && isset($lca[$id]) && isset($lca[$id][$svc_name]))))	{
+					 if (service_has_graph($tab_tmp[0], $tab_tmp[1]) && (($is_admin) || (!$is_admin && isset($lca[$tab_tmp[0]]) && isset($lca[$tab_tmp[0]][$tab_tmp[1]]) ))) {
 						$oid = "HS_".$tab_tmp[1]."_".$tab_tmp[0];
 						array_push($tab_id, $oid);	
 					}
