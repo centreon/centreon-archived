@@ -49,6 +49,7 @@
 		
 	if (isset($_GET["o"]) && $_GET["o"] == "r"){		
 		$pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$_GET["session_id"]."'");
+		$pearDB->query("UPDATE acl_resources SET changed = '1'");
 		$msg = new CentreonMsg();
 		$msg->setTextStyle("bold");
 		$msg->setText(_("ACL reloaded"));
@@ -58,7 +59,7 @@
 		isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = NULL;
 		isset($_POST["select"]) ? $sel = $_POST["select"] : $sel;
 				
-
+		$pearDB->query("UPDATE acl_resources SET changed = '1'");
 		$query = "UPDATE session SET update_acl = '1' WHERE user_id IN (";
 		$i = 0;		
 		if (isset($sel))
