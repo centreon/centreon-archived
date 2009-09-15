@@ -2022,7 +2022,7 @@ class XPathEngine extends XPathBase {
   function _handlePI($parser, $target, $data) {
     //echo("pi data=".$data."end"); exit;
     $data = $this->_translateAmpersand($data, $reverse=TRUE);
-    $this->parsedTextLocation .= "<?{$target} {$data}?>";
+    $this->parsedTextLocation .= "<?php {$target} {$data}?>";
     return TRUE;
   }
   
