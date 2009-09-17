@@ -258,7 +258,7 @@ ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMP_DIR/src/cron/purgeCentstorage > $TMP_DIR/work/cron/purgeCentstorage
 check_result $? "$(gettext "Change macros for purgeCentstorage")"
 
-cp $TMP_DIR/work/cron/purgeLogs $TMP_DIR/final/cron/purgeCentstorage >> $LOG_FILE 2>&1
+cp $TMP_DIR/work/cron/purgeCentstorage $TMP_DIR/final/cron/purgeCentstorage >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install purgeCentstorage")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
@@ -276,7 +276,7 @@ ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMP_DIR/src/cron/purgeCentstorage > $TMP_DIR/work/cron/centreonPurge.sh
 check_result $? "$(gettext "Change macros for centreonPurge.sh")"
 
-cp $TMP_DIR/work/cron/purgeLogs $TMP_DIR/final/cron/centreonPurge.sh >> $LOG_FILE 2>&1
+cp $TMP_DIR/work/cron/centreonPurge.sh $TMP_DIR/final/cron/centreonPurge.sh >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install centreonPurge.sh")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
