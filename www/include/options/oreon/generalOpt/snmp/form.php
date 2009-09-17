@@ -105,10 +105,10 @@
 	if ($form->validate())	{
 		# Update in DB
 		updateSNMPConfigData($form->getSubmitValue("gopt_id"));
+		
 		# Update in Oreon Object
-		$oreon->optGen = array();
-		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		$oreon->optGen =& $DBRESULT2->fetchRow();
+		$oreon->initOptGen($pearDB);
+
 		$o = NULL;
    		$valid = true;
 		$form->freeze();
