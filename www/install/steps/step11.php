@@ -423,7 +423,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
-		$requete = "UPDATE `cfg_ndo2db` SET `db_name` = '".$_SESSION["nameStatusDB"]."', `db_user` = '".$_SESSION["nameOreonDB"]."', `db_pass` = '".$_SESSION["pwdOreonDB"]."';";
+		$requete = "UPDATE `cfg_ndo2db` SET `db_name` = '".$_SESSION["nameStatusDB"]."', `db_user` = '".$_SESSION["nameOreonDB"]."', `db_pass` = '".$_SESSION["pwdOreonDB"]."', `db_host` = '".$_SESSION["dbLocation"]."';";
 		if ($DEBUG) 
 			print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0']);
