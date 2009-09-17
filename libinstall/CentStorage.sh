@@ -273,7 +273,7 @@ log "INFO" "$(gettext "Change macros for centreonPurge.sh")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_PATH@|'"$CENTREON_PATH"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-	$TMP_DIR/src/cron/purgeCentstorage.sh > $TMP_DIR/work/cron/centreonPurge.sh
+	$TMP_DIR/src/cron/centreonPurge.sh > $TMP_DIR/work/cron/centreonPurge.sh
 check_result $? "$(gettext "Change macros for centreonPurge.sh")"
 
 cp $TMP_DIR/work/cron/centreonPurge.sh $TMP_DIR/final/cron/centreonPurge.sh >> $LOG_FILE 2>&1
