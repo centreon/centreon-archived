@@ -421,7 +421,6 @@
 			} else if ($type == "HS"){ // svc + host_parent + hg_parent
 				// svc
 				$svcs_selected[$id] = getMyServiceName($id);
-				$svcs_selected[$id] = getMyServiceName($id);
 	
 				//host_parent
 				if (isset($id_full[1])) {
@@ -522,7 +521,7 @@
 						 * Services
 						 */
 						if ((isset($hosts_open[$host_id]) && $hosts_open[$host_id]) || (isset($hosts_selected[$host_id]) && $hosts_selected[$host_id]) ) {
-							$services = getMyHostServices($host_id);
+							$services = getMyHostActiveServices($host_id);
 							foreach($services as $svc_id => $svc_name)	{
 					           	$buffer->startElement("item");					    		
 					    		if (isset($svcs_selected[$svc_id]))
