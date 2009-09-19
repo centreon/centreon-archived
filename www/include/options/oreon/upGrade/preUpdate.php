@@ -123,7 +123,7 @@
 			$msgErr = _("Can't get file'");
 			break;
 		}
-		$outputString .= sprintf(_("%s is downloaded.<br/>"), $file->filename);
+		$outputString .= sprintf(_("%s is downloaded.")."<br/>", $file->filename);
 		if ($file->type == 'a') {
 			$readme .= sprintf(_("In order to complete your upgrade (%s), unzip the downloaded file, and follow the instructions in README\n"), $file->filename);
 			$lastVersion = $file->version;

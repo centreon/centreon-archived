@@ -324,7 +324,7 @@
 	?>
 	<script type="text/javascript" src="lib/wz_tooltip/wz_tooltip.js"></script>
 	<?php
-	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70)\" onmouseout=\"UnTip()\">Here is a self explanatory image.</a>"));	
+	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance")."<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70)\" onmouseout=\"UnTip()\">". _("Here is a self explanatory image.")."</a>");
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));	
 	if ($oreon->user->get_version() == 3) {
 		include_once("makeJS_formHost.php");	

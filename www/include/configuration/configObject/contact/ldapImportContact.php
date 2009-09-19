@@ -83,7 +83,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$tpl->assign('ldap_search_filter_help', _("Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br />Lotus Domino : (&(objectClass=person)(cn=*))<br />OpenLDAP : (&(objectClass=person)(cn=*))"));
+	$tpl->assign('ldap_search_filter_help', _("Active Directory :")." (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br />"._("Lotus Domino :")." (&(objectClass=person)(cn=*))<br />"._("OpenLDAP :")." (&(objectClass=person)(cn=*))");
 	$tpl->assign('ldap_search_filter_help_title', _("Filter Examples"));
 	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/ContactAjaxLDAP/ajaxLdapSearch.js"></script>');
 
