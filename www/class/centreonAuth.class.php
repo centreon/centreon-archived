@@ -88,9 +88,9 @@ class CentreonAuth {
 		global $centreon_path;
 		
 		if (strlen($password) == 0 || $password == "") {
-        	$this->passwdOk = 0;
-            return;
-        }
+        	    $this->passwdOk = 0;
+        	    return;
+    		}
 		
 		if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
 			
