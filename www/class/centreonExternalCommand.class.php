@@ -139,6 +139,9 @@
 		$this->actions["host_checks"][0] = "ENABLE_HOST_CHECK";
 		$this->actions["host_checks"][1] = "DISABLE_HOST_CHECK";
 		
+		$this->actions["host_passive_checks"][0] = "ENABLE_PASSIVE_HOST_CHECKS";
+		$this->actions["host_passive_checks"][1] = "DISABLE_PASSIVE_HOST_CHECKS";
+		
 		$this->actions["host_notifications"][0] = "ENABLE_HOST_NOTIFICATIONS";
 		$this->actions["host_notifications"][1] = "DISABLE_HOST_NOTIFICATIONS";
 		
