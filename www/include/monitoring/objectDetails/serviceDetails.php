@@ -204,14 +204,14 @@
 		}
 		unset($data);
 		
-		$en_acknowledge_text= array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
+		$en_acknowledge_text= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Service Problem"));
 		$en_acknowledge 	= array("1" => "0", "0" => "1");
 		$en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
 		$en_inv	 		= array("1" => "1", "0" => "0");
 		$en_inv_text 		= array("1" => _("Disable"), "0" => _("Enable"));
 		$color_onoff 		= array("1" => "#00ff00", "0" => "#ff0000");
 		$color_onoff_inv 	= array("0" => "#00ff00", "1" => "#ff0000");
-		$img_en 		= array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
+		$img_en 		= array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
 
 		/*
 		 * Ajust data for beeing displayed in template
@@ -305,18 +305,10 @@
 		$tpl->assign("m_mon_schedule", _("Re-schedule the next check for this service"));
 		$tpl->assign("m_mon_schedule_force", _("Re-schedule the next check for this service (forced)"));
 		$tpl->assign("m_mon_submit_passive", _("Submit result for this service"));
-		$tpl->assign("m_mon_accept_passive", _("Passive checks for this service"));
-		$tpl->assign("m_mon_notification_service", _("Notifications for this service"));
 		$tpl->assign("m_mon_schedule_downtime", _("Schedule downtime for this service"));
 		$tpl->assign("m_mon_schedule_comment", _("Add a comment for this service"));
-		$tpl->assign("m_mon_event_handler", _("Event Handler"));
-		$tpl->assign("m_mon_flap_detection", _("Flap Detection"));
-		$tpl->assign("m_mon_services_en_check_active", _("Active Check Enabled :"));
-		$tpl->assign("m_mon_services_en_check_passif", _("Passive Check Enabled :"));
-		$tpl->assign("m_mon_services_en_notification", _("Notification Enabled :"));
-		$tpl->assign("m_mon_services_en_flap", _("Flap Detection Enabled :"));
-		$tpl->assign("m_mon_obsessing", _("Obsess"));
-		$tpl->assign("m_comment_for_service", _("All Comments of this service"));
+		$tpl->assign("m_mon_obsessing", _("Obsess Over Service"));
+		$tpl->assign("m_comment_for_service", _("All Comments for this service"));
 		$tpl->assign("cmt_host_name", _("Host Name"));
 		$tpl->assign("cmt_service_descr", _("Services"));
 		$tpl->assign("cmt_entry_time", _("Entry Time"));
@@ -327,16 +319,27 @@
 		$tpl->assign("m_mon_ticket", "Open Ticket");
 		$tpl->assign("links", _("Links"));
 		
-		$str_check_svc_enable = _("Enable Checks for this service");
-		$str_check_svc_disable = _("Disable Checks for this service");
-		$str_notif_svc_enable = _("Enable Notifications for this service");
-		$str_notif_svc_disable = _("Disable Notifications for this service");		
-		$str_handler_svc_enable = _("Enable Event handler for this service");
-		$str_handler_svc_disable = _("Disable Event handler for this service");
-		$str_flap_svc_enable = _("Enable Flap detection for this service");
-		$str_flap_svc_disable = _("Disable Flap detection for this service");
-		$str_passive_svc_enable = _("Enable Passive checks for this service");
-		$str_passive_svc_disable = _("Disable Passive checks for this service");
+		$tpl->assign("m_mon_services_en_check_active", _("Active Checks"));
+		$tpl->assign("m_mon_services_en_check_passif", _("Passive Checks"));
+		$tpl->assign("m_mon_accept_passive", _("Passive Checks"));
+		$tpl->assign("m_mon_notification_service", _("Service Notifications"));
+		$tpl->assign("m_mon_services_en_notification", _("Service Notifications"));
+		$tpl->assign("m_mon_services_en_acknowledge", _("Acknowledged"));
+		$tpl->assign("m_mon_event_handler", _("Event Handler"));
+		$tpl->assign("m_mon_flap_detection", _("Flap Detection"));
+		$tpl->assign("m_mon_services_en_flap", _("Flap Detection"));
+		$str_check_svc_enable = _("Enable Active Checks");
+		$str_check_svc_disable = _("Disable Active Checks");
+		$str_passive_svc_enable = _("Enable Passive Checks");
+		$str_passive_svc_disable = _("Disable Passive Checks");
+		$str_notif_svc_enable = _("Enable Service Notifications");
+		$str_notif_svc_disable = _("Disable Service Notifications");
+		$str_handler_svc_enable = _("Enable Event Handler");
+		$str_handler_svc_disable = _("Disable Event Handler");
+		$str_flap_svc_enable = _("Enable Flap Detection");
+		$str_flap_svc_disable = _("Disable Flap Detection");
+		$str_obsess_svc_enable = _("Enable Obsess Over Service");
+		$str_obsess_svc_disable = _("Disable Obsess Over Service");
 		
 		/*
 		 * if user is admin, allActions is true, 
@@ -400,32 +403,41 @@
 		/*
 		 * Tips translations
 		 */
-		$tpl->assign("shortcut", _("Shortcuts"));
-		$tpl->assign("Tips1", _("Configure service"));
-		$tpl->assign("Tips3", _("View graphs of host"));
-		$tpl->assign("Tips4", _("View report of host"));
-		$tpl->assign("Tips5", _("View report of service"));
-		$tpl->assign("Tips6", _("View host status page"));
-		$tpl->assign("Tips7", _("View status of all services on host"));
-		$tpl->assign("Tips8", _("View logs of host"));
-		$tpl->assign("Tips9", _("View logs of service"));
+		$tpl->assign("host_shortcut", _("Host Shortcuts"));
+		$tpl->assign("serv_shortcut", _("Service Shortcuts"));
+		$tpl->assign("lnk_host_config", _("Configure host"));
+		$tpl->assign("lnk_serv_config", _("Configure service"));
+		$tpl->assign("lnk_host_graphs", _("View graphs for host"));
+		$tpl->assign("lnk_host_reports", _("View report for host"));
+		$tpl->assign("lnk_serv_reports", _("View report for service"));
+		$tpl->assign("lnk_host_status", _("View host status page"));
+		$tpl->assign("lnk_serv_status", _("View status of all services on host"));
+		$tpl->assign("lnk_host_logs", _("View logs for host"));
+		$tpl->assign("lnk_serv_logs", _("View logs for service"));
 
 		/*
 		 * Ext informations
 		 */
+		$notesurl = getMyServiceExtendedInfoField($service_id, "esi_notes_url");
+		$notesurl = $hostObj->replaceMacroInString($host_id, $notesurl);
+		$notesurl =  $svcObj->replaceMacroInString($service_id, $notesurl);
+		$actionurl = getMyServiceExtendedInfoField($service_id, "esi_action_url");
+		$actionurl = $hostObj->replaceMacroInString($host_id, $actionurl);
+		$actionurl =  $svcObj->replaceMacroInString($service_id, $actionurl);
+		
 		$tpl->assign("sv_ext_notes", getMyServiceExtendedInfoField($service_id, "esi_notes"));
-		$tpl->assign("sv_ext_notes_url", getMyServiceExtendedInfoField($service_id, "esi_notes_url"));
+		$tpl->assign("sv_ext_notes_url", $notesurl);
 		$tpl->assign("sv_ext_action_url_lang", _("Action URL"));
-		$tpl->assign("sv_ext_action_url", getMyServiceExtendedInfoField($service_id, "esi_action_url"));
+		$tpl->assign("sv_ext_action_url", $actionurl);
 		$tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
 		$tpl->assign("options", $optionsURL);
 		$tpl->assign("index_data", $index_data);
 		$tpl->assign("options2", $optionsURL2);
 		$tpl->display("serviceDetails.ihtml");
 		$host_name = str_replace("/", "#S#", $host_name);
-        $host_name = str_replace("\\", "#BS#", $host_name);
-        $svc_description = str_replace("/", "#S#", $svc_description);
-        $svc_description = str_replace("\\", "#BS#", $svc_description);
+		$host_name = str_replace("\\", "#BS#", $host_name);
+		$svc_description = str_replace("/", "#S#", $svc_description);
+		$svc_description = str_replace("\\", "#BS#", $svc_description);
 	}
 ?>
 
@@ -438,50 +450,62 @@
 	var svc_id = '<?php echo $svcObj->getServiceId($svc_description);?>';
 	var labels = new Array();
 	
-	labels['service_checks'] = new Array();	
-	labels['service_checks'][0] = "<?php echo $str_check_svc_enable;?>";
-	labels['service_checks'][1] = "<?php echo $str_check_svc_disable;?>";
-	labels['service_checks'][2] = "<?php echo $img_en[0];?>";
-	labels['service_checks'][3] = "<?php echo $img_en[1];?>";
+	labels['service_checks'] = new Array(	
+	    "<?php echo $str_check_svc_enable;?>",
+	    "<?php echo $str_check_svc_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"
+	);
 	
-	labels['service_notifications'] = new Array();	
-	labels['service_notifications'][0] = "<?php echo $str_notif_svc_enable;?>";
-	labels['service_notifications'][1] = "<?php echo $str_notif_svc_disable;?>";
-	labels['service_notifications'][2] = "<?php echo $img_en[0];?>";
-	labels['service_notifications'][3] = "<?php echo $img_en[1];?>";
+	labels['service_notifications'] = new Array(	
+	    "<?php echo $str_notif_svc_enable;?>",
+	    "<?php echo $str_notif_svc_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"
+	);
 	
-	labels['service_event_handler'] = new Array();	
-	labels['service_event_handler'][0] = "<?php echo $str_handler_svc_enable;?>";
-	labels['service_event_handler'][1] = "<?php echo $str_handler_svc_disable;?>";
-	labels['service_event_handler'][2] = "<?php echo $img_en[0];?>";
-	labels['service_event_handler'][3] = "<?php echo $img_en[1];?>";
+	labels['service_event_handler'] = new Array(	
+	    "<?php echo $str_handler_svc_enable;?>",
+	    "<?php echo $str_handler_svc_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"
+	);
 	
-	labels['service_flap_detection'] = new Array();	
-	labels['service_flap_detection'][0] = "<?php echo $str_flap_svc_enable;?>";
-	labels['service_flap_detection'][1] = "<?php echo $str_flap_svc_disable;?>";
-	labels['service_flap_detection'][2] = "<?php echo $img_en[0];?>";
-	labels['service_flap_detection'][3] = "<?php echo $img_en[1];?>";		
+	labels['service_flap_detection'] = new Array(	
+	    "<?php echo $str_flap_svc_enable;?>",
+	    "<?php echo $str_flap_svc_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"
+	);
 	
-	labels['service_passive_checks'] = new Array();	
-	labels['service_passive_checks'][0] = "<?php echo $str_passive_svc_enable;?>";
-	labels['service_passive_checks'][1] = "<?php echo $str_passive_svc_disable;?>";
-	labels['service_passive_checks'][2] = "<?php echo $img_en[0];?>";
-	labels['service_passive_checks'][3] = "<?php echo $img_en[1];?>";
+	labels['service_passive_checks'] = new Array(	
+	    "<?php echo $str_passive_svc_enable;?>",
+	    "<?php echo $str_passive_svc_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"
+	);
+	
+	labels['service_obsess'] = new Array(	
+	    "<?php echo $str_obsess_svc_enable;?>",
+	    "<?php echo $str_obsess_svc_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"
+	);
 	
 	function send_command(cmd, actiontype) {
 		if (!confirm(glb_confirm)) {
 			return 0;
 		}
 		if (window.XMLHttpRequest) { 
-	        xhr_cmd = new XMLHttpRequest();
-	    }
-	    else if (window.ActiveXObject) 
-	    {
-	        xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
-	    }
-	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
+		    xhr_cmd = new XMLHttpRequest();
+		}
+		else if (window.ActiveXObject) 
+		{
+		    xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
 	   	xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&service_id=" + svc_id + "&sid=" + _sid + "&actiontype=" + actiontype, true);
-    	xhr_cmd.send(null);
+    		xhr_cmd.send(null);
 	}
 	
 	function display_result(xhr_cmd, cmd) {
@@ -495,14 +519,21 @@
 		var state = items_state.item(0).firstChild.data;		
 		var actiontype = acttype.item(0).firstChild.data;
 		var executed_command = received_command.item(0).firstChild.data;
-		
+		var commands = new Array("service_checks", "service_notifications", "service_event_handler", "service_flap_detection", "service_passive_checks", "service_obsess");
+    		
 		if (state == "0") {
-			 msg_result = command_sent;
-			  if (cmd == "service_checks" || cmd == "service_notifications" || cmd == "service_event_handler" || cmd == "service_flap_detection" || cmd == "service_passive_checks") {
-			 	var tmp = atoi(actiontype) + 2;
+			msg_result = command_sent;
+			for each (var mycmd in commands)
+			    if (cmd == mycmd) {
+				var tmp = atoi(actiontype) + 2;
 				img_src= labels[executed_command][tmp];	
-			 	document.getElementById(cmd).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"+ labels[executed_command][actiontype] +"</a>";
-			  }
+				document.getElementById(cmd).innerHTML = "<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"
+				+ "<img src=" + img_src 
+				+ " alt=\"'" + labels[executed_command][actiontype] + "\"'"
+				+ " onmouseover=\"Tip('" + labels[executed_command][actiontype] + "')\""
+				+ " onmouseout='UnTip()'>"
+				+ "</img></a>";
+			    }
 		}
 		else {
 			 msg_result = command_failure;

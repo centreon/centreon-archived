@@ -1,4 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type="text/javascript" src="./lib/wz_tooltip/wz_tooltip.js"></script>
 <div>
 	<table class="ListTable">
 		<tr class='ListHeader'>
@@ -102,43 +103,115 @@
 				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src="./img/icones/16x16/clipboard.gif">&nbsp;{$options}</td>
+						<td class="ListColHeaderLeft" colspan="3"><img src="./img/icones/16x16/clipboard.gif">&nbsp;{$options}</td>
 					</tr>				
 					<tr class='list_one'>
 						<td class="ListColLeft">{$m_mon_host_checks_active}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.active_checks_enabled]};'>&nbsp;{$en_disable[$host_data.active_checks_enabled]}&nbsp;</font></td>
+						    <td class="ListColLeft" id="host_checks">
+    						{if $aclAct.host_checks || $admin == 1}	
+							<a href="#" onClick="send_command('host_checks', '{$en_inv[$host_data.active_checks_enabled]}');">
+							<img src={$img_en[$host_data.active_checks_enabled]}
+							alt="{$en_inv_text[$host_data.active_checks_enabled]} {$m_mon_check_this_host}"
+							onmouseover="Tip('{$en_inv_text[$host_data.active_checks_enabled]} {$m_mon_check_this_host}')"
+							onmouseout="UnTip()">
+							</img></a>
+						{/if}
+						    </td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$m_mon_host_checks_passive}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.passive_checks_enabled]};'>&nbsp;{$en_disable[$host_data.passive_checks_enabled]}&nbsp;</font></td>
+						<td>
+    						{if $aclAct.host_checks || $admin == 1}	
+							<a href="#" onClick="send_command('host_passive_checks', '{$en_inv[$host_data.passive_checks_enabled]}');">
+							<img src={$img_en[$host_data.passive_checks_enabled]}
+							alt="{$en_inv_text[$host_data.passive_checks_enabled]} {$m_mon_passive_check_this_host}"
+							onmouseover="Tip('{$en_inv_text[$host_data.passive_checks_enabled]} {$m_mon_passive_check_this_host}')"
+							onmouseout="UnTip()">
+							</img></a>
+						{/if}
+						</td>
 					</tr>
 						{if $host_notifications || $admin == true}
-							<tr class='list_two'>
+							<tr class='list_one'>
 								<td class="ListColLeft">{$m_mon_host_notification}</td>
 								<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.notifications_enabled]};'>&nbsp;{$en_disable[$host_data.notifications_enabled]}&nbsp;</font></td>
+								<td class="ListColLeft" id="host_notifications">
+								{if $aclAct.host_notifications || $admin == 1}	
+									<a href="#" onClick="send_command('host_notifications', '{$en_inv[$host_data.notifications_enabled]}');">
+								        <img src={$img_en[$host_data.notifications_enabled]}
+									alt="{$en_inv_text[$host_data.notifications_enabled]} {$m_mon_notify_this_host}"
+									onmouseover="Tip('{$en_inv_text[$host_data.notifications_enabled]} {$m_mon_notify_this_host}')"
+									onmouseout="UnTip()">
+									</img></a>
+								{/if}
+								</td>
 							</tr>
 						{/if}
-					<tr class='list_one'>
-						<td class="ListColLeft">{$m_mon_obsess_over_host}</td>
-						<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.obsess_over_host]};'>&nbsp;{$en_disable[$host_data.obsess_over_host]}&nbsp;</font></td>
-					</tr>
+						{if $admin == true}
+							<tr class='list_two'>
+								<td class="ListColLeft">{$m_mon_obsess_over_host}</td>
+								<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.obsess_over_host]};'>&nbsp;{$en_disable[$host_data.obsess_over_host]}&nbsp;</font></td>
+								<td class="ListColLeft" id="host_obsess">
+								{if $aclAct.obsess_over_host || $admin == 1}	
+									<a href="#" onClick="send_command('host_obsess', '{$en_inv[$host_data.obsess_over_host]}');">
+								        <img src={$img_en[$host_data.obsess_over_host]}
+									alt="{$en_inv_text[$host_data.obsess_over_host]} {$m_mon_obsess_over_host}"
+									onmouseover="Tip('{$en_inv_text[$host_data.obsess_over_host]} {$m_mon_obsess_over_host}')"
+									onmouseout="UnTip()">
+									</img></a>
+								{/if}
+								</td>
+						    </tr>
+						{/if}
 						{if $host_event_handler || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft">{$m_mon_event_handler}</td>
 								<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.event_handler_enabled]};'>&nbsp;{$en_disable[$host_data.event_handler_enabled]}&nbsp;</font></td>
+								<td class="ListColLeft" id="host_event_handler">
+								{if $aclAct.host_event_handler || $admin == 1}	
+									<a href="#" onClick="send_command('host_event_handler', '{$en_inv[$host_data.event_handler_enabled]}');">
+									<img src={$img_en[$host_data.event_handler_enabled]}
+									alt="{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}"
+									onmouseover="Tip('{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}')"
+									onmouseout="UnTip()">
+									</img></a>
+								{/if}
+								</td>
 							</tr>
 						{/if}
 						{if $host_flap_detection || $admin == true}
-							<tr class='list_two'>
+						    <tr class='list_two'>
 								<td class="ListColLeft">{$m_mon_flap_detection}</td>
 								<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.flap_detection_enabled]};'>&nbsp;{$en_disable[$host_data.flap_detection_enabled]}&nbsp;</font></td>
-							</tr>
+							    <td class="ListColLeft" id="host_flap_detection">
+							{if $aclAct.host_flap_detection || $admin == 1}
+								<a href="#" onClick="send_command('host_flap_detection', '{$en_inv[$host_data.flap_detection_enabled]}');">
+								<img src={$img_en[$host_data.flap_detection_enabled]}
+								alt="{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}"
+								onmouseover="Tip('{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}')"
+								onmouseout="UnTip()">
+								</img></a>
+							{/if}	
+							    </td>
+						    </tr>
 						{/if}
 						{if $host_data.current_state != UP}
 							{if $host_acknowledgement || $admin == true}
 								<tr class='list_one'>
 									<td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
-									<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.problem_has_been_acknowledged]};'>&nbsp;{$en_disable[$host_data.problem_has_been_acknowledged]}&nbsp;</font></td>
+									<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.problem_has_been_acknowledged]};'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$en[$host_data.problem_has_been_acknowledged]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+									<td class="ListColLeft">
+								    {if $aclAct.host_acknowledgement || $admin == 1}			
+									<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
+									<img src={$img_en[$host_data.problem_has_been_acknowledged]}
+									alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}"
+									onmouseover="Tip('{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}')"
+									onmouseout="UnTip()">
+									</img></a>
+								    {/if}
+									</td>
 								</tr>
 							{/if}
 						{/if}
@@ -149,22 +222,44 @@
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
+						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/server_network.gif">&nbsp;{$shortcut}</td>
+					</tr>
+					<tr class='list_one'>
+						<td>
+						    {if $lcaTopo.6 || $admin == 1}
+							<a href='./main.php?p=6&host_id={$h.host_id}&o=c'>
+							<img src="./img/icones/16x16/wrench.gif" alt="{$lnk_host_config}" onmouseover="Tip('{$lnk_host_config}')" onmouseout="UnTip()">
+							</a>
+						    {/if}
+						    {if $lcaTopo.20201 || $admin == 1}
+						        <a href='./main.php?p=20201&o=svc&search={$h.host_name}&search_host=1&search_service=0'>
+							<img src="./img/icones/16x16/svc_lights16.png" alt='{$lnk_all_services}' onmouseover="Tip('{$lnk_all_services}')" onmouseout="UnTip()">
+							</a>
+						    {/if}
+
+						    {if $lcaTopo.20301 || $admin == 1}
+							<a href='./main.php?p=20301&mode=0&id=HH_{$h.host_id}_01'>
+							<img src="./img/icones/16x16/Logfile16.gif" alt="{$lnk_host_logs}" onmouseover="Tip('{$lnk_host_logs}')" onmouseout="UnTip()">
+							</a>
+						    {/if}
+						    {if $lcaTopo.307 || $admin == 1}
+							<a href='./main.php?p=307&host={$h.host_id}'>
+							<img src="./img/icones/16x16/reporting.gif" alt="{$lnk_host_reports}" onmouseover="Tip('{$lnk_host_reports}')" onmouseout="UnTip()">
+							</a>
+						    {/if}
+						    {if $lcaTopo.4 || $admin == 1}
+							<a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>
+							<img src="./img/icones/16x16/line-chart.gif" alt="{$lnk_host_graphs}" onmouseover="Tip('{$lnk_host_graphs}')" onmouseout="UnTip()">
+							</a>
+						    {/if}
+						</td>
+					</tr>
+				</table>
+				<br />
+				<table class="ListTable">
+					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/gear.gif">&nbsp;{$hosts_command}</td>
 					</tr>
-					{if $aclAct.host_checks || $admin == 1}	
-						<tr class='list_one'>
-							<td class="ListColLeft" id="host_checks">
-								{$img_en[$host_data.active_checks_enabled]}&nbsp;<a href="#" onClick="send_command('host_checks', '{$en_inv[$host_data.active_checks_enabled]}');">{$en_inv_text[$host_data.active_checks_enabled]} {$m_mon_check_this_host}</a>
-							</td>
-						</tr>
-					{/if}
-					{if $aclAct.host_notifications || $admin == 1}	
-						<tr class='list_two'>
-							<td class="ListColLeft" id="host_notifications">
-								{$img_en[$host_data.notifications_enabled]}&nbsp;<a href="#" onClick="send_command('host_notifications', '{$en_inv[$host_data.notifications_enabled]}');">{$en_inv_text[$host_data.notifications_enabled]} {$m_mon_notify_this_host}</a>
-							</td>
-						</tr>
-					{/if}
 					{if $aclAct.host_schedule_downtime || $admin == 1}	
 						<tr class='list_one'>
 							<td class="ListColLeft" id="host_downtime">
@@ -221,29 +316,6 @@
 							</td>
 						</tr>
 					{/if}
-					{if $aclAct.host_event_handler || $admin == 1}					
-						<tr class='list_one'>
-							<td class="ListColLeft" id="host_event_handler">
-								{$img_en[$host_data.event_handler_enabled]}&nbsp;<a href="#" onClick="send_command('host_event_handler', '{$en_inv[$host_data.event_handler_enabled]}');">{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}</a>
-							</td>
-						</tr>
-					{/if}
-					{if $aclAct.host_flap_detection || $admin == 1}
-						<tr class='list_two'>
-							<td class="ListColLeft" id="host_flap_detection">
-								{$img_en[$host_data.flap_detection_enabled]}&nbsp;<a href="#" onClick="send_command('host_flap_detection', '{$en_inv[$host_data.flap_detection_enabled]}');">{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}</a>
-							</td>
-						</tr>
-					{/if}	
-					{if $host_data.current_state != UP}
-						{if $aclAct.host_acknowledgement || $admin == 1}			
-							<tr class='list_one'>
-								<td class="ListColLeft">
-									{$img_en[$host_data.problem_has_been_acknowledged]}&nbsp;<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}</a>
-								</td>
-							</tr>
-						{/if}
-					{/if}
 				</table>
 				<br />
 				<table class="ListTable">
@@ -268,47 +340,16 @@
 					{/if}
 				{/if}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href="#ping" name="ping" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">&#9679;&nbsp;{$m_mon_tools_ping} {$h.host_name}</a></td>
+						<td class="ListColLeft">&#9679;&nbsp;<a href="#ping" name="ping" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_ping} {$h.host_name}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href="#tracert" name="tracert" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">&#9679;&nbsp;{$m_mon_tools_tracert} {$h.host_name}</a></td>
+						<td class="ListColLeft">&#9679;&nbsp;<a href="#tracert" name="tracert" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_tracert} {$h.host_name}</a></td>
 					</tr>
 					{if $h_ext_action_url}
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href="{$h_ext_action_url}" target="_blank">{$h_ext_action_url_lang}</a></td>
 					</tr>
 					{/if}
-				</table>
-				<br />
-				<table class="ListTable">
-					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/shortcut.gif">&nbsp;{$shortcut}</td>
-					</tr>
-				{if $lcaTopo.6 || $admin == 1}
-					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./main.php?p=6&host_id={$h.host_id}&o=c'>&#9679;&nbsp;{$Tips3} {$h.host_name}</a></td>
-					</tr>
-				{/if}
-				{if $lcaTopo.20201 || $admin == 1}
-					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&search={$h.host_name}&search_host=1&search_service=0'>&#9679;&nbsp;{$Tips1}</a></td>
-					</tr>
-				{/if}
-				{if $lcaTopo.20301 || $admin == 1}
-					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./main.php?p=20301&mode=0&id=HH_{$h.host_id}_01'>&#9679;&nbsp;{$Tips5}</a></td>
-					</tr>
-				{/if}
-				{if $lcaTopo.4 || $admin == 1}
-					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>&#9679;&nbsp;{$Tips2}</a></td>
-					</tr>
-				{/if}
-				{if $lcaTopo.307 || $admin == 1}
-					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./main.php?p=307&host={$h.host_id}'>&#9679;&nbsp;{$Tips4}</a></td>
-					</tr>
-				{/if}
 				</table>
 				<br />
 				<table class="ListTable">

@@ -135,6 +135,9 @@
 		
 		$this->actions["service_submit_result"] = "";
 		
+		$this->actions["service_obsess"][0] = "START_OBSESSING_OVER_SVC";
+		$this->actions["service_obsess"][1] = "STOP_OBSESSING_OVER_SVC";
+		
 		# Hosts Actions
 		$this->actions["host_checks"][0] = "ENABLE_HOST_CHECK";
 		$this->actions["host_checks"][1] = "DISABLE_HOST_CHECK";
@@ -165,6 +168,9 @@
 		
 		$this->actions["host_notifications_for_services"][0] = "ENABLE_HOST_SVC_NOTIFICATIONS";
 		$this->actions["host_notifications_for_services"][1] = "DISABLE_HOST_SVC_NOTIFICATIONS";
+		
+		$this->actions["host_obsess"][0] = "START_OBSESSING_OVER_HOST";
+		$this->actions["host_obsess"][1] = "STOP_OBSESSING_OVER_HOST";
 		
 		# Global Nagios External Commands
 		$this->actions["global_shutdown"][0] = "SHUTDOWN_PROGRAM";

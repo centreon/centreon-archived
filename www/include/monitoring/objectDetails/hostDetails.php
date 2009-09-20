@@ -201,7 +201,7 @@
 		}
 		unset($data);
 
-		$en_acknowledge_text 	= array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this host"));
+		$en_acknowledge_text 	= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Host Problem"));
 		$en_acknowledge 		= array("1" => "0", "0" => "1");
 
 		$en_inv 				= array("1" => "1", "0" => "0");
@@ -210,7 +210,7 @@
 		$color_onoff_inv 		= array("0" => "#00ff00", "1" => "#ff0000");
 		$en_disable 			= array("1" => _("Enabled"), "0" => _("Disabled"));
 
-		$img_en = array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
+		$img_en = array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
 
 		$host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
 		$host_status[$host_name]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"], $oreon->user->getMyGMT());
@@ -261,13 +261,6 @@
 		$tpl->assign("m_mon_percent_state_change", _("Percent State Change"));
 		$tpl->assign("m_mon_downtime_sc", _("In Scheduled Downtime?"));
 		$tpl->assign("m_mon_last_update", _("Last Update"));
-		$tpl->assign("m_mon_host_checks_active", _("Active Checks"));
-		$tpl->assign("m_mon_host_checks_passive", _("Passive Checks"));
-		$tpl->assign("m_mon_host_notification", _("Host Notifications"));
-		$tpl->assign("m_mon_obsess_over_host", _("Obsess Over Host"));
-		$tpl->assign("m_mon_event_handler", _("Event Handler"));
-		$tpl->assign("m_mon_flap_detection", _("Flap Detection"));
-		$tpl->assign("m_mon_services_en_acknowledge", _("Acknowledge Enabled :"));
 		$tpl->assign("m_mon_tools", _("Tools"));		
 		$tpl->assign("cmt_host_name", _("Host Name"));
 		$tpl->assign("cmt_entry_time", _("Entry Time"));
@@ -276,46 +269,58 @@
 		$tpl->assign("cmt_persistent", _("Persistent"));
 		$tpl->assign("cmt_actions", _("Actions"));
 		$tpl->assign("options", _("Options"));
-		$tpl->assign("m_mon_view_identity_file", _("View identity file"));
-		$tpl->assign("m_mon_all_services", _("View all services of "));
-		$tpl->assign("m_mon_all_graphs", _("View all graphs of "));
 		$tpl->assign("m_mon_tools_ping", _("Ping"));
 		$tpl->assign("m_mon_tools_tracert", _("Tracert"));
 		$tpl->assign("hosts_command", _("Host Commands"));
-		$tpl->assign("m_mon_check_this_host", _("Checks for this host"));
-		$tpl->assign("m_mon_notify_this_host", _("Notifications for this host"));
 		$tpl->assign("m_mon_SCH_downtime", _("Schedule downtime for this host"));
 		$tpl->assign("m_mon_add_comment", _("Add Comment for this host"));
-		$tpl->assign("m_mon_disable_not_all_services", _("Disable notifications for all services on this host"));
-		$tpl->assign("m_mon_enable_not_all_services", _("Enable notifications for all services on this host"));
+		$tpl->assign("m_mon_disable_not_all_services", _("Disable all service notifications on this host"));
+		$tpl->assign("m_mon_enable_not_all_services", _("Enable all service notifications on this host"));
 		$tpl->assign("m_mon_SCH_immediate_check", _("Schedule an immediate check of all services on this host"));
 		$tpl->assign("m_mon_SCH_immediate_check_f", _("Schedule an immediate check of all services on this host (forced)"));
-		$tpl->assign("m_mon_diable_check_all_svc", _("Disable checks of all services on this host"));
-		$tpl->assign("m_mon_enable_check_all_svc", _("Enable checks of all services on this host"));
-		$tpl->assign("m_mon_ed_event_handler", _("Event handler for this host"));
-		$tpl->assign("m_mon_ed_flapping_detect", _("Flap detection for this host"));
-		$tpl->assign("m_mon_acknowledge", _("Acknowledge this host"));
+		$tpl->assign("m_mon_diable_check_all_svc", _("Disable all service checks on this host"));
+		$tpl->assign("m_mon_enable_check_all_svc", _("Enable all service checks on this host"));
+		$tpl->assign("m_mon_acknowledge", _("Acknowledge problem"));
 		$tpl->assign("seconds", _("seconds"));
 		$tpl->assign("links", _("Links"));
 
-		$str_check_host_enable = _("Enable Checks for this host");
-		$str_check_host_disable = _("Disable Checks for this host");
-		$str_notif_host_enable = _("Enable Notifications for this host");
-		$str_notif_host_disable = _("Disable Notifications for this host");		
-		$str_handler_host_enable = _("Enable Event handler for this host");
-		$str_handler_host_disable = _("Disable Event handler for this host");
-		$str_flap_host_enable = _("Enable Flap detection for this host");
-		$str_flap_host_disable = _("Disable Flap detection for this host");
+		$tpl->assign("m_mon_obsess_over_host", _("Obsess Over Host"));
+		$tpl->assign("m_mon_check_this_host", _("Active Checks"));
+		$tpl->assign("m_mon_host_checks_active", _("Active Checks"));
+		$tpl->assign("m_mon_host_checks_passive", _("Passive Checks"));
+		$tpl->assign("m_mon_passive_check_this_host", _("Passive Checks"));
+		$tpl->assign("m_mon_host_notification", _("Notifications"));
+		$tpl->assign("m_mon_notify_this_host", _("Notifications"));
+		$tpl->assign("m_mon_event_handler", _("Event Handler"));
+		$tpl->assign("m_mon_ed_event_handler", _("Event Handler"));
+		$tpl->assign("m_mon_ed_flapping_detect", _("Flap Detection"));
+		$tpl->assign("m_mon_flap_detection", _("Flap Detection"));
+		$tpl->assign("m_mon_services_en_acknowledge", _("Acknowledged"));
+		/*
+		 * Strings are used by javascript command handler
+		 */
+		$str_check_host_enable = _("Enable Active Checks");
+		$str_check_host_disable = _("Disable Active Checks");
+		$str_passive_check_host_enable = _("Enable Passive Checks");
+		$str_passive_check_host_disable = _("Disable Passive Checks");
+		$str_notif_host_enable = _("Enable Host Notifications");
+		$str_notif_host_disable = _("Disable Host Notifications");
+		$str_handler_host_enable = _("Enable Event Handler");
+		$str_handler_host_disable = _("Disable Event Handler");
+		$str_flap_host_enable = _("Enable Flap Detection");
+		$str_flap_host_disable = _("Disable Flap Detection");
+		$str_obsess_host_enable = _("Enable Obsess Over Host");
+		$str_obsess_host_disable = _("Disable Obsess Over Host");
 
 		/*
 		 * Add Tips
 		 */
-		$tpl->assign("shortcut", _("Shortcuts"));
-		$tpl->assign("Tips1", _("View all services of this host"));
-		$tpl->assign("Tips2", _("View graphs of this host"));
-		$tpl->assign("Tips3", _("Manage"));
-		$tpl->assign("Tips4", _("View report of this host"));
-		$tpl->assign("Tips5", _("View logs of this host"));
+		$tpl->assign("shortcut", _("Host Shortcuts"));
+		$tpl->assign("lnk_all_services", sprintf(_("View status of all services on host %s"), $host_name));
+		$tpl->assign("lnk_host_graphs", sprintf(_("View graphs for host %s"), $host_name));
+		$tpl->assign("lnk_host_config", sprintf(_("Configure host %s"), $host_name));
+		$tpl->assign("lnk_host_reports", sprintf(_("View report for host %s"), $host_name));
+		$tpl->assign("lnk_host_logs", sprintf(_("View logs for host %s"), $host_name));
 
 		/*
 		 * if user is admin, allActions is true, 
@@ -366,25 +371,23 @@
 		/*
 		 * Ext informations
 		 */
-		$tpl->assign("h_ext_notes", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes"));
-		$tpl->assign("h_ext_notes_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes_url"));
+		$notesurl = getMyHostExtendedInfoField($host_id, "ehi_notes_url");
+		$notesurl = $hostObj->replaceMacroInString($host_id, $notesurl);
+		$tpl->assign("h_ext_notes", getMyHostExtendedInfoField($host_id, "ehi_notes"));
+		$tpl->assign("h_ext_notes_url", $notesurl);
 		$tpl->assign("h_ext_action_url_lang", _("Action URL"));
 
-		/*
-		* This part was added by Kay Roesler to fix the $HOSTMANE$ Thingy
-		*/
-
-		$action_url = getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url");
-		$new_action_url = str_replace("\$HOSTNAME$", $host_name, $action_url);
-		$tpl->assign("h_ext_action_url", $new_action_url);
+		$actionurl = getMyHostExtendedInfoField($host_id, "ehi_action_url");
+		$actionurl = $hostObj->replaceMacroInString($host_id, $actionurl);
+		$tpl->assign("h_ext_action_url", $actionurl);
 		$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
 		$tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
 
 		$tpl->display("hostDetails.ihtml");
 		$host_name = str_replace("/", "#S#", $host_name);
-        $host_name = str_replace("\\", "#BS#", $host_name);
-        $svc_description = str_replace("/", "#S#", $svc_description);
-        $svc_description = str_replace("\\", "#BS#", $svc_description);
+		$host_name = str_replace("\\", "#BS#", $host_name);
+		$svc_description = str_replace("/", "#S#", $svc_description);
+		$svc_description = str_replace("\\", "#BS#", $svc_description);
 	}
 ?>
 <script type="text/javascript">	
@@ -395,44 +398,55 @@
 	var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
 	var labels = new Array();
 	
-	labels['host_checks'] = new Array();	
-	labels['host_checks'][0] = "<?php echo $str_check_host_enable;?>";
-	labels['host_checks'][1] = "<?php echo $str_check_host_disable;?>";
-	labels['host_checks'][2] = "<?php echo $img_en[0];?>";
-	labels['host_checks'][3] = "<?php echo $img_en[1];?>";
+	labels['host_checks'] = new Array(
+	    "<?php echo $str_check_host_enable;?>",
+	    "<?php echo $str_check_host_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"
+	);
 	
-	labels['host_notifications'] = new Array();	
-	labels['host_notifications'][0] = "<?php echo $str_notif_host_enable;?>";
-	labels['host_notifications'][1] = "<?php echo $str_notif_host_disable;?>";
-	labels['host_notifications'][2] = "<?php echo $img_en[0];?>";
-	labels['host_notifications'][3] = "<?php echo $img_en[1];?>";
+	labels['host_notifications'] = new Array(
+	    "<?php echo $str_notif_host_enable;?>",
+	    "<?php echo $str_notif_host_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"	
+	);
 	
-	labels['host_event_handler'] = new Array();	
-	labels['host_event_handler'][0] = "<?php echo $str_handler_host_enable;?>";
-	labels['host_event_handler'][1] = "<?php echo $str_handler_host_disable;?>";
-	labels['host_event_handler'][2] = "<?php echo $img_en[0];?>";
-	labels['host_event_handler'][3] = "<?php echo $img_en[1];?>";
+	labels['host_event_handler'] = new Array(
+	    "<?php echo $str_handler_host_enable;?>",
+	    "<?php echo $str_handler_host_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"
+	);
 	
-	labels['host_flap_detection'] = new Array();	
-	labels['host_flap_detection'][0] = "<?php echo $str_flap_host_enable;?>";
-	labels['host_flap_detection'][1] = "<?php echo $str_flap_host_disable;?>";
-	labels['host_flap_detection'][2] = "<?php echo $img_en[0];?>";
-	labels['host_flap_detection'][3] = "<?php echo $img_en[1];?>";
+	labels['host_flap_detection'] = new Array(
+	    "<?php echo $str_flap_host_enable;?>",
+	    "<?php echo $str_flap_host_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"
+	);
+	
+	labels['host_obsess'] = new Array(
+	    "<?php echo $str_obsess_host_enable;?>",
+	    "<?php echo $str_obsess_host_disable;?>",
+	    "<?php echo $img_en[0];?>",
+	    "<?php echo $img_en[1];?>"	
+	);
 	
 	function send_command(cmd, actiontype) {		
 		if (!confirm(glb_confirm)) {
 			return 0;
 		}
 		if (window.XMLHttpRequest) { 
-	        xhr_cmd = new XMLHttpRequest();
-	    }
-	    else if (window.ActiveXObject) 
-	    {
-	        xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
-	    }
+		    xhr_cmd = new XMLHttpRequest();
+		}
+		else if (window.ActiveXObject) 
+		{
+		    xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
+		}
 	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
-	   	xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&sid=" + _sid + "&actiontype=" + actiontype, true);
-    	xhr_cmd.send(null);
+	    xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&sid=" + _sid + "&actiontype=" + actiontype, true);
+    	    xhr_cmd.send(null);
 	}
 	
 	function display_result(xhr_cmd, cmd) {
@@ -441,19 +455,26 @@
 		var msg_result;		
 		var docXML= xhr_cmd.responseXML;
 		var items_state = docXML.getElementsByTagName("result");
-		var received_command = docXML.getElementsByTagName("cmd");
 		var acttype = docXML.getElementsByTagName("actiontype");
-		var state = items_state.item(0).firstChild.data;				
-		var executed_command = received_command.item(0).firstChild.data;
 		var actiontype = acttype.item(0).firstChild.data;
-				
+		var received_command = docXML.getElementsByTagName("cmd");
+		var executed_command = received_command.item(0).firstChild.data;
+		var commands = new Array("host_checks", "host_notifications", "host_event_handler", "host_flap_detection", "host_obsess");
+		
+		var state = items_state.item(0).firstChild.data;				
 		if (state == "0") {
-			 msg_result = command_sent;			 
-			 if (cmd == "host_checks" || cmd == "host_notifications" || cmd == "host_event_handler" || cmd == "host_flap_detection") {
+			 msg_result = command_sent; 
+			 for each (var mycmd in commands) 
+			    if (cmd == mycmd) {
 				var tmp = atoi(actiontype) + 2;
 				img_src= labels[executed_command][tmp];		
-			 	document.getElementById(cmd).innerHTML = img_src + "&nbsp;<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"+ labels[executed_command][actiontype] +"</a>";
-			 }
+			 	document.getElementById(cmd).innerHTML = "<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"
+				+ "<img src=" + img_src 
+				+ " alt=\"'" + labels[executed_command][actiontype] + "\"'"
+				+ " onmouseover=\"Tip('" + labels[executed_command][actiontype] + "')\""
+				+ " onmouseout='UnTip()'>"
+				+ "</img></a>";
+			    }
 		}
 		else {
 			 msg_result = command_failure;
