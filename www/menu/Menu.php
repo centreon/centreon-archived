@@ -96,7 +96,7 @@
 	$tpl->assign("Up", _("Up"));
 	$tpl->assign("Down", _("Down"));
 	$tpl->assign("Unreachable", _("Unreachable"));
-	$tpl->assign("Hosts_States", _("Hosts States"));
+	$tpl->assign("Hosts_States", _("Host States"));
 	$tpl->assign("Services_States", _("Service States"));
 	$tpl->assign("Logout", _("Logout"));
 	$tpl->assign("Help", _("Help"));
