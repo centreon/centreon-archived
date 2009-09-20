@@ -653,8 +653,8 @@
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);		
 		$tpl->assign('sort1', _("Files"));		
-		$tpl->assign('sort2', _("Checks Options"));		
-		$tpl->assign('sort3', _("Logs Options"));
+		$tpl->assign('sort2', _("Check Options"));		
+		$tpl->assign('sort3', _("Log Options"));
 		$tpl->assign('sort4', _("Data"));		
 		$tpl->assign('sort5', _("Tuning"));		
 		$tpl->assign('sort6', _("Admin"));
