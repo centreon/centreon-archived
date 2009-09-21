@@ -467,7 +467,7 @@
 		
 		$rq = "INSERT INTO host " .
 			"(host_template_model_htm_id, command_command_id, command_command_id_arg1, timeperiod_tp_id, timeperiod_tp_id2, command_command_id2, command_command_id_arg2," .
-			"host_name, host_alias, host_address, host_max_check_attempts, host_check_interval, host_active_checks_enabled, " .
+			"host_name, host_alias, host_address, host_max_check_attempts, host_check_interval, host_retry_check_interval, host_active_checks_enabled, " .
 			"host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host, host_check_freshness, host_freshness_threshold, " .
 			"host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
 			"host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay, " .
@@ -486,6 +486,7 @@
 			isset($ret["host_address"]) && $ret["host_address"] != NULL ? $rq .= "'".htmlentities($ret["host_address"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 			isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != NULL ? $rq .= "'".$ret["host_max_check_attempts"]."', " : $rq .= "NULL, ";
 			isset($ret["host_check_interval"]) && $ret["host_check_interval"] != NULL ? $rq .= "'".$ret["host_check_interval"]."', ": $rq .= "NULL, ";
+			isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"] != NULL ? $rq .= "'".$ret["host_retry_check_interval"]."', ": $rq .= "NULL, ";
 			isset($ret["host_active_checks_enabled"]["host_active_checks_enabled"]) && $ret["host_active_checks_enabled"]["host_active_checks_enabled"] != 2 ? $rq .= "'".$ret["host_active_checks_enabled"]["host_active_checks_enabled"]."', ": $rq .= "'2', ";
 			isset($ret["host_passive_checks_enabled"]["host_passive_checks_enabled"]) && $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] != 2 ? $rq .= "'".$ret["host_passive_checks_enabled"]["host_passive_checks_enabled"]."', ": $rq .= "'2', ";
 			isset($ret["host_checks_enabled"]["host_checks_enabled"]) && $ret["host_checks_enabled"]["host_checks_enabled"] != 2 ? $rq .= "'".$ret["host_checks_enabled"]["host_checks_enabled"]."', ": $rq .= "'2', ";
@@ -600,6 +601,8 @@
 			$fields["host_max_check_attempts"] = $ret["host_max_check_attempts"];
 		if (isset($ret["host_check_interval"]))
 			$fields["host_check_interval"] = $ret["host_check_interval"];
+		if (isset($ret["host_retry_check_interval"]))
+			$fields["host_retry_check_interval"] = $ret["host_retry_check_interval"];
 		if (isset($ret["host_active_checks_enabled"]))
 			$fields["host_active_checks_enabled"] = $ret["host_active_checks_enabled"]["host_active_checks_enabled"];
 		if (isset($ret["host_passive_checks_enabled"]))
@@ -896,6 +899,8 @@
 		isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != NULL ? $rq .= "'".$ret["host_max_check_attempts"]."', " : $rq .= "NULL, ";
 		$rq .= "host_check_interval = ";
 		isset($ret["host_check_interval"]) && $ret["host_check_interval"]!= NULL ? $rq .= "'".$ret["host_check_interval"]."', ": $rq .= "NULL, ";
+		$rq .= "host_retry_check_interval = ";
+		isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"]!= NULL ? $rq .= "'".$ret["host_retry_check_interval"]."', ": $rq .= "NULL, ";
 		$rq .= "host_active_checks_enabled = ";
 		isset($ret["host_active_checks_enabled"]["host_active_checks_enabled"]) && $ret["host_active_checks_enabled"]["host_active_checks_enabled"] != 2 ? $rq .= "'".$ret["host_active_checks_enabled"]["host_active_checks_enabled"]."', ": $rq .= "'2', ";
 		$rq .= "host_passive_checks_enabled = ";
@@ -1040,6 +1045,7 @@
 		if (isset($ret["host_alias"])) $fields["host_alias"] = htmlentities($ret["host_alias"], ENT_QUOTES);
 		if (isset($ret["host_address"])) $fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES);
 		if (isset($ret["host_max_check_attempts"])) $fields["host_max_check_attempts"] = $ret["host_max_check_attempts"];
+		if (isset($ret["host_retry_check_interval"])) $fields["host_retry_check_interval"] = $ret["host_retry_check_interval"];
 		if (isset($ret["host_check_interval"])) $fields["host_check_interval"] = $ret["host_check_interval"];
 		if (isset($ret["host_active_checks_enabled"])) $fields["host_active_checks_enabled"] = $ret["host_active_checks_enabled"]["host_active_checks_enabled"];
 		if (isset($ret["host_passive_checks_enabled"])) $fields["host_passive_checks_enabled"] = $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"];
@@ -1176,6 +1182,10 @@
 		if (isset($ret["host_check_interval"]) && $ret["host_check_interval"]!= NULL) {
 			$rq .= "host_check_interval = '".$ret["host_check_interval"]."', ";
 			$fields["host_check_interval"] = $ret["host_check_interval"];
+		}
+		if (isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"]!= NULL) {
+			$rq .= "host_retry_check_interval = '".$ret["host_retry_check_interval"]."', ";
+			$fields["host_retry_check_interval"] = $ret["host_retry_check_interval"];
 		}
 		if (isset($ret["host_active_checks_enabled"]["host_active_checks_enabled"])) {
 			$rq .= "host_active_checks_enabled = '".$ret["host_active_checks_enabled"]["host_active_checks_enabled"]."', ";

@@ -35,26 +35,7 @@
 	{if $tpl == 0 && $tzUsed}
 	<tr class="list_two"><td class="FormRowField">{$form.host_location.label}</td><td class="FormRowValue">{$form.host_location.html}</td></tr>
 	{/if}
-	{if $msg.nagios >= 2 && $msg.nagios < 3}
-	<tr class="list_one">
-		<td class="FormRowField">
-			<div style="text-decoration: underline">{$form.host_template_model_htm_id.label}</div>
-			{$form.tplText.label}
-		</td>
-		<td class="FormRowValue"> 
-			{$form.host_template_model_htm_id.html}
-			{if $o == "a" || $o == "c"}
-				&nbsp;<img src='./img/icones/16x16/server_network.gif'  style='cursor:pointer'  onClick="window.open('main.php?p=60103&host_id='+ document.Form.elements['host_template_model_htm_id'].options[document.Form.elements['host_template_model_htm_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
-				&nbsp;<img src='./img/icones/16x16/data_edit.gif'  style='cursor:pointer' onClick="window.open('main.php?p=60103&host_id='+ document.Form.elements['host_template_model_htm_id'].options[document.Form.elements['host_template_model_htm_id'].selectedIndex].value + '&o=c&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=620');">
-			{/if}			
-		</td>
-	</tr>
-	{/if}
-	
-	{if $msg.nagios >= 3}
-		{if $o == "mc"}
-			<tr class="list_two"><td class="FormRowField">{$form.mc_mod_tplp.label}</td><td class="FormRowValue">{$form.mc_mod_tplp.html}</td></tr>
-		{/if}
+
 	<tr class="list_two">
 		<td class="FormRowField">
 			<div style="text-decoration: underline">{$form.host_parallel_template.label}</div>
@@ -67,7 +48,6 @@
 			{/if}
 		</td>
 	</tr>
-	{/if}
 		
 	{if $form.dupSvTplAssocText.label}
 	<tr class="list_one">
@@ -76,13 +56,8 @@
 	</tr>
 	{/if}
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.check}</td></tr>
- 	{if $msg.nagios == 1}
-	<tr class="list_one"><td class="FormRowField">{$form.host_checks_enabled.label}</td><td class="FormRowValue">{$form.host_checks_enabled.html}</td></tr>
- 	{/if}
- 	{if $msg.nagios >= 2}
-	<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
- 	{/if}
-	<tr class="list_one">
+ 	<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
+ 	<tr class="list_one">
 		<td class="FormRowField">{$form.command_command_id.label}</td>
 		<td class="FormRowValue">
 			{$form.command_command_id.html}			
@@ -91,33 +66,23 @@
 			{/if}
 		</td>
 	</tr>
-	{if $msg.nagios >= 2}
 	<tr class="list_two"><td class="FormRowField">{$form.command_command_id_arg1.label}</td><td class="FormRowValue">{$form.command_command_id_arg1.html}
-	
 	{if $o == "a" || $o == "c"}
 	&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  onClick="set_arg('example1','command_command_id_arg1');"></a><input type="text" name="example1" disabled>
 	{/if}
 	</td></tr>
-	{/if}
 	<tr class="list_one"><td class="FormRowField">{$form.host_max_check_attempts.label}</td><td class="FormRowValue">{$form.host_max_check_attempts.html}</td></tr>
-	{if $msg.nagios >= 2}
 	<tr class="list_two"><td class="FormRowField">{$form.host_check_interval.label}</td><td class="FormRowValue">{$form.host_check_interval.html} {$time_unit}</td></tr>
-	{/if}
-	{if $msg.nagios >= 2}
-	<tr class="list_one"><td class="FormRowField">{$form.host_active_checks_enabled.label}</td><td class="FormRowValue">{$form.host_active_checks_enabled.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.host_passive_checks_enabled.label}</td><td class="FormRowValue">{$form.host_passive_checks_enabled.html}</td></tr>
- 	{/if}
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.host_retry_check_interval.label}</td><td class="FormRowValue">{$form.host_retry_check_interval.html} {$time_unit}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.host_active_checks_enabled.label}</td><td class="FormRowValue">{$form.host_active_checks_enabled.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.host_passive_checks_enabled.label}</td><td class="FormRowValue">{$form.host_passive_checks_enabled.html}</td></tr>
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_notifications_enabled.label}</td><td class="FormRowValue">{$form.host_notifications_enabled.html}</td></tr>	
- 	{if $msg.nagios >= 2}
-		{if $o == "mc"}
-			<tr class="list_two"><td class="FormRowField">{$form.mc_mod_hcg.label}</td><td class="FormRowValue">{$form.mc_mod_hcg.html}</td></tr>
-		{/if}
-		{if $msg.nagios >= 3}
-			<tr class="list_two"><td class="FormRowField">{$form.host_cs.label}</td><td class="FormRowValue">{$form.host_cs.html}</td></tr>
- 		{/if}		
-		<tr class="list_two"><td class="FormRowField">{$form.host_cgs.label}</td><td class="FormRowValue">{$form.host_cgs.html}</td></tr>
- 	{/if}
+	{if $o == "mc"}
+		<tr class="list_two"><td class="FormRowField">{$form.mc_mod_hcg.label}</td><td class="FormRowValue">{$form.mc_mod_hcg.html}</td></tr>
+	{/if}
+	<tr class="list_two"><td class="FormRowField">{$form.host_cs.label}</td><td class="FormRowValue">{$form.host_cs.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.host_cgs.label}</td><td class="FormRowValue">{$form.host_cgs.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_notification_interval.label}</td><td class="FormRowValue">{$form.host_notification_interval.html}{$time_unit}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_notifOpts.label}</td><td class="FormRowValue">{$form.host_notifOpts.html}</td></tr>	
@@ -160,14 +125,10 @@
  <table class="ListTable">
 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title3}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/import2.gif'>&nbsp;&nbsp;{$form.header.treatment}</td></tr>
- 	{if $msg.nagios >= 2}
 	<tr class="list_one"><td class="FormRowField">{$form.host_obsess_over_host.label}</td><td class="FormRowValue">{$form.host_obsess_over_host.html}</td></tr>
-	{/if}
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$Freshness_Control_options}</td></tr>	
- 	{if $msg.nagios >= 2}
 	<tr class="list_two"><td class="FormRowField">{$form.host_check_freshness.label}</td><td class="FormRowValue">{$form.host_check_freshness.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
-	{/if}
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Flapping_Options}</td></tr>		
 	<tr class="list_two"><td class="FormRowField">{$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>		
 	<tr class="list_one"><td class="FormRowField">{$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}&nbsp;%</td></tr>
@@ -178,10 +139,6 @@
 	<tr class="list_two"><td class="FormRowField">{$form.host_retain_status_information.label}</td><td class="FormRowValue">{$form.host_retain_status_information.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_retain_nonstatus_information.label}</td><td class="FormRowValue">{$form.host_retain_nonstatus_information.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.host_stalOpts.label}</td><td class="FormRowValue">{$form.host_stalOpts.html}</td></tr>
-	{if $msg.perfparse}
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_down.gif'>&nbsp;&nbsp;{$form.header.purge_policy}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.purge_policy_id.label}</td><td class="FormRowValue">{$form.purge_policy_id.html}</td></tr>
-	{/if}	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Event_Handler}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_event_handler_enabled.label}</td><td class="FormRowValue">{$form.host_event_handler_enabled.html}</td></tr>
 	<tr class="list_two">
@@ -193,25 +150,21 @@
 			{/if}
 		</td>
 	</tr>
-	{if $msg.nagios >= 2}
 	<tr class="list_one"><td class="FormRowField">{$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
 		{if $o == "a" || $o == "c"}
 		&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  onClick="set_arg('example2','command_command_id_arg2');"></a><input type="text" name="example2" disabled>
 		{/if}</td>
 	</tr>
-	{/if}
  </table>
 </div>
 <div id='tab4' class='tab'>
-<table class="ListTable">
+ <table class="ListTable">
 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title4}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.nagios}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ehi_notes_url.label}</td><td class="FormRowValue">{$form.ehi_notes_url.html}</td></tr>
- 	{if $msg.nagios >= 2}
-	<tr class="list_two"><td class="FormRowField">{$form.ehi_notes.label}</td><td class="FormRowValue">{$form.ehi_notes.html}</td></tr>
+ 	<tr class="list_two"><td class="FormRowField">{$form.ehi_notes.label}</td><td class="FormRowValue">{$form.ehi_notes.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ehi_action_url.label}</td><td class="FormRowValue">{$form.ehi_action_url.html}</td></tr>
- 	{/if}
-	<tr class="list_two"><td class="FormRowField">{$form.ehi_icon_image.label}</td><td class="FormRowValue">{$form.ehi_icon_image.html}&nbsp;&nbsp;<img id='ehi_icon_image_img' src='./img/blank.gif'></td></tr>
+ 	<tr class="list_two"><td class="FormRowField">{$form.ehi_icon_image.label}</td><td class="FormRowValue">{$form.ehi_icon_image.html}&nbsp;&nbsp;<img id='ehi_icon_image_img' src='./img/blank.gif'></td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ehi_icon_image_alt.label}</td><td class="FormRowValue">{$form.ehi_icon_image_alt.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.ehi_vrml_image.label}</td><td class="FormRowValue">{$form.ehi_vrml_image.html}&nbsp;&nbsp;<img id='ehi_vrml_image_img' src='./img/blank.gif'></td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}&nbsp;&nbsp;<img id='ehi_statusmap_image_img' src='./img/blank.gif'></td></tr>
@@ -222,8 +175,6 @@
 	<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
 </table>
 </div>
-
-{if $msg.nagios >= 3}
 <div id='tab5' class='tab'>
 <table class="ListTable">
 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title5}</td></tr>
@@ -244,7 +195,6 @@
 	</tr>
 </table>
 </div>
-{/if}
 
 <div id="validForm">
 {if $o == "a" || $o == "c" || $o == "mc"}

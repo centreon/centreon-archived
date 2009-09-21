@@ -366,7 +366,9 @@
 	$form->addElement('text', 'command_command_id_arg1', _("Args"), $attrsText);
 	
 	$form->addElement('text', 'host_max_check_attempts', _("Max Check Attempts"), $attrsText2);
-	
+	$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
+	$form->addElement('text', 'host_retry_check_interval', _("Retry Check Interval"), $attrsText2);
+
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, _("Yes"), '1');
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, _("No"), '0');
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, _("Default"), '2');
@@ -376,8 +378,6 @@
 	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 	
-	$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
-
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Yes"), '1');
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("No"), '0');
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Default"), '2');
