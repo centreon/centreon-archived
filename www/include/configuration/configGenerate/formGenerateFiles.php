@@ -133,11 +133,12 @@
 			 * Check dependancies
 			 */
 			$gbArr = manageDependencies();
-			
+
 			/*
 			 * Request id and host type.
 			 */
 			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
+
 			if (PEAR::isError($DBRESULT_Servers))
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
@@ -207,7 +208,7 @@
 		 * If debug needed
 		 */		
 		if (isset($ret["debug"]) && $ret["debug"])	{
-			$DBRESULT_Servers =& $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` LIMIT 1");
+			$DBRESULT_Servers =& $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `ns_activate` = '1' LIMIT 1");
 			$nagios_bin = $DBRESULT_Servers->fetchRow();
 			$DBRESULT_Servers->free();
 			$msg_debug = array();
