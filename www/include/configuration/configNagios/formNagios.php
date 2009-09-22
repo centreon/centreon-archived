@@ -176,7 +176,7 @@
 	 */
 	$nagTab = array();
  	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("None"), 'n');
- 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("Hourly"). 'h');
+ 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("Hourly"), 'h');
  	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("Daily"), 'd');
  	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("Weekly"), 'w');
  	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("Monthly"), 'm');
