@@ -120,6 +120,17 @@ aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
 		</td>
   </tr>
   <tr>
+		<td><b>&nbsp;&nbsp;&nbsp;MB String</b></td>
+		<td align="right"><?php
+        	if (extension_loaded('mbstring'))
+            	echo '<b><span class="go">OK</font></b>';
+            else {
+                echo '<b><span class="warning">Warning: install mb_string php extension</font></b>';
+                $return_false = 1;
+            }       ?>
+       	</td>
+  </tr>
+  <tr>
     	<td><b>&nbsp;&nbsp;&nbsp;PHP-POSIX</b></td>
     	<td align="right"><?php
 			if (function_exists('posix_getpwuid'))
