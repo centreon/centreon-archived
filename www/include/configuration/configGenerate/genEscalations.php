@@ -405,7 +405,8 @@
 		$DBRESULT->free();
 	} else {
 		while ($escalation =& $DBRESULT->fetchRow()) {			
-			$sg = array(); 
+			$strTemp = "";
+			$sg = array();
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
 			while ($sg =& $DBRESULT2->fetchRow()) {
 				if (isset($gbArr[5][$sg["sg_id"]]) && isset($generatedSG[$sg["sg_id"]]))
