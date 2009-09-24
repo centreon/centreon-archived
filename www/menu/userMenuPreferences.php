@@ -38,13 +38,20 @@
  
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path."/www/class/centreonDB.class.php";
+	require_once $centreon_path."/www/class/oreon.class.php";
+	require_once $centreon_path."/www/class/Session.class.php";
 	
+	session_start();
+	if(!isset($_SESSION['oreon']) || !isset($_GET['div']) || !isset($_GET['uid']))
+		exit();
+	$oreon = $_SESSION['oreon'];	
+	 
 	$pearDB = new CentreonDB();
 	
 	/*
 	 * Check session id
 	 */
-	$session =& $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities($_GET["uid"], ENT_QUOTES)."'");
+	$session =& $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities(session_id(), ENT_QUOTES)."' AND user_id = '".htmlentities($_GET['uid'], ENT_QUOTES)."'");
 	if (!$session->numRows()){
 		exit;
 	}
