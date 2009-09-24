@@ -393,15 +393,13 @@
 		$str_unitH_flag = 0;
 		$str_unitH = "";
 		
-		if (!$is_admin) {
-			foreach ($tab_host_name as $host_name ) {
-				if ($str_unitH != "")
-					$str_unitH .= ", ";
-				$str_unitH .= "'$host_name'";
-			}
-		}
+		foreach ($tab_host_name as $host_name ) {
+			if ($str_unitH != "")
+				$str_unitH .= ", ";
+			$str_unitH .= "'$host_name'";
+		}		
 		
-		if (!$is_admin && $str_unitH != "") {
+		if ($str_unitH != "") {
 			$str_unitH = "(`host_name` IN ($str_unitH) AND service_description IS NULL)";
 		}
 		
