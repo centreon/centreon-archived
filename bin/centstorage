@@ -283,7 +283,10 @@ sub GetPerfData() {
     # Get path of perfdata file
     my $PFDT = getPerfDataFile($con_oreon);
 
-    if (-r $PFDT || -r $PFDT.".bckp"){
+	if (!defined($PFDT)) {
+		writeLogFile("Could not find perf data file!");
+	} 
+    if ((defined($PFDT))&& (-r $PFDT || -r $PFDT.".bckp")){
 	# Check backup perfdata file 
 	if (-r $PFDT.".bckp") {
 	    $PFDT = $PFDT.".bckp";
