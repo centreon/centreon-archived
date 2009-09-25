@@ -213,7 +213,7 @@
                 if ($oreon->user->get_version() >= 3)
 	                $str .= print_line("_HOST_ID", $host["host_id"]);
                 
-				if ($host["host_register"] == 1)
+				if ($host["host_register"] == 1 && $host["host_location"] != "")
 					$str .= print_line("#location", $host["host_location"]);
 				
 				if ($host["host_snmp_community"])
@@ -270,8 +270,6 @@
 					$str .= print_line("max_check_attempts", $host["host_max_check_attempts"]);
 				if ($host["host_check_interval"] != NULL) 
 					$str .= print_line("check_interval", $host["host_check_interval"]);
-				if ($host["host_retry_check_interval"] != NULL) 
-					$str .= print_line("retry_interval", $host["host_retry_check_interval"]);
 				if ($host["host_active_checks_enabled"] != 2) 
 					$str .= print_line("active_checks_enabled", $host["host_active_checks_enabled"] == 1 ? "1": "0");
 				if ($host["host_passive_checks_enabled"] != 2) 
