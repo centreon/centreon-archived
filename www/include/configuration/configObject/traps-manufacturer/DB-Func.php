@@ -96,9 +96,11 @@
 	}
 	
 	function updateMnftr($id = null)	{
-		if (!$id) return;
-		global $form;
-		global $pearDB, $oreon;
+		global $form, $pearDB, $oreon;
+		
+		if (!$id) 
+			return;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE traps_vendor ";
@@ -119,10 +121,11 @@
 	}
 	
 	function insertMnftr($ret = array())	{
-		global $form;
-		global $pearDB;
+		global $form, $pearDB, $oreon;
+		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+		
 		$rq = "INSERT INTO traps_vendor ";
 		$rq .= "(name, alias, description) ";
 		$rq .= "VALUES ";
@@ -131,7 +134,7 @@
 		$rq .= "'".htmlentities($ret["description"], ENT_QUOTES)."')";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM traps_vendor");
-		$mnftr_id = $DBRESULT->fetchRow();
+		$mnftr_id =& $DBRESULT->fetchRow();
 		
 		$fields["name"] = htmlentities($ret["name"], ENT_QUOTES);
 		$fields["alias"] = htmlentities($ret["alias"], ENT_QUOTES);
