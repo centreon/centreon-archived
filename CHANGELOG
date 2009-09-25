@@ -1,3 +1,30 @@
+## Centreon 2.1.1
+
+=> fix: remove error in nagios.cfg form
+=> fix: remove warning when upgrading sql structure
+=> fix: Centstorage & Centcore check if perfdata files exist
+=> fix: could not add new manufacturer
+=> fix: process info page displayed outdated data  
+=> fix #1201: problem when there is more than one escalation with servicegroups
+=> fix #1212: Nagios debug (-v) bug (due to external poller's nagios bin path) 
+=> fix #1227: Problem with sh for SNMP Traps loading
+
+## Centreon 2.1
+
+=> fix: error in graph (4 graphs view)
+=> fix: escalation generation in distributed mode
+=> fix: issue when we add a service -> request problem
+=> fix: generation problem for host template
+=> fix: configuration changlog insert problem
+=> fix: configuration > plugins page => Options 
+
+## Centreon 2.1-RC8
+
+=> fix: improve monitoring sql request
+=> fix: Add ACL for Meta services
+=> fix: add foreign keys for hg and sg relations table for ACL
+=> fix: add foreign keys actions rules table on ACL
+
 ## Centreon 2.1-RC7
 Adds icons in Eventlogs & Graph views search bars
 => Bugfix #1040 : ArchiveDayLog scripted could be executed twice in a day because of an NTP sync
