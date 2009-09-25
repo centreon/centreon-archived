@@ -340,11 +340,6 @@ sub GetPerfData($){
     my $server_info = getServerConfig($id);
     my $distantconnexion = $server_info->{'ns_ip_address'};
 
-	if (!defined($distantperffile_buffer) || !$distantperffile_buffer) {
-		writeLogFile("perfdata file not configured for poller $id ($distantconnexion)";
-		return;
-	}
-
     # Check port configuration
     if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'}) {
 	$port = $server_info->{'ssh_port'};
@@ -353,6 +348,11 @@ sub GetPerfData($){
     # Where is perfdata file on remote poller 
     my $distantperffile = getPerfDataFile($con, $id);
     my $distantperffile_buffer = $distantperffile . ".buff";
+		
+	if (!defined($distantperffile_buffer) || !$distantperffile_buffer) {
+		writeLogFile("perfdata file not configured for poller $id ($distantconnexion)");
+		return;
+	}
 
     # Build destination directory reserved for this poller
     my $localbasevardir = "$VARLIB/perfdata/$id";
