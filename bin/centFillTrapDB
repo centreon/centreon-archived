@@ -90,7 +90,7 @@ sub main($$) {
     }
     my $last_oid = "";
 	while (<FILE>) {	
-		if ($_ =~ /^EVENT\ ([a-zA-Z0-9]+)\ ([0-9\.]+)\ (\"[A-Za-z\ ]+\")\ ([a-zA-Z]+)/) {
+		if ($_ =~ /^EVENT\ ([a-zA-Z0-9\_\-]+)\ ([0-9\.]+)\ (\"[A-Za-z\ \_\-]+\")\ ([a-zA-Z]+)/) {
 			my ($name,$oid,$type,$val) = ($1,$2,$3,$4);
 		    if (existsInDB($dbh, $oid)) {
 				print "Trap oid : $name => $oid already exists in database\n";
