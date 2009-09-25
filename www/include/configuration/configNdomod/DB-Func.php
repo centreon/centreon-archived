@@ -126,7 +126,7 @@
 		$rq .= "VALUES (";
 		isset($ret["description"]) && $ret["description"] != NULL ? $rq .= "'".htmlentities($ret["description"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["ns_nagios_server"]) && $ret["ns_nagios_server"] != NULL ? $rq .= "'".htmlentities($ret["ns_nagios_server"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        $rq .= "'".$nagios_servers[$ret["ns_nagios_server"]]."'";
+        $rq .= "'".$nagios_servers[$ret["ns_nagios_server"]]."', ";
        	isset($ret["output_type"]) && $ret["output_type"] != NULL ? $rq .= "'".htmlentities($ret["output_type"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["output"]) && $ret["output"] != NULL ? $rq .= "'".htmlentities($ret["output"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["buffer_file"]) && $ret["buffer_file"] != NULL ? $rq .= "'".htmlentities($ret["buffer_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
