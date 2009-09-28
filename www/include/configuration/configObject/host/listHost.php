@@ -39,7 +39,10 @@
  	if (!isset($oreon))
 		exit();
 
-	include("./include/common/autoNumLimit.php");
+	require_once ("./include/common/autoNumLimit.php");
+	require_once ($centreon_path . "/www/class/centreonHost.class.php");
+
+	$host_method = new CentreonHost($pearDB);
 
 	/*
 	 * Get Extended informations
@@ -259,7 +262,18 @@
 				}
 			}
 			
+			/*
+			 * Check icon
+			 */
 			
+			if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
+				$host_icone = "./img/media/" . getImageFilePath($ehiCache[$host["host_id"]]);
+			} else if ($icone = $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1))) {
+				$host_icone = "./img/media/" . $icone;
+			} else {
+				$host_icone = "./img/icones/16x16/server_network.gif";
+			}
+
 			/*
 			 * Create Array Data for template list
 			 */
@@ -267,7 +281,7 @@
 			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 							"RowMenu_select"=>$selectedElements->toHtml(),
 							"RowMenu_name"=>$host["host_name"],
-							"RowMenu_icone"=> ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]]) ? "./img/media/".getImageFilePath($ehiCache[$host["host_id"]]) : "./img/icones/16x16/server_network.gif"),
+							"RowMenu_icone"=> $host_icone,
 							"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
 							"RowMenu_desc"=>$host["host_alias"],
 							"RowMenu_address"=>htmlentities($host["host_address"]),
