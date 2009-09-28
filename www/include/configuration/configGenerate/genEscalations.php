@@ -322,7 +322,7 @@
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
 			while ($sg =& $DBRESULT2->fetchRow()) {
 				if (isset($gbArr[5][$sg["sg_id"]]) && isset($generatedSG[$sg["sg_id"]])) {
-					$services =& getMyServiceGroupServices($sg["sg_id"]);
+					$services =& getMyServiceGroupActivateServices($sg["sg_id"]);
 					foreach ($services as $key => $desc){
 						$tmptab = split("_", $key);
 						$host_location = getMyHostFieldOnHost($tmptab[0], "host_location");
@@ -344,7 +344,7 @@
 					if (isset($host) && count($host))
 						foreach ($host as $ids => $escalation) {
 							$tabHS = split("_", $ids);
-							if (isset($host_instance[$tabHS[0]])) {
+							if (isset($host_instance[$tabHS[0]]) && isset($hostGenerated[$host_id])) {
 								$host = array();
 								$strDef = "";
 								$host_id = $tabHS[0];
@@ -405,8 +405,8 @@
 		$DBRESULT->free();
 	} else {
 		while ($escalation =& $DBRESULT->fetchRow()) {			
-			$strTemp = "";
-			$sg = array();
+			$strTemp = "";			
+			$sg = array(); 
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
 			while ($sg =& $DBRESULT2->fetchRow()) {
 				if (isset($gbArr[5][$sg["sg_id"]]) && isset($generatedSG[$sg["sg_id"]]))

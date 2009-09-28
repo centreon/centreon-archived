@@ -229,8 +229,6 @@
 				$str .= print_line("max_check_attempts", $host["host_max_check_attempts"]);
 			if ($host["host_check_interval"] != NULL) 
 				$str .= print_line("check_interval", $host["host_check_interval"]);
-			if ($host["host_retry_check_interval"] != NULL) 
-					$str .= print_line("retry_interval", $host["host_retry_check_interval"]);
 			if ($host["host_active_checks_enabled"] != 2) 
 				$str .= print_line("active_checks_enabled", $host["host_active_checks_enabled"] == 1 ? "1": "0");
 			if ($host["host_passive_checks_enabled"] != 2) 
@@ -311,6 +309,9 @@
 			
 			if ($host["host_notification_interval"] != NULL) 
 				$str .= print_line("notification_interval", $host["host_notification_interval"]);
+			if ($host["host_first_notification_delay"] != NULL)
+            	$str .= print_line("first_notification_delay", $host["host_first_notification_delay"]);
+			
 			
 			/*
 			 * Timeperiod name

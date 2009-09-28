@@ -223,7 +223,9 @@
 				$strTMP .= print_line("notification_options", $service["service_notification_options"]);
 			if ($service["service_notifications_enabled"] != 2) 
 				$strTMP .= print_line("notifications_enabled", $service["service_notifications_enabled"] == 1 ? "1": "0");
-			
+			if ($service["service_first_notification_delay"] != NULL) 
+				$strTMP .= print_line("first_notification_delay", $service["service_first_notification_delay"]);
+		
 			/*
 			 * Contact Group Relation
 			 */
