@@ -125,11 +125,14 @@
 	 */
 	$gmtCache = array();
 
+	/*
+	 * Create host object
+	 */
+	$host_method = new CentreonHost($pearDB);
+
 	/******************************************************
 	 * Host Generation
 	 ******************************************************/
-		
-	
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hosts.cfg", $oreon->user->get_name());
 	
 	/*
@@ -176,32 +179,20 @@
 					if ($host["host_name"]) $str .= print_line("host_name", $host["host_name"]);
 				
 				/*
-				 *  For Nagios 3 ::: Multi Templates
+				 *  Multi Templates
 				 */
-				if ($oreon->user->get_version() >= 3) {
-					if (isset($templateCache[$host["host_id"]])) {
-						$tpl_str = "";	
-						foreach ($templateCache[$host["host_id"]] as $host_template) {
-							if ($tpl_str != "") {
-								$tpl_str .= ",";
-							}
-							$tpl_str .= $host_template;
+				if (isset($templateCache[$host["host_id"]])) {
+					$tpl_str = "";	
+					foreach ($templateCache[$host["host_id"]] as $host_template) {
+						if ($tpl_str != "") {
+							$tpl_str .= ",";
 						}
+						$tpl_str .= $host_template;
 					}
-					if (isset($tpl_str) && $tpl_str != "") 
-						$str .= print_line("use", $tpl_str);
-					unset($tpl_str);
-				} else if ($host["host_template_model_htm_id"]) {			
-					/*
-					 *  For Nagios 1 & 2
-					 */
-					$hostTemplate = array();
-					$DBRESULT2 =& $pearDB->query("SELECT host.host_name FROM host WHERE host.host_id = '".$host["host_template_model_htm_id"]."'");
-					while($hostTemplate = $DBRESULT2->fetchRow())
-						$str .= print_line("use", $hostTemplate["host_name"]);
-					$DBRESULT2->free();
-					unset($hostTemplate);		
 				}
+				if (isset($tpl_str) && $tpl_str != "") 
+					$str .= print_line("use", $tpl_str);
+				unset($tpl_str);
 				
 				if ($host["host_alias"])
 					$str .= print_line("alias", $host["host_alias"]);
@@ -210,8 +201,7 @@
 				/*
                  * Write Host_id
                  */
-                if ($oreon->user->get_version() >= 3)
-	                $str .= print_line("_HOST_ID", $host["host_id"]);
+                $str .= print_line("_HOST_ID", $host["host_id"]);
                 
 				if ($host["host_register"] == 1 && $host["host_location"] != "")
 					$str .= print_line("#location", $host["host_location"]);
@@ -242,21 +232,19 @@
 				/*
 				 * Hostgroups relation
 				 */
-				if ($oreon->user->get_version() >= 2)	{
-					$strTemp = "";
-					if (isset($hgCache[$host["host_id"]])) {
-						foreach ($hgCache[$host["host_id"]] as $hgs) {
-							if ($strTemp != "") {
-								$strTemp .= ",";
-							}
-							$strTemp .= $hgs;
-							$HGFilled[$hgs] = $hgs;
-						}					
-					}
-					if ($strTemp) 
-						$str .= print_line("hostgroups", $strTemp);
-					unset($strTemp);
+				$strTemp = "";
+				if (isset($hgCache[$host["host_id"]])) {
+					foreach ($hgCache[$host["host_id"]] as $hgs) {
+						if ($strTemp != "") {
+							$strTemp .= ",";
+						}
+						$strTemp .= $hgs;
+						$HGFilled[$hgs] = $hgs;
+					}					
 				}
+				if ($strTemp) 
+					$str .= print_line("hostgroups", $strTemp);
+				unset($strTemp);
 				
 				/*
 				 * Check Command
@@ -333,19 +321,17 @@
 				
 				/*
 				 * Nagios V3 : contacts relation
-				 */
-				if ($oreon->user->get_version() >= 3) {				
-					$strTemp = "";
-					if (isset($cctCache[$host["host_id"]])) {
-						foreach ($cctCache[$host["host_id"]] as $contact) {
-							if ($strTemp != "")
-								$strTemp .= ",";
-							$strTemp .= $contact;
-						}
-						if ($strTemp) 
-							$str .= print_line("contacts", $strTemp);
-						unset($strTemp);
+				 */			
+				$strTemp = "";
+				if (isset($cctCache[$host["host_id"]])) {
+					foreach ($cctCache[$host["host_id"]] as $contact) {
+						if ($strTemp != "")
+							$strTemp .= ",";
+						$strTemp .= $contact;
 					}
+					if ($strTemp) 
+						$str .= print_line("contacts", $strTemp);
+					unset($strTemp);
 				}
 				
 				if ($host["host_notification_interval"] != NULL) 
@@ -375,41 +361,39 @@
 				/*
 				 * On-demand macros
 				 */
-				if ($oreon->user->get_version() >= 3) {
-					$rq = "SELECT `host_macro_name`, `host_macro_value` FROM `on_demand_macro_host` WHERE `host_host_id` = '" . $host['host_id']."'";
-					$DBRESULT3 =& $pearDB->query($rq);
-					while ($od_macro =& $DBRESULT3->fetchRow()) {
-						$mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);
-						$mac_name = str_replace("\$", "", $mac_name);
-						$mac_value = $od_macro['host_macro_value'];
-						$str .= print_line($mac_name, $mac_value);
-					}
+
+				$rq = "SELECT `host_macro_name`, `host_macro_value` FROM `on_demand_macro_host` WHERE `host_host_id` = '" . $host['host_id']."'";
+				$DBRESULT3 =& $pearDB->query($rq);
+				while ($od_macro =& $DBRESULT3->fetchRow()) {
+					$mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);
+					$mac_name = str_replace("\$", "", $mac_name);
+					$mac_value = $od_macro['host_macro_value'];
+					$str .= print_line($mac_name, $mac_value);
 				}
-				
-				$host_method = new CentreonHost($pearDB);
-				
-				if ($oreon->user->get_version() >= 3)	{
-					$DBRESULT2 =& $pearDB->query("SELECT * FROM extended_host_information ehi WHERE ehi.host_host_id = '".$host["host_id"]."'");
-					$ehi =& $DBRESULT2->fetchRow();
-					if ($ehi["ehi_notes"])
-						$str .= print_line("notes", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes"]));
-					if ($ehi["ehi_notes_url"])
-	        			$str .= print_line("notes_url", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes_url"]));
-					if ($ehi["ehi_action_url"])
-	        			$str .= print_line("action_url", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_action_url"]));
-					if ($ehi["ehi_icon_image"])
-	        			$str .= print_line("icon_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1)));
-					if ($ehi["ehi_icon_image_alt"])
-	        			$str .= print_line("icon_image", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_icon_image_alt"]));
-					if ($ehi["ehi_vrml_image"])
-	        			$str .= print_line("vrml_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_vrml_image", 1)));
-					if ($ehi["ehi_statusmap_image"])
-	        			$str .= print_line("statusmap_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_statusmap_image", 1)));
-					if ($ehi["ehi_2d_coords"])
-	        			$str .= print_line("2d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_2d_coords"]));
-					if ($ehi["ehi_3d_coords"])
-	        			$str .= print_line("3d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_3d_coords"]));
-				}
+
+				/*
+				 * Extended Informations
+				 */
+				$DBRESULT2 =& $pearDB->query("SELECT * FROM extended_host_information ehi WHERE ehi.host_host_id = '".$host["host_id"]."'");
+				$ehi =& $DBRESULT2->fetchRow();
+				if ($ehi["ehi_notes"])
+					$str .= print_line("notes", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes"]));
+				if ($ehi["ehi_notes_url"])
+        			$str .= print_line("notes_url", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes_url"]));
+				if ($ehi["ehi_action_url"])
+        			$str .= print_line("action_url", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_action_url"]));
+				if ($ehi["ehi_icon_image"])
+        			$str .= print_line("icon_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1)));
+				if ($ehi["ehi_icon_image_alt"])
+        			$str .= print_line("icon_image", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_icon_image_alt"]));
+				if ($ehi["ehi_vrml_image"])
+        			$str .= print_line("vrml_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_vrml_image", 1)));
+				if ($ehi["ehi_statusmap_image"])
+        			$str .= print_line("statusmap_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_statusmap_image", 1)));
+				if ($ehi["ehi_2d_coords"])
+        			$str .= print_line("2d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_2d_coords"]));
+				if ($ehi["ehi_3d_coords"])
+        			$str .= print_line("3d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_3d_coords"]));
 				$DBRESULT2->free();			
 			}
 			$str .= "}\n\n";
