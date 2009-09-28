@@ -1010,7 +1010,7 @@
 		$cpt_tpl = 0;
 		$tab_link_tpl = array();
 		$counter = 0;
-		foreach ($tmpConf as $key => $value){
+		foreach ($tmpConf as $key => $value){			
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
 				case "name" : 
@@ -1115,7 +1115,7 @@
 					break;
 				case "#TEMPLATE-HOST-LINK" : 
 					$tab_link_tpl[$cpt_tpl] = $value;
-					$cpt_tpl++;
+					$cpt_tpl++;					
 					break;
 				case ";TEMPLATE-HOST-LINK" : 
 					$tab_link_tpl[$cpt_tpl] = $value;
@@ -1150,10 +1150,10 @@
 				$useTpl[1] = $use;
 				$nbr["sv"] += 1;
 				# Add link with host template
-				if (isset($tab_link_tpl))
+				if (isset($tab_link_tpl))					
 					foreach ($tab_link_tpl as $tkey => $tvalue){
 						foreach ($tvalue as $template_link_name) {
-							$host_host_id = getMyHostID($template_link_name);						
+							$host_host_id = getMyHostID($template_link_name);		
 							if ($host_host_id) {
 								$DBRESULT_TEMP =& $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
 							}
