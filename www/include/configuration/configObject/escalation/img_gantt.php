@@ -39,7 +39,7 @@
 # connect DB oreon	
 
 	require_once ("../../../../class/Session.class.php");
-	require_once ("../../../../class/Oreon.class.php");
+	require_once ("../../../../class/centreon.class.php");
 	require_once ("../../../../class/centreonDB.class.php");
 
 	Session::start();

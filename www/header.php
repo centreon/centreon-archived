@@ -61,7 +61,7 @@
 	require_once "$classdir/centreonDB.class.php";
 	require_once "$classdir/centreonLang.class.php";
 	require_once "$classdir/Session.class.php";
-	require_once "$classdir/Oreon.class.php";	
+	require_once "$classdir/centreon.class.php";	
 	require_once SMARTY_DIR."Smarty.class.php";
 
 	/*

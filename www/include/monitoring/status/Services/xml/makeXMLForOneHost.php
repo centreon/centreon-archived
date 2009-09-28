@@ -42,7 +42,7 @@
 	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once $centreon_path . "www/class/Session.class.php";
-	include_once $centreon_path . "www/class/Oreon.class.php";
+	include_once $centreon_path . "www/class/centreon.class.php";
 	include_once $centreon_path . "www/class/centreonLang.class.php";	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 

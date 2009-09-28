@@ -41,7 +41,7 @@
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
 	require_once $centreon_path . "www/class/User.class.php";
-	require_once $centreon_path . "www/class/Oreon.class.php";
+	require_once $centreon_path . "www/class/centreon.class.php";
 	require_once $centreon_path . "www/class/other.class.php";	
 	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
 	

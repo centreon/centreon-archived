@@ -54,7 +54,7 @@
 	}
 
 	require_once ("$classdir/Session.class.php");
-	require_once ("$classdir/Oreon.class.php");
+	require_once ("$classdir/centreon.class.php");
 	require_once ("$classdir/centreonAuth.class.php");
 	require_once ("$classdir/centreonLog.class.php");
 	require_once ("$classdir/centreonDB.class.php");

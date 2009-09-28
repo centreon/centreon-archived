@@ -38,7 +38,7 @@
  
 
 	require_once ("../../class/Session.class.php");
-	require_once ("../../class/Oreon.class.php");
+	require_once ("../../class/centreon.class.php");
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];

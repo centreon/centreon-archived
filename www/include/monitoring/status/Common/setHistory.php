@@ -42,7 +42,7 @@
 
 		$path = "$centreon_path/www";
 		
-		require_once("$path/class/Oreon.class.php");
+		require_once("$path/class/centreon.class.php");
 		require_once("$path/class/Session.class.php");
 		
 		session_id($_POST["sid"]);

@@ -41,7 +41,7 @@
 	
 	/* Translation */
 	require_once ($centreon_path . "www/class/Session.class.php");
-	require_once ($centreon_path . "www/class/Oreon.class.php");
+	require_once ($centreon_path . "www/class/centreon.class.php");
 	require_once ($centreon_path . "www/class/centreonLang.class.php");
 	
 	

@@ -63,6 +63,7 @@ class Oreon	{
 	var $poller;
 	var $template;
 	var $hostgroup;
+	var $host_id;
   
 	function Oreon($user = NULL, $pages = array())	{
 		global $pearDB;
