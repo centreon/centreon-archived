@@ -48,10 +48,9 @@
 	$contactGroup = array();
 	$i = 1;
 	$str = NULL;
-	while($contactGroup =& $DBRESULT->fetchRow())	{
-		$BP = false;
-		array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-		if ($BP)	{
+	while ($contactGroup =& $DBRESULT->fetchRow())	{
+		
+		if (isset($gbArr[1][$contactGroup["cg_id"]]))	{
 			$ret["comment"] ? ($str .= "# '" . $contactGroup["cg_name"] . "' contactgroup definition " . $i . "\n") : NULL ;
 			if ($ret["comment"] && $contactGroup["cg_comment"])	{
 				$comment = array();
@@ -59,16 +58,21 @@
 				foreach ($comment as $cmt)
 					$str .= "# ".$cmt."\n";
 			}
+			
+			/*
+			 * Start object
+			 */
 			$str .= "define contactgroup{\n";
-			if ($contactGroup["cg_name"]) $str .= print_line("contactgroup_name", $contactGroup["cg_name"]);
-			if ($contactGroup["cg_alias"]) $str .= print_line("alias", $contactGroup["cg_alias"]);
+			if ($contactGroup["cg_name"]) 
+				$str .= print_line("contactgroup_name", $contactGroup["cg_name"]);
+			if ($contactGroup["cg_alias"]) 
+				$str .= print_line("alias", $contactGroup["cg_alias"]);
+
 			$contact = array();
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT cct.contact_id, cct.contact_name FROM contactgroup_contact_relation ccr, contact cct WHERE ccr.contactgroup_cg_id = '".$contactGroup["cg_id"]."' AND ccr.contact_contact_id = cct.contact_id ORDER BY `contact_name`");
-			while($contact =& $DBRESULT2->fetchRow())	{
-				$BP = false;				
-				array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : $BP = false;
-				if ($BP)
+			while ($contact =& $DBRESULT2->fetchRow())	{
+				if (isset($gbArr[0][$contact["contact_id"]]))
 					$strTemp != NULL ? $strTemp .= ", ".$contact["contact_name"] : $strTemp = $contact["contact_name"];
 			}
 			$DBRESULT2->free();
