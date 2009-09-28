@@ -61,11 +61,31 @@
 		$poller = $oreon->poller;
 	else
 		$poller = 0;
+
+	if (isset($_POST["hostgroup"]))
+	  $hostgroup = $_POST["hostgroup"];
+	 else if (isset($_GET["hostgroup"]))
+	   $hostgroup = $_GET["hostgroup"];
+	 else if (isset($oreon->hostgroup) && $oreon->hostgroup)
+	   $hostgroup = $oreon->hostgroup;
+	 else
+	   $hostgroup = 0;
+	
+	if (isset($_POST["template"]))
+	  $template = $_POST["template"];
+	 else if (isset($_GET["template"]))
+	   $template = $_GET["template"];
+	 else if (isset($oreon->template) && $oreon->template)
+	   $template = $oreon->template;
+	 else
+	   $template = 0;
 	
 	/*
-	 * set Poller id
+	 * set object history
 	 */	
 	$oreon->poller = $poller;
+	$oreon->hostgroup = $hostgroup;
+	$oreon->template = $template;
 	
 	/*
 	 * Search active
@@ -76,14 +96,33 @@
 		$SearchTool = "(host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_address LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND ";
 	}
 	
+
+
+	if ($template) {
+	  $templateFROM = ", host_template_relation htr ";
+	  $templateWHERE = " htr.host_host_id = h.host_id AND htr.host_tpl_id = '$template' AND ";
+	 } else {
+	  $templateFROM = "";
+	  $templateWHERE = "";
+	}
+
+
 	/*
 	 * Launch Request
 	 */	
-	 
-	if ($poller) 
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation WHERE $SearchTool host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller'");
-	else
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h WHERE $SearchTool host_register = '1'");
+	if ($hostgroup) {
+	  if ($poller) 
+	    $DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup'");
+	  else
+	    $DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup'");
+	 } else {
+	  if ($poller) 
+	    $DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller'");
+	  else
+	    $DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h $templateFROM WHERE $SearchTool $templateWHERE host_register = '1'");
+	 }
+
+	
 	$tmp =& $DBRESULT->fetchRow();
 	$DBRESULT->free();
 	$rows = $tmp["COUNT(*)"];
@@ -150,10 +189,17 @@
 	/*
 	 * Select hosts 
 	 */
-	if ($poller)
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation WHERE $SearchTool host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
-	else
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE $SearchTool host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
+	if ($hostgroup) {
+	  if ($poller)
+	    $DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
+	  else
+	    $DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
+	 } else {
+	  if ($poller)
+	    $DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
+	  else
+	    $DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
+	}
 
 	$search = tidySearchKey($search, $advanced_search);
 	 
@@ -223,13 +269,13 @@
 	}
 	
 	/*
-	 * Header title for same name - Ajust pattern lenght with (0, 3) param
+	 * Header title for same name - Ajust pattern lenght with (0, 4) param
 	 */
 	
 	$pattern = NULL;
 	for ($i = 0; $i < count($elemArr); $i++)	{
 		# Searching for a pattern wich n+1 elem
-		if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 3)) && !$pattern)	{
+		if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 4)) && !$pattern)	{
 			for ($j = 0; isset($elemArr[$i]["RowMenu_name"][$j]); $j++)	{
 				if (isset($elemArr[$i+1]["RowMenu_name"][$j]) && $elemArr[$i+1]["RowMenu_name"][$j] == $elemArr[$i]["RowMenu_name"][$j])
 					;
@@ -237,18 +283,13 @@
 					break;
 			}
 			$pattern = substr($elemArr[$i]["RowMenu_name"], 0, $j);
-                        if ($pos = strrpos($pattern, "_") && $pos >= 3 && $j > $pos+2) {
-			        $pattern = substr($pattern, 0, $pos);
-			} else if ($pos = strrpos($pattern, "-") && $pos >= 3 && $j > $pos+2) {
-			        $pattern = substr($pattern, 0, $pos);
-			}
 		}
 		if (strstr($elemArr[$i]["RowMenu_name"], $pattern))
 			$elemArr[$i]["pattern"] = $pattern;
 		else	{
 			$elemArr[$i]["pattern"] = NULL;
 			$pattern = NULL;
-			if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 3)) && !$pattern)	{
+			if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 4)) && !$pattern)	{
 				for ($j = 0; isset($elemArr[$i]["RowMenu_name"][$j]); $j++)	{
 					if (isset($elemArr[$i+1]["RowMenu_name"][$j]) && $elemArr[$i+1]["RowMenu_name"][$j] == $elemArr[$i]["RowMenu_name"][$j])
 						;
@@ -324,9 +365,30 @@
 	$tpl->assign("poller", $options);
 	unset($options);
 
+
+	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+	$options = "<option value='0'></options>";
+	while ($data =& $DBRESULT->fetchRow()){
+	  $options .= "<option value='".$data["hg_id"]."' ".(($hostgroup == $data["hg_id"]) ? 'selected' : "").">".$data["hg_name"]."</option>";
+	 }
+	
+	$tpl->assign('hostgroup', $options);
+	unset($options);
+	
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
+	$options = "<option value='0'></options>";
+	while ($data =& $DBRESULT->fetchRow()){
+	  $options .= "<option value='".$data["host_id"]."' ".(($template == $data["host_id"]) ? 'selected' : "").">".$data["host_name"]."</option>";
+	 }
+	
+	$tpl->assign('template', $options);
+	unset($options);
+
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('Hosts', _("Hosts"));
 	$tpl->assign('Poller', _("Poller"));
+	$tpl->assign('Hostgroup', _("Hostgroup"));
+	$tpl->assign('Template', _("Template"));
 	$tpl->assign('Search', _("Search"));
 	$tpl->display("listHost.ihtml");
 ?>
