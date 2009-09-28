@@ -41,6 +41,16 @@
 
 	include("./include/common/autoNumLimit.php");
 
+	/*
+	 * Get Extended informations
+	 */
+	$ehiCache = array();
+	$DBRESULT =& $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
+	while ($ehi =& $DBRESULT->fetchRow()) {
+		$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
+	}
+	$DBRESULT->free();
+
 	if (isset($_POST["searchH"])) {
 		$search = $_POST["searchH"];
 		$_POST["search"] = $_POST["searchH"];
@@ -257,6 +267,7 @@
 			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 							"RowMenu_select"=>$selectedElements->toHtml(),
 							"RowMenu_name"=>$host["host_name"],
+							"RowMenu_icone"=> ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]]) ? "./img/media/".getImageFilePath($ehiCache[$host["host_id"]]) : "./img/icones/16x16/server_network.gif"),
 							"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
 							"RowMenu_desc"=>$host["host_alias"],
 							"RowMenu_address"=>htmlentities($host["host_address"]),
