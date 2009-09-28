@@ -47,7 +47,6 @@
 	/* 
 	 * Host Dependancies 
 	 */
-	
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhcr WHERE dhcr.dependency_dep_id = dep.dep_id) > 0";
 	$DBRESULT =& $pearDB->query($rq);
 	$dependency = array();
@@ -55,7 +54,6 @@
 	$str = "";
 	while ($dependency =& $DBRESULT->fetchRow()) {
 		
-		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostParent_relation dhpr, host, ns_host_relation nhr WHERE host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab["id"]."' AND dhpr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhpr.host_host_id");
 		$host = array();
 		$strTemp1 = "";
@@ -83,12 +81,10 @@
 			$str .= "define hostdependency{\n";
 			$str .= print_line("dependent_host_name", $strTemp2);
 			$str .= print_line("host_name", $strTemp1);
-			if ($oreon->user->get_version() >= 2)	{
-				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") 
-					$str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
-				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") 
-					$str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
-			}
+			if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") 
+				$str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
+			if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") 
+				$str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != "") 
 				$str .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
 			$str .= "}\n\n";
@@ -106,7 +102,6 @@
 	$DBRESULT =& $pearDB->query($rq);
 	$dependency = array();
 	while($dependency =& $DBRESULT->fetchRow())	{
-		$BP = false;
 		$generated = 0;
 		$generated2 = 0;
 		$strDef = "";
@@ -140,13 +135,11 @@
 			}
 			$strDef .= "define hostdependency{\n";
 			$strDef .= print_line("dependent_hostgroup_name", $strTemp2);
-			$strDef .= print_line("hostgroup_name", $strTemp1);
-			if ($oreon->user->get_version() >= 2)	{
-				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") 
-					$strDef .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
-				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") 
-					$strDef .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
-			}
+			$strDef .= print_line("hostgroup_name", $strTemp1);	
+			if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") 
+				$strDef .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
+			if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") 
+				$strDef .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != "") 
 				$strDef .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
 			$strDef .= "}\n\n";
@@ -190,9 +183,8 @@
 					$str .= print_line("host_name", $hPar);
 					$str .= print_line("dependent_service_description", getMyServiceName($svCh["service_service_id"]));
 					$str .= print_line("service_description", getMyServiceName($svPar["service_service_id"]));
-					if ($oreon->user->get_version() >= 2)
-						if (isset($svPar["inherits_parent"]["inherits_parent"]) && $svPar["inherits_parent"]["inherits_parent"] != "") 
-							$str .= print_line("inherits_parent", $svPar["inherits_parent"]["inherits_parent"]);
+					if (isset($svPar["inherits_parent"]["inherits_parent"]) && $svPar["inherits_parent"]["inherits_parent"] != "") 
+						$str .= print_line("inherits_parent", $svPar["inherits_parent"]["inherits_parent"]);
 					if (isset($svPar["execution_failure_criteria"]) && $svPar["execution_failure_criteria"] != "") 
 						$str .= print_line("execution_failure_criteria", $svPar["execution_failure_criteria"]);
 					if (isset($svPar["notification_failure_criteria"]) && $svPar["notification_failure_criteria"] != "") 
@@ -221,20 +213,16 @@
 		$sg = array();
 		$strTemp1 = "";
 		while ($sg =& $DBRESULT2->fetchRow())	{
-			$BP = false;
-			array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : "";
-			
-			if ($BP)	
+			if (isset($gbArr[5][$sg["sg_id"]]))	
 				$strTemp1 != "" ? $strTemp1 .= ", ".$sg["sg_name"] : $strTemp1 = $sg["sg_name"];
 		}
 		$DBRESULT2->free();
+		
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name FROM dependency_servicegroupChild_relation dsgcr, servicegroup WHERE dsgcr.dependency_dep_id = '".$dependency["dep_id"]."' AND servicegroup.sg_id = dsgcr.servicegroup_sg_id");
 		$sg = array();
 		$strTemp2 = "";
-		while ($sg =& $DBRESULT2->fetchRow())	{
-			$BP = false;
-			array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : "";
-			if ($BP)	
+		while ($sg =& $DBRESULT2->fetchRow()) {
+			if (isset($gbArr[5][$sg["sg_id"]]))	
 				$strTemp2 != "" ? $strTemp2 .= ", ".$sg["sg_name"] : $strTemp2 = $sg["sg_name"];
 		}
 		$DBRESULT2->free();			
@@ -248,13 +236,11 @@
 			}
 			$str .= "define servicedependency{\n";
 			$str .= print_line("dependent_servicegroup_name", $strTemp2);
-			$str .= print_line("servicegroup_name", $strTemp1);
-			if ($oreon->user->get_version() >= 2)	{
-				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") 
-					$str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
-				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") 
-					$str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
-			}
+			$str .= print_line("servicegroup_name", $strTemp1);	
+			if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != "") 
+				$str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
+			if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != "") 
+				$str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
 			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != "") 
 				$str .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
 			$str .= "}\n\n";

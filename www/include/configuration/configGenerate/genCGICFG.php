@@ -51,6 +51,7 @@
 		$cgi = $DBRESULT->fetchRow();
 	else
 		$cgi = array();
+	
 	$str = NULL;
 	$ret["comment"] ? ($str .= "# '".$cgi["cgi_name"]."'\n") : NULL;
 	if ($ret["comment"] && $cgi["cgi_comment"])	{
@@ -64,10 +65,6 @@
 			$value = str_replace("\r\n", ",", $value);
 			$str .= $key."=".$value."\n";
 		}
-	}
-	if ($oreon->user->get_version() == 1)	{
-		$str .= "xedtemplate_config_file=".$nagios["cfg_dir"]."hostextinfo.cfg\n";
-		$str .= "xedtemplate_config_file=".$nagios["cfg_dir"]."serviceextinfo.cfg\n";
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/cgi.cfg");
 	fclose($handle);
