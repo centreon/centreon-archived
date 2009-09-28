@@ -84,6 +84,15 @@
 	else
 		$search_type_host = NULL;
 	
+	if (isset($_GET["host_id"])){
+		$host_id = $_GET["host_id"];
+		$oreon->search_type_service = $_GET["host_id"];
+	} else if (isset($oreon->host_id)) {
+		 $host_id = $oreon->host_id;
+	} else
+		$host_id = NULL;
+	
+	
 	if ($search && (!isset($searchH) && !isset($searchS))) {
 		$searchH = $search;
 		$searchS = $search;
@@ -96,10 +105,18 @@
 		$oreon->search_type_service = 1;
 	}
 	
+	$hostWHERE = "";
+	$hostWHERE2 = "";
+	if (isset($host_id) && $host_id) {
+		$hostWHERE = " AND host.host_id = '$host_id' ";
+		$hostWHERE2 = " AND hsr.host_host_id = '$host_id' ";
+	}
+		
 	$rows = 0;
 	$tmp = "";
 	$tmp2 = "";
 	$tab_buffer = array();
+	
 	/*
 	 * Search case
 	 */
@@ -109,7 +126,7 @@
 		$searchS = str_replace('/', "#S#", $searchS);
 		$searchS = str_replace('\\', "#BS#", $searchS);
 		if ($search_type_service && !$search_type_host) {
-			$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')");
+			$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id $hostWHERE AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')");
 			while ($service = $DBRESULT->fetchRow()){
 				if (!isset($tab_buffer[$service["service_id"]]))
 					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
@@ -118,7 +135,7 @@
 				$rows++;
 			}
 		} else if (!$search_type_service && $search_type_host)	{
-			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
+			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id = host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL $hostWHERE";
 			$DBRESULT =& $pearDB->query($locale_query);
 			while ($service = $DBRESULT->fetchRow()) {			         
 				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
@@ -126,7 +143,7 @@
 				$rows++;				
 			}
 		} else {
-			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
+			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) $hostWHERE AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
 			$DBRESULT =& $pearDB->query($locale_query);
 			while ($service = $DBRESULT->fetchRow()) {			         
 				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
@@ -135,7 +152,7 @@
 			}
 		}
 	} else {
-    	$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL");
+    	$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL $hostWHERE2");
 		$rows = $DBRESULT->numRows();
 	}
 
@@ -173,7 +190,7 @@
 				"sv.service_retry_check_interval, sv.service_max_check_attempts " .
 				"FROM service sv, host, host_service_relation hsr " .
 				"WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") " .
-						"AND host.host_id IN (".($tmp2 ? $tmp2 : 'NULL').") " .
+						"AND host.host_id IN (".($tmp2 ? $tmp2 : 'NULL').") $hostWHERE " .
 						"AND sv.service_register = '1' " .
 						"AND hsr.service_service_id = sv.service_id " .
 						"AND host.host_id = hsr.host_host_id " .
@@ -188,7 +205,7 @@
 				"FROM service sv, host, host_service_relation hsr " .
 				"WHERE sv.service_register = '1' " .
 						"AND hsr.service_service_id = sv.service_id " .
-						"AND host.host_id = hsr.host_host_id " .
+						"AND host.host_id = hsr.host_host_id $hostWHERE " .
 						"AND host.host_register = '1' " .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	}
