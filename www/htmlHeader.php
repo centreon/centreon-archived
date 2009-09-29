@@ -113,13 +113,18 @@
 	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;	
 	
 	?>
-	
 <script type='text/javascript'>
-	
+	function favoris(autologin) {
+		if (navigator.appName != 'Microsoft Internet Explorer'){ 
+			window.sidebar.addPanel("Centreon - IT & Network Monitoring", autologin, "");
+		} else { 
+			window.external.AddFavorite(autologin, "Centreon - IT & Network Monitoring"); 
+		} 
+	}
+		
 	<?php
 		require_once ("./include/common/javascript/autologout.php");
 	?>    
-    
     window.onload = function () {
 	<?php
 		

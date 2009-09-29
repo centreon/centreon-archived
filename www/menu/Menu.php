@@ -151,7 +151,19 @@
 		$passwdCrypted = $oreon->user->get_passwd();
 		$autoLoginUrl = "p=$p&o=$o&min=$min&autologin=1&useralias=$userCrypted&password=$passwdCrypted";
 		$tpl->assign("autoLoginEnable", $oreon->optGen["display_autologin_shortcut"]);
-		$tpl->assign("autoLoginUrl", $autoLoginUrl);
+		
+		$prefix = '';
+		if (!strncmp($_SERVER["SERVER_PROTOCOL"], "HTTP/", 5)) {
+			$prefix .= "http://";
+		} else {
+			$prefix .= "https://";
+		}
+		
+		$prefix .= $_SERVER["SERVER_NAME"];
+		$prefix .= str_replace("main.php", "index.php", $_SERVER["REQUEST_URI"]);
+		$prefix .= "?";
+		
+		$tpl->assign("autoLoginUrl", $prefix.$autoLoginUrl);
 		$tpl->assign("CentreonAutologin", _("Centreon Autologin URL"));		
 	}
 
@@ -278,7 +290,10 @@
 		$tpl->assign("tab_user", $tab_user);
 	}
 	$tpl->assign('amIadmin', $oreon->user->admin);
-	# Display
+	
+	/*
+	 * Display
+	 */
 	$tpl->display("BlockHeader.ihtml");
 	$tpl->display("menu.ihtml");
 	//$tpl->display("BlockMenuType1.ihtml");	
