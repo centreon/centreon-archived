@@ -88,22 +88,6 @@
 		if ($hostGroup["hg_alias"]) 
 			$strDef .= print_line("alias", $hostGroup["hg_alias"]);
 		
-		/*
-		 * Hostgroup Members
-		 */
-		
-		$strTemp = "";
-		if (isset($ghgCache[$hostGroup["hg_id"]])) {
-			foreach ($ghgCache[$hostGroup["hg_id"]] as $child_name) {
-				if ($strTemp != "")
-					$strTemp .= ",";
-				$strTemp .= $child_name;
-				$HGLinkedToHost++;
-			}
-			if ($strTemp) 
-				$strDef .= print_line("hostgroup_members", $strTemp);
-		}
-		
 		if (isset($hostGroup["hg_notes"]) && $hostGroup["hg_notes"])	
 			$strDef .= print_line("notes", $hostGroup["hg_notes"]);
 		if (isset($hostGroup["hg_notes_url"]) && $hostGroup["hg_notes_url"])	
