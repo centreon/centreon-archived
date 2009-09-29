@@ -81,4 +81,3 @@ ALTER TABLE `nagios_servicestatus` ADD INDEX ( `service_object_id` , `current_st
 ALTER TABLE `nagios_objects` DROP INDEX `name1`;
 
 ALTER TABLE `centreon_acl` ADD INDEX ( `host_id` , `service_id` , `group_id` );
-s
