@@ -164,11 +164,9 @@
 			}
 			
 			$DBRESULT =& $pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
-			if ($oreon->user->get_version() >= 3) {
-				$DBRESULT =& $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '".$key."'");
-				$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '".$key."'");
-				$DBRESULT =& $pearDB->query("DELETE FROM contact_host_relation WHERE host_host_id = '".$key."'");
-			}
+			$DBRESULT =& $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '".$key."'");
+			$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '".$key."'");
+			$DBRESULT =& $pearDB->query("DELETE FROM contact_host_relation WHERE host_host_id = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("host", $key, $hostname['host_name'], "d");
 		}
 	}
@@ -270,39 +268,35 @@
 							$fields["nagios_server_id"] .= $Hg["nagios_server_id"] . ",";
 						}
 						$fields["nagios_server_id"] = trim($fields["nagios_server_id"], ",");
+						
 						/*
 						 *  multiple templates & on demand macros
 						 */
-						 if ($oreon->user->get_version() >= 3)
-						 {
-						 	/*
-						 	 * multiple templates
-						 	 */
-						 	$mTpRq1 = "SELECT * FROM `host_template_relation` WHERE `host_host_id` ='".$key."' ORDER BY `order`";
-						 	$DBRESULT3 =& $pearDB->query($mTpRq1);
-							$multiTP_logStr = "";
-							while ($hst =& $DBRESULT3->fetchRow()) {
-								$mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES" .
-											"('".$maxId["MAX(host_id)"]."', '".$hst['host_tpl_id']."', '". $hst['order'] ."')";
-						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
-						 		$multiTP_logStr .= $hst['host_tpl_id'] . ",";
-							}
-							$multiTP_logStr = trim($multiTP_logStr, ",");
-							$fields["templates"] = $multiTP_logStr;
-							/*
-							 * on demand macros
-							 */
-							$mTpRq1 = "SELECT * FROM `on_demand_macro_host` WHERE `host_host_id` ='".$key."'";
-						 	$DBRESULT3 =& $pearDB->query($mTpRq1);
-							while ($hst =& $DBRESULT3->fetchRow()) {
-								$macName = str_replace("\$", "", $hst["host_macro_name"]);
-								$mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`) VALUES" .
-											"('".$maxId["MAX(host_id)"]."', '\$".$macName."\$', '". $hst['host_macro_value'] ."')";
-						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
-								$fields["_".strtoupper($macName)."_"] = $hst['host_macro_value'];
-							}
-						 }
-						 $oreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
+					 	$mTpRq1 = "SELECT * FROM `host_template_relation` WHERE `host_host_id` ='".$key."' ORDER BY `order`";
+					 	$DBRESULT3 =& $pearDB->query($mTpRq1);
+						$multiTP_logStr = "";
+						while ($hst =& $DBRESULT3->fetchRow()) {
+							$mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES" .
+										"('".$maxId["MAX(host_id)"]."', '".$hst['host_tpl_id']."', '". $hst['order'] ."')";
+					 		$DBRESULT4 =& $pearDB->query($mTpRq2);
+					 		$multiTP_logStr .= $hst['host_tpl_id'] . ",";
+						}
+						$multiTP_logStr = trim($multiTP_logStr, ",");
+						$fields["templates"] = $multiTP_logStr;
+						
+						/*
+						 * on demand macros
+						 */
+						$mTpRq1 = "SELECT * FROM `on_demand_macro_host` WHERE `host_host_id` ='".$key."'";
+					 	$DBRESULT3 =& $pearDB->query($mTpRq1);
+						while ($hst =& $DBRESULT3->fetchRow()) {
+							$macName = str_replace("\$", "", $hst["host_macro_name"]);
+							$mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`) VALUES" .
+										"('".$maxId["MAX(host_id)"]."', '\$".$macName."\$', '". $hst['host_macro_value'] ."')";
+					 		$DBRESULT4 =& $pearDB->query($mTpRq2);
+							$fields["_".strtoupper($macName)."_"] = $hst['host_macro_value'];
+						}
+						$oreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
 					}
 				}
 			}
@@ -393,7 +387,7 @@
 		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
 			if (isset($ret["host_template_model_htm_id"]))
 				createHostTemplateService($host_id, $ret["host_template_model_htm_id"]);
-			else if($oreon->user->get_version())
+			else if ($oreon->user->get_version())
 				createHostTemplateService($host_id);
 		}
 		
@@ -427,9 +421,7 @@
 		$oreon->user->access->updateACL();
 		
 		$ret = $form->getSubmitValues();		
-		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"] && $ret["host_template_model_htm_id"] && $oreon->user->get_version() < 3)
-			createHostTemplateService($host_id, $ret["host_template_model_htm_id"]);
-		else if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"] && $oreon->user->get_version() >= 3) {			
+		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {			
 			createHostTemplateService($host_id);
 		}
 		insertHostExtInfos($host_id, $ret);
@@ -458,7 +450,7 @@
 		
 		// For Centreon 2, we no longer need "host_template_model_htm_id" in Nagios 3
 		// but we try to keep it compatible with Nagios 2 which needs "host_template_model_htm_id" 
-		if (isset($_POST['nbOfSelect']) || $oreon->user->get_version() >= 3) {
+		if (isset($_POST['nbOfSelect'])) {
 			$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
 			$result = $DBRESULT->fetchRow();
 			$ret["host_template_model_htm_id"] = $result["host_id"];
@@ -535,10 +527,9 @@
 					$already_stored[$tplId] = 1;
 	 			}
 	 		}
- 		} elseif (isset($_POST['nbOfSelect']) || $oreon->user->get_version() >= 3) { 	 		
+ 		} elseif (isset($_POST['nbOfSelect'])) { 	 		
 	 		$already_stored = array();
-	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++)
-	 		{ 			
+	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++) { 			
 	 			$tpSelect = "tpSelect_" . $i;
 	 			if (!isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
 		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id['MAX(host_id)'] .", ". $_POST[$tpSelect] .", ". $j .")";
@@ -559,10 +550,9 @@
 			$my_tab = $macro_on_demand;
 		else if (isset($_POST['nbOfMacro']))
 			$my_tab = $_POST;
-		if (isset($my_tab['nbOfMacro']) || $oreon->user->get_version() >= 3) {			
+		if (isset($my_tab['nbOfMacro'])) {			
 			$already_stored = array(); 		
-	 		for ($i=0; $i <= $my_tab['nbOfMacro']; $i++)
-	 		{ 			
+	 		for ($i=0; $i <= $my_tab['nbOfMacro']; $i++) { 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
 	 			if (isset($my_tab[$macInput]) && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]) {

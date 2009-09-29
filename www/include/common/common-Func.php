@@ -568,25 +568,8 @@
 		
 		if (!$host_id) 	
 			return;
-			
-		if ($oreon->user->get_version() < 3) {
-			while(1)	{
-				$DBRESULT =& $pearDB->query("SELECT h.host_template_model_htm_id, ".$field." FROM host h, extended_host_information ehi WHERE h.host_id = '".$host_id."' AND ehi.host_host_id = h.host_id LIMIT 1");
-				$row =& $DBRESULT->fetchRow();			
-				if (isset($row[$field]) && $row[$field])	{
-					$DBRESULT =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = ".$row[$field]." AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
-					$row =& $DBRESULT->fetchRow();
-					if (isset($row["dir_alias"]) && isset($row["img_path"]) && $row["dir_alias"] && $row["img_path"])
-						return $row["dir_alias"]."/".$row["img_path"];
-				}
-				else	{
-					if ($row["host_template_model_htm_id"])
-						$host_id = $row["host_template_model_htm_id"];
-					else
-						return NULL;
-				}
-			}
-		} elseif ($oreon->user->get_version() >= 3 && isset($flag1stLevel) && $flag1stLevel) {
+
+		if (isset($flag1stLevel) && $flag1stLevel) {
 			$rq = "SELECT ehi.".$field." " .
 					"FROM extended_host_information ehi " .
 					"WHERE ehi.host_host_id = '".$host_id."' LIMIT 1";								
@@ -603,7 +586,7 @@
 					return $result_field;
 			}
 			return NULL;
-		} elseif ($oreon->user->get_version() >= 3) {
+		} else {
 			$rq = "SELECT host_tpl_id " .
 				"FROM host_template_relation " .
 				"WHERE host_host_id = '".$host_id."' " .

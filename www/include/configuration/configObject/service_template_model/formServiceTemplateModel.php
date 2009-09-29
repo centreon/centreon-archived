@@ -366,12 +366,8 @@
 	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
 	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
 	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
-	if ($oreon->user->get_version() >= 2) {
-		$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
-		if ($oreon->user->get_version() >= 3) {
-			$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"));
-		}		
-	}
+	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
+	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"));
 	$form->addGroup($serviceNotifOpt, 'service_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
  	$serviceStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok"));
@@ -526,11 +522,9 @@
 		$form->addElement('header', 'title2', _("Massive Change"));
 
 	$form->addElement('header', 'nagios', _("Nagios"));
-	if ($oreon->user->get_version() >= 2)
-		$form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
+	$form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'esi_notes_url', _("URL"), $attrsText);
-	if ($oreon->user->get_version() >= 2)
-		$form->addElement('text', 'esi_action_url', _("Action URL"), $attrsText);
+	$form->addElement('text', 'esi_action_url', _("Action URL"), $attrsText);
 	$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('esi_icon_image',this.form.elements['esi_icon_image'].value)"));
 	$form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
@@ -550,42 +544,37 @@
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
-	#
-	## Sort 5 - Macros - Nagios 3
-	#
+	/*
+	 * Sort 5 - Macros - Nagios 3
+	 */
+	if ($o == "a")
+		$form->addElement('header', 'title5', _("Add macros"));
+	else if ($o == "c")
+		$form->addElement('header', 'title5', _("Modify macros"));
+	else if ($o == "w")
+		$form->addElement('header', 'title5', _("View macros"));
+	else if ($o == "mc")
+		$form->addElement('header', 'title5', _("Massive Change"));
+
+	$form->addElement('header', 'macro', _("Macros"));
 	
-	if ($oreon->user->get_version() == 3) {
-		if ($o == "a")
-			$form->addElement('header', 'title5', _("Add macros"));
-		else if ($o == "c")
-			$form->addElement('header', 'title5', _("Modify macros"));
-		else if ($o == "w")
-			$form->addElement('header', 'title5', _("View macros"));
-		else if ($o == "mc")
-			$form->addElement('header', 'title5', _("Massive Change"));
+	$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
+	$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
+	$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
+	$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
 	
-		$form->addElement('header', 'macro', _("Macros"));
-		
-		$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
-		$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
-		$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
-		$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
-		
-		include_once("include/configuration/configObject/service/makeJS_formService.php");	
-		if ($o == "c" || $o == "a" || $o == "mc" || $min)
-		{			
-			for ($k=0; isset($od_macro_id[$k]); $k++) {?>				
-				<script type="text/javascript">
-				globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
-				globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
-				globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
-				globalMacroTabSvcId[<?php echo $k;?>] = <?php echo $od_macro_svc_id[$k];?>;				
-				</script>			
-		<?php
-			}
+	include_once("include/configuration/configObject/service/makeJS_formService.php");	
+	if ($o == "c" || $o == "a" || $o == "mc" || $min) {			
+		for ($k=0; isset($od_macro_id[$k]); $k++) {?>				
+			<script type="text/javascript">
+			globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
+			globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
+			globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
+			globalMacroTabSvcId[<?php echo $k;?>] = <?php echo $od_macro_svc_id[$k];?>;				
+			</script>			
+	<?php
 		}
 	}
-
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');

@@ -169,10 +169,8 @@
 			$oreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $svcname['service_description']), "d");
 			$DBRESULT =& $pearDB->query("DELETE FROM service WHERE service_id = '".$key."'");
 			
-			if ($oreon->user->get_version() >= 3) {
-				$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
-				$DBRESULT =& $pearDB->query("DELETE FROM contact_service_relation WHERE service_service_id = '".$key."'");
-			}
+			$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
+			$DBRESULT =& $pearDB->query("DELETE FROM contact_service_relation WHERE service_service_id = '".$key."'");
 		}
 	}
 	
@@ -316,16 +314,14 @@
 							/*
 							 *  on demand macros
 							 */
-							if ($oreon->user->get_version() >= 3){
-								$mTpRq1 = "SELECT * FROM `on_demand_macro_service` WHERE `svc_svc_id` ='".$key."'";
-							 	$DBRESULT3 =& $pearDB->query($mTpRq1);
-								while ($sv =& $DBRESULT3->fetchRow()) {
-									$macName = str_replace("\$", "", $sv["svc_macro_name"]);
-									$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES " .
-												"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $sv['svc_macro_value'] ."')";
-							 		$DBRESULT4 =& $pearDB->query($mTpRq2);
-									$fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
-								}
+							$mTpRq1 = "SELECT * FROM `on_demand_macro_service` WHERE `svc_svc_id` ='".$key."'";
+						 	$DBRESULT3 =& $pearDB->query($mTpRq1);
+							while ($sv =& $DBRESULT3->fetchRow()) {
+								$macName = str_replace("\$", "", $sv["svc_macro_name"]);
+								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES " .
+											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $sv['svc_macro_value'] ."')";
+						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
+								$fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
 							}
 							
 							/*

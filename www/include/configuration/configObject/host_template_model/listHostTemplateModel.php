@@ -104,25 +104,20 @@
 		/* TPL List */
 		$tplArr = array();
 		$tplStr = NULL;
-		if ($oreon->user->get_version() < 3){
-			$tplArr = getMyHostTemplateModels($host["host_template_model_htm_id"]);
-			if (count($tplArr))	{ 
-				foreach($tplArr as $key =>$value)
-					$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
-			}
-		} else {
-			$tplArr = getMyHostMultipleTemplateModels($host['host_id']);
-			if (count($tplArr)) { 
-				$firstTpl = 1;
-				foreach($tplArr as $key =>$value) {
-					if ($firstTpl) {
-						$tplStr .= "<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
-						$firstTpl = 0;
-					} else
-						$tplStr .= "&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
-				}
+		
+		
+		$tplArr = getMyHostMultipleTemplateModels($host['host_id']);
+		if (count($tplArr)) { 
+			$firstTpl = 1;
+			foreach($tplArr as $key =>$value) {
+				if ($firstTpl) {
+					$tplStr .= "<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
+					$firstTpl = 0;
+				} else
+					$tplStr .= "&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
 			}
 		}
+	
 		/* Service List */
 		$svArr = array();
 		$svStr = NULL;

@@ -109,29 +109,26 @@
 	$form->addElement('header', 'information', _("Information"));
 	$form->addElement('text', 'dep_name', _("Name"), $attrsText);
 	$form->addElement('text', 'dep_description', _("Description"), $attrsText);
-	if ($oreon->user->get_version() >= 2)	{
-		$tab = array();
-		$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
-		$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
-		$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
-	}
+	$tab = array();
+	$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
+	$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"), array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
-	if ($oreon->user->get_version() >= 2)
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"), array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"), array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);'));
 	$form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
-	if ($oreon->user->get_version() >= 2)	{
-		$tab = array();
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Up"));
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
-		$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
-		$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
-	}
+	
+	$tab = array();
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Up"));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
+	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
+	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
 	$ams1 =& $form->addElement('advmultiselect', 'dep_hostParents', _("Hosts Name"), $hosts, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
@@ -165,9 +162,7 @@
 	$form->addRule('dep_description', _("Required Field"), 'required');
 	$form->addRule('dep_hostParents', _("Required Field"), 'required');
 	$form->addRule('dep_hostChilds', _("Required Field"), 'required');
-	
-	if ($oreon->user->get_version() == 1)
-		$form->addRule('notification_failure_criteria', _("Required Field"), 'required');
+	$form->addRule('notification_failure_criteria', _("Required Field"), 'required');
 	
 	$form->registerRule('cycle', 'callback', 'testHostDependencyCycle');
 	$form->addRule('dep_hostChilds', _("Circular Definition"), 'cycle');

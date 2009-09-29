@@ -326,26 +326,26 @@
 	<?php
 	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance")."<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70)\" onmouseout=\"UnTip()\">". _("Here is a self explanatory image.")."</a>");
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));	
-	if ($oreon->user->get_version() == 3) {
-		include_once("makeJS_formHost.php");	
-		if ($o == "c" || $o == "a" || $o == "mc") {		
-			for ($k = 0 ; isset($mTp[$k]); $k++) { ?>
-				<script type="text/javascript">
-				tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;		
-				</script> 
-			<?php
-			}
-			for ($k = 0; isset($od_macro_id[$k]); $k++) { ?>
-				<script type="text/javascript">
-				globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
-				globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
-				globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
-				globalMacroTabHostId[<?php echo $k;?>] = <?php echo $od_macro_host_id[$k];?>;
-				</script>				
-			<?php 
-			}
+	
+	include_once("makeJS_formHost.php");	
+	if ($o == "c" || $o == "a" || $o == "mc") {		
+		for ($k = 0 ; isset($mTp[$k]); $k++) { ?>
+			<script type="text/javascript">
+			tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;		
+			</script> 
+		<?php
+		}
+		for ($k = 0; isset($od_macro_id[$k]); $k++) { ?>
+			<script type="text/javascript">
+			globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
+			globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
+			globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
+			globalMacroTabHostId[<?php echo $k;?>] = <?php echo $od_macro_host_id[$k];?>;
+			</script>				
+		<?php 
 		}
 	}
+
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("No"), '0');
 	$form->addGroup($dupSvTpl, 'dupSvTplAssoc', _("Checks Enabled"), '&nbsp;');
@@ -440,10 +440,7 @@
     $hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
     $hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
     $hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
-	if ($oreon->user->get_version() >= 3) {		
-		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"));
-	}
-	
+	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"));
 	$form->addGroup($hostNotifOpt, 'host_notifOpts', _("Notification Options"), '&nbsp;&nbsp;');
 
  	$hostStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Up"));
@@ -541,32 +538,29 @@
 		$form->addElement('header', 'title3', _("Massive Change"));
 
 	$form->addElement('header', 'treatment', _("Data Processing"));
-	# Nagios 2
-	if ($oreon->user->get_version() >= 2)	{
-		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Yes"), '1');
-		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("No"), '0');
-		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Default"), '2');
-		$form->addGroup($hostOOH, 'host_obsess_over_host', _("Obsess Over Host"), '&nbsp;');
-		if ($o != "mc")
-			$form->setDefaults(array('host_obsess_over_host' => '2'));
 	
-		$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("Yes"), '1');
-		$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("No"), '0');
-		$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("Default"), '2');
-		$form->addGroup($hostCF, 'host_check_freshness', _("Check Freshness"), '&nbsp;');
-		if ($o != "mc")
-			$form->setDefaults(array('host_check_freshness' => '2'));
-	}
+	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Yes"), '1');
+	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("No"), '0');
+	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Default"), '2');
+	$form->addGroup($hostOOH, 'host_obsess_over_host', _("Obsess Over Host"), '&nbsp;');
+	if ($o != "mc")
+		$form->setDefaults(array('host_obsess_over_host' => '2'));
+
+	$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("Yes"), '1');
+	$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("No"), '0');
+	$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("Default"), '2');
+	$form->addGroup($hostCF, 'host_check_freshness', _("Check Freshness"), '&nbsp;');
+	if ($o != "mc")
+		$form->setDefaults(array('host_check_freshness' => '2'));
+
 	$hostFDE[] = &HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, _("Yes"), '1');
 	$hostFDE[] = &HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, _("No"), '0');
 	$hostFDE[] = &HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, _("Default"), '2');
 	$form->addGroup($hostFDE, 'host_flap_detection_enabled', _("Flap Detection Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('host_flap_detection_enabled' => '2'));
-	# Nagios 2
-	if ($oreon->user->get_version() >= 2)
-		$form->addElement('text', 'host_freshness_threshold', _("Freshness Threshold"), $attrsText2);
-
+	
+	$form->addElement('text', 'host_freshness_threshold', _("Freshness Threshold"), $attrsText2);
 	$form->addElement('text', 'host_low_flap_threshold', _("Low Flap threshold"), $attrsText2);
 	$form->addElement('text', 'host_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
 
@@ -591,9 +585,9 @@
 	if ($o != "mc")
 		$form->setDefaults(array('host_retain_nonstatus_information' => '2'));
 
-	#
-	## Sort 4 - Extended Infos
-	#
+	/*
+	 * Sort 4 - Extended Infos
+	 */
 	if ($o == "a")
 		$form->addElement('header', 'title4', _("Add a Host Extended Info"));
 	else if ($o == "c")
@@ -614,26 +608,25 @@
 	$form->addElement('text', 'ehi_2d_coords', _("Nagios 2d Coords"), $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', _("Nagios 3d Coords"), $attrsText2);
 
-	#
-	## Sort 5 - Macros - Nagios 3
-	#
-	if ($oreon->user->get_version() == 3) {
-		if ($o == "a")
-			$form->addElement('header', 'title5', _("Add macros"));
-		else if ($o == "c")
-			$form->addElement('header', 'title5', _("Modify macros"));
-		else if ($o == "w")
-			$form->addElement('header', 'title5', _("View macros"));
-		else if ($o == "mc")
-			$form->addElement('header', 'title5', _("Massive Change"));
+	/*
+	 * Sort 5 - Macros - Nagios 3
+	 */
+	if ($o == "a")
+		$form->addElement('header', 'title5', _("Add macros"));
+	else if ($o == "c")
+		$form->addElement('header', 'title5', _("Modify macros"));
+	else if ($o == "w")
+		$form->addElement('header', 'title5', _("View macros"));
+	else if ($o == "mc")
+		$form->addElement('header', 'title5', _("Massive Change"));
+
+	$form->addElement('header', 'macro', _("Macros"));
 	
-		$form->addElement('header', 'macro', _("Macros"));
-		
-		$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
-		$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
-		$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
-		$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
-	}
+	$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
+	$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
+	$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
+	$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
@@ -679,7 +672,7 @@
 		 * If we are using a Template, no need to check the value, we hope there are in the Template
 		 */
 		
-		if ($oreon->user->get_version() >= 3 && isset($_POST['nbOfSelect'])) {
+		if (isset($_POST['nbOfSelect'])) {
 			$z = 0;
 			$ok_flag = 0;
 			while ($z < $_POST['nbOfSelect']) {
@@ -819,7 +812,7 @@
 		$tpl->display("formHost.ihtml");
 	}
 
-if ($oreon->user->get_version() == 3 && !$action["action"]["action"] || isset($ok_flag) && !$ok_flag) {
+if (!$action["action"]["action"] || isset($ok_flag) && !$ok_flag) {
 ?>
 <script type="text/javascript">
 		add_select_template('<?php echo $o;?>');

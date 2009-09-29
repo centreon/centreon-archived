@@ -230,17 +230,8 @@
 		 */
 		$contact = array();
 		$DBRESULT =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_activate ='1'");
-		while ($contact =& $DBRESULT->fetchRow())	{
-			if ($oreon->user->get_version() == 2) {
-				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_activate FROM contactgroup_contact_relation cgcr, contactgroup cg WHERE cgcr.contact_contact_id = '".$contact["contact_id"]."' AND cg.cg_id = cgcr.contactgroup_cg_id");
-				while ($contactGroup =& $DBRESULT2->fetchRow())	{
-					if ($contactGroup["cg_activate"])
-						$cctEnb[$contact["contact_id"]] = 1;
-					unset($contactGroup);
-				}
-			} else {
-				$cctEnb[$contact["contact_id"]] = 1;
-			}
+		while ($contact =& $DBRESULT->fetchRow()) {
+			$cctEnb[$contact["contact_id"]] = 1;
 			unset($contact);				
 		}
 		$DBRESULT->free();
@@ -268,32 +259,22 @@
 		 * Host
 		 */
 		 
-		 	/*
-		 	 * Create template buffer
-		 	 */
-		 	if ($oreon->user->get_version() >= 3) {
-				$hostTemplate = array();
-				$DBRESULT =& $pearDB->query("SELECT htr.host_tpl_id, host.host_id FROM host_template_relation htr, host WHERE host.host_id = htr.host_host_id");
-				while ($htpl =& $DBRESULT->fetchRow()) {
-					$hostTemplate[$htpl["host_id"]]	= $htpl["host_tpl_id"];
-				}
-			}
-		 	
-		$host = array();
-		if ($oreon->user->get_version() == 2) {
-			$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id, host_id FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");			
-		} else if ($oreon->user->get_version() >= 3) {
-			$DBRESULT =& $pearDB->query("SELECT host.host_id, host.host_name FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");				
+	 	/*
+	 	 * Create template buffer
+	 	 */
+ 		$hostTemplate = array();
+		$DBRESULT =& $pearDB->query("SELECT htr.host_tpl_id, host.host_id FROM host_template_relation htr, host WHERE host.host_id = htr.host_host_id");
+		while ($htpl =& $DBRESULT->fetchRow()) {
+			$hostTemplate[$htpl["host_id"]]	= $htpl["host_tpl_id"];
 		}
-		
+	 	
+		$host = array();
+		$DBRESULT =& $pearDB->query("SELECT host.host_id, host.host_name FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");				
 		while ($host =& $DBRESULT->fetchRow())	{				
 			/*
 			 * If the Host is link to a Template, we think that the dependencies are manage in the template
 			 */
-			if (isset($host["host_template_model_htm_id"]) && $host["host_template_model_htm_id"])	{										
-				if (isset($host["host_template_model_htm_id"]) && isset($host["host_template_model_htm_id"][$hostEnb]))					
-					$hostEnb[$host["host_id"]] = $host["host_name"];											
-			} else if ($oreon->user->get_version() >= 3 && isset($hostTemplate[$host["host_id"]])) {										
+			if (isset($hostTemplate[$host["host_id"]])) {										
 				$hostEnb[$host["host_id"]] = $host["host_name"];
 			} else {	
 				$hostEnb[$host["host_id"]] = $host["host_name"];

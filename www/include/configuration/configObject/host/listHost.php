@@ -242,30 +242,22 @@
 			/*
 			 * Create Template topology 
 			 */		
-			if ($oreon->user->get_version() < 3){
-				$tplArr = getMyHostTemplateModels($host["host_template_model_htm_id"]);
-				if (count($tplArr))	{ 
-					foreach($tplArr as $key =>$value)
-						$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
-				}
-			} else {
-				$tplArr = getMyHostMultipleTemplateModels($host['host_id']);
-				if (count($tplArr)) { 
-					$firstTpl = 1;
-					foreach($tplArr as $key =>$value) {
-						if ($firstTpl) {
-							$tplStr .= "<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
-							$firstTpl = 0;
-						} else
-							$tplStr .= "&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
-					}
+			
+			$tplArr = getMyHostMultipleTemplateModels($host['host_id']);
+			if (count($tplArr)) { 
+				$firstTpl = 1;
+				foreach($tplArr as $key =>$value) {
+					if ($firstTpl) {
+						$tplStr .= "<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
+						$firstTpl = 0;
+					} else
+						$tplStr .= "&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
 				}
 			}
 			
 			/*
 			 * Check icon
 			 */
-			
 			if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
 				$host_icone = "./img/media/" . getImageFilePath($ehiCache[$host["host_id"]]);
 			} else if ($icone = $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1))) {

@@ -430,107 +430,105 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	
-	if ($oreon->user->get_version() == 3) {
-		## Part 23
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'enable_predictive_host_dependency_checks', _("Predictive Host Dependency Checks"), '&nbsp;');
-		
-		## Part 24
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'enable_predictive_service_dependency_checks', _("Predictive Service Dependency Checks"), '&nbsp;');
+	## Part 23
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'enable_predictive_host_dependency_checks', _("Predictive Host Dependency Checks"), '&nbsp;');
 	
-		## Part 25
-		$form->addElement('text', 'cached_host_check_horizon', _("Cached Host Check"), $attrsText);
-		
-		## Part 26
-		$form->addElement('text', 'cached_service_check_horizon', _("Cached Service Check"), $attrsText);
+	## Part 24
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'enable_predictive_service_dependency_checks', _("Predictive Service Dependency Checks"), '&nbsp;');
+
+	## Part 25
+	$form->addElement('text', 'cached_host_check_horizon', _("Cached Host Check"), $attrsText);
 	
-		## Part 27
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'use_large_installation_tweaks', _("Use large installation tweaks"), '&nbsp;');	
+	## Part 26
+	$form->addElement('text', 'cached_service_check_horizon', _("Cached Service Check"), $attrsText);
+
+	## Part 27
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'use_large_installation_tweaks', _("Use large installation tweaks"), '&nbsp;');	
+
+	## Part 28
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'free_child_process_memory', _("Free child process memory"), '&nbsp;');	
+
+	## Part 29
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'child_processes_fork_twice', _("Child processes fork twice"), '&nbsp;');	
 	
-		## Part 28
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'free_child_process_memory', _("Free child process memory"), '&nbsp;');	
+	## Part 30
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'enable_environment_macros', _("Enable environment macros"), '&nbsp;');
+
+	## Part 31
+	$form->addElement('text', 'additional_freshness_latency', _("Additional freshness latency"), $attrsText);
+
+	## Part 32
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'enable_embedded_perl', _("Enable embedded Perl"), '&nbsp;');
+
+	## Part 33
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'use_embedded_perl_implicitly', _("Use embedded Perl implicitly"), '&nbsp;');
+
+	## Part 34
+	$form->addElement('text', 'debug_file', _("Debug file (Directory + File)"), $attrsText);
 	
-		## Part 29
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'child_processes_fork_twice', _("Child processes fork twice"), '&nbsp;');	
-		
-		## Part 30
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'enable_environment_macros', _("Enable environment macros"), '&nbsp;');
-	
-		## Part 31
-		$form->addElement('text', 'additional_freshness_latency', _("Additional freshness latency"), $attrsText);
-	
-		## Part 32
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'enable_embedded_perl', _("Enable embedded Perl"), '&nbsp;');
-	
-		## Part 33
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'use_embedded_perl_implicitly', _("Use embedded Perl implicitly"), '&nbsp;');
-	
-		## Part 34
-		$form->addElement('text', 'debug_file', _("Debug file (Directory + File)"), $attrsText);
-		
-		## Part 35
-		$debugLevel = array();
-		$debugLevel["-1"]= _("Log everything");
-		$debugLevel["0"]= _("Log nothing (default)");
-		$debugLevel["1"]= _("Function enter/exit information");
-		$debugLevel["2"]= _("Config information");
-		$debugLevel["4"]= _("Process information");
-		$debugLevel["8"]= _("Scheduled event information");
-		$debugLevel["16"]= _("Host/service check information");
-		$debugLevel["32"]= _("Notification information");
-		$debugLevel["64"]= _("Event broker information");
-		//$debugLevel["256"]= _("Commands information");
-		//$debugLevel["2048"]= _("Macros information");
-		foreach ($debugLevel as $key => $val) {
-			if ($key == "-1" || $key == "0")
-				$debugCheck[] = &HTML_QuickForm::createElement('checkbox', $key, '&nbsp;', $val, array("id"=>"debug".$key, "onClick"=>"unCheckOthers(this.id);"));
-			else
-				$debugCheck[] = &HTML_QuickForm::createElement('checkbox', $key, '&nbsp;', $val, array("id"=>"debug".$key, "onClick"=>"unCheckAllAndNaught();"));			
-		}
-		$form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');		
-		$form->setDefaults($nagios_d);
-	
-		## Part 36
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 0 ", '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 1 ", '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 2 ", '2');
-		$form->addGroup($nagTab, 'debug_verbosity', _("Debug Verbosity"), '&nbsp;');
-	
-		## Part 37
-		$form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
+	## Part 35
+	$debugLevel = array();
+	$debugLevel["-1"]= _("Log everything");
+	$debugLevel["0"]= _("Log nothing (default)");
+	$debugLevel["1"]= _("Function enter/exit information");
+	$debugLevel["2"]= _("Config information");
+	$debugLevel["4"]= _("Process information");
+	$debugLevel["8"]= _("Scheduled event information");
+	$debugLevel["16"]= _("Host/service check information");
+	$debugLevel["32"]= _("Notification information");
+	$debugLevel["64"]= _("Event broker information");
+	//$debugLevel["256"]= _("Commands information");
+	//$debugLevel["2048"]= _("Macros information");
+	foreach ($debugLevel as $key => $val) {
+		if ($key == "-1" || $key == "0")
+			$debugCheck[] = &HTML_QuickForm::createElement('checkbox', $key, '&nbsp;', $val, array("id"=>"debug".$key, "onClick"=>"unCheckOthers(this.id);"));
+		else
+			$debugCheck[] = &HTML_QuickForm::createElement('checkbox', $key, '&nbsp;', $val, array("id"=>"debug".$key, "onClick"=>"unCheckAllAndNaught();"));			
 	}
+	$form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');		
+	$form->setDefaults($nagios_d);
+
+	## Part 36
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 0 ", '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 1 ", '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 2 ", '2');
+	$form->addGroup($nagTab, 'debug_verbosity', _("Debug Verbosity"), '&nbsp;');
+
+	## Part 37
+	$form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
 
 	$form->setDefaults(array(
 	"nagios_activate"=>'0',
