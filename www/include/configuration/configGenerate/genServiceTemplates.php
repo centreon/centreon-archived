@@ -39,8 +39,8 @@
 	if (!isset($oreon))
 		exit();
 
-	require_once ("@CENTREON_ETC@/centreon.conf.php");
-	require_once ($centreon_path . "/www/class/centreonService.class.php");
+	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once $centreon_path . "/www/class/centreonService.class.php";
 
 	/*
 	 * Create contact relation Cache
@@ -241,20 +241,19 @@
 			}
 			
 			/*
-			 * Contact Relation only for Nagios 3
+			 * Contact Relation
 			 */
-			if ($oreon->user->get_version() >= 3) {
-				$contact = array();
-				$strTMPTemp = NULL;
-				$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id ORDER BY `contact_name`");
-				while ($contact =& $DBRESULT2->fetchRow())	{
-					if (isset($gbArr[0][$contact["contact_id"]]))
-						$strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
-				}
-				$DBRESULT2->free();
-				if ($strTMPTemp) $strTMP .= print_line("contacts", $strTMPTemp);
-				unset($contact);
+			$contact = array();
+			$strTMPTemp = NULL;
+			$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id ORDER BY `contact_name`");
+			while ($contact =& $DBRESULT2->fetchRow())	{
+				if (isset($gbArr[0][$contact["contact_id"]]))
+					$strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
 			}
+			$DBRESULT2->free();
+			if ($strTMPTemp) $strTMP .= print_line("contacts", $strTMPTemp);
+			unset($contact);
+
 			
 			
 			if ($service["service_stalking_options"]) 
@@ -270,38 +269,37 @@
 				unset($DBRESULT_TEMP);
 			}
 				
-			if ($oreon->user->get_version() >= 3) {
-				/*
-				 * On-demand macros
-				 */
-				$rq = "SELECT svc_macro_name, svc_macro_value FROM on_demand_macro_service WHERE `svc_svc_id`=" . $service['service_id'];
-				$DBRESULT3 =& $pearDB->query($rq);
-				while($od_macro = $DBRESULT3->fetchRow()) {
-					$mac_name = str_replace("\$_SERVICE", "_", $od_macro['svc_macro_name']);
-					$mac_name = str_replace("\$", "", $mac_name);
-					$mac_value = $od_macro['svc_macro_value'];
-					$strTMP .= print_line($mac_name, $mac_value);
-				}
-				$DBRESULT3->free();
 			
-				/*
-				 * Extended Informations
-				 */
-				$svc_method = new CentreonService($pearDB);
-				
-				$DBRESULT3 =& $pearDB->query("SELECT * FROM extended_service_information esi WHERE esi.service_service_id = '".$service["service_id"]."'");
-				$esi =& $DBRESULT3->fetchRow();
-				if ($field = $esi["esi_notes"])
-					$strTMP .= print_line("notes", $svc_method->replaceMacroInString($service["service_id"], $field));
-				if ($field = $esi["esi_notes_url"])
-					$strTMP .= print_line("notes_url", $svc_method->replaceMacroInString($service["service_id"], $field));
-				if ($field = $esi["esi_action_url"])
-					$strTMP .= print_line("action_url", $svc_method->replaceMacroInString($service["service_id"], $field));
-				if ($field = getMyServiceExtendedInfoImage($service["service_id"], "esi_icon_image"))
-					$strTMP .= print_line("icon_image", $svc_method->replaceMacroInString($service["service_id"], $field));
-				if ($field = $esi["esi_icon_image_alt"])
-					$strTMP .= print_line("icon_image_alt", $svc_method->replaceMacroInString($service["service_id"], $field));
+			/*
+			 * On-demand macros
+			 */
+			$rq = "SELECT svc_macro_name, svc_macro_value FROM on_demand_macro_service WHERE `svc_svc_id`=" . $service['service_id'];
+			$DBRESULT3 =& $pearDB->query($rq);
+			while($od_macro = $DBRESULT3->fetchRow()) {
+				$mac_name = str_replace("\$_SERVICE", "_", $od_macro['svc_macro_name']);
+				$mac_name = str_replace("\$", "", $mac_name);
+				$mac_value = $od_macro['svc_macro_value'];
+				$strTMP .= print_line($mac_name, $mac_value);
 			}
+			$DBRESULT3->free();
+		
+			/*
+			 * Extended Informations
+			 */
+			$svc_method = new CentreonService($pearDB);
+			
+			$DBRESULT3 =& $pearDB->query("SELECT * FROM extended_service_information esi WHERE esi.service_service_id = '".$service["service_id"]."'");
+			$esi =& $DBRESULT3->fetchRow();
+			if ($field = $esi["esi_notes"])
+				$strTMP .= print_line("notes", $svc_method->replaceMacroInString($service["service_id"], $field));
+			if ($field = $esi["esi_notes_url"])
+				$strTMP .= print_line("notes_url", $svc_method->replaceMacroInString($service["service_id"], $field));
+			if ($field = $esi["esi_action_url"])
+				$strTMP .= print_line("action_url", $svc_method->replaceMacroInString($service["service_id"], $field));
+			if ($field = getMyServiceExtendedInfoImage($service["service_id"], "esi_icon_image"))
+				$strTMP .= print_line("icon_image", $svc_method->replaceMacroInString($service["service_id"], $field));
+			if ($field = $esi["esi_icon_image_alt"])
+				$strTMP .= print_line("icon_image_alt", $svc_method->replaceMacroInString($service["service_id"], $field));
 			
 			$strTMP .= "}\n\n";
 			if (!$service["service_register"] || $LinkedToHost)	{

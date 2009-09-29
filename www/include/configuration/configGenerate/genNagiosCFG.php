@@ -39,14 +39,14 @@
 	if (!isset($oreon))
 		exit();	
 	
-	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+	if (!is_dir($nagiosCFGPath.$tab['id']."/"))
 		mkdir($nagiosCFGPath.$tab['id']."/");
-	}
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/nagios.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
 	$nagios = $DBRESULT->fetchRow();
 	$str = NULL;
+	
 	$ret["comment"] ? ($str .= "# '".$nagios["nagios_name"]."'\n") : NULL;
 	if ($ret["comment"] && $nagios["nagios_comment"])	{
 		$comment = array();
@@ -63,21 +63,15 @@
 	$str .= "cfg_file=".$nagios["cfg_dir"]."contactgroups.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."contacts.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."hostgroups.cfg\n";
-	
-	if ($oreon->user->get_version() >= 2)
-		$str .= "cfg_file=".$nagios["cfg_dir"]."servicegroups.cfg\n";
-	
+	$str .= "cfg_file=".$nagios["cfg_dir"]."servicegroups.cfg\n";	
 	$str .= "cfg_file=".$nagios["cfg_dir"]."timeperiods.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."escalations.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."dependencies.cfg\n";	
 	
-	if ($oreon->user->get_version() == 2)	{
-		$str .= "cfg_file=".$nagios["cfg_dir"]."hostextinfo.cfg\n";
-		$str .= "cfg_file=".$nagios["cfg_dir"]."serviceextinfo.cfg\n";
-	}
-	
 	if (isset($tab['localhost']) && $tab['localhost']){
-		# Include for Meta Service the cfg file
+		/*
+		 * Include for Meta Service the cfg file
+		 */
 		if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
 			foreach ($files as $filename)	{
 				$cfg = NULL;
@@ -86,7 +80,9 @@
 				$cfg .= $file[0];
 				$str .= "cfg_file=".$nagios["cfg_dir"].$cfg.".cfg\n";
 			}
-		# Include for Module the cfg file
+		/*
+		 * Include for Module the cfg file
+		 */
 		foreach ($oreon->modules as $name => $tab2)
 			if ($oreon->modules[$name]["gen"] && $files = glob("./modules/$name/generate_files/*.php"))
 				foreach ($files as $filename)	{
@@ -101,7 +97,7 @@
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key => $value)	{
 		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{	
-			if ($key == "aggregate_status_updates" && ($value == 2 || $oreon->user->get_version() == 3));
+			if ($key == "aggregate_status_updates" && ($value == 2));
 			else if ($key == "enable_notifications" && $value == 2);	
 			else if ($key == "execute_service_checks" && $value == 2);	
 			else if ($key == "accept_passive_service_checks" && $value == 2);	
@@ -136,15 +132,11 @@
 			else if ($key == "use_true_regexp_matching" && $value == 2);
 			else if ($key == "service_inter_check_delay_method" && $value == 2);
 			else if ($key == "host_inter_check_delay_method" && $value == 2);
-			else if ($key == "downtime_file" && $oreon->user->get_version() >= 2);
-			else if ($key == "comment_file" && $oreon->user->get_version() >= 2);
-			else if ($key == "state_retention_file" && $oreon->user->get_version() >= 2);
+			else if ($key == "downtime_file");
+			else if ($key == "comment_file");
+			else if ($key == "state_retention_file");
 			else if ($key == "service_reaper_frequency") {
-				if ($oreon->user->get_version() == 2) {
-					$str .= $key."=".$value."\n";
-				} else {
-					$str .= "check_result_reaper_frequency=".$value."\n";
-				}
+				$str .= "check_result_reaper_frequency=".$value."\n";
 			}
 			else if ($key == "global_host_event_handler" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
@@ -203,8 +195,8 @@
 			else if ($key == "additional_freshness_latency" && $oreon->user->get_version() == 2);			
 			else if ($key == "max_debug_file_size" && $oreon->user->get_version() == 2);
 			else if ($key == "debug_file" && $oreon->user->get_version() == 2);
-			else if ($key == "downtime_file" && $oreon->user->get_version() == 3);
-			else if ($key == "comment_file" && $oreon->user->get_version() == 3);
+			else if ($key == "downtime_file");
+			else if ($key == "comment_file");
 			else if ($key == "enable_embedded_perl" && $oreon->user->get_version() == 2);
 			else if ($key == "use_embedded_perl_implicitly" && $oreon->user->get_version() == 2);			
 			else if ($key == "tmp_path" && $oreon->user->get_version() == 2);

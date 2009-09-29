@@ -162,8 +162,7 @@
 				/*
                  * Write service_id
                  */
-                if ($oreon->user->get_version() >= 3)
-	                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
+                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
 				
 				/*
 				 * Template Model Relation
@@ -279,20 +278,18 @@
 				}
 				
 				/*
-				 * Contact Relation only for Nagios 3
+				 * Contact Relation
 				 */
-				if ($oreon->user->get_version() >= 3) {
-					if (isset($cctSCache[$service["service_id"]])) {
-						$strTMPTemp = "";
-						foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
-							if ($strTMPTemp != "") 
-								$strTMPTemp .= ",";
-							$strTMPTemp .= $cct_name;
-						}
-						if ($strTMPTemp) 
-							$strTMP .= print_line("contacts", $strTMPTemp);
-						unset($strTMPTemp);
+				if (isset($cctSCache[$service["service_id"]])) {
+					$strTMPTemp = "";
+					foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
+						if ($strTMPTemp != "") 
+							$strTMPTemp .= ",";
+						$strTMPTemp .= $cct_name;
 					}
+					if ($strTMPTemp) 
+						$strTMP .= print_line("contacts", $strTMPTemp);
+					unset($strTMPTemp);
 				}
 				
 				if ($service["service_stalking_options"]) 
@@ -300,36 +297,35 @@
 				if (!$service["service_register"]) 
 					$strTMP .= print_line("register", "0");
 				
-				if ($oreon->user->get_version() >= 3) {
-					/*
-					 * On-demand macros
-					 */
-					if (isset($macroCache[$service['service_id']])) {
-						foreach ($macroCache[$service['service_id']] as $key => $value) {
-							$mac_name = str_replace("\$_SERVICE", "_", $key);
-							$mac_name = str_replace("\$", "", $mac_name);
-							$strTMP .= print_line($mac_name, $value);
-						}
-					}
-				
-					/*
-					 * Extended Informations
-					 */
-					
-					if (isset($esiCache[$service["service_id"]])) {
-						$esi =& $esiCache[$service["service_id"]];
-						if (isset($esi["notes"]) && $esi["notes"])
-							$strTMP .= print_line("notes", $esi["notes"]);
-						if (isset($esi["notes_url"]) && $esi["notes_url"])
-							$strTMP .= print_line("notes_url", $esi["notes_url"]);
-						if (isset($esi["action_url"]) && $esi["action_url"])
-							$strTMP .= print_line("action_url", $esi["action_url"]);
-						if (isset($esi["icon_image"]) && $esi["icon_image"])
-							$strTMP .= print_line("icon_image", $esi["icon_image"]);
-						if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
-							$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);	
+				/*
+				 * On-demand macros
+				 */
+				if (isset($macroCache[$service['service_id']])) {
+					foreach ($macroCache[$service['service_id']] as $key => $value) {
+						$mac_name = str_replace("\$_SERVICE", "_", $key);
+						$mac_name = str_replace("\$", "", $mac_name);
+						$strTMP .= print_line($mac_name, $value);
 					}
 				}
+			
+				/*
+				 * Extended Informations
+				 */
+				
+				if (isset($esiCache[$service["service_id"]])) {
+					$esi =& $esiCache[$service["service_id"]];
+					if (isset($esi["notes"]) && $esi["notes"])
+						$strTMP .= print_line("notes", $esi["notes"]);
+					if (isset($esi["notes_url"]) && $esi["notes_url"])
+						$strTMP .= print_line("notes_url", $esi["notes_url"]);
+					if (isset($esi["action_url"]) && $esi["action_url"])
+						$strTMP .= print_line("action_url", $esi["action_url"]);
+					if (isset($esi["icon_image"]) && $esi["icon_image"])
+						$strTMP .= print_line("icon_image", $esi["icon_image"]);
+					if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
+						$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);	
+				}
+				
 				$strTMP .= "}\n\n";
 				$str .= $strTMP;
 				
@@ -400,10 +396,7 @@
 						if (PEAR::isError($DBRESULT2))
 							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						while ($host =& $DBRESULT2->fetchRow())	{
-							$BP = false;
-							isset($gbArr[2][$host["host_id"]]) ? $BP = true : NULL;
-							
-							if ($BP)	{
+							if (isset($gbArr[2][$host["host_id"]]))	{
 								$parent = true;
 								if (isHostOnThisInstance($host["host_id"], $tab['id'])){
 									$strTMPTemp != NULL ? $strTMPTemp .= ", ".$host["host_name"] : $strTMPTemp = $host["host_name"];
@@ -425,8 +418,7 @@
 				/*
                  * Write service_id
                  */
-                if ($oreon->user->get_version() >= 3)
-	                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
+               $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
 				
 				/*
 				 * Template Model Relation
@@ -564,19 +556,18 @@
 				/*
 				 * Contact Relation only for Nagios 3
 				 */
-				if ($oreon->user->get_version() >= 3) {
-					if (isset($cctSCache[$service["service_id"]])) {
-						$strTMPTemp = "";
-						foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
-							if ($strTMPTemp != "") 
-								$strTMPTemp .= ",";
-							$strTMPTemp .= $cct_name;
-						}
-						if ($strTMPTemp) 
-							$strTMP .= print_line("contacts", $strTMPTemp);
-						unset($strTMPTemp);
+				if (isset($cctSCache[$service["service_id"]])) {
+					$strTMPTemp = "";
+					foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
+						if ($strTMPTemp != "") 
+							$strTMPTemp .= ",";
+						$strTMPTemp .= $cct_name;
 					}
+					if ($strTMPTemp) 
+						$strTMP .= print_line("contacts", $strTMPTemp);
+					unset($strTMPTemp);
 				}
+			
 				if ($service["service_stalking_options"]) 
 					$strTMP .= print_line("stalking_options", $service["service_stalking_options"]);
 				if (!$service["service_register"]) 
@@ -592,35 +583,33 @@
 					unset($DBRESULT_TEMP);
 				}
 				
-				if ($oreon->user->get_version() >= 3) {
-					/*
-					 * On-demand macros
-					 */
-					if (isset($macroCache[$service['service_id']])) {
-						foreach ($macroCache[$service['service_id']] as $key => $value) {
-							$mac_name = str_replace("\$_SERVICE", "_", $key);
-							$mac_name = str_replace("\$", "", $mac_name);
-							$strTMP .= print_line($mac_name, $value);
-						}
+				/*
+				 * On-demand macros
+				 */
+				if (isset($macroCache[$service['service_id']])) {
+					foreach ($macroCache[$service['service_id']] as $key => $value) {
+						$mac_name = str_replace("\$_SERVICE", "_", $key);
+						$mac_name = str_replace("\$", "", $mac_name);
+						$strTMP .= print_line($mac_name, $value);
 					}
+				}
+			
+				/*
+				 * Extended Informations
+				 */
 				
-					/*
-					 * Extended Informations
-					 */
-					
-					if (isset($esiCache[$service["service_id"]])) {
-						$esi =& $esiCache[$service["service_id"]];
-						if (isset($esi["notes"]) && $esi["notes"])
-							$strTMP .= print_line("notes", $esi["notes"]);
-						if (isset($esi["notes_url"]) && $esi["notes_url"])
-							$strTMP .= print_line("notes_url", $esi["notes_url"]);
-						if (isset($esi["action_url"]) && $esi["action_url"])
-							$strTMP .= print_line("action_url", $esi["action_url"]);
-						if (isset($esi["icon_image"]) && $esi["icon_image"])
-							$strTMP .= print_line("icon_image", $esi["icon_image"]);
-						if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
-							$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);	
-					}
+				if (isset($esiCache[$service["service_id"]])) {
+					$esi =& $esiCache[$service["service_id"]];
+					if (isset($esi["notes"]) && $esi["notes"])
+						$strTMP .= print_line("notes", $esi["notes"]);
+					if (isset($esi["notes_url"]) && $esi["notes_url"])
+						$strTMP .= print_line("notes_url", $esi["notes_url"]);
+					if (isset($esi["action_url"]) && $esi["action_url"])
+						$strTMP .= print_line("action_url", $esi["action_url"]);
+					if (isset($esi["icon_image"]) && $esi["icon_image"])
+						$strTMP .= print_line("icon_image", $esi["icon_image"]);
+					if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
+						$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);	
 				}
 				
 				$strTMP .= "}\n\n";

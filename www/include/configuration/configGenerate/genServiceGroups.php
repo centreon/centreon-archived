@@ -69,7 +69,9 @@
 			if ($serviceGroup["sg_alias"]) 
 				$strDef .= print_line("alias", $serviceGroup["sg_alias"]);
 			
-			// Service members
+			/*
+			 * Service members
+			 */
 			$service = array();
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
