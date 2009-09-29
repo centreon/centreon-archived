@@ -160,18 +160,22 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
+	function testFilled() {
+		
+	}
+
 	/*
 	 * Form Rules
 	 */
+	$form->registerRule('exist', 'callback', 'testExistence');
+	
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('name', _("Compulsory Name"), 'required');
+	$form->addRule('ds_name', _("Compulsory Name"), 'required');
+	$form->addRule('ds_name', _("Name is already in use"), 'exist');
 	$form->addRule('ds_name', _("Required Field"), 'required');
 	$form->addRule('ds_legend', _("Required Field"), 'required');
 	$form->addRule('ds_color_line', _("Required Field"), 'required');
-	$form->addRule('ds_color_area', _("Required Field"), 'required');
-
-	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('name', _("Name is already in use"), 'exist');
+	
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	/*

@@ -114,6 +114,10 @@
 		$ret = $form->getSubmitValues();
 		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
 			noDefaultOreonGraph();
+		
+		if ($ret["ds_filled"] == 1 && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"])))
+			$ret["ds_color_area"] = $ret["ds_color_line"];
+			
 		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `name` , `ds_order` , `ds_name` , " .
 				" `ds_color_line` , `ds_color_area` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
 				"`default_tpl1`, `comment` ) ";
@@ -148,6 +152,10 @@
 		$ret = $form->getSubmitValues();
 		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
 			noDefaultOreonGraph();
+		
+		if ($ret["ds_filled"] == 1 && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"])))
+			$ret["ds_color_area"] = $ret["ds_color_line"];
+	
 		$rq = "UPDATE giv_components_template ";
 		$rq .= "SET name = ";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
