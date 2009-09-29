@@ -678,16 +678,8 @@
 		/*
 		 * If we are using a Template, no need to check the value, we hope there are in the Template
 		 */
-		if ((!$form->getSubmitValue("host_template_model_htm_id")) && ($oreon->user->get_version() != 3))	{
-			$form->addRule('host_alias', _("Compulsory Alias"), 'required');
-			$form->addRule('host_address', _("Compulsory Address"), 'required');
-			$form->addRule('host_max_check_attempts', _("Required Field"), 'required');
-			$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-			$form->addRule('host_cs', _("Compulsory Contact"), 'required');
-			$form->addRule('host_notification_interval', _("Required Field"), 'required');
-			$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
-			$form->addRule('host_notifOpts', _("Compulsory Option"), 'required');
-		} else if ($oreon->user->get_version() >= 3 && isset($_POST['nbOfSelect'])) {
+		
+		if ($oreon->user->get_version() >= 3 && isset($_POST['nbOfSelect'])) {
 			$z = 0;
 			$ok_flag = 0;
 			while ($z < $_POST['nbOfSelect']) {
