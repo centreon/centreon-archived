@@ -277,9 +277,11 @@
 	#
 	$form->addElement('header', 'information', _("General Information"));
 
-	# No possibility to change name and alias, because there's no interest
-	if ($o != "mc")
-		$form->addElement('text', 'service_description', _("Description"), $attrsText);
+	/*
+	 * - No possibility to change name and alias, because there's no interest
+	 * - May be ? #409
+	 */
+	$form->addElement('text', 'service_description', _("Description"), $attrsText);
 	$form->addElement('text', 'service_alias', _("Alias"), $attrsText);
 	
 	$form->addElement('select', 'service_template_model_stm_id', _("Service Template"), $svTpls);

@@ -26,9 +26,7 @@
 		{if $msg.tpl}
 		<tr class="list_one"><td class="FormRowField">{$form.service_alias.label}<br />{$form.header.service_alias_interest}</td><td class="FormRowValue">{$form.service_alias.html}</td></tr>
 		{/if}
-		{if $o != "mc"}
 		<tr class="list_two"><td class="FormRowField">{$form.service_description.label}</td><td class="FormRowValue">{$form.service_description.html}</td></tr>
-		{/if}
 		<tr class="list_one">
 			<td class="FormRowField">
 				<div style='text-decoration: underline;'>{$form.service_template_model_stm_id.label}</div>

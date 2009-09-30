@@ -878,7 +878,9 @@
 			$ret["service_alias"] = str_replace('/', "#S#", $ret["service_alias"]);
 			$ret["service_alias"] = str_replace('\\', "#BS#", $ret["service_alias"]);
 		}
+		
 		$rq = "UPDATE service SET ";
+		$rq .= "service_description = '".$ret["service_description"]."', ";
 		if (isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL) {
 			$rq .= "service_template_model_stm_id = '".$ret["service_template_model_stm_id"]."', ";
 			$fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
