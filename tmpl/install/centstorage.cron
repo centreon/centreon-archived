@@ -41,10 +41,10 @@
 CRONTAB_EXEC_USER=""
 
 # Cron for log parsor
-* * * * * @CRONUSER@ @CENTSTORAGE_BINDIR@/logAnalyser >> @CENTREON_LOG@/logAnalyser.log 2>&1
+* * * * * @NAGIOS_USER@ @CENTSTORAGE_BINDIR@/logAnalyser >> @CENTREON_LOG@/logAnalyser.log 2>&1
 
 # Cron for tracing Nagios Poller Performances
-*/5 * * * * @CRONUSER@ @CENTSTORAGE_BINDIR@/nagiosPerfTrace >> @CENTREON_LOG@/nagiosPerfTrace.log 2>&1
+*/5 * * * * @NAGIOS_USER@ @CENTSTORAGE_BINDIR@/nagiosPerfTrace >> @CENTREON_LOG@/nagiosPerfTrace.log 2>&1
 
 # Cron for databin and logs purge
-0 2 * * * @CRONUSER@ @INSTALL_DIR_CENTREON@/cron/centreonPurge.sh >> @CENTREON_LOG@/centreonPurge.log 2>&1
+0 2 * * * @WEB_USER@ @INSTALL_DIR_CENTREON@/cron/centreonPurge.sh >> @CENTREON_LOG@/centreonPurge.log 2>&1

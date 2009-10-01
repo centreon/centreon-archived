@@ -1258,6 +1258,8 @@ function prepare_sudo_config() {
 	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage restart
 	# CentStorage stop
 	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage stop
+	# CentStorage start
+	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage start
 	## END: CENTREON SUDO 
 
 	__EOT__
@@ -1452,7 +1454,7 @@ function createCentreonInstallConf() {
 	CENTREON_LOG=$CENTREON_LOG
 	CENTREON_ETC=$CENTREON_ETC
 	CENTREON_GENDIR=$CENTREON_GENDIR
-  CENTREON_VARLIB=$CENTREON_VARLIB
+	CENTREON_VARLIB=$CENTREON_VARLIB	
 	CRON_D=$CRON_D
 	INIT_D=$INIT_D
 	PHP_BIN=$PHP_BIN
@@ -2010,7 +2012,12 @@ function install_init_service() {
 	elif [ "$OS" = "SUSE" ] ; then
 		chkconfig --add $service
 	elif [ "$OS" = "REDHAT" ] ; then
-		chkconfig --add $service
+    # Just for CentOS :p bug #1148
+    if [ -x /sbin/chkconfig ] ; then
+      /sbin/chkconfig --add $service
+    else
+		 chkconfig --add $service
+   fi
 	elif [ "$OS" = "FREEBSD" ] ; then
 		echo_info "$(gettext "You must configure your /etc/rc.conf with"): ${service}_enable=YES"
 	else
@@ -2058,7 +2065,6 @@ function find_OS() {
 			dist_found="NOT_FOUND"
 			log "INFO" "$(gettext "GNU/Linux distribution not found")"
 			return 1
-
 		fi
 	elif [ "$system" = "FreeBSD" ] ; then
 		dist_found="FREEBSD"

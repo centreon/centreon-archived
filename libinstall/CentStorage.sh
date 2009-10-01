@@ -293,7 +293,8 @@ ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-	-e 's|@CRONUSER@|'"$NAGIOS_USER"'|g' \
+	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
+	-e 's|@WEB_USER@|'"$WEB_USER"'|g' \
 	$BASE_DIR/tmpl/install/centstorage.cron > $TMP_DIR/work/centstorage.cron
 check_result $? "$(gettext "Change macros for centstorage.cron")"
 

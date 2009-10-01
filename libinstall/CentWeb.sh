@@ -278,7 +278,8 @@ ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@PERL_BIN@|'"$BIN_PERL"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-	-e 's|@CRONUSER@|'"$NAGIOS_USER"'|g' \
+	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
+	-e 's|@WEB_USER@|'"$WEB_USER"'|g' \
 	$BASE_DIR/tmpl/install/centreon.cron > $TMP_DIR/work/centreon.cron
 check_result $? "$(gettext "Change macros for centreon.cron")"
 cp $TMP_DIR/work/centreon.cron $TMP_DIR/final/centreon.cron >> "$LOG_FILE" 2>&1
