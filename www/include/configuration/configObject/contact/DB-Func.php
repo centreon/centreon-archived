@@ -232,7 +232,7 @@
 	}
 
 	function insertContact($ret = array())	{
-		global $form, $pearDB, $oreon;
+		global $form, $pearDB, $oreon, $centreon_crypt;
 	
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
@@ -250,7 +250,13 @@
 		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".md5($ret["contact_passwd"])."', ": $rq .= "NULL, ";
+		if ($centreon_crypt == 1)
+			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".md5($ret["contact_passwd"])."', ": $rq .= "NULL, ";
+		else if ($centreon_crypt == 2)
+			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".sha1($ret["contact_passwd"])."', ": $rq .= "NULL, ";
+		else
+			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".md5($ret["contact_passwd"])."', ": $rq .= "NULL, ";
+				
 		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["contact_hostNotifOpts"]))."', ": $rq .= "NULL, ";
 		isset($ret["contact_svNotifOpts"]) && $ret["contact_svNotifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["contact_svNotifOpts"]))."', ": $rq .= "NULL, ";
@@ -281,8 +287,14 @@
 			$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES);
 		if (isset($ret["contact_alias"]))
 			$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES);
-		if (isset($ret["contact_passwd"]))
-			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+		if (isset($ret["contact_passwd"])) {
+			if ($centreon_crypt == 1)
+				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+			else if ($centreon_crypt == 2)
+				$fields["contact_passwd"] = sha1($ret["contact_passwd"]);
+			else
+				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+		}
 		if (isset($ret["contact_lang"]))
 			$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES);
 		if (isset($ret["contact_hostNotifOpts"]))
@@ -323,7 +335,7 @@
 	}
 
 	function updateContact($contact_id = null, $from_MC = false)	{
-		global $form, $pearDB, $oreon;
+		global $form, $pearDB, $oreon, $centreon_crypt;
 		if (!$contact_id) 
 			return;
 		$ret = array();
@@ -340,8 +352,14 @@
 			$rq .= "contact_alias = ";
 			isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		}
-		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"])
-			$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";	
+		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
+			if ($centreon_crypt == 1)
+				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";	
+			else if ($centreon_crypt == 2)
+				$rq .= "contact_passwd = '".sha1($ret["contact_passwd"])."', ";	
+			else
+				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";	
+		}
 		$rq .=	"contact_lang = ";
 		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= 	"contact_host_notification_options = ";
@@ -377,7 +395,12 @@
 		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES);
 		$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES);
-		$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+		if ($centreon_crypt == 1)
+			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+		else if ($centreon_crypt == 2)
+			$fields["contact_passwd"] = sha1($ret["contact_passwd"]);
+		else
+			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
 		$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES);
 		$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
 		$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
@@ -386,7 +409,6 @@
 		$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
 		$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
 		$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
-		//$fields["contact_type_msg"] = $ret["contact_type_msg"];
 		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
 		$fields["contact_auth_type"] = $ret["contact_auth_type"];
 		if (isset($ret["contact_ldap_dn"]))
@@ -400,7 +422,7 @@
 	}
 
 	function updateContact_MC($contact_id = null)	{
-		global $form, $pearDB, $oreon;
+		global $form, $pearDB, $oreon, $centreon_crypt;
 		if (!$contact_id) 
 			return;
 		$ret = array();
@@ -415,8 +437,16 @@
 			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];	
 		}
 		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) { 
-			$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
-			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+			if ($centreon_crypt == 1) {
+				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
+				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+			} else if ($centreon_crypt == 2) {
+				$rq .= "contact_passwd = '".sha1($ret["contact_passwd"])."', ";
+				$fields["contact_passwd"] = sha1($ret["contact_passwd"]);
+			} else {
+				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
+				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+			}
 		}
 		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL) {
 			$rq .= "contact_lang = '".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ";

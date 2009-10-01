@@ -37,15 +37,19 @@
  */
 
 	function testExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
-		global $oreon;
+		global $pearDB, $form, $oreon;
+		
 		$DBRESULT =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES)."'");
 		$contact =& $DBRESULT->fetchRow();
-		#Modif case
+		/*
+		 * Modif case
+		 */
 		if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id())	
 			return true;
-		#Duplicate entry
+		
+		/*
+		 * Duplicate entry
+		 */
 		else if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id())
 			return false;
 		else
@@ -53,15 +57,19 @@
 	}	
 	
 	function testAliasExistence ($alias = NULL)	{
-		global $pearDB;
-		global $form;
-		global $oreon;
+		global $pearDB, $form, $oreon;
+		
 		$DBRESULT =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES)."'");
 		$contact =& $DBRESULT->fetchRow();
-		#Modif case
+		
+		/*
+		 * Modif case
+		 */
 		if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id())	
 			return true;
-		#Duplicate entry
+		/*
+		 * Duplicate entry
+		 */
 		else if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id())
 			return false;
 		else
@@ -69,15 +77,17 @@
 	}
 	
 	function updateContactInDB ($contact_id = NULL)	{
-		if (!$contact_id) return;
+		if (!$contact_id) 
+			return;
 		updateContact($contact_id);
 	}
 	
 	function updateContact($contact_id = null)	{
-		if (!$contact_id) return;
-		global $form;
-		global $pearDB;
-		global $oreon;
+		global $form, $pearDB, $oreon, $centreon_crypt;
+		
+		if (!$contact_id) 
+			return;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE contact SET ";
@@ -85,8 +95,16 @@
 		isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "contact_alias = ";
 		isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"])
-			$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
+		
+		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
+			if ($centreon_crypt == 1)
+				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";	
+			else if ($centreon_crypt == 2)
+				$rq .= "contact_passwd = '".sha1($ret["contact_passwd"])."', ";	
+			else
+				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";				
+		}
+			
 		$rq .=	"contact_lang = ";
 		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "contact_email = ";
@@ -95,6 +113,10 @@
 		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
+		
+		/*
+		 * Update user object..
+		 */
 		$oreon->user->name = $ret["contact_name"];
 		$oreon->user->alias = $ret["contact_alias"];
 		$oreon->user->lang = $ret["contact_lang"];
