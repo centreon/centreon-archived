@@ -251,7 +251,7 @@ check_result $? "$(gettext "Install purgeLogs")"
 ## purgeCentstorage
 log "INFO" "$(gettext "Change macros for purgeCentstorage")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@CENTREON_PATH@|'"$CENTREON_PATH"'|g' \
+	-e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
 	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
@@ -271,7 +271,7 @@ check_result $? "$(gettext "Install purgeCentstorage")"
 ## centreonPurge.sh
 log "INFO" "$(gettext "Change macros for centreonPurge.sh")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@CENTREON_PATH@|'"$CENTREON_PATH"'|g' \
+	-e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	$TMP_DIR/src/cron/centreonPurge.sh > $TMP_DIR/work/cron/centreonPurge.sh
 check_result $? "$(gettext "Change macros for centreonPurge.sh")"

@@ -251,6 +251,14 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 [ ! -h $INSTALL_DIR_CENTREON/filesUpload -a ! -d $INSTALL_DIR_CENTREON/filesUpload ] && \
 	ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
 
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -v \
+	$CENTREON_GENDIR/filesUpload/images >> "$LOG_FILE" 2>&1
+# By default, CentWeb use a filesGeneration directory in install dir.
+# I create a symlink to continue in a same process
+[ ! -h $INSTALL_DIR_CENTREON/filesUpload -a ! -d $INSTALL_DIR_CENTREON/filesUpload ] && \
+	ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
+
 log "INFO" "$(gettext "Copying GPL_LIB")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
