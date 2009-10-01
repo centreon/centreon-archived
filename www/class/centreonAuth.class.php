@@ -48,14 +48,12 @@ class CentreonAuth {
 	private $cryptEngine;
 	private $autologin;
 	public  $userInfos;
-	
 	private $cryptPossibilities;
-	
 	private $pearDB;
 	/*
 	 * Flags
 	 */
-	var $passwdOk;
+	public $passwdOk;
 	private $authType;
 	
 	/*
@@ -72,25 +70,31 @@ class CentreonAuth {
 	 * Constructor
 	 */
     function CentreonAuth($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1) {
+    	global $centreon_crypt;
+    	
     	$this->cryptPossibilities = array('MD5', 'SHA1');
     	$this->CentreonLog =& $CentreonLog;
     	$this->login = $username;
     	$this->password = $password;
     	$this->pearDB = $pearDB;
     	$this->autologin = $autologin;
+    	$this->cryptEngine = $centreon_crypt;
     	/*
     	 * Check User acces
     	 */
     	$this->checkUser($username, $password);
     }
 	
+	/*
+	 * Check if password is ok.
+	 */
 	private function checkPassword($password) {
 		global $centreon_path;
 		
 		if (strlen($password) == 0 || $password == "") {
-        	    $this->passwdOk = 0;
-        	    return;
-    		}
+        	$this->passwdOk = 0;
+            return;
+        }
 		
 		if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
 			
@@ -105,7 +109,7 @@ class CentreonAuth {
 			$authLDAP = new CentreonAuthLDAP($this->pearDB, $this->CentreonLog, $this->login, $this->password, $this->userInfos);
 			$authLDAP->connect();
 			$this->passwdOk = $authLDAP->checkPassword();
-			$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".md5($this->password)."' WHERE `contact_alias` = '".$this->login."' LIMIT 1"); 	
+			$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' LIMIT 1"); 	
 			$authLDAP->close();
 			
 		} else if ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
@@ -155,8 +159,8 @@ class CentreonAuth {
      */
 
     private function getCryptFunction() {
-		if (isset($this->userInfos["contact_crypt"])) {
-	  		switch ($this->userInfos["contact_crypt"]) {
+		if (isset($this->cryptEngine)) {
+	  		switch ($this->cryptEngine) {
 	  			case 1 : 
 	  				return "MD5";
 	  				break;
@@ -177,7 +181,7 @@ class CentreonAuth {
 	 */
     
     private function myCrypt($str) {
-  		switch ($this->cryptEngine) {
+    	switch ($this->cryptEngine) {
   			case 1 : 
   				return md5($str);
   				break;
@@ -211,4 +215,5 @@ class CentreonAuth {
 	}
 
 }
+
 ?>
