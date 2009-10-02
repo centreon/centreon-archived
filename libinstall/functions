@@ -1243,7 +1243,7 @@ function prepare_sudo_config() {
 	${CAT} <<- __EOT__ > $directory/centreon.sudo
 	## BEGIN: CENTREON SUDO
 	#Add by CENTREON installation script
-	User_Alias      CENTREON=$WEB_USER
+	User_Alias      CENTREON=$WEB_USER,$NAGIOS_USER
 	# Nagios Restart
 	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT* restart
 	# Nagios reload
