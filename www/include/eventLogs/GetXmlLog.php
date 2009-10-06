@@ -270,6 +270,7 @@
 		array_push ($msg_type_set, "'4'");
 	
 	$msg_req = '';
+	$suffix_order = " ORDER BY ctime DESC, host_name ASC, service_description ASC ";
 	
 	$msg_status_set = array();
 	
@@ -501,6 +502,11 @@
 	 */
 	
 	if (isset($req) && $req) {
+		/*
+		 * Add Suffix for order
+		 */
+		$req .= $suffix_order;
+		
 		$lstart = 0;
 		$DBRESULT =& $pearDBO->query($req);
 		$rows = $DBRESULT->numrows();
@@ -608,9 +614,9 @@
 		 * Full Request
 		 */
 	    if (isset($csv_flag) && ($csv_flag == 1))
-	    	$req .= " ORDER BY ctime DESC,log_id DESC LIMIT 0,64000"; //limit a little less than 2^16 which is excel maximum number of lines
+	    	$req .= " LIMIT 0,64000"; //limit a little less than 2^16 which is excel maximum number of lines
 	    else
-	    	$req .= " ORDER BY ctime DESC,log_id DESC LIMIT $lstart,$limit";
+	    	$req .= " LIMIT $lstart,$limit";
 		
 		$DBRESULT =& $pearDBO->query($req);
 		
