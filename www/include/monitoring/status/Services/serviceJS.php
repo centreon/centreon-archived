@@ -49,7 +49,6 @@
 	if ($num < 0)
 		$num = 0;
 ?>
-<script type="text/javascript" src="./include/common/javascript/scriptaculous/dragdrop.js"></script>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
 	var _debug = 0;
@@ -253,7 +252,7 @@
 	
 		_lock = 1;
 		var proc = new Transformation();
-		var _addrXML = "./include/monitoring/status/Services/xml/serviceXML.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
+		var _addrXML = "./include/monitoring/status/Services/xml/serviceXML.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc;
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);
 		proc.transform("forAjax");
@@ -415,13 +414,13 @@
 	}
 
 	function send_the_command() {
-	       	if (window.XMLHttpRequest) { 
-	        	xhr_cmd = new XMLHttpRequest();
-	    	}
-	    	else if (window.ActiveXObject) 
-	    	{
-	        	xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
-	    	}
+	   	if (window.XMLHttpRequest) { 
+	    	xhr_cmd = new XMLHttpRequest();
+	    }
+	    else if (window.ActiveXObject) 
+	    {
+	    	xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
+	    }	    
 		var comment = document.getElementById('popupComment').value;
 		if (comment == "") {
 			alert(_popup_no_comment_msg);
@@ -439,9 +438,5 @@
 	   	xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
     		xhr_cmd.send(null);
 		Modalbox.hide();		
-	}
-	
-	function my_test(id) {		
-		new Draggable(id, { revert : true });
 	}
 </SCRIPT>

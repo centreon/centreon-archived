@@ -75,9 +75,17 @@
 	$grouplistStr = $access->getAccessGroupsString();
 	$groupnumber = count($grouplist);	
 
+	$default_poller = "ALL";
+	$rq_default_poller = "SELECT cp_value FROM contact_param WHERE cp_key = 'monitoring_default_poller' AND cp_contact_id = '".$user_id."' LIMIT 1";
+	$DBRES_POLLER = $pearDB->query($rq_default_poller);
+	if ($DBRES_POLLER->numRows()) {
+		$tmpRow = $DBRES_POLLER->fetchRow();
+		$default_poller = $tmpRow['cp_value'];
+	}
+	
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) 		&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
-	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
+	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = $default_poller;
 	(isset($_GET["search"]) 	&& !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
 	(isset($_GET["sort_type"]) 	&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "host_name";
 	(isset($_GET["search_type_host"]) 		&& !check_injection($_GET["search_type_host"])) ? $search_type_host = htmlentities($_GET["search_type_host"]) : $search_type_host = 1;
@@ -88,6 +96,10 @@
 	(isset($_GET["p"]) 			&& !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 	(isset($_GET["nc"]) 		&& !check_injection($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";
 
+	if (!$instance) {
+		$instance = "ALL";
+	}
+	
 	/*
 	 * Init GMT class
 	 */
@@ -201,6 +213,11 @@
 	 */
 	$rq_state = "";
 	
+	$instance_filter = "";
+	if ($instance != "ALL") {
+		$instance_filter = " AND no.instance_id = '".$instance."' ";
+	}
+	
 	if ($o == "svcpb")
 		$rq_state = " AND nss.current_state != 0";
 	if ($o == "svc_ok")
@@ -249,7 +266,7 @@
 			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts FROM  nagios_objects no, nagios_services ns $ACLDBName" .
 			"WHERE no.object_id = ns.service_object_id " .
 			"	AND no.name1 NOT LIKE '_Module_%' " .
-			"	$searchHost $searchService $ACLCondition " .
+			"	$searchHost $searchService $instance_filter $ACLCondition " .
 			"	AND objecttype_id = 2 " .
 			"	AND EXISTS ($rq3)" .
 			"	) A, " .
@@ -263,11 +280,11 @@
 	if ($is_admin) {
 		$rq_pagination ="SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
 						"FROM nagios_objects no ,  nagios_servicestatus nss " .
-						"WHERE no.object_id = nss.service_object_id $rq_state AND no.name1 NOT LIKE '_Module_%' $searchHost $searchService";
+						"WHERE no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $searchHost $searchService";
 	} else {
 		$rq_pagination ="SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
 						"FROM nagios_objects no, nagios_servicestatus nss, centreon_acl " .
-						"WHERE no.object_id = nss.service_object_id $rq_state AND no.name1 NOT LIKE '_Module_%' $searchHost $searchService $ACLCondition";
+						"WHERE no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $searchHost $searchService $ACLCondition";
 	}
 	$DBRESULT =& $pearDBndo->query($rq_pagination);
 	$data =& $DBRESULT->fetchRow();
