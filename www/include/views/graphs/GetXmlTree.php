@@ -54,7 +54,7 @@
 
 	/* Tanslation */
 	require_once ($centreon_path . "www/class/Session.class.php");
-	require_once ($centreon_path . "www/class/centreon.class.php");
+	require_once ($centreon_path . "www/class/Oreon.class.php");
 	require_once ($centreon_path . "www/class/centreonLang.class.php");
 	
 	Session::start();
@@ -248,24 +248,22 @@
 			 * Send Host Group list
 			 */
 			if ($search != "")
-				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ORDER BY `hg_name`");			
+				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID"))." ORDER BY `hg_name`");			
 			else
-				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
+				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID"))." ORDER BY `hg_name`");
 			while ($HG =& $DBRESULT->fetchRow()) {
 				$i++;				
 				if (HG_has_one_or_more_host($HG["hg_id"])){
-			       	if ($is_admin || (isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_id"]]))) {
-				       	$buffer->startElement("item");
-						$buffer->writeAttribute("child", "1");
-						//if (!$search && !$search_host && !$search_service)
-							$buffer->writeAttribute("nocheckbox", "1");
-						$buffer->writeAttribute("id", "HG_".$HG["hg_id"]);
-						$buffer->writeAttribute("text", $HG["hg_name"]);
-						$buffer->writeAttribute("im0", "../16x16/clients.gif");
-						$buffer->writeAttribute("im1", "../16x16/clients.gif");
-						$buffer->writeAttribute("im2", "../16x16/clients.gif");						
-						$buffer->endElement();
-			       	}
+				    $buffer->startElement("item");
+					$buffer->writeAttribute("child", "1");
+					//if (!$search && !$search_host && !$search_service)
+					$buffer->writeAttribute("nocheckbox", "1");
+					$buffer->writeAttribute("id", "HG_".$HG["hg_id"]);
+					$buffer->writeAttribute("text", $HG["hg_name"]);
+					$buffer->writeAttribute("im0", "../16x16/clients.gif");
+					$buffer->writeAttribute("im1", "../16x16/clients.gif");
+					$buffer->writeAttribute("im2", "../16x16/clients.gif");						
+					$buffer->endElement();			       	
 				}
 			}
 			$DBRESULT->free();
@@ -280,31 +278,36 @@
 			$searchSTR = "";
 			if ($search != "")
 				$searchSTR = " AND (`host_name` LIKE '%$search%' OR `host_alias` LIKE '%$search%') ";
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' $searchSTR ORDER BY host_name");
+			$query = "SELECT DISTINCT * " .
+					"FROM host " .
+					"WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) " .
+					"AND host_register = '1' $searchSTR " . 
+					$access->queryBuilder("AND", "host_id", $hoststr).
+					"ORDER BY host_name"; 
+			
+			$DBRESULT2 =& $pearDB->query($query);
 			while ($host =& $DBRESULT2->fetchRow()){
 				$i++;
 				if (isset($hostWithGraph[$host["host_id"]])){
-					if ($is_admin || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))){			           	
-			           	if (!$cpt) {
-			    			$buffer->startElement("item");
-							$buffer->writeAttribute("child", "1");
-							$buffer->writeAttribute("id", "HO_0");
-							$buffer->writeAttribute("nocheckbox", "1");
-							$buffer->writeAttribute("text", _("Orphan hosts"));
-							$buffer->writeAttribute("im0", "../16x16/server_network.gif");
-							$buffer->writeAttribute("im1", "../16x16/server_network.gif");
-							$buffer->writeAttribute("im2", "../16x16/server_network.gif");       		
-			           	}
-			           	$buffer->startElement("item");
+			    	if (!$cpt) {
+			    		$buffer->startElement("item");
 						$buffer->writeAttribute("child", "1");
-						$buffer->writeAttribute("id", "HH_".$host["host_id"]);
-						$buffer->writeAttribute("text", $host["host_name"]);
+						$buffer->writeAttribute("id", "HO_0");
+						$buffer->writeAttribute("nocheckbox", "1");
+						$buffer->writeAttribute("text", _("Orphan hosts"));
 						$buffer->writeAttribute("im0", "../16x16/server_network.gif");
 						$buffer->writeAttribute("im1", "../16x16/server_network.gif");
-						$buffer->writeAttribute("im2", "../16x16/server_network.gif");
-						$buffer->endElement();						
-						$cpt++;
-					}
+						$buffer->writeAttribute("im2", "../16x16/server_network.gif");       		
+			        }
+			        $buffer->startElement("item");
+					$buffer->writeAttribute("child", "1");
+					$buffer->writeAttribute("id", "HH_".$host["host_id"]);
+					$buffer->writeAttribute("text", $host["host_name"]);
+					$buffer->writeAttribute("im0", "../16x16/server_network.gif");
+					$buffer->writeAttribute("im1", "../16x16/server_network.gif");
+					$buffer->writeAttribute("im2", "../16x16/server_network.gif");
+					$buffer->endElement();						
+					$cpt++;					
 				}
 			}
 			if ($cpt)
@@ -316,15 +319,7 @@
 			 */
 			$cpt = 0;
 			$str = 0;
-			if ($search != "")
-				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service WHERE `meta_name` LIKE '%$search%' AND `meta_activate` = '1' ORDER BY `meta_name`");
-			else
-				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
-			while ($MS =& $DBRESULT->fetchRow()){
-				$i++;
-				$cpt++;
-			}
-			if ($cpt){
+			if ($is_admin || count($access->getMetaServices())) {
 				$buffer->startElement("item");
 				$buffer->writeAttribute("child", "1");
 				$buffer->writeAttribute("id", "MT_0");
@@ -477,11 +472,11 @@
 		
 		$hostgroups = getAllHostgroups();
 		foreach ($hostgroups as $hg_id => $hg_name){
+			
 			/*
 			 * Hostgroups
 			 */
-			
-			if (HG_has_one_or_more_host($hg_id)) {
+			if (HG_has_one_or_more_host($hg_id) && isset($access->hostGroups[$hg_id])) {
 	    		$buffer->startElement("item");
 	    		if (isset($hgs_open[$hg_id]))
 	    			$buffer->writeAttribute("open", "1");
