@@ -63,7 +63,15 @@
 	/* 
 	 * requisit 
 	 */
-	(isset($_GET["instance"]) && !check_injection($_GET["instance"])) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
+	$default_poller = "ALL";
+	$rq_default_poller = "SELECT cp_value FROM contact_param WHERE cp_key = 'monitoring_default_poller' AND cp_contact_id = '".$user_id."' LIMIT 1";
+	$DBRES_POLLER = $pearDB->query($rq_default_poller);
+	if ($DBRES_POLLER->numRows()) {
+		$tmpRow = $DBRES_POLLER->fetchRow();
+		$default_poller = $tmpRow['cp_value'];
+	}	
+		
+	(isset($_GET["instance"]) && !check_injection($_GET["instance"])) ? $instance = htmlentities($_GET["instance"]) : $instance = $default_poller;
 	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	

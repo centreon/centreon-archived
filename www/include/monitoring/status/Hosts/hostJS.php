@@ -200,7 +200,7 @@ function initM(_time_reload,_sid,_o){
 function goM(_time_reload,_sid,_o){
 	_lock = 1;
 	var proc = new Transformation();
-	 _addrXML = "./include/monitoring/status/Hosts/xml/hostXML.php?"+'&sid='+_sid+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>';
+	 _addrXML = "./include/monitoring/status/Hosts/xml/hostXML.php?"+'&sid='+_sid+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>';
 	proc.setXml(_addrXML)
 	proc.setXslt(_addrXSL)
 	proc.transform("forAjax");
