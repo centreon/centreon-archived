@@ -101,15 +101,9 @@
 				}
 				
 				/*
-				 * Load module lang file without re-login
+				 *  Rebuilds modules in oreon object
 				 */
-			    $lang_file_path = "./modules/".$name."/lang/". $oreon->user->get_lang().".php";
-				if ($module_conf[$name]["lang_files"] && file_exists($lang_file_path))	{
-					include_once($lang_file_path);
-				}
-			
-			# Rebuilds modules in oreon object
-			$oreon->creatModuleList($pearDB);
+				$oreon->creatModuleList($pearDB);
 				
 			} else
 				$tpl->assign("output4", _("Unable to install module"));
