@@ -242,9 +242,15 @@
 	}
 	
 	function getMyHostServicesByName2($host_id = NULL)	{
-		if (!$host_id) return;
 		global $pearDB;
+		
+		if (!$host_id) 
+			return;
+
 		$hSvs = array();
+		/*
+		 * Service By Host
+		 */
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_activate = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -254,13 +260,20 @@
 			$hSvs[$elem["service_description"]] = html_entity_decode($elem["service_id"], ENT_QUOTES);
 		}
 		$DBRESULT->free();
+		
+		/*
+		 * Service By Hostgroup
+		 */
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($elem =& $DBRESULT->fetchRow())
+		while ($elem =& $DBRESULT->fetchRow()) {
+			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
+			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
 			$hSvs[$elem["service_description"]]	= html_entity_decode($elem["service_id"], ENT_QUOTES);
+		}
 		$DBRESULT->free();
 		return $hSvs;
 	}
