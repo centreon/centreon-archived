@@ -174,7 +174,7 @@ if [ "$RC" -eq "0" ] ; then
 	if [ ! "${CENTSTORAGE_INSTALL_RUNLVL}" ] ; then
 		yes_no_default "$(gettext "Do you want me to install CentStorage run level ?")"
 		RC="$?"
-	elif [ ! "${CENTSTORAGE_INSTALL_RUNLVL}" -eq 1 ] ; then
+	elif [ "${CENTSTORAGE_INSTALL_RUNLVL}" -eq 1 ] ; then
 		RC="0"
 	fi
 	if [ "$RC" -eq "0" ] ; then
