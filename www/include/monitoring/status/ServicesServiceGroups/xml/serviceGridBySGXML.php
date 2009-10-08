@@ -192,7 +192,7 @@
 		" AND sgm.servicegroup_id = sg.servicegroup_id" .
 		" AND no.is_active = 1 AND no.objecttype_id = 2";
 	
-		$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
+		$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("ALIAS"));
 	
 		if ($instance != "ALL")
 			$rq1 .= " AND no.instance_id = ".$instance;
@@ -216,8 +216,12 @@
 	
 		$DBRESULT_PAGINATION =& $pearDBndo->query($rq1);
 		$host_table = array();
+		$sg_table = array();
 		while ($row =& $DBRESULT_PAGINATION->fetchRow()) {
-		      $host_table[$row["host_name"]] = $row["host_name"];
+		    $host_table[$row["host_name"]] = $row["host_name"];
+			if (!isset($sg_table[$row["alias"]]))
+            	$sg_table[$row["alias"]] = array();
+        	$sg_table[$row["alias"]][$row["host_name"]] = $row["host_name"];
 		}	
 		$DBRESULT_PAGINATION->free();
 		
@@ -242,7 +246,7 @@
 			" AND no.name1 IN ($hostList)" .
 			" AND no.is_active = 1 AND no.objecttype_id = 2";
 		
-		$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
+		$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("ALIAS"));
 	
 		if ($instance != "ALL")
 			$rq1 .= " AND no.instance_id = ".$instance;
@@ -288,38 +292,39 @@
 	$flag = 0;
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	while ($tab =& $DBRESULT_NDO1->fetchRow() && $numRows){
-		$class == "list_one" ? $class = "list_two" : $class = "list_one";
-		if ($sg != $tab["alias"]){
-			$flag = 0;
-			if ($sg != "") {
-				$buffer->endElement();
-				$buffer->endElement();				
+		if (isset($sg_table[$tab["alias"]]) && isset($sg_table[$tab["alias"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
+			$class == "list_one" ? $class = "list_two" : $class = "list_one";
+			if ($sg != $tab["alias"]){
+				$flag = 0;
+				if ($sg != "") {
+					$buffer->endElement();
+					$buffer->endElement();				
+				}
+				$sg = $tab["alias"];
+				$h = "";
+				$buffer->startElement("sg");
+				$buffer->writeElement("sgn", $tab["alias"]);
+				$buffer->writeElement("o", $ct);			
 			}
-			$sg = $tab["alias"];
-			$h = "";
-			$buffer->startElement("sg");
-			$buffer->writeElement("sgn", $tab["alias"]);
-			$buffer->writeElement("o", $ct);			
+			$ct++;
+	
+			if ($h != $tab["host_name"]){
+				if ($h != "" && $flag)
+					$buffer->endElement();
+				$flag = 1;
+				$h = $tab["host_name"];			
+				$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
+				$buffer->startElement("h");
+				$buffer->writeAttribute("class", $class);
+				$buffer->writeElement("hn", $tab["host_name"]);
+				$buffer->writeElement("hs", $tab_status_host[$hs]);
+				$buffer->writeElement("hc", $tab_color_host[$hs]);			
+			}
+			$buffer->startElement("svc");
+			$buffer->writeElement("sn", $tab["service_description"]);
+			$buffer->writeElement("sc", $tab_color_service[$tab["current_state"]]);
+			$buffer->endElement();		
 		}
-		$ct++;
-
-		if ($h != $tab["host_name"]){
-			if ($h != "" && $flag)
-				$buffer->endElement();
-			$flag = 1;
-			$h = $tab["host_name"];			
-			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
-			$buffer->startElement("h");
-			$buffer->writeAttribute("class", $class);
-			$buffer->writeElement("hn", $tab["host_name"]);
-			$buffer->writeElement("hs", $tab_status_host[$hs]);
-			$buffer->writeElement("hc", $tab_color_host[$hs]);			
-		}
-		$buffer->startElement("svc");
-		$buffer->writeElement("sn", $tab["service_description"]);
-		$buffer->writeElement("sc", $tab_color_service[$tab["current_state"]]);
-		$buffer->endElement();		
-
 	}
 	if ($sg != "") {
 		$buffer->endElement();

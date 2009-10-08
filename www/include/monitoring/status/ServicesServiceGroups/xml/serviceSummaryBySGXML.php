@@ -55,7 +55,7 @@
 
 	$pearDB = new CentreonDB();
 	$pearDBndo = new CentreonDB("ndo");
-
+	
 	/*
 	 * Get NDO Prefix
 	 */
@@ -161,7 +161,7 @@
 			" AND sgm.servicegroup_id = sg.servicegroup_id".
 			" AND no.is_active = 1 ";
 		
-	$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
+	$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("ALIAS"));
 
 
 	if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb" || $o == "svcSumSG_ack_0")
@@ -205,7 +205,7 @@
 				" AND sgm.servicegroup_id = sg.servicegroup_id".
 				" AND no.is_active = 1 ";
 			
-		$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
+		$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("ALIAS"));
 	
 	
 		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb" || $o == "svcSumSG_ack_0")
@@ -235,8 +235,12 @@
 	
 		$DBRESULT =& $pearDBndo->query($rq1);
 		$host_table = array();
+		$sg_table = array();
 		while ($row =& $DBRESULT->fetchRow()) {
-		      $host_table[$row["host_name"]] = $row["host_name"];
+		    $host_table[$row["host_name"]] = $row["host_name"];
+			if (!isset($sg_table[$row["alias"]]))
+            	$sg_table[$row["alias"]] = array();
+        	$sg_table[$row["alias"]][$row["host_name"]] = $row["host_name"];
 		} 
 		$DBRESULT->free();
 	
@@ -315,42 +319,43 @@
 	$flag = 0;
 	$ct = 0;
 	$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-
 	while ($numRows && $tab =& $DBRESULT_NDO1->fetchRow()){
-		($class == "list_one") ? $class = "list_two" : $class = "list_one";
-		if (($h != "" && $h != $tab["host_name"]) || ($sg != $tab["alias"] && $sg != "")) {						
-			$buffer->startElement("h");
-			$buffer->writeAttribute("class", $class);
-			$buffer->writeElement("hn", $h);
-			$buffer->writeElement("hs", $tab_status_host[$hs]);
-			$buffer->writeElement("hc", $tab_color_host[$hs]);
-			$buffer->writeElement("sk", $nb_service[0]);
-			$buffer->writeElement("sw", $nb_service[1]);
-			$buffer->writeElement("sc", $nb_service[2]);
-			$buffer->writeElement("su", $nb_service[3]);
-			$buffer->writeElement("sp", $nb_service[4]);			
-			$buffer->endElement();
-		}
-		if ($sg != $tab["alias"]){
-			$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-			if ($flag)
-				$buffer->endElement();				
-			$sg = $tab["alias"];
-			$buffer->startElement("sg");			
-			$buffer->writeElement("sgn", $tab["alias"]);
-			$buffer->writeElement("o", $ct);			
-			$flag = 1;
-		}
-		$ct++;
-		$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
-	
-		if ($h != $tab["host_name"] || $h == "") {
-			$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-			$h = $tab["host_name"];
-		}
+		if (isset($sg_table[$tab["alias"]]) && isset($sg_table[$tab["alias"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
+			($class == "list_one") ? $class = "list_two" : $class = "list_one";
+			if (($h != "" && $h != $tab["host_name"]) || ($sg != $tab["alias"] && $sg != "")) {						
+				$buffer->startElement("h");
+				$buffer->writeAttribute("class", $class);
+				$buffer->writeElement("hn", $h);
+				$buffer->writeElement("hs", $tab_status_host[$hs]);
+				$buffer->writeElement("hc", $tab_color_host[$hs]);
+				$buffer->writeElement("sk", $nb_service[0]);
+				$buffer->writeElement("sw", $nb_service[1]);
+				$buffer->writeElement("sc", $nb_service[2]);
+				$buffer->writeElement("su", $nb_service[3]);
+				$buffer->writeElement("sp", $nb_service[4]);			
+				$buffer->endElement();
+			}
+			if ($sg != $tab["alias"]){
+				$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+				if ($flag)
+					$buffer->endElement();				
+				$sg = $tab["alias"];
+				$buffer->startElement("sg");			
+				$buffer->writeElement("sgn", $tab["alias"]);
+				$buffer->writeElement("o", $ct);			
+				$flag = 1;
+			}
+			$ct++;
+			$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
 		
-		$nb_service[$tab["current_state"]]++;
-		$sg = $tab["alias"];
+			if ($h != $tab["host_name"] || $h == "") {
+				$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+				$h = $tab["host_name"];
+			}
+			
+			$nb_service[$tab["current_state"]]++;
+			$sg = $tab["alias"];
+		}
 	}
 	if (isset($hs)) {
 		$buffer->startElement("h");

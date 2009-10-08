@@ -49,6 +49,7 @@
  	private $resourceGroups = array(); /* Resource groups the user belongs to */
  	private $hostGroups = array(); /* Hostgroups the user can see */
  	private $serviceGroups = array(); /* Servicegroups the user can see */
+ 	private $serviceGroupsAlias = array(); /* Servicegroups by alias the user can see */
  	private $serviceCategories = array(); /* Service categories the user can see */
  	private $actions = array(); /* Actions the user can do */
  	private $hostGroupsFilter = array();
@@ -187,7 +188,7 @@
  	private function setServiceGroups() {
  		global $pearDB;
  		
- 		$query = "SELECT sg.sg_id, sg.sg_name, arsr.acl_res_id " .
+ 		$query = "SELECT sg.sg_id, sg.sg_name, sg.sg_alias, arsr.acl_res_id " .
  				"FROM servicegroup sg, acl_resources_sg_relations arsr " .
  				"WHERE sg.sg_id = arsr.sg_id " .
  				"AND arsr.acl_res_id IN (".$this->getResourceGroupsString().") " .
@@ -195,6 +196,7 @@
  		$DBRESULT =& $pearDB->query($query);
  		while ($row =& $DBRESULT->fetchRow()) {
  			$this->serviceGroups[$row['sg_id']] = $row['sg_name'];
+ 			$this->serviceGroupsAlias[$row['sg_id']] = $row['sg_alias'];
  			$this->serviceGroupsFilter[$row['acl_res_id']][$row['sg_id']] = $row['sg_id'];
  		}
  	}
@@ -470,9 +472,10 @@
  		foreach ($this->serviceGroups as $key => $value) {
  			if ($i)
  				$string .= ", ";
- 			switch($flag) {
+ 			switch ($flag) {
  				case "ID" : $string .= "'".$key."'"; break;
  				case "NAME" : $string .= "'".$value."'"; break;
+ 				case "ALIAS" : $string .= "'".$this->serviceGroupsAlias[$key]."'"; break;
  				default : $string .= "'".$key."'"; break;
  			}
  			$i++;
