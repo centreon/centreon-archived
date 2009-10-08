@@ -136,6 +136,19 @@
 		
 		$command_line = " graph - --start=".$start." --end=".$end;
 
+		if ($oreon->optGen["rrdtool_version"] == "1.3") {
+           if (isset($oreon->optGen["rrdtool_title_font"]) && isset($oreon->optGen["rrdtool_title_fontsize"]))
+              $command_line .= " --font TITLE:".$oreon->optGen["rrdtool_title_fontsize"].":".$oreon->optGen["rrdtool_title_font"]." ";
+           if (isset($oreon->optGen["rrdtool_unit_font"]) && isset($oreon->optGen["rrdtool_unit_fontsize"]))
+              $command_line .= " --font UNIT:".$oreon->optGen["rrdtool_unit_fontsize"].":".$oreon->optGen["rrdtool_unit_font"]." ";
+           if (isset($oreon->optGen["rrdtool_axis_font"]) && isset($oreon->optGen["rrdtool_axis_fontsize"]))
+              $command_line .= " --font AXIS:".$oreon->optGen["rrdtool_axis_fontsize"].":".$oreon->optGen["rrdtool_axis_font"]." ";
+           if (isset($oreon->optGen["rrdtool_title_font"]) && isset($oreon->optGen["rrdtool_title_fontsize"]))
+              $command_line .= " --font WATERMARK:".$oreon->optGen["rrdtool_title_fontsize"].":".$oreon->optGen["rrdtool_title_font"]." ";
+           if (isset($oreon->optGen["rrdtool_legend_title"]) && isset($oreon->optGen["rrdtool_legend_fontsize"]))
+              $command_line .= " --font LEGEND:".$oreon->optGen["rrdtool_legend_fontsize"].":".$oreon->optGen["rrdtool_legend_title"]." ";
+        }
+
 		/*
 		 * get all template infos
 		 */
