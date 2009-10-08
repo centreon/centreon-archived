@@ -39,83 +39,89 @@
 	if (!isset($oreon))
 		exit();
 
-	
 	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-	
 	while ($opt =& $DBRESULT->fetchRow()) {
 		$gopt[$opt["key"]] = myDecode($opt["value"]);
 	}
+	$DBRESULT->free();
 
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
+	$fontList = array('Arial' => 'Arial', 'Times' => 'Times', 'Verdana' => 'Verdana');
+	$fontSize = array('5' => '5', '6' => '6', '7' => '7', '8' => '8', '9' => '9', '10' => '10', '11' => '11', '12' => '12', '13' => '13');
+
+	/*
+	 * Var information to format the element
+	 */
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
-	$attrsAdvSelect = null;
+	$attrSelect 	= array("style" => "width: 220px;");
+	$attrSelect2 	= array("style" => "width: 50px;");
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Modify General Options"));
 	
-	#
-	## Various information
-	#
+	/*
+	 * Various information
+	 */
 	$form->addElement('text', 'rrdtool_path_bin', _("Directory + RRDTOOL Binary"), $attrsText);
 	$form->addElement('text', 'rrdtool_version', _("RRDTool Version"), $attrsText2);
-
-	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, _("Graphs Plugins"), '1');
-	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, _("Simple Graphs Renderer"), '0');
+	
+	/*
+	 * Unit
+	 */
+	$form->addElement('header', 'unit_title', _("Unit Properties"));
+	$form->addElement('select', 'rrdtool_unit_font', _("Font"), $fontList, $attrSelect);
+	$form->addElement('select', 'rrdtool_unit_fontsize', _("Font size"), $fontSize, $attrSelect2);
+	
+	/*
+	 * Title
+	 */
+	$form->addElement('header', 'title_title', _("Title Properties"));
+	$form->addElement('select', 'rrdtool_title_font', _("Font"), $fontList, $attrSelect);
+	$form->addElement('select', 'rrdtool_title_fontsize', _("Font size"), $fontSize, $attrSelect2);
+	
+	/*
+	 * Axis
+	 */
+	$form->addElement('header', 'axis_title', _("Axis Properties"));
+	$form->addElement('select', 'rrdtool_axis_font', _("Font"), $fontList, $attrSelect);
+	$form->addElement('select', 'rrdtool_axis_fontsize', _("Font size"), $fontSize, $attrSelect2);
+	
+	/*
+	 * Legend
+	 */
+	$form->addElement('header', 'legend_title', _("Legend Properties"));
+	$form->addElement('select', 'rrdtool_legend_font', _("Font"), $fontList, $attrSelect);
+	$form->addElement('select', 'rrdtool_legend_fontsize', _("Font size"), $fontSize, $attrSelect2);
+	
+	/*
+	 * Watermark
+	 */
+	$form->addElement('header', 'watermark_title', _("Watermark Properties"));
+	$form->addElement('select', 'rrdtool_watermark_font', _("Font"), $fontList, $attrSelect);
+	$form->addElement('select', 'rrdtool_watermark_fontsize', _("Font size"), $fontSize, $attrSelect2);
 	
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-	#
-	## Form Rules
-	#
+	/*
+	 * Form Rules
+	 */
 	function slash($elem = NULL)	{
 		if ($elem)
 			return rtrim($elem, "/")."/";
 	}
+	
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->applyFilter('nagios_path', 'slash');
-	//$form->applyFilter('nagios_path_bin', 'slash');
-	$form->applyFilter('nagios_path_img', 'slash');
-	$form->applyFilter('nagios_path_plugins', 'slash');
-	$form->applyFilter('oreon_path', 'slash');
-	$form->applyFilter('oreon_web_path', 'slash');
-	$form->applyFilter('oreon_rrdbase_path', 'slash');
-	$form->applyFilter('debug_path', 'slash');
-	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
-	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
-	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
-	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
-	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
-	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
-	$form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
-	$form->addRule('nagios_path_plugins', _("Can't write directory"), 'is_writable_path');
-	$form->addRule('nagios_path_img', _("Can't write directory"), 'is_writable_path');
-	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
-	$form->addRule('nagios_path_bin', _("Can't execute binary"), 'is_executable_binary');
-	$form->addRule('mailer_path_bin', _("Can't execute binary"), 'is_executable_binary');
 	$form->addRule('rrdtool_path_bin', _("Can't execute binary"), 'is_executable_binary');
 	$form->addRule('oreon_rrdbase_path', _("Can't write in directory"), 'is_writable_path');
-	$form->addRule('debug_path', _("Can't write in directory"), 'is_writable_path');
-	$form->addRule('snmp_trapd_path_conf', _("Can't write in file"), 'is_writable_file_if_exist');
 
-	#
-	##End of form definition
-	#
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path.'rrdtool/', $tpl);
 
@@ -127,10 +133,14 @@
 
     $valid = false;
 	if ($form->validate())	{
-		# Update in DB
+		/*
+		 * Update in DB
+		 */
 		updateRRDToolConfigData($form->getSubmitValue("gopt_id"));
 		
-		# Update in Oreon Object
+		/*
+		 * Update in Oreon Object
+		 */
 		$oreon->initOptGen($pearDB);
 		
 		$o = NULL;
@@ -142,9 +152,9 @@
 
 	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=rrdtool'"));
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
