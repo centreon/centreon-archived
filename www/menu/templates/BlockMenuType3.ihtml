@@ -60,4 +60,4 @@
 			</div>
 		</td>
 		<td id="Tmainpage" class="TcTD" valign="top">
-		<img src="./img/icones/7x7/sort_left.gif" onclick="new Effect.toggle('menu_3'); xhr = new XMLHttpRequest(); xhr.open('GET','{$user_update_pref_menu_3}', true);xhr.send(null);" style="position:relative;bottom:10px;left:-10px;" alt="hide_or_show_menu" /><img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('menu_2');Effect.toggle('menu1_bgcolor');{if $PageID == 2 || $PageID == 4}Effect.toggle('QuickSearch'){/if}" style="float:right;position:relative;top:-9px;right:3px" alt="hide_or_show_menu" />
+		<img src="./img/icones/7x7/sort_left.gif" onclick="new Effect.toggle('menu_3'); xhr = new XMLHttpRequest(); xhr.open('GET','{$user_update_pref_menu_3}', true);xhr.send(null);" style="position:relative;bottom:10px;left:-10px;" alt="hide_or_show_menu" /><img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('menu_2');Effect.toggle('menu1_bgcolor');{if $PageID == 2 || $PageID == 4}Effect.toggle('QuickSearch'){/if}" style="float:right;position:relative;top:2px;right:3px" alt="hide_or_show_menu" />
