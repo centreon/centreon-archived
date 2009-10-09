@@ -47,7 +47,7 @@
  	private $admin; /* Flag that tells us if the user is admin or not */
  	private $accessGroups = array(); /* Access groups the user belongs to */
  	private $resourceGroups = array(); /* Resource groups the user belongs to */
- 	private $hostGroups = array(); /* Hostgroups the user can see */
+ 	public  $hostGroups = array(); /* Hostgroups the user can see */
  	private $serviceGroups = array(); /* Servicegroups the user can see */
  	private $serviceGroupsAlias = array(); /* Servicegroups by alias the user can see */
  	private $serviceCategories = array(); /* Service categories the user can see */
