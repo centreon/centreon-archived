@@ -49,7 +49,7 @@ require "@CENTREON_ETC@/conf.pm";
 my $VarLib = "@CENTREON_VARLIB@";
 
 # logAnalyser's lock file
-my $lock_file = "$VarLib/logAnalyser.lock";
+my $lock_file = "$VarLib/nagiosPerfTrace.lock";
 my $cmdtmp;
 my $pid;
 if (-e "$lock_file") {
