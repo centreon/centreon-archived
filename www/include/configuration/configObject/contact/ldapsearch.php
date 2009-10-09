@@ -39,7 +39,7 @@
  	require_once("@CENTREON_ETC@/centreon.conf.php");
 	require_once("../../../../include/common/common-Func.php");
  	require_once("../../../../$classdir/Session.class.php");
- 	require_once("../../../../$classdir/centreon.class.php");
+ 	require_once("../../../../$classdir/Oreon.class.php");
  	require_once("../../../../$classdir/centreonXML.class.php");
  	require_once("../../../../$classdir/centreonDB.class.php");
  	require_once("../../../../$classdir/centreonLDAP.class.php");
@@ -152,7 +152,12 @@
 	}
 
 	if ($connect) {
-		$attrib = array("givenname", "mail", "uid", "cn", "sn", "samaccountname"); //
+		if (isset($ldap_login_attrib) && $ldap_login_attrib != "") {
+			$attrib = array("givenname", "mail", "uid", "cn", "sn", "samaccountname", $ldap_login_attrib);
+ 		} else{
+ 			$attrib = array("givenname", "mail", "uid", "cn", "sn", "samaccountname");
+ 		}		
+
 		if ($debug_ldap_import == 1) {
 			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Base DN : ". $ldap_base_dn ."\n", 3, $debug_path."ldapsearch.log");
 			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Filter : ". $ldap_search_filter . "\n", 3, $debug_path."ldapsearch.log");
