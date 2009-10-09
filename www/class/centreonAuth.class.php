@@ -109,7 +109,7 @@ class CentreonAuth {
 			$authLDAP = new CentreonAuthLDAP($this->pearDB, $this->CentreonLog, $this->login, $this->password, $this->userInfos);
 			$authLDAP->connect();
 			$this->passwdOk = $authLDAP->checkPassword();
-			$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' LIMIT 1"); 	
+			$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' LIMIT 1"); 	
 			$authLDAP->close();
 			
 		} else if ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
