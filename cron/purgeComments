@@ -73,7 +73,6 @@ my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
 
 # Connect to centreon DB
 my $dbh_centreon = DBI->connect("DBI:mysql:database=".$mysql_db_centreon.";host=".$mysql_host, $mysql_user, $mysql_password, {'RaiseError' => 1});
-
 # Get ndo / nagios connexion informations
 my $sth1 = $dbh_centreon->prepare("SELECT * FROM cfg_ndo2db LIMIT 1");
 if (!$sth1->execute) {
@@ -103,7 +102,7 @@ while (my $relation = $sth1->fetchrow_hashref()) {
 }
 
 # Comment Purges
-my $sth2 = $dbh->prepare("SELECT internal_comment_id, no.name1, no.name2 FROM `".$prefix."comments` cmt, `".$prefix."objects` no WHERE cmt.object_id = no.object_id AND UNIX_TIMESTAMP(cmt.entry_time) < '$dateMax'");
+my $sth2 = $dbh->prepare("SELECT internal_comment_id, no.name1, no.name2 FROM `".$prefix."comments` cmt, `".$prefix."objects` no WHERE cmt.object_id = no.object_id AND (UNIX_TIMESTAMP(cmt.comment_time) < '$dateMax' OR UNIX_TIMESTAMP(cmt.entry_time) < '$dateMax')");
 if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
 }
