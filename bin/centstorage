@@ -350,8 +350,8 @@ sub GetPerfData() {
 	    }
 	    
 	    # Remove Read File
-	    if (!unlink($PFDT."_read")) {
-		writeLogFile("Error When removing service-perfdata file : ".$!);
+	    if (-r $PFDT."_read" && !unlink($PFDT."_read")) {
+			writeLogFile("Error When removing service-perfdata file : ".$!);
 	    }
 	    
 	    # Flush buffer
