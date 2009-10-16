@@ -343,7 +343,7 @@
 			if ($ehi["ehi_icon_image"])
     			$str .= print_line("icon_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1)));
 			if ($ehi["ehi_icon_image_alt"])
-    			$str .= print_line("icon_image", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_icon_image_alt"]));
+    			$str .= print_line("icon_image_alt", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_icon_image_alt"]));
 			if ($ehi["ehi_vrml_image"])
     			$str .= print_line("vrml_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_vrml_image", 1)));
 			if ($ehi["ehi_statusmap_image"])
