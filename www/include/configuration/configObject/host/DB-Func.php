@@ -1408,11 +1408,13 @@
 		else
 			$ret = $form->getSubmitValue("host_parents");
 		for($i = 0; $i < count($ret); $i++)	{
+		    if ($ret[$i] != $host_id) {
 			$rq = "INSERT INTO host_hostparent_relation ";
 			$rq .= "(host_parent_hp_id, host_host_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$ret[$i]."', '".$host_id."')";
 			$DBRESULT =& $pearDB->query($rq);
+		    }
 		}
 	}
 	
@@ -1429,11 +1431,13 @@
 		$ret = $form->getSubmitValue("host_parents");
 		for($i = 0; $i < count($ret); $i++)	{
 			if (!isset($hpars[$ret[$i]]) && isset($ret[$i]))	{
+			    if ($ret[$i] != $host_id) {
 				$rq = "INSERT INTO host_hostparent_relation ";
 				$rq .= "(host_parent_hp_id, host_host_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$ret[$i]."', '".$host_id."')";
 				$DBRESULT =& $pearDB->query($rq);
+			    }
 			}
 		}
 	}
@@ -1447,11 +1451,13 @@
 		$ret = array();
 		$ret = $form->getSubmitValue("host_childs");
 		for($i = 0; $i < count($ret); $i++)	{
+		    if ($ret[$i] != $host_id) {
 			$rq = "INSERT INTO host_hostparent_relation ";
 			$rq .= "(host_parent_hp_id, host_host_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$host_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);
+		    }
 		}
 	}
 	
@@ -1468,11 +1474,13 @@
 		$ret = $form->getSubmitValue("host_childs");
 		for($i = 0; $i < count($ret); $i++)	{
 			if (!isset($hchs[$ret[$i]]) && isset($ret[$i]))	{
+			    if ($ret[$i] != $host_id) {
 				$rq = "INSERT INTO host_hostparent_relation ";
 				$rq .= "(host_parent_hp_id, host_host_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$host_id."', '".$ret[$i]."')";
 				$DBRESULT =& $pearDB->query($rq);
+			    }
 			}
 		}
 	}
