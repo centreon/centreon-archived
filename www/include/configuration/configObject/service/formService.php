@@ -345,7 +345,7 @@
 		$mc_mod_cgs = array();
 		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, _("Incremental"), '0');
 		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_cgs, 'mc_mod_cgs', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_cgs, 'mc_mod_cgs', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cgs'=>'0'));
 	}
 	/*
@@ -411,7 +411,7 @@
 		$mc_mod_Pars = array();
 		$mc_mod_Pars[] = &HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, _("Incremental"), '0');
 		$mc_mod_Pars[] = &HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	}
     $ams3 =& $form->addElement('advmultiselect', 'service_hPars', _("Linked with Hosts"), $hosts, $attrsAdvSelect_big);
@@ -432,7 +432,7 @@
 		$mc_mod_sgs = array();
 		$mc_mod_sgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sgs', null, _("Incremental"), '0');
 		$mc_mod_sgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sgs', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_sgs, 'mc_mod_sgs', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_sgs, 'mc_mod_sgs', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_sgs'=>'0'));
 	}
     $ams3 =& $form->addElement('advmultiselect', 'service_sgs', _("Parent ServiceGroups"), $sgs, $attrsAdvSelect);
@@ -446,7 +446,7 @@
 		$mc_mod_traps = array();
 		$mc_mod_traps[] = &HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, _("Incremental"), '0');
 		$mc_mod_traps[] = &HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_traps, 'mc_mod_traps', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_traps, 'mc_mod_traps', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_traps'=>'0'));
 	}
     $ams3 =& $form->addElement('advmultiselect', 'service_traps', _("Service Trap Relation"), $traps, $attrsAdvSelect_big);
@@ -560,7 +560,7 @@
 		$mc_mod_sc = array();
 		$mc_mod_sc[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sc', null, _("Incremental"), '0');
 		$mc_mod_sc[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sc', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_sc, 'mc_mod_sc', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_sc, 'mc_mod_sc', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_sc'=>'0'));
 	}
 	$ams3 =& $form->addElement('advmultiselect', 'service_categories', _("Categories"), $service_categories, $attrsAdvSelect_small);

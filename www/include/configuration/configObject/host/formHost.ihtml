@@ -29,6 +29,9 @@
 	{/if}
 	<tr class="list_one"><td class="FormRowField">{$form.host_address.label}</td><td class="FormRowValue">{$form.host_address.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.host_snmp_community.label} && {$form.host_snmp_version.label}</td><td class="FormRowValue">{$form.host_snmp_community.html}&nbsp;&nbsp;{$form.host_snmp_version.html}</td></tr>
+	{if $o == "mc"}
+		<tr class="list_one"><td class="FormRowField">{$form.mc_mod_nsid.label}</td><td class="FormRowValue">{$form.mc_mod_nsid.html}</td></tr>
+	{/if}
 	{if $form.nagios_server_id.label}
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
 	{/if}
@@ -36,6 +39,9 @@
 	<tr class="list_two"><td class="FormRowField">{$form.host_location.label}</td><td class="FormRowValue">{$form.host_location.html}</td></tr>
 	{/if}
 
+	{if $o == "mc"}
+		<tr class="list_two"><td class="FormRowField">{$form.mc_mod_tplp.label}</td><td class="FormRowValue">{$form.mc_mod_tplp.html}</td></tr>
+	{/if}
 	<tr class="list_two">
 		<td class="FormRowField">
 			<div style="text-decoration: underline">{$form.host_parallel_template.label}</div>
@@ -110,9 +116,6 @@
 			<tr class="list_one"><td class="FormRowField">{$form.mc_mod_hch.label}</td><td class="FormRowValue">{$form.mc_mod_hch.html}</td></tr>
 		{/if}
 		<tr class="list_one"><td class="FormRowField">{$form.host_childs.label}</td><td class="FormRowValue">{$form.host_childs.html}</td></tr>
-		{if $o == "mc"}
-			<tr class="list_one"><td class="FormRowField">{$form.mc_mod_nsid.label}</td><td class="FormRowValue">{$form.mc_mod_nsid.html}</td></tr>
-		{/if}
 	{else}
 		{if $o == "mc"}
 			<tr class="list_one"><td class="FormRowField">{$form.mc_mod_htpl.label}</td><td class="FormRowValue">{$form.mc_mod_htpl.html}</td></tr>

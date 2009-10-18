@@ -184,7 +184,7 @@
 		$mc_mod_cg = array();
 		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
 		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_cg, 'mc_mod_cg', _("Update Options"), '&nbsp;');
+		$form->addGroup($mc_mod_cg, 'mc_mod_cg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cg'=>'0'));
 	}
     $ams3 =& $form->addElement('advmultiselect', 'contact_cgNotif', _("Contact Groups parents"), $notifCgs, $attrsAdvSelect);
@@ -255,7 +255,7 @@
 		$mc_mod_hcmds = array();
 		$mc_mod_hcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, _("Incremental"), '0');
 		$mc_mod_hcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_hcmds, 'mc_mod_hcmds', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_hcmds, 'mc_mod_hcmds', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hcmds'=>'0'));
 	}
 	
@@ -282,7 +282,7 @@
 		$mc_mod_svcmds = array();
 		$mc_mod_svcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, _("Incremental"), '0');
 		$mc_mod_svcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update Options"), '&nbsp;');
+		$form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_svcmds'=>'0'));
 	}
     $ams2 =& $form->addElement('advmultiselect', 'contact_svNotifCmds', _("Services Notification Commands"), $notifCmds, $attrsAdvSelect);

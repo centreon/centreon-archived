@@ -318,7 +318,7 @@
 		$mc_mod_tplp = array();
 		$mc_mod_tplp[] = &HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Incremental"), '0');
 		$mc_mod_tplp[] = &HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_tplp, 'mc_mod_tplp', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_tplp, 'mc_mod_tplp', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_tplp'=>'0'));
 	}
 	?>
@@ -411,7 +411,7 @@
 		$mc_mod_hcg = array();
 		$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');
 		$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hcg'=>'0'));
 	}
 		
@@ -472,14 +472,15 @@
 		$form->addElement('header', 'title2', _("Massive Change"));
 
 	$form->addElement('header', 'links', _("Relations"));
+
 	if ($o == "mc")	{
 		$mc_mod_hpar = array();
 		$mc_mod_hpar[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hpar', null, _("Incremental"), '0');
 		$mc_mod_hpar[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hpar', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_hpar, 'mc_mod_hpar', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_hpar, 'mc_mod_hpar', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hpar'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'host_parents', _("Parent Hosts"), $hostPs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_parents', _("Parent Hosts"), $hostPs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -489,10 +490,10 @@
 		$mc_mod_hch = array();
 		$mc_mod_hch[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hch', null, _("Incremental"), '0');
 		$mc_mod_hch[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hch', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_hch, 'mc_mod_hch', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_hch, 'mc_mod_hch', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hch'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'host_childs', _("Child Hosts"), $hostPs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_childs', _("Child Hosts"), $hostPs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -502,24 +503,24 @@
 		$mc_mod_hhg = array();
 		$mc_mod_hhg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hhg', null, _("Incremental"), '0');
 		$mc_mod_hhg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hhg', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_hhg, 'mc_mod_hhg', _("Update options"), '&nbsp;');
+		$form->addGroup($mc_mod_hhg, 'mc_mod_hhg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hhg'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'host_hgs', _("Parent HostGroups"), $hgs, $attrsAdvSelect);
+        $ams3 =& $form->addElement('advmultiselect', 'host_hgs', _("Parent HostGroups"), $hgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 	
 	if ($o == "mc")	{
-		$mc_mod_hhg = array();
-		$mc_mod_hhg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_nsid', null, _("Incremental"), '0');
-		$mc_mod_hhg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_nsid', null, _("Replacement"), '1');
-		$form->addGroup($mc_mod_hhg, 'mc_mod_nsid', _("Update options"), '&nbsp;');
+		$mc_mod_nsid = array();
+		$mc_mod_nsid[] = &HTML_QuickForm::createElement('radio', 'mc_mod_nsid', null, _("Incremental"), '0');
+		$mc_mod_nsid[] = &HTML_QuickForm::createElement('radio', 'mc_mod_nsid', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_nsid, 'mc_mod_nsid', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_nsid'=>'0'));
 	}
 	/*
-    $ams3 =& $form->addElement('advmultiselect', 'nagios_server_id', _("Monitored from "), $nsServers, $attrsAdvSelectsmall);
+	$ams3 =& $form->addElement('advmultiselect', 'nagios_server_id', _("Monitored from "), $nsServers, $attrsAdvSelectsmall);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
