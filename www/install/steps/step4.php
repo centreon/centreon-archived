@@ -124,7 +124,7 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
         	if (extension_loaded('mbstring'))
             	echo '<b><span class="go">OK</font></b>';
             else {
-                echo '<b><span class="warning">Warning: install mb_string php extension</font></b>';
+                echo '<b><span class="warning">Critical: php-mbstring functions are not installed</font></b>';
                 $return_false = 1;
             }       ?>
        	</td>
@@ -168,7 +168,7 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 	       	$uid = @posix_getpwuid (fileowner($_SESSION['nagios_conf']));
 			$gid = @posix_getgrgid (filegroup($_SESSION['nagios_conf']));
 	       	$perms = substr(sprintf('%o', fileperms($_SESSION['nagios_conf'])), -3) ;
-			if (!(strcmp($perms,'775')) && !strcmp($_SESSION['nagios_user'], $uid['name']) && !strcmp($_SESSION['apache_group'], $gid['name'])){
+			if (!(strcmp($perms,'775')) && (!strcmp($_SESSION['nagios_user'], $uid['name']) || !strcmp($_SESSION['apache_group'], $gid['name']))){
 	          	echo '<b><span class="go">OK</font></b>';
 	          	 $msg =  '';
 			} else {
