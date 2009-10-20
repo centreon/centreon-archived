@@ -100,9 +100,11 @@
 	function insertServiceCategorieInDB(){
 		global $pearDB;
 		if (testServiceCategorieExistence($_POST["sc_name"])){
-			$DBRESULT =& $pearDB->query("INSERT INTO `service_categories` (`sc_name` , `sc_description` , `sc_activate` ) VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', '".$_POST["sc_activate"]["sc_activate"]."')");
-		}
-		updateServiceCategoriesServices(htmlentities($_POST["sc_id"], ENT_QUOTES));
+                $DBRESULT =& $pearDB->query("INSERT INTO `service_categories` (`sc_name` , `sc_description` , `sc_activate` ) VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', '".$_POST["sc_activate"]["sc_activate"]."')");
+                $DBRESULT =& $pearDB->query("SELECT MAX(sc_id) FROM `service_categories` WHERE sc_name LIKE '".$_POST["sc_name"]."'");
+                $data =& $DBRESULT->fetchRow();
+        }
+        updateServiceCategoriesServices($data["MAX(sc_id)"]);
 	}
 	
 	function updateServiceCategorieInDB(){
