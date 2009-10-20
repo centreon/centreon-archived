@@ -47,14 +47,19 @@
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_ndomod` WHERE `activate` = '1' AND `ns_nagios_server` = '".$tab['id']."' LIMIT 1");
 	
-	$DBRESULT->numRows() ? $ndomod = $DBRESULT->fetchRow() : $ndomod = array();
-
+	$DBRESULT->numRows() ? $ndomod =& $DBRESULT->fetchRow() : $ndomod = array();
+	
+	$DBRESULT2 =& $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '".$tab['id']."' LIMIT 1");
+	$DBRESULT2->numRows() ? $nagios =& $DBRESULT2->fetchRow() : $nagios = array();
+	
 	$str = "";
+	$str .= "instance_name=".$nagios["name"]."\n";
 	foreach ($ndomod as $key => $value)	{
-		if ($value && $key != "id" && $key != "description" && $key != "local" && $key != "ns_nagios_server" && $key != "activate")	{	
+		if ($value && $key != "id" && $key != "description" && $key != "local" && $key != "ns_nagios_server" && $key != "activate" && $key != "instance_name")	{	
 			$str .= $key."=".$value."\n";
 		}
 	}
+	
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/ndomod.cfg");
 	fclose($handle);
 	$DBRESULT->free();
