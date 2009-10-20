@@ -38,20 +38,6 @@
   
 	if (!isset($oreon))
 		exit();
-	
-	function get_ndo_instance_id($name_instance){
-		global $gopt,$pearDBndo;
-		/*
-		 * Get NDO table prefix
-		 */
-		$ndo_base_prefix = getNDOPrefix();
-		
-		$DBRESULT_NDO =& $pearDBndo->query("SELECT `instance_id` FROM `".$ndo_base_prefix."instances` WHERE `instance_name` LIKE '".$name_instance."'");
-		$ndo =& $DBRESULT_NDO->fetchRow();
-		return $ndo["instance_id"];
-	}
-	
-	$DBRESULT =& $pearDB->query("SELECT `cfg`.`instance_name` AS `name` FROM `nagios_server` `ns`, `cfg_ndomod` `cfg` WHERE `cfg`.`ns_nagios_server` = `ns`.`id` AND `ns`.`ns_activate` = 1");	
 ?>
 function getXhrC(){
 	if (window.XMLHttpRequest) // Firefox et autres
@@ -111,13 +97,13 @@ function construct_selecteList_ndo_instance(id){
 		_select.appendChild(k);
 
 <?php
+	$DBRESULT =& $pearDBndo->query("SELECT `instance_id`, instance_name FROM `".getNDOPrefix()."instances`");
 	while ($nagios_server =& $DBRESULT->fetchRow())	{
-	 	$isntance_id = get_ndo_instance_id($nagios_server["name"]);
 ?>
 		var m = document.createElement('option');
-		m.value= "<?php echo $isntance_id; ?>";
+		m.value= "<?php echo $nagios_server["instance_id"]; ?>";
 		_select.appendChild(m);
-		var n = document.createTextNode("<?php echo $nagios_server["name"]; ?>");
+		var n = document.createTextNode("<?php echo $nagios_server["instance_name"]; ?>   ");
 		m.appendChild(n);
 		_select.appendChild(m);
 <?php }	?>
