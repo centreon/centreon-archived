@@ -84,10 +84,10 @@ function construct_selecteList_ndo_instance(id){
 		_select.id = "select_instance";
 		_select.onchange = function() { 
 			_instance = this.value; 
-			_default_instance = this.selectedIndex; 
+			_default_instance = this.value; 
 			monitoring_refresh();
 			xhr = new XMLHttpRequest();
-			xhr.open('GET','./include/monitoring/status/Common/updateContactParam.php?uid=<?php echo $oreon->user->user_id; ?>&instance_id='+this.selectedIndex, true);
+			xhr.open('GET','./include/monitoring/status/Common/updateContactParam.php?uid=<?php echo $oreon->user->user_id; ?>&instance_id='+this.value, true);
 			xhr.send(null);
 		};
 		var k = document.createElement('option');
@@ -95,6 +95,7 @@ function construct_selecteList_ndo_instance(id){
 		var l = document.createTextNode("ALL");
 		k.appendChild(l);
 		_select.appendChild(k);
+		var i = 1;
 
 <?php
 	$DBRESULT =& $pearDBndo->query("SELECT `instance_id`, instance_name FROM `".getNDOPrefix()."instances`");
@@ -106,8 +107,10 @@ function construct_selecteList_ndo_instance(id){
 		var n = document.createTextNode("<?php echo $nagios_server["instance_name"]; ?>   ");
 		m.appendChild(n);
 		_select.appendChild(m);
+		select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
+		i++;
 <?php }	?>
-		_select.selectedIndex = _default_instance;
+		_select.selectedIndex = select_index[_default_instance];
 		_select_instance.appendChild(_select);
 	
 	}
