@@ -271,7 +271,7 @@
 		isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL ? $rq .= "'".$ret["contact_type_msg"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_activate"]["contact_activate"]) && $ret["contact_activate"]["contact_activate"] != NULL ? $rq .= "'".$ret["contact_activate"]["contact_activate"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL ? $rq .= "'".$ret["contact_auth_type"]."', ": $rq .= "'local', ";
-		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".$ret["contact_ldap_dn"]."', ": $rq .= "NULL, ";
+		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."' ": $rq .= "NULL ";
 		$rq .= ")";
 		
@@ -383,7 +383,7 @@
 		$rq .= "contact_auth_type = ";
 		isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL ? $rq .= "'".$ret["contact_auth_type"]."', ": $rq .= "'local', ";
 		$rq .= "contact_ldap_dn = ";
-		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".$ret["contact_ldap_dn"]."', ": $rq .= "NULL, ";
+		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "contact_location = ";
 		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."' ": $rq .= "NULL ";
 		$rq .= "WHERE contact_id = '".$contact_id."'";
@@ -493,7 +493,7 @@
 			$fields["contact_auth_type"] = $ret["contact_auth_type"];
 		}
 		if (isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL) {
-			$rq .= "contact_ldap_dn = '".$ret["contact_ldap_dn"]."', ";
+			$rq .= "contact_ldap_dn = '".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES)."', ";
 			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
 		}
 		if (isset($ret["contact_location"]) && $ret["contact_location"] != NULL) {
