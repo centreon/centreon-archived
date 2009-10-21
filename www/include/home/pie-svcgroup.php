@@ -38,7 +38,7 @@
  
 
 	require_once ("../../class/Session.class.php");
-	require_once ("../../class/centreon.class.php");
+	require_once ("../../class/Oreon.class.php");
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
@@ -179,8 +179,8 @@
                                                           "WHERE ".$ndo_base_prefix."services.display_name = '".$s["service_description"]."' " .
                                                           "AND ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id " .
                                                           "AND ".$ndo_base_prefix."hosts.display_name = '".$s["host_name"]."'" .
-                                                          "AND ".$ndo_base_prefix."services.host_object_id = nagios_hosts.host_object_id ");
-                        while($stt = $DBRESULT3->fetchRow()){
+                                                          "AND ".$ndo_base_prefix."services.host_object_id = ".$ndo_base_prefix."hosts.host_object_id ");
+                        while ($stt = $DBRESULT3->fetchRow()){
                                 if ($stt["current_state"] == 1)
                                         $counterWarn++;
                                 if ($stt["current_state"] == 0)

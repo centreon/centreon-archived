@@ -257,20 +257,20 @@
 			$searchService .= ")";
 	}
 	
-	$rq3 = 	"SELECT 1 FROM nagios_servicestatus WHERE no.object_id = ns.service_object_id  ";
+	$rq3 = 	"SELECT 1 FROM ".$ndo_base_prefix."servicestatus WHERE no.object_id = ns.service_object_id  ";
 	
 	$rq1 = 	"SELECT $ArgNeeded " .
 		 	"FROM (";
 
 	$rq2 = 	"SELECT DISTINCT no.name1 as host_name, no.object_id, no.name2 as service_description, " .
-			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts FROM  nagios_objects no, nagios_services ns $ACLDBName" .
+			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts FROM  ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns $ACLDBName" .
 			"WHERE no.object_id = ns.service_object_id " .
 			"	AND no.name1 NOT LIKE '_Module_%' " .
 			"	$searchHost $searchService $instance_filter $ACLCondition " .
 			"	AND objecttype_id = 2 " .
 			"	AND EXISTS ($rq3)" .
 			"	) A, " .
-		 	"nagios_servicestatus nss WHERE A.object_id = nss.service_object_id $rq_state $rq_sorte $rq_limit ";
+		 	"".$ndo_base_prefix."servicestatus nss WHERE A.object_id = nss.service_object_id $rq_state $rq_sorte $rq_limit ";
 
 	$rq = $rq1 . $rq2;
 
@@ -279,11 +279,11 @@
 	 */
 	if ($is_admin) {
 		$rq_pagination ="SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
-						"FROM nagios_objects no ,  nagios_servicestatus nss " .
+						"FROM ".$ndo_base_prefix."objects no ,  ".$ndo_base_prefix."servicestatus nss " .
 						"WHERE no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $searchHost $searchService";
 	} else {
 		$rq_pagination ="SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
-						"FROM nagios_objects no, nagios_servicestatus nss, centreon_acl " .
+						"FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."servicestatus nss, centreon_acl " .
 						"WHERE no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $searchHost $searchService $ACLCondition";
 	}
 	$DBRESULT =& $pearDBndo->query($rq_pagination);

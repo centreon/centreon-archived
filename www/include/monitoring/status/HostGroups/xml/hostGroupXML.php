@@ -47,7 +47,7 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	
 	include_once $centreon_path . "www/class/Session.class.php";
-	include_once $centreon_path . "www/class/centreon.class.php";	
+	include_once $centreon_path . "www/class/Oreon.class.php";	
 	include_once $centreon_path . "www/class/other.class.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
@@ -150,7 +150,7 @@
 					"INNER JOIN ".$ndo_base_prefix."objects noo ON (noo.object_id = nhgm.host_object_id ) " .
 					"INNER JOIN ".$ndo_base_prefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
 					"INNER JOIN ".$ndo_base_prefix."objects no ON (noo.name1 = no.name1) " .
-					"INNER JOIN nagios_hoststatus nhs on (nhs.host_object_id = no.object_id) " .
+					"INNER JOIN ".$ndo_base_prefix."hoststatus nhs on (nhs.host_object_id = no.object_id) " .
 			"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 $searchStr " .
 			"GROUP BY nhg.alias, nhs.current_state";
 	$DBRESULT =& $pearDBndo->query($rq1);
@@ -164,11 +164,11 @@
 	 * Get Services request
 	 */
 	$rq2 = 	"SELECT nhg.alias, nss.current_state, count( nss.service_object_id ) AS nb " .
-			"FROM nagios_hostgroup_members nhgm " .
-				"INNER JOIN nagios_objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
-				"INNER JOIN nagios_hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
-				"INNER JOIN nagios_objects no ON ( noo.name1 = no.name1 ) " .
-				"INNER JOIN nagios_servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
+			"FROM ".$ndo_base_prefix."hostgroup_members nhgm " .
+				"INNER JOIN ".$ndo_base_prefix."objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
+				"INNER JOIN ".$ndo_base_prefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
+				"INNER JOIN ".$ndo_base_prefix."objects no ON ( noo.name1 = no.name1 ) " .
+				"INNER JOIN ".$ndo_base_prefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
 			"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2 $searchStr " .
 			"GROUP BY nhg.alias, nss.current_state";
 	$DBRESULT =& $pearDBndo->query($rq2);
