@@ -114,13 +114,22 @@
  	 *  Returns a string that replaces on demand macros by their values
  	 */
  	public function replaceMacroInString($host_id, $string) { 		 		
-		if (strpos($string, "\$HOSTADDRESS$"))
- 			$string = str_replace("\$HOSTADDRESS\$", $this->getHostAddress($host_id), $string);
-		if (strpos($string, "\$HOSTNAME$"))
- 			$string = str_replace("\$HOSTNAME\$", $this->getHostName($host_id), $string); 		
-		if (strpos($string, "\$HOSTALIAS$"))
- 			$string = str_replace("\$HOSTALIAS\$", $this->getHostAlias($host_id), $string);
- 		
+		$rq = "SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1";
+        $DBRESULT =& $this->local_pearDB->query($rq);
+        if (!$DBRESULT->numRows())
+        	return $string;
+        $row =& $DBRESULT->fetchRow();
+        // replace if not template
+        if ($row['host_register']) {
+			if (strpos($string, "\$HOSTADDRESS$"))
+	 			$string = str_replace("\$HOSTADDRESS\$", $this->getHostAddress($host_id), $string);
+			if (strpos($string, "\$HOSTNAME$"))
+	 			$string = str_replace("\$HOSTNAME\$", $this->getHostName($host_id), $string); 		
+			if (strpos($string, "\$HOSTALIAS$"))
+	 			$string = str_replace("\$HOSTALIAS\$", $this->getHostAlias($host_id), $string);
+        }
+        unset($row);
+        
  		$matches = array();
  		$pattern = '|(\$_HOST[0-9a-zA-Z]+\$)|';
  		preg_match_all($pattern, $string, $matches);
