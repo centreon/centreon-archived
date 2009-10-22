@@ -189,8 +189,7 @@ class CentreonDB {
 		if ($grant == "")
 			return 0;
 		
-		$db_name = str_replace("_", "\\\_", $this->dsn["database"]);
-        $db_name = str_replace("-", "\\\-", $db_name); 
+		$db_name = $this->dsn["database"];
 		 
 		$DBRESULT =& $this->query("show grants"); 
 		while ($result =& $DBRESULT->fetchRow()) {
