@@ -49,29 +49,44 @@
 			</xsl:element>
 		</td>
 		<td class="ListColLeft">
+			<xsl:if test="hnu != 'none'">
+				<xsl:element name="a">
+					<xsl:attribute name="classe">infobulle</xsl:attribute>
+					<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
+						<xsl:element name="img">
+							<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+							<xsl:attribute name="title">HTTP Link : <xsl:value-of select="hnn"/></xsl:attribute>
+						</xsl:element>
+				</xsl:element>
+			</xsl:if>
 			<xsl:if test="hdtm = 1">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
+						<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
+						<xsl:attribute name="title">Host is currently on downtime</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ha = 1">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+						<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+						<xsl:attribute name="title">Problem has been acknowleged</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="hae = 0 and hpe = 1">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+						<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+						<xsl:attribute name="title">This host is only check by passiv mode</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="hae = 0 and hpe = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+						<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+						<xsl:attribute name="title">This host is never checked</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ne = 0">
 					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+						<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+						<xsl:attribute name="title">Notification disabled for this host</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 		</td>

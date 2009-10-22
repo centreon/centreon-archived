@@ -47,6 +47,7 @@
 	
 	$pearDB 	= new CentreonDB();
 	$pearDBndo 	= new CentreonDB("ndo");
+	$hostObj	= new CentreonHost($pearDB);
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
@@ -136,9 +137,11 @@
 			" unix_timestamp(nhs.last_state_change) as last_state_change," .
 			" nhs.output," .
 			" unix_timestamp(nhs.last_check) as last_check," .
+			" nh.host_object_id as host_id," .
 			" nh.address," .
 			" no.name1 as host_name," .
 			" nh.action_url," .
+			" nh.notes," .
 			" nh.notes_url," .
 			" nh.icon_image," .
 			" nh.icon_image_alt," .
@@ -250,17 +253,26 @@
 		$buffer->writeElement("lc", (($ndo["last_check"] != 0) ? $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]) : "N/A"));
 		$buffer->writeElement("cs", $tab_status_host[$ndo["current_state"]]);		
 		$buffer->writeElement("pha", $ndo["problem_has_been_acknowledged"]);
-        $buffer->writeElement("pce", $ndo["passive_checks_enabled"]);
-        $buffer->writeElement("ace", $ndo["active_checks_enabled"]);
-        $buffer->writeElement("lsc", ($duration ? $duration : "N/A"));      
-        $buffer->writeElement("ha", $ndo["problem_has_been_acknowledged"]);
-        $buffer->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);
-        $buffer->writeElement("hae", $ndo["active_checks_enabled"]);       
-        $buffer->writeElement("hpe", $ndo["passive_checks_enabled"]);
-        $buffer->writeElement("ne", $ndo["notifications_enabled"]);
-        $buffer->writeElement("tr", $ndo["current_check_attempt"]."/".$ndo["max_check_attempts"]." (".$state_type[$ndo["state_type"]].")");
-        $buffer->writeElement("ico", $ndo["icon_image"]);
-		$buffer->endElement();		
+		$buffer->writeElement("pce", $ndo["passive_checks_enabled"]);
+		$buffer->writeElement("ace", $ndo["active_checks_enabled"]);
+		$buffer->writeElement("lsc", ($duration ? $duration : "N/A"));      
+		$buffer->writeElement("ha", $ndo["problem_has_been_acknowledged"]);
+		$buffer->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);
+		$buffer->writeElement("hae", $ndo["active_checks_enabled"]);       
+		$buffer->writeElement("hpe", $ndo["passive_checks_enabled"]);
+		$buffer->writeElement("ne", $ndo["notifications_enabled"]);
+		$buffer->writeElement("tr", $ndo["current_check_attempt"]."/".$ndo["max_check_attempts"]." (".$state_type[$ndo["state_type"]].")");
+		$buffer->writeElement("ico", $ndo["icon_image"]);
+		$buffer->writeElement("hnn", $ndo["notes"]);
+		if ($ndo["notes_url"]) {
+			$notesurl = $ndo["notes_url"];
+			$notesurl = $hostObj->replaceMacroInString($ndo["host_id"], $notesurl);
+			$buffer->writeElement("hnu", $tt);
+		}
+		else
+			$buffer->writeElement("hnu", "none");
+
+		$buffer->endElement();
 	}
 
 	if (!$ct)
