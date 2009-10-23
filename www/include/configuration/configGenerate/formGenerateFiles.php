@@ -216,7 +216,18 @@
 				$msg_debug[$host['id']] = str_replace ("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);
 				$msg_debug[$host['id']] = str_replace ("Error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
 				$msg_debug[$host['id']] = str_replace ("Total Warnings: 0", "<font color='green'>Total Warnings: 0</font>", $msg_debug[$host['id']]);
-				$msg_debug[$host['id']] = str_replace ("Total Errors: 0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);		
+				$msg_debug[$host['id']] = str_replace ("Total Errors: 0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);
+				$msg_debug[$host['id']] = str_replace ("<br />License:", " - License:", $msg_debug[$host['id']]);
+				
+				$lines = split("<br />", $msg_debug[$host['id']]);
+				$msg_debug[$host['id']] = "";
+				$i = 0;
+				foreach ($lines as $line) {
+					if (strncmp($line, "Processing object config file", strlen("Processing object config file")) && $i 
+						&& strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org")))
+						$msg_debug[$host['id']] .= $line . "<br>";
+					$i++;
+				}
 			}
 		}
 		

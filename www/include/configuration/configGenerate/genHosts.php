@@ -39,7 +39,6 @@
 	if (!isset($oreon))
 		exit();
 	
-	require_once ("@CENTREON_ETC@/centreon.conf.php");
 	require_once ($centreon_path . "/www/class/centreonHost.class.php");
 	
 	/*
@@ -124,6 +123,13 @@
 	 * Build GMT cache
 	 */
 	$gmtCache = array();
+
+	/*
+	 * Init Buffer for hostgroup used in hosts
+	 */
+	global $hgHostGenerated;
+	$hgHostGenerated = array();
+
 
 	/*
 	 * Create host object
@@ -240,6 +246,7 @@
 						}
 						$strTemp .= $hgs;
 						$HGFilled[$hgs] = $hgs;
+						$hgHostGenerated[$hgs] = 1;
 					}					
 				}
 				if ($strTemp) 

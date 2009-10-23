@@ -335,7 +335,28 @@
 		}
 		
 	} else {
-		$DBRESULT =& $pearDB->query("SELECT * FROM service WHERE `service_activate` = '1' AND `service_register` = '1' ORDER BY `service_register`, `service_description`");
+		/*
+		 * Create Service relation buffer
+		 */
+		$serviceRelation = array();
+		$DBRESULT2 =& $pearDB->query("SELECT host_host_id as host_id, hostgroup_hg_id as hg_id, service_service_id as service_id FROM host_service_relation");
+		while ($data =& $DBRESULT2->fetchRow())	{
+			if (!isset($serviceRelation[$data["service_id"]]))
+				$serviceRelation[$data["service_id"]] = array();
+			if (isset($data["hg_id"]) && isset($generatedHG[$data["hg_id"]]) && isset($hgHostGenerated[$data["hg_id"]])) {
+				if (!isset($serviceRelation[$data["service_id"]]["hg"]))
+					$serviceRelation[$data["service_id"]]["hg"] = array();
+				$serviceRelation[$data["service_id"]]["hg"][$data["hg_id"]] = $generatedHG[$data["host_id"]];
+			}
+			if (isset($data["host_id"]) && isset($hostGenerated[$data["host_id"]])) {
+				if (!isset($serviceRelation[$data["service_id"]]["h"]))
+					$serviceRelation[$data["service_id"]]["h"] = array();
+				$serviceRelation[$data["service_id"]]["h"][$data["host_id"]] = $hostGenerated[$data["host_id"]];
+			}
+		}
+		$DBRESULT2->free();
+		
+		$DBRESULT =& $pearDB->query("SELECT * FROM service WHERE `service_activate` = '1' AND `service_register` = '1' ORDER BY `service_description`");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$service = array();
@@ -368,48 +389,32 @@
 					/*
 					 * HostGroup Relation
 					 */
-					$hostGroup = array();
 					$strTMPTemp = NULL;
-					$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM host_service_relation hsr, hostgroup hg WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.hostgroup_hg_id = hg.hg_id");
-					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-					while ($hostGroup =& $DBRESULT2->fetchRow())	{
-						if (isset($generatedHG[$hostGroup["hg_id"]]) && $generatedHG[$hostGroup["hg_id"]] && isset($HGFilled[$hostGroup["hg_name"]])){
+					if (isset($serviceRelation[$service["service_id"]]["hg"]))
+						foreach ($serviceRelation[$service["service_id"]]["hg"] as $key => $value) {
 							$parent = true;
-							$strTMPTemp != NULL ? $strTMPTemp .= ", ".$hostGroup["hg_name"] : $strTMPTemp = $hostGroup["hg_name"];
+							$strTMPTemp != NULL ? $strTMPTemp .= ", ".$value : $strTMPTemp = $value;
 							$LinkedToHost++;
 						}
-					}
-					$DBRESULT2->free();
 					if ($strTMPTemp) 
 						$strTMP .= print_line("hostgroup_name", $strTMPTemp);
-					unset($hostGroup);
 					unset($strTMPTemp);
 					
-					if (!$parent)	{
+					if (!$parent) {
 						/*
 						 * Host Relation
 						 */
-						$host = array();
 						$strTMPTemp = NULL;
-						$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_service_relation hsr, host WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.host_host_id = host.host_id");
-						if (PEAR::isError($DBRESULT2))
-							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-						while ($host =& $DBRESULT2->fetchRow())	{
-							if (isset($gbArr[2][$host["host_id"]]))	{
+						if (isset($serviceRelation[$service["service_id"]]["h"]))
+							foreach ($serviceRelation[$service["service_id"]]["h"] as $key => $value) {
 								$parent = true;
-								if (isHostOnThisInstance($host["host_id"], $tab['id'])){
-									$strTMPTemp != NULL ? $strTMPTemp .= ", ".$host["host_name"] : $strTMPTemp = $host["host_name"];
-									$LinkedToHost++;
-								}
+								$strTMPTemp != NULL ? $strTMPTemp .= ", ".$value : $strTMPTemp = $value;
+								$LinkedToHost++;
 							}
-						}
-						$DBRESULT2->free();
 						if ($strTMPTemp) 
 							$strTMP .= print_line("host_name", $strTMPTemp);
-						unset($host);
+						unset($strTMPTemp);
 					}
-					unset($strTMPTemp);
 				}
 				
 				if ($service["service_description"]) 
