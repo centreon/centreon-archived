@@ -64,7 +64,7 @@
 	$tab_css = array();
 	for ($i = 0; $DBRESULT->numRows() && $elem =& $DBRESULT->fetchRow();$i++){
 		$tab_css[$elem["menu_nb"]] = $elem;
-		if(isset($_GET["css_color_".$elem["id_css_color_menu"]])){
+		if (isset($_GET["css_color_".$elem["id_css_color_menu"]])){
 			$name = $_GET["css_color_".$elem["id_css_color_menu"]];			
 			$id = $elem["id_css_color_menu"];
 			$rq = "UPDATE `css_color_menu` SET `css_name` = '".$name."' WHERE `id_css_color_menu` = $id";
@@ -104,7 +104,7 @@
 				$select_list =	'<select name="css_color_'. $elem["id_css_color_menu"] .'">';
 				for ($j=0 ; isset($tab_file_css[$j]) ; $j++){
 					
-					if($elem["css_name"] == $tab_file_css[$j]) {
+					if ($elem["css_name"] == $tab_file_css[$j]) {
 						$selected = "selected";
 					} else {
 						$selected = "";	
