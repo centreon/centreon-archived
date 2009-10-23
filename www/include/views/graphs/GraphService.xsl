@@ -269,9 +269,13 @@
 						<xsl:if test="split = 1">
 							<xsl:for-each select="metrics">
 								<xsl:if test="select = 1">
-									<xsl:element name="img">
-							  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateODSMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-								</xsl:element>
+									<xsl:element name="a">
+									<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', ''); return false;</xsl:attribute>
+									<xsl:attribute name="href">#</xsl:attribute>
+										<xsl:element name="img">
+									  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateODSMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+										</xsl:element>
+									</xsl:element>
 								<br/>
 								</xsl:if>
 							</xsl:for-each>
