@@ -77,8 +77,16 @@
  	 *  Returns a string that replaces on demand macros by their values
  	 */
  	public function replaceMacroInString($svc_id, $string) { 		 		 		 		
- 		if (preg_match("/$SERVICEDESC$/", $string))
- 			$string = str_replace("\$SERVICEDESC\$", $this->getServiceDesc($svc_id), $string); 		
+ 		$rq = "SELECT service_register FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
+        $DBRES =& $this->local_pearDB->query($rq);
+        if (!$DBRES->numRows())
+        	return $string;
+        $row =& $DBRES->fetchRow();
+        // replace if not template
+        if ($row['service_register']) {
+	 		if (preg_match("/$SERVICEDESC$/", $string))
+	 			$string = str_replace("\$SERVICEDESC\$", $this->getServiceDesc($svc_id), $string); 		
+        }
  		$matches = array();
  		$pattern = '|(\$_SERVICE[0-9a-zA-Z]+\$)|';
  		preg_match_all($pattern, $string, $matches);
