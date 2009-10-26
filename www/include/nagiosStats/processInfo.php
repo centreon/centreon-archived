@@ -73,7 +73,7 @@
 	while ($nagios =& $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];		
 		
-		$DBRESULT2 =& $pearDBndo->query("SELECT instance_id FROM `".$ndo_base_prefix."instances` WHERE instance_name LIKE '".$nagios['instance_name']."'");
+		$DBRESULT2 =& $pearDBndo->query("SELECT instance_id FROM `".$ndo_base_prefix."instances` WHERE instance_name LIKE '".$nagios['name']."'");
 		$row =& $DBRESULT2->fetchRow();
 		$DBRESULT2->free();
 		
