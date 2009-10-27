@@ -48,6 +48,9 @@ require "@CENTREON_ETC@/conf.pm";
 # Define Var lib dir
 my $VarLib = "@CENTREON_VARLIB@";
 
+# SSH options
+my $sshOptions="-o ConnectTimeout=5";
+
 # logAnalyser's lock file
 my $lock_file = "$VarLib/nagiosPerfTrace.lock";
 my $cmdtmp;
@@ -340,7 +343,7 @@ sub get_poller()	{
 				$nagiostats = `$nagiostats_bin`;
 		    } else {
 				$tmp = $cfg_dir->{'cfg_dir'};
-				$nagiostats = `ssh -o ConnectTimeout=5 $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
+				$nagiostats = `ssh $sshOptions $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
 		    }
 		    check_dir($id);
 		    if (rrd_process($nagiostats, $is_localhost, $must_update_ds, $id)) {
