@@ -345,6 +345,9 @@ sub get_poller()	{
 				$tmp = $cfg_dir->{'cfg_dir'};
 				$nagiostats = `ssh $sshOptions $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
 		    }
+			if ($nagiostats =~ m/Error reading status file/ ) {
+				next;
+			}
 		    check_dir($id);
 		    if (rrd_process($nagiostats, $is_localhost, $must_update_ds, $id)) {
 		    	$must_update_ds = 1;
