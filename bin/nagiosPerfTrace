@@ -340,7 +340,7 @@ sub get_poller()	{
 		    }
 		    $cfg_dir = $cfg_item->fetchrow_hashref();
 		    if ($is_localhost){
-				$nagiostats = `$nagiostats_bin`;
+				$nagiostats = `$nagiostats_bin -c $cfg_dir->{'cfg_dir'}nagios.cfg`;
 		    } else {
 				$tmp = $cfg_dir->{'cfg_dir'};
 				$nagiostats = `ssh $sshOptions $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
