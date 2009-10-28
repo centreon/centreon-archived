@@ -330,11 +330,11 @@ sub get_poller()	{
 
     my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
     if (defined($dbh)){
-		$item = $dbh->prepare("SELECT id, ns_ip_address, localhost, nagiostats_bin FROM nagios_server WHERE ns_activate = 1");
+		$item = $dbh->prepare("SELECT /* SQL_CACHE */ id, ns_ip_address, localhost, nagiostats_bin FROM nagios_server WHERE ns_activate = 1");
 		if (!$item->execute) {die "Error:" . $item->errstr . "\n";}
 		while (($id, $ip, $is_localhost, $nagiostats_bin) = $item->fetchrow_array())	{
 		    $must_update_ds = 0;
-		    $cfg_item = $dbh->prepare("SELECT cfg_dir FROM cfg_nagios WHERE nagios_server_id = " . $id);
+		    $cfg_item = $dbh->prepare("SELECT /* SQL_CACHE */ cfg_dir FROM cfg_nagios WHERE nagios_server_id = " . $id);
 		    if (!$cfg_item->execute) {
 				die "Error:" . $cfg_item->errstr . "\n";
 		    }
