@@ -42,6 +42,7 @@
 use strict;
 use Getopt::Long;
 use DBI;
+use HTML::Entities;
 
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
 require "@CENTREON_ETC@/conf.pm";
@@ -102,11 +103,11 @@ sub main() {
 		    my $args = "";
 		    print FILE "EVENT ".$values[0]." ".$values[1]." \"Status Event\" ".$values[2]."\n";
 		    if (defined($values[3])) {
-				print FILE "FORMAT ".$values[3]."\n";
+				print FILE "FORMAT ".decode_entities($values[3])."\n";
 		    } else {
 				$values[3] = "no output for trap!";
 		    }
-		    print FILE "EXEC ".$NAGIOS_TRAPS."centTrapHandler-2.x \$aA \$A \$o \"$values[3]\"\n";
+		    print FILE "EXEC ".$NAGIOS_TRAPS."centTrapHandler-2.x \$aA \$A \$o \"".decode_entities($values[3])."\"\n";
 		    if (defined($values[4])) {
 				print FILE "SDESC\n".$values[4];
 				if ($values[4] =~ /\n$/) {
