@@ -535,7 +535,7 @@
 		if (isset($macro_on_demand))
 			$my_tab = $macro_on_demand;
 		else if (isset($_POST['nbOfMacro']))
-			$my_tab = $_POST;
+			$my_tab = $ret;
 		if (isset($my_tab['nbOfMacro'])) {			
 			$already_stored = array(); 		
 	 		for ($i=0; $i <= $my_tab['nbOfMacro']; $i++)
