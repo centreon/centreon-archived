@@ -42,7 +42,12 @@
 use strict;
 use Getopt::Long;
 use DBI;
-use HTML::Entities;
+eval "use HTML::Entities";
+if($@) {
+	print "NOT using HTML::Entities, you might have problem with special characters. Install HTML::Entities.\n";
+} else {
+	print "Using HTML::Entities\n";
+}
 
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
 require "@CENTREON_ETC@/conf.pm";
@@ -63,7 +68,7 @@ sub getPath($) {
     if (($pathRes->{'value'} =~ /\/$/)) {
     	return $pathRes->{'value'};
     } else {
-    	return "/etc/snmp/centreon_traps/";
+    	return "/appcentreon/logiciel/list/snmptrapd/etc/centreon_traps/";
     }
 }
 
@@ -103,11 +108,14 @@ sub main() {
 		    my $args = "";
 		    print FILE "EVENT ".$values[0]." ".$values[1]." \"Status Event\" ".$values[2]."\n";
 		    if (defined($values[3])) {
-				print FILE "FORMAT ".decode_entities($values[3])."\n";
+				if (exists &decode_entities) {
+					$values[3] = decode_entities($values[3]);
+				}
+				print FILE "FORMAT ".$values[3]."\n";
 		    } else {
 				$values[3] = "no output for trap!";
 		    }
-		    print FILE "EXEC ".$NAGIOS_TRAPS."centTrapHandler-2.x \$aA \$A \$o \"".decode_entities($values[3])."\"\n";
+		    print FILE "EXEC ".$NAGIOS_TRAPS."centTrapHandler-2.x \$aA \$A \$o \"$values[3]\"\n";
 		    if (defined($values[4])) {
 				print FILE "SDESC\n".$values[4];
 				if ($values[4] =~ /\n$/) {
