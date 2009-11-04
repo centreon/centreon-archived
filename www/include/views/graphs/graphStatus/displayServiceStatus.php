@@ -43,7 +43,7 @@
 	require_once $centreon_path."/www/class/centreonDB.class.php";
 	require_once $centreon_path."www/class/Session.class.php";
 	require_once $centreon_path."/www/class/centreonGMT.class.php";
-	require_once $centreon_path."www/class/centreon.class.php";
+	require_once $centreon_path."www/class/Oreon.class.php";
 	require_once $centreon_path."www/include/common/common-Func.php";
 
 	$pearDB = new CentreonDB();
@@ -61,7 +61,7 @@
 	 * Verify if start and end date
 	 */	
 
-	(!isset($_GET["start"])) ? $start = time() - (60*60*24): $start = $_GET["start"];
+	(!isset($_GET["start"])) ? $start = time() - (60*60*48): $start = $_GET["start"];
 	(!isset($_GET["end"])) ? $end = time() : $end = $_GET["end"];
 
 	$len = $end - $start;
@@ -125,29 +125,18 @@
 		} else
 			$template_id = $_GET["template_id"];
 		$DBRESULT->free();	
+		
 		/*
 		 * Create command line
 		 */
-		
 		if (isset($_GET["flagperiod"]) && $_GET["flagperiod"] == 0) {
-			$start 	= $CentreonGMT->getUTCDate($start);
-			$end 	= $CentreonGMT->getUTCDate($end);
+			if ($CentreonGMT->used()) {
+				$start 	= $CentreonGMT->getUTCDate($start);
+				$end 	= $CentreonGMT->getUTCDate($end);
+			}	
 		} 
 		
 		$command_line = " graph - --start=".$start." --end=".$end;
-
-		if ($oreon->optGen["rrdtool_version"] == "1.3") {
-           if (isset($oreon->optGen["rrdtool_title_font"]) && isset($oreon->optGen["rrdtool_title_fontsize"]))
-              $command_line .= " --font TITLE:".$oreon->optGen["rrdtool_title_fontsize"].":".$oreon->optGen["rrdtool_title_font"]." ";
-           if (isset($oreon->optGen["rrdtool_unit_font"]) && isset($oreon->optGen["rrdtool_unit_fontsize"]))
-              $command_line .= " --font UNIT:".$oreon->optGen["rrdtool_unit_fontsize"].":".$oreon->optGen["rrdtool_unit_font"]." ";
-           if (isset($oreon->optGen["rrdtool_axis_font"]) && isset($oreon->optGen["rrdtool_axis_fontsize"]))
-              $command_line .= " --font AXIS:".$oreon->optGen["rrdtool_axis_fontsize"].":".$oreon->optGen["rrdtool_axis_font"]." ";
-           if (isset($oreon->optGen["rrdtool_title_font"]) && isset($oreon->optGen["rrdtool_title_fontsize"]))
-              $command_line .= " --font WATERMARK:".$oreon->optGen["rrdtool_title_fontsize"].":".$oreon->optGen["rrdtool_title_font"]." ";
-           if (isset($oreon->optGen["rrdtool_legend_title"]) && isset($oreon->optGen["rrdtool_legend_fontsize"]))
-              $command_line .= " --font LEGEND:".$oreon->optGen["rrdtool_legend_fontsize"].":".$oreon->optGen["rrdtool_legend_title"]." ";
-        }
 
 		/*
 		 * get all template infos
