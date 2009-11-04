@@ -40,12 +40,11 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('lca_id');
+		
 		$DBRESULT =& $pearDB->query("SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = '".$name."'");
 		$lca =& $DBRESULT->fetchRow();
-		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $lca["acl_res_id"] == $id)	
 			return true;
-		#Duplicate entry
 		else if ($DBRESULT->numRows() >= 1 && $lca["acl_res_id"] != $id)
 			return false;
 		else
