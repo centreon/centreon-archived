@@ -39,8 +39,8 @@
 		exit ();
 	
 	function testActionExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form;
+		
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('acl_action_id');
