@@ -215,9 +215,9 @@
 	 */
 	 
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('lca_name', _("Required"), 'required');
+	$form->addRule('acl_topo_name', _("Required"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('lca_name', _("Already exists"), 'exist');
+	$form->addRule('acl_topo_name', _("Already exists"), 'exist');
 	$form->setRequiredNote(_("Required field"));
 
 	/*

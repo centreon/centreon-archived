@@ -42,14 +42,16 @@
 	/*
 	 * Database retrieve information for LCA
 	 */
-	 
 	if ($o == "c" || $o == "w")	{
+		/*
+		 * Set base value
+		 */
 		$DBRESULT =& $pearDB->query("SELECT * FROM acl_resources WHERE acl_res_id = '".$acl_id."' LIMIT 1");
+		$acl = array_map("myDecode", $DBRESULT->fetchRow());		
 		
-		# Set base value
-		$acl = array_map("myDecode", $DBRESULT->fetchRow());
-		
-		# Set Hosts relations
+		/*
+		 * Set Hosts relations
+		 */
 		$hostnotexludes = array();
 		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = '".$acl_id."'");
 		for ($i = 0; $hosts_list =& $DBRESULT->fetchRow(); $i++) {
@@ -58,39 +60,51 @@
 		}
 		$DBRESULT->free();
 		
-		# Set Hosts exludes relations
+		/*
+		 * Set Hosts exludes relations
+		 */
 		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = '".$acl_id."'");
 		for ($i = 0; $hosts_list =& $DBRESULT->fetchRow(); $i++)
 			$acl["acl_hostexclude"][$i] = $hosts_list["host_host_id"];		
 		$DBRESULT->free();
 		
-		# Set Hosts Groups relations
+		/*
+		 * Set Hosts Groups relations
+		 */
 		$DBRESULT =& $pearDB->query("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = '".$acl_id."'");
 		for ($i = 0; $hg_list =& $DBRESULT->fetchRow(); $i++)
 			$acl["acl_hostgroup"][$i] = $hg_list["hg_hg_id"];
 		$DBRESULT->free();
 
-		# Set Groups relations
+		/*
+		 * Set Groups relations
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
 		for ($i = 0; $groups =& $DBRESULT->fetchRow(); $i++)
 			$acl["acl_groups"][$i] = $groups["acl_group_id"];
 		$DBRESULT->free();
 		
-		# Set Service Categories relations
+		/*
+		 * Set Service Categories relations
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
 		if ($DBRESULT->numRows())
 			for ($i = 0; $sc =& $DBRESULT->fetchRow(); $i++)
 				$acl["acl_sc"][$i] = $sc["sc_id"];
 		$DBRESULT->free();
 
-		# Set Service Groups relations
+		/*
+		 * Set Service Groups relations
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = '".$acl_id."'");
 		if ($DBRESULT->numRows())
 			for ($i = 0; $sg =& $DBRESULT->fetchRow(); $i++)
 				$acl["acl_sg"][$i] = $sg["sg_id"];
 		$DBRESULT->free();
 		
-		# Set Meta Services relations
+		/*
+		 * Set Meta Services relations
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = '".$acl_id."'");
 		if ($DBRESULT->numRows())
 			for ($i = 0; $ms =& $DBRESULT->fetchRow(); $i++)
@@ -141,11 +155,9 @@
 		$meta_services[$ms["meta_id"]] = $ms["meta_name"];
 	$DBRESULT->free();
 	
-	
 	/*
 	 * Var information to format the element
 	 */
-	
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"60");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 200px;");
@@ -167,8 +179,8 @@
 	 * LCA basic information
 	 */
 	$form->addElement('header', 'information', _("General Information"));
-	$form->addElement('header', 'hostgroups', _("Host Groups Shared"));
-	$form->addElement('header', 'services', _("Service Filters"));
+	$form->addElement('header', 'hostgroups', _("Hosts Groups Shared"));
+	$form->addElement('header', 'services', _("Services Filters"));
 	$form->addElement('text',	'acl_res_name', _("ACL Definition"), $attrsText);
 	$form->addElement('text', 	'acl_res_alias', _("Alias"), $attrsText2);
 
@@ -189,7 +201,7 @@
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$form->addElement('header', 'Host_infos', _("Shared Resources"));
+	$form->addElement('header', 'Host_infos', _("Shared Resouces"));
 	$form->addElement('header', 'help', _("Help"));
 	$form->addElement('header', 'HSharedExplain', _("<b><i>Help :</i></b> In this tab, you will be able to select hosts and hostgroups that you want to shared to people present in group selected on the previous tab. You have also the possibilty to exclude host on selected hostgroup. You can also do filters on selected hosts services. If you select a service category, user will only see only services of the selected categories."));
 	/*
@@ -204,13 +216,13 @@
 	/*
 	 * Host Groups
 	 */
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hostgroup', _("Host groups available"), $hostgroups, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostgroup', _("Hosts groups available"), $hostgroups, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', _("Exclude hosts from selected hosts groups"), $hosttoexcludes, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', _("Exclude hosts on selected hosts groups"), $hosttoexcludes, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
@@ -219,7 +231,7 @@
 	/*
 	 * Host Filters
 	 */
-	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', _("Service Categories Access"), $service_categories, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', _("Services Categories Access"), $service_categories, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
@@ -261,9 +273,9 @@
 	 * Form Rules
 	 */
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('lca_name', _("Required"), 'required');
+	$form->addRule('acl_res_name', _("Required"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('lca_name', _("Already exists"), 'exist');
+	$form->addRule('acl_res_name', _("Already exists"), 'exist');
 	$form->setRequiredNote(_("Required field"));
 
 	/*
@@ -318,8 +330,8 @@
 			$tpl->assign('form', $renderer->toArray());
 			$tpl->assign('o', $o);
 			$tpl->assign("sort1", _("General Information"));
-			$tpl->assign("sort2", _("Host Resources"));
-			$tpl->assign("sort3", _("Service Resources"));
+			$tpl->assign("sort2", _("Hosts Resources"));
+			$tpl->assign("sort3", _("Services Resources"));
 			$tpl->assign("sort4", _("Meta Services"));
 			$tpl->display("formResourcesAccess.ihtml");
 		}
