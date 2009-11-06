@@ -94,7 +94,7 @@ elif [ -f /etc/init.d/functions ]; then
 fi
 
 prefix=@CENTREON_DIR@
-Bin=@CENTSTORAGE_BINDIR@/centstorage
+centstorageBin=@CENTSTORAGE_BINDIR@/centstorage
 centstorageCfgFile=@CENTREON_ETC@/conf.pm
 centstorageLogDir=@CENTREON_LOG@
 centstorageRunDir=@CENTREON_RUNDIR@
@@ -135,7 +135,7 @@ case "$1" in
 	    # Test if running directory exist.
 	    rundir_exist
 	    echo "Starting centstorage Collector : centstorage"
-	    su - @NAGIOS_USER@ -c "$Bin >> $centstorageDemLog 2>&1"
+	    su - @NAGIOS_USER@ -c "$centstorageBin >> $centstorageDemLog 2>&1"
 	    if [ -d $centstorageLockDir ]; then 
 	    	touch $centstorageLockDir/$centstorageLockFile; 
 	    fi
