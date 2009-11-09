@@ -649,7 +649,7 @@
 						break;
 					
 					default :
-						if (preg_match("/^_([a-zA-Z0-9]+)/", $key, $def)) {
+						if (preg_match("/^_([a-zA-Z0-9\_\-]+)/", $key, $def)) {
 							$macro_on_demand["macroInput_".$counter] = $def[1];
 							$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
 							$macro_on_demand["nbOfMacro"] = $counter++;	
@@ -1122,7 +1122,7 @@
 					$cpt_tpl++;
 					break;
 				default :
-					if (preg_match("/^_([a-zA-Z0-9]+)/", $key, $def)) {
+					if (preg_match("/^_([a-zA-Z0-9\_\-]+)/", $key, $def)) {
 						$macro_on_demand["macroInput_".$counter] = $def[1];
 						$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
 						$macro_on_demand["nbOfMacro"] = $counter++;	
