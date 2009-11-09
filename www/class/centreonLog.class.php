@@ -89,6 +89,12 @@ class CentreonUserLog {
 		}
 		
 		/*
+		 * Replace special char
+		 */
+		$string = str_replace("`", "", $string);
+		$string = str_replace("*", "\*", $string);
+		
+		/*
 		 * print Error in log file.
 		 */
 		exec("echo \"".$string."\" >> ".$this->errorType[$id].date("Y-m-d").".log");
@@ -136,6 +142,12 @@ class CentreonLog {
 		if ($print) {
 			print $str;
 		}
+		
+		/*
+		 * Replace special char
+		 */
+		$string = str_replace("`", "", $string);
+		$string = str_replace("*", "\*", $string);
 		
 		/*
 		 * print Error in log file.
