@@ -39,7 +39,7 @@
 	function deleteAllConfCFG()	{
 		global $pearDB;
 		global $oreon;
-		//echo "delete all cfg conf<br />";
+		
 		$rq = "DELETE FROM command";
 		$DBRESULT =& $pearDB->query($rq);
 		$rq = "DELETE FROM timeperiod";
@@ -64,6 +64,7 @@
 
 	function insertResourceCFG(& $buf)	{
 		global $oreon, $debug_nagios_import, $debug_path;
+		
 		$i = 0;
 		foreach ($buf as $str)	{
 			$regs = array();
@@ -281,6 +282,7 @@
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				$useTpl = insertHostCFG($tmpConf);
+				
 				if (isset($tmpConf["host_name"]) && !hostExists($tmpConf["host_name"]))	{
 					$rq = "INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) VALUES ('".getMyHostID($tmpConf["host_name"])."', '".$_POST['host']."')";
 					$DBRESULT = $pearDB->query($rq);
@@ -289,6 +291,8 @@
 				isset($useTpl[2]) ? $parentsTMP[$useTpl[0]] = $useTpl[2] : NULL;
 				$get = false;
 				$tmpConf = array();
+				
+				
 			}
 			if (preg_match("/^[ \t]*define host[ \t]*{/", $str, $def))
 				$get = true;
@@ -497,11 +501,10 @@
 	}
 
 	function insertContactGroupCFG($tmpConf = array())	{
-		global $nbr;
-		global $oreon;
-		global $debug_nagios_import;
-		global $debug_path;
+		global $nbr, $oreon, $pearDB, $debug_nagios_import, $debug_path;
+		
 		require_once("./include/configuration/configObject/contactgroup/DB-Func.php");
+		
 		if (isset($tmpConf["contactgroup_name"]) && testContactGroupExistence($tmpConf["contactgroup_name"]))	{
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertContactGroupCFG : ". $tmpConf["contactgroup_name"] ."\n", 3, $debug_path."cfgimport.log");
@@ -533,184 +536,177 @@
 	}
 
 	function insertHostCFG($tmpConf = array())	{
+		global $nbr, $oreon, $pearDB, $debug_nagios_import, $debug_path;
+		
 		$use = NULL;
 		$useTpl = array();
 		$macro_on_demand = array();
-		global $nbr;
-		global $oreon;
-		global $pearDB;
-		global $debug_nagios_import;
-		global $debug_path;
-		//if (isset($tmpConf["host_name"]) && testHostExistence($tmpConf["host_name"]) || isset($tmpConf["name"]) && testHostTplExistence($tmpConf["name"]))	{
-			if ($debug_nagios_import == 1)
-				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ."\n", 3, $debug_path."cfgimport.log");
-			$counter = 0;
-			foreach ($tmpConf as $key=>$value)	{
-				switch($key)	{
-					case "use" : $use = trim($tmpConf[$key]);
-								$tmp = explode(",", $use);
-								foreach ($tmp as $value) {
-									if (!hostTemplateExists($value)) {									
-										$pearDB->query("INSERT INTO `host` (host_name, host_register) VALUES ('".$value."', '0')");
-										$DBRES =& $pearDB->query("SELECT MAX(host_id) FROM `host` WHERE host_register = '0' LIMIT 1");
-										$row =& $DBRES->fetchRow();
-										$pearDB->query("INSERT INTO `extended_host_information` (host_host_id) VALUES ('".$row['MAX(host_id)']."')");									
-									}
-								}
-								break;
-					case "name" : $tmpConf["host_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "alias" : $tmpConf["host_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "address" : $tmpConf["host_address"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "max_check_attempts" : $tmpConf["host_max_check_attempts"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "check_interval" : $tmpConf["host_check_interval"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "freshness_threshold" : $tmpConf["host_freshness_threshold"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "low_flap_threshold" : $tmpConf["host_low_flap_threshold"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "high_flap_threshold" : $tmpConf["host_high_flap_threshold"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "notification_interval" : $tmpConf["host_notification_interval"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-
-					case "active_checks_enabled" : $tmpConf["host_active_checks_enabled"]["host_active_checks_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "checks_enabled" : $tmpConf["host_checks_enabled"]["host_checks_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "passive_checks_enabled" : $tmpConf["host_passive_checks_enabled"]["host_passive_checks_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "obsess_over_host" : $tmpConf["host_obsess_over_host"]["host_obsess_over_host"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "check_freshness" : $tmpConf["host_check_freshness"]["host_check_freshness"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "event_handler_enabled" : $tmpConf["host_event_handler_enabled"]["host_event_handler_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "flap_detection_enabled" : $tmpConf["host_flap_detection_enabled"]["host_flap_detection_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "process_perf_data" : $tmpConf["host_process_perf_data"]["host_process_perf_data"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "retain_status_information" : $tmpConf["host_retain_status_information"]["host_retain_status_information"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "retain_nonstatus_information" : $tmpConf["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "notifications_enabled" : $tmpConf["host_notifications_enabled"]["host_notifications_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "register" : $tmpConf["host_register"]["host_register"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-
-					case "notification_options" : $tmpConf["host_notifOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
-					case "stalking_options" : $tmpConf["host_stalOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
-
-					case "check_command" :
-						$cmd =& explode("!", trim($tmpConf[$key]));
-						$tmpConf["command_command_id"] = getMyCommandID(array_shift($cmd));
-						if (!$tmpConf["command_command_id"])
-							unset($tmpConf["command_command_id"]);
-						else if (count($cmd))
-							$tmpConf["command_command_id_arg"] = "!".implode("!", $cmd);
-						else
-							$tmpConf["command_command_id_arg"] = NULL;
-						unset ($tmpConf[$key]);
-						break;
-					case "event_handler" :
-						$cmd =& explode("!", trim($tmpConf[$key]));
-						$tmpConf["command_command_id2"] = getMyCommandID(array_shift($cmd));
-						if (!$tmpConf["command_command_id2"])
-							unset($tmpConf["command_command_id2"]);
-						else if (count($cmd))
-							$tmpConf["command_command_id2_arg"] = "!".implode("!", $cmd);
-						else
-							$tmpConf["command_command_id2_arg"] = NULL;
-						unset ($tmpConf[$key]);
-						break;
-					case "parents" : $tmpConf["host_parentsTMP"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "check_period" : $tmpConf["timeperiod_tp_id"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
-					case "notification_period" : $tmpConf["timeperiod_tp_id2"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
-
-					case "contact_groups" :
-						$tmpConf["host_cgs"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["host_cgs"] as $key2=>$value2)	{
-							$tmpConf["host_cgs"][$key2] = getMyContactGroupID(trim($value2));
-							if (!$tmpConf["host_cgs"][$key2])
-								unset($tmpConf["host_cgs"][$key2]);
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ."\n", 3, $debug_path."cfgimport.log");
+		$counter = 0;
+		foreach ($tmpConf as $key => $value)	{
+			switch($key)	{
+				case "use" : $use = trim($tmpConf[$key]);
+					$tmp = explode(",", $use);
+					foreach ($tmp as $value) {
+						if (!hostTemplateExists($value)) {									
+							$pearDB->query("INSERT INTO `host` (host_name, host_register) VALUES ('".$value."', '0')");
+							$DBRES =& $pearDB->query("SELECT MAX(host_id) FROM `host` WHERE host_register = '0' LIMIT 1");
+							$row =& $DBRES->fetchRow();
+							$pearDB->query("INSERT INTO `extended_host_information` (host_host_id) VALUES ('".$row['MAX(host_id)']."')");									
 						}
-						unset ($tmpConf[$key]);
-						break;
+					}
+					break;
+				case "name" : $tmpConf["host_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "alias" : $tmpConf["host_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "address" : $tmpConf["host_address"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "max_check_attempts" : $tmpConf["host_max_check_attempts"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "check_interval" : $tmpConf["host_check_interval"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "freshness_threshold" : $tmpConf["host_freshness_threshold"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "low_flap_threshold" : $tmpConf["host_low_flap_threshold"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "high_flap_threshold" : $tmpConf["host_high_flap_threshold"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "notification_interval" : $tmpConf["host_notification_interval"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+
+				case "active_checks_enabled" : $tmpConf["host_active_checks_enabled"]["host_active_checks_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "checks_enabled" : $tmpConf["host_checks_enabled"]["host_checks_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "passive_checks_enabled" : $tmpConf["host_passive_checks_enabled"]["host_passive_checks_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "obsess_over_host" : $tmpConf["host_obsess_over_host"]["host_obsess_over_host"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "check_freshness" : $tmpConf["host_check_freshness"]["host_check_freshness"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "event_handler_enabled" : $tmpConf["host_event_handler_enabled"]["host_event_handler_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "flap_detection_enabled" : $tmpConf["host_flap_detection_enabled"]["host_flap_detection_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "process_perf_data" : $tmpConf["host_process_perf_data"]["host_process_perf_data"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "retain_status_information" : $tmpConf["host_retain_status_information"]["host_retain_status_information"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "retain_nonstatus_information" : $tmpConf["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "notifications_enabled" : $tmpConf["host_notifications_enabled"]["host_notifications_enabled"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "register" : $tmpConf["host_register"]["host_register"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "notification_options" : $tmpConf["host_notifOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
+				case "stalking_options" : $tmpConf["host_stalOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
+				case "check_command" :
+					$cmd =& explode("!", trim($tmpConf[$key]));
+					$tmpConf["command_command_id"] = getMyCommandID(array_shift($cmd));
+					if (!$tmpConf["command_command_id"])
+						unset($tmpConf["command_command_id"]);
+					else if (count($cmd))
+						$tmpConf["command_command_id_arg"] = "!".implode("!", $cmd);
+					else
+						$tmpConf["command_command_id_arg"] = NULL;
+					unset ($tmpConf[$key]);
+					break;
+				case "event_handler" :
+					$cmd =& explode("!", trim($tmpConf[$key]));
+					$tmpConf["command_command_id2"] = getMyCommandID(array_shift($cmd));
+					if (!$tmpConf["command_command_id2"])
+						unset($tmpConf["command_command_id2"]);
+					else if (count($cmd))
+						$tmpConf["command_command_id2_arg"] = "!".implode("!", $cmd);
+					else
+						$tmpConf["command_command_id2_arg"] = NULL;
+					unset ($tmpConf[$key]);
+					break;
+				case "parents" : $tmpConf["host_parentsTMP"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "check_period" : $tmpConf["timeperiod_tp_id"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
+				case "notification_period" : $tmpConf["timeperiod_tp_id2"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
+				case "contact_groups" :
+					$tmpConf["host_cgs"] = explode(",", $tmpConf[$key]);
+					foreach ($tmpConf["host_cgs"] as $key2=>$value2)	{
+						$tmpConf["host_cgs"][$key2] = getMyContactGroupID(trim($value2));
+						if (!$tmpConf["host_cgs"][$key2])
+							unset($tmpConf["host_cgs"][$key2]);
+					}
+					unset ($tmpConf[$key]);
+					break;
+				case "contacts" :
+					$tmpConf["host_cs"] = explode(",", $tmpConf[$key]);
+					foreach ($tmpConf["host_cs"] as $key2=>$value2)	{
+						$tmpConf["host_cs"][$key2] = getMyContactID(trim($value2));
+						if (!$tmpConf["host_cs"][$key2])
+							unset($tmpConf["host_cs"][$key2]);
+					}
+					unset ($tmpConf[$key]);
+					break;
+				case "hostgroups" :
+					$tmpConf["host_hgs"] = explode(",", $tmpConf[$key]);
+					foreach ($tmpConf["host_hgs"] as $key2=>$value2)	{
+						$tmpConf["host_hgs"][$key2] = getMyHostGroupID(trim($value2));
+						if (!$tmpConf["host_hgs"][$key2])
+							unset($tmpConf["host_hgs"][$key2]);
+					}
+					unset ($tmpConf[$key]);
+					break;
+				case "_SNMPCOMMUNITY" : 
+					$tmpConf["host_snmp_community"] = $tmpConf[$key];
+					break;
 					
-					case "contacts" :
-						$tmpConf["host_cs"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["host_cs"] as $key2=>$value2)	{
-							$tmpConf["host_cs"][$key2] = getMyContactID(trim($value2));
-							if (!$tmpConf["host_cs"][$key2])
-								unset($tmpConf["host_cs"][$key2]);
-						}
-						unset ($tmpConf[$key]);
-						break;
-						
-					case "hostgroups" :
-						$tmpConf["host_hgs"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["host_hgs"] as $key2=>$value2)	{
-							$tmpConf["host_hgs"][$key2] = getMyHostGroupID(trim($value2));
-							if (!$tmpConf["host_hgs"][$key2])
-								unset($tmpConf["host_hgs"][$key2]);
-						}
-						unset ($tmpConf[$key]);
-						break;
-						
-					case "_SNMPCOMMUNITY" : 
-						$tmpConf["host_snmp_community"] = $tmpConf[$key];
-						break;
-						
-					case "_SNMPVERSION" : 
-						$tmpConf["host_snmp_version"] = $tmpConf[$key];
-						break;
-					
-					default :
-						if (preg_match("/^_([a-zA-Z0-9\_\-]+)/", $key, $def)) {
-							$macro_on_demand["macroInput_".$counter] = $def[1];
-							$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
-							$macro_on_demand["nbOfMacro"] = $counter++;	
-						}
-						break;
-				}
+				case "_SNMPVERSION" : 
+					$tmpConf["host_snmp_version"] = $tmpConf[$key];
+					break;
+				default :
+					if (preg_match("/^_([a-zA-Z0-9\_\-]+)/", $key, $def)) {
+						$macro_on_demand["macroInput_".$counter] = $def[1];
+						$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
+						$macro_on_demand["nbOfMacro"] = $counter++;	
+					}
+					break;
 			}
-			if (isset($tmpConf["host_register"]["host_register"]))	{
-				if ($tmpConf["host_register"]["host_register"] == '1')
-					$tmpConf["host_register"]["host_register"] = '1';
-				else
-					$tmpConf["host_register"]["host_register"] = '0';
-			}
-			else
+		}
+		if (isset($tmpConf["host_register"]["host_register"]))	{
+			if ($tmpConf["host_register"]["host_register"] == '1')
 				$tmpConf["host_register"]["host_register"] = '1';
-			$tmpConf["host_activate"]["host_activate"] = "1";
-			$tmpConf["host_comment"] = date("d/m/Y - H:i:s", time());
-			$tmpConf["ehi_notes"] = NULL;
-			$tmpConf["ehi_notes_url"] = NULL;
-			$tmpConf["ehi_action_url"] = NULL;
-			$tmpConf["ehi_icon_image"] = NULL;
-			$tmpConf["ehi_icon_image_alt"] = NULL;
-			$tmpConf["ehi_vrml_image"] = NULL;
-			$tmpConf["ehi_statusmap_image"] = NULL;
-			$tmpConf["ehi_2d_coords"] = NULL;
-			$tmpConf["ehi_3d_coords"] = NULL;
-			
-			if ($tmpConf["host_register"]["host_register"]) {				
-				if (!hostExists($tmpConf['host_name'])) {
-					$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);				
-				}
-				else {				
-					$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);					
-				}
+			else
+				$tmpConf["host_register"]["host_register"] = '0';
+		} else
+			$tmpConf["host_register"]["host_register"] = '1';
+		
+		$tmpConf["host_activate"]["host_activate"] = "1";
+		$tmpConf["host_comment"] = date("d/m/Y - H:i:s", time());
+		$tmpConf["ehi_notes"] = NULL;
+		$tmpConf["ehi_notes_url"] = NULL;
+		$tmpConf["ehi_action_url"] = NULL;
+		$tmpConf["ehi_icon_image"] = NULL;
+		$tmpConf["ehi_icon_image_alt"] = NULL;
+		$tmpConf["ehi_vrml_image"] = NULL;
+		$tmpConf["ehi_statusmap_image"] = NULL;
+		$tmpConf["ehi_2d_coords"] = NULL;
+		$tmpConf["ehi_3d_coords"] = NULL;
+		
+		/*
+		 * Auto deploy Service attached to host templates
+		 */
+		$tmpConf["dupSvTplAssoc"] = array("dupSvTplAssoc" => 1);
+		
+		if ($tmpConf["host_register"]["host_register"]) {				
+			if (!hostExists($tmpConf['host_name'])) {
+				$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);				
+			} else {				
+				$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);					
 			}
-			else {				
-				if (!hostTemplateExists($tmpConf['host_name'])) {									
-					$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
-				}
-				else {														
-					$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
-				}
+		} else {				
+			if (!hostTemplateExists($tmpConf['host_name'])) {									
+				$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
+			} else {														
+				$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
 			}
-			$useTpl[1] = $use;
-			isset($tmpConf["host_parentsTMP"]) ? $useTpl[2] = $tmpConf["host_parentsTMP"] : NULL;
-			$nbr["h"] += 1;
-			return $useTpl;
-		//} else {
-		//	if ($debug_nagios_import == 1)
-		//		error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ." already exist. Skip !\n", 3, $debug_path."cfgimport.log");
-
-		//}
+		}
+		/*
+		 * Create all sevices
+		 */
+		generateHostServiceMultiTemplate($useTpl[0], $useTpl[0]);
+		
+		$useTpl[1] = $use;
+		isset($tmpConf["host_parentsTMP"]) ? $useTpl[2] = $tmpConf["host_parentsTMP"] : NULL;
+		$nbr["h"] += 1;
+		return $useTpl;
 	}
 
 	function insertHostExtInfoCFG($tmpConf = array())	{
-		global $nbr;
-		global $oreon;
-		global $debug_nagios_import;
-		global $debug_path;
+		global $nbr, $oreon, $debug_nagios_import, $debug_path;
+		
+		/*
+		 * Include host Tools
+		 */
 		require_once("./include/configuration/configObject/host/DB-Func.php");
-		foreach ($tmpConf as $key=>$value)
+		
+		foreach ($tmpConf as $key => $value) {
 			switch($key)	{
 				case "notes" : $tmpConf["ehi_notes"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "notes_url" : $tmpConf["ehi_notes_url"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -721,7 +717,6 @@
 				case "statusmap_image" : $tmpConf["ehi_statusmap_image"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "2d_coords" : $tmpConf["ehi_2d_coords"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "3d_coords" : $tmpConf["ehi_3d_coords"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-
 				case "host_name" :
 					$tmpConf["host_names"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["host_names"] as $key2=>$value2)	{
@@ -732,6 +727,7 @@
 					unset ($tmpConf[$key]);
 					break;
 			}
+		}
 		foreach($tmpConf["host_names"] as $key=>$value)	{
 			updateHostExtInfos($value, $tmpConf);
 			$nbr["hei"] += 1;
@@ -740,15 +736,17 @@
 	}
 
 	function insertHostGroupCFG($tmpConf = array())	{
-		global $nbr;
-		global $oreon;
-		global $debug_nagios_import;
-		global $debug_path;
+		global $nbr, $oreon, $debug_nagios_import, $debug_path;
+		
+		/*
+		 * REquire Hostgroups tools
+		 */
 		require_once("./include/configuration/configObject/hostgroup/DB-Func.php");
-		if (isset($tmpConf["hostgroup_name"]) && testHostGroupExistence($tmpConf["hostgroup_name"]))	{
+		
+		if (isset($tmpConf["hostgroup_name"]) && testHostGroupExistence($tmpConf["hostgroup_name"])) {
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostGroupCFG : ". $tmpConf["hostgroup_name"] ."  \n", 3, $debug_path."cfgimport.log");
-			foreach ($tmpConf as $key=>$value)
+			foreach ($tmpConf as $key => $value)
 				switch($key)	{
 					case "hostgroup_name" : $tmpConf["hg_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "alias" : $tmpConf["hg_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -784,13 +782,12 @@
 	}
 
 	function insertHostDependencyCFG($tmpConf = array())	{
-		global $nbr;
-		global $oreon;
-		global $debug_nagios_import;
-		global $debug_path;
+		global $nbr, $oreon, $debug_nagios_import, $debug_path;
+		
 		require_once("./include/configuration/configObject/host_dependency/DB-Func.php");
 		require_once("./include/configuration/configObject/hostgroup_dependency/DB-Func.php");
-		foreach ($tmpConf as $key=>$value)
+		
+		foreach ($tmpConf as $key => $value)
 			switch($key)	{
 				case "inherits_parent" : $tmpConf["inherits_parent"]["inherits_parent"] = $tmpConf[$key]; break;
 				case "execution_failure_criteria" : $tmpConf["execution_failure_criteria"] = array_flip(explode(",", $tmpConf[$key])); break;
