@@ -137,7 +137,7 @@
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO cfg_nagios (" .
-				"`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , `object_cache_file` , `temp_file` , `temp_path` , `check_result_path`, `max_check_result_file_age`" .
+				"`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , `object_cache_file` , `temp_file` , `temp_path` , `check_result_path`, `max_check_result_file_age`, " .
 				"`status_file` , `p1_file`, `aggregate_status_updates` , `status_update_interval` , `nagios_user` , `nagios_group` , " .
 				"`enable_notifications` , `execute_service_checks` , `accept_passive_service_checks` , `execute_host_checks` , " .
 				"`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , " .
