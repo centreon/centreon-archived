@@ -166,7 +166,7 @@
 		$actions = $oreon->user->access->checkAction("host_checks_for_services");
 		
 		if ($actions == true || $is_admin) {
-			$flg = write_command(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $arg, GetMyHostPoller($pearDB, $arg));
+			$flg = write_command(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $arg . ";" . time(), GetMyHostPoller($pearDB, $arg));
 			return _("Your command has been sent");
 		}
 		return NULL;
