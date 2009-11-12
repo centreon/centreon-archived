@@ -43,7 +43,7 @@
 	include_once ("./step_upgrade/functions.php");
 	include_once ("../class/Session.class.php");
 
-	Session::start();
+	CentreonSession::start();
 
 	/*
 	 * Pear Modules Management

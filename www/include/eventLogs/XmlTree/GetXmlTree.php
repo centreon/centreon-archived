@@ -57,7 +57,7 @@
 	require_once ($centreon_path . "www/class/Session.class.php");
 	require_once ($centreon_path . "www/class/centreon.class.php");
 	
-	Session::start();
+	CentreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 	$locale = $oreon->user->get_lang();
 	putenv("LANG=$locale");
@@ -87,7 +87,7 @@
 		
 		if ($search != "") {
 			$data = array();
-			$query = "SELECT * " .
+			$query = "SELECT sgr.host_host_id, sgr.service_service_id " .
 					"FROM servicegroup_relation sgr, service s " .
 					"WHERE sgr.service_service_id = s.service_id " .
 					"AND s.service_description LIKE '%".$search."%' " .
@@ -288,9 +288,9 @@
 			 * Request build
 			 */
 			if ($search_host != "")
-				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search_host%' OR `host_alias` LIKE '%$search_host%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ORDER BY `hg_name`");			
+				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search_host%' OR `host_alias` LIKE '%$search_host%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID"))." ORDER BY `hg_name`");			
 			else
-				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
+				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID"))." ORDER BY `hg_name`");
 			
 			while ($HG =& $DBRESULT->fetchRow()){
 			    $i++;				
@@ -533,7 +533,7 @@
 			 * Hostgroups
 			 */
 			
-			if (HG_has_one_or_more_host($hg_id)) {
+			if (HG_has_one_or_more_host($hg_id) && isset($access->hostGroups[$hg_id])) {
 	    		$buffer->startElement("item");
 	    		if (isset($hgs_open[$hg_id]))
 	    			$buffer->writeAttribute("open", "1");

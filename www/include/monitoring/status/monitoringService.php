@@ -39,7 +39,7 @@
 	if (!isset($oreon))
 		exit();
 
-	require_once './class/other.class.php';
+	require_once './class/centreonDuration.class.php';
 	include_once("./include/monitoring/common-Func.php");
 	include_once("./include/monitoring/external_cmd/cmd.php");
 

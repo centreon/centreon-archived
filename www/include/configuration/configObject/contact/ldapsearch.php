@@ -44,7 +44,7 @@
  	require_once("../../../../$classdir/centreonDB.class.php");
  	require_once("../../../../$classdir/centreonLDAP.class.php");
 
- 	Session::start();
+ 	CentreonSession::start();
 
 	if (!isset($_SESSION["oreon"])) {
 		header("Location: ../../../../index.php");

@@ -48,7 +48,7 @@
 
 	$pearDB = new CentreonDB();
 
-	Session::start();
+	CentreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 	
 	function getStatusDBDir($pearDBO){

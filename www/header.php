@@ -74,7 +74,7 @@
 
 	ini_set("session.gc_maxlifetime", "31536000");
 
-	Session::start();
+	CentreonSession::start();
 
 	/*
 	 * Delete Session Expired

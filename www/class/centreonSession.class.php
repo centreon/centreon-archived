@@ -36,7 +36,7 @@
  * 
  */
 
-class Session
+class CentreonSession
 {
 	// Attributes
 	

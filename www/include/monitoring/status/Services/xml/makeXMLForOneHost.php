@@ -37,7 +37,7 @@
  */
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path . "www/class/other.class.php";
+	include_once $centreon_path . "www/class/centreonDuration.class.php";
 	include_once $centreon_path . "www/class/centreonGMT.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
@@ -159,7 +159,7 @@
 
 		$duration = "";
 		if ($ndo["last_state_change"] > 0)
-			$duration = Duration::toString(time() - $ndo["last_state_change"]);
+			$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
 
 		if ($ndo["icon_image"] == "")
 			$icon_image = "./img/icones/16x16/server_network.gif";

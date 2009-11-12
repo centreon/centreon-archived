@@ -47,14 +47,14 @@
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/Session.class.php");
     include_once($centreon_path . "www/class/centreon.class.php");	
-	include_once($centreon_path . "www/class/other.class.php");
+	include_once($centreon_path . "www/class/centreonDuration.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/class/centreonXML.class.php");
 	include_once($centreon_path . "www/class/centreonDB.class.php");
 	include_once($centreon_path . "www/include/monitoring/status/Common/common-Func.php");	
 	include_once($centreon_path . "www/include/common/common-Func.php");
 
-	Session::start();
+	CentreonSession::start();
     $oreon =& $_SESSION["oreon"];
 
 	$pearDB = new CentreonDB();

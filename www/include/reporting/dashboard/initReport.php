@@ -50,7 +50,7 @@
 	/*
 	 * Require Centreon Class
 	 */
-	require_once "./class/other.class.php";
+	require_once "./class/centreonDuration.class.php";
 	require_once "./class/centreonDB.class.php";
 	
 	/*

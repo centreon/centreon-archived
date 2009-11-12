@@ -63,7 +63,7 @@
 	require_once ($centreon_path . "www/class/Session.class.php");
 	require_once ($centreon_path . "www/class/centreon.class.php");
 
-	Session::start();
+	CentreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 	$locale = $oreon->user->get_lang();
 	putenv("LANG=$locale");

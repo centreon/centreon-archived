@@ -42,7 +42,7 @@
 	require_once ("../../../../class/centreon.class.php");
 	require_once ("../../../../class/centreonDB.class.php");
 
-	Session::start();
+	CentreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 
 	/* Connect to Centreon DB */

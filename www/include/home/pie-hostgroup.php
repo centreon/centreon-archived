@@ -39,7 +39,7 @@
 	require_once ("../../class/Session.class.php");
 	require_once ("../../class/centreon.class.php");
 
-	Session::start();
+	CentreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 
 	$oreonPath = '/usr/local/centreon/';

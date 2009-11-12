@@ -41,7 +41,7 @@
 	require_once ("../../$classdir/centreonDB.class.php");
 	
 	$pearDB = new CentreonDB();
-	Session::start();
+	CentreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 	
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE `session_id` = '".session_id()."'");

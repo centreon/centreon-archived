@@ -41,7 +41,7 @@
 	require_once ($centreon_path . "www/class/centreon.class.php");
 	require_once ($centreon_path . "www/class/centreonLang.class.php");
 
-	Session::start();
+	CentreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 	
 	$centreonLang = new CentreonLang($centreon_path, $oreon);

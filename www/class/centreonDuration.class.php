@@ -36,7 +36,7 @@
  * 
  */
 
-class Duration
+class CentreonDuration
 {
 	function toString ($duration, $periods = null){
         if (!is_array($duration))

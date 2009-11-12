@@ -67,7 +67,7 @@
 	isset ($_POST["metric_id"]) ? $mtrcs = $_POST["metric_id"] : $mtrcs = $mtrcs;
 
 	$path = "./include/views/graphs/graphODS/";
-	require_once '../../../class/other.class.php';
+	require_once '../../../class/centreonDuration.class.php';
 	require_once '../../common/common-Func.php';	
 
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 

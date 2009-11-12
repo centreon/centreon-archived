@@ -53,7 +53,7 @@
 		}
 	}
 
-	require_once ("$classdir/Session.class.php");
+	require_once ("$classdir/centreonSession.class.php");
 	require_once ("$classdir/centreon.class.php");
 	require_once ("$classdir/centreonAuth.class.php");
 	require_once ("$classdir/centreonLog.class.php");
@@ -89,7 +89,7 @@
 	ini_set("session.gc_maxlifetime", "31536000");
 	
 	if (!isset($cas) || !isset($cas["auth_cas_enable"])){	
-		Session::start();
+		CentreonSession::start();
 	}
 	
 	if (isset($_GET["disconnect"])) {
@@ -110,8 +110,8 @@
 		
 			$pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
 		
-			Session::stop();
-			Session::start();
+			CentreonSession::stop();
+			CentreonSession::start();
 		}
 	}
 	/*
@@ -127,8 +127,8 @@
 		$CentreonLog->insertLog(1, "Contact '".$oreon->user->get_alias()."' logout");
 
 		$pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
-		Session::stop();
-		Session::start();
+		CentreonSession::stop();
+		CentreonSession::start();
 	}
 	
 	if (isset($_POST["submit"]) || (isset($_GET["autologin"]) && isset($_GET["p"]) && $_GET["autologin"])) {
@@ -154,7 +154,7 @@
 	     
 	    if ($centreonAuth->passwdOk == 1) {
 	    	$user =& new User($centreonAuth->userInfos, $generalOptions["nagios_version"]);
-	    	$oreon = new Oreon($user);
+	    	$oreon = new Centreon($user);
 	    	$_SESSION["oreon"] =& $oreon;
 		    $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
 			if (!isset($_POST["submit"]))	{

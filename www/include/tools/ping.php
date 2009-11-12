@@ -39,7 +39,7 @@
 	 require_once ("../../$classdir/Session.class.php");
 	 require_once ("../../$classdir/centreon.class.php");
 
-	 Session::start();
+	 CentreonSession::start();
 	
 	 if (!isset($_SESSION["oreon"])) {
 	 	// Quick dirty protection

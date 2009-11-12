@@ -40,7 +40,7 @@
 	require_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once($centreon_path . "www/include/common/common-Func.php");
 	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
-	require_once $centreon_path . "www/class/other.class.php";
+	require_once $centreon_path . "www/class/centreonDuration.class.php";
 	require_once $centreon_path . "www/class/User.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";	
 	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
@@ -56,7 +56,7 @@
 		
 		$res =& $pearDB->query("SELECT * FROM contact, session WHERE session.session_id='".$_GET['sid']."' AND session.user_id = contact.contact_id");
 		$user =& new User($res->fetchRow(), "3");
-		$oreon = new Oreon($user);
+		$oreon = new Centreon($user);
 		
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);

@@ -53,7 +53,7 @@
 	require_once $centreon_path."www/class/centreon.class.php";
 	require_once "$centreon_path/www/class/centreonGMT.class.php";
 	
-	Session::start();
+	CentreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 
 	require_once $centreon_path."www/include/common/common-Func.php";

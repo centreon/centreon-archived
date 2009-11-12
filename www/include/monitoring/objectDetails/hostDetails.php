@@ -217,7 +217,7 @@
 		$host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"], $oreon->user->getMyGMT()) : "";
 		!$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_notification"], $oreon->user->getMyGMT());
 		!$host_status[$host_name]["next_notification"] ? $host_status[$host_name]["next_notification"] = "": $host_status[$host_name]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_notification"], $oreon->user->getMyGMT());
-		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["duration"] = "" : $host_status[$host_name]["duration"] = Duration::toString(time() - $host_status[$host_name]["last_state_change"]);
+		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["duration"] = "" : $host_status[$host_name]["duration"] = CentreonDuration::toString(time() - $host_status[$host_name]["last_state_change"]);
 		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$host_status[$host_name]["last_state_change"], $oreon->user->getMyGMT());
 		$host_status[$host_name]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time(), $oreon->user->getMyGMT());
 

@@ -288,7 +288,7 @@
 	function formatData($state, $time, $timeTOTAL, $time_none, $nb_alert, $color){
 		$tab = array();
 		$tab["state"] = _($state);
-		$tab["time"] = Duration::toString($time);
+		$tab["time"] = CentreonDuration::toString($time);
 		$tab["timestamp"] = $time;
 		$tab["pourcentTime"] = round($time/($timeTOTAL+1)*100,2) ;
 		if ($state != "Undetermined")

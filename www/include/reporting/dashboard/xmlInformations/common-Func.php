@@ -45,7 +45,7 @@
 	require_once ($centreon_path . "www/class/centreonLang.class.php");
 	
 	
-	Session::start();
+	CentreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 	$centreonLang = new CentreonLang($centreon_path, $oreon);
 	$centreonLang->bindLang();
@@ -88,11 +88,11 @@
         $Duration = _("Duration");
         $Alert = _("Alert");
 		$detailPopup = '{table class=bulleDashtab}';
-	 	$detailPopup .= '{tr}{td class=bulleDashleft colspan=3}'.$Day.': '. date("d/m/Y", $date_start) .' --  '.$Duration.': '.Duration::toString($totalTime).'{/td}{td class=bulleDashleft }'.$Alert.'{/td}{/tr}';
+	 	$detailPopup .= '{tr}{td class=bulleDashleft colspan=3}'.$Day.': '. date("d/m/Y", $date_start) .' --  '.$Duration.': '.CentreonDuration::toString($totalTime).'{/td}{td class=bulleDashleft }'.$Alert.'{/td}{/tr}';
 		foreach($statesTab as $key => $value) {
 			$detailPopup .= '	{tr}' .
 							'		{td class=bulleDashleft style="background:'.$color[$value].';"  }'._($value).':{/td}' .
-							'		{td class=bulleDash}'. Duration::toString($statTab[$value."_T"]) .'{/td}' .
+							'		{td class=bulleDash}'. CentreonDuration::toString($statTab[$value."_T"]) .'{/td}' .
 							'		{td class=bulleDash}'.$statTab[$value."_MP"].'%{/td}'.
 							'		{td class=bulleDash}'.$statTab[$value."_A"].'{/td}';
 			$detailPopup .= '	{/tr}';

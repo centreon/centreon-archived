@@ -60,7 +60,7 @@
 	(!isset($_GET["start"])) ? $start = time() - 120 - (60*60*48) : $start = $_GET["start"]- 120;
 	(!isset($_GET["end"])) ? $end = time() - 120 : $end = $_GET["end"] - 120;
 	
-	Session::start();
+	CentreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 
 	require_once $centreon_path."www/include/common/common-Func.php";

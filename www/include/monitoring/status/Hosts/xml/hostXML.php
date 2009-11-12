@@ -38,7 +38,7 @@
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/class/centreonDB.class.php";
-	include_once $centreon_path . "www/class/other.class.php";
+	include_once $centreon_path . "www/class/centreonDuration.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
 	include_once $centreon_path . "www/class/centreonGMT.class.php";
@@ -238,7 +238,7 @@
 		$duration = " ";
 		
 		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
-			$duration = Duration::toString(time() - $ndo["last_state_change"]);
+			$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
 		else
 			$duration = "N/A";
 			

@@ -55,7 +55,7 @@
 	}
 
 	// Including files and dependences 
-	require_once './class/other.class.php';	
+	require_once './class/centreonDuration.class.php';	
 	require_once './include/common/common-Func.php';	
 	require_once './class/centreonDB.class.php';
 	
@@ -129,7 +129,7 @@
 				$tab_hostprobname[$nbhostpb] = $ndo["name1"];
 	            $tab_hostprobstate[$nbhostpb] = $ndo["current_state"];
 	            $tab_hostproblast[$nbhostpb] = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $oreon->user->getMyGMT());
-	            $tab_hostprobduration[$nbhostpb] = Duration::toString(time() - $ndo["lsc"]);
+	            $tab_hostprobduration[$nbhostpb] = CentreonDuration::toString(time() - $ndo["lsc"]);
 	            $tab_hostproboutput[$nbhostpb] = $ndo["output"];
         	    $tab_hostprobip[$nbhostpb] = $ndo["address"];
 				$nbhostpb++;				

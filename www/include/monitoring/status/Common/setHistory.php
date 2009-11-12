@@ -47,7 +47,7 @@
 		
 		session_id($_POST["sid"]);
 		
-		Session::start();
+		CentreonSession::start();
 		
 		$oreon = $_SESSION['oreon'];
 		

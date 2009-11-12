@@ -40,7 +40,7 @@ require_once("User.class.php");
 require_once("centreonGMT.class.php");
 require_once("centreonLogAction.class.php");
 
-class Oreon	{
+class Centreon	{
 		
 	var $user;
 	var $Nagioscfg;
@@ -65,7 +65,7 @@ class Oreon	{
 	var $hostgroup;
 	var $host_id;
   
-	function Oreon($user = NULL, $pages = array())	{
+	function Centreon($user = NULL, $pages = array())	{
 		global $pearDB;
 		
 		/*
