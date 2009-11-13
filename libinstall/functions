@@ -2222,7 +2222,7 @@ function find_macros_in_dir() {
 	local file="$4"
 	local var_ref="$5"
 	local file_out_tmp=""
-	file_out_tmp=$(mktemp $TMPDIR/file_out_tmp.XXXXXX)
+	file_out_tmp=$(mktemp $TMP_DIR/file_out_tmp.XXXXXX)
 	
 	for mac in ${macro//,/ } ; do
 		log "INFO" "$(gettext "Search file for macro") : $mac"
