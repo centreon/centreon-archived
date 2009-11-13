@@ -198,7 +198,7 @@
 	$flag = 0;
 
 	if (!$is_admin)
-		$acl = $access->getHostGroups();
+		$acl = $access->getHostGroups("ALIAS");
        
     $convertTable = array();
     $convertID = array();
@@ -211,7 +211,7 @@
     
     $i = 0;
 	foreach ($stats as $name => $stat) {
-		if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($convertTable[$name]) && isset($convertID[$convertTable[$name]]) && isset($acl[$convertID[$convertTable[$name]]])) || (!isset($acl))) && $name != "meta_hostgroup") {
+		if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($convertID[$name]) && isset($acl[$convertID[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
 			if (isset($stat["h"]) && count($stat["h"])) {
 				$buffer->startElement("l");

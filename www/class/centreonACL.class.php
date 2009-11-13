@@ -48,6 +48,7 @@
  	private $accessGroups = array(); /* Access groups the user belongs to */
  	private $resourceGroups = array(); /* Resource groups the user belongs to */
  	public  $hostGroups = array(); /* Hostgroups the user can see */
+ 	private $hostGroupsAlias = array(); /* Hostgroups by alias the user can see */
  	private $serviceGroups = array(); /* Servicegroups the user can see */
  	private $serviceGroupsAlias = array(); /* Servicegroups by alias the user can see */
  	private $serviceCategories = array(); /* Service categories the user can see */
@@ -170,7 +171,7 @@
  	private function setHostGroups() {
  		global $pearDB;
  		
- 		$query = "SELECT hg.hg_id, hg.hg_name, arhr.acl_res_id " .
+ 		$query = "SELECT hg.hg_id, hg.hg_name, hg.hg_alias, arhr.acl_res_id " .
  				"FROM hostgroup hg, acl_resources_hg_relations arhr " .
  				"WHERE hg.hg_id = arhr.hg_hg_id " .
  				"AND arhr.acl_res_id IN (".$this->getResourceGroupsString().") " .
@@ -178,6 +179,7 @@
  		$DBRESULT =& $pearDB->query($query);
  		while ($row =& $DBRESULT->fetchRow()) {
  			$this->hostGroups[$row['hg_id']] = $row['hg_name'];
+ 			$this->hostGroupsAlias[$row['hg_id']] = $row['hg_alias'];
  			$this->hostGroupsFilter[$row['acl_res_id']][$row['hg_id']] = $row['hg_id']; 
  		} 
  	}
@@ -417,8 +419,10 @@
  	/*
  	 *  Hostgroups Getter
  	 */
- 	public function getHostGroups() {
+ 	public function getHostGroups($flag = NULL) {
  		$this->checkUpdateACL();
+ 		if (isset($flag) && $flag == "ALIAS")
+ 			return $this->hostGroupsAlias;
  		return $this->hostGroups;
  	}
  	
@@ -441,6 +445,7 @@
  			switch($flag) {
  				case "ID" : $string .= "'".$key."'"; break;
  				case "NAME" : $string .= "'".$value."'"; break;
+ 				case "ALIAS" : $string .= "'".$this->hostGroupsAlias[$key]."'"; break;
  				default : $string .= "'".$key."'"; break;
  			}
  			$i++;
