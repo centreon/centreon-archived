@@ -114,7 +114,7 @@
 					" AND no.name1 not like '_Module_%'";
 		
 	if (!$is_admin)
-		$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString("NAME"));
+		$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString("ALIAS"));
 	
 	if ($instance != "ALL")
 		$rq1 .= 	" AND no.instance_id = ".$instance;
