@@ -187,6 +187,8 @@
 					if ($str != "")
 						$str .= ', ';
 					$id_tmp = split(",", $t);
+					$desc = str_replace("#S#", "/", $desc);
+					$desc = str_replace("#BS#", "\\", $desc);
 					$str .= "('".$host."', '".$desc."', '".$id_tmp[0]."' , '".$id_tmp[1]."' , ".$acl_group_id.") ";
 				}
 			}
