@@ -101,7 +101,7 @@
 	while (false !== ($filename = readdir($handle)))	{
 		if ($filename != "." && $filename != ".." && $filename != ".SVN" && $filename != ".svn" && $filename != ".CSV")	{
 			$moduleinfo = getModuleInfoInDB($filename, NULL);
-			
+
 			/*
 			 * Package already installed
 			 */
@@ -113,6 +113,7 @@
 										"RowMenu_infos"=>$moduleinfo["infos"],
 										"RowMenu_author"=>$moduleinfo["author"],
 										"RowMenu_upgrade" => 0,
+										"RowMenu_picture" => (file_exists("./modules/$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
 										"RowMenu_isinstalled"=>_("Yes"),
 										"RowMenu_link"=>"?p=".$p."&o=w&id=".$moduleinfo["id"],
 										"RowMenu_link_install"=>NULL,
@@ -122,10 +123,8 @@
 				/*
 				 * Check Update
 				 */
-				
 				if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE")) {
 					$handle2 = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
-					//$i = 0;
 					while (false !== ($filename2 = readdir($handle2)))	{
 						if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]."-") && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php"))	{
 							include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
@@ -155,6 +154,7 @@
 												"RowMenu_release"=>$module_conf[$filename]["mod_release"],
 												"RowMenu_author"=>$module_conf[$filename]["author"],
 												"RowMenu_infos"=>$module_conf[$filename]["infos"],
+												"RowMenu_picture" => (file_exists("./modules/$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
 												"RowMenu_isinstalled"=>_("No"),
 												"RowMenu_link"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"],
 												"RowMenu_link_install"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"]."&o=i",

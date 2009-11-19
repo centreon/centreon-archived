@@ -1,5 +1,6 @@
 <table class="ListTable">
 	<tr class="ListHeader">
+		<td class="ListColHeaderPicker">&nbsp;</td>
 		<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 		<td class="ListColHeaderLeft">{$headerMenu_rname}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_infos}</td>
@@ -10,6 +11,7 @@
 	</tr>
 	{section name=elem loop=$elemArr}
 	<tr class={$elemArr[elem].MenuClass}>
+		<td class="ListColLeft"><img src="{$elemArr[elem].RowMenu_picture}" style='width:16px;height:16px;'></td>
 		<td class="ListColLeft">
 			{if $elemArr[elem].RowMenu_link}
 				<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
