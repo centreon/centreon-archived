@@ -11,7 +11,7 @@
 			<td class="ColPopup"><xsl:value-of select="hostname"/></td>
 		</tr>
 		<tr class="ListHeaderPopup">
-			<td class="ColPopup" style="width:100%;text-aling:right;"><xsl:value-of select="service_description"/></td>
+			<td class="ColPopup" style="width:100%;text-align:right;"><xsl:value-of select="service_description"/></td>
 		</tr>
 		<tr class='list_two'>
 			<td colspan="2" class="ColPopup">

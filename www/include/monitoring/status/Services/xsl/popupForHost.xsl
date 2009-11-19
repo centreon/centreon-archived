@@ -8,7 +8,7 @@
 					<xsl:attribute name="src"><xsl:value-of select="ico"/></xsl:attribute>
 				</xsl:element>
 			</td>			
-			<td class="ColPopup" style="width:100%;text-aling:right;"><xsl:value-of select="hostname"/>&#160;//&#160;<xsl:value-of select="address"/>&#160;</td>
+			<td class="ColPopup" style="width:100%;text-align:right;"><xsl:value-of select="hostname"/>&#160;//&#160;<xsl:value-of select="address"/>&#160;</td>
 		</tr>
 		<tr class='list_two'>
 			<td colspan="2" class="ColPopup">
