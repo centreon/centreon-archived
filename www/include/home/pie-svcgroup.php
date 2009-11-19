@@ -37,7 +37,7 @@
  */
  
 
-	require_once ("../../class/Session.class.php");
+	require_once ("../../class/centreonSession.class.php");
 	require_once ("../../class/Oreon.class.php");
 
 	CentreonSession::start();

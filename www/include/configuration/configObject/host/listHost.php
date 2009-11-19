@@ -109,8 +109,6 @@
 		$SearchTool = "(host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_address LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND ";
 	}
 	
-
-
 	if ($template) {
 	  $templateFROM = ", host_template_relation htr ";
 	  $templateWHERE = " htr.host_host_id = h.host_id AND htr.host_tpl_id = '$template' AND ";
@@ -118,7 +116,6 @@
 	  $templateFROM = "";
 	  $templateWHERE = "";
 	}
-
 
 	/*
 	 * Launch Request

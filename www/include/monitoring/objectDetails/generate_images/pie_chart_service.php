@@ -36,7 +36,7 @@
  * 
  */
  
-	require_once ("../../../../class/Session.class.php");
+	require_once ("../../../../class/centreonSession.class.php");
 	require_once ("../../../../class/centreon.class.php");
 
 	CentreonSession::start();

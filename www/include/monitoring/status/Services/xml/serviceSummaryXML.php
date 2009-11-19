@@ -45,7 +45,7 @@
 	$buffer = '';
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/class/Session.class.php");
+	include_once($centreon_path . "www/class/centreonSession.class.php");
     include_once($centreon_path . "www/class/centreon.class.php");	
 	include_once($centreon_path . "www/class/centreonDuration.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");

@@ -36,7 +36,7 @@
  * 
  */
 	 include("@CENTREON_ETC@/centreon.conf.php");
-	 require_once ("../../$classdir/Session.class.php");
+	 require_once ("../../$classdir/centreonSession.class.php");
 	 require_once ("../../$classdir/centreon.class.php");
 
 	 CentreonSession::start();

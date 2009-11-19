@@ -53,7 +53,7 @@
 	include_once $centreon_path . "www/include/views/graphs/common-Func.php";
 
 	/* Tanslation */
-	require_once ($centreon_path . "www/class/Session.class.php");
+	require_once ($centreon_path . "www/class/centreonSession.class.php");
 	require_once ($centreon_path . "www/class/Oreon.class.php");
 	require_once ($centreon_path . "www/class/centreonLang.class.php");
 	
