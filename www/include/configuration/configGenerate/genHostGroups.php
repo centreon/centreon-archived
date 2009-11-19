@@ -59,7 +59,6 @@
 	/*
 	 * Create table to liste generated hostGroups
 	 */
-	 
 	$generatedHG = array();
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostgroups.cfg", $oreon->user->get_name());
 

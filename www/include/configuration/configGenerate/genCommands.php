@@ -51,11 +51,13 @@
 	$str1 = NULL;
 	$str2 = NULL;
 	while ($command =& $DBRESULT->fetchRow())	{
+
 		$command["command_line"] = str_replace('#BR#', "\\n", $command["command_line"]);
 		$command["command_line"] = str_replace('#T#', "\\t", $command["command_line"]);
 		$command["command_line"] = str_replace('#R#', "\\r", $command["command_line"]);
 		$command["command_line"] = str_replace('#S#', "/", $command["command_line"]);
 		$command["command_line"] = str_replace('#BS#', "\\", $command["command_line"]);
+
 		if ($command["command_type"] == 1 || $command["command_type"] == 3)	{
 			/*
 			 * Notification Command case -> command_type == 1

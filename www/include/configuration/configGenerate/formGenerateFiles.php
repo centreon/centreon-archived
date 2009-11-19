@@ -178,7 +178,7 @@
 						foreach ($oreon->modules as $key => $value) {
 							if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php"))
 								foreach ($files as $filename)
-									require_once($filename);
+									require_once ($filename);
 						}
 					}
 					unset($generatedHG);

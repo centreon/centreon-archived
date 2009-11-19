@@ -39,14 +39,12 @@
 	if (!isset($oreon))
 		exit();
 
-	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) 
 		mkdir($nagiosCFGPath.$tab['id']."/");
-	}
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/ndo2db.cfg", $oreon->user->get_name());
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_ndo2db` WHERE `activate` = '1' AND `ns_nagios_server` = '".$tab['id']."' LIMIT 1");
-	
+	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_ndo2db` WHERE `activate` = '1' AND `ns_nagios_server` = '".$tab['id']."' LIMIT 1");	
 	$DBRESULT->numRows() ? $ndomod = $DBRESULT->fetchRow() : $ndomod = array();
 
 	$str = "";

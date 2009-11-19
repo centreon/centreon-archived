@@ -132,7 +132,7 @@
 				$str .= print_line("pager", $contact["contact_pager"]);
 			
 			/*
-			 * Todo : ADDRESSX
+			 * TODO : ADDRESSX
 			 */
 			
 			$str .= "}\n\n";

@@ -39,9 +39,8 @@
 	if (!isset($oreon))
 		exit();
 
-	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+	if (!is_dir($nagiosCFGPath.$tab['id']."/"))
 		mkdir($nagiosCFGPath.$tab['id']."/");
-	}
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/cgi.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT cfg_dir FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
