@@ -1202,7 +1202,6 @@ CREATE TABLE IF NOT EXISTS `host` (
   `display_name` varchar(255) default NULL,
   `host_max_check_attempts` int(11) default NULL,
   `host_check_interval` int(11) default NULL,
-  `host_retry_check_interval` int(11) default NULL,
   `host_active_checks_enabled` enum('0','1','2') default NULL,
   `host_passive_checks_enabled` enum('0','1','2') default NULL,
   `host_checks_enabled` enum('0','1','2') default NULL,
