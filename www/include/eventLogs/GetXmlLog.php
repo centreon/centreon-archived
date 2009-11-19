@@ -59,11 +59,10 @@
 	
 	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
 	include_once $centreon_path . "www/class/centreonDB.class.php";
-	
-	require_once ($centreon_path . "www/class/Session.class.php");
-	require_once ($centreon_path . "www/class/Oreon.class.php");
+	require_once ($centreon_path . "www/class/centreonSession.class.php");
+	require_once ($centreon_path . "www/class/centreon.class.php");
 
-	Session::start();
+	centreonSession::start();
 	$oreon =& $_SESSION["oreon"];
 	$locale = $oreon->user->get_lang();
 	putenv("LANG=$locale");
