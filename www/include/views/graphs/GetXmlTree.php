@@ -476,7 +476,7 @@
 			/*
 			 * Hostgroups
 			 */
-			if (HG_has_one_or_more_host($hg_id) && isset($access->hostGroups[$hg_id])) {
+			if (HG_has_one_or_more_host($hg_id) && ($access->admin == 1 || ($access->admin == 1 && isset($access->hostGroups[$hg_id])))) {
 	    		$buffer->startElement("item");
 	    		if (isset($hgs_open[$hg_id]))
 	    			$buffer->writeAttribute("open", "1");
