@@ -275,7 +275,8 @@
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('acl_res_name', _("Required"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('acl_res_name', _("Already exists"), 'exist');
+	if ($o == "a")
+		$form->addRule('acl_res_name', _("Already exists"), 'exist');
 	$form->setRequiredNote(_("Required field"));
 
 	/*
