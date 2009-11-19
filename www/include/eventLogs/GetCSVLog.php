@@ -42,8 +42,8 @@
 	include_once($centreon_path . "www/class/centreonDB.class.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 
-	$pearDB = new CentreonDB();
-	$pearDBO = new CentreonDB("centstorage");
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
 
 	/*
 	 * Security check
