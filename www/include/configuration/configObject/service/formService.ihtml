@@ -3,13 +3,11 @@
 <form {$form.attributes}>
 <div>
 	<ul id="mainnav">
-		<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">{$sort1}</a></li>
+		<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
 		<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
 		<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
 		<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
-		{if $msg.nagios >= 3}
 		<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
-		{/if}
 	</ul>
 </div>
 <div id="validFormTop">
