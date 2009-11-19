@@ -43,7 +43,7 @@
 	require_once $centreon_path."/www/class/centreonDB.class.php";
 	require_once $centreon_path."www/class/centreonSession.class.php";
 	require_once $centreon_path."/www/class/centreonGMT.class.php";
-	require_once $centreon_path."www/class/Oreon.class.php";
+	require_once $centreon_path."www/class/centreon.class.php";
 	require_once $centreon_path."www/include/common/common-Func.php";
 
 	$pearDB = new CentreonDB();

@@ -39,7 +39,7 @@
  	require_once("@CENTREON_ETC@/centreon.conf.php");
 	require_once("../../../../include/common/common-Func.php");
  	require_once("../../../../$classdir/centreonSession.class.php");
- 	require_once("../../../../$classdir/Oreon.class.php");
+ 	require_once("../../../../$classdir/centreon.class.php");
  	require_once("../../../../$classdir/centreonXML.class.php");
  	require_once("../../../../$classdir/centreonDB.class.php");
  	require_once("../../../../$classdir/centreonLDAP.class.php");
