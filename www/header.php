@@ -101,7 +101,7 @@
 	/*
 	 * Define Oreon var alias
 	 */
-	$centreon =& $_SESSION["oreon"];
+	$centreon =& $_SESSION["centreon"];
 	$oreon =& $centreon;
 	if (!is_object($centreon))
 		exit();
@@ -109,13 +109,13 @@
 	/*
 	 * Init differents elements we need in a lot of pages
 	 */
-	unset($oreon->Nagioscfg);
-	$oreon->initNagiosCFG($pearDB);
-	unset($oreon->optGen);
-	$oreon->initOptGen($pearDB);
+	unset($centreon->Nagioscfg);
+	$centreon->initNagiosCFG($pearDB);
+	unset($centreon->optGen);
+	$centreon->initOptGen($pearDB);
 
 	if (!$p){
-		$root_menu = get_my_first_allowed_root_menu($oreon->user->access->topologyStr);
+		$root_menu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
 		if (isset($root_menu["topology_page"])) 
 			$p = $root_menu["topology_page"]; 
 		else 
@@ -172,7 +172,7 @@
 	/*
 	 * Update Session Table For last_reload and current_page row
 	 */
-	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");	
+	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$centreon->user->user_id."' LIMIT 1");	
 	
 	/*
 	 * Init Language 

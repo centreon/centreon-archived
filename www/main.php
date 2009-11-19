@@ -87,7 +87,7 @@
 	 */
 	  
 	global $is_admin;
-	$is_admin = $oreon->user->admin;
+	$is_admin = $centreon->user->admin;
 	
 	$DBRESULT =& $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
 	$redirect =& $DBRESULT->fetchRow();
@@ -97,9 +97,9 @@
 	 */ 
 	$url = "";
 	if (!isset($_GET["doc"])){
-		if ($oreon->user->access->page($p)) {
+		if ($centreon->user->access->page($p)) {
 			if ($redirect["topology_page"] < 100){
-				$ret = get_child($redirect["topology_page"], $oreon->user->access->topologyStr);
+				$ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
 				if (!$ret['topology_page']){
 					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
@@ -107,7 +107,7 @@
 					} else
 						$url = "./alt_error.php";
 				} else {
-					$ret2 = get_child($ret['topology_page'], $oreon->user->access->topologyStr);
+					$ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
 					if ($ret2["topology_url_opt"])	{
 						if (!$o) {
 							$tab = split("\=", $ret2["topology_url_opt"]);
@@ -127,7 +127,7 @@
 					}
 				}
 			} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
-				$ret = get_child($redirect["topology_page"], $oreon->user->access->topologyStr);
+				$ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
 				if (!$ret['topology_page']){
 					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
@@ -149,7 +149,7 @@
 						$url = "./alt_error.php";
 				}
 			} else if ($redirect["topology_page"] >= 1000) {
-				$ret = get_child($redirect["topology_page"], $oreon->user->access->topologyStr);
+				$ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
 				if (!$ret['topology_page']){
 					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
@@ -180,9 +180,9 @@
 	 */
 	if (!$min)
 		include_once "menu/Menu.php";
-	if (!$oreon->user->showDiv("header")) { ?> <script type="text/javascript">new Effect.toggle('header', 'blind', { duration : 0 });</script> <?php }
-	if (!$oreon->user->showDiv("menu_3")) { ?> <script type="text/javascript">new Effect.toggle('menu_3', 'blind', { duration : 0 });</script> <?php }
-	if (!$oreon->user->showDiv("menu_2")) { ?> <script type="text/javascript">new Effect.toggle('menu_2', 'blind', { duration : 0 });</script> <?php }
+	if (!$centreon->user->showDiv("header")) { ?> <script type="text/javascript">new Effect.toggle('header', 'blind', { duration : 0 });</script> <?php }
+	if (!$centreon->user->showDiv("menu_3")) { ?> <script type="text/javascript">new Effect.toggle('menu_3', 'blind', { duration : 0 });</script> <?php }
+	if (!$centreon->user->showDiv("menu_2")) { ?> <script type="text/javascript">new Effect.toggle('menu_2', 'blind', { duration : 0 });</script> <?php }
 	/*
 	 * Display PathWay
 	 */
@@ -194,7 +194,7 @@
 	 */
 	require_once ("./class/centreonMsg.class.php");
 	$msg = new CentreonMsg();
-	if (!$oreon->user->admin && !count($oreon->user->access->getAccessGroups())) {
+	if (!$centreon->user->admin && !count($centreon->user->access->getAccessGroups())) {
 		$msg->setImage("./img/icones/16x16/warning.gif");
 		$msg->setTextStyle("bold");
 		$msg->setText(_("You are not in an access group"));
@@ -204,29 +204,29 @@
 	if (isset($url) && $url)
     	include_once $url;
 
-	if (!isset($oreon->historyPage))
-		$oreon->createHistory();
+	if (!isset($centreon->historyPage))
+		$centreon->createHistory();
 	
 	/*
 	 * Keep in memory all informations about pagination, keyword for search... 
 	 */
 	if (isset($url) && $url){
 		if (isset($_GET["num"]))
-			$oreon->historyPage[$url] = $_GET["num"];
+			$centreon->historyPage[$url] = $_GET["num"];
 		if (isset($_POST["num"]))
-			$oreon->historyPage[$url] = $_POST["num"];
+			$centreon->historyPage[$url] = $_POST["num"];
 		if (isset($_GET["search"]))
-			$oreon->historySearch[$url] = $_GET["search"];
+			$centreon->historySearch[$url] = $_GET["search"];
 		if (isset($_POST["search"]))
-			$oreon->historySearch[$url] = $_POST["search"];
+			$centreon->historySearch[$url] = $_POST["search"];
 		if (isset($_GET["search_service"]))
-			$oreon->historySearchService[$url] = $_GET["search_service"];
+			$centreon->historySearchService[$url] = $_GET["search_service"];
 		if (isset($_POST["search_service"]))
-			$oreon->historySearchService[$url] = $_POST["search_service"];
+			$centreon->historySearchService[$url] = $_POST["search_service"];
 		if (isset($_GET["limit"]))
-			$oreon->historyLimit[$url] = $_GET["limit"];
+			$centreon->historyLimit[$url] = $_GET["limit"];
 		if (isset($_POST["limit"]))
-			$oreon->historyLimit[$url] = $_POST["limit"];
+			$centreon->historyLimit[$url] = $_POST["limit"];
 	}
 
 	print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";

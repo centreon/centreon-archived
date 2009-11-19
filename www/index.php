@@ -64,6 +64,7 @@
 	 */
 	global $pearDB;
 	$pearDB = new CentreonDB();
+
 	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
     while ($generalOption =& $DBRESULT->fetchRow())
     	$generalOptions[$generalOption["key"]] = $generalOption["value"];
@@ -99,7 +100,7 @@
 			phpCAS::client(CAS_VERSION_2_0, $cas["cas_server"], 443, $cas["cas_url"]);
 			phpCAS::logout();
 		}
-		$oreon = & $_SESSION["oreon"];
+		$centreon = & $_SESSION["centreon"];
 		
 		/*
 		 * Init log class
@@ -117,8 +118,8 @@
 	/*
 	 * already connected
 	 */
-	if (isset($_SESSION["oreon"])) {	
-		$oreon = & $_SESSION["oreon"];
+	if (isset($_SESSION["centreon"])) {	
+		$centreon = & $_SESSION["centreon"];
 		
 		/*
 		 * Init log class
@@ -154,8 +155,8 @@
 	     
 	    if ($centreonAuth->passwdOk == 1) {
 	    	$user =& new User($centreonAuth->userInfos, $generalOptions["nagios_version"]);
-	    	$oreon = new Centreon($user);
-	    	$_SESSION["oreon"] =& $oreon;
+	    	$centreon = new Centreon($user);
+	    	$_SESSION["centreon"] =& $centreon;
 		    $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
 			if (!isset($_POST["submit"]))	{
 				$args = NULL;
