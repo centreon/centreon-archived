@@ -36,24 +36,26 @@
  * 
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path."www/class/centreonDuration.class.php";
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonACL.class.php";
 	include_once $centreon_path."www/class/centreonXML.class.php";
 	include_once $centreon_path."www/class/centreonDB.class.php";
+	include_once $centreon_path."www/class/centreonHost.class.php";
+	include_once $centreon_path."www/class/centreonService.class.php";
 	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";	
 	include_once $centreon_path."www/include/common/common-Func.php";
 
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
 	$pearDBndo 	= new CentreonDB("ndo");
+	
+	$hostObj	= new CentreonHost($pearDB);
+	$serviceObj	= new CentreonService($pearDB);
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
-	
-	$hostObj = new CentreonHost($pearDB);
-	$svcObj = new CentreonService($pearDB);
 	
 	/* 
 	 * security check 2/2 
@@ -265,9 +267,8 @@
 	$rq1 = 	"SELECT $ArgNeeded " .
 		 	"FROM (";
 
-	$rq2 = 	"SELECT DISTINCT no.name1 as host_name, no.object_id as service_id, no.name2 as service_description, " .
-			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts " .
-			"FROM  ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns $ACLDBName" .
+	$rq2 = 	"SELECT DISTINCT no.name1 as host_name, no.object_id, no.name2 as service_description, " .
+			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts FROM  ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns $ACLDBName" .
 			"WHERE no.object_id = ns.service_object_id " .
 			"	AND no.name1 NOT LIKE '_Module_%' " .
 			"	$searchHost $searchService $instance_filter $ACLCondition " .
@@ -327,7 +328,7 @@
 			$duration = " ";
 
 			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
-				$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
+				$duration = centreonDuration::toString(time() - $ndo["last_state_change"]);
 			else if ($ndo["last_state_change"] > 0)
 				$duration = " - ";
 
@@ -348,28 +349,23 @@
 			$buffer->writeElement("f", $flag);
 			
 			if ($host_prev == $ndo["host_name"]){
-				$buffer->writeElement("hc", "transparent");
+				$buffer->writeElement("hc", "transparent");				
 				$buffer->startElement("hn");
 				$buffer->writeAttribute("none", "1");
 				$buffer->text($ndo["host_name"]);
-				$buffer->endElement();
-			} else {
+				$buffer->endElement();				
+			} else {				
 				$host_prev = $ndo["host_name"];
 				$buffer->writeElement("hc", $color_host);
 				$buffer->startElement("hn");
 				$buffer->writeAttribute("none", "0");
 				$buffer->text($ndo["host_name"]);
 				$buffer->endElement();
-				$actionurl = $host_status[$ndo["host_name"]]["action_url"];
-				$actionurl = $hostObj->replaceMacroInString($ndo["host_name"]]["object_id"], $actionurl);
-				$actionurl = $svcObj->replaceMacroInString($ndo["service_id"], $actionurl);
-				$buffer->writeElement("hau", $actionurl);
+				$buffer->writeElement("hau", $host_status[$ndo["host_name"]]["action_url"]);								
 
 				if ($host_status[$ndo["host_name"]]["notes_url"]) {
-					$notesurl = $host_status[$ndo["host_name"]]["notes_url"];
-					$notesurl = $hostObj->replaceMacroInString($ndo["host_name"]]["object_id"], $notesurl);
-					$notesurl = $svcObj->replaceMacroInString($ndo["service_id"], $notesurl);
-					$buffer->writeElement("hnu", $notesurl);
+					$host_status[$ndo["host_name"]]["notes_url"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $host_status[$ndo["host_name"]]["notes_url"]);
+					$buffer->writeElement("hnu", $host_status[$ndo["host_name"]]["notes_url"]);
 				} else
 					$buffer->writeElement("hnu", "none");
 					
@@ -383,12 +379,7 @@
 			$buffer->writeElement("ppd", $ndo["process_performance_data"]);
 			$buffer->writeElement("hs", $host_status[$ndo["host_name"]]["current_state"]);			
 			$buffer->writeElement("sd", $ndo["service_description"]);
-			$buffer->writeElement("svc_id", $ndo["object_id"]);			
-						
-			$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
-			$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
-			
-			$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO));
+			$buffer->writeElement("svc_id", $ndo["object_id"]);						
 			$buffer->writeElement("sc", $color_service);
 			$buffer->writeElement("cs", $tab_status_svc[$ndo["current_state"]]);
 			$buffer->writeElement("po", $ndo["plugin_output"], 0);
@@ -401,26 +392,29 @@
 			$buffer->writeElement("is", $ndo["is_flapping"]);
 			$buffer->writeElement("dtm", $ndo["scheduled_downtime_depth"]);
 			
+			if ($ndo["notes_url"] != "") {
+				$ndo["notes_url"] = $string = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes_url"]);
+				$ndo["notes_url"] = $string = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes_url"]);
+				$buffer->writeElement("snu", $ndo["notes_url"]);
+			} else {
+				$buffer->writeElement("snu", 'none');
+			}
+
 			if (!isset($ndo["notes"]) || $ndo["notes"] == "")
 				$ndo["notes"] = $ndo["notes_url"];
 			$buffer->writeElement("sn", $ndo["notes"]);
 			
-			if ($ndo["notes_url"] != "") {
-				$notesurl = $ndo["notes_url"];
-				$notesurl = $hostObj->replaceMacroInString($ndo["host_name"]]["object_id"], $notesurl);
-				$notesurl = $svcObj->replaceMacroInString($ndo["service_id"], $notesurl);
-				$buffer->writeElement("snu", $notesurl);
-			} else {
-				$buffer->writeElement("snu", 'none');
-			}
-			
-			$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);
+			$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);			
 			$buffer->writeElement("ha", $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]);
 			$buffer->writeElement("hae", $host_status[$ndo["host_name"]]["active_checks_enabled"]);
-			$buffer->writeElement("hpe", $host_status[$ndo["host_name"]]["passive_checks_enabled"]);
-			$buffer->writeElement("nc", $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]));
+	        $buffer->writeElement("hpe", $host_status[$ndo["host_name"]]["passive_checks_enabled"]);
+	        $buffer->writeElement("nc", $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]));	        	        
 			$buffer->writeElement("lc", $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]));
 			$buffer->writeElement("d", $duration);
+			
+			$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
+			$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
+			$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO));
 			$buffer->endElement();			
 		}
 	}

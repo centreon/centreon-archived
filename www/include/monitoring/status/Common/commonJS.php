@@ -78,6 +78,7 @@ function advanced_options(id){
 
 function construct_selecteList_ndo_instance(id){
 	if (!document.getElementById("select_instance")){
+		var select_index = new Array();
 		var _select_instance = document.getElementById(id);
 		var _select = document.createElement("select");
 		_select.name = "select_instance";

@@ -40,8 +40,8 @@ class CentreonDuration
 {
 	function toString ($duration, $periods = null){
         if (!is_array($duration))
-            $duration = Duration::int2array($duration, $periods);
-        return Duration::array2string($duration);
+            $duration = CentreonDuration::int2array($duration, $periods);
+        return CentreonDuration::array2string($duration);
     }
  
     function int2array ($seconds, $periods = null){        
