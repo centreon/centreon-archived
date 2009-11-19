@@ -581,10 +581,8 @@
 							init();
 							initAutoComplete('Form','city_name','sub');
 							};</script>");
+	$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
 
-	$tpl->assign('javascript', "<script type='text/javascript'>function showLogo(_img_dst, _value) {".
-	"var _img = document.getElementById(_img_dst + '_img');".
-	"_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 
 	$valid = false;

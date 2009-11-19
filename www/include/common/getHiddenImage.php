@@ -54,12 +54,20 @@
 		$logos_path = $oreon->optGen["nagios_path_img"];
 	}
 
-	if (isset($_GET["path"]) && $_GET["path"] && is_file($logos_path . $_GET["path"])){
-		$fd = fopen($logos_path . $_GET["path"], "r");
-		$buffer = NULL;
-		while (!feof($fd))
-		    $buffer .= fgets($fd, 4096);
-		fclose ($fd);
-		print $buffer;
+	if (isset($_GET["id"]) && $_GET["id"] && is_numeric($_GET["id"])) {
+	
+	    $result =& $pearDB->query("SELECT dir_name, img_path FROM view_img_dir, view_img, view_img_dir_relation vidr WHERE img_id = '".$_GET["id"]."'");
+	    while ($img = $result->fetchRow() ) {
+		$imgpath = $logos_path . $img["dir_name"] ."/". $img["img_path"];
+		if (is_file($imgpath)) {
+		    $fd = fopen($imgpath, "r");
+		    $buffer = NULL;
+		    while (!feof($fd))
+			$buffer .= fgets($fd, 4096);
+		    fclose ($fd);
+		    print $buffer;
+		    break;
+		}
+	    }	
 	}
 ?>

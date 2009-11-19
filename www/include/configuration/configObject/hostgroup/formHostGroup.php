@@ -240,6 +240,7 @@
 							window.onload = function () {
 							initAutoComplete('Form','city_name','sub');
 							};</script>");
+	$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
 		
 	$valid = false;
 	if ($form->validate())	{
