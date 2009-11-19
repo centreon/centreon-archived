@@ -41,10 +41,23 @@
 		
 	include("./include/common/autoNumLimit.php");
 
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
-		
+	
+	/*
+	 * Create Timeperiod Cache
+	 */
+	$tpCache = array();
+	$DBRESULT =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
+	while ($data =& $DBRESULT->fetchRow())
+		$tpCache[$data["tp_id"]] = $data["tp_name"];
+	unset($data);
+	$DBRESULT->free();
+	
+	
 	if (isset($search))
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 	else
@@ -60,11 +73,15 @@
 
 	include("./include/common/checkPagination.php");
 	
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Alias/Login"));
@@ -73,8 +90,10 @@
 	$tpl->assign("headerMenu_svNotif", _("Services Notification Period"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
-	# end header menu
-	#Contact list
+	
+	/*
+	 * Contact list
+	 */
 	if ($search)
 		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email  FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	else
@@ -84,9 +103,15 @@
 	$search = tidySearchKey($search, $advanced_search);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	#Different style between each lines
+	
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();
 	for ($i = 0; $contact =& $DBRESULT->fetchRow(); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$contact['contact_id']."]");
@@ -99,34 +124,30 @@
 			$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$contact['contact_id']."]'></input>";
-		/* Get Host Notif Period */
-		$hostTp = NULL;
-		$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$contact["timeperiod_tp_id"]."'");
-		$hostTp = $DBRESULT2->fetchRow();
-		/* Get Service Notif Period */
-		$svTp = NULL;
-		$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$contact["timeperiod_tp_id2"]."'");
-		$svTp = $DBRESULT2->fetchRow();		
+		
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$contact["contact_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&contact_id=".$contact['contact_id'],
 						"RowMenu_desc"=>$contact["contact_alias"],
 						"RowMenu_email"=>$contact["contact_email"],
-						"RowMenu_hostNotif"=>html_entity_decode($hostTp["tp_name"], ENT_QUOTES)." (".$contact["contact_host_notification_options"].")",
-						"RowMenu_svNotif"=>html_entity_decode($svTp["tp_name"], ENT_QUOTES)." (".$contact["contact_service_notification_options"].")",
+						"RowMenu_hostNotif"=>html_entity_decode($tpCache[$contact["timeperiod_tp_id"]], ENT_QUOTES)." (".$contact["contact_host_notification_options"].")",
+						"RowMenu_svNotif"=>html_entity_decode($tpCache[$contact["timeperiod_tp_id2"]], ENT_QUOTES)." (".$contact["contact_service_notification_options"].")",
 						"RowMenu_status"=>$contact["contact_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
-	#Different messages we put in the template
+	
+	/*
+	 * Different messages we put in the template
+	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"),"ldap_importL"=>"?p=".$p."&o=li", "ldap_importT"=>_("LDAP Import")));
 	if ($oreon->optGen['ldap_auth_enable'])
 		$tpl->assign('ldap', $oreon->optGen['ldap_auth_enable'] );
 
-	#
-	## Toolbar select  
-	#
+	/*
+	 * Toolbar select
+	 */
 	?>
 	<script type="text/javascript">
 	function setO(_i) {
@@ -168,9 +189,9 @@
 	
 	$tpl->assign('limit', $limit);
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
