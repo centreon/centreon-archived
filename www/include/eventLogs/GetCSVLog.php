@@ -61,7 +61,7 @@
 	} else
 			get_error('need session identifiant !');		
 			
-	require_once $centreon_path . "www/class/centreonDuration.class.php";
+	require_once $centreon_path . "www/class/other.class.php";
 	require_once $centreon_path . "www/include/common/common-Func.php";	
 
 	
