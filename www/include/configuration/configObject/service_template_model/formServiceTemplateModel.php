@@ -679,7 +679,13 @@
 				if ($value)
 					updateServiceInDB($value, true);
 		}
-		$o = "w";
+		$action = $form->getSubmitValue("action");
+		if (!$action["action"]["action"]) {
+			$o = "w";
+		} 
+		else {
+			$o = NULL;
+		}
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
