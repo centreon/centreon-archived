@@ -72,6 +72,13 @@
 	<div id='tab2' class='tab'>
 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherAddress}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_address1.label}</td><td class="FormRowValue">{$form.contact_address1.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_address2.label}</td><td class="FormRowValue">{$form.contact_address2.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_address3.label}</td><td class="FormRowValue">{$form.contact_address3.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_address4.label}</td><td class="FormRowValue">{$form.contact_address4.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_address5.label}</td><td class="FormRowValue">{$form.contact_address5.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_address6.label}</td><td class="FormRowValue">{$form.contact_address6.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>

@@ -243,7 +243,8 @@
 				"`contact_host_notification_options` , `contact_service_notification_options` , " .
 				"`contact_email` , `contact_pager` , `contact_comment` , `contact_oreon` , " .
 				"`contact_admin` , `contact_type_msg`, `contact_activate`, `contact_auth_type`, " .
-				"`contact_ldap_dn`, `contact_location` )" .
+				"`contact_ldap_dn`, `contact_location`, `contact_address`, `contact_address1`, " .
+				"`contact_address1`, `contact_address1`, `contact_address1`, `contact_address1`)" .
 				"VALUES ( ";
 		$rq .= "NULL, ";
 		isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
@@ -273,6 +274,12 @@
 		isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL ? $rq .= "'".$ret["contact_auth_type"]."', ": $rq .= "'local', ";
 		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."' ": $rq .= "NULL ";
+		isset($ret["contact_address1"]) && $ret["contact_address1"] != NULL ? $rq .= "'".htmlentities($ret["contact_address1"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["contact_address2"]) && $ret["contact_address2"] != NULL ? $rq .= "'".htmlentities($ret["contact_address2"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["contact_address3"]) && $ret["contact_address3"] != NULL ? $rq .= "'".htmlentities($ret["contact_address3"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["contact_address4"]) && $ret["contact_address4"] != NULL ? $rq .= "'".htmlentities($ret["contact_address4"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["contact_address5"]) && $ret["contact_address5"] != NULL ? $rq .= "'".htmlentities($ret["contact_address5"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".htmlentities($ret["contact_address6"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= ")";
 		
 		$DBRESULT =& $pearDB->query($rq);
@@ -320,7 +327,6 @@
 	
 		if (isset($ret["contact_ldap_dn"]))
 			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
-	
 		if (isset($ret["contact_location"]))
 			$fields["contact_location"] = $ret["contact_location"];
 		if (isset($ret["contact_hostNotifCmds"]))
@@ -329,6 +335,23 @@
 			$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
 		if (isset($ret["contact_cgNotif"]))
 			$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
+
+		if (isset($ret["contact_address1"]))
+			$fields["contact_address1"] = $ret["contact_address1"];
+		if (isset($ret["contact_address2"]))
+			$fields["contact_address2"] = $ret["contact_address2"];
+		if (isset($ret["contact_address3"]))
+			$fields["contact_address3"] = $ret["contact_address3"];
+		if (isset($ret["contact_address4"]))
+			$fields["contact_address4"] = $ret["contact_address4"];
+		if (isset($ret["contact_address5"]))
+			$fields["contact_address5"] = $ret["contact_address5"];
+		if (isset($ret["contact_address6"]))
+			$fields["contact_address6"] = $ret["contact_address6"];
+		
+		/*
+		 * Write Actions Logs
+		 */
 		$oreon->CentreonLogAction->insertLog("contact", $contact_id["MAX(contact_id)"], $ret["contact_name"], "a", $fields);
 		
 		return ($contact_id["MAX(contact_id)"]);
@@ -386,6 +409,20 @@
 		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "contact_location = ";
 		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."' ": $rq .= "NULL ";
+		
+		$rq .= "contact_address1 = ";
+		isset($ret["contact_address1"]) && $ret["contact_address1"] != NULL ? $rq .= "'".$ret["contact_address1"]."' ": $rq .= "NULL ";
+		$rq .= "contact_address2 = ";
+		isset($ret["contact_address2"]) && $ret["contact_address2"] != NULL ? $rq .= "'".$ret["contact_address2"]."' ": $rq .= "NULL ";
+		$rq .= "contact_address3 = ";
+		isset($ret["contact_address3"]) && $ret["contact_address3"] != NULL ? $rq .= "'".$ret["contact_address3"]."' ": $rq .= "NULL ";
+		$rq .= "contact_address4 = ";
+		isset($ret["contact_address4"]) && $ret["contact_address4"] != NULL ? $rq .= "'".$ret["contact_address4"]."' ": $rq .= "NULL ";
+		$rq .= "contact_address5 = ";
+		isset($ret["contact_address5"]) && $ret["contact_address5"] != NULL ? $rq .= "'".$ret["contact_address5"]."' ": $rq .= "NULL ";
+		$rq .= "contact_address6 = ";
+		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".$ret["contact_address6"]."' ": $rq .= "NULL ";
+		
 		$rq .= "WHERE contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL && $contact_id == $oreon->user->get_id()) {
@@ -418,6 +455,15 @@
 		$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
 		if (isset($ret["contact_cgNotif"]))
 			$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
+		$fields["contact_address1"] = $ret["contact_address1"];
+		$fields["contact_address2"] = $ret["contact_address2"];
+		$fields["contact_address3"] = $ret["contact_address3"];
+		$fields["contact_address4"] = $ret["contact_address4"];
+		$fields["contact_address5"] = $ret["contact_address5"];
+		$fields["contact_address6"] = $ret["contact_address6"];
+		/*
+		 * Write Action logs
+		 */
 		$oreon->CentreonLogAction->insertLog("contact", $contact_id, $ret["contact_name"], "c", $fields);
 	}
 

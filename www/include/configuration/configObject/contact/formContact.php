@@ -140,8 +140,8 @@
 
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"60");
-	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+	$attrsAdvSelect = array("style" => "width: 270px; height: 100px;");
+	$attrsTextarea 	= array("rows"=>"15", "cols"=>"100");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
@@ -163,6 +163,7 @@
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('header', 'additional', _("Additional Information"));
 	$form->addElement('header', 'centreon', _("Centreon information / Authentication"));
+	$form->addElement('header', 'centreon', _("Centreon information / Authentication"));
 	
 	/*
 	 * No possibility to change name and alias, because there's no interest
@@ -178,6 +179,14 @@
 	
 	$form->addElement('text', 'contact_email', _("Email"), $attrsText);
 	$form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
+	
+	$form->addElement('header', 'furtherAddress', _("Additional Addresses"));
+	$form->addElement('text', 'contact_address1', _("Address1"), $attrsText);
+	$form->addElement('text', 'contact_address2', _("Address2"), $attrsText);
+	$form->addElement('text', 'contact_address3', _("Address3"), $attrsText);
+	$form->addElement('text', 'contact_address4', _("Address4"), $attrsText);
+	$form->addElement('text', 'contact_address5', _("Address5"), $attrsText);
+	$form->addElement('text', 'contact_address6', _("Address6"), $attrsText);
 
 	/*
 	 * Contact Groups Field
