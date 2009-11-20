@@ -88,16 +88,18 @@
 	$tpl->assign("headerMenu_email", _("Email"));
 	$tpl->assign("headerMenu_hostNotif", _("Host Notification Period"));
 	$tpl->assign("headerMenu_svNotif", _("Services Notification Period"));
+	$tpl->assign("headerMenu_lang", _("Language"));
 	$tpl->assign("headerMenu_status", _("Status"));
+	$tpl->assign("headerMenu_access", _("Access"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
 	/*
 	 * Contact list
 	 */
 	if ($search)
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email  FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email  FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
@@ -115,14 +117,12 @@
 	$elemArr = array();
 	for ($i = 0; $contact =& $DBRESULT->fetchRow(); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$contact['contact_id']."]");
-		$moptions = "<!--<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='"._("Modify")."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=d&select[".$contact['contact_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>&nbsp;&nbsp;-->";
+		$moptions = "";
 		if ($contact["contact_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
 			$moptions .= "<a href='main.php?p=".$p."&contact_id=".$contact['contact_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
-		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		$moptions .= "&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$contact['contact_id']."]'></input>";
 		
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
@@ -133,9 +133,12 @@
 						"RowMenu_email"=>$contact["contact_email"],
 						"RowMenu_hostNotif"=>html_entity_decode($tpCache[$contact["timeperiod_tp_id"]], ENT_QUOTES)." (".$contact["contact_host_notification_options"].")",
 						"RowMenu_svNotif"=>html_entity_decode($tpCache[$contact["timeperiod_tp_id2"]], ENT_QUOTES)." (".$contact["contact_service_notification_options"].")",
+						"RowMenu_lang"=>$contact["contact_lang"],
+						"RowMenu_access"=>$contact["contact_oreon"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_status"=>$contact["contact_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$style != "two" ? $style = "two" : $style = "one";	
+	}
 	$tpl->assign("elemArr", $elemArr);
 	
 	/*
