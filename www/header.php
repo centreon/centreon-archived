@@ -95,7 +95,7 @@
 	if (!$DBRESULT->numRows())
 		header("Location: index.php?disconnect=2");
 
-	if (!isset($_SESSION["oreon"]))
+	if (!isset($_SESSION["centreon"]))
 		header("Location: index.php?disconnect=1");
 
 	/*
