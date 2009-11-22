@@ -1,5 +1,11 @@
 {$form.javascript}
 <form {$form.attributes}>
+	<div>
+	<ul id="mainnav">
+		<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">{$form.header.notification_base}</a></li>
+		<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.exclude}</a></li>
+	</ul>
+	</div>
 	<div id="validFormTop">
 	{if $o == "a" || $o == "c"}
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
@@ -8,26 +14,47 @@
 	{/if}
 	</div>
 	<div id='tab1' class='tab'>
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.tp_name.label}</td><td class="FormRowValue">{$form.tp_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.tp_alias.label}</td><td class="FormRowValue">{$form.tp_alias.html}</td></tr>
-	 	
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/date-time_preferences.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.tp_sunday.label}</td><td class="FormRowValue">{$form.tp_sunday.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.tp_monday.label}</td><td class="FormRowValue">{$form.tp_monday.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.tp_tuesday.label}</td><td class="FormRowValue">{$form.tp_tuesday.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.tp_wednesday.label}</td><td class="FormRowValue">{$form.tp_wednesday.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.tp_thursday.label}</td><td class="FormRowValue">{$form.tp_thursday.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.tp_friday.label}</td><td class="FormRowValue">{$form.tp_friday.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.tp_saturday.label}</td><td class="FormRowValue">{$form.tp_saturday.html}</td></tr>
-		
-		{if $o == "a" || $o == "c"}
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
-		{/if}
-	</table>
+		 <table class="ListTable">
+		 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.tp_name.label}</td><td class="FormRowValue">{$form.tp_name.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.tp_alias.label}</td><td class="FormRowValue">{$form.tp_alias.html}</td></tr>
+		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.tp_sunday.label}</td><td class="FormRowValue">{$form.tp_sunday.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.tp_monday.label}</td><td class="FormRowValue">{$form.tp_monday.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.tp_tuesday.label}</td><td class="FormRowValue">{$form.tp_tuesday.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.tp_wednesday.label}</td><td class="FormRowValue">{$form.tp_wednesday.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.tp_thursday.label}</td><td class="FormRowValue">{$form.tp_thursday.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.tp_friday.label}</td><td class="FormRowValue">{$form.tp_friday.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.tp_saturday.label}</td><td class="FormRowValue">{$form.tp_saturday.html}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/date-time_preferences.gif'>&nbsp;&nbsp;{$form.header.exception}</td></tr>			
+			<tr class="list_two">
+				<td colspan='2'><input type="hidden" name="nbOfMacro" id="hiddenMacInput">
+					<table id="macroTable" class="ListTableSmall" style='padding-top:0px'>
+						<tr class="ListHeader">
+							<td class="ListColLeft">{$tRDay}</td>
+							<td class="ListColCenter">{$tRHours}</td>
+							{if $o != "w"}
+								<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBlankInput();"></td>			
+							{/if}
+						</tr>
+					</table>
+				</td>
+			</tr>
+			{if $o == "a" || $o == "c"}
+				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+			{/if}
+		 </table>
+	</div>
+	<div id='tab2' class='tab'>
+		 <table class="ListTable">
+		 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/date-time_preferences.gif'>&nbsp;&nbsp;{$form.header.exclude}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.tp_exclude.label}</td><td class="FormRowValue">{$form.tp_exclude.html}</td></tr>
+			{if $o == "a" || $o == "c"}
+				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+			{/if}
+		 </table>
 	</div>
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}

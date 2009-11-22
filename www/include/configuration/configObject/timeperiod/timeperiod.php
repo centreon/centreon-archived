@@ -51,10 +51,13 @@
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 		
-	#Pear library
-	require_once "HTML/QuickForm.php";
+	/*
+	 * Pear library
+	 */
+	require_once 'HTML/QuickForm.php';
+	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	
+
 	#Path to the configuration dir
 	$path = "./include/configuration/configObject/timeperiod/";
 	

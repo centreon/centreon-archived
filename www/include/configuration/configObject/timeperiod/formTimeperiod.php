@@ -36,25 +36,35 @@
  * 
  */
  
-
-	#
-	## Database retrieve information for Time Period
-	#
+	if (!isset($centreon))
+		exit();
+		
 	$tp = array();
 	if (($o == "c" || $o == "w") && $tp_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$tp_id."' LIMIT 1");
-		# Set base value
+		
+		/*
+		 * Set base value
+		 */
 		$tp = array_map("myDecode", $DBRESULT->fetchRow());
+		$tp["contact_exclude"] = array();
 	}
-
-	##########################################################
-	# Var information to format the element
-	#
+	
+	$excludeTP = array();
+	$DBRESULT =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
+	while ($data =& $DBRESULT->fetchRow())
+		if ($o != "a" || $tp_id != $data["tp_id"])
+			$excludeTP[$data["tp_id"]] = $data["tp_name"];
+	$DBRESULT->free();
+	unset($data);
+	
+	/*
+	 * Var information to format the element
+	 */
 	$attrsText 		= array("size"=>"35");
+	$attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
-	#
-	## Form begin
-	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Time Period"));
@@ -63,17 +73,20 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View a Time Period"));
 
-	#
-	## Time Period basic information
-	#
+	/*
+	 * 	Time Period basic information
+	 */
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text', 'tp_name', _("Time Period Name"), $attrsText);
 	$form->addElement('text', 'tp_alias', _("Alias"), $attrsText);
 	
-	##
-	## Notification informations
-	##
+	/*
+	 * Notification informations
+	 */
 	$form->addElement('header', 'notification', _("Notification Time Range"));
+	$form->addElement('header', 'notification_base', _("Basic Notification"));
+	$form->addElement('header', 'exclude', _("Time Range exclusion"));
+	$form->addElement('header', 'exception', _("Time Range exceptions"));
 	
 	$form->addElement('text', 'tp_sunday', _("Sunday"), $attrsText);
 	$form->addElement('text', 'tp_monday', _("Monday"), $attrsText);
@@ -83,10 +96,36 @@
 	$form->addElement('text', 'tp_friday', _("Friday"), $attrsText);
 	$form->addElement('text', 'tp_saturday', _("Saturday"), $attrsText);
 	
-	#
-	## Further informations
-	#
+	/*
+	 * Exclude Timeperiod
+	 */
+	$ams3 =& $form->addElement('advmultiselect', 'tp_exclude', _("Exclude Timeperiods"), $excludeTP, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setElementTemplate($template);
+	echo $ams3->getElementJs(false);
 	
+	/*
+	 * Include javascript for dynamique entries
+	 */
+	require_once "./include/configuration/configObject/timeperiod/timeperiod_JS.php";
+
+	/*
+	 *  Host multiple templates relations stored in DB
+	 */	
+	$mTp = array();
+	$k = 0;
+	$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
+	while ($multiTp =& $DBRESULT->fetchRow()){
+		$mTp[$k] = $multiTp["host_tpl_id"];
+		$k++;
+	}
+	$DBRESULT->free();
+	
+	
+	/*
+	 * Further informations
+	 */
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
@@ -97,14 +136,18 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
-	#
-	## Form Rules
-	#
+	/*
+	 * Form Rules
+	 */
 	function myReplace()	{
 		global $form;
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["tp_name"]));
 	}
+	
+	/*
+	 * Set rules
+	 */
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('tp_name', 'myReplace');
 	$form->addRule('tp_name', _("Compulsory Name"), 'required');
@@ -113,32 +156,34 @@
 	$form->addRule('tp_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
-	# 
-	##End of form definition
-	#
-	
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	# Just watch a Time Period information
 	if ($o == "w")	{
+		# Just watch a Time Period information
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&tp_id=".$tp_id."'"));
 	    $form->setDefaults($tp);
 		$form->freeze();
-	}
-	# Modify a Time Period information
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
+		# Modify a Time Period information
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($tp);
-	}
-	# Add a Time Period information
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
+		# Add a Time Period information
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
+	/*
+	 * Translations
+	 */
+	$tpl->assign("tRDay", _("Time range Days"));
+	$tpl->assign("tRHours", _("Time range Hours"));
+
 	$valid = false;
 	if ($form->validate())	{
 		$tpObj =& $form->getElement('tp_id');
@@ -154,8 +199,10 @@
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once($path."listTimeperiod.php");
-	else	{
-		#Apply a template definition
+	else {
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -164,4 +211,6 @@
 		$tpl->assign('o', $o);		
 		$tpl->display("formTimeperiod.ihtml");
 	}
-?>
+?><script type="text/javascript">
+		displayExistingMacroHost(<?php echo $k;?>);
+</script>
