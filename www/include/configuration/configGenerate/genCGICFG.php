@@ -63,6 +63,9 @@
 		if ($value && $key != "cgi_id" && $key != "cgi_name" && $key != "cgi_comment" && $key != "cgi_activate") {
 			$value = str_replace("\r\n", ",", $value);
 			$str .= $key."=".$value."\n";
+		} else if ($key == "use_authentication") {
+			$value = str_replace("\r\n", ",", $value);
+			$str .= $key."=".$value."\n";
 		}
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/cgi.cfg");
