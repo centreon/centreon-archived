@@ -216,11 +216,11 @@
 					
 					$info[$i]["givenname"][0] = str_replace("'", "", $info[$i]["givenname"][0]);
 					$info[$i]["givenname"][0] = str_replace("\"", "", $info[$i]["givenname"][0]);
-					$info[$i]["givenname"][0] = htmlentities($info[$i]["givenname"][0]);
+//					$info[$i]["givenname"][0] = htmlentities($info[$i]["givenname"][0]);
 					
 					$info[$i]["cn"][0] = str_replace("'", "", $info[$i]["cn"][0]);
 					$info[$i]["cn"][0] = str_replace("\"", "", $info[$i]["cn"][0]);
-					$info[$i]["cn"][0] = htmlentities($info[$i]["cn"][0]);
+//					$info[$i]["cn"][0] = htmlentities($info[$i]["cn"][0]);
 					
 					$buffer->startElement("user");
 					$buffer->writeAttribute("isvalid", $isvalid);
@@ -246,7 +246,7 @@
 					$buffer->endElement();
 					$buffer->startElement("uid");
 					$buffer->writeAttribute("isvalid", (empty($uid) ? "0" : "1" ), 1, 0);
-					$buffer->text($uid);
+					$buffer->text($uid, 1, 0);
 					$buffer->endElement();
 					$buffer->endElement();					
 				}
