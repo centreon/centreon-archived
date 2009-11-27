@@ -216,11 +216,9 @@
 					
 					$info[$i]["givenname"][0] = str_replace("'", "", $info[$i]["givenname"][0]);
 					$info[$i]["givenname"][0] = str_replace("\"", "", $info[$i]["givenname"][0]);
-//					$info[$i]["givenname"][0] = htmlentities($info[$i]["givenname"][0]);
 					
 					$info[$i]["cn"][0] = str_replace("'", "", $info[$i]["cn"][0]);
 					$info[$i]["cn"][0] = str_replace("\"", "", $info[$i]["cn"][0]);
-//					$info[$i]["cn"][0] = htmlentities($info[$i]["cn"][0]);
 					
 					$buffer->startElement("user");
 					$buffer->writeAttribute("isvalid", $isvalid);
