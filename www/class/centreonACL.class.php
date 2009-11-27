@@ -70,7 +70,8 @@
  		if (!isset($is_admin)) {
  			$localPearDB = new CentreonDB();
  			$rq = "SELECT contact_admin FROM `contact` WHERE contact_id = '".$user_id."' LIMIT 1";
- 			$row =& $localPearDB->query($rq);
+ 			$RES =& $localPearDB->query($rq);
+ 			$row =& $RES->fetchRow();
  			$this->admin = $row['contact_admin'];
  		} else
  			$this->admin = $is_admin; 		
