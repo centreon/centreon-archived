@@ -49,7 +49,7 @@ require "@CENTREON_ETC@/conf.pm";
 my $VarLib = "@CENTREON_VARLIB@";
 
 # SSH options
-my $sshOptions="-o ConnectTimeout=5";
+my $sshOptions = "-o ConnectTimeout=5";
 
 # logAnalyser's lock file
 my $lock_file = "$VarLib/nagiosPerfTrace.lock";
@@ -320,6 +320,7 @@ sub get_poller()	{
     my $item;
     my $id;
     my $ip;
+    my $ssh_port;
     my $is_localhost;
     my $nagiostats_bin;
     my $cfg_item;
@@ -330,11 +331,11 @@ sub get_poller()	{
 
     my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
     if (defined($dbh)){
-		$item = $dbh->prepare("SELECT /* SQL_CACHE */ id, ns_ip_address, localhost, nagiostats_bin FROM nagios_server WHERE ns_activate = 1");
+		$item = $dbh->prepare("SELECT id, ssh_port, ns_ip_address, localhost, nagiostats_bin FROM nagios_server WHERE ns_activate = 1");
 		if (!$item->execute) {die "Error:" . $item->errstr . "\n";}
-		while (($id, $ip, $is_localhost, $nagiostats_bin) = $item->fetchrow_array())	{
+		while (($id, $ssh_port, $ip, $is_localhost, $nagiostats_bin) = $item->fetchrow_array())	{
 		    $must_update_ds = 0;
-		    $cfg_item = $dbh->prepare("SELECT /* SQL_CACHE */ cfg_dir FROM cfg_nagios WHERE nagios_server_id = " . $id);
+		    $cfg_item = $dbh->prepare("SELECT cfg_dir FROM cfg_nagios WHERE nagios_server_id = " . $id);
 		    if (!$cfg_item->execute) {
 				die "Error:" . $cfg_item->errstr . "\n";
 		    }
@@ -343,7 +344,7 @@ sub get_poller()	{
 				$nagiostats = `$nagiostats_bin -c $cfg_dir->{'cfg_dir'}nagios.cfg`;
 		    } else {
 				$tmp = $cfg_dir->{'cfg_dir'};
-				$nagiostats = `ssh $sshOptions $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
+				$nagiostats = `ssh $sshOptions -p $ssh_port $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
 		    }
 			if ($nagiostats =~ m/Error reading status file/ ) {
 				next;
