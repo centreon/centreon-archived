@@ -36,7 +36,7 @@
  * 
  */
  
-  	$etc = "@CENTREON_ETC@";
+  	$etc = "/etc/centreon";
   
 	if (!file_exists("$etc/centreon.conf.php") && is_dir('./install'))
 		header("Location: ./install/setup.php");
@@ -132,11 +132,14 @@
 		CentreonSession::start();
 	}
 	
-	if (isset($_POST["submit"]) || (isset($_GET["autologin"]) && isset($_GET["p"]) && $_GET["autologin"])) {
+	if (isset($_POST["submit"]) || (isset($_GET["autologin"]) && isset($_GET["p"]) && $_GET["autologin"]) || ((isset($_POST["autologin"]) && isset($_POST["p"]) && $_POST["autologin"]))) {
 		/*
 		 * Init log class
 		 */
 		$CentreonLog = new CentreonUserLog(-1, $pearDB);
+		
+		if (isset($_POST['p']))
+			$_GET["p"] = $_POST["p"];
 		
 		/*
 		 * Get Connexion parameters
