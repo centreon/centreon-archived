@@ -164,7 +164,7 @@
         isset($ret["nagios_name"]) && $ret["nagios_name"] != NULL ? $rq .= "'".htmlentities($ret["nagios_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["nagios_server_id"]) && $ret["nagios_server_id"] != NULL ? $rq .= "'".htmlentities($ret["nagios_server_id"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["log_file"]) && $ret["log_file"] != NULL ? $rq .= "'".htmlentities($ret["log_file"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["cfg_dir"]) && $ret["cfg_dir"] != NULL ? $rq .= "'".htmlentities($ret["cfg_dir"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["cfg_dir"]) && $ret["cfg_dir"] != NULL ? $rq .= "'".htmlentities($ret["cfg_dir"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["object_cache_file"]) && $ret["object_cache_file"] != NULL ? $rq .= "'".htmlentities($ret["object_cache_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
        	isset($ret["temp_file"]) && $ret["temp_file"] != NULL ? $rq .= "'".htmlentities($ret["temp_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["temp_path"]) && $ret["temp_path"] != NULL ? $rq .= "'".htmlentities($ret["temp_path"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -174,7 +174,7 @@
         isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "'".htmlentities($ret["p1_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["aggregate_status_updates"]["aggregate_status_updates"]) && $ret["aggregate_status_updates"]["aggregate_status_updates"] != 2 ? $rq .= "'".$ret["aggregate_status_updates"]["aggregate_status_updates"]."',  "  : $rq .= "'2', ";
         isset($ret["status_update_interval"]) && $ret["status_update_interval"] != NULL ? $rq .= "'".htmlentities($ret["status_update_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
- 	    isset($ret["nagios_user"]) && $ret["nagios_user"] != NULL ? $rq .= "'".htmlentities($ret["nagios_user"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["nagios_user"]) && $ret["nagios_user"] != NULL ? $rq .= "'".htmlentities($ret["nagios_user"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["nagios_group"]) && $ret["nagios_group"] != NULL ? $rq .= "'".htmlentities($ret["nagios_group"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["enable_notifications"]["enable_notifications"]) && $ret["enable_notifications"]["enable_notifications"] != 2 ? $rq .= "'".$ret["enable_notifications"]["enable_notifications"]."',  " : $rq .= "'2', ";
         isset($ret["execute_service_checks"]["execute_service_checks"]) && $ret["execute_service_checks"]["execute_service_checks"] != 2 ? $rq .= "'".$ret["execute_service_checks"]["execute_service_checks"]."',  " : $rq .= "'2', ";
@@ -204,12 +204,12 @@
         isset($ret["log_external_commands"]["log_external_commands"]) && $ret["log_external_commands"]["log_external_commands"] != 2 ? $rq .= "'".$ret["log_external_commands"]["log_external_commands"]."',  " : $rq .= "'2', ";
         isset($ret["log_passive_checks"]["log_passive_checks"]) && $ret["log_passive_checks"]["log_passive_checks"] != 2 ? $rq .= "'".$ret["log_passive_checks"]["log_passive_checks"]."',  " : $rq .= "'2', ";
         isset($ret["global_host_event_handler"]) && $ret["global_host_event_handler"] != NULL ? $rq .= "'".$ret["global_host_event_handler"]."',  " : $rq .= "NULL, ";
-	    isset($ret["global_service_event_handler"]) && $ret["global_service_event_handler"] != NULL ? $rq .= "'".$ret["global_service_event_handler"]."',  " : $rq .= "NULL, ";
+        isset($ret["global_service_event_handler"]) && $ret["global_service_event_handler"] != NULL ? $rq .= "'".$ret["global_service_event_handler"]."',  " : $rq .= "NULL, ";
         isset($ret["sleep_time"]) && $ret["sleep_time"] != NULL ? $rq .= "'".htmlentities($ret["sleep_time"], ENT_QUOTES)."',  " : $rq .= "NULL, ";        
         isset($ret["service_inter_check_delay_method"]) && $ret["service_inter_check_delay_method"] != NULL ? $rq .= "'".$ret["service_inter_check_delay_method"]."',  " : $rq .= "NULL, ";
         isset($ret["host_inter_check_delay_method"]) && $ret["host_inter_check_delay_method"] != NULL ? $rq .= "'".$ret["host_inter_check_delay_method"]."',  " : $rq .= "NULL, ";
         isset($ret["service_interleave_factor"]["service_interleave_factor"]) && $ret["service_interleave_factor"]["service_interleave_factor"] != 2 ? $rq .= "'".$ret["service_interleave_factor"]["service_interleave_factor"]."',  " : $rq .= "'2', ";
-  		isset($ret["max_concurrent_checks"]) && $ret["max_concurrent_checks"] != NULL ? $rq .= "'".htmlentities($ret["max_concurrent_checks"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["max_concurrent_checks"]) && $ret["max_concurrent_checks"] != NULL ? $rq .= "'".htmlentities($ret["max_concurrent_checks"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["max_service_check_spread"]) && $ret["max_service_check_spread"] != NULL ? $rq .= "'".htmlentities($ret["max_service_check_spread"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["max_host_check_spread"]) && $ret["max_host_check_spread"] != NULL ? $rq .= "'".htmlentities($ret["max_host_check_spread"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["service_reaper_frequency"]) && $ret["service_reaper_frequency"] != NULL ? $rq .= "'".htmlentities($ret["service_reaper_frequency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -250,12 +250,12 @@
         isset($ret["service_perfdata_file_processing_interval"]) && $ret["service_perfdata_file_processing_interval"] != NULL ? $rq .= "'".htmlentities($ret["service_perfdata_file_processing_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["host_perfdata_file_processing_command"]) && $ret["host_perfdata_file_processing_command"] != NULL ? $rq .= "'".htmlentities($ret["host_perfdata_file_processing_command"])."',  " : $rq .= "NULL, ";
         isset($ret["service_perfdata_file_processing_command"]) && $ret["service_perfdata_file_processing_command"] != NULL ? $rq .= "'".htmlentities($ret["service_perfdata_file_processing_command"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-		isset($ret["check_for_orphaned_services"]["check_for_orphaned_services"]) && $ret["check_for_orphaned_services"]["check_for_orphaned_services"] != 2 ? $rq .= "'".$ret["check_for_orphaned_services"]["check_for_orphaned_services"]."',  " : $rq .= "'2', ";
-		isset($ret["check_service_freshness"]["check_service_freshness"]) && $ret["check_service_freshness"]["check_service_freshness"] != 2 ? $rq .= "'".$ret["check_service_freshness"]["check_service_freshness"]."',  " : $rq .= "'2', ";
-		isset($ret["service_freshness_check_interval"]) && $ret["service_freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["service_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-	    isset($ret["additional_freshness_latency"]) && $ret["additional_freshness_latency"] != NULL ? $rq .= "'".htmlentities($ret["additional_freshness_latency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-	    isset($ret["cached_host_check_horizon"]) && $ret["cached_host_check_horizon"] != NULL ? $rq .= "'".htmlentities($ret["cached_host_check_horizon"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-	    isset($ret["cached_service_check_horizon"]) && $ret["cached_service_check_horizon"] != NULL ? $rq .= "'".htmlentities($ret["cached_service_check_horizon"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["check_for_orphaned_services"]["check_for_orphaned_services"]) && $ret["check_for_orphaned_services"]["check_for_orphaned_services"] != 2 ? $rq .= "'".$ret["check_for_orphaned_services"]["check_for_orphaned_services"]."',  " : $rq .= "'2', ";
+        isset($ret["check_service_freshness"]["check_service_freshness"]) && $ret["check_service_freshness"]["check_service_freshness"] != 2 ? $rq .= "'".$ret["check_service_freshness"]["check_service_freshness"]."',  " : $rq .= "'2', ";
+        isset($ret["service_freshness_check_interval"]) && $ret["service_freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["service_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["additional_freshness_latency"]) && $ret["additional_freshness_latency"] != NULL ? $rq .= "'".htmlentities($ret["additional_freshness_latency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["cached_host_check_horizon"]) && $ret["cached_host_check_horizon"] != NULL ? $rq .= "'".htmlentities($ret["cached_host_check_horizon"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["cached_service_check_horizon"]) && $ret["cached_service_check_horizon"] != NULL ? $rq .= "'".htmlentities($ret["cached_service_check_horizon"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["check_host_freshness"]["check_host_freshness"]) && $ret["check_host_freshness"]["check_host_freshness"] != 2 ? $rq .= "'".$ret["check_host_freshness"]["check_host_freshness"]."',  " : $rq .= "'2', ";
         isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["date_format"]) && $ret["date_format"] != NULL ? $rq .= "'".htmlentities($ret["date_format"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -280,11 +280,11 @@
         isset($ret["admin_email"]) && $ret["admin_email"] != NULL ? $rq .= "'".htmlentities($ret["admin_email"], ENT_QUOTES)."', " : $rq .= "NULL, ";        
         isset($ret["admin_pager"]) && $ret["admin_pager"] != NULL ? $rq .= "'".htmlentities($ret["admin_pager"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "'".htmlentities($ret["nagios_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"] != NULL ? $rq .= "'".$ret["nagios_activate"]["nagios_activate"]."'," : $rq .= "'0',";
-		isset($ret["broker_module"]) && $ret["broker_module"] != NULL ? $rq .= "'".htmlentities($ret["broker_module"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "'".htmlentities($ret["event_broker_options"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "'".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "'2', ";
-		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "'".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."') " : $rq .= "'2' ) ";
+        isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"] != NULL ? $rq .= "'".$ret["nagios_activate"]["nagios_activate"]."'," : $rq .= "'0',";
+        isset($ret["broker_module"]) && $ret["broker_module"] != NULL ? $rq .= "'".htmlentities($ret["broker_module"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+        isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "'".htmlentities($ret["event_broker_options"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+        isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "'".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "'2', ";
+        isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "'".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."') " : $rq .= "'2' ) ";
  
         $DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
