@@ -52,7 +52,7 @@
 							<xsl:attribute name="src">./img/media/<xsl:value-of select="hico"/></xsl:attribute>
 							<xsl:attribute name="width">16</xsl:attribute>
 							<xsl:attribute name="height">16</xsl:attribute>
-							<xsl:attribute name="style">padding-right:5px;</xsl:attribute>
+							<xsl:attribute name="style">margin-right:5px;</xsl:attribute>
 						</xsl:element>
 					</xsl:if>
 					<xsl:element name="a">
@@ -72,7 +72,7 @@
 			<xsl:if test="hn/@none = 0">
 				<xsl:if test="hnu != 'none'">
 					<xsl:element name="a">
-					  	<xsl:attribute name="classe">infobulle</xsl:attribute>
+					  	<xsl:attribute name="class">infobulle</xsl:attribute>
 					  	<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
 							<xsl:element name="img">
 							  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
@@ -121,7 +121,7 @@
 		<td class="ListColRight">
 			<xsl:if test="snu != 'none'">
 				<xsl:element name="a">
-				  	<xsl:attribute name="classe">infobulle</xsl:attribute>
+				  	<xsl:attribute name="class">infobulle</xsl:attribute>
 				  	<xsl:attribute name="href"><xsl:value-of select="snu"/></xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>

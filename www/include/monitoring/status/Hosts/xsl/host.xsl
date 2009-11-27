@@ -51,7 +51,7 @@
 		<td class="ListColLeft">
 			<xsl:if test="hnu != 'none'">
 				<xsl:element name="a">
-					<xsl:attribute name="classe">infobulle</xsl:attribute>
+					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
 						<xsl:element name="img">
 							<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
@@ -91,7 +91,7 @@
 			</xsl:if>
 			<xsl:if test="ne = 0">
 				<xsl:element name="a">
-					<xsl:attribute name="classe">infobulle</xsl:attribute>
+					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:attribute name="href">./main.php?p=4&mode=0&svc_id=<xsl:value-of select="hn"/></xsl:attribute>
 					<xsl:element name="img">
 						<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
