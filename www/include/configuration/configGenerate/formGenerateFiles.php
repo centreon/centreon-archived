@@ -155,6 +155,8 @@
 					require $path."genContactGroups.php";
 					require $path."genHosts.php";
 					require $path."genHostTemplates.php";
+					if ($oreon->user->get_version() == 2)
+						require $path."genExtendedInfos.php";
 					require $path."genHostGroups.php";
 					require $path."genServiceTemplates.php";
 					require $path."genServices.php";
@@ -228,6 +230,7 @@
 						$msg_debug[$host['id']] .= $line . "<br>";
 					$i++;
 				}
+						
 			}
 		}
 		
@@ -235,7 +238,6 @@
 		/*
 		 * Move Configuration Files and Images
 		 */
-
 		if (isset($ret["move"]) && $ret["move"])	{
 			
 			/*
