@@ -114,9 +114,9 @@
 			$redirect =& $form->addElement('hidden', 'o');
 			$redirect->setValue($o);
 		    
-		    $selHost =& $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
+			$selHost =& $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
 			$selSv =& $form->addElement('select', 'service_id', _("Service"), $services);
-		    $form->addElement('checkbox', 'persistant', _("Persistent"));
+			$form->addElement('checkbox', 'persistant', _("Persistent"));
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 			
 			/*
@@ -139,7 +139,7 @@
 					$_POST["comment"] = 0;
 				AddSvcComment($_POST["host_id"], $_POST["service_id"], $_POST["comment"], $_POST["persistant"]);
 				$valid = true;
-		    	require_once($path."viewServiceComment.php");
+				require_once($path."viewServiceComment.php");
 			} else {
 				# Smarty template Init
 				$tpl = new Smarty();
