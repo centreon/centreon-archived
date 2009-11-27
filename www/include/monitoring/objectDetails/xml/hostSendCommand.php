@@ -74,7 +74,7 @@
 	$hName = str_replace("#S#", "/", $hostObj->getHostName($host_id));
 	$hName = str_replace("#BS#", "\\", $hName);
 	
-	$send_cmd .= ";" . $hName;
+	$send_cmd .= ";" . $hName . ";" . time();
 	$command->set_process_command($send_cmd, $poller);
 	$act_type ? $return_type = 0 : $return_type = 1;
 	$result = $command->write();
