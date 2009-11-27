@@ -14,6 +14,7 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/view.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2" style="text-align: center;" id='ldap_search_result_output' ></td></tr>
 	</table>
+	<input type='hidden' name='o' value='{$o}'>
 	<div id="validForm">
 	{if $o == "li"}
 		<p>{$form.action.html}</p>
