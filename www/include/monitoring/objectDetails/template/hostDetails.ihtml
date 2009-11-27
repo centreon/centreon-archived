@@ -347,7 +347,7 @@
 					</tr>
 					{if $h_ext_action_url}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href="{$h_ext_action_url}" target="_blank">{$h_ext_action_url_lang}</a></td>
+						<td class="ListColLeft">&#9679;&nbsp;<a href="{$h_ext_action_url}" target="_blank">{$h_ext_action_url_lang}</a></td>
 					</tr>
 					{/if}
 				</table>
