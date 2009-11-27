@@ -89,6 +89,16 @@
 						<xsl:attribute name="title">Notification disabled for this host</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
+			<xsl:if test="ne = 0">
+				<xsl:element name="a">
+					<xsl:attribute name="classe">infobulle</xsl:attribute>
+					<xsl:attribute name="href">./main.php?p=4&mode=0&svc_id=<xsl:value-of select="hn"/></xsl:attribute>
+					<xsl:element name="img">
+						<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+						<xsl:attribute name="title">See Graphs of this host</xsl:attribute>
+					</xsl:element>
+				</xsl:element>
+			</xsl:if>
 		</td>
 		<td class="ListColCenter">
 			<xsl:attribute name="style">
