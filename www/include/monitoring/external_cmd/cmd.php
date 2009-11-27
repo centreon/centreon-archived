@@ -148,7 +148,7 @@
 					case 64: notifi_svc_host_hostgroup($key, 0);break;//
 					case 65: checks_svc_host_hostgroup($key, 1);break;//
 					case 66: checks_svc_host_hostgroup($key, 0);break;//
-					case 67: schedule_svc_check($key, 1, 1);break;//
+					case 67: schedule_svc_checks($key, 1);break;//
 					
 					/* Auto Aknowledge */
 					

@@ -17,23 +17,8 @@
 
 	if (!isset($oreon))
 		exit();
-	/*
-	 * Write command in nagios pipe or in centcore pipe. 
-	 */
 
-	function write_command($cmd, $poller){
-		global $oreon, $key, $pearDB;
-		$str = NULL;
-
-		$informations = split(";", $key);
-		if ($poller && isPollerLocalhost($pearDB, $poller))
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
-		else if (isHostLocalhost($pearDB, $informations[0]))
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
-		else
-			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . "@CENTREON_VARLIB@/centcore.cmd";
-		return passthru($str);
-	}
+	include_once("./include/monitoring/external_cmd/extcmd.php");
 
 	 /*
       * Ack hosts massively
@@ -49,28 +34,28 @@
 			isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
 			isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";
 			isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "1" : $sticky = "0";
+
+			$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
 			
-	                if ($actions == true || $is_admin) {
-	                        $key = $host_name;
-	
-	                        $host_poller = GetMyHostPoller($pearDB, $host_name);
-	
-	                        $flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$host_name.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
-	                }
+			if ($actions == true || $is_admin) {
+				$key = $host_name;
+				$host_poller = GetMyHostPoller($pearDB, $host_name);
+				$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$host_name.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+			}
 	
 			$actions = $oreon->user->access->checkAction("service_acknowledgement");
 			if (($actions == true || $is_admin) && isset($_GET['ackhostservice']) && $_GET['ackhostservice'] == "true") {
 				$DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' LIMIT 1");
-	            $row =& $DBRES->fetchRow();
+	       		$row =& $DBRES->fetchRow();
 				$svc_tab = array();
-	            $svc_tab = getMyHostServices($row['host_id']);
-	            if (count($svc_tab)) {
+				$svc_tab = getMyHostServices($row['host_id']);
+				if (count($svc_tab)) {
 					foreach ($svc_tab as $key2 => $value) {
-	            		write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$value.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
-	                }
+						write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$value.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+					}
 				}
 			}
-			return _("Your command has been sent");
+			return $flg;
         }
 
         /*
@@ -88,14 +73,13 @@
 				return NULL;
 			$svc_description = $tmp[1];
 			isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
-	                isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";	
+			isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";	
 			isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "1" : $sticky = "0";
-	        if ($actions == true || $is_admin) {
-				$_GET["comment"] = $_GET["comment"];
+			if ($actions == true || $is_admin) {
 	            $_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
-	            $flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$svc_description.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $host_name));
-	            return _("Your command has been sent");
-	         }
-	         return NULL;
+				$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$svc_description.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $host_name));
+	        	return $flg;
+	        }
+			return NULL;
         }
 ?>

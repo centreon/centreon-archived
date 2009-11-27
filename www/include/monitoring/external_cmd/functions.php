@@ -41,42 +41,7 @@
 
 	$tab = array("1" => "ENABLE", "0" => "DISABLE");
 
-	/*
-	 * Write command in nagios pipe or in centcore pipe. 
-	 */
-
-	function write_command($cmd, $poller){
-		global $oreon, $key, $pearDB;
-		
-		$str = NULL;
-		
-		/*
-		 * Destination is centcore pipe path
-		 */
-		$destination = "@CENTREON_VARLIB@/centcore.cmd";
-		if ($destination == "/centcore.cmd")
-			$destination = "/var/lib/centreon/centcore.cmd";
-		
-		$cmd = str_replace("`", "&#96;", $cmd);
-		$cmd = str_replace("'", "&#39;", $cmd);
-		
-		$cmd = str_replace("\n", "<br>", $cmd);
-		$informations = split(";", $key);
-		if ($poller && isPollerLocalhost($pearDB, $poller))
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
-		else if (isHostLocalhost($pearDB, $informations[0]))
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
-		else
-			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . $destination;
-		return passthru($str);
-	}
-
-	function send_cmd($arg){
-		if (isset($arg))
-			$flg = write_command($arg);
-		$flg ? $ret = _("Your command has been sent") : $ret = "Problem Execution";
-		return $ret;
-	}
+	include_once("./include/monitoring/external_cmd/extcmd.php");
 	
 	/*
 	 * 	Re-Schedule for all services of an host
@@ -88,7 +53,7 @@
 		
 		if ($actions == true || $is_admin) {
 			$tab_forced = array("0" => "", "1" => "_FORCED");
-			$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_HOST_SVC_CHECKS;" . $arg . ";" . time(), GetMyHostPoller($pearDB, $arg));
+			$flg = send_cmd(" SCHEDULE".$tab_forced[$forced]."_HOST_SVC_CHECKS;" . $arg . ";" . time(), GetMyHostPoller($pearDB, $arg));
 			return $flg;
 		}
 		return NULL;
@@ -105,8 +70,8 @@
 		if ($actions == true || $is_admin) {
 			$tab_forced = array("0" => "", "1" => "_FORCED");
 			$tab_data = split(";", $arg);
-			$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_SVC_CHECK;". $tab_data[0] . ";" . $tab_data[1] . ";" . time(), GetMyHostPoller($pearDB, $tab_data[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" SCHEDULE".$tab_forced[$forced]."_SVC_CHECK;". $tab_data[0] . ";" . $tab_data[1] . ";" . time(), GetMyHostPoller($pearDB, $tab_data[0]));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -120,8 +85,8 @@
 		$actions = $oreon->user->access->checkAction("host_checks");
 		
 		if ($actions == true || $is_admin) {
-			$flg = write_command(" ". $tab[$type]."_HOST_CHECK;". $arg, GetMyHostPoller($pearDB, $arg));
-			return _("Your command has been sent");
+			$flg = send_cmd(" ". $tab[$type]."_HOST_CHECK;". $arg, GetMyHostPoller($pearDB, $arg));
+			return $flg;
 		}
 		
 		return NULL;
@@ -136,8 +101,8 @@
 		$actions = $oreon->user->access->checkAction("host_notifications");
 		
 		if ($actions == true || $is_admin) {
-			$flg = write_command(" ".$tab[$type]."_HOST_NOTIFICATIONS;". $arg, GetMyHostPoller($pearDB, $arg));
-			return _("Your command has been sent");
+			$flg = send_cmd(" ".$tab[$type]."_HOST_NOTIFICATIONS;". $arg, GetMyHostPoller($pearDB, $arg));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -151,8 +116,8 @@
 		$actions = $oreon->user->access->checkAction("host_notifications_for_services");
 		
 		if ($actions == true || $is_admin) {
-			$flg = write_command(" " . $tab[$type] . "_HOST_SVC_NOTIFICATIONS;". $arg, GetMyHostPoller($pearDB, $arg));
-			return _("Your command has been sent");
+			$flg = send_cmd(" " . $tab[$type] . "_HOST_SVC_NOTIFICATIONS;". $arg, GetMyHostPoller($pearDB, $arg));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -166,8 +131,8 @@
 		$actions = $oreon->user->access->checkAction("host_checks_for_services");
 		
 		if ($actions == true || $is_admin) {
-			$flg = write_command(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $arg . ";" . time(), GetMyHostPoller($pearDB, $arg));
-			return _("Your command has been sent");
+			$flg = send_cmd(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $arg . ";" . time(), GetMyHostPoller($pearDB, $arg));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -182,8 +147,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
-			$flg = write_command(" " . $tab[$type] . "_SVC_CHECK;". $tab_data["0"] .";".$tab_data["1"], GetMyHostPoller($pearDB, $tab_data["0"]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" " . $tab[$type] . "_SVC_CHECK;". $tab_data["0"] .";".$tab_data["1"], GetMyHostPoller($pearDB, $tab_data["0"]));
+			return $flg;
 		}		
 		return NULL;
 	}
@@ -198,8 +163,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
-			$flg = write_command(" " . $tab[$type] . "_PASSIVE_SVC_CHECKS;". $tab_data[0] . ";". $tab_data[1], GetMyHostPoller($pearDB, $tab_data["0"]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" " . $tab[$type] . "_PASSIVE_SVC_CHECKS;". $tab_data[0] . ";". $tab_data[1], GetMyHostPoller($pearDB, $tab_data["0"]));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -214,8 +179,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
-			$flg = write_command(" " . $tab[$type] . "_SVC_NOTIFICATIONS;". $tab_data[0] . ";". $tab_data[1], GetMyHostPoller($pearDB, $tab_data["0"]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" " . $tab[$type] . "_SVC_NOTIFICATIONS;". $tab_data[0] . ";". $tab_data[1], GetMyHostPoller($pearDB, $tab_data["0"]));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -230,8 +195,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
-			$flg = write_command(" " . $tab[$type] . "_SVC_EVENT_HANDLER;". $tab_data[0] .";".$tab_data[1], GetMyHostPoller($pearDB, $tab_data["0"]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" " . $tab[$type] . "_SVC_EVENT_HANDLER;". $tab_data[0] .";".$tab_data[1], GetMyHostPoller($pearDB, $tab_data["0"]));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -246,8 +211,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
-			$flg = write_command(" " . $tab[$type] . "_HOST_EVENT_HANDLER;". $arg, GetMyHostPoller($pearDB, $arg));
-			return _("Your command has been sent");
+			$flg = send_cmd(" " . $tab[$type] . "_HOST_EVENT_HANDLER;". $arg, GetMyHostPoller($pearDB, $arg));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -262,8 +227,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
-			$flg = write_command(" " . $tab[$type] . "_SVC_FLAP_DETECTION;". $tab_data[0] .";".$tab_data[1], GetMyHostPoller($pearDB, $tab_data[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" " . $tab[$type] . "_SVC_FLAP_DETECTION;". $tab_data[0] .";".$tab_data[1], GetMyHostPoller($pearDB, $tab_data[0]));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -278,8 +243,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
-			$flg = write_command(" " . $tab[$type] . "_HOST_FLAP_DETECTION;". $arg, GetMyHostPoller($pearDB, $arg));
-			return _("Your command has been sent");
+			$flg = send_cmd(" " . $tab[$type] . "_HOST_FLAP_DETECTION;". $arg, GetMyHostPoller($pearDB, $arg));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -290,8 +255,8 @@
 	function notifi_host_hostgroup($arg, $type){
 		global $pearDB, $tab, $is_admin;
 		$tab_data = split(";", $arg);
-		$flg = write_command(" " . $tab[$type] . "_HOST_NOTIFICATIONS;". $tab_data[0], GetMyHostPoller($pearDB, $tab_data[0]));
-		return _("Your command has been sent");
+		$flg = send_cmd(" " . $tab[$type] . "_HOST_NOTIFICATIONS;". $tab_data[0], GetMyHostPoller($pearDB, $tab_data[0]));
+		return $flg;
 	}
 
 	/*
@@ -304,8 +269,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$key = $_GET["host_name"];
-			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$_GET["host_name"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" ACKNOWLEDGE_HOST_PROBLEM;".$_GET["host_name"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -319,8 +284,8 @@
 		$actions = $oreon->user->access->checkAction("host_acknowledgement");
 		
 		if ($actions == true || $is_admin) {
-			$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$_GET["host_name"], GetMyHostPoller($pearDB, $_GET["host_name"]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" REMOVE_HOST_ACKNOWLEDGEMENT;".$_GET["host_name"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return $flg;
 		}
 		
 		return NULL;
@@ -335,8 +300,8 @@
 		$actions = $oreon->user->access->checkAction("service_acknowledgement");
 		
 		if ($actions == true || $is_admin) {
-			$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$_GET["host_name"].";".$_GET["service_description"], GetMyHostPoller($pearDB, $_GET["host_name"]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" REMOVE_SVC_ACKNOWLEDGEMENT;".$_GET["host_name"].";".$_GET["service_description"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -352,8 +317,8 @@
 		if ($actions == true || $is_admin) {
 			$_GET["comment"] = $_GET["comment"];
 			$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
-			$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$_GET["host_name"].";".$_GET["service_description"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" ACKNOWLEDGE_SVC_PROBLEM;".$_GET["host_name"].";".$_GET["service_description"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -365,8 +330,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$key = $_GET["host_name"];
-			$flg = write_command(" PROCESS_SERVICE_CHECK_RESULT;".$_GET["host_name"].";".$_GET["service_description"].";".$_GET["return_code"].";".$_GET["output"]."|".$_GET["dataPerform"], GetMyHostPoller($pearDB, $_GET["host_name"]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" PROCESS_SERVICE_CHECK_RESULT;".$_GET["host_name"].";".$_GET["service_description"].";".$_GET["return_code"].";".$_GET["output"]."|".$_GET["dataPerform"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return $flg;
 		}
 		return NULL;
 	}
@@ -378,19 +343,19 @@
 		while ($r =& $res->fetchRow()){
 			$resH =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$r["host_host_id"]."'");
 			$rH =& $resH->fetchRow();
-			$flg = write_command(" " . $tab[$type] . "_HOST_NOTIFICATIONS;". $rH["host_name"]);
+			$flg = send_cmd(" " . $tab[$type] . "_HOST_NOTIFICATIONS;". $rH["host_name"]);
 		}
 	*/
-		return _("Your command has been sent");
+		return $flg;
 	}
 	
 	function checks_svc_host_hostgroup($arg, $type){
 		global $tab, $pearDB, $is_admin;
 		/*$res =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$arg."'");
 		$r =& $res->fetchRow();
-		$flg = write_command(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $rH["host_name"]);
+		$flg = send_cmd(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $rH["host_name"]);
 		*/
-		return _("Your command has been sent");
+		return $flg;
 	}
 	
 	#############################################################################
@@ -409,8 +374,8 @@
 		if ($actions == true || $is_admin) {
 			$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
 			$ressource = split(";", $key);
-			$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$ressource[0].";".$ressource[1].";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" ACKNOWLEDGE_SVC_PROBLEM;".$ressource[0].";".$ressource[1].";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -422,8 +387,8 @@
 		if ($actions == true || $is_admin) {
 			$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
 			$ressource = split(";", $key);
-			$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" REMOVE_SVC_ACKNOWLEDGEMENT;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -439,8 +404,8 @@
 		if ($actions == true || $is_admin) {
 			$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";
 			$ressource = split(";", $key);
-			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$ressource[0].";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" ACKNOWLEDGE_HOST_PROBLEM;".$ressource[0].";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -452,8 +417,8 @@
 		if ($actions == true || $is_admin) {
 			$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";
 			$ressource = split(";", $key);
-			$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" REMOVE_HOST_ACKNOWLEDGEMENT;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -468,8 +433,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$ressource = split(";", $key);
-			$flg = write_command(" ENABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" ENABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -480,8 +445,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$ressource = split(";", $key);
-			$flg = write_command(" DISABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" DISABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -496,8 +461,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$ressource = split(";", $key);
-			$flg = write_command(" ENABLE_HOST_NOTIFICATIONS;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" ENABLE_HOST_NOTIFICATIONS;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -508,8 +473,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$ressource = split(";", $key);
-			$flg = write_command(" DISABLE_HOST_NOTIFICATIONS;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" DISABLE_HOST_NOTIFICATIONS;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -524,8 +489,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$ressource = split(";", $key);
-			$flg = write_command(" ENABLE_SVC_CHECK;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" ENABLE_SVC_CHECK;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -536,8 +501,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$ressource = split(";", $key);
-			$flg = write_command(" DISABLE_SVC_CHECK;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" DISABLE_SVC_CHECK;".$ressource[0].";".$ressource[1], GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -552,8 +517,8 @@
 		
 		if ($actions == true || $is_admin) {
 			$ressource = split(";", $key);
-			$flg = write_command(" ENABLE_HOST_CHECK;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" ENABLE_HOST_CHECK;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 	
@@ -566,8 +531,8 @@
 		if ($actions == true || $is_admin) {
 			global $pearDB,$tab, $is_admin;
 			$ressource = split(";", $key);
-			$flg = write_command(" DISABLE_HOST_CHECK;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
-			return _("Your command has been sent");
+			$flg = send_cmd(" DISABLE_HOST_CHECK;".$ressource[0], GetMyHostPoller($pearDB, $ressource[0]));
+			return $flg;
 		}
 	}
 ?>
