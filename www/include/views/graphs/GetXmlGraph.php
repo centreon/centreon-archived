@@ -277,7 +277,7 @@
 
 	foreach ($tab_real_id as $key => $openid) {
 		$bad_value = 0;	
-		//$split = 1;
+		$split = 0;
 		$tab_tmp = split("_", $openid);
 		
 		if (isset($tab_tmp[2]) && $tab_tmp[2])
