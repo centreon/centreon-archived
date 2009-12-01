@@ -166,7 +166,7 @@
 	
 	/* Get Services status */
 
-	$rq1 =	  	" SELECT DISTINCT no.object_id id, no.name1 as host_name, no.name2 svc_name, nss.current_state svcs " .
+	$rq1 =	  	" SELECT no.object_id id, no.name1 as host_name, no.name2 svc_name, nss.current_state svcs " .
 				" FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."servicestatus nss ";
 		
 	if (!$is_admin)
