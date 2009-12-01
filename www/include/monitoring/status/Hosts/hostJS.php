@@ -232,7 +232,7 @@ function cmdCallback(cmd) {
     else {
     	for (keyz in _selectedElem) {
         	if (keyz == _selectedElem[keyz]) {
-            	_getVar += '&select[' + keyz + ']=1';
+            	_getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
             }
         }
         Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: 'Acknowledgement'});
