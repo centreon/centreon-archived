@@ -743,7 +743,7 @@
 		$tab = array();
 		if (!isset($host_name)) {
 			if ($this->admin)
-				$query = "SELECT host_name, service_description FROM centreon_acl";
+				$query = "SELECT DISTINCT host_name, service_description FROM centreon_acl";
 			else
 				$query = "SELECT host_name, service_description FROM centreon_acl WHERE group_id IN (".$this->getAccessGroupsString().")";
 			$DBRESULT =& $pearDBndo->query($query);
