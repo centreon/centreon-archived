@@ -187,7 +187,7 @@ function mk_img(_src, _alt)	{
   	if (_img.complete){
   		_img.alt = _alt;	
   	} else {
-  		_img.alt = "Image could not be loaded (" +_alt + ")."; 
+  		_img.alt = "Image could not be generated"; 
   	}
 	return _img;
 }
@@ -202,7 +202,7 @@ function mk_imgOrder(_src, _alt)	{
   	if (_img.complete){
   		_img.alt = _alt;	
   	} else {
-  		_img.alt = "Image could not be loaded (" +_alt + ")."; 
+  		_img.alt = "Image could not be generated"; 
   	}
 	return _img;
 }
