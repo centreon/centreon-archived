@@ -189,7 +189,7 @@
 	function insertCFG(& $buf, & $ret)	{
 		$typeDef = NULL;
 		global $nbr,$oreon,$debug_nagios_import,$debug_path, $pearDB;
-		$nbr = array("cmd"=>0, "tp"=>0, "cct"=>0, "cg"=>0, "h"=>0, "hg"=>0, "hd"=>0, "sv"=>0, "svd"=>0, "sg"=>0, "sgd"=>0, "hei"=>0);
+		$nbr = array("cmd"=>0, "tp"=>0, "cct"=>0, "cg"=>0, "h"=>0, "hg"=>0, "hd"=>0, "sv"=>0, "svd"=>0, "sg"=>0, "sgd"=>0, "hei"=>0, "sei"=>0);
 		$tmpConf = array();
 		$get = false;
 		$regexp = "/^[ \t]*(.[^ \t#]+)[ \t]+(.[^;]+)/";
@@ -358,12 +358,13 @@
 				switch ($typeDef)	{
 					case "service": $useTpl = insertServiceCFG($tmpConf); count($useTpl) ? $useTpls[$useTpl[0]] = $useTpl[1] : NULL; break;
 					case "hostdependency": insertHostDependencyCFG($tmpConf); break;
+					case "serviceextinfo": insertServiceExtInfoCFG($tmpConf); break;
 				}
 				$get = false;
 				$tmpConf = array();
 				$typeDef = NULL;
 			}
-			if (preg_match("/^[ \t]*define (service|hostdependency)[ \t]*{/", $str, $def))	{
+			if (preg_match("/^[ \t]*define (service|hostdependency|serviceextinfo)[ \t]*{/", $str, $def))	{
 				$typeDef = $def[1];
 				$get = true;
 			} else if ($get)	{
@@ -703,18 +704,23 @@
 		
 		/*
 		 * Include host Tools
-		 */
+		 */		
 		require_once("./include/configuration/configObject/host/DB-Func.php");
+		require_once("./class/centreonDB.class.php");
+		require_once("./class/centreonMedia.class.php");
+		
+		$DB = new CentreonDB();
+		$mediaObj = new CentreonMedia($DB);
 		
 		foreach ($tmpConf as $key => $value) {
 			switch($key)	{
 				case "notes" : $tmpConf["ehi_notes"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "notes_url" : $tmpConf["ehi_notes_url"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "action_url" : $tmpConf["ehi_action_url"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "icon_image" : $tmpConf["ehi_icon_image"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "icon_image_alt" : $tmpConf["ehi_icon_image_alt"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "vrml_image" : $tmpConf["ehi_vrml_image"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "statusmap_image" : $tmpConf["ehi_statusmap_image"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "icon_image" : $tmpConf["ehi_icon_image"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;
+				case "icon_image_alt" : $tmpConf["ehi_icon_image_alt"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;
+				case "vrml_image" : $tmpConf["ehi_vrml_image"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;
+				case "statusmap_image" : $tmpConf["ehi_statusmap_image"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;
 				case "2d_coords" : $tmpConf["ehi_2d_coords"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "3d_coords" : $tmpConf["ehi_3d_coords"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "host_name" :
@@ -731,6 +737,54 @@
 		foreach($tmpConf["host_names"] as $key=>$value)	{
 			updateHostExtInfos($value, $tmpConf);
 			$nbr["hei"] += 1;
+		}
+		return true;
+	}
+	
+	function insertServiceExtInfoCFG($tmpConf = array())	{
+		global $nbr, $oreon, $debug_nagios_import, $debug_path;		
+		
+		/*
+		 * Include host Tools
+		 */
+		require_once("./include/configuration/configObject/service/DB-Func.php");
+		require_once("./class/centreonDB.class.php");
+		require_once("./class/centreonService.class.php");
+		require_once("./class/centreonMedia.class.php");
+		
+		$DB = new CentreonDB();
+		$svcObj = new CentreonService($DB);
+		$mediaObj = new CentreonMedia($DB);
+		
+		foreach ($tmpConf as $key => $value) {
+			switch($key)	{
+				case "notes" : $tmpConf["esi_notes"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "notes_url" : $tmpConf["esi_notes_url"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "action_url" : $tmpConf["esi_action_url"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "icon_image" : $tmpConf["esi_icon_image"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;
+				case "icon_image_alt" : $tmpConf["esi_icon_image_alt"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;												case "host_name" :
+					$tmpConf["host_name"] = trim($tmpConf[$key]);					
+					$tmpConf["host_name"] = str_replace("/", "#S#", $tmpConf["host_name"]);
+					$tmpConf["host_name"] = str_replace("\\", "#BS#", $tmpConf["host_name"]);					
+					break;
+				case "service_description" : 
+					$tmpConf["service_descriptions"] = explode(",", $tmpConf[$key]);					
+					unset ($tmpConf[$key]); break;
+			}
+		}
+				
+		if (isset($tmpConf["host_name"]) && isset($tmpConf["service_descriptions"])) {			
+			foreach ($tmpConf["service_descriptions"] as $key2 => $value2)	{
+				$value2 = str_replace("/", "#S#", $value2);
+				$value2 = str_replace("\\", "#BS#", $value2);
+				$tmpConf["service_descriptions"][$key2] = $svcObj->getServiceId(trim($value2), $tmpConf["host_name"]);
+				if (!$tmpConf["service_descriptions"][$key2])
+					unset($tmpConf["service_descriptions"][$key2]);
+			}			
+			foreach($tmpConf["service_descriptions"] as $key => $value)	{				
+				updateServiceExtInfos($value, $tmpConf);
+				$nbr["sei"] += 1;
+			}
 		}
 		return true;
 	}
