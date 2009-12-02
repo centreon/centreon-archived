@@ -1,3 +1,34 @@
+## Centreon 2.1.4
+
+=> fix: adds timestamp on host external commands
+=> fix: remove special char in log output
+=> fix: remove error when user create nagios.cfg file
+=> fix: remove errors when laoding nagios.cfg file
+=> enhancement: add auto deploy service attached to hosts templates on hosts when loading cfg files
+=> fix: fix problem with str_replace and URL_notes and URL_actions #1288
+=> fix: fix error with ACL and / and \
+=> fix: problem to load LDAP contact
+=> fix: nagiosPerfTrace => ssh port is now used
+
+## Centreon 2.1.3
+
+=> fix: problem with \ in ldap properties
+=> fix: problem with graph split : link
+=> fix: remove problem with macro in url
+=> fix: remove bug with selection of poller.
+
+## Centreon 2.1.2
+
+=> fix: bug 1239 => remove error during update of 2.0.2 to 2.1.1
+=> fix: improve SHA1 use
+=> fix: bug 1257 => ACL problem in monitoring > service by servicegroup
+=> fix: bug with pagination in monitoring > service by servicegroup
+=> fix: issue with upgrade
+=> enhancement : better debug in LDAP Search
+=> fix: behavior while installing runlevel of centstorage
+=> fix: display format wasen't use in meta service
+=> fix: remove check language pack during module installation
+
 ## Centreon 2.1.1
 
 => fix: remove error in nagios.cfg form
