@@ -111,7 +111,7 @@
 		$rq = "UPDATE traps ";
 		$rq .= "SET `traps_name` = '".htmlentities($ret["traps_name"], ENT_QUOTES)."', ";
 		$rq .= "`traps_oid` = '".htmlentities($ret["traps_oid"], ENT_QUOTES)."', ";
-		$rq .= "`traps_args` = '".htmlentities($ret["traps_args"], ENT_QUOTES)."', ";
+		$rq .= "`traps_args` = '".htmlentities(addslashes($ret["traps_args"]), ENT_QUOTES)."', ";
 		$rq .= "`traps_status` = '".htmlentities($ret["traps_status"], ENT_QUOTES)."', ";
 		$rq .= "`traps_submit_result_enable` = '".$ret["traps_submit_result_enable"]."', ";
 		$rq .= "`traps_reschedule_svc_enable` = '".$ret["traps_reschedule_svc_enable"]."', ";
@@ -148,7 +148,7 @@
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["traps_name"], ENT_QUOTES)."',";
 		$rq .= "'".htmlentities($ret["traps_oid"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["traps_args"], ENT_QUOTES)."', ";
+		$rq .= "'".htmlentities(addslashes($ret["traps_args"]), ENT_QUOTES)."', ";
 		$rq .= "'".htmlentities($ret["traps_status"], ENT_QUOTES)."', ";
 		$rq .= "'".htmlentities($ret["traps_submit_result_enable"], ENT_QUOTES)."', ";
 		$rq .= "'".htmlentities($ret["traps_reschedule_svc_enable"], ENT_QUOTES)."', ";
