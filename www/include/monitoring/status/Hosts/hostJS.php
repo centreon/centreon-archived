@@ -110,6 +110,14 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		
+		var h = document.getElementById('last_hard_state_change');
+		if (h) {
+			h.innerHTML = '<?php echo _("Hard State Duration")?>';
+		  	h.indice = 'last_hard_state_change';
+		  	h.onclick=function(){change_type_order(this.indice)};
+			h.style.cursor = "pointer";	
+		}
+		
 		var h = document.getElementById('last_check');
 		h.innerHTML = '<?php echo _("Last Check")?>';
 	  	h.indice = 'last_check';

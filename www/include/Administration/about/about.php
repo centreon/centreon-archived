@@ -85,7 +85,15 @@
 			</tr>
 			<tr>	
 				<td>&nbsp;</td>	
-				<td>Sylvestre Ho Tam Chay</td>
+				<td>Sylvestre Ho</td>
+			</tr>
+			<tr>	
+				<td>&nbsp;</td>	
+				<td>Matthieu Kermagoret</td>
+			</tr>
+			<tr>	
+				<td>&nbsp;</td>	
+				<td>Laurent Pinsivy</td>
 			</tr>
 			<tr>	
 				<td>&nbsp;</td>	
@@ -93,7 +101,7 @@
 			</tr>
 			<tr>	
 				<td>&nbsp;</td>	
-				<td>Laurent Pinsivy</td>
+				<td>Cedric Temple</td>
 			</tr>
 			<tr>	
 				<td>&nbsp;</td>	
@@ -104,7 +112,7 @@
 		<div style="padding-left: 30px;">
 			<img src="./img/Paris-Business.jpg" alt="Logo Join Community">
 		</div>
-		<br>
+		<br><br>
 		<div style="text-align:left;">
 			<br><h3><b><?php echo _("Contributors"); ?> :</b></h3><br>
 			<table width="80%">
@@ -117,11 +125,16 @@
 					<td>Gaetan Lucas de Couville</td>
 				</tr>
 				<tr>
+					<td>Vincent Carpentier</td>
+					<td>Christoph Ziemann</td>
+				</tr>
+				
+				<tr>
 					<td>Jean Marc Grisar</td>
 					<td>Florin Grosu</td>
 				</tr>
 				<tr>
-					<td>Luiz Gustavo</td>
+					<td>Luiz Gustavo Costa</td>
 					<td>guigui2607</td>
 				</tr>
 				<tr>
@@ -129,11 +142,19 @@
 					<td>Thomas Fisher</td>
 				</tr>
 				<tr>
+					<td>Ethan Galstad</td>
+					<td>Jean Gabes</td>
+				</tr>
+				<tr>
+					<td>Jay Lopez</td>
+					<td>Jan Kuipers</td>
+				</tr>
+				<tr>
 					<td>Ira Janssen</td>
 					<td>Thomas Johansen</td>
 				</tr>
 				<tr>
-					<td>Jay Lopez</td>
+					<td>Peeters Jan</td>
 					<td>Jan Kuipers</td>
 				</tr>
 				<tr>
@@ -141,15 +162,23 @@
 					<td>Camille N&eacute;ron</td>
 				</tr>
 				<tr>
+					<td>Maxime Peccoux</td>
+					<td>Patrick Proy</td>
+				</tr>
+				<tr>
 					<td>Joerg Steinlechner</td>
 					<td>Silvio Rodrigo Damasceno de Souza</td>
+				</tr>
+				<tr>
+					<td>Thierry Van Acker</td>
+					<td>Felix Zingel</td>
 				</tr>
 				<tr>
 					<td>Massimiliano Ziccardi</td>
 					<td>Christoph Ziemann</td>
 				</tr>
 				<tr>
-					<td colspan="2"><?php print _("And others..."); ?></td>
+					<td colspan="2"><?php print _("And the others..."); ?></td>
 				</tr>
 			</table>
 		</div>

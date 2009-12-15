@@ -44,6 +44,7 @@
 	 if (!isset($_SESSION["oreon"])) {
 	 	// Quick dirty protection
 	 	header("Location: ../../index.php");
+		exit;
 	 } else
 	 	$oreon =& $_SESSION["oreon"];
 
@@ -62,7 +63,8 @@
 	$msg = "";
 	if (!PEAR::isError($ping))	{
     	$ping->setArgs(array("count" => 4));
-		$response = $ping->ping($host);
+		# patch for user that have PEAR Traceroute 0.21.1, remote exec possible Julien Cayssol
+		$response = $ping->ping(escapeshellcmd($host));
 		foreach ($response->getRawData() as $key => $data)
    			$msg .= $data ."<br />";
 		print $msg;

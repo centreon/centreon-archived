@@ -124,16 +124,19 @@ sub analyse_host_row($$) {
     		  if (defined($host_ids{$host_id})) {
     		  	# If host already exist in table log_archive_last_status but host name has changed
     		  	my $entry = $hosts{$host_ids{$host_id}};
-    		  	$entry->{"current_state"} = $row->{"status"};
-				$entry->{"current_state_time"} = $row->{"ctime"};
-				$hosts{$row->{"host_name"}} = $entry;
-				undef($hosts{$host_ids{$host_id}});
+			my %new_log_entry;
+			while (my ($key, $value) = each (%$entry)) {
+			    $new_log_entry{$key} = $value;
+			}
+			$hosts{$row->{"host_name"}} = \%new_log_entry;
+			$host_ids{$host_id} = $row->{"host_name"};
+			# renaming services in %services
     		  }else {
     		  	# if it's a new host
 				my %log_entry = ("current_state" 		=> "UNDETERMINED",
 						 "current_state_time" 	=> $start,
 						 "DOWN_D" 				=> 0,
-						 "UP_D" 					=> 0,
+						 "UP_D" 				=> 0,
 						 "UNREACHABLE_D" 		=> 0,
 						 "UNDETERMINED_D" 		=> 0,
 						 "UP_A" 				=> 0,
@@ -148,7 +151,8 @@ sub analyse_host_row($$) {
     }
     if (defined($hosts{$row->{"host_name"}})) {
 	    my $log_entry = $hosts{$row->{"host_name"}};
-	    if ($row->{"ctime"} > $log_entry->{"current_state_time"} && $row->{"status"} ne $log_entry->{"current_state"}) {
+	    if (($row->{"ctime"} >= $log_entry->{"current_state_time"} && $row->{"status"} ne $log_entry->{"current_state"})
+		|| (!defined($log_entry->{"current_state_time"}) || ! defined ($log_entry->{"current_state"}))) {
 			$log_entry->{$log_entry->{"current_state"}."_D"} += $row->{"ctime"} - $log_entry->{"current_state_time"};
 			$log_entry->{"current_state"} = $row->{"status"};
 			$log_entry->{"current_state_time"} = $row->{"ctime"};
@@ -168,56 +172,60 @@ sub analyse_host_row($$) {
 ################################################################
 sub analyse_service_row($$) {
     my ($start, $row) = (shift, shift);
-    
+
     $row->{"service_description"} =~ s/\//#S#/g;
     $row->{"service_description"} =~ s/\\/#BS#/g;
-    
+
     my $svc = $row->{"host_name"}.";".$row->{"service_description"};
     if (!defined($services{$svc})) {
     	# getting host id and service id
     	my $host_id = getHostID($row->{"host_name"}, $dbhoreon);
     	my $service_id;
     	if (defined($host_id) && $host_id) { 
-	    	$service_id = getServiceID($host_id, $row->{"service_description"}, $dbhoreon);
+	    $service_id = getServiceIDByName($row->{"host_name"}, $row->{"service_description"}, $dbhoreon);
     	}
     	if (defined($service_id) && $service_id && defined($host_id) && $host_id) {
-    		if (defined($service_ids{$host_id.";".$service_id})) {
-    			# If service already exist in table log_archive_last_status but service description has changed
-    		  	my $entry = $services{$service_ids{$host_id.";".$service_id}};
-				$services{$svc} = $entry;
-				undef($services{$service_ids{$host_id.";".$service_id}});
-    		}else {
-    			# if it's a new service
-				my %log_entry = ("current_state" 		=> "UNDETERMINED",
-						 "current_state_time" 	=> $start,
-						 "CRITICAL_D" 			=> 0,
-						 "WARNING_D" 			=> 0,
-						 "UNKNOWN_D" 			=> 0,
-						 "OK_D"					=> 0,
-						 "UNDETERMINED_D" 		=> 0,
-						 "CRITICAL_A" 			=> 0,
-						 "WARNING_A" 			=> 0,
-						 "UNKNOWN_A" 			=> 0,
-						 "OK_A"					=> 0,
-						 "host_id"				=> $host_id,
-						 "service_id"			=> $service_id
-						 );
-				$services{$svc} = \%log_entry;
-   	 		}
-   	 		$service_ids{$host_id.";".$service_id} = $svc;
+	    if (defined($service_ids{$host_id.";".$service_id})) {
+		# If service already exist in table log_archive_last_status but service description has changed
+		my $entry = $services{$service_ids{$host_id.";".$service_id}};
+		my %new_log_entry;
+		while (my ($key, $value) = each (%$entry)) {
+		    $new_log_entry{$key} = $value;
+		} 
+		$services{$svc} = \%new_log_entry;
+		$service_ids{$host_id.";".$service_id} = $svc;
+	    }else {
+		# if it's a new service
+		my %log_entry = ("current_state" 		=> "UNDETERMINED",
+				 "current_state_time" 	=> $start,
+				 "CRITICAL_D" 			=> 0,
+				 "WARNING_D" 			=> 0,
+				 "UNKNOWN_D" 			=> 0,
+				 "OK_D"					=> 0,
+				 "UNDETERMINED_D" 		=> 0,
+				 "CRITICAL_A" 			=> 0,
+				 "WARNING_A" 			=> 0,
+				 "UNKNOWN_A" 			=> 0,
+				 "OK_A"					=> 0,
+				 "host_id"				=> $host_id,
+				 "service_id"			=> $service_id
+				 );
+		$services{$svc} = \%log_entry;
+	    }
+	    $service_ids{$host_id.";".$service_id} = $svc;
     	}
     }
     if (defined($services{$svc})) {
-	    my $log_entry = $services{$svc};
-	    if ($row->{"ctime"} > $log_entry->{"current_state_time"} && $row->{"status"} ne $log_entry->{"current_state"}) {
-			$log_entry->{$log_entry->{"current_state"}."_D"} += $row->{"ctime"} - $log_entry->{"current_state_time"};
-			$log_entry->{"current_state"} = $row->{"status"};
-			$log_entry->{"current_state_time"} = $row->{"ctime"};
-			if ($row->{"msg_type"} == $msg_type{"svc_alerts"}) {
-			    $log_entry->{$row->{"status"}."_A"}++;
-			}
-			$services{$svc} = $log_entry;
+	my $log_entry = $services{$svc};
+	if ($row->{"ctime"} >= $log_entry->{"current_state_time"} && $row->{"status"} ne $log_entry->{"current_state"}) {
+	    $log_entry->{$log_entry->{"current_state"}."_D"} += $row->{"ctime"} - $log_entry->{"current_state_time"};
+	    $log_entry->{"current_state"} = $row->{"status"};
+	    $log_entry->{"current_state_time"} = $row->{"ctime"};
+	    if ($row->{"msg_type"} == $msg_type{"svc_alerts"}) {
+		$log_entry->{$row->{"status"}."_A"}++;
 	    }
+	    $services{$svc} = $log_entry;
+	}
     }
 }
 
@@ -273,93 +281,100 @@ sub get_last_status_in_ignored_time($$) {
     $sth->execute;
     die "Error: " . $dbh->errstr . "\n" if (!$sth);
     while (my $row = $sth->fetchrow_hashref()) {
-	
-		$row->{"host_name"} =~ s/\//#S#/g;
-		$row->{"host_name"} =~ s/\\/#BS#/g;
-		$row->{"host_name"} = uc($row->{"host_name"});
-		
-		if (!defined($row->{"service_description"})) {
-		    if (defined($hosts{$row->{"host_name"}})) {
-				my $entry = $hosts{$row->{"host_name"}};
-				$entry->{"current_state"} = $row->{"status"};
-				$entry->{"current_state_time"} = $row->{"ctime"};
-				$hosts{$row->{"host_name"}} = $entry;
-		    } else {
-		    	my $host_id = getHostID($row->{"host_name"}, $dbhoreon);
-		    	if (defined($host_id) && $host_id) {
-		    		  if (defined($host_ids{$host_id})) {
-		    		  	# If host already exist in table log_archive_last_status but host name has changed
-		    		  	my $entry = $hosts{$host_ids{$host_id}};
-		    		  	$entry->{"current_state"} = $row->{"status"};
-						$entry->{"current_state_time"} = $row->{"ctime"};
-						$hosts{$row->{"host_name"}} = $entry;
-						undef($hosts{$host_ids{$host_id}});
-						
-		    		  }else {
-		    		  	# if it's a new host
-						my %log_entry = ("current_state" 	=> $row->{"status"},
-								 		"current_state_time"	=> $row->{"ctime"},
-								 		"DOWN_D" 				=> 0,
-								 		"UP_D" 				=> 0,
-								 		"UNREACHABLE_D" 		=> 0,
-								 		"UNDETERMINED_D" 		=> 0,
-										"UP_A" 				=> 0,
-								 		"DOWN_A" 				=> 0,
-								 		"UNREACHABLE_A" 		=> 0,
-								 		"host_id"				=> $host_id);
-						$hosts{$row->{"host_name"}} = \%log_entry;
-		    		}
-		    		$host_ids{$host_id} = $row->{"host_name"};
-		    	}
-		   	}
-		}else {
-			$row->{"service_description"} =~ s/\//#S#/g;
-		    $row->{"service_description"} =~ s/\\/#BS#/g;
-		    $row->{"service_description"} = uc($row->{"service_description"});
-		    # service already exists in table log_archive_last_status
-		    if (defined($services{$row->{"host_name"}.";".$row->{"service_description"}})) {
-				my $entry = $services{$row->{"host_name"}.";".$row->{"service_description"}};
-				$entry->{"current_state"} = $row->{"status"};
-				$entry->{"current_state_time"} = $row->{"ctime"};
-				$services{$row->{"host_name"}.";".$row->{"service_description"}} = $entry;
-		    } else {
-		    	# getting host id and service id
-		    	my $host_id = getHostID($row->{"host_name"}, $dbhoreon);
-		    	my $service_id;
-		    	if (defined($host_id) && $host_id) { 
-			    	$service_id = getServiceID($host_id, $row->{"service_description"}, $dbhoreon);
-		   		}
-		    	if (defined($service_id) && $service_id && defined($host_id) && $host_id) {
-		    		  if (defined($service_ids{$host_id.";".$service_id})) {
-		    		  	# If service already exist in table log_archive_last_status but service description has changed
-		    		  	my $entry = $services{$service_ids{$host_id.";".$service_id}};
-		    		  	$entry->{"current_state"} = $row->{"status"};
-						$entry->{"current_state_time"} = $row->{"ctime"};
-						$services{$row->{"host_name"}.";".$row->{"service_description"}} = $entry;
-						undef($services{$service_ids{$host_id.";".$service_id}});
-						$service_ids{$host_id.";".$service_id} = $row->{"host_name"}.";".$row->{"service_description"};
-		    		  }else {
-		    		  	# if it's a new service
-						my %log_entry = ("current_state" 	=> $row->{"status"},
-							 "current_state_time"	=> $row->{"ctime"},
-							 "CRITICAL_D" 			=> 0,
-							 "WARNING_D" 			=> 0,
-							 "UNKNOWN_D" 			=> 0,
-							 "OK_D"					=> 0,
-							 "UNDETERMINED_D" 		=> 0,
-							 "CRITICAL_A" 			=> 0,
-							 "WARNING_A" 			=> 0,
-							 "UNKNOWN_A" 			=> 0,
-							 "OK_A"					=> 0,
-							 "host_id"				=> $host_id,
-				    		 "service_id"			=> $service_id
-						);
-						$services{$row->{"host_name"}.";".$row->{"service_description"}} = \%log_entry;
-						$service_ids{$host_id.";".$service_id} = $row->{"host_name"}.";".$row->{"service_description"};
-		    		}
-				}
+
+	$row->{"host_name"} =~ s/\//#S#/g;
+	$row->{"host_name"} =~ s/\\/#BS#/g;
+	$row->{"host_name"} = uc($row->{"host_name"});
+
+	if (!defined($row->{"service_description"})) {
+	    if (defined($hosts{$row->{"host_name"}})) {
+		my $entry = $hosts{$row->{"host_name"}};
+		$entry->{"current_state"} = $row->{"status"};
+		$entry->{"current_state_time"} = $row->{"ctime"};
+		$hosts{$row->{"host_name"}} = $entry;
+	    } else {
+		my $host_id = getHostID($row->{"host_name"}, $dbhoreon);
+		if (defined($host_id) && $host_id) {
+		    if (defined($host_ids{$host_id})) {
+			# If host already exist in table log_archive_last_status but host name has changed
+			my $entry = $hosts{$host_ids{$host_id}};
+			$entry->{"current_state"} = $row->{"status"};
+			$entry->{"current_state_time"} = $row->{"ctime"};
+                        my %new_log_entry;
+                        while (my ($key, $value) = each (%$entry)) {
+                            $new_log_entry{$key} = $value;
+                        }
+                        $hosts{$row->{"host_name"}} = \%new_log_entry;
+                        $host_ids{$host_id} = $row->{"host_name"};
+
+		    }else {
+			# if it's a new host
+			my %log_entry = ("current_state" 	=> $row->{"status"},
+					 "current_state_time"	=> $row->{"ctime"},
+					 "DOWN_D" 				=> 0,
+					 "UP_D" 				=> 0,
+					 "UNREACHABLE_D" 		=> 0,
+					 "UNDETERMINED_D" 		=> 0,
+					 "UP_A" 				=> 0,
+					 "DOWN_A" 				=> 0,
+					 "UNREACHABLE_A" 		=> 0,
+					 "host_id"				=> $host_id);
+			$hosts{$row->{"host_name"}} = \%log_entry;
+		    }
+		    $host_ids{$host_id} = $row->{"host_name"};
+		}
+	    }
+	}else {
+	    $row->{"service_description"} =~ s/\//#S#/g;
+	    $row->{"service_description"} =~ s/\\/#BS#/g;
+	    $row->{"service_description"} = uc($row->{"service_description"});
+	    # service already exists in table log_archive_last_status
+	    if (defined($services{$row->{"host_name"}.";".$row->{"service_description"}})) {
+		my $entry = $services{$row->{"host_name"}.";".$row->{"service_description"}};
+		$entry->{"current_state"} = $row->{"status"};
+		$entry->{"current_state_time"} = $row->{"ctime"};
+		$services{$row->{"host_name"}.";".$row->{"service_description"}} = $entry;
+	    } else {
+		# getting host id and service id
+		my $host_id = getHostID($row->{"host_name"}, $dbhoreon);
+		my $service_id;
+		if (defined($host_id) && $host_id) { 
+		    $service_id = getServiceID($host_id, $row->{"service_description"}, $dbhoreon);
+		}
+		if (defined($service_id) && $service_id && defined($host_id) && $host_id) {
+		    if (defined($service_ids{$host_id.";".$service_id})) {
+			# If service already exist in table log_archive_last_status but service description has changed
+			my $entry = $services{$service_ids{$host_id.";".$service_id}};
+			$entry->{"current_state"} = $row->{"status"};
+			$entry->{"current_state_time"} = $row->{"ctime"};
+			my %new_log_entry;
+			while (my ($key, $value) = each (%$entry)) {
+			    $new_log_entry{$key} = $value;
+			}
+			$services{$row->{"host_name"}.";".$row->{"service_description"}} = \%new_log_entry;
+			$service_ids{$host_id.";".$service_id} = $row->{"host_name"}.";".$row->{"service_description"};
+		    }else {
+			# if it's a new service
+			my %log_entry = ("current_state" 	=> $row->{"status"},
+					 "current_state_time"	=> $row->{"ctime"},
+					 "CRITICAL_D" 			=> 0,
+					 "WARNING_D" 			=> 0,
+					 "UNKNOWN_D" 			=> 0,
+					 "OK_D"					=> 0,
+					 "UNDETERMINED_D" 		=> 0,
+					 "CRITICAL_A" 			=> 0,
+					 "WARNING_A" 			=> 0,
+					 "UNKNOWN_A" 			=> 0,
+					 "OK_A"					=> 0,
+					 "host_id"				=> $host_id,
+					 "service_id"			=> $service_id
+					 );
+			$services{$row->{"host_name"}.";".$row->{"service_description"}} = \%log_entry;
+			$service_ids{$host_id.";".$service_id} = $row->{"host_name"}.";".$row->{"service_description"};
 		    }
 		}
+	    }
+	}
     }
     $sth->finish();
 }
@@ -418,10 +433,10 @@ sub get_last_status ($$) {
 		}
     }
     while (my ($key, $value) = each (%hosts)) {
-		if ($value->{"current_state_time"} < $start_time) {
-		    $value->{"current_state_time"} = $start_time;
-		    $hosts{$key} = $value;
-		}
+	if ($value->{"current_state_time"} < $start_time) {
+	    $value->{"current_state_time"} = $start_time;
+	    $hosts{$key} = $value;
+	}
     }
 }
 
@@ -480,6 +495,41 @@ sub getServiceID($$$){
 		return $service_id;
     }
 }
+sub getServiceIDByName($$$){
+    $_[1] =~ s/\&/\&amp\;/g;
+    
+    my $con = $_[2];								
+    my $sth2 = $con->prepare("SELECT `service_id` FROM `service`, `host_service_relation` hsr, `host` h ".
+							"WHERE hsr.`host_host_id` = h.`host_id` and UPPER(h.`host_name`)='".$_[0]."' AND hsr.`service_service_id` = `service_id` ".
+							"AND UPPER(`service_description`) = '".$_[1]."' AND `service_register` = '1' LIMIT 1");
+    if (!$sth2->execute) {
+		print("Error when getting service id : " . $sth2->errstr . "\n");
+    }
+    my $data = $sth2->fetchrow_hashref();
+    $sth2->finish();
+    if (!defined($data->{'service_id'}) && !$data->{'service_id'}){
+		$sth2 = $con->prepare("SELECT `service_id` FROM `hostgroup_relation` hgr, `service`, `host_service_relation` hsr, `host` h" .
+							" WHERE hgr.`host_host_id` = h.`host_id` and UPPER(h.`host_name`)='".$_[0]."' AND hsr.`hostgroup_hg_id` = hgr.`hostgroup_hg_id`" .
+							" AND `service_id` = hsr.`service_service_id` AND UPPER(`service_description`) = '".$_[1]."' AND `service_register` = '1'");
+		if (!$sth2->execute) {
+			print("Error when getting service id 2 : " . $sth2->errstr . "\n");
+		}
+		my $data2 = $sth2->fetchrow_hashref();
+		my $service_id = $data2->{'service_id'};
+		undef($data);
+		undef($data2);
+		undef($sth2);
+		if (defined($service_id)){
+		    return $service_id;
+		} else {
+		    return 0;
+		}
+    } else {
+		my $service_id = $data->{'service_id'};
+		undef($data);
+		return $service_id;
+    }
+}
 
 sub getHostID($$){	
     my $con = $_[1];
@@ -497,45 +547,46 @@ sub getHostID($$){
 
 sub insert_hosts_stats_in_db ($$) {
     my ($date_start, $date_end) = (shift, shift); 
-    
+
     # beginning of query that will insert host stats
     my $archive_insert_query = "INSERT INTO `log_archive_host` (`host_id`, `UPTimeScheduled`, `UPnbEvent`, `DOWNTimeScheduled`, `DOWNnbEvent`, ".
-	    						"`UNREACHABLETimeScheduled`, `UNREACHABLEnbEvent`, `UNDETERMINEDTimeScheduled`, `date_start`, `date_end`) VALUES ";
-    
+	"`UNREACHABLETimeScheduled`, `UNREACHABLEnbEvent`, `UNDETERMINEDTimeScheduled`, `date_start`, `date_end`) VALUES ";
+
     # beginning of query that will insert host day last status
     my $status_insert_query = " INSERT INTO `log_archive_last_status` (`host_name`, `host_id`, `status`, `ctime`) VALUES ";
-    
+
     # beginning of query that will delete host previous day last status
     my $status_delete_query = "DELETE FROM `log_archive_last_status` WHERE `service_description` is null AND `host_name`=";
-    
+
     while (my ($key, $value) = each (%hosts)) {
-		# Adding last state duration
-		$value->{$value->{"current_state"}."_D"} += $date_end - $value->{"current_state_time"};
-		
-		# Replace special chars
-		$key =~ s/\//#S#/g;
-		$key =~ s/\\/#BS#/g;
-		
-		# Fetching host_id from host_name if host_id is not defined in %value hash table
-		my $host_id;
-		if (!defined($value->{'host_id'}) && !$value->{'host_id'}) {
-			my $host_id = getHostID($key, $dbhoreon);
-		}else {
-			$host_id = $value->{'host_id'};
-		}
-		if (defined($host_id) && $host_id) {
-		    # Inserting new stats for host in table
-		    my $archive_insert_suffix = "('".$host_id."', '".$value->{"UP_D"}."', '".$value->{"UP_A"}."', '".$value->{"DOWN_D"}."', '".$value->{"DOWN_A"}."', ".
-			"'".$value->{"UNREACHABLE_D"}."', '".$value->{"UNREACHABLE_A"}."', '".$value->{"UNDETERMINED_D"}."', '".$date_start."', '".$date_end."')";
-		    $dbh->do($archive_insert_query.$archive_insert_suffix);
-		   	
-		   	# Deleting last status for host in table
-		    $dbh->do($status_delete_query.$key);
-		    
-		    # inserting latest known status for host in table
-		   	my $status_insert_suffix = "('".$key."', '".$host_id."', '".$value->{"current_state"}."', '".$date_end."'),";
-		   	$dbh->do($status_insert_query.$status_insert_suffix);
-		}
+	# Adding last state duration
+	$value->{$value->{"current_state"}."_D"} += $date_end - $value->{"current_state_time"};
+
+	# Replace special chars
+	$key =~ s/\//#S#/g;
+	$key =~ s/\\/#BS#/g;
+
+	# Fetching host_id from host_name if host_id is not defined in %value hash table
+	my $host_id;
+	if (!defined($value->{'host_id'}) && !$value->{'host_id'}) {
+	    my $host_id = getHostID($key, $dbhoreon);
+	}else {
+	    $host_id = $value->{'host_id'};
+	}
+	if (defined($host_id) && $host_id) {
+	    # Deleting last status for host in table
+	    $dbh->do($status_delete_query."'".$key."'");
+	    if (getHostID($key, $dbhoreon)) {
+		# Inserting new stats for host in table
+		my $archive_insert_suffix = "('".$host_id."', '".$value->{"UP_D"}."', '".$value->{"UP_A"}."', '".$value->{"DOWN_D"}."', '".$value->{"DOWN_A"}."', ".
+		    "'".$value->{"UNREACHABLE_D"}."', '".$value->{"UNREACHABLE_A"}."', '".$value->{"UNDETERMINED_D"}."', '".$date_start."', '".$date_end."')";
+		$dbh->do($archive_insert_query.$archive_insert_suffix);
+
+		# inserting latest known status for host in table
+		my $status_insert_suffix = "('".$key."', '".$host_id."', '".$value->{"current_state"}."', '".$date_end."')";
+		$dbh->do($status_insert_query.$status_insert_suffix);
+	    }
+	}
     }
 }
 
@@ -548,60 +599,61 @@ sub insert_hosts_stats_in_db ($$) {
 sub insert_services_stats_in_db ($$) {
 
     my ($date_start, $date_end) = (shift, shift);
-    
+
     # Query beginning for service stats insert query
     my $archive_insert_query = "INSERT INTO `log_archive_service` (`host_id`, `service_id`, `OKTimeScheduled`, `OKnbEvent`, `WARNINGTimeScheduled`, `WARNINGnbEvent`, ".
-	    						" `CRITICALTimeScheduled`, `CRITICALnbEvent`, `UNKNOWNTimeScheduled`, `UNKNOWNnbEvent`, ".
-	    						" `UNDETERMINEDTimeScheduled`, `date_start`, `date_end`)  VALUES ";
-	# Query beginning for service last known status delete query
-	my $status_delete_query = "DELETE FROM `log_archive_last_status` WHERE ";
-	# Query beginning for service last known status insert query
-	my $status_insert_query = " INSERT INTO `log_archive_last_status` (`host_name`, `host_id`, `service_description`, `service_id`, `status`, `ctime`) VALUES "; 
-   
+	" `CRITICALTimeScheduled`, `CRITICALnbEvent`, `UNKNOWNTimeScheduled`, `UNKNOWNnbEvent`, ".
+	" `UNDETERMINEDTimeScheduled`, `date_start`, `date_end`)  VALUES ";
+    # Query beginning for service last known status delete query
+    my $status_delete_query = "DELETE FROM `log_archive_last_status` WHERE ";
+    # Query beginning for service last known status insert query
+    my $status_insert_query = " INSERT INTO `log_archive_last_status` (`host_name`, `host_id`, `service_description`, `service_id`, `status`, `ctime`) VALUES "; 
+
     while (my ($key, $value) = each (%services)) {
-	
-		# Adding last state duration
-		$value->{$value->{"current_state"}."_D"} += $date_end - $value->{"current_state_time"};
+
+	# Adding last state duration
+	$value->{$value->{"current_state"}."_D"} += $date_end - $value->{"current_state_time"};
+
+	# Fetching host_id from host_name for insertion in log_archive_service table
+	my ($host_name, $svc_desc) = split (";", $key);
+
+	# Replace special chars
+	$host_name =~ s/\//#S#/g;
+	$host_name =~ s/\\/#BS#/g;
+	$svc_desc =~ s/\//#S#/g;
+	$svc_desc =~ s/\\/#BS#/g;
+
+	# Fetching host_id from host_name if host_id is not defined in %value hash table
+	my $host_id;
+	if (!defined($value->{'host_id'}) && !$value->{'host_id'}) {
+	    my $host_id = getHostID($key, $dbhoreon);
+	}else {
+	    $host_id = $value->{'host_id'};
+	}
+	if (defined($host_id) && $host_id) {
+	    my $svc_id;
+	    if (!defined($value->{'service_id'}) && !$value->{'service_id'}) {
+		$svc_id = getServiceID($host_id, $svc_desc, $dbhoreon);
+	    }else {
+		$svc_id = $value->{'service_id'};
+	    }
+	    if (defined($svc_id) && $svc_id) {
+		# Deleting last status for service in table
+		my  $status_delete_suffix = "host_name = '".$host_name."' AND service_description = '".$svc_desc."'";
+		$dbh->do($status_delete_query.$status_delete_suffix);
 		
-		# Fetching host_id from host_name for insertion in log_archive_service table
-		my ($host_name, $svc_desc) = split (";", $key);
-		
-		# Replace special chars
-		$host_name =~ s/\//#S#/g;
-		$host_name =~ s/\\/#BS#/g;
-		$svc_desc =~ s/\//#S#/g;
-		$svc_desc =~ s/\\/#BS#/g;
-		
-		# Fetching host_id from host_name if host_id is not defined in %value hash table
-		my $host_id;
-		if (!defined($value->{'host_id'}) && !$value->{'host_id'}) {
-			my $host_id = getHostID($key, $dbhoreon);
-		}else {
-			$host_id = $value->{'host_id'};
+		if (getServiceIDByName($host_name, $svc_desc, $dbhoreon)) {
+		    # inserting new entry in log_archive_service table
+		    my $archive_insert_suffix = "('".$host_id."', '".$svc_id."', '".$value->{"OK_D"}."', '".$value->{"OK_A"}."', '".$value->{"WARNING_D"}."', '".$value->{"WARNING_A"}."', ".
+			"'".$value->{"CRITICAL_D"}."', '".$value->{"CRITICAL_A"}."', '".$value->{"UNKNOWN_D"}."', '".$value->{"UNKNOWN_A"}."', ".
+			"'".$value->{"UNDETERMINED_D"}."', '".$date_start."', '".$date_end."')";
+		    $dbh->do($archive_insert_query.$archive_insert_suffix);
+		    # inserting latest known status for host in table 
+		    my $status_insert_suffix = "('".$host_name."', '".$host_id."', '".$svc_desc."', '".$svc_id."', '".$value->{"current_state"}."', '".$date_end."')";
+		    $dbh->do($status_insert_query.$status_insert_suffix);
 		}
-		if (defined($host_id) && $host_id) {
-			my $svc_id;
-			if (!defined($value->{'service_id'}) && !$value->{'service_id'}) {
-		   		$svc_id = getServiceID($host_id, $svc_desc, $dbhoreon);
-			}else {
-				$svc_id = $value->{'service_id'};
-			}
-			if (defined($svc_id) && $svc_id) {
-			    # inserting new entry in log_archive_service table
-			    my $archive_insert_suffix = "('".$host_id."', '".$svc_id."', '".$value->{"OK_D"}."', '".$value->{"OK_A"}."', '".$value->{"WARNING_D"}."', '".$value->{"WARNING_A"}."', ".
-											"'".$value->{"CRITICAL_D"}."', '".$value->{"CRITICAL_A"}."', '".$value->{"UNKNOWN_D"}."', '".$value->{"UNKNOWN_A"}."', ".
-											"'".$value->{"UNDETERMINED_D"}."', '".$date_start."', '".$date_end."')";
-			   	$dbh->do($archive_insert_query.$archive_insert_suffix);
-			   	
-			   	# Deleting last status for service in table
-			   	my  $status_delete_suffix = "host_name = '".$host_name."' AND service_description = '".$svc_desc."'";
-			    $dbh->do($status_delete_query.$status_delete_suffix);
-			    
-			    # inserting latest known status for host in table 
-			    my $status_insert_suffix = "('".$host_name."', '".$host_id."', '".$svc_desc."', '".$svc_id."', '".$value->{"current_state"}."', '".$date_end."')";
-			    $dbh->do($status_insert_query.$status_insert_suffix);
-			}
-		}
+	    }
+	}
     }
 }
 
@@ -754,7 +806,7 @@ sub rebuild_archives($) {
     my $previous_day = timelocal(0,0,0,$day,$month,$year) - $one_day_real_duration;
     while ($start < $end) {
 		# getting day beginning => 00h 00min
-		# if there is few hour gap (time change : winter/summer), we alsoreadjust it
+		# if there is few hour gap (time change : winter/summer), we also readjust it
 		($day,$month,$year) = (localtime($start))[3,4,5];
 		$start = timelocal(0,0,0,$day,$month,$year);
 		if ($start == $previous_day) {

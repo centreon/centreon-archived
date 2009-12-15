@@ -33,7 +33,6 @@ locate_centreon_logdir
 locate_centreon_etcdir
 locate_centreon_generationdir
 locate_centreon_varlib
-locate_centreon_logdir
 locate_centpluginstraps_bindir
 
 ## Config pre-require

@@ -120,13 +120,22 @@ sub identify_metric($$$$$$$$){
     my $metric = removeBackSpace($_[0]);
   
     while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\ ]+)\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)\s?/g){
-	$1 =~ s/^\s+//;
-	$1 =~ s/\s+$//;
-	if (!defined($3)){$3 = "";}
-	if (!defined($4)){$4 = "";}
-	if (!defined($5)){$5 = "";}
-	if (!defined($6)){$6 = "";}
-	if (!defined($7)){$7 = "";}
+	my $metric_name = $1;
+    $metric_name =~ s/^\s+//;
+    $metric_name =~ s/\s+$//;
+    my $unit = "";
+    my $value = $2;
+    my $warn = "";
+    my $critical = "";
+    my $min = "";
+    my $max = "";
+
+    if (defined($3)){$unit = $3;}
+    if (defined($4)){$warn = $4;}
+    if (defined($5)){$critical = $5;}
+    if (defined($6)){$min = $6;}
+    if (defined($7)){$max = $7;}
+
 	my $cpt = 1;
 	my $x = 0;
 	while (defined($$cpt)){
@@ -135,7 +144,7 @@ sub identify_metric($$$$$$$$){
 	    $x++;
 	}
 	
-	@data = ($1, $2, $3, $4, $5, $6, $7); # metric, value, unit, warn, critical, min, max
+	@data = ($metric_name, $value, $unit, $warn, $critical, $min, $max); # metric, value, unit, warn, critical, min, max
 	if ($1 && defined($2)){			
 	    # Check if metric is known...
 	    $data[0] = removeSpecialCharInMetric($data[0]);
@@ -169,7 +178,6 @@ sub identify_metric($$$$$$$$){
 
 	    # Check Storage Type
 	    # O -> BD Mysql & 1 -> RRDTool
-
 	    $begin = $_[3] - 200;
 
 	    if (defined($data[1])) {
@@ -184,6 +192,13 @@ sub identify_metric($$$$$$$$){
 	}
 	undef(@data);
     }
+    undef($metric_name);
+    undef($value);
+    undef($unit);
+    undef($min);
+    undef($max);
+    undef($warn);
+    undef($critical);
     undef($begin);
     return $generalcounter;
 }
