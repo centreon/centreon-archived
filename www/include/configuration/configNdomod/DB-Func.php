@@ -165,7 +165,7 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE `cfg_ndomod` SET ";
         isset($ret["description"]) && $ret["description"] != NULL ? $rq .= "description = '".htmlentities($ret["description"], ENT_QUOTES)."', " : $rq .= "description = NULL, ";
-        isset($ret["ns_nagios_server"]["ns_nagios_server"]) && $ret["ns_nagios_server"]["ns_nagios_server"] != NULL ? $rq .= "ns_nagios_server = '".htmlentities($ret["ns_nagios_server"]["ns_nagios_server"], ENT_QUOTES)."', " : $rq .= "ns_nagios_server = NULL, ";
+        isset($ret["ns_nagios_server"]) && $ret["ns_nagios_server"] != NULL ? $rq .= "ns_nagios_server = '".htmlentities($ret["ns_nagios_server"], ENT_QUOTES)."', " : $rq .= "ns_nagios_server = NULL, ";
 		$rq .= "instance_name = '".$nagios_servers[$ret["ns_nagios_server"]]."', ";
 		//isset($ret["instance_name"]) && $ret["instance_name"] != NULL ? $rq .= "instance_name = '".htmlentities($ret["instance_name"], ENT_QUOTES)."',  " : $rq .= "instance_name = NULL, ";
         isset($ret["output_type"]) && $ret["output_type"] != NULL ? $rq .= "output_type = '".htmlentities($ret["output_type"], ENT_QUOTES)."',  " : $rq .= "output_type = NULL, ";
