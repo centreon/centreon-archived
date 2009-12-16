@@ -36,7 +36,11 @@
  * 
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	/*
+	 * if debug == 0 => Normal, 
+	 * debug == 1 => get use, 
+	 * debug == 2 => log in file (log.xml)
+	 */
 	$debugXML = 0;
 	$buffer = '';
 
@@ -156,7 +160,7 @@
 		" AND sgm.servicegroup_id = sg.servicegroup_id" .
 		" AND no.is_active = 1 AND no.objecttype_id = 2";
 	
-	$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
+	$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("ALIAS"));
 
 	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
@@ -178,13 +182,32 @@
 
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq1);
 	$numRows = 0;
+	$tabString = "";
 	while ($row =& $DBRESULT_PAGINATION->fetchRow()) {
-	      $numRows++;
+		$numRows++;
+		if ($tabString != "")
+			$tabString .= ",";
+		$tabString .= "'".$row['host_name']."'";
 	}	
+	unset($row);
 	$DBRESULT_PAGINATION->free();
 	
 	if ($numRows) {
 	
+		/*
+		 * Create Buffer for host status
+		 */
+		$rq = "SELECT nhs.current_state, nh.display_name FROM `" .$ndo_base_prefix."hoststatus` nhs, `" .$ndo_base_prefix."hosts` nh " . 
+ 	            "WHERE nh.display_name IN ($tabString) " . 
+ 	            "AND nh.host_object_id = nhs.host_object_id" ; 
+		$DBRESULT =& $pearDBndo->query($rq);
+		$tabHostStatus = array();
+		while ($row =& $DBRESULT->fetchRow()) {
+			$tabHostStatus[$row["display_name"]] = $row["current_state"];
+		}
+		unset($row);
+		$DBRESULT->free();
+		
 		$rq1 = "SELECT DISTINCT sg.alias, no.name1 as host_name".
 		" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
 		" WHERE ss.service_object_id = sgm.service_object_id".
@@ -313,7 +336,7 @@
 					$buffer->endElement();
 				$flag = 1;
 				$h = $tab["host_name"];			
-				$hs = get_Host_Status($tab["host_name"], $pearDBndo, $general_opt);
+				$hs = $tabHostStatus[$tab["host_name"]];
 				$buffer->startElement("h");
 				$buffer->writeAttribute("class", $class);
 				$buffer->writeElement("hn", $tab["host_name"]);

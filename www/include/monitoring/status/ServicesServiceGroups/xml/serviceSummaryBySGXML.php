@@ -53,8 +53,8 @@
 	include_once($centreon_path."www/include/monitoring/status/Common/common-Func.php");	
 	include_once($centreon_path."www/include/common/common-Func.php");
 
-	$pearDB = new CentreonDB();
-	$pearDBndo = new CentreonDB("ndo");
+	$pearDB 	= new CentreonDB();
+	$pearDBndo 	= new CentreonDB("ndo");
 	
 	/*
 	 * Get NDO Prefix
@@ -192,7 +192,7 @@
 	      $numRows++;
     }	
 	$DBRESULT->free();
-
+	
 	if ($numRows) {
 	
 		/*
@@ -266,7 +266,7 @@
 				" AND no.name1 IN ($hostList)" .
 				" AND no.is_active = 1 ";
 			
-		$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("NAME"));
+		$rq1 .= $access->queryBuilder("AND", "sg.alias", $access->getServiceGroupsString("ALIAS"));
 	
 	
 		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb" || $o == "svcSumSG_ack_0")
