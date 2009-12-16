@@ -61,7 +61,7 @@ define('TEMPLATE_SET', $template);
 
 // get our current language
 // default to english, but this is negotiable.
-if (!(isset($lng) && file_exists('./sysinfo/includes/lang/' . $oreon->user->get_lang() . '.php'))) {
+if (!(isset($lng) && file_exists('./sysinfo/includes/lang/' . $centreon->user->get_lang() . '.php'))) {
     $lng = 'en';
     // see if the browser knows the right languange.
     if(isset($HTTP_ACCEPT_LANGUAGE)) {
