@@ -328,7 +328,7 @@ while [ "$pear_module" -eq 0 ] ; do
   		yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
       [ "$?" -eq 0 ] && PEAR_AUTOINST=1
     fi
-  	if [ "$PEAR_AUTOINST" -eq 1 ] ; then
+  	if [ "${PEAR_AUTOINST:-0}" -eq 1 ] ; then
   		upgrade_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
   		install_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
   	else
