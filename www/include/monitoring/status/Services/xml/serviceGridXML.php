@@ -137,8 +137,11 @@
 
 		$DBRESULT =& $pearDBndo->query($rq);
 		$tab = array();
-		while ($svc =& $DBRESULT->fetchRow())
-			$tab[$svc["service_name"]] = $svc["current_state"];
+		while ($svc =& $DBRESULT->fetchRow()) {
+			if (!isset($tab[$svc["name1"]]))
+				$tab[$svc["name1"]] = array();
+			$tab[$svc["name1"]][$svc["service_name"]] = $svc["current_state"];
+		}
 		return($tab);
 	}
 
@@ -227,13 +230,23 @@
 	$flag = 0;
 
 	$tab_final = array();
+	$str = "";
 	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
-		$tab_svc = get_services_status($ndo["host_name"]);
-		if (count($tab_svc)){
-			$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
-			$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
-		}
+		if ($str != "")
+			$str .= ",";
+		$str .= "'".$ndo["host_name"]."'";
+		$tab_final[$ndo["host_name"]] = array("cs" => $ndo["current_state"]);
+			
 	}
+	
+	/*
+	 * Get Service status
+	 */
+	$tab_svc = get_services_status($str);
+	foreach ($tab_svc as $host_name => $tab) {
+		if (count($tab))
+			$tab_final[$host_name]["tab_svc"] = $tab;
+	} 
 
 	foreach ($tab_final as $host_name => $tab){
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";

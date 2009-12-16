@@ -9,6 +9,13 @@
 		<td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
+		<xsl:for-each select="//i">
+			<xsl:if test="o = 'svc_unhandled' or o = 'svcpb' or o = 'svc_warning' or o = 'svc_critical' or o = 'svc_unknown'">
+				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_hard_state_change">
+					<xsl:value-of select="hard_state_label"/>
+				</td>
+			</xsl:if>
+		</xsl:for-each>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_check"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>
@@ -74,10 +81,11 @@
 					<xsl:element name="a">
 					  	<xsl:attribute name="class">infobulle</xsl:attribute>
 					  	<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
-							<xsl:element name="img">
-							  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
-							  	<xsl:attribute name="title">HTTP Link : <xsl:value-of select="hnn"/></xsl:attribute>
-							</xsl:element>
+						<xsl:attribute name="target">_blank</xsl:attribute>
+						<xsl:element name="img">
+						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
+						  	<xsl:attribute name="title">HTTP Link <xsl:value-of select="hnn"/></xsl:attribute>
+						</xsl:element>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hdtm = 1">
@@ -118,14 +126,15 @@
 				</xsl:element>
 			</xsl:element>
 		</td>
-		<td class="ListColRight">
+		<td class="ListColRight" style="white-space:nowrap;">
 			<xsl:if test="snu != 'none'">
 				<xsl:element name="a">
 				  	<xsl:attribute name="class">infobulle</xsl:attribute>
+				  	<xsl:attribute name="target">_blank</xsl:attribute>
 				  	<xsl:attribute name="href"><xsl:value-of select="snu"/></xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
-						  	<xsl:attribute name="title">HTTP Link : <xsl:value-of select="sn"/></xsl:attribute>
+						  	<xsl:attribute name="title">HTTP Link <xsl:value-of select="sn"/></xsl:attribute>
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>
@@ -189,6 +198,11 @@
 		<td class="ListColRight" style="white-space:nowrap;">
 			<xsl:value-of select="d"/>
 		</td>
+		<xsl:if test = "//i/o = 'svc_unhandled' or //i/o = 'svcpb' or //i/o = 'svc_warning' or //i/o = 'svc_critical' or //i/o = 'svc_unknown'">
+			<td class="ListColRight" style="white-space:nowrap;">
+				<xsl:value-of select="last_hard_state_change"/>
+			</td>
+		</xsl:if>
         <td class="ListColCenter" style="white-space:nowrap;">
         	<xsl:value-of select="lc"/>
         </td>

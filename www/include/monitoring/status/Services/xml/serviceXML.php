@@ -177,7 +177,7 @@
 	/* 
 	 * Get Service status
 	 */
-	switch ($sort_type){
+	switch ($sort_type) {
 		case 'host_name' : 
 			$rq_sorte = " ORDER BY host_name ". $order.", service_description"; 
 			break;
@@ -189,6 +189,9 @@
 			break;
 		case 'last_state_change' : 
 			$rq_sorte = " ORDER BY nss.last_state_change ". $order.", host_name, service_description "; 
+			break;
+		case 'last_hard_state_change' : 
+			$rq .= " order by nss.last_hard_state_change ". $order.",no.name1,no.name2 "; 
 			break;
 		case 'last_check' : 
 			$rq_sorte = " ORDER BY nss.last_check ". $order.", host_name, service_description "; 
@@ -203,7 +206,7 @@
 
 	$rq_limit = " LIMIT ".($num * $limit).",".$limit;
 
-	$ArgNeeded = "A.*, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.state_type as state_type, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.scheduled_downtime_depth, nss.flap_detection_enabled";
+	$ArgNeeded = "A.*, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.state_type as state_type, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_hard_state_change) as last_hard_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.scheduled_downtime_depth, nss.flap_detection_enabled";
 
 	$ACLDBName = "";
 	if (!$is_admin)
@@ -309,6 +312,7 @@
 	$buffer->writeElement("p", $p);
 	$buffer->writeElement("nc", $nc);
 	$buffer->writeElement("o", $o);
+	$buffer->writeElement("hard_state_label", _("Hard State Duration"));
 	$buffer->endElement();
 
 	$host_prev = "";
@@ -331,6 +335,12 @@
 				$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
 			else if ($ndo["last_state_change"] > 0)
 				$duration = " - ";
+
+			/* HARD STATE CHANGE*/
+			if (($ndo["last_hard_state_change"] > 0) && ($ndo["last_hard_state_change"] >= $ndo["last_state_change"]))
+				$hard_duration = CentreonDuration::toString(time() - $ndo["last_hard_state_change"]);
+			else if ($ndo["last_hard_state_change"] > 0)
+				$hard_duration = " N/S ";	
 
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
 			
@@ -414,6 +424,7 @@
 	        $buffer->writeElement("nc", $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]));	        	        
 			$buffer->writeElement("lc", $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]));
 			$buffer->writeElement("d", $duration);
+			$buffer->writeElement("last_hard_state_change", $hard_duration);			
 			
 			$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
 			$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);

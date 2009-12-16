@@ -11,12 +11,13 @@
 			<td class="ColPopup"><xsl:value-of select="hostname"/></td>
 		</tr>
 		<tr class="ListHeaderPopup">
-			<td class="ColPopup" style="width:100%;text-align:right;"><xsl:value-of select="service_description"/></td>
+			<td class="ColPopup" style="width:100%;text-align:left;"><xsl:value-of select="service_description"/></td>
 		</tr>
 		<tr class='list_two'>
 			<td colspan="2" class="ColPopup">
 				<xsl:attribute name="style">
 					background-color:<xsl:value-of select="current_state/@color"/>;
+					white-space:normal;
     			</xsl:attribute>
 				<b><xsl:value-of select="plugin_output"/></b>
 			</td>

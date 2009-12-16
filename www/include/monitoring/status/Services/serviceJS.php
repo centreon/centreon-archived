@@ -159,6 +159,15 @@
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 	
+			var h = document.getElementById('last_hard_state_change');
+			if (h) {
+				h.innerHTML = '<?php echo _("Hard State Duration"); ?>';
+			  	h.indice = 'last_hard_state_change';
+			  	h.title = '<?php echo _("Sort by last hard state change date"); ?>';
+			  	h.onclick=function(){change_type_order(this.indice)};
+				h.style.cursor = "pointer";
+			}
+	
 			var h = document.getElementById('last_check');
 			h.innerHTML = '<?php echo _("Last Check"); ?>';
 		  	h.indice = 'last_check';
@@ -286,9 +295,11 @@
 			//calcul auto de la hauteur de l'ecran client
 			var h = screen.availHeight;
 			
-			if (h - tempY < span.offsetHeight || (tempY + 570) > h) {
-				span.style.top = '-350px';
-			}
+			if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h){
+            	span.style.top = '-380px';
+            }
+            span.style.left = '150px';
+
 			viewDebugInfo('Display span_'+id);
 		}
 	}
@@ -306,9 +317,10 @@
 			//calcul auto de la hauteur de l'ecran client
 			var h = screen.availHeight;
 			
-			if (h - tempY < span.offsetHeight || (tempY + 600) > h){				
-				span.style.top = '-380px';
-			}
+			if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h){
+            	span.style.top = '-380px';
+            }
+            span.style.left = '150px';
 		
 			var proc_popup = new Transformation();
 			var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
@@ -404,7 +416,7 @@
 		} 
 		else { 
 			for (keyz in _selectedElem) {
-				if (keyz == _selectedElem[keyz]) {
+				if (keyz == _selectedElem[keyz]) {					
 					_getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
 				}
 			}
