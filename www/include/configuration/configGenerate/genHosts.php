@@ -65,7 +65,7 @@
 	 * Get Template cache
 	 */
 	$templateCache = array();
-	$DBRESULT =& $pearDB->query("SELECT host_name, host_host_id, `order` FROM `host_template_relation`, host WHERE host_template_relation.host_tpl_id = host.host_id ORDER BY `host_host_id`, `order`");
+	$DBRESULT =& $pearDB->query("SELECT host_name, host_host_id, `order` FROM `host_template_relation`, host WHERE host_template_relation.host_tpl_id = host.host_id");
 	while ($h =& $DBRESULT->fetchRow()) {
 		if (!isset($templateCache[$h["host_host_id"]]))
 			$templateCache[$h["host_host_id"]] = array();
@@ -225,8 +225,9 @@
 				$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
 				while ($hostParent =& $DBRESULT2->fetchRow())	{
 					$DBRESULT3 =& $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$hostParent["host_id"]."' AND nagios_server_id = '".$tab['id']."'");
-					if (verifyIfMustBeGenerated($hostParent["host_id"], $gbArr[2], $ret) && $DBRESULT3->numRows())
+					if (verifyIfMustBeGenerated($hostParent["host_id"], $gbArr[2], $ret) && $DBRESULT3->numRows()) {
 						$strTemp != NULL ? $strTemp .= ", ".$hostParent["host_name"] : $strTemp = $hostParent["host_name"];
+					}
 				}
 				$DBRESULT2->free();
 				

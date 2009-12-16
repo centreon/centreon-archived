@@ -240,9 +240,9 @@
 	$attrsText 		= array("size"=>"30");
 	$attrsText2		= array("size"=>"6");
 	$attrsTextLong 	= array("size"=>"60");
-	$attrsAdvSelect_small = array("style" => "width: 200px; height: 70px;");
-	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsAdvSelect_big = array("style" => "width: 200px; height: 200px;");
+	$attrsAdvSelect_small = array("style" => "width: 300px; height: 70px;");
+	$attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
+	$attrsAdvSelect_big = array("style" => "width: 300px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
@@ -563,16 +563,25 @@
 	$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
 	$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
 	
-	include_once("include/configuration/configObject/service/makeJS_formService.php");	
-	if ($o == "c" || $o == "a" || $o == "mc" || $min) {			
-		for ($k=0; isset($od_macro_id[$k]); $k++) {?>				
-			<script type="text/javascript">
-			globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
-			globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
-			globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
-			globalMacroTabSvcId[<?php echo $k;?>] = <?php echo $od_macro_svc_id[$k];?>;				
-			</script>			
-	<?php
+		$form->addElement('header', 'macro', _("Macros"));
+		
+		$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
+		$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
+		$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
+		$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
+		
+		include_once("include/configuration/configObject/service/makeJS_formService.php");	
+		if ($o == "c" || $o == "a" || $o == "mc" || $min)
+		{			
+			for ($k=0; isset($od_macro_id[$k]); $k++) {?>				
+				<script type="text/javascript">
+				globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
+				globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
+				globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
+				globalMacroTabSvcId[<?php echo $k;?>] = <?php echo $od_macro_svc_id[$k];?>;				
+				</script>			
+		<?php
+			}
 		}
 	}
 
@@ -715,6 +724,6 @@
 		$tpl->display("formService.ihtml");		
 	}
 ?>
-<script type="text/javascript">				
+<script type="text/javascript">		
 		displayExistingMacroSvc(<?php echo $k;?>, '<?php echo $o;?>');
 </script>

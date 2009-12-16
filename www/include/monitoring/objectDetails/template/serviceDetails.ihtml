@@ -342,8 +342,26 @@
 				{/if}
 
 				</table>
+				{if $service_data.action_url || $service_data.notes_url}		
 				<br />
 
+				<table class="ListTable">
+					<tr class='ListHeader'>
+						<td class="ListColHeaderLeft" colspan="2"><img src="./img/icones/16x16/wrench.gif">&nbsp;{$m_mon_tools}</td>
+					</tr>
+					{if $service_data.notes_url}
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href="{$service_data.notes_url}" target="_blank">URL notes</a></td>
+					</tr>
+					{/if}
+					{if $service_data.action_url}
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href="{$service_data.action_url}" target="_blank">URL Action</a></td>
+					</tr>
+					{/if}
+				</table>
+				{/if}
+				<br>
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft" colspan="2"><img src="./img/icones/16x16/link.gif">&nbsp;{$links}</td>

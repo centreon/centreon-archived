@@ -76,7 +76,7 @@
 			require_once($path."viewServiceComment.php"); 
 			break; 
 		case "dh" : 
-			DeleteComment("HOST",isset($_GET["select"]) ? $_GET["select"] : array());
+			DeleteComment("HOST",isset($_POST["select"]) ? $_POST["select"] : array());
 			require_once($path."viewComment.php"); 
 			break;
 		case "vh" :

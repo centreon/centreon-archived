@@ -107,7 +107,8 @@
 				$id .= "MS_".$res["meta_id"].",";
 				$meta = 1;
 			} else {
-				$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
+				if (isset($tmp[1]))
+					$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
 			}
 		}
 	}

@@ -49,13 +49,14 @@
 				"WHERE h.host_id = hsr.host_host_id " .
 				"AND hsr.service_service_id = '".$service_id."' LIMIT 1";		
 		$DBRES =& $pearDB->query($query);
+		
 		if (!$DBRES->numRows())
 			$combo = "- / " . $service_description;
 		else {
 			$row =& $DBRES->fetchRow();
 			$combo = $row['host_name'] . " / ". $service_description;
 		}
-				
+		
 		return $combo;
 	}
 
@@ -242,19 +243,20 @@
 			$row["service_id"] = '';
 			# Loop on the number of Service we want to duplicate
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
-				$val = null;
+				$val = NULL;		
 				# Create a sentence which contains all the value
-				foreach ($row as $key2=>$value2)	{
-					if ($key2 == "service_description" && $descKey)
-						$service_description = $value2 = $value2."_".$i;
+				foreach ($row as $key2=>$value2)	{					
+					if ($key2 == "service_description" && $descKey) {						
+						$service_description = $value2 = $value2."_".$i;						
+					}
 					else if ($key2 == "service_description")
 						$service_description = NULL;
-					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");					
 					if ($key2 != "service_id")
 						$fields[$key2] = $value2;
 					if (isset($service_description))
-						$fields["service_description"] = $service_description;
-				}
+						$fields["service_description"] = $service_description;					
+				}				
 				if (!count($hPars))
 					$hPars = getMyServiceHosts($key);
 				if (!count($hgPars))
@@ -262,7 +264,7 @@
 				if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars)) || (!$row["service_register"] && testServiceTemplateExistence($service_description)))	{
 					$hPars = array();
 					$hgPars = array();
-					(isset($val) && $val != "NULL" && $val) ? $rq = "INSERT INTO service VALUES (".$val.")" : $rq = NULL;
+					(isset($val) && $val != "NULL" && $val) ? $rq = "INSERT INTO service VALUES (".$val.")" : $rq = NULL;					
 					if (isset($rq)) {
 						$DBRESULT =& $pearDB->query($rq);
 						$DBRESULT =& $pearDB->query("SELECT MAX(service_id) FROM service");
@@ -446,7 +448,7 @@
 	
 	function insertServiceInDB ($ret = array(), $macro_on_demand = NULL)	{
 		global $oreon;
-				
+		
 		$tmp_fields = array();
 		$tmp_fields = insertService($ret, $macro_on_demand);
 		$service_id = $tmp_fields['service_id'];
@@ -465,6 +467,8 @@
 	
 	function insertService($ret = array(), $macro_on_demand = NULL)	{
 		global $form, $pearDB, $oreon;
+		
+		
 		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
@@ -550,12 +554,11 @@
 		 */
 		if (isset($macro_on_demand))
 			$my_tab = $macro_on_demand;
-		else if (isset($_POST['nbOfMacro']))
+		else if (isset($ret['nbOfMacro']))
 			$my_tab = $ret;
 		if (isset($my_tab['nbOfMacro'])) {			
 			$already_stored = array(); 		
-	 		for ($i=0; $i <= $my_tab['nbOfMacro']; $i++)
-	 		{ 			
+	 		for ($i=0; $i <= $my_tab['nbOfMacro']; $i++) { 			
 	 			$macInput = "macroInput_" . $i;
 	 			$macValue = "macroValue_" . $i;
 	 			if (isset($my_tab[$macInput]) && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]) {

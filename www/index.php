@@ -154,7 +154,11 @@
 		isset($_POST["password"]) ? $passwordP = $_POST["password"] : $passwordP = NULL;
 		$passwordG ? $password = $passwordG : $password = $passwordP;
 	    
-	    $centreonAuth = new CentreonAuth($useralias, $password, $autologin, $pearDB, $CentreonLog);
+	    if (!isset($encryptType)) {
+	    	$encryptType = 1;
+	    }
+	    
+	    $centreonAuth = new CentreonAuth($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType);
 	     
 	    if ($centreonAuth->passwdOk == 1) {
 	    	$user =& new CentreonUser($centreonAuth->userInfos, $generalOptions["nagios_version"]);

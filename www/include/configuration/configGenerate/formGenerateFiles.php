@@ -182,6 +182,7 @@
 								foreach ($files as $filename)
 									require_once ($filename);
 						}
+						}
 					}
 					unset($generatedHG);
 					unset($generatedSG);

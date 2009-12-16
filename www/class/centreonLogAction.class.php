@@ -58,6 +58,7 @@ class CentreonLogAction {
  		}
  		$query[strlen($query)-2] = " "; //removes the last coma
  		$DBRESULT =& $pearDBO->query($query); 		
+ 		unset($DBRESULT);
  	}
 	
 	/*
@@ -82,11 +83,11 @@ class CentreonLogAction {
 		global $pearDB;
 	
 		$DBRESULT =& $pearDB->query("SELECT contact_name FROM `contact` WHERE contact_id = '$id' LIMIT 1");				
-		while ($data =& $DBRESULT->fetchRow()) {
+		while ($data =& $DBRESULT->fetchRow())
 			$name = $data["contact_name"];
-		}
-			
-	return $name;
+		unset($data);
+		$DBRESULT->free();	
+		return $name;
 	}
 	
 	/*
@@ -97,8 +98,7 @@ class CentreonLogAction {
 		$list_actions = array();
 		$i = 0;
 		
-		$DBRESULT =& $pearDBO->query("SELECT * FROM log_action WHERE object_id ='".$id."' AND object_type = '".$object_type."' ORDER BY action_log_date DESC");		
-		
+		$DBRESULT =& $pearDBO->query("SELECT * FROM log_action WHERE object_id ='".$id."' AND object_type = '".$object_type."' ORDER BY action_log_date DESC");
 		while ($data =& $DBRESULT->fetchRow()) {
 			$list_actions[$i]["action_log_id"] = $data["action_log_id"];
 			$list_actions[$i]["action_log_date"] = date("d/m/Y H:i",$data["action_log_date"]);
@@ -109,7 +109,8 @@ class CentreonLogAction {
 			$list_actions[$i]["log_contact_id"] = $this->getContactname($data["log_contact_id"]);
 			$i++;
 		}
-
+		$DBRESULT->free();
+		unset($data);		
 		return $list_actions;
 	}
 	
@@ -138,8 +139,7 @@ class CentreonLogAction {
 					$list_modifications[$i]["field_value_before"] = "";//$field["field_value"];
 					$list_modifications[$i]["field_value_after"] = $field["field_value"];
 					$j++;
-				}
-				else {
+				} else {
 					foreach ($ref as $key => $value) {
 						if (!isset($ref[$field["field_name"]])) {
 							$list_modifications[$i]["field_value_before"] = "";
@@ -157,6 +157,7 @@ class CentreonLogAction {
 					}
 				}
 				$i++;
+				$DBRESULT->free();
 			}
 		}
 		return $list_modifications;
@@ -176,11 +177,9 @@ class CentreonLogAction {
 		$actionList["mc"] = "Massive change";	
 		
 		foreach ($actionList as $key => $value) {
-			if ($action == $key) {
+			if ($action == $key)
 				$action = $value;
-			}
 		}
-		
 		return $action;
 	}
 	

@@ -49,6 +49,12 @@ class CentreonDB {
 	private $options;
 	private $centreon_path;
 	private $log;
+	/*
+	 * Statistics
+	 */
+	private $requestExecuted;
+	private $requestSuccessful;
+	private $lineRead;
 	
 	/*
 	 *  Constructor only accepts 1 parameter which can be :
@@ -85,9 +91,18 @@ class CentreonDB {
 				$this->connectToCentreon($conf_centreon);
 				$this->connect();
 				break;
-		}		
+		}
+		/*
+		 * Init request statistics
+		 */
+		$this->requestExecuted = 0;
+		$this->requestSuccessful = 0;
+		$this->lineRead = 0;
     }
-    
+
+	/*
+	 * Display Connexion errors Page
+	 */    
 	private function displayConnectionErrorPage() {
 		echo "<img src='./img/centreon.gif'><br/>";
 		echo "<b>" . _("Connection failed, please contact your administrator") . "</b>";		
@@ -173,36 +188,43 @@ class CentreonDB {
      *  Query
      */
     public function query($query_string = NULL) {    	
-    	global $oreon;
-    	
+		$this->requestExecuted++;
     	$DBRES = $this->privatePearDB->query($query_string);
     	if (PEAR::isError($DBRES))
     		$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
+		else
+			$this->requestSuccessful++;
     	return $DBRES;
     }
     
     /*
      * Check NDO user grants
      */
-
 	public function hasGrants($grant = "") {
 		if ($grant == "")
 			return 0;
 		
 		$db_name = $this->dsn["database"];
-		 
+		
+		$db_nameSec = str_replace("_", "\\\_", $this->dsn["database"]);
+		$db_nameSec = str_replace("-", "\\\-", $db_nameSec); 
+
 		$DBRESULT =& $this->query("show grants"); 
 		while ($result =& $DBRESULT->fetchRow()) {
 			foreach ($result as $key => $value)
 				;
-			$expr = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `".$db_name."`.\*/";				
-			if (preg_match($expr, $value, $matches)) {
+			$expr = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `".$db_name."`.\*/";
+			$expr2 = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `".$db_nameSec."`.\*/";				
+			if (preg_match($expr, $value, $matches) || preg_match($expr2, $value, $matches)) {
 				if ($matches[1] == "ALL PRIVILEGES" || strstr($matches[1], $grant)) {
 					return 1;
 				}
 			}
 		}
 	}
-
+	
+	/*
+	 * End of Class
+	 */
 }
 ?>

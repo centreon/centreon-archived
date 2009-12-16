@@ -167,8 +167,8 @@
 	#
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"10");
-	$attrsAdvSelect = array("style" => "width: 250px; height: 150px;");
-	$attrsAdvSelect2 = array("style" => "width: 250px; height: 400px;");
+	$attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
+	$attrsAdvSelect2 = array("style" => "width: 300px; height: 400px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
@@ -217,7 +217,7 @@
 	#
 	$form->addElement('header', 'hosts', _("Implied Hosts"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_hosts', _("Hosts"), $hosts, $attrsAdvSelect);
+    $ams1 =& $form->addElement('advmultiselect', 'esc_hosts', _("Hosts"), $hosts, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -239,7 +239,7 @@
 	#
 	$form->addElement('header', 'hgs', _("Implied HostGroups"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_hgs', _("HostGroup"), $hgs, $attrsAdvSelect);
+    $ams1 =& $form->addElement('advmultiselect', 'esc_hgs', _("HostGroup"), $hgs, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -250,7 +250,7 @@
 	#
 	$form->addElement('header', 'metas', _("Implied Meta Services"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_metas', _("Meta Service"), $metas, $attrsAdvSelect);
+    $ams1 =& $form->addElement('advmultiselect', 'esc_metas', _("Meta Service"), $metas, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -261,7 +261,7 @@
 	#
 	$form->addElement('header', 'sgs', _("Implied Servicegroups"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_sgs', _("ServiceGroup"), $sgs, $attrsAdvSelect);
+    $ams1 =& $form->addElement('advmultiselect', 'esc_sgs', _("ServiceGroup"), $sgs, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);

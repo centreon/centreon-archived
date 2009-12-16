@@ -8,7 +8,10 @@
 		/*
 		 * Destination is centcore pipe path
 		 */
-		
+		$cmd = str_replace("`", "&#96;", $cmd);
+		$cmd = str_replace("'", "&#39;", $cmd);
+
+		$cmd = str_replace("\n", "<br>", $cmd);
 		$informations = split(";", $key);
 		if ($poller && isPollerLocalhost($pearDB, $poller)) {
 			$str = "[" . time() . "]" . $cmd . "\n";

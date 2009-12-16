@@ -44,7 +44,7 @@
   */
  class CentreonACL {
  	private $userID; /* ID of the user */
- 	private $admin; /* Flag that tells us if the user is admin or not */
+ 	public $admin; /* Flag that tells us if the user is admin or not */
  	private $accessGroups = array(); /* Access groups the user belongs to */
  	private $resourceGroups = array(); /* Resource groups the user belongs to */
  	public  $hostGroups = array(); /* Hostgroups the user can see */
@@ -721,8 +721,6 @@
 			} else {
 				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_id = '".$host_id."' AND group_id IN (".$this->getAccessGroupsString().")";
 				$DBRESULT =& $pearDBndo->query($query);
-				$row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-				$row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
 				while ($row =& $DBRESULT->fetchRow()) {
 					$row['service_description'] = str_replace("#S#", "/", $row['service_description']);
 					$row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);

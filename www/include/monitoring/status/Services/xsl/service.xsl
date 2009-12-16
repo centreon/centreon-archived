@@ -28,7 +28,7 @@
 	<xsl:for-each select="//l">
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
-  		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
+		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
 		<td class="ListColPicker">
 			<xsl:element name="input">
 				<xsl:attribute name="type">checkbox</xsl:attribute>

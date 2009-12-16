@@ -31,8 +31,8 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
+ * SVN : $URL: http://svn.centreon.com/branches/centreon-2.1/www/include/monitoring/status/Hosts/xml/hostXML.php $
+ * SVN : $Id: hostXML.php 9401 2009-11-20 09:18:02Z shotamchay $
  * 
  */
 

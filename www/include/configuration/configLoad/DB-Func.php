@@ -345,16 +345,16 @@
 		}
 		/*
 		 * Turn 6 -> Services
-		 */
+		 */		
 		if ($debug_nagios_import == 1)
 			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 6 -> Services\n", 3, $debug_path."cfgimport.log");
 		reset($buf);
 		$useTpl = array();
 		$useTpls = array();
 		require_once("./include/configuration/configObject/service/DB-Func.php");
-		foreach ($buf as $str)	{
+		foreach ($buf as $str)	{			
 			$regs = array();
-			if (preg_match("/}/", $str) && $get)	{
+			if (preg_match("/}/", $str) && $get)	{								
 				switch ($typeDef)	{
 					case "service": $useTpl = insertServiceCFG($tmpConf); count($useTpl) ? $useTpls[$useTpl[0]] = $useTpl[1] : NULL; break;
 					case "hostdependency": insertHostDependencyCFG($tmpConf); break;
@@ -789,6 +789,56 @@
 		return true;
 	}
 
+	
+	function insertServiceExtInfoCFG($tmpConf = array())	{
+		global $nbr, $oreon, $debug_nagios_import, $debug_path;		
+		
+		/*
+		 * Include host Tools
+		 */
+		require_once("./include/configuration/configObject/service/DB-Func.php");
+		require_once("./class/centreonDB.class.php");
+		require_once("./class/centreonService.class.php");
+		require_once("./class/centreonMedia.class.php");
+		
+		$DB = new CentreonDB();
+		$svcObj = new CentreonService($DB);
+		$mediaObj = new CentreonMedia($DB);
+		
+		foreach ($tmpConf as $key => $value) {
+			switch($key)	{
+				case "notes" : $tmpConf["esi_notes"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "notes_url" : $tmpConf["esi_notes_url"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "action_url" : $tmpConf["esi_action_url"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "icon_image" : $tmpConf["esi_icon_image"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;
+				case "icon_image_alt" : $tmpConf["esi_icon_image_alt"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;												case "host_name" :
+					$tmpConf["host_name"] = trim($tmpConf[$key]);					
+					$tmpConf["host_name"] = str_replace("/", "#S#", $tmpConf["host_name"]);
+					$tmpConf["host_name"] = str_replace("\\", "#BS#", $tmpConf["host_name"]);					
+					break;
+				case "service_description" : 
+					$tmpConf["service_descriptions"] = explode(",", $tmpConf[$key]);					
+					unset ($tmpConf[$key]); break;
+			}
+		}
+				
+		if (isset($tmpConf["host_name"]) && isset($tmpConf["service_descriptions"])) {			
+			foreach ($tmpConf["service_descriptions"] as $key2 => $value2)	{
+				$value2 = str_replace("/", "#S#", $value2);
+				$value2 = str_replace("\\", "#BS#", $value2);
+				$tmpConf["service_descriptions"][$key2] = $svcObj->getServiceId(trim($value2), $tmpConf["host_name"]);
+				if (!$tmpConf["service_descriptions"][$key2])
+					unset($tmpConf["service_descriptions"][$key2]);
+			}			
+			foreach($tmpConf["service_descriptions"] as $key => $value)	{				
+				updateServiceExtInfos($value, $tmpConf);
+				$nbr["sei"] += 1;
+			}
+		}
+		return true;
+	}
+	
+	
 	function insertHostGroupCFG($tmpConf = array())	{
 		global $nbr, $oreon, $debug_nagios_import, $debug_path;
 		

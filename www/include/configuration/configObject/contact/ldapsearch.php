@@ -48,6 +48,7 @@
 
 	if (!isset($_SESSION["oreon"])) {
 		header("Location: ../../../../index.php");
+		exit();
 	} else {
 		$oreon =& $_SESSION["oreon"];
 	}
@@ -183,7 +184,7 @@
 		if ($number_returned) {
 			$buffer->startElement("reponse");
 			$buffer->writeElement("entries", $number_returned);			
-			for ($i = 0 ; $i < $number_returned ; $i++) {
+			for ($i = 1 ; $i < $number_returned ; $i++) {
 				if (isset($info[$i]["givenname"])){
 					$isvalid = "0";
 					
@@ -267,7 +268,6 @@
 
 	header('Content-Type: text/xml');
 
-	
 	$buffer->output();
 	
 	if ($debug_ldap_import == 1)

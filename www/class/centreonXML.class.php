@@ -37,7 +37,7 @@
  */
  
  /*
-  *  Class that is used for writing & reading XML in utf_8 only!
+  *  Class that is used for writing XML in utf_8 only!
   */
   class CentreonXML {
   	var $buffer;
@@ -86,10 +86,11 @@
   	public function writeElement($element_tag, $element_value, $encode = 1) {
   		$this->startElement($element_tag);
   		$element_value = preg_replace('/[\x00-\x19\x7F]/', "", $element_value);
-		if ($encode)
-	  		$this->buffer->writeCData(utf8_encode(html_entity_decode($element_value)));
+		$element_value = html_entity_decode($element_value);
+		if ($encode || mb_detect_encoding($element_value)!="UTF-8")
+	  		$this->buffer->writeCData(utf8_encode($element_value));
   		else
-  			$this->buffer->writeCData(html_entity_decode($element_value));
+  			$this->buffer->writeCData($element_value);
   		
   		$this->endElement();
   	}
@@ -109,4 +110,4 @@
   		print $this->buffer->outputMemory(true);
   	}
   }
- ?>
+?>

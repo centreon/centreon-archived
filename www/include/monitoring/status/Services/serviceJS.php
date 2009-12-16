@@ -447,8 +447,8 @@
 		}		
 		var author = document.getElementById('author').value;
 
-	   	xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
-    		xhr_cmd.send(null);
+		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+		xhr_cmd.send(null);
 		Modalbox.hide();		
 	}
 </SCRIPT>

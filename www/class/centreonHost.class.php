@@ -119,7 +119,10 @@
         if (!$DBRESULT->numRows())
         	return $string;
         $row =& $DBRESULT->fetchRow();
-        // replace if not template
+        
+        /*
+         * replace if not template
+         */
         if ($row['host_register']) {
 			if (strpos($string, "\$HOSTADDRESS$"))
 	 			$string = str_replace("\$HOSTADDRESS\$", $this->getHostAddress($host_id), $string);
@@ -129,9 +132,9 @@
 	 			$string = str_replace("\$HOSTALIAS\$", $this->getHostAlias($host_id), $string);
         }
         unset($row);
-        
+        	
  		$matches = array();
- 		$pattern = '|(\$_HOST[0-9a-zA-Z]+\$)|';
+ 		$pattern = '|(\$_HOST[0-9a-zA-Z\_\-]+\$)|';
  		preg_match_all($pattern, $string, $matches);
  		$i = 0; 		
  		while (isset($matches[1][$i])) {	 			 			
@@ -149,8 +152,8 @@
 	 			$string = $this->replaceMacroInString($row2['host_tpl_id'], $string);
 	 		}
  		}
- 		return $string;
- 	}
- }
+		return $string;
+	}
+}
  
- ?>
+?>

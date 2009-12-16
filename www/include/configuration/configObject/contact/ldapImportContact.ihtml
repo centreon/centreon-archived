@@ -16,6 +16,7 @@
 	</table>
 	<input type='hidden' name='o' value='{$o}'>
 	<div id="validForm">
+	<input type='hidden' name='o' value='{$o}'>
 	{if $o == "li"}
 		<p>{$form.action.html}</p>
 		<p class="oreonbutton">{$form.submitA.html}</p>

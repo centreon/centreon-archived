@@ -127,7 +127,7 @@
 
 		$rq .=  	" AND no.object_id IN (" .
 					" SELECT nno.object_id FROM " .$ndo_base_prefix."objects nno " .
-					" WHERE nno.objecttype_id =2 AND nno.name1 = '".$host_name."')";
+					" WHERE nno.objecttype_id =2 AND nno.name1 IN (".$host_name."))";
 
 		if ($instance != "ALL")
 			$rq .= 	" AND no.instance_id = ".$instance;

@@ -232,7 +232,7 @@
 	}
 
 	function insertContact($ret = array())	{
-		global $form, $pearDB, $oreon, $centreon_crypt;
+		global $form, $pearDB, $oreon, $encryptType;
 	
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
@@ -251,9 +251,9 @@
 		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		if ($centreon_crypt == 1)
+		if ($encryptType == 1)
 			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".md5($ret["contact_passwd"])."', ": $rq .= "NULL, ";
-		else if ($centreon_crypt == 2)
+		else if ($encryptType == 2)
 			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".sha1($ret["contact_passwd"])."', ": $rq .= "NULL, ";
 		else
 			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".md5($ret["contact_passwd"])."', ": $rq .= "NULL, ";
@@ -295,9 +295,9 @@
 		if (isset($ret["contact_alias"]))
 			$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES);
 		if (isset($ret["contact_passwd"])) {
-			if ($centreon_crypt == 1)
+			if ($encryptType == 1)
 				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
-			else if ($centreon_crypt == 2)
+			else if ($encryptType == 2)
 				$fields["contact_passwd"] = sha1($ret["contact_passwd"]);
 			else
 				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
@@ -358,7 +358,7 @@
 	}
 
 	function updateContact($contact_id = null, $from_MC = false)	{
-		global $form, $pearDB, $oreon, $centreon_crypt;
+		global $form, $pearDB, $oreon, $encryptType;
 		if (!$contact_id) 
 			return;
 		$ret = array();
@@ -376,9 +376,9 @@
 			isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		}
 		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
-			if ($centreon_crypt == 1)
+			if ($encryptType == 1)
 				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";	
-			else if ($centreon_crypt == 2)
+			else if ($encryptType == 2)
 				$rq .= "contact_passwd = '".sha1($ret["contact_passwd"])."', ";	
 			else
 				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";	
@@ -432,9 +432,9 @@
 		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES);
 		$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES);
-		if ($centreon_crypt == 1)
+		if ($encryptType == 1)
 			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
-		else if ($centreon_crypt == 2)
+		else if ($encryptType == 2)
 			$fields["contact_passwd"] = sha1($ret["contact_passwd"]);
 		else
 			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
@@ -450,7 +450,8 @@
 		$fields["contact_auth_type"] = $ret["contact_auth_type"];
 		if (isset($ret["contact_ldap_dn"]))
 			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
-		$fields["contact_location"] = $ret["contact_location"];
+		if (isset($ret["contact_location"]))
+			$fields["contact_location"] = $ret["contact_location"];
 		$fields["contact_hostNotifCmds"] = implode(",", $ret["contact_hostNotifCmds"]);
 		$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
 		if (isset($ret["contact_cgNotif"]))
@@ -468,7 +469,7 @@
 	}
 
 	function updateContact_MC($contact_id = null)	{
-		global $form, $pearDB, $oreon, $centreon_crypt;
+		global $form, $pearDB, $oreon, $encryptType;
 		if (!$contact_id) 
 			return;
 		$ret = array();
@@ -483,10 +484,10 @@
 			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];	
 		}
 		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) { 
-			if ($centreon_crypt == 1) {
+			if ($encryptType == 1) {
 				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
 				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
-			} else if ($centreon_crypt == 2) {
+			} else if ($encryptType == 2) {
 				$rq .= "contact_passwd = '".sha1($ret["contact_passwd"])."', ";
 				$fields["contact_passwd"] = sha1($ret["contact_passwd"]);
 			} else {

@@ -83,7 +83,7 @@
 	}
 	
 	function updateContact($contact_id = null)	{
-		global $form, $pearDB, $oreon, $centreon_crypt;
+		global $form, $pearDB, $oreon, $encryptType;
 		
 		if (!$contact_id) 
 			return;
@@ -97,9 +97,9 @@
 		isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		
 		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
-			if ($centreon_crypt == 1)
+			if ($encryptType == 1)
 				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";	
-			else if ($centreon_crypt == 2)
+			else if ($encryptType == 2)
 				$rq .= "contact_passwd = '".sha1($ret["contact_passwd"])."', ";	
 			else
 				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";				

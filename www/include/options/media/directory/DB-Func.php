@@ -76,6 +76,7 @@
 			$dir_alias =& $DBRESULT->fetchRow();
 			$fileTab = scandir("./img/media/" . $dir_alias["dir_alias"]);
 			foreach ($fileTab as $fileName)
+			    if ($filename != "." && $filename != "..")
 				unlink("./img/media/" . $dir_alias["dir_alias"] . "/" . $fileName);
 			rmdir("./img/media/".$dir_alias["dir_alias"]);
 			if (!is_dir("./img/media/".$dir_alias["dir_alias"]))	{
@@ -181,6 +182,7 @@
 		
 		$fileTab = scandir("./img/media/".$dir_alias);
 		foreach ($fileTab as $fileName) {
+		    if ($fileName != "." && $fileName != "..")
 			unlink("./img/media/".$dir_alias."/".$fileName);			
 		}		
 		

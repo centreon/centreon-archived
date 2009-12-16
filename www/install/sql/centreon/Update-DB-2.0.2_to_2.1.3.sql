@@ -195,4 +195,86 @@ UPDATE topology SET topology_name = 'Global Health' WHERE topology_page = '10102
 
 UPDATE `topology` SET `topology_show` = '0' WHERE `topology`.`topology_page` = 50105 LIMIT 1;
 
-UPDATE `informations` SET `value` = '2.1-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0.2' LIMIT 1;
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL, 50202, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL, 50202, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL, 50202, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL, 60101, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL, 60101, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL, 60101, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+
+INSERT INTO `topology_JS` (id_page, o, PathName_js, Init) VALUES ('2021203', NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
+
+ALTER TABLE cfg_nagios ADD debug_level_opt VARCHAR(200) DEFAULT '0' AFTER debug_level;
+
+UPDATE `giv_graphs_template` SET `scaled` = '1';
+
+UPDATE `topology` SET `topology_name` = 'Service Problems' WHERE `topology`.`topology_name` = 'Services Problems';
+UPDATE `topology` SET `topology_name` = 'Services by host' WHERE `topology`.`topology_name` = 'Services by hosts';
+UPDATE `topology` SET `topology_name` = 'Services by host group' WHERE `topology`.`topology_name` = 'Services by hosts group';
+UPDATE `topology` SET `topology_name` = 'Service Groups' WHERE `topology`.`topology_name` = 'Services Groups';
+UPDATE `topology` SET `topology_name` = 'Contact Groups' WHERE `topology`.`topology_name` = 'Contacts Groups';
+UPDATE `topology` SET `topology_name` = 'Host Groups' WHERE `topology`.`topology_name` = 'Hosts Groups';
+UPDATE `topology` SET `topology_name` = 'Bug Tracker' WHERE `topology`.`topology_name` = 'Bugs Tracker';
+
+DELETE FROM topology WHERE topology_parent = 203 AND topology_name = 'Advanced Logs';
+DELETE FROM topology WHERE topology_parent = 203 AND topology_page = '20311';
+DELETE FROM topology WHERE topology_parent = 203 AND topology_page = '20312';
+DELETE FROM topology WHERE topology_parent = 203 AND topology_page = '20313';
+DELETE FROM topology WHERE topology_parent = 203 AND topology_page = '20314';
+
+UPDATE `command` SET `command_line` = '$USER1$#S#process-service-perfdata  &quot;$LASTSERVICECHECK$&quot; &quot;$HOSTNAME$&quot; &quot;$SERVICEDESC$&quot; &quot;$LASTSERVICESTATE$&quot; &quot;$SERVICESTATE$&quot; &quot;$SERVICEPERFDATA$&quot;' WHERE `command_name` = 'process-service-perfdata' LIMIT 1;
+
+ALTER TABLE `extended_host_information` ADD UNIQUE (`host_host_id`);
+UPDATE `topology` set `topology_show` = '0' WHERE `topology_page` = '50105' LIMIT 1;
+
+ALTER TABLE `topology_JS` ADD INDEX ( `id_page` , `o` );
+ALTER TABLE `acl_topology` ADD INDEX ( `acl_topo_id` , `acl_topo_activate` ); 
+
+UPDATE `acl_resources` SET `changed` = '1';
+
+CREATE TABLE IF NOT EXISTS `acl_resources_meta_relations` (
+  `armse_id` int(11) NOT NULL auto_increment,
+  `meta_id` int(11) default NULL,
+  `acl_res_id` int(11) default NULL,
+  PRIMARY KEY  (`armse_id`),
+  KEY `meta_id` (`meta_id`),
+  KEY `acl_res_id` (`acl_res_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ALTER TABLE `acl_resources_meta_relations` ADD FOREIGN KEY ( `meta_id` ) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE ;
+ALTER TABLE `acl_resources_meta_relations` ADD FOREIGN KEY ( `acl_res_id` ) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE ;
+
+DELETE FROM acl_resources_sg_relations WHERE NOT EXISTS (SELECT * FROM acl_resources WHERE acl_resources_sg_relations.acl_res_id = acl_resources.acl_res_id);
+DELETE FROM acl_resources_sg_relations WHERE NOT EXISTS (SELECT * FROM servicegroup WHERE servicegroup.sg_id = acl_resources_sg_relations.sg_id);
+ALTER TABLE `acl_resources_sg_relations` ADD INDEX ( `sg_id` , `acl_res_id` );
+ALTER TABLE `acl_resources_sg_relations` ADD INDEX ( `sg_id` );
+ALTER TABLE `acl_resources_sg_relations` ADD INDEX ( `acl_res_id` );
+ALTER TABLE `acl_resources_sg_relations` ADD FOREIGN KEY ( `sg_id` ) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE ;
+ALTER TABLE `acl_resources_sg_relations` ADD FOREIGN KEY ( `acl_res_id` ) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE ;
+
+DELETE FROM acl_resources_hg_relations WHERE NOT EXISTS (SELECT * FROM hostgroup WHERE hg_id = hg_hg_id);
+DELETE FROM acl_resources_hg_relations WHERE NOT EXISTS (SELECT * FROM acl_resources WHERE acl_resources_hg_relations.acl_res_id = acl_resources.acl_res_id);
+ALTER TABLE `acl_resources_hg_relations` ADD INDEX ( `hg_hg_id` );
+ALTER TABLE `acl_resources_hg_relations` ADD INDEX ( `acl_res_id` );
+ALTER TABLE `acl_resources_hg_relations` ADD INDEX ( `hg_hg_id` , `acl_res_id` );
+ALTER TABLE `acl_resources_hg_relations` ADD FOREIGN KEY ( `hg_hg_id` ) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE ;
+ALTER TABLE `acl_resources_hg_relations` ADD FOREIGN KEY ( `acl_res_id` ) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE ;
+
+DELETE FROM acl_actions_rules WHERE NOT EXISTS (SELECT * FROM acl_actions WHERE acl_action_rule_id = acl_action_id);
+ALTER TABLE `acl_actions_rules` ADD INDEX ( `acl_action_rule_id` );
+ALTER TABLE `acl_actions_rules` ADD FOREIGN KEY ( `acl_action_rule_id` ) REFERENCES `acl_actions` (`acl_action_id`) ON DELETE CASCADE ;
+
+
+UPDATE `topology` SET topology_url = 'http://trac.centreon.com/' WHERE topology_url LIKE 'http://bugs.centreon.com%';
+
+UPDATE `acl_resources` SET changed = '1';
+
+
+DELETE FROM topology WHERE topology_name = 'm_service' AND topology_page = '2031202';
+DELETE FROM topology WHERE topology_name = 'm_host' AND topology_page = '2031301';
+DELETE FROM topology WHERE topology_name = 'm_service' AND topology_page = '2031302';
+DELETE FROM topology WHERE topology_name = 'modOSM_m_osm' AND topology_page = '41099';
+DELETE FROM topology WHERE topology_name = 'hidden redirect' AND topology_page = '40207';
+
+UPDATE `informations` SET `value` = '2.1.4' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0.2' LIMIT 1;

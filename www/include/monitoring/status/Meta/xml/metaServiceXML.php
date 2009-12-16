@@ -143,6 +143,8 @@
 				$ACLString .= ",";
 			$ACLString .= "'meta_".$key."'";
 		}
+		if ($ACLString == "")
+			$ACLString = "''";
 		$rq .= " AND no.name2 IN (".$ACLString.") AND no.name1 LIKE '_Module_Meta' ";
 	}	
 	if ($search_type_host && $search_type_service && $search){

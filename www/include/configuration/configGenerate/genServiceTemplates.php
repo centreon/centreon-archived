@@ -46,7 +46,7 @@
 	 * Create contact relation Cache
 	 */
 	$cgSvcCache = array();
-	$DBRESULT2 =& $pearDB->query("SELECT s.service_id, cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg, service s WHERE csr.service_service_id = s.service_id AND csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
+	$DBRESULT2 =& $pearDB->query("SELECT s.service_id, cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg, service s WHERE csr.service_service_id = s.service_id AND csr.contactgroup_cg_id = cg.cg_id");
 	while ($cg =& $DBRESULT2->fetchRow())	{
 		if (!isset($cgSvcCache[$cg["service_id"]]))		
 			$cgSvcCache[$cg["service_id"]] = array();	

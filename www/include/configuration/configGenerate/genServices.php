@@ -39,14 +39,13 @@
 	if (!isset($oreon))
 		exit();
 
-	require_once ("@CENTREON_ETC@/centreon.conf.php");
 	require_once ($centreon_path . "/www/class/centreonService.class.php");
 
 	/*
 	 * Build cache for CG
 	 */
 	$cgSCache = array();
-	$DBRESULT =& $pearDB->query("SELECT csr.service_service_id, cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
+	$DBRESULT =& $pearDB->query("SELECT csr.service_service_id, cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.contactgroup_cg_id = cg.cg_id");
 	while ($cg =& $DBRESULT->fetchRow()) {
 		if (!isset($cgSCache[$cg["service_service_id"]]))
 			$cgSCache[$cg["service_service_id"]] = array();
@@ -59,7 +58,7 @@
 	 * Build cache for services contact
 	 */
 	$cctSCache = array();
-	$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name, csr.service_service_id FROM contact_service_relation csr, contact c WHERE csr.contact_id = c.contact_id ORDER BY `contact_name`");
+	$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name, csr.service_service_id FROM contact_service_relation csr, contact c WHERE csr.contact_id = c.contact_id");
 	while ($contact =& $DBRESULT2->fetchRow())	{
 		if (!isset($cctSCache[$contact["service_service_id"]]))
 			$cctSCache[$contact["service_service_id"]] = array();
@@ -72,7 +71,7 @@
 	 * Build cache for service group
 	 */
 	$sgCache = array();
-	$DBRESULT2 =& $pearDB->query("SELECT sgr.service_service_id, sg.sg_id, sg.sg_name FROM servicegroup_relation sgr, servicegroup sg WHERE sgr.servicegroup_sg_id = sg.sg_id ORDER BY `sg_name`");
+	$DBRESULT2 =& $pearDB->query("SELECT sgr.service_service_id, sg.sg_id, sg.sg_name FROM servicegroup_relation sgr, servicegroup sg WHERE sgr.servicegroup_sg_id = sg.sg_id");
 	while ($serviceGroup =& $DBRESULT2->fetchRow())	{
 		if (!isset($sgCache[$serviceGroup["service_service_id"]]))
 			$sgCache[$serviceGroup["service_service_id"]] = array();		
@@ -335,6 +334,14 @@
 		}
 		
 	} else {
+		
+		$hostGroupCorresp = array();
+		$DBRESULT =& $pearDB->query("SELECT hg_name, hg_id FROM hostgroup");
+		while ($data =& $DBRESULT->fetchRow())
+			$hostGroupCorresp[$data["hg_id"]] = $data["hg_name"];
+		$DBRESULT->free();
+		unset($data);
+		
 		/*
 		 * Create Service relation buffer
 		 */
@@ -343,10 +350,10 @@
 		while ($data =& $DBRESULT2->fetchRow())	{
 			if (!isset($serviceRelation[$data["service_id"]]))
 				$serviceRelation[$data["service_id"]] = array();
-			if (isset($data["hg_id"]) && isset($generatedHG[$data["hg_id"]]) && isset($hgHostGenerated[$data["hg_id"]])) {
+			if (isset($data["hg_id"]) && isset($generatedHG[$data["hg_id"]]) && isset($hgHostGenerated[$hostGroupCorresp[$data["hg_id"]]])) {
 				if (!isset($serviceRelation[$data["service_id"]]["hg"]))
 					$serviceRelation[$data["service_id"]]["hg"] = array();
-				$serviceRelation[$data["service_id"]]["hg"][$data["hg_id"]] = $generatedHG[$data["host_id"]];
+				$serviceRelation[$data["service_id"]]["hg"][$data["hg_id"]] = $generatedHG[$data["hg_id"]];
 			}
 			if (isset($data["host_id"]) && isset($hostGenerated[$data["host_id"]])) {
 				if (!isset($serviceRelation[$data["service_id"]]["h"]))
@@ -357,8 +364,6 @@
 		$DBRESULT2->free();
 		
 		$DBRESULT =& $pearDB->query("SELECT * FROM service WHERE `service_activate` = '1' AND `service_register` = '1' ORDER BY `service_description`");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$service = array();
 		$i = 1;
 		$str = NULL;
@@ -371,7 +376,7 @@
 			$service["service_alias"] = str_replace('#S#', "/", $service["service_alias"]);
 			$service["service_alias"] = str_replace('#BS#', "\\", $service["service_alias"]);
 			
-			if (isset($gbArr[4][$service["service_id"]]))	{
+			if (isset($gbArr[4][$service["service_id"]])) {
 				/*
 				 *  Can merge multiple Host or HostGroup Definition
 				 */
@@ -385,7 +390,7 @@
 						$strTMP .= "# ".$cmt."\n";
 				}
 				$strTMP .= "define service{\n";
-				if ($service["service_register"])	{
+				if ($service["service_register"] == 1 && (isset($serviceRelation[$service["service_id"]]["h"]) || isset($serviceRelation[$service["service_id"]]["hg"])))	{
 					/*
 					 * HostGroup Relation
 					 */
@@ -582,7 +587,7 @@
 					$DBRESULT_TEMP =& $pearDB->query("SELECT host_name FROM host, host_service_relation WHERE `service_service_id` = '".$service["service_id"]."' AND `host_id` = `host_host_id`");
 					if (PEAR::isError($DBRESULT_TEMP))
 						print "DB Error : ".$DBRESULT_TEMP->getDebugInfo()."<br />";
-					while($template_link =& $DBRESULT_TEMP->fetchRow())
+					while ($template_link =& $DBRESULT_TEMP->fetchRow())
 						$strTMP .= print_line(";TEMPLATE-HOST-LINK", $template_link["host_name"]);
 					unset($template_link);
 					unset($DBRESULT_TEMP);
@@ -626,7 +631,9 @@
 				unset($strTMPTemp);
 			}
 		}
+		unset($serviceRelation);
 	}
+	
 	
 	unset($service);
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/services.cfg");

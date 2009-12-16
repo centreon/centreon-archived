@@ -125,7 +125,7 @@ aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
         	if (extension_loaded('mbstring'))
             	echo '<b><span class="go">OK</font></b>';
             else {
-                echo '<b><span class="warning">Warning: install mb_string php extension</font></b>';
+                echo '<b><span class="warning">Critical: php-mbstring functions are not installed</font></b>';
                 $return_false = 1;
             }       ?>
        	</td>

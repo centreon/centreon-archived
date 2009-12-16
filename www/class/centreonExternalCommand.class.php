@@ -80,10 +80,12 @@
  		$return_local = 0;
  		$return_remote = 0;
  		foreach ($this->cmd_tab as $key => $cmd) {
- 			if (isset($this->localhost_tab[$this->poller_tab[$key]]))
-				$str_local .= "'[" . time() . "] " . $cmd . "\n'";			
-			else
+ 			if (isset($this->localhost_tab[$this->poller_tab[$key]])) {
+				$str_local .= "'[" . time() . "] " . $cmd . "\n'";
+ 			}	
+			else {
  				$str_remote .= "'EXTERNALCMD:".$this->poller_tab[$key].":[" . time() . "] " . $cmd . "\n'";
+			}
  		}
  		if ($str_local != "") {
  			$str_local = "echo " . $str_local . " >> " . $oreon->Nagioscfg["command_file"];			
@@ -217,6 +219,5 @@
  		return $this->actions;
  	}
 
- }
- 
+} 
 ?>

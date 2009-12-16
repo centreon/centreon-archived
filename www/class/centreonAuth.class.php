@@ -78,7 +78,7 @@ class CentreonAuth {
     	$this->password = $password;
     	$this->pearDB = $pearDB;
     	$this->autologin = $autologin;
-    	$this->cryptEngine = $centreon_crypt;
+    	$this->cryptEngine = $encryptType;
     	/*
     	 * Check User acces
     	 */

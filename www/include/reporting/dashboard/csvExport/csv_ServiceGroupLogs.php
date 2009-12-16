@@ -123,7 +123,7 @@
 	while ($sg =& $DBRESULT->fetchRow()) {
 		if ($str != "")
 			$str .= ", ";
-		$str .= "'".$sg["service_service_id"]."'"; 
+		$str .= "'" . $sg["service_service_id"] . "'"; 
 	}
 	if ($str == "")
 		$str = "''";

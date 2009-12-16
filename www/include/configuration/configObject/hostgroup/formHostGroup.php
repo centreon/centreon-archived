@@ -117,7 +117,7 @@
 	 */
 	$attrsText 		= array("size"=>"30");
 	$attrsTextLong 	= array("size"=>"50");
-	$attrsAdvSelect = array("style" => "width: 220px; height: 220px;");
+	$attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
 	$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 

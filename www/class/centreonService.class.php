@@ -92,13 +92,16 @@
         if (!$DBRES->numRows())
         	return $string;
         $row =& $DBRES->fetchRow();
-        // replace if not template
+        
+        /*
+         * replace if not template
+         */
         if ($row['service_register']) {
 	 		if (preg_match("/$SERVICEDESC$/", $string))
 	 			$string = str_replace("\$SERVICEDESC\$", $this->getServiceDesc($svc_id), $string); 		
         }
  		$matches = array();
- 		$pattern = '|(\$_SERVICE[0-9a-zA-Z]+\$)|';
+ 		$pattern = '|(\$_SERVICE[0-9a-zA-Z\_\-]+\$)|';
  		preg_match_all($pattern, $string, $matches);
  		$i = 0; 		
  		while (isset($matches[1][$i])) {	 			 			

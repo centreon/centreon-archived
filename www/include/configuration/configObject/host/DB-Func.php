@@ -433,6 +433,7 @@
 		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+			
 		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL)		{
 			$ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
@@ -1751,13 +1752,20 @@
 	}
 
 	function createHostTemplateService($host_id = null, $htm_id = NULL)	{
-		if (!$host_id) return;
 		global $pearDB, $path, $oreon;
+		
+		if (!$host_id) 
+			return;
+		
 		if (file_exists($path."../service/DB-Func.php"))
 			require_once($path."../service/DB-Func.php");
 		else if (file_exists($path."../configObject/service/DB-Func.php"))
 			require_once($path."../configObject/service/DB-Func.php");
-		# If we select a host template model, we create the services linked to this host template model		
+		
+		/*
+		 * If we select a host template model, 
+		 * 	we create the services linked to this host template model		
+		 */
 		if ($oreon->user->get_version() < 3) {
 			if ($htm_id)	{
 				$DBRESULT =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
@@ -1774,7 +1782,9 @@
 					}
 				}
 			}
-			# Then we create all the services linked to the host template model tree. (n levels services creation)
+			/*
+			 * Then we create all the services linked to the host template model tree. (n levels services creation)
+			 */
 			while (1)	{
 				if (!$htm_id)
 					$htm_id = getMyHostTemplateModel($host_id);
@@ -1799,8 +1809,7 @@
 				else if (!$htm_id)
 					break;
 			}
-		}
-		else {						
+		} else {						
 			global $form;
 			$ret = $form->getSubmitValues();			
 			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])

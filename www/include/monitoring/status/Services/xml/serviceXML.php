@@ -420,8 +420,8 @@
 			$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);			
 			$buffer->writeElement("ha", $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]);
 			$buffer->writeElement("hae", $host_status[$ndo["host_name"]]["active_checks_enabled"]);
-	        $buffer->writeElement("hpe", $host_status[$ndo["host_name"]]["passive_checks_enabled"]);
-	        $buffer->writeElement("nc", $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]));	        	        
+			$buffer->writeElement("hpe", $host_status[$ndo["host_name"]]["passive_checks_enabled"]);
+			$buffer->writeElement("nc", $centreonGMT->getDate($date_time_format_status, $ndo["next_check"]));
 			$buffer->writeElement("lc", $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]));
 			$buffer->writeElement("d", $duration);
 			$buffer->writeElement("last_hard_state_change", $hard_duration);			

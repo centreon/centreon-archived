@@ -258,9 +258,9 @@
 	#
 	$attrsText 			= array("size"=>"30");
 	$attrsText2			= array("size"=>"6");
-	$attrsAdvSelect 	= array("style" => "width: 220px; height: 100px;");
-	$attrsAdvSelectsmall= array("style" => "width: 220px; height: 50px;");
-	$attrsAdvSelectbig 	= array("style" => "width: 220px; height: 130px;");
+	$attrsAdvSelect 	= array("style" => "width: 270px; height: 100px;");
+	$attrsAdvSelectsmall= array("style" => "width: 270px; height: 50px;");
+	$attrsAdvSelectbig 	= array("style" => "width: 270px; height: 130px;");
 	$attrsTextarea 		= array("rows"=>"4", "cols"=>"80");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 

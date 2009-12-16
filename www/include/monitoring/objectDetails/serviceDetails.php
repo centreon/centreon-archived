@@ -45,8 +45,8 @@
 	
 	$pearDBndo 	= new CentreonDB("ndo");
 	
-	$hostObj = new CentreonHost($pearDB);
-	$svcObj = new CentreonService($pearDB);
+	$hostObj 	= new CentreonHost($pearDB);
+	$svcObj 	= new CentreonService($pearDB);
 
 	/*
 	 * ACL Actions
@@ -139,9 +139,11 @@
 				" nss.flap_detection_enabled," .
 				" unix_timestamp(nss.last_notification) as last_notification," .
 				" no.name1 as host_name," .
-				" no.name2 as service_description" .
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
+				" no.name2 as service_description, " .
+				" ns.notes_url, " .
+				" ns.action_url " .
+				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns " .
+				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' AND no.object_id = ns.service_object_id";
 	
 		$DBRESULT_NDO =& $pearDBndo->query($rq);		
 	
@@ -207,7 +209,7 @@
 		$en_acknowledge_text= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Service Problem"));
 		$en_acknowledge 	= array("1" => "0", "0" => "1");
 		$en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
-		$en_inv	 		= array("1" => "1", "0" => "0");
+		$en_inv			= array("1" => "1", "0" => "0");
 		$en_inv_text 		= array("1" => _("Disable"), "0" => _("Enable"));
 		$color_onoff 		= array("1" => "#00ff00", "0" => "#ff0000");
 		$color_onoff_inv 	= array("0" => "#00ff00", "1" => "#ff0000");
@@ -236,12 +238,12 @@
 		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace("<b>", "", $service_status[$host_name."_".$svc_description]["plugin_output"]);
 		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("</b>", "", $service_status[$host_name."_".$svc_description]["plugin_output"]);
 		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace("<br>", "", $service_status[$host_name."_".$svc_description]["plugin_output"]);
-
 		$service_status[$host_name."_".$svc_description]["plugin_output"] = utf8_encode($service_status[$host_name."_".$svc_description]["plugin_output"]);
-
-		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
-	
-		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]['plugin_output']);
+		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);	
+		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
+		
+		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
+		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
 
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = CentreonDuration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = centreonDuration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$service_status[$host_name."_".$svc_description]["last_state_change"], $oreon->user->getMyGMT());

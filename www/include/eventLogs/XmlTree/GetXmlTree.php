@@ -38,6 +38,8 @@
  
 	$debugXML = 0;
 	$buffer = '';
+	
+	ini_set("display_errors", "On");
 
 	/* 
 	 * pearDB init 
@@ -111,8 +113,7 @@
 					"FROM servicegroup_relation sgr, host h " .
 					"WHERE sgr.host_host_id = h.host_id " .
 					"AND h.host_name LIKE '%".$search."%'";			
-		}
-		else {			
+		} else {			
 			$query = "SELECT sg_id FROM `servicegroup`";			
 		}
 		$DBRES =& $pearDB->query($query);
@@ -166,6 +167,39 @@
 	(isset($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"], ENT_QUOTES) : $search_host = "";
 	(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = "";
 
+	/*
+	 * Create hostCahe
+	 */
+	$hostCache = array();
+	$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
+	while ($data =& $DBRESULT->fetchRow())
+		$hostCache[$data["host_id"]] = $data["host_name"];
+	$DBRESULT->free();
+	unset($data);
+	
+	/*
+	 * Create serviceCahe
+	 */
+	function setServiceCache($pearDB) {
+		$serviceCache = array();
+		$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
+		while ($data =& $DBRESULT->fetchRow())
+			$serviceCache[$data["service_id"]] = $data["service_description"];
+		$DBRESULT->free();
+		unset($data);
+		return $serviceCache;
+	}
+		
+	/*
+	 * Create hgCahe
+	 */
+	$hgCache = array();
+	$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ hg_id, hg_name FROM hostgroup");
+	while ($data =& $DBRESULT->fetchRow())
+		$hgCache[$data["hg_id"]] = $data["hg_name"];
+	$DBRESULT->free();
+	unset($data);
+
 	$type = "root";
 	$id = "0";
 	if (strlen($url_var) > 1){
@@ -189,7 +223,7 @@
 					$buffer->startElement("item");
 					$buffer->writeAttribute("child", "1");
 					$buffer->writeAttribute("id", "HH_".$host."_".$id);
-					$buffer->writeAttribute("text", getMyHostName($host));
+					$buffer->writeAttribute("text", $hostCache[$host]);
 					$buffer->writeAttribute("im0", "../16x16/server_network.gif");
 					$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 					$buffer->writeAttribute("im2", "../16x16/server_network.gif");
@@ -198,14 +232,16 @@
 			}
 		} else if ($type == "ST") {
 			
+			if (!isset($serviceCache))
+				$serviceCache = setServiceCache($pearDB);
 			/*
 			 * Send Service/host list for a SG 
 			 */
 			$data = getMyServiceGroupActivateServicesSearch($id, $search_service);
 			foreach ($data as $key => $value){
 				$tab_value = split("_", $key);
-				$host_name = getMyHostName($tab_value[0]);
-				$service_description = getMyServiceName($tab_value[1], $tab_value[0]);
+				$host_name = $hostCache[$tab_value[0]];
+				$service_description = $serviceCache[$tab_value[1]];
 				$buffer->startElement("item");
 				$buffer->writeAttribute("child", "0");
 				$buffer->writeAttribute("id", "HS_".$tab_value[1]."_".$tab_value[0]);
@@ -445,37 +481,39 @@
 				/*
 				 * host + hg_parent
 				 */	
-				$hosts_selected[$id] = getMyHostName($id);
-				$hosts_open[$id] = getMyHostName($id);	
+				$hosts_selected[$id] = $hostCache[$id];
+				$hosts_open[$id] = $hostCache[$id];	
 				/* + all svc*/
 				$services = getMyHostActiveServices($id);
 				foreach($services as $svc_id => $svc_name)
 					$svcs_selected[$svc_id] = $svc_name;
 				// 	hg_parent
 				if (isset($id_full[2]))
-					$hgs_open[$id_full[2]] = getMyHostGroupName($id_full[2]);
+					$hgs_open[$id_full[2]] = $hgCache($id_full[2]);
 				else {
 					$hgs = getMyHostGroups($id);
-					foreach($hgs as $hg_id => $hg_name)
+					foreach ($hgs as $hg_id => $hg_name)
 						$hgs_open[$hg_id] = $hg_name;
 				}				
 			} else if ($type == "HS"){ // svc + host_parent + hg_parent
+				if (!isset($serviceCache))
+					$serviceCache = setServiceCache($pearDB);
 				// svc
-				$svcs_selected[$id] = getMyServiceName($id);
-				$svcs_selected[$id] = getMyServiceName($id);
+				$svcs_selected[$id] = $serviceCache[$id];
+				$svcs_selected[$id] = $serviceCache[$id];
 	
 				//host_parent
 				if (isset($id_full[1])) {
 					$host_id = $id_full[1];
-					$hosts_open[$host_id] = getMyHostName($host_id);
+					$hosts_open[$host_id] = $hostCache[$host_id];
 				} else {
 					$host_id = getMyHostServiceID($id);
-					$hosts_open[$host_id] = getMyHostName($host_id);				
+					$hosts_open[$host_id] = $hostCache[$host_id];				
 				}
 
 				// 	hg_parent
 				if (isset($id_full[2]))
-					$hgs_open[$id_full[2]] = getMyHostGroupName($id_full[2]);
+					$hgs_open[$id_full[2]] = $hgCache[$id_full[2]];
 				else {
 					$hgs = getMyHostGroups($host_id);
 					if (isset($hgs)) {
@@ -485,12 +523,12 @@
 				}			
 			} else if ($type == "HG"){ // HG + hostS_child + svcS_child
 				
-				$hgs_selected[$id] = getMyHostGroupName($id);
-				$hgs_open[$id] = getMyHostGroupName($id);
+				$hgs_selected[$id] = $hgCache[$id];
+				$hgs_open[$id] = $hgCache[$id];
 	
 				$hosts = getMyHostGroupHosts($id);
 				foreach ($hosts as $host_id) {
-					$host_name = getMyHostName($host_id);
+					$host_name = $hostCache[$host_id];
 					$hosts_open[$host_id] = $host_name;
 					$hosts_selected[$host_id] = $host_name;
 	
@@ -533,7 +571,7 @@
 			 * Hostgroups
 			 */
 			
-			if (HG_has_one_or_more_host($hg_id) && ($access->admin == 1 || ($access->admin == 1 && isset($access->hostGroups[$hg_id])))) {
+			if (HG_has_one_or_more_host($hg_id) && ($access->admin == 1 || ($access->admin == 0 && isset($access->hostGroups[$hg_id])))) {
 	    		$buffer->startElement("item");
 	    		if (isset($hgs_open[$hg_id]))
 	    			$buffer->writeAttribute("open", "1");
@@ -570,7 +608,7 @@
 			    		
 			    		$buffer->writeAttribute("child", "1");
 			    		$buffer->writeAttribute("id", "HH_".$host_id."_".$hg_id);
-			    		$buffer->writeAttribute("text", getMyHostName($host_id));
+			    		$buffer->writeAttribute("text", $hostCache[$host_id]);
 			    		$buffer->writeAttribute("im0", "../16x16/server_network.gif");
 			    		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 			    		$buffer->writeAttribute("im2", "../16x16/server_network.gif");		        		
@@ -646,8 +684,7 @@
 			$metaString = "''";
 		if ($search_host != "") {
 			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_name` LIKE '%$search_host%' ".$access->queryBuilder("AND", "meta_id", $metaString)." ORDER BY `meta_name`");
-		}
-		else {
+		} else {
 			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service ".$access->queryBuilder("WHERE", "meta_id", $metaString)." ORDER BY `meta_name`");
 		}
 		while ($MS =& $DBRESULT->fetchRow()){
