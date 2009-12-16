@@ -36,13 +36,13 @@
  * 
  */
 
-	if (!isset($oreon))
+	if (!isset($centreon))
 		exit();
 		
 	print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $oreon->user->lang; ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $centreon->user->lang; ?>">
 <head>
 <title>Centreon - IT & Network Monitoring</title>
 <link rel="shortcut icon" href="./img/favicon.ico"/>
@@ -76,16 +76,16 @@
 	$searchStr = "";
 	if (isset($_GET["search"]))
 		$searchStr = "&search_host=".htmlentities($_GET["search"], ENT_QUOTES);
-	if (isset($oreon->historySearch[$url]) && !isset($_GET["search"]))
-		$searchStr = "&search_host=".$oreon->historySearch[$url];
+	if (isset($centreon->historySearch[$url]) && !isset($_GET["search"]))
+		$searchStr = "&search_host=".$centreon->historySearch[$url];
 	
 	$searchStrSVC = "";
 	if (isset($_GET["search_service"])) {
 		$searchStrSVC = "&search_service=".htmlentities($_GET["search_service"], ENT_QUOTES);
 		$search_service = htmlentities($_GET["search_service"], ENT_QUOTES);
-	} else if (isset($oreon->historySearchService[$url]) && !isset($_GET["search_service"])) {
-		$search_service = $oreon->historySearchService[$url];
-		$searchStr = "&search_service=".$oreon->historySearchService[$url];
+	} else if (isset($centreon->historySearchService[$url]) && !isset($_GET["search_service"])) {
+		$search_service = $centreon->historySearchService[$url];
+		$searchStr = "&search_service=".$centreon->historySearchService[$url];
 	}
 		
 	print "<script type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?sid=".session_id().$searchStr.$searchStrSVC."'></script>\n";
@@ -108,9 +108,9 @@
 	
 	$sid = session_id();
 
-	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
-	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;	
+	$tS = $centreon->optGen["AjaxTimeReloadStatistic"] * 1000;
+	$tM = $centreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
+	$centreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $centreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;	
 	
 	?>
 <script type='text/javascript'>

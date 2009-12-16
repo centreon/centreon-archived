@@ -177,6 +177,6 @@
 	/*
 	 * Init Language 
 	 */
-	$centreonLang = new CentreonLang($centreon_path, $oreon);
+	$centreonLang = new CentreonLang($centreon_path, $centreon);
 	$centreonLang->bindLang();
 ?>

@@ -36,7 +36,7 @@
  * 
  */ 
  
-	if (!isset($oreon))
+	if (!isset($centreon))
 		exit();
 		
 	echo "<div class='msg' align='center'>"._("You are not allowed to reach this page")."</div>";

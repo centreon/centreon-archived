@@ -71,10 +71,10 @@
 
 	function reset_search_page($url){
 		# Clean Vars
-		global $oreon;
+		global $centreon;
 		if (!isset($url))
 			return;
-		if (isset($_GET["search"]) && isset($oreon->historySearch[$url]) && $_GET["search"] != $oreon->historySearch[$url]){		
+		if (isset($_GET["search"]) && isset($centreon->historySearch[$url]) && $_GET["search"] != $centreon->historySearch[$url]){		
 			$_POST["num"] = 0;
 			$_GET["num"] = 0;
 		}	

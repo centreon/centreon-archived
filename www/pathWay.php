@@ -36,7 +36,7 @@
  * 
  */
   
-	if (!isset($oreon))
+	if (!isset($centreon))
 		exit();
 
 	function getTopologyParent($p)	{
@@ -121,7 +121,7 @@
 	}
 	$tabPath = $tmp;
 
-	if ($oreon->user->access->page($p)){	
+	if ($centreon->user->access->page($p)){	
 		$flag = '<img src="./img/icones/8x14/pathWayBlueStart.gif" class="imgPathWay">&nbsp;';
 		foreach ($tabPath as $cle => $valeur){
 			echo $flag;

@@ -20,7 +20,7 @@
 // $Id: stat.php,v 1.1 2005/11/30 23:57:14 julio234 Exp $
 //
 
-if (!isset($oreon))
+if (!isset($centreon))
 	exit;
 
 // our version number

@@ -105,9 +105,9 @@
 		/*
 		 * Init log class
 		 */
-		if (is_object($oreon)) {
-			$CentreonLog = new CentreonUserLog($oreon->user->get_id(), $pearDB);
-			$CentreonLog->insertLog(1, "Contact '".$oreon->user->get_alias()."' logout");
+		if (is_object($centreon)) {
+			$CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
+			$CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
 		
 			$pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
 		
@@ -124,8 +124,8 @@
 		/*
 		 * Init log class
 		 */
-		$CentreonLog = new CentreonUserLog($oreon->user->get_id(), $pearDB);
-		$CentreonLog->insertLog(1, "Contact '".$oreon->user->get_alias()."' logout");
+		$CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
+		$CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
 
 		$pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
 		CentreonSession::stop();
@@ -160,7 +160,7 @@
 	    	$user =& new User($centreonAuth->userInfos, $generalOptions["nagios_version"]);
 	    	$centreon = new Centreon($user);
 	    	$_SESSION["centreon"] =& $centreon;
-		    $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
+		    $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$centreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
 			if (!isset($_POST["submit"]))	{
 				$args = NULL;
 				foreach ($_GET as $key=>$value)
