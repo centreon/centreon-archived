@@ -328,7 +328,7 @@
 			$duration = " ";
 
 			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
-				$duration = centreonDuration::toString(time() - $ndo["last_state_change"]);
+				$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
 			else if ($ndo["last_state_change"] > 0)
 				$duration = " - ";
 
@@ -399,11 +399,14 @@
 			} else {
 				$buffer->writeElement("snu", 'none');
 			}
+			if ($ndo["notes"] != "") {
+				$ndo["notes"] = $string = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes"]);
+				$ndo["notes"] = $string = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes"]);
+				$buffer->writeElement("sn", $ndo["notes"]);
+			} else {
+				$buffer->writeElement("sn", 'none');
+			}
 
-			if (!isset($ndo["notes"]) || $ndo["notes"] == "")
-				$ndo["notes"] = $ndo["notes_url"];
-			$buffer->writeElement("sn", $ndo["notes"]);
-			
 			$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);			
 			$buffer->writeElement("ha", $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]);
 			$buffer->writeElement("hae", $host_status[$ndo["host_name"]]["active_checks_enabled"]);
