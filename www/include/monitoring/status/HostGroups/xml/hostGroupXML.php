@@ -44,7 +44,8 @@
 	$debugXML = 0;
 	$buffer = '';
 	
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	
 	include_once $centreon_path . "www/class/centreonSession.class.php";
 	include_once $centreon_path . "www/class/centreon.class.php";	
@@ -83,6 +84,18 @@
 	$grouplist = $access->getAccessGroups(); 
 	$groupnumber = count($grouplist);
 	
+	$groupStr = "";
+	foreach ($grouplist as $key => $value) {
+		if ($groupStr != "")
+			$groupStr .= ",";
+		$groupStr .=  "'".$key."'";
+	}
+	
+	if (!$is_admin) {
+		$acl = $access->getHostGroups("ALIAS");
+		$hostStr = $access->getHostsString("NAME", $pearDBndo);
+	}
+
 	/* 
 	 * requisit 
 	 */
@@ -145,14 +158,25 @@
 	 * Get Host Status request
 	 */
 	$stats = array();
-	$rq1 = 	"SELECT nhg.alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
-			"FROM ".$ndo_base_prefix."hostgroup_members nhgm " .
-					"INNER JOIN ".$ndo_base_prefix."objects noo ON (noo.object_id = nhgm.host_object_id ) " .
-					"INNER JOIN ".$ndo_base_prefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
-					"INNER JOIN ".$ndo_base_prefix."objects no ON (noo.name1 = no.name1) " .
-					"INNER JOIN ".$ndo_base_prefix."hoststatus nhs on (nhs.host_object_id = no.object_id) " .
-			"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 $searchStr " .
-			"GROUP BY nhg.alias, nhs.current_state";
+	if ($is_admin) {
+		$rq1 = 	"SELECT nhg.alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
+				"FROM ".$ndo_base_prefix."hostgroup_members nhgm " .
+						"INNER JOIN ".$ndo_base_prefix."objects noo ON (noo.object_id = nhgm.host_object_id ) " .
+						"INNER JOIN ".$ndo_base_prefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
+						"INNER JOIN ".$ndo_base_prefix."objects no ON (noo.name1 = no.name1) " .
+						"INNER JOIN ".$ndo_base_prefix."hoststatus nhs ON (nhs.host_object_id = no.object_id) " .
+				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 $searchStr" .
+				"GROUP BY nhg.alias, nhs.current_state";
+	} else {
+		$rq1 = 	"SELECT nhg.alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
+				"FROM ".$ndo_base_prefix."hostgroup_members nhgm " .
+						"INNER JOIN ".$ndo_base_prefix."objects noo ON (noo.object_id = nhgm.host_object_id ) " .
+						"INNER JOIN ".$ndo_base_prefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
+						"INNER JOIN ".$ndo_base_prefix."objects no ON (noo.name1 = no.name1) " .
+						"INNER JOIN ".$ndo_base_prefix."hoststatus nhs ON (nhs.host_object_id = no.object_id) " .
+				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 AND noo.name1 IN ($hostStr) AND noo.name2 IS NULL $searchStr" .
+				"GROUP BY nhg.alias, nhs.current_state";
+	}
 	$DBRESULT =& $pearDBndo->query($rq1);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		if (!isset($stats[$ndo["alias"]]))
@@ -163,7 +187,8 @@
 	/*
 	 * Get Services request
 	 */
-	$rq2 = 	"SELECT nhg.alias, nss.current_state, count( nss.service_object_id ) AS nb " .
+	if ($is_admin) {
+			$rq2 = 	"SELECT nhg.alias, nss.current_state, count( nss.service_object_id ) AS nb " .
 			"FROM ".$ndo_base_prefix."hostgroup_members nhgm " .
 				"INNER JOIN ".$ndo_base_prefix."objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
 				"INNER JOIN ".$ndo_base_prefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
@@ -171,9 +196,22 @@
 				"INNER JOIN ".$ndo_base_prefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
 			"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2 $searchStr " .
 			"GROUP BY nhg.alias, nss.current_state";
+		
+	} else {
+		$rq2 = 	"SELECT nhg.alias, nss.current_state, count( nss.service_object_id ) AS nb " .
+				"FROM ".$ndo_base_prefix."hostgroup_members nhgm " .
+					"INNER JOIN ".$ndo_base_prefix."objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
+					"INNER JOIN ".$ndo_base_prefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
+					"INNER JOIN ".$ndo_base_prefix."objects no ON ( noo.name1 = no.name1 ) " .
+					//"INNER JOIN centreon_acl ON (noo.name1 = host_name AND noo.name2 = service_description AND group_id IN ($groupStr)) " .
+					"INNER JOIN ".$ndo_base_prefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
+				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2 AND noo.name1 IN ($hostStr) $searchStr " .
+				"GROUP BY nhg.alias, nss.current_state";
+	}
 	$DBRESULT =& $pearDBndo->query($rq2);
 	while ($ndo =& $DBRESULT->fetchRow()) {
-		$stats[$ndo["alias"]]["s"][$ndo["current_state"]] = $ndo["nb"];
+		if ($stats[$ndo["alias"]])
+			$stats[$ndo["alias"]]["s"][$ndo["current_state"]] = $ndo["nb"];
 	}
 
 	if ($order == "DESC")
@@ -196,10 +234,7 @@
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
-
-	if (!$is_admin)
-		$acl = $access->getHostGroups("ALIAS");
-       
+     
     $convertTable = array();
     $convertID = array();
     $DBRESULT =& $pearDB->query("SELECT hg_id, hg_alias, hg_name FROM hostgroup");
