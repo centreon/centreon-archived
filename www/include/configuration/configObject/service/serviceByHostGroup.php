@@ -80,6 +80,7 @@
 		case "c" : require_once($path."formService.php"); break; #Modify a service
 		case "mc" : require_once($path."formService.php"); break; #Massive change
 		case "dv" : divideGroupedServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceByHostGroup.php"); break; # Divide service linked to n hostgroups
+		case "mvH" : divideGroupedServiceInDB(NULL, isset($select) ? $select : array(), 1); require_once($path."listServiceByHostGroup.php"); break; # Divide service linked to n hostgroups
 		case "s" : enableServiceInDB($service_id); require_once($path."listServiceByHostGroup.php"); break; #Activate a service
 		case "ms" : enableServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceByHostGroup.php"); break;
 		case "u" : disableServiceInDB($service_id); require_once($path."listServiceByHostGroup.php"); break; #Desactivate a service

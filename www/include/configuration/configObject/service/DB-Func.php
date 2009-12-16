@@ -174,31 +174,47 @@
 		}
 	}
 	
-	function divideGroupedServiceInDB ($service_id = null, $service_arr = array())	{
-		if (!$service_id && !count($service_arr)) return;
+	function divideGroupedServiceInDB ($service_id = null, $service_arr = array(), $toHost = NULL)	{
 		global $pearDB, $pearDBO;
 		
+		if (!$service_id && !count($service_arr)) 
+			return;
+
 		if ($service_id)
-			$service_arr = array($service_id=>"1");
-		foreach($service_arr as $key=>$value)	{
-			$lap= 0;
+			$service_arr = array($service_id => "1");
+
+		foreach ($service_arr as $key => $value)	{
+			$lap = 0;
 			$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation WHERE service_service_id = '".$key."'");
 			while ($relation =& $DBRESULT->fetchRow())	{
-				if ($relation["hostgroup_hg_id"])	{
-					if ($lap)	{
+				if ($relation["hostgroup_hg_id"]) {
+					if (isset($toHost)) {
 						$sv_id = NULL;
 						$DBRESULT2 =& $pearDB->query("DELETE FROM host_service_relation WHERE service_service_id = '".$key."' AND hostgroup_hg_id = '".$relation["hostgroup_hg_id"]."'");
-						$sv_id = multipleServiceInDB(array($key=>"1"), array($key=>"1"), NULL, 0, $relation["hostgroup_hg_id"], array(), array($relation["hostgroup_hg_id"]=>NULL));
-						if ($sv_id)	{
-							$hosts = getMyHostGroupHosts($relation["hostgroup_hg_id"]);
-							foreach($hosts as $host)	{
-								$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host."' AND service_id = '".$key."'");
+						$hosts = getMyHostGroupHosts($relation["hostgroup_hg_id"]);
+						$lap = 0;
+						foreach ($hosts as $host_id) {
+							if ($lap) {
+								$sv_id = multipleServiceInDB(array($key=>"1"), array($key=>"1"), $host_id, 0, NULL, array(), array($relation["hostgroup_hg_id"]=>NULL));
+								$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host_id."' AND service_id = '".$key."'");
+							}
+							$lap++;
+						}	
+					} else {
+						if ($lap) {
+							$sv_id = NULL;
+							$DBRESULT2 =& $pearDB->query("DELETE FROM host_service_relation WHERE service_service_id = '".$key."' AND hostgroup_hg_id = '".$relation["hostgroup_hg_id"]."'");
+							$sv_id = multipleServiceInDB(array($key=>"1"), array($key=>"1"), NULL, 0, $relation["hostgroup_hg_id"], array(), array($relation["hostgroup_hg_id"]=>NULL));
+							if ($sv_id)	{
+								$hosts = getMyHostGroupHosts($relation["hostgroup_hg_id"]);
+								foreach ($hosts as $host)	{
+									$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host."' AND service_id = '".$key."'");
+								}
 							}
 						}
+						$lap++;
 					}
-					$lap++;
-				}
-				else if ($relation["host_host_id"])	{
+				} else if ($relation["host_host_id"])	{
 					if ($lap)	{
 						$sv_id = NULL;
 						$DBRESULT2 =& $pearDB->query("DELETE FROM host_service_relation WHERE service_service_id = '".$key."' AND host_host_id = '".$relation["host_host_id"]."'");
