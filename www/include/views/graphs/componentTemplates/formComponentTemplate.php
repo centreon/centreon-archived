@@ -204,7 +204,7 @@
 		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Delete"));
-		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_line" => "#0000FF"));
+		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_line" => "#0000FF", "ds_transparency" => "80", "ds_average" => true, "ds_last" => true));
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&compo_id=".$compo_id, "changeT"=>_("Modify")));
 
