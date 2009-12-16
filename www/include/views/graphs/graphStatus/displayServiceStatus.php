@@ -218,7 +218,7 @@
 		$command_line .= " LINE1:warn#F8C706:\"Warning\" ";
 		$command_line .= " LINE1:crit#F91E05:\"Critical\" ";
 		$command_line .= " LINE1:unk#FFFFFF:\"Unknown\\l\" ";
-		$command_line .= " LINE1:vname#000000:\"tendance1\" ";
+		$command_line .= " LINE1:vname#000000:\"trend\" ";
 		
 		$command_line .= " GPRINT:v1:LAST:\"Last\:%7.2lf%s\"";
 		$command_line .= " GPRINT:v1:LAST:\"Last\:%7.2lf%s\"";
