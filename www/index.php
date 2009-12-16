@@ -157,7 +157,7 @@
 	    $centreonAuth = new CentreonAuth($useralias, $password, $autologin, $pearDB, $CentreonLog);
 	     
 	    if ($centreonAuth->passwdOk == 1) {
-	    	$user =& new User($centreonAuth->userInfos, $generalOptions["nagios_version"]);
+	    	$user =& new CentreonUser($centreonAuth->userInfos, $generalOptions["nagios_version"]);
 	    	$centreon = new Centreon($user);
 	    	$_SESSION["centreon"] =& $centreon;
 		    $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$centreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");

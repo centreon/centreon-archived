@@ -39,7 +39,7 @@
 require_once("centreonACL.class.php");
 require_once("centreonLog.class.php");
 
-class User	{
+class CentreonUser	{
 
 	var $user_id;
 	var $name;    

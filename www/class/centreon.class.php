@@ -36,7 +36,7 @@
  * 
  */
 
-require_once("User.class.php");
+require_once("centreonUser.class.php");
 require_once("centreonGMT.class.php");
 require_once("centreonLogAction.class.php");
 
