@@ -138,7 +138,7 @@
 	$form->addElement('header', 	'information', _("General Information"));
 	$form->addElement('text', 		'hg_name', _("HostGroup Name"), $attrsText);
 	$form->addElement('text', 		'hg_alias', _("Alias"), $attrsText);
-	$form->addElement('select', 	'hg_snmp_version', _("Version"), array(0=>null, 1=>"1", 2=>"2c", 3=>"3"));
+	$form->addElement('select', 	'hg_snmp_version', _("Version"), array(0=>null, 1=>"1", "2c"=>"2c", 3=>"3"));
 	$form->addElement('text', 		'hg_snmp_community', _("SNMP Community"), $attrsText);
 	
 	/*
