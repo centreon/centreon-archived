@@ -105,7 +105,17 @@
 		$generated = 0;
 		$generated2 = 0;
 		$strDef = "";
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name FROM dependency_hostgroupParent_relation dhgpr, hostgroup WHERE dhgpr.dependency_dep_id = '".$dependency["dep_id"]."' AND hostgroup.hg_id = dhgpr.hostgroup_hg_id");
+		$query = "SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name ". 
+				"FROM dependency_hostgroupParent_relation dhgpr, hostgroup, hostgroup_relation hgr, ns_host_relation ns, host h ". 
+				"WHERE dhgpr.dependency_dep_id = '".$dependency["dep_id"]."' ". 
+				"AND hostgroup.hg_id = dhgpr.hostgroup_hg_id ".
+				"AND dhgpr.hostgroup_hg_id = hgr.hostgroup_hg_id ".
+				"AND hgr.host_host_id = ns.host_host_id " .
+				"AND ns.nagios_server_id = '".$tab['id']."' " .
+				"AND ns.host_host_id = h.host_id " . 
+				"AND h.host_activate = '1'"; 
+					
+		$DBRESULT2 =& $pearDB->query($query);
 		$hg = array();
 		$strTemp1 = "";
 		while ($hg =& $DBRESULT2->fetchRow())	{
@@ -115,7 +125,17 @@
 			}
 		}
 		$DBRESULT2->free();
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name FROM dependency_hostgroupChild_relation dhgcr, hostgroup WHERE dhgcr.dependency_dep_id = '".$dependency["dep_id"]."' AND hostgroup.hg_id = dhgcr.hostgroup_hg_id");
+		$query = "SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name ". 
+				"FROM dependency_hostgroupChild_relation dhgcr, hostgroup, hostgroup_relation hgr, ns_host_relation ns, host h ".
+				"WHERE dhgcr.dependency_dep_id = '".$dependency["dep_id"]."' ".
+				"AND hostgroup.hg_id = dhgcr.hostgroup_hg_id " .
+				"AND dhgcr.hostgroup_hg_id = hgr.hostgroup_hg_id ".
+				"AND hgr.host_host_id = ns.host_host_id " .
+				"AND ns.nagios_server_id = '".$tab['id']."' " .
+				"AND ns.host_host_id = h.host_id " . 
+				"AND h.host_activate = '1'";
+		
+		$DBRESULT2 =& $pearDB->query($query);
 		$hg = array();
 		$strTemp2 = "";
 		while ($hg =& $DBRESULT2->fetchRow())	{
@@ -209,7 +229,19 @@
 	$dependency = array();
 	while($dependency =& $DBRESULT->fetchRow())	{
 		$BP = false;
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name FROM dependency_servicegroupParent_relation dsgpr, servicegroup WHERE dsgpr.dependency_dep_id = '".$dependency["dep_id"]."' AND servicegroup.sg_id = dsgpr.servicegroup_sg_id");
+		$query = "SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name ".
+				"FROM dependency_servicegroupParent_relation dsgpr, servicegroup, servicegroup_relation sgr, ns_host_relation ns, host h, service s ". 
+				"WHERE dsgpr.dependency_dep_id = '".$dependency["dep_id"]."' ". 
+				"AND servicegroup.sg_id = dsgpr.servicegroup_sg_id " .
+				"AND dsgpr.servicegroup_sg_id = sgr.servicegroup_sg_id " .
+				"AND sgr.host_host_id = ns.host_host_id " .
+				"AND ns.nagios_server_id = '".$tab['id']."' ".
+				"AND ns.host_host_id = h.host_id " . 
+				"AND h.host_activate = '1' " .
+				"AND sgr.service_service_id = s.service_id " .
+				"AND s.service_activate = '1'";
+		
+		$DBRESULT2 =& $pearDB->query($query);
 		$sg = array();
 		$strTemp1 = "";
 		while ($sg =& $DBRESULT2->fetchRow())	{
@@ -218,7 +250,19 @@
 		}
 		$DBRESULT2->free();
 		
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name FROM dependency_servicegroupChild_relation dsgcr, servicegroup WHERE dsgcr.dependency_dep_id = '".$dependency["dep_id"]."' AND servicegroup.sg_id = dsgcr.servicegroup_sg_id");
+		$query = "SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name ". 
+				"FROM dependency_servicegroupChild_relation dsgcr, servicegroup, servicegroup_relation sgr, ns_host_relation ns, host h, service s ". 
+				"WHERE dsgcr.dependency_dep_id = '".$dependency["dep_id"]."' ". 
+				"AND servicegroup.sg_id = dsgcr.servicegroup_sg_id " .
+				"AND dsgcr.servicegroup_sg_id = sgr.servicegroup_sg_id " .
+				"AND sgr.host_host_id = ns.host_host_id " .
+				"AND ns.nagios_server_id = '".$tab['id']."' " .
+				"AND ns.host_host_id = h.host_id " . 
+				"AND h.host_activate = '1' " .
+				"AND sgr.service_service_id = s.service_id " .
+				"AND s.service_activate = '1'";
+		
+		$DBRESULT2 =& $pearDB->query($query);
 		$sg = array();
 		$strTemp2 = "";
 		while ($sg =& $DBRESULT2->fetchRow()) {
