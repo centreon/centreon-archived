@@ -191,6 +191,9 @@
 			$rq_sorte = " ORDER BY nss.last_state_change ". $order.", host_name, service_description "; 
 			break;
 		case 'last_hard_state_change' : 
+			$rq_sorte = " ORDER BY nss.last_hard_state_change ". $order.", host_name, service_description "; 
+			break;
+		case 'last_hard_state_change' : 
 			$rq .= " order by nss.last_hard_state_change ". $order.",no.name1,no.name2 "; 
 			break;
 		case 'last_check' : 
