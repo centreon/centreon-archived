@@ -85,6 +85,10 @@
 			</tr>
 			<tr>	
 				<td>&nbsp;</td>	
+				<td>Nikolaus Filus</td>
+			</tr>
+			<tr>	
+				<td>&nbsp;</td>	
 				<td>Sylvestre Ho</td>
 			</tr>
 			<tr>	
@@ -127,8 +131,7 @@
 				<tr>
 					<td>Vincent Carpentier</td>
 					<td>Christoph Ziemann</td>
-				</tr>
-				
+				</tr>				
 				<tr>
 					<td>Jean Marc Grisar</td>
 					<td>Florin Grosu</td>
@@ -138,11 +141,7 @@
 					<td>guigui2607</td>
 				</tr>
 				<tr>
-					<td>Nikolaus Filus</td>
 					<td>Thomas Fisher</td>
-				</tr>
-				<tr>
-					<td>Ethan Galstad</td>
 					<td>Jean Gabes</td>
 				</tr>
 				<tr>
