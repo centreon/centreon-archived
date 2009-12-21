@@ -132,7 +132,9 @@
 		CentreonSession::start();
 	}
 	
-	if (isset($_POST["submit"]) || (isset($_GET["autologin"]) && isset($_GET["p"]) && $_GET["autologin"]) || ((isset($_POST["autologin"]) && isset($_POST["p"]) && $_POST["autologin"]))) {
+	if (isset($_POST["submit"]) 
+		|| (isset($_GET["autologin"]) && $_GET["autologin"] && isset($_GET["p"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"])) 
+		|| (isset($_POST["autologin"]) && $_POST["autologin"] && isset($_POST["p"]) && isset($generalOptions["enable_autologin"]))) {
 		/*
 		 * Init log class
 		 */
