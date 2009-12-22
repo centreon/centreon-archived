@@ -36,7 +36,7 @@
  * 
  */
 
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."www/class/centreonDuration.class.php";
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonACL.class.php";
@@ -154,7 +154,7 @@
 			" AND no.objecttype_id = 1 " .
 			" AND no.object_id = nh.host_object_id";
 
-	if ($o == "svc_unhandled") {
+	if (preg_match("/^svc_unhandled/", $o)) {
 		$rq1 .= " AND nhs.problem_has_been_acknowledged = 0";
 		$rq1 .= " AND nhs.scheduled_downtime_depth = 0";
 	}
@@ -240,13 +240,30 @@
 	if ($o == "svc_unknown")
 		$rq_state = " AND nss.current_state = 3 ";
 	
-	if ($o == "svc_unhandled") {
-		$rq_state .= " AND nss.current_state != 0";
+		
+	if (preg_match("/^svc_unhandled/", $o)) {
+		if (preg_match("/^svc_unhandled_(warning|critical|unknown)\$/", $o, $matches)) {
+			if (isset($matches[1]) && $matches[1] == 'warning') {
+				$rq_state .= ' AND nss.current_state = 1 ';
+			}
+			if (isset($matches[1]) && $matches[1] == 'critical') {
+				$rq_state .= ' AND nss.current_state = 2 ';
+			}
+			elseif (isset($matches[1]) && $matches[1] == 'unknown') {
+				$rq_state .= ' AND nss.current_state = 3 ';
+			}
+			else {
+				$rq_state .= " AND nss.current_state != 0 ";
+			}
+		}
+		else {
+			$rq_state .= " AND nss.current_state != 0";
+		}
 		$rq_state .= " AND nss.state_type = 1";
 		$rq_state .= " AND nss.problem_has_been_acknowledged = 0";
 		$rq_state .= " AND nss.scheduled_downtime_depth = 0";
 	}
-
+	
 	$searchHost = "";
 	if ($search_type_host && $search) {
 		if ($search_type_service && $search)
