@@ -387,12 +387,12 @@ sub CheckRestart(){
     $last_restart = getLastRestart();
     $last_restart_stt = getLastRestartInMemory();
     if (!$last_restart_stt || $last_restart ne $last_restart_stt){
-	check_HostServiceID();
-	if (getPurgeConfig()){
-	    CheckMySQLDrain();
-	    DeleteOldRrdDB();
-	}
-	saveLastRestartInMemory($last_restart);
+		check_HostServiceID();
+		if (getPurgeConfig()){
+		    CheckMySQLDrain();
+		    DeleteOldRrdDB();
+		}
+		saveLastRestartInMemory($last_restart);
     }
 }
 
@@ -402,27 +402,27 @@ sub checkAndUpdate($$){
     my $config = $_[6];
 
     if ($_[5]) {
-	CheckMySQLConnexion();
-	if ($_[1] =~ /_Module_[a-zA-Z]*/){
-	    # Get Service infos
-	    @data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
-	    
-	    if (defined($data_service[0]) && $data_service[0] ne 0) {
-		# perfdata index status time type counter rebuild
-		$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2], $config); 
-	    }
-	} else {
-	    # Get Service infos
-	    @data_service = identify_service($_[1], $_[2]); # return index_id and storage
-	    
-	    # Update status 
-	    updateServiceState($line_tab[1], $line_tab[2], $line_tab[0], $data_service[0],  $line_tab[4], $config->{'RRDdatabase_status_path'});
-	    
-	    if (defined($data_service[0]) && $data_service[0] ne 0) {
-		# perfdata index status time type counter rebuild configuration
-		$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2], $config); 
-	    }
-	}
+		CheckMySQLConnexion();
+		if ($_[1] =~ /_Module_[a-zA-Z]*/){
+		    # Get Service infos
+		    @data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
+		    
+		    if (defined($data_service[0]) && $data_service[0] ne 0) {
+				# perfdata index status time type counter rebuild
+				$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2], $config); 
+		    }
+		} else {
+		    # Get Service infos
+		    @data_service = identify_service($_[1], $_[2]); # return index_id and storage
+		    
+		    # Update status 
+		    updateServiceState($line_tab[1], $line_tab[2], $line_tab[0], $data_service[0],  $line_tab[4], $config->{'RRDdatabase_status_path'});
+		    
+		    if (defined($data_service[0]) && $data_service[0] ne 0) {
+				# perfdata index status time type counter rebuild configuration
+				$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2], $config); 
+		    }
+		}
     }
     undef(@data_service);
 }
