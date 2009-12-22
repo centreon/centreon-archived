@@ -257,9 +257,9 @@
 	$buffer->endElement();
 	
 	$msg_type_set = array ();
-	if ($alert == 'true' )
+	if ($alert == 'true')
 		array_push ($msg_type_set, "'0'");
-	if ($alert == 'true' )
+	if ($alert == 'true')
 		array_push ($msg_type_set, "'1'");
 	if ($notification == 'true')
 		array_push ($msg_type_set, "'2'");
@@ -306,7 +306,7 @@
 			$flag_begin = 1;
 		} else
 			$msg_req .= " OR ";
-		$msg_req .= " (`msg_type` IN ('0', '1') ";
+		$msg_req .= " (`msg_type` IN ('0', '1', '10', '11') ";
 		if (count($msg_status_set) > 0)
 		 	$msg_req .= " AND `status` IN (" . implode(',', $msg_status_set) . ") ";
 		if ($oh == 'true')
