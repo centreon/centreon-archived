@@ -359,10 +359,15 @@
 				$services = getMyServiceGroupServices($id);
 				foreach ($services as $svc_id => $svc_name)	{
 					$tab_tmp = split("_", $svc_id);
-					if ((($is_admin) || (!$is_admin && isset($lca["LcaHost"][getMyHostName($tab_tmp[1])]) && isset($lca["LcaHost"][getMyHostName($id)][$svc_name]))))	{
-						$tab_SG[$flag_already_call] = array("h" => getMyHostName($tab_tmp[0]), "s" => getMyServiceName($tab_tmp[1], $tab_tmp[0])); 
-						$flag_already_call++;
-					}
+					$tab = split(":", $svc_name);
+                    $host_name = $tab[3];
+                    $svc_name = $tab[0];
+                    if ((($is_admin) || (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$svc_name]))))       {
+                            $tab_SG[$flag_already_call] = array("h" => $host_name, "s" => $svc_name);
+                            $flag_already_call++;
+                    }
+                    unset($tab);
+                    unset($host_name);
 				}
 			} else if ($type == "HH") {
 				$host_name = getMyHostName($id);
