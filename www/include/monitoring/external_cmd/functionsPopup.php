@@ -33,7 +33,7 @@
 			$host_name = $tmp[0];
 			isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
 			isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";
-			isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "1" : $sticky = "0";
+			isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "2" : $sticky = "1";
 
 			$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
 			
@@ -74,7 +74,7 @@
 			$svc_description = $tmp[1];
 			isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
 			isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";	
-			isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "1" : $sticky = "0";
+			isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "2" : $sticky = "1";
 			if ($actions == true || $is_admin) {
 	            $_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
 				$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$svc_description.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], GetMyHostPoller($pearDB, $host_name));
