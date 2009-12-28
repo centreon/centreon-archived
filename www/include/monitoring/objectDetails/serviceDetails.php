@@ -244,6 +244,8 @@
 		
 		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
 		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
+		$service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["action_url"]);
+		$service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["action_url"]);
 
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = CentreonDuration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = centreonDuration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$service_status[$host_name."_".$svc_description]["last_state_change"], $oreon->user->getMyGMT());
