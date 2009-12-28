@@ -82,7 +82,7 @@
 	$lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName($pearDBndo);
 
 	if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
-		include_once("alt_error.php");
+		include_once("../errors/alt_error.php");
 	} else {
 
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."' " .

@@ -74,7 +74,7 @@
 	$tab_status = array();
 
 	if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
-		include_once("alt_error.php");
+		include_once("../errors/alt_error.php");
 	} else {
 		/*
 		 * Host Group List

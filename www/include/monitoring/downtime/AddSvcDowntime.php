@@ -158,6 +158,6 @@
 		    }
 		}
 	else {
-		require_once("./alt_error.php");
+		require_once("../errors/alt_error.php");
 	}
 ?>
