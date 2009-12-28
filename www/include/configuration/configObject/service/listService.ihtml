@@ -56,8 +56,6 @@
 		</tr>
 	</table>
 <input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' name='search_type_service' value='{$search_type_service}'>
-<input type='hidden' name='search_type_host' value='{$search_type_host}'>
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>

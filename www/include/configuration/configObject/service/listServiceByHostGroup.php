@@ -41,66 +41,91 @@
 
 	if (isset($_POST["searchH"])) {
 		$searchH = $_POST["searchH"];
-		$oreon->svc_host_search = $searchH;
-		$search_type_host = 1;
+		$centreon->svc_host_search = $searchH;
+		if ($_POST["searchH"] != "") {
+			$search_type_host = 1;
+			$centreon->search_type_host = 1;
+		}
 	} else {
 		if (isset($oreon->svc_host_search) && $oreon->svc_host_search)
-			$searchH = $oreon->svc_host_search;
+			$searchH = $centreon->svc_host_search;
 		else
 			$searchH = NULL;
 	}
 	
 	if (isset($_POST["searchS"])) {
 		$searchS = $_POST["searchS"];
-		$oreon->svc_svc_search = $searchS;
-		$search_type_service = 1;
+		$centreon->svc_svc_search = $searchS;
+		if ($_POST["searchS"] != "") {
+			$search_type_service = 1;
+			$centreon->search_type_service = 1;
+		}
 	} else {	
 		if (isset($oreon->svc_svc_search) && $oreon->svc_svc_search)
-			$searchS = $oreon->svc_svc_search;
+			$searchS = $centreon->svc_svc_search;
 		else
 			$searchS = NULL;
 	}
 
 	include("./include/common/autoNumLimit.php");
 
-	
-	if (isset($_GET["search_type_service"])){
-		$search_type_service = $_GET["search_type_service"];
-		$oreon->search_type_service = $_GET["search_type_service"];
-	} else if ($oreon->search_type_service)
-		 $search_type_service = $oreon->search_type_service;
-	else
-		$search_type_service = NULL;
-
-	if (isset($_GET["search_type_host"])){
-		$search_type_host = $_GET["search_type_host"];
-		$oreon->search_type_host = $_GET["search_type_host"];
-	} else if ($oreon->search_type_host)
-		 $search_type_host = $oreon->search_type_host;
-	else
-		$search_type_host = NULL;
-
 	$rows = 0;
 	$tmp = NULL;
 	/*
 	 * Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
 	 */
-	if (isset($search) && $search != "") {
-		$search = str_replace('/', "#S#", $search);
-		$search = str_replace('\\', "#BS#", $search);
-	
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND (sv.service_description LIKE '%$search%')");
-		
-		while ($service =& $DBRESULT->fetchRow()){
-			$rows++;
-			$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
+	if ($searchS != "" || $searchH != "") {
+		$searchH = str_replace('/', "#S#", $searchH);
+		$searchH = str_replace('\\', "#BS#", $searchH);
+		$searchS = str_replace('/', "#S#", $searchS);
+		$searchS = str_replace('\\', "#BS#", $searchS);
+		if ($search_type_service && !$search_type_host) {
+			$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
+										"FROM service sv, host_service_relation hsr " .
+										"WHERE sv.service_register = '1' " .
+										"	AND hsr.service_service_id = sv.service_id " .
+										"	AND hsr.host_host_id IS NULL " .
+										"	AND (sv.service_description LIKE '%$searchS%')");	
+			while ($service = $DBRESULT->fetchRow()){
+				if (!isset($tab_buffer[$service["service_id"]]))
+					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
+				$tmp2 ? $tmp2 .= ", ".$service["hostgroup_hg_id"] : $tmp2 = $service["hostgroup_hg_id"];	
+				$tab_buffer[$service["service_id"]] = $service["service_id"];
+				$rows++;
+			}
+		} else if (!$search_type_service && $search_type_host)	{
+			$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
+										"FROM service sv, host_service_relation hsr, hostgroup hg " .
+										"WHERE sv.service_register = '1' " .
+										"	AND hsr.service_service_id = sv.service_id " .
+										"	AND hsr.host_host_id IS NULL " .
+										"	AND (hg.hg_name LIKE '%$searchH%')" .
+										"	AND hsr.hostgroup_hg_id = hg.hg_id");	
+			while ($service = $DBRESULT->fetchRow()) {			         
+				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
+				$tmp2 ? $tmp2 .= ", ".$service["hostgroup_hg_id"] : $tmp2 = $service["hostgroup_hg_id"];			          
+				$rows++;				
+			}
+		} else {
+			$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
+										"FROM service sv, host_service_relation hsr, hostgroup hg " .
+										"WHERE sv.service_register = '1' " .
+										"	AND hsr.service_service_id = sv.service_id " .
+										"	AND hsr.host_host_id IS NULL " .
+										"	AND hg.hg_name LIKE '%$searchH%'" .
+										"	AND sv.service_description LIKE '%$searchS%'" .
+										"	AND hsr.hostgroup_hg_id = hg.hg_id");	
+			while ($service = $DBRESULT->fetchRow()) {			         
+				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
+				$tmp2 ? $tmp2 .= ", ".$service["hostgroup_hg_id"] : $tmp2 = $service["hostgroup_hg_id"];			          
+				$rows++;				
+			}
 		}
-		
 	} else	{
 		$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		$rows = $DBRESULT->numRows();
 	}
-
+	
 	/*
 	 * Smarty template Init
 	 */
@@ -108,7 +133,7 @@
 	$tpl = initSmartyTpl($path, $tpl);
 
 	include("./include/common/checkPagination.php");
-
+	
 	/*
 	 * start header menu
 	 */
@@ -123,14 +148,12 @@
 	/*
 	 * HostGroup/service list
 	 */
-	if ($search) {
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
+	if ($searchS || $searchH) {
+		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND hsr.hostgroup_hg_id IN (".($tmp2 ? $tmp2 : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	} else {
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	}
 	$DBRESULT =& $pearDB->query($rq);
-
-	$search = tidySearchKey($search, $advanced_search);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	
@@ -143,13 +166,15 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	 
-	$interval_length = $oreon->Nagioscfg['interval_length'];
+	$interval_length = $centreon->Nagioscfg['interval_length'];
 	 
 	$elemArr = array();
-	$fgHostgroup = array("value"=>NULL, "print"=>NULL);
+	$fgHostgroup = array("value" => NULL, "print" => NULL);
 	
-	$search = str_replace('#S#', "/", $search);
-	$search = str_replace('#BS#', "\\", $search);
+	$searchS = str_replace('#S#', "/", $searchS);
+	$searchS = str_replace('#BS#', "\\", $searchS);
+	$searchH = str_replace('#S#', "/", $searchH);
+	$searchH = str_replace('#BS#', "\\", $searchH);
 	
 	for ($i = 0; $service =& $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
@@ -167,9 +192,9 @@
 		/*
 		 * If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		 */
-		if (!$service["service_description"])
+		if (!$service["service_description"]) {
 			$service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
-		else	{
+		} else {
 			$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
 			$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 		}
@@ -181,13 +206,15 @@
 		$tplStr = NULL;
 		$tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
 		if (count($tplArr))
-			foreach($tplArr as $key =>$value){
+			foreach ($tplArr as $key =>$value){
 				$value = str_replace('#S#', "/", $value);
 				$value = str_replace('#BS#', "\\", $value);
 				$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";				
 			}
 		
-		# Get service intervals in seconds
+		/*
+		 * Get service intervals in seconds
+		 */
 		$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") * $interval_length;
 		$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") * $interval_length;
 
@@ -205,20 +232,21 @@
 			$retry_units = "sec";
 		}
 		
-		$elemArr[$i] = array(	"MenuClass"=>"list_".($service["nbr"]>1 ? "three" : $style),
-								"RowMenu_select"=>$selectedElements->toHtml(),
-								"RowMenu_name"=>$service["hg_name"],
-								"RowMenu_link"=>"?p=60102&o=c&hg_id=".$service['hg_id'],
-								"RowMenu_link2"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
-								"RowMenu_parent"=>$tplStr,
-								"RowMenu_retry"=> "$normal_check_interval $normal_units / $retry_check_interval $retry_units",
-								"RowMenu_attempts"=>getMyServiceField($service['service_id'], "service_max_check_attempts"),
-								"RowMenu_desc"=>$service["service_description"],
-								"RowMenu_status"=>$service["service_activate"] ? _("Enabled") : _("Disabled"),
-								"RowMenu_options"=>$moptions);
+		$elemArr[$i] = array(	"MenuClass" => "list_".($service["nbr"] > 1 ? "three" : $style),
+								"RowMenu_select" => $selectedElements->toHtml(),
+								"RowMenu_name" => $service["hg_name"],
+								"RowMenu_link" => "?p=60102&o=c&hg_id=".$service['hg_id'],
+								"RowMenu_link2" => "?p=".$p."&o=c&service_id=".$service['service_id'],
+								"RowMenu_parent" => $tplStr,
+								"RowMenu_retry" =>  "$normal_check_interval $normal_units / $retry_check_interval $retry_units",
+								"RowMenu_attempts" => getMyServiceField($service['service_id'], "service_max_check_attempts"),
+								"RowMenu_desc" => $service["service_description"],
+								"RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),
+								"RowMenu_options" => $moptions);
 								
 		$fgHostgroup["print"] ? NULL : $elemArr[$i]["RowMenu_name"] = NULL;
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$style != "two" ? $style = "two" : $style = "one";	
+	}
 	$tpl->assign("elemArr", $elemArr);
 
 	/*
@@ -273,6 +301,9 @@
 	$o2->setValue(NULL);
 
 	$tpl->assign('limit', $limit);
+
+	$tpl->assign("searchH", (isset($searchH) ? $searchH : NULL));
+	$tpl->assign("searchS", (isset($searchS) ? $searchS : NULL));
 
 	/*
 	 * Apply a template definition
