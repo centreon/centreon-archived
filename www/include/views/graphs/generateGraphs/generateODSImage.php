@@ -36,7 +36,7 @@
  * 
  */
 
- 	header('Content-Type: image/png');
+	header('Content-Type: image/png');
  	
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
@@ -54,7 +54,7 @@
 	require_once "$centreon_path/www/class/centreonGMT.class.php";
 	
 	CentreonSession::start();
-	$oreon =& $_SESSION["oreon"];
+	$centreon =& $_SESSION["centreon"];
 
 	require_once $centreon_path."www/include/common/common-Func.php";
 
@@ -102,8 +102,8 @@
 		/*
 		 * Get Graphs size
 		 */
-		(isset($graph_width)) ? $width = $graph_width : 500;
-		(isset($graph_height)) ? $height = $graph_height : 120;
+		(isset($graph_width) && $graph_width != "") ? $width = $graph_width : $width = 500;
+		(isset($graph_height) && $graph_height != "") ? $height = $graph_height : $height = 120;
 			
 		/*
 		 * Get index information to have acces to graph
@@ -178,20 +178,20 @@
 				
 		$command_line .= " --interlaced $base --imgformat PNG --width=$width --height=$height --title='".$title."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 
-		if ($oreon->optGen["rrdtool_version"] != "1.0")
+		if ($centreon->optGen["rrdtool_version"] != "1.0")
 			$command_line .= " --slope-mode ";
 		
-		if ($oreon->optGen["rrdtool_version"] == "1.3") {
-           if (isset($oreon->optGen["rrdtool_title_font"]) && isset($oreon->optGen["rrdtool_title_fontsize"]))
-              $command_line .= " --font TITLE:".$oreon->optGen["rrdtool_title_fontsize"].":".$oreon->optGen["rrdtool_title_font"]." ";
-           if (isset($oreon->optGen["rrdtool_unit_font"]) && isset($oreon->optGen["rrdtool_unit_fontsize"]))
-              $command_line .= " --font UNIT:".$oreon->optGen["rrdtool_unit_fontsize"].":".$oreon->optGen["rrdtool_unit_font"]." ";
-           if (isset($oreon->optGen["rrdtool_axis_font"]) && isset($oreon->optGen["rrdtool_axis_fontsize"]))
-              $command_line .= " --font AXIS:".$oreon->optGen["rrdtool_axis_fontsize"].":".$oreon->optGen["rrdtool_axis_font"]." ";
-           if (isset($oreon->optGen["rrdtool_title_font"]) && isset($oreon->optGen["rrdtool_title_fontsize"]))
-              $command_line .= " --font WATERMARK:".$oreon->optGen["rrdtool_title_fontsize"].":".$oreon->optGen["rrdtool_title_font"]." ";
-           if (isset($oreon->optGen["rrdtool_legend_title"]) && isset($oreon->optGen["rrdtool_legend_fontsize"]))
-              $command_line .= " --font LEGEND:".$oreon->optGen["rrdtool_legend_fontsize"].":".$oreon->optGen["rrdtool_legend_title"]." ";
+		if ($centreon->optGen["rrdtool_version"] == "1.3") {
+           if (isset($centreon->optGen["rrdtool_title_font"]) && isset($centreon->optGen["rrdtool_title_fontsize"]))
+              $command_line .= " --font TITLE:".$centreon->optGen["rrdtool_title_fontsize"].":".$centreon->optGen["rrdtool_title_font"]." ";
+           if (isset($centreon->optGen["rrdtool_unit_font"]) && isset($centreon->optGen["rrdtool_unit_fontsize"]))
+              $command_line .= " --font UNIT:".$centreon->optGen["rrdtool_unit_fontsize"].":".$centreon->optGen["rrdtool_unit_font"]." ";
+           if (isset($centreon->optGen["rrdtool_axis_font"]) && isset($centreon->optGen["rrdtool_axis_fontsize"]))
+              $command_line .= " --font AXIS:".$centreon->optGen["rrdtool_axis_fontsize"].":".$centreon->optGen["rrdtool_axis_font"]." ";
+           if (isset($centreon->optGen["rrdtool_title_font"]) && isset($centreon->optGen["rrdtool_title_fontsize"]))
+              $command_line .= " --font WATERMARK:".$centreon->optGen["rrdtool_title_fontsize"].":".$centreon->optGen["rrdtool_title_font"]." ";
+           if (isset($centreon->optGen["rrdtool_legend_title"]) && isset($centreon->optGen["rrdtool_legend_fontsize"]))
+              $command_line .= " --font LEGEND:".$centreon->optGen["rrdtool_legend_fontsize"].":".$centreon->optGen["rrdtool_legend_title"]." ";
         }
 		
 			
@@ -353,7 +353,7 @@
 			$cpt++;
 		}
 
-		$command_line = $oreon->optGen["rrdtool_path_bin"].$command_line." 2>&1";
+		$command_line = $centreon->optGen["rrdtool_path_bin"].$command_line." 2>&1";
 	
 		/*
 		 * Add Timezone for current user.
@@ -362,8 +362,8 @@
 			$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
 	
 		$command_line = escape_command("$command_line");
-		if ($oreon->optGen["debug_rrdtool"] == "1")
-			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $oreon->optGen["debug_path"]."rrdtool.log");
+		if ($centreon->optGen["debug_rrdtool"] == "1")
+			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $centreon->optGen["debug_path"]."rrdtool.log");
 		//print $command_line;
 		$fp = popen($command_line  , 'r');
 		if (isset($fp) && $fp ) {
