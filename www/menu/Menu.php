@@ -150,7 +150,10 @@
 		$userCrypted = $oreon->user->userCrypted;
 		$passwdCrypted = $oreon->user->get_passwd();
 		$autoLoginUrl = "p=$p&o=$o&min=$min&autologin=1&useralias=$userCrypted&password=$passwdCrypted";
-		$tpl->assign("autoLoginEnable", $oreon->optGen["display_autologin_shortcut"]);
+		if ($oreon->optGen["enable_autologin"] && $oreon->optGen["display_autologin_shortcut"])
+			$tpl->assign("autoLoginEnable", 1);
+		else
+			$tpl->assign("autoLoginEnable", 0);
 		
 		$prefix = '';
 		if (!strncmp($_SERVER["SERVER_PROTOCOL"], "HTTP/", 5)) {
@@ -296,7 +299,5 @@
 	 */
 	$tpl->display("BlockHeader.ihtml");
 	$tpl->display("menu.ihtml");
-	//$tpl->display("BlockMenuType1.ihtml");	
-	//count($elemArr[2]) ? $tpl->display("BlockMenuType2.ihtml") : NULL;
 	count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : print '<div id="contener"><!-- begin contener --><table id="Tcontener"><tr><td id="Tmainpage" class="TcTD">';
 ?>
