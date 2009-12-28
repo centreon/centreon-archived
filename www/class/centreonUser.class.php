@@ -36,8 +36,8 @@
  * 
  */
 
-require_once("centreonACL.class.php");
-require_once("centreonLog.class.php");
+require_once ("centreonACL.class.php");
+require_once ("centreonLog.class.php");
 
 class CentreonUser	{
 
@@ -67,7 +67,7 @@ class CentreonUser	{
 	# String with elements ID separated by commas for DB requests
 	var $lcaTStr;
 	  
-  	function User($user = array(), $nagios_version = NULL)  {
+  	function CentreonUser($user = array(), $nagios_version = NULL)  {
 		global $pearDB;
 		
 		$this->user_id = $user["contact_id"];
