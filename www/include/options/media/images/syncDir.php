@@ -41,6 +41,15 @@
 
 	$pearDB = new CentreonDB();
 
+	if (!isset($_GET["session_id"]))
+		exit ;
+	
+	if (isset($_GET["session_id"])) {
+		$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$_GET["session_id"]."'");
+		if ($DBRESULT->numRows() == 0)
+			exit();
+	}
+
 	$dir = "./img/media/";
 
 	$rejectedDir = array("." => 1, ".." => 1);
