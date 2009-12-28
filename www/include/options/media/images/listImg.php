@@ -54,18 +54,21 @@
 
 	include("./include/common/checkPagination.php");
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Directory"));
 	$tpl->assign("headerMenu_img", _("Image"));
 	$tpl->assign("headerMenu_options", _("Options"));
-	# end header menu
-	# img list
+	
 	if ($search)
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM view_img_dir_relation WHERE img_img_id = img_id GROUP BY img_id ) AS nbr, img_id, img_name, img_path, dir_name, dir_alias FROM view_img, view_img_dir, view_img_dir_relation WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'  OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND img_img_id = img_id AND dir_dir_parent_id = dir_id ORDER BY img_name, dir_alias LIMIT ".$num * $limit.", ".$limit;
 	else
@@ -73,9 +76,14 @@
 	$res =& $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-	#Different style between each lines
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();	for ($i = 0; $img =& $res->fetchRow(); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$img['img_id']."]");	
 		$moptions = "<a href='main.php?p=".$p."&img_id=".$img['img_id']."&o=w&&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
@@ -86,14 +94,15 @@
 						"RowMenu_dir"=>$img["dir_name"],
 						"RowMenu_img"=>html_entity_decode($img["dir_alias"]."/".$img["img_path"], ENT_QUOTES),
 						"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$style != "two" ? $style = "two" : $style = "one";	
+	}
 	$tpl->assign("elemArr", $elemArr);
-	#Different messages we put in the template
+	
+	/*
+	 * Different messages we put in the template
+	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	
-	#
-	##Toolbar select
-	#
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
 	function setO(_i) {
@@ -135,11 +144,10 @@
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
+	$tpl->assign('p', $p);
+	$tpl->assign('session_id', session_id());
+	$tpl->assign('syncDir', _("Synchronize Media Directory"));
 
-	#
-	##Apply a template definition
-	#
-	
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());

@@ -145,10 +145,10 @@
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
-
-	#
-	##Apply a template definition
-	#
+	$tpl->assign('p', $p);
+	$tpl->assign('session_id', session_id());
+	$tpl->assign('syncDir', _("Synchronize Media Directory"));
+	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());

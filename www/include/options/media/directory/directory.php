@@ -59,6 +59,7 @@
 
 	#Path to the configuration dir
 	$path = "./include/options/media/directory/";
+	$pathImages = "./include/options/media/images/";
 	
 	#PHP functions
 	require_once $path."DB-Func.php";
@@ -71,7 +72,13 @@
 		case "s" : enableDirectoryInDB($cg_id); require_once($path."listDirectory.php"); break; #Activate a Directory
 		case "u" : disableDirectoryInDB($cg_id); require_once($path."listDirectory.php"); break; #Desactivate a Directory
 		case "m" : multipleDirectoryInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listDirectory.php"); break; #Duplicate n Directory
-		case "d" : deleteDirectoryInDB(isset($select) ? $select : array()); require_once($path."listDirectory.php"); break; #Delete n Directory
+		case "d" : 
+			deleteDirectoryInDB(isset($select) ? $select : array()); 
+			require_once($path."listDirectory.php");
+			break; #Delete n Directory
+		case "sd" : 
+			require_once($pathImages."syncDir.php");
+			break;
 		default : require_once($path."listDirectory.php"); break;
 	}
 ?>

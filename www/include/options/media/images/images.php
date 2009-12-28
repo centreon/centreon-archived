@@ -47,15 +47,21 @@
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
 	$cG ? $select = $cG : $select = $cP;
 
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the cities dir
+	/*
+	 * Path to the cities dir
+	 */
 	$path = "./include/options/media/images/";
 
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 
@@ -63,7 +69,13 @@
 		case "a" : require_once($path."formImg.php"); break; #Add a img
 		case "w" : require_once($path."formImg.php"); break; #Watch a img
 		case "c" : require_once($path."formImg.php"); break; #Modify a img
-		case "d" : deleteImgInDB(isset($select) ? $select : array()); require_once($path."listImg.php"); break; #Delete n imgs
+		case "d" : 
+			deleteImgInDB(isset($select) ? $select : array()); 
+			require_once($path."listImg.php"); 
+			break;
+		case "sd" : 
+			require_once($path."syncDir.php");
+			break;
 		default : require_once($path."listImg.php"); break;
 	}
 ?>
