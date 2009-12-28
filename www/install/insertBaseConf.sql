@@ -292,11 +292,14 @@ INSERT INTO `contactgroup_host_relation` (`cghr_id`, `host_host_id`, `contactgro
 -- Contenu de la table `hostgroup`
 --
 
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(53, 'Linux_Servers', 'All linux servers', NULL, '0', NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(54, 'Windows_Servers', 'All windows servers', NULL, NULL, NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(55, 'Networks', 'All other equipment', NULL, '0', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(53, 'Linux-Servers', 'All linux servers', NULL, '0', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(54, 'Windows-Servers', 'All windows servers', NULL, NULL, NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(55, 'Networks', 'All other equipments', NULL, '0', NULL, '1');
 INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(56, 'Printers', 'All printers', NULL, NULL, NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(58, 'Cisco_routers', 'All cisco routers', NULL, '0', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(58, 'Routers', 'All routers', NULL, '0', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(59, 'Switchs', 'All switchs', NULL, '0', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(60, 'Firewall', 'All firewalls', NULL, '0', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(61, 'Unix-Servers', 'All unix servers', NULL, '0', NULL, '1');
 
 --
 -- Contenu de la table `hostgroup_relation`
@@ -662,23 +665,23 @@ INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps
 -- Contenu de la table `acl_groups`
 --
 
-INSERT INTO `acl_groups` (`acl_group_id`, `acl_group_name`, `acl_group_alias`, `acl_group_activate`) VALUES(14, 'Guest', 'Guest', '1');
+INSERT INTO `acl_groups` (`acl_group_id`, `acl_group_name`, `acl_group_alias`, `acl_group_activate`) VALUES (14, 'Guest View', 'Guest view', '1');
 
 --
 -- Contenu de la table `acl_topology`
 --
 
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(4, 'Home page', 'Only access on home page', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(5, 'Monitoring page', 'Only access on monitoring pages', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(6, 'Personal option pages ', 'Only access on Option pages', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(11, 'Configuration pages', 'Only access on all configuration pages', '0');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(13, 'Graphic pages', 'Only access on graphic pages', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES (4, 'Home page', 'Only access on home page', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES (5, 'Monitoring page', 'Only access on monitoring pages', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES (6, 'Personal option pages ', 'Only access on Option pages', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES (11, 'Configuration pages', 'Only access on all configuration pages', '0');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES (13, 'Graphic pages', 'Only access on graphic pages', '1');
 
 --
 -- Contenu de la table `acl_resources`
 --
 
-INSERT INTO `acl_resources` (`acl_res_id`, `acl_res_name`, `acl_res_alias`, `acl_res_activate`, `acl_res_comment`, `acl_res_status`, `changed`) VALUES(7, 'NetWork and DB', 'NetWork and DB', '1', NULL, NULL, 0);
+INSERT INTO `acl_resources` (`acl_res_id`, `acl_res_name`, `acl_res_alias`, `acl_res_activate`, `acl_res_comment`, `acl_res_status`, `changed`) VALUES (7, 'Simple view', 'Simple view', '1', NULL, NULL, 0);
 
 --
 -- Contenu de la table `acl_group_topology_relations`
@@ -690,32 +693,20 @@ INSERT INTO `acl_group_topology_relations` VALUES (25,14,4),(26,14,5),(28,14,6),
 -- Contenu de la table `acl_resources_hg_relations`
 --
 
-INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(57, 41, 6);
-INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(58, 49, 1);
-INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(200, 40, 2);
-INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(201, 42, 2);
-INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(202, 51, 2);
-
---
--- Contenu de la table `acl_resources_sg_relations`
---
-
-INSERT INTO `acl_resources_sg_relations` (`asgr`, `sg_id`, `acl_res_id`) VALUES(12, 0, 7);
-INSERT INTO `acl_resources_sg_relations` (`asgr`, `sg_id`, `acl_res_id`) VALUES(13, 10, 7);
-INSERT INTO `acl_resources_sg_relations` (`asgr`, `sg_id`, `acl_res_id`) VALUES(14, 11, 7);
+INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES (1, 53, 7);
 
 --
 -- Contenu de la table `acl_res_group_relations`
 --
 
-INSERT INTO `acl_res_group_relations` (`argr_id`, `acl_res_id`, `acl_group_id`) VALUES(170, 7, 14);
+INSERT INTO `acl_res_group_relations` (`argr_id`, `acl_res_id`, `acl_group_id`) VALUES (170, 7, 14);
 
 --
 -- Contenu de la table `acl_group_contacts_relations`
 --
 
-INSERT INTO `acl_group_contacts_relations` (`agcr_id`, `contact_contact_id`, `acl_group_id`) VALUES(20, 17, 14);
-INSERT INTO `acl_group_contacts_relations` (`agcr_id`, `contact_contact_id`, `acl_group_id`) VALUES(21, 18, 14);
+INSERT INTO `acl_group_contacts_relations` (`agcr_id`, `contact_contact_id`, `acl_group_id`) VALUES (20, 17, 14);
+INSERT INTO `acl_group_contacts_relations` (`agcr_id`, `contact_contact_id`, `acl_group_id`) VALUES (21, 18, 14);
 
 --
 -- Contenu de la table `acl_topology_relations`
