@@ -1,8 +1,3 @@
-body {
-	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
-	font-size: .8em;
-	}
-
 /* the div that holds the date picker calendar */
 .dpDiv {
 	}
@@ -10,7 +5,6 @@ body {
 
 /* the table (within the div) that holds the date picker calendar */
 .dpTable {
-	font-family: Tahoma, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	text-align: center;
 	color: #505050;
@@ -94,14 +88,13 @@ body {
 
 /* additional style information for the cell that holds a highlighted day (usually either today's date or the current date field value) */ 
 .dpDayHighlight {
-	color: #4060FF;
+	color: 4060ff;
 	font-weight: bold;
 	}
 
 
 /* the forward/backward buttons at the top */
 .dpButton {
-	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: gray;
 	background: #d8e8ff;
@@ -112,7 +105,6 @@ body {
 
 /* the "This Month" and "Close" buttons at the bottom */
 .dpTodayButton {
-	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: gray;
 	background: #d8e8ff;
