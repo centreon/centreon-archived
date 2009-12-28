@@ -241,12 +241,12 @@
 		$duration = " ";
 		
 		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
-			$duration = Duration::toString(time() - $ndo["last_state_change"]);
+			$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
 		else
 			$duration = "N/A";
 		
 		if (($ndo["last_hard_state_change"] > 0) && ($ndo["last_hard_state_change"] >= $ndo["last_state_change"]))
-			$hard_duration = Duration::toString(time() - $ndo["last_hard_state_change"]);
+			$hard_duration = CentreonDuration::toString(time() - $ndo["last_hard_state_change"]);
 		else if ($ndo["last_hard_state_change"] > 0)
 			$hard_duration = " N/A ";
 		
