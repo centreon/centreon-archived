@@ -98,13 +98,17 @@
 		 */
 		 		
 		$pearDBO = new CentreonDB("centstorage");
-
 		$RRDdatabase_path = getStatusDBDir($pearDBO);
+		
+		/*
+		 * Get Graphs size
+		 */
+		(isset($graph_width)) ? $width = $graph_width : 500;
+		(isset($graph_height)) ? $height = $graph_height : 120;
 	
 		/*
 		 * Get index information to have acces to graph
 		 */
-		
 		if (isset($_GET["service_description"])){
 			$_GET["service_description"] = str_replace("/", "#S#", $_GET["service_description"]);
 			$_GET["service_description"] = str_replace("\\", "#BS#", $_GET["service_description"]);
@@ -164,7 +168,7 @@
 		if (!isset($GraphTemplate["vertical_label"]) || $GraphTemplate["vertical_label"] == "")
 			$GraphTemplate["vertical_label"] = "sds";		
 		
-		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 ";
+		$command_line .= " --interlaced $base --imgformat PNG --width=$width --height=$height ";
 		$command_line .= "--title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='Status' ";
 				
 		/*

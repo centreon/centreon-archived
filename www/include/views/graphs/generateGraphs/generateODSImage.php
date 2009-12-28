@@ -100,9 +100,14 @@
 		$RRDdatabase_path = getRRDToolPath($pearDBO);
 	
 		/*
+		 * Get Graphs size
+		 */
+		(isset($graph_width)) ? $width = $graph_width : 500;
+		(isset($graph_height)) ? $height = $graph_height : 120;
+			
+		/*
 		 * Get index information to have acces to graph
 		 */
-		
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
 		$index_data_ODS =& $DBRESULT->fetchRow();
 		$DBRESULT->free();	
@@ -171,7 +176,7 @@
 		else
 			$title = _("Graph")." ".$index_data_ODS["service_description"] ;
 				
-		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 --title='".$title."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+		$command_line .= " --interlaced $base --imgformat PNG --width=$width --height=$height --title='".$title."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 
 		if ($oreon->optGen["rrdtool_version"] != "1.0")
 			$command_line .= " --slope-mode ";

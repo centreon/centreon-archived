@@ -84,13 +84,17 @@
 		 */
 		 		
 		$pearDBO = new CentreonDB("centstorage");
-
 		$RRDdatabase_path = getRRDToolPath($pearDBO);
+	
+		/*
+		 * Get Graphs size
+		 */
+		(isset($graph_width)) ? $width = $graph_width : 500;
+		(isset($graph_height)) ? $height = $graph_height : 120;
 	
 		/*
 		 * Get index information to have acces to graph
 		 */
-		
 		$DBRESULT =& $pearDBO->query("SELECT index_id, metric_name FROM metrics WHERE metric_id = '".$_GET["metric"]."' LIMIT 1");
 		$metric_ODS =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
@@ -158,7 +162,7 @@
 		else
 			$title = _("Graph")." ".$index_data_ODS["service_description"] ;
 		
-		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 --title='$title metric ".$metric_ODS["metric_name"] ."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+		$command_line .= " --interlaced $base --imgformat PNG --width=$width --height=$height --title='$title metric ".$metric_ODS["metric_name"] ."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		if ($oreon->optGen["rrdtool_version"] != "1.0")
 			$command_line .= " --slope-mode ";
 		
