@@ -39,25 +39,30 @@
 	## Database retrieve information
 	#
 	$img = array("img_path"=>NULL);
-	if ($o == "c" || $o == "w")	{
+	if ($o == "ci" || $o == "w")	{
 		$res =& $pearDB->query("SELECT * FROM view_img WHERE img_id = '".$img_id."' LIMIT 1");
 		# Set base value
 		$img = array_map("myDecode", $res->fetchRow());
 		
 		# Set Directories
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT dir_dir_parent_id FROM view_img_dir_relation WHERE img_img_id = '".$img_id."'");
+		$q =  "SELECT dir_name, dir_alias, img_path FROM view_img";
+		$q .= "  JOIN view_img_dir_relation ON img_id = view_img_dir_relation.img_img_id";
+		$q .= "  JOIN view_img_dir ON dir_id = dir_dir_parent_id";
+		$q .= "  WHERE img_id = '".$img_id."' LIMIT 1";
+		$DBRESULT =& $pearDB->query($q);
 		$dir =& $DBRESULT->fetchRow();
-		$img["directories"] = $dir["dir_dir_parent_id"];
+		$img_path = "./img/media/".$dir["dir_alias"]."/".$dir["img_path"];
+		$img["directories"] = $dir["dir_name"];
 		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
-	# Directories comes from DB -> Store in $dirs Array
-	$dirs = array();
+	$dir_ids = array();
 	$DBRESULT =& $pearDB->query("SELECT dir_id, dir_name FROM view_img_dir ORDER BY dir_name");
-	while ($dir =& $DBRESULT->fetchRow())
-		$dirs[$dir["dir_id"]] = $dir["dir_name"];
+	while ($dir =& $DBRESULT->fetchRow()) {
+		$dir_ids[$dir["dir_id"]] = $dir["dir_name"];
+	}
 	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
@@ -65,50 +70,43 @@
 	##########################################################
 	# Var information to format the element
 	#
-	$attrsText 		= array("size"=>"35");
+	$attrsText 	= array("size"=>"35");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsTextarea 	= array("rows"=>"10", "cols"=>"40");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$attrsTextarea 	= array("rows"=>"5", "cols"=>"80");
 
 	#
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	if ($o == "a")
-		$form->addElement('header', 'title', _("Add"));
-	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify"));
-	else if ($o == "w")
-		$form->addElement('header', 'title', _("View"));
-
-	#
-	## Basic information
-	#
-	$form->addElement('header', 'information', _("General Information"));	
-	$form->addElement('select', 'directories', _("Directory"), $dirs);
-
-	if ($o == "c" || $o == "w")
+	if ($o == "a") {
+		$form->addElement('header', 'title', _("Add Image(s)"));
+		$form->addElement('autocomplete', 'directories', _("Existing or new directory"), $dir_ids);
+ 		$file =& $form->addElement('file', 'filename', _("Image or archive (tar.gz)"));	
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+	} else if ($o == "ci") {
+		$form->addElement('header', 'title', _("Modify Image"));
 		$form->addElement('text', 'img_name', _("Image Name"), $attrsText);
- 	$file =& $form->addElement('file', 'filename', _("Image"));
-	$file1 =& $form->addElement('file', 'filename1', _("Image"));
-	$file2 =& $form->addElement('file', 'filename2', _("Image"));
-	$file3 =& $form->addElement('file', 'filename3', _("Image"));
-	$file4 =& $form->addElement('file', 'filename4', _("Image"));
-
-	if ($o == "w")	{
-		$DBRESULT =& $pearDB->query("SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$img["directories"]."' LIMIT 1");
-		$dir_alias =& $DBRESULT->fetchRow();
-		$form->addElement('text', 'img_path', "./img/media/".$dir_alias["dir_alias"]."/".$img["img_path"], NULL);
+		$form->addElement('autocomplete', 'directories', _("Existing or new directory"), $dir_ids);
+ 		$file =& $form->addElement('file', 'filename', _("Image"));
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$form->setDefaults($img);
+		$form->addRule('img_name', _("Compulsory image name"), 'required');
+	} else if ($o == "w") {
+		$form->addElement('header', 'title', _("View Image"));
+		$form->addElement('text', 'img_name', _("Image Name"), $attrsText);
+		$form->addElement('text', 'img_path', $img_path, NULL);
+		$form->addElement('autocomplete', 'directories', _("Directory"), $dir_ids);
+ 		$file =& $form->addElement('file', 'filename', _("Image"));	
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ci&img_id=".$img_id."'"));
+		$form->setDefaults($img);
 	}
-	
+	$form->addElement("button", "cancel", _("Cancel"), array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
+
 	$form->addElement('textarea', 'img_comment', _("Comments"), $attrsTextarea);	
 
-	#
-	## Further informations
-	#
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Return to list"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Review form after save"), '0');
 	$form->addGroup($tab, 'action', _("Action"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 	
@@ -120,51 +118,37 @@
 	## Form Rules
 	#
 	$form->applyFilter('__ALL__', 'myTrim');
-	if ($o == "c")
-		$form->addRule('img_name', _("Compulsory image name"), 'required');
 	$form->addRule('directories', _("Required Field"), 'required');
 	$form->setRequiredNote(_("Required Field"));
-
-	# 
-	##End of form definition
-	#
 	
+	# watch/view
+	if ($o == "w")	{
+		$form->freeze(); // modifications not allowed
+	}
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	# Just watch an information
-	if ($o == "w")	{
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&img_id=".$img_id."'"));
-	    $form->setDefaults($img);
-		$form->freeze();
-	}
-	# Modify an information
-	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
-	    $form->setDefaults($img);
-	}
-	# Add an information
-	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
-	}
-	
 	$valid = false;
 	if ($form->validate())	{
-		$imgObj =& $form->getElement('img_id');		
+		$imgID =& $form->getElement('img_id');	
+		$imgPath = $form->getElement('directories')->getValue();
+		$imgComment = $form->getElement('img_comment')->getValue();
 		if ($form->getSubmitValue("submitA"))
-			$imgObj->setValue(insertImgInDB($file, $file1, $file2, $file3, $file4, $path));
-		else if ($form->getSubmitValue("submitC"))
-			updateImgInDB($imgObj->getValue(), $file, $path);
+			$imgID->setValue(insertImg($file, $imgPath, $imgComment));
+		else if ($form->getSubmitValue("submitC")) {
+			$imgName = $form->getElement('img_name')->getValue();
+			updateImg($imgID->getValue(), $file, $imgPath, $imgName, $imgComment);
+		}
 		$o = NULL;	
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&img_id=".$imgObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ci&img_id=".$imgID->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
+	if ($valid)
+	// && $action["action"]["action"])
 		require_once("listImg.php");
 	else	{
 		#Apply a template definition	

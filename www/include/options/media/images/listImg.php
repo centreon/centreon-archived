@@ -67,37 +67,51 @@
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Directory"));
 	$tpl->assign("headerMenu_img", _("Image"));
-	$tpl->assign("headerMenu_options", _("Options"));
-	
+	$tpl->assign("headerMenu_comment", _("Comment"));
+
 	if ($search)
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM view_img_dir_relation WHERE img_img_id = img_id GROUP BY img_id ) AS nbr, img_id, img_name, img_path, dir_name, dir_alias FROM view_img, view_img_dir, view_img_dir_relation WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'  OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND img_img_id = img_id AND dir_dir_parent_id = dir_id ORDER BY img_name, dir_alias LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT * FROM view_img_dir LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id LEFT JOIN view_img ON img_img_id = img_id WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'  OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY dir_alias, img_name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM view_img_dir_relation WHERE img_img_id = img_id GROUP BY img_id ) AS nbr, img_id, img_name, img_path, dir_name, dir_alias FROM view_img, view_img_dir, view_img_dir_relation WHERE img_img_id = img_id AND dir_dir_parent_id = dir_id ORDER BY img_name, dir_alias LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT * FROM view_img_dir LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id LEFT JOIN view_img ON img_img_id = img_id ORDER BY dir_alias, img_name LIMIT ".$num * $limit.", ".$limit;
 	$res =& $pearDB->query($rq);
-	
-	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-	/*
-	 * Different style between each lines
-	 */
-	$style = "one";
-	
-	/*
+
+	$form = new HTML_QuickForm('form', 'GET', "?p=".$p);
+
+	/* 
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
-	$elemArr = array();	for ($i = 0; $img =& $res->fetchRow(); $i++) {
-		$selectedElements =& $form->addElement('checkbox', "select[".$img['img_id']."]");	
-		$moptions = "<a href='main.php?p=".$p."&img_id=".$img['img_id']."&o=w&&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
-		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>html_entity_decode($img["img_name"], ENT_QUOTES),
-						"RowMenu_link"=>"?p=".$p."&o=c&img_id=".$img['img_id'],
-						"RowMenu_dir"=>$img["dir_name"],
-						"RowMenu_img"=>html_entity_decode($img["dir_alias"]."/".$img["img_path"], ENT_QUOTES),
-						"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	
+	$elemArr = array();
+	for ($i = 0; $elem =& $res->fetchRow(); $i++) {
+		if (isset($elem['dir_id']) && !isset($elemArr[$elem['dir_id']])) {
+			$selectedDirElem =& $form->addElement('checkbox', "select[".$elem['dir_id']."]");
+			$rowOpt = array("RowMenu_select"=>$selectedDirElem->toHtml(),
+					"RowMenu_DirLink"=>"?p=".$p."&o=cd&dir_id=".$elem['dir_id'],
+					"RowMenu_dir"=>$elem["dir_name"],
+					"RowMenu_dir_cmnt"=>$elem["dir_comment"],
+					"RowMenu_empty"=>_("Empty directory"),
+					"counter"=> 0	);
+			$elemArr[$elem['dir_id']] = array("head"=>$rowOpt, "elem"=>array());
+		}
+
+		if ($elem['img_id']) {
+			if (isset($search) && $search)
+			    $searchOpt = "&search=".$search;
+			else
+			    $searchOpt = "";
+			$selectedImgElem =& $form->addElement('checkbox', "select[".$elem['dir_id']."-".$elem['img_id']."]");
+			$rowOpt = array("RowMenu_select"=>$selectedImgElem->toHtml(),
+					"RowMenu_ImgLink"=>"?p=".$p."&o=ci&img_id=".$elem['img_id'],
+					"RowMenu_DirLink"=>"?p=".$p."&o=cd&dir_id=".$elem['dir_id'],
+					"RowMenu_dir"=>$elem["dir_name"],
+					"RowMenu_img"=>html_entity_decode($elem["dir_alias"]."/".$elem["img_path"], ENT_QUOTES),
+					"RowMenu_name"=>html_entity_decode($elem["img_name"], ENT_QUOTES),
+					"RowMenu_comment"=>html_entity_decode($elem["img_comment"], ENT_QUOTES) );
+			$elemArr[$elem['dir_id']]["elem"][$i] = $rowOpt;
+			$elemArr[$elem['dir_id']]["head"]["counter"]++;
+		}
 	}
+
 	$tpl->assign("elemArr", $elemArr);
-	
 	/*
 	 * Different messages we put in the template
 	 */
@@ -108,30 +122,20 @@
 	function setO(_i) {
 		document.forms['form'].elements['o'].value = _i;
 	}
+	function submitO(_i) {
+		if (document.forms['form'].elements[_i].selectedIndex == 1 && confirm('<?php print _("Do you confirm the deletion ?"); ?>')) {
+		 	setO(document.forms['form'].elements[_i].value); document.forms['form'].submit();
+		} else if (document.forms['form'].elements[_i].selectedIndex == 2) {
+		 	setO(document.forms['form'].elements[_i].value); document.forms['form'].submit();
+		}
+		document.forms['form'].elements[_i].selectedIndex = 0;
+	}
 	</SCRIPT>
 	<?php
-	$attrs1 = array(
-		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"this.form.elements['o1'].selectedIndex = 0");
-    $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions"), "d"=>_("Delete")/*, "mc"=>_("Massive change")*/), $attrs1);
+	$actions = array(NULL=>_("More actions"), "d"=>_("Delete"), "m"=>_("Move images"));
+	$form->addElement('select', 'o1', NULL, $actions, array('onchange'=>"javascript:submitO('o1');"));
+	$form->addElement('select', 'o2', NULL, $actions, array('onchange'=>"javascript:submitO('o2');"));
 	$form->setDefaults(array('o1' => NULL));
-
-	$attrs2 = array(
-		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"this.form.elements['o2'].selectedIndex = 0");
-    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions"), "d"=>_("Delete")/*, "mc"=>_("Massive change")*/), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 

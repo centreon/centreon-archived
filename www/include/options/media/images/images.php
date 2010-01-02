@@ -43,6 +43,11 @@
 	isset($_POST["img_id"]) ? $imgP = $_POST["img_id"] : $imgP = NULL;
 	$imgG ? $img_id = $imgG : $img_id = $imgP;
 
+	isset($_GET["dir_id"]) ? $dirG = $_GET["dir_id"] : $dirG = NULL;
+	isset($_POST["dir_id"]) ? $dirP = $_POST["dir_id"] : $dirP = NULL;
+	$dirG ? $dir_id = $dirG : $dir_id = $dirP;
+
+
 	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
 	$cG ? $select = $cG : $select = $cP;
@@ -68,9 +73,12 @@
 	switch ($o)	{
 		case "a" : require_once($path."formImg.php"); break; #Add a img
 		case "w" : require_once($path."formImg.php"); break; #Watch a img
-		case "c" : require_once($path."formImg.php"); break; #Modify a img
+		case "ci" : require_once($path."formImg.php"); break; #Modify a img
+		case "cd" : require_once($path."formDirectory.php"); break; #Modify a dir
+		case "m"  : require_once($path."formDirectory.php"); break; #Move files to a dir
 		case "d" : 
-			deleteImgInDB(isset($select) ? $select : array()); 
+			deleteMultImg(isset($select) ? $select : array()); 
+			deleteMultDirectory(isset($select) ? $select : array()); 
 			require_once($path."listImg.php"); 
 			break;
 		case "sd" : 
