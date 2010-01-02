@@ -36,7 +36,7 @@
  * 
  */
  
-	require_once ("/etc/centreon/centreon.conf.php");
+	require_once ("@CENTREON_ETC@/centreon.conf.php");
 	require_once ("./class/centreonDB.class.php");
 
 	$pearDB = new CentreonDB();
@@ -53,6 +53,7 @@
 	$dir = "./img/media/";
 
 	$rejectedDir = array("." => 1, ".." => 1);
+	$allowedExt = array("jpg" => 1, "jpeg" => 1, "png" => 1, "gif" => 1);
 
 	$dirCreated = 0;
 	$pictureRegistered = 0;
@@ -102,14 +103,14 @@
 	<?php
 	
 	/*
-	 * Define functions
+	 * recreates local centreon directories as defined in DB
 	 */
  	function checkDirectory($dir, $pearDB, $dirCreated) {
- 		$DBRESULT =& $pearDB->query("SELECT dir_id FROM view_img_dir WHERE dir_alias = '$dir'");
+ 		$DBRESULT =& $pearDB->query("SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir."'");
  		if (!$DBRESULT->numRows()) {
- 			$DBRESULT =& $pearDB->query("INSERT INTO view_img_dir (`dir_name`, `dir_alias`) VALUES ('$dir', '$dir')");
+ 			$DBRESULT =& $pearDB->query("INSERT INTO view_img_dir (`dir_name`, `dir_alias`) VALUES ('".$dir."', '".$dir."')");
  			@mkdir("./img/media/$dir");
- 			$DBRESULT =& $pearDB->query("SELECT dir_id FROM view_img_dir WHERE dir_alias = '$dir'");
+ 			$DBRESULT =& $pearDB->query("SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir."'");
  			$data =& $DBRESULT->fetchRow();
  			$dirCreated++;
  			return $data["dir_id"];
@@ -119,25 +120,34 @@
  		}
  	}
  	
+	/* 
+	 * inserts $dir_id/$picture into DB if not registered yet
+	 */
  	function checkPicture($picture, $dir_id, $pearDB, $pictureRegistered) {
+		$img_ext = pathinfo($picture, PATHINFO_EXTENSION);
+		if (!$allowedExt[$img_ext])
+		    return 0;
  		$DBRESULT =& $pearDB->query("SELECT img_id " .
  									"FROM view_img, view_img_dir_relation vidh " .
- 									"WHERE img_path = '$picture' " .
- 									"	AND vidh.dir_dir_parent_id = '$dir_id'" .
+ 									"WHERE img_path = '".$picture."' " .
+ 									"	AND vidh.dir_dir_parent_id = '".$dir_id."'" .
  									"	AND vidh.img_img_id = img_id");
  		if (!$DBRESULT->numRows()) {
- 			$DBRESULT =& $pearDB->query("INSERT INTO view_img (`img_name`, `img_path`) VALUES ('".$picture."', '$picture')");
- 			$DBRESULT =& $pearDB->query("SELECT img_id FROM view_img WHERE `img_name` = '$picture' AND `img_path` = '$picture'");
+ 			$DBRESULT =& $pearDB->query("INSERT INTO view_img (`img_name`, `img_path`) VALUES ('".$picture."', '".$picture."')");
+ 			$DBRESULT =& $pearDB->query("SELECT img_id FROM view_img WHERE `img_name` = '".$picture."' AND `img_path` = '".$picture."'");
  			$data =& $DBRESULT->fetchRow();
  			$pictureRegistered++;
  			$DBRESULT =& $pearDB->query("INSERT INTO view_img_dir_relation (`dir_dir_parent_id`, `img_img_id`) VALUES ('".$dir_id."', '".$data['img_id']."')");
  			return $data['img_id'];
  		} else {
  			$data =& $DBRESULT->fetchRow();
- 			return $data["dir_id"];
+ 			return 0;
  		}
  	}
  	
+	/*
+	 * removes obsolete files from DB if not on filesystem
+	 */
  	function DeleteOldPictures($pearDB) {
  		$fileRemoved = 0;
  		$DBRESULT =& $pearDB->query("SELECT img_id, img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id");
