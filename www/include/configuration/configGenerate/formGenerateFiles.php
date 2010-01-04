@@ -117,18 +117,19 @@
 	$sub =& $form->addElement('submit', 'submit', _("Export"));
 	$msg = NULL;
 	$stdout = NULL;
-	if ($form->validate())	{
+	if ($form->validate()) {
 		$ret = $form->getSubmitValues();
 		
 		if (!isset($ret["comment"]))
 			$ret["comment"] = 0;
 		
 		$host_list = array();
-		foreach ($tab_nagios_server as $key => $value)
+		foreach ($tab_nagios_server as $key => $value) {
 			if ($key && ($res["host"] == 0 || $res["host"] == $key))
 				$host_list[$key] = $value;
+		}
 				
-		if (isset($ret["gen"]) && $ret["gen"] && ($ret["host"] == 0 || $ret["host"])){
+		if (isset($ret["gen"]) && $ret["gen"] && ($ret["host"] == 0 || $ret["host"])) {
 			/*
 			 * Check dependancies
 			 */
@@ -155,8 +156,6 @@
 					require $path."genContactGroups.php";
 					require $path."genHosts.php";
 					require $path."genHostTemplates.php";
-					if ($oreon->user->get_version() == 2)
-						require $path."genExtendedInfos.php";
 					require $path."genHostGroups.php";
 					require $path."genServiceTemplates.php";
 					require $path."genServices.php";
@@ -182,7 +181,6 @@
 								foreach ($files as $filename)
 									require_once ($filename);
 						}
-						}
 					}
 					unset($generatedHG);
 					unset($generatedSG);
@@ -197,11 +195,10 @@
 		 
 		$tab_server = array();
 		$DBRESULT_Servers =& $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
-		if (PEAR::isError($DBRESULT_Servers))
-			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
-		while ($tab =& $DBRESULT_Servers->fetchRow()){
-			if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id']))
+		while ($tab =& $DBRESULT_Servers->fetchRow()) {
+			if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
 				$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
+			}
 		}
 		
 		/*
@@ -239,11 +236,10 @@
 		/*
 		 * Move Configuration Files and Images
 		 */
-		if (isset($ret["move"]) && $ret["move"])	{
+		if (isset($ret["move"]) && $ret["move"]) {
 			
 			/*
 			 * Copying image in logos directory
-			 * 
 			 */
 			$DBRESULT_imgs =& $pearDB->query("SELECT `dir_alias`, `img_path` FROM `view_img`, `view_img_dir`, `view_img_dir_relation` WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id");
 			while ($images =& $DBRESULT_imgs->fetchrow()){
@@ -252,9 +248,9 @@
 				copy($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
 			}
 			$msg_copy = array();
-			foreach ($tab_server as $host)
-				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $host['id']))
-					if (isset($host['localhost']) && $host['localhost'] == 1){
+			foreach ($tab_server as $host) {
+				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $host['id'])) {
+					if (isset($host['localhost']) && $host['localhost'] == 1) {
 						$msg_copy[$host["id"]] = "";
 						foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
 							$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
@@ -262,7 +258,7 @@
 							if (!$bool)
 								$msg_copy[$host["id"]] .= display_copying_file($filename, " - "._("movement")."<font color='res'>KO</font>");
 						}
-						if (strlen($msg_copy[$host["id"]])){
+						if (strlen($msg_copy[$host["id"]])) {
 							$msg_copy[$host["id"]] = "<table border=0 width=300>".$msg_copy[$host["id"]]."</table>";
 						} else {
 							$msg_copy[$host["id"]] .= _("<br><b>Centreon : </b>All configuration files copied with success.");
@@ -273,12 +269,13 @@
 							$msg_restart[$host["id"]] = "";
 						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>All configuration will be send to ".$host['name']." by centcore in several minutes.");
 					}
+				}
+			}
 		}
 		
 		/*
 		 * Restart Nagios Poller
 		 */
-		
 		if (isset($ret["restart"]) && $ret["restart"])	{
 			$stdout = "";
 			if (!isset($msg_restart))
@@ -290,15 +287,12 @@
 			$DBRESULT =& $pearDB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
 			$serveurs =& $DBRESULT->fetchrow();
 			unset($DBRESULT);
-			if (isset($serveurs["init_script"]))
-				$nagios_init_script = $serveurs["init_script"];
-			else 
-				$nagios_init_script = "/etc/init.d/nagios";
+			(isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
 			unset($serveurs);
 							
 			foreach ($tab_server as $host) {
-				if ($ret["restart_mode"] == 1){
-					if (isset($host['localhost']) && $host['localhost'] == 1){
+				if ($ret["restart_mode"] == 1) {
+					if (isset($host['localhost']) && $host['localhost'] == 1) {
 						$msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " reload");
 					} else { 
 						system("echo 'RELOAD:".$host["id"]."' >> $centcore_pipe");
@@ -307,7 +301,7 @@
 						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A reload signal has been sent to ".$host["name"]."\n");
 					}
 				} else if ($ret["restart_mode"] == 2) {
-					if (isset($host['localhost']) && $host['localhost'] == 1){
+					if (isset($host['localhost']) && $host['localhost'] == 1) {
 						$msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " restart");
 					} else {
 						system("echo \"RESTART:".$host["id"]."\" >> $centcore_pipe", $return);
@@ -315,7 +309,7 @@
 							$msg_restart[$host["id"]] = "";
 						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to ".$host["name"]."\n");
 					}
-				} else if ($ret["restart_mode"] == 3)	{
+				} else if ($ret["restart_mode"] == 3) {
 					/*
 					 * Require external function files.
 					 */
@@ -326,12 +320,11 @@
 					$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to ".$host["name"]."\n");
 				}
 				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 			
-			foreach ($msg_restart as $key => $str)
+			foreach ($msg_restart as $key => $str) {
 				$msg_restart[$key] = str_replace("\n", "<br>", $str);
+			}
 		}
 	}
 
