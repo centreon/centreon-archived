@@ -56,14 +56,16 @@ class Centreon	{
 	var $historyLimit;
   	var $search_type_service;
 	var $search_type_host;
-	var $CentreonGMT;
-	var $CentreonLogAction;
 	var $svc_svc_search;
 	var $svc_host_search;
 	var $poller;
 	var $template;
 	var $hostgroup;
 	var $host_id;
+  	
+  	var $CentreonGMT;
+	var $CentreonLogAction;
+	var $externalCMD;
   
 	function Centreon($user = NULL, $pages = array())	{
 		global $pearDB;
@@ -102,6 +104,11 @@ class Centreon	{
 		 * Init Poller id
 		 */
 		$this->poller = 0;
+		
+		/*
+		 * Init External CMD object
+		 */
+		$this->externalCMD = new CentreonExternalCommand($pearDB);
 	}
 	
 	function creatModuleList($pearDB) {
