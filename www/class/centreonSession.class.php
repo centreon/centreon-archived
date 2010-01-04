@@ -65,7 +65,7 @@ class CentreonSession
 	}
 	
 	function checkSession($session_id, $pearDB) {
-		$DBRESULT =& $pearDB->query("SELECT id, user_id FROM session WHERE `session_id` = '$session_id'");
+		$DBRESULT =& $pearDB->query("SELECT id, user_id FROM session WHERE `session_id` = '".htmlentities($session_id, ENT_QUOTES)."'");
 		if ($DBRESULT->numRows() != 0) {
 			$DBRESULT->free();
 			return 1;

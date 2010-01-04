@@ -42,7 +42,7 @@ class CentreonGMT{
 	var $myGMT;
 	var $use;
 	
-	function CentreonGMT(){
+	function CentreonGMT($DB){
 		/*
 		 * Define Table of GMT line
 		 */
@@ -77,11 +77,14 @@ class CentreonGMT{
 		/*
 		 * Flag activ / inactiv
 		 */
-		$this->use = $this->checkGMTStatus();
+		$this->use = $this->checkGMTStatus($DB);
 	}
 	
-	function checkGMTStatus() {
+	function checkGMTStatus($DB) {
 		global $pearDB;
+		
+		if (!isset($pearDB) && isset($DB))
+			$pearDB = $DB;
 		
 		$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE `key` = 'enable_gmt'");
 		$result =& $DBRESULT->fetchRow();
@@ -160,8 +163,11 @@ class CentreonGMT{
 		}
 	}
 	
-	function getMyGMTFromSession($sid = NULL){
+	function getMyGMTFromSession($sid = NULL, $DB){
 		global $pearDB;
+		
+		if (!isset($pearDB) && isset($DB))
+			$pearDB = $DB;
 		
 		if (!isset($sid))
 			return 0;

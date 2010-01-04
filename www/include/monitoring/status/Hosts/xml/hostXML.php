@@ -36,51 +36,26 @@
  * 
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";	
-	include_once $centreon_path . "www/class/centreonDB.class.php";
-	include_once $centreon_path . "www/class/centreonDuration.class.php";
-	include_once $centreon_path . "www/class/centreonXML.class.php";
-	include_once $centreon_path . "www/class/centreonACL.class.php";
-	include_once $centreon_path . "www/class/centreonGMT.class.php";
-	include_once $centreon_path . "www/class/centreonHost.class.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";	
+	include_once "/etc/centreon/centreon.conf.php";	
+	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	
-	$pearDB 	= new CentreonDB();
-	$pearDBndo 	= new CentreonDB("ndo");
-	$hostObj	= new CentreonHost($pearDB);
-
-	$ndo_base_prefix = getNDOPrefix();
-	$general_opt = getStatusColor($pearDB);
+	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	
-	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
-		$sid = $_GET["sid"];
-		$sid = htmlentities($sid);
-		$res =& $pearDB->query("SELECT * FROM `session` WHERE `session_id` = '".$sid."'");
-		if (!$session =& $res->fetchRow())
-			get_error('bad session id');
-	} else
-		get_error('need session identifiant !');
-	
-	/* 
-	 * LCA 
-	 */
-	$is_admin =  isUserAdmin($sid);
-	$user_id = getUserIdFromSID($sid); 	
-	$access = new CentreonACL($user_id, $is_admin);	
-	$grouplistStr = $access->getAccessGroupsString();
-	
-	/* 
-	 * requisit 
-	 */
-	$default_poller = "ALL";
-	$rq_default_poller = "SELECT cp_value FROM contact_param WHERE cp_key = 'monitoring_default_poller' AND cp_contact_id = '".$user_id."' LIMIT 1";
-	$DBRES_POLLER = $pearDB->query($rq_default_poller);
-	if ($DBRES_POLLER->numRows()) {
-		$tmpRow = $DBRES_POLLER->fetchRow();
-		$default_poller = $tmpRow['cp_value'];
+	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+		;
+	} else {
+		print "Bad Session ID";
+		exit();
 	}
 	
-	(isset($_GET["instance"]) && !check_injection($_GET["instance"])) ? $instance = htmlentities($_GET["instance"]) : $instance = $default_poller;
+	/*
+	 * Set Default Poller
+	 */
+	$obj->getDefaultPoller();
+	
+	(isset($_GET["instance"]) && !check_injection($_GET["instance"])) ? $instance = htmlentities($_GET["instance"]) : $instance = $obj->defaultPoller;
 	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	
@@ -94,42 +69,12 @@
 	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 	
-	if (!$instance) {
+	if (!$instance)
 		$instance = "ALL";
-	}	
 
-	/*
-	 * Init GMT class
+	/* 
+	 * Get Host status 
 	 */
-	
-	$centreonGMT = new CentreonGMT();
-	$centreonGMT->getMyGMTFromSession($sid);
-	
-
-	$service = array();
-	$host_status = array();
-	$service_status = array();
-	$host_services = array();
-	$metaService_status = array();
-	$tab_host_service = array();
-
-	$tab_color_service = array();
-	$tab_color_service[0] = $general_opt["color_ok"];
-	$tab_color_service[1] = $general_opt["color_warning"];
-	$tab_color_service[2] = $general_opt["color_critical"];
-	$tab_color_service[3] = $general_opt["color_unknown"];
-	$tab_color_service[4] = $general_opt["color_pending"];
-
-	$tab_color_host = array();
-	$tab_color_host[0] = $general_opt["color_up"];
-	$tab_color_host[1] = $general_opt["color_down"];
-	$tab_color_host[2] = $general_opt["color_unreachable"];
-
-	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
-	$state_type = array("1" => "H", "0" => "S");
-
-	/* Get Host status */
 	$rq1 = 	" SELECT DISTINCT no.name1, nhs.current_state," .
 			" nhs.problem_has_been_acknowledged, " .
 			" nhs.passive_checks_enabled," .
@@ -150,16 +95,16 @@
 			" nhs.state_type," .
 			" nhs.current_check_attempt, " .
 			" nhs.scheduled_downtime_depth" .
-			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh";
-	if (!$is_admin)	
+			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts nh";
+	if (!$obj->is_admin)	
 		$rq1 .= ", centreon_acl ";
 		 
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id " .
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
 			" AND no.name1 NOT LIKE '_Module_%'";
 
-	if (!$is_admin)	
-		$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
+	if (!$obj->is_admin)	
+		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
@@ -207,34 +152,31 @@
 			$rq1 .= " order by no.name1 ";
 			break;
 	}
-
 	$rq_pagination = $rq1;
-
+	
 	/* 
 	 * Get Pagination Rows 
 	 */
-	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	$numRows = $DBRESULT_PAGINATION->numRows();
-
+	$DBRESULT =& $obj->DBNdo->query($rq_pagination);
+	$numRows = $DBRESULT->numRows();
+	$DBRESULT->free();
+	
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-	$buffer = new CentreonXML();
-	$buffer->startElement("reponse");
-	$buffer->startElement("i");
-	$buffer->writeElement("numrows", $numRows);
-	$buffer->writeElement("num", $num);
-	$buffer->writeElement("limit", $limit);
-	$buffer->writeElement("p", $p);
-	$buffer->writeElement("o", $o);
-	$buffer->writeElement("hard_state_label", _("Hard State Duration"));
-	$buffer->endElement();	
+	$obj->XML->startElement("reponse");
+	$obj->XML->startElement("i");
+	$obj->XML->writeElement("numrows", $numRows);
+	$obj->XML->writeElement("num", $num);
+	$obj->XML->writeElement("limit", $limit);
+	$obj->XML->writeElement("p", $p);
+	$obj->XML->writeElement("o", $o);
+	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
+	$obj->XML->endElement();	
 	
-	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+	$DBRESULT_NDO1 =& $obj->DBNdo->query($rq1);
 	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
-		$color_host = $tab_color_host[$ndo["current_state"]];
 		$passive = 0;
 		$active = 1;
 		$last_check = " ";
@@ -249,54 +191,47 @@
 			$hard_duration = CentreonDuration::toString(time() - $ndo["last_hard_state_change"]);
 		else if ($ndo["last_hard_state_change"] > 0)
 			$hard_duration = " N/A ";
-		
-		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 			
-		$host_status[$ndo["host_name"]] = $ndo;
-		$buffer->startElement("l");
-		$buffer->writeAttribute("class", $class);
-		$buffer->writeElement("o", 		$ct++);
-		$buffer->writeElement("hc", 	$color_host);
-		$buffer->writeElement("f", 		$flag);
-		$buffer->writeElement("hn",		$ndo["host_name"]);
-		$buffer->writeElement("a", 		($ndo["address"] ? $ndo["address"] : "N/A"));
-		$buffer->writeElement("ou", 	($ndo["output"] ? $ndo["output"] : "N/A"));
-		$buffer->writeElement("lc", 	(($ndo["last_check"] != 0) ? $centreonGMT->getDate($date_time_format_status, $ndo["last_check"]) : "N/A"));
-		$buffer->writeElement("cs", 	$tab_status_host[$ndo["current_state"]]);		
-		$buffer->writeElement("pha", 	$ndo["problem_has_been_acknowledged"]);
-        $buffer->writeElement("pce", 	$ndo["passive_checks_enabled"]);
-        $buffer->writeElement("ace", 	$ndo["active_checks_enabled"]);
-        $buffer->writeElement("lsc", 	($duration ? $duration : "N/A"));      
-        $buffer->writeElement("last_hard_state_change", 	($hard_duration ? $hard_duration : "N/A"));
-        $buffer->writeElement("ha", 	$ndo["problem_has_been_acknowledged"]);
-        $buffer->writeElement("hdtm", 	$ndo["scheduled_downtime_depth"]);
-        $buffer->writeElement("hae", 	$ndo["active_checks_enabled"]);       
-        $buffer->writeElement("hpe", 	$ndo["passive_checks_enabled"]);
-        $buffer->writeElement("ne", 	$ndo["notifications_enabled"]);
-        $buffer->writeElement("tr", 	$ndo["current_check_attempt"]."/".$ndo["max_check_attempts"]." (".$state_type[$ndo["state_type"]].")");
-        $buffer->writeElement("ico", 	$ndo["icon_image"]);
+		$obj->XML->startElement("l");
+		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
+		$obj->XML->writeElement("o", 	$ct++);
+		$obj->XML->writeElement("hc", 	$obj->colorHost[$ndo["current_state"]]);
+		$obj->XML->writeElement("f", 	$flag);
+		$obj->XML->writeElement("hn",	$ndo["host_name"]);
+		$obj->XML->writeElement("a", 	($ndo["address"] ? $ndo["address"] : "N/A"));
+		$obj->XML->writeElement("ou", 	($ndo["output"] ? $ndo["output"] : "N/A"));
+		$obj->XML->writeElement("lc", 	(($ndo["last_check"] != 0) ? $obj->GMT->getDate($date_time_format_status, $ndo["last_check"]) : "N/A"));
+		$obj->XML->writeElement("cs", 	$obj->statusHost[$ndo["current_state"]]);		
+		$obj->XML->writeElement("pha", 	$ndo["problem_has_been_acknowledged"]);
+        $obj->XML->writeElement("pce", 	$ndo["passive_checks_enabled"]);
+        $obj->XML->writeElement("ace", 	$ndo["active_checks_enabled"]);
+        $obj->XML->writeElement("lsc", 	($duration ? $duration : "N/A"));      
+        $obj->XML->writeElement("lhs", 	($hard_duration ? $hard_duration : "N/A"));
+        $obj->XML->writeElement("ha", 	$ndo["problem_has_been_acknowledged"]);
+        $obj->XML->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);
+        $obj->XML->writeElement("hae", 	$ndo["active_checks_enabled"]);       
+        $obj->XML->writeElement("hpe", 	$ndo["passive_checks_enabled"]);
+        $obj->XML->writeElement("ne", 	$ndo["notifications_enabled"]);
+        $obj->XML->writeElement("tr", 	$ndo["current_check_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
+        $obj->XML->writeElement("ico", 	$ndo["icon_image"]);
 		if ($ndo["notes"] != "") {
-			$buffer->writeElement("hnn", $hostObj->replaceMacroInString($ndo["host_id"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes_url"]))));
+			$obj->XML->writeElement("hnn", $hostObj->replaceMacroInString($ndo["host_id"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes_url"]))));
 		} else {
-			$buffer->writeElement("hnn", "none");			
+			$obj->XML->writeElement("hnn", "none");			
 		}
 		
 		if ($ndo["notes_url"] != "") {
-			$buffer->writeElement("hnu", $hostObj->replaceMacroInString($ndo["host_id"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes_url"]))));
+			$obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["host_id"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes_url"]))));
 		} else {
-			$buffer->writeElement("hnu", "none");			
+			$obj->XML->writeElement("hnu", "none");			
 		}
-		$buffer->endElement();		
+		$obj->XML->endElement();		
 	}
 
 	if (!$ct)
-		$buffer->writeElement("infos", "none");
+		$obj->XML->writeElement("infos", "none");
 
-	$buffer->endElement();
-	header('Content-Type: text/xml');
-	header('Pragma: no-cache');
-	header('Expires: 0');
-	header('Cache-Control: no-cache, must-revalidate'); 
-	
-	$buffer->output();
+	$obj->XML->endElement();
+	$obj->header();
+	$obj->XML->output();
 ?>
