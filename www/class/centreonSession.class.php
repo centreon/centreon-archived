@@ -36,44 +36,41 @@
  * 
  */
 
-class CentreonSession
+class CentreonSession 
 {
-	// Attributes
-	
-	// Associations
-	
-	// Operations
-	
-	function start()
-	{
+	function start() {
 		session_start();
 	}
 	
-	function stop()
-	{
+	function stop() {
 		session_unset();
 		session_destroy();
 	}
 	
-	function restart()
-	{
+	function restart() {
 		$this->stop();
 		$this->start();
 	}
 	
-	function s_unset()
-	{
+	function s_unset() {
 		session_unset();
 	}
 	
-	function unregister_var($register_var)
-	{
+	function unregister_var($register_var) {
 		session_unregister($register_var);
 	}
   
-	function register_var ($register_var) 
-	{
+	function register_var ($register_var) {
 		session_register($register_var);
+	}
+	
+	function checkSession($session_id, $pearDB) {
+		$DBRESULT =& $pearDB->query("SELECT id, user_id FROM session WHERE `session_id` = '$session_id'");
+		if ($DBRESULT->numRows() != 0) {
+			$DBRESULT->free();
+			return 1;
+		}
+		return 0;
 	}
 	
 } /* end class Session */
