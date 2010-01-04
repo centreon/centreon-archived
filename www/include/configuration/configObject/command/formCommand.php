@@ -114,15 +114,11 @@
 	/*
 	 * Command information
 	 */
-	if ($type == "1")
-		$form->addElement('header', 'information', _("Notification"));
-	else if ($type == "2")
-		$form->addElement('header', 'information', _("Check"));
-	else if ($type == "3")
-		$form->addElement('header', 'information', _("Check"));
+	if (isset($tabCommandType[$type]))
+		$form->addElement('header', 'information', $tabCommandType[$type]);
 	else
 		$form->addElement('header', 'information', _("Information"));
-	
+		
 	if (isset($tabCommandType)) {
 		foreach ($tabCommandType as $id => $name) {
 			$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id);	
