@@ -39,6 +39,7 @@
 require_once("centreonUser.class.php");
 require_once("centreonGMT.class.php");
 require_once("centreonLogAction.class.php");
+require_once("centreonExternalCommand.class.php");
 
 class Centreon	{
 		
@@ -93,7 +94,7 @@ class Centreon	{
 		/*
 		 * Create GMT object
 		 */
-		$this->CentreonGMT = new CentreonGMT();
+		$this->CentreonGMT = new CentreonGMT($pearDB);
 	
 		/*
 		 * Create LogAction object
