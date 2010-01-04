@@ -39,6 +39,8 @@
  	if (!isset($oreon))
  		exit();
  
+ 	include_once $path . "commandType.php";
+ 
  	/*
 	 * Form Rules
 	 */
@@ -121,10 +123,15 @@
 	else
 		$form->addElement('header', 'information', _("Information"));
 	
-	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
-	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
-	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
-	
+	if (isset($tabCommandType)) {
+		foreach ($tabCommandType as $id => $name) {
+			$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id);	
+		}
+	} else {
+		$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
+		$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
+		$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
+	}
 	$form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 
 	if (isset($type) && $type != "")
