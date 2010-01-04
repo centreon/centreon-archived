@@ -63,9 +63,9 @@
 			if ($destination == "/centcore.cmd")
 			    $destination = "/var/lib/centreon/centcore.cmd";
 		}
-		if(!$cmdfile = fopen($destination, "a"))
+		if (!$cmdfile = fopen($destination, "a"))
 		    return _("Cannot open command file");
-		if(!fwrite($cmdfile, $str)) {
+		if (!fwrite($cmdfile, $str)) {
 		    fclose($cmdfile);
 		    return _("Cannot write to command file");
 		}
