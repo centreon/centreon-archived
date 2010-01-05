@@ -471,7 +471,7 @@
 	  $version = getVersion();
 	
 	  while (1) {
-	    $DBRESULT =& $pearDB->query("SELECT sc_id FROM service_categories_relation scr WHERE scr.service_service_id = '".$service_id."'");
+	    $DBRESULT =& $pearDB->query("SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc WHERE scr.service_service_id = '".$service_id."' AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'");
 	    if ($DBRESULT->numRows()) {
 	      $tabSC = array();
 	      while ($row =& $DBRESULT->fetchRow())
