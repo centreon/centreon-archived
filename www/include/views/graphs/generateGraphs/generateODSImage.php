@@ -35,8 +35,6 @@
  * SVN : $Id$
  * 
  */
-
-	header('Content-Type: image/png');
  	
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
@@ -45,7 +43,7 @@
 	/*
 	 * Include config file
 	 */
-	include "@CENTREON_ETC@/centreon.conf.php";
+	include "/etc/centreon/centreon.conf.php";
 		
 	require_once "./DB-Func.php";
 	require_once $centreon_path."www/class/centreonDB.class.php";
@@ -111,6 +109,11 @@
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
 		$index_data_ODS =& $DBRESULT->fetchRow();
 		$DBRESULT->free();	
+		
+		
+		$filename = $index_data_ODS["host_name"]. "-".$index_data_ODS["service_description"];
+		$filename = str_replace("#S#", "/", $filename);
+		$filename = str_replace("#BS#", "\\", $filename);
 		
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
 			if ($index_data_ODS["host_name"] != "_Module_Meta") {
@@ -322,9 +325,11 @@
 		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
 		
 		
-		# Create Legende
+		/*
+		 * Create Legende
+		 */
 		$cpt = 0;
-		foreach ($metrics as $key => $tm){
+		foreach ($metrics as $key => $tm) {
 			
 			if ($metrics[$key]["ds_filled"])
 				$command_line .= " AREA:v".($cpt).$tm["ds_color_area"].$tm["ds_transparency"]." ";
@@ -365,6 +370,11 @@
 		if ($centreon->optGen["debug_rrdtool"] == "1")
 			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $centreon->optGen["debug_path"]."rrdtool.log");
 		//print $command_line;
+		
+		header("Content-Type: image/png");
+		header("Content-Transfer-Encoding: binary");
+		header("Content-Disposition: attachment; filename=\"$filename\";");
+		
 		$fp = popen($command_line  , 'r');
 		if (isset($fp) && $fp ) {
 			$str ='';
