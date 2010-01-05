@@ -100,8 +100,8 @@
  	/*
 	 * Init GMT class
 	 */
-	$centreonGMT = new CentreonGMT();
-	$centreonGMT->getMyGMTFromSession($sid);
+	$centreonGMT = new CentreonGMT($pearDB);
+	$centreonGMT->getMyGMTFromSession($sid, $pearDB);
  
 	$contact_id = check_session($sid, $pearDB);
 	

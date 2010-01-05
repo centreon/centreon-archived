@@ -49,8 +49,8 @@
 	/*
 	 * Init GMT class
 	 */
-	$centreonGMT = new CentreonGMT();
-	$centreonGMT->getMyGMTFromSession(session_id());
+	$centreonGMT = new CentreonGMT($pearDB);
+	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
 	unset($tpl);
 	unset($path);

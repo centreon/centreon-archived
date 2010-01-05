@@ -89,7 +89,7 @@
 	/*
 	 * Init GMT Class
 	 */
-	$CentreonGMT = new CentreonGMT();
+	$CentreonGMT = new CentreonGMT($pearDB);
 	
 	/*
 	 * Check Session activity 
@@ -102,7 +102,7 @@
 	 	/*
 	 	 * Get GMT for current user
 	 	 */
-	 	$gmt = $CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
+	 	$gmt = $CentreonGMT->getMyGMTFromSession($_GET["session_id"], $pearDB);
 	 
 		/*
 		 * Get RRDTool binary Path 

@@ -87,8 +87,8 @@
 		/*
 	 	 * Get GMT for current user
 	 	 */
-	 	$CentreonGMT = new CentreonGMT();
-	 	$CentreonGMT->getMyGMTFromSession($_GET["session_id"]);
+	 	$CentreonGMT = new CentreonGMT($pearDB);
+	 	$CentreonGMT->getMyGMTFromSession($_GET["session_id"], $pearDB);
 		
 		/*
 		 * Connect to ods

@@ -116,8 +116,8 @@
 	/*
  	 * Get GMT for current user
  	 */
- 	$CentreonGMT = new CentreonGMT();
- 	$CentreonGMT->getMyGMTFromSession($sid);
+ 	$CentreonGMT = new CentreonGMT($pearDB);
+ 	$CentreonGMT->getMyGMTFromSession($sid, $pearDB);
 	$gmt = $CentreonGMT->getMyGMTForRRD();
 	/*
 	 * Check if period is a period by duration or a time range.
