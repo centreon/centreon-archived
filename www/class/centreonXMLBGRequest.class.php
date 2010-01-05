@@ -95,6 +95,7 @@ class CentreonXMLBGRequest	{
 	var $statusHost;
 	var $statusService;
 	var $colorHost;
+	var $colorHostInService;
 	var $colorService;
 	
 	/*
@@ -180,6 +181,7 @@ class CentreonXMLBGRequest	{
 		$this->statusService= array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 		$this->colorHost 	= array(0 => $this->general_opt["color_up"], 1 => $this->general_opt["color_down"], 2 => $this->general_opt["color_unreachable"]);
 		$this->colorService	= array(0 => $this->general_opt["color_ok"], 1 => $this->general_opt["color_warning"], 2 => $this->general_opt["color_critical"], 3 => $this->general_opt["color_unknown"]);
+		$this->colorHostInService = array(0 => "normal", 1 => "#FD8B46", 2 => "normal");
 	}
 	
 	/* 
@@ -272,6 +274,20 @@ class CentreonXMLBGRequest	{
 			$this->defaultPoller = $tmpRow['cp_value'];
 			$DBRESULT->free();
 			unset($tmpRow);
+		}
+	}
+	
+	public function setInstanceHistory($instance) {
+		$this->DB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'MONITORING_POLLER_ID' AND `cp_contact_id` = '$user_id'");	
+		$this->DB->query("INSERT INTO `contact_param` SET `cp_key` = 'MONITORING_POLLER_ID', `cp_contact_id` = '" . $this->user_id . "', `cp_value` = '$instance'");
+	}
+	
+	public function checkArgument($name, $tab, $defaultValue) {
+		if (isset($name) && isset($tab)) {
+			if (isset($tab[$name]))
+				return htmlentities($tab[$name], ENT_QUOTES);
+			else
+				return htmlentities($defaultValue, ENT_QUOTES);
 		}
 	}
 }
