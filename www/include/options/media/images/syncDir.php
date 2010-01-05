@@ -53,10 +53,11 @@
 	$dir = "./img/media/";
 
 	$rejectedDir = array("." => 1, ".." => 1);
-	$allowedExt = array("jpg" => 1, "jpeg" => 1, "png" => 1, "gif" => 1);
+	$allowedExt = array("jpg" => 1, "jpeg" => 1, "png" => 1, "gif" => 1, "gd2" => 1);
 
 	$dirCreated = 0;
-	$pictureRegistered = 0;
+	$regCounter = 0;
+	$gdCounter = 0;
 
 	if (is_dir($dir)) {
 	    if ($dh = opendir($dir)) {
@@ -66,7 +67,7 @@
 	            	 if ($dh2 = opendir($dir.$subdir)) {
 	            	 	while (($picture = readdir($dh2)) !== false) {
 	            	 		if (!isset($rejectedDir[$picture])) {
-	            	 			checkPicture($picture, $dir_id, $pearDB, &$pictureRegistered);
+	            	 			checkPicture($picture, $dir.$subdir, $dir_id, $pearDB, &$regCounter, &$gdCounter);
 	            	 		}
 	            	 	}
 	            	 	closedir($dh2);
@@ -93,7 +94,8 @@
 		<?php
 			print "Bad picture alias detected : $fileRemoved<br>";
 			print "New directory added : $dirCreated<br>";
-			print "New picture/logo added : $pictureRegistered<br><br><br>";
+			print "New images added : $regCounter<br>";
+			print "Convert gd2 -> png : $gdCounter<br><br><br>";
 		?>
 		</p>
 		<br><br><br>
@@ -123,20 +125,39 @@
 	/* 
 	 * inserts $dir_id/$picture into DB if not registered yet
 	 */
- 	function checkPicture($picture, $dir_id, $pearDB, $pictureRegistered) {
-		$img_ext = pathinfo($picture, PATHINFO_EXTENSION);
-		if (!$allowedExt[$img_ext])
+ 	function checkPicture($picture, $dirpath, $dir_id, $pearDB, $regCounter, $gdCounter) {
+		global $allowedExt;
+		$img_info = pathinfo($picture);
+		$img_ext = $img_info["extension"];
+		if (! (isset($allowedExt[$img_ext])&&$allowedExt[$img_ext]) )
 		    return 0;
+
+                if (!$img_info["filename"]) {
+			$img_parts = explode(".", $img_info["basename"]);
+                        $img_info["filename"] = $img_parts[0];
+		}
+
+		if ($img_info["extension"] == 'gd2' && !is_file($img_info["filename"] . ".png") ) {
+			$im = imagecreatefromgd2($dirpath ."/". $picture);
+			if (!$im) 
+			    return 0;
+			//unlink($picture);
+			$picture = $img_info["filename"] . ".png";
+			imagepng($im, $dirpath ."/". $picture);
+			imagedestroy($im);
+			$gdCounter++;
+		}
+
  		$DBRESULT =& $pearDB->query("SELECT img_id " .
  									"FROM view_img, view_img_dir_relation vidh " .
  									"WHERE img_path = '".$picture."' " .
  									"	AND vidh.dir_dir_parent_id = '".$dir_id."'" .
  									"	AND vidh.img_img_id = img_id");
  		if (!$DBRESULT->numRows()) {
- 			$DBRESULT =& $pearDB->query("INSERT INTO view_img (`img_name`, `img_path`) VALUES ('".$picture."', '".$picture."')");
- 			$DBRESULT =& $pearDB->query("SELECT img_id FROM view_img WHERE `img_name` = '".$picture."' AND `img_path` = '".$picture."'");
+ 			$DBRESULT =& $pearDB->query("INSERT INTO view_img (`img_name`, `img_path`) VALUES ('".$img_info["filename"]."', '".$picture."')");
+ 			$DBRESULT =& $pearDB->query("SELECT img_id FROM view_img WHERE `img_name` = '".$img_info["filename"]."' AND `img_path` = '".$picture."'");
  			$data =& $DBRESULT->fetchRow();
- 			$pictureRegistered++;
+ 			$regCounter++;
  			$DBRESULT =& $pearDB->query("INSERT INTO view_img_dir_relation (`dir_dir_parent_id`, `img_img_id`) VALUES ('".$dir_id."', '".$data['img_id']."')");
  			return $data['img_id'];
  		} else {
