@@ -99,7 +99,7 @@
   	 *  Writes attribute
   	 */
   	public function writeAttribute($att_name, $att_value) {
-  		$this->buffer->writeAttribute($att_name, $att_value);
+  		$this->buffer->writeAttribute($att_name, utf8_encode(html_entity_decode($att_value)));
   	}
   	
   	/*
