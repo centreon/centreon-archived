@@ -86,8 +86,8 @@
 	/*
 	 * Init GMT class
 	 */
-	$centreonGMT = new CentreonGMT();
-	$centreonGMT->getMyGMTFromSession($sid);
+	$centreonGMT = new CentreonGMT($pearDB);
+	$centreonGMT->getMyGMTFromSession($sid, $pearDB);
 	
 	/*
 	 * Get General Options

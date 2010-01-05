@@ -36,8 +36,7 @@
  * 
  */
 
-	//include_once "@CENTREON_ETC@/centreon.conf.php";	
-	include_once "/etc/centreon/centreon.conf.php";	
+	include_once "@CENTREON_ETC@/centreon.conf.php";	
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	
@@ -59,17 +58,17 @@
 	$obj->getDefaultPoller();
 	
 	/*
-	 *  options 
+	 *  Check Arguments from GET
 	 */
-	(isset($_GET["instance"]) && !check_injection($_GET["instance"])) ? $instance = htmlentities($_GET["instance"]) : $instance = $obj->defaultPoller;
-	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
-	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
-	(isset($_GET["search"]) && !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
-	(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]):$sort_type = "host_name";
-	(isset($_GET["order"]) && !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $order = "ASC";
-	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
-	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
-	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
+	$o 			= $obj->checkArgument("o", $_GET, "h");
+	$p			= $obj->checkArgument("p", $_GET, "2");
+	$num 		= $obj->checkArgument("num", $_GET, 0);
+	$limit 		= $obj->checkArgument("limit", $_GET, 20);
+	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+	$search 	= $obj->checkArgument("search", $_GET, "");
+	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+	$order 		= $obj->checkArgument("order", $_GET, "ASC");
+	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 	
 	/*
 	 * Backup poller selection
@@ -182,8 +181,8 @@
 	
 	$ct = 0;
 	$flag = 0;
-	$DBRESULT_NDO1 =& $obj->DBNdo->query($rq1);
-	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
+	$DBRESULT =& $obj->DBNdo->query($rq1);
+	while ($ndo =& $DBRESULT->fetchRow()){
 		
 		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
 			$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
@@ -203,7 +202,7 @@
 		$obj->XML->writeElement("hn",	$ndo["host_name"]);
 		$obj->XML->writeElement("a", 	($ndo["address"] ? $ndo["address"] : "N/A"));
 		$obj->XML->writeElement("ou", 	($ndo["output"] ? $ndo["output"] : "N/A"));
-		$obj->XML->writeElement("lc", 	($ndo["last_check"] != 0 ? $obj->GMT->getDate($date_time_format_status, $ndo["last_check"]) : "N/A"));
+		$obj->XML->writeElement("lc", 	($ndo["last_check"] != 0 ? $obj->GMT->getDate($dateFormat, $ndo["last_check"]) : "N/A"));
 		$obj->XML->writeElement("cs", 	$obj->statusHost[$ndo["current_state"]]);		
 		$obj->XML->writeElement("pha", 	$ndo["problem_has_been_acknowledged"]);
         $obj->XML->writeElement("pce", 	$ndo["passive_checks_enabled"]);
@@ -231,6 +230,7 @@
 		}
 		$obj->XML->endElement();		
 	}
+	$DBRESULT->free();
 
 	if (!$ct)
 		$obj->XML->writeElement("infos", "none");
