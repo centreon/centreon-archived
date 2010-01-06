@@ -134,17 +134,17 @@
 			/*
 			 * ADDRESSX
 			 */
-			if ($contact["contact_address1"]) 
+			if (isset($contact["contact_address1"]) && $contact["contact_address1"]) 
 				$str .= print_line("address1", $contact["contact_address1"]);
-			if ($contact["contact_address2"]) 
+			if (isset($contact["contact_address2"]) && $contact["contact_address2"]) 
 				$str .= print_line("address2", $contact["contact_address2"]);
-			if ($contact["contact_address3"]) 
+			if (isset($contact["contact_address3"]) && $contact["contact_address3"]) 
 				$str .= print_line("address3", $contact["contact_address3"]);
-			if ($contact["contact_address4"]) 
+			if (isset($contact["contact_address4"]) && $contact["contact_address4"]) 
 				$str .= print_line("address4", $contact["contact_address4"]);
-			if ($contact["contact_address5"]) 
+			if (isset($contact["contact_address5"]) && $contact["contact_address5"]) 
 				$str .= print_line("address5", $contact["contact_address5"]);
-			if ($contact["contact_address6"]) 
+			if (isset($contact["contact_address6"]) && $contact["contact_address6"]) 
 				$str .= print_line("address6", $contact["contact_address6"]);
 			
 			$str .= "}\n\n";
