@@ -299,9 +299,9 @@
 	 */
 	require_once $centreon_path."www/class/centreonGMT.class.php";
 	
-	$CentreonGMT = new CentreonGMT();
+	$CentreonGMT = new CentreonGMT($pearDB);
 	
-	$GMTList = $CentreonGMT->getGMTList();
+	$GMTList = $CentreonGMT->getGMTList($pearDB);
 	
 	$form->addElement('select', 'host_location', _("Timezone / Location"), $GMTList);
 	if ($o != "mc")

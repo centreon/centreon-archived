@@ -36,7 +36,7 @@
  * 
  */
  
-	if (!isset ($oreon))
+	if (!isset($centreon))
 		exit ();
 
 	function getHostServiceCombo($service_id = NULL, $service_description = NULL) {
@@ -131,20 +131,20 @@
 	
 	function enableServiceInDB ($service_id = null, $service_arr = array())	{
 		if (!$service_id && !count($service_arr)) return;
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 		if ($service_id)
 			$service_arr = array($service_id=>"1");
 		foreach($service_arr as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '".$key."'");			
 			$DBRESULT2 =& $pearDB->query("SELECT service_description FROM `service` WHERE service_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow(); 
-			$oreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $row['service_description']), "enable");
+			$centreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $row['service_description']), "enable");
 		}
 	}
 	
 	function disableServiceInDB ($service_id = null, $service_arr = array())	{
 		if (!$service_id && !count($service_arr)) return;
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 		if ($service_id)
 			$service_arr = array($service_id=>"1");
 		foreach($service_arr as $key=>$value)	{
@@ -152,11 +152,11 @@
 				
 			$DBRESULT2 =& $pearDB->query("SELECT service_description FROM `service` WHERE service_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow(); 
-			$oreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $row['service_description']), "disable");
+			$centreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $row['service_description']), "disable");
 		}
 	}
 	function deleteServiceInDB ($services = array())	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 
 		foreach ($services as $key => $value)	{
 
@@ -167,7 +167,7 @@
 			
 			$DBRESULT3 =& $pearDB->query("SELECT service_description FROM `service` WHERE `service_id` = '".$key."' LIMIT 1");
 			$svcname = $DBRESULT3->fetchRow();
-			$oreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $svcname['service_description']), "d");
+			$centreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $svcname['service_description']), "d");
 			$DBRESULT =& $pearDB->query("DELETE FROM service WHERE service_id = '".$key."'");
 			
 			$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
@@ -231,7 +231,7 @@
 	}
 		
 	function multipleServiceInDB ($services = array(), $nbrDup = array(), $host = NULL, $descKey = 1, $hostgroup = NULL, $hPars = array(), $hgPars = array())	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 	
 		# $descKey param is a flag. If 1, we know we have to rename description because it's a traditionnal duplication. If 0, we don't have to, beacause we duplicate services for an Host duplication
 		# Foreach Service
@@ -363,7 +363,7 @@
 								$description = $row2['service_description'];								
 								$description = str_replace("#S#", "/", $description);
 								$description = str_replace("#BS#", "\\", $description);
-								$oreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], getHostServiceCombo($maxId["MAX(service_id)"], $description), "a", $fields);							
+								$centreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], getHostServiceCombo($maxId["MAX(service_id)"], $description), "a", $fields);							
 							}
 						}
 					}
@@ -447,7 +447,7 @@
 	}	
 	
 	function insertServiceInDB ($ret = array(), $macro_on_demand = NULL)	{
-		global $oreon;
+		global $centreon;
 		
 		$tmp_fields = array();
 		$tmp_fields = insertService($ret, $macro_on_demand);
@@ -459,17 +459,15 @@
 		insertServiceExtInfos($service_id, $ret);
 		updateServiceTrap($service_id, $ret);
 		updateServiceCategories($service_id, $ret);
-		$oreon->user->access->updateACL();
+		$centreon->user->access->updateACL();
 		$fields = $tmp_fields['fields'];
-		$oreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, htmlentities($fields["service_description"], ENT_QUOTES)), "a", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, htmlentities($fields["service_description"], ENT_QUOTES)), "a", $fields);
 		return ($service_id);
 	}
 	
 	function insertService($ret = array(), $macro_on_demand = NULL)	{
-		global $form, $pearDB, $oreon;
-		
-		
-		
+		global $form, $pearDB, $centreon;
+
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
@@ -637,7 +635,7 @@
 		$fields["service_traps"] = "";
 		if (isset($ret["service_traps"]))
 			$fields["service_traps"] = implode(",", $ret["service_traps"]);
-		$oreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id["MAX(service_id)"], htmlentities($ret["service_description"], ENT_QUOTES)), "a", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id["MAX(service_id)"], htmlentities($ret["service_description"], ENT_QUOTES)), "a", $fields);
 		return (array("service_id" => $service_id["MAX(service_id)"], "fields" => $fields));
 	}
 	
@@ -673,7 +671,7 @@
 	function updateService($service_id = null, $from_MC = false)	{
 		if (!$service_id) return;
 		global $form;
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
@@ -864,15 +862,15 @@
 		$fields["service_traps"] = "";
 		if (isset($ret["service_traps"]))
 			$fields["service_traps"] = implode(",", $ret["service_traps"]);
-		$oreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id, htmlentities($ret["service_description"], ENT_QUOTES)), "c", $fields);
-		$oreon->user->access->updateACL();
+		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id, htmlentities($ret["service_description"], ENT_QUOTES)), "c", $fields);
+		$centreon->user->access->updateACL();
 	}
 	
 	function updateService_MC($service_id = null)	{
 		if (!$service_id) 
 			return;
 		global $form;
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
@@ -1102,7 +1100,7 @@
 	 			$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
 	 		}
 		}
-		$oreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, getMyServiceName($service_id), ENT_QUOTES), "mc", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, getMyServiceName($service_id), ENT_QUOTES), "mc", $fields);
 	}
 	
 	/*

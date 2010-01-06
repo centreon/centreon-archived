@@ -36,8 +36,8 @@
  * 
  */
  
-	if (!isset ($oreon))
-		exit ();
+	if (!isset ($centreon))
+		exit();
 		
 	function hostExists($name = NULL){
 		global $pearDB;
@@ -112,7 +112,7 @@
 	}
 	
 	function enableHostInDB ($host_id = null, $host_arr = array())	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 		
 		if (!$host_id && !count($host_arr)) 
 			return;
@@ -124,12 +124,12 @@
 				
 			$DBRESULT2 =& $pearDB->query("SELECT host_name FROM `host` WHERE host_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow(); 
-			$oreon->CentreonLogAction->insertLog("host", $key, $row['host_name'], "enable");
+			$centreon->CentreonLogAction->insertLog("host", $key, $row['host_name'], "enable");
 		}
 	}
 	
 	function disableHostInDB ($host_id = null, $host_arr = array())	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 		if (!$host_id && !count($host_arr)) 
 			return;
 		
@@ -139,12 +139,12 @@
 			$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '0' WHERE host_id = '".$key."'");
 			$DBRESULT2 =& $pearDB->query("SELECT host_name FROM `host` WHERE host_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow(); 
-			$oreon->CentreonLogAction->insertLog("host", $key, $row['host_name'], "disable");
+			$centreon->CentreonLogAction->insertLog("host", $key, $row['host_name'], "disable");
 		}
 	}
 	
 	function deleteHostInDB ($hosts = array())	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 		
 		foreach ($hosts as $key => $value)	{
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id) AS nbr, hsr.service_service_id FROM host_service_relation hsr, host WHERE hsr.host_host_id = '".$key."' AND host.host_id = hsr.host_host_id AND host.host_register = '1'";
@@ -159,7 +159,7 @@
 					$svcname = $DBRESULT4->fetchRow();
 					
 					$DBRESULT2 =& $pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
-					$oreon->CentreonLogAction->insertLog("service", $row["service_service_id"], $hostname['host_name']."/".$svcname["service_description"], "d");
+					$centreon->CentreonLogAction->insertLog("service", $row["service_service_id"], $hostname['host_name']."/".$svcname["service_description"], "d");
 				}
 			}
 			
@@ -167,7 +167,7 @@
 			$DBRESULT =& $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '".$key."'");
 			$DBRESULT =& $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '".$key."'");
 			$DBRESULT =& $pearDB->query("DELETE FROM contact_host_relation WHERE host_host_id = '".$key."'");
-			$oreon->CentreonLogAction->insertLog("host", $key, $hostname['host_name'], "d");
+			$centreon->CentreonLogAction->insertLog("host", $key, $hostname['host_name'], "d");
 		}
 	}
 	
@@ -175,7 +175,7 @@
 	 *  This function is called for duplicating a host
 	 */
 	function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
-		global $pearDB, $path, $oreon, $is_admin;
+		global $pearDB, $path, $centreon, $is_admin;
 		
 		foreach ($hosts as $key => $value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."' LIMIT 1");
@@ -296,7 +296,7 @@
 					 		$DBRESULT4 =& $pearDB->query($mTpRq2);
 							$fields["_".strtoupper($macName)."_"] = $hst['host_macro_value'];
 						}
-						$oreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
+						$centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
 					}
 				}
 			}
@@ -304,7 +304,7 @@
 	}
 	
 	function updateHostInDB ($host_id = NULL, $from_MC = false, $cfg = NULL)	{
-		global $form, $oreon;		
+		global $form, $centreon;		
 		if (!$host_id) 
 			return;
 		
@@ -387,7 +387,7 @@
 		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
 			if (isset($ret["host_template_model_htm_id"]))
 				createHostTemplateService($host_id, $ret["host_template_model_htm_id"]);
-			else if ($oreon->user->get_version())
+			else if ($centreon->user->get_version())
 				createHostTemplateService($host_id);
 		}
 		
@@ -408,7 +408,7 @@
 	}	
 	
 	function insertHostInDB ($ret = array(), $macro_on_demand = NULL)	{
-		global $oreon, $form;
+		global $centreon, $form;
 		
 		$host_id = insertHost($ret, $macro_on_demand);
 		updateHostHostParent($host_id, $ret);
@@ -418,18 +418,19 @@
 		updateHostHostGroup($host_id, $ret);
 		updateHostTemplateService($host_id, $ret);
 		updateNagiosServerRelation($host_id, $ret);
-		$oreon->user->access->updateACL();
-		
+		$centreon->user->access->updateACL();
+		/*
 		$ret = $form->getSubmitValues();		
 		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {			
 			createHostTemplateService($host_id);
 		}
+		*/
 		insertHostExtInfos($host_id, $ret);
 		return ($host_id);
 	}
 	
 	function insertHost($ret, $macro_on_demand = NULL)	{
-		global $form, $pearDB, $oreon, $is_admin;
+		global $form, $pearDB, $centreon, $is_admin;
 		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
@@ -532,7 +533,7 @@
 	 		$already_stored = array();
 	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++) { 			
 	 			$tpSelect = "tpSelect_" . $i;
-	 			if (!isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
+	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
 		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id['MAX(host_id)'] .", ". $_POST[$tpSelect] .", ". $j .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					$multiTP_logStr .= $_POST[$tpSelect] . ",";
@@ -684,7 +685,7 @@
 		$fields["nagios_server_id"] = "";
 		if (isset($ret["nagios_server_id"]))
 			$fields["nagios_server_id"] = $ret["nagios_server_id"];
-		$oreon->CentreonLogAction->insertLog("host", $host_id["MAX(host_id)"], htmlentities($ret["host_name"], ENT_QUOTES), "a", $fields);
+		$centreon->CentreonLogAction->insertLog("host", $host_id["MAX(host_id)"], htmlentities($ret["host_name"], ENT_QUOTES), "a", $fields);
 		return ($host_id["MAX(host_id)"]);
 	}	
 	
@@ -782,7 +783,7 @@
 	 * 	this function cleans all the services that were linked to the removed host template  
  	 */
 	function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = NULL){
-		global $pearDB, $path, $oreon;
+		global $pearDB, $path, $centreon;
 	
 		if (isset($antiLoop[$scndHID]) && $antiLoop[$scndHID]) {
 			return 0;
@@ -832,7 +833,7 @@
 	
 	function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
 		if (!$host_id) return;
-		global $form, $pearDB, $oreon;
+		global $form, $pearDB, $centreon;
 		$ret = array();
 		if (!isset($cfg))
 			$ret = $form->getSubmitValues();
@@ -1098,12 +1099,12 @@
 		$fields["nagios_server_id"] = "";
 		if (isset($ret["nagios_server_id"]))
 			$fields["nagios_server_id"] = $ret["nagios_server_id"];
-		$oreon->CentreonLogAction->insertLog("host", $host_id, htmlentities($ret["host_name"], ENT_QUOTES), "c", $fields);
-		$oreon->user->access->updateACL();
+		$centreon->CentreonLogAction->insertLog("host", $host_id, htmlentities($ret["host_name"], ENT_QUOTES), "c", $fields);
+		$centreon->user->access->updateACL();
 	}
 	
 	function updateHost_MC($host_id = null)	{
-		global $form, $pearDB, $oreon;
+		global $form, $pearDB, $centreon;
 		
 		if (!$host_id) 
 			return;
@@ -1395,7 +1396,7 @@
 		
 		$DBRESULTX =& $pearDB->query("SELECT host_name FROM `host` WHERE host_id='".$host_id."' LIMIT 1");
 		$row =& $DBRESULTX->fetchRow();
-		$oreon->CentreonLogAction->insertLog("host", $host_id, $row["host_name"], "mc", $fields);
+		$centreon->CentreonLogAction->insertLog("host", $host_id, $row["host_name"], "mc", $fields);
 	}
 	
 	function updateHostHostParent($host_id = null, $ret = array())	{
@@ -1722,28 +1723,32 @@
 	}
 
 	function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
-		global $pearDB, $path, $oreon;
+		global $pearDB, $path, $centreon;
 		
 		if (isset($antiLoop[$hID2]) && $antiLoop[$hID2]) {		
 			return 0;	
 		}
+		
 		if (file_exists($path."../service/DB-Func.php"))
 			require_once($path."../service/DB-Func.php");
 		else if (file_exists($path."../configObject/service/DB-Func.php"))
 			require_once($path."../configObject/service/DB-Func.php");
-		$rq = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2;
-		$DBRESULT =& $pearDB->query($rq);
-	
-		while ($hTpl = $DBRESULT->fetchRow()) {		
+		
+		$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2);
+		while ($hTpl =& $DBRESULT->fetchRow()) {		
 			$rq2 = "SELECT service_service_id FROM `host_service_relation` WHERE host_host_id = " . $hTpl['host_tpl_id'];
 			$DBRESULT2 =& $pearDB->query($rq2);
-			while ($hTpl2 = $DBRESULT2->fetchRow()) {			
+			while ($hTpl2 =& $DBRESULT2->fetchRow()) {			
 				$alias =& getMyServiceAlias($hTpl2["service_service_id"]);			
-				if (testServiceExistence ($alias, array(0=>$hID))) {				
-					$service = array("service_template_model_stm_id" => $hTpl2["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1) , "service_hPars" => array("0" => $hID));
+				if (testServiceExistence($alias, array(0 => $hID))) {				
+					$service = array(	
+									"service_template_model_stm_id" => $hTpl2["service_service_id"], 
+									"service_description" => $alias, 
+									"service_register" => array("service_register"=> 1), 
+									"service_activate" => array("service_activate" => 1), 
+									"service_hPars" => array("0" => $hID));
+									
 					$service_id = insertServiceInDB($service);
-					//$rq3 = "INSERT INTO host_service_relation (hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) VALUES (NULL, '".$hID."', NULL, '".$service_id."')";
-					//$DBRESULT3 =& $pearDB->query($rq3);
 				}
 			}
 			$antiLoop[$hID2] = 1;
@@ -1752,7 +1757,7 @@
 	}
 
 	function createHostTemplateService($host_id = null, $htm_id = NULL)	{
-		global $pearDB, $path, $oreon;
+		global $pearDB, $path, $centreon, $form;
 		
 		if (!$host_id) 
 			return;
@@ -1766,59 +1771,13 @@
 		 * If we select a host template model, 
 		 * 	we create the services linked to this host template model		
 		 */
-		if ($oreon->user->get_version() < 3) {
-			if ($htm_id)	{
-				$DBRESULT =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
-				while ($row =& $DBRESULT->fetchRow())	{
-					$alias =& getMyServiceAlias($row["service_service_id"]);
-					if (testServiceExistence ($alias, array(0=>$host_id)))	{
-						$service = array("service_template_model_stm_id" => $row["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
-						$service_id = insertServiceInDB($service);
-						$rq = "INSERT INTO host_service_relation ";
-						$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
-						$rq .= "VALUES ";
-						$rq .= "(NULL, '".$host_id."', NULL, '".$service_id."')";
-						$DBRESULT2 =& $pearDB->query($rq);
-					}
-				}
-			}
-			/*
-			 * Then we create all the services linked to the host template model tree. (n levels services creation)
-			 */
-			while (1)	{
-				if (!$htm_id)
-					$htm_id = getMyHostTemplateModel($host_id);
-				else if ($htm_id)
-					$htm_id = getMyHostTemplateModel($htm_id);
-				if ($htm_id)	{
-					$DBRESULT =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
-					while ($row =& $DBRESULT->fetchRow())	{
-						//$desc =& getMyServiceName($row["service_service_id"]);
-						$alias =& getMyServiceAlias($row["service_service_id"]);
-						if (testServiceExistence ($alias, array(0=>$host_id)))	{
-							$service = array("service_template_model_stm_id" => $row["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
-							$service_id = insertServiceInDB($service);		
-							$rq = "INSERT INTO host_service_relation ";
-							$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
-							$rq .= "VALUES ";
-							$rq .= "(NULL, '".$host_id."', NULL, '".$service_id."')";
-							$DBRESULT2 =& $pearDB->query($rq);
-						}
-					}
-				}
-				else if (!$htm_id)
-					break;
-			}
-		} else {						
-			global $form;
-			$ret = $form->getSubmitValues();			
-			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
-				generateHostServiceMultiTemplate($host_id, $host_id);
-		}
+		$ret = $form->getSubmitValues();
+		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
+			generateHostServiceMultiTemplate($host_id, $host_id);
 	}
 	
 	function updateHostTemplateService($host_id = null)	{
-		global $form, $pearDB, $oreon, $path;
+		global $form, $pearDB, $centreon, $path;
 
 		if (!$host_id) 
 			return;
@@ -1846,14 +1805,14 @@
 				}
 			}
 		}
-		else if ($oreon->user->get_version() >= 3) {
+		else if ($centreon->user->get_version() >= 3) {
 			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
 				generateHostServiceMultiTemplate($host_id, $host_id);
 		}
 	}
 	
 	function updateHostTemplateService_MC($host_id = null)	{
-		global $form, $pearDB, $oreon, $path;
+		global $form, $pearDB, $centreon, $path;
 		
 		if (!$host_id) 
 			return;
@@ -1883,7 +1842,7 @@
 					$DBRESULT2 =& $pearDB->query($rq);
 				}
 			}
-		} else if ($oreon->user->get_version() >= 3) {
+		} else if ($centreon->user->get_version() >= 3) {
 			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
 				generateHostServiceMultiTemplate($host_id, $host_id);
 		}
