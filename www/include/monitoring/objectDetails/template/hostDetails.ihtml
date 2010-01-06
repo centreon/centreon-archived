@@ -188,7 +188,7 @@
 							    </td>
 						    </tr>
 						{/if}
-						{if $host_data.current_state != UP}
+						{if $host_data.current_state != UP && $host_data.state_type != SOFT}
 							{if $host_acknowledgement || $admin == true}
 								<tr class='list_one'>
 									<td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
