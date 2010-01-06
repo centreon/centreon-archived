@@ -39,7 +39,8 @@
 	/*
 	 * Include config file
 	 */
-	include "@CENTREON_ETC@/centreon.conf.php";
+	//include "@CENTREON_ETC@/centreon.conf.php";
+	include "/etc/centreon/centreon.conf.php";
 		
 	require_once "./DB-Func.php";
 	require_once "$centreon_path/www/class/centreonGraph.class.php";
@@ -93,81 +94,13 @@
 	 */
 	$obj->initCommandLine();
 	$obj->addCommandLineTimeLimit($_GET["flagperiod"]);
-			
-	/*
-	 * Init DS template For each curv
-	 */
-	$cpt = 0;
-	$metrics = array();		
-	$DBRESULT =& $obj->DBC->query("SELECT metric_id, metric_name, unit_name, warn, crit FROM metrics WHERE index_id = '".$_GET["index"]."' AND `hidden` = '0' ORDER BY metric_name");
-	while ($metric =& $DBRESULT->fetchRow()){
-		if (!isset($_GET["metric"]) || (isset($_GET["metric"]) && isset($_GET["metric"][$metric["metric_id"]]))){	
-			if (!isset($obj->metricsActivate) || (isset($obj->metricsActivate) && isset($obj->metricsActivate[$metric["metric_id"]]) && $obj->metricsActivate[$metric["metric_id"]])){
-				
-				/*
-				 * Construct metric name for detect metric graph template.
-				 */
-				$metricNameForGraph = $metric["metric_name"];
-				$metricNameForGraph = str_replace("#S#", "/", $metricNameForGraph);
-				$metricNameForGraph = str_replace("#BS#", "\\", $metricNameForGraph);
-			
-				$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
-				$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
-				$metrics[$metric["metric_id"]]["metric"] = str_replace("#BS#", "bslash_", $metrics[$metric["metric_id"]]["metric"]);
-				$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
-				$metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
-				$metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
-				
-				$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metricNameForGraph."'");
-				$ds_data =& $res_ds->fetchRow();
-				if (!$ds_data){
-					$ds = getDefaultDS();						
-					$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
-					$ds_data =& $res_ds->fetchRow();
-					$metrics[$metric["metric_id"]]["ds_id"] = $ds;
-				}
-				/*
-				 * Fetch Datas
-				 */
-				foreach ($ds_data as $key => $ds_d) {
-					if ($key == "ds_transparency"){
-						$transparency = dechex(255-($ds_d*255)/100);
-						if (strlen($transparency) == 1)
-							$transparency = "0" . $transparency;
-						$metrics[$metric["metric_id"]][$key] = $transparency;
-					} else
-						$metrics[$metric["metric_id"]][$key] = $ds_d ;
-					
-				}
-				$res_ds->free();
-				
-				if (preg_match('/DS/', $ds_data["ds_name"], $matches)){
-					$metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metric["metric_name"]);
-				} else {
-                	$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
-				}
-				
-				if (strcmp($metric["unit_name"], ""))
-					$metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
-				
-				$metrics[$metric["metric_id"]]["legend_len"] = strlen($metrics[$metric["metric_id"]]["legend"]);
-			}
-		}
-		$cpt++;
-	}
-	$DBRESULT->free();
 	
-	$cpt = 0;
-	$longer = 0;
-	foreach ($metrics as $key => $tm){
-		if (isset($tm["ds_invert"]) && $tm["ds_invert"])
-			$obj->commandLine .= " DEF:va".$cpt."=".$obj->dbPath.$key.".rrd:".substr($metrics[$key]["metric"],0 , 19).":AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,* ";
-		else
-			$obj->commandLine .= " DEF:v".$cpt."=".$obj->dbPath.$key.".rrd:".substr($metrics[$key]["metric"],0 , 19).":AVERAGE ";
-		if ($tm["legend_len"] > $longer)
-			$longer = $tm["legend_len"];
-		$cpt++;
-	}
+	/*
+	 * Init Curve list
+	 */
+	$obj->setMetricList($_GET["metric"]);
+	$obj->initCurveList();	
+	$obj->addCurveInCommandLine();
 	
 	/*
 	 * Comment time
@@ -177,35 +110,11 @@
 	/*
 	 * Create Legende
 	 */
-	$cpt = 0;
-	foreach ($metrics as $key => $tm) {
-		
-		if ($metrics[$key]["ds_filled"])
-			$obj->commandLine .= " AREA:v".($cpt).$tm["ds_color_area"].$tm["ds_transparency"]." ";
-		
-		$obj->commandLine .= " LINE".$tm["ds_tickness"].":v".$cpt.$tm["ds_color_line"].":\"".$metrics[$key]["legend"];
-		
-		for ($i = $metrics[$key]["legend_len"]; $i != $longer + 1; $i++)
-			$obj->commandLine .= " ";
-			$obj->commandLine .= "\"";
-		if ($tm["ds_last"]){
-			$obj->commandLine .= " GPRINT:v".($cpt).":LAST:\"Last\:%7.2lf".($gprint_scale_cmd);
-			$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $obj->commandLine .= "\"" : $obj->commandLine .= "\\l\" ";
-		}
-		if ($tm["ds_min"]){
-			$obj->commandLine .= " GPRINT:v".($cpt).":MIN:\"Min\:%7.2lf".($gprint_scale_cmd);
-			$tm["ds_max"] || $tm["ds_average"] ? $obj->commandLine .= "\"" : $obj->commandLine .= "\\l\" ";
-		}
-		if ($tm["ds_max"]){
-			$obj->commandLine .= " GPRINT:v".($cpt).":MAX:\"Max\:%7.2lf".($gprint_scale_cmd); 
-			$tm["ds_average"] ? $obj->commandLine .= "\"" : $obj->commandLine .= "\\l\" ";
-		}
-		if ($tm["ds_average"]){
-			$obj->commandLine .= " GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf".($gprint_scale_cmd)."\\l\"";
-		}
-		$cpt++;
-	}
+	$obj->createLegend();
 
+	/*
+	 * Close command line
+	 */
 	$obj->endCommandLine();
 	/*
 	 * Add Timezone for current user.
