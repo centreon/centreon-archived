@@ -82,7 +82,7 @@ class CentreonBase	{
 		(!isset($compress)) ? $this->compress = 1 : $this->compress = $compress;
 		
 		if (!isset($session_id)) {
-			print "Your might check your session id";
+			print "Your must check your session id";
 			exit(1);
 		} else {
 			$this->session_id = htmlentities($session_id, ENT_QUOTES);
