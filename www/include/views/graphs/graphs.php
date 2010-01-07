@@ -149,6 +149,7 @@
 						"15552000"	=> _("Last 6 Months"),
 						"31104000"	=> _("Last Year"));
 	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
+	
 	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "onclick"=>"displayDatePicker('StartDate', this)", "size"=>10));
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5));
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "onclick"=>"displayDatePicker('EndDate', this)", "size"=>10));
@@ -217,7 +218,7 @@
 		var _divBar = document.createElement("div");
 	
 		_divBar.appendChild(create_log_link(tree,'id'));
-		_divBar.appendChild(create_monitoring_link(tree,'id'));
+		//_divBar.appendChild(create_monitoring_link(tree,'id'));
 		_divBar.setAttribute('style','float:right; margin-right:10px;' );
 		_menu_2.appendChild(_divBar);
 	}
@@ -268,7 +269,7 @@
 	if (document.FormPeriod.period.value != "")	{
 		period = document.FormPeriod.period.value;
 	} else {
-		if (currentTime.getMinutes() <= 9){
+		if (currentTime.getMinutes() <= 9) {
 			_zero_min = '0';
 		}
 
@@ -316,11 +317,9 @@
 				
 		if (pStart && pEnd){
 			period = pEnd - pStart;			
-		}
-		else if (document.FormPeriod.period.value != "") {
+		} else if (document.FormPeriod.period.value != "") {
 			period = document.FormPeriod.period.value;
-		} 		
-		else if(document.FormPeriod) {
+		} else if (document.FormPeriod) {
 			period = '';
 			StartDate = document.FormPeriod.StartDate.value;
 			EndDate = document.FormPeriod.EndDate.value;
@@ -341,7 +340,7 @@
 		if (document.formu2 && document.formu2.elements["metric"]){
 			for (i=0; i < document.formu2.elements["metric"].length; i++) {
 				_checked = "0";
-				if(document.formu2.elements["metric"][i].checked)	{
+				if (document.formu2.elements["metric"][i].checked)	{
 					_checked = "1";
 				}
 				_metrics += '&metric['+document.formu2.elements["metric"][i].value+']='+_checked ;
@@ -377,7 +376,7 @@
 		
 		tree.selectItem(id);
 		var proc = new Transformation();
-		var _addrXSL = "./include/views/graphs/GraphService.xsl";
+		var _addrXSL = "./include/views/graphs/graph.xsl";
 		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
 
 		proc.setXml(_addrXML)
