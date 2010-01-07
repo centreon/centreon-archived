@@ -34,7 +34,7 @@
 			<td>
 				<table class='Resume_light_table'>
 					<tr class='Resume_light_header' style="white-space:nowrap;">
-						<td>{$Hosts_States}</td>
+						<td>{$Hosts}</td>
 						<td>{$Up}</td>
 						<td>{$Down}</td>
 						<td>{$Unreachable}</td>
@@ -53,14 +53,14 @@
 			<td>
 				<table class='Resume_light_table'>
 					<tr class='Resume_light_header' style="white-space:nowrap;">
-						<td>{$Services_States}</td>
+						<td>{$Services}</td>
 						<td>{$Ok}</td>
 						<td>{$Warning}</td>
 						<td>{$Critical}</td>
 						<td>{$Unknown}</td>		
 						<td>{$Pending}</td>
 					</tr>
-					<tr >
+					<tr>
 						<td><div id="services" style='background:white;text-align:center'>?</div></td>
 						<td style='background:{$color.OK}'><div id="service_ok" style='background:white;text-align:center'>?</div></td>
 						<td	style='background:{$color.WARNING}'><div id="service_warning" style='background:white;text-align:center'>?</div></td>

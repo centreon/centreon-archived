@@ -75,6 +75,9 @@
 					var _statistic_service_warning 	= stat.getElementsByTagName("w")[0].firstChild.nodeValue;
 					var _statistic_service_critical = stat.getElementsByTagName("c")[0].firstChild.nodeValue;
 					var _statistic_service_unknown 	= stat.getElementsByTagName("un1")[0].firstChild.nodeValue;
+					var _statistic_service_warningU	= stat.getElementsByTagName("wU")[0].firstChild.nodeValue;
+					var _statistic_service_criticalU = stat.getElementsByTagName("cU")[0].firstChild.nodeValue;
+					var _statistic_service_unknownU	= stat.getElementsByTagName("un1U")[0].firstChild.nodeValue;
 					var _statistic_service_pending 	= stat.getElementsByTagName("p1")[0].firstChild.nodeValue;
 					var _statistic_host_up 			= stat.getElementsByTagName("up")[0].firstChild.nodeValue;
 					var _statistic_host_down 		= stat.getElementsByTagName("d")[0].firstChild.nodeValue;
@@ -139,7 +142,7 @@
 					
 					// Warning service stats
 					document.getElementById('service_warning').innerHTML = '';
-					var _text_service_warning = document.createTextNode(_statistic_service_warning);
+					var _text_service_warning = document.createTextNode(_statistic_service_warningU+"/"+_statistic_service_warning);
 					var _linkservice_warning = document.createElement("a");
 				  	_linkservice_warning.href = 'main.php?p=20201&o=svc_warning&search=';
 					_linkservice_warning.appendChild(_text_service_warning);
@@ -147,15 +150,15 @@
 					
 					// Critcal Service Stats
 					document.getElementById('service_critical').innerHTML = '';
-					var _text_service_critical = document.createTextNode(_statistic_service_critical);
+					var _text_service_critical = document.createTextNode(_statistic_service_criticalU+"/"+_statistic_service_critical);
 					var _linkservice_critical = document.createElement("a");
 				  	_linkservice_critical.href = 'main.php?p=20201&o=svc_critical&search=';
 					_linkservice_critical.appendChild(_text_service_critical);
 					document.getElementById('service_critical').appendChild(_linkservice_critical);
-					
+										
 					// Unknown Service Stats
 					document.getElementById('service_unknown').innerHTML = '';
-					var _text_service_unknown = document.createTextNode(_statistic_service_unknown);
+					var _text_service_unknown = document.createTextNode(_statistic_service_unknownU+"/"+_statistic_service_unknown);
 					var _linkservice_unknown = document.createElement("a");
 				  	_linkservice_unknown.href = 'main.php?p=20201&o=svc_unknown&search=';
 					_linkservice_unknown.appendChild(_text_service_unknown);

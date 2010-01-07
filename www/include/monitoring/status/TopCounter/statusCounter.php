@@ -102,7 +102,7 @@
 				" AND no.is_active = 1 GROUP BY nss.current_state";			
 	
 	$serviceCounter = 0;
-	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 6=>0, 7=>0, 8=>0);
 	$DBRESULT =& $obj->DBNdo->query($rq2);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
@@ -111,6 +111,31 @@
 	$DBRESULT->free();
 	unset($ndo);
 
+	/* ********************************************
+	 *  Get Real non-ok Status 
+	 */
+	$rq3 =  "SELECT COUNT(nss.current_state), nss.state_type, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth " .
+			"FROM nagios_servicestatus nss, nagios_objects no " .
+			"WHERE no.object_id = nss.service_object_id " .
+			"	AND no.name1 NOT LIKE '_Module_%' " .
+			"	AND no.is_active = 1 " .
+			"	AND nss.scheduled_downtime_depth = '0' " .
+			"	AND nss.problem_has_been_acknowledged = '0' " .
+			"	AND nss.current_state != '0' " .
+			"	AND (" .
+			"		SELECT 1 " .
+			"		FROM nagios_hoststatus nhs, nagios_objects no2 " .
+			"		WHERE nhs.host_object_id = no2.object_id " .
+			"			AND no2.name1 = no.name1 " .
+			"			AND nhs.current_state = '0') " .
+			"		GROUP BY nss.current_state, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth";
+	$DBRESULT =& $obj->DBNdo->query($rq2);
+	while ($ndo =& $DBRESULT->fetchRow()) {
+		$svc_stat[$ndo["current_state"] + 5] = $ndo["count(nss.current_state)"];
+	}
+	$DBRESULT->free();
+	unset($ndo);
+	
 	/* *********************************************
 	 * Create Buffer
 	 */
@@ -124,8 +149,11 @@
 	$obj->XML->writeElement("ts", $serviceCounter);
 	$obj->XML->writeElement("o", $svc_stat["0"]);
 	$obj->XML->writeElement("w", $svc_stat["1"]);
+	$obj->XML->writeElement("wU", $svc_stat["6"]);
 	$obj->XML->writeElement("c", $svc_stat["2"]);
+	$obj->XML->writeElement("cU", $svc_stat["7"]);
 	$obj->XML->writeElement("un1", $svc_stat["3"]);
+	$obj->XML->writeElement("un1U", $svc_stat["8"]);
 	$obj->XML->writeElement("p1", $svc_stat["4"]);
 	$obj->XML->writeElement("up", $host_stat["0"]);
 	$obj->XML->writeElement("d", $host_stat["1"]);
