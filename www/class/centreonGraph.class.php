@@ -95,6 +95,9 @@ class CentreonGraph	{
 	var $title;
 	var $graphID;
 	var $metricsActivate;
+	var $metricsEnabled;
+	var $metrics;
+	var $longer;
 	
 	/*
 	 * Class constructor
@@ -161,6 +164,118 @@ class CentreonGraph	{
 		$this->getRRDToolPath();
 		
 		$this->templateInformations = array();
+		$this->metricsEnabled = array();
+		$this->metrics = array();
+	}
+
+	public function setMetricList($metrics) {
+		$this->metricsEnabled = $metrics;
+	}
+
+	public function initCurveList() {
+		
+		$cpt = 0;
+		$metrics = array();		
+		$DBRESULT =& $this->DBC->query("SELECT metric_id, metric_name, unit_name, warn, crit FROM metrics WHERE index_id = '".$this->index."' AND `hidden` = '0' ORDER BY metric_name");
+		while ($metric =& $DBRESULT->fetchRow()){
+			if (!isset($this->metricsEnabled) || (isset($this->metricsEnabled) && isset($this->metricsEnabled[$metric["metric_id"]]))){	
+				if (!isset($obj->metricsActivate) || (isset($obj->metricsActivate) && isset($obj->metricsActivate[$metric["metric_id"]]) && $obj->metricsActivate[$metric["metric_id"]])){
+					
+					$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
+					$this->metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
+					$this->metrics[$metric["metric_id"]]["metric"] = str_replace("#BS#", "bslash_", $this->metrics[$metric["metric_id"]]["metric"]);
+					$this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
+					$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
+					$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
+					
+					$DBRESULT2 =& $this->DB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".str_replace("#S#", "/", str_replace("#BS#", "\\", $metric["metric_name"]))."'");
+					$ds_data =& $DBRESULT2->fetchRow();
+					$DBRESULT2->free();
+					if (!$ds_data){
+						$ds = getDefaultDS();						
+						$DBRESULT3 =& $this->DB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
+						$ds_data =& $DBRESULT3->fetchRow();
+						$DBRESULT3->free();
+						$this->metrics[$metric["metric_id"]]["ds_id"] = $ds;
+					}
+					
+					/*
+					 * Fetch Datas
+					 */
+					foreach ($ds_data as $key => $ds_d) {
+						if ($key == "ds_transparency"){
+							$transparency = dechex(255-($ds_d*255)/100);
+							if (strlen($transparency) == 1)
+								$transparency = "0" . $transparency;
+							$this->metrics[$metric["metric_id"]][$key] = $transparency;
+							unset($transparency);
+						} else
+							$this->metrics[$metric["metric_id"]][$key] = $ds_d ;
+					}
+					
+					if (preg_match('/DS/', $ds_data["ds_name"], $matches)){
+						$this->metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metric["metric_name"]);
+					} else {
+	                	$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+					}
+					
+					if (strcmp($metric["unit_name"], ""))
+						$this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
+					
+					$this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
+				}
+			}
+			$cpt++;
+		}
+		$DBRESULT->free();
+	}
+	
+	public function addCurveInCommandLine() {
+		$cpt = 0;
+		$this->longer = 0;
+		if (isset($this->metrics))
+			foreach ($this->metrics as $key => $tm){
+				if (isset($tm["ds_invert"]) && $tm["ds_invert"])
+					$this->fillCommandLine("DEF:va".$cpt."=".$this->dbPath.$key.".rrd:".substr($this->metrics[$key]["metric"],0 , 19).":AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,*");
+				else
+					$this->fillCommandLine("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($this->metrics[$key]["metric"],0 , 19).":AVERAGE");
+				if ($tm["legend_len"] > $this->longer)
+					$this->longer = $tm["legend_len"];
+				$cpt++;
+			}
+	}
+	
+	public function createLegend() {
+		$cpt = 0;
+		foreach ($this->metrics as $key => $tm) {
+			if ($this->metrics[$key]["ds_filled"])
+				$this->commandLine .= " AREA:v".$cpt.$tm["ds_color_area"].$tm["ds_transparency"]." ";
+			$this->commandLine .= " LINE".$tm["ds_tickness"].":v".$cpt.$tm["ds_color_line"].":\"".$this->metrics[$key]["legend"];
+			
+			
+			for ($i = $this->metrics[$key]["legend_len"]; $i != $this->longer + 1; $i++)
+				$this->commandLine .= " ";
+			
+			$this->commandLine .= "\"";
+			
+			if ($tm["ds_last"]){
+				$this->fillCommandLine("GPRINT:v".($cpt).":LAST:\"Last\:%7.2lf".($this->gprintScaleOption));
+				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $this->commandLine .= "\"" : $this->commandLine .= "\\l\" ";
+			}
+			if ($tm["ds_min"]){
+				$this->fillCommandLine("GPRINT:v".($cpt).":MIN:\"Min\:%7.2lf".($this->gprintScaleOption));
+				$tm["ds_max"] || $tm["ds_average"] ? $this->commandLine .= "\"" : $this->commandLine .= "\\l\" ";
+			}
+			if ($tm["ds_max"]){
+				$this->fillCommandLine("GPRINT:v".($cpt).":MAX:\"Max\:%7.2lf".($this->gprintScaleOption)); 
+				$tm["ds_average"] ? $this->commandLine .= "\"" : $this->commandLine .= "\\l\" ";
+			}
+			if ($tm["ds_average"]){
+				$this->fillCommandLine("GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
+			}
+			
+			$cpt++;
+		}
 	}
 
 	public function addRRDToolProperties() {
@@ -375,7 +490,7 @@ class CentreonGraph	{
  		
 		header("Content-Type: image/png");
 		header("Content-Transfer-Encoding: binary");
-		//header("Content-Disposition: attachment; filename=\"$this->filename\";");
+		header("Content-Disposition: attachment; filename=\"$this->filename\";");
 		if ($this->compress && $encoding)
 			header('Content-Encoding: '.$encoding);
 	}
