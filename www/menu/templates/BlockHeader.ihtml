@@ -41,7 +41,7 @@
 						<td>{$Pending}</td>
 					</tr>
 					<tr>
-						<td>&nbsp;</td>
+						<td><div id="hosts" style='background:white;text-align:center'>?</div></td>
 						<td	style='background:{$color.UP}'><div id="host_up" style='background:white;text-align:center'>?</div></td>
 						<td	style='background:{$color.DOWN}'><div id="host_down" style='background:white;text-align:center'>?</div></td>
 						<td	style='background:{$color.UNREACHABLE}'><div id="host_unreachable" style='background:white;text-align:center'>?</div></td>
@@ -57,16 +57,16 @@
 						<td>{$Ok}</td>
 						<td>{$Warning}</td>
 						<td>{$Critical}</td>
-						<td>{$Pending}</td>
 						<td>{$Unknown}</td>		
+						<td>{$Pending}</td>
 					</tr>
 					<tr >
-						<td>&nbsp;</td>
+						<td><div id="services" style='background:white;text-align:center'>?</div></td>
 						<td style='background:{$color.OK}'><div id="service_ok" style='background:white;text-align:center'>?</div></td>
 						<td	style='background:{$color.WARNING}'><div id="service_warning" style='background:white;text-align:center'>?</div></td>
 						<td	style='background:{$color.CRITICAL}'><div id="service_critical" style='background:white;text-align:center'>?</div></td>
-						<td	style='background:{$color.PENDING}'><div id="service_pending" style='background:white;text-align:center'>?</div></td>
 						<td	style='background:{$color.UNKNOWN}'><div id="service_unknown" style='background:white;text-align:center'>?</div></td>
+						<td	style='background:{$color.PENDING}'><div id="service_pending" style='background:white;text-align:center'>?</div></td>
 					</tr>
 				</table>
 			</td>

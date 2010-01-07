@@ -37,207 +37,111 @@
  */
 
 	$debug = 0;
-	$flag_reset = 0;
 	
-	foreach ($_GET as $key => $value) {
-		$_GET[$key] = htmlentities($value, ENT_QUOTES);
-	}
-
-	include_once "@CENTREON_ETC@/centreon.conf.php";	
+	include_once "/etc/centreon/centreon.conf.php";	
+	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
+	
 	include_once $centreon_path . "www/include/common/common-Func.php";
-	include_once $centreon_path . "www/class/centreonACL.class.php";
-	include_once $centreon_path . "www/class/centreonXML.class.php";
-	include_once $centreon_path . "www/class/centreonDB.class.php";
-	
-	/* 
-	 * Connect to oreon DB 
-	 */
-
-	$pearDB = new CentreonDB();
-		
-	$ndo_base_prefix = getNDOPrefix();
-	$general_opt = getStatusColor($pearDB);
 	
 	/*
-	 * Session...
+	 * Create XML Request Objects
 	 */
-	$debug_session = 'KO';
-
-	/*
-	 * sessionID check and refresh
-	 */
-	$sid = isset($_POST["sid"]) ? $_POST["sid"] : 0;
-	$sid = isset($_GET["sid"]) ? $_GET["sid"] : $sid;
-
-	/* 
-	 * Security Check
-	 */
-	if (!check_injection($sid)){
-		$sid = htmlentities($sid);
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if ($session =& $res->fetchRow())
-			$DBRESULT2 =& $pearDB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".$sid."' LIMIT 1");
-		else
-			get_error('bad session id');
-	} else
-		get_error('need session identifiant !');
-
-	/*
-	 * LCA
-	 */
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$user =& $res1->fetchRow();
-	$user_id = $user["user_id"];
-
-	global $is_admin;
+	$obj = new CentreonXMLBGRequest($_POST["sid"], 1, 1, 0, $debug);
 	
-	$is_admin =  isUserAdmin($sid);	
-		
-	/*
-	 * Get Acl Group list
-	 */
-	$access = new CentreonACL($user_id, $is_admin);
-	$grouplist = $access->getAccessGroups(); 
-	$groupnumber = count($grouplist);
-	$grouplistStr = $access->getAccessGroupsString(); 
-	
-	function restore_session($statistic_service = 'null', $statistic_host = 'null'){
-		global $pearDB, $sid;
-		if (isset($statistic_service) && !is_null($statistic_service)){
-			$sql = 	" UPDATE session SET " .
-					" s_nbHostsUp = '".$statistic_host["UP"]."'," .
-					" s_nbHostsDown = '".$statistic_host["DOWN"]."'," .
-					" s_nbHostsUnreachable = '".$statistic_host["UNREACHABLE"]."'," .
-					" s_nbHostsPending = '".$statistic_host["PENDING"]."'," .
-					" s_nbServicesOk = '".$statistic_service["OK"]."'," .
-					" s_nbServicesWarning = '".$statistic_service["WARNING"]."'," .
-					" s_nbServicesCritical = '".$statistic_service["CRITICAL"]."'," .
-					" s_nbServicesUnknown = '".$statistic_service["UNKNOWN"]."'," .
-					" s_nbServicesPending = '".$statistic_service["PENDING"]."'" .
-					" WHERE session_id = '".$sid."'";
-			$DBRESULT =& $pearDB->query($sql);			
-		}
-	}
-
-	function read($sid){
-		global $pearDB, $flag,$centreon_path, $ndo_base_prefix, $is_admin, $groupnumber, $grouplistStr, $access;
-		
-		$oreon = "";
-		$search = "";
-		$search_type_service = 0;
-		$search_type_host = 0;
-
-		/*
-		 * Connect to NDO
-		 */		
-		include_once($centreon_path . "www/class/centreonDB.class.php");
-		
-		$pearDBndo = new CentreonDB("ndo");
-				
-		if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
-			print "<data>Can't connect to ndo Database</data>";
-			exit();
-		} 
-
-		/*
-		 * Init stat for resume
-		 */
-		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
-		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
-
-		$query = "SELECT `key`, `value` FROM `options` WHERE `key` LIKE 'color_%'";
-		$DBRESULT_OPT =& $pearDB->query($query);		
-		$general_opt = array();
-		while ($rowz =& $DBRESULT_OPT->fetchRow()) {
-			$general_opt[$rowz['key']] = $rowz['value'];
-		}
-	
-		/* 
-		 * Get Host NDO status 
-		 */		
-		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
-				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects";
-		
-		if (!$is_admin)
-			$rq1 .= " , centreon_acl ";
-		
-		$rq1 .= " WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
-				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-				$access->queryBuilder("AND", $ndo_base_prefix."objects.name1", "centreon_acl.host_name") .				
-				$access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr) .
-				" AND " . $ndo_base_prefix. "objects.name1 NOT LIKE '_Module_%' " .				
-				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state";
-		
-		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-		
-		$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
-
-		while ($ndo =& $DBRESULT_NDO1->fetchRow())
-			$host_stat[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
-		$DBRESULT_NDO1->free();
-		
-		/* 
-		 * Get Service NDO status 
-		 */
-		if (!$is_admin)
-			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
-					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
-					" WHERE no.object_id = nss.service_object_id".
-					" AND no.name1 NOT LIKE '_Module_%' ".					
-					" AND no.name1 = centreon_acl.host_name ".
-					" AND no.name2 = centreon_acl.service_description " .
-					" AND centreon_acl.group_id IN (".$grouplistStr.") ".
-					" AND no.is_active = 1 GROUP BY nss.current_state";
-		else
-			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
-					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-					" WHERE no.object_id = nss.service_object_id".
-					" AND no.name1 NOT LIKE '_Module_%' ".
-					" AND no.is_active = 1 GROUP BY nss.current_state";			
-		
-		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
-		
-		$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-		while ($ndo =& $DBRESULT_NDO2->fetchRow())
-			$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
-		$DBRESULT_NDO2->free();
-		
-		restore_session($statistic_service, $statistic_host);
-
-		/*
-		 * Create Buffer
-		 */
-		$buffer = new CentreonXML();
-		$buffer->startElement("reponse");
-		$buffer->startElement("infos");
-		$buffer->writeElement("filetime", time());
-		$buffer->endElement();
-		$buffer->startElement("s");
-		$buffer->writeElement("o", $svc_stat["0"]);
-		$buffer->writeElement("w", $svc_stat["1"]);
-		$buffer->writeElement("c", $svc_stat["2"]);
-		$buffer->writeElement("un1", $svc_stat["3"]);
-		$buffer->writeElement("p1", $svc_stat["4"]);
-		$buffer->writeElement("up", $host_stat["0"]);
-		$buffer->writeElement("d", $host_stat["1"]);
-		$buffer->writeElement("un2", $host_stat["2"]);
-		$buffer->writeElement("p2", $host_stat["3"]);
-		$buffer->endElement();
-		$buffer->endElement();		
-		
-		/*
-		 * send Header
-		 */
-		header('Content-Type: text/xml');
-		header('Pragma: no-cache');
-		header('Expires: 0');
-		header('Cache-Control: no-cache, must-revalidate'); 
-		
-		/*
-		 * Display Buffer
-		 */
-		$buffer->output();
+	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+		$obj->reloadSession();
+	} else {
+		print "Bad Session ID";
+		exit();
 	}
 	
-	read($sid);
+	/* *********************************************
+	 * Get Host stats
+	 */
+	$rq1 = 	" SELECT count(DISTINCT ".$obj->ndoPrefix."objects.name1), ".$obj->ndoPrefix."hoststatus.current_state" .
+			" FROM ".$obj->ndoPrefix."hoststatus, ".$obj->ndoPrefix."objects";
+	
+	if (!$obj->is_admin)
+		$rq1 .= " , centreon_acl ";
+	
+	$rq1 .= " WHERE ".$obj->ndoPrefix."objects.object_id = ".$obj->ndoPrefix."hoststatus.host_object_id " .
+			" AND ".$obj->ndoPrefix."objects.is_active = 1 " .
+			$obj->access->queryBuilder("AND", $obj->ndoPrefix."objects.name1", "centreon_acl.host_name") .				
+			$obj->access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr) .
+			" AND " . $obj->ndoPrefix. "objects.name1 NOT LIKE '_Module_%' " .				
+			" GROUP BY ".$obj->ndoPrefix."hoststatus.current_state";
+	
+	
+	$hostCounter = 0;
+	$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
+	$DBRESULT =& $obj->DBNdo->query($rq1);
+	while ($ndo =& $DBRESULT->fetchRow()) {
+		$host_stat[$ndo["current_state"]] = $ndo["count(DISTINCT ".$obj->ndoPrefix."objects.name1)"];
+		$hostCounter += $host_stat[$ndo["current_state"]];
+	}
+	$DBRESULT->free();
+	unset($ndo);
+	 
+	/* *********************************************
+	 * Get Service stats
+	 */
+	if (!$obj->is_admin)
+		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+				" FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no, centreon_acl " .
+				" WHERE no.object_id = nss.service_object_id".
+				" AND no.name1 NOT LIKE '_Module_%' ".					
+				" AND no.name1 = centreon_acl.host_name ".
+				" AND no.name2 = centreon_acl.service_description " .
+				" AND centreon_acl.group_id IN (".$grouplistStr.") ".
+				" AND no.is_active = 1 GROUP BY nss.current_state";
+	else
+		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+				" FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no" .
+				" WHERE no.object_id = nss.service_object_id".
+				" AND no.name1 NOT LIKE '_Module_%' ".
+				" AND no.is_active = 1 GROUP BY nss.current_state";			
+	
+	$serviceCounter = 0;
+	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+	$DBRESULT =& $obj->DBNdo->query($rq2);
+	while ($ndo =& $DBRESULT->fetchRow()) {
+		$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
+		$serviceCounter += $svc_stat[$ndo["current_state"]];
+	}
+	$DBRESULT->free();
+	unset($ndo);
+
+	/* *********************************************
+	 * Create Buffer
+	 */
+	$obj->XML = new CentreonXML();
+	$obj->XML->startElement("reponse");
+	$obj->XML->startElement("infos");
+	$obj->XML->writeElement("filetime", time());
+	$obj->XML->endElement();
+	$obj->XML->startElement("s");
+	$obj->XML->writeElement("th", $hostCounter);
+	$obj->XML->writeElement("ts", $serviceCounter);
+	$obj->XML->writeElement("o", $svc_stat["0"]);
+	$obj->XML->writeElement("w", $svc_stat["1"]);
+	$obj->XML->writeElement("c", $svc_stat["2"]);
+	$obj->XML->writeElement("un1", $svc_stat["3"]);
+	$obj->XML->writeElement("p1", $svc_stat["4"]);
+	$obj->XML->writeElement("up", $host_stat["0"]);
+	$obj->XML->writeElement("d", $host_stat["1"]);
+	$obj->XML->writeElement("un2", $host_stat["2"]);
+	$obj->XML->writeElement("p2", $host_stat["3"]);
+	$obj->XML->endElement();
+	$obj->XML->endElement();
+	
+	/*
+	 * Send headers
+	 */	
+	$obj->header();
+	
+	/*
+	 * Display XML data
+	 */
+	$obj->XML->output();
+
 ?>

@@ -183,6 +183,15 @@ class CentreonXMLBGRequest	{
 		$this->colorService	= array(0 => $this->general_opt["color_ok"], 1 => $this->general_opt["color_warning"], 2 => $this->general_opt["color_critical"], 3 => $this->general_opt["color_unknown"]);
 		$this->colorHostInService = array(0 => "normal", 1 => "#FD8B46", 2 => "normal");
 	}
+
+	
+	/*
+	 * Update session table for this user. 
+	 * 	=> value used for logout session
+	 */
+	public function reloadSession() {
+		$DBRESULT2 =& $this->DB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".$this->session_id."' LIMIT 1");
+	}
 	
 	/* 
 	 * Check if user is admin
