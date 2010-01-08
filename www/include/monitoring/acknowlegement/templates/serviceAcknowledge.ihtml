@@ -1,7 +1,7 @@
 {$form.javascript}
 <form {$form.attributes}>
 <div align=center>
-	 <table class="ListTableMedium">
+	 <table class="ListTableMedium" style="width:600px;">
 	 	<tr class="ListHeader">
 		 	<td class="FormHeader" colspan="2">{$form.header.title}&nbsp;&nbsp;<a href='http://www.nagios.org/developerinfo/externalcommands/'><img src='./img/icones/16x16/text_code.gif'></a></td>
 	 	</tr>

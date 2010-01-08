@@ -40,7 +40,7 @@
 		exit ();
 
 	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';	
+	require_once "HTML/QuickForm/Renderer/ArraySmarty.php";	
 	require_once "./class/centreonDB.class.php";
 	
 	$pearDBndo = new CentreonDB("ndo");
@@ -95,11 +95,9 @@
 		$form->addElement('hidden', 'p', $p);
 		$form->addElement('hidden', 'en', $en);
 
-		//$form->setDefaults(array("sticky" => "checked", "notify" => 1, "persistent" => 1));
-		
 		$form->applyFilter('__ALL__', 'myTrim');
 		
-		$form->addElement('textarea', 'comment', _("comment"), array("rows"=>"7", "cols"=>"100"));
+		$form->addElement('textarea', 'comment', _("comment"), array("rows"=>"8", "cols"=>"80"));
 		$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 		$form->setJsWarnings(_("Invalid information entered"),_("Please correct these fields"));
 		

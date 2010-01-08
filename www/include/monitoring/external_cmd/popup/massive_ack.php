@@ -54,43 +54,46 @@
 
 	$path = "$centreon_path/www/include/monitoring/external_cmd/popup/";
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTplForPopup($path, $tpl, './templates/', $centreon_path);
 	
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#
-	## Form begin
-	#
-
 	$form = new HTML_QuickForm('select_form', 'GET', 'main.php');
 
-	$form->addElement('header', 'title', _("Command Options"));
+	$form->addElement('header', 'title', _("Acknowledge problems"));
 
 	$tpl->assign('authorlabel', _("Alias"));
 	$tpl->assign('authoralias', $oreon->user->get_alias());
 
-	$form->addElement('checkbox', 'notify', _("notify"));
-	$form->addElement('checkbox', 'sticky', _("sticky"));
+	$form->addElement('textarea', 'comment', 'comment', array("rows"=>"4", "cols"=>"70", "id"=>"popupComment"));
+	$form->setDefaults(array("comment" => sprintf(_("Acknowledged by %s"), $oreon->user->alias)));
+	
 	$chckbox[] =& $form->addElement('checkbox', 'persistent', _("persistent"));
 	$chckbox[0]->setChecked(true);
 
-	$form->addElement('checkbox', 'ackhostservice', _("Acknowledge services attached to hosts"));
-
+	$chckbox2[] =& $form->addElement('checkbox', 'ackhostservice', _("Acknowledge services attached to hosts"));
+	$chckbox2[0]->setChecked(true);
+	
+	$chckbox3[] =& $form->addElement('checkbox', 'sticky', _("sticky"));
+	$chckbox3[0]->setChecked(true);
+	
+	$form->addElement('checkbox', 'notify', _("notify"));
+	
 	$form->addElement('hidden', 'author', $oreon->user->get_alias(), array("id"=>"author"));
 	
-	$attr =  array("rows"=>"4", "cols"=>"80", "id"=>"popupComment");
-	$form->addElement('textarea', 'comment', 'comment', $attr);
-	$def_tab = array("comment" => sprintf(_("Acknowledged by %s"), $oreon->user->alias));
-	$form->setDefaults($def_tab);
 	
 	$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
-	$form->setJsWarnings(_("Invalid information entered"),_("Please correct these fields"));
+	$form->setJsWarnings(_("Invalid information entered"), _("Please correct these fields"));
 	
-	$form->addElement('button', 'submit', _("Add"), array("onClick" => "send_the_command();"));
+	$form->addElement('button', 'submit', _("Acknowledge selected problems"), array("onClick" => "send_the_command();"));
 	$form->addElement('reset', 'reset', _("Reset"));
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);

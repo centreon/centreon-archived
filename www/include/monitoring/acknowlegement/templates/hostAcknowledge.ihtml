@@ -1,14 +1,15 @@
 {$form.javascript}
 <form {$form.attributes}>
 <div align=center>
-	 <table class="ListTableMedium">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">{$form.header.title}</td></tr>
+	 <table class="ListTableMedium" style="width:600px;">
+	 	<tr class="ListHeader">
+	 		<td class="FormHeader" colspan="2">{$form.header.title}&nbsp;&nbsp;<a href='http://www.nagios.org/developerinfo/externalcommands/'><img src='./img/icones/16x16/text_code.gif'></a></td></tr>
 		<tr class="list_one">
 			<td class="FormRowField">{$hostlabel}</td>
 			<td class="FormRowValue">{$hostname}</td>
 		</tr>
 		{if $en == 1}
-		<tr class="list_two">
+		<tr class="list_one">
 			<td class="FormRowField">{$form.notify.label}</td>
 			<td class="FormRowValue">{$form.notify.html}</td>
 		</tr>
@@ -17,10 +18,18 @@
 			<td class="FormRowValue">{$form.persistent.html}</td>
 		</tr>
 		<tr class="list_one">
+			<td class="FormRowField">{$form.sticky.label}</td>
+			<td class="FormRowValue">{$form.sticky.html}</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.ackhostservice.label}</td>
+			<td class="FormRowValue">{$form.ackhostservice.html}</td>
+		</tr>
+		<tr class="list_one">
 			<td class="FormRowField">{$authorlabel}</td>
 			<td class="FormRowValue">{$authoralias}</td>
 		</tr>
-		<tr class="list_one">
+		<tr class="list_two">
 			<td class="FormRowField">{$form.comment.label}</td>
 			<td class="FormRowValue">{$form.comment.html}</td>
 		</tr>
