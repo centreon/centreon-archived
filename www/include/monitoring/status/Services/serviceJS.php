@@ -438,9 +438,20 @@
 			alert(_popup_no_comment_msg);
 			return 0;
 		}
-		var sticky = document.getElementById('sticky').checked;
-		var persistent = document.getElementById('persistent').checked;
-		var notify = document.getElementById('notify').checked;
+		if (document.getElementById('sticky'))
+			var sticky = document.getElementById('sticky').checked;
+		else
+			var sticky = 1;
+		
+		if (document.getElementById('persistent')) 
+			var persistent = document.getElementById('persistent').checked;
+		else
+			var persistent = 1;
+		
+		if (document.getElementById('notify')) 
+			var notify = document.getElementById('notify').checked;
+		else
+			var notify = 0;
 		var ackhostservice = 0;
 		if (document.getElementById('ackhostservice')) {
 			ackhostservice = document.getElementById('ackhostservice').checked;
