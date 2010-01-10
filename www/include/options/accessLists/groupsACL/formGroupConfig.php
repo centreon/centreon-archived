@@ -35,24 +35,58 @@
  * SVN : $Id$
  * 
  */
+ 	
+ 	if (!isset($centreon))
+ 		exit();
 
-	#
-	## Database retrieve information for Contact
-	#
+	/*
+	 * Retreive information
+	 */
 	$group = array();
-	if (($o == "c" || $o == "w") && $acl_group_id)	{	
+	if (($o == "c" || $o == "w") && $acl_group_id) {	
 		$DBRESULT =& $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '".$acl_group_id."' LIMIT 1");
-		# Set base value
+		/*
+		 * Set base value
+		 */
 		$group = array_map("myDecode", $DBRESULT->fetchRow());
-		# Set Contact Childs
+		
+		/*
+		 * Set Contact Childs
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_contact_id FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."'");
-		for($i = 0; $contacts =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $contacts =& $DBRESULT->fetchRow(); $i++)
 			$group["cg_contacts"][$i] = $contacts["contact_contact_id"];
 		$DBRESULT->free();
+
+		/*
+		 * Set Menu link List
+		 */
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_topology_id FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_group_id."'");
+		for ($i = 0; $data =& $DBRESULT->fetchRow(); $i++)
+			$group["menuAccess"][$i] = $data["acl_topology_id"];
+		$DBRESULT->free();
+		
+		/*
+		 * Set resources List
+		 */
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");
+		for ($i = 0; $data =& $DBRESULT->fetchRow(); $i++)
+			$group["resourceAccess"][$i] = $data["acl_res_id"];
+		$DBRESULT->free();
+
+		/*
+		 * Set Action List
+		 */
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_action_id FROM acl_group_actions_relations WHERE acl_group_id = '".$acl_group_id."'");
+		for ($i = 0; $data =& $DBRESULT->fetchRow(); $i++)
+			$group["actionAccess"][$i] = $data["acl_action_id"];
+		$DBRESULT->free();
+
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
+	
+	/*
+	 * Database retrieve information for differents elements list we need on the page
+	 */
 	# Contacts comes from DB -> Store in $contacts Array
 	$contacts = array();
 	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' ORDER BY contact_name");
@@ -60,18 +94,39 @@
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
 	$DBRESULT->free();
-	
+
+	# topology comes from DB -> Store in $contacts Array
+	$menu = array();
+	$DBRESULT =& $pearDB->query("SELECT acl_topo_id, acl_topo_name FROM acl_topology ORDER BY acl_topo_name");
+	while ($topo =& $DBRESULT->fetchRow())
+		$menus[$topo["acl_topo_id"]] = $topo["acl_topo_name"];
+	unset($topo);
+	$DBRESULT->free();
+
+	# Action comes from DB -> Store in $contacts Array
+	$action = array();
+	$DBRESULT =& $pearDB->query("SELECT acl_action_id, acl_action_name FROM acl_actions ORDER BY acl_action_name");
+	while ($data =& $DBRESULT->fetchRow())
+		$action[$data["acl_action_id"]] = $data["acl_action_name"];
+	unset($data);
+	$DBRESULT->free();
+
+	# Resources comes from DB -> Store in $contacts Array
+	$resources = array();
+	$DBRESULT =& $pearDB->query("SELECT acl_res_id, acl_res_name FROM acl_resources ORDER BY acl_res_name");
+	while ($res =& $DBRESULT->fetchRow())
+		$resources[$res["acl_res_id"]] = $res["acl_res_name"];
+	unset($res);
+	$DBRESULT->free();
+		
 	##########################################################
 	# Var information to format the element
 	#
 	$attrsText 		= array("size"=>"30");
-	$attrsAdvSelect = array("style" => "width: 250px; height: 100px;");
-	$attrsTextarea 	= array("rows"=>"5", "cols"=>"60");
+	$attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
+	$attrsTextarea 	= array("rows"=>"6", "cols"=>"150");
 	$template 		= "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
-	#
-	## Form begin
-	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Group"));
@@ -80,21 +135,48 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View a Group"));
 
-	# Contact basic information
+	/*
+	 * Contact basic information
+	 */
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text', 'acl_group_name', _("Group Name"), $attrsText);
 	$form->addElement('text', 'acl_group_alias', _("Alias"), $attrsText);
 	
-	# Contacts Selection
+	/*
+	 * Contacts Selection
+	 */
 	$form->addElement('header', 'notification', _("Relations"));
+	$form->addElement('header', 'menu', _("Menu access list link"));
+	$form->addElement('header', 'resource', _("Resources access list link"));
+	$form->addElement('header', 'actions', _("Action access list link"));
 	
     $ams1 =& $form->addElement('advmultiselect', 'cg_contacts', _("Linked Contacts"), $contacts, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
+
+    $ams1 =& $form->addElement('advmultiselect', 'menuAccess', _("Menu access"), $menus, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setElementTemplate($template);
+	echo $ams1->getElementJs(false);
+
+    $ams1 =& $form->addElement('advmultiselect', 'actionAccess', _("Actions access"), $action, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setElementTemplate($template);
+	echo $ams1->getElementJs(false);
+
+    $ams1 =& $form->addElement('advmultiselect', 'resourceAccess', _("Resources access"), $resources, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setElementTemplate($template);
+	echo $ams1->getElementJs(false);
 	
-	# Further informations
+	/*
+	 * Further informations
+	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$groupActivation[] = &HTML_QuickForm::createElement('radio', 'acl_group_activate', null, _("Enabled"), '1');
 	$groupActivation[] = &HTML_QuickForm::createElement('radio', 'acl_group_activate', null, _("Disabled"), '0');
@@ -110,8 +192,10 @@
 	$form->addElement('hidden', 'acl_group_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-	
-	# Form Rules
+
+	/*
+	 * Form Rules
+	 */
 	function myReplace()	{
 		global $form;
 		$ret = $form->getSubmitValues();
@@ -126,26 +210,36 @@
 	$form->addRule('acl_group_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
-	# End of form definition
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	# Just watch a Contact Group information
-	if ($o == "w")	{
+	/*
+	 * Define tab title
+	 */
+	$tpl->assign("sort1", "Group Information");
+	$tpl->assign("sort2", "Authorizations information");
+	
+	/*
+	 * Just watch a Contact Group information
+	 */
+	if ($o == "w") {
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$group_id."'"));
 	    $form->setDefaults($group);
 		$form->freeze();
-	}
-	# Modify a Contact Group information
-	else if ($o == "c")	{
+	} else if ($o == "c") {
+		/*
+		 * Modify a Contact Group information
+		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($group);
-	}
-	# Add a Contact Group information
-	else if ($o == "a")	{
+	} else if ($o == "a") {
+		/*
+		 * Add a Contact Group information
+		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -165,8 +259,10 @@
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once($path."listGroupConfig.php");
-	else	{
-		#Apply a template definition
+	else {
+		/*
+		 * Apply a template definition
+		 */
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

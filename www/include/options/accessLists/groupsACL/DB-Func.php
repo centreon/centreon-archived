@@ -109,11 +109,15 @@
 	function insertGroupInDB ($ret = array())	{
 		$acl_group_id = insertGroup($ret);
 		updateGroupContacts($acl_group_id, $ret);
+		updateGroupActions($acl_group_id);
+		updateGroupResources($acl_group_id);
+		updateGroupMenus($acl_group_id);
 		return $acl_group_id;
 	}
 	
 	function insertGroup($ret)	{
 		global $form, $pearDB;
+		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO acl_groups ";
@@ -127,14 +131,22 @@
 	}
 	
 	function updateGroupInDB ($acl_group_id = NULL)	{
-		if (!$acl_group_id) return;
+		if (!$acl_group_id) 
+			return;
+
 		updateGroup($acl_group_id);
 		updateGroupContacts($acl_group_id);
+		updateGroupActions($acl_group_id);
+		updateGroupResources($acl_group_id);
+		updateGroupMenus($acl_group_id);
 	}
 	
 	function updateGroup($acl_group_id = null)	{
-		if (!$acl_group_id) return;
 		global $form, $pearDB;
+		
+		if (!$acl_group_id) 
+			return;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE acl_groups ";
@@ -146,8 +158,11 @@
 	}
 	
 	function updateGroupContacts($acl_group_id, $ret = array())	{
-		if (!$acl_group_id) return;
 		global $form, $pearDB;
+		
+		if (!$acl_group_id) 
+			return;
+		
 		$rq = "DELETE FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (isset($_POST["cg_contacts"]))
@@ -158,5 +173,59 @@
 				$rq .= "('".$id."', '".$acl_group_id."')";
 				$DBRESULT =& $pearDB->query($rq);
 			}
+	}
+	
+	function updateGroupActions($acl_group_id, $ret = array())	{
+		global $form, $pearDB;
+		
+		if (!$acl_group_id) 
+			return;
+		
+		$rq = "DELETE FROM acl_group_actions_relations WHERE acl_group_id = '".$acl_group_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (isset($_POST["actionAccess"]))
+			foreach ($_POST["actionAccess"] as $id){
+				$rq = "INSERT INTO acl_group_actions_relations ";
+				$rq .= "(acl_action_id, acl_group_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$id."', '".$acl_group_id."')";
+				$DBRESULT =& $pearDB->query($rq);
+			}
+	}
+	
+	function updateGroupMenus($acl_group_id, $ret = array())	{
+		global $form, $pearDB;
+		
+		if (!$acl_group_id) 
+			return;
+		
+		$rq = "DELETE FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_group_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (isset($_POST["menuAccess"]))
+			foreach ($_POST["menuAccess"] as $id){
+				$rq = "INSERT INTO acl_group_topology_relations ";
+				$rq .= "(acl_topology_id, acl_group_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$id."', '".$acl_group_id."')";
+				$DBRESULT =& $pearDB->query($rq);
+			}
+	}
+	
+	function updateGroupResources($acl_group_id, $ret = array())	{
+		global $form, $pearDB;
+		
+		if (!$acl_group_id) 
+			return;
+		
+		$DBRESULT =& $pearDB->query("DELETE FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");
+		if (isset($_POST["resourceAccess"])) {
+			foreach ($_POST["resourceAccess"] as $id) {
+				$rq = "INSERT INTO acl_res_group_relations ";
+				$rq .= "(acl_res_id, acl_group_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$id."', '".$acl_group_id."')";
+				$DBRESULT =& $pearDB->query($rq);
+			}
+		}
 	}
 ?>
