@@ -175,30 +175,35 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
-	# Form Rules
+	/*
+	 * Form Rules
+	 */
 	function myReplace()	{
 		global $form;
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["acl_action_name"]));
 	}
 
-	# Controls
+	/*
+	 * Controls
+	 */
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('acl_group_name', 'myReplace');
 	$form->addRule('acl_action_name', _("Compulsory Name"), 'required');
 	$form->addRule('acl_action_description', _("Compulsory Alias"), 'required');
-	$form->addRule('acl_groups', _("Compulsory Groups"), 'required');
 	$form->registerRule('exist', 'callback', 'testActionExistence');
 	$form->addRule('acl_action_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
-	# End of form definition
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	# Modify an Action Group
+	/*
+	 * Modify an Action Group
+	 */
 	if ($o == "c" && isset($selected_actions) && isset($action_infos))	{
 		$form->setDefaults($selected_actions);
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
