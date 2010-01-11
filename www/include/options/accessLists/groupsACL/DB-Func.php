@@ -109,6 +109,7 @@
 	function insertGroupInDB ($ret = array())	{
 		$acl_group_id = insertGroup($ret);
 		updateGroupContacts($acl_group_id, $ret);
+		updateGroupContactGroups($acl_group_id);
 		updateGroupActions($acl_group_id);
 		updateGroupResources($acl_group_id);
 		updateGroupMenus($acl_group_id);
@@ -136,6 +137,7 @@
 
 		updateGroup($acl_group_id);
 		updateGroupContacts($acl_group_id);
+		updateGroupContactGroups($acl_group_id);
 		updateGroupActions($acl_group_id);
 		updateGroupResources($acl_group_id);
 		updateGroupMenus($acl_group_id);
@@ -169,6 +171,24 @@
 			foreach ($_POST["cg_contacts"] as $id){
 				$rq = "INSERT INTO acl_group_contacts_relations ";
 				$rq .= "(contact_contact_id, acl_group_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$id."', '".$acl_group_id."')";
+				$DBRESULT =& $pearDB->query($rq);
+			}
+	}
+	
+	function updateGroupContactGroups($acl_group_id, $ret = array())	{
+		global $form, $pearDB;
+		
+		if (!$acl_group_id) 
+			return;
+		
+		$rq = "DELETE FROM acl_group_contactgroups_relations WHERE acl_group_id = '".$acl_group_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (isset($_POST["cg_contactGroups"]))
+			foreach ($_POST["cg_contactGroups"] as $id){
+				$rq = "INSERT INTO acl_group_contactgroups_relations ";
+				$rq .= "(cg_cg_id, acl_group_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$id."', '".$acl_group_id."')";
 				$DBRESULT =& $pearDB->query($rq);

@@ -79,6 +79,22 @@ CREATE TABLE IF NOT EXISTS `acl_group_contacts_relations` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `acl_group_contactgroups_relations`
+--
+
+CREATE TABLE IF NOT EXISTS `acl_group_contactgroups_relations` (
+  `agcgr_id` int(11) NOT NULL auto_increment,
+  `cg_cg_id` int(11) default NULL,
+  `acl_group_id` int(11) default NULL,
+  PRIMARY KEY  (`agcgr_id`),
+  KEY `cg_cg_id` (`cg_cg_id`),
+  KEY `acl_group_id` (`acl_group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+
+--
 -- Structure de la table `acl_group_topology_relations`
 --
 
@@ -2316,4 +2332,11 @@ ALTER TABLE `acl_resources_hg_relations` ADD FOREIGN KEY ( `acl_res_id` ) REFERE
 
 ALTER TABLE `acl_resources_sg_relations` ADD FOREIGN KEY ( `sg_id` ) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE ;
 ALTER TABLE `acl_resources_sg_relations` ADD FOREIGN KEY ( `acl_res_id` ) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE ;
+
+--
+-- Contraintes pour la table acl_group_contactgroups_relations
+--
+
+ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `cg_cg_id` ) REFERENCES `centreon`.`contactgroup` (`cg_id`) ON DELETE CASCADE ;
+ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `acl_group_id` ) REFERENCES `centreon`.`acl_groups` (`acl_group_id`) ON DELETE CASCADE ;
 

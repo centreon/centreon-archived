@@ -59,6 +59,14 @@
 		$DBRESULT->free();
 
 		/*
+		 * Set ContactGroup Childs
+		 */
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM acl_group_contactgroups_relations WHERE acl_group_id = '".$acl_group_id."'");
+		for ($i = 0; $contactgroups =& $DBRESULT->fetchRow(); $i++)
+			$group["cg_contactGroups"][$i] = $contactgroups["cg_cg_id"];
+		$DBRESULT->free();
+
+		/*
 		 * Set Menu link List
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_topology_id FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_group_id."'");
@@ -93,6 +101,14 @@
 	while ($contact =& $DBRESULT->fetchRow())
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
+	$DBRESULT->free();
+
+	# ContactGroup comes from DB -> Store in $contacts Array
+	$contactGroups = array();
+	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	while ($contactGroup =& $DBRESULT->fetchRow())
+		$contactGroups[$contactGroup["cg_id"]] = $contactGroup["cg_name"];
+	unset($contactGroup);
 	$DBRESULT->free();
 
 	# topology comes from DB -> Store in $contacts Array
@@ -151,6 +167,12 @@
 	$form->addElement('header', 'actions', _("Action access list link"));
 	
     $ams1 =& $form->addElement('advmultiselect', 'cg_contacts', _("Linked Contacts"), $contacts, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setElementTemplate($template);
+	echo $ams1->getElementJs(false);
+
+	$ams1 =& $form->addElement('advmultiselect', 'cg_contactGroups', _("Linked Contact Groups"), $contactGroups, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);

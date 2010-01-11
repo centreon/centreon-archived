@@ -37,3 +37,17 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topo
 UPDATE      `topology` SET `topology_parent` = '605', `topology_page` = '60501'  WHERE `topology_parent` = '501' AND  `topology_page` = '50102';
 DELETE FROM `topology` WHERE `topology_parent` = '50102' AND `topology_page` = '5010201';
 DELETE FROM `topology` WHERE `topology_parent` = '50102' AND `topology_page` = '5010202';
+
+
+
+CREATE TABLE IF NOT EXISTS `acl_group_contactgroups_relations` (
+  `agcgr_id` int(11) NOT NULL auto_increment,
+  `cg_cg_id` int(11) default NULL,
+  `acl_group_id` int(11) default NULL,
+  PRIMARY KEY  (`agcgr_id`),
+  KEY `cg_cg_id` (`cg_cg_id`),
+  KEY `acl_group_id` (`acl_group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `cg_cg_id` ) REFERENCES `centreon`.`contactgroup` (`cg_id`) ON DELETE CASCADE ;
+ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `acl_group_id` ) REFERENCES `centreon`.`acl_groups` (`acl_group_id`) ON DELETE CASCADE ;

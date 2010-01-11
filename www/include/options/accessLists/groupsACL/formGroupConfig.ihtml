@@ -22,6 +22,7 @@
 		<tr class="list_two"><td class="FormRowField">{$form.acl_group_alias.label}</td><td class="FormRowValue">{$form.acl_group_alias.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/businessmen.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.cg_contacts.label}</td><td class="FormRowValue">{$form.cg_contacts.html}</td></tr>
+	 	<tr class="list_two"><td class="FormRowField">{$form.cg_contactGroups.label}</td><td class="FormRowValue">{$form.cg_contactGroups.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.acl_group_activate.label}</td><td class="FormRowValue">{$form.acl_group_activate.html}</td></tr>
 		{if $o == "a" || $o == "c"}
