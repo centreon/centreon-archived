@@ -343,11 +343,42 @@
 			}
 			unset($regs);
 		}
+		
+		/*
+		 * Turn 7 -> Service Groups
+		 */
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 7 -> Service Groups\n", 3, $debug_path."cfgimport.log");
+		reset($buf);
+
+		foreach ($buf as $str)	{
+			$regs = array();
+			if (preg_match("/}/", $str) && $get)	{
+				switch ($typeDef)	{
+					case "servicegroup": insertServiceGroupCFG($tmpConf);  break;
+					default :; break;
+				}
+				$get = false;
+				$tmpConf = array();
+				$typeDef = NULL;
+			}
+			if (preg_match("/^[ \t]*define (servicegroup)[ \t]*{/", $str, $def))	{
+				$typeDef = $def[1];
+				$get = true;
+			}
+			else if ($get)	{
+				if (preg_match($regexp, $str, $regs))
+					$tmpConf[$regs[1]] = trim($regs[2]);
+			}
+			unset($regs);
+		}
+		
 		/*
 		 * Turn 6 -> Services
 		 */		
 		if ($debug_nagios_import == 1)
 			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 6 -> Services\n", 3, $debug_path."cfgimport.log");
+			
 		reset($buf);
 		$useTpl = array();
 		$useTpls = array();
@@ -737,54 +768,6 @@
 		foreach($tmpConf["host_names"] as $key=>$value)	{
 			updateHostExtInfos($value, $tmpConf);
 			$nbr["hei"] += 1;
-		}
-		return true;
-	}
-	
-	function insertServiceExtInfoCFG($tmpConf = array())	{
-		global $nbr, $oreon, $debug_nagios_import, $debug_path;		
-		
-		/*
-		 * Include host Tools
-		 */
-		require_once("./include/configuration/configObject/service/DB-Func.php");
-		require_once("./class/centreonDB.class.php");
-		require_once("./class/centreonService.class.php");
-		require_once("./class/centreonMedia.class.php");
-		
-		$DB = new CentreonDB();
-		$svcObj = new CentreonService($DB);
-		$mediaObj = new CentreonMedia($DB);
-		
-		foreach ($tmpConf as $key => $value) {
-			switch($key)	{
-				case "notes" : $tmpConf["esi_notes"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "notes_url" : $tmpConf["esi_notes_url"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "action_url" : $tmpConf["esi_action_url"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "icon_image" : $tmpConf["esi_icon_image"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;
-				case "icon_image_alt" : $tmpConf["esi_icon_image_alt"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;												case "host_name" :
-					$tmpConf["host_name"] = trim($tmpConf[$key]);					
-					$tmpConf["host_name"] = str_replace("/", "#S#", $tmpConf["host_name"]);
-					$tmpConf["host_name"] = str_replace("\\", "#BS#", $tmpConf["host_name"]);					
-					break;
-				case "service_description" : 
-					$tmpConf["service_descriptions"] = explode(",", $tmpConf[$key]);					
-					unset ($tmpConf[$key]); break;
-			}
-		}
-				
-		if (isset($tmpConf["host_name"]) && isset($tmpConf["service_descriptions"])) {			
-			foreach ($tmpConf["service_descriptions"] as $key2 => $value2)	{
-				$value2 = str_replace("/", "#S#", $value2);
-				$value2 = str_replace("\\", "#BS#", $value2);
-				$tmpConf["service_descriptions"][$key2] = $svcObj->getServiceId(trim($value2), $tmpConf["host_name"]);
-				if (!$tmpConf["service_descriptions"][$key2])
-					unset($tmpConf["service_descriptions"][$key2]);
-			}			
-			foreach($tmpConf["service_descriptions"] as $key => $value)	{				
-				updateServiceExtInfos($value, $tmpConf);
-				$nbr["sei"] += 1;
-			}
 		}
 		return true;
 	}
@@ -1214,6 +1197,15 @@
 					}
 					unset ($tmpConf[$key]);
 					break;
+				case "servicegroups" :
+					$tmpConf["service_sgs"] = explode(",", $tmpConf[$key]);
+					foreach ($tmpConf["service_sgs"] as $key2 => $value2) {
+						$tmpConf["service_sgs"][$key2] = getMyServiceGroupID(trim($value2));
+						if (!$tmpConf["service_sgs"][$key2])
+							unset($tmpConf["service_sgs"][$key2]);	
+					}
+					unset($tmpConf[$key2]);
+					break;
 				case "#TEMPLATE-HOST-LINK" : 
 					$tab_link_tpl[$cpt_tpl] = $value;
 					$cpt_tpl++;					
@@ -1246,7 +1238,6 @@
 			if ((count($tmpConf["service_hgPars"]) || count($tmpConf["service_hPars"])) || !$tmpConf["service_register"]["service_register"])	{
 				if ($debug_nagios_import == 1)
 					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceCFG : ". $tmpConf["service_description"] ." \n", 3, $debug_path."cfgimport.log");
-
 				$useTpl[0] = insertServiceInDB($tmpConf, $macro_on_demand);
 				$useTpl[1] = $use;
 				$nbr["sv"] += 1;
