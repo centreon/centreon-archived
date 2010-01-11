@@ -197,8 +197,6 @@
 					($nbr["cct"] ? $msg .= "Contact : ".$nbr["cct"]." "._("Entries are registered")."<br />" : 0);
 					($nbr["cg"] ? $msg .= "Contact Group : ".$nbr["cg"]." "._("Entries are registered")."<br />" : 0);
 					($nbr["h"] ? $msg .= "Host : ".$nbr["h"]." "._("Entries are registered")."<br />" : 0);
-					($nbr["hei"] ? $msg .= "Host Extended Infos : ".$nbr["hei"]." "._("Entries are registered")."<br />" : 0);
-					($nbr["sei"] ? $msg .= "Service Extended Infos : ".$nbr["sei"]." "._("Entries are registered")."<br />" : 0);
 					($nbr["hg"] ? $msg .= "Host Group : ".$nbr["hg"]." "._("Entries are registered")."<br />" : 0);
 					($nbr["hd"] ? $msg .= "Host Dependency : ".$nbr["hd"]." "._("Entries are registered")."<br />" : 0);
 					($nbr["sv"] ? $msg .= "Service : ".$nbr["sv"]." "._("Entries are registered")."<br />" : 0);
