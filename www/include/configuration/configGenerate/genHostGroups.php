@@ -65,7 +65,16 @@
 	$i = 1;
 	$str = NULL;
 	$hostGroup = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY `hg_name`");
+	$request =  "SELECT DISTINCT hg_id, hg_name, hg_alias, hg_comment, hg_notes, hg_notes_url, hg_action_url " .
+				"FROM hostgroup hg, hostgroup_relation hgr, ns_host_relation nhr, host h " .
+				"WHERE hg.hg_activate = '1' " .
+					"AND hgr.hostgroup_hg_id = hg.hg_id " .
+					"AND hgr.host_host_id = h.host_id " .
+					"AND nhr.host_host_id = hgr.host_host_id " .
+					"AND h.host_activate = '1' " .
+					"AND nhr.nagios_server_id = '".$tab['id']."' " .
+				"ORDER BY `hg_name`";
+	$DBRESULT =& $pearDB->query($request);
 	while ($hostGroup =& $DBRESULT->fetchRow())	{
 		$strDef = NULL;
 		$HGLinkedToHost = 0;

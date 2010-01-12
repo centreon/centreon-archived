@@ -76,12 +76,12 @@
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
 									"FROM servicegroup_relation, service, host " .
-									"WHERE servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
-									"AND service.service_id = servicegroup_relation.service_service_id " .
-									"AND host.host_id = servicegroup_relation.host_host_id " .
-									"AND service.service_activate = '1' " .
-									"AND host.host_activate = '1' " .
-									"AND  servicegroup_relation.host_host_id IS NOT NULL");
+									"WHERE servicegroup_relation.servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
+										"AND service.service_id = servicegroup_relation.service_service_id " .
+										"AND host.host_id = servicegroup_relation.host_host_id " .
+										"AND service.service_activate = '1' " .
+										"AND host.host_activate = '1' " .
+										"AND servicegroup_relation.host_host_id IS NOT NULL");
 			while ($service =& $DBRESULT2->fetchRow()){
 				if (isset($gbArr[4][$service["service_id"]]))	{				
 					if ($service["host_id"])	{
