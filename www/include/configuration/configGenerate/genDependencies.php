@@ -101,7 +101,7 @@
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgcr WHERE dhgcr.dependency_dep_id = dep.dep_id) > 0";
 	$DBRESULT =& $pearDB->query($rq);
 	$dependency = array();
-	while($dependency =& $DBRESULT->fetchRow())	{
+	while ($dependency =& $DBRESULT->fetchRow())	{
 		$generated = 0;
 		$generated2 = 0;
 		$strDef = "";
@@ -111,7 +111,6 @@
 				"AND hostgroup.hg_id = dhgpr.hostgroup_hg_id ".
 				"AND dhgpr.hostgroup_hg_id = hgr.hostgroup_hg_id ".
 				"AND hgr.host_host_id = ns.host_host_id " .
-				"AND ns.nagios_server_id = '".$tab['id']."' " .
 				"AND ns.host_host_id = h.host_id " . 
 				"AND h.host_activate = '1'"; 
 					
@@ -131,7 +130,6 @@
 				"AND hostgroup.hg_id = dhgcr.hostgroup_hg_id " .
 				"AND dhgcr.hostgroup_hg_id = hgr.hostgroup_hg_id ".
 				"AND hgr.host_host_id = ns.host_host_id " .
-				"AND ns.nagios_server_id = '".$tab['id']."' " .
 				"AND ns.host_host_id = h.host_id " . 
 				"AND h.host_activate = '1'";
 		
