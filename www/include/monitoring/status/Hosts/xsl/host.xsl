@@ -66,7 +66,7 @@
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>
-			<xsl:if test="hdtm = 1">
+			<xsl:if test="hdtm != 0">
 				<xsl:element name="img">
 				  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
 				</xsl:element>

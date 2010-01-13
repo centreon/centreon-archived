@@ -235,6 +235,11 @@
 
 		$host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
 
+	    if (isset($host_status[$host_name]["scheduled_downtime_depth"]) &&
+		    $host_status[$host_name]["scheduled_downtime_depth"]) {
+		    $host_status[$host_name]["scheduled_downtime_depth"] = 1;
+		}
+		
 		if (isset($tab_host_service[$host_name]) && count($tab_host_service[$host_name]))
 			foreach ($tab_host_service[$host_name] as $key_name => $s){
 				if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
