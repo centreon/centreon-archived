@@ -648,6 +648,7 @@
 		
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' " . $searchSTR . $access->queryBuilder("AND", "host_id", $hoststr) . " ORDER BY host_name");
 		$cpt = 0;
+		$i = 0;
 		$hostaloneSTR2 = "";
 		while ($host =& $DBRESULT2->fetchRow()){
 			$i++;				

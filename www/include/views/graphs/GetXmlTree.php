@@ -328,6 +328,7 @@
 			 * Hosts Alone
 			 */
 			$cpt = 0;
+			$i = 0;
 			$str = "";
 			$hostWithGraph = getHostGraphedList();
 			
