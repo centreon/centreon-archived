@@ -179,14 +179,16 @@
 	$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr, dependency WHERE dependency.dep_id = dspr.dependency_dep_id");
 	while ($svPar =& $DBRESULT->fetchRow())	{
 		if (isset($gbArr[4][$svPar["service_service_id"]]))	{
+			$hPar = NULL;
 			if (isset($gbArr[2][$svPar["host_host_id"]]) && isset($host_instance[$svPar["host_host_id"]])) {						
 				$hPar = getMyHostName($svPar["host_host_id"]);
 			}
 			# Service Child
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$svPar["dependency_dep_id"]."'");
 			while ($svCh =& $DBRESULT2->fetchRow())	{
+				$hCh = NULL;
 				if (isset($gbArr[4][$svCh["service_service_id"]])) {
-					if (isset($gbArr[2][$svCh["host_host_id"]]) && isset($gbArr[2][$svCh["host_host_id"]]))	{					
+					if (isset($gbArr[2][$svCh["host_host_id"]]) && isset($gbArr[2][$svCh["host_host_id"]]) && isset($host_instance[$svCh["host_host_id"]]))	{					
 						$hCh = getMyHostName($svCh["host_host_id"]);
 					}
 				}
@@ -199,10 +201,12 @@
 							$str .= "# ".$cmt."\n";
 					}
 					$str .= "define servicedependency{\n";
-					$str .= print_line("dependent_host_name", $hCh);
 					$str .= print_line("host_name", $hPar);
-					$str .= print_line("dependent_service_description", getMyServiceName($svCh["service_service_id"]));
 					$str .= print_line("service_description", getMyServiceName($svPar["service_service_id"]));
+
+					$str .= print_line("dependent_host_name", $hCh);
+					$str .= print_line("dependent_service_description", getMyServiceName($svCh["service_service_id"]));
+					
 					if (isset($svPar["inherits_parent"]["inherits_parent"]) && $svPar["inherits_parent"]["inherits_parent"] != "") 
 						$str .= print_line("inherits_parent", $svPar["inherits_parent"]["inherits_parent"]);
 					if (isset($svPar["execution_failure_criteria"]) && $svPar["execution_failure_criteria"] != "") 
