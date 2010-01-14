@@ -305,7 +305,7 @@ INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `h
 -- Contenu de la table `hostgroup_relation`
 --
 
-INSERT INTO `hostgroup_relation` (`hgr_id`, `hostgroup_hg_id`, `host_host_id`) VALUES(1250, 53, 14);
+INSERT INTO `hostgroup_relation` (`hgr_id`, `hostgroup_hg_id`, `host_host_id`) VALUES (1250, 53, 14);
 
 
 --
@@ -397,7 +397,7 @@ INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `service
 -- Contenu de la table `contactgroup_service_relation`
 --
 
-INSERT INTO `contactgroup_service_relation` (`cgsr_id`, `contactgroup_cg_id`, `service_service_id`) VALUES(121, 5, 1);
+INSERT INTO `contactgroup_service_relation` (`cgsr_id`, `contactgroup_cg_id`, `service_service_id`) VALUES (121, 5, 1);
 
 
 --
