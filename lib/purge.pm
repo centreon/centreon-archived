@@ -41,7 +41,7 @@ sub CheckMySQLDrain(){
     # Connecte MySQL To centreon and centstorage
     $con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
     $con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-
+    
     # Get services by hosts
     my $sth2 = $con_oreon->prepare("SELECT service_service_id, host_host_id FROM host_service_relation WHERE hostgroup_hg_id IS NULL ");
     if (!$sth2->execute) {
@@ -84,56 +84,23 @@ sub CheckMySQLDrain(){
 	while ($data = $sth->fetchrow_hashref()) {
 	    if ($data->{'service_id'} && $data->{'host_id'} && !defined($srv_list{$data->{'host_id'}."_".$data->{'service_id'}})){
 		my $data_svc;
-		my $t = 0;
 		my $sth1 = $con_ods->prepare("SELECT metric_id FROM index_data, metrics WHERE index_data.host_id = '".$data->{'host_id'}."' AND index_data.service_id = '".$data->{'service_id'}."' AND metrics.index_id = index_data.id");
 		if (!$sth1->execute) {
 		    writeLogFile("Error in Drain function 3 : " . $sth1->errstr);
 		}
 		while ($data_svc = $sth1->fetchrow_hashref()) {
-		    # Add Metric to delete in buffer
-		    writeLogFile("Purge : Delete data in 'data_bin' : metric_id => ".$data_svc->{'metric_id'});
-		    $metricToDel{$data_svc->{'metric_id'}} = $data_svc->{'metric_id'};
-		    
 		    $sth2 = $con_ods->prepare("DELETE FROM metrics WHERE metric_id = '".$data_svc->{'metric_id'}."'");	
 		    if (!$sth2->execute) {
 			writeLogFile("Error when deleting Metrics for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." m : ".$data_svc->{'metric_id'}." : " . $sth2->errstr);
 		    }
 		    $sth2->finish();
 		    undef($sth2);
-		    $t++;
-		}
-
-		if ($t){
-		    writeLogFile("Purge : remove from index : ".$data->{'service_id'}."' AND host_id = '".$data->{'host_id'});
-		    $sth2 = $con_ods->prepare("DELETE FROM index_data WHERE `service_id` = '".$data->{'service_id'}."' AND host_id = '".$data->{'host_id'}."'");
-		    if (!$sth2->execute) {
-			writeLogFile("Error when index for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." :" . $sth2->errstr);
-		    }
-		    $sth2->finish();
 		}
 		undef($sth2);
 		undef($data_svc);
 	    }
 	}
 
-	# Delete Metric
-	my $ids = "";
-	my $flag = 0;
-	foreach my $value (%metricToDel) {
-	    $ids .= "," if ($flag);
-	    $ids .= "'$value'";
-	    $flag++;
-	}
-	if ($flag) {
-	    $sth2 = $con_ods->prepare("DELETE FROM data_bin WHERE data_bin.id_metric IN ($ids)");	
-	    if (!$sth2->execute) {
-		writeLogFile("Error when deleting Data in data_bin");
-	    }
-	    $sth2->finish();
-	    undef($sth2);
-	    undef($ids);
-	}
-	undef($flag);
     }
 
     $sth->finish();
