@@ -122,7 +122,7 @@
 	#
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text', 'sg_name', _("ServiceGroup Name"), $attrsText);
-	$form->addElement('text', 'sg_alias', _("Alias"), $attrsText);
+	$form->addElement('text', 'sg_alias', _("Description"), $attrsText);
 	
 	##
 	## Services Selection
@@ -172,7 +172,7 @@
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('sg_name', 'myReplace');
 	$form->addRule('sg_name', _("Compulsory Name"), 'required');
-	$form->addRule('sg_alias', _("Compulsory Alias"), 'required');
+	$form->addRule('sg_alias', _("Compulsory Description"), 'required');
 	$form->registerRule('exist', 'callback', 'testServiceGroupExistence');
 	$form->addRule('sg_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
