@@ -104,8 +104,8 @@
 				$start_date = mktime(0, 0, 0, $month, $day - 30, $year);
 				$end_date = mktime(24, 0, 0, $month, $day - 1, $year);
 			} else if($period == "lastyear"){
-				$start_date = mktime(0, 0, 0, 1, 1, $year-2);
-				$end_date = mktime(0, 0, 0, 1, 1, $year-1);
+				$start_date = mktime(0, 0, 0, 1, 1, $year-1);
+				$end_date = mktime(0, 0, 0, 1, 1, $year);
 			} else if($period == "thismonth") {
 				$start_date = mktime(0, 0, 0, $month, 1, $year);
 				$end_date = mktime(24, 0, 0, $month, $day - 1, $year);
