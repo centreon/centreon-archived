@@ -296,7 +296,12 @@
 				$obj->XML->endElement();				
 			} else {				
 				$host_prev = $ndo["host_name"];
-				$obj->XML->writeElement("hc", $obj->colorHostInService[$host_status[$ndo["host_name"]]["current_state"]]);
+				if ($host_status[$ndo["host_name"]]["scheduled_downtime_depth"] == 0) {
+					$obj->XML->writeElement("hc", $obj->colorHostInService[$host_status[$ndo["host_name"]]["current_state"]]);
+				} else {
+					$obj->XML->writeElement("hc", $general_opt['color_downtime']);
+				}
+			
 				$obj->XML->startElement("hn");
 				$obj->XML->writeAttribute("none", "0");
 				$obj->XML->text($ndo["host_name"]);

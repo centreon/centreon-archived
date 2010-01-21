@@ -23,7 +23,7 @@
 	<xsl:for-each select="//l">
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
-		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
+  		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
 		<td class="ListColPicker">
 		<xsl:element name="input">
 			<xsl:attribute name="type">checkbox</xsl:attribute>
@@ -33,26 +33,30 @@
 			<xsl:attribute name="onclick">
             	if (this.checked) {
                 	putInSelectedElem('<xsl:value-of select="hn"/>');
-                }
-                else {
+                } else {
                 	removeFromSelectedElem('<xsl:value-of select="hn"/>');
                 }
             </xsl:attribute>
 		</xsl:element>
 		</td>
 		<td class="ListColLeft">
-			<xsl:if test="ico != ''">
-				<xsl:element name="img">
-				  	<xsl:attribute name="src">./img/media/<xsl:value-of select="ico"/></xsl:attribute>
-				  	<xsl:attribute name="width">16</xsl:attribute>
-					<xsl:attribute name="height">16</xsl:attribute>
-					<xsl:attribute name="style">padding-right:5px;</xsl:attribute>
+			<xsl:element name="span">
+				<xsl:if test="hdtm != 0">
+					<xsl:attribute name="class">host_downtime</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ico != ''">
+					<xsl:element name="img">
+					  	<xsl:attribute name="src">./img/media/<xsl:value-of select="ico"/></xsl:attribute>
+					  	<xsl:attribute name="width">16</xsl:attribute>
+						<xsl:attribute name="height">16</xsl:attribute>
+						<xsl:attribute name="style">padding-right:5px;</xsl:attribute>
+					</xsl:element>
+				</xsl:if>
+				<xsl:element name="a">
+				  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+					<xsl:attribute name="class">pop</xsl:attribute>
+					<xsl:value-of select="hn"/>
 				</xsl:element>
-			</xsl:if>
-			<xsl:element name="a">
-			  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
-				<xsl:attribute name="class">pop</xsl:attribute>
-				<xsl:value-of select="hn"/>
 			</xsl:element>
 		</td>
 		<td class="ListColRight">
@@ -111,7 +115,7 @@
 	    <td class="ListColRight"><xsl:value-of select="lsc"/></td>
 		<xsl:if test = "//i/o = 'h_unhandled' or //i/o = 'hpb'">
 			<td class="ListColRight" style="white-space:nowrap;">
-				<xsl:value-of select="lhs"/>
+				<xsl:value-of select="last_hard_state_change"/>
 			</td>
 		</xsl:if>
 	    <td class="ListColCenter"><xsl:value-of select="tr"/></td>

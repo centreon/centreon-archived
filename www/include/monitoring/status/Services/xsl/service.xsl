@@ -28,7 +28,7 @@
 	<xsl:for-each select="//l">
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
-		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
+  		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
 		<td class="ListColPicker">
 			<xsl:element name="input">
 				<xsl:attribute name="type">checkbox</xsl:attribute>
@@ -38,8 +38,7 @@
 				<xsl:attribute name="onclick">
 					if (this.checked) {
 						putInSelectedElem('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');
-					}
-					else {
+					} else {
 						removeFromSelectedElem('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');
 					}
 				</xsl:attribute>
@@ -48,18 +47,23 @@
 		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:if test="hn/@none = 0">
 				<xsl:element name="span">
-					<xsl:if test="hs = 1">
-						<xsl:attribute name="class">host_down</xsl:attribute>
+					<xsl:if test="hdtm = 0">
+						<xsl:if test="hs = 1">
+							<xsl:attribute name="class">host_down</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="hs = 2">
+							<xsl:attribute name="class">host_unreachable</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
-					<xsl:if test="hs = 2">
-						<xsl:attribute name="class">host_unreachable</xsl:attribute>
+					<xsl:if test="hdtm != 0">
+						<xsl:attribute name="class">host_downtime</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="hico != ''">
 						<xsl:element name="img">
 							<xsl:attribute name="src">./img/media/<xsl:value-of select="hico"/></xsl:attribute>
 							<xsl:attribute name="width">16</xsl:attribute>
 							<xsl:attribute name="height">16</xsl:attribute>
-							<xsl:attribute name="style">margin-right:5px;</xsl:attribute>
+							<xsl:attribute name="style">padding-right:5px;</xsl:attribute>
 						</xsl:element>
 					</xsl:if>
 					<xsl:element name="a">
@@ -79,7 +83,7 @@
 			<xsl:if test="hn/@none = 0">
 				<xsl:if test="hnu != 'none'">
 					<xsl:element name="a">
-					  	<xsl:attribute name="class">infobulle</xsl:attribute>
+					  	<xsl:attribute name="classe">infobulle</xsl:attribute>
 					  	<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
@@ -129,7 +133,7 @@
 		<td class="ListColRight" style="white-space:nowrap;">
 			<xsl:if test="snu != 'none'">
 				<xsl:element name="a">
-				  	<xsl:attribute name="class">infobulle</xsl:attribute>
+				  	<xsl:attribute name="classe">infobulle</xsl:attribute>
 				  	<xsl:attribute name="target">_blank</xsl:attribute>
 				  	<xsl:attribute name="href"><xsl:value-of select="snu"/></xsl:attribute>
 						<xsl:element name="img">
