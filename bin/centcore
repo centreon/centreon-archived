@@ -720,7 +720,7 @@ if ($pid ne fork()) {
 	
 		while ($stop) {  
 	
-		    if ( -f $cmdFile) {
+		    if (-e $cmdFile) {
 				if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
 				    while (<FILE>){
 						parseRequest($_);
