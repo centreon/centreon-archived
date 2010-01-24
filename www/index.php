@@ -53,11 +53,11 @@
 		}
 	}
 
-	require_once ("$classdir/centreon.class.php");
-	require_once ("$classdir/centreonSession.class.php");
-	require_once ("$classdir/centreonAuth.class.php");
-	require_once ("$classdir/centreonLog.class.php");
-	require_once ("$classdir/centreonDB.class.php");
+	require_once "$classdir/centreon.class.php";
+	require_once "$classdir/centreonSession.class.php";
+	require_once "$classdir/centreonAuth.class.php";
+	require_once "$classdir/centreonLog.class.php";
+	require_once "$classdir/centreonDB.class.php";
 	
 	/*
 	 * Get auth type
@@ -179,19 +179,6 @@
 	    } else
 	    	$connect = false;
 	}
-	
-?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<title>Centreon - IT & Network Monitoring</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2009 Open Source Matters. All rights reserved." />
-<meta name="robots" content="index, nofollow" />
-<link href="<?php echo $skin; ?>login.css" rel="stylesheet" type="text/css">
-<link rel="shortcut icon" href="./img/favicon.ico">
-</head>
-<body OnLoad="document.login.useralias.focus();">
-<?php 
 
 	/*
 	 * Check PHP version 
@@ -205,5 +192,3 @@
 		include_once("./login.php"); 
 	}
 ?>
-</body>
-</html>
