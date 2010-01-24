@@ -241,7 +241,7 @@ sub getConfig($){
     return($data);
 }
 
-sub prepardPerfdataParsed($) {
+sub perfdata2array($) {
     my $str = $_[0];
     my @line_tab;
     
@@ -283,9 +283,9 @@ sub GetPerfData() {
     # Get path of perfdata file
     my $PFDT = getPerfDataFile($con_oreon);
 
-	if (!defined($PFDT)) {
-		writeLogFile("Could not find perf data file!");
-	} 
+    if (!defined($PFDT)) {
+	writeLogFile("Could not find perf data file!");
+    } 
     if ((defined($PFDT))&& (-r $PFDT || -r $PFDT.".bckp")){
 	# Check backup perfdata file 
 	if (-r $PFDT.".bckp") {
@@ -315,7 +315,7 @@ sub GetPerfData() {
 			print DROP $_  ;
 		    }
 		    $_ =~ s/\n//g;
-		    @line_tab = prepardPerfdataParsed($_);
+		    @line_tab = perfdata2array($_);
 		    if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "")){
 			checkAndUpdate(@line_tab, $configOptions);
 			$counterData++;
@@ -397,6 +397,7 @@ sub CheckRestart(){
 }
 
 sub checkAndUpdate($$){
+# param: perfdataArray[5], config
     my $data_service;
     my $valueRecorded;
     my $config = $_[6];
@@ -405,7 +406,7 @@ sub checkAndUpdate($$){
 		CheckMySQLConnexion();
 		if ($_[1] =~ /_Module_[a-zA-Z]*/){
 		    # Get Service infos
-		    @data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
+		    @data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage_type
 		    
 		    if (defined($data_service[0]) && $data_service[0] ne 0) {
 				# perfdata index status time type counter rebuild
@@ -413,13 +414,13 @@ sub checkAndUpdate($$){
 		    }
 		} else {
 		    # Get Service infos
-		    @data_service = identify_service($_[1], $_[2]); # return index_id and storage
+		    @data_service = identify_service($_[1], $_[2]); # return index_id and storage_type
 		    
-		    # Update status 
+		    # Update status : host, service, ctime, index_id, status, RRDpath
 		    updateServiceState($line_tab[1], $line_tab[2], $line_tab[0], $data_service[0],  $line_tab[4], $config->{'RRDdatabase_status_path'});
 		    
 		    if (defined($data_service[0]) && $data_service[0] ne 0) {
-				# perfdata index status time type counter rebuild configuration
+				# perfdata, index, status, ctime, type, counter, rebuild, configuration
 				$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2], $config); 
 		    }
 		}
@@ -464,18 +465,16 @@ sub getModulesInterval($$){
     return $interval;
 }
 
-# Host name, sercvice desc, ctime, index, status, $rrdPath
+# Host name, service desc, ctime, index, status, $rrdPath
 sub updateServiceState($$$$$$) { 
     my $interval = 4000;
     my $nb_value;
     my $interval_length;
-    my $rrdtoolDBPath = $_[5];
     
-    # Set Index
+    my $ctime = $_[2];
     my $index = $_[3];
-
-    # Set Hard State
     my $status = $_[4];
+    my $rrdtoolDBPath = $_[5];
 
     if (defined($status)){
 	if ($status =~ /OK/){
@@ -498,9 +497,9 @@ sub updateServiceState($$$$$$) {
     }
 
     # call function to check if DB exist and else create it
-    if (defined($index) && defined($status) && $_[2]){
+    if (defined($index) && defined($status) && $ctime){
 	if (-e $rrdtoolDBPath."/".$index.".rrd"){
-	    updateRRDDatabase($rrdtoolDBPath, $index, "status", $_[2], $status);
+	    updateRRDDatabase($rrdtoolDBPath, $index, "status", $ctime, $status);
 	} else {
 	    my $begin = time() - 200000;
 	    $interval = getServiceCheckIntervalWithSVCid($index) * getIntervalLenght($con_oreon);
@@ -512,7 +511,7 @@ sub updateServiceState($$$$$$) {
 	    
 	    createRRDDatabase($rrdtoolDBPath, $index, $begin, $interval, "status", $nb_value);
 	    tuneRRDDatabase($rrdtoolDBPath, $index, "status", $interval_hb);
-	    updateRRDDatabase($rrdtoolDBPath, $index, "status", $_[2], $status);
+	    updateRRDDatabase($rrdtoolDBPath, $index, "status", $ctime, $status);
 	    
 	    undef($begin);
 	}

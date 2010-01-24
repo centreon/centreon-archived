@@ -104,7 +104,7 @@ sub updateMetricInformation($$$$$){
 }
 
 #
-# perfdata index status time type counter rebuild
+# perfdata, index, status, ctime, storage_type, counter, rebuild
 #
 sub identify_metric($$$$$$$$){ 
     my (@data, $begin, $just_insert, $generalcounter);
@@ -176,15 +176,16 @@ sub identify_metric($$$$$$$$){
 
 	    updateMetricInformation($metric->{'metric_id'}, $data[3], $data[4], $data[5], $data[6]);
 
-	    # Check Storage Type
-	    # O -> BD Mysql & 1 -> RRDTool
 	    $begin = $_[3] - 200;
 
-	    if (defined($data[1])) {
-		if (defined($_[4]) && $_[4] eq 0 && $_[6] eq 0){
+	    if (defined($data[1]) && defined($_[4])) {
+		# no rebuild running
+		if ($_[6] eq 0){
 		    updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
-		} elsif (defined($_[4]) && $_[4] eq 2) { 
-		    updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
+		} 
+		# Check Storage Type
+		# $_[4]: O -> RRDTool only, 2 -> RRDTool + MySQL
+		if ($_[4] eq 2) { 
 		    updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 		}
 	    }
@@ -257,18 +258,18 @@ sub identify_hidden_metric($$$$$$$$){ # perfdata index status time type counter 
 		undef($sth1);
 	    }
 
-	    # Check Storage Type
-	    # O -> BD Mysql & 1 -> RRDTool
 	    $begin = $_[3] - 200;
-	    if (defined($data[1])){
-		if (defined($_[4]) && $_[4] eq 0 && $_[6] eq 0){
+	    if (defined($data[1]) && defined($_[4])){
+		if ($_[6] eq 0){
+		    # no rebuild running
 		    updateRRDDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
-		    $generalcounter++;
-		} elsif (defined($_[4]) && $_[4] eq 2) { 
-		    updateRRDDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
-		    updateMysqlDBforHiddenSVC($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});	
-		    $generalcounter++;
 		}
+		# Storage Type
+		# O -> RRDTool only,  2 -> RRDTool + MySQL
+		if ($_[4] eq 2) { 
+		    updateMysqlDBforHiddenSVC($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});	
+		}
+		$generalcounter++;
 	    }
 	    $just_insert = 0;
 	}
