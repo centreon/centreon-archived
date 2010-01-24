@@ -93,7 +93,7 @@ input[type="submit"], input[type="button"], input[type="reset"]{
 
 .inputclassic, .inputclassicPass, #logintab2 	{border:1px solid gray;}
 #logintab2 										{border-top: 2px solid gray;border-bottom: 2px solid gray;}
-.inputclassic, .inputclassicPass 				{width:150;}
+.inputclassic, .inputclassicPass 				{width:150px;}
 .inputclassic									{padding:2px 2px 3px 18px;background: #FFFFFF url("../../img/icones/16x16/user1.gif") no-repeat scroll 1px 1px;}
 .inputclassicPass								{padding:2px 2px 3px 18px;background: #FFFFFF url("../../img/icones/16x16/key1.gif") no-repeat scroll 1px 1px;}
 .msg, body 										{color:#FFFFFF;}

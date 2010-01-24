@@ -56,7 +56,7 @@ body,input,option,select,tab,div,td,a,textarea {
 a 		{text-decoration:none;}
 a:hover {text-decoration:underline;}
 
-img,hr {border:0;padding:}
+img,hr {border:0;padding:0}
 
 table {border-collapse:collapse;empty-cells:show;border-spacing:0;}
 
@@ -73,7 +73,7 @@ option 		{padding-left:1px;padding-right:1px;}
 
 #logli,#logOut,#date {color:#525252;font-weight:700;position:absolute;} 
 
-#logli 		{right:10px;text-align:right;top:50px;width:450px;}
+#logli 		{right:10px;text-align:right;top:50px;width:350px;}
 #date 		{font-size:10px;right:20px;top:131px;}
 #logOut 	{right:10px;top:131px;}
 
@@ -86,7 +86,7 @@ option 		{padding-left:1px;padding-right:1px;}
 #linkBar 		{font-weight:700;position:absolute;right:0;text-align:right;top:110px;width:150px;}
 #linkBar img 	{margin-left:4px;}
 
-.separator 		{font-color:#000;font-style:italic;font-weight:700;}
+.separator 		{color:#000000;font-style:italic;font-weight:700;}
 .list_separator {text-align:center;background-color:#99CC55;}
 
 /* Info Bulle */
@@ -115,7 +115,7 @@ a.infobulle:hover 	{z-index:25;}
 /* Menu 3 */
 .Tmenu3 	{background-color:#fff;border-collapse:collapse;}
 .Tmenu3 .top .left,.Tmenu3 .top .right,.Tmenu3 .bottom .left,.Tmenu3 .bottom .right {height:9px;width:10px;}
-div.menuLeft 	{margin:0px;padding:3px;background-color:#FFFFFF;border:1px #CDCDCD solid;white-space:nowrap;margin-bottom:6px;margin-botom:50px;}
+div.menuLeft 	{margin:0px;padding:3px;background-color:#FFFFFF;border:1px #CDCDCD solid;white-space:nowrap;margin-bottom:6px;margin-bottom:50px;}
 #menu_3 a:hover {color:#E8AB5C;}
 #menu_3 li 		{list-style-type:none;padding-left:1px;}
 #menu3_bgcolor 	{background:#FFF;}
@@ -146,12 +146,12 @@ div.pagination 		{margin-left:40%;}
 	position:absolute;
 	width:310px;
 	text-align:center;
-	-moz-border-radius:4px;
+	border-radius:4px;
 }
 
 
 div.uptodate,div.updateSecu,div.update,div.update_readme,div.update_output,div.graph_footer,div.left_menu {margin:3px;padding:3px;}
-div.uptodate,div.updateSecu,div.update,div.update_readme,div.graph_footer,div.left_menu,div.menuLeft,div.updateError{-moz-border-radius:4px;}
+div.uptodate,div.updateSecu,div.update,div.update_readme,div.graph_footer,div.left_menu,div.menuLeft,div.updateError{border-radius:4px;}
 
 div.uptodate 	{background-color:#DFF9E0;border:1px #ADC7A1 solid;}
 div.updateSecu 	{background-color:#F9EDED;border:1px #E3858C solid;}
@@ -165,8 +165,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 #footerline1 		{height:2px;width:100%;}
 #footerline2 		{height:6px;width:100%;}
 
-/ Specifique Appli */
-
+/* Specifique Appli */
 /*  Arbo ACL */
 .arbo_a 	{margin-left:30px;padding-top:0;}
 .arbo_a li 	{list-style:none;margin-left:0;padding-left:0;padding-top:1px;}
@@ -186,9 +185,9 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .search_input_host, .search_input_active_host, .search_input_service, .search_input_active_service, .search_input_active, .search_input_found {height:14px;}
 
 /* Log Options */
-.ajaxOption             {margin:0px 0px -5px 0px;border-collapse:separate;empty-cells:show;background-image:url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x; color:#666;border: 2px #cccccc solid;-moz-border-radius:2px;}
+.ajaxOption             {margin:0px 0px -5px 0px;border-collapse:separate;empty-cells:show;background-image:url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x; color:#666;border: 2px #cccccc solid;border-radius:2px;}
 .ajaxOption td          {padding:2px 4px 2px 4px;}
-.ajaxOption table td    {background-img:url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x; color:#666;}
+.ajaxOption table td    {background-image:url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x; color:#666;}
 .ajaxOption input       {margin-right:5px;}
 
 
@@ -203,7 +202,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .tacPB 						{background-color:#2AD1D4;}
 #hostStats 										{margin-top:10px;}
 #hostStats,#serviceStats,#unhandledproblems 	{border:1px #CCC solid;margin-bottom:20px;}
-.tacticalDiv 									{border:1px #CCC solid;}
+.tacticakDiv 									{border:1px #CCC solid;}
 
 .FormHeader .td {padding-left:2px;}
 
@@ -295,7 +294,7 @@ a.infobulle:hover span {
 background-color:#808080;
 border:1px gray;
 display:block;
-font-weight:none;
+font-weight:normal;
 left:2em;
 padding:1px;
 position:absolute;
