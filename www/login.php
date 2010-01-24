@@ -56,13 +56,13 @@
 		print "<div style='padding-top: 60px;'><span class='msg'>$msg</span></div>";
 
 ?><div id='LoginInvit'>
-	<table id="logintab1">
-		<tr>
-			<td class="LoginInvitLogo" colspan="2"><img src="img/centreon.gif" alt="Centreon Logo" title="Centreon Logo" style="" /></td>
-		</tr>
-		<tr>
-			<td class="LoginInvitVersion"><br />
-			<?php
+       <table id="logintab1">
+	<tr>
+		<td class="LoginInvitLogo" colspan="2"><img src="img/centreon.gif" alt="Centreon Logo" title="Centreon Logo" style="" /></td>
+	</tr>
+	<tr>
+		<td class="LoginInvitVersion"><br />
+		<?php
 				/*
 				 * Print Centreon Version
 				 */
@@ -76,27 +76,25 @@
 		<tr>
 			<td colspan="2">
 				<table id="logintab2">
-					<tr>
-						<td><label for="useralias">Login:</label></td>
+				       <tr><td style="grayLine"><td></tr>
+				       <tr>
+						<td align='right'><label for="useralias">Login:</label></td>
 						<td><input type="text" name="useralias" value="" class="inputclassic" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
 					</tr>
 					<tr>
-						<td><label for="password">Password:</label></td>
+						<td align='right'><label for="password">Password:</label></td>
 						<td><input type="password" name="password" value="" class="inputclassicPass" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
 					</tr>
 					<tr>
-						<td  colspan="2" id="sublogin">
-							<input type="Submit" name="submit" value="Login" <?php if ($file_install_acces) print "disabled"; ?> >
+						<td  colspan="2" align='center'>
+							<input type="Submit" name="submit" value="Connection >>" <?php if ($file_install_acces) print "disabled"; ?> >
 						</td>
 					</tr>
 				</table>
 			</td>
 		</tr>
 		<tr>
-			<td id="LoginInvitcpy" colspan="2">
-				<br />
-				&copy; 2005-2009 <a href="mailto:infos@centreon.com">Centreon</a>
-			</td>
+			<td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2010 <a href="mailto:infos@centreon.com">Centreon</a></td>
 		</tr>
 	</table>
 </div>
