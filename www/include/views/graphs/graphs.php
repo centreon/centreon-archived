@@ -149,11 +149,12 @@
 						"15552000"	=> _("Last 6 Months"),
 						"31104000"	=> _("Last Year"));
 	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
-	
 	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "onclick"=>"displayDatePicker('StartDate', this)", "size"=>10));
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5));
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "onclick"=>"displayDatePicker('EndDate', this)", "size"=>10));
 	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "onclick"=>"displayTimePicker('EndTime', this)", "size"=>5));
+	$form->addElement('button', 'prev', '<<', array("onclick"=>"prevPeriod()"));
+	$form->addElement('button', 'next', '>>', array("onclick"=>"nextPeriod()"));
 	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));	
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -255,8 +256,86 @@
 		graph_4_host(openid, multi);
 	}
 
+function form2ctime(dpart, tpart) {
+        // dpart : MM/DD/YYYY
+        // tpart : HH:mm
+        var dparts = dpart.split("/");
+        var tparts = tpart.split(":");
+        return new Date(dparts[2], dparts[0]-1, dparts[1], tparts[0], tparts[1], 0).getTime();
+}
+
+function ctime2date(ctime) {
+        var date = new Date(ctime);
+        return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
+}
+
+function ctime2time(ctime) {
+	var _zero_hour = '';
+	var _zero_min = '';
+        var date = new Date(ctime);
+	if (date.getHours() <= 9) { _zero_hour = '0'; }
+	if (date.getMinutes() <= 9) { _zero_min = '0'; }
+        return _zero_hour + date.getHours() + ":" + _zero_min + date.getMinutes();
+}
+
+function prevPeriod() {
+	if (!document.FormPeriod) {
+	    return;
+	}
+        var start;
+        var end;
+        var period;
+        if (document.FormPeriod.period.value) {
+                var now = new Date().getTime();
+                period = document.FormPeriod.period.value * 1000;
+                start = now - period;
+        } else {
+                end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
+                start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
+                period = end - start;
+        }
+
+        end = start;
+        start = start - period;
+
+	document.FormPeriod.period.value = "";
+        document.FormPeriod.StartDate.value = ctime2date(start);
+        document.FormPeriod.StartTime.value = ctime2time(start);
+        document.FormPeriod.EndDate.value = ctime2date(end);
+        document.FormPeriod.EndTime.value = ctime2time(end);
+        apply_period();
+}
+
+function nextPeriod() {
+	if (!document.FormPeriod) {
+	    return;
+	}
+        var start;
+        var end;
+        var period;
+        if (document.FormPeriod.period.value) {
+                var now = new Date().getTime();
+                period = document.FormPeriod.period.value * 1000;
+                end = now + period;
+        } else {
+                end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
+                start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
+                period = end - start;
+        }
+
+        start = end;
+        end = end + period;
+
+	document.FormPeriod.period.value = "";
+        document.FormPeriod.StartDate.value = ctime2date(start);
+        document.FormPeriod.StartTime.value = ctime2time(start);
+        document.FormPeriod.EndDate.value = ctime2date(end);
+        document.FormPeriod.EndTime.value = ctime2time(end);
+        apply_period();
+}
+
 	// Period
-	var currentTime = new Date();
+	var currentTime = new Date().getTime();
 	var period ='';
 
 	var _zero_hour = '';
@@ -265,43 +344,15 @@
 	var EndDate = '';
 	var StartTime = '';
 	var EndTime = '';
+	var ms_per_hour = 60 * 60 * 1000;
 
 	if (document.FormPeriod.period.value != "")	{
 		period = document.FormPeriod.period.value;
 	} else {
-		if (currentTime.getMinutes() <= 9) {
-			_zero_min = '0';
-		}
-
-		if (currentTime.getHours() >= 12){
-			StartDate 	= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
-			EndDate 	= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
-
-			if ((currentTime.getHours()- 12) <= 9){
-				_zero_hour = '0';					
-			} else{
-				_zero_hour = '';											
-			}
-			
-			StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
-			if(currentTime.getHours() <= 9){
-				_zero_hour = '0';					
-			} else{
-				_zero_hour = '';											
-			}	
-			EndTime   = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-		} else {
-			StartDate = currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
-			EndDate   = currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
-			
-			StartTime =  (24 -(12 - currentTime.getHours()))+ ":00";
-			if (currentTime.getHours() <= 9){
-				_zero_hour = '0';					
-			} else {
-				_zero_hour = '';											
-			}
-			EndTime = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-		}
+		EndDate   = ctime2date(currentTime);
+		EndTime   = ctime2time(currentTime);
+		StartDate = ctime2date(currentTime-12*ms_per_hour);
+		StartTime = ctime2time(currentTime-12*ms_per_hour);
 	}
 
 	if (document.FormPeriod) {
