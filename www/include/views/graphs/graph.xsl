@@ -303,7 +303,7 @@
 					</td>
 				</tr>
 				<tr>
-			<td class='ListColLeft' style="text-align:left;">
+			<td class='ListColRight' style="text-align:right;">
 				<xsl:element name='input'>
 					<xsl:attribute name="onClick">prevPeriod();</xsl:attribute>
 					<xsl:attribute name="type">button</xsl:attribute>
