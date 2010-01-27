@@ -7,14 +7,14 @@
 CREATE TABLE IF NOT EXISTS `centreon_acl` (
   `id` int(11) NOT NULL auto_increment,
   `host_id` int(11) default NULL,
-  `host_name` varchar(255) default NULL,
+  `host_name` char(64) default NULL,
   `service_id` int(11) default NULL,
-  `service_description` varchar(255) default NULL,
+  `service_description` char(128) default NULL,
   `group_id` int(11) default NULL,
-  PRIMARY KEY  (`id`),
-  KEY `host_name` (`host_name`),
-  KEY `service_description` (`service_description`),
-  KEY `group_id` (`group_id`)
+  PRIMARY KEY (`id`),
+  KEY `tripleIndex` (`host_name`,`service_description`,`group_id`),
+  KEY `host_name_2` (`host_name`),
+  KEY `host_id` (`host_id`,`service_id`,`group_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
