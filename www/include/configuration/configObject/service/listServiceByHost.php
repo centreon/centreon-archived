@@ -39,6 +39,19 @@
 	if (!isset($oreon))
 		exit();
 	
+	/*
+	 * Get Extended informations
+	 */
+	$ehiCache = array();
+	$DBRESULT =& $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
+	while ($ehi =& $DBRESULT->fetchRow()) {
+		$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
+	}
+	$DBRESULT->free();
+	
+	require_once "./class/centreonHost.class.php";
+	$host_method = new CentreonHost($pearDB);
+	
 	if (isset($_POST["searchH"])) {
 		$searchH = $_POST["searchH"];
 		$oreon->svc_host_search = $searchH;
@@ -264,9 +277,18 @@
 			$retry_units = "sec";
 		}
 		
+		if ((isset($ehiCache[$service["host_id"]]) && $ehiCache[$service["host_id"]])) {
+			$host_icone = "./img/media/" . getImageFilePath($ehiCache[$service["host_id"]]);
+		} else if ($icone = $host_method->replaceMacroInString($service["host_id"], getMyHostExtendedInfoImage($service["host_id"], "ehi_icon_image", 1))) {
+			$host_icone = "./img/media/" . $icone;
+		} else {
+			$host_icone = "./img/icones/16x16/server_network.gif";
+		}
+		
 		$elemArr[$i] = array(	"MenuClass"			=> "list_".($service["nbr"]>1 ? "three" : $style), 
 								"RowMenu_select"	=> $selectedElements->toHtml(),
 								"RowMenu_name"		=> $service["host_name"],
+								"RowMenu_icone"		=> $host_icone,
 								"RowMenu_link"		=> "?p=60101&o=c&host_id=".$service['host_id'],
 								"RowMenu_link2"		=> "?p=".$p."&o=c&service_id=".$service['service_id'],
 								"RowMenu_parent"	=> $tplStr,
