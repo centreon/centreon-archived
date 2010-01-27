@@ -189,7 +189,7 @@
 	<div>
 		<table class="ListTable">
 			<tr class="list_one">
-				<td class='ListColLeft' valign="top" align='center'><xsl:value-of select="name"/></td>	
+				<td class='ListColLeft' valign="top" align='center' colspan="3"><xsl:value-of select="name"/></td>	
 				<td style="text-align:right;width:42px;">
 					<xsl:element name="a">
 						<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
@@ -202,6 +202,15 @@
 				</td>
 			</tr>
 			<tr>
+			<td class='ListColRight' style="text-align:right;">
+				<xsl:element name='input'>
+					<xsl:attribute name="onClick">prevPeriod();</xsl:attribute>
+					<xsl:attribute name="type">button</xsl:attribute>
+					<xsl:attribute name="name">prev</xsl:attribute>
+					<xsl:attribute name="value">&lt;&lt;</xsl:attribute>
+					<xsl:attribute name="style">height:100px;</xsl:attribute>
+				</xsl:element>
+			</td>
 	    		<td class='ListColCenter' valign="top" align='center'>
 			    	<div id="imggraph">
 						<xsl:if test="//split = 0">
@@ -235,6 +244,15 @@
 					<br/>
 					</div>
 				</td>
+			<td class='ListColLeft' style="text-align:left;">
+				<xsl:element name='input'>
+					<xsl:attribute name="onClick">nextPeriod();</xsl:attribute>
+					<xsl:attribute name="type">button</xsl:attribute>
+					<xsl:attribute name="name">next</xsl:attribute>
+					<xsl:attribute name="value">&gt;&gt;</xsl:attribute>
+					<xsl:attribute name="style">height:100px;</xsl:attribute>
+				</xsl:element>
+			</td>
 			</tr>
 	    </table>
 	</div>
@@ -274,7 +292,7 @@
 			<table class="ListTable">
 			<xsl:for-each select="//multi_svc">
 		        <tr class="list_one">
-					<td style="text-align:right;width:42px;">
+					<td style="text-align:right;width:42px;" colspan="3">
 						<xsl:element name="a">
 							<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 							<img src="./img/icones/16x16/save.gif" style="margin-right:5px;"/>
@@ -285,6 +303,15 @@
 					</td>
 				</tr>
 				<tr>
+			<td class='ListColLeft' style="text-align:left;">
+				<xsl:element name='input'>
+					<xsl:attribute name="onClick">prevPeriod();</xsl:attribute>
+					<xsl:attribute name="type">button</xsl:attribute>
+					<xsl:attribute name="name">prev</xsl:attribute>
+					<xsl:attribute name="value">&lt;&lt;</xsl:attribute>
+					<xsl:attribute name="style">height:100px;</xsl:attribute>
+				</xsl:element>
+			</td>
 	    			<td class='ListColCenter' valign="top" align='center'>
 			    	<div id="imggraph">
 						<xsl:if test="split = 0">
@@ -319,12 +346,22 @@
 							</xsl:for-each>
 						</xsl:if>
 						<xsl:if test="status = 1">
+							<br/>
 							<xsl:element name="img">
 							  	<xsl:attribute name="src">./include/views/graphs/graphStatus/displayServiceStatus.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 							</xsl:element>
 						</xsl:if>
 					</div> 
 				</td>
+			<td class='ListColLeft' style="text-align:left;">
+				<xsl:element name='input'>
+					<xsl:attribute name="onClick">nextPeriod();</xsl:attribute>
+					<xsl:attribute name="type">button</xsl:attribute>
+					<xsl:attribute name="name">next</xsl:attribute>
+					<xsl:attribute name="value">&gt;&gt;</xsl:attribute>
+					<xsl:attribute name="style">height:100px;</xsl:attribute>
+				</xsl:element>
+			</td>
 			</tr>
 		</xsl:for-each>
 	</table>

@@ -153,8 +153,6 @@
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5));
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "onclick"=>"displayDatePicker('EndDate', this)", "size"=>10));
 	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "onclick"=>"displayTimePicker('EndTime', this)", "size"=>5));
-	$form->addElement('button', 'prev', '<<', array("onclick"=>"prevPeriod()"));
-	$form->addElement('button', 'next', '>>', array("onclick"=>"nextPeriod()"));
 	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));	
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
