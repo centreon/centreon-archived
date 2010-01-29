@@ -68,35 +68,31 @@
  	/*
  	 *  Writes command
  	 */
- 	public function write() {
- 		global $oreon;
- 		
- 		$varlib = "@CENTREON_VARLIB@";
- 		if ($varlib == "")
- 			$varlib = "/var/lib/centreon";
- 		
- 		$str_local = "";
- 		$str_remote = "";
- 		$return_local = 0;
- 		$return_remote = 0;
- 		foreach ($this->cmd_tab as $key => $cmd) {
- 			if (isset($this->localhost_tab[$this->poller_tab[$key]])) {
-				$str_local .= "'[" . time() . "] " . $cmd . "\n'";
- 			}	
-			else {
- 				$str_remote .= "'EXTERNALCMD:".$this->poller_tab[$key].":[" . time() . "] " . $cmd . "\n'";
-			}
- 		}
- 		if ($str_local != "") {
- 			$str_local = "echo " . $str_local . " >> " . $oreon->Nagioscfg["command_file"];			
- 			passthru($str_local, $return_local);
- 		}
- 		if ($str_remote != "") {
- 			$str_remote = "echo " . $str_remote . " >> $varlib/centcore.cmd";
- 			passthru($str_remote, $return_remote);	
- 		}
- 		return ($return_local + $return_remote);
- 	}
+ 	function writeCommand($cmd, $poller, $centreon) {
+		global $key, $pearDB;
+		
+		$str = NULL;
+		
+		/*
+		 * Destination is centcore pipe path
+		 */
+		$destination = "@CENTREON_VARLIB@/centcore.cmd";
+		if ($destination == "/centcore.cmd")
+			$destination = "/var/lib/centreon/centcore.cmd";
+		
+		$cmd = str_replace("`", "&#96;", $cmd);
+		$cmd = str_replace("'", "&#39;", $cmd);
+		
+		$cmd = str_replace("\n", "<br>", $cmd);
+		$informations = split(";", $key);
+		if ($poller && isPollerLocalhost($pearDB, $poller))
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $centreon->Nagioscfg["command_file"];
+		else if (isHostLocalhost($pearDB, $informations[0]))
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $centreon->Nagioscfg["command_file"];
+		else
+			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . $destination;
+		return passthru($str);
+	}
  	
  	/*
  	 *  set basic process commands
