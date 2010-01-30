@@ -425,12 +425,14 @@
 				$buffer->writeElement("start", $start);
 				$buffer->writeElement("end", time());				
 		
-				if ($split)
+				if ($split) {
+					natsort($metrics);
 					foreach ($metrics as $metric_id => $metric)	{
 						$buffer->startElement("metric");
 						$buffer->writeElement("metric_id", $metric_id);
 						$buffer->endElement();						
 					}
+				}
 				$buffer->endElement();				
 			}
 			$buffer->endElement();			

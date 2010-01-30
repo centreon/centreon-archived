@@ -294,6 +294,7 @@
 
 		# Create Legende
 		$cpt = 1;
+		natsort($metrics);
 		foreach ($metrics as $key => $tm){
 			if ($metrics[$key]["ds_filled"])
 				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"].$tm["ds_transparency"]." ";

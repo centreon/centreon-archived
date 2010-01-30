@@ -247,6 +247,7 @@ class CentreonGraph	{
 	
 	public function createLegend() {
 		$cpt = 0;
+		natsort($this->metrics);
 		foreach ($this->metrics as $key => $tm) {
 			if ($this->metrics[$key]["ds_filled"])
 				$this->commandLine .= " AREA:v".$cpt.$tm["ds_color_area"].$tm["ds_transparency"]." ";
