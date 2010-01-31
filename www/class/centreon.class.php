@@ -43,7 +43,6 @@ require_once("centreonExternalCommand.class.php");
 
 class Centreon	{
 		
-	var $user;
 	var $Nagioscfg;
 	var $optGen;
 	var $redirectTo;
@@ -64,7 +63,8 @@ class Centreon	{
 	var $hostgroup;
 	var $host_id;
   	
-  	var $CentreonGMT;
+	var $user;
+	var $CentreonGMT;
 	var $CentreonLogAction;
 	var $externalCMD;
   
