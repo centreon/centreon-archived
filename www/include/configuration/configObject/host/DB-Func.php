@@ -1642,7 +1642,7 @@
 		if (!$host_id) 
 			return;
 		
-		# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies, osl
+		# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies
 		# Get initial Hostgroup list to make a diff after deletion
 		$rq = "SELECT hostgroup_hg_id FROM hostgroup_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
@@ -1673,7 +1673,7 @@
 			$DBRESULT =& $pearDB->query($rq);
 			$hgsNEW[$ret[$i]] = $ret[$i];
 		}
-		# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies, osl
+		# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies
 		if (count($hgSVS))
 			foreach ($hgsOLD as $hg)
 				if (!isset($hgsNEW[$hg]))	{
@@ -1689,10 +1689,6 @@
 							$DBRESULT =& $pearDB->query($rq);
 							$rq = "DELETE FROM dependency_serviceParent_relation ";
 							$rq .= "WHERE host_host_id = '".$host_id."' AND service_service_id = '".$sv."'";
-							$DBRESULT =& $pearDB->query($rq);
-							# Delete in OSL
-							$rq = "DELETE FROM osl_indicator ";
-							$rq .= "WHERE host_id = '".$host_id."' AND service_id = '".$sv."'";
 							$DBRESULT =& $pearDB->query($rq);
 						}
 				}

@@ -221,9 +221,7 @@
 		$hgEnb = array();
 		$svEnb = array();
 		$sgEnb = array();
-		$oslEnb = array();
-		$omsEnb = array();
-		$gbEnb = array(0 => &$cctEnb, 1 => &$cgEnb, 2 => &$hostEnb, 3 => &$hgEnb, 4 => &$svEnb, 5 => &$sgEnb, 6 => &$oslEnb, 7 => &$omsEnb);
+		$gbEnb = array(0 => &$cctEnb, 1 => &$cgEnb, 2 => &$hostEnb, 3 => &$hgEnb, 4 => &$svEnb, 5 => &$sgEnb);
 		
 		/*
 		 * Contact
