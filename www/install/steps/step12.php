@@ -55,7 +55,7 @@ aff_header("Centreon Setup Wizard", "Post-Installation", 12);	?>
 		<li> Centreon Wiki : <a target="_blank" href="http://doc.centreon.com">doc.centreon.com</a></li>
 	</ul>
 	<br /><p align="justify">
-	If your company needs professional consulting and services for Centreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a  target="_blank" href="http://www.merethis.com">Centreon support center</a></b>.
+	If your company needs professional consulting and services for Centreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a  target="_blank" href="http://support.merethis.com">Centreon support center</a></b>.
 	</p>
 	</td>
   </tr>

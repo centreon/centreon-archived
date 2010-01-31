@@ -368,13 +368,13 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 			break;
 		if (!$tab && !$nb){
 			$requete = "INSERT INTO `contact` (`contact_name` , `contact_alias` , `contact_passwd` , `contact_lang` , `contact_email` , `contact_oreon` , `contact_admin` , `contact_activate` ) VALUES ";
-			$requete .= "('".htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES). " " .htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)."', '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."', '". md5($_SESSION["oreonpasswd"]) ."', 'en_US', '".$_SESSION['oreonemail']."', '1', '1', '1');";
+			$requete .= "('".htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES). " " .htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)."', '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."', '". md5($_SESSION["oreonpasswd"]) ."', 'en_US', '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES)."', '1', '1', '1');";
 			if ($DEBUG) 
 				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
 			htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES);
 		} else {
-			$requete = "UPDATE `contact` SET `contact_name` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES)." ". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)  ."',`contact_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `contact_email` = 'nagios@localhost', `contact_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."' LIMIT 1 ;";
+			$requete = "UPDATE `contact` SET `contact_name` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES)." ". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)  ."',`contact_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `contact_email` = '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES)."', `contact_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."' LIMIT 1 ;";
 			if ($DEBUG) 
 				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
@@ -424,6 +424,22 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
 		$requete = "UPDATE `cfg_ndo2db` SET `db_name` = '".$_SESSION["nameStatusDB"]."', `db_user` = '".$_SESSION["nameOreonDB"]."', `db_pass` = '".$_SESSION["pwdOreonDB"]."', `db_host` = '".$_SESSION["dbLocation"]."';";
+		if ($DEBUG) 
+			print $requete . "<br />";
+		$result = @mysql_query($requete, $res['0']);
+		if ($res[1] == '') {
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		} else {
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
+		    $return_false = 1;
+		}
+	}
+	if (!$return_false){
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set RRDTool properties</b></td>';
+		$mysql_msg = '';
+		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
+		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
+		$requete = "UPDATE `options` SET `value` = '".htmlentities($_SESSION["rrdtool_dir"], ENT_QUOTES)."' WHERE `key` = 'rrdtool_path_bin'";
 		if ($DEBUG) 
 			print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0']);

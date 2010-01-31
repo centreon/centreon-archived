@@ -112,7 +112,7 @@ aff_header("Centreon Setup Wizard", "Centreon Configuration File", 10);	?>
 			$file[29] = "?>";
 			
 			if ($fd = fopen($conf_centreon["centreon_etc"]."centreon.conf.php", "w"))	{
-				for ($i = 0; $i <= 29; $i++)
+				for ($i = 0; $file[$i]; $i++)
 					fwrite ($fd, $file[$i]);
 				fclose ($fd);
 				echo '<b><span class="go">OK</b>';
@@ -131,14 +131,14 @@ aff_header("Centreon Setup Wizard", "Centreon Configuration File", 10);	?>
 		<td><b>Generate Centstorage configuration file</b></td>
 		<td align="right"><?php
 			$file_pm = array();
-			$file_pm[0] = "\$mysql_host = \"". $_SESSION["dbLocation"] ."\";\n";
-			$file_pm[1] = "\$mysql_user = \"". $_SESSION["nameOreonDB"] . "\";\n";
-			$file_pm[2] = "\$mysql_passwd = \"". $_SESSION["pwdOreonDB"] . "\";\n";
-			$file_pm[3] = "\$mysql_database_oreon = \"". $_SESSION["nameOreonDB"] . "\";\n";
-			$file_pm[4] = "\$mysql_database_ods = \"". $_SESSION["nameOdsDB"] . "\";\n";
-			$file_pm[5] = "1;\n";
+			$file_pm[] = "\$mysql_host = \"". $_SESSION["dbLocation"] ."\";\n";
+			$file_pm[] = "\$mysql_user = \"". $_SESSION["nameOreonDB"] . "\";\n";
+			$file_pm[] = "\$mysql_passwd = \"". $_SESSION["pwdOreonDB"] . "\";\n";
+			$file_pm[] = "\$mysql_database_oreon = \"". $_SESSION["nameOreonDB"] . "\";\n";
+			$file_pm[] = "\$mysql_database_ods = \"". $_SESSION["nameOdsDB"] . "\";\n";
+			$file_pm[] = "1;\n";
 			if ($fd = fopen($conf_centreon["centreon_etc"]."/conf.pm", "w"))	{
-				for ($i = 0; $i <= 5; $i++)
+				for ($i = 0; $file_pm[$i]; $i++)
 					fwrite ($fd, $file_pm[$i]);
 				fclose ($fd);
 				echo '<b><span class="go">OK</b>';
