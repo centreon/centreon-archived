@@ -487,13 +487,13 @@ sub getModulesInterval($$){
 	if (!$sth_interval->execute) {
 	    writeLogFile("Error when getting metrics interval for BAM : " . $sth_interval->errstr . "");
 	}
-	my $osl_conf = $sth_interval->fetchrow_hashref();
-	if (defined($osl_conf->{'normal_check_interval'}) && $osl_conf->{'normal_check_interval'}){
-	    $interval = $osl_conf->{'normal_check_interval'} * getIntervalLenght($con_oreon);
+	my $bamConf = $sth_interval->fetchrow_hashref();
+	if (defined($bamConf->{'normal_check_interval'}) && $bamConf->{'normal_check_interval'}){
+	    $interval = $bamConf->{'normal_check_interval'} * getIntervalLenght($con_oreon);
 	} else {
 	    $interval = 2 * getIntervalLenght($con_oreon);
 	}
-	undef($osl_conf);
+	undef($bamConf);
 	undef($sth_interval);
     } else {
 	$interval = 90;
