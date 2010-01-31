@@ -48,7 +48,7 @@ use vars qw($debug $LOG %status $generalcounter $stop $method);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
 use vars qw($con $ssh $scp $rsync $rsyncWT $echo $sudo $installedPath $timeout);
 
-if (POSIX::getuid() == 0 ) { 
+if (POSIX::getuid() == 0) { 
     print  STDERR "You must not execute centcore with root user \n"; exit 1;
 }
 
@@ -491,7 +491,7 @@ sub sendConfigFile($){
     
     # Check Port configuration
     if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'}) {
-	$port = $server_info->{'ssh_port'};
+		$port = $server_info->{'ssh_port'};
     }
 
     my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/*";
@@ -530,18 +530,18 @@ sub initNagios($$){
     }
     
     if (defined($conf->{'ns_ip_address'}) && $conf->{'ns_ip_address'}) {
-	# Launch command
-	$cmd = "$ssh -p $port ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." ".$options."\n";
-	$stdout = `$cmd`;
+		# Launch command
+		$cmd = "$ssh -p $port ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." ".$options."\n";
+		$stdout = `$cmd`;
     } else {
-	writeLogFile("Cannot $options Nagios for poller $id");
+		writeLogFile("Cannot $options Nagios for poller $id");
     }
     
     # Logs Actions
     writeLogFile("Init Script : '$sudo ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ns_ip_address'}." ($id)");
     my $line;
     foreach $line (split(/\n/, $stdout)){
-	writeLogFile("NAGIOS : ".$line);
+		writeLogFile("NAGIOS : ".$line);
     }
 
     # Free
@@ -567,11 +567,11 @@ sub syncTraps($) {
     }
     
     if ($id == 0) {
-	`$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
-	my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
-	if ($ls > 1) {
-	    `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
-	}
+		`$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+		my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
+		if ($ls > 1) {
+		    `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+		}
     }
 }
 
@@ -583,7 +583,7 @@ sub testConfig($) {
     my $data = getServerConfig($id);
     
     if (defined($data->{'ssh_port'}) && $data->{'ssh_port'}) {
-	$port = $data->{'ssh_port'};
+		$port = $data->{'ssh_port'};
     }
     
     my $distantconnexion = $data->{'ns_ip_address'};
@@ -607,46 +607,46 @@ sub syncArchives($) {
     my $ns_server = getServerConfig($id);
     
     if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'}) {
-	$port = $ns_server->{'ssh_port'};
+		$port = $ns_server->{'ssh_port'};
     }
     
     if ($id != 0) {
-	# Sync Archive for one poller
-	if (! -d "$VARLIB/log/".$ns_server->{'id'}."/archives/") {
-	    if (! -d "$VARLIB/log/".$ns_server->{'id'}) {
-		mkdir "$VARLIB/log/".$ns_server->{'id'};
-	    }
-	    if (! -d "$VARLIB/log/".$ns_server->{'id'}."/archives/") {
-		mkdir "$VARLIB/log/".$ns_server->{'id'}."/archives/";
-	    }
-	}
-	my $sth = $con->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$id."' AND `nagios_activate` = '1'");
-	if ($sth->execute()) {
-	    my $data = $sth->fetchrow_hashref();
-	    
-	    # Archive Sync
-	    writeLogFile("$rsync --port=$port -c ".$ns_server->{'ns_ip_address'}.":".$data->{'log_archive_path'}."/*.log $VARLIB/log/".$ns_server->{'id'}."/archives/") if ($debug);
-	    
-	    writeLogFile("Start Synchronizing archives for poller $id");
-	    `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $VARLIB/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
-	    undef($data);
-	    writeLogFile("Synchronize over for poller $id");	    
-	} else {
-	    print "Can't get archive path for poller ".$ns_server->{'id'}." (".$ns_server->{'ns_address_ip'}.") -> ".$sth->errstr;
-	}
+		# Sync Archive for one poller
+		if (! -d "$VARLIB/log/".$ns_server->{'id'}."/archives/") {
+		    if (! -d "$VARLIB/log/".$ns_server->{'id'}) {
+				mkdir "$VARLIB/log/".$ns_server->{'id'};
+		    }
+		    if (! -d "$VARLIB/log/".$ns_server->{'id'}."/archives/") {
+				mkdir "$VARLIB/log/".$ns_server->{'id'}."/archives/";
+		    }
+		}
+		my $sth = $con->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$id."' AND `nagios_activate` = '1'");
+		if ($sth->execute()) {
+		    my $data = $sth->fetchrow_hashref();
+		    
+		    # Archive Sync
+		    writeLogFile("$rsync --port=$port -c ".$ns_server->{'ns_ip_address'}.":".$data->{'log_archive_path'}."/*.log $VARLIB/log/".$ns_server->{'id'}."/archives/") if ($debug);
+		    
+		    writeLogFile("Start Synchronizing archives for poller $id");
+		    `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $VARLIB/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
+		    undef($data);
+		    writeLogFile("Synchronize over for poller $id");	    
+		} else {
+		    print "Can't get archive path for poller ".$ns_server->{'id'}." (".$ns_server->{'ns_address_ip'}.") -> ".$sth->errstr;
+		}
     } else {
-	# synchronize Archives for all pollers
-	my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
-	if (!$sth2->execute) {
-	    die "Error:" . $sth2->errstr . "\n";
-	} else { 
-	    while (my $server = $sth2->fetchrow_hashref()) {
-		writeLogFile("Receive Order to synchronize all archives of all pollers");
-		syncArchives($server->{'id'});
-		undef($server);
-	    }
-	    undef($sth2);
-	}
+		# synchronize Archives for all pollers
+		my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
+		if (!$sth2->execute) {
+		    die "Error:" . $sth2->errstr . "\n";
+		} else { 
+		    while (my $server = $sth2->fetchrow_hashref()) {
+			writeLogFile("Receive Order to synchronize all archives of all pollers");
+			syncArchives($server->{'id'});
+			undef($server);
+		    }
+		    undef($sth2);
+		}
     }
 }
 
@@ -718,8 +718,7 @@ if ($pid ne fork()) {
 		signalstartprogram();
 		writepid($$);
 	
-		while ($stop) {  
-	
+		while ($stop) {
 		    if (-e $cmdFile) {
 				if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
 				    while (<FILE>){
@@ -739,7 +738,6 @@ if ($pid ne fork()) {
 		    }
 		    sleep(1);
 		}
-	    
 	    signalstopprogram();
 	}
     exit 0;
