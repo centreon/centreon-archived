@@ -192,7 +192,7 @@
 		$nbr = array("cmd"=>0, "tp"=>0, "cct"=>0, "cg"=>0, "h"=>0, "hg"=>0, "hd"=>0, "sv"=>0, "svd"=>0, "sg"=>0, "sgd"=>0, "hei"=>0, "sei"=>0);
 		$tmpConf = array();
 		$get = false;
-		$regexp = "/^[ \t]*(.[^ \t#]+)[ \t]+(.[^;]+)/";
+		$regexp = "/^[ \t]*(.[^ \t#]+)[ \t]+((\\\;|[^;])+)/";
 		
 		/*
 		 * Fill with buffer value
@@ -218,8 +218,7 @@
 			if (preg_match("/^[ \t]*define (timeperiod|command)[ \t]*{/", $str, $def))	{
 				$typeDef = $def[1];
 				$get = true;
-			}
-			else if ($get)	{
+			} else if ($get)	{
 				if (preg_match($regexp, $str, $regs))
 					$tmpConf[$regs[1]] = trim($regs[2]);
 			}
