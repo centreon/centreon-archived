@@ -1315,13 +1315,6 @@
 		return NULL;
 	}
 
-	function copyRrdDB($arg = NULL, $new_id = NULL, $host_id = NULL)	{
-		if (!$arg || !$new_id || !$host_id) return;
-		global $oreon;
-		if (is_file($oreon->optGen["oreon_path"]."filesUpload/rrd/".$arg.".rrd"))
-			copy($oreon->optGen["oreon_path"]."filesUpload/rrd/".$arg.".rrd", $oreon->optGen["oreon_path"]."rrd/".$host_id."_".$new_id.".rrd");
-	}
-
 	#
 	## GRAPHS
 	#
@@ -1347,7 +1340,7 @@
 		return NULL;
 	}
 
-	function getDefaultGraph ($service_id = NULL, $rrdType = NULL)	{
+	function getDefaultGraph($service_id = NULL, $rrdType = NULL) {
 		global $pearDB;
 		
 		$gt["graph_id"] = getMyServiceGraphID($service_id);
