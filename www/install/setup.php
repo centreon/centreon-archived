@@ -36,9 +36,9 @@
  * 
  */
  
-	include_once ("../class/centreonSession.class.php");
+	include_once ("../class/Session.class.php");
 	include_once ("DB-Func.php");
-	CentreonSession::start();
+	Session::start();
 	ini_set("track_errors",true);
 	if (file_exists("install.conf.php")) {
 	   include_once ("install.conf.php");
@@ -68,6 +68,10 @@
 	if (isset($_POST["step"]) && $_POST["step"] == 6 && isset($_POST["pwdOreonDB"]) && strcmp($_POST["pwdOreonDB"], $_POST["pwdOreonDB2"])){
 		$_POST["step"] = 5;
 		$passwd_error = "Password not confirmed correctly.";
+	}
+	if (isset($_POST["step"]) && $_POST["step"] == 6 && isset($_POST["pwdOreonDB"]) && !strcmp($_POST["pwdOreonDB"], "")){
+		$_POST["step"] = 5;
+		$passwd_error = "Sorry: Centreon user database password acces cannot be empty.";
 	}
 	if (isset($_POST["step"]) && $_POST["step"] == 7 && isset($_POST["oreonpasswd"])  && strcmp($_POST["oreonpasswd"], $_POST["oreonpasswd2"])){
 		$_POST["step"] = 6;
