@@ -31,46 +31,44 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
+ * SVN : $URL: http://svn.centreon.com/branches/centreon-2.1/www/include/configuration/configObject/traps/GetXMLTrapsForVendor.php $
+ * SVN : $Id: GetXMLTrapsForVendor.php 8144 2009-05-20 21:11:21Z jmathis $
  * 
  */
- 
-	if (!isset ($oreon))
-		exit ();
-        
-	isset($_GET["traps_id"]) ? $trapG = $_GET["traps_id"] : $trapG = NULL;
-	isset($_POST["traps_id"]) ? $trapP = $_POST["traps_id"] : $trapP = NULL;
-	$trapG ? $traps_id = $trapG : $traps_id = $trapP;
-
-	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
-	$cG ? $select = $cG : $select = $cP;
-
-	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
-	$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
-	#Pear library
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-	#Path to the configuration dir
-	$path = "./include/configuration/configObject/traps/";
-
-	#PHP functions
-	//require_once $path."DB-Func.php";
-    require_once './class/centreonTraps.class.php';
-	require_once "./include/common/common-Func.php";
-
-    $trapObj = new Centreon_Traps($oreon, $pearDB);
+	
+    if (!isset($_GET['id'])) {
+        exit;
+    }
     
-	switch ($o)	{
-		case "a" : require_once($path."formTraps.php"); break; #Add a Trap
-		case "w" : require_once($path."formTraps.php"); break; #Watch a Trap
-		case "c" : require_once($path."formTraps.php"); break; #Modify a Trap
-		case "m" : $trapObj->duplicate(isset($select) ? $select : array(), $dupNbr); require_once($path."listTraps.php"); break; #Duplicate n Traps
-		case "d" : $trapObj->delete(isset($select) ? $select : array()); require_once($path."listTraps.php"); break; #Delete n Traps
-		default : require_once($path."listTraps.php"); break;
-	}
+    $nextRowId = htmlentities($_GET['id'], ENT_QUOTES) + 1;
+    $nbOfInitialRows = htmlentities($_GET['nbOfInitialRows'], ENT_QUOTES);
+    $currentId = htmlentities($_GET['id'], ENT_QUOTES);
+    
+    include_once("@CENTREON_ETC@/centreon.conf.php");	
+	require_once $centreon_path . "/www/class/centreonXML.class.php";
+	
+    /* 
+	 * start init db
+	 */
+    $xml = new CentreonXML();
+	$xml->startElement('root');
+    
+    $xml->startElement('main');
+    $xml->writeElement('advancedLabel', _('Advanced parameters'));
+    $xml->writeElement('addLabel', _('Add a new matching rule'));
+    $xml->writeElement('regexpLabel', _('Regexp') . ' : ');
+    $xml->writeElement('statusLabel', _('Status') . ' : ');
+    $xml->writeElement('orderLabel', _('Order') . ' : ');
+    $xml->writeElement('addImg', trim('./img/icones/16x16/navigate_plus.gif'));
+    $xml->writeElement('okLabel', _('OK'));
+    $xml->writeElement('warningLabel', _('Warning'));
+    $xml->writeElement('criticalLabel', _('Critical'));
+    $xml->writeElement('nextRowId', 'additionalRow_'.$nextRowId);
+    $xml->writeElement('confirmDeletion', _('Do you really wish to remove this entry?'));
+    $xml->writeElement('currentId', $currentId);
+    $xml->writeElement('orderValue', $nbOfInitialRows + $currentId);
+    
+	$xml->endElement();	
+	header('Content-Type: text/xml');
+	$xml->output();
 ?>

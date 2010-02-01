@@ -39,10 +39,16 @@
 	if (!isset($oreon))
 		exit();
 
-	#
-	## Database retrieve information for Trap
-	#
-	
+	/*
+	 * Database retrieve information for Trap
+	 */
+    function testTrapExistence()
+    {
+        global $trapObj;
+        
+        return $trapObj->testTrapExistence();
+    }
+     
 	function myDecodeTrap($arg)	{
 		$arg = html_entity_decode($arg, ENT_QUOTES);
 		return($arg);
@@ -51,8 +57,8 @@
 	function myReplace()	{
 		global $form;
 		return (str_replace(" ", "_", $form->getSubmitValue("traps_name")));
-	}
-	
+	}    
+    
 	$trap = array();
 	$mnftr = array(NULL=>NULL);
 	$mnftr_id = -1;
@@ -68,15 +74,15 @@
 	}
 	$DBRESULT->free();
 	
-	##########################################################
-	# Var information to format the element
-	#
 	$attrsText 		= array("size"=>"50");
-	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	#
-	## Form begin
-	#
+	$attrsLongText 	= array("size"=>"120");
+	$attrsTextarea 	= array("rows"=>"10", "cols"=>"120");
+	
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+    $trapObj->setForm($form);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Trap definition"));
 	else if ($o == "c")
@@ -84,15 +90,29 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View a Trap definition"));
 
-	#
-	## Command information
-	#
+    /*
+    ** Initializes nbOfInitialRows
+    */
+    $query = "SELECT MAX(tmo_order) FROM traps_matching_properties WHERE trap_id = '".$traps_id."' ";    
+    $res = $pearDB->query($query);
+    if ($res->numRows()) {
+        $row = $res->fetchRow();
+        $nbOfInitialRows = $row['MAX(tmo_order)'];        
+    }
+    else {
+        $nbOfInitialRows = 0;
+    }
+    
+    
+	/*
+	 * Command information
+	 */
 	$form->addElement('text', 'traps_name', _("Trap name"), $attrsText);
-	$form->addElement('select', 'traps_status', _("Status"), array(0=>_("Ok"), 1=>_("Warning"), 2=>_("Critical"), 3=>_("Unknown")));
+	$form->addElement('select', 'traps_status', _("Status"), array(0=>_("Ok"), 1=>_("Warning"), 2=>_("Critical"), 3=>_("Unknown")), array('id' => 'trapStatus'));
 	$form->addElement('select', 'manufacturer_id', _("Vendor Name"), $mnftr);
 	$form->addElement('textarea', 'traps_comments', _("Comments"), $attrsTextarea);
 
-	/*
+	/* *******************************************************************
 	 * Three possibilities : 	- submit result
 	 * 							- execute a special command
 	 * 							- resubmit a scheduling force 
@@ -113,17 +133,20 @@
 	$form->addElement('checkbox', 'traps_reschedule_svc_enable', _("Reschedule Associated Servcies"));
 	$form->setDefaults(0);
 	
+	$form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching options"), null, array('id' => 'traps_advanced_treatment', 'onclick' => "toggleParams(this.checked);"));
+	$form->setDefaults(0);
+	
 	
 	/*
 	 * execute commande
 	 */
-	$form->addElement('text', 'traps_execution_command', _("Special Command"), $attrsText);
+	$form->addElement('text', 'traps_execution_command', _("Special Command"), $attrsLongText);
 	$form->addElement('checkbox', 'traps_execution_command_enable', _("Execute special command"));
 	$form->setDefaults(0);
 
-	#
-	## Further informations
-	#
+	/*
+	 * Further informations
+	 */
 	$form->addElement('hidden', 'traps_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -134,10 +157,9 @@
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 	
-	#
-	## Form Rules
-	#
-
+	/*
+	 * Form Rules
+	 */
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('traps_name', 'myReplace');
 	$form->addRule('traps_name', _("Compulsory Name"), 'required');
@@ -148,49 +170,47 @@
 	$form->addRule('traps_oid', _("A same Oid element already exists"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
-	#
-	##End of form definition
-	#
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch a Command information
+	
 	if ($o == "w")	{
+		# Just watch a Command information
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'"));
 	    $form->setDefaults($trap);
 		$form->freeze();
-	}
-	# Modify a Command information
-	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	} else if ($o == "c")	{
+		# Modify a Command information
+		$subC =& $form->addElement('button', 'submitC', _("Save"), array('onClick' => 'javascript:checkForm();'));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($trap);
-	}
-	# Add a Command information
-	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+	} else if ($o == "a")	{
+		# Add a Command information
+		$subA =& $form->addElement('button', 'submitA', _("Save"), array('onClick' => 'javascript:checkForm();'));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
 	if ($form->validate())	{
-		$trapObj =& $form->getElement('traps_id');
+		$trapParam =& $form->getElement('traps_id');
 		if ($form->getSubmitValue("submitA")) 
-			$trapObj->setValue(insertTrapInDB());
+			$trapParam->setValue($trapObj->insert());
 		else if ($form->getSubmitValue("submitC"))
-			updateTrapInDB($trapObj->getValue());
+			$trapObj->update($trapParam->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$trapObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$trapParam->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}
 	$action =& $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
+	if ($valid && $action["action"]["action"]) {
 		require_once($path."listTraps.php");
-	else	{
-		##Apply a template definition
+	} else {
+		# Apply a template definition
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -198,10 +218,17 @@
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		
+		$tpl->assign('subtitle0', _("Main information"));
 		$tpl->assign('subtitle1', _("Action 1 : Submit result to Nagios"));
 		$tpl->assign('subtitle2', _("Action 2 : Force service check rescheduling "));
 		$tpl->assign('subtitle3', _("Action 3 : Execute a Command"));
+		$tpl->assign('subtitle4', _("OID Information"));
 		
 		$tpl->display("formTraps.ihtml");
 	}
+    
+    require_once $path . '/javascript/trapJs.php';
 ?>
+<script type='text/javascript'>
+setTimeout('initParams()', 200);
+</script>
