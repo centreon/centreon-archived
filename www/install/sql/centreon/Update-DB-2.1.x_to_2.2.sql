@@ -38,8 +38,6 @@ UPDATE      `topology` SET `topology_parent` = '605', `topology_page` = '60501' 
 DELETE FROM `topology` WHERE `topology_parent` = '50102' AND `topology_page` = '5010201';
 DELETE FROM `topology` WHERE `topology_parent` = '50102' AND `topology_page` = '5010202';
 
-
-
 CREATE TABLE IF NOT EXISTS `acl_group_contactgroups_relations` (
   `agcgr_id` int(11) NOT NULL auto_increment,
   `cg_cg_id` int(11) default NULL,
@@ -51,3 +49,16 @@ CREATE TABLE IF NOT EXISTS `acl_group_contactgroups_relations` (
 
 ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `cg_cg_id` ) REFERENCES `centreon`.`contactgroup` (`cg_id`) ON DELETE CASCADE ;
 ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `acl_group_id` ) REFERENCES `centreon`.`acl_groups` (`acl_group_id`) ON DELETE CASCADE ;
+
+CREATE TABLE IF NOT EXISTS `traps_matching_properties` (
+  `tmo_id` int(11) NOT NULL AUTO_INCREMENT,
+  `trap_id` int(11) DEFAULT NULL,
+  `tmo_order` int(11) DEFAULT NULL,
+  `tmo_regexp` varchar(255) DEFAULT NULL,
+  `tmo_status` int(11) DEFAULT NULL,
+  PRIMARY KEY (`tmo_id`),
+  KEY `trap_id` (`trap_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+ 
+ALTER TABLE `traps_matching_properties` ADD INDEX (`trap_id`);
+ALTER TABLE `traps_matching_properties` ADD FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE ;  

@@ -1801,6 +1801,22 @@ CREATE TABLE IF NOT EXISTS `traps` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `traps_matching_properties`
+--
+
+CREATE TABLE IF NOT EXISTS `traps_matching_properties` (
+  `tmo_id` int(11) NOT NULL AUTO_INCREMENT,
+  `trap_id` int(11) DEFAULT NULL,
+  `tmo_order` int(11) DEFAULT NULL,
+  `tmo_regexp` varchar(255) DEFAULT NULL,
+  `tmo_status` int(11) DEFAULT NULL,
+  PRIMARY KEY (`tmo_id`),
+  KEY `trap_id` (`trap_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `traps_service_relation`
 --
 
@@ -2340,3 +2356,4 @@ ALTER TABLE `acl_resources_sg_relations` ADD FOREIGN KEY ( `acl_res_id` ) REFERE
 ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `cg_cg_id` ) REFERENCES `centreon`.`contactgroup` (`cg_id`) ON DELETE CASCADE ;
 ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `acl_group_id` ) REFERENCES `centreon`.`acl_groups` (`acl_group_id`) ON DELETE CASCADE ;
 
+ALTER TABLE `traps_matching_properties` ADD FOREIGN KEY ( `trap_id` ) REFERENCES `151_centreon`.`traps` (`traps_id`) ON DELETE CASCADE ;
