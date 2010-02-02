@@ -100,19 +100,25 @@ class CentreonDB {
 		$this->lineRead = 0;
     }
 
-	/*
-	 * Display Connexion errors Page
-	 */    
-	private function displayConnectionErrorPage() {
+	/* **************************************
+     * Display error page
+     * 
+     * @access public
+	 * @return	void
+     */
+    private function displayConnectionErrorPage() {
 		echo "<img src='./img/centreon.gif'><br/>";
 		echo "<b>" . _("Connection failed, please contact your administrator") . "</b>";		
 		exit;
 	}    
     
-    /*
-     *  Get info to connect to Centreon DB
+    /* **************************************
+     * estrablishe centreon DB connector
+     * 
+     * @access public
+	 * @return	void
      */
-    private function connectToCentreon($conf_centreon) {		
+	private function connectToCentreon($conf_centreon) {		
 		$this->dsn = array(
 	    	'phptype'  => $this->db_type,
 	    	'username' => $conf_centreon["user"],
@@ -122,10 +128,13 @@ class CentreonDB {
 		);		
     }
     
-    /*
-     *  Get info to connect to Centstorage DB
+    /* **************************************
+     * estrablishe Centstorage DB connector
+     * 
+     * @access public
+	 * @return	void
      */
-    private function connectToCentstorage($conf_centreon) {
+	private function connectToCentstorage($conf_centreon) {
     	$this->dsn = array(
 	    	'phptype'  => $this->db_type,
 	    	'username' => $conf_centreon["user"],
@@ -135,8 +144,11 @@ class CentreonDB {
 		);
     }
     
-    /*
-     *  Get info to connect to NDO DB
+    /* **************************************
+     * estrablishe NDO DB connector
+     * 
+     * @access public
+	 * @return	void
      */
     private function connectToNDO($conf_centreon) {		
 		$DBRESULT =& $this->privatePearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
@@ -154,10 +166,13 @@ class CentreonDB {
 		);
     }
     
-    /*
-     *  The connection is established here
+    /* **************************************
+     * estrablishe DB connector
+     * 
+     * @access public
+	 * @return	void
      */
-    public function connect() {    	    	    	
+	public function connect() {    	    	    	
     	
     	$this->privatePearDB =& DB::connect($this->dsn, $this->options);
 		$i = 0;
@@ -173,10 +188,13 @@ class CentreonDB {
 		}
     }
     
-    /*
-     *  Disconnection
+	/* **************************************
+     * Disconnect DB connector
+     * 
+     * @access public
+	 * @return	void
      */
-    public function disconnect() {
+	public function disconnect() {
     	$this->privatePearDB->disconnect();
     }
     
@@ -184,10 +202,14 @@ class CentreonDB {
     	return $this->privatePearDB->toString();
     }
     
-    /*
-     *  Query
+    /* **************************************
+     * launch a query
+     * 
+     * @access public
+	 * @param	string	$query_string	query
+	 * @return	object	query result
      */
-    public function query($query_string = NULL) {    	
+	public function query($query_string = NULL) {    	
 		$this->requestExecuted++;
     	$DBRES = $this->privatePearDB->query($query_string);
     	if (PEAR::isError($DBRES))
@@ -197,8 +219,14 @@ class CentreonDB {
     	return $DBRES;
     }
     
-    /*
+    /* **************************************
      * Check NDO user grants
+     * 
+     * Check if user is able to modify schema.
+     * 
+     * @access public
+	 * @param	char	$grant	User Name
+	 * @return	int		result flag
      */
 	public function hasGrants($grant = "") {
 		if ($grant == "")
