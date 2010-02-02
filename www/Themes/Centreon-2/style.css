@@ -73,7 +73,7 @@ option 		{padding-left:1px;padding-right:1px;}
 
 #logli,#logOut,#date {color:#525252;font-weight:700;position:absolute;} 
 
-#logli 		{right:10px;text-align:right;top:50px;width:350px;}
+#logli 		{right:10px;text-align:right;top:50px;width:450px;}
 #date 		{font-size:10px;right:20px;top:131px;}
 #logOut 	{right:10px;top:131px;}
 
