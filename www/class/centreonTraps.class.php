@@ -43,8 +43,8 @@ class Centreon_Traps
     protected $_centreon;
     
     /*
-            ** constructor
-            */
+     * constructor
+     */
     public function __construct($centreon, $db, $form = null)
     {
         if (!isset($centreon)) {
@@ -59,9 +59,9 @@ class Centreon_Traps
     }
 
     /*
-            **  _setMatchingOptions takes the $_POST array and analyses it, 
-            **  then inserts data into the  traps_matching_properties
-            */
+     *  _setMatchingOptions takes the $_POST array and analyses it, 
+     *  then inserts data into the  traps_matching_properties
+     */
     private function _setMatchingOptions($trapId, $tab = array())
     {
         $this->_db->query("DELETE FROM traps_matching_properties WHERE trap_id = '" . $trapId ."'");
@@ -101,16 +101,16 @@ class Centreon_Traps
     }
     
     /*
-            ** sets form if not passed to constructor beforehands
-            */
+     * sets form if not passed to constructor beforehands
+     */
     public function setForm($form)
     {
         $this->_form = $form;
     }
     
     /*
-            ** tests if trap already exists
-            */    
+     * tests if trap already exists
+     */    
     public function testTrapExistence($oid = NULL)	{		
 		$id = NULL;
 		if (isset($this->_form)) {
@@ -132,8 +132,8 @@ class Centreon_Traps
 	}
 
     /*
-            ** delete  traps
-            */
+     * delete  traps
+     */
 	public function delete($traps = array()) {
 		foreach($traps as $key=>$value) {
 			$res2 = $this->_db->query("SELECT traps_name FROM `traps` WHERE `traps_id` = '".$key."' LIMIT 1");
@@ -144,8 +144,8 @@ class Centreon_Traps
 	}
 	
     /*
-            ** duplicate traps
-            */
+     * duplicate traps
+     */
 	public function duplicate($traps = array(), $nbrDup = array()) {		
 		foreach ($traps as $key => $value)	{
 			$res = $this->_db->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
@@ -171,8 +171,8 @@ class Centreon_Traps
 	}
 	
     /*
-            ** constructor
-            */
+     * Update
+     */
 	public function update($traps_id = null) {
 		if (!$traps_id) {
 			return null;
@@ -220,8 +220,8 @@ class Centreon_Traps
 	}
 	
     /*
-            ** inserts trap
-            */
+     * inserts trap
+     */
 	public function insert($ret = array())	{		
 		if (!count($ret)) {
 			$ret = $this->_form->getSubmitValues();
