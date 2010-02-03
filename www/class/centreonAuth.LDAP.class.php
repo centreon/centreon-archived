@@ -73,6 +73,7 @@ class CentreonAuthLDAP {
 	}
 	
 	function connect() {
+		$this->contactInfos['contact_ldap_dn'] = html_entity_decode($this->contactInfos['contact_ldap_dn']);
 		if  (!isset($this->contactInfos['contact_ldap_dn']) || $this->contactInfos['contact_ldap_dn'] == '')
 			$this->contactInfos['contact_ldap_dn'] = "anonymous" ;
 		$this->ds = ldap_connect($this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']);
