@@ -550,7 +550,7 @@
 	$form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'esi_notes_url', _("URL"), $attrsTextURL);
 	$form->addElement('text', 'esi_action_url', _("Action URL"), $attrsTextURL);
-	$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('esi_icon_image_img',this.form.elements['esi_icon_image'].value)"));
+	$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id"=>"esi_icon_image", "onChange"=>"showLogo('esi_icon_image_img',this.value)"));
 	$form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
 	$form->addElement('header', 'oreon', _("Centreon"));
@@ -759,6 +759,7 @@
 ?>
 <script type="text/javascript">		
 		displayExistingMacroSvc(<?php echo $k;?>, '<?php echo $o;?>');
+		showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
 </script>
 <?php
 	}

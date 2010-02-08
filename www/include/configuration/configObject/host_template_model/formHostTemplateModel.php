@@ -465,10 +465,10 @@
 	$form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
 	$form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
-	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('ehi_icon_image_img',this.form.elements['ehi_icon_image'].value)"));
+	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("id"=>"ehi_icon_image", "onChange"=>"showLogo('ehi_icon_image_img',this.value)"));
 	$form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
-	$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("onChange"=>"showLogo('ehi_vrml_image_img',this.form.elements['ehi_vrml_image'].value)"));
-	$form->addElement('select', 'ehi_statusmap_image', _("Nagios Status Map Image"),$extImgStatusmap, array("onChange"=>"showLogo('ehi_statusmap_image_img',this.form.elements['ehi_statusmap_image'].value)"));
+	$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("id"=>"ehi_vrml_image", "onChange"=>"showLogo('ehi_vrml_image_img',this.value)"));
+	$form->addElement('select', 'ehi_statusmap_image', _("Nagios Status Map Image"),$extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)"));
 	$form->addElement('text', 'ehi_2d_coords', _("Nagios 2d Coords"), $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', _("Nagios 3d Coords"), $attrsText2);
 
@@ -631,5 +631,8 @@ if (!$action["action"]["action"]) {
 <script type="text/javascript">
 		add_select_template();
 		displayExistingMacroHost(<?php echo $k; ?>);
+		showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
+		showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
+		showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
 </script>
 <?php } ?>
