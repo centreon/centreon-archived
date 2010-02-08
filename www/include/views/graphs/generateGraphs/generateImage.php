@@ -39,8 +39,7 @@
 	/*
 	 * Include config file
 	 */
-	//include "@CENTREON_ETC@/centreon.conf.php";
-	include "/etc/centreon/centreon.conf.php";
+	include "@CENTREON_ETC@/centreon.conf.php";
 		
 	require_once "./DB-Func.php";
 	require_once "$centreon_path/www/class/centreonGraph.class.php";
