@@ -63,13 +63,19 @@
 		/*
 		 * Grab hostgroup || host
 		 */
-		$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
+		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."' AND host_host_id IS NOT NULL");
 		while ($parent =& $DBRESULT->fetchRow())	{
 			if ($parent["host_host_id"])
 				$service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
-			else if ($parent["hostgroup_hg_id"])
+		}
+		$DBRESULT->free();
+
+		$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."' AND hostgroup_hg_id IS NOT NULL");
+		while ($parent =& $DBRESULT->fetchRow())	{
+			if ($parent["hostgroup_hg_id"])
 				$service["service_hgPars"][$parent["hostgroup_hg_id"]] = $parent["hostgroup_hg_id"];
 		}
+		$DBRESULT->free();
 		
 		/*
 		 * Set Service Notification Options
@@ -84,7 +90,6 @@
 		$tmp = explode(',', $service["service_stalking_options"]);
 		foreach ($tmp as $key => $value)
 			$service["service_stalOpts"][trim($value)] = 1;
-		$DBRESULT->free();
 		
 		/*
 		 * Set Contact Group
