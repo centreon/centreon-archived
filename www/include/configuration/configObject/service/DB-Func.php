@@ -303,8 +303,18 @@
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id, servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$key."'");
 							$fields["service_sgs"] = "";
 							while($Sg =& $DBRESULT->fetchRow()){
-								$Sg["host_host_id"] ? $host_id = "'".$Sg["host_host_id"]."'" : $host_id = "NULL";
-								$Sg["hostgroup_hg_id"] ? $hg_id = "'".$Sg["hostgroup_hg_id"]."'" : $hg_id = "NULL";
+							    if (isset($host) && $host) {
+								    $host_id = $host;
+								}
+								else  {
+								    $Sg["host_host_id"] ? $host_id = "'".$Sg["host_host_id"]."'" : $host_id = "NULL";
+								}
+							    if (isset($hostgroup) && $hostgroup) {
+							        $hg_id = $hostgroup;
+							    }
+							    else {
+							        $Sg["hostgroup_hg_id"] ? $hg_id = "'".$Sg["hostgroup_hg_id"]."'" : $hg_id = "NULL";   
+							    }							    
 								$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$host_id.", ".$hg_id.", '".$maxId["MAX(service_id)"]."', '".$Sg["servicegroup_sg_id"]."')");
 								if ($Sg["host_host_id"])
 									$fields["service_sgs"] .= $Sg["host_host_id"] . ",";
