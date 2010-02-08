@@ -185,12 +185,12 @@
 		$form->freeze();
 	} else if ($o == "c")	{
 		# Modify a Command information
-		$subC =& $form->addElement('button', 'submitC', _("Save"), array('onClick' => 'javascript:checkForm();'));
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($trap);
 	} else if ($o == "a")	{
 		# Add a Command information
-		$subA =& $form->addElement('button', 'submitA', _("Save"), array('onClick' => 'javascript:checkForm();'));
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 
