@@ -1235,6 +1235,10 @@
 			$rq .= "host_notification_interval = '".$ret["host_notification_interval"]."', ";
 			$fields["host_notification_interval"] = $ret["host_notification_interval"];
 		}
+	    if (isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != NULL) {
+			$rq .= "host_first_notification_delay = '".$ret["host_first_notification_delay"]."', ";
+			$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
+		}
 		if (isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL) {
 			$rq .= "host_notification_options = '".implode(",", array_keys($ret["host_notifOpts"]))."', ";
 			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));

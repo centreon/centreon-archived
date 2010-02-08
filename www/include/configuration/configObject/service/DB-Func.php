@@ -994,6 +994,10 @@
 			$rq .= "service_notification_interval = '".$ret["service_notification_interval"]."', ";
 			$fields["service_notification_interval"] = $ret["service_notification_interval"];
 		}
+	    if (isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL) {
+			$rq .= "service_first_notification_delay = '".$ret["service_first_notification_delay"]."', ";
+			$fields["service_first_notification_delay"] = $ret["service_first_notification_delay"];
+		}
 		if (isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL) {
 			$rq .= "service_notification_options = '".implode(",", array_keys($ret["service_notifOpts"]))."', ";
 			$fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
