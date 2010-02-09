@@ -104,6 +104,8 @@
 		$metric["metric_id"] = $metrics["metric_id"];
 		$metric["class"] = $tab_class[$im % 2];
 		$metric["metric_name"] = $metrics["metric_name"];
+		$metric["metric_name"] = str_replace("#S#", "/", $metric["metric_name"]);
+		$metric["metric_name"] = str_replace("#BS#", "\\", $metric["metric_name"]);
 		$metric["unit_name"] = $metrics["unit_name"];
 		$metric["hidden"] = $yesOrNo[$metrics["hidden"]];
 		$metric["locked"] = $yesOrNo[$metrics["locked"]];
