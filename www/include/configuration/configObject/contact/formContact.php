@@ -213,8 +213,8 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_oreon', null, _("No"), '0');
 	$form->addGroup($tab, 'contact_oreon', _("Reach Centreon Front-end"), '&nbsp;');
 	
-	$form->addElement('password', 'contact_passwd', _("Password"), $attrsText);
-	$form->addElement('password', 'contact_passwd2', _("Confirm Password"), $attrsText);
+	$form->addElement('password', 'contact_passwd', _("Password"), array("size"=>"30", "autocomplete"=>"off"));
+	$form->addElement('password', 'contact_passwd2', _("Confirm Password"), array("size"=>"30", "autocomplete"=>"off"));
     $form->addElement('select', 'contact_lang', _("Default Language"), $langs);
     $form->addElement('select', 'contact_type_msg', _("Mail Type"), array(NULL=>NULL, "txt"=>"txt", "html"=>"html", "pdf"=>"pdf"));
 	$tab = array();
