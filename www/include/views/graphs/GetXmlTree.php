@@ -118,7 +118,7 @@
 		$serviceCache = array();
 		$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
 		while ($data =& $DBRESULT->fetchRow())
-			$serviceCache[$data["service_id"]] = $data["service_description"];
+			$serviceCache[$data["service_id"]] = db2str($data["service_description"]);
 		$DBRESULT->free();
 		unset($data);
 		return $serviceCache;
