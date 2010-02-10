@@ -1331,8 +1331,22 @@ function configureSUDO(){
 			echo_passed "$(gettext "Please configure your sudo with this example"):\n\t $dir_conf/centreon.sudo" "$passed"
 		fi
 	else
-		echo_passed "$(gettext "Sudo is already configured")" "$passed"
+		#echo_passed "$(gettext "Sudo is already configured")" "$passed"
 		## ticket #7 (upgrade script here)
+		echo_info "$(gettext "Your sudo has been configured previously")"
+		if [ "${FORCE_SUDO_CONF:-0}" -eq 1 ] ; then
+			no_force_sudo="0"
+		else
+			yes_no_default "$(gettext "Do you want me to reconfigure your sudo ? (WARNING) ")"
+			no_force_sudo="$?"
+		fi
+		if [ $no_force_sudo -eq 0 ] ; then 
+			clean_sudo $SUDO_FILE 0
+			${CAT} $dir_conf/centreon.sudo >> $SUDO_FILE
+			echo_success "$(gettext "Configuring Sudo")" "$ok"
+		else
+			echo_passed "$(gettext "Please configure your sudo with this example"):\n\t $dir_conf/centreon.sudo" "$passed"
+		fi
 	fi
 	log "INFO" "$(gettext "Please configure your sudo with this example"): $dir_conf/centreon.sudo"
 	# Add a simple test for Defaults Requiretty problem on CentOS, Fedora...
