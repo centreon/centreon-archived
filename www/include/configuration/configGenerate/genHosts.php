@@ -65,7 +65,7 @@
 	 * Get Template cache
 	 */
 	$templateCache = array();
-	$DBRESULT =& $pearDB->query("SELECT host_name, host_host_id, `order` FROM `host_template_relation`, host WHERE host_template_relation.host_tpl_id = host.host_id");
+	$DBRESULT =& $pearDB->query("SELECT host_name, host_host_id, `order` FROM `host_template_relation`, host WHERE host_template_relation.host_tpl_id = host.host_id ORDER BY `order`");
 	while ($h =& $DBRESULT->fetchRow()) {
 		if (!isset($templateCache[$h["host_host_id"]]))
 			$templateCache[$h["host_host_id"]] = array();
