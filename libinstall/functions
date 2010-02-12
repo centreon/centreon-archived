@@ -1248,6 +1248,7 @@ function prepare_sudo_config() {
 	## BEGIN: CENTREON SUDO
 	#Add by CENTREON installation script
 	User_Alias      CENTREON=$WEB_USER,$NAGIOS_USER
+	Defaults:CENTREON !requiretty
 	# Nagios Restart
 	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT* restart
 	# Nagios reload
@@ -1350,10 +1351,10 @@ function configureSUDO(){
 	fi
 	log "INFO" "$(gettext "Please configure your sudo with this example"): $dir_conf/centreon.sudo"
 	# Add a simple test for Defaults Requiretty problem on CentOS, Fedora...
-	is_suspect_conf_sudo $SUDO_FILE
-	if [ "$?" -eq 1 ] ; then
-		echo_warning "$(gettext "For security policy, your sudo's\nconfiguration would only run when the user is logged into a real tty. Please adjust your configuration by commenting 'Defaults requiretty' line in your configuration file.")" "$warning"
-	fi
+	#is_suspect_conf_sudo $SUDO_FILE
+	#if [ "$?" -eq 1 ] ; then
+	#	echo_warning "$(gettext "For security policy, your sudo's\nconfiguration would only run when the user is logged into a real tty. Please adjust your configuration by commenting 'Defaults requiretty' line in your configuration file.")" "$warning"
+	#fi
 	return 0
 }
 
