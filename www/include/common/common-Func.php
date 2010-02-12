@@ -379,7 +379,7 @@
 			"ORDER BY `order`";
 		$DBRESULT =& $pearDB->query($rq);
 		while ($row =& $DBRESULT->fetchRow()) {
-			$rq2 = "SELECT `ehi.".$field."` " .
+			$rq2 = "SELECT ehi.`".$field."` " .
 				"FROM extended_host_information ehi " .
 				"WHERE ehi.host_host_id = '".$row['host_tpl_id']."' LIMIT 1";
 			$DBRESULT2 =& $pearDB->query($rq2);
@@ -540,7 +540,7 @@
 		
 		if ($version < 3) {
 			while (1)	{
-				$DBRESULT =& $pearDB->query("SELECT `ehi.".$field."`, h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' LIMIT 1");
+				$DBRESULT =& $pearDB->query("SELECT ehi.`".$field."`, h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' LIMIT 1");
 				$row =& $DBRESULT->fetchRow();
 				if (isset($row[$field]) && $row[$field])
 					return $row[$field];
@@ -550,7 +550,7 @@
 					return NULL;
 			}
 		} else if ($version >= 3) {			
-			$rq = 	"SELECT `ehi.".$field."` " .
+			$rq = 	"SELECT ehi.`".$field."` " .
 					"FROM extended_host_information ehi " .
 					"WHERE ehi.host_host_id = '".$host_id."' LIMIT 1";								
 			$DBRESULT =& $pearDB->query($rq);
@@ -570,7 +570,7 @@
 			return;
 
 		if (isset($flag1stLevel) && $flag1stLevel) {
-			$rq = "SELECT `ehi.".$field."` " .
+			$rq = "SELECT ehi.`".$field."` " .
 					"FROM extended_host_information ehi " .
 					"WHERE ehi.host_host_id = '".$host_id."' LIMIT 1";								
 			$DBRESULT =& $pearDB->query($rq);
@@ -593,7 +593,7 @@
 				"ORDER BY `order`";
 			$DBRESULT =& $pearDB->query($rq);
 			while ($row =& $DBRESULT->fetchRow()) {
-				$rq2 = "SELECT `ehi.".$field."` " .
+				$rq2 = "SELECT ehi.`".$field."` " .
 						"FROM extended_host_information ehi " .
 						"WHERE ehi.host_host_id = '".$row['host_tpl_id']."' LIMIT 1";								
 				$DBRESULT2 =& $pearDB->query($rq2);
