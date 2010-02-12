@@ -275,7 +275,6 @@ if [ "$upgrade" -eq 1 ] ; then
 		echo "$line"
 		echo -e "\t$(gettext "Detecting old installation")"
 		echo "$line"
-		echo -e "\n\n"
 		echo_success "$(gettext "Finding configuration file in:") $inst_upgrade_dir" "$ok"
 		log "INFO" "$(gettext "Old configuration found in ") $(ls $inst_upgrade_dir/instCent*)"
 		echo_info "$(gettext "You seem to have an existing Centreon.")\n"
