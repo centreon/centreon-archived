@@ -39,10 +39,10 @@
 ?><script type="text/javascript">
 
 /*
- *  This second block is the javascript code for the multi macro creation 
+ *  This second block is the javascript code for the multi exception creation 
  */
 function addBlankInput() {
-	var tabElem = document.getElementById('macroTable');
+	var tabElem = document.getElementById('exceptionTable');
 	var keyElem = document.createElement('input');
 	var valueElem = document.createElement('input');
 	var imgElem = document.createElement('img');			
@@ -50,28 +50,28 @@ function addBlankInput() {
 	var tbodyElem = document.createElement('tbody');
 	
 	trElem.id = "trElem_" + globalj;
-	if (trMacroClassFlag) {
+	if (trExceptionClassFlag) {
 		trElem.className = "list_one";
-		trMacroClassFlag = 0;
+		trExceptionClassFlag = 0;
 	} else {
 		trElem.className = "list_two";
-		trMacroClassFlag = 1;
+		trExceptionClassFlag = 1;
 	}
 	
-	trElem.id = "trMacroInput_" + globalj;	
+	trElem.id = "trExceptionInput_" + globalj;	
 	var tdElem1 = document.createElement('td');
 	tdElem1.className = "ListColCenter";
 	var tdElem2 = document.createElement('td');
 	tdElem2.className = "ListColLeft";
 	var tdElem3 = document.createElement('td');
 	tdElem3.className = "ListColCenter";
-	keyElem.id = 'macroInput_' + globalj;	
-	keyElem.name = 'macroInput_' + globalj;
+	keyElem.id = 'exceptionInput_' + globalj;	
+	keyElem.name = 'exceptionInput_' + globalj;
 	keyElem.value = '';
 	tdElem1.appendChild(keyElem);	
 				
-	valueElem.id = 'macroValue_' + globalj;
-	valueElem.name = 'macroValue_' + globalj;
+	valueElem.id = 'exTimerange_' + globalj;
+	valueElem.name = 'exTimerange_' + globalj;
 	valueElem.value = "";	
 	tdElem2.appendChild(valueElem);	
 		
@@ -81,9 +81,9 @@ function addBlankInput() {
 		var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
 		if (response){			
 			if (navigator.appName == "Microsoft Internet Explorer") {
-				document.getElementById('trMacroInput_' + this.id).innerText = "";
+				document.getElementById('trExceptionInput_' + this.id).innerText = "";
 			} else {
-				document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+				document.getElementById('trExceptionInput_' + this.id).innerHTML = "";
 			}
 		}
 	}	
@@ -94,31 +94,31 @@ function addBlankInput() {
 	tbodyElem.appendChild(trElem);		
 	tabElem.appendChild(tbodyElem);	
 	globalj++;
-	document.getElementById('hiddenMacInput').value = globalj;
+	document.getElementById('hiddenExInput').value = globalj;
 }
 
 
 /*
- * Function for displaying existing macro
+ * Function for displaying existing exceptions
  */
-function displayExistingMacroHost(max){	
+function displayExistingExceptions(max){	
 	for (var i = 0; i < max; i++) {	
 		var keyElem = document.createElement('input');
 		var valueElem = document.createElement('input');
 		var imgElem = document.createElement('img');	
-		var tabElem = document.getElementById('macroTable');
+		var tabElem = document.getElementById('exceptionTable');
 		var trElem = document.createElement('tr');
 		var tbodyElem = document.createElement('tbody');
 		
 		trElem.id = "trElem_" + globalj;
-		if (trMacroClassFlag) {
+		if (trExceptionClassFlag) {
 			trElem.className = "list_one";
-			trMacroClassFlag = 0;
+			trExceptionClassFlag = 0;
 		} else {
 			trElem.className = "list_two";
-			trMacroClassFlag = 1;
+			trExceptionClassFlag = 1;
 		}		
-		trElem.id = "trMacroInput_" + globalj;
+		trElem.id = "trExceptionInput_" + globalj;
 		
 		var tdElem1 = document.createElement('td');
 		tdElem1.className = "ListColCenter";
@@ -127,14 +127,14 @@ function displayExistingMacroHost(max){
 		var tdElem3 = document.createElement('td');
 		tdElem3.className = "ListColCenter";	
 			
-		keyElem.id = 'macroInput_' + globalj;	
-		keyElem.name = 'macroInput_' + globalj;
-		keyElem.value = globalMacroTabName[globalj];		
+		keyElem.id = 'exceptionInput_' + globalj;	
+		keyElem.name = 'exceptionInput_' + globalj;
+		keyElem.value = globalExceptionTabName[globalj];		
 		tdElem1.appendChild(keyElem);	
 					
-		valueElem.id = 'macroValue_' + globalj;
-		valueElem.name = 'macroValue_' + globalj;
-		valueElem.value = globalMacroTabValue[globalj];		
+		valueElem.id = 'exTimerange_' + globalj;
+		valueElem.name = 'exTimerange_' + globalj;
+		valueElem.value = globalExceptionTabTimerange[globalj];		
 		tdElem2.appendChild(valueElem);	
 		
 		if (_o == "w") {
@@ -148,10 +148,10 @@ function displayExistingMacroHost(max){
 			var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
 			if (response){
 				if (navigator.appName == "Microsoft Internet Explorer") {
-					document.getElementById('trMacroInput_' + this.id).innerText = "";
+					document.getElementById('trExceptionInput_' + this.id).innerText = "";
 				}
 				else {
-					document.getElementById('trMacroInput_' + this.id).innerHTML = "";
+					document.getElementById('trExceptionInput_' + this.id).innerHTML = "";
 				}
 			}
 		}
@@ -165,7 +165,7 @@ function displayExistingMacroHost(max){
 		tbodyElem.appendChild(trElem);
 		tabElem.appendChild(tbodyElem);
 	}
-	document.getElementById('hiddenMacInput').value = globalj;
+	document.getElementById('hiddenExInput').value = globalj;
 }
 
 /*
@@ -173,10 +173,10 @@ function displayExistingMacroHost(max){
  */
 
 var globalj=0;
-var trMacroClassFlag = 1;
-var globalMacroTabId = new Array();
-var globalMacroTabName = new Array();
-var globalMacroTabValue = new Array();
-var globalMacroTabHostId = new Array();
+var trExceptionClassFlag = 1;
+var globalExceptionTabId = new Array();
+var globalExceptionTabName = new Array();
+var globalExceptionTabTimerange = new Array();
+var globalExceptionTabTimeperiodId = new Array();
 
 </script>

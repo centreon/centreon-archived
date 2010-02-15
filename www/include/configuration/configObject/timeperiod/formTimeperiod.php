@@ -181,8 +181,8 @@
 	/*
 	 * Translations
 	 */
-	$tpl->assign("tRDay", _("Time range Days"));
-	$tpl->assign("tRHours", _("Time range Hours"));
+	$tpl->assign("tRDay", _("Days"));
+	$tpl->assign("tRHours", _("Timerange"));
 
 	$valid = false;
 	if ($form->validate())	{
@@ -212,5 +212,5 @@
 		$tpl->display("formTimeperiod.ihtml");
 	}
 ?><script type="text/javascript">
-		displayExistingMacroHost(<?php echo $k;?>);
+		displayExistingExceptions(<?php echo $k;?>);
 </script>
