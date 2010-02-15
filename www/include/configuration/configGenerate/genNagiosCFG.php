@@ -174,13 +174,6 @@
 			else if ($key == "enable_embedded_perl" && $value == 2);
 			else if ($key == "use_embedded_perl_implicitly" && $value == 2);
 			else if ($key == "debug_verbosity" && $value == 2);
-//			else if ($key == "cached_host_check_horizon");
-//			else if ($key == "cached_service_check_horizon");
-//			else if ($key == "additional_freshness_latency");	
-//			else if ($key == "downtime_file");
-//			else if ($key == "comment_file");
-//			else if ($key == "debug_level_opt");
-//			else if ($key == "enable_embedded_perl");
 			else {
 				$str .= $key."=".$value."\n";
 			}
