@@ -63,12 +63,26 @@ class Centreon	{
 	var $hostgroup;
 	var $host_id;
   	
-	var $user;
-	var $CentreonGMT;
-	var $CentreonLogAction;
-	var $externalCMD;
-  
-	function Centreon($user = NULL, $pages = array())	{
+	public $user;
+	public $CentreonGMT;
+	public $CentreonLogAction;
+	public $extCmd;
+	public $DB;
+	public $config;
+	public $session;
+	public $lang;
+	public $duration;
+	public $media;
+	
+    /* **************************************
+     * Class constructor
+     * 
+     * @access public
+	 * @param	objst 	$user	User objets
+	 * @param	int		$page	page id
+	 * @return	object	objet information
+     */
+	function __contruct($user = NULL, $pages = array())	{
 		global $pearDB;
 		
 		/*
@@ -109,7 +123,7 @@ class Centreon	{
 		/*
 		 * Init External CMD object
 		 */
-		$this->externalCMD = new CentreonExternalCommand($pearDB);
+		$this->extCmd = new CentreonExternalCommand($pearDB);
 	}
 	
 	function creatModuleList($pearDB) {
