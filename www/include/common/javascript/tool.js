@@ -91,21 +91,21 @@ function toggleDisplay(id)	{
 
 function checkUncheckAll(theElement) {
      var theForm = theElement.form, z = 0;
-	 for (z=0; z<theForm.length;z++){
-      	if (theForm[z].type == 'checkbox' && theForm[z].disabled == '0'){
-		  	if (theForm[z].checked) {
-				theForm[z].checked = false;
-				if (typeof(_selectedElem) != 'undefined') {
-					removeFromSelectedElem(theForm[z].id);
-				}
-		   	} else {
-		  		theForm[z].checked = true;
-		  		if (typeof(_selectedElem) != 'undefined') {
-					putInSelectedElem(theForm[z].id);
-				}
-			}
-		}
+    for (z=0; z<theForm.length;z++) {
+	if (theForm[z].type == 'checkbox' && theForm[z].disabled == '0'){
+            if (theElement.checked && !theForm[z].checked) { 
+        	theForm[z].checked = true; 
+                if (typeof(_selectedElem) != 'undefined') { 
+            	    putInSelectedElem(theForm[z].id); 
+                } 
+            } else if (!theElement.checked && theForm[z].checked) { 
+                theForm[z].checked = false; 
+                if (typeof(_selectedElem) != 'undefined') { 
+                    removeFromSelectedElem(theForm[z].id); 
+                } 
+            } 
 	}
+    }
 }
 
 function DisplayHidden(id) {
