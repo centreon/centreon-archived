@@ -58,7 +58,27 @@ CREATE TABLE IF NOT EXISTS `traps_matching_properties` (
   `tmo_status` int(11) DEFAULT NULL,
   PRIMARY KEY (`tmo_id`),
   KEY `trap_id` (`trap_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
  
 ALTER TABLE `traps_matching_properties` ADD INDEX (`trap_id`);
 ALTER TABLE `traps_matching_properties` ADD FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE ;  
+
+
+CREATE TABLE IF NOT EXISTS `timeperiod_include_relations` (
+  `include_id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+  `timeperiod_id` INT( 11 ) NOT NULL ,
+  `timeperiod_include_id` INT( 11 ) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `timeperiod_exclude_relations` (
+  `include_id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+  `timeperiod_id` INT( 11 ) NOT NULL ,
+  `timeperiod_exclude_id` INT( 11 ) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `timeperiod_exceptions` (
+  `exception_id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+  `timeperiod_id` INT(11) NOT NULL ,
+  `days` VARCHAR(255) NOT NULL ,
+  `timerange` VARCHAR(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
