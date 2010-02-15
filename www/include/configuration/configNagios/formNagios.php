@@ -96,7 +96,7 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View a Nagios Configuration File"));
 	
-	/*
+	/* *****************************************************
 	 * Nagios Configuration basic information
 	 */
 	$form->addElement('header', 'information', _("Information"));
@@ -109,7 +109,7 @@
 	
 	$form->addElement('select', 'nagios_server_id', _("Server Nagios configured"), $nagios_server);
 	
-	/*
+	/* *****************************************************
 	 * Part 1
 	 */
 	$form->addElement('text', 'log_file', _("Log file"), $attrsText2);
@@ -122,13 +122,13 @@
 	$form->addElement('text', 'max_check_result_file_age', _("Max Check Result File Age"), $attrsText3);
 	$form->addElement('text', 'p1_file', _("P1 File"), $attrsText2);
 	
-	/*
+	/* *****************************************************
 	 * User / Groups
 	 */
 	$form->addElement('text', 'nagios_user', _("Nagios User"), $attrsText);
 	$form->addElement('text', 'nagios_group', _("Nagios Group"), $attrsText);
 	
-	/*
+	/* *****************************************************
 	 * Enable / Disable functionalities
 	 */
 	$nagTab = array();
@@ -167,7 +167,7 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'enable_event_handlers', _("Event Handler Option"), '&nbsp;');
 	
-	/*
+	/* *****************************************************
 	 * Log Rotation Method
 	 */
 	$nagTab = array();
@@ -179,8 +179,8 @@
 	$form->addGroup($nagTab, 'log_rotation_method', _("Log Rotation Method"), '&nbsp;&nbsp;');
 	$form->addElement('text', 'log_archive_path', _("Log Archive Path"), $attrsText2);
 	
-	/*
-	 * Part 6
+	/* *****************************************************
+	 * External Commands
 	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_external_commands', null, _("Yes"), '1');
@@ -192,13 +192,13 @@
 	$form->addElement('text', 'external_command_buffer_slots', _("External Command Buffer Slots"), $attrsText3);
 	$form->addElement('text', 'command_file', _("External Command File"), $attrsText2);
 	
-	/*
-	 * Part 7
+	/* *****************************************************
+	 * Lock files
 	 */
 	$form->addElement('text', 'lock_file', _("Lock File"), $attrsText2);
 	
-	/*
-	 * Part 8
+	/* *****************************************************
+	 * Retention
 	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'retain_state_information', null, _("Yes"), '1');
@@ -220,8 +220,8 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'use_retained_scheduling_info', _("Use Retained Scheduling Info Option"), '&nbsp;');
 	
-	/*
-	 * Part 9
+	/* *****************************************************
+	 * logging options
 	 */
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_syslog', null, _("Yes"), '1');
@@ -271,13 +271,13 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'log_passive_checks', _("Passive Check Logging Option"), '&nbsp;');
 	
-	/*
+	/* *****************************************************
 	 * Event handler
 	 */
 	$form->addElement('select', 'global_host_event_handler', _("Global Host Event Handler"), $checkCmds);
 	$form->addElement('select', 'global_service_event_handler', _("Global Service Event Handler"), $checkCmds);
 	
-	/*
+	/* *****************************************************
 	 * General Options
 	 */
 	$form->addElement('text', 'interval_length', _("Timing Interval Length"), $attrsText3);
@@ -306,7 +306,7 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'passive_host_checks_are_soft', _("Passive Host Checks Are SOFT Option"), '&nbsp;');
 	
-	/*
+	/* *****************************************************
 	 * Auto Rescheduling Option
 	 */
 	$nagTab = array();
@@ -318,7 +318,7 @@
 	$form->addElement('text', 'auto_rescheduling_interval', _("Auto-Rescheduling Interval"), $attrsText3);
 	$form->addElement('text', 'auto_rescheduling_window', _("Auto-Rescheduling Window"), $attrsText3);
 	
-	/*
+	/* *****************************************************
 	 * Aggressive host checking
 	 */
 	$nagTab = array();
@@ -327,7 +327,7 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_aggressive_host_checking', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'use_aggressive_host_checking', _("Aggressive Host Checks"), '&nbsp;');
 	
-	/*
+	/* *****************************************************
 	 * Flapping management.
 	 */
 	$nagTab = array();
@@ -341,7 +341,7 @@
 	$form->addElement('text', 'low_host_flap_threshold', 		_("Low Host Flap Threshold"), $attrsText3);
 	$form->addElement('text', 'high_host_flap_threshold', 		_("High Host Flap Threshold"), $attrsText3);
 	
-	/*
+	/* *****************************************************
 	 * SOFT dependencies options
 	 */
 	$nagTab = array();
@@ -350,7 +350,7 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'soft_state_dependencies', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'soft_state_dependencies', _("Soft Service Dependencies Option"), '&nbsp;');
 	
-	/*
+	/* *****************************************************
 	 * Timeout.
 	 */
 	$form->addElement('text', 'service_check_timeout', 	_("Service Check Timeout"), $attrsText3);
@@ -361,7 +361,7 @@
 	$form->addElement('text', 'ochp_timeout', 			_("Obsessive Compulsive Host Processor Timeout"), $attrsText3);
 	$form->addElement('text', 'perfdata_timeout', 		_("Performance Data Processor Command Timeout"), $attrsText3);
 	
-	/*
+	/* *****************************************************
 	 * OCSP / OCHP
 	 */
 	$nagTab = array();
@@ -378,7 +378,7 @@
 	$form->addGroup($nagTab, 'obsess_over_hosts', _("Obsess Over Hosts Option"), '&nbsp;');
 	$form->addElement('select', 'ochp_command', _("Obsessive Compulsive Host Processor Command"), $checkCmds);
 	
-	/*
+	/* *****************************************************
 	 * Perfdata configuration parameters
 	 */
 	$nagTab = array();
@@ -414,7 +414,7 @@
 	$form->addElement('select', 'host_perfdata_file_processing_command', _("Host Performance Data File Processing Command"), $checkCmds);
 	$form->addElement('select', 'service_perfdata_file_processing_command', _("Service Performance Data File Processing Command"), $checkCmds);
 	
-	/*
+	/* *****************************************************
 	 * Check orphaned
 	 */
 	$nagTab = array();
@@ -429,7 +429,7 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_for_orphaned_hosts', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'check_for_orphaned_hosts', _("Orphaned Host Check Option"), '&nbsp;');
 	
-	/*
+	/* *****************************************************
 	 * Freshness 
 	 */
 	$nagTab = array();
@@ -446,7 +446,7 @@
 	$form->addElement('text', 'host_freshness_check_interval', _("Host Freshness Check Interval"), $attrsText3);
 	$form->addElement('text', 'additional_freshness_latency', _("Additional freshness latency"), $attrsText3);
 	
-	/*
+	/* *****************************************************
 	 * General Informations
 	 */
 	$form->addElement('text', 'date_format', _("Date Format"), $attrsText);
@@ -467,7 +467,7 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_true_regexp_matching', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'use_true_regexp_matching', _("True Regular Expression Matching Option"), '&nbsp;');
 	
-	/*
+	/* *****************************************************
 	 * Event Broker Option
 	 */
 	$form->addElement('text', 'event_broker_options', _("Broker Module Options"), $attrsText2);
