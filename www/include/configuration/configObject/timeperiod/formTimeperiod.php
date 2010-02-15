@@ -53,24 +53,30 @@
 		 * Retrieves inclusions
 		 */
 		$res = $pearDB->query("SELECT * FROM timeperiod_include_relations WHERE timeperiod_id = '".$tp_id."'");
+		$tp["tp_include"] = array();
 		while ($row = $res->fetchRow()) {
-		    ;
+		    $tp["tp_include"][] = $row['timeperiod_include_id'];
 		}
 		
 		/*
 		 * Retrieves exclusions
 		 */
 		$res = $pearDB->query("SELECT * FROM timeperiod_exclude_relations WHERE timeperiod_id = '". $tp_id."'");
+		$tp["tp_exclude"] = array();
 		while ($row = $res->fetchRow()) {
-		    ;
+		    $tp["tp_exclude"][] = $row['timeperiod_exclude_id'];
 		}
 	}
 	
+	$includeTP = array();
 	$excludeTP = array();
 	$DBRESULT =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
-	while ($data =& $DBRESULT->fetchRow())
-		if ($o != "a" || $tp_id != $data["tp_id"])
+	while ($data =& $DBRESULT->fetchRow()) {
+		if ($o != "a" || $tp_id != $data["tp_id"]) {
 			$excludeTP[$data["tp_id"]] = $data["tp_name"];
+			$includeTP[$data["tp_id"]] = $data["tp_name"];
+		}
+	}
 	$DBRESULT->free();
 	unset($data);
 	
@@ -116,7 +122,8 @@
 	 */
 	$form->addElement('header', 'notification', _("Notification Time Range"));
 	$form->addElement('header', 'notification_base', _("Basic Notification"));
-	$form->addElement('header', 'exclude', _("Time Range exclusion"));
+	$form->addElement('header', 'include', _("Timeperiod inclusion"));
+	$form->addElement('header', 'exclude', _("Timeperiod exclusion"));
 	$form->addElement('header', 'exception', _("Time Range exceptions"));
 	
 	$form->addElement('text', 'tp_sunday', _("Sunday"), $attrsText);
@@ -126,6 +133,15 @@
 	$form->addElement('text', 'tp_thursday', _("Thursday"), $attrsText);
 	$form->addElement('text', 'tp_friday', _("Friday"), $attrsText);
 	$form->addElement('text', 'tp_saturday', _("Saturday"), $attrsText);
+	
+	/*
+	 * Include Timeperiod
+	 */
+	$ams3 =& $form->addElement('advmultiselect', 'tp_include', _("Include Timeperiods"), $includeTP, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setElementTemplate($template);
+	echo $ams3->getElementJs(false);
 	
 	/*
 	 * Exclude Timeperiod

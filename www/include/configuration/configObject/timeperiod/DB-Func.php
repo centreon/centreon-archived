@@ -40,6 +40,45 @@
 	if (!isset ($oreon))
 		exit ();
 
+	function includeExcludeTimeperiods($tpId, $includeTab = array(), $excludeTab = array())
+	{
+		global $pearDB;
+		
+		/*
+		 * Insert inclusions
+		 */
+		if (isset($includeTab) && is_array($includeTab)) {
+		    $str = "";
+		    foreach($includeTab as $tpIncludeId) {
+		        if ($str != "") {
+		            $str.= ", ";
+		        }
+		        $str .= "('".$tpId."', '".$tpIncludeId."')";
+		    }
+		    if (strlen($str)) {
+		        $query = "INSERT INTO timeperiod_include_relations (timeperiod_id, timeperiod_include_id ) VALUES ".$str;
+		        $pearDB->query($query);
+		    }
+		}
+		
+		/*
+		 * Insert exclusions
+		 */
+		if (isset($excludeTab) && is_array($excludeTab)) {
+		    $str = "";
+		    foreach($excludeTab as $tpExcludeId) {
+		        if ($str != "") {
+		            $str.= ", ";
+		        }
+		        $str .= "('".$tpId."', '".$tpExcludeId."')";
+		    }
+		    if (strlen($str)) {
+		        $query = "INSERT INTO timeperiod_exclude_relations (timeperiod_id, timeperiod_exclude_id ) VALUES ".$str;
+		        $pearDB->query($query);
+		    }
+		}
+	}
+		
 	function testTPExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
@@ -109,6 +148,15 @@
 					$query = "INSERT INTO timeperiod_exceptions (timeperiod_id, days, timerange) 
 							SELECT ".$tp_id['MAX(tp_id)'].", days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '".$key."'";					
 					$pearDB->query($query);
+					
+					$query = "INSERT INTO timeperiod_include_relations (timeperiod_id, timeperiod_include_id) 
+							SELECT ".$tp_id['MAX(tp_id)'].", timeperiod_include_id FROM timeperiod_include_relations WHERE timeperiod_id = '".$key."'";					
+					$pearDB->query($query);
+					
+					$query = "INSERT INTO timeperiod_exclude_relations (timeperiod_id, timeperiod_exclude_id) 
+							SELECT ".$tp_id['MAX(tp_id)'].", timeperiod_exclude_id FROM timeperiod_exclude_relations WHERE timeperiod_id = '".$key."'";					
+					$pearDB->query($query);
+					
 					$oreon->CentreonLogAction->insertLog("timeperiod", $tp_id["MAX(tp_id)"], $tp_name, "a", $fields);
 				}
 			}
@@ -139,6 +187,10 @@
 				"WHERE tp_id = '".$tp_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		
+		$pearDB->query("DELETE FROM timeperiod_include_relations WHERE timeperiod_id = '".$tp_id."'");
+		$pearDB->query("DELETE FROM timeperiod_exclude_relations WHERE timeperiod_id = '".$tp_id."'");
+		includeExcludeTimeperiods($tp_id, $ret['tp_include'], $ret['tp_exclude']);
+		
 	    if (isset($_POST['nbOfExceptions'])) {			
 			$my_tab = $_POST;
 	        $already_stored = array();
@@ -147,7 +199,7 @@
 	 			$exInput = "exceptionInput_" . $i;
 	 			$exValue = "exceptionTimerange_" . $i;
 	 			if (isset($my_tab[$exInput]) && !isset($already_stored[strtolower($my_tab[$exInput])]) && $my_tab[$exInput]) {		 			
-		 			$rq = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`) VALUES ('". $tp_id['MAX(tp_id)'] ."', '". htmlentities($my_tab[$exInput], ENT_QUOTES) ."', '". htmlentities($my_tab[$exValue], ENT_QUOTES) ."')";
+		 			$rq = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`) VALUES ('". $tp_id ."', '". htmlentities($my_tab[$exInput], ENT_QUOTES) ."', '". htmlentities($my_tab[$exValue], ENT_QUOTES) ."')";
 			 		$DBRESULT =& $pearDB->query($rq);
 					$fields[$my_tab[$exInput]] = $my_tab[$exValue];	
 					$already_stored[strtolower($my_tab[$exInput])] = 1;
@@ -193,7 +245,9 @@
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(tp_id) FROM timeperiod");
 		$tp_id = $DBRESULT->fetchRow();
-				
+
+		includeExcludeTimeperiods($tp_id['MAX(tp_id)'], $ret['tp_include'], $ret['tp_exclude']);		
+		
 		/*
 		 *  Insert exceptions
 		 */

@@ -3,7 +3,8 @@
 	<div>
 	<ul id="mainnav">
 		<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">{$form.header.notification_base}</a></li>
-		<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.exclude}</a></li>
+		<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.include}</a></li>
+		<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$form.header.exclude}</a></li>
 	</ul>
 	</div>
 	<div id="validFormTop">
@@ -47,6 +48,16 @@
 		 </table>
 	</div>
 	<div id='tab2' class='tab'>
+		 <table class="ListTable">
+		 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/date-time_preferences.gif'>&nbsp;&nbsp;{$form.header.include}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.tp_exclude.label}</td><td class="FormRowValue">{$form.tp_include.html}</td></tr>
+			{if $o == "a" || $o == "c"}
+				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+			{/if}
+		 </table>
+	</div>
+	<div id='tab3' class='tab'>
 		 <table class="ListTable">
 		 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/date-time_preferences.gif'>&nbsp;&nbsp;{$form.header.exclude}</td></tr>
