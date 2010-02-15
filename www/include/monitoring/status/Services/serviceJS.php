@@ -192,10 +192,11 @@
 			var h = document.getElementById(_sort_type);
 			var _linkaction_asc = document.createElement("a");
 	
-			if (_order == 'ASC')
+			if (_order == 'ASC') {
 				_linkaction_asc.appendChild(_img_asc);
-			else
+			} else {
 				_linkaction_asc.appendChild(_img_desc);
+			}
 			
 			_linkaction_asc.href = '#' ;
 			_linkaction_asc.onclick=function(){change_order()};
@@ -248,13 +249,13 @@
 		}
 	
 		if (_first){
-			viewDebugInfo('--loop--');
 			mainLoop();
 			_first = 0;
 		}
 		_time=<?php echo $time; ?>;
-		if (_on)
+		if (_on) {
 			goM(_time_reload,_sid,_o);
+		}
 	}
 	
 	function goM(_time_reload,_sid,_o){
@@ -267,8 +268,6 @@
 		proc.transform("forAjax");
 	
 		_lock = 0;
-		viewDebugInfo('--end--');
-		
 		_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 		_time_live = _time_reload;
 		_on = 1;
@@ -295,7 +294,7 @@
 			//calcul auto de la hauteur de l'ecran client
 			var h = screen.availHeight;
 			
-			if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h){
+			if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h) {
             	span.style.top = '-380px';
             }
             span.style.left = '150px';
@@ -360,13 +359,13 @@
 	        PcH = false;
 	    }
 	    if (PcH){
-			_img = mk_img('include/views/graphs/generateGraphs/generateODSImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index+'&time=<?php print time(); ?>');
+			_img = mk_img('include/views/graphs/generateGraphs/generateImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index+'&time=<?php print time(); ?>');
 			Pdiv.appendChild(_img);
 			var l = screen.availWidth; // calcul auto de la largeur de l'ecran client 
 			var h = screen.availHeight; // calcul auto de la hauteur de l'ecran client 		
 			var posy = tempY + 10;
-			if(h - tempY < 420){
-				posy = tempY-310;
+			if (h - tempY < 420){
+				posy = tempY - 310;
 			}
 			Pdiv.style.display = "block";
 			Pdiv.style.left = tempX +'px';
@@ -375,7 +374,7 @@
 	}
 	
 	function hiddenIMG(id){
-		// Pour les navigateurs récents
+		// Pour les navigateurs recents
 	    if ( document.getElementById && document.getElementById( 'div_img' ) ){
 	        Pdiv = document.getElementById( 'div_img' );
 	        PcH = true;
@@ -384,13 +383,13 @@
 	        Pdiv = document.all[ 'div_img' ];
 	        PcH = true;
 	    } else if ( document.layers && document.layers[ 'div_img' ] ){
-		    // Pour les très veilles versions
+		    // Pour les tres veilles versions
 	        Pdiv = document.layers[ 'div_img' ];
 	        PcH = true;
 	    } else{
 	        PcH = false;
 	    }
-	    if ( PcH ) {
+	    if (PcH) {
 			Pdiv.style.display = "none";
 			Pdiv.innerHTML = '';
 		}
@@ -411,6 +410,7 @@
 
 		_cmd = cmd;
 		_getVar = "";
+		
 		if (cmd != '70' && cmd != '72') { 
 			return 1;
 		} 
@@ -420,7 +420,7 @@
 					_getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
 				}
 			}
-			Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: 'Acknowledgement'});
+			Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title:'Acknowledgement',width:600});
 			return 0;
 		}	
 	}
@@ -428,9 +428,7 @@
 	function send_the_command() {
 	   	if (window.XMLHttpRequest) { 
 	    	xhr_cmd = new XMLHttpRequest();
-	    }
-	    else if (window.ActiveXObject) 
-	    {
+	    } else if (window.ActiveXObject) {
 	    	xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 	    }	    
 		var comment = document.getElementById('popupComment').value;
