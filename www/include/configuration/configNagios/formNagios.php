@@ -123,13 +123,6 @@
 	/*
 	 * Part 2
 	 */
-	$form->addElement('text', 'status_file', _("Status File"), $attrsText2);
-	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'aggregate_status_updates', null, _("Yes"), '1');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'aggregate_status_updates', null, _("No"), '0');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'aggregate_status_updates', null, _("Default"), '2');
-	$form->addGroup($nagTab, 'aggregate_status_updates', _("Aggregated Status Updates Option"), '&nbsp;');
-	$form->addElement('text', 'status_update_interval', _("Aggregated Status Data Update Interval"), $attrsText3);
 	
 	/*
 	 * Part 3
@@ -280,7 +273,7 @@
 	$form->addElement('text', 'max_service_check_spread', _("Maximum Service Check Spread"), $attrsText3);
 	$form->addElement('text', 'service_interleave_factor', _("Service Interleave Factor"), $attrsText3);
 	$form->addElement('text', 'max_concurrent_checks', _("Maximum Concurrent Service Checks"), $attrsText3);
-	$form->addElement('text', 'service_reaper_frequency', _("Service Reaper Frequency"), $attrsText3);
+	$form->addElement('text', 'check_result_reaper_frequency', _("Service Reaper Frequency"), $attrsText3);
 	$form->addElement('text', 'host_inter_check_delay_method', _("Host Inter-Check Delay Method"), $attrsText3);
 	$form->addElement('text', 'max_host_check_spread', _("Maximum Host Check Spread"), $attrsText3);
 	$form->addElement('text', 'interval_length', _("Timing Interval Length"), $attrsText3);
@@ -297,10 +290,10 @@
 	 * Part 12
 	 */
 	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_agressive_host_checking', null, _("Yes"), '1');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_agressive_host_checking', null, _("No"), '0');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_agressive_host_checking', null, _("Default"), '2');
-	$form->addGroup($nagTab, 'use_agressive_host_checking', _("Agressive Host Checks"), '&nbsp;');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_aggressive_host_checking', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_aggressive_host_checking', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_aggressive_host_checking', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'use_aggressive_host_checking', _("Agressive Host Checks"), '&nbsp;');
 	
 	/*
 	 * Part 13
@@ -531,8 +524,7 @@
 	$form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
 
 	$form->setDefaults(array(
-	"nagios_activate"=>'0',
-	"aggregate_status_updates"=>'1',
+	"nagios_activate"=>'0',	
 	"nagios_user"=>"nagios_user",
 	"nagios_group"=>"nagios",
 	"enable_notifications"=>'1',
@@ -559,7 +551,7 @@
 	"service_interleave_factor"=>'s',
 	"host_inter_check_delay_method"=>'s',
 	"auto_reschedule_checks"=>'2',
-	"use_agressive_host_checking"=>'0',
+	"use_aggressive_host_checking"=>'0',
 	"enable_predictive_host_dependency_checks"=>'2',
 	"enable_predictive_service_dependency_checks"=>'2',
 	"enable_flap_detection"=>'0',

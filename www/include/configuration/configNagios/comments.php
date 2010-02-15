@@ -217,7 +217,7 @@ $nagios_comment["max_host_check_spread"]="This option determines the maximum num
   . "In general, this option will not have an affect on host check scheduling if scheduling information is being retained using the use_retained_scheduling_info option.<br />"
   . "Default value is 30 (minutes). ";
  
-$nagios_comment["service_reaper_frequency"]="This is the frequency (in seconds!) that Nagios will process "
+$nagios_comment["check_result_reaper_frequency"]="This is the frequency (in seconds!) that Nagios will process "
   . "the results of services that have been checked. ";
 
 $nagios_comment["sleep_time"]="This is the number of seconds to sleep between checking for system "
@@ -269,7 +269,7 @@ $nagios_comment["interval_length"]="This is the seconds per unit interval as use
   . "that each interval is one minute long (60 seconds).  Other settings "
   . "have not been tested much, so your mileage is likely to vary... ";
 
-$nagios_comment["use_agressive_host_checking"]="If you don\'t want to turn on agressive host checking features, set "
+$nagios_comment["use_aggressive_host_checking"]="If you don\'t want to turn on agressive host checking features, set "
   . "this value to 0 (the default).  Otherwise set this value to 1 to "
   . "enable the agressive check option.  Read the docs for more info "
   . "on what agressive host check is or check out the source code in "
@@ -414,15 +414,6 @@ $nagios_comment["host_freshness_check_interval"]="This setting determines how of
 $nagios_comment["freshness_check_interval"]="This setting determines how often (in seconds) Nagios will "
   . "check the freshness of service check results.  If you have "
   . "disabled service freshness checking, this option has no effect. ";
-
-$nagios_comment["aggregate_status_updates"]="This option determines whether or not Nagios will  "
-  . "aggregate updates of host, service, and program status "
-  . "data.  Normally, status data is updated immediately when "
-  . "a change occurs.  This can result in high CPU loads if "
-  . "you are monitoring a lot of services.  If you want Nagios "
-  . "to only refresh status data every few seconds, disable "
-  . "this option. "
-  . "Values: 1 = enable aggregate updates, 0 = disable aggregate updates ";
 
 $nagios_comment["status_update_interval"]="Combined with the aggregate_status_updates option, "
   . "this option determines the frequency (in seconds!) that "

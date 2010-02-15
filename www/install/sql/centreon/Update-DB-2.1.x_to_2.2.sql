@@ -86,3 +86,7 @@ CREATE TABLE IF NOT EXISTS `timeperiod_exceptions` (
 ALTER TABLE `timeperiod_exceptions`
   ADD CONSTRAINT `timeperiod_exceptions_relation_ibfk_1` FOREIGN KEY (`timeperiod_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE CASCADE;
 
+
+ALTER TABLE `cfg_nagios` RENAME COLUMN service_reaper_frequency TO check_result_reaper_frequency;
+ALTER TABLE `cfg_nagios` RENAME COLUMN use_agressive_host_checking TO use_aggressive_host_checking;
+ALTER TABLE `cfg_nagios` DROP COLUMN aggregate_status_updates;

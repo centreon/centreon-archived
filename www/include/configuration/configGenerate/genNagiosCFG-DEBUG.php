@@ -96,8 +96,8 @@
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key=>$value)	{
 		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{	
-			if ($key == "aggregate_status_updates" && $value == 2);
-			else if ($key == "enable_notifications" && $value == 2);	
+			//if ($key == "aggregate_status_updates" && $value == 2);
+			if ($key == "enable_notifications" && $value == 2);	
 			else if ($key == "execute_service_checks" && $value == 2);	
 			else if ($key == "accept_passive_service_checks" && $value == 2);	
 			else if ($key == "execute_host_checks" && $value == 2);	
@@ -116,7 +116,7 @@
 			else if ($key == "log_external_commands" && $value == 2);
 			else if ($key == "log_passive_checks" && $value == 2);
 			else if ($key == "auto_reschedule_checks" && $value == 2);
-			else if ($key == "use_agressive_host_checking" && $value == 2);
+			else if ($key == "use_aggressive_host_checking" && $value == 2);
 			else if ($key == "enable_flap_detection" && $value == 2);
 			else if ($key == "soft_state_dependencies" && $value == 2);
 			else if ($key == "obsess_over_services" && $value == 2);
@@ -129,7 +129,7 @@
 			else if ($key == "use_true_regexp_matching" && $value == 2);
 			else if ($key == "service_inter_check_delay_method" && $value == 2);
 			else if ($key == "host_inter_check_delay_method" && $value == 2);
-			else if ($key == "service_reaper_frequency") {
+			else if ($key == "check_result_reaper_frequency") {
 					$str .= "check_result_reaper_frequency=".$value."\n";
 			} else if ($key == "global_host_event_handler" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
@@ -176,9 +176,9 @@
 //			else if ($key == "cached_host_check_horizon");
 //			else if ($key == "cached_service_check_horizon");
 //			else if ($key == "additional_freshness_latency");	
-			else if ($key == "downtime_file");
-			else if ($key == "comment_file");
-			else if ($key == "debug_level_opt");
+//			else if ($key == "downtime_file");
+//			else if ($key == "comment_file");
+//			else if ($key == "debug_level_opt");
 //			else if ($key == "enable_embedded_perl");
 			else
 				$str .= $key."=".$value."\n";

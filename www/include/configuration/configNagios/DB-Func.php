@@ -138,7 +138,7 @@
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO cfg_nagios (" .
 				"`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , `object_cache_file` , `temp_file` , `temp_path` , `check_result_path`, `max_check_result_file_age`, " .
-				"`status_file` , `p1_file`, `aggregate_status_updates` , `status_update_interval` , `nagios_user` , `nagios_group` , " .
+				"`status_file` , `p1_file`, `status_update_interval` , `nagios_user` , `nagios_group` , " .
 				"`enable_notifications` , `execute_service_checks` , `accept_passive_service_checks` , `execute_host_checks` , " .
 				"`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , " .
 				"`check_external_commands` , `command_check_interval` , `command_file` , `downtime_file` , `comment_file` , " .
@@ -148,8 +148,8 @@
 				"`log_external_commands` , `log_passive_checks` , `global_host_event_handler` , " .
 				"`global_service_event_handler` , `sleep_time` , `service_inter_check_delay_method` , " .
 				"`host_inter_check_delay_method` , `service_interleave_factor` , `max_concurrent_checks` , `max_service_check_spread` , " .
-				"`max_host_check_spread` , `service_reaper_frequency` , `interval_length` , `auto_reschedule_checks` , `auto_rescheduling_interval` , " .
-				"`auto_rescheduling_window` , `use_agressive_host_checking` , `enable_predictive_host_dependency_checks`, `enable_flap_detection` , `low_service_flap_threshold` , " .
+				"`max_host_check_spread` , `check_result_reaper_frequency` , `interval_length` , `auto_reschedule_checks` , `auto_rescheduling_interval` , " .
+				"`auto_rescheduling_window` , `use_aggressive_host_checking` , `enable_predictive_host_dependency_checks`, `enable_flap_detection` , `low_service_flap_threshold` , " .
 				"`high_service_flap_threshold` , `low_host_flap_threshold` , `high_host_flap_threshold` , `soft_state_dependencies` ,`enable_predictive_service_dependency_checks` , " .
 				"`service_check_timeout` , `host_check_timeout` , `event_handler_timeout` , `notification_timeout` , `ocsp_timeout` , `ochp_timeout` , " .
 				"`perfdata_timeout` , `obsess_over_services` , `ocsp_command` , `obsess_over_hosts` , `ochp_command` , `process_performance_data` , " .
@@ -171,8 +171,7 @@
        	isset($ret["check_result_path"]) && $ret["check_result_path"] != NULL ? $rq .= "'".htmlentities($ret["check_result_path"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
        	isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != NULL ? $rq .= "'".htmlentities($ret["max_check_result_file_age"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["status_file"]) && $ret["status_file"] != NULL ? $rq .= "'".htmlentities($ret["status_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "'".htmlentities($ret["p1_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["aggregate_status_updates"]["aggregate_status_updates"]) && $ret["aggregate_status_updates"]["aggregate_status_updates"] != 2 ? $rq .= "'".$ret["aggregate_status_updates"]["aggregate_status_updates"]."',  "  : $rq .= "'2', ";
+        isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "'".htmlentities($ret["p1_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";        
         isset($ret["status_update_interval"]) && $ret["status_update_interval"] != NULL ? $rq .= "'".htmlentities($ret["status_update_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["nagios_user"]) && $ret["nagios_user"] != NULL ? $rq .= "'".htmlentities($ret["nagios_user"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["nagios_group"]) && $ret["nagios_group"] != NULL ? $rq .= "'".htmlentities($ret["nagios_group"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -212,12 +211,12 @@
         isset($ret["max_concurrent_checks"]) && $ret["max_concurrent_checks"] != NULL ? $rq .= "'".htmlentities($ret["max_concurrent_checks"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["max_service_check_spread"]) && $ret["max_service_check_spread"] != NULL ? $rq .= "'".htmlentities($ret["max_service_check_spread"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["max_host_check_spread"]) && $ret["max_host_check_spread"] != NULL ? $rq .= "'".htmlentities($ret["max_host_check_spread"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["service_reaper_frequency"]) && $ret["service_reaper_frequency"] != NULL ? $rq .= "'".htmlentities($ret["service_reaper_frequency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["check_result_reaper_frequency"]) && $ret["check_result_reaper_frequency"] != NULL ? $rq .= "'".htmlentities($ret["check_result_reaper_frequency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["interval_length"]) && $ret["interval_length"] != NULL ? $rq .= "'".htmlentities($ret["interval_length"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["auto_reschedule_checks"]["auto_reschedule_checks"]) && $ret["auto_reschedule_checks"]["auto_reschedule_checks"] != 2 ? $rq .= "'".$ret["auto_reschedule_checks"]["auto_reschedule_checks"]."', " : $rq .= "'2', ";
         isset($ret["auto_rescheduling_interval"]) && $ret["auto_rescheduling_interval"] != NULL ? $rq .= "'".htmlentities($ret["auto_rescheduling_interval"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["auto_rescheduling_window"]) && $ret["auto_rescheduling_window"] != NULL ? $rq .= "'".htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-        isset($ret["use_agressive_host_checking"]["use_agressive_host_checking"]) && $ret["use_agressive_host_checking"]["use_agressive_host_checking"] != 2 ? $rq .= "'".$ret["use_agressive_host_checking"]["use_agressive_host_checking"]."',  " : $rq .= "'2', ";
+        isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]) && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 2 ? $rq .= "'".$ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]."',  " : $rq .= "'2', ";
         isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]) && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2 ? $rq .= "'".$ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]."',  " : $rq .= "'2', ";
         isset($ret["enable_flap_detection"]["enable_flap_detection"]) && $ret["enable_flap_detection"]["enable_flap_detection"] != 2 ? $rq .= "'".$ret["enable_flap_detection"]["enable_flap_detection"]."',  " : $rq .= "'2', ";
         isset($ret["low_service_flap_threshold"]) && $ret["low_service_flap_threshold"] != NULL ? $rq .= "'".htmlentities($ret["low_service_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -321,8 +320,7 @@
         isset($ret["check_result_path"]) && $ret["check_result_path"] != NULL ? $rq .= "check_result_path = '".htmlentities($ret["check_result_path"], ENT_QUOTES)."',  " : $rq .= "check_result_path = NULL, ";
         isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != NULL ? $rq .= "max_check_result_file_age = '".htmlentities($ret["max_check_result_file_age"], ENT_QUOTES)."',  " : $rq .= "max_check_result_file_age = NULL, ";
         isset($ret["status_file"]) && $ret["status_file"] != NULL ? $rq .= "status_file = '".htmlentities($ret["status_file"], ENT_QUOTES)."',  " : $rq .= "status_file = NULL, ";
-        isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "p1_file = '".htmlentities($ret["p1_file"], ENT_QUOTES)."',  " : $rq .= "p1_file = NULL, ";
-        isset($ret["aggregate_status_updates"]["aggregate_status_updates"]) && $ret["aggregate_status_updates"]["aggregate_status_updates"] != 2 ? $rq .= "aggregate_status_updates = '".$ret["aggregate_status_updates"]["aggregate_status_updates"]."',  "  : $rq .= "aggregate_status_updates  = '2', ";
+        isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "p1_file = '".htmlentities($ret["p1_file"], ENT_QUOTES)."',  " : $rq .= "p1_file = NULL, ";        
         isset($ret["status_update_interval"]) && $ret["status_update_interval"] != NULL ? $rq .= "status_update_interval = '".htmlentities($ret["status_update_interval"], ENT_QUOTES)."',  " : $rq .= "status_update_interval = NULL, ";
  	    isset($ret["nagios_user"]) && $ret["nagios_user"] != NULL ? $rq .= "nagios_user = '".htmlentities($ret["nagios_user"], ENT_QUOTES)."',  " : $rq .= "nagios_user = NULL, ";
         isset($ret["nagios_group"]) && $ret["nagios_group"] != NULL ? $rq .= "nagios_group = '".htmlentities($ret["nagios_group"], ENT_QUOTES)."',  " : $rq .= "nagios_group = NULL, ";
@@ -360,14 +358,14 @@
         isset($ret["max_service_check_spread"]) && $ret["max_service_check_spread"] != NULL ? $rq .= "max_service_check_spread = '".htmlentities($ret["max_service_check_spread"], ENT_QUOTES)."',  " : $rq .= "max_service_check_spread = NULL, ";
         isset($ret["service_interleave_factor"]["service_interleave_factor"]) && $ret["service_interleave_factor"]["service_interleave_factor"] != 2 ? $rq .= "service_interleave_factor = '".$ret["service_interleave_factor"]["service_interleave_factor"]."',  " : $rq .= "service_interleave_factor = '2', ";
   		isset($ret["max_concurrent_checks"]) && $ret["max_concurrent_checks"] != NULL ? $rq .= "max_concurrent_checks = '".htmlentities($ret["max_concurrent_checks"], ENT_QUOTES)."',  " : $rq .= "max_concurrent_checks = NULL, ";
-        isset($ret["service_reaper_frequency"]) && $ret["service_reaper_frequency"] != NULL ? $rq .= "service_reaper_frequency = '".htmlentities($ret["service_reaper_frequency"], ENT_QUOTES)."',  " : $rq .= "service_reaper_frequency = NULL, ";
+        isset($ret["check_result_reaper_frequency"]) && $ret["check_result_reaper_frequency"] != NULL ? $rq .= "check_result_reaper_frequency = '".htmlentities($ret["check_result_reaper_frequency"], ENT_QUOTES)."',  " : $rq .= "check_result_reaper_frequency = NULL, ";
         isset($ret["host_inter_check_delay_method"]) && $ret["host_inter_check_delay_method"] != NULL ? $rq .= "host_inter_check_delay_method  = '".$ret["host_inter_check_delay_method"]."',  " : $rq .= "host_inter_check_delay_method  = NULL, ";
         isset($ret["max_host_check_spread"]) && $ret["max_host_check_spread"] != NULL ? $rq .= "max_host_check_spread = '".htmlentities($ret["max_host_check_spread"], ENT_QUOTES)."',  " : $rq .= "max_host_check_spread = NULL, ";
         isset($ret["interval_length"]) && $ret["interval_length"] != NULL ? $rq .= "interval_length = '".htmlentities($ret["interval_length"], ENT_QUOTES)."',  " : $rq .= "interval_length = NULL, ";
         isset($ret["auto_reschedule_checks"]["auto_reschedule_checks"]) && $ret["auto_reschedule_checks"]["auto_reschedule_checks"] != 2 ? $rq .= "auto_reschedule_checks = '".$ret["auto_reschedule_checks"]["auto_reschedule_checks"]."', " : $rq .= "auto_reschedule_checks = '2', ";
         isset($ret["auto_rescheduling_interval"]) && $ret["auto_rescheduling_interval"] != NULL ? $rq .= "auto_rescheduling_interval = '".htmlentities($ret["auto_rescheduling_interval"], ENT_QUOTES)."', " : $rq .= "auto_rescheduling_interval = NULL, ";
         isset($ret["auto_rescheduling_window"]) && $ret["auto_rescheduling_window"] != NULL ? $rq .= "auto_rescheduling_window = '".htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES)."', " : $rq .= "auto_rescheduling_window = NULL, ";
-        isset($ret["use_agressive_host_checking"]["use_agressive_host_checking"]) && $ret["use_agressive_host_checking"]["use_agressive_host_checking"] != 2 ? $rq .= "use_agressive_host_checking   = '".$ret["use_agressive_host_checking"]["use_agressive_host_checking"]."',  " : $rq .= "use_agressive_host_checking   = '2', ";
+        isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]) && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 2 ? $rq .= "use_aggressive_host_checking   = '".$ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]."',  " : $rq .= "use_aggressive_host_checking   = '2', ";
         isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]) && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2 ? $rq .= "enable_predictive_host_dependency_checks   = '".$ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]."',  " : $rq .= "enable_predictive_host_dependency_checks   = '2', ";
         isset($ret["enable_flap_detection"]["enable_flap_detection"]) && $ret["enable_flap_detection"]["enable_flap_detection"] != 2 ? $rq .= "enable_flap_detection = '".$ret["enable_flap_detection"]["enable_flap_detection"]."',  " : $rq .= "enable_flap_detection = '2', ";
         isset($ret["low_service_flap_threshold"]) && $ret["low_service_flap_threshold"] != NULL ? $rq .= "low_service_flap_threshold = '".htmlentities($ret["low_service_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "low_service_flap_threshold = NULL, ";

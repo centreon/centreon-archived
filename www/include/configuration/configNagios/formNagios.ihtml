@@ -43,9 +43,8 @@
 		<tr class="list_two"><td class="FormRowField">{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row.gif'>&nbsp;&nbsp;{$Status}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.status_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.aggregate_status_updates.label}</td><td class="FormRowValue">{$form.aggregate_status_updates.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.status_update_interval.label}</td><td class="FormRowValue">{$form.status_update_interval.html}&nbsp;{$Seconds}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.status_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>		
+		<tr class="list_two"><td class="FormRowField">{$form.status_update_interval.label}</td><td class="FormRowValue">{$form.status_update_interval.html}&nbsp;{$Seconds}</td></tr>
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$ExternalCommandes}</td></tr>	
 		<tr class="list_one"><td class="FormRowField">{$form.check_external_commands.label}</td><td class="FormRowValue">{$form.check_external_commands.html}</td></tr>
@@ -64,7 +63,7 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$HostCheckOptions}</td></tr>	
-		<tr class="list_one"><td class="FormRowField">{$form.use_agressive_host_checking.label}</td><td class="FormRowValue">{$form.use_agressive_host_checking.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.use_aggressive_host_checking.label}</td><td class="FormRowValue">{$form.use_aggressive_host_checking.html}</td></tr>
 		{if $msg.nagios == 3}
 		<tr class="list_one"><td class="FormRowField">{$form.enable_predictive_host_dependency_checks.label}</td><td class="FormRowValue">{$form.enable_predictive_host_dependency_checks.html}</td></tr>
 		{/if}
@@ -206,7 +205,7 @@
 		
 		<tr class="list_one"><td class="FormRowField">{$form.service_interleave_factor.label}</td><td class="FormRowValue">{$form.service_interleave_factor.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.max_concurrent_checks.label}</td><td class="FormRowValue">{$form.max_concurrent_checks.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.service_reaper_frequency.label}</td><td class="FormRowValue">{$form.service_reaper_frequency.html}&nbsp;{$Seconds}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.check_result_reaper_frequency.label}</td><td class="FormRowValue">{$form.check_result_reaper_frequency.html}&nbsp;{$Seconds}</td></tr>
 
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$AutoRescheduling}</td></tr>
