@@ -73,13 +73,25 @@
 		
 		foreach($timeperiods as $key=>$value)	{
 			global $pearDB;
+			
+			$fields = array();
 			$DBRESULT =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$key."' LIMIT 1");
+			
+			$query = "SELECT days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '".$key."'";
+			$res = $pearDB->query($query);
+			while ($row = $res->fetchRow()) {
+			    foreach ($row as $keyz => $valz) {
+			        $fields[$keyz] = $valz;
+			    }
+			}
+			
 			$row = $DBRESULT->fetchRow();
 			$row["tp_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
-				foreach ($row as $key2=>$value2)	{
-					$key2 == "tp_name" ? ($tp_name = $value2 = $value2."_".$i) : null;
+				foreach ($row as $key2=>$value2) {
+					$value2 .= "_" . $i;
+				    $key2 == "tp_name" ? ($tp_name = $value2) : $tp_name = null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 					if ($key2 != "tp_id")
 						$fields[$key2] = $value2;
@@ -87,11 +99,16 @@
 				}
 				if (testTPExistence($tp_name))	{	
 					$DBRESULT =& $pearDB->query($val ? $rq = "INSERT INTO timeperiod VALUES (".$val.")" : $rq = null);
+					
 					/*
 		 			* Get Max ID
 		 			*/
 					$DBRESULT =& $pearDB->query("SELECT MAX(tp_id) FROM `timeperiod`");
 					$tp_id = $DBRESULT->fetchRow();	
+				
+					$query = "INSERT INTO timeperiod_exceptions (timeperiod_id, days, timerange) 
+							SELECT ".$tp_id['MAX(tp_id)'].", days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '".$key."'";					
+					$pearDB->query($query);
 					$oreon->CentreonLogAction->insertLog("timeperiod", $tp_id["MAX(tp_id)"], $tp_name, "a", $fields);
 				}
 			}

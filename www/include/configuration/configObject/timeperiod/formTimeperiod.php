@@ -48,6 +48,22 @@
 		 */
 		$tp = array_map("myDecode", $DBRESULT->fetchRow());
 		$tp["contact_exclude"] = array();
+		
+		/*
+		 * Retrieves inclusions
+		 */
+		$res = $pearDB->query("SELECT * FROM timeperiod_include_relations WHERE timeperiod_id = '".$tp_id."'");
+		while ($row = $res->fetchRow()) {
+		    ;
+		}
+		
+		/*
+		 * Retrieves exclusions
+		 */
+		$res = $pearDB->query("SELECT * FROM timeperiod_exclude_relations WHERE timeperiod_id = '". $tp_id."'");
+		while ($row = $res->fetchRow()) {
+		    ;
+		}
 	}
 	
 	$excludeTP = array();
