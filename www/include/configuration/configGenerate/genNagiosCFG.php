@@ -72,7 +72,7 @@
 		/*
 		 * Include for Meta Service the cfg file
 		 */
-		if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
+		if ($files = glob("./include/configuration/configGenerate/metaService/*.php")) {
 			foreach ($files as $filename)	{
 				$cfg = NULL;
 				$file =& basename($filename);
@@ -80,6 +80,7 @@
 				$cfg .= $file[0];
 				$str .= "cfg_file=".$nagios["cfg_dir"].$cfg.".cfg\n";
 			}
+		}
 		/*
 		 * Include for Module the cfg file
 		 */
