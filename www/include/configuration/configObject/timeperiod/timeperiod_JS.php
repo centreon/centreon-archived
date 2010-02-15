@@ -70,8 +70,8 @@ function addBlankInput() {
 	keyElem.value = '';
 	tdElem1.appendChild(keyElem);	
 				
-	valueElem.id = 'exTimerange_' + globalj;
-	valueElem.name = 'exTimerange_' + globalj;
+	valueElem.id = 'exceptionTimerange_' + globalj;
+	valueElem.name = 'exceptionTimerange_' + globalj;
 	valueElem.value = "";	
 	tdElem2.appendChild(valueElem);	
 		
@@ -132,8 +132,8 @@ function displayExistingExceptions(max){
 		keyElem.value = globalExceptionTabName[globalj];		
 		tdElem1.appendChild(keyElem);	
 					
-		valueElem.id = 'exTimerange_' + globalj;
-		valueElem.name = 'exTimerange_' + globalj;
+		valueElem.id = 'exceptionTimerange_' + globalj;
+		valueElem.name = 'exceptionTimerange_' + globalj;
 		valueElem.value = globalExceptionTabTimerange[globalj];		
 		tdElem2.appendChild(valueElem);	
 		

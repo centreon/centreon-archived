@@ -82,3 +82,7 @@ CREATE TABLE IF NOT EXISTS `timeperiod_exceptions` (
   `days` VARCHAR(255) NOT NULL ,
   `timerange` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ALTER TABLE `timeperiod_exceptions`
+  ADD CONSTRAINT `timeperiod_exceptions_relation_ibfk_1` FOREIGN KEY (`timeperiod_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE CASCADE;
+

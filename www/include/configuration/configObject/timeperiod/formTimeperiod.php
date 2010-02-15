@@ -59,6 +59,21 @@
 	unset($data);
 	
 	/*
+	 *  Gets list of timeperiod exceptions
+	 */
+	$j = 0;		
+	$DBRESULT =& $pearDB->query("SELECT exception_id, timeperiod_id, days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '". $tp_id ."' ORDER BY `days`");
+	while ($exceptionTab =& $DBRESULT->fetchRow()){
+		$exception_id[$j] = $exceptionTab["exception_id"];
+		$exception_days[$j] = $exceptionTab["days"];
+		$exception_timerange[$j] = $exceptionTab["timerange"];
+		$exception_timeperiod_id[$j] = $exceptionTab["timeperiod_id"];
+		$j++;		
+	}
+	$DBRESULT->free();
+	
+	
+	/*
 	 * Var information to format the element
 	 */
 	$attrsText 		= array("size"=>"35");
@@ -106,22 +121,39 @@
 	echo $ams3->getElementJs(false);
 	
 	/*
-	 * Include javascript for dynamique entries
-	 */
-	require_once "./include/configuration/configObject/timeperiod/timeperiod_JS.php";
-
-	/*
-	 *  Host multiple templates relations stored in DB
+	 *  Multiple exceptions relations stored in DB
 	 */	
 	$mTp = array();
 	$k = 0;
-	$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
+	$DBRESULT =& $pearDB->query("SELECT exception_id FROM timeperiod_exceptions WHERE timeperiod_id = '". $tp_id ."'");
 	while ($multiTp =& $DBRESULT->fetchRow()){
-		$mTp[$k] = $multiTp["host_tpl_id"];
+		$mTp[$k] = $multiTp["exception_id"];
 		$k++;
 	}
 	$DBRESULT->free();
 	
+	/*
+	 * Include javascript for dynamique entries
+	 */
+	require_once "./include/configuration/configObject/timeperiod/timeperiod_JS.php";
+    if ($o == "c" || $o == "a" || $o == "mc") {		
+		for ($k = 0 ; isset($mTp[$k]); $k++) { ?>
+			<script type="text/javascript">
+			tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;		
+			</script> 
+		<?php
+		}
+		
+		for ($k = 0; isset($exception_id[$k]); $k++) { ?>
+			<script type="text/javascript">
+			globalExceptionTabId[<?php echo $k;?>] = <?php echo $exception_id[$k];?>;		
+			globalExceptionTabName[<?php echo $k;?>] = '<?php echo $exception_days[$k];?>';
+			globalExceptionTabTimerange[<?php echo $k;?>] = '<?php echo $exception_timerange[$k];?>';
+			globalExceptionTabTimeperiodId[<?php echo $k;?>] = <?php echo $exception_timeperiod_id[$k];?>;
+			</script>				
+		<?php 
+		}
+	}
 	
 	/*
 	 * Further informations

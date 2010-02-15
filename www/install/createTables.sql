@@ -2339,6 +2339,14 @@ ALTER TABLE `service_categories_relation`
   ADD CONSTRAINT `service_categories_relation_ibfk_1` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `service_categories_relation_ibfk_2` FOREIGN KEY (`sc_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE;
 
+
+--
+-- Contraintes pour la table `timeperiod_exceptions`
+--
+ALTER TABLE `timeperiod_exceptions`
+  ADD CONSTRAINT `timeperiod_exceptions_relation_ibfk_1` FOREIGN KEY (`timeperiod_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE CASCADE;
+
+
 --
 -- Contraintes pour la table `topology_JS`
 --
