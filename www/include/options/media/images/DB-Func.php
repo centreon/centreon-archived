@@ -37,7 +37,7 @@
  */
 
 	function sanitizeFilename($filename) {
-		$cleanstr = htmlentities($filename, ENT_QUOTES);
+		$cleanstr = htmlentities($filename, ENT_QUOTES, "UTF-8");
 		$cleanstr = str_replace(" ", "_", $cleanstr);
 		$cleanstr = str_replace("/", "_", $cleanstr);
 		$cleanstr = str_replace("\\", "_", $cleanstr);
@@ -45,7 +45,7 @@
 	}
 
 	function sanitizePath($path) {
-		$cleanstr = htmlentities($path, ENT_QUOTES);
+		$cleanstr = htmlentities($path, ENT_QUOTES, "UTF-8");
 		$cleanstr = str_replace("/", "_", $cleanstr);
 		$cleanstr = str_replace("\\", "_", $cleanstr);
 		return $cleanstr;
@@ -199,8 +199,8 @@
 			deleteImage($img_id);
 			$img_id = insertImg ($HTMLfile, $dir_alias, $img_info["img_path"], $img_info["img_comment"]);
 		}
-		/* rename */
-		if ($img_name) {
+		/* rename AND not moved*/
+		if ($img_name && $dir_alias == $img_info["dir_alias"]) {
 			$img_ext = pathinfo($img_info["img_path"], PATHINFO_EXTENSION);
 			$filename= $img_name.".".$img_ext;
 			$oldname = $mediadir.$img_info["dir_alias"]."/".$img_info["img_path"];
@@ -212,10 +212,8 @@
 		}
 		/* move to new dir - only processed if no file was uploaded */
 		if (!$HTMLfile->isUploadedFile() && $dir_alias != $img_info["dir_alias"]) {
-			if (!testDirectoryExistence($dir_alias))
+			if (!($dir_id = testDirectoryExistence($dir_alias)) )
 				$dir_id = insertDirectory($dir_alias);
-			else
-				$dir_id = $img_info["dir_id"];
 			$oldpath = $mediadir.$img_info["dir_alias"]."/".$img_info["img_path"];
 			$newpath = $mediadir.$dir_alias."/".$img_info["img_path"];
 			if (rename($oldpath,$newpath))
