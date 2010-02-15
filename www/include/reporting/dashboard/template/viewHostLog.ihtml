@@ -2,13 +2,13 @@
 {$form.javascript}
 {$styleB}
 <div class="cachediv">
-<FORM id="datareport">
-<INPUT type="hidden" name="host_id" value="{$host_id}"><br />	        
-<INPUT type="hidden" name="color_UP" value="{$color.UP}">
-<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
-<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
-<INPUT type="hidden" name="color_UNDETERMINED" value="{$color.UNDETERMINED}" >
-</FORM>
+	<FORM id="datareport">
+		<INPUT type="hidden" name="host_id" value="{$host_id}"><br />	        
+		<INPUT type="hidden" name="color_UP" value="{$color.UP}">
+		<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
+		<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
+		<INPUT type="hidden" name="color_UNDETERMINED" value="{$color.UNDETERMINED}" >
+	</FORM>
 </div>
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
@@ -53,7 +53,7 @@
 					<table class="ajaxOption">
 						<tr>
 							<td>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle} : </td>
-				        		<td>{$formPeriod.period.html}{$formPeriod.hidden}</td>
+			        		<td>{$formPeriod.period.html}{$formPeriod.hidden}</td>
 							<td>&nbsp;{$periodORlabel}&nbsp;</td>
 							<td>
 									{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
