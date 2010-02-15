@@ -38,6 +38,16 @@
 
 class CentreonSession 
 {
+	/*
+	 * Constructor class
+	 * 
+	 * @access public
+	 * @return 	object	object session
+	 */
+	public function __construct() {
+		
+	}
+	
 	function start() {
 		session_start();
 	}
@@ -60,7 +70,7 @@ class CentreonSession
 		session_unregister($register_var);
 	}
   
-	function register_var ($register_var) {
+	function register_var($register_var) {
 		session_register($register_var);
 	}
 	
