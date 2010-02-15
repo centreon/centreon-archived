@@ -54,7 +54,7 @@
 	}	
 	
 	function enableNagiosInDB ($nagios_id = null)	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 		if (!$nagios_id) 
 			return;
 		
@@ -64,11 +64,11 @@
 		$DBRESULT =& $pearDB->query("UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'");
 		
 		$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id."'");		
-		$oreon->Nagioscfg = array();
+		$centreon->Nagioscfg = array();
 	}
 	
 	function disableNagiosInDB ($nagios_id = null)	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 		
 		if (!$nagios_id) 
 			return;
@@ -82,9 +82,9 @@
 		$maxId =& $DBRESULT->fetchRow();
 		if (isset($maxId["MAX(nagios_id)"]))	{
 			$DBRESULT2 =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$maxId["MAX(nagios_id)"]."'");					
-			$oreon->Nagioscfg = array();
+			$centreon->Nagioscfg = array();
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-			$oreon->Nagioscfg = $DBRESULT->fetchRow();
+			$centreon->Nagioscfg = $DBRESULT->fetchRow();
 			$DBRESULT2->free();
 		}
 	}
@@ -136,7 +136,7 @@
 	}
 	
 	function insertNagios($ret = array())	{
-		global $form, $pearDB, $oreon;
+		global $form, $pearDB, $centreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO cfg_nagios (" .
@@ -305,21 +305,21 @@
 		$DBRESULT->free();
 		if (isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"])	{
 			$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."'");
-			$oreon->Nagioscfg = array();
+			$centreon->Nagioscfg = array();
 			$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-			$oreon->Nagioscfg = $DBRESULT->fetchRow();
+			$centreon->Nagioscfg = $DBRESULT->fetchRow();
 			$DBRESULT->free();
 		}
 		return ($nagios_id["MAX(nagios_id)"]);
 	}
 	
-	function updateNagios($nagios_id = null)	{
+	function updateNagios($nagios_id = null) { 
 		global $form, $pearDB;
 		
 		if (!$nagios_id) 
 			return;
 		
-		if (isset($ret["nagios_server_id"])){
+		if (isset($ret["nagios_server_id"])) {
 			$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET `nagios_server_id` != '".$ret["nagios_server_id"]."'");
 		}
 		
@@ -331,6 +331,7 @@
         isset($ret["log_file"]) && $ret["log_file"] != NULL ? $rq .= "log_file = '".htmlentities($ret["log_file"], ENT_QUOTES)."', " : $rq .= "log_file = NULL, ";
 		isset($ret["cfg_dir"]) && $ret["cfg_dir"] != NULL ? $rq .= "cfg_dir = '".htmlentities($ret["cfg_dir"], ENT_QUOTES)."',  " : $rq .= "cfg_dir = NULL, ";
         isset($ret["object_cache_file"]) && $ret["object_cache_file"] != NULL ? $rq .= "object_cache_file = '".htmlentities($ret["object_cache_file"], ENT_QUOTES)."',  " : $rq .= "object_cache_file = NULL, ";
+       	isset($ret["precached_object_file"]) && $ret["precached_object_file"] != NULL ? $rq .= "precached_object_file = '".htmlentities($ret["precached_object_file"], ENT_QUOTES)."',  " : $rq .= "precached_object_file = NULL, ";
        	isset($ret["temp_file"]) && $ret["temp_file"] != NULL ? $rq .= "temp_file = '".htmlentities($ret["temp_file"], ENT_QUOTES)."',  " : $rq .= "temp_file = NULL, ";
         isset($ret["temp_path"]) && $ret["temp_path"] != NULL ? $rq .= "temp_path = '".htmlentities($ret["temp_path"], ENT_QUOTES)."',  " : $rq .= "temp_path = NULL, ";
         isset($ret["check_result_path"]) && $ret["check_result_path"] != NULL ? $rq .= "check_result_path = '".htmlentities($ret["check_result_path"], ENT_QUOTES)."',  " : $rq .= "check_result_path = NULL, ";
@@ -437,8 +438,7 @@
 		isset($ret["broker_module"]) && $ret["broker_module"] != NULL ? $rq .= "broker_module = '".htmlentities($ret["broker_module"], ENT_QUOTES)."', " : $rq .= "broker_module = NULL, ";
 		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "event_broker_options = '".htmlentities($ret["event_broker_options"], ENT_QUOTES)."', " : $rq .= "event_broker_options = NULL, ";
 		isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "enable_embedded_perl   = '".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "enable_embedded_perl   = '2', ";
-		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "use_embedded_perl_implicitly   = '".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."',  " : $rq .= "use_embedded_perl_implicitly   = '2', ";
-		
+		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "use_embedded_perl_implicitly   = '".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."',  " : $rq .= "use_embedded_perl_implicitly   = '2', ";		
 		isset($ret["debug_file"]) && $ret["debug_file"] != NULL ? $rq .= "debug_file = '".htmlentities($ret["debug_file"], ENT_QUOTES)."',  " : $rq .= "debug_file = NULL, ";		
 		$level = 0;        
         if (isset($ret["nagios_debug_level"]) && $ret["nagios_debug_level"] != NULL) {        	        	        	
@@ -450,6 +450,12 @@
 		isset($ret["nagios_debug_level"]) && $ret["nagios_debug_level"] != NULL ? $rq .= "debug_level_opt = '".implode(",", array_keys($ret["nagios_debug_level"]))."',  " : $rq .= "debug_level = NULL, ";
 		isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2 ? $rq .= "debug_verbosity   = '".$ret["debug_verbosity"]["debug_verbosity"]."',  " : $rq .= "debug_verbosity   = '2', ";
 		isset($ret["max_debug_file_size"]) && $ret["max_debug_file_size"] != NULL ? $rq .= "max_debug_file_size = '".htmlentities($ret["max_debug_file_size"], ENT_QUOTES)."',  " : $rq .= "max_debug_file_size = NULL, ";
+
+		isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"]) && $ret["translate_passive_host_checks"]["translate_passive_host_checks"] != NULL ? $rq .= "translate_passive_host_checks = '".htmlentities($ret["translate_passive_host_checks"]["translate_passive_host_checks"], ENT_QUOTES)."',  " : $rq .= "translate_passive_host_checks = NULL, ";
+		isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"]) && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != NULL ? $rq .= "passive_host_checks_are_soft = '".htmlentities($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"], ENT_QUOTES)."',  " : $rq .= "passive_host_checks_are_soft = NULL, ";
+		isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]) && $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] != NULL ? $rq .= "check_for_orphaned_hosts = '".htmlentities($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"], ENT_QUOTES)."',  " : $rq .= "check_for_orphaned_hosts = NULL, ";
+		isset($ret["external_command_buffer_slots"]["external_command_buffer_slots"]) && $ret["external_command_buffer_slots"]["external_command_buffer_slots"] != NULL ? $rq .= "external_command_buffer_slots = '".htmlentities($ret["external_command_buffer_slots"]["external_command_buffer_slots"], ENT_QUOTES)."',  " : $rq .= " = NULL, ";
+		//isset($ret[""]) && $ret[""] != NULL ? $rq .= " = '".htmlentities($ret[""], ENT_QUOTES)."',  " : $rq .= " = NULL, ";
 		
 		$rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
@@ -457,4 +463,5 @@
 		if ($ret["nagios_activate"]["nagios_activate"])
 			enableNagiosInDB($nagios_id);
 	}
+	
 ?>
