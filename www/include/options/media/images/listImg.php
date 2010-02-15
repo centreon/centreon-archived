@@ -84,6 +84,7 @@
 	for ($i = 0; $elem =& $res->fetchRow(); $i++) {
 		if (isset($elem['dir_id']) && !isset($elemArr[$elem['dir_id']])) {
 			$selectedDirElem =& $form->addElement('checkbox', "select[".$elem['dir_id']."]");
+			$selectedDirElem->setAttribute("onclick", "setSubNodes(this, 'select[".$elem['dir_id']."-')");
 			$rowOpt = array("RowMenu_select"=>$selectedDirElem->toHtml(),
 					"RowMenu_DirLink"=>"?p=".$p."&o=cd&dir_id=".$elem['dir_id'],
 					"RowMenu_dir"=>$elem["dir_name"],
@@ -130,6 +131,28 @@
 		}
 		document.forms['form'].elements[_i].selectedIndex = 0;
 	}
+
+	function setSubNodes(theElement, like) {
+	    var theForm = theElement.form;
+	    var z = 0;
+	    for (z=0; z<theForm.length;z++) {
+		if (theForm[z].type == 'checkbox' && theForm[z].disabled == '0' && theForm[z].name.indexOf(like)>=0 ){
+			if (theElement.checked && !theForm[z].checked) {
+                                theForm[z].checked = true;
+                                if (typeof(_selectedElem) != 'undefined') {
+                                        putInSelectedElem(theForm[z].id);
+                                }
+			} else if (!theElement.checked && theForm[z].checked) {
+                                theForm[z].checked = false;
+                                if (typeof(_selectedElem) != 'undefined') {
+                                        removeFromSelectedElem(theForm[z].id);
+                                }
+                        }
+                }
+    	    }
+	}
+
+
 	</SCRIPT>
 	<?php
 	$actions = array(NULL=>_("More actions"), "d"=>_("Delete"), "m"=>_("Move images"));

@@ -35,6 +35,9 @@
  * SVN : $Id$
  * 
  */
+
+	require_once("./class/easyArchive.class.php");
+
 	#
 	## Database retrieve information
 	#
@@ -81,7 +84,7 @@
 	if ($o == "a") {
 		$form->addElement('header', 'title', _("Add Image(s)"));
 		$form->addElement('autocomplete', 'directories', _("Existing or new directory"), $dir_ids);
- 		$file =& $form->addElement('file', 'filename', _("Image or archive (tar.gz)"));	
+ 		$file =& $form->addElement('file', 'filename', _("Image or archive"));	
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 	} else if ($o == "ci") {
 		$form->addElement('header', 'title', _("Modify Image"));
@@ -136,7 +139,7 @@
 		$imgPath = $form->getElement('directories')->getValue();
 		$imgComment = $form->getElement('img_comment')->getValue();
 		if ($form->getSubmitValue("submitA"))
-			$imgID->setValue(insertImg($file, $imgPath, $imgComment));
+			handleUpload($file, $imgPath, $imgComment);
 		else if ($form->getSubmitValue("submitC")) {
 			$imgName = $form->getElement('img_name')->getValue();
 			updateImg($imgID->getValue(), $file, $imgPath, $imgName, $imgComment);

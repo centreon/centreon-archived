@@ -52,45 +52,94 @@
 	}
 	
 
-	function insertImg ($HTMLfile, $dir_alias, $img_comment = "") {
+	function extractDir($zipfile, $path) {
+		if (file_exists($zipfile)) {
+		    $files = array();
+		    $zip = new ZipArchive;
+		    if ($zip->open($zipfile) === TRUE) {
+    			if ($zip->extractTo($path) === TRUE)
+    			    return TRUE;
+    			else
+    			    return FALSE;
+    			$zip->close();
+		    } else
+		      return FALSE;
+		} else
+		    return FALSE;
+	}
+
+
+	function handleUpload($HTMLfile, $dir_alias, $img_comment = "") {
 		if (!$HTMLfile || !$dir_alias)
-			return;
-		$fDataz = $HTMLfile->getValue();
-		if (!isset($fDataz["name"]) | !isset($fDataz["type"]))
-			return;
-		global $pearDB;
+			return false;
+		$fileinfo = $HTMLfile->getValue();
+		if (!isset($fileinfo["name"]) | !isset($fileinfo["type"]))
+			return false;
 		
-		$img_id = 0;
+		$uploaddir = "../filesUpload/images/";
+
+                switch ($fileinfo["type"]) {
+			// known archive types
+                        case "application/zip" : 
+                        case "application/x-tar" : 
+                        case "application/x-gzip" : 
+                        case "application/x-bzip" : 
+                        case "application/x-zip-compressed" : 
+			    $HTMLfile->moveUploadedFile($uploaddir);
+			    $arc = new EasyArchive();
+			    $filelist = $arc->extract($uploaddir.$fileinfo["name"]);
+			    if ($filelist!==false) {
+				foreach ($filelist as $file) {
+				    if (is_dir($uploaddir.$file))
+					continue; // skip directories in list
+				    $img_ids[] = insertImg($uploaddir, $file, $dir_alias, $img_comment);
+				}
+				unlink($uploaddir.$fileinfo["name"]);
+				return $img_ids;
+			    }
+			    return false;
+			    break;
+                        default : 
+			    if (stristr($fileinfo["type"], "image/") ) {
+				$HTMLfile->moveUploadedFile($uploaddir);
+				$filename = sanitizeFilename($fileinfo["name"]);
+				$fullpath = $mediadir.$dir_alias."/".$filename;
+				if (is_file($fullpath))
+				    return false; // file exists
+				return insertImg($uploaddir, $fileinfo["name"], $dir_alias, $img_comment);
+			    } else {
+				return false;
+			    }
+                }
+	}
+
+	function insertImg ($src_dir, $filename, $dir_alias, $img_comment = "") {
+		global $pearDB;
 		$mediadir = "./img/media/";
+		
 		if (!($dir_id = testDirectoryExistence($dir_alias)))
 			$dir_id = insertDirectory($dir_alias);
 
-		$new_filename = sanitizeFilename($fDataz["name"]);
-		$fullpath = $mediadir.$dir_alias."/".$new_filename;
-		if (stristr($fDataz["type"], "image") && !is_file($fullpath)) {
+		$dst_file = sanitizeFilename($filename);
+		$dst  = $mediadir.$dir_alias."/".$dst_file;
+		if (is_file($dst))
+			return false; // file exists
+		if (!rename($src_dir.$filename, $dst))
+			return false; // access denied, path error
 
-			$HTMLfile->moveUploadedFile($mediadir);
-			if (rename($mediadir.$fDataz["name"], $fullpath))	{
-				$img_info = array();
-				$pinfo = pathinfo($fullpath);
-				$img_info["img_name"] = $pinfo["filename"];
-				$img_info["img_path"] = $pinfo["basename"];
-				/* 'pathinfo' returns NULL as filename on PHP < 5.2 */
-				if (!$img_info["img_name"])	{
-					$img_name = explode(".", $ret["img_path"]);
-					$img_info["img_name"] = $img_name[0];
-				}					
-				$rq = "INSERT INTO view_img ";
-				$rq .= "(img_name, img_path, img_comment) ";
-				$rq .= "VALUES ";
-				$rq .= "('".htmlentities($img_info["img_name"], ENT_QUOTES)."', '".$img_info["img_path"]."', '".htmlentities($img_comment, ENT_QUOTES)."')";
-				$pearDB->query($rq);
-				$res =& $pearDB->query("SELECT MAX(img_id) FROM view_img");
-				$img_id =& $res->fetchRow();
-				$res =& $pearDB->query("INSERT INTO view_img_dir_relation (dir_dir_parent_id, img_img_id) VALUES ('".$dir_id."', '".$img_id["MAX(img_id)"]."')");
-//				$res->free();
-			}
-		}
+		$img_parts = explode(".", $filename);
+		$img_name = $img_parts[0];
+		$rq = "INSERT INTO view_img ";
+		$rq .= "(img_name, img_path, img_comment) ";
+		$rq .= "VALUES ";
+		$rq .= "('".htmlentities($img_name, ENT_QUOTES)."', '".htmlentities($filename, ENT_QUOTES)."', '".htmlentities($img_comment, ENT_QUOTES)."')";
+		$pearDB->query($rq);
+		$res =& $pearDB->query("SELECT MAX(img_id) FROM view_img");
+		$img_id =& $res->fetchRow();
+		$img_id = $img_id["MAX(img_id)"];
+		$res =& $pearDB->query("INSERT INTO view_img_dir_relation (dir_dir_parent_id, img_img_id) VALUES ('".$dir_id."', '".$img_id."')");
+//		$res->free();
+
 		return ($img_id);
 	}
 
