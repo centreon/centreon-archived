@@ -29,6 +29,9 @@
 			<tr class="list_two"><td class="FormRowField">{$form.tp_friday.label}</td><td class="FormRowValue">{$form.tp_friday.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField">{$form.tp_saturday.label}</td><td class="FormRowValue">{$form.tp_saturday.html}</td></tr>
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/date-time_preferences.gif'>&nbsp;&nbsp;{$form.header.exception}</td></tr>			
+			{if $gmtUsed}
+				<tr class='list_one'><td><img src='./img/icones/16x16/warning.gif'>&nbsp; {$noExceptionMessage}</td></tr>
+			{/if}
 			<tr class="list_two">
 				<td colspan='2'><input type="hidden" name="nbOfExceptions" id="hiddenExInput">
 					<table id="exceptionTable" class="ListTableSmall" style='padding-top:0px'>

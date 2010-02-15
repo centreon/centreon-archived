@@ -272,7 +272,9 @@
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);	
 		$tpl->assign('form', $renderer->toArray());	
-		$tpl->assign('o', $o);		
+		$tpl->assign('o', $o);
+		$tpl->assign('gmtUsed', $oreon->CentreonGMT->used());
+		$tpl->assign('noExceptionMessage', _('GMT is activated on your system. Exceptions will not be generated.'));
 		$tpl->display("formTimeperiod.ihtml");
 	}
 ?><script type="text/javascript">
