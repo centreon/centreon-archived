@@ -218,13 +218,13 @@
         $obj->XML->writeElement("ico", 	$ndo["icon_image"]);
         
 		if ($ndo["notes"] != "") {
-			$obj->XML->writeElement("hnn", $hostObj->replaceMacroInString($ndo["host_id"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes_url"]))));
+			$obj->XML->writeElement("hnn", $hostObj->replaceMacroInString($ndo["name1"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes_url"]))));
 		} else {
 			$obj->XML->writeElement("hnn", "none");			
 		}
 		
 		if ($ndo["notes_url"] != "") {
-			$obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["host_id"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes_url"]))));
+			$obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["name1"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes_url"]))));
 		} else {
 			$obj->XML->writeElement("hnu", "none");			
 		}

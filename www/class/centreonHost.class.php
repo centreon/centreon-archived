@@ -113,8 +113,14 @@
  	/*
  	 *  Returns a string that replaces on demand macros by their values
  	 */
- 	public function replaceMacroInString($host_id, $string) { 		 		
-		$rq = "SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1";
+ 	public function replaceMacroInString($hostParam, $string) { 		 		
+ 	    if (is_numeric($hostParam)) {
+ 	        $host_id = $hostParam;		    
+		}
+		elseif (is_string($hostParam)) {
+		    $host_id = $this->getHostId($hostParam);
+		}
+ 	    $rq = "SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1";
         $DBRESULT =& $this->local_pearDB->query($rq);
         if (!$DBRESULT->numRows())
         	return $string;
