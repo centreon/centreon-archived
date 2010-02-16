@@ -90,3 +90,11 @@ ALTER TABLE `timeperiod_exceptions`
 ALTER TABLE `cfg_nagios` CHANGE service_reaper_frequency check_result_reaper_frequency INT(11);
 ALTER TABLE `cfg_nagios` CHANGE use_agressive_host_checking use_aggressive_host_checking ENUM('0', '1', '2');
 ALTER TABLE `cfg_nagios` DROP COLUMN aggregate_status_updates;
+
+CREATE TABLE `command_arg_description` (
+	`cmd_id` INT( 11 ) NOT NULL ,
+	`macro_name` VARCHAR( 255 ) NOT NULL ,
+	`macro_description` VARCHAR( 255 ) NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+ALTER TABLE  `command_arg_description` ADD CONSTRAINT  `command_arg_description_ibfk_1` FOREIGN KEY (`cmd_id`) REFERENCES  `command` (  `command_id` ) ON DELETE CASCADE;

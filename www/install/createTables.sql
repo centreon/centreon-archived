@@ -551,6 +551,18 @@ CREATE TABLE IF NOT EXISTS `command` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `command_arg_description`
+--
+
+CREATE TABLE `command_arg_description` (
+	`cmd_id` INT( 11 ) NOT NULL ,
+	`macro_name` VARCHAR( 255 ) NOT NULL ,
+	`macro_description` VARCHAR( 255 ) NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `command_categories`
 --
 
@@ -2009,6 +2021,13 @@ ALTER TABLE `cfg_ndo2db`
 --
 ALTER TABLE `cfg_ndomod`
   ADD CONSTRAINT `cfg_ndomod_ibfk_1` FOREIGN KEY (`ns_nagios_server`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `command_arg_description`
+--
+
+ALTER TABLE `command_arg_description`
+  ADD CONSTRAINT  `command_arg_description_ibfk_1` FOREIGN KEY (`cmd_id`) REFERENCES  `command` (  `command_id` ) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `contact`

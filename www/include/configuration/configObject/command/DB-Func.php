@@ -162,6 +162,7 @@
 		$fields["command_type"] = $ret["command_type"]["command_type"];
 		$fields["graph_id"] = $ret["graph_id"];
 		$oreon->CentreonLogAction->insertLog("command", $cmd_id, htmlentities($ret["command_name"], ENT_QUOTES), "c", $fields);
+		insertArgDesc($cmd_id, $ret);
 	}
 	
 	function insertCommandInDB ($ret = array())	{
@@ -206,6 +207,7 @@
 		$cmd_id = $DBRESULT->fetchRow();
 		
 		$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], htmlentities($ret["command_name"], ENT_QUOTES), "a", $fields);
+		insertArgDesc($cmd_id["MAX(command_id)"], $ret);
 		return ($cmd_id["MAX(command_id)"]);
 	}
 	
@@ -228,5 +230,28 @@
 		}
 		closedir($handle[$rep]);
 		return ($plugins);
+	}
+	
+	/*
+	 *  Inserts descriptions of arguments
+	 */
+	function insertArgDesc($cmd_id, $ret = NULL) {
+		global $oreon, $pearDB;
+		
+		if (!count($ret)) {
+			$ret = $form->getSubmitValues();
+		}
+		
+		$pearDB->query("DELETE FROM `command_arg_description` WHERE cmd_id = '".$cmd_id."'");
+		$query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) VALUES ";
+		if (isset($ret['listOfArg']) && $ret['listOfArg']) {
+			$tab1 = split("\n", $ret['listOfArg']);
+			foreach ($tab1 as $key => $value) {
+				$tab2 = split(" : ", $value, 2);
+				$query .= "('" . htmlentities($cmd_id, ENT_QUOTES) . "', '" . htmlentities($tab2[0], ENT_QUOTES) . "', '" .htmlentities($tab2[1], ENT_QUOTES). "'),";				
+			}
+			$query = trim($query, ",");
+			$pearDB->query($query);
+		}
 	}
 ?>

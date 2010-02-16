@@ -51,6 +51,8 @@
 		return (str_replace(" ", "_", $ret["command_name"]));
 	}
 	
+	require_once $centreon_path . "www/include/configuration/configObject/command/javascript/commandJs.php";
+	
 	/*
 	 * Database retrieve information for Command
 	 */
@@ -98,7 +100,8 @@
 	$DBRESULT->free();
 	
 	$attrsText 		= array("size"=>"35");
-	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65");
+	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
+	$attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
 
 	/*
 	 * Form begin
@@ -139,8 +142,12 @@
 	$form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
 	$form->addElement('text', 'command_hostaddress', _("\$HOSTADDRESS\$"), $attrsText);
 	$form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
+	$argListObj =& $form->addElement('textarea', 'listOfArg', _("Argument Descriptions"), $attrsTextarea2);
+	$argListObj->setAttribute("readonly");
 	$form->addElement('select', 'graph_id', _("Graph template"), $graphTpls);
 
+	$form->addElement('button', 'desc_arg', _("Describe arguments"), array("onClick"=>"goPopup();"));
+	
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
@@ -273,6 +280,7 @@
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+		$tpl->assign('arg_desc_label', _("Argument Descriptions"));
 		$tpl->display("formCommand.ihtml");
 	}
 ?>
