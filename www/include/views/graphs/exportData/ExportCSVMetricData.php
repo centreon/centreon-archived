@@ -51,8 +51,8 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once '../../../class/centreonDB.class.php';
 	
-	$pearDB = new CentreonDB();
-	$pearDBO = new CentreonDB("centstorage");
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
 	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
@@ -63,15 +63,15 @@
 	} else
 		get_error('need session identifiant !');
 
-	isset ($_GET["metric_id"]) ? $mtrcs = $_GET["metric_id"] : $mtrcs = NULL;
-	isset ($_POST["metric_id"]) ? $mtrcs = $_POST["metric_id"] : $mtrcs = $mtrcs;
+	isset ($_GET["metric_id"]) ? $mtrcs = htmlentities($_GET["metric_id"], ENT_QUOTES) : $mtrcs = NULL;
+	isset ($_POST["metric_id"]) ? $mtrcs = htmlentities($_POST["metric_id"], ENT_QUOTES) : $mtrcs = $mtrcs;
 
 	$path = "./include/views/graphs/graphODS/";
 	require_once '../../../class/centreonDuration.class.php';
 	require_once '../../common/common-Func.php';	
 
-	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
-	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
+	$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES) : "today"; 
+	$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES) : $period;
 
 	header("Content-Type: application/csv-tab-delimited-table");
 	header("Content-disposition: filename=".$mhost.".csv");

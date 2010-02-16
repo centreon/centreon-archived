@@ -51,8 +51,8 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."www/class/centreonDB.class.php";
 	
-	$pearDB = new CentreonDB();
-	$pearDBO = new CentreonDB("centstorage");
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
 	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
@@ -63,13 +63,13 @@
 	} else
 		get_error('need session identifiant !');
 
-	isset($_GET["index"]) ? $index = $_GET["index"] : $index = NULL;
-	isset($_POST["index"]) ? $index = $_POST["index"] : $index = $index;
+	isset($_GET["index"]) ? $index = htmlentities($_GET["index"], ENT_QUOTES) : $index = NULL;
+	isset($_POST["index"]) ? $index = htmlentities($_POST["index"], ENT_QUOTES) : $index = $index;
 
 	$path = "./include/views/graphs/graphODS/";
 
-	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
-	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
+	$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES) : "today"; 
+	$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES) : $period;
 
 	$DBRESULT =& $pearDBO->query("SELECT host_name, service_description FROM index_data WHERE id = '$index'");
 	while ($res =& $DBRESULT->fetchRow()){
@@ -89,8 +89,8 @@
 	while ($index_data =& $DBRESULT->fetchRow()){	
 		if (!isset($listMetric[$index_data["metric_name"]]))
 			$listMetric[$index_data["metric_name"]] = $index_data["metric_name"];
-		$DBRESULT2 =& $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".$_GET["start"]."' AND ctime < '".$_GET["end"]."'");
-		while ($data =& $DBRESULT2->fetchRow()){
+		$DBRESULT2 =& $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES)."' AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES)."'");
+		while ($data =& $DBRESULT2->fetchRow()) {
 			if (!isset($datas[$data["ctime"]]))
 				$datas[$data["ctime"]] = array();
 			$datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
@@ -98,13 +98,15 @@
 	}
 	
 	print "time";
-	foreach ($listMetric as $table)
+	foreach ($listMetric as $table) {
 		print ";".$table;
+	}
 	print "\n";
-	foreach ($datas as $key => $tab){
+	foreach ($datas as $key => $tab) {
 		print $key;
-		foreach($tab as $value)
-			print ";".$value;
+		foreach($tab as $value) {
+			printf(";%f", $value);
+		}
 		print "\n";
 	}
 	exit();

@@ -64,13 +64,13 @@
 	} else
 		get_error('need session identifiant !');
 
-	isset($_GET["index"]) ? $index = $_GET["index"] : $index = NULL;
-	isset($_POST["index"]) ? $index = $_POST["index"] : $index = $index;
+	isset($_GET["index"]) ? $index = htmlentities($_GET["index"], ENT_QUOTES) : $index = NULL;
+	isset($_POST["index"]) ? $index = htmlentities($_POST["index"], ENT_QUOTES) : $index = $index;
 
 	$path = "./include/views/graphs/graphODS/";
 
-	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
-	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
+	$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES) : "today"; 
+	$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES) : $period;
 
 	$DBRESULT =& $pearDBO->query("SELECT host_name, service_description FROM index_data WHERE id = '$index'");
 	while ($res =& $DBRESULT->fetchRow()){
@@ -85,14 +85,15 @@
 		header("Content-disposition: filename=".$index.".xml");
 
 	$DBRESULT =& $pearDBO->query("SELECT metric_id FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index'");
-	while ($index_data =& $DBRESULT->fetchRow()){	
-		$DBRESULT2 =& $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".$_GET["start"]."' AND ctime < '".$_GET["end"]."'");
-		while ($data =& $DBRESULT2->fetchRow()){
+	while ($index_data =& $DBRESULT->fetchRow()) {	
+		$DBRESULT2 =& $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES)."' AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES)."'");
+		while ($data =& $DBRESULT2->fetchRow()) {
 			if (!isset($datas[$data["ctime"]]))
 				$datas[$data["ctime"]] = array();
 			$datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
 		}
 	}
+
 	$buffer = new CentreonXML();
 	$buffer->startElement("root");
 	$buffer->startElement("datas");	
