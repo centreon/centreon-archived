@@ -396,11 +396,12 @@ fi
 
 ## Purge working directories
 purge_centreon_tmp_dir "silent"
+server=$(hostname -f)
 
 ${CAT} << __EOT__
 ###############################################################################
 #                                                                             #
-#                 Go to the URL : http://your-server/centreon/                #
+#                 Go to the URL : http://$server/centreon/                    #
 #                   	     to finish the setup                              #
 #                                                                             #
 #                  Report bugs at http://forge.centreon.com                   #
