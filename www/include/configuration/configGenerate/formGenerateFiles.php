@@ -252,11 +252,15 @@
 				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $host['id'])) {
 					if (isset($host['localhost']) && $host['localhost'] == 1) {
 						$msg_copy[$host["id"]] = "";
+						if (!is_dir($oreon->Nagioscfg["cfg_dir"]))
+							$msg_copy[$host["id"]] .= sprintf(_("Nagios config directory %s does not exist!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
+						if (!is_writable($oreon->Nagioscfg["cfg_dir"]))
+							$msg_copy[$host["id"]] .= sprintf(_("Nagios config directory %s is not writable for webserver's user!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
 						foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
-							$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
+							$bool = @copy($filename, $oreon->Nagioscfg["cfg_dir"].basename($filename));
 							$filename = array_pop(explode("/", $filename));
 							if (!$bool)
-								$msg_copy[$host["id"]] .= display_copying_file($filename, " - "._("movement")."<font color='res'>KO</font>");
+								$msg_copy[$host["id"]] .= display_copying_file($filename, " - "._("movement")." <font color='res'>KO</font>");
 						}
 						if (strlen($msg_copy[$host["id"]])) {
 							$msg_copy[$host["id"]] = "<table border=0 width=300>".$msg_copy[$host["id"]]."</table>";
