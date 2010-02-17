@@ -67,7 +67,7 @@
 	/*
 	 * Add Template CSS for sysInfos Pages
 	 */
-	if (isset($p) && !strcmp($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
+	if (isset($p) && strstr($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
 		echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
 
 

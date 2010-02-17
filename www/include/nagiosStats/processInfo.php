@@ -163,6 +163,7 @@
 	
 	
 	$str_shutdown = _("Shutdown the Nagios process");
+	$str_start = _("Start the Nagios process");
 	$str_restart = _("Restart the Nagios process");
 	$str_notif_enable = _("Enable notifications");
 	$str_notif_disable = _("Disable notifications");
@@ -188,6 +189,7 @@
 	/* Process commands */
 	$tpl->assign("commandLabel", _("Process Commands"));
 	$tpl->assign("str_shutdown", $str_shutdown);
+	$tpl->assign("str_start", $str_start);
 	$tpl->assign("str_restart", $str_restart);
 	
 	$tpl->assign("str_notif_enable", $str_notif_enable);
@@ -221,11 +223,13 @@
 	$tpl->assign("str_perfdata_disable", $str_perfdata_disable);
 	
 	$shutdown_img = "<img src='./img/icones/16x16/stop.gif'>";
+	$start_img = "<img src='./img/icones/16x16/media_play.gif'>";
 	$restart_img = "<img src='./img/icones/16x16/refresh.gif'>";
 	$disable_img = "<img src='./img/icones/16x16/delete2.gif'>";
 	$enable_img = "<img src='./img/icones/16x16/flag_green.gif'>";
 	
 	$tpl->assign("shutdown_img", $shutdown_img);
+	$tpl->assign("start_img", $start_img);
 	$tpl->assign("restart_img", $restart_img);
 	$tpl->assign("disable_img", $disable_img);
 	$tpl->assign("enable_img", $enable_img);
@@ -255,6 +259,12 @@
 	labels['global_shutdown'][2] = "<?php echo $shutdown_img;?>";
 	labels['global_shutdown'][3] = "<?php echo $shutdown_img;?>";
 	
+	labels['global_start'] = new Array();
+	labels['global_start'][0] = "<?php echo $str_start;?>";
+	labels['global_start'][1] = "<?php echo $str_start;?>";
+	labels['global_start'][2] = "<?php echo $start_img;?>";
+	labels['global_start'][3] = "<?php echo $start_img;?>";
+
 	labels['global_restart'] = new Array();
 	labels['global_restart'][0] = "<?php echo $str_restart;?>";	
 	labels['global_restart'][1] = "<?php echo $str_restart;?>";
@@ -333,8 +343,8 @@
 	        xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 	    }
 	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, poller, cmd + '_' + poller); };
-	   	xhr_cmd.open("GET", "./include/nagiosStats/processCommands.php?cmd=" + cmd + "&poller=" + poller + "&sid=" + _sid + "&type=" + actiontype, true);
-    	xhr_cmd.send(null);
+	    xhr_cmd.open("GET", "./include/nagiosStats/processCommands.php?cmd=" + cmd + "&poller=" + poller + "&sid=" + _sid + "&type=" + actiontype, true);
+	    xhr_cmd.send(null);
 	}
 	
 	function display_result(xhr_cmd, poller, div_id) {

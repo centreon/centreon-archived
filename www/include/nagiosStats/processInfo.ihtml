@@ -51,15 +51,20 @@
 	 			</table>
 	 			<br>
 	 		</td>
-	 		{assign var=val value=$procInfo.$key.is_currently_running}
+	 		{assign var=run value=$procInfo.$key.is_currently_running}
 	 		{assign var=count value=$count_action}
-	 		{if $val && ($admin || $count)}
+	 		{if ($admin || $count)}
 	 		<td align="center">
 	 			<table class="ListTable">
 	 				<tr><td class="tactical_light_header"><b>{$commandLabel}</b></td></tr>
 	 				{if $admin || $action_list.global_shutdown }
+					    {if $run}
 	 				<tr><td class="list_one" id="global_shutdown_{$key}">{$shutdown_img}&nbsp;<a href="#" onClick="send_command('global_shutdown', '0', '{$key}');">{$str_shutdown}</a></td></tr>
+					    {else}
+	 					<tr><td class="list_one" id="global_start_{$key}">{$start_img}&nbsp;<a href="#" onClick="send_command('global_start', '0', '{$key}');">{$str_start}</a></td></tr>
 	 				{/if}
+	 				{/if}
+				    {if $run}
 	 				{if $admin || $action_list.global_restart }
 	 				<tr><td class="list_two" id="global_restart_{$key}">{$restart_img}&nbsp;<a href="#" onClick="send_command('global_restart', '0', '{$key}');">{$str_restart}</a></td></tr>
 	 				{/if}	 				
@@ -163,6 +168,7 @@
 	 					{/if}
 	 				</td></tr>
 	 				{/if}
+				    {/if}
 	 			</table>
 	 		</td>
 	 		{/if}

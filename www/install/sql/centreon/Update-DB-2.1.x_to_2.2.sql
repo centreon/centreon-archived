@@ -98,3 +98,8 @@ CREATE TABLE `command_arg_description` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 ALTER TABLE  `command_arg_description` ADD CONSTRAINT  `command_arg_description_ibfk_1` FOREIGN KEY (`cmd_id`) REFERENCES  `command` (  `command_id` ) ON DELETE CASCADE;
+
+UPDATE      `topology` SET `topology_name` = 'Process Control', `topology_parent` = '505', `topology_page` = '50502', `topology_order` = '20' WHERE `topology_parent` = '102' AND  `topology_page` = '10202';
+UPDATE      `topology` SET `topology_url` = NULL WHERE  `topology_parent` = '5' AND  `topology_page` = '505';
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_icone`) VALUES (NULL, "System Information", '505', '50501', '10', '1','./include/options/sysInfos/index.php', './img/icones/16x16/about.gif');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 50502, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
