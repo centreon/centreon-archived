@@ -50,11 +50,18 @@
 				{/if}							
 			</td>
 		</tr>
-		<tr class="list_one"><td class="FormRowField">{$form.command_command_id_arg.label}</td><td class="FormRowValue">{$form.command_command_id_arg.html}
 		{if $o == "a" || $o == "c"}
-		&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  onClick="set_arg('example1','command_command_id_arg');"></a><input type="text" name="example1" disabled>
+		<tr class="list_one">
+			<td class="FormRowField">{$form.command_command_id_arg.label}</td>
+			<td class="FormRowValue"><div id='dynamicDiv'></div></td>
+		</tr>
 		{/if}
-		</td></tr>
+		{if $o == "mc"}
+		<tr class="list_one">
+			<td class="FormRowField">{$form.command_command_id_arg.label}</td>
+			<td class="FormRowValue">{$form.command_command_id_arg.html}&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  onClick="set_arg('example1','command_command_id_arg');"></a><input type="text" name="example1" disabled></td>
+		</tr>
+		{/if}
 		<tr class="list_two"><td class="FormRowField">{$form.service_max_check_attempts.label}</td><td class="FormRowValue">{$form.service_max_check_attempts.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_normal_check_interval.label}</td><td class="FormRowValue">{$form.service_normal_check_interval.html}&nbsp;{$time_unit}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_retry_check_interval.label}</td><td class="FormRowValue">{$form.service_retry_check_interval.html}&nbsp;{$time_unit}</td></tr>

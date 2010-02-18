@@ -702,6 +702,7 @@
 		require_once($path."listServiceTemplateModel.php");
 	else	{
 		#Apply a template definition
+		require_once $path.'javascript/argumentJs.php';
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -725,4 +726,7 @@
 <script type="text/javascript">		
 		displayExistingMacroSvc(<?php echo $k;?>, '<?php echo $o;?>');
 		showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
+		if (o != "mc") {
+			setTimeout('transformForm()', 200);
+		}
 </script>

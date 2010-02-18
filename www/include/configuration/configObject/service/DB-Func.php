@@ -39,6 +39,35 @@
 	if (!isset($centreon))
 		exit ();
 
+	/**
+	 * 
+	 * @param $argArray
+	 * @return string
+	 */
+    function getCommandArgs($argArray = array())
+    {
+        $argTab = array();
+		foreach ($argArray as $key => $value) {
+		    if (preg_match('/^ARG(\d+)/', $key, $matches)) {
+			    $argTab[$matches[1]] = $value;
+				$argTab[$matches[1]] = str_replace("\n", "#BR#", $argTab[$matches[1]]);
+			    $argTab[$matches[1]] = str_replace("\t", "#T#", $argTab[$matches[1]]);
+                $argTab[$matches[1]] = str_replace("\r", "#R#", $argTab[$matches[1]]);
+			    $argTab[$matches[1]] = str_replace('/', "#S#", $argTab[$matches[1]]);
+			    $argTab[$matches[1]] = str_replace('\\', "#BS#", $argTab[$matches[1]]);
+			}
+        }
+		ksort($argTab);
+		$str = "";
+		foreach ($argTab as $val) {
+		    $str .= "!" . $val;
+        }
+        if (!strlen($str)) {
+            return null;
+        }
+        return $str;
+    }
+		
 	function getHostServiceCombo($service_id = NULL, $service_description = NULL) {
 		global $pearDB;
 		if ($service_id == NULL || $service_description == NULL)
@@ -480,13 +509,6 @@
 
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
-			$ret["command_command_id_arg"] = str_replace("\n", "#BR#", $ret["command_command_id_arg"]);
-			$ret["command_command_id_arg"] = str_replace("\t", "#T#", $ret["command_command_id_arg"]);
-			$ret["command_command_id_arg"] = str_replace("\r", "#R#", $ret["command_command_id_arg"]);
-			$ret["command_command_id_arg"] = str_replace('/', "#S#", $ret["command_command_id_arg"]);
-			$ret["command_command_id_arg"] = str_replace('\\', "#BS#", $ret["command_command_id_arg"]);
-		}
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
@@ -547,8 +569,10 @@
 					$ret["service_comment"] = str_replace('\\', "#BS#", $ret["service_comment"]);
 				}
 				isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".htmlentities($ret["service_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-				
+				$ret['command_command_id_arg'] = getCommandArgs($_POST);
 				isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+				
+				
 				isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 				isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL ? $rq .= "'".$ret["service_register"]["service_register"]."', " : $rq .= "NULL, ";
 				isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
@@ -684,13 +708,6 @@
 		global $pearDB, $centreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
-			$ret["command_command_id_arg"] = str_replace("\n", "#BR#", $ret["command_command_id_arg"]);
-			$ret["command_command_id_arg"] = str_replace("\t", "#T#", $ret["command_command_id_arg"]);
-			$ret["command_command_id_arg"] = str_replace("\r", "#R#", $ret["command_command_id_arg"]);
-			$ret["command_command_id_arg"] = str_replace('/', "#S#", $ret["command_command_id_arg"]);
-			$ret["command_command_id_arg"] = str_replace('\\', "#BS#", $ret["command_command_id_arg"]);
-		}		
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
@@ -774,6 +791,7 @@
 		$ret["service_comment"] = str_replace("\\", '#BS#', $ret["service_comment"]);				
 		isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".htmlentities($ret["service_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 
+		$ret["command_command_id_arg"] = getCommandArgs($_POST);
 		$rq .= "command_command_id_arg = ";
 		isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		$rq .= "command_command_id_arg2 = ";
@@ -1024,6 +1042,7 @@
 			$rq .= "service_comment = '".htmlentities($ret["service_comment"], ENT_QUOTES)."', ";
 			$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES);
 		}
+		$ret["command_command_id_arg"] = getCommandArgs($_POST);
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL) {
 			$rq .= "command_command_id_arg = '".htmlentities($ret["command_command_id_arg"], ENT_QUOTES)."', ";
 			$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES);

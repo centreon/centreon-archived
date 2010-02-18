@@ -52,6 +52,7 @@
 	}
 
 	$service = array();
+	$serviceTplId = null;
 	if (($o == "c" || $o == "w") && $service_id)	{
 		
 		$DBRESULT =& $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
@@ -59,6 +60,8 @@
 		 * Set base value
 		 */
 		$service = array_map("myDecodeService", $DBRESULT->fetchRow());
+		$serviceTplId = $service['service_template_model_stm_id'];
+		$cmdId = $service['command_command_id'];
 		
 		/*
 		 * Grab hostgroup || host
@@ -148,9 +151,10 @@
 	$svTpls = array(NULL => NULL);
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
 	while ($svTpl = $DBRESULT->fetchRow())	{
-		if (!$svTpl["service_description"])
+		if (!$svTpl["service_description"]) {
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
-		else	{
+		}
+		else {
 			$svTpl["service_description"] = str_replace('#S#', "/", $svTpl["service_description"]);
 			$svTpl["service_description"] = str_replace('#BS#', "\\", $svTpl["service_description"]);
 		}
@@ -289,7 +293,7 @@
 	$form->addElement('text', 'service_description', _("Description"), $attrsText);
 	$form->addElement('text', 'service_alias', _("Alias"), $attrsText);
 	
-	$form->addElement('select', 'service_template_model_stm_id', _("Service Template"), $svTpls);
+	$form->addElement('select', 'service_template_model_stm_id', _("Service Template"), $svTpls, array('id'=>'svcTemplate', 'onChange'=>'changeServiceTemplate(this.value)'));
 	$form->addElement('static', 'tplText', _("Using a Template exempts you to fill required fields"));
 	
 	#
@@ -304,7 +308,12 @@
 	if ($o != "mc")
 		$form->setDefaults(array('service_is_volatile' => '2'));
 
-	$form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');	
+    if ($o == "mc") {
+	    $form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
+    }
+    else {
+        $form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, array('id' => "checkCommand", 'onChange' => "changeCommand(this.value);"));
+    }
 	$form->addElement('text', 'command_command_id_arg', _("Args"), $attrsText);
 	$form->addElement('text', 'service_max_check_attempts', _("Max Check Attempts"), $attrsText2);
 	$form->addElement('text', 'service_normal_check_interval', _("Normal Check Interval"), $attrsText2);
@@ -741,6 +750,7 @@
 			require_once($path."listServiceByHost.php");
 	} else {
 		#Apply a template definition
+		require_once $path.'javascript/argumentJs.php';
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -760,11 +770,14 @@
 		$tpl->assign('v', $oreon->user->get_version());		
 		$tpl->display("formService.ihtml");
 	}
-	if ($oreon->user->get_version() == 3 && !$action["action"]["action"]){
+	if (!$action["action"]["action"]){
 ?>
 <script type="text/javascript">		
 		displayExistingMacroSvc(<?php echo $k;?>, '<?php echo $o;?>');
 		showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
+		if (o != "mc") {
+			setTimeout('transformForm()', 200);
+		}
 </script>
 <?php
 	}
