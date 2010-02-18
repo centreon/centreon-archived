@@ -43,6 +43,7 @@ require_once ("DB.php");
 
 class CentreonDB {		
 	private $db_type = "mysql";
+	private $db_port = "3306";
 	private $retry;
 	private $privatePearDB;
 	private $dsn;
@@ -72,6 +73,13 @@ class CentreonDB {
 		$this->centreon_path = $centreon_path;
 		$this->retry = $retry;				
 		$this->options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
+
+		/*
+		 * Add possibility to change SGDB port
+		 */
+		if (isset($conf_centreon["port"]) && $conf_centreon["port"] != "")
+			$this->db_port = $conf_centreon["port"];
+		
 		switch (strtolower($db)) {
 			case "centreon" : 				
 				$this->connectToCentreon($conf_centreon);
@@ -121,6 +129,7 @@ class CentreonDB {
 	private function connectToCentreon($conf_centreon) {		
 		$this->dsn = array(
 	    	'phptype'  => $this->db_type,
+	    	'port'     => $this->db_port,
 	    	'username' => $conf_centreon["user"],
 	    	'password' => $conf_centreon["password"],
 	    	'hostspec' => $conf_centreon["hostCentreon"],
@@ -137,6 +146,7 @@ class CentreonDB {
 	private function connectToCentstorage($conf_centreon) {
     	$this->dsn = array(
 	    	'phptype'  => $this->db_type,
+	    	'port'     => $this->db_port,
 	    	'username' => $conf_centreon["user"],
 	    	'password' => $conf_centreon["password"],
 	    	'hostspec' => $conf_centreon["hostCentstorage"],
@@ -159,6 +169,7 @@ class CentreonDB {
 		
 		$this->dsn = array(
 	    	'phptype'  => $this->db_type,
+	    	'port'     => $this->db_port,
 	    	'username' => $confNDO['db_user'],
 	    	'password' => $confNDO['db_pass'],
 	    	'hostspec' => $confNDO['db_host'],
