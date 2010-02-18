@@ -245,9 +245,14 @@ class CentreonGraph	{
 			}
 	}
 	
+
+	static function cmplegend($a, $b) {
+		return strnatcasecmp($a["legend"], $b["legend"]);
+	}
+
 	public function createLegend() {
 		$cpt = 0;
-		natsort($this->metrics);
+		uasort($this->metrics, array("CentreonGraph", "cmplegend"));
 		foreach ($this->metrics as $key => $tm) {
 			if ($this->metrics[$key]["ds_filled"])
 				$this->commandLine .= " AREA:v".$cpt.$tm["ds_color_area"].$tm["ds_transparency"]." ";

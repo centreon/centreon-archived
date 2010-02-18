@@ -41,6 +41,10 @@
 		header("Content-type: text/xml"); 
 	} 
 
+	function cmpmetricname($a, $b) {
+	    return strnatcasecmp($a["metric_name"], $b["metric_name"]);
+	}
+
 	/*
 	 * Include Config file
 	 */	
@@ -426,7 +430,7 @@
 				$buffer->writeElement("end", time());				
 		
 				if ($split) {
-					natsort($metrics);
+					uasort($metrics, "cmpmetricname");
 					foreach ($metrics as $metric_id => $metric)	{
 						$buffer->startElement("metric");
 						$buffer->writeElement("metric_id", $metric_id);

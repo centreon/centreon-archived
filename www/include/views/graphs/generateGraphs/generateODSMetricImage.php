@@ -42,6 +42,10 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 	
+	function cmplegend($a, $b) {
+		return strnatcasecmp($a["legend"], $b["legend"]);
+	}
+ 	
 	/*
 	 * Include config file
 	 */
@@ -292,9 +296,11 @@
 		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
 		
 
-		# Create Legende
+		/*
+		 * Create Legend
+		 */
 		$cpt = 1;
-		natsort($metrics);
+		uasort($metrics, "cmplegend");
 		foreach ($metrics as $key => $tm){
 			if ($metrics[$key]["ds_filled"])
 				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"].$tm["ds_transparency"]." ";
