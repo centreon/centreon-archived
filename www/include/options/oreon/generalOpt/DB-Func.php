@@ -140,7 +140,7 @@
 		updateOption($pearDB, "debug_nagios_import", isset($ret["debug_nagios_import"]) && $ret["debug_nagios_import"] != NULL ? $ret["debug_nagios_import"]: "NULL");
 		updateOption($pearDB, "debug_rrdtool", isset($ret["debug_rrdtool"]) && $ret["debug_rrdtool"] != NULL ? $ret["debug_rrdtool"]: "NULL");
 		updateOption($pearDB, "debug_ldap_import", isset($ret["debug_ldap_import"]) && $ret["debug_ldap_import"] != NULL ? $ret["debug_ldap_import"]: "NULL");
-		updateOption($pearDB, "debug_inventory", isset($ret["debug_inventory"]) && $ret["debug_inventory"] != NULL ? $ret["debug_inventory"]: "NULL");
+		updateOption($pearDB, "debug_sql", isset($ret["debug_sql"]) && $ret["debug_sql"] != NULL ? $ret["debug_sql"]: "NULL");
 
 		$oreon->initOptGen($pearDB);
 	}

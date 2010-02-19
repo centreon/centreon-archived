@@ -50,10 +50,11 @@ class CentreonAuth {
 	public  $userInfos;
 	private $cryptPossibilities;
 	private $pearDB;
+	private $debug;
 	/*
 	 * Flags
 	 */
-	public $passwdOk;
+	public  $passwdOk;
 	private $authType;
 	
 	/*
@@ -83,7 +84,20 @@ class CentreonAuth {
     	 * Check User acces
     	 */
     	$this->checkUser($username, $password);
+    	$this->debug = $this->getLogFlag();
     }
+	
+	/*
+	 * Is loging enable ?
+	 */
+	private function getLogFlag() {
+		$DBRESULT =& $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_auth'");
+		$data = $DBRESULT->fetchRow();
+		if (isset($data["value"])) {
+			return $data["value"];
+		} else
+			return 0;
+	}
 	
 	/*
 	 * Check if password is ok.
@@ -139,17 +153,21 @@ class CentreonAuth {
 
 				if ($this->passwdOk == 1) {
 					$this->CentreonLog->setUID($this->userInfos["contact_id"]);
-					$this->CentreonLog->insertLog(1, "Contact '".$username."' logged in - IP : ".$_SERVER["REMOTE_ADDR"]);
+					if ($this->debug)
+						$this->CentreonLog->insertLog(1, "Contact '".$username."' logged in - IP : ".$_SERVER["REMOTE_ADDR"]);
 				} else {
-					$this->CentreonLog->insertLog(1, "Contact '".$username."' doesn't match with password");
+					if ($this->debug)
+						$this->CentreonLog->insertLog(1, "Contact '".$username."' doesn't match with password");
 					$this->error = "Invalid user";	
 				}
 			} else {
-				$this->CentreonLog->insertLog(1, "Contact '".$username."' is not enable for reaching centreon");
+				if ($this->debug)
+					$this->CentreonLog->insertLog(1, "Contact '".$username."' is not enable for reaching centreon");
 				$this->error = "Invalid user";
 			}
     	} else {
-    		$this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");
+    		if ($this->debug)
+	    		$this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");
     		$this->error = "Invalid user";
     	}
     }

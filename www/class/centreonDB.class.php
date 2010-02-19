@@ -56,6 +56,7 @@ class CentreonDB {
 	private $requestExecuted;
 	private $requestSuccessful;
 	private $lineRead;
+	private $debug;
 	
 	/*
 	 *  Constructor only accepts 1 parameter which can be :
@@ -106,7 +107,21 @@ class CentreonDB {
 		$this->requestExecuted = 0;
 		$this->requestSuccessful = 0;
 		$this->lineRead = 0;
+		
+		$this->debug = $this->getLogFlag();
     }
+
+	/*
+	 * Is loging enable ?
+	 */
+	private function getLogFlag() {
+		$DBRESULT =& $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_sql'");
+		$data = $DBRESULT->fetchRow();
+		if (isset($data["value"])) {
+			return $data["value"];
+		} else
+			return 0;
+	}
 
 	/* **************************************
      * Display error page
@@ -192,7 +207,8 @@ class CentreonDB {
 			$i++;
 		}
 		if ($i == $this->retry) {
-			$this->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");
+			if ($this->debug)
+				$this->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");
 			$this->displayConnectionErrorPage();
 		} else {	
 			$this->privatePearDB->setFetchMode(DB_FETCHMODE_ASSOC);
@@ -223,10 +239,13 @@ class CentreonDB {
 	public function query($query_string = NULL) {    	
 		$this->requestExecuted++;
     	$DBRES = $this->privatePearDB->query($query_string);
-    	if (PEAR::isError($DBRES))
-    		$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
-		else
+    	if (PEAR::isError($DBRES)) {
+    		if ($this->debug) {
+				$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
+    		}
+    	} else {
 			$this->requestSuccessful++;
+    	}
     	return $DBRES;
     }
     

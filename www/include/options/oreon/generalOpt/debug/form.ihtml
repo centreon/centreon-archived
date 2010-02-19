@@ -5,11 +5,11 @@
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$genOpt_debug_options}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;{$form.header.debug}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.debug_path.label}</td><td class="FormRowValue">{$form.debug_path.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.debug_auth.label}</td><td class="FormRowValue">{$form.debug_auth.html}&nbsp;{$form.debug_auth_clear.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.debug_nagios_import.label}</td><td class="FormRowValue">{$form.debug_nagios_import.html}&nbsp;{$form.debug_nagios_import_clear.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.debug_rrdtool.label}</td><td class="FormRowValue">{$form.debug_rrdtool.html}&nbsp;{$form.debug_rrdtool_clear.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.debug_ldap_import.label}</td><td class="FormRowValue">{$form.debug_ldap_import.html}&nbsp;{$form.debug_ldap_import_clear.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.debug_inventory.label}</td><td class="FormRowValue">{$form.debug_inventory.html}&nbsp;{$form.debug_inventory_clear.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.debug_auth.label}</td><td class="FormRowValue">{$form.debug_auth.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.debug_nagios_import.label}</td><td class="FormRowValue">{$form.debug_nagios_import.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.debug_rrdtool.label}</td><td class="FormRowValue">{$form.debug_rrdtool.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.debug_ldap_import.label}</td><td class="FormRowValue">{$form.debug_ldap_import.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.debug_sql.label}</td><td class="FormRowValue">{$form.debug_sql.html}</td></tr>
 </table>
 {if !$valid}
 	<div id="validForm">

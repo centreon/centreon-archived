@@ -45,6 +45,7 @@ class CentreonAuthLDAP {
 	var $CentreonLog;
 	var $contactInfos;
 	var $typePassword;
+	var $debug;
 	
 	
 	function CentreonAuthLDAP($pearDB, $CentreonLog, $login, $password, $contactInfos) {
@@ -70,6 +71,20 @@ class CentreonAuthLDAP {
 		 * Create URI
 		 */
 		($this->ldapInfos['ldap_ssl']) ? $this->ldapuri = "ldaps://" : $this->ldapuri = "ldap://" ;
+		
+		$this->debug = $this->getLogFlag();
+	}
+	
+	/*
+	 * Is loging enable ?
+	 */
+	private function getLogFlag() {
+		$DBRESULT =& $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap'");
+		$data = $DBRESULT->fetchRow();
+		if (isset($data["value"])) {
+			return $data["value"];
+		} else
+			return 0;
 	}
 	
 	function connect() {
@@ -77,7 +92,8 @@ class CentreonAuthLDAP {
 		if  (!isset($this->contactInfos['contact_ldap_dn']) || $this->contactInfos['contact_ldap_dn'] == '')
 			$this->contactInfos['contact_ldap_dn'] = "anonymous" ;
 		$this->ds = ldap_connect($this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']);
-		$this->CentreonLog->insertLog(3, "LDAP Auth Cnx : ". $this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']." : ".ldap_error($this->ds)." (".ldap_errno($this->ds).")");
+		if ($this->debug)
+			$this->CentreonLog->insertLog(3, "LDAP Auth Cnx : ". $this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']." : ".ldap_error($this->ds)." (".ldap_errno($this->ds).")");
 	}
 	
 	function checkPassword() {
@@ -92,7 +108,8 @@ class CentreonAuthLDAP {
 		 * LDAP BIND
 		 */
 		@ldap_bind($this->ds, $this->contactInfos['contact_ldap_dn'], $this->typePassword);
-		$this->CentreonLog->insertLog(3, "Connexion = ".$this->contactInfos['contact_ldap_dn']." :: ".ldap_error($this->ds));
+		if ($this->debug)
+			$this->CentreonLog->insertLog(3, "Connexion = ".$this->contactInfos['contact_ldap_dn']." :: ".ldap_error($this->ds));
 
 		/*
 		 * In some case, we fallback to local Auth
@@ -106,33 +123,40 @@ class CentreonAuthLDAP {
 		if (isset($this->ds) && $this->ds) {
 			switch (ldap_errno($this->ds)) {
 				case 0:
-					$this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
+					if ($this->debug)
+						$this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
 				   	return 1;
 				   	break;
 				case 2:
-					$this->CentreonLog->insertLog(3, "LDAP AUTH : Protocol Error ");
+					if ($this->debug)
+						$this->CentreonLog->insertLog(3, "LDAP AUTH : Protocol Error ");
 				   	return 1;
 				   	break;
 				case -1:
 				case 51:
-					$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server Busy. Try later");
+					if ($this->debug)
+						$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server Busy. Try later");
 					return 0;
 					break;
 				case 52:
-					$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server unavailable. Try later");
+					if ($this->debug)
+						$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server unavailable. Try later");
 					return 0;
 					break;
 				case 81:
-					$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Fallback to Local AUTH");
+					if ($this->debug)
+						$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Fallback to Local AUTH");
 					return 0;
 					break;
 				default:
-				   	$this->CentreonLog->insertLog(3, "LDAP AUTH : LDAP don't like you, sorry");
+				   	if ($this->debug)
+						$this->CentreonLog->insertLog(3, "LDAP AUTH : LDAP don't like you, sorry");
 				   	return 0;
 				   	break;
 			}
 		} else {
-			$this->CentreonLog->insertLog(3, "DS empty");
+			if ($this->debug)
+				$this->CentreonLog->insertLog(3, "DS empty");
 			return 0;
 		}
 	}
@@ -142,9 +166,7 @@ class CentreonAuthLDAP {
 	 */
 	function close() {
 		ldap_close($this->ds);
-	}
-	
+	}	
 }
- 
- 
+
 ?>
