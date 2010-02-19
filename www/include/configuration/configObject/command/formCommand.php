@@ -63,6 +63,11 @@
 		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
 		# Set base value
 		$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
+	    $DBRESULT =& $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '".$command_id."'");	
+		while ($row =& $DBRESULT->fetchRow()) {
+			$strArgDesc .= $row['macro_name'] . " : " . html_entity_decode($row['macro_description']) . "\n";
+			$nbRow++;
+		}
 	}
 	
 	/*
@@ -153,6 +158,7 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
+	$form->setDefaults(array("listOfArg"=>$strArgDesc));
 	
 	$form->addElement('select', 'resource', null, $resource);
 	$form->addElement('select', 'macros', null, $macros);
