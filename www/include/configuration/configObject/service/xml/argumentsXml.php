@@ -108,6 +108,8 @@
                 foreach($valueTab as $key => $value) {
                     $nbTmp = $key;
                     $valueTab['ARG'.$nbTmp] = $value;
+                    $valueTab['ARG'.$nbTmp] = str_replace('#S#', "/", $valueTab['ARG'.$nbTmp]);
+                    $valueTab['ARG'.$nbTmp] = str_replace('#BS#', "\\", $valueTab['ARG'.$nbTmp]);
                     unset($valueTab[$key]);
                 }
             }
