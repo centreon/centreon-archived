@@ -119,7 +119,7 @@
 		$cpt++;
 	}
 
-	$path = "./include/nagiosStats/";
+	$path = "./include/Administration/corePerformance/";
 		
 	/*
 	 * Smarty template Init

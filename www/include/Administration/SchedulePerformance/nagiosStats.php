@@ -95,7 +95,7 @@
 						"service_states" => "nagios_services_states.rrd",
 						"cmd_buffer" => "nagios_cmd_buffer.rrd");
 		
-	$path = "./include/nagiosStats/";
+	$path = "./include/Administration/corePerformance/";
 		
 	/*
 	 * Smarty template Init

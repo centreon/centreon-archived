@@ -36,48 +36,48 @@
  * 
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
-require_once $centreon_path . "/www/class/centreonExternalCommand.class.php";
-require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once $centreon_path . "/www/class/centreonSession.class.php";
-require_once $centreon_path . "/www/class/centreon.class.php";
-require_once $centreon_path . "/www/class/centreonXML.class.php";
-
-CentreonSession::start();
-if (!isset($_SESSION["oreon"]) || !isset($_GET["poller"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]) || !isset($_GET["type"]))
-	exit();
-
-$oreon =& $_SESSION["oreon"];
-
-$poller = $_GET["poller"];
-$cmd = $_GET["cmd"];
-$sid = $_GET["sid"];
-$type = $_GET["type"];
-
-$pearDB = new CentreonDB();
-$DBRESULT =& $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
-if (!$DBRESULT->numRows())
-	exit();
-
-if (!$oreon->user->access->checkAction($cmd))
-	exit();	
-
-
-$command = new CentreonExternalCommand($oreon);
-$cmd_tab = $command->getExternalCommandList();
-$command->set_process_command($cmd_tab[$cmd][$type], $poller);
-$result = $command->write();
-
-$buffer = new CentreonXML();
-$buffer->startElement("root");
-$buffer->writeElement("result", $result);
-$buffer->writeElement("cmd", $cmd);
-
-$type ? $type = 0 : $type = 1;
-$buffer->writeElement("actiontype", $type);
-
-$buffer->endElement();
-header('Content-type: text/xml; charset=utf-8');
-header('Cache-Control: no-cache, must-revalidate');
-$buffer->output();
+	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once $centreon_path . "/www/class/centreonExternalCommand.class.php";
+	require_once $centreon_path . "/www/class/centreonDB.class.php";
+	require_once $centreon_path . "/www/class/centreonSession.class.php";
+	require_once $centreon_path . "/www/class/centreon.class.php";
+	require_once $centreon_path . "/www/class/centreonXML.class.php";
+	
+	CentreonSession::start();
+	if (!isset($_SESSION["oreon"]) || !isset($_GET["poller"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]) || !isset($_GET["type"]))
+		exit();
+	
+	$oreon =& $_SESSION["oreon"];
+	
+	$poller = $_GET["poller"];
+	$cmd = $_GET["cmd"];
+	$sid = $_GET["sid"];
+	$type = $_GET["type"];
+	
+	$pearDB = new CentreonDB();
+	$DBRESULT =& $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
+	if (!$DBRESULT->numRows())
+		exit();
+	
+	if (!$oreon->user->access->checkAction($cmd))
+		exit();	
+	
+	
+	$command = new CentreonExternalCommand($oreon);
+	$cmd_tab = $command->getExternalCommandList();
+	$command->set_process_command($cmd_tab[$cmd][$type], $poller);
+	$result = $command->write();
+	
+	$buffer = new CentreonXML();
+	$buffer->startElement("root");
+	$buffer->writeElement("result", $result);
+	$buffer->writeElement("cmd", $cmd);
+	
+	$type ? $type = 0 : $type = 1;
+	$buffer->writeElement("actiontype", $type);
+	
+	$buffer->endElement();
+	header('Content-type: text/xml; charset=utf-8');
+	header('Cache-Control: no-cache, must-revalidate');
+	$buffer->output();
 ?>
