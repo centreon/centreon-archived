@@ -67,7 +67,7 @@ class CentreonUser	{
 	# String with elements ID separated by commas for DB requests
 	var $lcaTStr;
 	  
-  	function CentreonUser($user = array(), $nagios_version = NULL)  {
+  	function CentreonUser($user = array())  {
 		global $pearDB;
 		
 		$this->user_id = $user["contact_id"];
@@ -78,7 +78,7 @@ class CentreonUser	{
 		$this->charset = "UTF-8";
 		$this->passwd = $user["contact_passwd"];
 		$this->admin = $user["contact_admin"];
-		$this->version = $nagios_version;
+		$this->version = 3;
 	  	$this->gmt = $user["contact_location"];
 	  	$this->is_admin = NULL;
 	  	/*
