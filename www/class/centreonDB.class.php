@@ -108,20 +108,8 @@ class CentreonDB {
 		$this->requestSuccessful = 0;
 		$this->lineRead = 0;
 		
-		$this->debug = $this->getLogFlag();
+		$this->debug = 1;
     }
-
-	/*
-	 * Is loging enable ?
-	 */
-	private function getLogFlag() {
-		$DBRESULT =& $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_sql'");
-		$data = $DBRESULT->fetchRow();
-		if (isset($data["value"])) {
-			return $data["value"];
-		} else
-			return 0;
-	}
 
 	/* **************************************
      * Display error page
