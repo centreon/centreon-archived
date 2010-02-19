@@ -54,6 +54,8 @@
 		# Set base value
 		$service_list =& $DBRESULT->fetchRow();
 		$service = array_map("myDecodeSvTP", $service_list);
+		$serviceTplId = $service['service_template_model_stm_id'];
+		$cmdId = $service['command_command_id'];
 		
 		/*
 		 * Grab hostgroup || host
@@ -269,7 +271,7 @@
 	$form->addElement('text', 'service_alias', _("Alias"), $attrsText);
 	$form->addElement('header', 'service_alias_interest', _("Name Used for Service in auto-deploy by template"), $attrsText);
 
-	$form->addElement('select', 'service_template_model_stm_id', _("Template Service Model"), $svTpls);
+	$form->addElement('select', 'service_template_model_stm_id', _("Template Service Model"), $svTpls, array('id'=>'svcTemplate', 'onChange'=>'changeServiceTemplate(this.value)'));
 	$form->addElement('static', 'tplText', _("Using a Template Model allows you to have multi-level Template connections"));
 
     $ams3 =& $form->addElement('advmultiselect', 'service_hPars', _("Linked to host templates "), $hosts, $attrsAdvSelect_big);
@@ -290,7 +292,12 @@
 	if ($o != "mc")
 		$form->setDefaults(array('service_is_volatile' => '2'));
 
-	$form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
+	if ($o == "mc") {
+	    $form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
+    }
+    else {
+        $form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, array('id' => "checkCommand", 'onChange' => "changeCommand(this.value);"));
+    }
 	$form->addElement('text', 'command_command_id_arg', _("Args"), $attrsTextLong);
 	$form->addElement('text', 'service_max_check_attempts', _("Max Check Attempts"), $attrsText2);
 	$form->addElement('text', 'service_normal_check_interval', _("Normal Check Interval"), $attrsText2);
@@ -702,7 +709,7 @@
 		require_once($path."listServiceTemplateModel.php");
 	else	{
 		#Apply a template definition
-		require_once $path.'javascript/argumentJs.php';
+		require_once $centreon_path . 'www/include/configuration/configObject/service/javascript/argumentJs.php';
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
