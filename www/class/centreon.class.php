@@ -82,13 +82,13 @@ class Centreon	{
 	 * @param	int		$page	page id
 	 * @return	object	objet information
      */
-	function __contruct($user = NULL, $pages = array())	{
+	function Centreon($userInfos)	{
 		global $pearDB;
 		
 		/*
 		 * Get User informations
 		 */
-		$this->user = $user;
+		$this->user = new CentreonUser($userInfos);
 		
 		/*
 		 * Get Local nagios.cfg file
