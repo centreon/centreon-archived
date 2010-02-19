@@ -1,5 +1,10 @@
 ## Centreon 2.2
-s
+
+=> feature #1570: new command and service interface
+=> enhancement : removes useless/deprecated Nagios options 
+=> enhancement : better overview of monitoring status
+=> enhancement : new Views > Graphs interface (possibility to export images etc...)
+
 
 ## Centreon 2.1.4
 
