@@ -346,27 +346,29 @@ class CentreonGraph	{
 	}
 
 	public function getDefaultGraphTemplate() {
-		$tmp_id = $this->getServiceGraphID();
-		if ($tmp_id != "") {
-			$this->template_id = $tmp_id;
+		$template_id = $this->getServiceGraphID();
+		if ($template_id != "") {
+			$this->template_id = $template_id;
 			return;
 		} else {
 			$command_id = getMyServiceField($this->indexData["service_id"], "command_command_id");
 			$DBRESULT =& $this->DB->query("SELECT graph_id FROM command WHERE `command_id` = '".$command_id."'");
 			if ($DBRESULT->numRows())	{
-				$gt =& $DBRESULT->fetchRow();
-				$this->template_id = $gt["graph_id"];
-				unset($gt);
-				return;
+				$data =& $DBRESULT->fetchRow();
+				if ($data["graph_id"] != 0) {
+					$this->template_id = $data["graph_id"];
+					unset($data);
+					return;
+				}
 			}
 			$DBRESULT->free();
 			unset($command_id);
 		}
 		$DBRESULT =& $this->DB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$gt =& $DBRESULT->fetchRow();
-			$this->template_id = $gt["graph_id"];
-			unset($gt);
+			$data =& $DBRESULT->fetchRow();
+			$this->template_id = $data["graph_id"];
+			unset($data);
 			$DBRESULT->free();
 			return;
 		}
