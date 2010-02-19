@@ -54,7 +54,7 @@
 			    $argTab[$matches[1]] = str_replace("\t", "#T#", $argTab[$matches[1]]);
                 $argTab[$matches[1]] = str_replace("\r", "#R#", $argTab[$matches[1]]);
 			    $argTab[$matches[1]] = str_replace('/', "#S#", $argTab[$matches[1]]);
-			    $argTab[$matches[1]] = str_replace('\\', "#BS#", $argTab[$matches[1]]);
+			    $argTab[$matches[1]] = str_replace("\\\\", "#BS#", $argTab[$matches[1]]);
 			}
         }
 		ksort($argTab);
