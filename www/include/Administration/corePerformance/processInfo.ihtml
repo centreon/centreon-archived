@@ -1,0 +1,178 @@
+<div>
+	<ul id="mainnav">
+	{assign var='cpt' value=0}
+	{foreach from=$tab_server key=key item=item}
+		{assign var='cpt' value=$cpt+1}
+		<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$tab_server[$key]}</a></li>
+	{/foreach}
+	</ul>
+</div>
+<a name="generate">
+{assign var='cpt' value=0}
+{foreach from=$host_list key=key item=item}
+{assign var='cpt2' value=$cpt}
+{assign var='cpt' value=$cpt+1}
+<div id='tab{$cpt}' class='tab'>
+ 	<table class="ListTable">
+	 	<tr class="ListHeader">
+	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$tab_server[$cpt2]}&nbsp;</td>
+	 	</tr>		
+		<tr valign="top">
+			<td align="center">
+	 			<table class="ListTable">
+	 				<tr><td colspan=2 class="tactical_light_header"><b>{$processInfoLabel}</b></td></tr>
+	 				<tr class='list_one'><td>{$str_prog_version}</td><td>{$procInfo.$key.program_version}</td></tr>
+	 				<tr class='list_two'><td>{$str_prog_start_time}</td><td>{$procInfo.$key.program_start_time}</td></tr>
+	 				<tr class='list_one'><td>{$str_last_command_check}</td><td>{$procInfo.$key.last_command_check}</td></tr>
+	 				<tr class='list_two'><td>{$str_last_log_rotation}</td><td>{$procInfo.$key.last_log_rotation}</td></tr>
+	 				<tr class='list_one'><td>{$str_process_id}</td><td>{$procInfo.$key.process_id}</td></tr>
+	 				{assign var=val value=$procInfo.$key.is_currently_running}
+	 				<tr class='list_two'><td>{$str_currently_running}</td><td><b>{$yes_no_tab.$val}</b></td></tr>
+	 				{assign var=val value=$procInfo.$key.notifications_enabled}
+	 				<tr class='list_one'><td>{$str_notifications_enabled}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.active_host_checks_enabled}
+	 				<tr class='list_two'><td>{$str_host_check_execute}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.passive_host_checks_enabled}
+	 				<tr class='list_one'><td>{$str_passive_host_checks_enabled}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.active_service_checks_enabled}
+	 				<tr class='list_two'><td>{$str_service_check_execute}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.passive_service_checks_enabled}
+	 				<tr class='list_one'><td>{$str_passive_service_checks_enabled}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.event_handlers_enabled}
+	 				<tr class='list_two'><td>{$str_event_handlers_enabled}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.obsess_over_hosts}
+	 				<tr class='list_one'><td>{$str_obsess_over_hosts}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.obsess_over_services}
+	 				<tr class='list_two'><td>{$str_obsess_over_services}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.process_performance_data}	 				 
+	 				<tr class='list_one'><td>{$str_process_performance_data}</td><td>{$yes_no_tab.$val}</td></tr>
+	 				{assign var=val value=$procInfo.$key.flap_detection_enabled}	 				 
+	 				<tr class='list_two'><td>{$str_flap_detection}</td><td>{$yes_no_tab.$val}</td></tr>
+	 			</table>
+	 			<br>
+	 		</td>
+	 		{assign var=run value=$procInfo.$key.is_currently_running}
+	 		{assign var=count value=$count_action}
+	 		{if ($admin || $count)}
+	 		<td align="center">
+	 			<table class="ListTable">
+	 				<tr><td class="tactical_light_header"><b>{$commandLabel}</b></td></tr>
+	 				{if $admin || $action_list.global_shutdown }
+					    {if $run}
+	 				<tr><td class="list_one" id="global_shutdown_{$key}">{$shutdown_img}&nbsp;<a href="#" onClick="send_command('global_shutdown', '0', '{$key}');">{$str_shutdown}</a></td></tr>
+					    {else}
+	 					<tr><td class="list_one" id="global_start_{$key}">{$start_img}&nbsp;<a href="#" onClick="send_command('global_start', '0', '{$key}');">{$str_start}</a></td></tr>
+	 				{/if}
+	 				{/if}
+				    {if $run}
+	 				{if $admin || $action_list.global_restart }
+	 				<tr><td class="list_two" id="global_restart_{$key}">{$restart_img}&nbsp;<a href="#" onClick="send_command('global_restart', '0', '{$key}');">{$str_restart}</a></td></tr>
+	 				{/if}	 				
+	 				{if $admin || $action_list.global_notifications }
+	 				<tr><td class="list_one" id="global_notifications_{$key}">
+	 					{assign var=val value=$procInfo.$key.notifications_enabled}
+	 					{if $val}
+	 						{$disable_img}&nbsp;<a href="#" onClick="send_command('global_notifications', '1', '{$key}');">{$str_notif_disable}</a>
+	 					{else}
+	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('global_notifications', '0', '{$key}');">{$str_notif_enable}</a>
+	 					{/if}
+	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_service_checks }
+	 				<tr><td class="list_two" id="global_service_checks_{$key}">
+	 					{assign var=val value=$procInfo.$key.active_service_checks_enabled}
+	 					{if $val}
+	 						{$disable_img}&nbsp;<a href="#" onClick="send_command('global_service_checks', '1', '{$key}');">{$str_stop_svc_check}</a>
+	 					{else}
+	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('global_service_checks', '0', '{$key}');">{$str_start_svc_check}</a>
+	 					{/if}
+	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_service_passive_checks }
+	 				<tr><td class="list_one" id="global_service_passive_checks_{$key}">
+	 					{assign var=val value=$procInfo.$key.passive_service_checks_enabled}
+	 					{if $val}
+	 						{$disable_img}&nbsp;<a href="#" onClick="send_command('global_service_passive_checks', '1', '{$key}');">{$str_stop_passive_svc_check}</a>
+	 					{else}
+	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('global_service_passive_checks', '0', '{$key}');">{$str_start_passive_svc_check}</a>
+	 					{/if}
+	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_host_checks }
+	 				<tr><td class="list_two" id="global_host_checks_{$key}">
+	 					{assign var=val value=$procInfo.$key.active_host_checks_enabled}
+	 					{if $val}
+	 						{$disable_img}&nbsp;<a href="#" onClick="send_command('global_host_checks', '1', '{$key}');">{$str_stop_host_check}</a>
+	 					{else}
+	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('global_host_checks', '0', '{$key}');">{$str_start_host_check}</a>
+	 					{/if}
+	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_host_passive_checks }
+	 				<tr><td class="list_one" id="global_host_passive_checks_{$key}">
+	 					{assign var=val value=$procInfo.$key.passive_host_checks_enabled}
+	 					{if $val}
+	 						{$disable_img}&nbsp;<a href="#" onClick="send_command('global_host_passive_checks', '1', '{$key}');">{$str_stop_passive_host_check}</a>
+	 					{else}
+	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('global_host_passive_checks', '0', '{$key}');">{$str_start_passive_host_check}</a>
+	 					{/if}
+	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_event_handler }
+	 				<tr><td class="list_two" id='global_event_handler_{$key}'>
+	 					{assign var=val value=$procInfo.$key.event_handlers_enabled}
+	 					{if $val}
+	 						{$disable_img}&nbsp;<a href="#" onClick="send_command('global_event_handler', '1', '{$key}');">{$str_handler_disable}</a>
+	 					{else}
+	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('global_event_handler', '0', '{$key}');">{$str_handler_enable}</a>
+	 					{/if}
+	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_service_obsess }
+	 				<tr><td class="list_one" id="global_service_obsess_{$key}">
+	 					{assign var=val value=$procInfo.$key.obsess_over_services}
+	 					{if $val}
+	 						{$disable_img}&nbsp;<a href="#" onClick="send_command('global_service_obsess', '1', '{$key}');">{$str_stop_svc_obsess}</a>
+	 					{else}
+	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('global_service_obsess', '0', '{$key}');">{$str_start_svc_obsess}</a>
+	 					{/if}
+	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_host_obsess }
+	 				<tr><td class="list_two" id="global_host_obsess_{$key}">
+	 					{assign var=val value=$procInfo.$key.obsess_over_hosts}
+	 					{if $val}
+	 						{$disable_img}&nbsp;<a href="#" onClick="send_command('global_host_obsess', '1', '{$key}');">{$str_stop_host_obsess}</a>
+	 					{else}
+	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('global_host_obsess', '0', '{$key}');">{$str_start_host_obsess}</a>
+	 					{/if}
+	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_flap_detection }
+	 				<tr><td class="list_one" id="global_flap_detection_{$key}">
+	 					{assign var=val value=$procInfo.$key.flap_detection_enabled}
+	 					{if $val}
+	 						{$disable_img}&nbsp;<a href="#" onClick="send_command('global_flap_detection', '1', '{$key}');">{$str_flap_detection_disable}</a>
+	 					{else}
+	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('global_flap_detection', '0', '{$key}');">{$str_flap_detection_enable}</a>
+	 					{/if}
+	 				</td></tr>
+	 				{/if}
+	 				{if $admin || $action_list.global_perf_data }
+	 				<tr><td class="list_two" id="global_perf_data_{$key}">
+	 					{assign var=val value=$procInfo.$key.process_performance_data}
+	 					{if $val}
+	 						{$disable_img}&nbsp;<a href="#" onClick="send_command('global_perf_data', '1', '{$key}');">{$str_perfdata_disable}</a>
+	 					{else}
+	 						{$enable_img}&nbsp;<a href="#" onClick="send_command('global_perf_data', '0', '{$key}');">{$str_perfdata_enable}</a>
+	 					{/if}
+	 				</td></tr>
+	 				{/if}
+				    {/if}
+	 			</table>
+	 		</td>
+	 		{/if}
+	 	</tr>	 	
+	 </table>	 
+</div>
+{/foreach}
