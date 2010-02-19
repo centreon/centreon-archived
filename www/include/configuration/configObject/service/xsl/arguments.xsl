@@ -10,6 +10,13 @@
 	            	<td><xsl:value-of select='//main/argValue'/></td>
 	            	<td><xsl:value-of select='//main/argExample'/></td>
 	            </tr>
+	            <xsl:if test='//nbArg = 0'>
+	            	<tr>
+	            		<td colspan='3'>
+	            			<xsl:value-of select='//main/noArgLabel'/>
+	            		</td>
+	            	</tr>
+	            </xsl:if>
 	            <xsl:for-each select='//arg'>
 	            	<xsl:element name='tr'>                                
 	                	<xsl:attribute name='class'><xsl:value-of select='style'/></xsl:attribute>

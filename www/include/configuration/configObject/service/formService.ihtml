@@ -47,7 +47,7 @@
 				{$form.command_command_id.html}
 				{if $o == "a" || $o == "c"}
 				&nbsp;<img src='./img/icones/16x16/about.gif' style='cursor:help' onClick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id'].options[document.Form.elements['command_command_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
-				{/if}							
+				{/if}
 			</td>
 		</tr>
 		{if $o == "a" || $o == "c"}

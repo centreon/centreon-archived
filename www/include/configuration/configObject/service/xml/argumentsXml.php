@@ -51,6 +51,7 @@
 	$xml->writeElement('argLabel', _('Argument'));
 	$xml->writeElement('argValue', _('Value'));
 	$xml->writeElement('argExample', _('Example'));
+	$xml->writeElement('noArgLabel', _('No argument found for this command'));
 	$xml->endElement();
 	
     if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId'])) {
@@ -124,6 +125,7 @@
         }
         
         $style = 'list_two';
+        $nbArg = 0;
         foreach ($argTab as $name => $description) {
             $style == 'list_one' ? $style = 'list_two' : $style = 'list_one';
             $xml->startElement('arg');
@@ -133,8 +135,10 @@
             $xml->writeElement('example', isset($exampleTab[$name]) ? $exampleTab[$name] : "");
             $xml->writeElement('style', $style);
             $xml->endElement();
+            $nbArg++;
         }
     }
+    $xml->writeElement('nbArg', $nbArg);
 	$xml->endElement();	
 	header('Content-Type: text/xml');
 	$xml->output();
