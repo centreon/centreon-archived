@@ -66,14 +66,14 @@
 		/*
 		 * Grab hostgroup || host
 		 */
-		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."' AND host_host_id IS NOT NULL");
+		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM host_service_relation hsr, host WHERE hsr.service_service_id = '".$service_id."' AND host_host_id IS NOT NULL AND host_id = host_host_id ORDER BY host_name, host_alias");
 		while ($parent =& $DBRESULT->fetchRow())	{
 			if ($parent["host_host_id"])
 				$service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
 		}
 		$DBRESULT->free();
 
-		$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."' AND hostgroup_hg_id IS NOT NULL");
+		$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id FROM host_service_relation hsr, hostgroup WHERE hsr.service_service_id = '".$service_id."' AND hostgroup_hg_id IS NOT NULL AND hostgroup_hg_id = hg_id ORDER BY hg_name, hg_alias");
 		while ($parent =& $DBRESULT->fetchRow())	{
 			if ($parent["hostgroup_hg_id"])
 				$service["service_hgPars"][$parent["hostgroup_hg_id"]] = $parent["hostgroup_hg_id"];
