@@ -41,9 +41,9 @@
 	}
 
 	// Including files and dependences 
-	require_once './class/centreonDuration.class.php';	
-	require_once './include/common/common-Func.php';	
-	require_once './class/centreonDB.class.php';
+	require_once "./class/centreonDuration.class.php";	
+	require_once "./include/common/common-Func.php";	
+	require_once "./class/centreonDB.class.php";
 	
 	global $pearDB, $pearDBndo;
 	
@@ -327,7 +327,7 @@
 		 * Get problem table
 		 */
 		if (!$is_admin)
-			$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
+			$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
 					" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht" .
 					" WHERE obj.object_id = stat.service_object_id" .
 					" AND stat.service_object_id = svc.service_object_id" .
@@ -342,7 +342,7 @@
 					" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 					" ORDER by stat.current_state DESC, obj.name1";
 		else
-			$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
+			$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
 					" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht" .
 					" WHERE obj.object_id = stat.service_object_id" .
 					" AND stat.service_object_id = svc.service_object_id" .
@@ -364,6 +364,7 @@
 		$tab_duration[$j] = "";
 		$tab_output[$j] = "";
 		$tab_ip[$j] = "";
+		$tab_icone[$j] = "";
 		
 		while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 			$is_unhandled = 1;	
@@ -386,6 +387,7 @@
 					$tab_duration[$j] = " - ";
 				}
 				$tab_output[$j] = $ndo["output"];
+				$tab_icone[$j] = $ndo["icon_image"];
 				$j++;
 			}
 		}
@@ -418,7 +420,8 @@
 		$tpl->assign("tb_last", $tab_last);
 		$tpl->assign("tb_output", $tab_output);
 		$tpl->assign("tb_duration", $tab_duration);
-		$tpl->assign("tb_ip", $tab_ip);			
+		$tpl->assign("tb_ip", $tab_ip);
+		$tpl->assign("tb_icone", $tab_icone);		
 					
 		$tpl->assign("tb_hostprobname", $tab_hostprobname);
 		$tpl->assign("tb_hostprobstate", $tab_hostprobstate);

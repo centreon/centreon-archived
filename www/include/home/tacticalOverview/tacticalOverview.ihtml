@@ -100,7 +100,7 @@
 					{assign var="class" value="list_one"}
 					{foreach from=$tb_hostprobname key=k item=hostname}
 					<tr class="{$class}">
-						<td class="ListColLeft" style="white-space:nowrap;"><a href="{$url_hostdetail}{$tb_hostprobname[$k]}">{$tb_hostprobname[$k]}</a></td>
+						<td class="ListColLeft" style="white-space:nowrap;"><img src="./img/media/{$tb_icone[$k]}" width='16' height='16'>&nbsp;&nbsp;<a href="{$url_hostdetail}{$tb_hostprobname[$k]}">{$tb_hostprobname[$k]}</a></td>
 						{if $tb_hostprobstate[$k] == 1}
 						<td class="ListColCenter" style="background-color:{$color.color_critical};font-weight:bold;white-space:nowrap;" align=center>{$str_down}</td>
 						{/if}
@@ -257,7 +257,7 @@
 					{assign var="class" value="list_one"}
 					{foreach from=$tb_hostname key=k item=hostname}
 					<tr class="{$class}">
-						<td class="ListColLeft" style="white-space:nowrap;"><a href="{$url_hostdetail}{$tb_hostname[$k]}">{$tb_hostname[$k]}</a></td>
+						<td class="ListColLeft" style="white-space:nowrap;"><img src="./img/media/{$tb_icone[$k]}" width='16' height='16'>&nbsp;&nbsp;<a href="{$url_hostdetail}{$tb_hostname[$k]}">{$tb_hostname[$k]}</a></td>
 						{if $tb_state[$k] == 3}
 						<td class="ListColLeft" style="white-space:nowrap;"><a href="{$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}">{$tb_svcname[$k]}</a></td>
 						<td class="ListColCenter" style="background-color:{$color.color_unknown};font-weight:bold;white-space:nowrap;" align=center>{$str_unknown}</td>
