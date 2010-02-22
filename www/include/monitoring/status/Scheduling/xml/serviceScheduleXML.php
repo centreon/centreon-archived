@@ -74,8 +74,8 @@
 	 * Init GMT class
 	 */
 	
-	$centreonGMT = new CentreonGMT();
-	$centreonGMT->getMyGMTFromSession($sid);
+	$centreonGMT = new CentreonGMT($pearDB);
+	$centreonGMT->getMyGMTFromSession($sid, $pearDB);
 	
 	(isset($_GET["enable"]) && !check_injection($_GET["enable"])) ? $enable = urldecode($_GET["enable"]) : $enable = "enable";
 	(isset($_GET["disable"]) && !check_injection($_GET["disable"])) ? $disable = urldecode($_GET["disable"]) : $disable = "disable";
