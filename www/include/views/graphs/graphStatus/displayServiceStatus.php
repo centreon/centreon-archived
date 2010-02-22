@@ -40,6 +40,7 @@
 	}
 			
 	require_once "@CENTREON_ETC@/centreon.conf.php";	
+	
 	require_once $centreon_path."/www/class/centreonDB.class.php";
 	require_once $centreon_path."www/class/centreonSession.class.php";
 	require_once $centreon_path."/www/class/centreonGMT.class.php";
@@ -96,15 +97,14 @@
 		/*
 		 * Connect to ods
 		 */
-		 		
 		$pearDBO = new CentreonDB("centstorage");
 		$RRDdatabase_path = getStatusDBDir($pearDBO);
 		
 		/*
 		 * Get Graphs size
 		 */
-		(isset($graph_width)) ? $width = $graph_width : 500;
-		(isset($graph_height)) ? $height = $graph_height : 120;
+		$width = 500;
+		$height = 120;
 	
 		/*
 		 * Get index information to have acces to graph
@@ -149,7 +149,7 @@
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 		$GraphTemplate =& $DBRESULT->fetchRow();
 		
-		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
+		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)) {
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 			$meta =& $DBRESULT_meta->fetchRow();
 			$index_data_ODS["service_description"] = $meta["meta_name"];
@@ -162,13 +162,13 @@
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
 			$base = "-b ".$GraphTemplate["base"];		
 		if (!isset($GraphTemplate["width"]) || $GraphTemplate["width"] == "")
-			$GraphTemplate["width"] = 600;
+			$GraphTemplate["width"] = 500;
 		if (!isset($GraphTemplate["height"]) || $GraphTemplate["height"] == "")
-			$GraphTemplate["height"] = 200;
+			$GraphTemplate["height"] = 120;
 		if (!isset($GraphTemplate["vertical_label"]) || $GraphTemplate["vertical_label"] == "")
 			$GraphTemplate["vertical_label"] = "sds";		
 		
-		$command_line .= " --interlaced $base --imgformat PNG --width=$width --height=$height ";
+		$command_line .= " --interlaced $base --imgformat PNG --width=".$width." --height=".$height." ";
 		$command_line .= "--title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='Status' ";
 				
 		/*
