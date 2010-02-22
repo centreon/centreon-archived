@@ -39,13 +39,44 @@
 	/*
 	 * Write command in nagios pipe or in centcore pipe. 
 	 */
+	
+	function write_command($cmd, $poller){
+		global $centreon, $key, $pearDB;
+		
+		$str = NULL;
+		
+		/*
+		 * Destination is centcore pipe path
+		 */
+		$destination = "@CENTREON_VARLIB@/centcore.cmd";
+		if ($destination == "/centcore.cmd")
+			$destination = "/var/lib/centreon/centcore.cmd";
+		
+		$cmd = str_replace("`", "&#96;", $cmd);
+		$cmd = str_replace("'", "&#39;", $cmd);
+		
+		$cmd = str_replace("\n", "<br>", $cmd);
+		$informations = split(";", $key);
+		if ($poller && isPollerLocalhost($pearDB, $poller)) {
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $centreon->Nagioscfg["command_file"];
+		} else if (isHostLocalhost($pearDB, $informations[0])) {
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $centreon->Nagioscfg["command_file"];
+		} else {
+			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . $destination;
+		}
+		return passthru($str);
+	}
+	
+	/*
+	 * Doesn't work...
+	 * 
 	function write_command($cmd, $poller){
 		global $oreon, $key, $pearDB;
 		
 		$str = NULL;
-		/*
+		*
 		 * Destination is centcore pipe path
-		 */
+		 *
 		$cmd = str_replace("`", "&#96;", $cmd);
 		$cmd = str_replace("'", "&#39;", $cmd);
 
@@ -72,6 +103,7 @@
 		fclose($cmdfile);
 		return _("Your command has been sent");
 	}
+	*/
 
 
 	function send_cmd($cmd, $poller = NULL){
