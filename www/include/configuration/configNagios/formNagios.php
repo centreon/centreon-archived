@@ -295,15 +295,15 @@
 	$form->addElement('text', 'check_result_reaper_frequency', _("Check Result Reaper Frequency"), $attrsText3);
 	
 	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Yes"), '1');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("No"), '0');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Default"), '2');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'translate_passive_host_checks', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'translate_passive_host_checks', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'translate_passive_host_checks', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'translate_passive_host_checks', _("Translate Passive Host Checks Option"), '&nbsp;');
 	
 	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Yes"), '1');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("No"), '0');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Default"), '2');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'passive_host_checks_are_soft', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'passive_host_checks_are_soft', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'passive_host_checks_are_soft', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'passive_host_checks_are_soft', _("Passive Host Checks Are SOFT Option"), '&nbsp;');
 	
 	/* *****************************************************
