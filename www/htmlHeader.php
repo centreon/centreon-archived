@@ -149,3 +149,4 @@
 <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
 </head>
 <body>
+<script type="text/javascript" src="./lib/wz_tooltip/wz_tooltip.js"></script>

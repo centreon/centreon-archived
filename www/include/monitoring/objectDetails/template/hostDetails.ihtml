@@ -1,5 +1,4 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<script type="text/javascript" src="./lib/wz_tooltip/wz_tooltip.js"></script>
 <div>
 	<table class="ListTable">
 		<tr class='ListHeader'>
