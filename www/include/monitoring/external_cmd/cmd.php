@@ -52,7 +52,6 @@
 					/*
 					 * Re-Schedulde SVC Checks
 					 */
-					
 					case 1: 	schedule_host_svc_checks($key, 0);	break;//
 					case 2: 	schedule_host_svc_checks($key, 1);	break;//Forced
 					case 3: 	schedule_svc_checks($key, 0);		break;//
@@ -61,21 +60,14 @@
 					/*
 					 * Scheduling svc
 					 */
-					
 					case 5: 	host_svc_checks($key, $en);			break;
 					case 6: 	host_check($key, $en);				break;//
 					case 7: 	svc_check($key, $en);				break;//
 					
-					/*
-					 * Delay notification
-					 */
-					 		
-
 					
 					/*
 					 * Notifications
 					 */
-					
 					case 8: 	host_svc_notifications($key, $en);	break;//
 					case 9: 	host_notification($key, $en);		break;//
 					case 10: 	svc_notifications($key, $en);		break;//
@@ -83,13 +75,11 @@
 					/*
 					 * En/Disable passive service check
 					 */
-					
 					case 11: 	passive_svc_check($key, $en); 		break;//
 					
 					/*
 					 * Acknowledge status
 					 */
-					
 					case 14:	acknowledgeHost(); 					break;
 					case 15:	acknowledgeService(); 					break;
 					
@@ -129,7 +119,6 @@
 					/*
 					 * End Configuration Nagios Core
 					 */
-					
 					case 43: host_flapping_enable($key, $en); break;//
 					case 44: svc_flapping_enable($key, $en); break;//
 					case 45: host_event_handler($key, $en); break;//
@@ -151,21 +140,18 @@
 					case 67: schedule_svc_checks($key, 1);break;//
 					
 					/* Auto Aknowledge */
-					
 					case 70:	autoAcknowledgeServiceStart($key); 					break;
 					case 71:	autoAcknowledgeServiceStop($key);  					break;
 					case 72:	autoAcknowledgeHostStart($key); 					 	break;
 					case 73:	autoAcknowledgeHostStop($key);  						break;
 				
 					/* Auto Notification */
-					
 					case 80:	autoNotificationServiceStart($key); 					break;
 					case 81:	autoNotificationServiceStop($key);  					break;
 					case 82:	autoNotificationHostStart($key); 					 	break;
 					case 83:	autoNotificationHostStop($key);  						break;
 					
 					/* Auto Check */
-					
 					case 90:	autoCheckServiceStart($key); 					break;
 					case 91:	autoCheckServiceStop($key);  					break;
 					case 92:	autoCheckHostStart($key); 					 	break;
