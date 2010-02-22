@@ -90,6 +90,13 @@ ALTER TABLE `timeperiod_exceptions`
 ALTER TABLE `cfg_nagios` CHANGE service_reaper_frequency check_result_reaper_frequency INT(11);
 ALTER TABLE `cfg_nagios` CHANGE use_agressive_host_checking use_aggressive_host_checking ENUM('0', '1', '2');
 ALTER TABLE `cfg_nagios` DROP COLUMN aggregate_status_updates;
+ALTER TABLE `cfg_nagios` ADD `passive_host_checks_are_soft` INT NULL ;
+ALTER TABLE `cfg_nagios` ADD `check_for_orphaned_hosts` INT NULL ;
+ALTER TABLE `cfg_nagios` ADD `external_command_buffer_slots` INT NULL ;
+ALTER TABLE `cfg_nagios` ADD `translate_passive_host_checks` INT NULL ;
+
+
+
 
 CREATE TABLE `command_arg_description` (
 	`cmd_id` INT( 11 ) NOT NULL ,
