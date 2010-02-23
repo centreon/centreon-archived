@@ -99,6 +99,7 @@
 	 * Var information to format the element
 	 */
 	$attrsText 		= array("size"=>"35");
+	$attrsTextLong	= array("size"=>"55");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
@@ -115,24 +116,24 @@
 	 */
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text', 'tp_name', _("Time Period Name"), $attrsText);
-	$form->addElement('text', 'tp_alias', _("Alias"), $attrsText);
+	$form->addElement('text', 'tp_alias', _("Alias"), $attrsTextLong);
 	
 	/*
 	 * Notification informations
 	 */
-	$form->addElement('header', 'notification', _("Notification Time Range"));
+	$form->addElement('header', 'notification', _("Time Range"));
 	$form->addElement('header', 'notification_base', _("Basic Notification"));
 	$form->addElement('header', 'include', _("Timeperiod inclusion"));
 	$form->addElement('header', 'exclude', _("Timeperiod exclusion"));
 	$form->addElement('header', 'exception', _("Time Range exceptions"));
 	
-	$form->addElement('text', 'tp_sunday', _("Sunday"), $attrsText);
-	$form->addElement('text', 'tp_monday', _("Monday"), $attrsText);
-	$form->addElement('text', 'tp_tuesday', _("Tuesday"), $attrsText);
-	$form->addElement('text', 'tp_wednesday', _("Wednesday"), $attrsText);
-	$form->addElement('text', 'tp_thursday', _("Thursday"), $attrsText);
-	$form->addElement('text', 'tp_friday', _("Friday"), $attrsText);
-	$form->addElement('text', 'tp_saturday', _("Saturday"), $attrsText);
+	$form->addElement('text', 'tp_sunday', _("Sunday"), $attrsTextLong);
+	$form->addElement('text', 'tp_monday', _("Monday"), $attrsTextLong);
+	$form->addElement('text', 'tp_tuesday', _("Tuesday"), $attrsTextLong);
+	$form->addElement('text', 'tp_wednesday', _("Wednesday"), $attrsTextLong);
+	$form->addElement('text', 'tp_thursday', _("Thursday"), $attrsTextLong);
+	$form->addElement('text', 'tp_friday', _("Friday"), $attrsTextLong);
+	$form->addElement('text', 'tp_saturday', _("Saturday"), $attrsTextLong);
 	
 	/*
 	 * Include Timeperiod
@@ -169,11 +170,10 @@
 	 */
 	require_once "./include/configuration/configObject/timeperiod/timeperiod_JS.php";
     if ($o == "c" || $o == "a" || $o == "mc") {		
-		for ($k = 0 ; isset($mTp[$k]); $k++) { ?>
-			<script type="text/javascript">
-			tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;		
-			</script> 
-		<?php
+		for ($k = 0 ; isset($mTp[$k]); $k++) {
+			print "<script type=\"text/javascript\">";
+			print "tab[$k] = ".$mTp[$k].";";		
+			print "</script>"; 
 		}
 		
 		for ($k = 0; isset($exception_id[$k]); $k++) { ?>
@@ -214,10 +214,28 @@
 	 */
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('tp_name', 'myReplace');
+	
+	$form->registerRule('exist', 	'callback', 'testTPExistence');
+	$form->registerRule('format', 	'callback', 'checkHours');
+	
+	/*
+	 * Name Check
+	 */
 	$form->addRule('tp_name', _("Compulsory Name"), 'required');
-	$form->addRule('tp_alias', _("Compulsory Alias"), 'required');
-	$form->registerRule('exist', 'callback', 'testTPExistence');
 	$form->addRule('tp_name', _("Name is already in use"), 'exist');
+	$form->addRule('tp_alias', _("Compulsory Alias"), 'required');
+	
+	/*
+	 * Check Hours format
+	 */
+	$form->addRule('tp_sunday', 	_('Error in hour definition'), 'format');
+	$form->addRule('tp_monday', 	_('Error in hour definition'), 'format');
+	$form->addRule('tp_tuesday', 	_('Error in hour definition'), 'format');
+	$form->addRule('tp_wednesday', 	_('Error in hour definition'), 'format');
+	$form->addRule('tp_thursday', 	_('Error in hour definition'), 'format');
+	$form->addRule('tp_friday', 	_('Error in hour definition'), 'format');
+	$form->addRule('tp_saturday', 	_('Error in hour definition'), 'format');
+	
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	/*
@@ -261,6 +279,7 @@
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
+	
 	if ($valid && $action["action"]["action"])
 		require_once($path."listTimeperiod.php");
 	else {

@@ -282,4 +282,39 @@
 		
 		return ($tp_id["MAX(tp_id)"]);
 	}
+
+	function checkHours($hourString) {
+		if ($hourString == "") {
+			return true;
+		} else {
+			if (strstr($hourString, ",")) {
+				$tab1 = split(",", $hourString);
+				for ($i = 0 ; isset($tab1[$i]) ; $i++) {
+					if (preg_match("/([0-9]*):([0-9]*)-([0-9]*):([0-9]*)/", $tab1[$i], $str)) {
+						if ($str[1] > 24 || $str[3] > 24)
+							return false;
+						if ($str[2] > 59 || $str[4] > 59)
+							return false;
+						if (($str[3] * 60 * 60 + $str[4] * 60) > 86400 || ($str[1] * 60 * 60 + $str[2] * 60) > 86400)
+							return false;
+					} else {
+						return false;
+					}
+				}
+				return true;
+			} else {
+				if (preg_match("/([0-9]*):([0-9]*)-([0-9]*):([0-9]*)/", $hourString, $str)) {
+					if ($str[1] > 24 || $str[3] > 24)
+						return false;
+					if ($str[2] > 59 || $str[4] > 59)
+						return false;
+					if (($str[3] * 60 * 60 + $str[4] * 60) > 86400 || ($str[1] * 60 * 60 + $str[2] * 60) > 86400)
+						return false;	
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+	}
 ?>
