@@ -36,13 +36,14 @@
  * 
  */
 
-	require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once("/etc/centreon/centreon.conf.php");
 	require_once($centreon_path . "www/class/centreonSession.class.php");
 	require_once($centreon_path . "www/class/centreon.class.php");
 	require_once($centreon_path . "www/class/centreonDB.class.php");
 	require_once($centreon_path . "www/include/common/common-Func.php");
 	
 	$pearDB = new CentreonDB();
+	
 	session_start();
 	$oreon = $_SESSION['oreon'];
 	
@@ -60,12 +61,17 @@
 	}
 	
 	define('SMARTY_DIR', $centreon_path . 'GPL_LIB/Smarty/libs/');
+	
 	require_once SMARTY_DIR . "Smarty.class.php";
 	
 	$o = $_GET['o'];
 	$p = $_GET['p'];
 	$cmd = $_GET['cmd'];
 	
-	require_once($centreon_path . 'www/include/monitoring/external_cmd/popup/massive_ack.php');
-
+	if ($cmd == 70 || $cmd == 72) {
+		require_once($centreon_path . 'www/include/monitoring/external_cmd/popup/massive_ack.php');
+	} else if ($cmd == 74 || $cmd == 75) {
+		require_once($centreon_path . 'www/include/monitoring/external_cmd/popup/massive_downtime.php');
+	}
+	exit();
 ?>

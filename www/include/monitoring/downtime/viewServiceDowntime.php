@@ -46,8 +46,8 @@
 	 * Init GMT class
 	 */
 	
-	$centreonGMT = new CentreonGMT();
-	$centreonGMT->getMyGMTFromSession(session_id());
+	$centreonGMT = new CentreonGMT($pearDB);
+	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 		
 	$ndo_base_prefix = getNDOPrefix();
 	include_once("./class/centreonDB.class.php");

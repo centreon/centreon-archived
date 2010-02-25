@@ -35,32 +35,39 @@
  * SVN : $Id: cmd.php 8142 2009-05-20 21:09:15Z jmathis $
  * 
  */
-	require_once("@CENTREON_ETC@/centreon.conf.php");
-	require_once($centreon_path . "www/class/Session.class.php");
-	require_once($centreon_path . "www/class/Oreon.class.php");
-	require_once($centreon_path . "www/class/centreonDB.class.php");
+	
+	//require_once("@CENTREON_ETC@/centreon.conf.php");
+	require_once("/etc/centreon/centreon.conf.php");
+	
+	require_once $centreon_path . "www/class/centreonSession.class.php";
+	require_once $centreon_path . "www/class/centreon.class.php";
+	require_once $centreon_path . "www/class/centreonDB.class.php";
 	
 	session_start();
-	$oreon = $_SESSION['oreon'];
-	global $oreon;
-	global $pearDB;
+	$centreon = $_SESSION['centreon'];
+	
+	global $centreon, $pearDB;
 	
 	$pearDB = new CentreonDB();	
 
-	require_once($centreon_path . "www/include/common/common-Func.php");
+	require_once $centreon_path . "www/include/common/common-Func.php";
 
-	if (!isset($oreon))
+	if (!isset($centreon))
 		exit();
 		
-	include_once($centreon_path . "www/include/monitoring/external_cmd/functionsPopup.php");	
-	if (isset($_GET["select"]) && isset($_GET["sid"])){
-		$is_admin = isUserAdmin($_GET['sid']);
+	include_once $centreon_path . "www/include/monitoring/external_cmd/functionsPopup.php";	
+	
+	if (isset($_GET["select"]) && isset($_GET["sid"])) {
+		$is_admin = isUserAdmin(htmlentities($_GET['sid'], ENT_QUOTES));
 		foreach ($_GET["select"] as $key => $value){	
-			if (isset($_GET["cmd"]))
+			if (isset($_GET["cmd"])) {
 				switch ($_GET["cmd"]) {		
-					case 70:	massiveServiceAck($key); 					break;
-					case 72:	massiveHostAck($key); 					 	break;
+					case 70:	massiveServiceAck($key); break;
+					case 72:	massiveHostAck($key); break;
+					case 74:	massiveServiceDowntime($key); break;
+					case 75:	massiveHostDowntime($key); break;
 				}
 			}
 		}
+	}
 ?>

@@ -15,21 +15,21 @@
  * For information : contact@centreon.com
  */
 
-	if (!isset($oreon))
+	if (!isset($centreon))
 		exit();
 	/*
 	 * Write command in nagios pipe or in centcore pipe. 
 	 */
 
 	function write_command($cmd, $poller){
-		global $oreon, $key, $pearDB;
+		global $centreon, $key, $pearDB;
 		$str = NULL;
 
 		$informations = split(";", $key);
 		if ($poller && isPollerLocalhost($pearDB, $poller))
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $centreon->Nagioscfg["command_file"];
 		else if (isHostLocalhost($pearDB, $informations[0]))
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $centreon->Nagioscfg["command_file"];
 		else
 			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . "@CENTREON_VARLIB@/centcore.cmd";
 		return passthru($str);
@@ -39,10 +39,10 @@
       * Ack hosts massively
       */
         function massiveHostAck($key){
-        	global $pearDB, $_GET, $is_admin, $oreon;
+        	global $pearDB, $_GET, $is_admin, $centreon;
 		
 			$actions = false;
-        	$actions = $oreon->user->access->checkAction("host_acknowledgement");
+        	$actions = $centreon->user->access->checkAction("host_acknowledgement");
 
 			$tmp = split(";", $key);
 			$host_name = $tmp[0];
@@ -58,7 +58,7 @@
                     $flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$host_name.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
             }
 	
-			$actions = $oreon->user->access->checkAction("service_acknowledgement");
+			$actions = $centreon->user->access->checkAction("service_acknowledgement");
 			if (($actions == true || $is_admin) && isset($_GET['ackhostservice']) && $_GET['ackhostservice'] == "true") {
 				$DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' LIMIT 1");
 	            $row =& $DBRES->fetchRow();
@@ -77,10 +77,10 @@
          * Ack services massively
          */
         function massiveServiceAck($key){
-	        global $pearDB, $is_admin, $oreon;
+	        global $pearDB, $is_admin, $centreon;
 			
 			$actions = false;
-			$actions = $oreon->user->access->checkAction("service_acknowledgement");
+			$actions = $centreon->user->access->checkAction("service_acknowledgement");
 			                
 			$tmp = split(";", $key);
 			$host_name = $tmp[0];
@@ -98,4 +98,15 @@
 	         }
 	         return NULL;
         }
+        
+        /*
+         * Downtime
+         */
+        function massiveHostDowntime($key) {
+        	
+        } 
+        
+        function massiveServiceDowntime($key) {
+        	
+        } 
 ?>

@@ -50,8 +50,8 @@
 	
 	
 	$hostStr = $oreon->user->access->getHostsString("ID", $pearDBndo);
-	$centreonGMT = new CentreonGMT();
-	$centreonGMT->getMyGMTFromSession(session_id());
+	$centreonGMT = new CentreonGMT($pearDB);
+	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 	if ($oreon->user->access->checkAction("host_comment")) {				
 		/*
 		 * ACL
