@@ -195,6 +195,32 @@
 	if ($numRows) {
 	
 		/*
+		 * Check ndo version
+		 */
+		$request = "SELECT count(*) FROM " .$ndo_base_prefix."servicegroups WHERE config_type = '1' LIMIT 1";
+		$DBRESULT =& $pearDBndo->query($request);
+		while ($row =& $DBRESULT->fetchRow()) {
+			if ($row["count(sg_alias)"] == 1) {
+				$custom_ndo = 0;
+				break;
+			} else {
+				$request = "SELECT count(*) FROM " .$ndo_base_prefix."servicegroups LIMIT 1";
+				$DBRESULT2 =& $pearDBndo->query($request);
+				while ($row2 =& $DBRESULT2->fetchRow()) {
+					if ($row2["count(sg_alias)"] == 1) {
+						$custom_ndo = 0;
+						break;
+					} else {
+						$custom_ndo = 1;
+						break;
+					}
+				}
+				$DBRESULT2->free();
+			}
+		}
+		$DBRESULT->free();
+	
+		/*
 		 * Create Buffer for host status
 		 */
 		$rq = "SELECT nhs.current_state, nh.display_name FROM `" .$ndo_base_prefix."hoststatus` nhs, `" .$ndo_base_prefix."hosts` nh " . 
@@ -210,9 +236,11 @@
 		
 		$rq1 = "SELECT DISTINCT sg.alias, no.name1 as host_name".
 		" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
-		" WHERE ss.service_object_id = sgm.service_object_id".
-		" AND sg.config_type = 1" .
-		" AND no.object_id = sgm.service_object_id" .
+		" WHERE ss.service_object_id = sgm.service_object_id";
+		if ($custom_ndo == 0)
+			$rq1 .= " AND sg.config_type = 1";
+		
+		$rq1 .= " AND no.object_id = sgm.service_object_id" .
 		" AND sgm.servicegroup_id = sg.servicegroup_id" .
 		" AND no.is_active = 1 AND no.objecttype_id = 2";
 	
@@ -237,7 +265,7 @@
 		}
 		$rq1 .= " ORDER BY sg.alias, host_name " . $order;
 		$rq1 .= " LIMIT ".($num * $limit).",".$limit;
-	
+		
 		$DBRESULT_PAGINATION =& $pearDBndo->query($rq1);
 		$host_table = array();
 		$sg_table = array();
@@ -264,9 +292,11 @@
 		 */
 		$rq1 =	"SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
 			" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
-			" WHERE ss.service_object_id = sgm.service_object_id".
-			" AND sg.config_type = 1" .
-			" AND no.object_id = sgm.service_object_id" .
+			" WHERE ss.service_object_id = sgm.service_object_id";
+			if ($custom_ndo == 0)
+				$rq1 .= " AND sg.config_type = 1";
+			
+			$rq1 .= " AND no.object_id = sgm.service_object_id" .
 			" AND sgm.servicegroup_id = sg.servicegroup_id" .
 			" AND no.name1 IN ($hostList)" .
 			" AND no.is_active = 1 AND no.objecttype_id = 2";
