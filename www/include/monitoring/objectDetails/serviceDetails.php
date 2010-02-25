@@ -66,13 +66,14 @@
 	$ndo_base_prefix = getNDOPrefix();
 
 	if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
-		$host_name = $_GET["host_name"];
+		$host_name = htmlentities($_GET["host_name"], ENT_QUOTES);
 		$svc_description = $_GET["service_description"];
+		$svc_description = htmlentities(str_replace("\\\\", "\\", $svc_description), ENT_QUOTES);
 	} else {
 		foreach ($_GET["select"] as $key => $value)
 			$tab_data = split(";", $key);
-		$host_name = $tab_data[0];
-		$svc_description = $tab_data[1];
+		$host_name = htmlentities($tab_data[0], ENT_QUOTES);
+		$svc_description = htmlentities($tab_data[1], ENT_QUOTES);
 	}
 
 	/*
