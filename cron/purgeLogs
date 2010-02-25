@@ -51,9 +51,14 @@ my $VarLib = "@CENTREON_VARLIB@";
 # logAnalyser's lock file
 my $lock_file = "$VarLib/logAnalyser.lock";
 my $pid;
-while (-e "$lock_file") {
+for (my $x = 0; -e "$lock_file" ; $x++) {
 	sleep(1);
+	if ($x >= 1000) {
+		print "Cannot purge logs. Lock file found : $lock_file";
+		exit();
+	}
 }
+
 $pid = getpgrp(0);
 `echo $pid > $lock_file`;
 
