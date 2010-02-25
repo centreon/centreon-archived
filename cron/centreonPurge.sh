@@ -46,7 +46,7 @@ sleep 10
 # Wait a little 
 sleep 10
 
-@CENTREON_PATH@/cron/purgeLogs >> @CENTREON_LOG@/logAnalyzer-purge.log 2>&1
+@CENTREON_PATH@/cron/purgeLogs >> @CENTREON_LOG@/centreon-purge.log 2>&1
 
 # Wait a little 
 sleep 10
