@@ -99,7 +99,7 @@
 					</tr>
 					<tr>
 						<td  colspan="2" align='center'>
-							<input type="Submit" name="submit" value="Connection >>" <?php if ($file_install_acces) print "disabled"; ?> >
+							<input type="Submit" name="submit" value="Connect >>" <?php if ($file_install_acces) print "disabled"; ?> >
 						</td>
 					</tr>
 				</table>
