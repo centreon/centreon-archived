@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS `acl_group_contactgroups_relations` (
   KEY `acl_group_id` (`acl_group_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `cg_cg_id` ) REFERENCES `centreon`.`contactgroup` (`cg_id`) ON DELETE CASCADE ;
-ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `acl_group_id` ) REFERENCES `centreon`.`acl_groups` (`acl_group_id`) ON DELETE CASCADE ;
+ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `cg_cg_id` ) REFERENCES `contactgroup` (`cg_id`) ON DELETE CASCADE ;
+ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `acl_group_id` ) REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE ;
 
 CREATE TABLE IF NOT EXISTS `traps_matching_properties` (
   `tmo_id` int(11) NOT NULL AUTO_INCREMENT,
