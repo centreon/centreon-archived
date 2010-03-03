@@ -1,12 +1,6 @@
 </script>
 {$form.javascript}
 <form {$form.attributes}>
-<div>
-<ul id="mainnav">
-	<li class="a" id='c1'><a href="#tab1"  onclick="javascript:montre('1');">{$sort1}</a></li>
-	<li class="b" id='c2'><a href="#tab2" onclick="javascript:montre('2');">{$sort2}</a></li>
-</ul>
-</div>
 <div id="validFormTop">
 {if $o == "a" || $o == "c"}
 	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
@@ -25,14 +19,10 @@
 		{/if}
 		<tr class="list_one"><td class="FormRowField">{$form.execution_failure_criteria.label}</td><td class="FormRowValue">{$form.execution_failure_criteria.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.notification_failure_criteria.label}</td><td class="FormRowValue">{$form.notification_failure_criteria.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.dep_comment.label}</td><td class="FormRowValue">{$form.dep_comment.html}</td></tr>
-	</table>
-</div>
-<div id='tab2' class="tab">
-	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+
 		<tr class="list_one"><td class="FormRowField">{$form.dep_hSvPar.label}</td><td class="FormRowValue">{$form.dep_hSvPar.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.dep_hSvChi.label}</td><td class="FormRowValue">{$form.dep_hSvChi.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.dep_comment.label}</td><td class="FormRowValue">{$form.dep_comment.html}</td></tr>
 	</table>
 </div>
 <div id="validForm">
