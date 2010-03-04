@@ -95,7 +95,7 @@
 	echo ";".$xml->infos->ok.";".$xml->infos->warning.";".$xml->infos->critical.";".$xml->infos->unknown."\n";
 	echo "\n";
 	
-	echo _("Day").";"._("Time").";"._("Host").";"._("Address").";"._("Status").";"._("Type").";"._("Retry").";"._("Output").";"._("Contact").";"._("Cmd")."\n";
+	echo _("Day").";"._("Time").";"._("Host").";"._("Address").";"._("Service").";"._("Status").";"._("Type").";"._("Retry").";"._("Output").";"._("Contact").";"._("Cmd")."\n";
 	foreach ($xml->line as $line) {
 		echo $line->date.";".$line->time.";".$line->host_name.";".$line->address.";".$line->service_description.";".$line->status.";".$line->type.";".$line->retry.";".$line->output.";".$line->contact.";".$line->contact_cmd."\n";
 	}
