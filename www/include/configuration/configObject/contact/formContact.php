@@ -162,8 +162,7 @@
 	 */
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('header', 'additional', _("Additional Information"));
-	$form->addElement('header', 'centreon', _("Centreon information / Authentication"));
-	$form->addElement('header', 'centreon', _("Centreon information / Authentication"));
+	$form->addElement('header', 'centreon', _("Centreon Authentication"));
 	
 	/*
 	 * No possibility to change name and alias, because there's no interest
@@ -198,7 +197,7 @@
 		$form->addGroup($mc_mod_cg, 'mc_mod_cg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cg'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'contact_cgNotif', _("Contact Groups parents"), $notifCgs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'contact_cgNotif', _("Linked to Contact Groups"), $notifCgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -260,7 +259,7 @@
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'hScheduled', 'onClick' => 'uncheckAllH(this);'));
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
-	$form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Hosts Notification Options"), '&nbsp;&nbsp;');
+	$form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Host Notification Options"), '&nbsp;&nbsp;');
     $form->addElement('select', 'timeperiod_tp_id', _("Host Notification Period"), $notifTps);
 	unset($hostNotifOpt);
 	
@@ -289,8 +288,8 @@
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);'));
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);'));
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
-	$form->addGroup($svNotifOpt, 'contact_svNotifOpts', _("Services Notification Options"), '&nbsp;&nbsp;');
-    $form->addElement('select', 'timeperiod_tp_id2', _("Services Notification Period"), $notifTps);
+	$form->addGroup($svNotifOpt, 'contact_svNotifOpts', _("Service Notification Options"), '&nbsp;&nbsp;');
+	$form->addElement('select', 'timeperiod_tp_id2', _("Service Notification Period"), $notifTps);
  	if ($o == "mc")	{
 		$mc_mod_svcmds = array();
 		$mc_mod_svcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, _("Incremental"), '0');
@@ -298,7 +297,7 @@
 		$form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_svcmds'=>'0'));
 	}
-    $ams2 =& $form->addElement('advmultiselect', 'contact_svNotifCmds', _("Services Notification Commands"), $notifCmds, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'contact_svNotifCmds', _("Service Notification Commands"), $notifCmds, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
