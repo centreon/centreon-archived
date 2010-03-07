@@ -36,18 +36,6 @@
  * 
  */
   
-?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<title>Centreon - IT & Network Monitoring</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved." />
-<meta name="robots" content="index, nofollow" />
-<link href="<?php echo $skin; ?>login.css" rel="stylesheet" type="text/css">
-<link rel="shortcut icon" href="./img/favicon.ico">
-</head>
-<body OnLoad="document.login.useralias.focus();">
-<?php
 	/*
 	 * Init Date
 	 */
@@ -66,9 +54,11 @@
 		print "<div style='padding-top: 60px;'><span class='msg'>$error_msg</span></div>";
 	if (isset($msg) && $msg)
 		print "<div style='padding-top: 60px;'><span class='msg'>$msg</span></div>";
-
-?><div id='LoginInvit'>
-       <table id="logintab1">
+//id='LoginInvit' 
+// "logintab1"
+?><p align="center">
+<div style='text-align:center;align:center;padding-top:90px;'>
+       <table id="logintab1" style="text-align:center;" align="center">
 	<tr>
 		<td class="LoginInvitLogo" colspan="2"><img src="img/centreon.gif" alt="Centreon Logo" title="Centreon Logo" style="" /></td>
 	</tr>
@@ -110,6 +100,5 @@
 		</tr>
 	</table>
 </div>
+</p>
 </form>
-</body>
-</html>
