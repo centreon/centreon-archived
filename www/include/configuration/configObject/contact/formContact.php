@@ -236,13 +236,13 @@
 	unset($GMTList);
 	
    	$auth_type = array();
-   	$auth_type["local"] = "local";
+   	$auth_type["local"] = "Centreon";
 	if ($oreon->optGen['ldap_auth_enable'] == 1) {
-		$auth_type["ldap"] = "ldap";
+		$auth_type["ldap"] = "LDAP";
 		$form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
 	}
 	$form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0'));
-   	$form->addElement('select', 'contact_auth_type', _("Authentification Type"), $auth_type);
+   	$form->addElement('select', 'contact_auth_type', _("Authentication Source"), $auth_type);
 	
 	/*
 	 * Notification informations
