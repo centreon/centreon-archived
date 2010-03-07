@@ -264,6 +264,7 @@
 	$attrsTextarea 		= array("rows"=>"4", "cols"=>"80");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
+	
 	#
 	## Form begin
 	#
@@ -312,7 +313,7 @@
 
 	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);	
-	$form->addElement('text', 'host_parallel_template', _("Host Multiple Templates"), $hTpls);
+	$form->addElement('text', 'host_parallel_template', _("Host Templates"), $hTpls);
 	
 	if ($o == "mc")	{
 		$mc_mod_tplp = array();
@@ -321,10 +322,8 @@
 		$form->addGroup($mc_mod_tplp, 'mc_mod_tplp', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_tplp'=>'0'));
 	}
-	?>
-	<script type="text/javascript" src="lib/wz_tooltip/wz_tooltip.js"></script>
-	<?php
-	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance")."<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70)\" onmouseout=\"UnTip()\">". _("Here is a self explanatory image.")."</a>");
+
+	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance")."<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70, FIX, [this, 0, 10])\" onmouseout=\"UnTip()\">". _("Here is a self explanatory image.")."</a>");
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));	
 	
 	include_once("makeJS_formHost.php");	
@@ -744,6 +743,7 @@
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
+	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0/*, "perfparse"=>$oreon->optGen["perfparse_installed"]*/));
 	$tpl->assign('min', $min);
 	$tpl->assign("sort1", _("Host Configuration"));
 	$tpl->assign("sort2", _("Relations"));
@@ -751,6 +751,15 @@
 	$tpl->assign("sort4", _("Host Extended Infos"));
 	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>' );
+	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+	
+	# prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) { 
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 	
 	if ($o != "a" && $o != "c")
 		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));

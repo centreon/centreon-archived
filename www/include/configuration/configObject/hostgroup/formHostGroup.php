@@ -126,17 +126,17 @@
 	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', _("Add a HostGroup"));
+		$form->addElement('header', 'title', _("Add a Host Group"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify a HostGroup"));
+		$form->addElement('header', 'title', _("Modify a Host Group"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', _("View a HostGroup"));
+		$form->addElement('header', 'title', _("View a Host Group"));
 
 	/*
 	 * Contact basic information
 	 */
 	$form->addElement('header', 	'information', _("General Information"));
-	$form->addElement('text', 		'hg_name', _("HostGroup Name"), $attrsText);
+	$form->addElement('text', 		'hg_name', _("Host Group Name"), $attrsText);
 	$form->addElement('text', 		'hg_alias', _("Alias"), $attrsText);
 	$form->addElement('select', 	'hg_snmp_version', _("Version"), array(0=>null, 1=>"1", "2c"=>"2c", 3=>"3"));
 	$form->addElement('text', 		'hg_snmp_community', _("SNMP Community"), $attrsText);
@@ -151,7 +151,7 @@
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
-	$ams1 =& $form->addElement('advmultiselect', 'hg_hg', _("Linked HostGroups"), $hostGroups, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'hg_hg', _("Linked Host Groups"), $hostGroups, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -241,7 +241,16 @@
 							initAutoComplete('Form','city_name','sub');
 							};</script>");
 	$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
-		
+	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+
+	# prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) { 
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+
 	$valid = false;
 	if ($form->validate())	{
 		$hgObj =& $form->getElement('hg_id');

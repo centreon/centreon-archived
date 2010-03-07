@@ -281,6 +281,7 @@
 	# Nagios 2
 	
 	$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
+	$form->addElement('text', 'host_retry_check_interval', _("Retry Check Interval"), $attrsText2);
 
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Yes"), '1');
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("No"), '0');
@@ -332,7 +333,7 @@
 	/*
 	 *  Contact groups
 	 */
-    $ams3 =& $form->addElement('advmultiselect', 'host_cgs', _("Linked ContactGroups"), $notifCgs, $attrsAdvSelect);
+    $ams3 =& $form->addElement('advmultiselect', 'host_cgs', _("Linked Contact Groups"), $notifCgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -385,7 +386,7 @@
 		$form->addGroup($mc_mod_htpl, 'mc_mod_htpl', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_htpl'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'host_svTpls', _("Services Template linked"), $svTpls, $attrsAdvSelect2);
+	$ams3 =& $form->addElement('advmultiselect', 'host_svTpls', _("Linked Service Templates"), $svTpls, $attrsAdvSelect2);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -582,7 +583,16 @@
 							initAutoComplete('Form','city_name','sub');
 							};</script>");
 	$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
+	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 
+	# prepare help texts
+	$helptext = "";
+	include_once("include/configuration/configObject/host/help.php");
+	foreach ($help as $key => $text) { 
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+	
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 
 	$valid = false;

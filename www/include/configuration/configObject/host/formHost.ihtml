@@ -2,11 +2,11 @@
 <form {$form.attributes}>
 <div>
 <ul id="mainnav">
-	<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">{$sort1}</a></li>
-	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
-	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
-	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
-	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
+	<li class="a" id='c1'><a href="#"  style='cursor:pointer' onclick="javascript:montre('1');">{$sort1}</a></li>
+	<li class="b" id='c2'><a href="#" style='cursor:pointer' onclick="javascript:montre('2');">{$sort2}</a></li>
+	<li class="b" id='c3'><a href="#" style='cursor:pointer' onclick="javascript:montre('3');">{$sort3}</a></li>
+	<li class="b" id='c4'><a href="#" style='cursor:pointer' onclick="javascript:montre('4');">{$sort4}</a></li>
+	<li class="b" id='c5'><a href="#" style='cursor:pointer' onclick="javascript:montre('5');">{$sort5}</a></li>
 </ul>
 </div>
 <div id="validFormTop">
@@ -22,75 +22,75 @@
 	<tr class="ListHeader"><td class="FormHeader"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title}</td><td style="text-align:right;"><a href="./main.php?p={$p}&min=1&doc=1&page=configobject.html" target="_blank"  style='cursor:help' alt='{$topdoc}'><img src="./img/icones/16x16/text_code.gif" title="{$topdoc}"></a>&nbsp;&nbsp;</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 	{if $o != "mc"}
-		<tr class="list_one"><td class="FormRowField">{$form.host_name.label}</td><td class="FormRowValue">{$form.host_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.host_alias.label}</td><td class="FormRowValue">{$form.host_alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:host_name", {$helpattr});'> {$form.host_name.label}</td><td class="FormRowValue">{$form.host_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:alias", {$helpattr});'> {$form.host_alias.label}</td><td class="FormRowValue">{$form.host_alias.html}</td></tr>
 	{/if}
-	<tr class="list_one"><td class="FormRowField">{$form.host_address.label}</td><td class="FormRowValue">{$form.host_address.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.host_snmp_community.label} && {$form.host_snmp_version.label}</td><td class="FormRowValue">{$form.host_snmp_community.html}&nbsp;&nbsp;{$form.host_snmp_version.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:address", {$helpattr});'> {$form.host_address.label}</td><td class="FormRowValue">{$form.host_address.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:snmp_options", {$helpattr});'> {$form.host_snmp_community.label} && {$form.host_snmp_version.label}</td><td class="FormRowValue">{$form.host_snmp_community.html}&nbsp;&nbsp;{$form.host_snmp_version.html}</td></tr>
 	{if $o == "mc"}
-		<tr class="list_one"><td class="FormRowField">{$form.mc_mod_nsid.label}</td><td class="FormRowValue">{$form.mc_mod_nsid.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_nsid.label}</td><td class="FormRowValue">{$form.mc_mod_nsid.html}</td></tr>
 	{/if}
 	{if $form.nagios_server_id.label}
-		<tr class="list_one"><td class="FormRowField">{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:poller", {$helpattr});'> {$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
 	{/if}
 	{if $tpl == 0 && $tzUsed}
-	<tr class="list_two"><td class="FormRowField">{$form.host_location.label}</td><td class="FormRowValue">{$form.host_location.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:host_location", {$helpattr});'> {$form.host_location.label}</td><td class="FormRowValue">{$form.host_location.html}</td></tr>
 	{/if}
 
 	{if $o == "mc"}
-		<tr class="list_two"><td class="FormRowField">{$form.mc_mod_tplp.label}</td><td class="FormRowValue">{$form.mc_mod_tplp.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_tplp.label}</td><td class="FormRowValue">{$form.mc_mod_tplp.html}</td></tr>
 	{/if}
 	<tr class="list_two">
 		<td class="FormRowField">
-			<div style="text-decoration: underline">{$form.host_parallel_template.label}</div>
+			<img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:use", {$helpattr});'> <span>{$form.host_parallel_template.label}</span><br>
 			{$form.tplTextParallel.label}
 			<input type="hidden" name="nbOfSelect" id="hiddenInput">
 		</td>
 		<td class="FormRowValue" id="parallelTemplate">			
 			{if $o == "a" || $o == "c" || $o == "mc"}
-				{$add_mtp_label}&nbsp;<img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBlankSelect();">			
+				{$add_mtp_label}&nbsp;<img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onclick="javascript:addBlankSelect();">
 			{/if}
 		</td>
 	</tr>
 		
 	{if $form.dupSvTplAssocText.label}
 	<tr class="list_one">
-		<td class="FormRowField">{$form.dupSvTplAssocText.label}</td>
+		<td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:create_linked_services", {$helpattr});'> {$form.dupSvTplAssocText.label}</td>
 		<td class="FormRowValue">{$form.dupSvTplAssoc.html}</td>
 	</tr>
 	{/if}
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.check}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:check_period", {$helpattr});'> {$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
  	<tr class="list_one">
-		<td class="FormRowField">{$form.command_command_id.label}</td>
+		<td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:check_command", {$helpattr});'> {$form.command_command_id.label}</td>
 		<td class="FormRowValue">
 			{$form.command_command_id.html}			
 			{if $o == "a" || $o == "c"}
-			&nbsp;<img src='./img/icones/16x16/about.gif' style='cursor:help' onClick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id'].options[document.Form.elements['command_command_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
+			&nbsp;<img src='./img/icones/16x16/about.gif' style='cursor:help' style='cursor:pointer' onclick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id'].options[document.Form.elements['command_command_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
 			{/if}
 		</td>
 	</tr>
-	<tr class="list_two"><td class="FormRowField">{$form.command_command_id_arg1.label}</td><td class="FormRowValue">{$form.command_command_id_arg1.html}
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:check_command_args", {$helpattr});'> {$form.command_command_id_arg1.label}</td><td class="FormRowValue">{$form.command_command_id_arg1.html}
 	{if $o == "a" || $o == "c"}
-	&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  onClick="set_arg('example1','command_command_id_arg1');"></a><input type="text" name="example1" disabled>
+	&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  style='cursor:pointer' onclick="set_arg('example1','command_command_id_arg1');"></a><input type="text" name="example1" disabled>
 	{/if}
 	</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_max_check_attempts.label}</td><td class="FormRowValue">{$form.host_max_check_attempts.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.host_check_interval.label}</td><td class="FormRowValue">{$form.host_check_interval.html} {$time_unit}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_retry_check_interval.label}</td><td class="FormRowValue">{$form.host_retry_check_interval.html} {$time_unit}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.host_active_checks_enabled.label}</td><td class="FormRowValue">{$form.host_active_checks_enabled.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_passive_checks_enabled.label}</td><td class="FormRowValue">{$form.host_passive_checks_enabled.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:max_check_attempts", {$helpattr});'> {$form.host_max_check_attempts.label}</td><td class="FormRowValue">{$form.host_max_check_attempts.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:check_interval", {$helpattr});'> {$form.host_check_interval.label}</td><td class="FormRowValue">{$form.host_check_interval.html} {$time_unit}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:retry_interval", {$helpattr});'> {$form.host_retry_check_interval.label}</td><td class="FormRowValue">{$form.host_retry_check_interval.html} {$time_unit}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:active_checks_enabled", {$helpattr});'> {$form.host_active_checks_enabled.label}</td><td class="FormRowValue">{$form.host_active_checks_enabled.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:passive_checks_enabled", {$helpattr});'> {$form.host_passive_checks_enabled.label}</td><td class="FormRowValue">{$form.host_passive_checks_enabled.html}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_notifications_enabled.label}</td><td class="FormRowValue">{$form.host_notifications_enabled.html}</td></tr>	
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:notifications_enabled", {$helpattr});'> {$form.host_notifications_enabled.label}</td><td class="FormRowValue">{$form.host_notifications_enabled.html}</td></tr>	
 	{if $o == "mc"}
-		<tr class="list_two"><td class="FormRowField">{$form.mc_mod_hcg.label}</td><td class="FormRowValue">{$form.mc_mod_hcg.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_hcg.label}</td><td class="FormRowValue">{$form.mc_mod_hcg.html}</td></tr>
 	{/if}
-	<tr class="list_two"><td class="FormRowField">{$form.host_cs.label}</td><td class="FormRowValue">{$form.host_cs.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.host_cgs.label}</td><td class="FormRowValue">{$form.host_cgs.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_notification_interval.label}</td><td class="FormRowValue">{$form.host_notification_interval.html}{$time_unit}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_notifOpts.label}</td><td class="FormRowValue">{$form.host_notifOpts.html}</td></tr>	
-	<tr class="list_two"><td class="FormRowField">{$form.host_first_notification_delay.label}</td><td class="FormRowValue">{$form.host_first_notification_delay.html} {$time_unit}</td></tr>	
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:contacts", {$helpattr});'> {$form.host_cs.label}</td><td class="FormRowValue">{$form.host_cs.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:contact_groups", {$helpattr});'> {$form.host_cgs.label}</td><td class="FormRowValue">{$form.host_cgs.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:notification_interval", {$helpattr});'> {$form.host_notification_interval.label}</td><td class="FormRowValue">{$form.host_notification_interval.html}{$time_unit}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:notification_period", {$helpattr});'> {$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:notification_options", {$helpattr});'> {$form.host_notifOpts.label}</td><td class="FormRowValue">{$form.host_notifOpts.html}</td></tr>	
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:first_notification_delay", {$helpattr});'> {$form.host_first_notification_delay.label}</td><td class="FormRowValue">{$form.host_first_notification_delay.html} {$time_unit}</td></tr>	
 	{if $o == "a" || $o == "c"}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
 	{/if}
@@ -101,52 +101,59 @@
  <table class="ListTable">
 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title2}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
+	{if !$msg.tpl}
 		{if $o == "mc"}
-			<tr class="list_one"><td class="FormRowField">{$form.mc_mod_hhg.label}</td><td class="FormRowValue">{$form.mc_mod_hhg.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_hhg.label}</td><td class="FormRowValue">{$form.mc_mod_hhg.html}</td></tr>
 		{/if}
-		<tr class="list_one"><td class="FormRowField">{$form.host_hgs.label}</td><td class="FormRowValue">{$form.host_hgs.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:hostgroups", {$helpattr});'> {$form.host_hgs.label}</td><td class="FormRowValue">{$form.host_hgs.html}</td></tr>
 		{if $o == "mc"}
-			<tr class="list_two"><td class="FormRowField">{$form.mc_mod_hpar.label}</td><td class="FormRowValue">{$form.mc_mod_hpar.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_hpar.label}</td><td class="FormRowValue">{$form.mc_mod_hpar.html}</td></tr>
 		{/if}
-		<tr class="list_two"><td class="FormRowField">{$form.host_parents.label}</td><td class="FormRowValue">{$form.host_parents.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:parents", {$helpattr});'> {$form.host_parents.label}</td><td class="FormRowValue">{$form.host_parents.html}</td></tr>
 		{if $o == "mc"}
-			<tr class="list_one"><td class="FormRowField">{$form.mc_mod_hch.label}</td><td class="FormRowValue">{$form.mc_mod_hch.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_hch.label}</td><td class="FormRowValue">{$form.mc_mod_hch.html}</td></tr>
 		{/if}
-		<tr class="list_one"><td class="FormRowField">{$form.host_childs.label}</td><td class="FormRowValue">{$form.host_childs.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:child_hosts", {$helpattr});'> {$form.host_childs.label}</td><td class="FormRowValue">{$form.host_childs.html}</td></tr>
+	{else}
+		{if $o == "mc"}
+			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_htpl.label}</td><td class="FormRowValue">{$form.mc_mod_htpl.html}</td></tr>
+		{/if}
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:service_templates", {$helpattr});'> {$form.host_svTpls.label}</td><td class="FormRowValue">{$form.host_svTpls.html}</td></tr>
+	{/if}		
  </table>
 </div>
 <div id='tab3' class='tab'>
  <table class="ListTable">
 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title3}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/import2.gif'>&nbsp;&nbsp;{$form.header.treatment}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_obsess_over_host.label}</td><td class="FormRowValue">{$form.host_obsess_over_host.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:obsess_over_host", {$helpattr});'> {$form.host_obsess_over_host.label}</td><td class="FormRowValue">{$form.host_obsess_over_host.html}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$Freshness_Control_options}</td></tr>	
-	<tr class="list_two"><td class="FormRowField">{$form.host_check_freshness.label}</td><td class="FormRowValue">{$form.host_check_freshness.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:check_freshness", {$helpattr});'> {$form.host_check_freshness.label}</td><td class="FormRowValue">{$form.host_check_freshness.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:freshness_threshold", {$helpattr});'> {$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Flapping_Options}</td></tr>		
-	<tr class="list_two"><td class="FormRowField">{$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>		
-	<tr class="list_one"><td class="FormRowField">{$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}&nbsp;%</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.host_high_flap_threshold.label}</td><td class="FormRowValue">{$form.host_high_flap_threshold.html}&nbsp;%</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:flap_detection_enabled", {$helpattr});'> {$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>		
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:low_flap_threshold", {$helpattr});'> {$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}&nbsp;%</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:high_flap_threshold", {$helpattr});'> {$form.host_high_flap_threshold.label}</td><td class="FormRowValue">{$form.host_high_flap_threshold.html}&nbsp;%</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$Perfdata_Options}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_process_perf_data.label}</td><td class="FormRowValue">{$form.host_process_perf_data.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:process_perf_data", {$helpattr});'> {$form.host_process_perf_data.label}</td><td class="FormRowValue">{$form.host_process_perf_data.html}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$History_Options}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.host_retain_status_information.label}</td><td class="FormRowValue">{$form.host_retain_status_information.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_retain_nonstatus_information.label}</td><td class="FormRowValue">{$form.host_retain_nonstatus_information.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.host_stalOpts.label}</td><td class="FormRowValue">{$form.host_stalOpts.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:retain_status_information", {$helpattr});'> {$form.host_retain_status_information.label}</td><td class="FormRowValue">{$form.host_retain_status_information.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:retain_nonstatus_information", {$helpattr});'> {$form.host_retain_nonstatus_information.label}</td><td class="FormRowValue">{$form.host_retain_nonstatus_information.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:stalking_options", {$helpattr});'> {$form.host_stalOpts.label}</td><td class="FormRowValue">{$form.host_stalOpts.html}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Event_Handler}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.host_event_handler_enabled.label}</td><td class="FormRowValue">{$form.host_event_handler_enabled.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:event_handler_enabled", {$helpattr});'> {$form.host_event_handler_enabled.label}</td><td class="FormRowValue">{$form.host_event_handler_enabled.html}</td></tr>
 	<tr class="list_two">
-		<td class="FormRowField">{$form.command_command_id2.label}</td>
+		<td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:event_handler", {$helpattr});'> {$form.command_command_id2.label}</td>
 		<td class="FormRowValue">
 			{$form.command_command_id2.html}
 			{if $o == "a" || $o == "c"}
-				&nbsp;<img src='./img/icones/16x16/information.gif' style='cursor:help' onClick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id2'].options[document.Form.elements['command_command_id2'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
+				&nbsp;<img src='./img/icones/16x16/information.gif' style='cursor:help' style='cursor:pointer' onclick="window.open('main.php?p=60706&command_id='+ document.Form.elements['command_command_id2'].options[document.Form.elements['command_command_id2'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
 			{/if}
 		</td>
 	</tr>
-	<tr class="list_one"><td class="FormRowField">{$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:event_handler_args", {$helpattr});'> {$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
 		{if $o == "a" || $o == "c"}
-		&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  onClick="set_arg('example2','command_command_id_arg2');"></a><input type="text" name="example2" disabled>
+		&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  style='cursor:pointer' onclick="set_arg('example2','command_command_id_arg2');"></a><input type="text" name="example2" disabled>
 		{/if}</td>
 	</tr>
  </table>
@@ -155,15 +162,15 @@
  <table class="ListTable">
 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title4}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.nagios}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ehi_notes_url.label}</td><td class="FormRowValue">{$form.ehi_notes_url.html}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.ehi_notes.label}</td><td class="FormRowValue">{$form.ehi_notes.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ehi_action_url.label}</td><td class="FormRowValue">{$form.ehi_action_url.html}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.ehi_icon_image.label}</td><td class="FormRowValue">{$form.ehi_icon_image.html}&nbsp;&nbsp;<img id='ehi_icon_image_img' src='./img/blank.gif'></td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ehi_icon_image_alt.label}</td><td class="FormRowValue">{$form.ehi_icon_image_alt.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.ehi_vrml_image.label}</td><td class="FormRowValue">{$form.ehi_vrml_image.html}&nbsp;&nbsp;<img id='ehi_vrml_image_img' src='./img/blank.gif'></td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}&nbsp;&nbsp;<img id='ehi_statusmap_image_img' src='./img/blank.gif'></td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:notes_url", {$helpattr});'> {$form.ehi_notes_url.label}</td><td class="FormRowValue">{$form.ehi_notes_url.html}</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:notes", {$helpattr});'> {$form.ehi_notes.label}</td><td class="FormRowValue">{$form.ehi_notes.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:action_url", {$helpattr});'> {$form.ehi_action_url.label}</td><td class="FormRowValue">{$form.ehi_action_url.html}</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:icon_image", {$helpattr});'> {$form.ehi_icon_image.label}</td><td class="FormRowValue">{$form.ehi_icon_image.html}&nbsp;&nbsp;<img id='ehi_icon_image_img' src='./img/blank.gif'></td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:icon_image_alt", {$helpattr});'> {$form.ehi_icon_image_alt.label}</td><td class="FormRowValue">{$form.ehi_icon_image_alt.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:vrml_image", {$helpattr});'> {$form.ehi_vrml_image.label}</td><td class="FormRowValue">{$form.ehi_vrml_image.html}&nbsp;&nbsp;<img id='ehi_vrml_image_img' src='./img/blank.gif'></td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:statusmap_image", {$helpattr});'> {$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}&nbsp;&nbsp;<img id='ehi_statusmap_image_img' src='./img/blank.gif'></td></tr>
+	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:2d_coords", {$helpattr});'> {$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:3d_coords", {$helpattr});'> {$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
@@ -176,12 +183,13 @@
 	<tr><td><input type="hidden" name="nbOfMacro" id="hiddenMacInput"></td></tr>
 	<tr>
 		<td>
+		<img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:macro", {$helpattr});'>
 			<table id="macroTable" class="ListTableSmall">
 				<tr class="ListHeader">
 					<td class="ListColLeft">{$form.macroName.label}</td>
 					<td class="ListColCenter">{$form.macroValue.label}</td>
 					{if $o != "w"}
-						<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBlankInput();"></td>			
+						<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onclick="javascript:addBlankInput();"></td>			
 					{/if}
 				</tr>
 			</table>
@@ -200,3 +208,4 @@
 </div>
 {$form.hidden}
 </form>
+{$helptext}
