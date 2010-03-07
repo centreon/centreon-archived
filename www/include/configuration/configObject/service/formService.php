@@ -495,13 +495,6 @@
 
 	$form->addElement('header', 'treatment', _("Data Processing"));
 
-	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, _("Yes"), '1');
-	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, _("No"), '0');
-	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, _("Default"), '2');
-	$form->addGroup($servicePC, 'service_parallelize_check', _("Parallel Check"), '&nbsp;');
-	if ($o != "mc")
-		$form->setDefaults(array('service_parallelize_check' => '2'));
-
 	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("Yes"), '1');
 	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("No"), '0');
 	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("Default"), '2');

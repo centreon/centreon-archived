@@ -114,7 +114,6 @@
 		<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title3}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/import2.gif'>&nbsp;&nbsp;{$form.header.treatment}</td></tr>
 
-		<tr class="list_one"><td class="FormRowField">{$form.service_parallelize_check.label}</td><td class="FormRowValue">{$form.service_parallelize_check.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_obsess_over_service.label}</td><td class="FormRowValue">{$form.service_obsess_over_service.html}</td></tr>
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$Freshness_Control_options}</td></tr>	
