@@ -122,9 +122,8 @@
 	 * Notification informations
 	 */
 	$form->addElement('header', 'notification', _("Time Range"));
-	$form->addElement('header', 'notification_base', _("Basic Notification"));
-	$form->addElement('header', 'include', _("Timeperiod inclusion"));
-	$form->addElement('header', 'exclude', _("Timeperiod exclusion"));
+	$form->addElement('header', 'notification_base', _("Basic Settings"));
+	$form->addElement('header', 'include', _("Extended Settings"));
 	$form->addElement('header', 'exception', _("Time Range exceptions"));
 	
 	$form->addElement('text', 'tp_sunday', _("Sunday"), $attrsTextLong);
