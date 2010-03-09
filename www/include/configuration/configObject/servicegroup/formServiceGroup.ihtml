@@ -12,12 +12,12 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.sg_name.label}</td><td class="FormRowValue">{$form.sg_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.sg_alias.label}</td><td class="FormRowValue">{$form.sg_alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:servicegroup_name", {$helpattr});'> {$form.sg_name.label}</td><td class="FormRowValue">{$form.sg_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:alias", {$helpattr});'> {$form.sg_alias.label}</td><td class="FormRowValue">{$form.sg_alias.html}</td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.relation}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.sg_hServices.label}</td><td class="FormRowValue">{$form.sg_hServices.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.sg_hgServices.label}</td><td class="FormRowValue">{$form.sg_hgServices.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:members", {$helpattr});'> {$form.sg_hServices.label}</td><td class="FormRowValue">{$form.sg_hServices.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:hg_members", {$helpattr});'> {$form.sg_hgServices.label}</td><td class="FormRowValue">{$form.sg_hgServices.html}</td></tr>
 		
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.sg_activate.label}</td><td class="FormRowValue">{$form.sg_activate.html}</td></tr>
@@ -38,4 +38,4 @@
 	</div>
 	{$form.hidden}
 </form>
-
+{$helptext}

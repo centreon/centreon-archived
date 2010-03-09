@@ -269,7 +269,6 @@
 	if ($o != "mc")
 		$form->addElement('text', 'service_description', _("Service Template Name"), $attrsText);
 	$form->addElement('text', 'service_alias', _("Alias"), $attrsText);
-	$form->addElement('header', 'service_alias_interest', _("Name Used for Service in auto-deploy by template"), $attrsText);
 
 	$form->addElement('select', 'service_template_model_stm_id', _("Template Service Model"), $svTpls, array('id'=>'svcTemplate', 'onChange'=>'changeServiceTemplate(this.value)'));
 	$form->addElement('static', 'tplText', _("Using a Template Model allows you to have multi-level Template connections"));
@@ -679,6 +678,15 @@
 	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
+	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+
+	# prepare help texts
+	$helptext = "";
+	include_once("include/configuration/configObject/service/help.php");
+	foreach ($help as $key => $text) { 
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{

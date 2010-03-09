@@ -1,9 +1,11 @@
 <?php
 $help = array();
+$help["mc_update"] = dgettext("help", "Choose the update mode for the below field: incremental adds the selected values, replacement overwrites the original values.");
 
 /*
  * Service Configuration
  */
+$help["service_alias"] = dgettext("help", "Name used for service in auto-deploy by template.");
 $help["service_description"] = dgettext("help", "Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.");
 $help["use"] = dgettext("help", "This is where you specify the name of the template object that you want to inherit properties/variables from. Inherited properties doesn't need to be specified again. \"Local\" object variables always take precedence over variables defined in the template object. Objects can inherit properties/variables from multiple levels of template objects. When defining multiple sources, the first template specified takes precedence over the later one, in the case where a property is defined in both.");
 
@@ -30,6 +32,7 @@ $help["first_notification_delay"] = dgettext("help", "Define the number of \"tim
 /*
  * Relations
  */
+$help["host_templates"] = dgettext("help", "Specify one or multiple host templates, that should be linked to this template. A service, that uses this service template, will complete the missing host relation and result in a full service definition.");
 $help["host_name"] = dgettext("help", "Specify the host(s) that this service \"runs\" on or is associated with.");
 $help["hostgroup_name"] = dgettext("help", "Specify the hostgroup(s) that this service \"runs\" on or is associated with. One or more hostgroup(s) may be used instead of, or in addition to, specifying hosts.");
 $help["servicegroups"] = dgettext("help", "This directive is used to identify the short name(s) of the servicegroup(s) that the service belongs to. This directive may be used as an alternative to using the members directive in servicegroup definitions.");
