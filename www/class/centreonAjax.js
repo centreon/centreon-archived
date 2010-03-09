@@ -1,4 +1,3 @@
-<?php
 /*
  * Copyright 2005-2009 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -30,34 +29,58 @@
  * do not wish to do so, delete this exception statement from your version.
  * 
  * For more information : contact@centreon.com
- * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
- 
-	if (!isset($centreon)) {
-		exit();
+
+function mk_pagination(){;}
+function mk_paginationFF(){;}
+function set_header_title(){;}
+document.write("<script type='text/javascript' src='./include/common/javascript/xslt.js'></script>");
+
+function CentreonAjax(xmlFile, xslFile, elementId)
+{
+	this._xslFile = xslFile;
+	this._xmlFile = xmlFile;
+	this._target = elementId;
+	this._time;
+	this._proc;
+	this._tObj;
+	var _self = this;
+	
+	this.setTime = function (t)
+	{
+		this._time = t * 1000;
 	}
-
-	$path = "./include/home/tacticalOverview/";
 	
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
-		
-	/*
-	 * Display tactical
-	 */
-	$tpl->display("tacticalOverview.ihtml");	
+	this.setXslFile = function (xslFile)
+	{
+		this._xslFile = xslFile;
+	}
 	
- ?>
-
- <script type='text/javascript' src='./class/centreonAjax.js'></script>
- <script type='text/javascript'>
-  	var ajax = new CentreonAjax('./include/home/tacticalOverview/xml/tacticalOverviewXml.php', './include/home/tacticalOverview/xsl/tacticalOverview.xsl', 'ajaxDiv');
-	ajax.setTime(10);
-  	ajax.start();
- </script>
+	this.setXmlFile = function (xmlFile)
+	{
+		this._xmlFile = xmlFile;
+	}
+	
+	this.setTarget = function (elementId)
+	{
+		this._target = elementId;
+	}
+	
+	this.start = function ()
+	{		
+		_self._proc = new Transformation();
+		_self._proc.setXml(_self._xmlFile);
+		_self._proc.setXslt(_self._xslFile);
+		_self._proc.transform(_self._target);
+		if (_self._time) {
+			_self._tObj = setTimeout(function(){_self.start();}, _self._time);
+		}
+	}
+	
+	this.stop = function ()
+	{
+		if (_self._tObj) {
+			clearTimeout(_self._tObj);
+		}
+	}
+}
