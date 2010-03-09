@@ -88,6 +88,9 @@
 		$ckbx2[] =& $form->addElement('checkbox', 'persistent', _("persistent"));
 		$ckbx2[0]->setChecked(true);
 		
+		$ckbx3[] =& $form->addElement('checkbox', 'force_check', _("Force active check"));
+		$ckbx3[0]->setChecked(true);
+		
 		$form->addElement('hidden', 'host_name', $host_name);
 		$form->addElement('hidden', 'service_description', $service_description);
 		$form->addElement('hidden', 'author', $oreon->user->get_alias());

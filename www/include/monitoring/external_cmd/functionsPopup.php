@@ -49,6 +49,7 @@
 			isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
 			isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";
 			isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "2" : $sticky = "1";
+			isset($_GET['force_check']) && $_GET['force_check'] == "true" ? $force_check = "1" : $force_check = "0";
 			
             if ($actions == true || $is_admin) {
                     $key = $host_name;
@@ -67,6 +68,8 @@
 	            if (count($svc_tab)) {
 					foreach ($svc_tab as $key2 => $value) {
 	            		write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$value.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+	                	if ($force_check)
+		                	write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".$value.";".time(), $host_poller);           
 	                }
 				}
 			}
