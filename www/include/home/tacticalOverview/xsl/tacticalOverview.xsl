@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:output method="html"/>
 <xsl:template match="/">
+<xsl:for-each select="//root">
 <div id="hostStats">
 	<table>
 		<tr>
 			<td style="font-weight:bold;background-color:#ffffff;">
-				&nbsp;::&nbsp;<xsl:value-of select="//main/str_hosts"/>
+				&#160;::&#160;<xsl:value-of select="//main/str_hosts"/>
 			</td>
 		</tr>
 		<tr>
@@ -22,7 +24,7 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_hostPb'/>
 												</xsl:attribute>											
-												<xsl:value-of select='hostDown'/> <xsl:value-of select='//main/str_down'/>
+												<xsl:value-of select='hostDown'/>&#160;<xsl:value-of select='//main/str_down'/>
 											</xsl:element>
 										</td>
 									</tr>
@@ -35,7 +37,7 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_hostPb'/>
 												</xsl:attribute>											
-												<xsl:value-of select='hostDown'/> <xsl:value-of select='//main/str_down'/>
+												<xsl:value-of select='hostDown'/>&#160;<xsl:value-of select='//main/str_down'/>
 											</xsl:element>
 										</xsl:element>>
 									</tr>
@@ -44,7 +46,7 @@
 									<tr>
 										<xsl:element name='td'>
 											<xsl:attribute name='style'>background-color:<xsl:value-of select='color_unknown'/>;</xsl:attribute>										
-											<xsl:value-of select='hostDown'/> <xsl:value-of select='//main/str_down'/>
+											<xsl:value-of select='hostDown'/>&#160;<xsl:value-of select='//main/str_down'/>
 										</xsl:element>
 									</tr>
 									</xsl:otherwise>
@@ -52,7 +54,7 @@
 								<xsl:if test="hostDownAck &gt; 0">								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#ee9572;">
-										<xsl:value-of select='hostDownAck'/> <xsl:value-of select='//main/str_acknowledged'/>
+										<xsl:value-of select='hostDownAck'/>&#160;<xsl:value-of select='//main/str_acknowledged'/>
 									</td>
 								</tr>								
 								</xsl:if>
@@ -72,7 +74,7 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_host_unhand'/>
 											</xsl:attribute>											
-											<xsl:value-of select='hostDownUnhand'/> <xsl:value-of select='//main/str_unhandledpb'/>
+											<xsl:value-of select='hostDownUnhand'/>&#160;<xsl:value-of select='//main/str_unhandledpb'/>
 										</xsl:element>									
 									</xsl:element>
 								</tr>
@@ -89,12 +91,12 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_hostPb'/>
 												</xsl:attribute>											
-												<xsl:value-of select='hostUnreach'/> <xsl:value-of select='//main/str_unreachable'/>
+												<xsl:value-of select='hostUnreach'/>&#160;<xsl:value-of select='//main/str_unreachable'/>
 											</xsl:element>
 										</td>
 									</tr>
 									</xsl:when>
-									<xsl:when test="hostUnreach &gt; 0">								
+									<xsl:when test="hostUnreach &gt; 0">
 									<tr>
 										<xsl:element name='td'>
 										<xsl:attribute name='style'>background-color:<xsl:value-of select='color_unreachable'/>;font-weight:bold;</xsl:attribute>										
@@ -102,7 +104,7 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_hostPb'/>
 												</xsl:attribute>											
-												<xsl:value-of select='hostUnreach'/> <xsl:value-of select='//main/str_unreachable'/>
+												<xsl:value-of select='hostUnreach'/>&#160;<xsl:value-of select='//main/str_unreachable'/>
 											</xsl:element>						
 										</xsl:element>
 									</tr>
@@ -111,7 +113,7 @@
 									<tr>
 										<xsl:element name='td'>
 											<xsl:attribute name='style'>background-color:<xsl:value-of select='color_unknown'/>;</xsl:attribute>
-											<xsl:value-of select='hostUnreach'/> <xsl:value-of select='//main/str_unreachable'/>
+											<xsl:value-of select='hostUnreach'/>&#160;<xsl:value-of select='//main/str_unreachable'/>
 										</xsl:element>
 									</tr>								
 									</xsl:otherwise>
@@ -119,14 +121,14 @@
 								<xsl:if test="hostUnreachAck &gt; 0">								
 									<tr>
 										<td class="SubTacticalDT" style="background-color:#339999;">
-											<xsl:value-of select='hostUnreachAck'/> <xsl:value-of select='//main/str_acknowledged'/>
+											<xsl:value-of select='hostUnreachAck'/>&#160;<xsl:value-of select='//main/str_acknowledged'/>
 										</td>
 									</tr>
 								</xsl:if>
 								<xsl:if test="hostUnreachInact &gt; 0">								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#339999;">
-										<xsl:value-of select='hostUnreachInact'/> <xsl:value-of select='//main/str_disabled'/>
+										<xsl:value-of select='hostUnreachInact'/>&#160;<xsl:value-of select='//main/str_disabled'/>
 									</td>
 								</tr>
 								</xsl:if>								
@@ -139,7 +141,7 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_host_unhand'/>
 											</xsl:attribute>											
-											<xsl:value-of select='hostUnreachUnhand'/> <xsl:value-of select='//main/str_unhandledpb'/>
+											<xsl:value-of select='hostUnreachUnhand'/>&#160;<xsl:value-of select='//main/str_unhandledpb'/>
 										</xsl:element>									
 									</xsl:element>
 								</tr>
@@ -156,14 +158,14 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_hostOK'/>
 											</xsl:attribute>											
-											<xsl:value-of select='hostUp'/> <xsl:value-of select='//main/str_up'/>
+											<xsl:value-of select='hostUp'/>&#160;<xsl:value-of select='//main/str_up'/>
 										</xsl:element>									
 									</xsl:element>
 								</tr>
 								<xsl:if test="hostUpInactive &gt; 0">								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#ccff99;">
-										<xsl:value-of select='hostUpInactive'/> <xsl:value-of select='str_disabled'/>
+										<xsl:value-of select='hostUpInactive'/>&#160;<xsl:value-of select='str_disabled'/>
 									</td>
 								</tr>
 								</xsl:if>								
@@ -180,7 +182,7 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_hostPb'/>
 												</xsl:attribute>											
-												<xsl:value-of select='hostPending'/> <xsl:value-of select='//main/str_pending'/>
+												<xsl:value-of select='hostPending'/>&#160;<xsl:value-of select='//main/str_pending'/>
 											</xsl:element>
 										</xsl:element>
 									</tr>
@@ -189,7 +191,7 @@
 									<tr>
 										<xsl:element name='td'>
 											<xsl:attribute name='style'>background-color:<xsl:value-of select='color_unknown'/>;</xsl:attribute>
-											<xsl:value-of select='hostPending'/> <xsl:value-of select="//main/str_pending"/>										
+											<xsl:value-of select='hostPending'/>&#160;<xsl:value-of select="//main/str_pending"/>										
 										</xsl:element>
 									</tr>				
 									</xsl:otherwise>
@@ -197,7 +199,7 @@
 								<xsl:if test="hostPendingInact &gt; 0">								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#99cccc;">
-										<xsl:value-of select='hostPendingInact'/> <xsl:value-of select="//main/str_disabled"/>
+										<xsl:value-of select='hostPendingInact'/>&#160;<xsl:value-of select="//main/str_disabled"/>
 									</td>
 								</tr>
 								</xsl:if>
@@ -206,7 +208,7 @@
 									<xsl:element name='td'>
 										<xsl:attribute name='class'>SubTacticalDT</xsl:attribute>
 										<xsl:attribute name='style'>background-color:<xsl:value-of select='color_pending'/>;font-weight:bold;</xsl:attribute>
-										<xsl:value-of select='hostPendingUnhand'/> <xsl:value-of select="//main/str_unhandledpb"/>
+										<xsl:value-of select='hostPendingUnhand'/>&#160;<xsl:value-of select="//main/str_unhandledpb"/>
 									</xsl:element>
 								</tr>
 								</xsl:if>
@@ -222,7 +224,7 @@
 	<table>
 		<tr>
 			<td style="font-weight:bold;background-color:#ffffff;">
-				&nbsp;::&nbsp;<xsl:value-of select="//main/str_hostprobunhandled"/>
+				&#160;::&#160;<xsl:value-of select="//main/str_hostprobunhandled"/>
 			</td>
 		</tr>
 		<tr>			
@@ -241,7 +243,7 @@
 						<td align='center'><xsl:value-of select='//main/str_hostproblastcheck'/></td>
 						<td align='center' style="width:500px;"><xsl:value-of select='//main/str_hostproboutput'/></td>
 					</tr>					
-					<xsl:foreach select='//root/unhandledHosts'>
+					<xsl:for-each select='//root/unhandledHosts'>
 					<xsl:element name='tr'>
 						<xsl:attribute name='class'><xsl:value-of select='class'/></xsl:attribute>
 						<xsl:element name='td'>
@@ -289,7 +291,7 @@
 							<xsl:value-of select='output'/>
 						</xsl:element>
 					</xsl:element>					
-					</xsl:foreach>
+					</xsl:for-each>
 				</table>
 				</td>
 			</xsl:otherwise>
@@ -300,7 +302,7 @@
 <div id="serviceStats">
 	<table>
 		<tr>
-			<td style="font-weight:bold;background-color:#ffffff;">&nbsp;::&nbsp;<xsl:value-of select='str_services'/></td>
+			<td style="font-weight:bold;background-color:#ffffff;">&#160;::&#160;<xsl:value-of select='//main/str_services'/></td>
 		</tr>
 		<tr>
 			<td style="vertical-align:top;">
@@ -317,7 +319,7 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_critical'/>
 												</xsl:attribute>
-												<xsl:value-of select='svcCritical'/> <xsl:value-of select='//main/str_critical'/>
+												<xsl:value-of select='svcCritical'/>&#160;<xsl:value-of select='//main/str_critical'/>
 											</xsl:element>										
 										</xsl:element>
 									</tr>
@@ -329,19 +331,19 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_critical'/>
 												</xsl:attribute>											
-												<xsl:value-of select='svcCritical'/> <xsl:value-of select='//main/str_critical'/>
+												<xsl:value-of select='svcCritical'/>&#160;<xsl:value-of select='//main/str_critical'/>
 											</xsl:element>
 										</td>
 									</tr>
 									</xsl:when>
-									<xsl:otherwisee>
+									<xsl:otherwise>
 									<tr>
 										<xsl:element name='td'>
 											<xsl:attribute name='style'>background-color:<xsl:value-of select='color_unknown'/>;</xsl:attribute>
-											<xsl:value-of select='svcCritical'/> <xsl:value-of select='//main/str_critical'/>
+											<xsl:value-of select='svcCritical'/>&#160;<xsl:value-of select='//main/str_critical'/>
 										</xsl:element>
 									</tr>								
-									</xsl:otherwisee>
+									</xsl:otherwise>
 								</xsl:choose>								
 								<xsl:if test='svcCriticalAck &gt; 0'>
 								<tr>
@@ -350,7 +352,7 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_svc_ack'/>
 											</xsl:attribute>											
-											<xsl:value-of select='svcCriticalAck'/> <xsl:value-of select='//main/str_acknowledged'/>
+											<xsl:value-of select='svcCriticalAck'/>&#160;<xsl:value-of select='//main/str_acknowledged'/>
 										</xsl:element>										
 									</td>
 								</tr>
@@ -358,14 +360,14 @@
 								<xsl:if test='svcCriticalInact &gt; 0'>								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#ee9572;">
-										<xsl:value-of select='svcCriticalInact'/> <xsl:value-of select='str_disabled'/>
+										<xsl:value-of select='svcCriticalInact'/>&#160;<xsl:value-of select='//main/str_disabled'/>
 									</td>
 								</tr>
 								</xsl:if>
 								<xsl:if test='svcCriticalOnpbHost &gt; 0'>								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#ee9572;">
-										<xsl:value-of select='svcCriticalOnpbHost'/> <xsl:value-of select='str_pbhost'/>
+										<xsl:value-of select='svcCriticalOnpbHost'/>&#160;<xsl:value-of select='//main/str_pbhost'/>
 									</td>
 								</tr>								
 								</xsl:if>
@@ -378,7 +380,7 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_svc_unhand'/>
 											</xsl:attribute>											
-											<xsl:value-of select='svcCriticalUnhand'/> <xsl:value-of select='//main/str_unhandledpb'/>
+											<xsl:value-of select='svcCriticalUnhand'/>&#160;<xsl:value-of select='//main/str_unhandledpb'/>
 										</xsl:element>
 									</xsl:element>
 								</tr>
@@ -396,7 +398,7 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_warning'/>
 												</xsl:attribute>											
-												<xsl:value-of select='svcWarning'/> <xsl:value-of select='//main/str_warning'/>
+												<xsl:value-of select='svcWarning'/>&#160;<xsl:value-of select='//main/str_warning'/>
 											</xsl:element>
 										</xsl:element>
 									</tr>
@@ -408,7 +410,7 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_warning'/>
 												</xsl:attribute>											
-												<xsl:value-of select='svcWarning'/> <xsl:value-of select='//main/str_warning'/>
+												<xsl:value-of select='svcWarning'/>&#160;<xsl:value-of select='//main/str_warning'/>
 											</xsl:element>										
 										</td>
 									</tr>
@@ -417,7 +419,7 @@
 									<tr>
 										<xsl:element name='td'>
 											<xsl:attribute name='style'>background-color:<xsl:value-of select='color_unknown'/></xsl:attribute>										
-											<xsl:value-of select='svcWarning'/> <xsl:value-of select='str_warning'/>
+											<xsl:value-of select='svcWarning'/>&#160;<xsl:value-of select='//main/str_warning'/>
 										</xsl:element>
 									</tr>
 									</xsl:otherwise>							
@@ -429,7 +431,7 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_svc_ack'/>
 											</xsl:attribute>											
-											<xsl:value-of select='svcWarningAck'/> <xsl:value-of select='//main/str_acknowledged'/>
+											<xsl:value-of select='svcWarningAck'/>&#160;<xsl:value-of select='//main/str_acknowledged'/>
 										</xsl:element>										
 									</td>
 								</tr>
@@ -437,14 +439,14 @@
 								<xsl:if test='svcWarningInact &gt; 0'>								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#ffcc66;">
-										<xsl:value-of select='svcWarningInact'/> <xsl:value-of select='//main/str_disabled'/>
+										<xsl:value-of select='svcWarningInact'/>&#160;<xsl:value-of select='//main/str_disabled'/>
 									</td>
 								</tr>
 								</xsl:if>								
 								<xsl:if test='svcWarningOnpbHost &gt; 0'>
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#ffcc66;">
-										<xsl:value-of select='svcWarningOnpbHost'/> <xsl:value-of select='//main/str_pbhost'/>
+										<xsl:value-of select='svcWarningOnpbHost'/>&#160;<xsl:value-of select='//main/str_pbhost'/>
 									</td>
 								</tr>
 								</xsl:if>								
@@ -457,7 +459,7 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_svc_unhand'/>
 											</xsl:attribute>
-											<xsl:value-of select='svcWarningUnhand'/> <xsl:value-of select='//main/str_unhandledpb'/>
+											<xsl:value-of select='svcWarningUnhand'/>&#160;<xsl:value-of select='//main/str_unhandledpb'/>
 										</xsl:element>
 									</xsl:element>
 								</tr>
@@ -473,14 +475,14 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_ok'/>
 											</xsl:attribute>											
-											<xsl:value-of select='svcOk'/> <xsl:value-of select='//main/str_ok'/>
+											<xsl:value-of select='svcOk'/>&#160;<xsl:value-of select='//main/str_ok'/>
 										</xsl:element>
 									</xsl:element>
 								</tr>
 								<xsl:if test='svcOkInactive &gt; 0'>
 									<tr>
 										<td class="SubTacticalDT" style="background-color:#ccff99;">
-											<xsl:value-of select='svcOkInactive'/> <xsl:value-of select='//main/str_disabled'/>
+											<xsl:value-of select='svcOkInactive'/>&#160;<xsl:value-of select='//main/str_disabled'/>
 										</td>
 									</tr>
 								</xsl:if>
@@ -497,7 +499,7 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_unknown'/>
 												</xsl:attribute>
-												<xsl:value-of select='svcUnknown'/> <xsl:value-of select='//main/str_unknown'/>
+												<xsl:value-of select='svcUnknown'/>&#160;<xsl:value-of select='//main/str_unknown'/>
 											</xsl:element>
 										</xsl:element>
 									</tr>
@@ -510,7 +512,7 @@
 												<xsl:attribute name='href'>
 													<xsl:value-of select='//main/url_unknown'/>
 												</xsl:attribute>											
-												<xsl:value-of select='svcUnknown'/> <xsl:value-of select='//main/str_unknown'/>
+												<xsl:value-of select='svcUnknown'/>&#160;<xsl:value-of select='//main/str_unknown'/>
 											</xsl:element>
 										</xsl:element>
 									</tr>
@@ -523,7 +525,7 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_svc_ack'/>
 											</xsl:attribute>											
-											<xsl:value-of select='svcUnknownAck'/> <xsl:value-of select='//main/str_acknowledged'/>
+											<xsl:value-of select='svcUnknownAck'/>&#160;<xsl:value-of select='//main/str_acknowledged'/>
 										</xsl:element>
 									</td>
 								</tr>
@@ -531,14 +533,14 @@
 								<xsl:if test='svcUnknownInact &gt; 0'>													
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#cccccc;">
-										<xsl:value-of select='svcUnknownInact'/> <xsl:value-of select='//main/str_disabled'/>
+										<xsl:value-of select='svcUnknownInact'/>&#160;<xsl:value-of select='//main/str_disabled'/>
 									</td>
 								</tr>
 								</xsl:if>
 								<xsl:if test='svcUnknownOnpbHost &gt; 0'>								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#cccccc;">
-										<xsl:value-of select='svcUnknownOnpbHost'/> <xsl:value-of select='str_pbhost'/>
+										<xsl:value-of select='svcUnknownOnpbHost'/>&#160;<xsl:value-of select='//main/str_pbhost'/>
 									</td>
 								</tr>
 								</xsl:if>
@@ -551,7 +553,7 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_svc_unhand'/>
 											</xsl:attribute>
-											<xsl:value-of select='svcUnknownUnhand'/> <xsl:value-of select='//main/str_unhandledpb'/>
+											<xsl:value-of select='svcUnknownUnhand'/>&#160;<xsl:value-of select='//main/str_unhandledpb'/>
 										</xsl:element>
 									</xsl:element>
 								</tr>
@@ -565,7 +567,7 @@
 									<tr>
 										<xsl:element name='td'>
 											<xsl:attribute name='style'>background-color:<xsl:value-of select='color_pending'/>;font-weight:bold;</xsl:attribute>
-											<xsl:value-of select='svcPending'/> <xsl:value-of select='//main/str_pending'/>
+											<xsl:value-of select='svcPending'/>&#160;<xsl:value-of select='//main/str_pending'/>
 										</xsl:element>
 									</tr>
 									</xsl:when>
@@ -573,7 +575,7 @@
 									<tr>
 										<xsl:element name='td'>
 											<xsl:attribute name='style'>background-color:<xsl:value-of select='color_unknown'/>;</xsl:attribute>
-											<xsl:value-of select='svcPending'/> <xsl:value-of select='//main/str_pending'/>
+											<xsl:value-of select='svcPending'/>&#160;<xsl:value-of select='//main/str_pending'/>
 										</xsl:element>
 									</tr>
 									</xsl:otherwise>			
@@ -581,14 +583,14 @@
 								<xsl:if test='svcPendingInact &gt; 0'>								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#99cccc;">
-										<xsl:value-of select='svcPendingInact'/> <xsl:value-of select='//main/str_disabled'/>
+										<xsl:value-of select='svcPendingInact'/>&#160;<xsl:value-of select='//main/str_disabled'/>
 									</td>
 								</tr>
 								</xsl:if>
 								<xsl:if test='svcPendingOnpbHost &gt; 0'>								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#99cccc;">
-										<xsl:value-of select='svcPendingOnpbHost'/> <xsl:value-of select='//main/str_pbhost'/>
+										<xsl:value-of select='svcPendingOnpbHost'/>&#160;<xsl:value-of select='//main/str_pbhost'/>
 									</td>
 								</tr>
 								</xsl:if>
@@ -601,7 +603,7 @@
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_svc_unhand'/>
 											</xsl:attribute>											
-											<xsl:value-of select='svcPendingUnhand'/> <xsl:value-of select='//main/str_unhandledpb'/>
+											<xsl:value-of select='svcPendingUnhand'/>&#160;<xsl:value-of select='//main/str_unhandledpb'/>
 										</xsl:element>
 									</xsl:element>
 								</tr>
@@ -617,7 +619,7 @@
 <div id="unhandledproblems">
 	<table>
 		<tr>
-			<td style="font-weight:bold;background-color:#ffffff;">&nbsp;::&nbsp;<xsl:value-of select='//main/str_unhandled'/></td>
+			<td style="font-weight:bold;background-color:#ffffff;">&#160;::&#160;<xsl:value-of select='//main/str_unhandled'/></td>
 		</tr>
 		<tr>			
 			<xsl:choose>
@@ -628,15 +630,15 @@
 				<td>
 					<table class="tactical_light_table">
 						<tr style="font-weight:bold;" class="tactical_light_header">
-							<td align='center'><xsl:value-of select='str_hostname'/></td>
-							<td align='center'><xsl:value-of select='str_servicename'/></td>
-							<td align='center'><xsl:value-of select='str_status'/></td>
-							<td align='center'><xsl:value-of select='str_ip'/></td>
-							<td align='center'><xsl:value-of select='str_duration'/></td>
-							<td align='center'><xsl:value-of select='str_lastcheck'/></td>
-							<td align='center' style="width:500px;"><xsl:value-of select='str_output'/></td>
+							<td align='center'><xsl:value-of select='//main/str_hostname'/></td>
+							<td align='center'><xsl:value-of select='//main/str_servicename'/></td>
+							<td align='center'><xsl:value-of select='//main/str_status'/></td>
+							<td align='center'><xsl:value-of select='//main/str_ip'/></td>
+							<td align='center'><xsl:value-of select='//main/str_duration'/></td>
+							<td align='center'><xsl:value-of select='//main/str_lastcheck'/></td>
+							<td align='center' style="width:500px;"><xsl:value-of select='//main/str_output'/></td>
 						</tr>
-						<xsl:foreach select='//root/unhandledServices'>						
+						<xsl:for-each select='//root/unhandledServices'>						
 							<xsl:element name='tr'>
 								<xsl:attribute name='class'><xsl:value-of select='class'/></xsl:attribute>
 								<td class="ListColLeft" style="white-space:nowrap;">
@@ -644,7 +646,7 @@
 										<xsl:attribute name='src'>./img/media/<xsl:value-of select='icon'/></xsl:attribute>
 										<xsl:attribute name='width'>16</xsl:attribute>
 										<xsl:attribute name='height'>16</xsl:attribute>
-										&nbsp;&nbsp;
+										&#160;&#160;
 									</xsl:element>								
 									<xsl:element name='a'>
 										<xsl:attribute name='href'>
@@ -685,7 +687,7 @@
 									<xsl:value-of select='output'/>
 								</td>						
 							</xsl:element>
-						</xsl:foreach>
+						</xsl:for-each>
 					</table>
 				</td>
 				</xsl:otherwise>
@@ -693,5 +695,6 @@
 		</tr>
 	</table>
 </div>
+</xsl:for-each>
 </xsl:template>
 </xsl:stylesheet>

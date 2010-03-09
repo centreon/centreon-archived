@@ -55,10 +55,11 @@
 	$pearDB = $db;
 	$dbb 	= new CentreonDB("ndo");
     $centreon = $_SESSION['centreon'];
-	
+	    
 	$acl_host_name_list = $centreon->user->access->getHostsString("NAME", $dbb);
 	$acl_access_group_list = $centreon->user->access->getAccessGroupsString();		
 	
+	$is_admin = $centreon->user->access->admin;
 	
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($db); 
@@ -198,12 +199,12 @@
 				" AND no.name1 not like '_Module_%' ".
 				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 	}					
-	$resNdo2 = $dbb->query($rq2);	
+	$resNdo2 = $dbb->query($rq2);
 	$SvcStat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 
 	while ($ndo = $resNdo2->fetchRow()) {
-		$SvcStat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
-	} 
+		$SvcStat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];		
+	} 	
 	$resNdo2->free();
 		
 	/*
