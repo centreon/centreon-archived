@@ -297,7 +297,9 @@ sub sendExternalCommand($$){
 
     # check if ip address is defined
     if (defined($server_info->{'ns_ip_address'})) {
-
+	
+	$cmd =~ s/\//\/\//g;
+	
 	my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'echo \"".$cmd."\" >> ".$command_file."'\n";
 	my $stdout = `$cmd`;
 
