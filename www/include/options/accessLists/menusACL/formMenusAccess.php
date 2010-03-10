@@ -76,7 +76,7 @@
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	#
 	## Form begin
@@ -96,7 +96,7 @@
 	$form->addElement('text',	'acl_topo_name', _("ACL Definition"), $attrsText);
 	$form->addElement('text', 	'acl_topo_alias', _("Alias"), $attrsText);
 
-    $ams1 =& $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -264,7 +264,7 @@
 			require_once("listsMenusAccess.php");
 		else	{
 			#Apply a template definition
-			$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+			$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 			$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 			$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 			$form->accept($renderer);

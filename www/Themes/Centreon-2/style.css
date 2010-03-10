@@ -399,3 +399,5 @@ a.infobulle span,.img_volante 		{display:none;position:absolute;z-index:500;}
 .FormFooter,.ListColFooter5,.ListColFooter5 a,.ListColFooterCenter,.ListColFooterLeft,.ListColFooterRight 	{font-size:12px;font-weight:700;padding-right:10px;}
 .ListColFooterRight,.ListColRight,.Toolbar_pagelimit {text-align:right;}
 .list_one,.list_two,.list_three,.list_four,.line_ack,.line_downtime,.list_unreachable		{font-weight:400;vertical-align:middle;}
+
+div.ams		{text-align:center;font-style:italic;}

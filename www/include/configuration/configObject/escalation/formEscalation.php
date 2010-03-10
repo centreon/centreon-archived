@@ -170,7 +170,7 @@
 	$attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
 	$attrsAdvSelect2 = array("style" => "width: 300px; height: 400px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	#
 	## Form begin
@@ -206,7 +206,7 @@
 	$form->addGroup($tab, 'escalation_options2', _("Services Escalation Options"), '&nbsp;&nbsp;');
 	$form->addElement('textarea', 'esc_comment', _("Comments"), $attrsTextarea);
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_cgs', _("Implied Contact Groups"), $cgs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'esc_cgs', array(_("Implied Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -217,7 +217,7 @@
 	#
 	$form->addElement('header', 'hosts', _("Implied Hosts"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_hosts', _("Hosts"), $hosts, $attrsAdvSelect2);
+	$ams1 =& $form->addElement('advmultiselect', 'esc_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -228,7 +228,7 @@
 	#
 	$form->addElement('header', 'services', _("Implied Services"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_hServices', _("Services by Hosts"), $hServices, $attrsAdvSelect2);
+	$ams1 =& $form->addElement('advmultiselect', 'esc_hServices', array(_("Services by Host"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -237,9 +237,9 @@
 	#
 	## Sort 4
 	#
-	$form->addElement('header', 'hgs', _("Implied HostGroups"));
+	$form->addElement('header', 'hgs', _("Implied Host Groups"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_hgs', _("HostGroup"), $hgs, $attrsAdvSelect2);
+	$ams1 =& $form->addElement('advmultiselect', 'esc_hgs', array(_("Host Group"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -250,7 +250,7 @@
 	#
 	$form->addElement('header', 'metas', _("Implied Meta Services"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_metas', _("Meta Service"), $metas, $attrsAdvSelect2);
+	$ams1 =& $form->addElement('advmultiselect', 'esc_metas', array(_("Meta Service"), _("Available"), _("Selected")), $metas, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -259,9 +259,9 @@
 	#
 	## Sort 6
 	#
-	$form->addElement('header', 'sgs', _("Implied Servicegroups"));
+	$form->addElement('header', 'sgs', _("Implied Service Groups"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_sgs', _("ServiceGroup"), $sgs, $attrsAdvSelect2);
+	$ams1 =& $form->addElement('advmultiselect', 'esc_sgs', array(_("Service Group"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -344,7 +344,7 @@
 		require_once("listEscalation.php");
 	else	{
 		#Apply a template definition	
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);	

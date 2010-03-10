@@ -162,7 +162,7 @@
 	$attrsText2 	= array("size"=>"60");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"80");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	/*
 	 * Form begin
@@ -195,7 +195,7 @@
 	 */
 	$form->addElement('header', 'contacts_infos', _("People linked to this Access list"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -207,7 +207,7 @@
 	/*
 	 * Hosts
 	 */
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hosts', _("Hosts available"), $hosts, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
@@ -216,13 +216,13 @@
 	/*
 	 * Host Groups
 	 */
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hostgroup', _("Hosts groups available"), $hostgroups, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostgroup', array(_("Host Groups"), _("Available"), _("Selected")), $hostgroups, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', _("Exclude hosts on selected hosts groups"), $hosttoexcludes, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', array(_("Exclude hosts from selected host groups"), _("Available"), _("Selected")), $hosttoexcludes, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
@@ -231,7 +231,7 @@
 	/*
 	 * Host Filters
 	 */
-	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', _("Services Categories Access"), $service_categories, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', array(_("Service Categories Access"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
@@ -241,7 +241,7 @@
 	 * Service Groups Add
 	 */
 	$form->addElement('header', 'SSharedExplain', "");
-	$ams2 =& $form->addElement('advmultiselect', 'acl_sg', _("Services Groups"), $service_groups, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_sg', array(_("Service Groups"), _("Available"), _("Selected")), $service_groups, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
@@ -251,7 +251,7 @@
 	 * Meta Services
 	 */
 	$form->addElement('header', 'MSSharedExplain', "");
-	$ams2 =& $form->addElement('advmultiselect', 'acl_meta', _("Meta Services"), $meta_services, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_meta', array(_("Meta Services"), _("Available"), _("Selected")), $meta_services, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
@@ -324,7 +324,7 @@
 			/*
 			 * Apply a template definition
 			 */
-			$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+			$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 			$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 			$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 			$form->accept($renderer);

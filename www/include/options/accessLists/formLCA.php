@@ -132,7 +132,7 @@ $lca["lca_topos"] = array();
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	#
 	## Form begin
@@ -167,7 +167,7 @@ $lca["lca_topos"] = array();
 	## Contact Group concerned
 	#
 	$form->addElement('header', 'cg', _("Implied Contact Groups"));
-    $ams1 =& $form->addElement('advmultiselect', 'lca_cgs', _("Contact Groups"), $cgs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'lca_cgs', array(_("Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -184,7 +184,7 @@ $lca["lca_topos"] = array();
 	#
 	$form->addElement('header', 'rs', _("Implied Resources"));
 
-    $ams1 =& $form->addElement('advmultiselect', 'lca_hgs', _("Host Groups"), $hgs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'lca_hgs', array(_("Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -195,13 +195,13 @@ $lca["lca_topos"] = array();
 	$form->addGroup($tab, 'lca_hg_childs', _("Include Host Groups -> Hosts"), '&nbsp;');
 	$form->setDefaults(array('lca_hg_childs' => '1'));
 
-    $ams1 =& $form->addElement('advmultiselect', 'lca_hosts', _("Hosts"), $hosts, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'lca_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-    $ams1 =& $form->addElement('advmultiselect', 'lca_sgs', _("Service Groups"), $sgs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'lca_sgs', array(_("Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -367,7 +367,7 @@ $lca["lca_topos"] = array();
 		require_once("listLCA.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

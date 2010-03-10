@@ -94,7 +94,7 @@
 	$attrsText2 	= array("size"=>"10");
 	$attrsAdvSelect = array("style" => "width: 400px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	/*
 	 * Form begin
@@ -146,13 +146,13 @@
 	/*
 	 * Sort 2 Host Service Dependencies
 	 */
-	$ams1 =& $form->addElement('advmultiselect', 'dep_hSvPar', _("Hosts Services Description"), $hServices, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'dep_hSvPar', array(_("Host Service Descriptions"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-    $ams1 =& $form->addElement('advmultiselect', 'dep_hSvChi', _("Dependent Hosts Services Description"), $hServices, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'dep_hSvChi', array(_("Dependent Host Service Descriptions"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -230,7 +230,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

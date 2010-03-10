@@ -262,7 +262,7 @@
 	$attrsAdvSelectsmall= array("style" => "width: 270px; height: 50px;");
 	$attrsAdvSelectbig 	= array("style" => "width: 270px; height: 130px;");
 	$attrsTextarea 		= array("rows"=>"4", "cols"=>"80");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	
 	#
@@ -417,7 +417,7 @@
 	/*
 	 *  Contacts
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'host_cs', _("Linked Contacts"), $notifCs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -426,7 +426,7 @@
 	/*
 	 *  Contact groups
 	 */
-    $ams3 =& $form->addElement('advmultiselect', 'host_cgs', _("Linked ContactGroups"), $notifCgs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -479,7 +479,7 @@
 		$form->addGroup($mc_mod_hpar, 'mc_mod_hpar', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hpar'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'host_parents', _("Parent Hosts"), $hostPs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_parents', array(_("Parent Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -492,7 +492,7 @@
 		$form->addGroup($mc_mod_hch, 'mc_mod_hch', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hch'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'host_childs', _("Child Hosts"), $hostPs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_childs', array(_("Child Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -505,7 +505,7 @@
 		$form->addGroup($mc_mod_hhg, 'mc_mod_hhg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hhg'=>'0'));
 	}
-        $ams3 =& $form->addElement('advmultiselect', 'host_hgs', _("Parent HostGroups"), $hgs, $attrsAdvSelect);
+        $ams3 =& $form->addElement('advmultiselect', 'host_hgs', array(_("Parent Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -519,7 +519,7 @@
 		$form->setDefaults(array('mc_mod_nsid'=>'0'));
 	}
 	/*
-	$ams3 =& $form->addElement('advmultiselect', 'nagios_server_id', _("Monitored from "), $nsServers, $attrsAdvSelectsmall);
+	$ams3 =& $form->addElement('advmultiselect', 'nagios_server_id', array(_("Monitored from"), _("Available"), _("Selected")), $nsServers, $attrsAdvSelectsmall);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -796,7 +796,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

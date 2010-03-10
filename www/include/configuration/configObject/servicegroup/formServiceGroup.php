@@ -104,38 +104,38 @@
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 400px; height: 250px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	#
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', _("Add a ServiceGroup"));
+		$form->addElement('header', 'title', _("Add a Service Group"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify a ServiceGroup"));
+		$form->addElement('header', 'title', _("Modify a Service Group"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', _("View a ServiceGroup"));
+		$form->addElement('header', 'title', _("View a Service Group"));
 
 	#
 	## Contact basic information
 	#
 	$form->addElement('header', 'information', _("General Information"));
-	$form->addElement('text', 'sg_name', _("ServiceGroup Name"), $attrsText);
+	$form->addElement('text', 'sg_name', _("Service Group Name"), $attrsText);
 	$form->addElement('text', 'sg_alias', _("Description"), $attrsText);
 	
 	##
 	## Services Selection
 	##
 	$form->addElement('header', 'relation', _("Relations"));
-    $ams1 =& $form->addElement('advmultiselect', 'sg_hServices', _("Host Services linked"), $hServices, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
 	$form->addElement('header', 'relation', _("Relations"));
-    $ams1 =& $form->addElement('advmultiselect', 'sg_hgServices', _("Linked Host Group Services"), $hgServices, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'sg_hgServices', array(_("Linked Host Group Services"), _("Available"), _("Selected")), $hgServices, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -232,7 +232,7 @@
 		require_once($path."listServiceGroup.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);	

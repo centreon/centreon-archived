@@ -101,7 +101,7 @@
 	$attrsText 		= array("size"=>"35");
 	$attrsTextLong	= array("size"=>"55");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
@@ -137,7 +137,7 @@
 	/*
 	 * Include Timeperiod
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'tp_include', _("Include Timeperiods"), $includeTP, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'tp_include', array(_("Include Timeperiods"), _("Available"), _("Selected")), $includeTP, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -146,7 +146,7 @@
 	/*
 	 * Exclude Timeperiod
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'tp_exclude', _("Exclude Timeperiods"), $excludeTP, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'tp_exclude', array(_("Exclude Timeperiods"), _("Available"), _("Selected")), $excludeTP, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
@@ -285,7 +285,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);	
