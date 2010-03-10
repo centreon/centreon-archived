@@ -53,17 +53,18 @@
 		}
 	}
 
-	require_once ("$classdir/Session.class.php");
-	require_once ("$classdir/Oreon.class.php");
-	require_once ("$classdir/centreonAuth.class.php");
-	require_once ("$classdir/centreonLog.class.php");
-	require_once ("$classdir/centreonDB.class.php");
+	require_once "$classdir/centreon.class.php";
+	require_once "$classdir/centreonSession.class.php";
+	require_once "$classdir/centreonAuth.class.php";
+	require_once "$classdir/centreonLog.class.php";
+	require_once "$classdir/centreonDB.class.php";
 	
 	/*
 	 * Get auth type
 	 */
 	global $pearDB;
 	$pearDB = new CentreonDB();
+
 	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
     while ($generalOption =& $DBRESULT->fetchRow())
     	$generalOptions[$generalOption["key"]] = $generalOption["value"];
@@ -89,7 +90,7 @@
 	ini_set("session.gc_maxlifetime", "31536000");
 	
 	if (!isset($cas) || !isset($cas["auth_cas_enable"])){	
-		Session::start();
+		CentreonSession::start();
 	}
 	
 	if (isset($_GET["disconnect"])) {
@@ -99,43 +100,48 @@
 			phpCAS::client(CAS_VERSION_2_0, $cas["cas_server"], 443, $cas["cas_url"]);
 			phpCAS::logout();
 		}
-		$oreon = & $_SESSION["oreon"];
+		$centreon = & $_SESSION["centreon"];
 		
 		/*
 		 * Init log class
 		 */
-		if (is_object($oreon)) {
-			$CentreonLog = new CentreonUserLog($oreon->user->get_id(), $pearDB);
-			$CentreonLog->insertLog(1, "Contact '".$oreon->user->get_alias()."' logout");
+		if (is_object($centreon)) {
+			$CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
+			$CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
 		
 			$pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
 		
-			Session::stop();
-			Session::start();
+			CentreonSession::stop();
+			CentreonSession::start();
 		}
 	}
 	/*
 	 * already connected
 	 */
-	if (isset($_SESSION["oreon"])) {	
-		$oreon = & $_SESSION["oreon"];
+	if (isset($_SESSION["centreon"])) {	
+		$centreon = & $_SESSION["centreon"];
 		
 		/*
 		 * Init log class
 		 */
-		$CentreonLog = new CentreonUserLog($oreon->user->get_id(), $pearDB);
-		$CentreonLog->insertLog(1, "Contact '".$oreon->user->get_alias()."' logout");
+		$CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
+		$CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
 
 		$pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
-		Session::stop();
-		Session::start();
+		CentreonSession::stop();
+		CentreonSession::start();
 	}
 	
-	if (isset($_POST["submit"]) || (isset($_GET["autologin"]) && isset($_GET["p"]) && $_GET["autologin"])) {
+	if (isset($_POST["submit"]) 
+		|| (isset($_GET["autologin"]) && $_GET["autologin"] && isset($_GET["p"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"]) 
+		|| (isset($_POST["autologin"]) && $_POST["autologin"] && isset($_POST["p"]) && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])) {
 		/*
 		 * Init log class
 		 */
 		$CentreonLog = new CentreonUserLog(-1, $pearDB);
+		
+		if (isset($_POST['p']))
+			$_GET["p"] = $_POST["p"];
 		
 		/*
 		 * Get Connexion parameters
@@ -155,12 +161,12 @@
 	    }
 	    
 	    $centreonAuth = new CentreonAuth($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType);
-	     
+	    
 	    if ($centreonAuth->passwdOk == 1) {
-	    	$user =& new User($centreonAuth->userInfos, $generalOptions["nagios_version"]);
-	    	$oreon = new Oreon($user);
-	    	$_SESSION["oreon"] =& $oreon;
-		    $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
+	    	
+	    	$centreon = new Centreon($centreonAuth->userInfos, $generalOptions["nagios_version"]);
+	    	$_SESSION["centreon"] =& $centreon;
+		    $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$centreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
 			if (!isset($_POST["submit"]))	{
 				$args = NULL;
 				foreach ($_GET as $key=>$value)
@@ -173,19 +179,6 @@
 	    } else
 	    	$connect = false;
 	}
-	
-?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<title>Centreon - IT & Network Monitoring</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2009 Open Source Matters. All rights reserved." />
-<meta name="robots" content="index, nofollow" />
-<link href="<?php echo $skin; ?>login.css" rel="stylesheet" type="text/css">
-<link rel="shortcut icon" href="./img/favicon.ico">
-</head>
-<body OnLoad="document.login.useralias.focus();">
-<?php 
 
 	/*
 	 * Check PHP version 
@@ -199,5 +192,3 @@
 		include_once("./login.php"); 
 	}
 ?>
-</body>
-</html>
