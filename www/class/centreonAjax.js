@@ -36,6 +36,17 @@ function mk_paginationFF(){;}
 function set_header_title(){;}
 document.write("<script type='text/javascript' src='./include/common/javascript/xslt.js'></script>");
 
+var tempX = 0;
+var tempY = 0;
+
+document.onmousemove = position;
+	
+function position(e)
+{
+	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
+	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
+}
+
 function CentreonAjax(xmlFile, xslFile, elementId)
 {
 	this._xslFile = xslFile;
@@ -83,4 +94,27 @@ function CentreonAjax(xmlFile, xslFile, elementId)
 			clearTimeout(_self._tObj);
 		}
 	}
+}
+
+function CentreonAjaxOverlay()
+{
+	this.show = function (xmlPage, xslPage, elementId)
+	{
+		var span = document.getElementById(elementId);		
+  	  	var overlayAjax = new CentreonAjax(xmlPage, xslPage, elementId);
+  	  	overlayAjax.start();
+
+    	var h = screen.availHeight;
+    		
+    	if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h) {
+        	span.style.top = '-380px';
+        }
+        span.style.left = '150px';
+	}
+	
+	this.hide = function (id)
+  	{
+		var span = document.getElementById(elementId);
+		span.innerHTML = '';
+  	}
 }

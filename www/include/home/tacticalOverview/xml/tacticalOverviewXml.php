@@ -44,6 +44,7 @@
     require_once $centreon_path . "www/class/centreon.class.php";
     require_once $centreon_path . 'www/class/centreonACL.class.php';
     require_once $centreon_path . 'www/class/centreonUser.class.php';
+    require_once $centreon_path . 'www/class/centreonDuration.class.php';
 	
 	session_start();
         
@@ -83,7 +84,7 @@
 	$resNdo1->free();
 		
 	// Get Hosts Problems			
-	$rq1 = 	" SELECT DISTINCT obj.name1 , hs.current_state, unix_timestamp(hs.last_check) AS last_check, hs.output, h.address, unix_timestamp(hs.last_state_change) AS lsc" .
+	$rq1 = 	" SELECT DISTINCT hs.host_object_id, obj.name1 , hs.current_state, unix_timestamp(hs.last_check) AS last_check, hs.output, h.icon_image, h.address, unix_timestamp(hs.last_state_change) AS lsc" .
 			" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects obj,  ".$ndo_base_prefix."hosts h " .
 			" WHERE obj.object_id = hs.host_object_id".
 			" AND obj.object_id = h.host_object_id" .
@@ -93,7 +94,7 @@
 			" AND hs.problem_has_been_acknowledged = 0" .
 			" ORDER by hs.current_state";
 	$resNdoHosts = $dbb->query($rq1);
-		
+
 	$nbhostpb = 0;
     $tab_hostprobname[$nbhostpb] = "";
     $tab_hostprobstate[$nbhostpb] = "";
@@ -101,7 +102,9 @@
     $tab_hostprobduration[$nbhostpb] = "";
     $tab_hostproboutput[$nbhostpb] = "";
     $tab_hostprobip[$nbhostpb] = "";
-
+    $tab_hosticone = array();
+    $tab_hostobjectid = array();
+    
     while ($ndo = $resNdoHosts->fetchRow()) {				
 	    $tab_hostprobname[$nbhostpb] = $ndo["name1"];
         $tab_hostprobstate[$nbhostpb] = $ndo["current_state"];
@@ -109,10 +112,12 @@
         $tab_hostprobduration[$nbhostpb] = CentreonDuration::toString(time() - $ndo["lsc"]);
         $tab_hostproboutput[$nbhostpb] = $ndo["output"];
     	$tab_hostprobip[$nbhostpb] = $ndo["address"];
-		$nbhostpb++;				
+    	$tab_hosticone[$nbhostpb] = $ndo["icon_image"];
+    	$tab_hostobjectid[$nbhostpb] = $ndo['host_object_id'];
+		$nbhostpb++;
 	}
 	$resNdoHosts->free();
-		
+
 	$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);			
 	/*
 	 * Get the id's of problem hosts
@@ -234,7 +239,7 @@
 				" AND nss.current_state > 0 GROUP BY nss.service_object_id";
 	}
 	$onPbHost = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-		
+	
 	$resNdo1 = $dbb->query($rq2);
 	while($ndo = $resNdo1->fetchRow())	{			
 		if ($ndo["current_state"] != 0) {
@@ -320,7 +325,7 @@
 	 * Get problem table
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
+		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
 				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht" .
 				" WHERE obj.object_id = stat.service_object_id" .
 				" AND stat.service_object_id = svc.service_object_id" .
@@ -336,7 +341,7 @@
 				" ORDER by stat.current_state DESC, obj.name1";
 	}
 	else {
-		$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
+		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
 				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht" .
 				" WHERE obj.object_id = stat.service_object_id" .
 				" AND stat.service_object_id = svc.service_object_id" .
@@ -359,7 +364,9 @@
 	$tab_output[$j] = "";
 	$tab_ip[$j] = "";
 	$tab_icone[$j] = "";
-		
+	$tab_objectid[$j] = "";
+	$tab_hobjectid[$j] = "";
+	
 	while ($ndo = $resNdo1->fetchRow()){
 		$is_unhandled = 1;	
 
@@ -373,19 +380,20 @@
 			$tab_svcname[$j] = $ndo["name2"];
 			$tab_state[$j] = $ndo["current_state"];
 			$tab_last[$j] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
-			$tab_ip[$j] = $ndo["address"];
+			$tab_ip[$j] = $ndo["address"];			
 			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
-	    		$tab_duration[$j] = Duration::toString(time() - $ndo["last_state_change"]);
+	    		$tab_duration[$j] = CentreonDuration::toString(time() - $ndo["last_state_change"]);
 			} else if ($ndo["last_state_change"] > 0) {
 				$tab_duration[$j] = " - ";
 			}
 			$tab_output[$j] = $ndo["output"];
 			$tab_icone[$j] = $ndo["icon_image"];
+			$tab_objectid[$j] = $ndo['service_object_id'];
+			$tab_hobjectid[$j] = $ndo['host_object_id'];
 			$j++;
 		}
 	}
-	$resNdo1->free();
-		
+	$resNdo1->free();	
 	$nb_pb = $j;	
 				
 	$xml = new CentreonXML();
@@ -452,17 +460,18 @@
 	
 	/*
 	 *  Unhandled hosts
-	 */
-	$xml->startElement('unhandledHosts');
-	$style = 'list_two';
+	 */	
+	$style = 'list_two';	
 	foreach($tab_hostprobname as $key => $val) {
-	    $style = ($style == 'list_two') ? 'list_one' : 'list_two'; 
+	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
+	    $xml->startElement('unhandledHosts'); 	    
 	    $xml->writeElement('hostname', $val);
 	    $xml->writeElement('ip', $tab_hostprobip[$key]);
 	    $xml->writeElement('duration', $tab_hostprobduration[$key]);
 	    $xml->writeElement('last', $tab_hostproblast[$key]);
 	    $xml->writeElement('output', $tab_hostproboutput[$key]);
-	    $xml->writeElement('icon', $tab_icone[$key]);
+	    $xml->writeElement('icon', $tab_hosticone[$key]);
+	    $xml->writeElement('hid', $tab_hostobjectid[$key]);
 	    $xml->writeElement('class', $style);
 	    if ($tab_hostprobstate[$key] == 1) {
 	        $xml->writeElement('state', _('Down'));
@@ -472,16 +481,16 @@
 	        $xml->writeElement('state', _('Unreachable'));
 	        $xml->writeElement('bgcolor', $general_opt['color_unreachable']);
 	    }
-	}
-	$xml->endElement();
+	    $xml->endElement();	    
+	}	
 	
 	/*
 	 *  Unhandled services
-	 */
-	$xml->startElement('unhandledServices');
+	 */	
 	$style = 'list_two';
 	foreach($tab_svcname as $key => $val) {
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two'; 
+        $xml->startElement('unhandledServices');
 	    $xml->writeElement('servicename', $val);
 	    $xml->writeElement('hostname', $tab_hostname[$key]);	    
 	    $xml->writeElement('ip', $tab_ip[$key]);
@@ -489,21 +498,23 @@
 	    $xml->writeElement('last', $tab_last[$key]);
 	    $xml->writeElement('output', $tab_output[$key]);
 	    $xml->writeElement('icon', $tab_icone[$key]);
+	    $xml->writeElement('sid', $tab_objectid[$key]);
+	    $xml->writeElement('hid', $tab_hobjectid[$key]);
 	    $xml->writeElement('class', $style);
-	    if ($tab_hostprobstate[$key] == 1) {
+	    if ($tab_state[$key] == 1) {
 	        $xml->writeElement('state', _('Warning'));
 	        $xml->writeElement('bgcolor', $general_opt['color_warning']);
 	    }
-	    elseif ($tab_hostprobstate[$key] == 2) {
+	    elseif ($tab_state[$key] == 2) {
 	        $xml->writeElement('state', _('Critical'));
 	        $xml->writeElement('bgcolor', $general_opt['color_critical']);
 	    }
-	    elseif ($tab_hostprobstate[$key] == 3) {
+	    elseif ($tab_state[$key] == 3) {
 	        $xml->writeElement('state', _('Unknown'));
 	        $xml->writeElement('bgcolor', $general_opt['color_unknown']);
 	    }
-	}
-	$xml->endElement();
+	    $xml->endElement();
+	}	
 	
 	
 	$xml->startElement('main');	

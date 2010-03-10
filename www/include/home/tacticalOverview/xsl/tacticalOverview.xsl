@@ -30,7 +30,7 @@
 									</tr>
 									</xsl:when>
 									<xsl:when test="hostDown &gt; 0">
-									<tr>										
+									<tr>
 										<xsl:element name='td'>
 											<xsl:attribute name='style'>background-color:<xsl:value-of select='color_down'/>;font-weight:bold;</xsl:attribute>							
 											<xsl:element name='a'>
@@ -39,7 +39,7 @@
 												</xsl:attribute>											
 												<xsl:value-of select='hostDown'/>&#160;<xsl:value-of select='//main/str_down'/>
 											</xsl:element>
-										</xsl:element>>
+										</xsl:element>
 									</tr>
 									</xsl:when>
 									<xsl:otherwise>
@@ -56,9 +56,9 @@
 									<td class="SubTacticalDT" style="background-color:#ee9572;">
 										<xsl:value-of select='hostDownAck'/>&#160;<xsl:value-of select='//main/str_acknowledged'/>
 									</td>
-								</tr>								
+								</tr>
 								</xsl:if>
-								<xsl:if test="hostDownInact &gt; 0">								
+								<xsl:if test="hostDownInact &gt; 0">
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#ee9572;">
 										<xsl:value-of select='hostDownInact'/><xsl:value-of select='//main/str_disabled'/>
@@ -68,8 +68,8 @@
 								<xsl:if test="hostDownUnhand &gt; 0">								
 								<tr>
 									<xsl:element name='td'>
-									<xsl:attribute name='class'>SubTacticalDT</xsl:attribute>
-									<xsl:attribute name='style'>background-color:<xsl:value-of select='color_down'/>;font-weight:bold;</xsl:attribute>
+										<xsl:attribute name='class'>SubTacticalDT</xsl:attribute>
+										<xsl:attribute name='style'>background-color:<xsl:value-of select='color_down'/>;font-weight:bold;</xsl:attribute>
 										<xsl:element name='a'>
 											<xsl:attribute name='href'>
 												<xsl:value-of select='//main/url_host_unhand'/>
@@ -249,16 +249,24 @@
 						<xsl:element name='td'>
 							<xsl:attribute name='class'>ListColLeft</xsl:attribute>
 							<xsl:attribute name='style'>white-space:nowrap;</xsl:attribute>
-							<xsl:element name='img'>
-								<xsl:attribute name='src'>
-									./img/media/<xsl:value-of select='icon'/>
-								</xsl:attribute>
-								<xsl:attribute name='width'>16</xsl:attribute>
-								<xsl:attribute name='height'>16</xsl:attribute>
-							</xsl:element>
+							<xsl:if test='icon != ""'>
+								<xsl:element name='img'>
+									<xsl:attribute name='src'>
+										./img/media/<xsl:value-of select='icon'/>
+									</xsl:attribute>
+									<xsl:attribute name='width'>16</xsl:attribute>
+									<xsl:attribute name='height'>16</xsl:attribute>
+								</xsl:element>
+							</xsl:if>
 							<xsl:element name='a'>
-								<xsl:attribute name='href'><xsl:value-of select='url_hostdetail'/><xsl:value-of select='hostname'/></xsl:attribute>
+								<xsl:attribute name='href'><xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/></xsl:attribute>
+								<xsl:attribute name="class">infobulle</xsl:attribute>
+								<xsl:attribute name='onmouseover'>showHostOverlay('<xsl:value-of select="hid"/>');</xsl:attribute>
+								<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="hid"/>');</xsl:attribute>
 								<xsl:value-of select='hostname'/>
+								<xsl:element name="span">
+									<xsl:attribute name="id">span_<xsl:value-of select="hid"/></xsl:attribute>
+								</xsl:element>
 							</xsl:element>
 						</xsl:element>
 						<xsl:element name='td'>
@@ -642,18 +650,26 @@
 							<xsl:element name='tr'>
 								<xsl:attribute name='class'><xsl:value-of select='class'/></xsl:attribute>
 								<td class="ListColLeft" style="white-space:nowrap;">
-									<xsl:element name='img'>
-										<xsl:attribute name='src'>./img/media/<xsl:value-of select='icon'/></xsl:attribute>
-										<xsl:attribute name='width'>16</xsl:attribute>
-										<xsl:attribute name='height'>16</xsl:attribute>
-										&#160;&#160;
-									</xsl:element>								
+									<xsl:if test='icon != ""'>
+										<xsl:element name='img'>
+											<xsl:attribute name='src'>./img/media/<xsl:value-of select='icon'/></xsl:attribute>
+											<xsl:attribute name='width'>16</xsl:attribute>
+											<xsl:attribute name='height'>16</xsl:attribute>
+											&#160;&#160;
+										</xsl:element>
+									</xsl:if>						
 									<xsl:element name='a'>
+										<xsl:attribute name='onmouseover'>showHostOverlay('<xsl:value-of select="hid"/>');</xsl:attribute>
+										<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="hid"/>');</xsl:attribute>
+										<xsl:attribute name="class">infobulle</xsl:attribute>
 										<xsl:attribute name='href'>
 											<xsl:value-of select='//main/url_host_detail'/><xsl:value-of select='hostname'/>
 										</xsl:attribute>
+										<xsl:value-of select='hostname'/>
+										<xsl:element name='span'>
+											<xsl:attribute name='id'>span_<xsl:value-of select='hid'/></xsl:attribute>
+										</xsl:element>
 									</xsl:element>
-									<xsl:value-of select='hostname'/>
 								</td>							
 								<xsl:element name='td'>
 									<xsl:attribute name='class'>ListColLeft</xsl:attribute>
@@ -661,9 +677,16 @@
 										background-color: <xsl:value-of select='bgcolor'/>;white-space: nowrap;
 									</xsl:attribute>
 									<xsl:element name='a'>
+										<xsl:attribute name='onmouseover'>showServiceOverlay('<xsl:value-of select="sid"/>');</xsl:attribute>
+										<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="sid"/>');</xsl:attribute>
+										<xsl:attribute name="class">infobulle</xsl:attribute>
 										<xsl:attribute name='href'>
 											<xsl:value-of select='//main/url_svcdetail'/><xsl:value-of select='hostname'/><xsl:value-of select='//main/url_svcdetail2'/><xsl:value-of select='servicename'/>
 										</xsl:attribute>
+										<xsl:value-of select='servicename'/>
+										<xsl:element name='span'>
+											<xsl:attribute name='id'>span_<xsl:value-of select='sid'/></xsl:attribute>
+										</xsl:element>
 									</xsl:element>
 								</xsl:element>
 								<xsl:element name='td'>
@@ -696,5 +719,6 @@
 	</table>
 </div>
 </xsl:for-each>
+<div id="div_img" class="img_volante"></div>
 </xsl:template>
 </xsl:stylesheet>
