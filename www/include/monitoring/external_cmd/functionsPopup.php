@@ -97,9 +97,6 @@
 			isset($_GET['sticky']) && $_GET['sticky'] == "true" 				? $sticky = "2" : $sticky = "1";
 			isset($_GET['force_check']) && $_GET['force_check'] == "true" 		? $force_check = "1" : $force_check = "0";
 
-			foreach ($_GET as $key => $value)
-				exec("echo '".$key." = $value' >> /tmp/log.log");
-
 			$host_poller = GetMyHostPoller($pearDB, $host_name);
 			
 	        if ($actions == true || $is_admin) {
