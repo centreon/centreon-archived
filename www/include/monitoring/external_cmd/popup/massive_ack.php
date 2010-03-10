@@ -73,7 +73,7 @@
 	$tpl->assign('authorlabel', _("Alias"));
 	$tpl->assign('authoralias', $oreon->user->get_alias());
 
-	$form->addElement('textarea', 'comment', 'comment', array("rows"=>"4", "cols"=>"70", "id"=>"popupComment"));
+	$form->addElement('textarea', 'comment', _("Comment"), array("rows"=>"5", "cols"=>"85", "id"=>"popupComment"));
 	$form->setDefaults(array("comment" => sprintf(_("Acknowledged by %s"), $oreon->user->alias)));
 	
 	$chckbox[] =& $form->addElement('checkbox', 'persistent', _("persistent"));
@@ -84,6 +84,9 @@
 	
 	$chckbox3[] =& $form->addElement('checkbox', 'sticky', _("sticky"));
 	$chckbox3[0]->setChecked(true);
+	
+	$ckbx4[] =& $form->addElement('checkbox', 'force_check', _("Force active check"));
+	$ckbx4[0]->setChecked(true);
 	
 	$form->addElement('checkbox', 'notify', _("notify"));
 	
