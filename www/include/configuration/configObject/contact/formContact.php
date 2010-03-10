@@ -199,7 +199,7 @@
 	}
 	$ams3 =& $form->addElement('advmultiselect', 'contact_cgNotif', array(_("Linked to Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
@@ -273,7 +273,7 @@
 	
 	$ams1 =& $form->addElement('advmultiselect', 'contact_hostNotifCmds', array(_("Host Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
@@ -299,7 +299,7 @@
 	}
 	$ams2 =& $form->addElement('advmultiselect', 'contact_svNotifCmds', array(_("Service Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 

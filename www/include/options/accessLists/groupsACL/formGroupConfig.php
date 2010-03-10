@@ -168,31 +168,31 @@
 	
 	$ams1 =& $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	$ams1 =& $form->addElement('advmultiselect', 'cg_contactGroups', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $contactGroups, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	$ams1 =& $form->addElement('advmultiselect', 'menuAccess', array(_("Menu access"), _("Available"), _("Selected")), $menus, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	$ams1 =& $form->addElement('advmultiselect', 'actionAccess', array(_("Actions access"), _("Available"), _("Selected")), $action, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	$ams1 =& $form->addElement('advmultiselect', 'resourceAccess', array(_("Resources access"), _("Available"), _("Selected")), $resources, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	

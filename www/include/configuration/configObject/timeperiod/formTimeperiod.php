@@ -139,7 +139,7 @@
 	 */
 	$ams3 =& $form->addElement('advmultiselect', 'tp_include', array(_("Include Timeperiods"), _("Available"), _("Selected")), $includeTP, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 	
@@ -148,7 +148,7 @@
 	 */
 	$ams3 =& $form->addElement('advmultiselect', 'tp_exclude', array(_("Exclude Timeperiods"), _("Available"), _("Selected")), $excludeTP, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 	

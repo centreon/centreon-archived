@@ -197,7 +197,7 @@
 	
 	$ams1 =& $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
@@ -209,7 +209,7 @@
 	 */
 	$ams2 =& $form->addElement('advmultiselect', 'acl_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
@@ -218,13 +218,13 @@
 	 */
 	$ams2 =& $form->addElement('advmultiselect', 'acl_hostgroup', array(_("Host Groups"), _("Available"), _("Selected")), $hostgroups, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
 	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', array(_("Exclude hosts from selected host groups"), _("Available"), _("Selected")), $hosttoexcludes, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
@@ -233,7 +233,7 @@
 	 */
 	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', array(_("Service Categories Access"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 
@@ -243,7 +243,7 @@
 	$form->addElement('header', 'SSharedExplain', "");
 	$ams2 =& $form->addElement('advmultiselect', 'acl_sg', array(_("Service Groups"), _("Available"), _("Selected")), $service_groups, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
@@ -253,7 +253,7 @@
 	$form->addElement('header', 'MSSharedExplain', "");
 	$ams2 =& $form->addElement('advmultiselect', 'acl_meta', array(_("Meta Services"), _("Available"), _("Selected")), $meta_services, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 		

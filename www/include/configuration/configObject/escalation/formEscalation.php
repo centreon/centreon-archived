@@ -208,7 +208,7 @@
 	
 	$ams1 =& $form->addElement('advmultiselect', 'esc_cgs', array(_("Implied Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
@@ -219,7 +219,7 @@
 	
 	$ams1 =& $form->addElement('advmultiselect', 'esc_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
@@ -230,7 +230,7 @@
 	
 	$ams1 =& $form->addElement('advmultiselect', 'esc_hServices', array(_("Services by Host"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
@@ -241,7 +241,7 @@
 	
 	$ams1 =& $form->addElement('advmultiselect', 'esc_hgs', array(_("Host Group"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
@@ -252,7 +252,7 @@
 	
 	$ams1 =& $form->addElement('advmultiselect', 'esc_metas', array(_("Meta Service"), _("Available"), _("Selected")), $metas, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
@@ -263,7 +263,7 @@
 	
 	$ams1 =& $form->addElement('advmultiselect', 'esc_sgs', array(_("Service Group"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 

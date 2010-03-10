@@ -191,7 +191,7 @@
 
 	$ams3 =& $form->addElement('advmultiselect', 'ms_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 

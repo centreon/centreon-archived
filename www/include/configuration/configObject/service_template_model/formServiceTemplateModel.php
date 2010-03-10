@@ -275,7 +275,7 @@
 
 	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
@@ -351,7 +351,7 @@
 	 */
 	$ams3 =& $form->addElement('advmultiselect', 'service_cs', array(_("Implied Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 	
@@ -360,7 +360,7 @@
 	 */
 	$ams3 =& $form->addElement('advmultiselect', 'service_cgs', array(_("Implied Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
@@ -417,7 +417,7 @@
 	$form->addElement('header', 'traps', _("SNMP Traps"));
 	$ams3 =& $form->addElement('advmultiselect', 'service_traps', array(_("Service Trap Relation"), _("Available"), _("Selected")), $traps, $attrsAdvSelect_big);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
@@ -430,7 +430,7 @@
 	} 
 	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 	
@@ -546,7 +546,7 @@
 	}
 	$ams3 =& $form->addElement('advmultiselect', 'service_categories', array(_("Categories"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect_small);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 

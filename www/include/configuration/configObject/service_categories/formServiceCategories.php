@@ -126,13 +126,13 @@
 
 	$ams1 =& $form->addElement('advmultiselect', 'sc_svc', array(_("Host Service Descriptions"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
 	$ams1 =& $form->addElement('advmultiselect', 'sc_svcTpl', array(_("Service Template Descriptions"), _("Available"), _("Selected")), $hServicesTpl, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 

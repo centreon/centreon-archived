@@ -169,7 +169,7 @@ $lca["lca_topos"] = array();
 	$form->addElement('header', 'cg', _("Implied Contact Groups"));
 	$ams1 =& $form->addElement('advmultiselect', 'lca_cgs', array(_("Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
@@ -186,7 +186,7 @@ $lca["lca_topos"] = array();
 
 	$ams1 =& $form->addElement('advmultiselect', 'lca_hgs', array(_("Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	$tab = array();
@@ -197,13 +197,13 @@ $lca["lca_topos"] = array();
 
 	$ams1 =& $form->addElement('advmultiselect', 'lca_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	$ams1 =& $form->addElement('advmultiselect', 'lca_sgs', array(_("Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
