@@ -31,7 +31,6 @@
 		{if $ldap == "1" }
 			<tr class="list_two"><td class="FormRowField">{$form.contact_ldap_dn.label}</td><td class="FormRowValue">{$form.contact_ldap_dn.html}</td></tr>
 		{/if}
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 	 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.hostNotification}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_hostNotifOpts.label}</td><td class="FormRowValue">{$form.contact_hostNotifOpts.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
