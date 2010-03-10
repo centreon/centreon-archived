@@ -24,7 +24,7 @@
 	        </tr>
 			{/if}
 			<tr class="list_two">
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.force_check.html}&nbsp;{$form.force_check.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="force_check" checked>&nbsp;{$form.force_check.label}</td>
 			</tr>
 		</table>
 		<div id="validForm">

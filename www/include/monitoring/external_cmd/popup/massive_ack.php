@@ -76,22 +76,21 @@
 	$form->addElement('textarea', 'comment', _("Comment"), array("rows"=>"5", "cols"=>"85", "id"=>"popupComment"));
 	$form->setDefaults(array("comment" => sprintf(_("Acknowledged by %s"), $oreon->user->alias)));
 	
-	$chckbox[] =& $form->addElement('checkbox', 'persistent', _("persistent"));
+	$chckbox[] =& $form->addElement('checkbox', 'persistent', _("Persistent"));
 	$chckbox[0]->setChecked(true);
 
 	$chckbox2[] =& $form->addElement('checkbox', 'ackhostservice', _("Acknowledge services attached to hosts"));
 	$chckbox2[0]->setChecked(true);
-	
-	$chckbox3[] =& $form->addElement('checkbox', 'sticky', _("sticky"));
-	$chckbox3[0]->setChecked(true);
-	
-	$ckbx4[] =& $form->addElement('checkbox', 'force_check', _("Force active check"));
-	$ckbx4[0]->setChecked(true);
-	
-	$form->addElement('checkbox', 'notify', _("notify"));
+
+	$chckbox3[] =& $form->addElement('checkbox', 'sticky', _("Sticky"));
+	$chckbox3[0]->setChecked(true);	
+
+	$chckbox4[] =& $form->addElement('checkbox', 'force_check', _("Force active checks"));
+	$chckbox4[0]->setChecked(true);
+		
+	$form->addElement('checkbox', 'notify', _("Notify"));
 	
 	$form->addElement('hidden', 'author', $oreon->user->get_alias(), array("id"=>"author"));
-	
 	
 	$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 	$form->setJsWarnings(_("Invalid information entered"), _("Please correct these fields"));
