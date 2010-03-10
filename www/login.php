@@ -35,7 +35,18 @@
  * SVN : $Id$
  * 
  */
-  
+?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Centreon - IT & Network Monitoring</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved." />
+<meta name="robots" content="index, nofollow" />
+<link href="<?php echo $skin; ?>login.css" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="./img/favicon.ico">
+</head>
+<body OnLoad="document.login.useralias.focus();">
+<?php
 	/*
 	 * Init Date
 	 */
@@ -54,51 +65,53 @@
 		print "<div style='padding-top: 60px;'><span class='msg'>$error_msg</span></div>";
 	if (isset($msg) && $msg)
 		print "<div style='padding-top: 60px;'><span class='msg'>$msg</span></div>";
-//id='LoginInvit' 
-// "logintab1"
-?><p align="center">
-<div style='text-align:center;align:center;padding-top:90px;'>
-       <table id="logintab1" style="text-align:center;" align="center">
-	<tr>
-		<td class="LoginInvitLogo" colspan="2"><img src="img/centreon.gif" alt="Centreon Logo" title="Centreon Logo" style="" /></td>
-	</tr>
-	<tr>
-		<td class="LoginInvitVersion"><br />
-		<?php
-				/*
-				 * Print Centreon Version
-				 */
-				$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-				$release = $DBRESULT->fetchRow();
-				print $release["value"];
-			?>
-			</td>
-			<td class="LoginInvitDate"><br /><?php echo $date; ?></td>
+
+?>
+<p align="center">
+	<div style='text-align:center;align:center;padding-top:90px;'>
+	       <table id="logintab1" style="text-align:center;" align="center">
+		<tr>
+			<td class="LoginInvitLogo" colspan="2"><img src="img/centreon.gif" alt="Centreon Logo" title="Centreon Logo" style="" /></td>
 		</tr>
 		<tr>
-			<td colspan="2">
-				<table id="logintab2">
-				       <tr><td style="grayLine"><td></tr>
-				       <tr>
-						<td align='right'><label for="useralias">Login:</label></td>
-						<td><input type="text" name="useralias" value="" class="inputclassic" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
-					</tr>
-					<tr>
-						<td align='right'><label for="password">Password:</label></td>
-						<td><input type="password" name="password" value="" class="inputclassicPass" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
-					</tr>
-					<tr>
-						<td  colspan="2" align='center'>
-							<input type="Submit" name="submit" value="Connect >>" <?php if ($file_install_acces) print "disabled"; ?> >
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr>
-			<td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2010 <a href="mailto:infos@centreon.com">Centreon</a></td>
-		</tr>
-	</table>
-</div>
+			<td class="LoginInvitVersion"><br />
+			<?php
+					/*
+					 * Print Centreon Version
+					 */
+					$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+					$release = $DBRESULT->fetchRow();
+					print $release["value"];
+				?>
+				</td>
+				<td class="LoginInvitDate"><br /><?php echo $date; ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table id="logintab2">
+					       <tr><td style="grayLine"><td></tr>
+					       <tr>
+							<td align='right'><label for="useralias">Login:</label></td>
+							<td><input type="text" name="useralias" value="" class="inputclassic" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
+						</tr>
+						<tr>
+							<td align='right'><label for="password">Password:</label></td>
+							<td><input type="password" name="password" value="" class="inputclassicPass" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
+						</tr>
+						<tr>
+							<td  colspan="2" align='center'>
+								<input type="Submit" name="submit" value="Connect >>" <?php if ($file_install_acces) print "disabled"; ?> >
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2010 <a href="mailto:infos@centreon.com">Centreon</a></td>
+			</tr>
+		</table>
+	</div>
 </p>
 </form>
+</body>
+</html>

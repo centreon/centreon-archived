@@ -36,7 +36,7 @@
  */
 
 /* Link */
-a		{text-decoration:none;}
+a			{text-decoration:none;}
 a:hover		{text-decoration:underline;}
 
 body, .msg, #sublogin, #LoginInvitcpy a, #LoginInvitcpy {text-align:center;}
@@ -50,7 +50,7 @@ img 		{border:0;}
 input		{border-style:none;padding:2px;}
 checkbox	{padding:2px;}
 select		{border-style:none;}
-td		{padding:3px;color:#525252;white-space:nowrap;}
+td			{padding:3px;color:#525252;white-space:nowrap;}
 form		{padding:0px;margin:0px;}
 
 input[type="submit"] {background: url("./Images/bg_input_orange.gif");background-position:0px 0px;color:#000000;}
@@ -70,16 +70,17 @@ input[type="submit"] {
 	width:200px;
 	text-align: center;
 }
-#logintab1 	{width:290px;}
-#logintab2 td	{border:1px;padding:5px;background-color:#eaeaee;}
-#sublogin	{width:200px;}
+#logintab1 		{width:290px;}
+#logintab2		{width:290px;}
+#logintab2 td	{border:1px;padding:7px;background-color:#eaeaee;}
+#sublogin		{width:200px;}
 
 .LoginInvitVersion	{text-align:left;}
 .LoginInvitDate		{text-align:right;}
 
 #LoginInvitcpy a,  #LoginInvitcpy {color:gray;}
  
-.grayLine					{padding-top:20px;}
+.grayLine					{padding-top:15px;}
 .inputclassic, .inputclassicPass, #logintab2 	{border:1px solid gray;}
 #logintab2 										{border-top: 2px solid gray;border-bottom: 2px solid gray;}
 .inputclassic, .inputclassicPass 				{width:150px;}
