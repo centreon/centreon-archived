@@ -11,11 +11,11 @@
 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/cube_green.gif'>&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.sc_name.label}</td><td class="FormRowValue">{$form.sc_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.sc_description.label}</td><td class="FormRowValue">{$form.sc_description.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:name", {$helpattr});'> {$form.sc_name.label}</td><td class="FormRowValue">{$form.sc_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:description", {$helpattr});'> {$form.sc_description.label}</td><td class="FormRowValue">{$form.sc_description.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
 		<!--<tr class="list_one"><td class="FormRowField">{$form.sc_svc.label}</td><td class="FormRowValue">{$form.sc_svc.html}</td></tr>-->
-		<tr class="list_two"><td class="FormRowField">{$form.sc_svcTpl.label}</td><td class="FormRowValue">{$form.sc_svcTpl.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:service_template", {$helpattr});'> {$form.sc_svcTpl.label}</td><td class="FormRowValue">{$form.sc_svcTpl.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.sc_activate.label}</td><td class="FormRowValue">{$form.sc_activate.html}</td></tr>
 	</table>
@@ -30,4 +30,4 @@
 	</div>
 	{$form.hidden}
 </form>
-
+{$helptext}

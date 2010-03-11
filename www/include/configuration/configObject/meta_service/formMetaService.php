@@ -259,6 +259,15 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
+	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+	# prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) { 
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+	
 	if ($o == "w")	{
 		/*
 		 * Just watch a host information
