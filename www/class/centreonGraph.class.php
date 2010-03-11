@@ -498,7 +498,7 @@ class CentreonGraph	{
  		
 		header("Content-Type: image/png");
 		header("Content-Transfer-Encoding: binary");
-		header("Content-Disposition: attachment; filename=\"$this->filename\";");
+		header("Content-Disposition: attachment; filename=\"".$this->filename.".png\";");
 		if ($this->compress && $encoding)
 			header('Content-Encoding: '.$encoding);
 	}
