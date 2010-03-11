@@ -612,7 +612,11 @@ sub updateRRDDatabase($$$$$){
     RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%e", $value));
     my $ERR = RRDs::error();
     if ($ERR) {
-	writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric_id.".rrd at ".$ctime." -> ".$value." : $ERR");
+	 	if ($ERR =~ /([0-9]*) when last update time is ([0-9]*)/) {
+            if ($1 != $2) {
+                writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric_id.".rrd at ".$ctime." -> ".$value." : $ERR");
+            }
+        }
     } else {
 	writeLogFile("DB updating : ".$RRDdatabase_path.$metric_id.".rrd") if ($debug);
     }
