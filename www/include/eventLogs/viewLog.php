@@ -131,7 +131,8 @@
 	 * From Monitoring
 	 */
 	if (isset($_POST["svc_id"])) {
-		$services = split(",", $_POST["svc_id"]);		
+		$id = "";
+	    $services = split(",", $_POST["svc_id"]);		
 		foreach ($services as $str) {
 			$buf_svc = split(";", $str);
 			$id .= "HS_" . getMyServiceID($buf_svc[1], getMyHostID($buf_svc[0])).",";
