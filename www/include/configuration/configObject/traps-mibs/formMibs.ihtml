@@ -11,8 +11,8 @@
 	<div>
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_add.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.mnftr.label}</td><td class="FormRowValue">{$form.mnftr.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:vendor", {$helpattr});'> {$form.mnftr.label}</td><td class="FormRowValue">{$form.mnftr.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:filename", {$helpattr});'> {$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
 	</table>
 	</div>
 	<div id="validForm">
@@ -36,4 +36,5 @@
 	 </table>
 	 </div>
 	 {/if}	
-</form>
+</form>{$helptext}
+

@@ -130,10 +130,10 @@
 	/*
 	 * Schedule svc check forced
 	 */
-	$form->addElement('checkbox', 'traps_reschedule_svc_enable', _("Reschedule Associated Servcies"));
+	$form->addElement('checkbox', 'traps_reschedule_svc_enable', _("Reschedule associated services"));
 	$form->setDefaults(0);
 	
-	$form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching options"), null, array('id' => 'traps_advanced_treatment', 'onclick' => "toggleParams(this.checked);"));
+	$form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching mode"), null, array('id' => 'traps_advanced_treatment', 'onclick' => "toggleParams(this.checked);"));
 	$form->setDefaults(0);
 	
 	
@@ -167,7 +167,7 @@
 	$form->addRule('manufacturer_id', _("Compulsory Name"), 'required');
 	$form->addRule('traps_args', _("Compulsory Name"), 'required');
 	$form->registerRule('exist', 'callback', 'testTrapExistence');
-	$form->addRule('traps_oid', _("A same Oid element already exists"), 'exist');
+	$form->addRule('traps_oid', _("The same OID element already exists"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 
@@ -176,7 +176,16 @@
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
+	$tpl->assign('trap_adv_args', _("Advanced matching rules"));
 
+	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+	# prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) { 
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 	
 	if ($o == "w")	{
 		# Just watch a Command information
@@ -220,9 +229,9 @@
 		
 		$tpl->assign('subtitle0', _("Main information"));
 		$tpl->assign('subtitle1', _("Action 1 : Submit result to Nagios"));
-		$tpl->assign('subtitle2', _("Action 2 : Force service check rescheduling "));
+		$tpl->assign('subtitle2', _("Action 2 : Force rescheduling of service check"));
 		$tpl->assign('subtitle3', _("Action 3 : Execute a Command"));
-		$tpl->assign('subtitle4', _("OID Information"));
+		$tpl->assign('subtitle4', _("Trap description"));
 		
 		$tpl->display("formTraps.ihtml");
 	}
