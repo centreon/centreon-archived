@@ -11,9 +11,9 @@
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/exchange.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.command_name.label}</td><td class="FormRowValue">{$form.command_name.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:command_name", {$helpattr});'> {$form.command_name.label}</td><td class="FormRowValue">{$form.command_name.html}</td></tr>
 		<tr class="list_two">
-			<td class="FormRowField">{$form.command_line.label}</td>
+			<td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:command_line", {$helpattr});'> {$form.command_line.label}</td>
 			<td>
 				<table border="0">
 				<tr>
@@ -43,11 +43,11 @@
 				</table>
 			</td>
 		</tr>
-		<tr class="list_one"><td class="FormRowField">{$form.command_example.label}</td><td class="FormRowValue">{$form.command_example.html} &nbsp;{$form.command_hostaddress.label}&nbsp;{$form.command_hostaddress.html}&nbsp;<img alt='{$cmd_play}' title='{$cmd_play}' src='./img/icones/16x16/media_play.gif' onClick="window.open('main.php?p=60706&command_hostaddress='+ document.Form.command_hostaddress.value +'&command_example='+ document.Form.command_example.value +'&command_line='+ document.Form.command_line.value + '&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');"></td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.command_type.label}</td><td class="FormRowValue">{$form.command_type.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:arg_example", {$helpattr});'> {$form.command_example.label}</td><td class="FormRowValue">{$form.command_example.html} &nbsp;{$form.command_hostaddress.label}&nbsp;{$form.command_hostaddress.html}&nbsp;<img alt='{$cmd_play}' title='{$cmd_play}' src='./img/icones/16x16/media_play.gif' onClick="window.open('main.php?p=60706&command_hostaddress='+ document.Form.command_hostaddress.value +'&command_example='+ document.Form.command_example.value +'&command_line='+ document.Form.command_line.value + '&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');"></td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:command_type", {$helpattr});'> {$form.command_type.label}</td><td class="FormRowValue">{$form.command_type.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:graph_template", {$helpattr});'> {$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>
 		<tr class="list_two">
-			<td class="FormRowField">{$arg_desc_label}</td>
+			<td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:arg_description", {$helpattr});'> {$arg_desc_label}</td>
 			<td class="FormRowValue">
 				{$form.desc_arg.html}
 				 <div id="listOfArgDiv">
@@ -70,3 +70,5 @@
 	</div>
 	{$form.hidden}
 </form>
+{$helptext}
+

@@ -17,22 +17,23 @@
 		 <table class="ListTable">
 		 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.tp_name.label}</td><td class="FormRowValue">{$form.tp_name.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.tp_alias.label}</td><td class="FormRowValue">{$form.tp_alias.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:timeperiod_name", {$helpattr});'> {$form.tp_name.label}</td><td class="FormRowValue">{$form.tp_name.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:alias", {$helpattr});'> {$form.tp_alias.label}</td><td class="FormRowValue">{$form.tp_alias.html}</td></tr>
 		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.tp_sunday.label}</td><td class="FormRowValue">{$form.tp_sunday.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.tp_monday.label}</td><td class="FormRowValue">{$form.tp_monday.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.tp_tuesday.label}</td><td class="FormRowValue">{$form.tp_tuesday.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.tp_wednesday.label}</td><td class="FormRowValue">{$form.tp_wednesday.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.tp_thursday.label}</td><td class="FormRowValue">{$form.tp_thursday.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.tp_friday.label}</td><td class="FormRowValue">{$form.tp_friday.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.tp_saturday.label}</td><td class="FormRowValue">{$form.tp_saturday.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:weekday", {$helpattr});'> {$form.tp_sunday.label}</td><td class="FormRowValue">{$form.tp_sunday.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:weekday", {$helpattr});'> {$form.tp_monday.label}</td><td class="FormRowValue">{$form.tp_monday.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:weekday", {$helpattr});'> {$form.tp_tuesday.label}</td><td class="FormRowValue">{$form.tp_tuesday.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:weekday", {$helpattr});'> {$form.tp_wednesday.label}</td><td class="FormRowValue">{$form.tp_wednesday.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:weekday", {$helpattr});'> {$form.tp_thursday.label}</td><td class="FormRowValue">{$form.tp_thursday.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:weekday", {$helpattr});'> {$form.tp_friday.label}</td><td class="FormRowValue">{$form.tp_friday.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:weekday", {$helpattr});'> {$form.tp_saturday.label}</td><td class="FormRowValue">{$form.tp_saturday.html}</td></tr>
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/date-time_preferences.gif'>&nbsp;&nbsp;{$form.header.exception}</td></tr>			
 			{if $gmtUsed}
 				<tr class='list_one'><td colspan='2'><img src='./img/icones/16x16/warning.gif'>&nbsp; {$noExceptionMessage}</td></tr>
 			{/if}
 			<tr class="list_two">
 				<td colspan='2'><input type="hidden" name="nbOfExceptions" id="hiddenExInput">
+				<img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:exception", {$helpattr});'>
 					<table id="exceptionTable" class="ListTableSmall" style='padding-top:0px'>
 						<tr class="ListHeader">
 							<td class="ListColLeft">{$tRDay}</td>
@@ -52,8 +53,8 @@
 	<div id='tab2' class='tab'>
 		 <table class="ListTable">
 		 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.tp_include.label}</td><td class="FormRowValue">{$form.tp_include.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.tp_exclude.label}</td><td class="FormRowValue">{$form.tp_exclude.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:include", {$helpattr});'> {$form.tp_include.label}</td><td class="FormRowValue">{$form.tp_include.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:exclude", {$helpattr});'> {$form.tp_exclude.label}</td><td class="FormRowValue">{$form.tp_exclude.html}</td></tr>
 			{if $o == "a" || $o == "c"}
 				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 			{/if}
@@ -69,3 +70,5 @@
 	</div>
 	{$form.hidden}
 </form>
+{$helptext}
+

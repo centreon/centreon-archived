@@ -12,11 +12,11 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.cg_name.label}</td><td class="FormRowValue">{$form.cg_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.cg_alias.label}</td><td class="FormRowValue">{$form.cg_alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:contactgroup_name", {$helpattr});'> {$form.cg_name.label}</td><td class="FormRowValue">{$form.cg_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:alias", {$helpattr});'> {$form.cg_alias.label}</td><td class="FormRowValue">{$form.cg_alias.html}</td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/businessmen.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.cg_contacts.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.cg_contacts.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:members", {$helpattr});'> {$form.cg_contacts.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.cg_contacts.html}</p></td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.cg_activate.label}</td><td class="FormRowValue">{$form.cg_activate.html}</td></tr>
@@ -37,4 +37,5 @@
 	</div>
 	{$form.hidden}
 </form>
+{$helptext}
 

@@ -1,5 +1,6 @@
 <?php
 $help = array();
+$help["mc_update"] = dgettext("help", "Choose the update mode for the below field: incremental adds the selected values, replacement overwrites the original values.");
 
 /*
  * General Information
@@ -18,14 +19,20 @@ $help["service_notification_options"] = dgettext("help", "Define the service sta
 $help["service_notification_period"] = dgettext("help", "Specify the time period during which the contact can be notified about service problems or recoveries. You can think of this as an \"on call\" time for service notifications for the contact.");
 $help["service_notification_commands"] = dgettext("help", "Define one ore more commands used to notify the contact of a service problem or recovery. All notification commands are executed when the contact needs to be notified.");
 
+$help["ldap_dn"] = dgettext("help", "Enter the LDAP Distinguished Name (DN) which identifies this user.");
+
+
 /*
  * Centreon specific authentication
  */
 $help["centreon_login"] = dgettext("help", "Specify if the contact is allowed to login into centreon.");
 $help["password"] = dgettext("help", "Define the password for the centreon login here.");
+$help["password2"] = dgettext("help", "Enter the password again.");
 $help["language"] = dgettext("help", "Define the default language for the user for the centreon front-end here.");
 $help["admin"] = dgettext("help", "Specify if the user has administrative permissions. Administrators are not restricted by access control list (ACL) settings.");
 $help["auth_type"] = dgettext("help", "Specify the source for user credentials. Choose between Centreon and LDAP, whereas LDAP is only available when configured in Administration Options.");
+$help["location"] = dgettext("help", "Select the timezone, in which the user resides, from the list. The timezones are listed as time difference to Greenwich Mean Time (GMT) in hours.");
+
 
 /*
  * Additional Information
