@@ -206,7 +206,7 @@
 	$form->addGroup($tab, 'escalation_options2', _("Services Escalation Options"), '&nbsp;&nbsp;');
 	$form->addElement('textarea', 'esc_comment', _("Comments"), $attrsTextarea);
 	
-	$ams1 =& $form->addElement('advmultiselect', 'esc_cgs', array(_("Implied Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'esc_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -316,7 +316,6 @@
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
-	$tpl->assign("nagios", $oreon->user->get_version());
 	
 	$tpl->assign("sort1", _("Information"));
 	$tpl->assign("sort2", _("Hosts Escalation"));
@@ -326,6 +325,15 @@
 	$tpl->assign("sort6", _("Servicegroups Escalation"));
 	
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
+
+	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+	# prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) { 
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 	
 	$valid = false;
 	if ($form->validate())	{

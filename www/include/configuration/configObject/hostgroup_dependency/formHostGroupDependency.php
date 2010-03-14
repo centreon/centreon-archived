@@ -129,13 +129,13 @@
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_hgParents', array(_("HostGroups Name"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'dep_hgParents', array(_("Host Groups Name"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_hgChilds', array(_("Dependent HostGroups Name"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'dep_hgChilds', array(_("Dependent Host Groups Name"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -193,7 +193,15 @@
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
-	$tpl->assign("nagios", $oreon->user->get_version());
+
+	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+	# prepare help texts
+	$helptext = "";
+	include_once("include/configuration/configObject/host_dependency/help.php");
+	foreach ($help as $key => $text) { 
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 
 	$valid = false;
 	if ($form->validate())	{

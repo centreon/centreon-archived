@@ -146,13 +146,13 @@
 	/*
 	 * Sort 2 Host Service Dependencies
 	 */
-	$ams1 =& $form->addElement('advmultiselect', 'dep_hSvPar', array(_("Host Service Descriptions"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'dep_hSvPar', array(_("Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_hSvChi', array(_("Dependent Host Service Descriptions"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'dep_hSvChi', array(_("Dependent Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -190,7 +190,16 @@
 	$tpl = initSmartyTpl($path, $tpl);
 
 	$tpl->assign("sort1", _("Information"));
-	$tpl->assign("sort2", _("Host Service Description"));
+	$tpl->assign("sort2", _("Service Description"));
+
+	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+	# prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) { 
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 
 	# Just watch a Dependency information
 	if ($o == "w")	{

@@ -21,17 +21,15 @@
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmark.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.esc_name.label}</td><td class="FormRowValue">{$form.esc_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.esc_alias.label}</td><td class="FormRowValue">{$form.esc_alias.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.first_notification.label}</td><td class="FormRowValue">{$form.first_notification.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.last_notification.label}</td><td class="FormRowValue">{$form.last_notification.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.notification_interval.label}</td><td class="FormRowValue">{$form.notification_interval.html}{$time_unit}</td></tr>
-		{if $nagios >= 2}
-		<tr class="list_two"><td class="FormRowField">{$form.escalation_period.label}</td><td class="FormRowValue">{$form.escalation_period.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.escalation_options1.label}</td><td class="FormRowValue">{$form.escalation_options1.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.escalation_options2.label}</td><td class="FormRowValue">{$form.escalation_options2.html}</td></tr>
-		{/if}
-		<tr class="list_one"><td class="FormRowField">{$form.esc_cgs.label}</td><td class="FormRowValue">{$form.esc_cgs.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:name", {$helpattr});'> {$form.esc_name.label}</td><td class="FormRowValue">{$form.esc_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:alias", {$helpattr});'> {$form.esc_alias.label}</td><td class="FormRowValue">{$form.esc_alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:first_notification", {$helpattr});'> {$form.first_notification.label}</td><td class="FormRowValue">{$form.first_notification.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:last_notification", {$helpattr});'> {$form.last_notification.label}</td><td class="FormRowValue">{$form.last_notification.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:notification_interval", {$helpattr});'> {$form.notification_interval.label}</td><td class="FormRowValue">{$form.notification_interval.html}{$time_unit}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:escalation_period", {$helpattr});'> {$form.escalation_period.label}</td><td class="FormRowValue">{$form.escalation_period.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:host_escalation_options", {$helpattr});'> {$form.escalation_options1.label}</td><td class="FormRowValue">{$form.escalation_options1.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:service_escalation_options", {$helpattr});'> {$form.escalation_options2.label}</td><td class="FormRowValue">{$form.escalation_options2.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:contact_groups", {$helpattr});'> {$form.esc_cgs.label}</td><td class="FormRowValue">{$form.esc_cgs.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.esc_comment.label}</td><td class="FormRowValue">{$form.esc_comment.html}</td></tr>
 	</table>
 </div>
@@ -40,39 +38,35 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.hosts}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.esc_hosts.label}</td><td class="FormRowValue">{$form.esc_hosts.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:host_name", {$helpattr});'> {$form.esc_hosts.label}</td><td class="FormRowValue">{$form.esc_hosts.html}</td></tr>
 	</table>
 </div>
 <div id='tab3' class="tab">
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.services}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.esc_hServices.label}</td><td class="FormRowValue">{$form.esc_hServices.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:service_description", {$helpattr});'> {$form.esc_hServices.label}</td><td class="FormRowValue">{$form.esc_hServices.html}</td></tr>
 	</table>
 </div>
 <div id='tab4' class="tab">
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.hgs}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.esc_hgs.label}</td><td class="FormRowValue">{$form.esc_hgs.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:hostgroup_name", {$helpattr});'> {$form.esc_hgs.label}</td><td class="FormRowValue">{$form.esc_hgs.html}</td></tr>
 	</table>
 </div>
 <div id='tab5' class="tab">
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.metas}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.esc_metas.label}</td><td class="FormRowValue">{$form.esc_metas.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:metaservice_name", {$helpattr});'> {$form.esc_metas.label}</td><td class="FormRowValue">{$form.esc_metas.html}</td></tr>
 	</table>
 </div>
 <div id='tab6' class="tab">
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.sgs}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.esc_sgs.label}</td><td class="FormRowValue">{$form.esc_sgs.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:servicegroup_name", {$helpattr});'> {$form.esc_sgs.label}</td><td class="FormRowValue">{$form.esc_sgs.html}</td></tr>
 	</table>
 </div>
 <div id="validForm">
@@ -85,4 +79,5 @@
 </div>
 {$form.hidden}
 </form>
+{$helptext}
 
