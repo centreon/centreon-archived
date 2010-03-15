@@ -271,7 +271,7 @@
 						</xsl:element>
 						<xsl:element name='td'>
 							<xsl:attribute name='class'>ListColCenter</xsl:attribute>
-							<xsl:attribute name='style'>background-color: <xsl:value-of select='color'/>;font-weight:bold;white-space:nowrap;</xsl:attribute>
+							<xsl:attribute name='style'>background-color:<xsl:value-of select='bgcolor'/>;font-weight:bold;white-space:nowrap;</xsl:attribute>
 							<xsl:attribute name='align'>center</xsl:attribute>
 							<xsl:value-of select='state'/>
 						</xsl:element>
@@ -675,7 +675,7 @@
 								<xsl:element name='td'>
 									<xsl:attribute name='class'>ListColLeft</xsl:attribute>
 									<xsl:attribute name='style'>
-										background-color: <xsl:value-of select='bgcolor'/>;white-space: nowrap;
+										white-space: nowrap;
 									</xsl:attribute>
 									<xsl:element name='a'>
 										<xsl:attribute name='onmouseover'>showServiceOverlay('<xsl:value-of select="sid"/>');</xsl:attribute>
