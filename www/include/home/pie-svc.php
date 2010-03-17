@@ -142,5 +142,7 @@
 
 	$g->set_tool_tip( '#val#%' );
 	//$g->title( " " . _('Services') . " ", '{font-size:18px; color: #424242}' );
+	header("Cache-Control: cache, must-revalidate");
+    header("Pragma: public");
 	echo $g->render();
 ?>

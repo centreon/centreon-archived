@@ -110,5 +110,7 @@
 	$g->pie_slice_colours($color);
 	$g->set_tool_tip( '#val#%' );
 	//$g->title( " ", '{font-size:18px; color: #424242}' );
+	header("Cache-Control: cache, must-revalidate");
+    header("Pragma: public");
 	echo $g->render();
 ?>
