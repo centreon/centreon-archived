@@ -76,6 +76,8 @@
 		
 	header("Content-Type: application/csv-tab-delimited-table");
 	header("Content-disposition: filename=".$nom.".csv");
+	header("Cache-Control: cache, must-revalidate");
+    header("Pragma: public");
 	
 	$xml = new SimpleXMLElement($flux);
 
