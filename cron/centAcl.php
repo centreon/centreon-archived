@@ -75,14 +75,7 @@
 
 	$cpt = 0;	
 	foreach ($tabGroups as $acl_group_id => $acl_res_id){
-		$tabElem = array();		
-
-		/*
-		 * Delete old data for this group
-		 */
-		$DBRESULT =& $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$tabElem = array();
 		
 		/*
 		 * Select 
@@ -186,6 +179,14 @@
 			$time_end = microtime_float2(); 
 			$now = $time_end - $time_start; 
 			print round($now,3) . " " . _("seconds") . "\n";
+		}
+		
+		/*
+		 * Delete old data for this group
+		 */
+		$DBRESULT =& $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
+		if (PEAR::isError($DBRESULT)) {
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 		
 		if (count($tabElem)){
