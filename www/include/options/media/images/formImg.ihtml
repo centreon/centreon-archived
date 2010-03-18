@@ -13,16 +13,16 @@
 				{if $o == "w"}
 					<td class="ListColCenter" rowspan="4"><img src='{$form.img_path.label}'></td>
 				{/if}
-				<td class="FormRowField">{$form.img_name.label}</td>
+				<td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:img_name", {$helpattr});'> {$form.img_name.label}</td>
 				<td class="FormRowValue">{$form.img_name.html}</td>
 			</tr>
 		{/if}		
 		<tr class="list_two">
-			<td class="FormRowField">{$form.directories.label}</td>
+			<td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:img_dir", {$helpattr});'> {$form.directories.label}</td>
 			<td class="FormRowValue">{$form.directories.html}</td>
 		</tr>
 		<tr class="list_one">
-			<td class="FormRowField">{$form.filename.label}</td>
+			<td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:img_file", {$helpattr});'> {$form.filename.label}</td>
 			<td class="FormRowValue">
 				{if $o == "a" || $o == "ci"}
 					{$form.filename.html}
@@ -52,4 +52,5 @@
 	{/if}
 	</div>
 	{$form.hidden}
-</form>
+</form>{$helptext}
+
