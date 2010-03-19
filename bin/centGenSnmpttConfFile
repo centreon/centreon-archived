@@ -40,8 +40,9 @@
 #
 
 use strict;
-use Getopt::Long;
 use DBI;
+use Getopt::Long;
+
 eval "use HTML::Entities";
 if($@) {
 	print "NOT using HTML::Entities, you might have problem with special characters. Install HTML::Entities.\n";
@@ -68,7 +69,7 @@ sub getPath($) {
     if (($pathRes->{'value'} =~ /\/$/)) {
     	return $pathRes->{'value'};
     } else {
-    	return "/appcentreon/logiciel/list/snmptrapd/etc/centreon_traps/";
+    	return "/etc/snmp/centreon_traps/";
     }
 }
 
