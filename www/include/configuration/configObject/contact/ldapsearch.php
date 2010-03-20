@@ -184,7 +184,7 @@
 		if ($number_returned) {
 			$buffer->startElement("reponse");
 			$buffer->writeElement("entries", $number_returned);			
-			for ($i = 1 ; $i < $number_returned ; $i++) {
+			for ($i = 0 ; $i < $number_returned ; $i++) {
 				if (isset($info[$i]["givenname"])){
 					$isvalid = "0";
 					
