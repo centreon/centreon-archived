@@ -115,7 +115,21 @@ a.infobulle:hover 	{z-index:25;}
 /* Menu 3 */
 .Tmenu3 	{background-color:#fff;border-collapse:collapse;}
 .Tmenu3 .top .left,.Tmenu3 .top .right,.Tmenu3 .bottom .left,.Tmenu3 .bottom .right {height:9px;width:10px;}
-div.menuLeft 	{margin:0px;padding:3px;background-color:#FFFFFF;border:1px #CDCDCD solid;white-space:nowrap;margin-bottom:6px;margin-bottom:50px;}
+
+div.menuLeft {
+    margin: 0px;
+    padding: 3px;
+	border: 1px solid #CDCDCD;
+    white-space: nowrap;
+    margin-bottom: 6px;
+    margin-botom: 50px;
+    background-color: #FFF;
+    -moz-border-radius: 7px / 7px;
+    -webkit-border-radius: 7px / 7px;
+    -khtml-border-radius: 7px / 7px;
+    border-radius: 7px / 7px;
+}
+
 #menu_3 a:hover {color:#E8AB5C;}
 #menu_3 li 		{list-style-type:none;padding-left:1px;}
 #menu3_bgcolor 	{background:#FFF;}
