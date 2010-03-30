@@ -143,7 +143,7 @@
 	function svc_check($arg, $type){
 		global $tab, $pearDB, $is_admin, $oreon;
 		$actions = false;		
-		$actions = $oreon->user->access->checkAction("host_checks");
+		$actions = $oreon->user->access->checkAction("service_checks");
 		
 		if ($actions == true || $is_admin) {
 			$tab_data = split(";", $arg);
