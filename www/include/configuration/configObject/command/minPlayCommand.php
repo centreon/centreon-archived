@@ -102,7 +102,8 @@
 		$msg = _("Could not find macro ") . $error_msg;
 		$status = _("ERROR");
 	} else {
-		$command = $resource_def;		
+		$command = $resource_def;
+		$command = str_replace('@DOLLAR@', '$', $command);
 		$splitter = split(";", $command);
 		$command = $splitter[0];
 		$stdout = array();
