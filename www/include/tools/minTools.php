@@ -36,9 +36,9 @@
  * 
  */
 	if (isset($_GET["host_id"]))
-		$host_id = $_GET["host_id"];
+		$host_id = htmlentities($_GET["host_id"], ENT_QUOTES);
 	else if (isset($_POST["host_id"]))
-		$host_id = $_POST["host_id"];
+		$host_id = htmlentities($_POST["host_id"], ENT_QUOTES);
 	else
 		$host_id = NULL;
 

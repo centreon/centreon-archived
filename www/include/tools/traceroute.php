@@ -39,10 +39,10 @@
  	ini_set("Display_errors", "Off");
 
 	 include("@CENTREON_ETC@/centreon.conf.php");
-	 require_once ("../../$classdir/centreonSession.class.php");
-	 require_once ("../../$classdir/centreon.class.php");
+	 require_once ("../../$classdir/Session.class.php");
+	 require_once ("../../$classdir/Oreon.class.php");
 
-	 CentreonSession::start();
+	 Session::start();
 
 	 if (!isset($_SESSION["oreon"])) {
 	 	// Quick dirty protection
@@ -52,9 +52,9 @@
 	 	$oreon =& $_SESSION["oreon"];
 
 	if (isset($_GET["host"]))
-		$host = $_GET["host"];
+		$host = htmlentities($_GET["host"], ENT_QUOTES);
 	else if (isset($_POST["host"]))
-		$host = $_POST["host"];
+		$host = htmlentities($_POST["host"], ENT_QUOTES);
 	else
 		exit;
 
