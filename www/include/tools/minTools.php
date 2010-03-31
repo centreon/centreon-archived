@@ -42,14 +42,16 @@
 	else
 		$host_id = NULL;
 
+	if (!preg_match("/^[0-9]*$/", $host_id))
+		exit();
+
 	$msg ='';
 
 	/*
 	 * Database retrieve information for differents elements list we need on the page
 	 */
-	$Host = array();
+	$Host = array(NULL => NULL);
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_address, host_snmp_community, host_snmp_version FROM host WHERE host_id =". $host_id ."");
-	$Host = array(NULL=>NULL);
 	$Host =& $DBRESULT->fetchRow();
 	$DBRESULT->free();
 	switch ($o)	{
