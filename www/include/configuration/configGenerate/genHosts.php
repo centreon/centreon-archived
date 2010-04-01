@@ -274,15 +274,16 @@
 				/*
 				 * Check Period
 				 */
-				if ($host["host_register"] == 1) {
-					if ((!isset($host["timeperiod_tp_id"]) && $host["host_location"] != 0)) {
-						$host["timeperiod_tp_id"] = getMyHostField($host["host_id"], "timeperiod_tp_id");
-					}
-				} 
+				if ($oreon->CentreonGMT->used() == 1) {
+					if ($host["timeperiod_tp_id"])
+						$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]."_GMT".$host["host_location_tp"]);
+					else
+						$str .= print_line("check_period", $timeperiods[getMyHostField($host["host_id"], "timeperiod_tp_id")]."_GMT".$host["host_location_tp"]);
+				} else {
+					if ($host["timeperiod_tp_id"])
+						$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]);					
+				}
 				
-				if ($host["timeperiod_tp_id"])
-					$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location_tp"] : ""));
-
 				if ($host["host_obsess_over_host"] != 2) 
 					$str .= print_line("obsess_over_host", $host["host_obsess_over_host"] == 1 ? "1": "0");
 				if ($host["host_check_freshness"] != 2) 
@@ -350,13 +351,16 @@
 				/*
 				 * Timeperiod name
 				 */
-				if ($host["host_register"] == 1) {
-					if ((!isset($host["timeperiod_tp_id2"]) && $host["host_location"] != 0)) {
-						$host["timeperiod_tp_id2"] = getMyHostField($host["host_id"], "timeperiod_tp_id2");
-					}
-				} 
-				if ($host["timeperiod_tp_id2"])
-					$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]].($oreon->CentreonGMT->used() == 1 ? "_GMT".$host["host_location_tp"] : ""));			
+				if ($oreon->CentreonGMT->used() == 1) {
+					if ($host["timeperiod_tp_id2"])
+						$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]]."_GMT".$host["host_location_tp"]);
+					else
+						$str .= print_line("notification_period", $timeperiods[getMyHostField($host["host_id"], "timeperiod_tp_id2")]."_GMT".$host["host_location_tp"]);
+				} else {
+					if ($host["timeperiod_tp_id2"])
+						$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]]);					
+				}
+							
 				if ($host["host_notification_options"]) 
 					$str .= print_line("notification_options", $host["host_notification_options"]);
 				if ($host["host_notifications_enabled"] != 2) 
