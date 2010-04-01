@@ -1287,14 +1287,15 @@
 		 */	 		
  		if (isset($_POST['nbOfSelect']) && $_POST['nbOfSelect']) {
 	 		$already_stored = array();
-	 		
+
 	 		$oldTp = array();
 	 		$newTp = array();	 		
 	 		$DBRESULT =& $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-	 		while ($hst =& $DBRESULT->fetchRow())
-	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];			
+	 		while ($hst =& $DBRESULT->fetchRow()) {
+	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];
+	 		}			
 	 		$multiTP_logStr = "";
-	 		for ($i=0;$i <= $_POST['nbOfSelect']; $i++){
+	 		for ($i = 0; $i <= $_POST['nbOfSelect']; $i++){
 	 			$tpSelect = "tpSelect_" . $i;
 	 			if (isset($_POST[$tpSelect])) {
 	 				$newTp[$_POST[$tpSelect]] = $_POST[$tpSelect];
@@ -1302,20 +1303,17 @@
 	 			}
 	 		}
 	 		$multiTP_logStr = trim($multiTP_logStr, ",");
-	 		if ($multiTP_logStr != "")
+	 		if ($multiTP_logStr != "") {
 	 			$fields["templates"] = $multiTP_logStr;
-	 		foreach ($oldTp as $val){
-	 			/*
-  	 			 * if not set, then that means a template was removed
-	 			 * we will have to remove the services that were linked to that host template as well  
-	 			 */
-	 			if (!isset($newTp[$val])) {
-	 				deleteHostServiceMultiTemplate($host_id, $val, $newTp);
-	 			}
 	 		}
 	 		
-	 		if (isset($_POST['mc_mod_tplp']['mc_mod_tplp']) && $_POST['mc_mod_tplp']['mc_mod_tplp'] == 1)
+	 		/*
+	 		 *  in case of replacement
+	 		 */
+	 		if (isset($_POST['mc_mod_tplp']['mc_mod_tplp']) && $_POST['mc_mod_tplp']['mc_mod_tplp'] == 1) {
 		 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+	 		}
+	 		$allowedToDelete = 0;
 	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++) { 			
 	 			$tpSelect = "tpSelect_" . $i; 		
 	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
@@ -1323,7 +1321,20 @@
 			 		$DBRESULT =& $pearDB->query($rq);
 					$j++;
 					$already_stored[$_POST[$tpSelect]] = 1;
+					$allowedToDelete = 1;
 	 			}			
+	 		}
+	 		
+	 		if ($allowedToDelete) {
+    	 		foreach ($oldTp as $val){
+    	 			/*
+      	 			 * if not set, then that means a template was removed
+    	 			 * we will have to remove the services that were linked to that host template as well  
+    	 			 */
+    	 			if (!isset($newTp[$val])) {
+    	 				deleteHostServiceMultiTemplate($host_id, $val, $newTp);
+    	 			}
+    	 		}
 	 		}
  		}
  		
