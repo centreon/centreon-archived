@@ -150,37 +150,74 @@ sub DeleteOldRrdDB(){
 # Check if host or service have change their name and description. 
 # If hosts or services have change, it update their id.
    
-sub check_HostServiceID(){
-    my ($data, $host_name, $service_description, $purge_mod);
-    
+sub check_HostServiceID() {
+    my ($data, $host_name, $service_description, $purge_mod, %serviceCache, %hostCache);
+
     writeLogFile("Sync : Nagios restart - Process start");
 
     # connection to MySQL DB
-    $con = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+    my $conO = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+    my $conC = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+
+    # Create Service Cache 
+    my $sth = $conO->prepare("SELECT service_description, service_id FROM service WHERE service_register = '1'");
+    if (!$sth->execute()) {
+        writeLogFile("Sync | Cache Service : Error -> " . $sth->errstr . "\n");
+    }
+    while ($data = $sth->fetchrow_hashref()) {
+	#writeLogFile("Cache : ".$data->{'service_id'}." => ".$data->{'service_description'}."\n");
+	$serviceCache{$data->{'service_id'}} = $data->{'service_description'};
+    }
+    undef($data);
+    undef($sth);
+
+    # Create Host Cache
+    $sth = $conO->prepare("SELECT host_name, host_id FROM host WHERE host_register = '1'");
+    if (!$sth->execute()) {
+        writeLogFile("Sync | Cache Host : Error -> " . $sth->errstr . "\n");
+    }
+    while ($data = $sth->fetchrow_hashref()) {
+	#writeLogFile("Cache : ".$data->{'host_id'}." => ".$data->{'host_name'}."\n");
+	$hostCache{$data->{'host_id'}} = $data->{'host_name'};
+    }
+    undef($data);
+    undef($sth);
 
     # Get index data in buffer
-    my $sth1 = $con->prepare("SELECT host_name, host_id, service_description, service_id FROM index_data ORDER BY host_name");
-    if (!$sth1->execute) {
+    my $sth1 = $conC->prepare("SELECT host_name, host_id, service_description, service_id FROM index_data ORDER BY host_name");
+    if (!$sth1->execute()) {
 	writeLogFile("Sync : Error -> " . $sth1->errstr . "\n");
     }
-    while ($data = $sth1->fetchrow_hashref()){
-	$host_name = getHostName($data->{'host_id'});
-	$service_description = getServiceName($data->{'service_id'});
-	if (defined($host_name) && $host_name && defined($service_description) && $service_description && defined($data->{'host_name'}) && defined($data->{'service_description'}) && (($host_name ne $data->{'host_name'}) || ($service_description ne $data->{'service_description'}))){
-	    $str = "UPDATE index_data SET `host_name` = '".$host_name."', `service_description` = '".$service_description."' WHERE `host_id` = '".$data->{'host_id'}."' AND `service_id` = '".$data->{'service_id'}."'";
-	    my $sth2 = $con->prepare($str);
-	    writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
-	    undef($sth2);
-    	}  
+    while ($data = $sth1->fetchrow_hashref()) {
+	if (defined($data->{'host_id'})) {	    
+	    if (defined($hostCache{$data->{'host_id'}})) {
+		$host_name = $hostCache{$data->{'host_id'}};
+	    }	 
+	    if (defined($serviceCache{$data->{'service_id'}})) {
+		$service_description = $serviceCache{$data->{'service_id'}};
+	    }
+	    if (defined($host_name) && $host_name && defined($service_description) && $service_description && defined($data->{'host_name'}) && defined($data->{'service_description'}) && (($host_name ne $data->{'host_name'}) || ($service_description ne $data->{'service_description'}))){
+		$str = "UPDATE index_data SET `host_name` = '".$host_name."', `service_description` = '".$service_description."' WHERE `host_id` = '".$data->{'host_id'}."' AND `service_id` = '".$data->{'service_id'}."'";
+		writeLogFile($str);
+		my $sth2 = $conC->prepare($str);
+		writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
+		undef($sth2);
+	    }
+	    undef($host_name);
+	    undef($service_description);
+	}
     }
-    if (defined($last_restart) && $last_restart){
+    if (defined($last_restart) && $last_restart) {
 	$sth1 = $con->prepare("UPDATE statistics SET `last_restart` = '".$last_restart."'");
 	if (!$sth1->execute) {
 	    writeLogFile("Error:" . $sth1->errstr . "\n");
 	}
 	undef($sth1);
     }
-    $con->disconnect();
+    undef(%hostCache);
+    undef(%serviceCache);
+    $conO->disconnect();
+    $conC->disconnect();
     writeLogFile("Sync : Process end");
 }
 
