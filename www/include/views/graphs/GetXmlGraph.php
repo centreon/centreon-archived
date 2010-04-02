@@ -280,8 +280,7 @@
 	$tab_class = array("1" => "list_one", "0" => "list_two");
 
 	foreach ($tab_real_id as $key => $openid) {
-		$bad_value = 0;	
-		$split = 0;
+		$bad_value = 0;
 		$tab_tmp = split("_", $openid);
 		
 		if (isset($tab_tmp[2]) && $tab_tmp[2])
