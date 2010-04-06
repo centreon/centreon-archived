@@ -762,7 +762,7 @@ sub main {
 		# building archive for last past dat		
 		my ($day,$month,$year) = (localtime(time))[3,4,5];
 		if (check_date($day, $month, $year)) {			
-			my $yesterday_real_start =  timelocal(0,0,0,$day,$month,$year) - (60 * 60 * 24);
+			my $yesterday_real_start =  mktime(0,0,0,$day,$month,$year) - (60 * 60 * 24);
 			archive_day_log($yesterday_real_start + $time_period{"day_start_time"}, $yesterday_real_start + $time_period{"day_end_time"});
 		}		
     }
@@ -792,7 +792,7 @@ sub rebuild_archives($) {
 		($start, $end) = ($row->{"minc"}, $row->{"maxc"});
     }
     my ($day,$month,$year) = (localtime(time))[3,4,5];
-    my $now =  timelocal(0,0,0,$day,$month,$year);
+    my $now =  mktime(0,0,0,$day,$month,$year);
     my $today_begin = $now - ($now % $one_day_real_duration);
     if ($end > $today_begin) {
 		$end = $today_begin;
@@ -802,18 +802,18 @@ sub rebuild_archives($) {
     # Getting list of days between the first log and last log
     my @days;
     ($day,$month,$year) = (localtime($start))[3,4,5];
-    $start =  timelocal(0,0,0,$day,$month,$year);
-    my $previous_day = timelocal(0,0,0,$day,$month,$year) - $one_day_real_duration;
+    $start =  mktime(0,0,0,$day,$month,$year);
+    my $previous_day = mktime(0,0,0,$day,$month,$year) - $one_day_real_duration;
     while ($start < $end) {
 		# getting day beginning => 00h 00min
 		# if there is few hour gap (time change : winter/summer), we also readjust it
 		($day,$month,$year) = (localtime($start))[3,4,5];
-		$start = timelocal(0,0,0,$day,$month,$year);
+		$start = mktime(0,0,0,$day,$month,$year);
 		if ($start == $previous_day) {
 			$start += $one_day_real_duration;
 		}
 		# setting day beginning/end hour and minute with the value set in centreon DB
-    	my $day_start = $start +  $time_period->{"day_start_time"};
+		my $day_start = $start +  $time_period->{"day_start_time"};
 		my $day_end = $start +  $time_period->{"day_end_time"};
 		my %period = ("day_start" => $day_start, "day_end" => $day_end);
 		# adding new day delimited by $day_start and $day_end in days list table
@@ -831,11 +831,12 @@ sub rebuild_archives($) {
     # archiving logs for each days
     foreach(@days_in_order) {
     	# print $_->{"day_start"}." ".$_->{"day_end"}."\n";
-		archive_day_log($_->{"day_start"}, $_->{"day_end"});
-		undef(%hosts);
-		undef(%services);
-		undef(%host_ids);
-		undef(%service_ids);
+	print localtime($_->{"day_start"})." ".localtime($_->{"day_end"})."\n";
+	archive_day_log($_->{"day_start"}, $_->{"day_end"});
+	undef(%hosts);
+	undef(%services);
+	undef(%host_ids);
+	undef(%service_ids);
     }
 }
 
