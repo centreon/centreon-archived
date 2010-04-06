@@ -332,7 +332,7 @@
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id, servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$key."'");
 							$fields["service_sgs"] = "";
 							while($Sg =& $DBRESULT->fetchRow()){
-							    if (isset($host) && $host) {
+								if (isset($host) && $host) {
 								    $host_id = $host;
 								}
 								else  {
@@ -343,7 +343,7 @@
 							    }
 							    else {
 							        $Sg["hostgroup_hg_id"] ? $hg_id = "'".$Sg["hostgroup_hg_id"]."'" : $hg_id = "NULL";   
-							    }							    
+							    }
 								$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$host_id.", ".$hg_id.", '".$maxId["MAX(service_id)"]."', '".$Sg["servicegroup_sg_id"]."')");
 								if ($Sg["host_host_id"])
 									$fields["service_sgs"] .= $Sg["host_host_id"] . ",";
@@ -375,8 +375,12 @@
 						 	$DBRESULT3 =& $pearDB->query($mTpRq1);
 							while ($sv =& $DBRESULT3->fetchRow()) {
 								$macName = str_replace("\$", "", $sv["svc_macro_name"]);
+								$macName = str_replace("/", "#S#", $macName);
+							    $macName = str_replace("\\", "#BS#", $macName);
+							    $macVal = str_replace("/", "#S#", $hst['svc_macro_value']);
+							    $macVal = str_replace("\\", "#BS#", $macVal);	
 								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES " .
-											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $sv['svc_macro_value'] ."')";
+											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $macVal ."')";
 						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
 								$fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
 							}
@@ -596,7 +600,11 @@
 	 			if (isset($my_tab[$macInput]) && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]) {
 		 			$my_tab[$macInput] = str_replace("\$_SERVICE", "", $my_tab[$macInput]);
 		 			$my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($my_tab[$macInput]) ."\$', '". $my_tab[$macValue] ."', ". $service_id["MAX(service_id)"] .")";
+		 			$macName = str_replace("/", "#S#", $my_tab[$macInput]);
+		 			$macName = str_replace("\\", "#BS#", $macName);
+		 			$macVal = str_replace("/", "#S#", $my_tab[$macValue]);
+		 			$macVal = str_replace("\\", "#BS#", $macVal);
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($macName) ."\$', '". $macVal ."', ". $service_id["MAX(service_id)"] .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					$fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];		
 					$already_stored[strtolower($my_tab[$macInput])] = 1;
@@ -816,7 +824,11 @@
 	 			if (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
 		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id .")";
+		 			$macName = str_replace("/", "#S#", $_POST[$macInput]);
+		 			$macName = str_replace("\\", "#BS#", $macName);
+		 			$macVal = str_replace("/", "#S#", $_POST[$macValue]);
+		 			$macVal = str_replace("\\", "#BS#", $macVal);
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($macName) ."\$', '". $macVal ."', ". $service_id .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];	
 					$already_stored[strtolower($_POST[$macInput])] = 1;
@@ -1118,15 +1130,23 @@
 	 			if (isset($_POST[$macInput]) && isset($already_stored_in_db[strtolower($_POST[$macInput])])) {	 			 				
 	 				$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-	 				$rq = "UPDATE on_demand_macro_service SET `svc_macro_value`='". $_POST[$macValue] . "'".
+		 			$macName = str_replace("/", "#S#", $_POST[$macInput]);
+		 			$macName = str_replace("\\", "#BS#", $macName);
+		 			$macVal = str_replace("/", "#S#", $_POST[$macValue]);
+		 			$macVal = str_replace("\\", "#BS#", $macVal);
+	 				$rq = "UPDATE on_demand_macro_service SET `svc_macro_value`='". $macVal . "'".
 	 					  " WHERE `svc_svc_id`=" . $service_id .
-	 					  " AND `svc_macro_name`='\$_SERVICE" . $_POST[$macInput] . "\$'";
+	 					  " AND `svc_macro_name`='\$_SERVICE" . $macName . "\$'";
 			 		$DBRESULT =& $pearDB->query($rq);
 	 			}
 	 			elseif (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {		 			
 		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($_POST[$macInput]) ."\$', '". $_POST[$macValue] ."', ". $service_id .")";
+		 			$macName = str_replace("/", "#S#", $_POST[$macInput]);
+		 			$macName = str_replace("\\", "#BS#", $macName);
+		 			$macVal = str_replace("/", "#S#", $_POST[$macValue]);
+		 			$macVal = str_replace("\\", "#BS#", $macVal);
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($macName) ."\$', '". $macVal ."', ". $service_id .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					$already_stored[$_POST[$macInput]] = 1;
 	 			}

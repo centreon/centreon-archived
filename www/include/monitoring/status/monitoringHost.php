@@ -43,7 +43,9 @@
 	include_once("./include/monitoring/common-Func.php");
 	include_once("./include/monitoring/external_cmd/cmd.php");
 
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -55,13 +57,19 @@
 	$pathDetails = "./include/monitoring/objectDetails/";
 	$pathTools = "./include/tools/";
 
-	if(isset($_GET["cmd"]) && $_GET["cmd"] == 14 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 1){
-		if (!isset($_GET["notify"]))
-			$_GET["notify"] = 0;
-		if (!isset($_GET["persistent"]))
-			$_GET["persistent"] = 0;
-		acknowledgeHost();
-	} else if(isset($_GET["cmd"]) && $_GET["cmd"] == 14 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 0){
+	if (!isset($_GET["cmd"]) && isset($_POST["cmd"])) {
+		$param = $_POST;
+	} else {
+		$param = $_GET;
+	}
+
+	if (isset($param["cmd"]) && $param["cmd"] == 14 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 1){
+		if (!isset($param["notify"]))
+			$param["notify"] = 0;
+		if (!isset($param["persistent"]))
+			$param["persistent"] = 0;
+		acknowledgeHost($param);
+	} else if (isset($param["cmd"]) && $param["cmd"] == 14 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 0){
 		acknowledgeHostDisable();
 	}
 
@@ -81,15 +89,31 @@
 			if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
 				print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";			
 			else {
+				/*
+				 * Check table ACL exists
+				 */
 				if ($err_msg = table_not_exists("centreon_acl")) 
 					print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
+				
 				switch ($o)	{
-					case "h" 	: require_once($path."host.php"); 					break;
-					case "hpb" 	: require_once($path."host.php"); 					break;
-					case "h_unhandled" 	: require_once($path."host.php"); 					break;
-					case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
-					case "hak" 	: require_once($pathRoot."acknowlegement/hostAcknowledge.php"); 	break;
-					default 	: require_once($path."host.php"); 					break;
+					case "h" 	: 
+						require_once($path."host.php");
+						break;
+					case "hpb" 	: 
+						require_once($path."host.php");
+						break;
+					case "h_unhandled" 	: 
+						require_once($path."host.php");
+						break;
+					case "hd" 	: 
+						require_once($pathDetails."hostDetails.php");
+						break;
+					case "hak" 	: 
+						require_once($pathRoot."acknowlegement/hostAcknowledge.php");
+						break;
+					default 	: 
+						require_once($path."host.php");
+						break;
 				}
 			}
 		}

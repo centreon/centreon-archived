@@ -36,89 +36,79 @@
  * 
  */
  
- /*
+ 	/*
 	 * Init functions
 	 */
 	function microtime_float2() 	{
 	   list($usec, $sec) = explode(" ", microtime());
 	   return ((float)$usec + (float)$sec);
 	}
-		
-	function getAuthorizedCategories2($groupstr, $res_id){
+	
+	/*
+	 * Return enable categories for this resource access
+	 */
+	function getAuthorizedCategories($groupstr, $res_id) {
 		global $pearDB;
 		
 		if (strlen($groupstr) == 0)
 			return array();
 			
-		$tab_categories = array();				
-		$DBRES =& $pearDB->query("SELECT acl_res_id FROM `acl_resources` WHERE acl_res_id = '".$res_id."' AND acl_res_activate = '1'");
-			
-		if (!$DBRES->numRows())
-			return array();
+		$tab_categories = array();
 		$request = "SELECT sc_id " .
-					"FROM acl_resources_sc_relations, acl_res_group_relations " .
+					"FROM acl_resources_sc_relations, acl_res_group_relations, acl_resources " .
 					"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-					"AND acl_res_group_relations.acl_group_id IN (".$groupstr.") " .
-					"AND acl_resources_sc_relations.acl_res_id = '$res_id'";
-					
+						"AND acl_res_group_relations.acl_group_id IN (".$groupstr.") " .
+						"AND acl_resources_sc_relations.acl_res_id = acl_resources.acl_res_id " .
+						"AND acl_resources.acl_res_id = '".$res_id."' " .
+						"AND acl_res_activate = '1'";
 		$DBRESULT =& $pearDB->query($request);
-		while ($res =& $DBRESULT->fetchRow())			
-			$tab_categories[$res["sc_id"]] = $res["sc_id"];		
+		while ($res =& $DBRESULT->fetchRow()) {
+			$tab_categories[$res["sc_id"]] = $res["sc_id"];			
+		}
+		$DBRESULT->free();
 	  	unset($res);
 	  	unset($DBRESULT);		
 	  	return $tab_categories;
 	}
 	
-	function getServiceTemplateList3($service_id = NULL)	{
-		global $pearDB;
+	function getServiceTemplateCategoryList($service_id = NULL)	{
+		global $pearDB, $svcTplCache, $svcCatCache;
 
+		$tabCategory = array();
+		
 		if (!$service_id) 
 			return;
+		
+		if (isset($svcCatCache[$service_id])) {
+			foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
+				$tabCategory[$ct_id] = $ct_id;
+			} 
+		}
+		
 		/*
 		 * Init Table of template
 		 */
-		$strTemplate = "'$service_id'";
-		while (1)	{
-			/*
-			 * Get template Informations
-			 */
-			$DBRESULT =& $pearDB->query("SELECT service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$row =& $DBRESULT->fetchRow();
-			if (isset($row["service_template_model_stm_id"]) && $row["service_template_model_stm_id"]){
-				if ($strTemplate)
-					$strTemplate .= ', ';
-				$strTemplate .= "'".$row["service_template_model_stm_id"]."'";
-				$service_id = $row["service_template_model_stm_id"];
-			} else
-				return $strTemplate;
-		}
-	}
-	
-	function getMyServiceName2($service_id = NULL)	{
-		if (!$service_id) return;
-		global $pearDB;
 		while (1) {
-			$DBRESULT =& $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$row =& $DBRESULT->fetchRow();
-			if ($row["service_description"])	{
-				$row["service_description"] = str_replace('#S#', "/", $row["service_description"]);
-				$row["service_description"] = str_replace('#BS#', "\\", $row["service_description"]);
-				return html_entity_decode($row["service_description"], ENT_QUOTES);
-			} else if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
-				break;
+			if (isset($svcTplCache[$service_id]) && $svcTplCache[$service_id]) {
+				//print "svc => $service_id => ".$svcTplCache[$service_id]." \n";
+				//print_r($svcCatCache[$service_id]);
+				if (isset($svcCatCache[$service_id])) {
+					foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
+						$tabCategory[$ct_id] = $ct_id;
+					} 
+				}
+				$service_id = $svcTplCache[$service_id];
+			} else {
+				return $tabCategory;
+			}	
 		}
 	}
 	
-	function getACLSGForHost2($pearDB, $host_id, $groupstr){
+	function getACLSGForHost($pearDB, $host_id, $groupstr){
+		global $svcCache;
+		
 		if (!$pearDB || !isset($host_id))
 			return ;
-
 
 		/*
 		 * Init Acl Table
@@ -133,10 +123,10 @@
 			$condition = " WHERE `acl_group_id` IN (".$groupstr.") AND ";			
 		else
 			$condition = " WHERE ";
+		
 		$DBRESULT =& $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar ".$condition." " .
 									"argr.acl_res_id = ar.acl_res_id " .
 									"AND ar.acl_res_activate = '1'");
-				
 		while ($res =& $DBRESULT->fetchRow()) {
 			$DBRESULT2 =& $pearDB->query(	"SELECT `service_service_id` " .
 											"FROM `servicegroup`, `acl_resources_sg_relations`, `servicegroup_relation` " .
@@ -144,58 +134,45 @@
 											"AND `acl_resources_sg_relations`.`sg_id` = `servicegroup`.`sg_id` " .
 											"AND `servicegroup_relation`.`servicegroup_sg_id` = `servicegroup`.`sg_id` " .
 											"AND `servicegroup_relation`.`host_host_id` = '".$host_id."'");	
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while ($service =& $DBRESULT2->fetchRow())
-				$svc[getMyServiceName2($service["service_service_id"])] = $service["service_service_id"];
+			while ($service =& $DBRESULT2->fetchRow()) {
+				if (isset($svcCache[$service["service_service_id"]])) {
+					$svc[$svcCache[$service["service_service_id"]]] = $service["service_service_id"];
+				}
+			}
 			$DBRESULT2->free();
 		}
 		$DBRESULT->free();
 		return $svc;
 	}
 	
-	function getServicesCategories2($str){
-		global $pearDB;
+	function getAuthorizedServicesHost($host_id, $groupstr, $res_id, $authorizedCategories){
+		global $pearDB, $svcCache, $hostCache;
 		
-		$tab = array();
-		$DBRESULT =& $pearDB->query("SELECT `sc_id` FROM `service_categories_relation` WHERE `service_service_id` IN (".$str.")");
-		while ($res =& $DBRESULT->fetchRow())
-			$tab[$res["sc_id"]] = $res["sc_id"];
-		unset($res);		
-		unset($DBRESULT);
-		return $tab;
-	}
-	
-	function getAuthorizedServicesHost2($host_id, $groupstr, $res_id){
-		global $pearDB;
+		$tab_svc 	= getMyHostServicesByName($host_id);
 		
-		$tab_svc 	= getMyHostServicesByName2($host_id);
-
-		/*
-		 * Get categories
-		 */
-		$tab_cat    = getAuthorizedCategories2($groupstr, $res_id);		
-
-
 		/*
 		 * Get Service Groups
 		 */
-		$svc_SG 	= getACLSGForHost2($pearDB, $host_id, $groupstr);
+		$svc_SG 	= getACLSGForHost($pearDB, $host_id, $groupstr);
 		
 		$tab_services = array();
-		if (count($tab_cat)){
+		if (count($authorizedCategories)) {
 			if ($tab_svc) {
-				foreach ($tab_svc as $svc_descr => $svc_id){
-					$tmp = getServiceTemplateList3($svc_id);
-					$tab = getServicesCategories2($tmp);					
+				foreach ($tab_svc as $svc_descr => $svc_id) {
+					//print "Service : $host_id (".$hostCache[$host_id].") ".$svc_id ." | ".$svcCache[$svc_id]."\n";
+					$tab = getServiceTemplateCategoryList($svc_id);
+					if (count($tab) && 0) {
+						print "------------------\n";
+						print_r($tab);
+					}
 					foreach ($tab as $t){
-						if (isset($tab_cat[$t])) {							
+						if (isset($authorizedCategories[$t])) {							
 							$tab_services[$svc_descr] = $svc_id;
 						}
 					}
 				}
 			}			
-		} elseif (hostIsAuthorized($host_id, $groupstr)){
+		} else if (hostIsAuthorized($host_id, $groupstr)){
 			$tab_services = $tab_svc;
 			if ($svc_SG) {
 				foreach ($svc_SG as $key => $value) {
@@ -203,7 +180,7 @@
 				}
 			}	
 		}
-	  	return $tab_services;
+		return $tab_services;
 	}
 	
 	function hostIsAuthorized($host_id, $group_id) {
@@ -240,43 +217,24 @@
 		
 		return false;
 	}
-	
-	function getMyHostServicesByName2($host_id = NULL)	{
-		global $pearDB;
+
+	/*
+	 * Retreive service description
+	 */	
+	function getMyHostServicesByName($host_id = NULL)	{
+		global $pearDB, $hsRelation, $svcCache;
 		
 		if (!$host_id) 
 			return;
-
-		$hSvs = array();
-		/*
-		 * Service By Host
-		 */
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_activate = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($elem =& $DBRESULT->fetchRow())	{
-			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
-			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
-			$hSvs[$elem["service_description"]] = html_entity_decode($elem["service_id"], ENT_QUOTES);
-		}
-		$DBRESULT->free();
 		
-		/*
-		 * Service By Hostgroup
-		 */
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-				" AND service_id = hsr.service_service_id");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($elem =& $DBRESULT->fetchRow()) {
-			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
-			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
-			$hSvs[$elem["service_description"]]	= html_entity_decode($elem["service_id"], ENT_QUOTES);
+		$hSvs = array();
+		if (isset($hsRelation[$host_id])) {
+			foreach ($hsRelation[$host_id] as $service_id => $flag) {
+				$service_description = str_replace('#S#', '/', $svcCache[$service_id]);
+				$service_description = str_replace('#BS#', '\\', $service_description);
+				$hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);
+			}
 		}
-		$DBRESULT->free();
 		return $hSvs;
 	}
- 
- 
- ?>
+?>

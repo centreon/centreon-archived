@@ -47,7 +47,6 @@
 	/*
 	 * Init GMT class
 	 */
-	
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 		
@@ -102,7 +101,7 @@
 			/*
 			 * Form begin
 			 */		
-			$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+			$form = new HTML_QuickForm('Form', 'POST', "?p=".$p);
 			$form->addElement('header', 'title', _("Add a Service downtime"));
 			
 			/*

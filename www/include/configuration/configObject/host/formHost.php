@@ -243,8 +243,11 @@
 		$od_macro_id[$j] = $od_macro["host_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
 		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
-		$od_macro_value[$j] = $od_macro["host_macro_value"];
-		$od_macro_host_id[$j] = $od_macro["host_host_id"];
+		$od_macro_name[$j] = str_replace("#BS#", "\\", $od_macro_name[$j]);
+		$od_macro_name[$j] = str_replace("#S#", "/", $od_macro_name[$j]);
+		$od_macro_value[$j] = str_replace("#BS#", "\\", $od_macro["host_macro_value"]);
+		$od_macro_value[$j] = str_replace("#S#", "/", $od_macro_value[$j]);
+		$od_macro_host_id[$j] = $od_macro["host_host_id"];		
 		$j++;		
 	}
 	$DBRESULT->free();

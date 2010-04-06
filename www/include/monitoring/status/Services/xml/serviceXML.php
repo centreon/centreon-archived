@@ -119,7 +119,7 @@
 	$tabOrder["service_description"]= " ORDER BY service_description ". $order.", host_name";
 	$tabOrder["current_state"] 		= " ORDER BY nss.current_state ". $order.", host_name, service_description";
 	$tabOrder["last_state_change"] 	= " ORDER BY nss.last_state_change ". $order.", host_name, service_description";
-	$tabOrder["last_hard_state_change"] = " order by nss.last_hard_state_change ". $order.",no.name1,no.name2";
+	$tabOrder["last_hard_state_change"] = " ORDER by nss.last_hard_state_change ". $order.",no.name1,no.name2";
 	$tabOrder["last_check"] 		= " ORDER BY nss.last_check ". $order.", host_name, service_description";
 	$tabOrder["current_attempt"] 	= " ORDER BY nss.current_check_attempt ". $order.", host_name, service_description";
 	$tabOrder["default"] 			= " ORDER BY host_name ". $order ;
@@ -201,9 +201,9 @@
 			$searchService .= " AND ";
 		}
 		$searchService .= " no.name2 LIKE '%$search%' ";
-		if ($search_type_host && $search)
-			$searchService .= ")";
 	}
+	if ($search_type_host && $search)
+		$searchService .= ")";	
 	
 	$rq3 = 	"SELECT 1 FROM ".$obj->ndoPrefix."servicestatus WHERE no.object_id = ns.service_object_id  ";
 	
@@ -264,16 +264,26 @@
 	$DBRESULT =& $obj->DBNdo->query($finalRequest);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		if (isset($host_status[$ndo["host_name"]])){
-			
+
+			if ($host_status[$ndo["host_name"]]["scheduled_downtime_depth"] == 0) {
+				$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]];			
+			} else {
+				$color_host = $general_opt['color_downtime'];
+			}
+			$color_service = $tab_color_service[$ndo["current_state"]];
+			$passive = 0;
+			$active = 1;
+			$last_check = " ";
+			$duration = " ";
+
 			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
 				$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
 			else if ($ndo["last_state_change"] > 0)
 				$duration = " - ";
 
+			$hard_duration = " N/S ";
 			if (($ndo["last_hard_state_change"] > 0) && ($ndo["last_hard_state_change"] >= $ndo["last_state_change"]))
 				$hard_duration = CentreonDuration::toString(time() - $ndo["last_hard_state_change"]);
-			else if ($ndo["last_hard_state_change"] > 0)
-				$hard_duration = " N/S ";	
 
 			if ($ndo["scheduled_downtime_depth"] == 1) {
 				$class = "line_downtime";

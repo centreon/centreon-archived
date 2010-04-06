@@ -94,7 +94,7 @@
 		} else {
 			$error_msg = "\$USER" . $match_id . "\$";
 		}
-	}	
+	}
 
 	if ($error_msg != "") {
 		$command = $resource_def;

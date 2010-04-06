@@ -65,7 +65,7 @@
 		
 	if ($is_admin || (isset($lcaHostByName[$host_name]))){
 		
-		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+		$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&host_name=$host_name");
 	
 		$form->addElement('header', 'title', _("Acknowledge a host"));
 	

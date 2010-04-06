@@ -92,7 +92,7 @@
 			 * Form begin
 			 */
 			
-			$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+			$form = new HTML_QuickForm('Form', 'POST', "?p=".$p);
 			if ($o == "ah")
 				$form->addElement('header', 'title', _("Add a Host downtime"));
 			

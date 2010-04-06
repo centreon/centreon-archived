@@ -6,6 +6,35 @@
 => enhancement : new Views > Graphs interface (possibility to export images etc...)
 
 
+## Centreon 2.1.6
+
+=> fix: missing column in eventlog csv export
+=> fix: GMT generation problem
+=> fix: problem with massive change on hosts
+=> fix: prevents SQL injection in ping tool
+=> fix: multiple external commands due to mouse clicks on menu 
+=> enhancement: enhanced centstorage purge/sync
+=> enhancement: better ACL engine
+
+
+## Centreon 2.1.5
+
+=> fix: problem with graph and nsclient ++
+=> fix: problem with last year in reporting
+=> fix: hostgroup escalation export
+=> fix: cgi.cfg generation 
+=> fix:	problem on icone un service extended information
+=> fix: problem on downtime for services and hosts
+=> fix: event logs
+=> fix: LDAP authentication
+=> fix: LDAP import
+=> fix: service group view display double information
+=> fix: first notification delay not managed by meta services
+=> fix: host duplication problem
+=> fix: remove null password possibility for MySQL account during setup
+=> fix: autocomplete password disable in contact form
+=> fix: requiretty problem managed for CentOS/Redhat
+
 ## Centreon 2.1.4
 
 => fix: adds timestamp on host external commands

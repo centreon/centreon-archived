@@ -360,7 +360,7 @@
 					if ($host["timeperiod_tp_id2"])
 						$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]]);					
 				}
-							
+
 				if ($host["host_notification_options"]) 
 					$str .= print_line("notification_options", $host["host_notification_options"]);
 				if ($host["host_notifications_enabled"] != 2) 
@@ -379,7 +379,11 @@
 				while ($od_macro =& $DBRESULT3->fetchRow()) {
 					$mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);
 					$mac_name = str_replace("\$", "", $mac_name);
+					$mac_name = str_replace("#S#", "/", $mac_name);
+					$mac_name = str_replace("#BS##BS#", "\\", $mac_name);
 					$mac_value = $od_macro['host_macro_value'];
+					$mac_value = str_replace("#S#", "/", $mac_value);
+					$mac_value = str_replace("#BS##BS#", "\\", $mac_value);
 					$str .= print_line($mac_name, $mac_value);
 				}
 

@@ -38,7 +38,7 @@
 
 	if (!isset($oreon))
 		exit();
-	
+
 	require_once ($centreon_path . "/www/class/centreonHost.class.php");
 	
 	/*
@@ -320,7 +320,11 @@
 			while ($od_macro =& $DBRESULT3->fetchRow()) {
 				$mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);
 				$mac_name = str_replace("\$", "", $mac_name);
+				$mac_name = str_replace("#S#", "/", $mac_name);
+				$mac_name = str_replace("#BS##BS#", "\\", $mac_name);
 				$mac_value = $od_macro['host_macro_value'];
+				$mac_value = str_replace("#S#", "/", $mac_value);
+				$mac_value = str_replace("#BS##BS#", "\\", $mac_value);
 				$str .= print_line($mac_name, $mac_value);
 			}
 			

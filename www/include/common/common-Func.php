@@ -464,28 +464,27 @@
 	}
 	
 	function getMyServiceCategories($service_id = NULL) {
-	  if (!$service_id)
-	    return;
-	  global $pearDB, $oreon;
+		global $pearDB, $oreon;
 	
-	  $version = getVersion();
-	
-	  while (1) {
-	    $DBRESULT =& $pearDB->query("SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc WHERE scr.service_service_id = '".$service_id."' AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'");
-	    if ($DBRESULT->numRows()) {
-	      $tabSC = array();
-	      while ($row =& $DBRESULT->fetchRow())
-		$tabSC[$row["sc_id"]] = $row["sc_id"];
-	      return $tabSC;
-	    } else {
-	      $DBRESULT =& $pearDB->query("SELECT service_template_model_stm_id FROM service WHERE service_id = '".$service_id."'");
-	      $row =& $DBRESULT->fetchRow();
-	      if ($row["service_template_model_stm_id"])
-		$service_id = $row["service_template_model_stm_id"];
-	      else
-		return array();
-	    }
-	  }
+		if (!$service_id)
+	    	return;
+	  
+	  	while (1) {
+	  		$DBRESULT =& $pearDB->query("SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc WHERE scr.service_service_id = '".$service_id."' AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'");
+	    	if ($DBRESULT->numRows()) {
+	    		$tabSC = array();
+	      		while ($row =& $DBRESULT->fetchRow())
+					$tabSC[$row["sc_id"]] = $row["sc_id"];
+	      		return $tabSC;
+	    	} else {
+	      		$DBRESULT =& $pearDB->query("SELECT service_template_model_stm_id FROM service WHERE service_id = '".$service_id."'");
+	      		$row =& $DBRESULT->fetchRow();
+	      		if ($row["service_template_model_stm_id"])
+					$service_id = $row["service_template_model_stm_id"];
+	      		else
+					return array();
+	    	}
+	  	}
 	}
 	
 	function getMyCategorieName($sc_id = NULL) {

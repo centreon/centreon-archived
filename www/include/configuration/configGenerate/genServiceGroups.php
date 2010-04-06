@@ -43,12 +43,12 @@
 	$generatedSG = array();
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/servicegroups.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT * FROM `servicegroup` ORDER BY `sg_name`");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `servicegroup` WHERE sg_activate = '1' ORDER BY `sg_name`");
 	
 	$serviceGroup = array();
 	$i = 1;
 	$str = NULL;
-	while ($serviceGroup = $DBRESULT->fetchRow())	{
+	while ($serviceGroup =& $DBRESULT->fetchRow())	{
 		$generated = 0;
 		$strDef = "";
 
@@ -68,7 +68,7 @@
 				$strDef .= print_line("servicegroup_name", $serviceGroup["sg_name"]);
 			if ($serviceGroup["sg_alias"]) 
 				$strDef .= print_line("alias", $serviceGroup["sg_alias"]);
-			
+
 			/*
 			 * Service members
 			 */
@@ -89,7 +89,6 @@
 							
 							$service["service_description"] = str_replace("#S#", "/", $service["service_description"]);
 							$service["service_description"] = str_replace("#BS#", "\\", $service["service_description"]);
-			
 							$strTemp != NULL ? $strTemp .= ", ".$service["host_name"].", ".$service["service_description"] : $strTemp = $service["host_name"].", ".$service["service_description"];
 							$generated++;
 						}

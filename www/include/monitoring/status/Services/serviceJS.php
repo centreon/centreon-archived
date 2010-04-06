@@ -436,9 +436,9 @@
 			alert(_popup_no_comment_msg);
 			return 0;
 		}
-		if (document.getElementById('sticky'))
+		if (document.getElementById('sticky')) {
 			var sticky = document.getElementById('sticky').checked;
-		else
+		} else
 			var sticky = 1;
 		
 		if (document.getElementById('persistent')) 
@@ -452,16 +452,17 @@
 			var notify = 0;
 
 		if (document.getElementById('force_check')) {
-            var force_check = document.getElementById('force_check').checked;
-    	}
-    	else {
-            var force_check = 0;
-        }
+			var force_check = document.getElementById('force_check').checked;
+		}
+		else {
+			var force_check = 0;
+		}
 		
 		var ackhostservice = 0;
 		if (document.getElementById('ackhostservice')) {
 			ackhostservice = document.getElementById('ackhostservice').checked;
-		}		
+		}
+		
 		var author = document.getElementById('author').value;
 
 		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + "&sid=" + _sid + _getVar, true);

@@ -257,10 +257,10 @@
 		if ($service_status[$host_name."_".$svc_description]["problem_has_been_acknowledged"])
 			$service_status[$host_name."_".$svc_description]["current_state"] .= "&nbsp;&nbsp;<b>("._("ACKNOWLEDGED").")</b>";
 
-	    if (isset($service_status[$host_name."_".$svc_description]["scheduled_downtime_depth"]) && 
+		if (isset($service_status[$host_name."_".$svc_description]["scheduled_downtime_depth"]) && 
 		    $service_status[$host_name."_".$svc_description]["scheduled_downtime_depth"]) {
 		    $service_status[$host_name."_".$svc_description]["scheduled_downtime_depth"] = 1;
-		}	
+		}
 			
 		if (isset($ndo) && $ndo) {
 			foreach ($tab_host_service[$host_name] as $key_name => $s) {

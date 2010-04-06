@@ -45,7 +45,7 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");	
+	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
 	include_once($centreon_path."www/class/centreonXML.class.php");
@@ -201,18 +201,18 @@
 		$request = "SELECT count(*) FROM " .$ndo_base_prefix."servicegroups WHERE config_type = '1' LIMIT 1";
 		$DBRESULT =& $pearDBndo->query($request);
 		while ($row =& $DBRESULT->fetchRow()) {
-			if ($row["count(sg_alias)"] == 1) {
+			if ($row["count(*)"] > 0) {
 				$custom_ndo = 0;
 				break;
 			} else {
 				$request = "SELECT count(*) FROM " .$ndo_base_prefix."servicegroups LIMIT 1";
 				$DBRESULT2 =& $pearDBndo->query($request);
 				while ($row2 =& $DBRESULT2->fetchRow()) {
-					if ($row2["count(sg_alias)"] == 1) {
-						$custom_ndo = 0;
+					if ($row2["count(*)"] > 0) {
+						$custom_ndo = 1;
 						break;
 					} else {
-						$custom_ndo = 1;
+						$custom_ndo = 0;
 						break;
 					}
 				}

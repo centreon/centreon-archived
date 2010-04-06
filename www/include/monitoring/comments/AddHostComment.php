@@ -47,8 +47,6 @@
 	/*
 	 * Init GMT class
 	 */
-	
-	
 	$hostStr = $oreon->user->access->getHostsString("ID", $pearDBndo);
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);

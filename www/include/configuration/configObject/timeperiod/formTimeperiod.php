@@ -103,6 +103,9 @@
 	$attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
 	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Time Period"));
@@ -112,7 +115,7 @@
 		$form->addElement('header', 'title', _("View a Time Period"));
 
 	/*
-	 * 	Time Period basic information
+	 * Time Period basic information
 	 */
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text', 'tp_name', _("Time Period Name"), $attrsText);
@@ -234,7 +237,7 @@
 	$form->addRule('tp_thursday', 	_('Error in hour definition'), 'format');
 	$form->addRule('tp_friday', 	_('Error in hour definition'), 'format');
 	$form->addRule('tp_saturday', 	_('Error in hour definition'), 'format');
-	
+
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	/*
@@ -244,17 +247,23 @@
 	$tpl = initSmartyTpl($path, $tpl);
 	
 	if ($o == "w")	{
-		# Just watch a Time Period information
+		/*
+		 * Just watch a Time Period information
+		 */
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&tp_id=".$tp_id."'"));
 	    $form->setDefaults($tp);
 		$form->freeze();
 	} else if ($o == "c")	{
-		# Modify a Time Period information
+		/*
+		 * Modify a Time Period information
+		 */
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($tp);
 	} else if ($o == "a")	{
-		# Add a Time Period information
+		/*
+		 * Add a Time Period information
+		 */
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -287,6 +296,7 @@
 		$form->freeze();
 		$valid = true;
 	}
+	
 	$action = $form->getSubmitValue("action");
 	
 	if ($valid && $action["action"]["action"])

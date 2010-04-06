@@ -99,8 +99,9 @@
 	$tpl = initSmartyTpl($path, $tpl, "./include/common/");
 
 	$page_max = ceil($rows / $limit);
-	if ($num >= $page_max && $rows)
+	if ($num >= $page_max && $rows) {
 		$num = $page_max - 1;
+	}
 
 	$pageArr = array();
 	$istart = 0;

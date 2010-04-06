@@ -107,6 +107,10 @@
 	
 		global $pearDBndo,$pearDB, $ndo_base_prefix, $general_opt, $o, $instance,$is_admin, $groupnumber, $grouplist, $access;
 
+		if ($host_name == "") {
+           return array();
+        }
+
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `".$ndo_base_prefix."servicestatus` nss, `".$ndo_base_prefix."objects` no";
 				

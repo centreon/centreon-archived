@@ -78,7 +78,6 @@
 			$order = $oreon->optGen["problem_sort_order"];
 		} else
 			$order = $_GET["order"];
-			
 	} else {
 		if (!isset($_GET["sort_type"]))
 			$sort_type = "host_name";
@@ -143,7 +142,7 @@
 	/*
 	 * Showing actions allowed for current user
 	 */
-	if (isset($authorized_actions) && $allActions == false){		
+	if (isset($authorized_actions) && $allActions == false) {		
 		foreach ($authorized_actions as $action_name) {
 			if ($action_name == "service_schedule_check" || $allActions == true) 
 				$action_list[3] = _("Schedule immediate check");

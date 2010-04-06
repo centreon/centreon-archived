@@ -44,7 +44,7 @@
 			<xsl:if test="pa = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-					  	<xsl:attribute name="title">Problem has been acknowleged</xsl:attribute>
+					  	<xsl:attribute name="title">Problem has been acknowledged</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 1">

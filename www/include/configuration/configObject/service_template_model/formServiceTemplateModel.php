@@ -223,7 +223,10 @@
 		$od_macro_id[$j] = $od_macro["svc_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_SERVICE", "", $od_macro["svc_macro_name"]);
 		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);		
-		$od_macro_value[$j] = $od_macro["svc_macro_value"];
+		$od_macro_name[$j] = str_replace("#BS#", "\\", $od_macro_name[$j]);
+		$od_macro_name[$j] = str_replace("#S#", "/", $od_macro_name[$j]);
+		$od_macro_value[$j] = str_replace("#BS#", "\\", $od_macro["svc_macro_value"]);
+		$od_macro_value[$j] = str_replace("#S#", "/", $od_macro_value[$j]);
 		$od_macro_svc_id[$j] = $od_macro["svc_svc_id"];
 		$j++;		
 	}

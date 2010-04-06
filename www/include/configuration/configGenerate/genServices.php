@@ -303,6 +303,10 @@
 					foreach ($macroCache[$service['service_id']] as $key => $value) {
 						$mac_name = str_replace("\$_SERVICE", "_", $key);
 						$mac_name = str_replace("\$", "", $mac_name);
+						$mac_name = str_replace("#S#", "/", $mac_name);
+						$mac_name = str_replace("#BS##BS#", "\\", $mac_name);
+						$value = str_replace("#S#", "/", $value);
+						$value = str_replace("#BS##BS#", "\\", $value);
 						$strTMP .= print_line($mac_name, $value);
 					}
 				}
@@ -600,6 +604,10 @@
 					foreach ($macroCache[$service['service_id']] as $key => $value) {
 						$mac_name = str_replace("\$_SERVICE", "_", $key);
 						$mac_name = str_replace("\$", "", $mac_name);
+						$mac_name = str_replace("#S#", "/", $mac_name);
+						$mac_name = str_replace("#BS##BS#", "\\", $mac_name);
+						$value = str_replace("#S#", "/", $value);
+						$value = str_replace("#BS##BS#", "\\", $value);
 						$strTMP .= print_line($mac_name, $value);
 					}
 				}

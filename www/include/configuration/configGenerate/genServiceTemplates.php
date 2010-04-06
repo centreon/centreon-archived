@@ -39,7 +39,7 @@
 	if (!isset($oreon))
 		exit();
 
-	require_once $centreon_path . "/www/class/centreonService.class.php";
+	require_once ($centreon_path . "/www/class/centreonService.class.php");
 
 	/*
 	 * Create contact relation Cache
@@ -277,7 +277,11 @@
 			while($od_macro = $DBRESULT3->fetchRow()) {
 				$mac_name = str_replace("\$_SERVICE", "_", $od_macro['svc_macro_name']);
 				$mac_name = str_replace("\$", "", $mac_name);
+				$mac_name = str_replace("#S#", "/", $mac_name);
+				$mac_name = str_replace("#BS##BS#", "\\", $mac_name);
 				$mac_value = $od_macro['svc_macro_value'];
+				$mac_value = str_replace("#S#", "/", $mac_value);
+				$mac_value = str_replace("#BS##BS#", "\\", $mac_value);
 				$strTMP .= print_line($mac_name, $mac_value);
 			}
 			$DBRESULT3->free();

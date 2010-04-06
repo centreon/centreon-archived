@@ -164,7 +164,7 @@
 			$i++;
 		}
 		if ($generated && $generated2){
-			$str .= $strDef;	
+			$str .= $strDef;
 		}
 	}
 	unset($dependency);
@@ -251,7 +251,7 @@
 				$strTemp1 != "" ? $strTemp1 .= ", ".$sg["sg_name"] : $strTemp1 = $sg["sg_name"];
 		}
 		$DBRESULT2->free();
-		
+
 		$query = "SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name ". 
 				"FROM dependency_servicegroupChild_relation dsgcr, servicegroup, servicegroup_relation sgr, ns_host_relation ns, host h, service s ". 
 				"WHERE dsgcr.dependency_dep_id = '".$dependency["dep_id"]."' ". 

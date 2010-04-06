@@ -58,21 +58,27 @@
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	if (isset($_GET["cmd"]) && $_GET["cmd"] == 15 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 1){
-		if (!isset($_GET["notify"]))
-			$_GET["notify"] = 0;
-		if (!isset($_GET["persistent"]))
-			$_GET["persistent"] = 0;
-		acknowledgeService();
-	} else if(isset($_GET["cmd"]) && $_GET["cmd"] == 15 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 0)
+	if (!isset($_GET["cmd"]) && isset($_POST["cmd"])) {
+		$param = $_POST;
+	} else {
+		$param = $_GET;
+	}
+
+	if (isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 1){
+		if (!isset($param["notify"]))
+			$param["notify"] = 0;
+		if (!isset($param["persistent"]))
+			$param["persistent"] = 0;
+		acknowledgeService($param);
+	} else if(isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 0)
 		acknowledgeServiceDisable();
 
-	if (isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"]))
+	if (isset($param["cmd"]) && $param["cmd"] == 16 && isset($param["output"]))
 		submitPassiveCheck();
 
 	if ($o == "svcSch"){
-		$_GET["sort_types"] = "next_check";
-		$_GET["order"] = "sort_asc";
+		$param["sort_types"] = "next_check";
+		$param["order"] = "sort_asc";
 	}
 
 	$path = "./include/monitoring/status/";
@@ -94,8 +100,12 @@
 	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) 
 		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
 	else {
+		/*
+		 * Check if ACL table exists
+		 */
 		if ($err_msg = table_not_exists("centreon_acl")) 
 			print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
+		
 		switch ($o)	{
 			/*
 			 * View of Service

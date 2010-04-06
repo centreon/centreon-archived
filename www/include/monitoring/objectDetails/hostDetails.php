@@ -63,10 +63,10 @@
 	$ndo_base_prefix = getNDOPrefix();
 
 	if (isset($_GET["host_name"]) && $_GET["host_name"])
-		$host_name = $_GET["host_name"];
+		$host_name = htmlentities($_GET["host_name"], ENT_QUOTES);
 	else
 		foreach ($_GET["select"] as $key => $value)
-			$host_name = $key;
+			$host_name = htmlentities($key, ENT_QUOTES);
 
 	if (!$is_admin)
 		$lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName($pearDBndo);
@@ -235,7 +235,7 @@
 
 		$host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
 
-	    if (isset($host_status[$host_name]["scheduled_downtime_depth"]) &&
+		if (isset($host_status[$host_name]["scheduled_downtime_depth"]) &&
 		    $host_status[$host_name]["scheduled_downtime_depth"]) {
 		    $host_status[$host_name]["scheduled_downtime_depth"] = 1;
 		}

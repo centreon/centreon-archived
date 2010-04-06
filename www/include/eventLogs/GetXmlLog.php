@@ -345,7 +345,7 @@
 			$tab_tmp = split("_", $openid);
 			if (isset($tab_tmp[1]))
 				$id = $tab_tmp[1];
-		    if (isset($tab_tmp[2])) {
+			if (isset($tab_tmp[2])) {
 			    $hostId = $tab_tmp[2];
 			}
 			$type = $tab_tmp[0];
@@ -380,13 +380,13 @@
 					if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$value])) || $is_admin)
 						$tab_svc[$host_name][$key] = $value;
 			} else if ($type == "HS") {
-			if (isset($hostId)) {
+				if (isset($hostId)) {
 			        $host_name = getMyHostName($hostId);
 				}
 				else {
 				    $host_name = getMyHostName(getMyHostIDService($id));
 				}
-			    
+				
 				$service_description = getMyServiceName($id);
 				if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$service_description])) || $is_admin)
 					$tab_svc[$host_name][$id] = $service_description;

@@ -55,8 +55,8 @@
 	if (!isset($centreon))
 		exit();
 		
-	include_once $centreon_path . "www/include/monitoring/external_cmd/functionsPopup.php";	
-	
+	include_once($centreon_path . "www/include/monitoring/external_cmd/functionsPopup.php");
+
 	if (isset($_GET["select"]) && isset($_GET["sid"])) {
 		$is_admin = isUserAdmin(htmlentities($_GET['sid'], ENT_QUOTES));
 		foreach ($_GET["select"] as $key => $value){	

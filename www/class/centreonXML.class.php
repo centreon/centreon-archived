@@ -95,10 +95,10 @@
   		$this->endElement();
   	}
   	
-  	/*
-  	 *  Writes attribute
-  	 */
-    public function writeAttribute($att_name, $att_value, $encode = false) {
+	/*
+	 *  Writes attribute
+	 */
+	public function writeAttribute($att_name, $att_value, $encode = false) {
   		if ($encode) {
   	        $this->buffer->writeAttribute($att_name, utf8_encode(html_entity_decode($att_value)));
   		}
@@ -115,4 +115,5 @@
   		print $this->buffer->outputMemory(true);
   	}
   }
+
 ?>
