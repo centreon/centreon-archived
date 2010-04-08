@@ -205,6 +205,15 @@
 							$fields["host_parents"] .= $host["host_parent_hp_id"] . ",";
 						}
 						$fields["host_parents"] = trim($fields["host_parents"], ",");
+						
+						$res = $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$key."'");
+						$fields["host_childs"] = "";
+						while($host =& $res->fetchRow()){
+							$res1 = $pearDB->query("INSERT INTO host_hostparent_relation (host_parent_hp_id, host_host_id) VALUES ('".$maxId["MAX(host_id)"]."', '".$host['host_host_id']."')");
+							$fields["host_childs"] .= $host['host_host_id'] . ",";
+						}
+						$fields['host_childs'] = trim($fields['host_childs'], ",");
+						
 						# We need to duplicate the entire Service and not only create a new relation for it in the DB / Need Service functions
 						if (file_exists($path."../service/DB-Func.php"))
 							require_once($path."../service/DB-Func.php");
