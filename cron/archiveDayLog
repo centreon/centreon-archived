@@ -747,12 +747,12 @@ sub main {
     
     #initialising time_period by getting infos from Centreon DB
     if (defined($time_period{"report_minute_start"}) && defined($time_period{"report_hour_start"})) {
-		$time_period{"day_start_time"} = mktime(0, $time_period{"report_minute_start"}, $time_period{"report_hour_start"}, 0, 0, 100)
-		    							- mktime(0, 0, 0, 0, 0, 100);
+		$time_period{"day_start_time"} = mktime(0, $time_period{"report_minute_start"}, $time_period{"report_hour_start"}, 0, 0, 100,0,0,-1)
+		    							- mktime(0, 0, 0, 0, 0, 100,0,0,-1);
     }
     if (defined($time_period{"report_minute_end"}) && defined($time_period{"report_hour_end"})) {
-		$time_period{"day_end_time"} = mktime(0, $time_period{"report_minute_end"}, $time_period{"report_hour_end"}, 0, 0, 100)
-		    							- mktime(0, 0, 0, 0, 0, 100);
+		$time_period{"day_end_time"} = mktime(0, $time_period{"report_minute_end"}, $time_period{"report_hour_end"}, 0, 0, 100,0,0,-1)
+		    							- mktime(0, 0, 0, 0, 0, 100,0,0,-1);
     }
     
     if ($options{"rebuild"}) {
@@ -762,7 +762,7 @@ sub main {
 		# building archive for last past dat		
 		my ($day,$month,$year) = (localtime(time))[3,4,5];
 		if (check_date($day, $month, $year)) {			
-			my $yesterday_real_start =  mktime(0,0,0,$day,$month,$year) - (60 * 60 * 24);
+			my $yesterday_real_start =  mktime(0,0,0,$day,$month,$year,0,0,-1) - (60 * 60 * 24);
 			archive_day_log($yesterday_real_start + $time_period{"day_start_time"}, $yesterday_real_start + $time_period{"day_end_time"});
 		}		
     }
@@ -792,8 +792,8 @@ sub rebuild_archives($) {
 		($start, $end) = ($row->{"minc"}, $row->{"maxc"});
     }
     my ($day,$month,$year) = (localtime(time))[3,4,5];
-    my $now =  mktime(0,0,0,$day,$month,$year);
-    my $today_begin = $now - ($now % $one_day_real_duration);
+    my $today_begin =  mktime(0,0,0,$day,$month,$year,0,0,-1);
+    #my $today_begin = $now - ($now % $one_day_real_duration);
     if ($end > $today_begin) {
 		$end = $today_begin;
     }
@@ -802,15 +802,15 @@ sub rebuild_archives($) {
     # Getting list of days between the first log and last log
     my @days;
     ($day,$month,$year) = (localtime($start))[3,4,5];
-    $start =  mktime(0,0,0,$day,$month,$year);
-    my $previous_day = mktime(0,0,0,$day,$month,$year) - $one_day_real_duration;
+    $start =  mktime(0,0,0,$day,$month,$year,0,0,-1);
+    my $previous_day = mktime(0,0,0,$day - 1,$month,$year,0,0,-1);
     while ($start < $end) {
 		# getting day beginning => 00h 00min
 		# if there is few hour gap (time change : winter/summer), we also readjust it
 		($day,$month,$year) = (localtime($start))[3,4,5];
-		$start = mktime(0,0,0,$day,$month,$year);
+		$start = mktime(0,0,0,$day,$month,$year,0,0,-1);
 		if ($start == $previous_day) {
-			$start += $one_day_real_duration;
+		    $start = mktime(0,0,0,$day + 1,$month,$year,0,0,-1);
 		}
 		# setting day beginning/end hour and minute with the value set in centreon DB
 		my $day_start = $start +  $time_period->{"day_start_time"};
@@ -820,7 +820,9 @@ sub rebuild_archives($) {
 		push @days, \%period;
 		 
 		$previous_day = $start;
-		$start += $one_day_real_duration;
+#		$start += $one_day_real_duration;
+		$day++;
+		$start = mktime(0,0,0,$day,$month,$year,0,0,-1);
     }
     my @days_in_order;
     for (my $i = 0 ; $i <  scalar(@days); $i++) {
@@ -831,7 +833,8 @@ sub rebuild_archives($) {
     # archiving logs for each days
     foreach(@days_in_order) {
     	# print $_->{"day_start"}." ".$_->{"day_end"}."\n";
-	print localtime($_->{"day_start"})." ".localtime($_->{"day_end"})."\n";
+	print "rebuilding : ".(localtime($_->{"day_start"}))[4]."/".(localtime($_->{"day_start"}))[3]."/".(1900+(localtime($_->{"day_start"}))[5])." ".(localtime($_->{"day_start"}))[2].":".(localtime($_->{"day_start"}))[1];
+	print " To ".(localtime($_->{"day_end"}))[4]."/".(localtime($_->{"day_end"}))[3]."/".(1900+(localtime($_->{"day_end"}))[5])." ".(localtime($_->{"day_end"}))[2].":".(localtime($_->{"day_end"}))[1]."\n";
 	archive_day_log($_->{"day_start"}, $_->{"day_end"});
 	undef(%hosts);
 	undef(%services);
