@@ -67,8 +67,7 @@
 
 	if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
 		$host_name = htmlentities($_GET["host_name"], ENT_QUOTES);
-		$svc_description = $_GET["service_description"];
-		$svc_description = htmlentities(str_replace("\\\\", "\\", $svc_description), ENT_QUOTES);
+		$svc_description = htmlentities(str_replace("\\\\", "\\", $_GET["service_description"]), ENT_QUOTES);
 	} else {
 		foreach ($_GET["select"] as $key => $value)
 			$tab_data = split(";", $key);
@@ -109,8 +108,7 @@
         }
 
 		$tab_status = array();
-			
-	
+		
 		/*
 		 * start ndo service info
 		 */
@@ -142,6 +140,7 @@
 				" no.name1 as host_name," .
 				" no.name2 as service_description, " .
 				" ns.notes_url, " .
+				" ns.notes, " .
 				" ns.action_url " .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns " .
 				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' AND no.object_id = ns.service_object_id";
@@ -245,6 +244,7 @@
 		
 		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
 		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
+		
 		$service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["action_url"]);
 		$service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["action_url"]);
 
