@@ -98,6 +98,7 @@
 	$tpl->assign("Unreachable", _("Unreachable"));
 	$tpl->assign("Hosts", _("Hosts"));
 	$tpl->assign("Services", _("Services"));
+	$tpl->assign("ndoState", _("Poller States"));
 	$tpl->assign("Logout", _("Logout"));
 	$tpl->assign("Help", _("Help"));
 	$tpl->assign("Documentation", _("Documentation"));

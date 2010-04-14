@@ -31,6 +31,21 @@
 	<div id="resume_light">
 		<table cellpadding="0" cellspacing="0" border="0">
 		<tr>
+			{if $amIadmin == 1}
+			<td>
+				<table class='Resume_light_table'>
+					<tr class='Resume_light_header' style="white-space:nowrap;">
+						<td colspan="3">{$ndoState}</td>
+					</tr>
+					<tr>
+						<td id='latency'><div style='text-align:center'><img src='./img/icones/16x16/clock.gif' width=14 id="img_latency" /></div></td>
+						<td id="pollingState"><div style='text-align:center;'><img src='./img/icones/16x16/gear.gif' width=14 id="img_pollingState"/></div></td>
+						<td id="activity"><div style='text-align:center'><img src='./img/icones/16x16/data_into.gif' width=14 id="img_activity" /></div></td>
+					</tr>
+				</table>
+			</td>
+			<td>&nbsp;</td>
+			{/if}
 			<td>
 				<table class='Resume_light_table'>
 					<tr class='Resume_light_header' style="white-space:nowrap;">

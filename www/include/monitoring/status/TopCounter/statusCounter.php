@@ -136,6 +136,85 @@
 	$DBRESULT->free();
 	unset($ndo);
 	
+	/* ********************************************
+	 * Check Poller Status
+	 */
+	$status = 0;
+	$latency = 0;
+	$activity = 0;
+	$error = "";
+	$pollerListInError = "";
+	
+	$request = 	"SELECT UNIX_TIMESTAMP(`status_update_time`) AS last_update, `is_currently_running`, instance_name, ".$ndo_base_prefix."instances.instance_id " .
+				"FROM `".$ndo_base_prefix."programstatus`, ".$ndo_base_prefix."instances " .
+				"WHERE ".$ndo_base_prefix."programstatus.instance_id = ".$ndo_base_prefix."instances.instance_id";
+	$DBRESULT =& $pearDBndo->query($request);
+	while ($ndo =& $DBRESULT->fetchRow()) {
+		/*
+		 * Running
+		 */
+		if ($status != 2 && $ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] <= 120)) {
+			$status = 1;
+			if ($pollerListInError != "")
+				$pollerListInError .= ", ";
+			$pollerListInError .= $ndo["instance_name"];
+		} 
+		if ($ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= 120)) {
+			$status = 2;
+			if ($pollerListInError != "")
+				$pollerListInError .= ", ";
+			$pollerListInError .= $ndo["instance_name"];
+		}
+		/*
+		 * Activity
+		 */
+		if ($activity != 2 && (time() - $ndo["last_update"] <= 120)) {
+			$activity = 1;
+		}
+		if ((time() - $ndo["last_update"] >= 120)) {
+			$activity = 2;
+		}
+	}
+	$DBRESULT->free();
+	$error = "Pollers $pollerListInError not running.";
+
+	$request = 	"SELECT stat_value, i.instance_id, instance_name " .
+				"FROM `nagios_stats` ns, instance i " .
+				"WHERE ns.stat_label = 'Service Check Latency' " .
+				"	AND ns.stat_key LIKE 'Average' " .
+				"	AND ns.instance_id = i.instance_id";
+	while ($ndo =& $DBRESULT->fetchRow()) {
+		if ($latency != 2 && $ndo["stat_value"] >= 60) {
+			$latency = 1;
+		}
+		if ($ndo["stat_value"] >= 120) {
+			$latency = 2;
+		}
+	}
+	$DBRESULT->free();
+	unset($ndo);
+
+	/* ********************************************
+	 * Error Messages
+	 */
+	if ($status != 0) {
+		$errorPstt = "$error";
+	} else {
+		$errorPstt = _("OK : all pollers are running");	
+	}
+
+	if ($latency != 0) {
+		$errorLtc = _("Latency detected on you plateforme ; check configuration for better optimisation");
+	} else {
+		$errorLtc = _("OK : no latency detected on your plateforme");
+	}
+	
+	if ($activity != 0) {
+		$errorAct = _("Some database pollers updates are not actives ; check your nagios plateformes");
+	} else {
+		$errorAct = _("OK : all database pollers updates are actives");
+	}
+	
 	/* *********************************************
 	 * Create Buffer
 	 */
@@ -159,6 +238,14 @@
 	$obj->XML->writeElement("d", $host_stat["1"]);
 	$obj->XML->writeElement("un2", $host_stat["2"]);
 	$obj->XML->writeElement("p2", $host_stat["3"]);
+	$obj->XML->endElement();
+	$obj->XML->startElement("m");
+	$obj->XML->writeElement("pstt", $status);
+	$obj->XML->writeElement("ltc", $latency);
+	$obj->XML->writeElement("act", $activity);
+	$obj->XML->writeElement("errorPstt", $errorPstt);
+	$obj->XML->writeElement("errorLtc", $errorLtc);
+	$obj->XML->writeElement("errorAct", $errorAct);
 	$obj->XML->endElement();
 	$obj->XML->endElement();
 	
