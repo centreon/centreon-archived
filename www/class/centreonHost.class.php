@@ -116,8 +116,7 @@
  	public function replaceMacroInString($hostParam, $string) { 		 		
 		if (is_numeric($hostParam)) {
  	        $host_id = $hostParam;		    
-		}
-		elseif (is_string($hostParam)) {
+		} elseif (is_string($hostParam)) {
 		    $host_id = $this->getHostId($hostParam);
 		}
 		$rq = "SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1";
