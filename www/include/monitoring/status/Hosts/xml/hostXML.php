@@ -224,7 +224,7 @@
 		}
 		
 		if ($ndo["notes_url"] != "") {
-			$obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["name1"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes_url"]))));
+			$obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["name1"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], str_replace("\$HOSTNOTES\$", $ndo["notes"], $ndo["notes"])))));
 		} else {
 			$obj->XML->writeElement("hnu", "none");			
 		}
