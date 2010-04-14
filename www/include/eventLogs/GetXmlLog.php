@@ -55,12 +55,12 @@
 	/*
 	 * pearDB init
 	 */ 	
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	
-	include_once($centreon_path . "www/include/eventLogs/common-Func.php");
-	include_once $centreon_path . "www/class/centreonDB.class.php";
-	require_once ($centreon_path . "www/class/centreonSession.class.php");
-	require_once ($centreon_path . "www/class/centreon.class.php");
+	require_once $centreon_path . "www/include/eventLogs/common-Func.php";
+	require_once $centreon_path . "www/class/centreonDB.class.php";
+	require_once $centreon_path . "www/class/centreonSession.class.php";
+	require_once $centreon_path . "www/class/centreon.class.php";
 
 	centreonSession::start();
 	$oreon =& $_SESSION["oreon"];
@@ -71,6 +71,9 @@
 	bind_textdomain_codeset("messages", "UTF-8");
 	textdomain("messages");
 	
+	/*
+	 * Connect to DB
+	 */
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
 	$pearDBndo 	= new CentreonDB("ndo");	
@@ -81,7 +84,7 @@
 	include_once $centreon_path . "www/class/centreonACL.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
 	include_once $centreon_path . "www/class/centreonGMT.class.php";
-	
+
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	
 	/*
@@ -140,6 +143,46 @@
 	(isset($_GET["search_service"]) 		&& !check_injection($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = "";
 	(isset($_GET["export"]) 		&& !check_injection($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES) : $export = 0;
 
+	/* *********************************************************
+	 * Cache informations
+	 */
+
+	/*
+	 * Create hostCahe
+	 */
+	$hostCache = array();
+	$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
+	while ($data =& $DBRESULT->fetchRow()) {
+		$hostCache[$data["host_id"]] = $data["host_name"];
+		$hostCacheName[$data["host_name"]] = $data["host_id"];
+	}
+	$DBRESULT->free();
+	unset($data);
+	
+	/*
+	 * Create serviceCahe
+	 */
+	function setServiceCache($pearDB) {
+		$serviceCache = array();
+		$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
+		while ($data =& $DBRESULT->fetchRow())
+			$serviceCache[$data["service_id"]] = $data["service_description"];
+		$DBRESULT->free();
+		unset($data);
+		return $serviceCache;
+	}
+		
+	/*
+	 * Create hgCahe
+	 */
+	$hgCache = array();
+	$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ hg_id, hg_name FROM hostgroup");
+	while ($data =& $DBRESULT->fetchRow())
+		$hgCache[$data["hg_id"]] = $data["hg_name"];
+	$DBRESULT->free();
+	unset($data);
+	
+
 	if ($contact_id){
 		$user_params = get_user_param($contact_id, $pearDB);		
 		
@@ -189,12 +232,20 @@
 		$search_S = $user_params["search_S"];
 	}
 
-	if ($StartDate != "" && $StartTime != ""){
+	if ($StartDate != "" && $StartTime == "") {
+		$StartTime = "00:00";
+	}
+
+	if ($EndDate != "" && $EndTime == "") {
+		$EndTime = "00:00";
+	}
+
+	if ($StartDate != "") {
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
 		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1) ;
 	}
-	if ($EndDate !=  "" && $EndTime != ""){
+	if ($EndDate !=  "") {
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
 		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1) ;
@@ -351,11 +402,11 @@
 			$type = $tab_tmp[0];
 			if ($type == "HG" && isset($id)){
 				$hosts = getMyHostGroupHosts($id);
-				foreach ($hosts as $h_id)	{
+				foreach ($hosts as $h_id) {
 					$host_name = getMyHostName($h_id);
 					if ((isset($lca["LcaHost"][$host_name]) && !$is_admin) || $is_admin) {
-					   $tab_host_name[] = $host_name;
-					   $tab_svc[$host_name] = getMyHostActiveServices($h_id, $search_service);
+						$tab_host_name[] = $host_name;
+						$tab_svc[$host_name] = getMyHostActiveServices($h_id, $search_service);
 					}
 				}
 			} else if ($type == 'ST'){
@@ -365,7 +416,7 @@
 					$tab = split(":", $svc_name);
                     $host_name = $tab[3];
                     $svc_name = $tab[0];
-                    if ((($is_admin) || (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$svc_name]))))       {
+                    if ((($is_admin) || (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$svc_name])))) {
                             $tab_SG[$flag_already_call] = array("h" => $host_name, "s" => $svc_name);
                             $flag_already_call++;
                     }
@@ -376,20 +427,32 @@
 				$host_name = getMyHostName($id);
 				$tab_host_name[] = $host_name;
 				$tmp_tab = getMyHostActiveServices($id, $search_service);
-				foreach ($tmp_tab as $key => $value)
-					if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$value])) || $is_admin)
+				foreach ($tmp_tab as $key => $value) {
+					if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$value])) || $is_admin) {
 						$tab_svc[$host_name][$key] = $value;
+					}
+				}
 			} else if ($type == "HS") {
-				if (isset($hostId)) {
-			        $host_name = getMyHostName($hostId);
+				/*
+				 * Host Informations
+				 */
+				if (isset($hostId) && isset($hostCache[$hostId])) {
+			        $host_name = $hostCache[$hostId];
+			        $tab_host_name[] = $host_name;
+				} else {
+					if (isset($hostCache[getMyHostIDService($id)])) {
+				  		$host_name = $hostCache[getMyHostIDService($id)];						
+						$tab_host_name[] = $host_name;
+					}
 				}
-				else {
-				    $host_name = getMyHostName(getMyHostIDService($id));
-				}
+			    /*
+			     * Servie informations
+			     */
+				$service_description = $serviceCache[$id];
 				
-				$service_description = getMyServiceName($id);
 				if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$service_description])) || $is_admin)
 					$tab_svc[$host_name][$id] = $service_description;
+					
 				unset($host_name);
 				unset($service_description);
 			} else if ($type == "MS") {
