@@ -16,7 +16,7 @@
 => fix: poller selection on monitoring page
 => enhancement: enhanced centstorage purge/sync
 => enhancement: better ACL engine
-
+=> feature: displays poller information (running state, latency...)
 
 ## Centreon 2.1.5
 
