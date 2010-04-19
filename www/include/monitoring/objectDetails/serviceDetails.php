@@ -457,7 +457,7 @@
 	var command_sent = '<?php echo _("Command sent"); ?>';
 	var command_failure = "<?php echo _("Failed to execute command");?>";
 	var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
-	var svc_id = '<?php echo $svcObj->getServiceId($svc_description);?>';
+	var svc_id = '<?php echo $svcObj->getServiceId($svc_description, $host_name);?>';
 	var labels = new Array();
 	
 	labels['service_checks'] = new Array(	

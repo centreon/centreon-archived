@@ -64,22 +64,18 @@
  	/*
  	 *  Method that returns the id of a service
  	 */
- 	public function getServiceId($svc_desc, $host_name = NULL) {
- 		if (!isset($host_name)) {
- 			$rq = "SELECT service_id FROM service WHERE service_description = '".$svc_desc."' LIMIT 1";
+ 	public function getServiceId($svc_desc, $host_name) {
+ 		$rq = "SELECT s.service_id " . 
+ 		      "FROM service s, host_service_relation hsr, host h " . 
+ 			  "WHERE s.service_id = hsr.service_service_id " .
+ 			  "AND hsr.host_host_id = h.host_id " .
+ 			  "AND h.host_name = '".$host_name."' " .
+ 			  "AND s.service_description = '".$svc_desc."' LIMIT 1";
+ 		$DBRES = $this->local_pearDB->query($rq);
+ 		if (!$DBRES->numRows()) {
+ 			return null;
  		}
- 		else {
- 			$rq = "SELECT s.service_id " . 
- 				"FROM service s, host_service_relation hsr, host h " . 
- 				"WHERE s.service_id = hsr.service_service_id " .
- 				"AND hsr.host_host_id = h.host_id " .
- 				"AND h.host_name = '".$host_name."' " .
- 				"AND s.service_description = '".$svc_desc."' LIMIT 1";
- 		}
- 		$DBRES =& $this->local_pearDB->query($rq);
- 		if (!$DBRES->numRows())
- 			return NULL;
- 		$row =& $DBRES->fetchRow(); 		
+ 		$row = $DBRES->fetchRow();
  		return $row['service_id'];
  	}
  	 	
