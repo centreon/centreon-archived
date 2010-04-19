@@ -13,6 +13,7 @@
 => fix: problem with massive change on hosts
 => fix: prevents SQL injection in ping tool
 => fix: multiple external commands due to mouse clicks on menu 
+=> fix: poller selection on monitoring page
 => enhancement: enhanced centstorage purge/sync
 => enhancement: better ACL engine
 
