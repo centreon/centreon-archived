@@ -130,14 +130,18 @@ class CentreonDB {
 	 * @return	void
      */
 	private function connectToCentreon($conf_centreon) {		
+		
+		if (!isset($conf_centreon["port"])) {
+			$conf_centreon["port"] = "3306";
+		}
+		
 		$this->dsn = array(
 	    	'phptype'  => $this->db_type,
-	    	'port'     => $this->db_port,
 	    	'username' => $conf_centreon["user"],
 	    	'password' => $conf_centreon["password"],
-	    	'hostspec' => $conf_centreon["hostCentreon"],
+	    	'hostspec' => $conf_centreon["hostCentreon"].":".$conf_centreon["port"],
 	    	'database' => $conf_centreon["db"],
-		);		
+		);
     }
     
     /* **************************************
@@ -147,12 +151,16 @@ class CentreonDB {
 	 * @return	void
      */
 	private function connectToCentstorage($conf_centreon) {
+    	
+    	if (!isset($conf_centreon["port"])) {
+			$conf_centreon["port"] = "3306";
+		}
+	
     	$this->dsn = array(
 	    	'phptype'  => $this->db_type,
-	    	'port'     => $this->db_port,
 	    	'username' => $conf_centreon["user"],
 	    	'password' => $conf_centreon["password"],
-	    	'hostspec' => $conf_centreon["hostCentstorage"],
+	    	'hostspec' => $conf_centreon["hostCentstorage"].":".$conf_centreon["port"],
 	    	'database' => $conf_centreon["dbcstg"],
 		);
     }
@@ -164,18 +172,21 @@ class CentreonDB {
 	 * @return	void
      */
     private function connectToNDO($conf_centreon) {		
-		$DBRESULT =& $this->privatePearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+		$DBRESULT =& $this->privatePearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db LIMIT 1;");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$confNDO = $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		
+		if (!isset($confNDO['db_port'])) {
+			$confNDO['db_port'] = "3306";
+		}
+		
 		$this->dsn = array(
 	    	'phptype'  => $this->db_type,
-	    	'port'     => $this->db_port,
 	    	'username' => $confNDO['db_user'],
 	    	'password' => $confNDO['db_pass'],
-	    	'hostspec' => $confNDO['db_host'],
+	    	'hostspec' => $confNDO['db_host'].":".$confNDO['db_port'],
 	    	'database' => $confNDO['db_name'],
 		);
     }
