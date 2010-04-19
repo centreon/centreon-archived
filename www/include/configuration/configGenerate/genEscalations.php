@@ -330,7 +330,8 @@
 							$hosts[$host_location] = array();
 						if (!isset($hosts[$host_location][$tmptab[0]]))
 							$hosts[$host_location][$tmptab[0]] = array();
-						$hosts[$host_location][$tmptab[0]][$tmptab[0]."_".$tmptab[1]] = $escalation;
+						$timePeriod = $escalation['escalation_period'];
+						$hosts[$host_location][$tmptab[0]][$tmptab[0]."_".$tmptab[1]."_".$timePeriod] = $escalation;
 					}
 				}
 			}
