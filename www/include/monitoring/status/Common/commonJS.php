@@ -85,11 +85,11 @@ function construct_selecteList_ndo_instance(id){
 		_select.id = "select_instance";
 		_select.onchange = function() { 
 			_instance = this.value; 
-			_default_instance = this.value; 
-			monitoring_refresh();
+			_default_instance = this.value;
 			xhr = new XMLHttpRequest();
 			xhr.open('GET','./include/monitoring/status/Common/updateContactParam.php?uid=<?php echo $oreon->user->user_id; ?>&instance_id='+this.value, true);
 			xhr.send(null);
+			xhr.onreadystatechange = function() { monitoring_refresh(); };
 		};
 		var k = document.createElement('option');
 		k.value= "ALL";
