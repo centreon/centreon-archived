@@ -225,15 +225,15 @@
 	}
 
 	if ($latency != 0) {
-		$errorLtc = _("Latency detected on you plateforme ; check configuration for better optimisation");
+		$errorLtc = _("Latency detected on your platform; check configuration for better optimisation");
 	} else {
-		$errorLtc = _("OK : no latency detected on your plateforme");
+		$errorLtc = _("OK : no latency detected on your platform");
 	}
 	
 	if ($activity != 0) {
-		$errorAct = _("Some database pollers updates are not actives ; check your nagios plateformes");
+		$errorAct = _("Some database poller updates are not active; check your nagios platform");
 	} else {
-		$errorAct = _("OK : all database pollers updates are actives");
+		$errorAct = _("OK : all database poller updates are active");
 	}
 	
 	/* *********************************************
