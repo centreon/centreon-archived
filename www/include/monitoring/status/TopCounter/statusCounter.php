@@ -145,6 +145,27 @@
 	$error = "";
 	$pollerListInError = "";
 	
+	/*
+	 * Get minimum check interval
+	 */
+	$request = "SELECT MIN(check_interval) FROM ".$ndo_base_prefix."services";
+	$DBRESULT =& $pearDBndo->query($request);
+	$data =& $DBRESULT->fetchRow();
+	$minInterval = $data["MIN(check_interval)"];
+	
+	/*
+	 * Get minimin interval lenght
+	 */
+	$request = "SELECT MIN(interval_length) FROM cfg_nagios";
+	$DBRESULT =& $pearDB->query($request);
+	$data =& $DBRESULT->fetchRow();
+	$intervalLength = $data["MIN(interval_length)"];
+	
+	/*
+	 * Unit Time
+	 */
+	$timeUnit = $minInterval * $intervalLength;
+	
 	$request = 	"SELECT UNIX_TIMESTAMP(`status_update_time`) AS last_update, `is_currently_running`, instance_name, ".$ndo_base_prefix."instances.instance_id " .
 				"FROM `".$ndo_base_prefix."programstatus`, ".$ndo_base_prefix."instances " .
 				"WHERE ".$ndo_base_prefix."programstatus.instance_id = ".$ndo_base_prefix."instances.instance_id";
@@ -153,13 +174,13 @@
 		/*
 		 * Running
 		 */
-		if ($status != 2 && $ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] <= 120)) {
+		if ($status != 2 && $ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit * 2)) {
 			$status = 1;
 			if ($pollerListInError != "")
 				$pollerListInError .= ", ";
 			$pollerListInError .= $ndo["instance_name"];
 		} 
-		if ($ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= 120)) {
+		if ($ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
 			$status = 2;
 			if ($pollerListInError != "")
 				$pollerListInError .= ", ";
@@ -168,10 +189,10 @@
 		/*
 		 * Activity
 		 */
-		if ($activity != 2 && (time() - $ndo["last_update"] <= 120)) {
+		if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 2)) {
 			$activity = 1;
 		}
-		if ((time() - $ndo["last_update"] >= 120)) {
+		if ((time() - $ndo["last_update"] >= $timeUnit * 4)) {
 			$activity = 2;
 		}
 	}
