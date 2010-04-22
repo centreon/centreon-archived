@@ -419,11 +419,16 @@
 					"WHERE macro.host_host_id = '".$row["host_tpl_id"]."' AND macro.host_macro_name = '\$_HOST".$field."\$' LIMIT 1";
 			$DBRESULT2 =& $pearDB->query($rq2);
 			$row2 =& $DBRESULT2->fetchRow();
-			if (isset($row2["host_macro_value"]) && $row2["host_macro_value"])
-				return $row2["host_macro_value"];
+			if (isset($row2["host_macro_value"]) && $row2["host_macro_value"]) {
+				$macroValue = str_replace("#S#", "/", $row2["host_macro_value"]);
+				$macroValue = str_replace("#BS#", "\\", $macroValue);
+			    return $macroValue;
+			}
 			else {
 				if ($result_field = getMyHostMacroFromMultiTemplates($row['host_tpl_id'], $field)) {
-					return $result_field;
+					$macroValue = str_replace("#S#", "/", $result_field);
+					$macroValue = str_replace("#BS#", "\\", $macroValue);
+				    return $macroValue;
 				}
 			}
 		}
@@ -454,8 +459,11 @@
 					"WHERE macro.host_host_id = '".$host_id."' AND macro.host_macro_name = '\$_HOST".$field."\$' LIMIT 1";
 			$DBRESULT =& $pearDB->query($rq);
 			$row =& $DBRESULT->fetchRow();
-			if (isset($row["host_macro_value"]) && $row["host_macro_value"])
-				return $row["host_macro_value"];
+			if (isset($row["host_macro_value"]) && $row["host_macro_value"]) {
+				$macroValue = str_replace("#S#", "/", $row["host_macro_value"]);
+				$macroValue = str_replace("#BS#", "\\", $macroValue);
+			    return $macroValue;
+			}
 			else {
 				return getMyHostMacroFromMultiTemplates($host_id, $field);
 			}
@@ -521,9 +529,12 @@
 					"FROM on_demand_macro_service macro " .
 					"WHERE macro.svc_svc_id = '".$service_id."' AND macro.svc_macro_name = '\$_SERVICE".$field."\$' LIMIT 1";								
 			$DBRESULT =& $pearDB->query($rq);
-			$row =& $DBRESULT->fetchRow();
-			if (isset($row["svc_macro_value"]) && $row["svc_macro_value"])
-				return $row["svc_macro_value"];
+			$row = $DBRESULT->fetchRow();
+			if (isset($row["svc_macro_value"]) && $row["svc_macro_value"]) {
+				$macroValue = str_replace("#S#", "/", $row['svc_macro_value']);
+                $macroValue = str_replace("#BS#", "\\", $macroValue);
+			    return $macroValue;
+			}
 			else {
 				$service_id = getMyServiceField($service_id, "service_template_model_stm_id");
 				return getMyServiceMacro($service_id, $field);
