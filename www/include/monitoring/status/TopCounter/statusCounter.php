@@ -161,7 +161,7 @@
 	$data =& $DBRESULT->fetchRow();
 	$intervalLength = $data["MIN(interval_length)"];
 	
-	/*
+	/* *****************************************************
 	 * Unit Time
 	 */
 	$timeUnit = $minInterval * $intervalLength;
