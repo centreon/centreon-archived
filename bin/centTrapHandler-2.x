@@ -238,6 +238,7 @@ sub getTrapsInfos($$$$){
 				/*
 				 * Replace macros
 				 */
+				$traps_execution_command =~ s/\&quot\;/\"/g;
                 $traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
                 $traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
                 $traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
