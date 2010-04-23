@@ -99,7 +99,8 @@
 	 *  Writes attribute
 	 */
 	public function writeAttribute($att_name, $att_value, $encode = false) {
-  		if ($encode) {
+  		$att_value = preg_replace('/[\x00-\x19\x7F]/', "", $att_value);
+	    if ($encode) {
   	        $this->buffer->writeAttribute($att_name, utf8_encode(html_entity_decode($att_value)));
   		}
   		else {
