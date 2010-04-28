@@ -235,19 +235,23 @@ sub getTrapsInfos($$$$){
 				undef($time_now);
 			} 
 			if (defined($traps_execution_command_enable) && $traps_execution_command_enable){
-				/*
-				 * Replace macros
-				 */
+			
+				##########################
+				# REPLACE MACROS
+				#		
+
 				$traps_execution_command =~ s/\&quot\;/\"/g;
                 $traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
                 $traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
                 $traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
                 $traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
 				$traps_execution_command =~ s/\@TIME\@/$datetime/g;
-				
-				/*
-				 * Send command
-				 */
+
+
+				##########################
+				# SEND COMMAND
+				#		
+
 				system($traps_execution_command);				
 			}
 			undef($sth);
