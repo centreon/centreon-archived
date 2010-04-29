@@ -307,7 +307,7 @@
 							$mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`) VALUES" .
 										"('".$maxId["MAX(host_id)"]."', '\$".$macName."\$', '". $macVal ."')";
 					 		$DBRESULT4 =& $pearDB->query($mTpRq2);
-							$fields["_".strtoupper($macName)."_"] = $;
+							$fields["_".strtoupper($macName)."_"] = $macVal;
 						}
 						$centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
 					}
