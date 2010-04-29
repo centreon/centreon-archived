@@ -394,6 +394,22 @@
 		$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
 		$tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
 
+		/* Dynamics tools */
+		/**/
+		$tools = array();
+		$DBRESULT =& $pearDB->query("SELECT * FROM modules_informations");
+		while($module = $DBRESULT->fetchrow())
+		{
+			if(isset($module['host_tools']) && $module['host_tools'] == 1 && file_exists('modules/'.$module['name'].'/host_tools.php'))
+				include('modules/'.$module['name'].'/host_tools.php');
+		}
+		$DBRESULT->free();
+		if(count($tools) > 0)
+			$tpl->assign("tools", $tools);
+		/**/
+		/* Dynamics tools */
+
+
 		$tpl->display("hostDetails.ihtml");
 		$host_name = str_replace("/", "#S#", $host_name);
 		$host_name = str_replace("\\", "#BS#", $host_name);

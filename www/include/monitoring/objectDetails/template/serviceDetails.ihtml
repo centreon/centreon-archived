@@ -182,14 +182,29 @@
 					</tr>
 				</table>
 				<br />
-				{if $sv_ext_action_url}		
+				{if $sv_ext_action_url or $tools}		
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft">{$m_mon_tools}</td>
 					</tr>
+					{if $sv_ext_action_url}		
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href="{$sv_ext_action_url}" target="_blank">{$sv_ext_action_url_lang}</a></td>
 					</tr>
+					{/if}
+					{if $tools}		
+					{section name=tool loop=$tools}
+					<tr class='list_one'>
+						<td class="ListColLeft">
+						{if $tools[tool].popup == ""}
+						<a href="{$tools[tool].url}" target="{$tools[tool].target}">
+						{else}
+						<a href="#tools" name="tools" onClick="window.open('{$tools[tool].url}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width={$tools[tool].width}, height={$tools[tool].height}');">
+						{/if}
+						&#9679;&nbsp;{$tools[tool].name}</a></td>
+					</tr>
+					{/section}
+					{/if}
 				</table>
 				<br>
 				{/if}

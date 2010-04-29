@@ -443,6 +443,23 @@
 		$tpl->assign("options", $optionsURL);
 		$tpl->assign("index_data", $index_data);
 		$tpl->assign("options2", $optionsURL2);
+
+
+		/* Dynamics tools */
+		/**/
+		$tools = array();
+		$DBRESULT =& $pearDB->query("SELECT * FROM modules_informations");
+		while($module = $DBRESULT->fetchrow())
+		{
+			if(isset($module['svc_tools']) && $module['svc_tools'] == 1 && file_exists('modules/'.$module['name'].'/svc_tools.php'))
+				include('modules/'.$module['name'].'/svc_tools.php');
+		}
+		$DBRESULT->free();
+		if(count($tools) > 0)
+			$tpl->assign("tools", $tools);
+		/**/
+		/* Dynamics tools */
+
 		$tpl->display("serviceDetails.ihtml");
 		$host_name = str_replace("/", "#S#", $host_name);
 		$host_name = str_replace("\\", "#BS#", $host_name);

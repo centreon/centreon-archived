@@ -83,7 +83,7 @@
 		if (testModuleExistence(NULL, $name))	return NULL;
 		global $pearDB;
 		$rq = "INSERT INTO `modules_informations` " .
-				"(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, `sql_files`, `php_files` ) " .
+				"(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, `sql_files`, `php_files`, `svc_tools`, `host_tools` ) " .
 				"VALUES ( ";
 		isset($name) && $name != NULL ? $rq .= "'".htmlentities($name , ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($module_conf["rname"]) && $module_conf["rname"] != NULL ? $rq .= "'".htmlentities($module_conf["rname"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
@@ -93,7 +93,9 @@
 		isset($module_conf["author"]) && $module_conf["author"] != NULL ? $rq .= "'".htmlentities($module_conf["author"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($module_conf["lang_files"]) && $module_conf["lang_files"] != NULL ? $rq .= "'".htmlentities($module_conf["lang_files"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($module_conf["sql_files"]) && $module_conf["sql_files"] != NULL ? $rq .= "'".htmlentities($module_conf["sql_files"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($module_conf["php_files"]) && $module_conf["php_files"] != NULL ? $rq .= "'".htmlentities($module_conf["php_files"] , ENT_QUOTES)."'": $rq .= "NULL";
+		isset($module_conf["php_files"]) && $module_conf["php_files"] != NULL ? $rq .= "'".htmlentities($module_conf["php_files"] , ENT_QUOTES)."', ": $rq .= "NULL,";
+		isset($module_conf["svc_tools"]) && $module_conf["svc_tools"] != NULL ? $rq .= "'".htmlentities($module_conf["svc_tools"] , ENT_QUOTES)."', ": $rq .= "NULL,";
+		isset($module_conf["host_tools"]) && $module_conf["host_tools"] != NULL ? $rq .= "'".htmlentities($module_conf["host_tools"] , ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM modules_informations");
