@@ -36,9 +36,9 @@
  * 
  */
  
-	include_once ("../class/Session.class.php");
+	include_once ("../class/centreonSession.class.php");
 	include_once ("DB-Func.php");
-	Session::start();
+	CentreonSession::start();
 	ini_set("track_errors",true);
 	if (file_exists("install.conf.php")) {
 	   include_once ("install.conf.php");

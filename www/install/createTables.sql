@@ -1465,6 +1465,8 @@ CREATE TABLE IF NOT EXISTS `modules_informations` (
   `lang_files` enum('0','1') default NULL,
   `sql_files` enum('0','1') default NULL,
   `php_files` enum('0','1') default NULL,
+  `svc_tools` enum('0','1') default NULL,
+  `host_tools` enum('0','1') default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
