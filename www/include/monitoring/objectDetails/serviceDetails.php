@@ -114,7 +114,7 @@
 		 */
 		$rq =	"SELECT " .
 				" nss.current_state," .
-				" nss.output as plugin_output," .
+				" CONCAT( '<b>', nss.output, '</b><br>', nss.long_output ) as plugin_output," .
 				" nss.current_check_attempt as current_attempt," .
 				" nss.status_update_time as status_update_time," .
 				" unix_timestamp(nss.last_state_change) as last_state_change," .
@@ -234,13 +234,11 @@
 		else
 			$service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"], $oreon->user->getMyGMT());
 		
-
-		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace("<b>", "", $service_status[$host_name."_".$svc_description]["plugin_output"]);
-		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("</b>", "", $service_status[$host_name."_".$svc_description]["plugin_output"]);
-		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace("<br>", "", $service_status[$host_name."_".$svc_description]["plugin_output"]);
 		$service_status[$host_name."_".$svc_description]["plugin_output"] = utf8_encode($service_status[$host_name."_".$svc_description]["plugin_output"]);
 		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);	
 		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
+		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace("\\n", "<br>", $service_status[$host_name."_".$svc_description]["plugin_output"]);
+		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace('\n', "<br>", $service_status[$host_name."_".$svc_description]["plugin_output"]);
 		
 		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
 		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
