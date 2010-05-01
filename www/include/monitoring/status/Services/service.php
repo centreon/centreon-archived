@@ -146,7 +146,7 @@
 		foreach ($authorized_actions as $action_name) {
 			if ($action_name == "service_schedule_check" || $allActions == true) 
 				$action_list[3] = _("Schedule immediate check");
-			if ($action_name == "service_schedule_check" || $allActions == true) 
+			if ($action_name == "service_schedule_forced_check" || $allActions == true) 
 				$action_list[4] = _("Schedule immediate check (Forced)");
 			if ($action_name == "service_acknowledgement" || $allActions == true) 
 				$action_list[70] = _("Services : Acknowledge");

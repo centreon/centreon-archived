@@ -278,14 +278,14 @@
 							</td>
 						</tr>
 					{/if}
-					{if $aclAct.host_schedule_check || $admin == 1}						
+					{if $aclAct.service_schedule_check || $admin == 1}						
 						<tr class='list_one'>
 							<td class="ListColLeft" id ="host_schedule_check">
 								<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('host_schedule_check', '0');">{$m_mon_SCH_immediate_check}</a>
 							</td>
 						</tr>
 					{/if}
-					{if $aclAct.host_schedule_check || $admin == 1}					
+					{if $aclAct.service_schedule_forced_check || $admin == 1}					
 						<tr class='list_two'>
 							<td class="ListColLeft" id="host_schedule_check">
 								<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('host_schedule_check', '1');">{$m_mon_SCH_immediate_check_f}</a>

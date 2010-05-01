@@ -219,7 +219,7 @@
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_schedule_check || $admin == true}
+						{if $aclAct.service_schedule_forced_check || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft" id="service_schedule_check_forced">
 									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('service_schedule_check', '1', '{$m_mon_schedule_force}');">{$m_mon_schedule_force}</a>
