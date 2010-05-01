@@ -35,7 +35,7 @@
  * SVN : $Id$
  * 
  */
-	if (!isset ($oreon))
+	if (!isset($centreon))
 		exit ();
 	
 	function testActionExistence ($name = NULL)	{
@@ -57,13 +57,15 @@
 	}
 
 	function enableActionInDB ($acl_action_id = null)	{
-		if (!$acl_action_id) return;
+		if (!$acl_action_id) 
+			return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE acl_actions SET acl_action_activate = '1' WHERE acl_action_id = '".$acl_action_id."'");
 	}
 	
 	function disableActionInDB ($acl_action_id = null)	{
-		if (!$acl_action_id) return;
+		if (!$acl_action_id) 
+			return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE acl_actions SET acl_action_activate = '0' WHERE acl_action_id = '".$acl_action_id."'");
 	}
@@ -78,7 +80,7 @@
 	}
 	
 	function multipleActionInDB ($Actions = array(), $nbrDup = array())	{
-		foreach($Actions as $key=>$value)	{
+		foreach($Actions as $key => $value)	{
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM acl_actions WHERE acl_action_id = '".$key."' LIMIT 1");
 			$row =& $DBRESULT->fetchRow();
@@ -104,8 +106,6 @@
 						# Duplicate Actions
 						$DBRESULT =& $pearDB->query("SELECT acl_action_rule_id,acl_action_name FROM acl_actions_rules WHERE acl_action_rule_id = '".$key."'");
 						while ($acl =& $DBRESULT->fetchRow()) {
-							//print $acl["acl_action_rule_id"]."<br />";
-							//print $acl["acl_action_name"];
 							$DBRESULT2 =& $pearDB->query("INSERT INTO acl_actions_rules VALUES ('', '".$maxId["MAX(acl_action_id)"]."', '".$acl["acl_action_name"]."')");
 						}
 						
@@ -127,7 +127,8 @@
 		global $form, $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		$rq = "INSERT INTO acl_actions ";
+		
+			$rq = "INSERT INTO acl_actions ";
 		$rq .= "(acl_action_name, acl_action_description, acl_action_activate) ";
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["acl_action_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_action_description"], ENT_QUOTES)."', '".htmlentities($ret["acl_action_activate"]["acl_action_activate"], ENT_QUOTES)."')";
@@ -138,14 +139,17 @@
 	}
 	
 	function updateActionInDB ($acl_action_id = NULL)	{
-		if (!$acl_action_id) return;
+		if (!$acl_action_id) 
+			return;
 		updateAction($acl_action_id);
 		updateGroupActions($acl_action_id);
 	}
 	
 	function updateAction($acl_action_id = null)	{
-		if (!$acl_action_id) return;
+		if (!$acl_action_id) 
+			return;
 		global $form, $pearDB;
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE acl_actions ";
@@ -157,7 +161,8 @@
 	}
 	
 	function updateGroupActions($acl_action_id, $ret = array())	{
-		if (!$acl_action_id) return;
+		if (!$acl_action_id) 
+			return;
 		global $form, $pearDB;
 		
 		$rq = "DELETE FROM acl_group_actions_relations WHERE acl_action_id = '".$acl_action_id."'";
@@ -174,28 +179,27 @@
 	}
 	
 	function updateRulesActions($acl_action_id, $ret = array())	{
-	if (!$acl_action_id) return;
-	global $form, $pearDB;
+		if (!$acl_action_id) 
+			return;
+		global $form, $pearDB;
+		
+		$rq = "DELETE FROM acl_actions_rules WHERE acl_action_rule_id = '".$acl_action_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		
+		$actions = array();
+		$actions = listActions();
 	
-	$rq = "DELETE FROM acl_actions_rules WHERE acl_action_rule_id = '".$acl_action_id."'";
-	$DBRESULT =& $pearDB->query($rq);
-	
-	$actions = array();
-	$actions = listActions();
-	
-		foreach ($actions as $action){
-			if(isset($_POST[$action])) {
+		foreach ($actions as $action) {
+			if (isset($_POST[$action])) {
 			
 				$rq = "INSERT INTO acl_actions_rules ";
 				$rq .= "(acl_action_rule_id, acl_action_name) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$acl_action_id."', '".$action."')";
-				
+				print "$rq<br>";
 				$DBRESULT =& $pearDB->query($rq);
-			}
-			
-		}
-			
+			}	
+		}	
 	}
 	
 	function listActions() {
@@ -206,6 +210,7 @@
 		$actions[] = "service_notifications";
 		$actions[] = "service_acknowledgement";
 		$actions[] = "service_schedule_check";
+		$actions[] = "service_schedule_forced_check";
 		$actions[] = "service_schedule_downtime";
 		$actions[] = "service_comment";
 		$actions[] = "service_event_handler";
@@ -218,6 +223,7 @@
 		$actions[] = "host_notifications";
 		$actions[] = "host_acknowledgement";
 		$actions[] = "host_schedule_check";
+		$actions[] = "host_schedule_forced_check";
 		$actions[] = "host_schedule_downtime";
 		$actions[] = "host_comment";
 		$actions[] = "host_event_handler";

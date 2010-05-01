@@ -36,7 +36,7 @@
  * 
  */
  
- 	if (!isset($oreon))
+ 	if (!isset($centreon))
  		exit();
  		
 	#
@@ -87,7 +87,7 @@
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 250px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"60");
-	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+	$template 		= "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin
@@ -110,6 +110,7 @@
 	$form->addElement('checkbox', 'service_notifications', _("Enable/Disable Notifications for a service"));
 	$form->addElement('checkbox', 'service_acknowledgement', _("Acknowledge/Disaknowledge a service"));
 	$form->addElement('checkbox', 'service_schedule_check', _("Re-schedule the next check for a service"));
+	$form->addElement('checkbox', 'service_schedule_forced_check', _("Re-schedule the next check for a service (Forced)"));
 	$form->addElement('checkbox', 'service_schedule_downtime', _("Schedule downtime for a service"));
 	$form->addElement('checkbox', 'service_comment', _("Add/Delete a comment for a service"));
 	$form->addElement('checkbox', 'service_event_handler', _("Enable/Disable Event Handler for a service"));
@@ -122,6 +123,7 @@
 	$form->addElement('checkbox', 'host_notifications', _("Enable/Disable Notifications for a host"));
 	$form->addElement('checkbox', 'host_acknowledgement', _("Acknowledge/Disaknowledge a host"));
 	$form->addElement('checkbox', 'host_schedule_check', _("Schedule the check for a host"));
+	$form->addElement('checkbox', 'host_schedule_forced_check', _("Schedule the check for a host (Forced)"));
 	$form->addElement('checkbox', 'host_schedule_downtime', _("Schedule downtime for a host"));
 	$form->addElement('checkbox', 'host_comment', _("Add/Delete a comment for a host"));
 	$form->addElement('checkbox', 'host_event_handler', _("Enable/Disable Event Handler for a host"));
@@ -152,9 +154,9 @@
 	$form->addElement('header', 'host_actions', _("Hosts Actions Access"));
 	$form->addElement('header', 'global_actions', _("Global Nagios Actions (External Process Commands)"));
 		
-	$ams1 =& $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect);
+    $ams1 =& $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
@@ -175,35 +177,30 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
-	/*
-	 * Form Rules
-	 */
+	# Form Rules
 	function myReplace()	{
 		global $form;
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["acl_action_name"]));
 	}
 
-	/*
-	 * Controls
-	 */
+	# Controls
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('acl_group_name', 'myReplace');
 	$form->addRule('acl_action_name', _("Compulsory Name"), 'required');
 	$form->addRule('acl_action_description', _("Compulsory Alias"), 'required');
+	$form->addRule('acl_groups', _("Compulsory Groups"), 'required');
 	$form->registerRule('exist', 'callback', 'testActionExistence');
 	$form->addRule('acl_action_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
-	/*
-	 * Smarty template Init
-	 */
+	# End of form definition
+
+	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	/*
-	 * Modify an Action Group
-	 */
+	# Modify an Action Group
 	if ($o == "c" && isset($selected_actions) && isset($action_infos))	{
 		$form->setDefaults($selected_actions);
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
@@ -235,7 +232,7 @@
 		require_once($path."listsActionsAccess.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);	

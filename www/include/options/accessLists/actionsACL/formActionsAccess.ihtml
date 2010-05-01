@@ -20,42 +20,44 @@
 	 	<!-- Global -->
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.global_actions}</td></tr>
 	 	<tr class="list_one"><td class="FormRowField">{$form.global_shutdown.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_shutdown.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField">{$form.global_restart.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_restart.html}</p></td></tr>
+	 	<tr class="list_two"><td class="FormRowField">{$form.global_restart.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_restart.html}</p></td></tr>
 	 	<tr class="list_one"><td class="FormRowField">{$form.global_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_notifications.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField">{$form.global_service_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_checks.html}</p></td></tr>
+	 	<tr class="list_two"><td class="FormRowField">{$form.global_service_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_checks.html}</p></td></tr>
 	 	<tr class="list_one"><td class="FormRowField">{$form.global_service_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_passive_checks.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField">{$form.global_host_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_checks.html}</p></td></tr>
+	 	<tr class="list_two"><td class="FormRowField">{$form.global_host_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_checks.html}</p></td></tr>
 	 	<tr class="list_one"><td class="FormRowField">{$form.global_host_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_passive_checks.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField">{$form.global_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_event_handler.html}</p></td></tr>
+	 	<tr class="list_two"><td class="FormRowField">{$form.global_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_event_handler.html}</p></td></tr>
 	 	<tr class="list_one"><td class="FormRowField">{$form.global_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_flap_detection.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField">{$form.global_service_obsess.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_obsess.html}</p></td></tr>
+	 	<tr class="list_two"><td class="FormRowField">{$form.global_service_obsess.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_obsess.html}</p></td></tr>
 	 	<tr class="list_one"><td class="FormRowField">{$form.global_host_obsess.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_obsess.html}</p></td></tr>
-	 	<tr class="list_one"><td class="FormRowField">{$form.global_perf_data.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_perf_data.html}</p></td></tr>
+	 	<tr class="list_two"><td class="FormRowField">{$form.global_perf_data.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_perf_data.html}</p></td></tr>
 	 	
 	 	<!-- Services -->
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.service_actions}</td></tr>		 	
 		<tr class="list_one"><td class="FormRowField">{$form.service_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_checks.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.service_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_notifications.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.service_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_notifications.html}</p></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_acknowledgement.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.service_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_check.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.service_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_downtime.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.service_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_check.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_schedule_forced_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_forced_check.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.service_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_schedule_downtime.html}</p></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_comment.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_comment.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.service_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_event_handler.html}</p></td></tr>		
+		<tr class="list_two"><td class="FormRowField">{$form.service_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_event_handler.html}</p></td></tr>		
 		<tr class="list_one"><td class="FormRowField">{$form.service_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_flap_detection.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.service_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_passive_checks.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.service_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_passive_checks.html}</p></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_submit_result.html}</p></td></tr>
 		 
 		<!-- Hosts -->
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.host_actions}</td></tr>		
 		<tr class="list_one"><td class="FormRowField">{$form.host_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks.html}</p></td></tr>	
-		<tr class="list_one"><td class="FormRowField">{$form.host_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications.html}</p></td></tr>	
+		<tr class="list_two"><td class="FormRowField">{$form.host_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications.html}</p></td></tr>	
 		<tr class="list_one"><td class="FormRowField">{$form.host_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_acknowledgement.html}</p></td></tr>	
-		<tr class="list_one"><td class="FormRowField">{$form.host_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_check.html}</p></td></tr>	
-		<tr class="list_one"><td class="FormRowField">{$form.host_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_downtime.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.host_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_check.html}</p></td></tr>	
+		<tr class="list_one"><td class="FormRowField">{$form.host_schedule_forced_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_forced_check.html}</p></td></tr>	
+		<tr class="list_two"><td class="FormRowField">{$form.host_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_downtime.html}</p></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_comment.html}</p></td></tr>	
-		<tr class="list_one"><td class="FormRowField">{$form.host_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_event_handler.html}</p></td></tr>				
+		<tr class="list_two"><td class="FormRowField">{$form.host_event_handler.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_event_handler.html}</p></td></tr>				
 		<tr class="list_one"><td class="FormRowField">{$form.host_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_flap_detection.html}</p></td></tr>	
-		<tr class="list_one"><td class="FormRowField">{$form.host_checks_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks_for_services.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.host_checks_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks_for_services.html}</p></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_notifications_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications_for_services.html}</p></td></tr>
 										 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
