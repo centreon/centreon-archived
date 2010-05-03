@@ -58,6 +58,7 @@
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
+		<tr class="list_two"><td class="FormRowField">{$form.command_comment.label}</td><td class="FormRowValue">{$form.command_comment.html}</td></tr>
 	</table>
 	</div>
 	<div id="validForm">

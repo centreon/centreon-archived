@@ -107,6 +107,7 @@
 	$attrsText 		= array("size"=>"35");
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
 	$attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
+	$attrsTextarea3	= array("rows"=>"5", "cols"=>"50", "id"=>"command_comment");
 
 	/*
 	 * Form begin
@@ -153,6 +154,8 @@
 
 	$form->addElement('button', 'desc_arg', _("Describe arguments"), array("onClick"=>"goPopup();"));
 	
+	$form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');

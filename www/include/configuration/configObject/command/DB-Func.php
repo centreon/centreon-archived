@@ -152,6 +152,7 @@
 				"`command_line` = '".htmlentities($ret["command_line"], ENT_QUOTES)."', " .
 				"`command_example` = '".htmlentities($ret["command_example"], ENT_QUOTES)."', " .
 				"`command_type` = '".htmlentities($ret["command_type"]["command_type"], ENT_QUOTES)."', " .
+				"`command_comment` = '".htmlentities($ret["command_comment"], ENT_QUOTES)."', " .
 				"`graph_id` = '".htmlentities($ret["graph_id"], ENT_QUOTES)."' " .
 				"WHERE `command_id` = '".$cmd_id."'";
 		$DBRESULT =& $pearDB->query($rq);
@@ -159,6 +160,7 @@
 		$fields["command_name"] = htmlentities($ret["command_name"], ENT_QUOTES);
 		$fields["command_line"] = htmlentities($ret["command_line"], ENT_QUOTES);
 		$fields["command_example"] = htmlentities($ret["command_example"], ENT_QUOTES);
+		$fields["command_comment"] = htmlentities($ret["command_comment"], ENT_QUOTES);
 		$fields["command_type"] = $ret["command_type"]["command_type"];
 		$fields["graph_id"] = $ret["graph_id"];
 		$oreon->CentreonLogAction->insertLog("command", $cmd_id, htmlentities($ret["command_name"], ENT_QUOTES), "c", $fields);
