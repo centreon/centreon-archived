@@ -2,7 +2,7 @@
 #
 # SNMPTT Net-SNMP-Test v1.0
 #
-# Copyright 2002-2005 Alex Burger
+# Copyright 2002-2007 Alex Burger
 # alex_b@users.sourceforge.net
 #
 # 4/13/2003
@@ -117,6 +117,8 @@ if (defined ($mibs_environment))
 {
   $ENV{'MIBS'} = $mibs_environment;
 }
+
+$SNMP::save_descriptions = 1;
 &SNMP::initMib();
 
 if (defined ($best_guess))
@@ -208,6 +210,13 @@ $test = 'ipForwarding';		# ipForwarding
 $expect = 'INTEGER';
 &my_getType($test, $expect,);
 
+print "\n\nTesting Description\n";
+print "*******************\n";
+
+$test = '.1.3.6.1.2.1.4.1';		# ipForwarding
+$expect = 'The indication of whether this entity is acting';
+&my_getDescription($test, $expect,);
+
 print "\n";
 
 sub translate
@@ -247,3 +256,27 @@ sub my_getType
 }
 
 
+sub my_getDescription
+{
+  my $test = shift;
+  my $expect = shift;
+  my $description_temp = $SNMP::MIB{$test}->{description};
+  $description_temp =~ s/\n\s+/\n/g;
+
+  if ($description_temp =~ $expect)
+  {
+    print "Test passed.  Result:\n";
+    print "-------------------------------------------------\n";
+    print "$description_temp\n";
+    print "-------------------------------------------------\n";
+  }
+  else
+  {
+    print "Test FAILED!  Expected a string containing:\n";
+    print "$expect\n\n";
+    print "Received:\n";
+    print "-------------------------------------------------\n";
+    print "$description_temp\n";
+    print "-------------------------------------------------\n";
+  }
+}

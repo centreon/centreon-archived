@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# SNMPTTCONVERTMIB v1.2
+# SNMPTTCONVERTMIB v1.3
 #
 # Copyright 2002-2007 Alex Burger
 # alex_b@users.sourceforge.net
@@ -50,7 +50,7 @@ my $prepend_type = 1;
 #############################################################################
 #
 
-my $snmpttconvertmib_version = "v1.2";
+my $snmpttconvertmib_version = "v1.3";
 
 sub showversion
 {
@@ -206,14 +206,26 @@ unless (open OUTPUTFILE, ">>$output")
   die "Cannot open output file: $!";
 }
 
-# A mib file can contain multiple BEGIN definitions.  This finds the first on
+# A mib file can contain multiple BEGIN definitions.  This finds the first one
 # to make sure we have at least one definition.
 # Determine name of MIB file
 my $mib_name = '';
 while ($currentline <= $#mibfile)
 {
   my $line = $mibfile[$currentline];
-  if ($line =~ /(.*)DEFINITIONS\s*::=\s*BEGIN/)
+
+  # Sometimes DEFINITIONS ::= BEGIN will appear on the line following the mib name.
+  # Look for DEFINITIONS ::= BEGIN with nothing (white space allowed) around it and a previous line with 
+  # only a single word with whitespace around it.
+  if ($currentline > 0 && $line =~ /^\s*DEFINITIONS\s*::=\s*BEGIN\s*$/ && $mibfile[$currentline-1] =~ /^\s*(\S+)\s*$/) {
+    # We should have found the mib name
+    $mib_name = $1;
+    print "\nSplit line DEFINITIONS ::= BEGIN found ($1).\n";
+    $mib_name =~ s/\s+//g;
+    last;
+  }
+
+  elsif ($line =~ /(.*)DEFINITIONS\s*::=\s*BEGIN/)
   {
     $mib_name = $1;
     $mib_name =~ s/\s+//g;
@@ -253,8 +265,26 @@ if (1)
   while ($currentline <= $#mibfile)
   {
     my $line = $mibfile[$currentline];
-    
-    if ($line =~ /(.*)DEFINITIONS\s*::=\s*BEGIN/)
+
+    # Sometimes DEFINITIONS ::= BEGIN will appear on the line following the mib name.
+    # Look for DEFINITIONS ::= BEGIN with nothing (white space allowed) around it and a previous line with 
+    # only a single word with whitespace around it.
+    if ($currentline > 0 && $line =~ /^\s*DEFINITIONS\s*::=\s*BEGIN\s*$/ && $mibfile[$currentline-1] =~ /^\s*(\S+)\s*$/) {
+      # We should have found the mib name
+      print "\n\nSplit line DEFINITIONS ::= BEGIN found ($1).\n";
+
+      $mib_name = $1;
+      $mib_name =~ s/\s+//g;
+      print "Processing MIB:         $mib_name\n";
+     
+      print OUTPUTFILE "#\n#\n#\n#\n";
+      print OUTPUTFILE "MIB: $mib_name (file:$input) converted on " . scalar(localtime) . " using snmpttconvertmib $snmpttconvertmib_version\n";
+      
+      $currentline++; # Increment to the next line
+      next;
+    }
+
+    elsif ($line =~ /(.*)DEFINITIONS\s*::=\s*BEGIN/)
     {
       $mib_name = $1;
       $mib_name =~ s/\s+//g;
@@ -300,14 +330,16 @@ if (1)
       
       my @variables = ();
 
+      print "#\n";
+
       # Sometimes the TRAP-TYPE / NOTIFICATION-TYPE will appear on the line following the trap name
       # Look for xxx-TYPE with nothing (white space allowed) around it and a previous line with only a single word
       # with whitespace around it.
-      if ( ($currentline > 0 && $line =~ /^\s*TRAP-TYPE\s*$/ && $mibfile[$currentline-1] =~ /^\s*(\w+)\s*$/) ||
-           ($currentline > 0 && $line =~ /^\s*NOTIFICATION-TYPE\s*$/ && $mibfile[$currentline-1] =~ /^\s*(\w+)\s*$/) ) {
+      if ( ($currentline > 0 && $line =~ /^\s*TRAP-TYPE\s*$/ && $mibfile[$currentline-1] =~ /^\s*(\S+)\s*$/) ||
+           ($currentline > 0 && $line =~ /^\s*NOTIFICATION-TYPE\s*$/ && $mibfile[$currentline-1] =~ /^\s*(\S+)\s*$/) ) {
         # We should have found the trap name
         $trapname = $1;
-        print "split line TRAP-TYPE / NOTIFICATION-TYPE found ($1).\n";
+        print "Split line TRAP-TYPE / NOTIFICATION-TYPE found ($1).\n";
       }
       
       # If the TRAP-TYPE / NOTIFICATION-TYPE line starts with white space, it's probably a import line, so ignore
@@ -326,7 +358,6 @@ if (1)
       $trapname = $1;
       
       
-      print "#\n";
       print "Line: $currentline\n";
       if ($trapversion eq 'TRAP')
       {
@@ -898,6 +929,11 @@ if (1)
   print "Total translations:        $total_translations\n";
   print "Successful translations:   $successful_translations\n";
   print "Failed translations:       $failed_translations\n";
+
+  if ($total_translations == 0) {
+    print "\nThe MIB file did not contain any TRAP-TYPE or NOTIFICATION-TYPE definitions,\n";
+    print "so no translations occured.  Try another MIB file.\n\n";
+  }
 }
 
 

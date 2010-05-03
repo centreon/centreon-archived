@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 #
-# SNMPTT v1.2
+# SNMPTT v1.3
 #
-# Copyright 2002-2007 Alex Burger
+# Copyright 2002-2009 Alex Burger
 # alex_b@users.sourceforge.net
 # 4/11/2002
 #
@@ -47,7 +47,7 @@
 #
 use strict;
 
-my $snmptt_version = "v1.2";
+my $snmptt_version = "v1.3";
 
 sub showversion
 {
@@ -202,6 +202,7 @@ my $spool_directory;
 my $sleep;
 my $use_trap_time;
 my $keep_unlogged_traps;
+my $duplicate_trap_window;
 
 # Logging
 my $stdout_enable;
@@ -315,6 +316,7 @@ my $g_start_time = time();
 my $debug_file_open_error = 1;
 if ($DEBUGGING >= 1)
 {
+  # Open the debug file
   if ($DEBUGGING_FILE ne '') 
   {
     if (open DEBUGFILE, ">>$DEBUGGING_FILE")
@@ -391,14 +393,14 @@ if ($eventlog_system_enable == 1 || $eventlog_enable == 1)
 if ($syslog_system_enable == 1 && $daemon == 1)
 {
   syslog_system("SNMPTT $snmptt_version started");
-  if ($debug_file_open_error == 1) {
+  if ($DEBUGGING >= 1 && $debug_file_open_error == 1) {
     syslog_system("Could not open debug output file!");
   }
 }
 if ($log_system_enable == 1 && $daemon == 1)
 {
   log_system("SNMPTT $snmptt_version started");
-  if ($debug_file_open_error == 1) {
+  if ($DEBUGGING >= 1 && $debug_file_open_error == 1) {
     log_system("Could not open debug output file!");
   }
 }
@@ -406,7 +408,7 @@ if ($log_system_enable == 1 && $daemon == 1)
 if ($eventlog_system_enable == 1 && $daemon == 1)
 {
   eventlog_system("SNMPTT $snmptt_version started",0,$eventlog_information);
-  if ($debug_file_open_error == 1) {
+  if ($DEBUGGING >= 1 && $debug_file_open_error == 1) {
     eventlog_system("Could not open debug output file!",14,$eventlog_warning);
   }
 }
@@ -564,6 +566,20 @@ if ($sql_win32_odbc_enable == 1)
 }
 
 
+if ($duplicate_trap_window > 0)
+{
+  eval 'require Digest::MD5;';
+  if ($@) {
+    warn $@;
+    print "\nCould not load the Perl module Digest::MD5!  If duplicate_trap_window\n";
+    print "is set then the Digest::MD5 module is required.  Please see snmptt.html\n";
+    print "for system requirements.\n\n";
+    die "died";
+  }
+  require Digest::MD5;
+}
+
+
 ##############################################################################
 ####  MAIN SECTION START
 
@@ -617,6 +633,7 @@ my $g_last_dbd_odbc_ping = $g_start_time;
 my $timetoreload;
 my $timetodie;
 my $timetologstatistics;
+my %duplicate_traps;
 
 if ($daemon == 1)
 {
@@ -629,7 +646,9 @@ if ($daemon == 1)
     $pid_file_set = 1;
   }
 
-  print STDOUT "$pid_file\n";
+  if ($DEBUGGING >= 1) {
+    print STDOUT "PID file: $pid_file\n";
+  }
   if (-e $pid_file) {
     open(OLDPID, "<$pid_file");
     my $old_pid = <OLDPID>;
@@ -688,7 +707,9 @@ if ($daemon == 1)
     my $pid2;
 
     my $working_dir = cwd;
-    print "cwd: $working_dir\n";
+    if ($DEBUGGING >= 1) {
+      print "cwd: $working_dir\n";
+    }
 
     chdir '/'
        or die "Can't chdir to /: $!";
@@ -707,18 +728,20 @@ if ($daemon == 1)
 
     # We write PID using the uid of the user that started snmptt.
     if ($pid)   # This is run in the parent process
-    {        
-      if (open(PID, ">$pid_file") ) {
-        print(PID "$pid\n");
-        close(PID);
-      }
-      else {
-        $pid_file = "$working_dir/snmptt.pid";
-        
-        if (open(PID, ">$pid_file") )
-        {
+    {
+      if ($daemon_uid eq '') {
+        if (open(PID, ">$pid_file") ) {
           print(PID "$pid\n");
           close(PID);
+        }
+        else {
+          $pid_file = "$working_dir/snmptt.pid";
+          
+          if (open(PID, ">$pid_file") )
+          {
+            print(PID "$pid\n");
+            close(PID);
+          }
         }
       }
 
@@ -727,14 +750,15 @@ if ($daemon == 1)
 
     POSIX:setsid
        or die "Can't start a new session: $!";
-    umask 0;
+    #umask 0;
+    umask 002;
 
     # We fork again so there are two processes.  The first which is run using the uid
     # of the user that started snmptt, and the second which is run as the user as 
     # defined by daemon_uid in snmptt.ini.  We do this so we can sit and wait for the
     # child to finish so we can clean up the snmptt.pid file.
     # We only need to do this if daemon_uid is set..
-    if ($^O ne "MSWin32" && $daemon_uid ne '') {
+    if ($daemon_uid ne '') {
       defined($pid2 = fork)
         or die "Can't fork: $!";
       
@@ -742,6 +766,20 @@ if ($daemon == 1)
       {
         $SIG{TERM} = \&signal_handler_die;        # new signal for parent
         
+        if (open(PID, ">$pid_file") ) {
+          print(PID "$pid2\n");
+          close(PID);
+        }
+        else {
+          $pid_file = "$working_dir/snmptt.pid";
+          
+          if (open(PID, ">$pid_file") )
+          {
+            print(PID "$pid2\n");
+            close(PID);
+          }
+        }
+
         while (1) {
           if ($timetodie == 1 || waitpid($pid2, WNOHANG) != 0) {
             kill SIGTERM, $pid2;
@@ -755,7 +793,8 @@ if ($daemon == 1)
       
       POSIX:setsid
         or die "Can't start a new session: $!";
-      umask 0;
+      #umask 0;
+      umask 002;
     }
   } 
 
@@ -828,40 +867,8 @@ if ($daemon == 1)
       $debug_file_open_error = 1;
       # Re-open debug file (if needed) as the new user
       if ($DEBUGGING >= 1)
-      {
-        if ($DEBUGGING_FILE ne '')
-        {
-          if (open DEBUGFILE, ">>$DEBUGGING_FILE")
-          {
-            select DEBUGFILE;	# change default output to debug file
-            $debug_file_used = 1;
-            $debug_file_open_error = 0;
-            print "Debug file $DEBUGGING_FILE re-opened under uid $daemon_uid\n";
-            warn "Debug file $DEBUGGING_FILE re-opened under uid $daemon_uid\n";
-          }
-          else
-          {
-            warn "could not re-open debug output file ($!)";
-          }
-          if ($syslog_system_enable == 1 && $daemon == 1)
-          {
-            if ($debug_file_open_error == 1) {
-              syslog_system("Could not re-open debug output file!");
-            }
-          }
-          if ($log_system_enable == 1 && $daemon == 1)
-          {
-            if ($debug_file_open_error == 1) {              
-              log_system("Could not re-open debug output file!");
-            }
-          }
-        }
-
-        if ($eventlog_system_enable == 1 && $daemon == 1){
-          if ($debug_file_open_error == 1) {
-            eventlog_system("Could not re-open debug output file!",14,$eventlog_error);
-          }
-        }
+      {        
+        &reopen_debug_file;
       }
     }
   }
@@ -877,6 +884,27 @@ if ($daemon == 1)
   
   while (!$timetodie)
   {
+    # If debugging, flush the buffers so we can tail snmptt.debug file.
+    if ($DEBUGGING >= 1) {
+      $| = 1;
+      $| = 0;
+    }
+
+    if ($duplicate_trap_window) {
+      # Purge traps older than duplicate_trap_window in %duplicate_traps
+      my $duplicate_traps_current_time = time();
+      foreach my $key (sort keys %duplicate_traps)
+      {
+        #print "Previous trap digest: $key: " . localtime($duplicate_traps{$key}) . "\n";
+        if ($duplicate_traps{$key} < $duplicate_traps_current_time - $duplicate_trap_window) {
+          # Purge the record
+          delete $duplicate_traps{$key};
+          #print "  Deleted...\n";
+        }
+      }
+      #print "\n";
+    }
+
     if (! (chdir($spool_directory)))
     {
       if ($DEBUGGING >= 1)
@@ -1039,18 +1067,32 @@ if ($daemon == 1)
 
         $input = 'FILE';
 
-        if (! (&readtrap())) {			# Read trap from STDIN or file
+        my $readtrap_result = &readtrap();      # Read trap from STDIN or file
+
+        if ($readtrap_result == 0) {
+          if ($DEBUGGING >= 1) {
           print "  Error processing trap file $file.  Skipping...\n";
+          }
           next;
         }
 
-        &searchfortrap;		# Search for trap snmptt.conf (array)
+        my $trap_is_a_duplicate = 0;
+        if ($readtrap_result == -1) {
+          $trap_is_a_duplicate = 1;
+          if ($DEBUGGING >= 1) {
+            print "  Duplicate trap detected in trap file $file.  Skipping...\n";
+          }
+        }
 
+        # Search for trap only if it's not a duplicate.
+        if (! ($trap_is_a_duplicate)) {			
+          &searchfortrap;		# Search for trap snmptt.conf (array)
+        }
         close FILE;
 
         if ($filesuccess == 1)
         {
-          if ($keep_unlogged_traps == 0 || $trap_successfully_logged == 1)
+          if ($keep_unlogged_traps == 0 || $trap_successfully_logged == 1 || $trap_is_a_duplicate)
           {
             unless (unlink($file))
             {
@@ -1219,6 +1261,10 @@ sub processtrap
   # $var[4] 		ip address from trap agent
   # $var[5] 		trap community string
   # $var[6] 		enterprise
+  # $var[7] 		securityEngineID                (snmptthandler-embedded required)
+  # $var[8] 		securityName                    (snmptthandler-embedded required)
+  # $var[9] 		contextEngineID                 (snmptthandler-embedded required)
+  # $var[10] 		contextName                     (snmptthandler-embedded required)
   #
   # $entvarname[0]	passed variable name 1
   # $entvarname[1]	passed variable name 2
@@ -1385,7 +1431,6 @@ sub processtrap
          $nodesmatch = 1;
        }
      }
-
      # If NODES MODE=NEG, then reverse the result.
      if ($nodes_mode eq 'neg') {
        if ($nodesmatch == 0) {
@@ -1397,13 +1442,21 @@ sub processtrap
      }
      if ($DEBUGGING >= 1)
      {
-       if ($nodesmatch == 1)
-       {
-         print "  NODES has a positive match (node mode \'$nodes_mode\' and node found in list)\n";
+        if ($nodes_mode eq 'pos') {
+          if ($nodesmatch == 1) {
+            print "  NODES has a positive match (node mode \'pos\' and node found in list)\n";
+          }
+          else {
+            print "  NODES has a negative match (node mode \'pos\' and node NOT found in list)\n";
+          }
+        }
+        else {
+          if ($nodesmatch == 1) {
+            print "  NODES has a positive match (node mode \'neg\' and node NOT found in list)\n";
+          }
+          else {
+            print "  NODES has a negative match (node mode \'neg\' and node found in list)\n";
        }
-       else
-       {
-         print "  NODES has a negative match (node mode \'$nodes_mode\' and node NOT found in list)\n";
        }
      }
    }
@@ -2222,6 +2275,18 @@ sub substitute
     }
   }
 
+  # $Be - securityEngineID (snmpEngineID)
+  &substitute2 ("\$Be", $var[7]);
+
+  # $Bu - securityName (snmpCommunitySecurityName)
+  &substitute2 ("\$Bu", $var[8]);
+
+  # $BE - contextEngineID (snmpCommunityContextEngineID)
+  &substitute2 ("\$BE", $var[9]);
+
+  # $Bn - contextName (snmpCommunityContextName)
+  &substitute2 ("\$Bn", $var[10]);
+
   # $c - Category
   #s(\$c)($event2[1])g;
   &substitute2 ("\$c", $event2[1]);
@@ -3013,6 +3078,7 @@ sub readtrap
   @entvar = ();
   @entvarname = ();
   @preexec_var = ();
+  my @rawtrap = ();
 
   # Statistics
   $g_total_traps_received++;
@@ -3025,6 +3091,7 @@ sub readtrap
   if ( $daemon == 1)
   {
     chomp($trap_date_time_epoch = (<$input>));	# Pull time trap was spooled
+    push(@rawtrap, $trap_date_time_epoch);
     if ($trap_date_time_epoch eq "") {
       if ($DEBUGGING >= 1) {
         print "  Invalid trap file.  Expected a serial time on the first line but got nothing\n";
@@ -3085,6 +3152,7 @@ sub readtrap
   # Pull in passed SNMP info from snmptrapd via STDIN and place in the array @tempvar
 
   chomp($tempvar[0]=<$input>);	# hostname
+  push(@rawtrap, $tempvar[0]);
   $tempvar[0] =~ s(`)(')g;	#` Replace any back ticks with regular single quote 
   if ($tempvar[0] eq "") {
     if ($DEBUGGING >= 1) {
@@ -3094,6 +3162,7 @@ sub readtrap
   }
     
   chomp($tempvar[1]=<$input>);	# ip address
+  push(@rawtrap, $tempvar[1]);
   $tempvar[1] =~ s(`)(')g;	#` Replace any back ticks with regular single quote
   if ($tempvar[1] eq "") {
     if ($DEBUGGING >= 1) {
@@ -3117,6 +3186,7 @@ sub readtrap
   my $linenum = 1;
   while (defined(my $line = <$input>))
   {
+    push(@rawtrap, $line);
     $line =~ s(`)(')g;	#` Replace any back ticks with regular single quote
 
     if ($remove_backslash_from_quotes == 1)  # Remove escape from quotes if enabled
@@ -3152,9 +3222,9 @@ sub readtrap
       $temp1 = translate_symbolic_to_oid($temp1);
 
       # If line begins with a double quote (") but does not END in a double quote then we need to merge
-      # the following lines together into one until we find the closing double quote.
+      # the following lines together into one until we find the closing double quote.  Allow for escaped quotes.
       # Net-SNMP sometimes divides long lines into multiple lines..
-      if ( ($temp2 =~ /^\"/) && ( ! ($temp2 =~ /\"$/)) )
+      if ( ($temp2 =~ /^\"/) && ( ! ($temp2 =~ /[^\\]\"$/)) )
       {
         if ($DEBUGGING >= 2) {
           print "  Multi-line value detected - merging onto one line...\n";
@@ -3163,8 +3233,9 @@ sub readtrap
         while (defined(my $line2 = <$input>))
         {
           chomp $line2;
+          push(@rawtrap, $line2);
           $temp2.=" ".$line2;
-          if ($line2 =~ /\"$/)
+          if ($line2 =~ /[^\\]\"$/)     # Ends in a non-escaped quote
           {
             last;
           }
@@ -3211,9 +3282,9 @@ sub readtrap
       }
 
       # If line begins with a double quote (") but does not END in a double quote then we need to merge
-      # the following lines together into one until we find the closing double quote.
+      # the following lines together into one until we find the closing double quote.  Allow for escaped quotes.
       # Net-SNMP sometimes divides long lines into multiple lines..
-      if ( ($line =~ /^\"/) && ( ! ($line =~ /\"$/)) )
+      if ( ($line =~ /^\"/) && ( ! ($line =~ /[^\\]\"$/)) )
       {
         if ($DEBUGGING >= 2) {
           print "  Multi-line value detected - merging onto one line...\n";
@@ -3222,8 +3293,9 @@ sub readtrap
         while (defined(my $line2 = <$input>))
         {
           chomp $line2;
+          push(@rawtrap, $line2);
           $line.=" ".$line2;
-          if ($line2 =~ /\"$/)
+          if ($line2 =~ /[^\\]\"$/)                  # Ends in a non-escaped quote
           {
             last;
           }
@@ -3254,6 +3326,14 @@ sub readtrap
 
   if ($DEBUGGING >= 2)
   {
+    # Print out raw trap passed from snmptrapd
+    print "\nRaw trap passed from snmptrapd:\n";
+    for (my $i=0;$i <= $#rawtrap;$i++)
+    {
+      chomp($rawtrap[$i]);
+      print "$rawtrap[$i]\n";
+    }
+
     # Print out all items passed from snmptrapd
     print "\nItems passed from snmptrapd:\n";
     for (my $i=0;$i <= $#tempvar;$i++)
@@ -3271,9 +3351,13 @@ sub readtrap
   $var[3] = $tempvar[5];		# trapname / OID - assume first value after uptime is
           # the trap OID (value for .1.3.6.1.6.3.1.1.4.1.0)
 
-  $var[4] = "";	# Clear ip address from trap agent
-  $var[5] = "";	# Clear trap community string
-  $var[6] = "";	# Clear enterprise
+  $var[4] = "";	 # Clear ip address from trap agent
+  $var[5] = "";	 # Clear trap community string
+  $var[6] = "";	 # Clear enterprise
+  $var[7] = "";	 # Clear securityEngineID
+  $var[8] = "";	 # Clear securityName
+  $var[9] = "";	 # Clear contextEngineID
+  $var[10] = ""; # Clear contextName
 
   # Make sure trap OID is numerical as event lookups are done using numerical OIDs only
   $var[3] = translate_symbolic_to_oid($var[3]);
@@ -3297,6 +3381,22 @@ sub readtrap
       # $var[6] = $tempvar[$i+1];
       # Make sure enterprise value is numerical
       $var[6] = translate_symbolic_to_oid($tempvar[$i+1]);
+    }
+    elsif ($tempvar[$i] =~ /^.1.3.6.1.6.3.10.2.1.1.0$/)	# securityEngineID
+    {
+      $var[7] = $tempvar[$i+1];
+    }
+    elsif ($tempvar[$i] =~ /^.1.3.6.1.6.3.18.1.1.1.3$/)	# securityName
+    {
+      $var[8] = $tempvar[$i+1];
+    }
+    elsif ($tempvar[$i] =~ /^.1.3.6.1.6.3.18.1.1.1.4$/)	# contextEngineID
+    {
+      $var[9] = $tempvar[$i+1];
+    }
+    elsif ($tempvar[$i] =~ /^.1.3.6.1.6.3.18.1.1.1.5$/)	# contextName
+    {
+      $var[10] = $tempvar[$i+1];
     }
     else  # application specific variables
     {
@@ -3392,6 +3492,10 @@ sub readtrap
     print "4:		ip address from trap agent\n";
     print "5:		trap community string\n";
     print "6:		enterprise\n";
+    print "7:		securityEngineID        (snmptthandler-embedded required)\n";
+    print "8:		securityName            (snmptthandler-embedded required)\n";
+    print "9:		contextEngineID         (snmptthandler-embedded required)\n";
+    print "10:		contextName             (snmptthandler-embedded required)\n";
     print "0+:		passed variables\n\n";	
 
     #print out all standard variables
@@ -3409,6 +3513,26 @@ sub readtrap
     }
   }
 
+  # Generate hash of trap and detect duplicates
+  if ($duplicate_trap_window) {
+    my $md5 = Digest::MD5->new;
+    # All variables except for uptime.
+    $md5->add($var[0],$var[1].$var[3].$var[4].$var[5].$var[6].$var[7].$var[8].$var[9].$var[10]."@entvar");
+    
+    my $trap_digest = $md5->hexdigest;
+
+    if ($DEBUGGING >= 2) {
+      print "Trap digest: $trap_digest\n";
+    }
+
+    if ($duplicate_traps{$trap_digest}) {
+      # Duplicate trap detected.  Skipping trap...
+      return -1;
+    }
+
+    $duplicate_traps{$trap_digest} = time();
+  }
+
   return 1;
 
   # Variables of trap received by SNMPTRAPD:
@@ -3420,6 +3544,10 @@ sub readtrap
   # $var[4]   ip address from trap agent
   # $var[5]   trap community string
   # $var[6]   enterprise
+  # $var[7]   securityEngineID                (snmptthandler-embedded required)
+  # $var[8]   securityName                    (snmptthandler-embedded required)
+  # $var[9]   contextEngineID                 (snmptthandler-embedded required)
+  # $var[10]  contextName                     (snmptthandler-embedded required)
   #
   # $entvarname[0]  passed variable name 1
   # $entvarname[1]  passed variable name 2
@@ -3446,6 +3574,10 @@ sub searchfortrap
   # $var[4]  ip address from trap agent
   # $var[5]  trap community string
   # $var[6]  enterprise
+  # $var[7]  securityEngineID                (snmptthandler-embedded required)
+  # $var[8]  securityName                    (snmptthandler-embedded required)
+  # $var[9]  contextEngineID                 (snmptthandler-embedded required)
+  # $var[10] contextName                     (snmptthandler-embedded required)
   #
   # $entvarname[0] passed variable name 1
   # $entvarname[1] passed variable name 2
@@ -3897,7 +4029,7 @@ sub loadsnmpttini {
   if( open( CONFIG, $configfile ) ) {
     close CONFIG;
     $cfg = new Config::IniFiles( -file => $configfile);
-    if ($DEBUGGING >= 0) {
+    if ($DEBUGGING >= 1) {
       print "Config file $configfile loaded\n";
     }
   }
@@ -3963,6 +4095,7 @@ sub loadsnmpttini {
   $sleep = $cfg->val('DaemonMode', 'sleep');
   $use_trap_time = $cfg->val('DaemonMode', 'use_trap_time');
   $keep_unlogged_traps = $cfg->val('DaemonMode', 'keep_unlogged_traps');	
+  $duplicate_trap_window = $cfg->val('DaemonMode', 'duplicate_trap_window');	
 
   # Logging
   $stdout_enable = $cfg->val('Logging', 'stdout_enable');
@@ -4106,8 +4239,9 @@ sub loadsnmpttini {
   if (! defined ($spool_directory)) { $spool_directory = ''} ;
   if (! defined ($sleep)) { $sleep = 5} ;
   if (! defined ($use_trap_time)) { $use_trap_time = 1} ;
-
   if (! defined ($keep_unlogged_traps)) { $keep_unlogged_traps = 1} ;
+  if (! defined ($duplicate_trap_window)) { $duplicate_trap_window = 0} ;
+
   if (! defined ($stdout_enable)) { $stdout_enable = 0} ;
   if (! defined ($log_enable)) { $log_enable = 1} ;
   if (! defined ($log_file)) { $log_file = ''} ;
@@ -4207,6 +4341,7 @@ sub signal_handler_reload {
   # Daemon reload
   #
   $timetoreload = 1;
+  &reopen_debug_file;
 }
 
 sub signal_handler_die {
@@ -5858,4 +5993,40 @@ sub sql_win32_odbc_insert {
     }
   return 0;
   }
+}
+
+sub reopen_debug_file {
+  if ($DEBUGGING_FILE ne '')
+  {
+    close DEBUGFILE;
+    if (open DEBUGFILE, ">>$DEBUGGING_FILE")
+    {
+      select DEBUGFILE;	# change default output to debug file
+      $debug_file_used = 1;
+      $debug_file_open_error = 0;
+      print "Debug file $DEBUGGING_FILE re-opened under uid $daemon_uid\n";
+      warn "Debug file $DEBUGGING_FILE re-opened under uid $daemon_uid\n";
+    }
+    else
+    {
+      warn "could not re-open debug output file ($!)";
+      
+      if ($syslog_system_enable == 1 && $daemon == 1)
+      {
+        syslog_system("Could not re-open debug output file!");
+      }
+      
+      if ($log_system_enable == 1 && $daemon == 1)
+      {
+        log_system("Could not re-open debug output file!");
+      }
+      
+      if ($eventlog_system_enable == 1 && $daemon == 1){
+        eventlog_system("Could not re-open debug output file!",14,$eventlog_error);
+      }
+      return 0;
+    }
+    return 1;
+  }
+  return 0;
 }
