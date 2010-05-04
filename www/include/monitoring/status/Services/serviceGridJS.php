@@ -80,6 +80,7 @@ var _resultCache=new Object();
 var _first = 1;
 var _lock = 0;
 var _instance = 'ALL';
+var _default_hg = '<?php echo $default_hg;?>';
 var _default_instance = '<?php echo $default_poller?>';
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
@@ -148,6 +149,7 @@ function monitoring_pause()	{
 
 function initM(_time_reload,_sid,_o){
 	construct_selecteList_ndo_instance('instance_selected');
+	construct_HostGroupSelectList('hostgroups_selected');
 	if(!document.getElementById('debug')){
 		var _divdebug = document.createElement("div");
 		_divdebug.id = 'debug';

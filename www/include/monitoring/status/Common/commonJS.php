@@ -118,6 +118,62 @@ function construct_selecteList_ndo_instance(id){
 	
 }
 
+function construct_HostGroupSelectList(id) {
+	if (!document.getElementById("hostgroups")) {
+		var select_index = new Array();
+		var _select_hostgroups = document.getElementById(id);
+		var _select = document.createElement("select");
+		_select.name = "hostgroups";
+		_select.id = "hostgroups";
+		_select.onchange = function() { 
+			_default_hg = this.value;
+			xhr = new XMLHttpRequest();
+			xhr.open('GET','./include/monitoring/status/Common/updateContactParamHostGroups.php?uid=<?php echo $oreon->user->user_id; ?>&hostgroups='+this.value, true);
+			xhr.send(null);
+			xhr.onreadystatechange = function() { 
+				monitoring_refresh();
+			};
+		};
+		var k = document.createElement('option');
+		k.value= "0";
+		_select.appendChild(k);
+		var i = 1;
+<?php
+		$hg = array();
+		if (!$oreon->user->access->admin) {
+			$query = "SELECT DISTINCT hg.hg_alias " .
+			 		"FROM hostgroup hg, acl_resources_hg_relations arhr " .
+			 		"WHERE hg.hg_id = arhr.hg_hg_id " .
+			 		"AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
+			 		"AND hg.hg_activate = '1' ORDER BY hg.hg_alias"; 		
+			 $DBRESULT =& $pearDB->query($query);
+			 while ($data =& $DBRESULT->fetchRow()) {
+			 	$hg[$data["hg_alias"]] = 1;
+			 }
+			 $DBRESULT->free();
+			unset($data);
+		}
+
+		$DBRESULT =& $pearDBndo->query("SELECT DISTINCT `alias` FROM `".getNDOPrefix()."hostgroups` ORDER BY `alias`");
+		while ($hostgroups =& $DBRESULT->fetchRow()) {
+			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hg[$hostgroups["alias"]]))) { ?>
+				var m = document.createElement('option');
+				m.value= "<?php echo $hostgroups["alias"]; ?>";
+				_select.appendChild(m);
+				var n = document.createTextNode("<?php echo $hostgroups["alias"]; ?>   ");
+				m.appendChild(n);
+				_select.appendChild(m);
+				select_index["<?php echo $hostgroups["alias"]; ?>"] = i;
+				i++;
+<?php 		}	
+		}
+?>
+		_select.selectedIndex = select_index[_default_hg];
+		_select_hostgroups.appendChild(_select);
+	}
+}
+
+
 function viewDebugInfo(_str) {
 	if (_debug)	{
 		_nb = _nb + 1;

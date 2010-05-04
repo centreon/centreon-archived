@@ -55,6 +55,7 @@
 	$rows = 10;
 
 	include_once("./include/monitoring/status/Common/default_poller.php");
+	include_once("./include/monitoring/status/Common/default_hostgroups.php");
 	include_once($hg_path."serviceGridByHGJS.php");
 
 	# Smarty template Init
@@ -72,6 +73,8 @@
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
+	$tpl->assign('pollerStr', _('Poller'));
+	$tpl->assign('hgStr', _('Hostgroup'));
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 

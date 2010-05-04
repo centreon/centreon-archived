@@ -75,6 +75,7 @@
 	$rows = 10;
 	
 	include_once("./include/monitoring/status/Common/default_poller.php");
+	include_once("./include/monitoring/status/Common/default_hostgroups.php");
 	include_once("hostJS.php");
 
 
@@ -157,6 +158,8 @@
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	$tpl->assign('limit', $limit);
+	$tpl->assign('pollerStr', _('Poller'));
+	$tpl->assign('hgStr', _('Hostgroup'));
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);

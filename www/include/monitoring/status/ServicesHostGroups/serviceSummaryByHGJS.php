@@ -147,6 +147,7 @@ function monitoring_pause()	{
 
 function initM(_time_reload,_sid,_o){
 	construct_selecteList_ndo_instance('instance_selected');
+	construct_HostGroupSelectList('hostgroups_selected');
 	if(!document.getElementById('debug')){
 		var _divdebug = document.createElement("div");
 		_divdebug.id = 'debug';

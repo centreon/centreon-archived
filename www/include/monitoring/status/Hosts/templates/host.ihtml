@@ -2,6 +2,15 @@
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
+<table class="ajaxOption">
+	<tr>
+		<td>{$pollerStr}:</td>
+		<td><span class="consol_button" id="instance_selected"></span></td>
+	    <td>{$hgStr}:</td>
+	    <td><span class="consol_button" id="hostgroups_selected"></span></td>
+	</tr>
+</table>
+<br/>
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
 		<td class="Toolbar_TDSelectAction_Top" width="550">
@@ -10,7 +19,6 @@
 			<span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
 			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
-			<span class="consol_button" id="instance_selected"></span>
 			<span class="consol_button">{$form.o1.html}</span>
 			<input name="p" value="{$p}" type="hidden">
 		</td>
