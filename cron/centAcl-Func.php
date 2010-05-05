@@ -84,45 +84,55 @@
 				$tabCategory[$ct_id] = $ct_id;
 			} 
 		}
-		
+
 		/*
 		 * Init Table of template
 		 */
 		while (1) {
 			if (isset($svcTplCache[$service_id]) && $svcTplCache[$service_id]) {
-				//print "svc => $service_id => ".$svcTplCache[$service_id]." \n";
-				//print_r($svcCatCache[$service_id]);
 				if (isset($svcCatCache[$service_id])) {
 					foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
 						$tabCategory[$ct_id] = $ct_id;
 					} 
 				}
 				$service_id = $svcTplCache[$service_id];
-			} else {
+			}
+			else {
 				return $tabCategory;
 			}	
 		}
 	}
 	
 	function getACLSGForHost($pearDB, $host_id, $groupstr){
-		global $svcCache;
+		global $svcCache, $sgCache;
 		
 		if (!$pearDB || !isset($host_id))
 			return ;
 
+		$svc = array();
+        if (isset($sgCache[$groupstr])) {
+            foreach ($sgCache[$groupstr] as $key => $tab) {
+                foreach ($tab as $hostId => $tab2) {
+                    if ($host_id == $hostId) {
+                        foreach ($tab2 as $svcDesc => $svcId) {
+                            $svc[$svcDesc] = $svcId;
+                        }
+                    }
+                }
+            }
+        }
+		return $svc;
 		/*
 		 * Init Acl Table
 		 */
 		$svc = array();
-		
-		$str_topo = "";
-		$condition = "";		
-		
 		$condition = "";
-		if ($groupstr != "")
-			$condition = " WHERE `acl_group_id` IN (".$groupstr.") AND ";			
-		else
+		if ($groupstr != "") {
+			$condition = " WHERE `acl_group_id` IN (".$groupstr.") AND ";
+		}			
+		else {
 			$condition = " WHERE ";
+		}
 		
 		$DBRESULT =& $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar ".$condition." " .
 									"argr.acl_res_id = ar.acl_res_id " .
@@ -159,20 +169,16 @@
 		if (count($authorizedCategories)) {
 			if ($tab_svc) {
 				foreach ($tab_svc as $svc_descr => $svc_id) {
-					//print "Service : $host_id (".$hostCache[$host_id].") ".$svc_id ." | ".$svcCache[$svc_id]."\n";
 					$tab = getServiceTemplateCategoryList($svc_id);
-					if (count($tab) && 0) {
-						print "------------------\n";
-						print_r($tab);
-					}
 					foreach ($tab as $t){
-						if (isset($authorizedCategories[$t])) {							
+						if (isset($authorizedCategories[$t])) {					
 							$tab_services[$svc_descr] = $svc_id;
 						}
 					}
 				}
-			}			
-		} else if (hostIsAuthorized($host_id, $groupstr)){
+			}
+		}
+		else if (hostIsAuthorized($host_id, $groupstr)){
 			$tab_services = $tab_svc;
 			if ($svc_SG) {
 				foreach ($svc_SG as $key => $value) {
@@ -194,8 +200,6 @@
 				"AND rhr.host_host_id = '".$host_id."' " .
 				"AND res.acl_res_activate = '1'";
 		$DBRES =& $pearDB->query($query);
-		if (PEAR::isError($DBRES))
-			print "DB Error : ".$DBRES->getDebugInfo()."<br />";
 		if ($DBRES->numRows())
 			return true;
 		
