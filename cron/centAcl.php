@@ -53,6 +53,7 @@
 	    programExit("Lock file found");
 	}
 	
+	ini_set('max_execution_time', 0); 
 	$fh = fopen(LOCK_FILE, "w+");
 	fwrite($fh, time());
 	fclose($fh);
@@ -371,7 +372,7 @@
 			 * Insert datas
 			 */
 			if ($str != "") {
-				$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);			
+				$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
 				$str = "";
 			}
 		}
