@@ -132,7 +132,7 @@
 		  
 		  	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
 				if (!isset($_POST["persistant"]))
-					$_POST["persistant"] = 0;
+					$_POST["persistant"] = 1;
 				if (!isset($_POST["comment"]))
 					$_POST["comment"] = 0;
 				AddSvcDowntime($_POST["host_id"], $_POST["service_id"],  $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
