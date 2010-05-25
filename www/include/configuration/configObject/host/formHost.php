@@ -87,7 +87,7 @@
 		/*
 		 * Set Host Parents
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation, host WHERE host_id = host_parent_hp_id AND host_host_id = '".$host_id."' ORDER BY host_name");
 		for ($i = 0; $parent =& $DBRESULT->fetchRow(); $i++)
 			$host["host_parents"][$i] = $parent["host_parent_hp_id"];
 		$DBRESULT->free();
@@ -95,7 +95,7 @@
 		/*
 		 * Set Host Childs
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$host_id."'");
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation, host WHERE host_id = host_host_id AND host_parent_hp_id = '".$host_id."' ORDER BY host_name");
 		for ($i = 0; $child =& $DBRESULT->fetchRow(); $i++)
 			$host["host_childs"][$i] = $child["host_host_id"];
 		$DBRESULT->free();
