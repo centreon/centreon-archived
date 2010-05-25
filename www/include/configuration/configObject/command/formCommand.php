@@ -127,7 +127,8 @@
 		$form->addElement('header', 'information', $tabCommandType[$type]);
 	else
 		$form->addElement('header', 'information', _("Information"));
-
+	$form->addElement('header', 'furtherInfos', _("Additional Information"));
+	
 	if (isset($tabCommandType)) {
 		foreach ($tabCommandType as $id => $name) {
 			$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id);	
