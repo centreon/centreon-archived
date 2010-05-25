@@ -5,9 +5,9 @@
 <table class="ajaxOption">
 	<tr>
 		<td>{$pollerStr}:</td>
-		<td><span class="consol_button" id="instance_selected"></span></td>
+		<td><span id="instance_selected"></span></td>
 	    <td>{$hgStr}:</td>
-	    <td><span class="consol_button" id="hostgroups_selected"></span></td>
+	    <td><span id="hostgroups_selected"></span></td>
 	</tr>
 </table>
 <br/>
