@@ -95,9 +95,6 @@ ALTER TABLE `cfg_nagios` ADD `check_for_orphaned_hosts` INT NULL ;
 ALTER TABLE `cfg_nagios` ADD `external_command_buffer_slots` INT NULL ;
 ALTER TABLE `cfg_nagios` ADD `translate_passive_host_checks` INT NULL ;
 
-
-
-
 CREATE TABLE `command_arg_description` (
 	`cmd_id` INT( 11 ) NOT NULL ,
 	`macro_name` VARCHAR( 255 ) NOT NULL ,
