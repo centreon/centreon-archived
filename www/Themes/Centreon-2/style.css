@@ -260,7 +260,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .ListColCenter,.ListColLeft,.ListColRight,.ListColNoWrap    {padding:1px 3px;}
 .ListColRight 						    {padding:1px 3px;}
 
-* html #ListTable td,#ListTableMedium td,#ListTableSmall td,.ListTable td,.ListTableMedium td,.ListTableSmall td {margin:0;padding:0 3px;}
+* html #ListTable td,#ListTableMedium td,#ListTableSmall td,.ListTable td,.ListTableMedium td,.ListTableSmall td {margin:0;padding:0 4px;}
 .ListTableSmall a,.ListTable a,.ListTableMedium a,.ListTableSmall a {color:#666;z-index:5;}
 .ListTableMedium 		{width:60%;}
 .ListTableSmall 		{width:40%;}
@@ -269,7 +269,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
 .ListTable td,.ListTableMedium td,.ListTableSmall td {padding-bottom:2px;padding-top:2px;}
 
-.tab .ListTable,.tab .ListTableMedium,.tab .ListTableSmall {margin-top:21px;}
+.tab .ListTable,.tab .ListTableMedium{margin-top:21px;}
 
 .TableFooter {margin-bottom:4px;margin-top:8px;width:100%;z-index:1;}
 
