@@ -148,16 +148,20 @@
 	/*
 	 * Get minimum check interval
 	 */
-	$request = "SELECT MIN(check_interval) FROM ".$ndo_base_prefix."services";
-	$DBRESULT =& $pearDBndo->query($request);
-	$data =& $DBRESULT->fetchRow();
-	$minInterval = $data["MIN(check_interval)"];
-	
+	$request = "SELECT MIN(check_interval) FROM ".$obj->ndoPrefix."services";
+	$DBRESULT =& $obj->DBNdo->query($request);
+	if (isset($DBRESULT) && $DBRESULT->numRows()) {
+		$data =& $DBRESULT->fetchRow();
+		$minInterval = $data["MIN(check_interval)"];
+	} else {
+		$minInterval = 5;
+	}
+		
 	/*
 	 * Get minimin interval lenght
 	 */
 	$request = "SELECT MIN(interval_length) FROM cfg_nagios";
-	$DBRESULT =& $pearDB->query($request);
+	$DBRESULT =& $obj->DB->query($request);
 	$data =& $DBRESULT->fetchRow();
 	$intervalLength = $data["MIN(interval_length)"];
 	
@@ -166,10 +170,10 @@
 	 */
 	$timeUnit = $minInterval * $intervalLength;
 	
-	$request = 	"SELECT UNIX_TIMESTAMP(`status_update_time`) AS last_update, `is_currently_running`, instance_name, ".$ndo_base_prefix."instances.instance_id " .
-				"FROM `".$ndo_base_prefix."programstatus`, ".$ndo_base_prefix."instances " .
-				"WHERE ".$ndo_base_prefix."programstatus.instance_id = ".$ndo_base_prefix."instances.instance_id";
-	$DBRESULT =& $pearDBndo->query($request);
+	$request = 	"SELECT UNIX_TIMESTAMP(`status_update_time`) AS last_update, `is_currently_running`, instance_name, ".$obj->ndoPrefix."instances.instance_id " .
+				"FROM `".$obj->ndoPrefix."programstatus`, ".$obj->ndoPrefix."instances " .
+				"WHERE ".$obj->ndoPrefix."programstatus.instance_id = ".$obj->ndoPrefix."instances.instance_id";
+	$DBRESULT =& $obj->DBNdo->query($request);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		/*
 		 * Running
@@ -204,6 +208,7 @@
 				"WHERE ns.stat_label = 'Service Check Latency' " .
 				"	AND ns.stat_key LIKE 'Average' " .
 				"	AND ns.instance_id = i.instance_id";
+	$DBRESULT =& $obj->DBC->query($request);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		if ($latency != 2 && $ndo["stat_value"] >= 60) {
 			$latency = 1;
