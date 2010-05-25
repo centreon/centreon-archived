@@ -114,7 +114,7 @@ function CentreonAjaxOverlay()
 	
 	this.hide = function (id)
   	{
-		var span = document.getElementById(elementId);
+		var span = document.getElementById(id);
 		span.innerHTML = '';
   	}
 }
