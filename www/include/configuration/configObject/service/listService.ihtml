@@ -3,10 +3,7 @@
 	<table class="ajaxOption">
 		<tr>
 			<td>{$Hosts} : <input type='text' name='searchH' value='{$searchH}' /></td>
-			{if $HGFilter}
-            <td>&nbsp;&nbsp;{$HostGroup} : <input type='text' name='searchS' value='{$HGFilter}' /></td>
-			{/if}
-            <td>&nbsp;&nbsp;{$Services} : <input type='text' name='searchS' value='{$searchS}' /></td>
+			<td>&nbsp;&nbsp;{$Services} : <input type='text' name='searchS' value='{$searchS}' /></td>
             <td><input type='submit' name='Search' value='{$Search}' /></td>
 		</tr>
 	</table><br />
