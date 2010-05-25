@@ -53,18 +53,20 @@
 		/*
 		 *  Set HostGroup Childs
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
-		for ($i = 0; $hosts =& $DBRESULT->fetchRow(); $i++)
-			$hg["hg_hosts"][$i] = $hosts["host_host_id"];
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host.host_id FROM hostgroup_relation, hostgroup, host WHERE hostgroup_relation.host_host_id = host.host_id AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup.hg_id = '".$hg_id."' ORDER BY host.host_name");
+		for ($i = 0; $hosts =& $DBRESULT->fetchRow(); $i++) {
+			$hg["hg_hosts"][$i] = $hosts["host_id"];
+		}
 		$DBRESULT->free();
 		unset($hosts);
 		
 		/*
 		 *  Set HostGroup Childs
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation WHERE hg_parent_id = '".$hg_id."'");
-		for ($i = 0; $hgs =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hg_id."' AND hgr.hg_child_id = hg.hg_id ORDER BY hg.hg_name");
+		for ($i = 0; $hgs =& $DBRESULT->fetchRow(); $i++) {
 			$hg["hg_hg"][$i] = $hgs["hg_child_id"];
+		}
 		$DBRESULT->free();
 		unset($hgs);
 	}
