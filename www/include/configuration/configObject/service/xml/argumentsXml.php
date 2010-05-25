@@ -45,8 +45,8 @@
 	 */	
 	$db = new CentreonDB();
 	$xml = new CentreonXML();
+	
 	$xml->startElement('root');
-
 	$xml->startElement('main');
 	$xml->writeElement('argLabel', _('Argument'));
 	$xml->writeElement('argValue', _('Value'));
@@ -55,6 +55,7 @@
 	$xml->endElement();
 	
     if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId'])) {
+
         $cmdId = htmlentities($_GET['cmdId'], ENT_QUOTES);
         $svcId = htmlentities($_GET['svcId'], ENT_QUOTES);
         $svcTplId = htmlentities($_GET['svcTplId'], ENT_QUOTES);
@@ -87,13 +88,14 @@
 		}
         $exampleTab = split('!', $row2['command_example']);
         if (is_array($exampleTab)) {
-            foreach($exampleTab as $key => $value) {
+            foreach ($exampleTab as $key => $value) {
                 $nbTmp = $key;
+                $value = str_replace('#S#', "/", $value);
+                $value = str_replace('#BS#', "\\", $value);
                 $exampleTab['ARG'.$nbTmp] = $value;
                 unset($exampleTab[$key]);
             }
-        }
-        else {
+        } else {
             $exampleTab = array();
         }
 		
@@ -112,8 +114,7 @@
                     $valueTab['ARG'.$nbTmp] = str_replace('#BS#', "\\", $valueTab['ARG'.$nbTmp]);
                     unset($valueTab[$key]);
                 }
-            }
-            else {
+            } else {
                 $exampleTab = array();
             }    
         }
@@ -126,6 +127,9 @@
             $argTab[$row['macro_name']] = $row['macro_description']; 
         }
         
+        /*
+         * Write XML
+         */
         $style = 'list_two';
         $nbArg = 0;
         foreach ($argTab as $name => $description) {
