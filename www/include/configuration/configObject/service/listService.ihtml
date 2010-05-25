@@ -3,18 +3,18 @@
 	<table class="ajaxOption">
 		<tr>
 			<td>{$Hosts} : <input type='text' name='searchH' value='{$searchH}' /></td>
-            <td>&nbsp;-&nbsp;{$Services} : <input type='text' name='searchS' value='{$searchS}' /></td>
+			{if $HGFilter}
+            <td>&nbsp;&nbsp;{$HostGroup} : <input type='text' name='searchS' value='{$HGFilter}' /></td>
+			{/if}
+            <td>&nbsp;&nbsp;{$Services} : <input type='text' name='searchS' value='{$searchS}' /></td>
             <td><input type='submit' name='Search' value='{$Search}' /></td>
 		</tr>
 	</table><br />
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
 			<td class="Toolbar_TDSelectAction_Top">
-				{$msg.options} {$form.o1.html}
-				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}">{$msg.addT}</a>
+				{$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}">{$msg.addT}</a><input name="p" value="{$p}" type="hidden">
 			</td>
-			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}

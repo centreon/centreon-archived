@@ -51,8 +51,8 @@
 		</tr>
 		{if $o == "a" || $o == "c"}
 		<tr class="list_one">
-			<td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:check_command_args", {$helpattr});'> {$form.command_command_id_arg.label}</td>
-			<td class="FormRowValue"><div id='dynamicDiv'></div></td>
+			<td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:check_command_args", {$helpattr});'>{$form.command_command_id_arg.label}</td>
+			<td class="FormRowValue"><div id='dynamicDiv' style='padding-top:0px;border:1px;border-color:#AAA;'></div></td>
 		</tr>
 		{/if}
 		{if $o == "mc"}
