@@ -706,6 +706,26 @@
 		return $hosts;
 	}
 
+	function getMyHostGroupHostGroups($hg_id = NULL) {
+		global $pearDB;
+		
+		if (!$hg_id) 
+			return;
+		
+		$hostgroups = array();
+		$DBRESULT =& $pearDB->query("SELECT hg_child_id " .
+									"FROM hostgroup_hg_relation, hostgroup " .
+									"WHERE hostgroup_hg_relation.hg_parent_id = '".$hg_id."' " .
+									"AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
+									"ORDER BY hostgroup.hg_name");
+		while ($elem =& $DBRESULT->fetchRow()) {
+			$hosts[$elem["hg_child_id"]] = $elem["hg_child_id"];
+		}
+		$DBRESULT->free();
+		unset($elem);
+		return $hosts;
+	}
+
 	function getMyHostGroupCommunity($hg_id = NULL)	{
 		global $pearDB;
 		
@@ -1448,23 +1468,27 @@
 		return count($data);
 	}
 	
-	function HG_has_one_or_more_host($hg_id){
-		global $pearDBO, $pearDB, $pearDBndo, $access, $is_admin, $lca, $hoststr, $servicestr;
-				
-		if ($is_admin)
-			$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$hg_id."'");
-		else
-			$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND hgr.host_host_id IN ($hoststr)");
-		while ($h =& $DBRESULT->fetchRow()) {
-			if ($is_admin)
-				return true;
-			else
-				$DBRESULT2 =& $pearDBO->query("SELECT service_id FROM index_data WHERE index_data.host_id = '".$h["host_host_id"]."' AND service_id IN ($servicestr)");
-			while ($flag =& $DBRESULT2->fetchRow())
-					return true;
-			
+	function HG_has_one_or_more_host($hg_id, $hgHCache, $hgHgCache, $is_admin, $lca) {
+		global $pearDBO, $access, $servicestr;
+		
+		if (isset($hgHgCache[$hg_id]) && count($hgHgCache[$hg_id]))
+			return true;
+		
+		if (isset($hgHCache) && isset($hgHCache[$hg_id])) {
+			foreach ($hgHCache[$hg_id] as $host_id) {
+				if (isset($lca["LcaHost"][$host_id]) || $is_admin) {
+					if ($is_admin) {
+						return true;
+					} else {
+						$DBRESULT2 =& $pearDBO->query("SELECT service_id FROM index_data WHERE index_data.host_id = '".$host_id."' AND service_id IN ($servicestr)");
+						while ($flag =& $DBRESULT2->fetchRow()) {
+							return true;
+						}
+					}
+				} 
+			}
 		}
-		return false;	
+		return false;
 	}
 	
 	function getMyHostServiceID($service_id = NULL){

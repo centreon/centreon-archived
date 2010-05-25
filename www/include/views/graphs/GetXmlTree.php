@@ -39,8 +39,9 @@
 	/*
 	 * Include config file
 	 */
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
 	
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	
 	$pearDB 	= new CentreonDB();
@@ -48,7 +49,6 @@
 	$pearDBO 	= new CentreonDB("centstorage");
 	
 	/* PHP functions */
-	
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	include_once $centreon_path . "www/include/views/graphs/common-Func.php";
 
@@ -148,6 +148,19 @@
 		$DBRESULT->free();
 		unset($data);
 		return $hgHCache;
+	}
+	
+	function setHgHgCache($pearDB) {
+		$hgHgCache = array();
+		$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ hg_parent_id, hg_child_id FROM hostgroup_hg_relation");
+		while ($data =& $DBRESULT->fetchRow()) {
+			if (!isset($hgHgCache[$data["hg_parent_id"]]))
+				$hgHgCache[$data["hg_parent_id"]] = array();
+			$hgHgCache[$data["hg_parent_id"]][$data["hg_child_id"]] = 1;
+		}
+		$DBRESULT->free();
+		unset($data);
+		return $hgHgCache;
 	}	
 	
 	$type = "root";
@@ -168,6 +181,35 @@
 		$buffer->writeAttribute("id", $url_var);		
 		
 		if ($type == "HG") {
+			if (!isset($hgHCache)) {
+				$hgHCache = sethgHCache($pearDB);
+			}
+			if (!isset($hgHgCache)) {
+				$hgHgCache = setHgHgCache($pearDB);
+			}
+			
+			/*
+			 * Get HostGroups
+			 */
+			$hostgroups = getMyHostGroupHostGroups($id);
+			if (isset($hostgroups) && count($hostgroups)) {
+				foreach ($hostgroups as $hg_id) {
+					if (isset($hgCache[$hg_id]) && $hg_id){
+					    if (HG_has_one_or_more_host($hg_id, $hgHCache, $hgHgCache, $is_admin, $lca)) {
+						    $buffer->startElement("item");
+							$buffer->writeAttribute("child", "1");
+							$buffer->writeAttribute("nocheckbox", "1");
+							$buffer->writeAttribute("id", "HG_".$hg_id);
+							$buffer->writeAttribute("text", $hgCache[$hg_id]);
+							$buffer->writeAttribute("im0", "../16x16/clients.gif");
+							$buffer->writeAttribute("im1", "../16x16/clients.gif");
+							$buffer->writeAttribute("im2", "../16x16/clients.gif");						
+							$buffer->endElement();			       	
+					    }
+					}
+				}			
+			}
+			
 			/*
 			 * Get Hosts
 			 */
@@ -297,19 +339,23 @@
 			}
 			$DBRESULT->free();
 		} else if ($type == "RR") {
-			if (!isset($hgHCache))
+			if (!isset($hgHCache)) {
 				$hgHCache = sethgHCache($pearDB);
+			}
+			if (!isset($hgHgCache)) {
+				$hgHgCache = setHgHgCache($pearDB);
+			}
 			
 			/*
 			 * Send Host Group list
 			 */
 			if ($search != "")
-				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID"))." ORDER BY `hg_name`");			
+				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id NOT IN (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation) AND (hg_id IN (SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL) OR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID")).") ORDER BY `hg_name`");			
 			else
-				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID"))." ORDER BY `hg_name`");
+				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id NOT IN (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation) AND (hg_id IN (SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL) OR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID")).") ORDER BY `hg_name`");
 			while ($HG =& $DBRESULT->fetchRow()) {
 				$i++;				
-				if (HG_has_one_or_more_host($HG["hg_id"])){
+				if (HG_has_one_or_more_host($HG["hg_id"], $hgHCache, $hgHgCache, $is_admin, $lca)){
 				    $buffer->startElement("item");
 					$buffer->writeAttribute("child", "1");
 					//if (!$search && !$search_host && !$search_service)
