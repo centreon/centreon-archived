@@ -51,6 +51,12 @@
 		$hg = array_map("myDecode", $DBRESULT->fetchRow());
 		
 		/*
+		 * Get Parent Groups
+		 */
+		$hostGroupParents = array();
+		$hostGroupParents = getHGParents($hg_id, $hostGroupParents, $pearDB);
+		
+		/*
 		 *  Set HostGroup Childs
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host.host_id FROM hostgroup_relation, hostgroup, host WHERE hostgroup_relation.host_host_id = host.host_id AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup.hg_id = '".$hg_id."' ORDER BY host.host_name");
@@ -91,8 +97,11 @@
 	
 	$hostGroups = array();
 	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $EDITCOND ORDER BY hg_name");
-	while ($hgs =& $DBRESULT->fetchRow())
-		$hostGroups[$hgs["hg_id"]] = $hgs["hg_name"];
+	while ($hgs =& $DBRESULT->fetchRow()) {
+		if (!isset($hostGroupParents[$hgs["hg_id"]])) {
+			$hostGroups[$hgs["hg_id"]] = $hgs["hg_name"];
+		}
+	}
 	$DBRESULT->free();
 	unset($hgs);
 	
@@ -175,6 +184,7 @@
 	
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
+	
 	$hgActivation[] = &HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Enabled"), '1');
 	$hgActivation[] = &HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Disabled"), '0');
 	$form->addGroup($hgActivation, 'hg_activate', _("Status"), '&nbsp;');

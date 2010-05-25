@@ -39,6 +39,21 @@
 	if (!isset ($oreon))
 		exit ();
 
+
+	function getHGParents($hg_id, $parentList, $pearDB) {
+		/*
+		 * Get Parent Groups
+		 */
+		$DBRESULT =& $pearDB->query("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id = '".$hg_id."'");
+		while ($hgs =& $DBRESULT->fetchRow()) {
+			$parentList[$hgs["hg_parent_id"]] = $hgs["hg_parent_id"];
+			$parentList = getHGParents($hgs["hg_parent_id"], $parentList, $pearDB);
+		}
+		$DBRESULT->free();
+		unset($hgs);
+		return $parentList;
+	}
+
 	function testHostGroupExistence ($name = NULL)	{
 		global $pearDB, $form;
 		$id = NULL;
