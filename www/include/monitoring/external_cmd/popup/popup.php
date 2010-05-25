@@ -45,7 +45,7 @@
 	$pearDB = new CentreonDB();
 	
 	session_start();
-	$oreon = $_SESSION['oreon'];
+	$oreon = $_SESSION['centreon'];
 	
 	if (!isset($oreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_GET['p'])) {
 		exit;

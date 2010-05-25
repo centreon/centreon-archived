@@ -49,7 +49,7 @@
 		
 		CentreonSession::start();
 		
-		$oreon = $_SESSION['oreon'];
+		$oreon = $_SESSION['centreon'];
 		
 		if (isset($_POST["limit"]) && isset($_POST["url"]))
 			$oreon->historyLimit[$_POST["url"]] = $_POST["limit"];

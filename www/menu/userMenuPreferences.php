@@ -42,9 +42,9 @@
 	require_once $centreon_path."/www/class/centreonSession.class.php";
 	
 	session_start();
-	if(!isset($_SESSION['oreon']) || !isset($_GET['div']) || !isset($_GET['uid']))
+	if(!isset($_SESSION['centreon']) || !isset($_GET['div']) || !isset($_GET['uid']))
 		exit();
-	$oreon = $_SESSION['oreon'];	
+	$oreon = $_SESSION['centreon'];	
 	 
 	$pearDB = new CentreonDB();
 	

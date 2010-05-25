@@ -44,7 +44,7 @@
 	require_once $centreon_path . "www/class/centreonGMT.class.php";
 	
 	session_start();
-	$oreon = $_SESSION['oreon'];
+	$oreon = $_SESSION['centreon'];
 	
 	$currentTime = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $oreon->user->getMyGMT());
 		

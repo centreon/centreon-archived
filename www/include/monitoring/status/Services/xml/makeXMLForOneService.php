@@ -47,7 +47,7 @@
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	session_start();
-	$oreon = $_SESSION['oreon'];
+	$oreon = $_SESSION['centreon'];
 	
 	$centreonlang = new CentreonLang($centreon_path, $oreon);
 	$centreonlang->bindLang();	
