@@ -285,10 +285,12 @@
 					 	$DBRESULT3 =& $pearDB->query($mTpRq1);
 						$multiTP_logStr = "";
 						while ($hst =& $DBRESULT3->fetchRow()) {
-							$mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES" .
-										"('".$maxId["MAX(host_id)"]."', '".$hst['host_tpl_id']."', '". $hst['order'] ."')";
-					 		$DBRESULT4 =& $pearDB->query($mTpRq2);
-					 		$multiTP_logStr .= $hst['host_tpl_id'] . ",";
+							if ($hst['host_tpl_id'] != $maxId["MAX(host_id)"]) {
+								$mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES" .
+											"('".$maxId["MAX(host_id)"]."', '".$hst['host_tpl_id']."', '". $hst['order'] ."')";
+						 		$DBRESULT4 =& $pearDB->query($mTpRq2);
+						 		$multiTP_logStr .= $hst['host_tpl_id'] . ",";
+							}
 						}
 						$multiTP_logStr = trim($multiTP_logStr, ",");
 						$fields["templates"] = $multiTP_logStr;
@@ -1461,13 +1463,13 @@
 			$ret = $ret["host_parents"];
 		else
 			$ret = $form->getSubmitValue("host_parents");
-		for($i = 0; $i < count($ret); $i++)	{
+		for ($i = 0; $i < count($ret); $i++)	{
 		    if ($ret[$i] != $host_id) {
-			$rq = "INSERT INTO host_hostparent_relation ";
-			$rq .= "(host_parent_hp_id, host_host_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$ret[$i]."', '".$host_id."')";
-			$DBRESULT =& $pearDB->query($rq);
+				$rq = "INSERT INTO host_hostparent_relation ";
+				$rq .= "(host_parent_hp_id, host_host_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$ret[$i]."', '".$host_id."')";
+				$DBRESULT =& $pearDB->query($rq);
 		    }
 		}
 	}
@@ -1486,11 +1488,11 @@
 		for($i = 0; $i < count($ret); $i++)	{
 			if (!isset($hpars[$ret[$i]]) && isset($ret[$i]))	{
 			    if ($ret[$i] != $host_id) {
-				$rq = "INSERT INTO host_hostparent_relation ";
-				$rq .= "(host_parent_hp_id, host_host_id) ";
-				$rq .= "VALUES ";
-				$rq .= "('".$ret[$i]."', '".$host_id."')";
-				$DBRESULT =& $pearDB->query($rq);
+					$rq = "INSERT INTO host_hostparent_relation ";
+					$rq .= "(host_parent_hp_id, host_host_id) ";
+					$rq .= "VALUES ";
+					$rq .= "('".$ret[$i]."', '".$host_id."')";
+					$DBRESULT =& $pearDB->query($rq);
 			    }
 			}
 		}
