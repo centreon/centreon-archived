@@ -53,7 +53,7 @@
 	<div id='tab3' class='tab'>
 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/centreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:centreon_login", {$helpattr});'> {$form.contact_oreon.label}</td><td class="FormRowValue">{$form.contact_oreon.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:password", {$helpattr});'> {$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:password2", {$helpattr});'> {$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
