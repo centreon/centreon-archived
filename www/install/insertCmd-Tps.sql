@@ -56,6 +56,94 @@ INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_ex
 INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_example`, `command_type`, `graph_id`, `cmd_cat_id`) VALUES(97, 'check_centreon_memory', '$USER1$#S#check_centreon_snmp_memory -H $HOSTADDRESS$ -C $USER2$ -v 1 -w 80 -c 90', '', 2, 4, NULL);
 
 --
+-- table `command_arg_description`
+--
+
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (2, "ARG1", "share");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (2, "ARG2", "user");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (2, "ARG3", "password");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (2, "ARG4", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (2, "ARG5", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (4, "ARG1", "status");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (4, "ARG2", "output");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (5, "ARG1", "SNMP version");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (5, "ARG2", "community");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (5, "ARG3", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (5, "ARG4", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (6, "ARG1", "count");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (6, "ARG2", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (6, "ARG3", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (7, "ARG1", "SNMP version");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (7, "ARG2", "community");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (7, "ARG3", "process name");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG1", "disk number");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG2", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG3", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG4", "community");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG5", "SNMP version");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG1", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG2", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG3", "path, partition");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (10, "ARG1", "interface");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (10, "ARG2", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (10, "ARG3", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (10, "ARG4", "community");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (10, "ARG5", "SNMP version");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (10, "ARG6", "Max bandwidth");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (14, "ARG1", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (14, "ARG2", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (15, "ARG1", "path");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (15, "ARG2", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (15, "ARG3", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (16, "ARG1", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (16, "ARG2", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (17, "ARG1", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (17, "ARG2", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (17, "ARG3", "process owner");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (18, "ARG1", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (18, "ARG2", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (21, "ARG1", "drive letter");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (21, "ARG2", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (21, "ARG3", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (23, "ARG1", "port");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (23, "ARG2", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (23, "ARG3", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (27, "ARG1", "hostname");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (29, "ARG1", "interface");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (30, "ARG1", "query address");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (31, "ARG1", "OID");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (31, "ARG2", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (31, "ARG3", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (33, "ARG1", "port");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (34, "ARG1", "variable");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (34, "ARG2", "params");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (34, "ARG3", "password");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (34, "ARG4", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (34, "ARG5", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (59, "ARG1", "port");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (59, "ARG2", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (59, "ARG3", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (62, "ARG1", "interface");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (62, "ARG2", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (62, "ARG3", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (62, "ARG4", "SNMP version");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (76, "ARG1", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (76, "ARG2", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (78, "ARG1", "drive letter");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (78, "ARG2", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (78, "ARG3", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (94, "ARG1", "community");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (94, "ARG2", "SNMP version");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (94, "ARG3", "OID");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (94, "ARG4", "warning");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (94, "ARG5", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (95, "ARG1", "process name");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (95, "ARG2", "memory thresholds");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (96, "ARG1", "community");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (96, "ARG2", "critical");
+INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (96, "ARG3", "warning");
+
+--
 -- table `timeperiod`
 --
 
