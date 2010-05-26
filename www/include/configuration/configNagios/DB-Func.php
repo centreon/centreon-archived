@@ -91,7 +91,8 @@
 	
 	function deleteNagiosInDB ($nagios = array())	{
 		global $pearDB;
-		foreach($nagios as $key => $value)	{
+		
+		foreach ($nagios as $key => $value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM cfg_nagios WHERE nagios_id = '".$key."'");
 		}
 		$DBRESULT =& $pearDB->query("SELECT nagios_id FROM cfg_nagios WHERE nagios_activate = '1'");		  
@@ -104,7 +105,7 @@
 	}
 	
 	function multipleNagiosInDB ($nagios = array(), $nbrDup = array())	{
-		foreach($nagios as $key=>$value)	{
+		foreach ($nagios as $key => $value)	{
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
@@ -126,7 +127,8 @@
 	}
 	
 	function updateNagiosInDB ($nagios_id = NULL)	{
-		if (!$nagios_id) return;
+		if (!$nagios_id) 
+			return;
 		updateNagios($nagios_id);
 	}	
 	
@@ -137,8 +139,10 @@
 	
 	function insertNagios($ret = array())	{
 		global $form, $pearDB, $centreon;
+		
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+		
 		$rq = "INSERT INTO cfg_nagios (" .
 				"`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , `precached_object_file`, `object_cache_file` , `temp_file` , " .
 				"`temp_path` , `check_result_path`, `max_check_result_file_age`, " .
@@ -262,9 +266,9 @@
         isset($ret["check_for_orphaned_services"]["check_for_orphaned_services"]) && $ret["check_for_orphaned_services"]["check_for_orphaned_services"] != 2 ? $rq .= "'".$ret["check_for_orphaned_services"]["check_for_orphaned_services"]."',  " : $rq .= "'2', ";
         isset($ret["check_service_freshness"]["check_service_freshness"]) && $ret["check_service_freshness"]["check_service_freshness"] != 2 ? $rq .= "'".$ret["check_service_freshness"]["check_service_freshness"]."',  " : $rq .= "'2', ";
         isset($ret["service_freshness_check_interval"]) && $ret["service_freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["service_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["additional_freshness_latency"]) && $ret["additional_freshness_latency"] != NULL ? $rq .= "'".htmlentities($ret["additional_freshness_latency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["cached_host_check_horizon"]) && $ret["cached_host_check_horizon"] != NULL ? $rq .= "'".htmlentities($ret["cached_host_check_horizon"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["cached_service_check_horizon"]) && $ret["cached_service_check_horizon"] != NULL ? $rq .= "'".htmlentities($ret["cached_service_check_horizon"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["additional_freshness_latency"]) && $ret["additional_freshness_latency"] != NULL ? $rq .= "'".htmlentities($ret["additional_freshness_latency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["check_host_freshness"]["check_host_freshness"]) && $ret["check_host_freshness"]["check_host_freshness"] != 2 ? $rq .= "'".$ret["check_host_freshness"]["check_host_freshness"]."',  " : $rq .= "'2', ";
         isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["date_format"]) && $ret["date_format"] != NULL ? $rq .= "'".htmlentities($ret["date_format"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -455,7 +459,6 @@
 		isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"]) && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != NULL ? $rq .= "passive_host_checks_are_soft = '".htmlentities($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"], ENT_QUOTES)."',  " : $rq .= "passive_host_checks_are_soft = NULL, ";
 		isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]) && $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] != NULL ? $rq .= "check_for_orphaned_hosts = '".htmlentities($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"], ENT_QUOTES)."',  " : $rq .= "check_for_orphaned_hosts = NULL, ";
 		isset($ret["external_command_buffer_slots"]) && $ret["external_command_buffer_slots"]!= NULL ? $rq .= "external_command_buffer_slots = '".htmlentities($ret["external_command_buffer_slots"], ENT_QUOTES)."',  " : $rq .= " = NULL, ";
-		//isset($ret[""]) && $ret[""] != NULL ? $rq .= " = '".htmlentities($ret[""], ENT_QUOTES)."',  " : $rq .= " = NULL, ";
 		
 		$rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
