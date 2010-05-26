@@ -262,20 +262,6 @@
 		  	/*
 		  	 * Get all host in hostgroups
 		  	 */
-			/*
-			$DBRESULT =& $pearDB->query("SELECT `hg_id` FROM `hostgroup`, `acl_resources_hg_relations` WHERE acl_res_id = '".$res2["acl_res_id"]."' AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
-	  		while ($hostgroup =& $DBRESULT->fetchRow()){
-				if (isset($hostHGRelation[$hostgroup["hg_id"]])) {
-					foreach ($hostHGRelation[$hostgroup["hg_id"]] as $host_id) {
-						if ($hostCache[$host_id])
-							$Host[$host_id] = $hostCache[$host_id];	
-						else
-							print "Host $host_id unknown !\n";
-					}
-				}
-	  		}
-			$DBRESULT->free();
-			*/
 	  		if (isset($hgResCache[$res2['acl_res_id']])) {
 			    foreach($hgResCache[$res2['acl_res_id']] as $hgId) {
     			    if (isset($hostHGRelation[$hgId])) {
