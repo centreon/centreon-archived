@@ -73,6 +73,10 @@
 		acknowledgeHostDisable();
 	}
 
+	if (isset($param["cmd"]) && $param["cmd"] == 16 && isset($param["output"])) {
+		submitHostPassiveCheck();
+	}
+	
 	if ($min){
 		switch ($o)	{
 			default : require_once($pathTools."tools.php"); break;

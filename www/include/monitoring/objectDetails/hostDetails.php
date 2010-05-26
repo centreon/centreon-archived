@@ -307,6 +307,8 @@
 		$tpl->assign("m_mon_ed_flapping_detect", _("Flap Detection"));
 		$tpl->assign("m_mon_flap_detection", _("Flap Detection"));
 		$tpl->assign("m_mon_services_en_acknowledge", _("Acknowledged"));
+		$tpl->assign("m_mon_submit_passive", _("Submit result for this host"));
+		
 		/*
 		 * Strings are used by javascript command handler
 		 */

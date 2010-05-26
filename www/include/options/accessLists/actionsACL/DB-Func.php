@@ -230,6 +230,8 @@
 		$actions[] = "host_flap_detection";
 		$actions[] = "host_checks_for_services";
 		$actions[] = "host_notifications_for_services";
+		$actions[] = "host_submit_result";
+		
 		
 		# Global Nagios External Commands
 		$actions[] = "global_shutdown";

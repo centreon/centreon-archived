@@ -350,6 +350,18 @@
 		return NULL;
 	}
 	
+	function submitHostPassiveCheck() {
+		global $pearDB, $key, $is_admin, $oreon;
+		$actions = false;		
+		$actions = $oreon->user->access->checkAction("host_submit_result");
+		
+		if ($actions == true || $is_admin) {
+			$key = $_GET["host_name"];
+			$flg = send_cmd(" PROCESS_HOST_CHECK_RESULT;".$_GET["host_name"].";".$_GET["return_code"].";".$_GET["output"]."|".$_GET["dataPerform"], GetMyHostPoller($pearDB, $_GET["host_name"]));
+			return $flg;
+		}
+		return NULL;
+	}
 	
 	function notifi_svc_host_hostgroup($arg, $type){
 		global $tab, $pearDB, $is_admin;

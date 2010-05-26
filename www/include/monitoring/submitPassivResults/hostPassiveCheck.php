@@ -41,8 +41,9 @@
 	if (!isset ($oreon))
 		exit ();
 
-	require_once ($centreon_path . "www/class/centreonHost.class.php");
-	require_once ($centreon_path . "www/class/centreonDB.class.php");
+	require_once $centreon_path . "www/class/centreonHost.class.php";
+	require_once $centreon_path . "www/class/centreonDB.class.php";
+	require_once $centreon_path . "www/class/centreonACL.class.php";
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	isset($_GET["cmd"]) ? $cmd = $_GET["cmd"] : $cmd = NULL;
@@ -50,13 +51,19 @@
 	$hObj = new CentreonHost($pearDB);
 	$path = "./include/monitoring/submitPassivResults/";
 	$pearDBndo = new CentreonDB("ndo");
+	$aclObj = new CentreonACL($pearDB);
 	
 	# HOST LCA
 	if (!$is_admin){
-		$host_id = $hObj->getHostId($host_name);
-		//todo acl
-		$flag_acl = 1;
+		$hostTab = $oreon->user->access->getHostsString(null, $pearDBndo);
+		foreach ($hostTab as $value) {
+			if ($value == $host_name)
+				$flag_acl = 1;
+		}
 	}
+	
+	$res = $pearDBndo->query($query);
+	$hostTab = array();
 	
 	if ($is_admin || ($flag_acl && !$is_admin)){
 
@@ -70,25 +77,11 @@
 
 		$hosts = array($host_name=>$host_name);
 
-		$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' ORDER BY host_name");
-		$host =& $DBRESULT->fetchRow();
-		$host_id = $host["host_id"];
-		
-		$services = array();
-		if (isset($host_id))
-			$services_id = getMyHostServices($host_id);
-		
-		$services = array();	
-		foreach ($services_id as $id => $value){
-			$svc_desc = getMyServiceName($id);
-			$services[$svc_desc] = $svc_desc;
-		}
-		
 		$form->addElement('select', 'host_name', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
 	   	
 		$form->addRule('host_name', _("Required Field"), 'required');
 	
-		$return_code = array("0" => "UP", "1" => "DOWN");
+		$return_code = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 	
 		$form->addElement('select', 'return_code', _("Check result"),$return_code);
 		$form->addElement('text', 'output', _("Check output"), array("size"=>"100"));
