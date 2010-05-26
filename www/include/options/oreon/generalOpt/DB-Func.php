@@ -101,16 +101,12 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		
-		updateOption($pearDB, "nagios_path", isset($ret["nagios_path"]) && $ret["nagios_path"] != NULL ? htmlentities($ret["nagios_path"], ENT_QUOTES) : "NULL");
-		updateOption($pearDB, "nagios_path_bin", isset($ret["nagios_path_bin"]) && $ret["nagios_path_bin"] != NULL ? htmlentities($ret["nagios_path_bin"], ENT_QUOTES) : "NULL");
-		updateOption($pearDB, "nagios_init_script", isset($ret["nagios_init_script"]) && $ret["nagios_init_script"] != NULL ? htmlentities($ret["nagios_init_script"], ENT_QUOTES) : "NULL");
 		updateOption($pearDB, "nagios_path_img", isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? htmlentities($ret["nagios_path_img"], ENT_QUOTES) : "NULL");
 		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? htmlentities($ret["nagios_path_plugins"], ENT_QUOTES) : "NULL");
-		updateOption($pearDB, "nagios_version", isset($ret["nagios_version"]) && $ret["nagios_version"] != NULL ? $ret["nagios_version"] : "NULL");
+		updateOption($pearDB, "monitoring_engine", isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != NULL ? $ret["monitoring_engine"] : "NULL");
 		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? htmlentities($ret["mailer_path_bin"], ENT_QUOTES) : "NULL");
 		
 		$oreon->initOptGen($pearDB);
-
 	}
 
 	function updateSNMPConfigData($gopt_id = null)	{

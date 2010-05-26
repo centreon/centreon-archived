@@ -40,22 +40,10 @@
 		exit();
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-	
 	while ($opt =& $DBRESULT->fetchRow()) {
 		$gopt[$opt["key"]] = myDecode($opt["value"]);
 	}
 	
-	/*
-	 * Database retrieve information for differents elements list we need on the page
-	 */
-	
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
-
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
 	$attrsAdvSelect = null;
@@ -70,17 +58,11 @@
 	 * Nagios information
 	 */
 	$form->addElement('header', 'nagios', _("Nagios information"));
-	$form->addElement('text', 'nagios_path', _("Directory"), $attrsText);
-	$form->addElement('text', 'nagios_path_bin', _("Directory + Binary"), $attrsText);
-	$form->addElement('text', 'nagios_init_script', _("Init Script"), $attrsText);
 	$form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
 	$form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
 	$form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
 	
-	$form->addElement('select', 'nagios_version', _("Nagios Release"), array(2=>"2", 3=>"3"));
-	
-	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, _("Yes"), '1');
-	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, _("No"), '0');
+	$form->addElement('select', 'monitoring_engine', _("Engine"), array("ICINGA" => "Icinga", "NAGIOS" => "Nagios"));
 	
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
@@ -106,18 +88,18 @@
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 	
-	//$form->addRule('nagios_path_plugins', ("Can't write in directory"), 'is_writable_path');
 	$form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path');
 	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
-	//$form->addRule('nagios_path_bin', _("Can't execute binary"), 'is_executable_binary');
 
-	#
-	##End of form definition
-	#
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path."/nagios", $tpl);
+
+	if (!isset($gopt["monitoring_engine"])) {
+		$gopt["monitoring_engine"] = "NAGIOS";
+	}
 
 	$form->setDefaults($gopt);
 
@@ -126,10 +108,14 @@
 
     $valid = false;
 	if ($form->validate())	{
-		# Update in DB
+		/*
+		 * Update in DB
+		 */
 		updateNagiosConfigData($form->getSubmitValue("gopt_id"));
 		
-		# Update in Oreon Object
+		/*
+		 * Update in Oreon Object
+		 */
 		$oreon->initOptGen($pearDB);
 		
 		$o = NULL;
@@ -142,21 +128,19 @@
 
 	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'"));
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
-	$tpl->assign("genOpt_nagios_properties", _("Nagios Properties"));
-	$tpl->assign("genOpt_nagios_version", _("Nagios version"));
-	$tpl->assign("genOpt_nagios_init_script", _("Initialization Script "));
-	$tpl->assign("genOpt_nagios_direstory", _("Nagios Directories"));
+	$tpl->assign("genOpt_nagios_version", _("Monitoring Engine"));
+	$tpl->assign("genOpt_nagios_direstory", _("Engine Directories"));
 	$tpl->assign("genOpt_mailer_path", _("Mailer path"));
-	$tpl->assign("genOpt_ndo_configuration", _("NDO Configuration"));
+	$tpl->assign("genOpt_monitoring_properties", "Monitoring engine properties");
 	
 	$tpl->assign('valid', $valid);
 	$tpl->display("form.ihtml");

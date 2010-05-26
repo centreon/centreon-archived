@@ -113,6 +113,11 @@
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
+			} else if (($key == "nagios_user" || $key == "nagios_group") && $value)	{
+				if ($centreon->optGen["monitoring_engine"] == "ICINGA") {
+					$key = str_replace("nagios", "icinga", $key);
+				}
+				$str .= $key."=".$value."\n"; 
 			}
 			else if ($key == "debug_level_opt");
 			else

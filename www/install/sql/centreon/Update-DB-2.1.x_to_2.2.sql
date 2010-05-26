@@ -194,5 +194,8 @@ UPDATE      `topology` SET `topology_url` = NULL WHERE  `topology_parent` = '5' 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_icone`) VALUES (NULL, "System Information", '505', '50501', '10', '1','./include/options/sysInfos/index.php', './img/icones/16x16/about.gif');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 50502, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
 ALTER TABLE `command` ADD `command_comment` TEXT NULL ;
+
+INSERT INTO `options` (`key`, `value`) VALUES ('monitoring_engine', 'NAGIOS');
+
 ALTER TABLE `modules_informations` ADD `svc_tools` ENUM( '0', '1' ) NOT NULL DEFAULT '0', ADD `host_tools` ENUM( '0', '1' ) NOT NULL DEFAULT '0', ADD INDEX ( svc_tools, host_tools );
 
