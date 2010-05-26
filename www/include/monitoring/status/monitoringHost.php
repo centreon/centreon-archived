@@ -108,6 +108,9 @@
 					case "hd" 	: 
 						require_once($pathDetails."hostDetails.php");
 						break;
+					case "hpc" 		: 
+						require_once("./include/monitoring/submitPassivResults/hostPassiveCheck.php");
+						break;
 					case "hak" 	: 
 						require_once($pathRoot."acknowlegement/hostAcknowledge.php");
 						break;
