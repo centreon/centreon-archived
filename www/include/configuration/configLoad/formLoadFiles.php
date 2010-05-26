@@ -144,7 +144,7 @@
 			case "application/x-zip-compressed" : $msg .= $fDataz["name"]." "._("Not supported extension")."<br />"; break;
 			case "application/x-gzip" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." "._("File loading OK")."<br />"; break; // tar.gz
 			case "application/x-tar" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." "._("File loading OK")."<br />"; break; // tar
-			case "application/octet-stream" : $file->moveUploadedFile($nagiosCFGPath); $msg .= _("Manual filling OK")." "._("File loading OK")."<br />"; break; // Text
+			case "application/octet-stream" : $file->moveUploadedFile($nagiosCFGPath); $msg .= _("Manual filling OK")."... "._("File loading OK")."<br />"; break; // Text
 			default : $msg .= _("File loading KO")."<br />";
 		}
 
