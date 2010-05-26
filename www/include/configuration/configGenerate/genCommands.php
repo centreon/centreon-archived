@@ -70,6 +70,17 @@
 				$str1 .= print_line("command_line", str_replace("@MAILER@", $oreon->optGen["mailer_path_bin"], $command["command_line"]));
 			if ($command["command_example"]) 
 				$str1 .= print_line(";command_example", $command["command_example"]);
+			
+			/*
+			 * Display arguments used in the command line.
+			 */
+			$DBRESULT2 =& $pearDB->query("SELECT macro_name, macro_description FROM command_arg_description WHERE cmd_id = '".$command["command_id"]."' ORDER BY macro_name");
+			while ($args =& $DBRESULT2->fetchRow())	{
+				$str2 .= print_line(";\$".$args["macro_name"]."\$", $args["macro_description"]);
+			}
+			$DBRESULT2->free();
+			unset($args);	
+			
 			$str1 .= "}\n\n";
 			$i1++;
 		} else if ($command["command_type"] == 2)	{
@@ -84,6 +95,17 @@
 				$str2 .= print_line("command_line", str_replace("@MAILER@", $oreon->optGen["mailer_path_bin"], $command["command_line"]));
 			if ($command["command_example"]) 
 				$str2 .= print_line(";command_example", $command["command_example"]);
+			
+			/*
+			 * Display arguments used in the command line.
+			 */
+			$DBRESULT2 =& $pearDB->query("SELECT macro_name, macro_description FROM command_arg_description WHERE cmd_id = '".$command["command_id"]."' ORDER BY macro_name");
+			while ($args =& $DBRESULT2->fetchRow())	{
+				$str2 .= print_line(";\$".$args["macro_name"]."\$", $args["macro_description"]);
+			}
+			$DBRESULT2->free();
+			unset($args);
+			
 			$str2 .= "}\n\n";
 			$i2++;
 		}
