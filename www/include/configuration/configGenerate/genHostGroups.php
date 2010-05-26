@@ -1,4 +1,4 @@
-<?php
+k<?php
 /*
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -66,13 +66,15 @@
 	$str = NULL;
 	$hostGroup = array();
 	$request =  "SELECT DISTINCT hg_id, hg_name, hg_alias, hg_comment, hg_notes, hg_notes_url, hg_action_url " .
-				"FROM hostgroup hg, hostgroup_relation hgr, ns_host_relation nhr, host h " .
+				"FROM hostgroup hg, hostgroup_relation hgr, ns_host_relation nhr, hostgroup_hg_relation hghgr, host h " .
 				"WHERE hg.hg_activate = '1' " .
-					"AND hgr.hostgroup_hg_id = hg.hg_id " .
+					"AND (hg.hg_id = hgr.hostgroup_hg_id " .
 					"AND hgr.host_host_id = h.host_id " .
 					"AND nhr.host_host_id = hgr.host_host_id " .
-					"AND h.host_activate = '1' " .
 					"AND nhr.nagios_server_id = '".$tab['id']."' " .
+					"AND h.host_activate = '1')" .
+					"OR (hghgr.hg_parent_id = hg.hg_id " .
+					"AND hghgr.hg_parent_id IS NOT NULL) " .
 				"ORDER BY `hg_name`";
 	$DBRESULT =& $pearDB->query($request);
 	while ($hostGroup =& $DBRESULT->fetchRow())	{
