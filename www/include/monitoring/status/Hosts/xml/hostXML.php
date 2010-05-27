@@ -36,7 +36,8 @@
  * 
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";	
+	//include_once "@CENTREON_ETC@/centreon.conf.php";	
+	include_once "/etc/centreon/centreon.conf.php";	
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	
@@ -55,7 +56,7 @@
 	/*
 	 * Set Default Poller
 	 */
-	$obj->getDefaultPoller();
+	$obj->getDefaultFilters();
 	
 	/*
 	 *  Check Arguments from GET
@@ -65,6 +66,7 @@
 	$num 		= $obj->checkArgument("num", $_GET, 0);
 	$limit 		= $obj->checkArgument("limit", $_GET, 20);
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
@@ -74,14 +76,12 @@
 	 * Backup poller selection
 	 */
 	$obj->setInstanceHistory($instance);
+	$obj->setHostGroupsHistory($hostgroups);
 	
-	if (!$instance)
-		$instance = "ALL";
-
 	/* 
 	 * Get Host status 
 	 */
-	$rq1 = 	" SELECT DISTINCT no.name1, nhs.current_state," .
+	$rq1 = 	" SELECT DISTINCT nhs.current_state," .
 			" nhs.problem_has_been_acknowledged, " .
 			" nhs.passive_checks_enabled," .
 			" nhs.active_checks_enabled," .
@@ -104,7 +104,11 @@
 			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts nh";
 	if (!$obj->is_admin)	
 		$rq1 .= ", centreon_acl ";
-		 
+	
+	if ($hostgroups) {
+		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hm ";
+	}
+	
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id " .
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
 			" AND no.name1 NOT LIKE '_Module_%'";
@@ -125,10 +129,14 @@
 		$rq1 .= " AND nhs.scheduled_downtime_depth = 0";		
 	}
 
-	if ($instance != "ALL")
+	if ($hostgroups) {
+		$rq1 .= " AND nh.host_object_id = hm.host_object_id AND hm.hostgroup_id IN 
+				(SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."') ";
+	}
+
+	if ($instance)
 		$rq1 .= " AND no.instance_id = ".$instance;
-
-
+	
 	switch ($sort_type) {
 		case 'host_name' : 
 			$rq1 .= " order by no.name1 ". $order; 

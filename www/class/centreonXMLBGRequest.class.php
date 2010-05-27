@@ -90,13 +90,18 @@ class CentreonXMLBGRequest	{
 	var $grouplistStr;
 	var $general_opt;
 	var $class;
-	var $defaultPoller;
 	var $stateType;
 	var $statusHost;
 	var $statusService;
 	var $colorHost;
 	var $colorHostInService;
 	var $colorService;
+	
+	/*
+	 * Filters
+	 */
+	var $defaultPoller;
+	var $defaultHostgroups;
 	
 	/*
 	 * Class constructor
@@ -275,12 +280,19 @@ class CentreonXMLBGRequest	{
 		return $this->classLine;
 	}
 	
-	public function getDefaultPoller() {
-		$this->defaultPoller = "ALL";
-		$DBRESULT = $this->DB->query("SELECT cp_value FROM contact_param WHERE cp_key = 'monitoring_default_poller' AND cp_contact_id = '".$this->user_id."' LIMIT 1");
+	public function getDefaultFilters() {
+		$this->defaultPoller = NULL;
+		$this->defaultHostgroups = NULL;
+		$DBRESULT = $this->DB->query("SELECT cp_value, cp_key FROM contact_param WHERE cp_key IN ('monitoring_default_hostgroups', 'monitoring_default_poller') AND cp_contact_id = '".$this->user_id."'");
 		if ($DBRESULT->numRows()) {
-			$tmpRow =& $DBRESULT->fetchRow();
-			$this->defaultPoller = $tmpRow['cp_value'];
+			while ($tmpRow =& $DBRESULT->fetchRow()) {
+				if ($tmpRow['cp_key'] == "monitoring_default_hostgroups") {
+					$this->defaultHostgroups = $tmpRow['cp_value'];
+				}
+				if ($tmpRow['cp_key'] == "monitoring_default_poller") {
+					$this->defaultPoller = $tmpRow['cp_value'];
+				}
+			}
 			$DBRESULT->free();
 			unset($tmpRow);
 		}
@@ -289,6 +301,11 @@ class CentreonXMLBGRequest	{
 	public function setInstanceHistory($instance) {
 		$this->DB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'MONITORING_POLLER_ID' AND `cp_contact_id` = '$user_id'");	
 		$this->DB->query("INSERT INTO `contact_param` SET `cp_key` = 'MONITORING_POLLER_ID', `cp_contact_id` = '" . $this->user_id . "', `cp_value` = '$instance'");
+	}
+	
+	public function setHostGroupsHistory($hg) {
+		$this->DB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'monitoring_default_hostgroups' AND `cp_contact_id` = '$user_id'");	
+		$this->DB->query("INSERT INTO `contact_param` SET `cp_key` = 'monitoring_default_hostgroups', `cp_contact_id` = '" . $this->user_id . "', `cp_value` = '$hg'");
 	}
 	
 	public function checkArgument($name, $tab, $defaultValue) {
