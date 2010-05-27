@@ -113,7 +113,7 @@ class Centreon	{
 		/*
 		 * Create LogAction object
 		 */
-		$this->CentreonLogAction = new CentreonLogAction($user);
+		$this->CentreonLogAction = new CentreonLogAction($this->user);
 		
 		/*
 		 * Init Poller id
