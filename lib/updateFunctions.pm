@@ -80,6 +80,7 @@ sub updateRRDDB($$$$$$$$) {
     my $interval_length;
     my $begin;
 
+    $_[3] =~s/,/./g;
     if (checkDBDirectory($_[0]) == 0) {
 	writeLogFile("Data droped....\n");
 	return 0;
@@ -143,6 +144,7 @@ sub updateRRDDBforHiddenSVC($$$$$$$$) {
     my $nb_value;
     my $interval_length;
 
+    $_[3] =~s/,/./g;
     if (checkDBDirectory($_[0]) == 0) {
 	writeLogFile("Data droped....\n");
 	return 0;
