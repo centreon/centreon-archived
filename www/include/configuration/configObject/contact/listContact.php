@@ -97,9 +97,9 @@
 	 * Contact list
 	 */
 	if ($search)
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email  FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email  FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
