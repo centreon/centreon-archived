@@ -143,6 +143,7 @@
 		$action_list[83] = _("Hosts : Disable Notification");
 		$action_list[92] = _("Hosts : Enable Check");
 		$action_list[93] = _("Hosts : Disable Check");
+		$action_list[75] = _("Hosts : Set Downtime");
 	}
 
 	$attrs = array(	'onchange'=>"javascript: if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");

@@ -413,7 +413,7 @@
 		_cmd = cmd;
 		_getVar = "";
 		
-		if (cmd != '70' && cmd != '72') { 
+		if (cmd != '70' && cmd != '72' && cmd != '74' &&  cmd != '75') { 
 			return 1;
 		} 
 		else { 
@@ -422,7 +422,7 @@
 					_getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
 				}
 			}
-			Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title:'Acknowledgement',width:600});
+			Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title:'External commands',width:600});
 			return 0;
 		}	
 	}
@@ -438,36 +438,54 @@
 			alert(_popup_no_comment_msg);
 			return 0;
 		}
-		if (document.getElementById('sticky')) {
-			var sticky = document.getElementById('sticky').checked;
-		} else
-			var sticky = 1;
-		
-		if (document.getElementById('persistent')) 
-			var persistent = document.getElementById('persistent').checked;
-		else
-			var persistent = 1;
-		
-		if (document.getElementById('notify')) 
-			var notify = document.getElementById('notify').checked;
-		else
-			var notify = 0;
-
-		if (document.getElementById('force_check')) {
-			var force_check = document.getElementById('force_check').checked;
+		if (_cmd == '70' || _cmd == '72') {
+			if (document.getElementById('sticky')) {
+				var sticky = document.getElementById('sticky').checked;
+			} else
+				var sticky = 1;
+			
+			if (document.getElementById('persistent')) 
+				var persistent = document.getElementById('persistent').checked;
+			else
+				var persistent = 1;
+			
+			if (document.getElementById('notify')) 
+				var notify = document.getElementById('notify').checked;
+			else
+				var notify = 0;
+	
+			if (document.getElementById('force_check')) {
+				var force_check = document.getElementById('force_check').checked;
+			}
+			else {
+				var force_check = 0;
+			}
+			
+			var ackhostservice = 0;
+			if (document.getElementById('ackhostservice')) {
+				ackhostservice = document.getElementById('ackhostservice').checked;
+			}
+			
+			var author = document.getElementById('author').value;
+	
+			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + "&sid=" + _sid + _getVar, true);
 		}
-		else {
-			var force_check = 0;
+		else if (_cmd == '74' || _cmd == '75') {
+			var downtimehostservice = 0;
+			if (document.getElementById('downtimehostservice')) {
+				downtimehostservice = document.getElementById('downtimehostservice').checked;
+			}
+			if (document.getElementById('fixed')) {
+				var fixed = document.getElementById('fixed').checked;
+			}
+			else {
+				var fixed = 0;
+			}
+			var start = document.getElementById('start').value;
+			var end = document.getElementById('end').value;
+			var author = document.getElementById('author').value;
+			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&start="+ start + "&end=" + end + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
 		}
-		
-		var ackhostservice = 0;
-		if (document.getElementById('ackhostservice')) {
-			ackhostservice = document.getElementById('ackhostservice').checked;
-		}
-		
-		var author = document.getElementById('author').value;
-
-		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + "&sid=" + _sid + _getVar, true);
 		xhr_cmd.send(null);
 		Modalbox.hide();		
 	}

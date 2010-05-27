@@ -121,39 +121,55 @@
         {
         	global $pearDB, $is_admin, $oreon, $centreonGMT;
 
-        	$tmp = split(";", $key);
-        	f (!isset($tmp[0])) {
-				throw new Exception('No host found');
-			}
-			$host_name = $tmp[0];
-			
-			isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
-			isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
-			isset($_GET['comment']) && $_GET['comment'] ? $comment = $_GET['comment'] : $comment = "";
-			isset($_GET['persistent']) && $_GET['persistent'] == true ? $persistent = 1 : $persistent = 0;
-			
-			$res = preg_split("/ /", $start);
-			if (count($start) != 2) {
-				throw new Exception('Start date format is not valid');
-			}
-			$res1 = preg_split("/\//", $res[0]);
-			$res2 = preg_split("/:/", $res[1]);
-			$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0]);
-			$start_time = $centreonGMT->getUTCDate($start_time);
-			
-			$res = preg_split("/ /", $end);
-        	if (count($start) != 2) {
-				throw new Exception('End date format is not valid');
-			}
-			$res3 = preg_split("/\//", $res[0]);
-			$res4 = preg_split("/:/", $res[1]);
-			$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0]);
-			$end_time = $centreonGMT->getUTCDate($end_time);
-			
-			$duration = $end_time - $start_time;
-			$timestamp = time();
-			
-			write_command(" SCHEDULE_HOST_DOWNTIME;".$host_name.";".$start_time.";".$end_time.";".$persistent.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", GetMyHostPoller($pearDB, $host_name));
+        	$actions = false;
+        	$actions = $oreon->user->access->checkAction("host_schedule_downtime");
+        	if ($actions == true || $is_admin) {
+	        	$tmp = split(";", $key);
+	        	if (!isset($tmp[0])) {
+					throw new Exception('No host found');
+				}
+				$host_name = $tmp[0];
+				
+				isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
+				isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
+				isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
+				isset($_GET['fixed']) && $_GET['fixed'] == true ? $fixed = 1 : $fixed = 0;
+				
+				$res = preg_split("/ /", $start);
+				if (count($res) != 2) {
+					throw new Exception('Start date format is not valid');
+				}
+				$res1 = preg_split("/\//", $res[0]);
+				$res2 = preg_split("/:/", $res[1]);
+				$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0]);
+				$start_time = $centreonGMT->getUTCDate($start_time);
+				
+				$res = preg_split("/ /", $end);
+	        	if (count($res) != 2) {
+					throw new Exception('End date format is not valid');
+				}
+				$res3 = preg_split("/\//", $res[0]);
+				$res4 = preg_split("/:/", $res[1]);
+				$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0]);
+				$end_time = $centreonGMT->getUTCDate($end_time);
+				$duration = $end_time - $start_time;
+				$hostPoller = GetMyHostPoller($pearDB, $host_name);
+				write_command(" SCHEDULE_HOST_DOWNTIME;".$host_name.";".$start_time.";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", $hostPoller);
+
+				$actions = $oreon->user->access->checkAction("service_schedule_downtime");
+				if (($actions == true) && isset($_GET['downtimehostservice']) && $_GET['downtimehostservice'] == "true") {
+					$DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' LIMIT 1");
+		            $row = $DBRES->fetchRow();
+					$svc_tab = array();
+		            $svc_tab = getMyHostServices($row['host_id']);
+		            if (count($svc_tab)) {
+						foreach ($svc_tab as $key2 => $value) {
+		            		write_command(" SCHEDULE_SVC_DOWNTIME;".$host_name.";".$value.";".$start_time.";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", $hostPoller);
+		                }
+					}
+				}
+        	}
+        	return null;
         }
         
         /*
@@ -163,40 +179,46 @@
         {
         	global $pearDB, $is_admin, $oreon, $centreonGMT;
 		
-        	$tmp = split(";", $key);
-			if (!isset($tmp[0])) {
-				throw new Exception('No host found');
-			}
-			$host_name = $tmp[0];
-			
-			if (!isset($tmp[1])) {
-				throw new Exception('No service found');
-        	} else {
-				$svc_description = $tmp[1];
-			}
-			
-			isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
-			isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
-			isset($_GET['comment']) && $_GET['comment'] ? $comment = $_GET['comment'] : $comment = "";
-			isset($_GET['persistent']) && $_GET['persistent'] == true ? $persistent = 1 : $persistent = 0;
-			
-			$res = preg_split("/ /", $start);
-			$res1 = preg_split("/\//", $res[0]);
-			$res2 = preg_split("/:/", $res[1]);
-			$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0], -1);
-	
-			$start_time = $centreonGMT->getUTCDate($start_time);
+        	$actions = false;
+        	$actions = $oreon->user->access->checkAction("service_schedule_downtime");
+        	if ($actions == true || $is_admin) {
+	        	$tmp = split(";", $key);
+				if (!isset($tmp[0])) {
+					throw new Exception('No host found');
+				}
+				$host_name = $tmp[0];
+				
+				if (!isset($tmp[1])) {
+					throw new Exception('No service found');
+	        	} else {
+					$svc_description = $tmp[1];
+				}
+				
+				isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
+				isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
+				isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
+				isset($_GET['fixed']) && $_GET['fixed'] == true ? $fixed = 1 : $fixed = 0;
+				
+				$res = preg_split("/ /", $start);
+        		if (count($res) != 2) {
+					throw new Exception('Start date format is not valid');
+				}
+				$res1 = preg_split("/\//", $res[0]);
+				$res2 = preg_split("/:/", $res[1]);
+				$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0], -1);
 		
-			$res = preg_split("/ /", $end);
-			$res3 = preg_split("/\//", $res[0]);
-			$res4 = preg_split("/:/", $res[1]);
-			$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0], -1);
-	
-			$end_time = $centreonGMT->getUTCDate($end_time);
-			
-			$duration = $end_time - $start_time;
-	
-			$timestamp = time();
-			write_command(" SCHEDULE_SVC_DOWNTIME;".$host_name.";".$svc_description.";".$start_time.";".$end_time.";".$persistent.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", GetMyHostPoller($pearDB, $host_name));
+				$start_time = $centreonGMT->getUTCDate($start_time);
+				$res = preg_split("/ /", $end);
+        		if (count($res) != 2) {
+					throw new Exception('End date format is not valid');
+				}
+				$res3 = preg_split("/\//", $res[0]);
+				$res4 = preg_split("/:/", $res[1]);
+				$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0], -1);
+				$end_time = $centreonGMT->getUTCDate($end_time);
+				$duration = $end_time - $start_time;
+				write_command(" SCHEDULE_SVC_DOWNTIME;".$host_name.";".$svc_description.";".$start_time.";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", GetMyHostPoller($pearDB, $host_name));
+        	}
+        	return null;
         }
 ?>

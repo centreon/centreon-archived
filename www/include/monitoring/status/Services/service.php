@@ -183,12 +183,14 @@
 		$action_list[81] = _("Services : Disable Notification");
 		$action_list[90] = _("Services : Enable Check");
 		$action_list[91] = _("Services : Disable Check");
+		$action_list[74] = _("Services : Set Downtime");
 		$action_list[72] = _("Hosts : Acknowledge");
 		$action_list[73] = _("Hosts : Disacknowledge");
 		$action_list[82] = _("Hosts : Enable Notification");
 		$action_list[83] = _("Hosts : Disable Notification");
 		$action_list[92] = _("Hosts : Enable Check");
-		$action_list[93] = _("Hosts : Disable Check");		
+		$action_list[93] = _("Hosts : Disable Check");
+		$action_list[75] = _("Hosts : Set Downtime");		
 	}
 	
 	$attrs = array( 'onchange'=>"javascript: if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");

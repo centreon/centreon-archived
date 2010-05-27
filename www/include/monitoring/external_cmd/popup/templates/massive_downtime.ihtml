@@ -1,0 +1,45 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div align=center>
+		 <table class="ListTableMedium">
+		 	<tr class="ListHeader"><td colspan='2' class="tactical_light_header"><img src="./img/icones/16x16/flag_red.gif">&nbsp;&nbsp;{$form.header.title}</td></tr>
+			<tr class="list_two">
+				<td class="FormRowField" style='padding-left:15px;'>{$form.start.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.start.html}</td>
+			</tr>
+			<tr class="list_one">
+				<td class="FormRowField" style='padding-left:15px;'>{$form.end.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.end.html}</td>
+			</tr>
+			<tr class="list_two">
+				<td class="FormRowField" style='padding-left:15px;'>{$form.fixed.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="fixed" checked></td>
+			</tr>
+			<tr class="list_one">
+				<td class="FormRowField" style='padding-left:15px;'>{$authorlabel}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$authoralias}</td>
+			</tr>
+			<tr class="list_two">
+				<td class="FormRowField" style='padding-left:15px;padding-right:15px;'>{$form.comment.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;padding-right:15px;'>{$form.comment.html}</td>
+			</tr>
+			{if $cmd == '75'}
+			<tr class="list_one">
+	            <td class="FormRowField" style='padding-left:15px;'>{$form.downtimehostservice.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="downtimehostservice" checked></td>
+	        </tr>
+			{/if}
+		</table>
+		<div id="validForm">
+			<p>{$form.action.html}</p>
+			<p>{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		</div>
+	</div>	
+	{$form.hidden}
+	<input name="o" type="hidden" value="{$o}" />
+	<input name="p" type="hidden" value="{$p}" />
+	<input name="cmd" type="hidden" value="{$cmd}" />
+	{foreach item=it from=$select}	
+		<input name="select[{$it}]" type="hidden" value="1" />
+	{/foreach}
+</form>

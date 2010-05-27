@@ -42,17 +42,19 @@
 	require_once $centreon_path . "www/class/centreonSession.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
+	require_once $centreon_path . "www/class/centreonGMT.class.php";
 	
 	session_start();
-	$centreon = $_SESSION['centreon'];
+	$oreon = $_SESSION['centreon'];
 	
-	global $centreon, $pearDB;
+	global $oreon, $pearDB;
 	
 	$pearDB = new CentreonDB();	
-
+	$centreonGMT = new CentreonGMT($pearDB);
+	
 	require_once $centreon_path . "www/include/common/common-Func.php";
 
-	if (!isset($centreon))
+	if (!isset($oreon))
 		exit();
 		
 	include_once($centreon_path . "www/include/monitoring/external_cmd/functionsPopup.php");

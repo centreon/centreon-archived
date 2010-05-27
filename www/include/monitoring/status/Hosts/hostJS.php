@@ -236,7 +236,7 @@ function cmdCallback(cmd) {
 
 	_cmd = cmd;
     _getVar = "";
-    if (cmd != '72') {
+    if (cmd != '72' && cmd != '75') {
 		return 1;
     }
     else {
@@ -245,7 +245,7 @@ function cmdCallback(cmd) {
             	_getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
             }
         }
-        Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: 'Acknowledgement'});
+        Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title: 'External commands', width: 600});
         return 0;
     }
 }
@@ -263,16 +263,34 @@ function send_the_command() {
 		alert(_popup_no_comment_msg);
 		return 0;
 	}
-    var sticky = document.getElementById('sticky').checked;
-    var persistent = document.getElementById('persistent').checked;
-    var notify = document.getElementById('notify').checked;
-    var ackhostservice = 0;
-    if (document.getElementById('ackhostservice')) {
-    	ackhostservice = document.getElementById('ackhostservice').checked;
-    }
-    var author = document.getElementById('author').value;
-
-    xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+	if (_cmd == '70' || _cmd == '72') {
+	    var sticky = document.getElementById('sticky').checked;
+	    var persistent = document.getElementById('persistent').checked;
+	    var notify = document.getElementById('notify').checked;
+	    var ackhostservice = 0;
+	    if (document.getElementById('ackhostservice')) {
+	    	ackhostservice = document.getElementById('ackhostservice').checked;
+	    }
+	    var author = document.getElementById('author').value;
+	
+	    xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+	}
+	else if (_cmd == '74' || _cmd == '75') {
+		var downtimehostservice = 0;
+		if (document.getElementById('downtimehostservice')) {
+			downtimehostservice = document.getElementById('downtimehostservice').checked;
+		}
+		if (document.getElementById('fixed')) {
+			var fixed = document.getElementById('fixed').checked;
+		}
+		else {
+			var fixed = 0;
+		}
+		var start = document.getElementById('start').value;
+		var end = document.getElementById('end').value;
+		var author = document.getElementById('author').value;
+		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd +"&start="+ start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+	}
     xhr_cmd.send(null);
 	Modalbox.hide();
 }
