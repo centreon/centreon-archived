@@ -83,7 +83,8 @@
 						'end' => date('Y/m/d H:i', time() + 7200) 
 					   )
 					);
-	
+	$form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30'));
+	$form->setDefaults(array('duration' => 3600));
 	
 	$chckbox[] =& $form->addElement('checkbox', 'fixed', _("Fixed"));
 	$chckbox[0]->setChecked(true);
@@ -110,5 +111,6 @@
 	$tpl->assign('p', $p);
 	$tpl->assign('cmd', $cmd);
 	$tpl->assign('select', $select);
+	$tpl->assign('seconds', _('seconds'));
 	$tpl->display("massive_downtime.ihtml");
 ?>

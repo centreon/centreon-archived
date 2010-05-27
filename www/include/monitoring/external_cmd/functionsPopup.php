@@ -134,6 +134,7 @@
 				isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
 				isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
 				isset($_GET['fixed']) && $_GET['fixed'] == true ? $fixed = 1 : $fixed = 0;
+				isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
 				
 				$res = preg_split("/ /", $start);
 				if (count($res) != 2) {
@@ -152,7 +153,9 @@
 				$res4 = preg_split("/:/", $res[1]);
 				$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0]);
 				$end_time = $centreonGMT->getUTCDate($end_time);
-				$duration = $end_time - $start_time;
+        	    if (!$duration) {
+				    $duration = $end_time - $start_time;
+				}
 				$hostPoller = GetMyHostPoller($pearDB, $host_name);
 				write_command(" SCHEDULE_HOST_DOWNTIME;".$host_name.";".$start_time.";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", $hostPoller);
 
@@ -198,6 +201,7 @@
 				isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
 				isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
 				isset($_GET['fixed']) && $_GET['fixed'] == true ? $fixed = 1 : $fixed = 0;
+				isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
 				
 				$res = preg_split("/ /", $start);
         		if (count($res) != 2) {
@@ -216,7 +220,9 @@
 				$res4 = preg_split("/:/", $res[1]);
 				$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0], -1);
 				$end_time = $centreonGMT->getUTCDate($end_time);
-				$duration = $end_time - $start_time;
+				if (!$duration) {
+				    $duration = $end_time - $start_time;
+				}
 				write_command(" SCHEDULE_SVC_DOWNTIME;".$host_name.";".$svc_description.";".$start_time.";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", GetMyHostPoller($pearDB, $host_name));
         	}
         	return null;

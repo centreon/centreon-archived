@@ -289,7 +289,8 @@ function send_the_command() {
 		var start = document.getElementById('start').value;
 		var end = document.getElementById('end').value;
 		var author = document.getElementById('author').value;
-		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd +"&start="+ start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+		var duration = document.getElementById('duration').value;
+		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration +"&start="+ start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
 	}
     xhr_cmd.send(null);
 	Modalbox.hide();
