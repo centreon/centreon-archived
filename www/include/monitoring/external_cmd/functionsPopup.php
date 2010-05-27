@@ -39,7 +39,7 @@
       * Ack hosts massively
       */
         function massiveHostAck($key){
-        	global $pearDB, $_GET, $is_admin, $oreon;
+        	global $pearDB, $is_admin, $oreon;
 		
 			$actions = false;
         	$actions = $oreon->user->access->checkAction("host_acknowledgement");
@@ -84,10 +84,13 @@
 			$actions = $oreon->user->access->checkAction("service_acknowledgement");
 			                
 			$tmp = split(";", $key);
+			if (!isset($tmp[0])) {
+				throw new Exception('No host found');
+			}
 			$host_name = $tmp[0];
 			
 			if (!isset($tmp[1])) {
-				return NULL;
+				throw new Exception('No service found');
         	} else {
 				$svc_description = $tmp[1];
 			}
@@ -108,6 +111,92 @@
 		        }
 	            return _("Your command has been sent");
 	         }
-	         return NULL;
+	         return null;
+        }
+        
+        /*
+         * Sets host downtime massively
+         */
+        function massiveHostDowntime($key)
+        {
+        	global $pearDB, $is_admin, $oreon, $centreonGMT;
+
+        	$tmp = split(";", $key);
+        	f (!isset($tmp[0])) {
+				throw new Exception('No host found');
+			}
+			$host_name = $tmp[0];
+			
+			isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
+			isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
+			isset($_GET['comment']) && $_GET['comment'] ? $comment = $_GET['comment'] : $comment = "";
+			isset($_GET['persistent']) && $_GET['persistent'] == true ? $persistent = 1 : $persistent = 0;
+			
+			$res = preg_split("/ /", $start);
+			if (count($start) != 2) {
+				throw new Exception('Start date format is not valid');
+			}
+			$res1 = preg_split("/\//", $res[0]);
+			$res2 = preg_split("/:/", $res[1]);
+			$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0]);
+			$start_time = $centreonGMT->getUTCDate($start_time);
+			
+			$res = preg_split("/ /", $end);
+        	if (count($start) != 2) {
+				throw new Exception('End date format is not valid');
+			}
+			$res3 = preg_split("/\//", $res[0]);
+			$res4 = preg_split("/:/", $res[1]);
+			$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0]);
+			$end_time = $centreonGMT->getUTCDate($end_time);
+			
+			$duration = $end_time - $start_time;
+			$timestamp = time();
+			
+			write_command(" SCHEDULE_HOST_DOWNTIME;".$host_name.";".$start_time.";".$end_time.";".$persistent.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", GetMyHostPoller($pearDB, $host_name));
+        }
+        
+        /*
+         *  Sets service downtime massively 
+         */
+        function massiveServiceDowntime($key)
+        {
+        	global $pearDB, $is_admin, $oreon, $centreonGMT;
+		
+        	$tmp = split(";", $key);
+			if (!isset($tmp[0])) {
+				throw new Exception('No host found');
+			}
+			$host_name = $tmp[0];
+			
+			if (!isset($tmp[1])) {
+				throw new Exception('No service found');
+        	} else {
+				$svc_description = $tmp[1];
+			}
+			
+			isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
+			isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
+			isset($_GET['comment']) && $_GET['comment'] ? $comment = $_GET['comment'] : $comment = "";
+			isset($_GET['persistent']) && $_GET['persistent'] == true ? $persistent = 1 : $persistent = 0;
+			
+			$res = preg_split("/ /", $start);
+			$res1 = preg_split("/\//", $res[0]);
+			$res2 = preg_split("/:/", $res[1]);
+			$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0], -1);
+	
+			$start_time = $centreonGMT->getUTCDate($start_time);
+		
+			$res = preg_split("/ /", $end);
+			$res3 = preg_split("/\//", $res[0]);
+			$res4 = preg_split("/:/", $res[1]);
+			$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0], -1);
+	
+			$end_time = $centreonGMT->getUTCDate($end_time);
+			
+			$duration = $end_time - $start_time;
+	
+			$timestamp = time();
+			write_command(" SCHEDULE_SVC_DOWNTIME;".$host_name.";".$svc_description.";".$start_time.";".$end_time.";".$persistent.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", GetMyHostPoller($pearDB, $host_name));
         }
 ?>
