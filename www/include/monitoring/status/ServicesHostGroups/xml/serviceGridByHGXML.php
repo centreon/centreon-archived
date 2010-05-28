@@ -239,6 +239,7 @@
 						foreach ($tabService[$host_name]["tab_svc"] as $svc => $state) {						
 							$buffer->startElement("svc");
 							$buffer->writeElement("sn", $svc);
+							$buffer->writeElement("snl", urlencode($svc));
 							$buffer->writeElement("sc", $tab_color_service[$state]);
 							$buffer->endElement();						
 						}

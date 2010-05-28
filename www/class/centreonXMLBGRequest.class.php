@@ -53,6 +53,7 @@ require_once $centreon_path."www/class/centreonDB.class.php";
 require_once $centreon_path."www/class/centreonHost.class.php";
 require_once $centreon_path."www/class/centreonService.class.php";
 require_once $centreon_path."www/class/centreonSession.class.php";
+require_once $centreon_path."www/class/centreonMonitoring.class.php";
 
 /*
  * Class for XML/Ajax request
@@ -72,6 +73,7 @@ class CentreonXMLBGRequest	{
 	
 	var $hostObj;
 	var $serviceObj;
+	var $monObj;
 	
 	var $access;
 	var $session_id;
@@ -142,6 +144,11 @@ class CentreonXMLBGRequest	{
 		 */
 		$this->hostObj		= new CentreonHost($this->DB);
 		$this->serviceObj	= new CentreonService($this->DB);
+	
+		/*
+		 * Init Object Monitoring
+		 */
+		$this->monObj 		= new CentreonMonitoring();
 	
 		/*
 		 * Timezone management
@@ -315,6 +322,12 @@ class CentreonXMLBGRequest	{
 			else
 				return htmlentities($defaultValue, ENT_QUOTES);
 		}
+	}
+	
+	public function prepareObjectName($name) {
+		$name = str_replace("/", "#S#", $name);
+		$name = str_replace("\\", "#BS#", $name);
+		return $name;
 	}
 }
 ?>

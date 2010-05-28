@@ -47,10 +47,10 @@
 	$time = time();
 
 	$obis = $o;
-	if(isset($_GET["problem"]))
-	$obis .= '_pb';
-	if(isset($_GET["acknowledge"]))
-	$obis .= '_ack_' . $_GET["acknowledge"];
+	if (isset($_GET["problem"]))
+		$obis .= '_pb';
+	if (isset($_GET["acknowledge"]))
+		$obis .= '_ack_' . $_GET["acknowledge"];
 		
 ?>
 <script type="text/javascript">
@@ -79,7 +79,7 @@ var _currentInputFieldValue=""; // valeur actuelle du champ texte
 var _resultCache=new Object();
 var _first = 1;
 var _lock = 0;
-var _instance = 'ALL';
+var _instance = 0;
 var _default_hg = '<?php echo $default_hg;?>';
 var _default_instance = '<?php echo $default_poller?>';
 
@@ -147,10 +147,10 @@ function monitoring_pause()	{
 	window.clearTimeout(_timeoutID);
 }
 
-function initM(_time_reload,_sid,_o){
+function initM(_time_reload,_sid,_o) {
 	construct_selecteList_ndo_instance('instance_selected');
 	construct_HostGroupSelectList('hostgroups_selected');
-	if(!document.getElementById('debug')){
+	if (!document.getElementById('debug')){
 		var _divdebug = document.createElement("div");
 		_divdebug.id = 'debug';
 		var _debugtable = document.createElement("table");
@@ -160,10 +160,9 @@ function initM(_time_reload,_sid,_o){
 		_divdebug.appendChild(_debugtable);
 		_header = document.getElementById('header');
 		_header.appendChild(_divdebug);
-//		viewDebugInfo('--INIT Debug--');
 	}
 
-	if(_first){
+	if (_first){
 		mainLoop();
 		_first = 0;
 	}

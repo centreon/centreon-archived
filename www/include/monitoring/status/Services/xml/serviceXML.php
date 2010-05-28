@@ -36,7 +36,8 @@
  * 
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	
@@ -58,7 +59,7 @@
 	/*
 	 * Set Default Poller
 	 */
-	$obj->getDefaultPoller();
+	$obj->getDefaultFilters();
 	
 	/* **************************************************
 	 * Check Arguments From GET tab
@@ -69,6 +70,7 @@
 	$num 		= $obj->checkArgument("num", $_GET, 0);
 	$limit 		= $obj->checkArgument("limit", $_GET, 20);
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
@@ -94,18 +96,37 @@
 	$rq1 = 	"SELECT DISTINCT no.name1 as host_name," .
 			" nhs.current_state, nhs.problem_has_been_acknowledged, nhs.scheduled_downtime_depth, " .
 			" nhs.passive_checks_enabled, nhs.active_checks_enabled, no.object_id, nh.action_url," .
-			" nh.notes_url, nh.notes, nh.address, nh.icon_image, nh.icon_image_alt " .
-			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts nh " .
-			" WHERE no.object_id = nhs.host_object_id " .
+			" nh.notes_url, nh.notes, nh.icon_image " .
+			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts nh ";
+	if ($hostgroups) {
+		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hm ";
+	}
+	
+	$rq1 .= " WHERE no.object_id = nhs.host_object_id " .
 			" 	AND nh.host_object_id = no.object_id " .
 			" 	AND no.objecttype_id = 1 " .
 			" 	AND no.object_id = nh.host_object_id";
+	
+	if ($hostgroups && $o != "meta") {
+		$rq1 .= " AND nh.host_object_id = hm.host_object_id AND hm.hostgroup_id IN ";
+		$rq1 .= " (SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."')";
+	}
+	
 	$rq1 .= (preg_match("/^svc_unhandled/", $o)) ? " AND nhs.problem_has_been_acknowledged = 0 AND nhs.scheduled_downtime_depth = 0 " : "";
 	$rq1 .= ($o == "meta") ?" AND no.name1 = '_Module_Meta'" : " AND no.name1 != '_Module_Meta'";
-	$rq1 .= ($instance != "ALL") ? " AND no.instance_id = ".$instance : "" ;
-
+	$rq1 .= ($instance) ? " AND no.instance_id = ".$instance : "" ;
+	
 	$DBRESULT =& $obj->DBNdo->query($rq1);
 	while ($ndo =& $DBRESULT->fetchRow()) {
+		/*
+		 * HG List
+		 */
+		if ($hostHGString != "")
+			$hostHGString .= ',';
+		$hostHGString .= "'".$ndo["host_name"]."'";
+		/*
+		 * Generate Host data list
+		 */
 		$host_status[$ndo["host_name"]] = $ndo;
 	}
 	$DBRESULT->free();
@@ -148,7 +169,7 @@
 	$rq_state = "";
 	
 	$instance_filter = "";
-	if ($instance != "ALL") {
+	if ($instance) {
 		$instance_filter = " AND no.instance_id = '".$instance."' ";
 	}
 	
@@ -205,6 +226,15 @@
 	if ($search_type_host && $search)
 		$searchService .= ")";	
 	
+	$hgCondition = "";
+	if ($hostgroups) {
+		if ($hostHGString != "") {
+		    $hgCondition = " AND no.name1 IN ($hostHGString) ";
+		} else {
+			$hgCondition = " AND no.name1 IN ('') ";
+		}
+	}
+	
 	$rq3 = 	"SELECT 1 FROM ".$obj->ndoPrefix."servicestatus WHERE no.object_id = ns.service_object_id  ";
 	
 	$rq1 = 	"SELECT $ArgNeeded " .
@@ -214,7 +244,7 @@
 			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts FROM  ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."services ns $ACLDBName" .
 			"WHERE no.object_id = ns.service_object_id " .
 			"	AND no.name1 NOT LIKE '_Module_%' " .
-			"	$searchHost $searchService $instance_filter $ACLCondition " .
+			"	$hgCondition $searchHost $searchService $instance_filter $ACLCondition " .
 			"	AND objecttype_id = 2 " .
 			"	AND EXISTS ($rq3)" .
 			"	) A, " .
@@ -225,16 +255,27 @@
 	/* *************************************************** 
 	 * Get Pagination Rows 
 	 */
+	
+	/* 
+	 * Get Pagination Rows 
+	 */	
+	if ($hostgroups) {
+		$hgCondition = " AND no.name1 IN (SELECT no.name1 FROM ".$obj->ndoPrefix."hostgroup_members hm, ".$obj->ndoPrefix."objects no WHERE no.object_id = hm.host_object_id AND hm.hostgroup_id IN
+						 (SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."')) ";
+	} else {
+		$hgCondition = "";
+	} 
+	 
 	if ($obj->is_admin) {
 		$rq = "SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
 				"FROM ".$obj->ndoPrefix."objects no ,  ".$obj->ndoPrefix."servicestatus nss " .
 				"WHERE no.object_id = nss.service_object_id $rq_state $instance_filter " .
-				"	AND no.name1 NOT LIKE '_Module_%' $searchHost $searchService";
+				"	AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService";
 	} else {
 		$rq = "SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
 				"FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, centreon_acl " .
 				"WHERE no.object_id = nss.service_object_id $rq_state $instance_filter " .
-				"	AND no.name1 NOT LIKE '_Module_%' $searchHost $searchService $ACLCondition";
+				"	AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService $ACLCondition";
 	}
 	$DBRESULT =& $obj->DBNdo->query($rq);
 	$data =& $DBRESULT->fetchRow();
@@ -245,7 +286,6 @@
 	/* ***************************************************
 	 * Create Buffer
 	 */
-	$obj->XML = new CentreonXML();
 	$obj->XML->startElement("reponse");
 	$obj->XML->startElement("i");
 	$obj->XML->writeElement("numrows", $numRows);
@@ -265,12 +305,6 @@
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		if (isset($host_status[$ndo["host_name"]])){
 
-			if ($host_status[$ndo["host_name"]]["scheduled_downtime_depth"] == 0) {
-				$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]];			
-			} else {
-				$color_host = $general_opt['color_downtime'];
-			}
-			$color_service = $tab_color_service[$ndo["current_state"]];
 			$passive = 0;
 			$active = 1;
 			$last_check = " ";
@@ -333,6 +367,7 @@
 			$obj->XML->writeElement("ppd", 	$ndo["process_performance_data"]);
 			$obj->XML->writeElement("hs", 	$host_status[$ndo["host_name"]]["current_state"]);			
 			$obj->XML->writeElement("sd", 	$ndo["service_description"]);
+			$obj->XML->writeElement("sdl", 	urlencode($ndo["service_description"]));
 			$obj->XML->writeElement("svc_id", $ndo["object_id"]);						
 			$obj->XML->writeElement("sc", 	$obj->colorService[$ndo["current_state"]]);
 			$obj->XML->writeElement("cs", 	$obj->statusService[$ndo["current_state"]]);
@@ -368,11 +403,8 @@
 			$obj->XML->writeElement("nc", $obj->GMT->getDate($dateFormat, $ndo["next_check"]));
 			$obj->XML->writeElement("lc", $obj->GMT->getDate($dateFormat, $ndo["last_check"]));
 			$obj->XML->writeElement("d", $duration);
-			$obj->XML->writeElement("last_hard_state_change", $hard_duration);			
-			
-			$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
-			$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
-			$obj->XML->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $obj->DBC));
+			$obj->XML->writeElement("last_hard_state_change", $hard_duration);
+			$obj->XML->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $obj->prepareObjectName($ndo["service_description"]), $obj->DBC));
 			$obj->XML->endElement();			
 		}
 	}

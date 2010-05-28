@@ -58,7 +58,7 @@
 							background-color:<xsl:value-of select="sc"/>;
 						</xsl:attribute>
 						<xsl:element name="a">
-						  	<xsl:attribute name="href">main.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hn"/>&amp;service_description=<xsl:value-of select="sn"/></xsl:attribute>
+						  	<xsl:attribute name="href">main.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hn"/>&amp;service_description=<xsl:value-of select="snl"/></xsl:attribute>
 							<xsl:value-of select="sn"/>
 						</xsl:element>
 					</span>&#160;						
