@@ -51,18 +51,18 @@
 	$hObj = new CentreonHost($pearDB);
 	$path = "./include/monitoring/submitPassivResults/";
 	$pearDBndo = new CentreonDB("ndo");
-	$aclObj = new CentreonACL($pearDB);
+	$aclObj = new CentreonACL($oreon->user->get_id());
 	
 	# HOST LCA
 	if (!$is_admin){
-		$hostTab = $oreon->user->access->getHostsString(null, $pearDBndo);
+		$hostTab = explode(',', $oreon->user->access->getHostsString('NAME', $pearDBndo));
 		foreach ($hostTab as $value) {
-			if ($value == $host_name)
+			if ($value == "'".$host_name."'")
 				$flag_acl = 1;
 		}
 	}
 	
-	$res = $pearDBndo->query($query);
+	//$res = $pearDBndo->query($query);
 	$hostTab = array();
 	
 	if ($is_admin || ($flag_acl && !$is_admin)){
