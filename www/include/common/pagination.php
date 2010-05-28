@@ -40,7 +40,7 @@
 	if (!isset($oreon))
 		exit();
 
-	global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host, $host_name, $rows, $p, $gopt, $pagination, $poller;
+	global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host, $host_name, $rows, $p, $gopt, $pagination, $poller, $template;
 	
 	isset($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
 	isset($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
@@ -113,7 +113,7 @@
 	if ($rows != 0) {
 
 		for ($i = $istart; $i <= $iend; $i++)
-			$pageArr[$i] = array("url_page"=>"./main.php?p=".$p."&num=$i&limit=".$limit."&poller=".$poller."&search=".$search."&type=".$type."&o=" . $o . $url_var, "label_page"=>"<b>".($i +1)."</b>","num"=> $i);		
+			$pageArr[$i] = array("url_page"=>"./main.php?p=".$p."&num=$i&limit=".$limit."&poller=".$poller."&template=$template&search=".$search."&type=".$type."&o=" . $o . $url_var, "label_page"=>"<b>".($i +1)."</b>","num"=> $i);		
 	
 		if ($i > 1)							
 			$tpl->assign("pageArr", $pageArr);
@@ -125,10 +125,10 @@
 		$tpl->assign("last", _("Last page"));
 	
 		if (($prev = $num - 1) >= 0)
-			$tpl->assign('pagePrev', ("./main.php?p=".$p."&num=$prev&limit=".$limit."&poller=".$poller."&search=".$search."&type=".$type."&o=" . $o .$url_var));
+			$tpl->assign('pagePrev', ("./main.php?p=".$p."&num=$prev&limit=".$limit."&poller=".$poller."&template=$template&search=".$search."&type=".$type."&o=" . $o .$url_var));
 		
 		if (($next = $num + 1) < ($rows/$limit))
-			$tpl->assign('pageNext', ("./main.php?p=".$p."&num=$next&limit=".$limit."&poller=".$poller."&search=".$search."&type=".$type."&o=" . $o .$url_var));
+			$tpl->assign('pageNext', ("./main.php?p=".$p."&num=$next&limit=".$limit."&poller=".$poller."&template=$template&search=".$search."&type=".$type."&o=" . $o .$url_var));
 		
 		$pageNumber = ceil($rows / $limit);
 		if (($rows / $limit) > 0)
@@ -137,9 +137,9 @@
 			$tpl->assign('pageNumber', ($num)."/".$pageNumber);
 		
 		if ($page_max > 5 && $num != 0)
-			$tpl->assign('firstPage', ("./main.php?p=".$p."&num=0&limit=".$limit."&poller=".$poller."&search=".$search."&type=".$type."&o=" . $o .$url_var));
+			$tpl->assign('firstPage', ("./main.php?p=".$p."&num=0&limit=".$limit."&poller=".$poller."&template=$template&search=".$search."&type=".$type."&o=" . $o .$url_var));
 		if ($page_max > 5 && $num != ($pageNumber-1))
-			$tpl->assign('lastPage', ("./main.php?p=".$p."&num=".($pageNumber-1)."&limit=".$limit."&poller=".$poller."&search=".$search."&type=".$type."&o=" . $o .$url_var));
+			$tpl->assign('lastPage', ("./main.php?p=".$p."&num=".($pageNumber-1)."&limit=".$limit."&template=$template&poller=".$poller."&search=".$search."&type=".$type."&o=" . $o .$url_var));
 		
 		/*
 		 * Select field to change the number of row on the page

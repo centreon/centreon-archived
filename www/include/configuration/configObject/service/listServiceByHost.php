@@ -49,9 +49,32 @@
 	}
 	$DBRESULT->free();
 	
+	if (isset($_POST["template"])) {
+		$template = $_POST["template"];
+	} else if (isset($_GET["template"])) {
+		$template = $_GET["template"];
+	} else {
+		$template = NULL;
+	}
+	
+	/*
+	 * Get Service Template List
+	 */
+	$tplService = array();
+	$templateFilter = "<option value='0'></option>";
+	$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service WHERE service_register = '0'");
+	while ($tpl =& $DBRESULT->fetchRow()) {
+		$tplService[$tpl["service_id"]] = $tpl["service_alias"];
+		$tpl["service_description"] = str_replace("#S#", "/", $tpl["service_description"]);
+		$tpl["service_description"] = str_replace("#BS#", "\\", $tpl["service_description"]);
+		
+		$templateFilter .= "<option value='".$tpl["service_id"]."'".(($tpl["service_id"] == $template) ? " selected" : "").">".$tpl["service_description"]."</option>";
+	}
+	$DBRESULT->free();
+	
 	require_once "./class/centreonHost.class.php";
 	$host_method = new CentreonHost($pearDB);
-	
+		
 	if (isset($_POST["searchH"])) {
 		$searchH = $_POST["searchH"];
 		$oreon->svc_host_search = $searchH;
@@ -122,7 +145,7 @@
 		$searchS = str_replace('/', "#S#", $searchS);
 		$searchS = str_replace('\\', "#BS#", $searchS);
 		if ($search_type_service && !$search_type_host) {
-			$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')");
+			$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
 			while ($service = $DBRESULT->fetchRow()){
 				if (!isset($tab_buffer[$service["service_id"]]))
 					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
@@ -131,7 +154,7 @@
 				$rows++;
 			}
 		} else if (!$search_type_service && $search_type_host)	{
-			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
+			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "");
 			$DBRESULT =& $pearDB->query($locale_query);
 			while ($service = $DBRESULT->fetchRow()) {			         
 				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
@@ -139,7 +162,7 @@
 				$rows++;				
 			}
 		} else {
-			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
+			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "");
 			$DBRESULT =& $pearDB->query($locale_query);
 			while ($service = $DBRESULT->fetchRow()) {			         
 				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
@@ -148,7 +171,7 @@
 			}
 		}
     } else {
-    	$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL");
+    	$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
 		$rows = $DBRESULT->numRows();
 	}
 	
@@ -191,6 +214,7 @@
 						"AND hsr.service_service_id = sv.service_id " .
 						"AND host.host_id = hsr.host_host_id " .
 						"AND host.host_register = '1' " .
+						((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = 	"SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
@@ -203,6 +227,7 @@
 						"AND hsr.service_service_id = sv.service_id " .
 						"AND host.host_id = hsr.host_host_id " .
 						"AND host.host_register = '1' " .
+						((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	
 	$DBRESULT =& $pearDB->query($rq);
@@ -228,9 +253,9 @@
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");	
 		$moptions = "";
 		if ($service["service_activate"])
-			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."&template=$template'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
-			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."&template=$template'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 
 		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$service['service_id']."]'></input>";
 
@@ -363,11 +388,13 @@
 	
 	$tpl->assign("searchH", (isset($searchH) ? $searchH : NULL));
 	$tpl->assign("searchS", (isset($searchS) ? $searchS : NULL));
-	 
+	$tpl->assign("templateFilter", $templateFilter);
+	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('Hosts', _("Hosts"));
+	$tpl->assign('ServiceTemplates', _("Templates"));
 	$tpl->assign('Services', _("Services"));
 	$tpl->assign('Search', _("Search"));
 	$tpl->display("listService.ihtml");
