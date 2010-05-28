@@ -17,7 +17,7 @@
 			</tr>
 			<tr class="list_one">
 				<td class="FormRowField" style='padding-left:15px;'>{$form.fixed.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="fixed" checked></td>
+				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="fixed" onClick="toggleFields(this);" checked></td>
 			</tr>
 			<tr class="list_two">
 				<td class="FormRowField" style='padding-left:15px;'>{$authorlabel}</td>

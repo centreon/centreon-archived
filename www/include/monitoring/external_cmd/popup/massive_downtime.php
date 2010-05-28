@@ -83,7 +83,7 @@
 						'end' => date('Y/m/d H:i', time() + 7200) 
 					   )
 					);
-	$form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30'));
+	$form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30', 'disabled'=>'true'));
 	$form->setDefaults(array('duration' => 3600));
 	
 	$chckbox[] =& $form->addElement('checkbox', 'fixed', _("Fixed"));

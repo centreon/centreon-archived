@@ -296,4 +296,16 @@ function send_the_command() {
 	Modalbox.hide();
 }
 
+function toggleFields(fixed)
+{
+	var dur;
+	dur = document.getElementById('duration');
+	if (fixed.checked) {
+		dur.disabled = true;
+	}
+	else {
+		dur.disabled = false;
+	}
+}
+
 </SCRIPT>
