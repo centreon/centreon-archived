@@ -188,11 +188,16 @@ INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_descriptio
 INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (96, "ARG3", "warning");
 
 
+DELETE FROM topology WHERE topology_page = '10202';
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_icone`) VALUES (NULL, "System Information", '505', '50501', '10', '1','./include/options/sysInfos/index.php', './img/icones/16x16/about.gif');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Process Control', './img/icones/16x16/calculator.gif', '505', '50502', '20', '1', './include/Administration/corePerformance/processInfo.php', NULL, NULL, NULL, '1', NULL, NULL, NULL);
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 50502, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
+UPDATE `topology` SET `topology_url` = NULL WHERE  `topology_parent` = '5' AND  `topology_page` = '505';
 
 UPDATE      `topology` SET `topology_name` = 'Process Control', `topology_parent` = '505', `topology_page` = '50502', `topology_order` = '20', `topology_url` = './include/Administration/corePerformance/processInfo.php'  WHERE `topology_parent` = '102' AND  `topology_page` = '10202';
 UPDATE      `topology` SET `topology_url` = NULL WHERE  `topology_parent` = '5' AND  `topology_page` = '505';
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_icone`) VALUES (NULL, "System Information", '505', '50501', '10', '1','./include/options/sysInfos/index.php', './img/icones/16x16/about.gif');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 50502, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
+
 ALTER TABLE `command` ADD `command_comment` TEXT NULL ;
 
 INSERT INTO `options` (`key`, `value`) VALUES ('monitoring_engine', 'NAGIOS');
