@@ -3,9 +3,9 @@
 <table class="ajaxOption">
 	<tr>
 	<td>{$Hosts} : <input type='text' name='searchH' value='{$search}' /></td>
-        <td>&nbsp;&nbsp;{$Poller} : <select name='poller' />{$poller}</select></td>
-	<td>&nbsp;&nbsp;{$Hostgroup} : <select name='hostgroup' />{$hostgroup}</select></td>
-	<td>&nbsp;&nbsp;{$Template} : <select name='template' />{$template}</select></td>
+        <td>&nbsp;&nbsp;{$Poller} : <select name='poller'>{$poller}</select></td>
+	<td>&nbsp;&nbsp;{$Hostgroup} : <select name='hostgroup'>{$hostgroup}</select></td>
+	<td>&nbsp;&nbsp;{$Template} : <select name='template'>{$template}</select></td>
         <td><input type='submit' name='SearchB' value='{$Search}' /></td>
 	</tr>
 </table>
