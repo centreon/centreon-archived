@@ -39,6 +39,11 @@
 	if (!isset($oreon))
 		exit();
 		
+	/*
+	 * Connect to NDO database.
+	 */
+	$pearDBNdo = new CentreonDB("ndo");
+		
 	include("./include/common/autoNumLimit.php");
 
 	/*
@@ -60,8 +65,33 @@
 	 */
 	$nagios_servers = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
-	while($nagios_server = $DBRESULT->fetchRow())
+	while ($nagios_server = $DBRESULT->fetchRow()) {
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
+	}
+	$DBRESULT->free();
+	
+	/*
+	 * Get information info RTM
+	 */
+	$ndoPrefix = getNDOPrefix();
+	$nagiosInfo = array();
+	$DBRESULT =& $pearDBNdo->query("SELECT program_start_time, is_currently_running, process_id, p.instance_id, instance_name FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
+	while ($info = $DBRESULT->fetchRow()) {
+		$nagiosInfo[$info["instance_name"]] = $info;
+	}
+	$DBRESULT->free();
+	
+	/*
+	 * Get Nagios / Icinga version
+	 */	
+	$pollerNumber = count($nagios_servers);
+	if ($pollerNumber == 0) {
+		$pollerNumber = 1;
+	}
+	$DBRESULT =& $pearDBNdo->query("SELECT p.instance_id, program_version, program_name, instance_name FROM `".$ndoPrefix."processevents` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id ORDER BY processevent_id DESC LIMIT $pollerNumber");
+	while ($info = $DBRESULT->fetchRow()) {
+		$nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
+	}
 	$DBRESULT->free();
 	
 	include("./include/common/checkPagination.php");
@@ -79,6 +109,10 @@
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_ip_address", _("IP Address"));
 	$tpl->assign("headerMenu_localisation", _("Localhost"));
+	$tpl->assign("headerMenu_is_running", _("Is running ?"));
+	$tpl->assign("headerMenu_pid", _("PID"));
+	$tpl->assign("headerMenu_version", _("Version"));
+	$tpl->assign("headerMenu_startTime", _("Start time"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
@@ -114,6 +148,10 @@
 						"RowMenu_ip_address"=>$config["ns_ip_address"],
 						"RowMenu_link"=>"?p=".$p."&o=c&server_id=".$config['id'],
 						"RowMenu_localisation"=>$config["localhost"] ? _("Yes") : "-",
+						"RowMenu_is_running" => ($nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
+						"RowMenu_version" => $nagiosInfo[$config["name"]]["version"],
+						"RowMenu_startTime" => ($nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["program_start_time"] : "-",
+						"RowMenu_pid" => ($nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",
 						"RowMenu_status"=>$config["ns_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	

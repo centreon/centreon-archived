@@ -21,6 +21,10 @@
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_ip_address}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_localisation}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_is_running}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_pid}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_startTime}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_version}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
@@ -30,6 +34,10 @@
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColCenter"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_ip_address}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_localisation}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_is_running}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_startTime}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_version}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
