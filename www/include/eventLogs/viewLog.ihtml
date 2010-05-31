@@ -1,4 +1,3 @@
-<script language='javascript' src='./include/common/javascript/datePicker.js'></script>
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <div id="div1">
@@ -21,3 +20,9 @@
 </form>
 </div>
 <div id="logView4xml">.</div>
+{literal}
+<script type='text/javascript'>
+new DatePicker({relative:'StartDate', keepFieldEmpty:true});
+new DatePicker({relative:'EndDate', keepFieldEmpty:true});
+</script>
+{/literal}

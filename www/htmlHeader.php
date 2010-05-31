@@ -52,9 +52,11 @@
 <link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?><?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
 <link href="./include/common/javascript/modalbox.css" rel="stylesheet" type="text/css" media="screen"/>
+<link href="./include/common/javascript/prototype-datepicker.css" rel="stylesheet" type="text/css" media="screen"/>
 <script type="text/javascript" src="./include/common/javascript/scriptaculous/prototype.js"></script>
 <script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects"></script>
 <script type="text/javascript" src="./include/common/javascript/modalbox.js"></script>
+<script type="text/javascript" src="./include/common/javascript/prototype-datepicker.js"></script>
 <?php
 
 	/*

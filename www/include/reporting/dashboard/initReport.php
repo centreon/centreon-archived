@@ -210,8 +210,8 @@
 	$formPeriod = new HTML_QuickForm('FormPeriod', 'post', "?p=".$p);
 	$formPeriod->addElement('select', 'period', "", $periodList, array("onchange"=>"resetFields([this.form.StartDate, this.form.EndDate]);this.form.submit();"));
 	$formPeriod->addElement('hidden', 'timeline', "1");
-	$formPeriod->addElement('text', 'StartDate', _("From"), array("onclick"=>"displayDatePicker('StartDate')", "size"=>10));
-	$formPeriod->addElement('text', 'EndDate', _("to"), array("onclick"=>"displayDatePicker('EndDate')", "size"=>10));
+	$formPeriod->addElement('text', 'StartDate', _("From"), array("id"=>"StartDate", "size"=>10));
+	$formPeriod->addElement('text', 'EndDate', _("to"), array("id"=>"EndDate", "size"=>10));
 	$formPeriod->addElement('submit', 'button', _("Apply"));
 	$formPeriod->setDefaults(array('period' => $period, "StartDate" => $get_date_start, "EndDate" => $get_date_end));
 ?>

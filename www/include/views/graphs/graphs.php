@@ -149,9 +149,9 @@
 						"15552000"	=> _("Last 6 Months"),
 						"31104000"	=> _("Last Year"));
 	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
-	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "onclick"=>"displayDatePicker('StartDate', this)", "size"=>10));
+	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "size"=>10));
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5));
-	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "onclick"=>"displayDatePicker('EndDate', this)", "size"=>10));
+	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "size"=>10));
 	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "onclick"=>"displayTimePicker('EndTime', this)", "size"=>5));
 	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));	
 	

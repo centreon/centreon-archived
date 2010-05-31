@@ -129,14 +129,12 @@
 		global $allowedExt;
 		$img_info = pathinfo($picture);
 		$img_ext = $img_info["extension"];
-		if (! (isset($allowedExt[$img_ext])&&$allowedExt[$img_ext]) )
+		if (! isset($allowedExt[$img_ext]) && $allowedExt[$img_ext]))
 		    return 0;
-
-                if (!$img_info["filename"]) {
-			$img_parts = explode(".", $img_info["basename"]);
-                        $img_info["filename"] = $img_parts[0];
-		}
-
+        if (!$img_info["filename"]) {
+		    $img_parts = explode(".", $img_info["basename"]);
+            $img_info["filename"] = $img_parts[0];
+        }
 		if ($img_info["extension"] == 'gd2' && !is_file($img_info["filename"] . ".png") ) {
 			$im = imagecreatefromgd2($dirpath ."/". $picture);
 			if (!$im) 
