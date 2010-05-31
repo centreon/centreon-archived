@@ -70,47 +70,52 @@
 
 
 	function handleUpload($HTMLfile, $dir_alias, $img_comment = "") {
-		if (!$HTMLfile || !$dir_alias)
+		if (!$HTMLfile || !$dir_alias) {
 			return false;
+		}
+		
 		$fileinfo = $HTMLfile->getValue();
-		if (!isset($fileinfo["name"]) | !isset($fileinfo["type"]))
+		if (!isset($fileinfo["name"]) | !isset($fileinfo["type"])) {
 			return false;
+		}
 		
 		$uploaddir = "../filesUpload/images/";
 
-                switch ($fileinfo["type"]) {
-			// known archive types
-                        case "application/zip" : 
-                        case "application/x-tar" : 
-                        case "application/x-gzip" : 
-                        case "application/x-bzip" : 
-                        case "application/x-zip-compressed" : 
-			    $HTMLfile->moveUploadedFile($uploaddir);
-			    $arc = new EasyArchive();
-			    $filelist = $arc->extract($uploaddir.$fileinfo["name"]);
-			    if ($filelist!==false) {
-				foreach ($filelist as $file) {
-				    if (is_dir($uploaddir.$file))
-					continue; // skip directories in list
-				    $img_ids[] = insertImg($uploaddir, $file, $dir_alias, $img_comment);
-				}
-				unlink($uploaddir.$fileinfo["name"]);
-				return $img_ids;
-			    }
-			    return false;
-			    break;
-                        default : 
-			    if (stristr($fileinfo["type"], "image/") ) {
-				$HTMLfile->moveUploadedFile($uploaddir);
-				$filename = sanitizeFilename($fileinfo["name"]);
-				$fullpath = $mediadir.$dir_alias."/".$filename;
-				if (is_file($fullpath))
-				    return false; // file exists
-				return insertImg($uploaddir, $fileinfo["name"], $dir_alias, $img_comment);
-			    } else {
-				return false;
-			    }
+        switch ($fileinfo["type"]) {
+			//known archive types
+            case "application/zip" : 
+            case "application/x-tar" : 
+            case "application/x-gzip" : 
+            case "application/x-bzip" : 
+            case "application/x-zip-compressed" : 
+                $HTMLfile->moveUploadedFile($uploaddir);
+    			$arc = new EasyArchive();
+    			$filelist = $arc->extract($uploaddir.$fileinfo["name"]);
+    			if ($filelist!==false) {
+    			    foreach ($filelist as $file) {
+    				    if (is_dir($uploaddir.$file)) {
+    					    continue; // skip directories in list
+    				    }
+    				    $img_ids[] = insertImg($uploaddir, $file, $dir_alias, $img_comment);
+    				}
+    				unlink($uploaddir.$fileinfo["name"]);
+    				return $img_ids;
                 }
+    			return false;
+    			break;
+            default : 
+                if (stristr($fileinfo["type"], "image/") ) {
+                    $HTMLfile->moveUploadedFile($uploaddir);
+				    $filename = sanitizeFilename($fileinfo["name"]);
+				    $fullpath = $mediadir.$dir_alias."/".$filename;
+				    if (is_file($fullpath)) {
+				        return false; // file exists
+				    }
+				    return insertImg($uploaddir, $fileinfo["name"], $dir_alias, $img_comment);
+			    } else {
+				    return false;
+			    }
+        }
 	}
 
 	function insertImg ($src_dir, $filename, $dir_alias, $img_comment = "") {
