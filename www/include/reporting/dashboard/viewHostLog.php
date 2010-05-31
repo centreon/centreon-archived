@@ -67,8 +67,8 @@
 	$hosts = getAllHostsForReporting($is_admin, $lcaHoststr, $search);
 	$selHost =& $formHost->addElement('select', 'host', _("Host"), $hosts, array("onChange" =>"this.form.submit();"));
 	$formHost->addElement('hidden', 'period', $period);
-	$formHost->addElement('hidden', 'StartDate', $get_date_start);
-	$formHost->addElement('hidden', 'EndDate', $get_date_end);
+	/*$formHost->addElement('hidden', 'StartDate', $get_date_start);
+	$formHost->addElement('hidden', 'EndDate', $get_date_end);*/
 	if (isset($id))
 		$formHost->setDefaults(array('host' => $id));
 	

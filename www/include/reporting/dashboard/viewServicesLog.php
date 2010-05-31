@@ -67,8 +67,8 @@
 		
 	$select =& $form->addElement('select', 'item', _("Service"), $items, array("onChange" =>"this.form.submit();"));
 	$form->addElement('hidden', 'period', $period);
-	$form->addElement('hidden', 'StartDate', $get_date_start);
-	$form->addElement('hidden', 'EndDate', $get_date_end);
+	/*$form->addElement('hidden', 'StartDate', $get_date_start);
+	$form->addElement('hidden', 'EndDate', $get_date_end);*/
 	$form->addElement('hidden', 'p', $p);
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);

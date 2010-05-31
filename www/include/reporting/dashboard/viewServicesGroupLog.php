@@ -60,8 +60,8 @@
 	$items = getAllServicesgroupsForReporting($search);
 	$form->addElement('select', 'item', _("Service Group"), $items, array("onChange" =>"this.form.submit();"));
 	$form->addElement('hidden', 'period', $period);
-	$form->addElement('hidden', 'StartDate', $get_date_start);
-	$form->addElement('hidden', 'EndDate', $get_date_end);
+	/*$form->addElement('hidden', 'StartDate', $get_date_start);
+	$form->addElement('hidden', 'EndDate', $get_date_end);*/
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	if (isset($id))
