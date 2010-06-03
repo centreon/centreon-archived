@@ -73,7 +73,6 @@
 		if (!$HTMLfile || !$dir_alias) {
 			return false;
 		}
-		
 		$fileinfo = $HTMLfile->getValue();
 		if (!isset($fileinfo["name"]) | !isset($fileinfo["type"])) {
 			return false;
@@ -81,63 +80,57 @@
 		
 		$uploaddir = "../filesUpload/images/";
 
-        switch ($fileinfo["type"]) {
-			//known archive types
-            case "application/zip" : 
-            case "application/x-tar" : 
-            case "application/x-gzip" : 
-            case "application/x-bzip" : 
-            case "application/x-zip-compressed" : 
-                $HTMLfile->moveUploadedFile($uploaddir);
-    			$arc = new EasyArchive();
-    			$filelist = $arc->extract($uploaddir.$fileinfo["name"]);
-    			if ($filelist!==false) {
-    			    foreach ($filelist as $file) {
-    				    if (is_dir($uploaddir.$file)) {
-    					    continue; // skip directories in list
-    				    }
-    				    $img_ids[] = insertImg($uploaddir, $file, $dir_alias, $img_comment);
-    				}
-    				unlink($uploaddir.$fileinfo["name"]);
-    				return $img_ids;
-                }
-    			return false;
-    			break;
-            default : 
-                if (stristr($fileinfo["type"], "image/") ) {
-                    $HTMLfile->moveUploadedFile($uploaddir);
-				    $filename = sanitizeFilename($fileinfo["name"]);
-				    $fullpath = $mediadir.$dir_alias."/".$filename;
-				    if (is_file($fullpath)) {
-				        return false; // file exists
-				    }
-				    return insertImg($uploaddir, $fileinfo["name"], $dir_alias, $img_comment);
-			    } else {
-				    return false;
+                switch ($fileinfo["type"]) {
+			// known archive types
+                        case "application/zip" : 
+                        case "application/x-tar" : 
+                        case "application/x-gzip" : 
+                        case "application/x-bzip" : 
+                        case "application/x-zip-compressed" : 
+			    $HTMLfile->moveUploadedFile($uploaddir);
+			    $arc = new EasyArchive();
+			    $filelist = $arc->extract($uploaddir.$fileinfo["name"]);
+			    if ($filelist!==false) {
+				foreach ($filelist as $file) {
+				    if (is_dir($uploaddir.$file))
+					continue; // skip directories in list
+				    $img_ids[] = insertImg($uploaddir, $file, $dir_alias, $file, $img_comment);
+				}
+				unlink($uploaddir.$fileinfo["name"]);
+				return $img_ids;
 			    }
-        }
+			    return false;
+			    break;
+                        default : 
+			    if (stristr($fileinfo["type"], "image/") ) {
+				$HTMLfile->moveUploadedFile($uploaddir);
+				return insertImg($uploaddir, $fileinfo["name"], $dir_alias, $fileinfo["name"], $img_comment);
+			    } else {
+				return false;
+			    }
+                }
 	}
 
-	function insertImg ($src_dir, $filename, $dir_alias, $img_comment = "") {
+	function insertImg ($src_dir, $src_file, $dst_dir, $dst_file, $img_comment = "") {
 		global $pearDB;
 		$mediadir = "./img/media/";
 		
-		if (!($dir_id = testDirectoryExistence($dir_alias)))
-			$dir_id = insertDirectory($dir_alias);
+		if (!($dir_id = testDirectoryExistence($dst_dir)))
+			$dir_id = insertDirectory($dst_dir);
 
-		$dst_file = sanitizeFilename($filename);
-		$dst  = $mediadir.$dir_alias."/".$dst_file;
+		$dst_file = sanitizeFilename($dst_file);
+		$dst  = $mediadir.$dst_dir."/".$dst_file;
 		if (is_file($dst))
 			return false; // file exists
-		if (!rename($src_dir.$filename, $dst))
+		if (!rename($src_dir.$src_file, $dst))
 			return false; // access denied, path error
 
-		$img_parts = explode(".", $filename);
+		$img_parts = explode(".", $dst_file);
 		$img_name = $img_parts[0];
 		$rq = "INSERT INTO view_img ";
 		$rq .= "(img_name, img_path, img_comment) ";
 		$rq .= "VALUES ";
-		$rq .= "('".htmlentities($img_name, ENT_QUOTES)."', '".htmlentities($filename, ENT_QUOTES)."', '".htmlentities($img_comment, ENT_QUOTES)."')";
+		$rq .= "('".htmlentities($img_name, ENT_QUOTES)."', '".htmlentities($dst_file, ENT_QUOTES)."', '".htmlentities($img_comment, ENT_QUOTES)."')";
 		$pearDB->query($rq);
 		$res =& $pearDB->query("SELECT MAX(img_id) FROM view_img");
 		$img_id =& $res->fetchRow();
@@ -182,6 +175,7 @@
 			return;
 		global $pearDB;
 		$mediadir = "./img/media/";
+		$uploaddir = "../filesUpload/images/";
 		/*
 		 * 1. upload new file
 		 * 2. rename to new name
@@ -201,8 +195,16 @@
 			$dir_alias = $img_info["dir_alias"];
 		/* insert new file */	
 		if ($HTMLfile && $HTMLfile->isUploadedFile()) {
-			deleteImage($img_id);
-			$img_id = insertImg ($HTMLfile, $dir_alias, $img_info["img_path"], $img_info["img_comment"]);
+			$fileinfo = $HTMLfile->getValue();
+			if (!isset($fileinfo["name"]) | !isset($fileinfo["type"]))
+				return false;
+			if (stristr($fileinfo["type"], "image/") )
+				$HTMLfile->moveUploadedFile($uploaddir);
+			else
+				return false;
+			deleteImg($img_id);
+			$img_id = insertImg ($uploaddir, $fileinfo["name"], $dir_alias, $img_info["img_path"], $img_info["img_comment"]);
+
 		}
 		/* rename AND not moved*/
 		if ($img_name && $dir_alias == $img_info["dir_alias"]) {
@@ -231,13 +233,10 @@
 	}
 	
 	function moveMultImg ($images, $dirName) {
-		foreach($images as $selector => $val) {
-			
-			$id = explode('-',$selector);
-			if (count($id)!=2) 
-				continue;
-			moveImg($id[1], $dirName);
-		}
+		if (count($images)>0)
+		    foreach($images as $id) {
+			moveImg($id, $dirName);
+		    }
 	}
 
 	function moveImg($img_id, $dir_alias) {
@@ -259,8 +258,14 @@
 		if ($dir_alias != $img_info["dir_alias"]) {
 			if (!testDirectoryExistence($dir_alias))
 				$dir_id = insertDirectory($dir_alias);
-			else
-				$dir_id = $img_info["dir_id"];
+			else {
+				$rq = "SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir_alias."'";
+				$DBRESULT =& $pearDB->query($rq);
+				if (!$DBRESULT)
+					return;
+				$dir_info =& $DBRESULT->fetchRow();
+				$dir_id = $dir_info["dir_id"];
+			}
 			$oldpath = $mediadir.$img_info["dir_alias"]."/".$img_info["img_path"];
 			$newpath = $mediadir.$dir_alias."/".$img_info["img_path"];
 			if (rename($oldpath,$newpath))

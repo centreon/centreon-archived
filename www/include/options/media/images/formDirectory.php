@@ -61,7 +61,7 @@
 	    else if (isset($dir_imgs) && $dir_imgs)
 		$list = $dir_imgs;
 	
-	    foreach($list as $selector) {
+	    foreach($list as $selector=>$status) {
 		$ids = explode('-',$selector);
 		if (count($ids)!=2) continue;
 		$selected[$ids[1]] = $ids[1];
