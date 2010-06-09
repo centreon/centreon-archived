@@ -166,4 +166,13 @@ echo _("hostgroup dependency");
 echo _("service dependency");
 echo _("servicegroup dependency");
 
+/* Menu Centreon BI */
+
+echo _("Report View");
+echo _("Resource View");
+echo _("Jobs");
+echo _("Report Templates");
+echo _("General Options");
+echo _("Trash");
+
 ?>
