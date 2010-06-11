@@ -64,7 +64,7 @@
 			$host_name = NULL;
 		
 			$data = array();
-			$data = array("start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320));
+			$data = array("start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320), "persistant" => 1);
 			if (isset($host_id))
 				$data["host_id"] = $host_id;
 			/*
