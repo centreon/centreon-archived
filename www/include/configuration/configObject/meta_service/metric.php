@@ -135,6 +135,21 @@
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
+	$form->addRule('host_id', _("Compulsory Field"), 'required');
+
+	function checkMetric() {
+		global $form;
+		
+		$tab = $form->getSubmitValue("metric_sel");
+		if (isset($tab[0]) & isset($tab[1])) {
+			return 1;
+		} 
+		return 0;
+	}
+
+	$form->registerRule('checkMetric', 'callback', 'checkMetric');
+	$form->addRule('metric_sel', _("Compulsory Field"), 'checkMetric');
+
 	/*
 	 * Just watch
 	 */
