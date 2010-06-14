@@ -107,7 +107,7 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'nagios_activate', null, _("Disabled"), '0');
 	$form->addGroup($nagTab, 'nagios_activate', _("Status"), '&nbsp;');
 	
-	$form->addElement('select', 'nagios_server_id', _("Server Nagios configured"), $nagios_server);
+	$form->addElement('select', 'nagios_server_id', _("Linked Nagios Server"), $nagios_server);
 	
 	/* *****************************************************
 	 * Part 1
@@ -291,7 +291,6 @@
 	$form->addElement('text', 'host_inter_check_delay_method', _("Host Inter-Check Delay Method"), $attrsText3);
 	$form->addElement('text', 'service_inter_check_delay_method', _("Service Inter-Check Delay Method"), $attrsText3);
 	
-	$form->addElement('text', 'check_result_reaper_frequency', _("Service Reaper Frequency"), $attrsText3);
 	$form->addElement('text', 'check_result_reaper_frequency', _("Check Result Reaper Frequency"), $attrsText3);
 	
 	$nagTab = array();
