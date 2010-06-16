@@ -120,7 +120,6 @@
 	$form->addElement('text', 'temp_path', _("Temp directory"), $attrsText2);
 	$form->addElement('text', 'check_result_path', _("Check result directory"), $attrsText2);
 	$form->addElement('text', 'max_check_result_file_age', _("Max Check Result File Age"), $attrsText3);
-	$form->addElement('text', 'p1_file', _("P1 File"), $attrsText2);
 	
 	/* *****************************************************
 	 * User / Groups
@@ -448,7 +447,11 @@
 	/* *****************************************************
 	 * General Informations
 	 */
-	$form->addElement('text', 'date_format', _("Date Format"), $attrsText);
+	$dateFormats = array("euro"=>"euro (30/06/2002 03:15:00)", 
+			"us"=>"us (06/30/2002 03:15:00)",
+			"iso8601"=>"iso8601 (2002-06-30 03:15:00)",
+			"strict-iso8601"=>"strict-iso8601 (2002-06-30 03:15:00)");
+	$form->addElement('select', 'date_format', _("Date Format"), $dateFormats);
 	$form->addElement('text', 'admin_email', _("Administrator Email Address"), $attrsText);
 	$form->addElement('text', 'admin_pager', _("Administrator Pager"), $attrsText);
 	$form->addElement('text', 'illegal_object_name_chars', _("Illegal Object Name Characters"), $attrsText2);
@@ -537,6 +540,8 @@
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'use_embedded_perl_implicitly', _("Use embedded Perl implicitly"), '&nbsp;');
+
+	$form->addElement('text', 'p1_file', _("Embedded Perl initialisation file"), $attrsText2);
 	
 	/* ****************************************************
 	 * Debug
@@ -544,11 +549,10 @@
 	$form->addElement('text', 'debug_file', _("Debug file (Directory + File)"), $attrsText);
 	$form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
 	
-	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 0 ", '0');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 1 ", '1');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 2 ", '2');
-	$form->addGroup($nagTab, 'debug_verbosity', _("Debug Verbosity"), '&nbsp;');
+	$verboseOptions = array('0'=>_("Basic information"),
+				'1'=>_("More detailed information"),
+				'2'=>_("Highly detailed information") );
+	$form->addElement('select', 'debug_verbosity', _("Debug Verbosity"), $verboseOptions);
 	
 	$debugLevel = array();
 	$debugLevel["-1"]= _("Log everything");
