@@ -741,9 +741,9 @@
 		$tpl->assign('Perl', _("Perl"));
 		$tpl->assign('DebugConfiguration', _("Debug Configuration"));
 		$tpl->assign('Debug', _("Debug"));
-		$tpl->assign("Seconds", _("Seconds"));
-		$tpl->assign("Minutes", _("Minutes"));
-		$tpl->assign("Bytes", _("Bytes"));
+		$tpl->assign("Seconds", _("seconds"));
+		$tpl->assign("Minutes", _("minutes"));
+		$tpl->assign("Bytes", _("bytes"));
 		$tpl->display("formNagios.ihtml");
 	}
 	?>
