@@ -41,6 +41,7 @@
 
 	require_once "HTML/QuickForm.php";
 	require_once "HTML/QuickForm/Renderer/ArraySmarty.php";	
+	require_once "./include/monitoring/common-Func.php";
 	require_once "./class/centreonDB.class.php";
 	
 	$pearDBndo = new CentreonDB("ndo");
@@ -66,6 +67,28 @@
 	 */
 	if ($is_admin || (isset($lcaHostByName["LcaHost"][$host_name]))){
 	
+		/*
+		 * Fetch default values for form
+		 */
+		$user_params = get_user_param($oreon->user->user_id, $pearDB);
+	
+		if (!isset($user_params["ack_sticky"]))
+			$user_params["ack_sticky"] = 1;
+
+		if (!isset($user_params["ack_notify"]))
+			$user_params["ack_notify"] = 0;
+
+		if (!isset($user_params["ack_persistent"]))
+			$user_params["ack_persistent"] = 1;
+
+		if (!isset($user_params["force_active"]))
+			$user_params["force_active"] = 1;
+
+		$sticky = $user_params["ack_sticky"];
+		$notify = $user_params["ack_notify"];
+		$persistent = $user_params["ack_persistent"];
+		$force_check = $user_params["force_check"];
+	
 		## Form begin
 		$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&host_name=$host_name&service_description=$service_description");
 		$form->addElement('header', 'title', _("Acknowledge a Service"));
@@ -80,16 +103,16 @@
 		$tpl->assign('authoralias', $oreon->user->get_alias());
 	
 		$ckbx[] =& $form->addElement('checkbox', 'notify', _("notify"));
-		$ckbx[0]->setChecked(false);
+		$ckbx[0]->setChecked($notify);
 		
 		$ckbx1[] =& $form->addElement('checkbox', 'sticky', _("sticky"));
-		$ckbx1[0]->setChecked(true);
+		$ckbx1[0]->setChecked($sticky);
 		
 		$ckbx2[] =& $form->addElement('checkbox', 'persistent', _("persistent"));
-		$ckbx2[0]->setChecked(true);
+		$ckbx2[0]->setChecked($persistent);
 		
 		$ckbx3[] =& $form->addElement('checkbox', 'force_check', _("Force active check"));
-		$ckbx3[0]->setChecked(true);
+		$ckbx3[0]->setChecked($force_check);
 		
 		$form->addElement('hidden', 'host_name', $host_name);
 		$form->addElement('hidden', 'service_description', $service_description);
@@ -100,7 +123,9 @@
 
 		$form->applyFilter('__ALL__', 'myTrim');
 		
-		$form->addElement('textarea', 'comment', _("comment"), array("rows"=>"8", "cols"=>"80"));
+		$textarea =& $form->addElement('textarea', 'comment', _("comment"), array("rows"=>"8", "cols"=>"80"));
+		$textarea->setValue(_("Acknowledged by ").$oreon->user->get_alias());
+
 		$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 		$form->setJsWarnings(_("Invalid information entered"),_("Please correct these fields"));
 		

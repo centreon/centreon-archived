@@ -64,10 +64,14 @@
 	}
 
 	if (isset($param["cmd"]) && $param["cmd"] == 14 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 1){
+		if (!isset($param["sticky"]))
+			$param["sticky"] = 0;
 		if (!isset($param["notify"]))
 			$param["notify"] = 0;
 		if (!isset($param["persistent"]))
 			$param["persistent"] = 0;
+		if (!isset($param["ackhostservice"]))
+			$param["ackhostservice"] = 0;
 		acknowledgeHost($param);
 	} else if (isset($param["cmd"]) && $param["cmd"] == 14 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 0){
 		acknowledgeHostDisable();

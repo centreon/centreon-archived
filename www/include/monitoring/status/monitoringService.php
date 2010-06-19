@@ -65,6 +65,8 @@
 	}
 
 	if (isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 1){
+		if (!isset($param["sticky"]))
+			$param["sticky"] = 0;
 		if (!isset($param["notify"]))
 			$param["notify"] = 0;
 		if (!isset($param["persistent"]))

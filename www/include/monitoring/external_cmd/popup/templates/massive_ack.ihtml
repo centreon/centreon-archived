@@ -4,13 +4,13 @@
 		 <table class="ListTableMedium">
 		 	<tr class="ListHeader"><td class="tactical_light_header"><img src="./img/icones/16x16/flag_red.gif">&nbsp;&nbsp;{$form.header.title}</td></tr>
 			<tr class="list_two">
-	            <td class="FormRowField" style='padding-left:15px;'><input type="checkbox" id="sticky" checked>&nbsp;{$form.sticky.label}</td>
+	            <td class="FormRowField" style='padding-left:15px;'>{$form.sticky.html}&nbsp;{$form.sticky.label}</td>
 	        </tr>
 			<tr class="list_one">
-				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="notify">&nbsp;{$form.notify.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.notify.html}&nbsp;{$form.notify.label}</td>
 			</tr>
 			<tr class="list_two">
-				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="persistent" checked>&nbsp;{$form.persistent.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.persistent.html}&nbsp;{$form.persistent.label}</td>
 			</tr>
 			<tr class="list_one">
 				<td class="FormRowValue" style='padding-left:15px;'>{$authorlabel}&nbsp;:&nbsp;{$authoralias}</td>
@@ -20,11 +20,11 @@
 			</tr>
 			{if $cmd == '72'}
 			<tr class="list_one">
-	            <td class="FormRowField" style='padding-left:15px;'><input type="checkbox" id="ackhostservice" checked>&nbsp;{$form.ackhostservice.label}</td>
+	            <td class="FormRowField" style='padding-left:15px;'>{$form.ackhostservice.html}&nbsp;{$form.ackhostservice.label}</td>
 	        </tr>
 			{/if}
 			<tr class="list_two">
-				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="force_check" checked>&nbsp;{$form.force_check.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.force_check.html}&nbsp;{$form.force_check.label}</td>
 			</tr>
 		</table>
 		<div id="validForm">

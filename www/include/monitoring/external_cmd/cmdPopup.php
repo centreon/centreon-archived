@@ -53,6 +53,7 @@
 	$centreonGMT = new CentreonGMT($pearDB);
 	
 	require_once $centreon_path . "www/include/common/common-Func.php";
+	require_once($centreon_path . "www/include/monitoring/common-Func.php");
 
 	if (!isset($oreon))
 		exit();

@@ -41,37 +41,42 @@
         function massiveHostAck($key){
         	global $pearDB, $is_admin, $oreon;
 		
-			$actions = false;
+		$actions = false;
         	$actions = $oreon->user->access->checkAction("host_acknowledgement");
 
-			$tmp = split(";", $key);
-			$host_name = $tmp[0];
+		$tmp = split(";", $key);
+		$host_name = $tmp[0];
 			
-			isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
-			isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";
-			isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "2" : $sticky = "1";
-			isset($_GET['force_check']) && $_GET['force_check'] == "true" ? $force_check = "1" : $force_check = "0";
+		isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
+		isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";
+		isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "2" : $sticky = "1";
+		isset($_GET['force_check']) && $_GET['force_check'] == "true" ? $force_check = "1" : $force_check = "0";
 			
-            if ($actions == true || $is_admin) {
+		if ($actions == true || $is_admin) {
                     $host_poller = GetMyHostPoller($pearDB, $host_name);
                     $flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$host_name.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
-            }
+		}
 	
-			$actions = $oreon->user->access->checkAction("service_acknowledgement");
-			if (($actions == true || $is_admin) && isset($_GET['ackhostservice']) && $_GET['ackhostservice'] == "true") {
-				$DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' LIMIT 1");
-	            $row =& $DBRES->fetchRow();
-				$svc_tab = array();
-	            $svc_tab = getMyHostServices($row['host_id']);
-	            if (count($svc_tab)) {
-					foreach ($svc_tab as $key2 => $value) {
-	            		write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$value.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
-						if ($force_check == 1)
-		                	write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".time(), $host_poller);                	
-	                }
+		$actions = $oreon->user->access->checkAction("service_acknowledgement");
+		if (($actions == true || $is_admin) && isset($_GET['ackhostservice']) && $_GET['ackhostservice'] == "true") {
+			$DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' LIMIT 1");
+			$row =& $DBRES->fetchRow();
+			$svc_tab = array();
+			$svc_tab = getMyHostServices($row['host_id']);
+			if (count($svc_tab)) {
+				foreach ($svc_tab as $key2 => $value) {
+					write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$value.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+					if ($force_check == 1)
+				 		write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".time(), $host_poller);                	
 				}
 			}
-			return _("Your command has been sent");
+		}
+		set_user_param($oreon->user->user_id, $pearDB, "ack_sticky", $sticky);
+		set_user_param($oreon->user->user_id, $pearDB, "ack_notify", $notify);
+		set_user_param($oreon->user->user_id, $pearDB, "ack_persistent", $persistent);
+		set_user_param($oreon->user->user_id, $pearDB, "force_check", $force_check);
+
+		return _("Your command has been sent");
         }
 
         /*
@@ -80,38 +85,43 @@
         function massiveServiceAck($key){
 	        global $pearDB, $is_admin, $oreon;
 			
-			$actions = false;
-			$actions = $oreon->user->access->checkAction("service_acknowledgement");
+		$actions = false;
+		$actions = $oreon->user->access->checkAction("service_acknowledgement");
 			                
-			$tmp = split(";", $key);
-			if (!isset($tmp[0])) {
-				throw new Exception('No host found');
-			}
-			$host_name = $tmp[0];
+		$tmp = split(";", $key);
+		if (!isset($tmp[0])) {
+			throw new Exception('No host found');
+		}
+		$host_name = $tmp[0];
 			
-			if (!isset($tmp[1])) {
-				throw new Exception('No service found');
-        	} else {
-				$svc_description = $tmp[1];
-			}
+		if (!isset($tmp[1])) {
+			throw new Exception('No service found');
+		} else {
+			$svc_description = $tmp[1];
+		}
 			
-			isset($_GET['persistent']) && $_GET['persistent'] == "true" 		? $persistent = "1" : $persistent = "0";
-	        isset($_GET['notify']) && $_GET['notify'] == "true" 				? $notify = "1" : $notify = "0";	
-			isset($_GET['sticky']) && $_GET['sticky'] == "true" 				? $sticky = "2" : $sticky = "1";
-			isset($_GET['force_check']) && $_GET['force_check'] == "true" 		? $force_check = "1" : $force_check = "0";
+		isset($_GET['persistent']) && $_GET['persistent'] == "true" 		? $persistent = "1" : $persistent = "0";
+		isset($_GET['notify']) && $_GET['notify'] == "true" 			? $notify = "1" : $notify = "0";	
+		isset($_GET['sticky']) && $_GET['sticky'] == "true" 			? $sticky = "2" : $sticky = "1";
+		isset($_GET['force_check']) && $_GET['force_check'] == "true" 		? $force_check = "1" : $force_check = "0";
 
-			$host_poller = GetMyHostPoller($pearDB, $host_name);
+		$host_poller = GetMyHostPoller($pearDB, $host_name);
 			
-	        if ($actions == true || $is_admin) {
-				$_GET["comment"] = $_GET["comment"];
-	            $_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
-	            $flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$svc_description.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
-		        if ($force_check == 1) {
-		        	write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".$svc_description.";".time(), $host_poller);  
-		        }
-	            return _("Your command has been sent");
-	         }
-	         return null;
+		if ($actions == true || $is_admin) {
+			$_GET["comment"] = $_GET["comment"];
+			$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
+			$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$svc_description.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+			if ($force_check == 1) {
+				write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".$svc_description.";".time(), $host_poller);  
+			}
+			set_user_param($oreon->user->user_id, $pearDB, "ack_sticky", $sticky);
+			set_user_param($oreon->user->user_id, $pearDB, "ack_notify", $notify);
+			set_user_param($oreon->user->user_id, $pearDB, "ack_persistent", $persistent);
+			set_user_param($oreon->user->user_id, $pearDB, "force_check", $force_check);
+
+			return _("Your command has been sent");
+		}
+		return null;
         }
         
         /*

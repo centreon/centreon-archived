@@ -265,7 +265,6 @@
 	function acknowledgeHost($param){
 		global $pearDB,$tab, $key, $is_admin, $oreon;
 
-		
 		$actions = false;		
 		$actions = $oreon->user->access->checkAction("host_acknowledgement");
 		
@@ -274,14 +273,19 @@
 			isset($param['sticky']) && $param['sticky'] == "1" ? $sticky = "2" : $sticky = "1";
 			$host_poller = GetMyHostPoller($pearDB, htmlentities($param["host_name"], ENT_QUOTES));
 			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$param["host_name"].";$sticky;".htmlentities($param["notify"], ENT_QUOTES).";".htmlentities($param["persistent"], ENT_QUOTES).";".htmlentities($param["author"], ENT_QUOTES).";".htmlentities($param["comment"], ENT_QUOTES), $host_poller);
+
 			if (isset($param['ackhostservice']) && $param['ackhostservice'] == 1) {
 				$svc_tab = getMyHostServices(getMyHostID(htmlentities($param["host_name"], ENT_QUOTES)));
-	            if (count($svc_tab)) {
+				if (count($svc_tab)) {
 					foreach ($svc_tab as $key2 => $value) {
-	            		write_command(" ACKNOWLEDGE_SVC_PROBLEM;".htmlentities($param["host_name"], ENT_QUOTES).";".$value.";".$sticky.";".htmlentities($param["notify"], ENT_QUOTES).";".htmlentities($param["persistent"], ENT_QUOTES).";".htmlentities($param["author"], ENT_QUOTES).";".htmlentities($param["comment"], ENT_QUOTES), $host_poller);
-	                }
+	            				write_command(" ACKNOWLEDGE_SVC_PROBLEM;".htmlentities($param["host_name"], ENT_QUOTES).";".$value.";".$sticky.";".htmlentities($param["notify"], ENT_QUOTES).";".htmlentities($param["persistent"], ENT_QUOTES).";".htmlentities($param["author"], ENT_QUOTES).";".htmlentities($param["comment"], ENT_QUOTES), $host_poller);
+	                		}
 				}
 			}
+			set_user_param($oreon->user->user_id, $pearDB, "ack_sticky", $param["sticky"]);
+			set_user_param($oreon->user->user_id, $pearDB, "ack_notify", $param["notify"]);
+			set_user_param($oreon->user->user_id, $pearDB, "ack_services", $param["ackhostservice"]);
+			set_user_param($oreon->user->user_id, $pearDB, "ack_persistent", $param["persistent"]);
 			return _("Your command has been sent");
 		}
 		return NULL;
@@ -334,6 +338,9 @@
 			$flg = send_cmd(" ACKNOWLEDGE_SVC_PROBLEM;".$param["host_name"].";".$param["service_description"].";".$sticky.";".$param["notify"].";".$param["persistent"].";".$param["author"].";".$param["comment"], GetMyHostPoller($pearDB, $param["host_name"]));
 			return $flg;
 		}
+		set_user_param($oreon->user->user_id, $pearDB, "ack_sticky", $param["sticky"]);
+		set_user_param($oreon->user->user_id, $pearDB, "ack_notify", $param["notify"]);
+		set_user_param($oreon->user->user_id, $pearDB, "ack_persistent", $param["persistent"]);
 		return NULL;
 	}
 
