@@ -119,6 +119,12 @@
 				}
 				$str .= $key."=".$value."\n"; 
 			}
+			else if ($key == "broker_module") {
+				foreach ($nagios["broker_module"] as $kBrm => $vBrm)
+					if ( $vBrm["broker_module"] != NULL )
+						>$str .= $key."=".$vBrm["broker_module"]."\n";
+					
+			}
 			else if ($key == "debug_level_opt");
 			else
 				$str .= $key."=".$value."\n";

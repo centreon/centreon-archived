@@ -46,6 +46,12 @@
 	$handle = create_file($nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG", $oreon->user->get_name(), false);
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
 	$nagios = $DBRESULT->fetchRow();
+	$DBRESULT->free();
+	$DBRESULT =& $pearDB->query("SELECT broker_module FROM `cfg_nagios_bkmod` WHERE `nagios_id` = '".$nagios["nagios_id"]."'");
+	$nagios["broker_module"] = NULL;
+	while ($arBk =& $DBRESULT->fetchRow())
+		$nagios["broker_module"][] = $arBk;
+	$DBRESULT->free();
 	
 	$str = NULL;
 	

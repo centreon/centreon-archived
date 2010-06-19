@@ -79,6 +79,19 @@
 	$DBRESULT->free();
 	unset($ns);
 	
+	/*
+	 * Get all broker module for this nagios config
+	 */
+	$nBk = 0;
+	$aBk = array();
+	$DBRESULT=& $pearDB->query("SELECT bkmod_id, broker_module FROM cfg_nagios_bkmod WHERE nagios_id='".$nagios_id."'");
+	while ($lineBk =& $DBRESULT->fetchRow()){
+		$aBk[$nBk] = $lineBk;
+		$nBk++;
+	}
+	$DBRESULT->free();
+	unset($lineBk);
+
 	$attrsText		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"50");
 	$attrsText3 	= array("size"=>"10");
@@ -472,8 +485,30 @@
 	/* *****************************************************
 	 * Event Broker Option
 	 */
+	$form->addElement('text', 'multiple_broker_module', _("Multiple Broker Module"), $attrsText2);
+	$form->addElement('static', 'bkTextMultiple', _("This directive can be used multiple times, see nagios documentation.<BR>NDO use the broker module directive, Nagvis too."));
+	$form->addElement('text', 'addBroker', _("Add a new broker module"), $attrsText2);
+	$form->addElement('text', 'delBroker', _("Delete this broker module"), $attrsText2);
+	include_once("makeJS_formNagios.php");
+	if ($o == "c" || $o == "a" ) {
+		if ( $nBk > 0 ) { 
+?>
+<script type="text/javascript">
+<?php
+		}
+		for ($nBk = 0 ; isset($aBk[$nBk]); $nBk++) { 
+?>
+	gBkId[<?php echo $nBk;?>] = <?php echo $aBk[$nBk]["bkmod_id"];?>;
+	gBkValue[<?php echo $nBk;?>] = '<?php echo $aBk[$nBk]["broker_module"];?>';
+<?php
+		}
+		if ( $nBk > 0 ) { 
+?>
+</script>
+<?php
 	$form->addElement('text', 'event_broker_options', _("Broker Module Options"), $attrsText2);
-	$form->addElement('text', 'broker_module', _("Broker Module"), $attrsText2);
+		}
+	}
 	
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
@@ -660,12 +695,16 @@
 	} else if ($o == "c")	{
 		# Modify a nagios information
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+#		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
+
 		$form->setDefaults($nagios);
 	} else if ($o == "a")	{
 		# Add a nagios information
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+#		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
+
 	}
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));
 
@@ -687,7 +726,7 @@
 		$nagiosObj->setValue(insertNagiosInDB());
 		else if ($form->getSubmitValue("submitC"))
 		updateNagiosInDB($nagiosObj->getValue());
-		$o = NULL;
+		$o = "w";
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&nagios_id=".$nagiosObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
@@ -731,7 +770,7 @@
 		$tpl->assign('Timouts', _("Timeouts"));
 		$tpl->assign('Archives', _("Archives"));
 		$tpl->assign('StatesRetention', _("States Retention"));
-		$tpl->assign('NDO', _("NDO"));
+		$tpl->assign('BrokerModule', _("Broker Module"));
 		$tpl->assign('Perfdata', _("Perfdata"));
 		$tpl->assign('TimeUnit', _("Time Unit"));
 		$tpl->assign('HostCheckSchedulingOptions', _("Host Check Scheduling Options"));
@@ -748,6 +787,7 @@
 	}
 	?>
 <script type="text/javascript">
+displayBroker('<?php echo $o;?>');
 function unCheckOthers(id) {
 	if (id == "debug-1") {
 		document.getElementById("debug0").checked = false;
