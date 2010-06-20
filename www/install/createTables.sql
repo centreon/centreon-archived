@@ -457,6 +457,19 @@ CREATE TABLE IF NOT EXISTS `cfg_nagios` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `cfg_nagios_bkmod`
+--
+
+CREATE TABLE IF NOT EXISTS `cfg_nagios_bkmod` (
+  `bkmod_id` int(11) NOT NULL AUTO_INCREMENT,
+  `nagios_id` int(11) DEFAULT NULL,
+  `broker_module` varchar(255) DEFAULT NULL,
+PRIMARY KEY (`bkmod_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `cfg_ndo2db`
 --
 
