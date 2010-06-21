@@ -89,6 +89,12 @@
 						<td class="ListColLeft">{$m_mon_last_update}</td>
 						<td class="ListColLeft">{$host_data.last_update}</td>
 					</tr>
+					{if $host_data.comments}
+					<tr class='list_one'>
+						<td class="ListColLeft">{$m_mon_host_comment}</td>
+						<td class="ListColLeft">{$host_data.comments}</td>
+					</tr>
+					{/if}
 				</table>
 				<br />
 				<table class="ListTable">

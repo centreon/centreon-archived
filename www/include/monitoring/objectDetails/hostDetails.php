@@ -240,6 +240,8 @@
 		    $host_status[$host_name]["scheduled_downtime_depth"] = 1;
 		}
 		
+		$host_status[$host_name]["comments"] = $hostDB["host_comment"];
+		
 		if (isset($tab_host_service[$host_name]) && count($tab_host_service[$host_name]))
 			foreach ($tab_host_service[$host_name] as $key_name => $s){
 				if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
@@ -294,6 +296,7 @@
 		$tpl->assign("m_mon_acknowledge", _("Acknowledge problem"));
 		$tpl->assign("seconds", _("seconds"));
 		$tpl->assign("links", _("Links"));
+		$tpl->assign("m_mon_host_comment", _("Comments"));
 
 		$tpl->assign("m_mon_obsess_over_host", _("Obsess Over Host"));
 		$tpl->assign("m_mon_check_this_host", _("Active Checks"));
