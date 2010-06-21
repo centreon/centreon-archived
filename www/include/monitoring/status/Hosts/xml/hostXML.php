@@ -201,6 +201,8 @@
 			$hard_duration = CentreonDuration::toString(time() - $ndo["last_hard_state_change"]);
 		else if ($ndo["last_hard_state_change"] > 0)
 			$hard_duration = " N/A ";
+		else
+			$hard_duration = "N/A";
 			
 		$obj->XML->startElement("l");
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
