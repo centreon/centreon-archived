@@ -153,7 +153,7 @@
 	
 	$rq_limit = " LIMIT ".($num * $limit).",".$limit;
 
-	$ArgNeeded = "A.*, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.state_type as state_type, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_hard_state_change) as last_hard_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.scheduled_downtime_depth, nss.flap_detection_enabled";
+	$ArgNeeded = "A.host_name, A.object_id, A.service_description, A.notes, A.notes_url, A.action_url, A.max_check_attempts, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.state_type as state_type, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_hard_state_change) as last_hard_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.scheduled_downtime_depth, nss.flap_detection_enabled";
 
 	$ACLDBName = "";
 	if (!$obj->is_admin)
@@ -336,6 +336,7 @@
 				$obj->XML->writeElement("hc", "transparent");				
 				$obj->XML->startElement("hn");
 				$obj->XML->writeAttribute("none", "1");
+				$obj->XML->writeAttribute("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->text($ndo["host_name"]);
 				$obj->XML->endElement();				
 			} else {				
