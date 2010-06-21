@@ -165,6 +165,12 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 	$SNMPTT_BINDIR/snmpttconvertmib >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install") : snmpttconvertmib"
 
+if [ -f $CENTREON_ETC/conf.pm ] ; then 
+	log "INFO" "$(gettext "Generate SNMPTT configuration")"
+	$CENTPLUGINSTRAPS_BINDIR/centGenSnmpttConfFile >> $LOG_FILE 2>&1
+	check_result $? "$(gettext "Generate SNMPTT configuration")"
+fi
+
 # Create traps directory in nagios pluginsdir
 #$INSTALL_DIR/cinstall $cinstall_opts -d 664 \
 #	-g $WEB_GROUP \
