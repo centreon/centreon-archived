@@ -236,3 +236,17 @@ ALTER TABLE `hostcategories_relation` ADD FOREIGN KEY ( `hostcategories_hc_id` )
 ALTER TABLE `hostcategories_relation` ADD FOREIGN KEY ( `host_host_id` ) REFERENCES `host` (`host_id`) ON DELETE CASCADE ;
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Categories', './img/icones/16x16/cube_green.gif', 601, 60104, 40, 1, './include/configuration/configObject/host_categories/hostCategories.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+
+CREATE TABLE IF NOT EXISTS `acl_resources_hc_relations` (
+  `arhcr_id` int(11) NOT NULL auto_increment,
+  `hc_id` int(11) default NULL,
+  `acl_res_id` int(11) default NULL,
+  PRIMARY KEY  (`arhcr_id`),
+  KEY `hc_id` (`hc_id`),
+  KEY `acl_res_id` (`acl_res_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ALTER TABLE `acl_resources_hc_relations`
+  ADD CONSTRAINT `acl_resources_hc_relations_ibfk_1` FOREIGN KEY (`hc_id`) REFERENCES `hostcategories` (`hc_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `acl_resources_hc_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE;
+

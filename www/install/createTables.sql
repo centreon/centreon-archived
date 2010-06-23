@@ -203,6 +203,21 @@ CREATE TABLE IF NOT EXISTS `acl_resources_sc_relations` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `acl_resources_hc_relations`
+--
+
+CREATE TABLE IF NOT EXISTS `acl_resources_hc_relations` (
+  `arhcr_id` int(11) NOT NULL auto_increment,
+  `hc_id` int(11) default NULL,
+  `acl_res_id` int(11) default NULL,
+  PRIMARY KEY  (`arhcr_id`),
+  KEY `hc_id` (`hc_id`),
+  KEY `acl_res_id` (`acl_res_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `acl_resources_service_relations`
 --
 
@@ -2022,6 +2037,13 @@ ALTER TABLE `acl_resources_host_relations`
 ALTER TABLE `acl_resources_sc_relations`
   ADD CONSTRAINT `acl_resources_sc_relations_ibfk_1` FOREIGN KEY (`sc_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `acl_resources_sc_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `acl_resources_hc_relations`
+--
+ALTER TABLE `acl_resources_hc_relations`
+  ADD CONSTRAINT `acl_resources_hc_relations_ibfk_1` FOREIGN KEY (`hc_id`) REFERENCES `hostcategories` (`hc_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `acl_resources_hc_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `acl_resources_service_relations`
