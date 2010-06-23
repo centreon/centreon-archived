@@ -210,3 +210,29 @@ CREATE TABLE IF NOT EXISTS `cfg_nagios_bkmod` (
   `broker_module` varchar(255) DEFAULT NULL,
 PRIMARY KEY (`bkmod_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE IF NOT EXISTS `hostcategories` (
+  `hc_id` int(11) NOT NULL auto_increment,
+  `hc_name` varchar(200) default NULL,
+  `hc_alias` varchar(200) default NULL,
+  `hc_comment` text,
+  `hc_activate` enum('0','1') NOT NULL default '1',
+  PRIMARY KEY  (`hc_id`),
+  KEY `name_index` (`hc_name`),
+  KEY `alias_index` (`hc_alias`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `hostcategories_relation` (
+  `hcr_id` int(11) NOT NULL auto_increment,
+  `hostcategories_hc_id` int(11) default NULL,
+  `host_host_id` int(11) default NULL,
+  PRIMARY KEY  (`hcr_id`),
+  KEY `hostcategories_index` (`hostcategories_hc_id`),
+  KEY `host_index` (`host_host_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ALTER TABLE `hostcategories_relation` ADD FOREIGN KEY ( `hostcategories_hc_id` ) REFERENCES `hostcategories` (`hc_id`) ON DELETE CASCADE ;
+ALTER TABLE `hostcategories_relation` ADD FOREIGN KEY ( `host_host_id` ) REFERENCES `host` (`host_id`) ON DELETE CASCADE ;
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Categories', './img/icones/16x16/cube_green.gif', 601, 60104, 40, 1, './include/configuration/configObject/host_categories/hostCategories.php', NULL, '0', '0', '1', NULL, NULL, NULL);

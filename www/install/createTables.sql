@@ -1288,6 +1288,39 @@ CREATE TABLE IF NOT EXISTS `host` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `hostcategories`
+--
+
+CREATE TABLE IF NOT EXISTS `hostcategories` (
+  `hc_id` int(11) NOT NULL auto_increment,
+  `hc_name` varchar(200) default NULL,
+  `hc_alias` varchar(200) default NULL,
+  `hc_comment` text,
+  `hc_activate` enum('0','1') NOT NULL default '1',
+  PRIMARY KEY  (`hc_id`),
+  KEY `name_index` (`hc_name`),
+  KEY `alias_index` (`hc_alias`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `hostcategories_relation`
+--
+
+CREATE TABLE IF NOT EXISTS `hostcategories_relation` (
+  `hcr_id` int(11) NOT NULL auto_increment,
+  `hostcategories_hc_id` int(11) default NULL,
+  `host_host_id` int(11) default NULL,
+  PRIMARY KEY  (`hcr_id`),
+  KEY `hostcategories_index` (`hostcategories_hc_id`),
+  KEY `host_index` (`host_host_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `hostgroup`
 --
 
@@ -2437,3 +2470,9 @@ ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `cg_cg_id` ) R
 ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `acl_group_id` ) REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE ;
 
 ALTER TABLE `traps_matching_properties` ADD FOREIGN KEY ( `trap_id` ) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE ;
+
+--
+-- Contraintes pour la table hostcategories_relation
+--
+ALTER TABLE `hostcategories_relation` ADD FOREIGN KEY ( `hostcategories_hc_id` ) REFERENCES `hostcategories` (`hc_id`) ON DELETE CASCADE ;
+ALTER TABLE `hostcategories_relation` ADD FOREIGN KEY ( `host_host_id` ) REFERENCES `host` (`host_id`) ON DELETE CASCADE ;
