@@ -66,6 +66,29 @@
 		else
 			$searchS = NULL;
 	}
+	
+	if (isset($_POST["template"])) {
+		$template = $_POST["template"];
+	} else if (isset($_GET["template"])) {
+		$template = $_GET["template"];
+	} else {
+		$template = NULL;
+	}
+
+	/*
+	 * Get Service Template List
+	 */
+	$tplService = array();
+	$templateFilter = "<option value='0'></option>";
+	$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service WHERE service_register = '0'");
+	while ($tpl =& $DBRESULT->fetchRow()) {
+		$tplService[$tpl["service_id"]] = $tpl["service_alias"];
+		$tpl["service_description"] = str_replace("#S#", "/", $tpl["service_description"]);
+		$tpl["service_description"] = str_replace("#BS#", "\\", $tpl["service_description"]);
+		
+		$templateFilter .= "<option value='".$tpl["service_id"]."'".(($tpl["service_id"] == $template) ? " selected" : "").">".$tpl["service_description"]."</option>";
+	}
+	$DBRESULT->free();
 
 	include("./include/common/autoNumLimit.php");
 
@@ -85,7 +108,7 @@
 										"WHERE sv.service_register = '1' " .
 										"	AND hsr.service_service_id = sv.service_id " .
 										"	AND hsr.host_host_id IS NULL " .
-										"	AND (sv.service_description LIKE '%$searchS%')");	
+										"	AND (sv.service_description LIKE '%$searchS%')".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));	
 			while ($service = $DBRESULT->fetchRow()){
 				if (!isset($tab_buffer[$service["service_id"]]))
 					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
@@ -100,7 +123,7 @@
 										"	AND hsr.service_service_id = sv.service_id " .
 										"	AND hsr.host_host_id IS NULL " .
 										"	AND (hg.hg_name LIKE '%$searchH%')" .
-										"	AND hsr.hostgroup_hg_id = hg.hg_id");	
+										"	AND hsr.hostgroup_hg_id = hg.hg_id".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));	
 			while ($service = $DBRESULT->fetchRow()) {			         
 				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
 				$tmp2 ? $tmp2 .= ", ".$service["hostgroup_hg_id"] : $tmp2 = $service["hostgroup_hg_id"];			          
@@ -114,7 +137,7 @@
 										"	AND hsr.host_host_id IS NULL " .
 										"	AND hg.hg_name LIKE '%$searchH%'" .
 										"	AND sv.service_description LIKE '%$searchS%'" .
-										"	AND hsr.hostgroup_hg_id = hg.hg_id");	
+										"	AND hsr.hostgroup_hg_id = hg.hg_id".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));	
 			while ($service = $DBRESULT->fetchRow()) {			         
 				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
 				$tmp2 ? $tmp2 .= ", ".$service["hostgroup_hg_id"] : $tmp2 = $service["hostgroup_hg_id"];			          
@@ -122,7 +145,7 @@
 			}
 		}
 	} else	{
-		$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
+		$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		$rows = $DBRESULT->numRows();
 	}
 	
@@ -149,9 +172,9 @@
 	 * HostGroup/service list
 	 */
 	if ($searchS || $searchH) {
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND hsr.hostgroup_hg_id IN (".($tmp2 ? $tmp2 : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND hsr.hostgroup_hg_id IN (".($tmp2 ? $tmp2 : 'NULL').") AND sv.service_register = '1' ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	}
 	$DBRESULT =& $pearDB->query($rq);
 
@@ -304,6 +327,7 @@
 
 	$tpl->assign("searchH", (isset($searchH) ? $searchH : NULL));
 	$tpl->assign("searchS", (isset($searchS) ? $searchS : NULL));
+	$tpl->assign("templateFilter", $templateFilter);
 
 	/*
 	 * Apply a template definition
@@ -313,6 +337,7 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('Hosts', _("HostGroups"));
 	$tpl->assign('Services', _("Services"));
+	$tpl->assign('ServiceTemplates', _("Templates"));
 	$tpl->assign('Search', _("Search"));
 	$tpl->display("listService.ihtml");
 ?>
