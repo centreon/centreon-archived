@@ -28,24 +28,26 @@
 			<td class="ListColHeaderCenter">{$dtm_duration}</td>
 			<td class="ListColHeaderCenter">{$dtm_author}</td>
 			<td class="ListColHeaderCenter">{$dtm_comment}</td>
+			<td class="ListColHeaderCenter">{$dtm_started}</td>
 			<td class="ListColHeaderCenter">{$dtm_fixed}</td>
 		</tr>
 		{foreach item=tds from=$tab_downtime_svc}
 		<tr class={cycle values="list_two, list_one"}>
 			<td class="ListColPicker"><input type="checkbox" name='select[{$tds.host_name};{$tds.internal_downtime_id}]'></td>
-			<td class="ListColLeft">{$tds.host_name}</td>
-			<td class="ListColLeft">{$tds.service_description}</td>
+			<td class="ListColLeft" width="150">{$tds.host_name}</td>
+			<td class="ListColLeft" width="150">{$tds.service_description}</td>
 			<td class="ListColRight" width="120">{$tds.scheduled_start_time}</td>
 			<td class="ListColRight" width="120">{$tds.scheduled_end_time}</td>
-			<td class="ListColRight">{$tds.duration}</td>
-			<td class="ListColCenter">{$tds.author_name}</td>
+			<td class="ListColRight" width="120">{$tds.duration} {$secondes}</td>
+			<td class="ListColCenter" width="150">{$tds.author_name}</td>
 			<td class="ListColLeft">{$tds.comment_data}</td>
+			<td class="ListColCenter" width="50">{$tds.was_started}</td>
 			<td class="ListColCenter" width="50">{$tds.is_fixed}</td>
 		</tr>
 		{/foreach}
 		<tr>
 			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="ds"><input type="submit" name="{$delete}" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgs.delConfirm}')"></td>
-			<td class="ListColFooterCenter" colspan="6">&nbsp;</td>
+			<td class="ListColFooterCenter" colspan="7">&nbsp;</td>
 			<td class="ListColFooterRight" align="right"><a href="{$msgs.addL}">{$msgs.addT}</a></td>
 		</tr>	
 	</table>	

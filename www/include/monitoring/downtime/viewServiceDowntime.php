@@ -101,7 +101,7 @@
 	 * Service Downtimes
 	 */
 	if ($is_admin) 
-		$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
+		$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
 				"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NOT NULL " .
@@ -110,7 +110,7 @@
 				"ORDER BY dtm.actual_start_time DESC " . 
 				"LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description " .
+		$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
 				"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj, centreon_acl " .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NOT NULL " .
@@ -131,9 +131,10 @@
 	unset($data);	
 
 	$en = array("0" => _("No"), "1" => _("Yes"));
-	foreach ($tab_downtime_svc as $key => $value)
+	foreach ($tab_downtime_svc as $key => $value) {
 		$tab_downtime_svc[$key]["is_fixed"] = $en[$tab_downtime_svc[$key]["is_fixed"]];
-	
+		$tab_downtime_svc[$key]["was_started"] = $en[$tab_downtime_svc[$key]["was_started"]];
+	}
 	/*
 	 * Element we need when we reload the page
 	 */
@@ -157,8 +158,11 @@
 	$tpl->assign("dtm_author", _("Author"));
 	$tpl->assign("dtm_comment", _("Comments"));
 	$tpl->assign("dtm_fixed", _("Fixed"));
-	$tpl->assign("dtm_duration", _("Duration"));	
+	$tpl->assign("dtm_duration", _("Duration"));
+	$tpl->assign("dtm_started", _("Started"));
 	$tpl->assign("dtm_service_downtime", _("Services Downtimes"));
+	
+	$tpl->assign("secondes", _("s"));
 	
 	$tpl->assign("no_svc_dtm", _("No downtime scheduled for services"));	
 	$tpl->assign("view_host_dtm", _("View downtimes of hosts"));
