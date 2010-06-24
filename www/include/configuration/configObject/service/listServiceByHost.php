@@ -3,42 +3,42 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	if (!isset($oreon))
 		exit();
-	
+
 	/*
 	 * Get Extended informations
 	 */
@@ -48,7 +48,7 @@
 		$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 	}
 	$DBRESULT->free();
-	
+
 	if (isset($_POST["template"])) {
 		$template = $_POST["template"];
 	} else if (isset($_GET["template"])) {
@@ -56,7 +56,7 @@
 	} else {
 		$template = NULL;
 	}
-	
+
 	/*
 	 * Get Service Template List
 	 */
@@ -67,14 +67,14 @@
 		$tplService[$tpl["service_id"]] = $tpl["service_alias"];
 		$tpl["service_description"] = str_replace("#S#", "/", $tpl["service_description"]);
 		$tpl["service_description"] = str_replace("#BS#", "\\", $tpl["service_description"]);
-		
+
 		$templateFilter .= "<option value='".$tpl["service_id"]."'".(($tpl["service_id"] == $template) ? " selected" : "").">".$tpl["service_description"]."</option>";
 	}
 	$DBRESULT->free();
-	
+
 	require_once "./class/centreonHost.class.php";
 	$host_method = new CentreonHost($pearDB);
-		
+
 	if (isset($_POST["searchH"])) {
 		$searchH = $_POST["searchH"];
 		$oreon->svc_host_search = $searchH;
@@ -85,57 +85,59 @@
 		else
 			$searchH = NULL;
 	}
-	
+
 	if (isset($_POST["searchS"])) {
 		$searchS = $_POST["searchS"];
 		$oreon->svc_svc_search = $searchS;
 		$search_type_service = 1;
-	} else {	
+	} else {
 		if (isset($oreon->svc_svc_search) && $oreon->svc_svc_search)
 			$searchS = $oreon->svc_svc_search;
 		else
 			$searchS = NULL;
 	}
-		
+
 	include("./include/common/autoNumLimit.php");
-	
+
 	/*
 	 * start quickSearch form
 	 */
 	$advanced_search = 0;
-		
+
 	if (isset($_GET["search_type_service"])){
 		$search_type_service = $_GET["search_type_service"];
 		$oreon->search_type_service = $_GET["search_type_service"];
 	} else if (isset($oreon->search_type_service))
 		 $search_type_service = $oreon->search_type_service;
-	else 
+	else
 		$search_type_service = NULL;
-		
+
 	if (isset($_GET["search_type_host"])){
 		$search_type_host = $_GET["search_type_host"];
 		$oreon->search_type_host = $_GET["search_type_host"];
 	} else if (isset($oreon->search_type_host))
 		 $search_type_host = $oreon->search_type_host;
-	else 
+	else
 		$search_type_host = NULL;
-	
+
 	if ($search && (!isset($searchH) && !isset($searchS))) {
 		$searchH = $search;
 		$searchS = $search;
 	}
-	
+
 	if (!isset($search_type_service) && !isset($search_type_host)){
 		$search_type_host = 1;
 		$oreon->search_type_host = 1;
 		$search_type_service = 1;
 		$oreon->search_type_service = 1;
 	}
-	
+
 	$rows = 0;
 	$tmp = "";
 	$tmp2 = "";
 	$tab_buffer = array();
+	$searchH = htmlentities($searchH, ENT_QUOTES);
+	$searchS = htmlentities($searchS, ENT_QUOTES);
 	/*
 	 * Search case
 	 */
@@ -149,38 +151,38 @@
 			while ($service = $DBRESULT->fetchRow()){
 				if (!isset($tab_buffer[$service["service_id"]]))
 					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
-				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];	
+				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];
 				$tab_buffer[$service["service_id"]] = $service["service_id"];
 				$rows++;
 			}
 		} else if (!$search_type_service && $search_type_host)	{
 			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "");
 			$DBRESULT =& $pearDB->query($locale_query);
-			while ($service = $DBRESULT->fetchRow()) {			         
-				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
-				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];			          
-				$rows++;				
+			while ($service = $DBRESULT->fetchRow()) {
+				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
+				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];
+				$rows++;
 			}
 		} else {
 			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "");
 			$DBRESULT =& $pearDB->query($locale_query);
-			while ($service = $DBRESULT->fetchRow()) {			         
-				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
-				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];			          
-				$rows++;				
+			while ($service = $DBRESULT->fetchRow()) {
+				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
+				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];
+				$rows++;
 			}
 		}
     } else {
     	$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
 		$rows = $DBRESULT->numRows();
 	}
-	
+
 	/*
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	include("./include/common/checkPagination.php");
 
 	/*
@@ -193,14 +195,14 @@
 	$tpl->assign("headerMenu_parent", _("Parent Template"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
-	
+
 	$tpl->assign("search_type_service", $search_type_service);
 	$tpl->assign("search_type_host", $search_type_host);
-	
+
 	/*
 	 * Host/service list
 	 */
-	 
+
 	if ($searchH || $searchS)
 		$rq = 	"SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
 				"WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, " .
@@ -229,28 +231,28 @@
 						"AND host.host_register = '1' " .
 						((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
-	
+
 	$DBRESULT =& $pearDB->query($rq);
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	# Different style between each lines
 	$style = "one";
-	
+
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
-	
+
 	$elemArr = array();
 	$fgHost = array("value"=>NULL, "print"=>NULL);
-	
+
 	$interval_length = $oreon->Nagioscfg['interval_length'];
-	
+
 	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-		
+
 		/*
 		 * If the name of our Host is in the Template definition, we have to catch it, whatever the level of it :-)
 		 */
 		$fgHost["value"] != $service["host_name"] ? ($fgHost["print"] = true && $fgHost["value"] = $service["host_name"]) : $fgHost["print"] = false;
-		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");	
+		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");
 		$moptions = "";
 		if ($service["service_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."&template=$template'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -262,25 +264,25 @@
 		/*
 		 * If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		 */
-		 
+
 		if (!$service["service_description"])
 			$service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
 		else	{
 			$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
-			$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);			
+			$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 		}
-		
-		/* 
-		 * TPL List 
+
+		/*
+		 * TPL List
 		 */
-		 
+
 		$tplArr = array();
 		$tplStr = NULL;
 		$tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
 		if (count($tplArr))
 			foreach($tplArr as $key =>$value){
 				$value = str_replace('#S#', "/", $value);
-				$value = str_replace('#BS#', "\\", $value);			
+				$value = str_replace('#BS#', "\\", $value);
 				$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
 			}
 
@@ -301,7 +303,7 @@
 		} else {
 			$retry_units = "sec";
 		}
-		
+
 		if ((isset($ehiCache[$service["host_id"]]) && $ehiCache[$service["host_id"]])) {
 			$host_icone = "./img/media/" . getImageFilePath($ehiCache[$service["host_id"]]);
 		} else if ($icone = $host_method->replaceMacroInString($service["host_id"], getMyHostExtendedInfoImage($service["host_id"], "ehi_icon_image", 1))) {
@@ -309,8 +311,8 @@
 		} else {
 			$host_icone = "./img/icones/16x16/server_network.gif";
 		}
-		
-		$elemArr[$i] = array(	"MenuClass"			=> "list_".($service["nbr"]>1 ? "three" : $style), 
+
+		$elemArr[$i] = array(	"MenuClass"			=> "list_".($service["nbr"]>1 ? "three" : $style),
 								"RowMenu_select"	=> $selectedElements->toHtml(),
 								"RowMenu_name"		=> $service["host_name"],
 								"RowMenu_icone"		=> $host_icone,
@@ -326,16 +328,16 @@
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);
-	
+
 	/*
 	 * Different messages we put in the template
 	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
 	/*
-	 * Toolbar select 
+	 * Toolbar select
 	 */
-	 
+
 	?>
 	<script type="text/javascript">
 	function setO(_i) {
@@ -355,7 +357,7 @@
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"this.form.elements['o1'].selectedIndex = 0");
 	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable"), "dv"=>_("Detach")), $attrs1);
-		
+
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
@@ -374,24 +376,24 @@
 
 	$o2 =& $form->getElement('o2');
 	$o2->setValue(NULL);
-	
+
 	$tpl->assign('limit', $limit);
 
 	/*
 	 * Apply a template definition
 	 */
-	
+
 	$searchH = str_replace("#S#", "/", $searchH);
 	$searchH = str_replace("#BS#", "\\", $searchH);
 	$searchS = str_replace("#S#", "/", $searchS);
 	$searchS = str_replace("#BS#", "\\", $searchS);
-	
+
 	$tpl->assign("searchH", (isset($searchH) ? $searchH : NULL));
 	$tpl->assign("searchS", (isset($searchS) ? $searchS : NULL));
 	$tpl->assign("templateFilter", $templateFilter);
-	
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);	
+	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('Hosts', _("Hosts"));
 	$tpl->assign('ServiceTemplates', _("Templates"));
