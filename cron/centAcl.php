@@ -37,11 +37,13 @@
  */
 
 	include_once "DB.php";
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."/cron/centAcl-Func.php";
 	include_once $centreon_path."/www/class/centreonDB.class.php";
 
-	define("LOCK_FILE", "@CENTREON_VARLIB@/centAcl.lock");
+	define("LOCK_FILE", "/var/lib/centreon/centAcl.lock");
+	//define("LOCK_FILE", "@CENTREON_VARLIB@/centAcl.lock");
 
 	function programExit($msg)
 	{
@@ -74,6 +76,15 @@
 	 *  Caching of all Data
 	 *
 	 */
+    $hostTemplateCache = array();
+    $query = "SELECT host_host_id, host_tpl_id FROM host_template_relation";
+    $res = $pearDB->query($query);
+    while ($row = $res->fetchRow()) {
+        if (!isset($hostTemplateCache[$row['host_tpl_id']])) {
+            $hostTemplateCache[$row['host_tpl_id']] = array();
+        }
+        $hostTemplateCache[$row['host_tpl_id']][$row['host_host_id']] = $row['host_host_id'];
+    }
 
 	$hostCache = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1'");
@@ -284,6 +295,8 @@
 			 * Give Authorized Categories
 			 */
 			$authorizedCategories = getAuthorizedCategories($acl_group_id, $res2["acl_res_id"]);
+
+			$Host = getFilteredHostCategories($Host, $acl_group_id, $res2["acl_res_id"]);
 
 			foreach ($Host as $key => $value) {
 				$tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);

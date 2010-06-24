@@ -45,6 +45,42 @@
 	}
 
 	/*
+	 * Return host tab after host categories filter
+	 */
+	function getFilteredHostCategories($host, $acl_group_id, $res_id) {
+        global $pearDB, $hostCache, $hostTemplateCache;
+
+        $hostTmp = $host;
+	    $request = "SELECT host_host_id " .
+					"FROM acl_resources_hc_relations, acl_res_group_relations, acl_resources, hostcategories_relation " .
+					"WHERE acl_resources_hc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
+					"AND acl_res_group_relations.acl_group_id = '".$acl_group_id."' " .
+					"AND acl_resources_hc_relations.acl_res_id = acl_resources.acl_res_id " .
+					"AND acl_resources.acl_res_id = '".$res_id."' " .
+	                "AND hostcategories_relation.hostcategories_hc_id = acl_resources_hc_relations.hc_id " .
+					"AND acl_res_activate = '1'";
+		$DBRESULT = $pearDB->query($request);
+		if ($DBRESULT->numRows()) {
+            $host = array();
+		}
+		while ($row = $DBRESULT->fetchRow()) {
+            //is a template
+		    if (isset($hostTemplateCache[$row['host_host_id']])) {
+                foreach ($hostTemplateCache[$row['host_host_id']] as $hId) {
+                    if (isset($hostTmp[$hId])) {
+                        $host[$hId] = $hostCache[$hId];
+                    }
+                }
+            }
+            //is not a template
+            elseif (isset($hostTmp[$row['host_host_id']])) {
+                $host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
+            }
+		}
+	    return $host;
+	}
+
+	/*
 	 * Return enable categories for this resource access
 	 */
 	function getAuthorizedCategories($groupstr, $res_id) {
@@ -57,10 +93,10 @@
 		$request = "SELECT sc_id " .
 					"FROM acl_resources_sc_relations, acl_res_group_relations, acl_resources " .
 					"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-						"AND acl_res_group_relations.acl_group_id IN (".$groupstr.") " .
-						"AND acl_resources_sc_relations.acl_res_id = acl_resources.acl_res_id " .
-						"AND acl_resources.acl_res_id = '".$res_id."' " .
-						"AND acl_res_activate = '1'";
+					"AND acl_res_group_relations.acl_group_id IN (".$groupstr.") " .
+					"AND acl_resources_sc_relations.acl_res_id = acl_resources.acl_res_id " .
+					"AND acl_resources.acl_res_id = '".$res_id."' " .
+					"AND acl_res_activate = '1'";
 		$DBRESULT =& $pearDB->query($request);
 		while ($res =& $DBRESULT->fetchRow()) {
 			$tab_categories[$res["sc_id"]] = $res["sc_id"];
