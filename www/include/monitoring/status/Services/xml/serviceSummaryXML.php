@@ -176,6 +176,7 @@
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 		$obj->XML->writeElement("o", $ct++);		
 		$obj->XML->writeElement("hn", $host_name);
+		$obj->XML->writeElement("hnl", urlencode($host_name));
 		$obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
 		$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
 		$obj->XML->writeElement("sk", $tab["nb_service_k"]);

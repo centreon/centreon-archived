@@ -262,6 +262,7 @@
 				$buffer->writeElement("spc", $tab_color_service[4] );
 				$buffer->writeElement("o", $ct++);
 				$buffer->writeElement("hn", $host_name);
+				$buffer->writeElement("hnl", urlencode($host_name));
 				$buffer->writeElement("hs", $tab_status_host[$tab["cs"]]);
 				$buffer->writeElement("hc", $tab_color_host[$tab["cs"]]);				
 				$buffer->endElement();				

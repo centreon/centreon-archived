@@ -210,6 +210,7 @@
 		$obj->XML->writeElement("hc", 	$obj->colorHost[$ndo["current_state"]]);
 		$obj->XML->writeElement("f", 	$flag);
 		$obj->XML->writeElement("hn",	$ndo["host_name"]);
+		$obj->XML->writeElement("hnl",	urlencode($ndo["host_name"]));
 		$obj->XML->writeElement("a", 	($ndo["address"] ? $ndo["address"] : "N/A"));
 		$obj->XML->writeElement("ou", 	($ndo["output"] ? $ndo["output"] : "N/A"));
 		$obj->XML->writeElement("lc", 	($ndo["last_check"] != 0 ? $obj->GMT->getDate($dateFormat, $ndo["last_check"]) : "N/A"));

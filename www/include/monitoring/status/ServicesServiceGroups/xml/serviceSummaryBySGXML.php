@@ -357,6 +357,7 @@
 				$buffer->startElement("h");
 				$buffer->writeAttribute("class", $class);
 				$buffer->writeElement("hn", $h);
+				$buffer->writeElement("hnl", urlencode($h));
 				$buffer->writeElement("hs", $tab_status_host[$hs]);
 				$buffer->writeElement("hc", $tab_color_host[$hs]);
 				$buffer->writeElement("sk", $nb_service[0]);

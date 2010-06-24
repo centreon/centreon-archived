@@ -192,6 +192,7 @@
 		}
 		$obj->XML->writeElement("o", $ct++);
 		$obj->XML->writeElement("hn", $host_name);
+		$obj->XML->writeElement("hnl", urlencode($host_name));
 		$obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
 		$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
 		$obj->XML->endElement();		

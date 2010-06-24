@@ -349,6 +349,7 @@
 			
 				$obj->XML->startElement("hn");
 				$obj->XML->writeAttribute("none", "0");
+				$obj->XML->writeAttribute("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->text($ndo["host_name"]);
 				$obj->XML->endElement();
 				$obj->XML->writeElement("hau", $host_status[$ndo["host_name"]]["action_url"]);								
