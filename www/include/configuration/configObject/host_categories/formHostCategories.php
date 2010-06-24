@@ -127,7 +127,7 @@
 	$attrsTextLong 	= array("size"=>"50");
 	$attrsAdvSelect = array("style" => "width: 220px; height: 220px;");
 	$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	/*
 	 * Create formulary
@@ -151,13 +151,13 @@
 	 * Hosts Selection
 	 */
 	$form->addElement('header', 'relation', _("Relations"));
-    $ams1 =& $form->addElement('advmultiselect', 'hc_hosts', _("Linked Hosts"), $hosts, $attrsAdvSelect);
+    $ams1 =& $form->addElement('advmultiselect', 'hc_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'hc_hostsTemplate', _("Linked Host Template"), $hostTpl, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'hc_hostsTemplate', array(_("Linked Host Template"), _("Available"), _("Selected")) , $hostTpl, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
