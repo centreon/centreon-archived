@@ -66,23 +66,23 @@
 	 * Set arguments from GET
 	 */	
 	$obj->start 	= $obj->checkArgument("start", $_GET, time() - (60*60*48));
-	$obj->end 		= $obj->checkArgument("end", $_GET, time());
+	$obj->end 	= $obj->checkArgument("end", $_GET, time());
 		
  	$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
-
-	/*
-	 * Check Graphs size
-	 */
-	if (isset($graph_width) && $graph_width != "") 
-		$obj->setWidth($graph_width);
-	if (isset($graph_height) && $graph_height != "")
-		$obj->setHeight($graph_height);	
 
 	/*
 	 * Template Management
 	 */
 	$obj->setTemplate($_GET["template_id"]);
-	
+
+	/*
+	 * Check Graphs size
+	 */
+	if (isset($obj->templateInformations["width"]) && $obj->templateInformations["width"] != "") 
+		$obj->setWidth($obj->templateInformations["width"]);
+	if (isset($obj->templateInformations["height"]) && $obj->templateInformations["height"] != "")
+		$obj->setHeight($obj->templateInformations["height"]);	
+
 	/*
 	 * Get Activate Metrics
 	 */

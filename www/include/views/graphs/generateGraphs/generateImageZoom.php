@@ -66,7 +66,7 @@
 	 * Set arguments from GET
 	 */	
 	$obj->start 	= $obj->checkArgument("start", $_GET, time() - (60*60*48));
-	$obj->end 		= $obj->checkArgument("end", $_GET, time());
+	$obj->end 	= $obj->checkArgument("end", $_GET, time());
 		
  	$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
 
