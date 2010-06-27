@@ -173,7 +173,6 @@ class CentreonGraph	{
 	}
 
 	public function initCurveList() {
-		
 		$cpt = 0;
 		$metrics = array();		
 		$DBRESULT =& $this->DBC->query("SELECT metric_id, metric_name, unit_name, warn, crit FROM metrics WHERE index_id = '".$this->index."' AND `hidden` = '0' ORDER BY metric_name");
@@ -188,6 +187,9 @@ class CentreonGraph	{
 					$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
 					$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
 					
+					/*
+					 * Copy Template values
+					 */
 					$DBRESULT2 =& $this->DB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".str_replace("#S#", "/", str_replace("#BS#", "\\", $metric["metric_name"]))."'");
 					$ds_data =& $DBRESULT2->fetchRow();
 					$DBRESULT2->free();
@@ -278,6 +280,11 @@ class CentreonGraph	{
 			if ($tm["ds_average"]){
 				$this->fillCommandLine("GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
 			}
+			if (isset($tm["warn"]) && $tm["warn"] != 0)
+				$this->fillCommandLine("HRULE:".$tm["warn"]."#00FF00:\"Warning \: ".$tm["warn"]."\\l\" "); 
+			if (isset($tm["crit"]) && $tm["crit"] != 0)	
+				$this->fillCommandLine("HRULE:".$tm["crit"]."#FF0000:\"Critical \: ".$tm["crit"]."\""); 
+
 			
 			$cpt++;
 		}
@@ -432,7 +439,10 @@ class CentreonGraph	{
 	 * Get index Data
 	 */
 	private function getIndexData() {
-		$DBRESULT =& $this->DBC->query("SELECT * FROM index_data WHERE id = '".$this->index."' LIMIT 1");
+//		$svc_instance = $metric_ODS["index_id"];
+		$svc_instance = $this->index;
+
+		$DBRESULT =& $this->DBC->query("SELECT * FROM index_data WHERE id = '".$svc_instance."' LIMIT 1");
 		if (!$DBRESULT->numRows()) {
 			$this->indexData = 0;
 		} else {
@@ -551,13 +561,21 @@ class CentreonGraph	{
 	}
 	
 	public function addCommandLineTimeLimit($flag) {
+		$xconfig = "";
 		if (isset($flag) && $flag == 0) {
 			if ($this->GMT->used()) {
 				$this->start 	= $this->GMT->getUTCDate($this->start);
 				$this->end 		= $this->GMT->getUTCDate($this->end);
 			}
 		}
-		$this->commandLine .= " --start=".$this->start." --end=".$this->end." ";
+		if($end - $start > 2160000 and $end - $start < 12960000)
+		{
+			if($end - $start < 12960000 - (86400*7))
+				$xconfig = "--x-grid DAY:1:DAY:7:DAY:7:0:%d/%m";
+			else
+				$xconfig = "--x-grid DAY:1:DAY:7:DAY:14:0:%d/%m";
+		}
+		$this->commandLine .= " $xconfig --start=".$this->start." --end=".$this->end." ";
 	}
 	
 	/*
