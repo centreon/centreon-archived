@@ -1,0 +1,66 @@
+{$colorJS}
+{$form.javascript}
+<form {$form.attributes}>
+ <table class="ListTable">
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/chart.gif'>&nbsp;&nbsp;{$form.header.ftitle}</td></tr>
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+	<tr class="list_one"><td class="FormRowField" width="33%">{$form.vmetric_name.label}</td><td class="FormRowValue">{$form.vmetric_name.html}</td></tr>
+	<tr class="list_two">
+		<td class="FormRowField">
+			{if $o == "a" || $o == "c"}
+				<div style="text-decoration: underline;">{$form.host_id.label}</div>
+				{$form.hsr_text.label}
+			{/if}
+			{if $o == "w"}
+				<div>{$form.host_id.label}</div>
+			{/if}
+		</td>
+		<td id="td_list_hsr" class="FormRowValue">
+			{$form.host_id.html}
+			&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
+		</td>
+	</tr>
+	<tr class="list_one"><td class="FormRowField">{$form.def_type.label}</td><td class="FormRowValue">{$form.def_type.html}</td></tr>
+	
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.function}</td></tr>
+	<tr class="list_two">
+		<td class="FormRowField">
+		{if $o == "a" || $o == "c"}
+			<div style="text-decoration: underline;">{$form.rpn_function.label}</div>
+			{$form.rpn_text.label}
+		{/if}
+		{if $o == "w"}
+			<div>{$form.rpn_function.label}</div>
+		{/if}
+		</td>
+		<td id="td_rpn_fct"><table id="table_rpn_fct" border="0"><tr>
+			<td id="td_rpn_value" class="FormRowValue" style="padding: 0px; border-width: 0px;">{$form.rpn_function.html}</td>
+			{if $o == "a" || $o == "c"}
+				<td id="td_list_metrics" style="padding: 0px; border-width: 0px;">
+					<input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery();" style="margin-left: 18px;" />
+					&nbsp;&nbsp;&nbsp;&nbsp;
+				</td>
+			{/if}
+		</tr></table></td>
+	</tr>
+	<tr class="list_one"><td class="FormRowField">{$form.unit_name.label}</td><td class="FormRowValue">{$form.unit_name.html}</td></tr>
+
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.options}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.vhidden.label}</td><td class="FormRowValue">{$form.vhidden.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
+	{if $o == "a" || $o == "c"}
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required.note}</td></tr>
+	{/if}
+</table>
+<div id="validForm">
+{if $o == "a" || $o == "c"}
+	<p>{$form.action.html}</p>
+	<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p>{$form.change.html}</p>
+{/if}
+</div>
+{$form.required}
+{$form.hidden}
+</form>
+
