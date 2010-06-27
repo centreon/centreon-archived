@@ -38,30 +38,47 @@
 
  	header('Content-Type: image/png');
  	
+	$warn = 0;
+	if (isset($_GET["warn"]) && $_GET["warn"] == 1)
+		$warn = 1;
+
+	$crit = 0;
+	if (isset($_GET["crit"]) && $_GET["crit"] == 1)
+		$crit = 1;
+
+
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
-	
-	function cmplegend($a, $b) {
-		return strnatcasecmp($a["legend"], $b["legend"]);
+
+	function legendcmp($item1, $item2) {
+	    return strnatcasecmp($item1["legend"], $item2["legend"]);
 	}
- 	
+	function metricsort($metrics) {
+	    uasort($metrics, "legendcmp");
+	}
+
 	/*
 	 * Include config file
 	 */
 	include "@CENTREON_ETC@/centreon.conf.php";
-	
-	require_once './DB-Func.php';
+		
+	require_once "./DB-Func.php";
 	require_once $centreon_path."www/class/centreonDB.class.php";
 	require_once $centreon_path."www/class/centreonSession.class.php";
 	require_once $centreon_path."www/class/centreon.class.php";
 	require_once "$centreon_path/www/class/centreonGMT.class.php";
-	
+
 	/*
 	 * Verify if start and end date
 	 */	
-	(!isset($_GET["start"])) ? $start = time() - 120 - (60*60*48) : $start = $_GET["start"]- 120;
+
+	(!isset($_GET["start"])) ? $start = time() - 120 - (60*60*48) : $start = $_GET["start"] - 120;
 	(!isset($_GET["end"])) ? $end = time() - 120 : $end = $_GET["end"] - 120;
+
+	/*
+	 * Verify if session is active
+	 */	
 	
 	CentreonSession::start();
 	$centreon =& $_SESSION["centreon"];
@@ -72,8 +89,16 @@
 
 	$session =& $pearDB->query("SELECT session_id, user_id FROM `session` WHERE session_id = '".htmlentities($_GET["session_id"], ENT_QUOTES)."'");
 	if (!$session->numRows()){
+		$image = imagecreate(250,100);
+		$fond = imagecolorallocate($image,0xEF,0xF2,0xFB);		
+		header("Content-Type: image/gif");
+		imagegif($image);
 		exit;
 	} else {
+		/*
+		 * Get Values
+		 */
+		$session_value =& $session->fetchRow();
 		$session->free();
 		
 		/*
@@ -85,27 +110,27 @@
 		/*
 		 * Connect to ods
 		 */
-		 		
+		 
 		$pearDBO = new CentreonDB("centstorage");
 		$RRDdatabase_path = getRRDToolPath($pearDBO);
 	
 		/*
-		 * Get Graphs size
-		 */
-		(isset($graph_width) && $graph_width != "") ? $width = $graph_width : $width = 500;
-		(isset($graph_height) && $graph_height != "") ? $height = $graph_height : $height = 120;
-	
-		/*
 		 * Get index information to have acces to graph
 		 */
+		
 		$DBRESULT =& $pearDBO->query("SELECT index_id, metric_name FROM metrics WHERE metric_id = '".$_GET["metric"]."' LIMIT 1");
 		$metric_ODS =& $DBRESULT->fetchRow();
-		$DBRESULT->free();
+		$metric_ODS["metric_name"] = str_replace("#S#", "/", $metric_ODS["metric_name"]);
+		$metric_ODS["metric_name"] = str_replace("#BS#", "\\", $metric_ODS["metric_name"]);
 		
 		$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$metric_ODS["index_id"]."'");
 		$metricnumber = $DBRESULT->numRows();
-		
-		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$metric_ODS["index_id"]."' LIMIT 1");
+		$DBRESULT->free();
+		$order = ($_GET["cpt"] - 1);
+		$order = $order % $metricnumber;
+
+		$svc_instance = $metric_ODS["index_id"];
+		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$svc_instance."' LIMIT 1");
 		$index_data_ODS =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		
@@ -126,18 +151,35 @@
 		} else {
 			$template_id = $_GET["template_id"];
 		}
+
+		/*
+		 * Create command line
+		 */
 		
 		if (isset($_GET["flagperiod"]) && $_GET["flagperiod"] == 0) {
-			$start 	= $CentreonGMT->getUTCDate($start);
-			$end 	= $CentreonGMT->getUTCDate($end);
+			if ($CentreonGMT->used()) {
+				$start 	= $CentreonGMT->getUTCDate($start);
+				$end 	= $CentreonGMT->getUTCDate($end);
+			}
 		}
 		
-		$command_line = " graph - --start=".$start. " --end=".$end;
-
-		# get all template infos
+		/*
+		 * get all template infos
+		 */
+		 
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 		$GraphTemplate =& $DBRESULT->fetchRow();
 
+		if($end - $start > 2160000 and $end - $start < 12960000)
+		{
+			if($end - $start < 12960000 - (86400*7))
+				$xconfig = "--x-grid DAY:1:DAY:7:DAY:7:0:%d/%m";
+			else
+				$xconfig = "--x-grid DAY:1:DAY:7:DAY:14:0:%d/%m";
+		}
+		$command_line = " graph - $xconfig --start=".$start." --end=".$end;
+
+		
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 			$meta =& $DBRESULT_meta->fetchRow();
@@ -146,25 +188,33 @@
 
 		$index_data_ODS["service_description"] = str_replace("#S#", "/", $index_data_ODS["service_description"]);
 		$index_data_ODS["service_description"] = str_replace("#BS#", "\\", $index_data_ODS["service_description"]);
-				
-		$metric_ODS["metric_name"] = str_replace("#S#", "/", $metric_ODS["metric_name"]);
-		$metric_ODS["metric_name"] = str_replace("#BS#", "\\", $metric_ODS["metric_name"]);
 
 		$gprint_scale_cmd = "%s"; 
- 	    if ($GraphTemplate["scaled"] == "0"){ 
- 	    	$gprint_scale_cmd = ""; 
- 	        $command_line .= " -X0 "; 
- 		}          
-				
+ 		if ($GraphTemplate["scaled"] == "0"){ 
+ 	    	# Disable y-axis scaling 
+ 			$command_line .= " -X0 "; 
+ 	        # Suppress Scaling in Text Output 
+ 	        $gprint_scale_cmd = ""; 
+ 	    } 
+		
 		$base = "";
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
 			$base = "-b ".$GraphTemplate["base"];
-		
+
 		if ($index_data_ODS["host_name"] != "_Module_Meta")
 			$title = $index_data_ODS["service_description"]." "._("graph on")." ".$index_data_ODS["host_name"];
 		else
 			$title = _("Graph")." ".$index_data_ODS["service_description"] ;
+
+		if (isset($metric_ODS["metric_name"]) && $metric_ODS["metric_name"]!="")
+			$title .= " metric ".$metric_ODS["metric_name"];
 		
+		if (!isset($GraphTemplate["width"]) || $GraphTemplate["width"] == "")
+			$GraphTemplate["width"] = 600;
+		if (!isset($GraphTemplate["height"]) || $GraphTemplate["height"] == "")
+			$GraphTemplate["height"] = 200;
+		if (!isset($GraphTemplate["vertical_label"]) || $GraphTemplate["vertical_label"] == "")
+			$GraphTemplate["vertical_label"] = "";		
 		$command_line .= " --interlaced $base --imgformat PNG --width=$width --height=$height --title='$title metric ".$metric_ODS["metric_name"] ."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		if ($centreon->optGen["rrdtool_version"] != "1.0")
 			$command_line .= " --slope-mode ";
@@ -181,12 +231,18 @@
            if (isset($centreon->optGen["rrdtool_legend_title"]) && isset($centreon->optGen["rrdtool_legend_fontsize"]))
               $command_line .= " --font LEGEND:".$centreon->optGen["rrdtool_legend_fontsize"].":".$centreon->optGen["rrdtool_legend_title"]." ";
         }
-		
-		# Init Graph Template Value
+
+		/*
+		 * Init Graph Template Value
+		 */
 		if (isset($GraphTemplate["bg_grid_color"]) && $GraphTemplate["bg_grid_color"])
 			$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
+
 		if (isset($GraphTemplate["bg_color"]) && $GraphTemplate["bg_color"])
 			$command_line .= "--color BACK".$GraphTemplate["bg_color"]." ";
+		else
+			$command_line .= "--color BACK#F0F0F0 ";
+
 		if (isset($GraphTemplate["police_color"]) && $GraphTemplate["police_color"])
 			$command_line .= "--color FONT".$GraphTemplate["police_color"]." ";
 		if (isset($GraphTemplate["grid_main_color"]) && $GraphTemplate["grid_main_color"])
@@ -201,50 +257,49 @@
 			$command_line .= "--color SHADEA".$GraphTemplate["col_top"]." ";
 		if (isset($GraphTemplate["col_bot"]) && $GraphTemplate["col_bot"])
 			$command_line .= "--color SHADEB".$GraphTemplate["col_bot"]." ";
-		
+
 		if (isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL)
 			$command_line .= "--lower-limit ".$GraphTemplate["lower_limit"]." ";
 		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
 			$command_line .= "--upper-limit ".$GraphTemplate["upper_limit"]." ";
 		if ((isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL) || (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL))
 			$command_line .= "--rigid --alt-autoscale-max ";
-
-		# Init DS template For each curv
+				
+		/*
+		 * Init DS template For each curve
+		 */
 		$metrics = array();
-		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name, warn, crit, min, max FROM metrics WHERE metric_id = '".$_GET["metric"]."' AND `hidden` = '0' ORDER BY metric_name");
-		$cpt = 1;
-		$order = ($_GET["cpt"] - 1);
-		$order = $order % $metricnumber;
-		$metrics = array();		
-		while ($metric =& $DBRESULT->fetchRow()){
-			
+		$selector = "metric_id = '".$_GET["metric"]."'";
+		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name, warn, crit, min, max FROM metrics WHERE ".$selector." AND `hidden` = '0' ORDER BY metric_name");
+		while ($metric =& $DBRESULT->fetchRow()) {
+
 			/*
 			 * Construct metric name for detect metric graph template.
 			 */
 			$metricNameForGraph = $metric["metric_name"];
 			$metricNameForGraph = str_replace("#S#", "/", $metricNameForGraph);
 			$metricNameForGraph = str_replace("#BS#", "\\", $metricNameForGraph);
-				
-			$metric["metric_name"] = str_replace("#S#", "slash_", $metricNameForGraph);
+
 			$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 			$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
-			$metrics[$metric["metric_id"]]["metric"] = str_replace("#BS#", "bslash_", $metric["metric_name"]);
+			$metrics[$metric["metric_id"]]["metric"] = str_replace("#BS#", "bslash_", $metrics[$metric["metric_id"]]["metric"]);
 			$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
-			
+			$metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
+			$metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
+
 			$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metricNameForGraph."'");
 			$ds_data =& $res_ds->fetchRow();
-			
-			if (!$ds_data){
+
+			if (!$ds_data) {
 				$ds = getDefaultDS();						
 				$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
 				$ds_data =& $res_ds->fetchRow();
 				$metrics[$metric["metric_id"]]["ds_id"] = $ds;
 			}
-			
+
 			/*
 			 * Fetch Datas
 			 */
-			
 			foreach ($ds_data as $key => $ds_d){
 				if ($key == "ds_transparency"){
 					$transparency = dechex(255-($ds_d*255)/100);
@@ -253,11 +308,9 @@
 					$metrics[$metric["metric_id"]][$key] = $transparency;
 				} else
 					$metrics[$metric["metric_id"]][$key] = $ds_d ;
-				
 			}
 			$res_ds->free();
-			
-			
+
 			if (preg_match('/DS/', $ds_data["ds_name"], $matches)){
 				$metrics[$metric["metric_id"]]["legend"] = str_replace("slash_", "/", $metric["metric_name"]);
 				$metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metrics[$metric["metric_id"]]["legend"]);
@@ -265,12 +318,11 @@
 			} else {
 				$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
 			}
-			if (strcmp($metric["unit_name"], "")){
+
+			if (strcmp($metric["unit_name"], ""))
 				$metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
-			}
 			$metrics[$metric["metric_id"]]["legend_len"] = strlen($metrics[$metric["metric_id"]]["legend"]);
-			$cpt++;
-		}
+		} /* while */
 		$DBRESULT->free();
 		
 		$cpt = 0;
@@ -288,42 +340,42 @@
 		/*
 		 * Display Start and end time on graph
 		 */
-		
 		$rrd_time  = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $start));
 		$rrd_time = str_replace(":", "\:", $rrd_time);
 		$rrd_time2 = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $end)) ;
 		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
-		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
-		
 
-		/*
-		 * Create Legend
-		 */
-		$cpt = 1;
-		uasort($metrics, "cmplegend");
+		$command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
+
+		# Create Legende
+		$cpt = 0;
+		metricsort($metrics);
 		foreach ($metrics as $key => $tm){
+			
 			if ($metrics[$key]["ds_filled"])
-				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"].$tm["ds_transparency"]." ";
-			$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt-1);
+				$command_line .= " AREA:v".($cpt)."".$tm["ds_color_area"].$tm["ds_transparency"]." ";
+
+			$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt);
 			$command_line .= $tm["ds_color_line"].":\"";
 			$command_line .= $metrics[$key]["legend"];
+
 			for ($i = $metrics[$key]["legend_len"]; $i != $longer + 1; $i++)
 				$command_line .= " ";
 			$command_line .= "\"";
 			if ($tm["ds_last"]){
-				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%7.2lf".($gprint_scale_cmd);
+				$command_line .= " GPRINT:v".($cpt).":LAST:\"Last\:%7.2lf".($gprint_scale_cmd);
 				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_min"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%7.2lf".($gprint_scale_cmd); 
+				$command_line .= " GPRINT:v".($cpt).":MIN:\"Min\:%7.2lf".($gprint_scale_cmd);
 				$tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_max"]){
-				 $command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%7.2lf".($gprint_scale_cmd); 
+				$command_line .= " GPRINT:v".($cpt).":MAX:\"Max\:%7.2lf".($gprint_scale_cmd); 
 				$tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_average"]){
-				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%7.2lf".($gprint_scale_cmd)."\\l\""; 
+				$command_line .= " GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf".($gprint_scale_cmd)."\\l\"";
 			}
 			$cpt++;
 			if (isset($tm["warn"]) && $tm["warn"] != 0)
@@ -340,11 +392,13 @@
 		if ($CentreonGMT->used())
 			$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
 	
+		/*
+		 * Escape Special Chars
+		 */
 		$command_line = escape_command("$command_line");
 		if ( $centreon->optGen["debug_rrdtool"] == "1" )
 			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $centreon->optGen["debug_path"]."rrdtool.log");
 
-		//print $command_line;
 		$fp = popen($command_line  , 'r');
 		if (isset($fp) && $fp ) {
 			$str ='';
