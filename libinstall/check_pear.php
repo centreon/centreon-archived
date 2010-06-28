@@ -122,6 +122,11 @@ function upgrade($packages) {
 		if (is_null($package_info)) {
 			continue;
 		}
+		
+		if ($package['name'] == "PEAR") {
+               $ok = $cmd->run('install', array('soft' => true, 'nodeps' => true, 'force' => true), array($package['name']));
+        }
+		
 		$installed_version = $package_info->getVersion();
 		if (version_compare($package['version'], $installed_version, '>')) {
 			echo "\033[s" . $package['name'] . "\033[0m\033[33G" . $package['version'] . "\033[0m\033[45G" . $installed_version . "\t";
