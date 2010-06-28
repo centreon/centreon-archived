@@ -357,9 +357,9 @@
 		$form->addRule('contact_svNotifCmds', _("Compulsory Command"), 'required');
 		$form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
 		$form->registerRule('exist', 'callback', 'testContactExistence');
-		$form->addRule('contact_name', "<font style='color: red;'>*</font>&nbsp;" . _("Required fields"), 'exist');
+		$form->addRule('contact_name', "<font style='color: red;'>*</font>&nbsp;" . _("Contact already exists"), 'exist');
 		$form->registerRule('existAlias', 'callback', 'testAliasExistence');
-		$form->addRule('contact_alias', "<font style='color: red;'>*</font>&nbsp;" . _("Required fields"), 'existAlias');
+		$form->addRule('contact_alias', "<font style='color: red;'>*</font>&nbsp;" . _("Alias already exists"), 'existAlias');
 		$form->registerRule('keepOneContactAtLeast', 'callback', 'keepOneContactAtLeast');
 		$form->addRule('contact_alias', _("You have to keep at least one contact to access to Centreon"), 'keepOneContactAtLeast');
 	} else if ($o == "mc")	{
