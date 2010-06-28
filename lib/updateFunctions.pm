@@ -94,7 +94,7 @@ sub updateRRDDB($$$$$$$$) {
 
 	    $begin = $_[4] - 200000;
 	    $interval = getServiceCheckInterval($_[1], $con_ods) * getIntervalLenght($con_oreon);
-	    $interval_hb = $interval * 2;
+	    $interval_hb = $interval * 10;
 
 	    # Caclulate number of value 
 	    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
@@ -159,7 +159,7 @@ sub updateRRDDBforHiddenSVC($$$$$$$$) {
 	    CheckMySQLConnexion();
 
 	    $interval = getModulesInterval(getServiceDescFromIndex($_[1], $con_ods), $con_oreon);
-	    $interval_hb = $interval * 2;
+	    $interval_hb = $interval * 10;
 	    
 	    # Caclulate number of value 
 	    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
