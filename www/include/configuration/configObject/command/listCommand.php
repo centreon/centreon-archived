@@ -151,6 +151,7 @@
 				else
 					break;
 			}
+			$pos = NULL;
 			$pattern = substr($elemArr[$i]["RowMenu_name"], 0, $j);
 			if ($pos = strrpos($pattern, "_") && $pos > 3 && $j > $pos+2) {
 			    $pattern = substr($pattern, 0, $pos);
