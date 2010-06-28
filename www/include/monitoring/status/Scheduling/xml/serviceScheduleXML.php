@@ -215,12 +215,12 @@
 	$rq_pagination = $rq;
 
 	switch($sort_type){
-			case 'host_name' : 				$rq .= " order by no.name1,no.name2 ". $order; break;
-			case 'service_description' : 	$rq .= " order by no.name2,no.name1 ". $order; break;
-			case 'last_check' : 			$rq .= " order by nss.last_check,no.name1,no.name2 ". $order; break;
-			case 'next_check' : 			$rq .= " order by nss.next_check,no.name1,no.name2 ". $order; break;
-			case 'active_check' : 			$rq .= " order by nss.active_check,no.name1,no.name2 ". $order; break;
-			default : 						$rq .= " order by no.name1 ". $order; break;
+			case 'host_name' : 				$rq .= " order by no.name1 ". $order; break;
+			case 'service_description' : 	$rq .= " order by no.name2 ". $order; break;
+			case 'last_check' : 			$rq .= " order by nss.last_check ". $order; break;
+			case 'next_check' : 			$rq .= " order by nss.next_check ". $order; break;
+			case 'active_check' : 			$rq .= " order by nss.active_check ". $order; break;
+			default : 						$rq .= " order by nss.next_check ". $order; break;
 	}
 
 	$rq .= " LIMIT ".($num * $limit).",".$limit;
