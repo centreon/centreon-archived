@@ -37,13 +37,13 @@
  */
 
 	include_once "DB.php";
-	include_once "/etc/centreon/centreon.conf.php";
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."/cron/centAcl-Func.php";
 	include_once $centreon_path."/www/class/centreonDB.class.php";
 
-	define("LOCK_FILE", "/var/lib/centreon/centAcl.lock");
-	//define("LOCK_FILE", "@CENTREON_VARLIB@/centAcl.lock");
+	//define("LOCK_FILE", "/var/lib/centreon/centAcl.lock");
+	define("LOCK_FILE", "@CENTREON_VARLIB@/centAcl.lock");
 
 	function programExit($msg)
 	{
