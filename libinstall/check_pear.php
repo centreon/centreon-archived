@@ -124,7 +124,9 @@ function upgrade($packages) {
 		}
 		
 		if ($package['name'] == "PEAR") {
-               $ok = $cmd->run('install', array('soft' => true, 'nodeps' => true, 'force' => true), array($package['name']));
+        	ob_start();
+            $ok = $cmd->run('install', array('soft' => true, 'nodeps' => true, 'force' => true), array($package['name']));
+        	ob_end_clean();
         }
 		
 		$installed_version = $package_info->getVersion();
