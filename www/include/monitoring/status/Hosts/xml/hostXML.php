@@ -214,7 +214,7 @@
 		$obj->XML->writeElement("a", 	($ndo["address"] ? $ndo["address"] : "N/A"));
 		$obj->XML->writeElement("ou", 	($ndo["output"] ? $ndo["output"] : "N/A"));
 		$obj->XML->writeElement("lc", 	($ndo["last_check"] != 0 ? $obj->GMT->getDate($dateFormat, $ndo["last_check"]) : "N/A"));
-		$obj->XML->writeElement("cs", 	$obj->statusHost[$ndo["current_state"]]);		
+		$obj->XML->writeElement("cs", 	_($obj->statusHost[$ndo["current_state"]]));		
 		$obj->XML->writeElement("pha", 	$ndo["problem_has_been_acknowledged"]);
         $obj->XML->writeElement("pce", 	$ndo["passive_checks_enabled"]);
         $obj->XML->writeElement("ace", 	$ndo["active_checks_enabled"]);

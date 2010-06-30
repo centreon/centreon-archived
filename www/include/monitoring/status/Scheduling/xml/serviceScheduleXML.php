@@ -301,7 +301,7 @@
 			$buffer->writeElement("sd", $ndo["service_description"]);
 			$buffer->writeElement("ac", $color_en_label[$ndo["active_checks_enabled"]]);
 			$buffer->writeElement("sc", $color_service);
-			$buffer->writeElement("cs", $tab_status_svc[$ndo["current_state"]]);
+			$buffer->writeElement("cs", _($tab_status_svc[$ndo["current_state"]]));
 			$buffer->writeElement("po", $ndo["plugin_output"]);
 			$buffer->writeElement("ca", $ndo["current_attempt"]);
 			$buffer->writeElement("ne", $ndo["notifications_enabled"]);			

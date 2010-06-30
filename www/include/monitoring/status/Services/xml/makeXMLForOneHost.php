@@ -180,7 +180,7 @@
 		$buffer->writeElement("address", $ndo["address"]);
 		$buffer->startElement("current_state");
 		$buffer->writeAttribute("color", $tab_color_host[$ndo["current_state"]]);
-		$buffer->text($tab_status_host[$ndo["current_state"]]);
+		$buffer->text(_($tab_status_host[$ndo["current_state"]]));
 		$buffer->endElement();
 		$buffer->writeElement("current_state_name", _("Host Status"), 0);
 		$buffer->startElement("plugin_output");

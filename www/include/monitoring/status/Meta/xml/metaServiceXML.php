@@ -257,7 +257,7 @@
 		
 		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO));
 		$buffer->writeElement("sc", $color_service);
-		$buffer->writeElement("cs", $tab_status_svc[$ndo["current_state"]]);
+		$buffer->writeElement("cs", _($tab_status_svc[$ndo["current_state"]]));
 		$buffer->writeElement("po", $ndo["plugin_output"]);
 		$buffer->writeElement("ca", $ndo["current_attempt"]);
 		$buffer->writeElement("ne", $ndo["notifications_enabled"]);
