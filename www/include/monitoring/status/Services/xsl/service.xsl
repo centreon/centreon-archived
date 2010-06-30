@@ -107,7 +107,7 @@
 				<xsl:if test="hae = 0 and hpe = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
-					  	<xsl:attribute name="title">This host is only check by passiv mode</xsl:attribute>
+					  	<xsl:attribute name="title">This host is only check by passive mode</xsl:attribute>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 0">
