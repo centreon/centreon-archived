@@ -1,7 +1,7 @@
 <?php
 /*
  based on EasyArchive V0.2 by Alban LOPEZ
-	from http://www.phpclasses.org/browse/package/4239.html 
+	from http://www.phpclasses.org/browse/package/4239.html
  modified for Centreon project by Nikolaus Filus
 
  EasyArchive is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 // uses extensions: zip, bzip2, ZipArchive
 require_once("Archive/Tar.php");
 
-class EasyArchive
+class CentreonEasyArchive
 {
 	var $archiveExt = array (
 		'zip'	=>'zip',
@@ -47,7 +47,7 @@ class EasyArchive
 		return false;
 	}
 
-	/* return: 
+	/* return:
 	 * filelist[] on success, false on failure
 	 */
 	function extract ($data, $dest=false)

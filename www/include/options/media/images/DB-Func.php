@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	function sanitizeFilename($filename) {
@@ -50,7 +50,7 @@
 		$cleanstr = str_replace("\\", "_", $cleanstr);
 		return $cleanstr;
 	}
-	
+
 
 	function extractDir($zipfile, $path) {
 		if (file_exists($zipfile)) {
@@ -77,18 +77,18 @@
 		if (!isset($fileinfo["name"]) | !isset($fileinfo["type"])) {
 			return false;
 		}
-		
+
 		$uploaddir = "../filesUpload/images/";
 
                 switch ($fileinfo["type"]) {
 			// known archive types
-                        case "application/zip" : 
-                        case "application/x-tar" : 
-                        case "application/x-gzip" : 
-                        case "application/x-bzip" : 
-                        case "application/x-zip-compressed" : 
+                        case "application/zip" :
+                        case "application/x-tar" :
+                        case "application/x-gzip" :
+                        case "application/x-bzip" :
+                        case "application/x-zip-compressed" :
 			    $HTMLfile->moveUploadedFile($uploaddir);
-			    $arc = new EasyArchive();
+			    $arc = new CentreonEasyArchive();
 			    $filelist = $arc->extract($uploaddir.$fileinfo["name"]);
 			    if ($filelist!==false) {
 				foreach ($filelist as $file) {
@@ -101,7 +101,7 @@
 			    }
 			    return false;
 			    break;
-                        default : 
+                        default :
 			    if (stristr($fileinfo["type"], "image/") ) {
 				$HTMLfile->moveUploadedFile($uploaddir);
 				return insertImg($uploaddir, $fileinfo["name"], $dir_alias, $fileinfo["name"], $img_comment);
@@ -114,7 +114,7 @@
 	function insertImg ($src_dir, $src_file, $dst_dir, $dst_file, $img_comment = "") {
 		global $pearDB;
 		$mediadir = "./img/media/";
-		
+
 		if (!($dir_id = testDirectoryExistence($dst_dir)))
 			$dir_id = insertDirectory($dst_dir);
 
@@ -144,7 +144,7 @@
 	function deleteMultImg ($images = array()) {
 		foreach($images as $selector => $val) {
 			$id = explode('-',$selector);
-			if (count($id)!=2) 
+			if (count($id)!=2)
 				continue;
 			deleteImg($id[1]);
 		}
@@ -168,7 +168,7 @@
 		}
 		$DBRESULT->free();
 	}
-	
+
 
 	function updateImg($img_id, $HTMLfile, $dir_alias, $img_name, $img_comment) {
 		if (!$img_id)
@@ -193,7 +193,7 @@
 			$dir_alias = sanitizePath($dir_alias);
 		else
 			$dir_alias = $img_info["dir_alias"];
-		/* insert new file */	
+		/* insert new file */
 		if ($HTMLfile && $HTMLfile->isUploadedFile()) {
 			$fileinfo = $HTMLfile->getValue();
 			if (!isset($fileinfo["name"]) | !isset($fileinfo["type"]))
@@ -231,7 +231,7 @@
 		}
 //		$DBRESULT->free();
 	}
-	
+
 	function moveMultImg ($images, $dirName) {
 		if (count($images)>0)
 		    foreach($images as $id) {
@@ -294,7 +294,7 @@
 		if (!$dir_id)
 			return true;
 		global $pearDB;
-	    
+
 		$rq = "SELECT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$dir_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		$empty = true;
@@ -326,7 +326,7 @@
 		else
 			return "";
 	}
-	
+
 
 	function deleteMultDirectory($dirs = array()) {
 		foreach($dirs as $selector => $val) {
@@ -364,10 +364,10 @@
 		}
 //		$DBRESULT->free();
 	}
-	
+
 
 	function updateDirectory($dir_id, $dir_alias, $dir_comment = "") {
-		if (!$dir_id) 
+		if (!$dir_id)
 			return;
 		global $pearDB;
 		$mediadir = "./img/media/";
@@ -385,7 +385,7 @@
 					"dir_alias = '".$dir_alias."', " .
 					"dir_comment = '".htmlentities($dir_comment, ENT_QUOTES)."' " .
 					"WHERE dir_id = '".$dir_id."'";
-			$DBRESULT =& $pearDB->query($rq);		
+			$DBRESULT =& $pearDB->query($rq);
 		}
 //		$DBRESULT->free();
 	}
