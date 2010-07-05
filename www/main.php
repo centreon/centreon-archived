@@ -3,42 +3,42 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
  	ini_set("display_errors", "On");
- 
-	/* 
+
+	/*
 	 * Define Local Functions
 	 *   - remove SQL Injection : Thanks to Julien CAYSSOL
 	 */
@@ -55,9 +55,9 @@
 	}
 
  	/*
- 	 * Purge Values 
+ 	 * Purge Values
  	 */
-	if (function_exists('filter_var')){	
+	if (function_exists('filter_var')){
 		foreach ($_GET as $key => $value){
 			if (!is_array($value)){
 				$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -65,7 +65,7 @@
 			}
 		}
 	}
-	
+
 	$p = getParameters("p");
 	$o = getParameters("o");
 	$min = getParameters("min");
@@ -73,28 +73,30 @@
 	$search = getParameters("search");
 	$limit = getParameters("limit");
 	$num = getParameters("num");
-	
+
 	/*
 	 * Include all func
 	 */
-	
+
 	include_once ("./basic-functions.php");
 	include_once ("./include/common/common-Func.php");
 	include_once ("./header.php");
 
+	require_once $centreon_path . 'www/autoloader.php';
+
 	/*
 	 * LCA Init Common Var
 	 */
-	  
+
 	global $is_admin;
 	$is_admin = $centreon->user->admin;
-	
+
 	$DBRESULT =& $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
 	$redirect =& $DBRESULT->fetchRow();
-	
+
 	/*
 	 * Init URL
-	 */ 
+	 */
 	$url = "";
 	if (!isset($_GET["doc"])){
 		if ($centreon->user->access->page($p)) {
@@ -163,7 +165,7 @@
 					} else
 						$url = "../errors/alt_error.php";
 				}
-			} 
+			}
 		} else {
 			$url = "../errors/alt_error.php";
 		}
@@ -200,15 +202,15 @@
 		$msg->setText(_("You are not in an access group"));
 		$msg->setTimeOut("3");
 	}
-	 
+
 	if (isset($url) && $url)
     	include_once $url;
 
 	if (!isset($centreon->historyPage))
 		$centreon->createHistory();
-	
+
 	/*
-	 * Keep in memory all informations about pagination, keyword for search... 
+	 * Keep in memory all informations about pagination, keyword for search...
 	 */
 	if (isset($url) && $url){
 		if (isset($_GET["num"]))
@@ -231,10 +233,10 @@
 
 	print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
 	print "<!-- Footer -->";
-	
+
 	/*
 	 * Display Footer
 	 */
 	if (!$min)
-		include_once "footer.php";	
+		include_once "footer.php";
 ?>
