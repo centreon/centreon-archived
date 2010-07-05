@@ -20,7 +20,7 @@ class CentreonDbPdo extends CentreonDB
     public function connect()
     {
         try {
-            $this->db = new CentreonMap_PDO($this->dsn['phptype'].":"."dbname=".$this->dsn['database'] . ";host=".$this->dsn['hostspec'],
+            $this->db = new CentreonPdo($this->dsn['phptype'].":"."dbname=".$this->dsn['database'] . ";host=".$this->dsn['hostspec'] . ";port=".$this->dsn['port'],
                                 $this->dsn['username'],
                                 $this->dsn['password'],
                                 $this->options);
@@ -30,6 +30,51 @@ class CentreonDbPdo extends CentreonDB
         }
     }
 
+    /**
+     * estrablish centreon DB connector
+     *
+     * @access protected
+	 * @return	void
+     */
+	protected function connectToCentreon($conf_centreon)
+	{
+		if (!isset($conf_centreon["port"])) {
+			$conf_centreon["port"] = "3306";
+		}
+
+		$this->dsn = array(
+	    	'phptype'  => $this->db_type,
+	    	'username' => $conf_centreon["user"],
+	    	'password' => $conf_centreon["password"],
+	    	'hostspec' => $conf_centreon["hostCentreon"],
+		    'port'	   => $conf_centreon["port"],
+	    	'database' => $conf_centreon["db"],
+		);
+    }
+
+    /**
+     * estrablish Centstorage DB connector
+     *
+     * @access protected
+	 * @return	void
+     */
+	protected function connectToCentstorage($conf_centreon)
+	{
+    	if (!isset($conf_centreon["port"])) {
+			$conf_centreon["port"] = "3306";
+		}
+
+    	$this->dsn = array(
+	    	'phptype'  => $this->db_type,
+	    	'username' => $conf_centreon["user"],
+	    	'password' => $conf_centreon["password"],
+	    	'hostspec' => $conf_centreon["hostCentstorage"],
+    		'port'	   => $conf_centreon["port"],
+	    	'database' => $conf_centreon["dbcstg"],
+		);
+    }
+
+
 	/**
      *  Get info to connect to NDO DB
      *
@@ -37,15 +82,19 @@ class CentreonDbPdo extends CentreonDB
      */
     protected function connectToNDO($conf_centreon)
     {
-		$DBRESULT = $this->db->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+		$DBRESULT = $this->db->query("SELECT db_port, db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
 		$confNDO = $DBRESULT->fetchRow();
-		unset($DBRESULT);
+
+        if (!isset($confNDO["db_port"]) || !$confNDO["db_port"]) {
+			$confNDO["db_port"] = "3306";
+		}
 
 		$this->dsn = array(
 	    	'phptype'  => $this->db_type,
 	    	'username' => $confNDO['db_user'],
 	    	'password' => $confNDO['db_pass'],
 	    	'hostspec' => $confNDO['db_host'],
+			'port'     => $confNDO['db_port'],
 	    	'database' => $confNDO['db_name'],
 		);
     }

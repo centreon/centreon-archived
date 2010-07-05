@@ -43,7 +43,7 @@ class CentreonDB
 	protected $db_type = "mysql";
 	protected $db_port = "3306";
 	protected $retry;
-	protected $privatePearDB;
+	protected $db;
 	protected $dsn;
 	protected $options;
 	protected $centreon_path;
@@ -66,8 +66,8 @@ class CentreonDB
 	 */
     public function __construct($db = "centreon", $retry = 3)
     {
-		include("@CENTREON_ETC@/centreon.conf.php");
-
+		//include("@CENTREON_ETC@/centreon.conf.php");
+        include("/etc/centreon/centreon.conf.php");
 		require_once $centreon_path."/www/class/centreonLog.class.php";
 		$this->log = new CentreonLog();
 
@@ -175,7 +175,7 @@ class CentreonDB
      */
     protected function connectToNDO($conf_centreon)
     {
-		$DBRESULT =& $this->privatePearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db LIMIT 1;");
+		$DBRESULT = $this->db->query("SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db LIMIT 1;");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$confNDO = $DBRESULT->fetchRow();
@@ -202,54 +202,54 @@ class CentreonDB
      */
 	protected function connect()
 	{
-    	$this->privatePearDB =& DB::connect($this->dsn, $this->options);
+    	$this->db = DB::connect($this->dsn, $this->options);
 		$i = 0;
-		while (PEAR::isError($this->privatePearDB) && ($i < $this->retry)) {
-			$this->privatePearDB =& DB::connect($this->dsn, $this->options);
+		while (PEAR::isError($this->db) && ($i < $this->retry)) {
+			$this->db = DB::connect($this->dsn, $this->options);
 			$i++;
 		}
 		if ($i == $this->retry) {
 			if ($this->debug)
-				$this->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");
+				$this->log->insertLog(2, $this->db->getMessage() . " (retry : $i)");
 			$this->displayConnectionErrorPage();
 		} else {
-			$this->privatePearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+			$this->db->setFetchMode(DB_FETCHMODE_ASSOC);
 		}
     }
 
 	/**
      * Disconnect DB connector
      *
-     * @access protected
+     * @access public
 	 * @return	void
      */
-	protected function disconnect()
+	public function disconnect()
 	{
-    	$this->privatePearDB->disconnect();
+    	$this->db->disconnect();
     }
 
     /**
      * To string method
      *
-     * @access protected
+     * @access public
      * @return string
      */
-    protected function toString()
+    public function toString()
     {
-    	return $this->privatePearDB->toString();
+    	return $this->db->toString();
     }
 
     /**
      * launch a query
      *
-     * @access protected
+     * @access public
 	 * @param	string	$query_string	query
 	 * @return	object	query result
      */
-	protected function query($query_string = null)
+	public function query($query_string = null)
 	{
 		$this->requestExecuted++;
-    	$DBRES = $this->privatePearDB->query($query_string);
+    	$DBRES = $this->db->query($query_string);
     	if (PEAR::isError($DBRES)) {
     		if ($this->debug) {
 				$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
