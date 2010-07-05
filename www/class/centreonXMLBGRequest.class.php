@@ -126,10 +126,10 @@ class CentreonXMLBGRequest
 		/*
 		 * Enable Database Connexions
 		 */
-		$this->DB 		= new CentreonDB();
-		$this->DBC 		= new CentreonDB("centstorage");
+		$this->DB 		= new CentreonDbPdo();
+		$this->DBC 		= new CentreonDbPdo("centstorage");
 		if ($dbNeeds) {
-			$this->DBNdo= new CentreonDB("ndo");
+			$this->DBNdo= new CentreonDbPdo("ndo");
 		}
 
 		/*
