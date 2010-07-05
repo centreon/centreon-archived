@@ -332,7 +332,7 @@
 				" AND stat.service_object_id = svc.service_object_id" .
 				" AND obj.name1 = ht.display_name" .
 				" AND stat.current_state > 0" .
-				" AND stat.current_state <> 3" .
+				/*" AND stat.current_state <> 3" .*/
 				" AND stat.problem_has_been_acknowledged = 0" .
 				" AND stat.scheduled_downtime_depth = 0" .
 				" AND obj.is_active = 1" .
@@ -349,7 +349,7 @@
 				" AND stat.service_object_id = svc.service_object_id" .
 				" AND obj.name1 = ht.display_name" .
 				" AND stat.current_state > 0" .
-				" AND stat.current_state <> 3" .
+				/*" AND stat.current_state <> 3" .*/
 				" AND stat.problem_has_been_acknowledged = 0" .
 		        " AND stat.scheduled_downtime_depth = 0" .
 				" AND obj.is_active = 1" .
