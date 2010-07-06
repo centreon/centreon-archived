@@ -261,11 +261,11 @@
 							<xsl:element name='a'>
 								<xsl:attribute name='href'><xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/></xsl:attribute>
 								<xsl:attribute name="class">infobulle</xsl:attribute>
-								<xsl:attribute name='onmouseover'>showHostOverlay('<xsl:value-of select="hid"/>');</xsl:attribute>
-								<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="hid"/>');</xsl:attribute>
+								<xsl:attribute name='onmouseover'>showHostOverlay('<xsl:value-of select="hid"/>', '<xsl:value-of select="domId"/>');</xsl:attribute>
+								<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="domId"/>');</xsl:attribute>
 								<xsl:value-of select='hostname'/>
 								<xsl:element name="span">
-									<xsl:attribute name="id">span_<xsl:value-of select="hid"/></xsl:attribute>
+									<xsl:attribute name="id">span_<xsl:value-of select="domId"/></xsl:attribute>
 								</xsl:element>
 							</xsl:element>
 						</xsl:element>
@@ -659,8 +659,8 @@
 										</xsl:element>
 									</xsl:if>						
 									<xsl:element name='a'>
-										<xsl:attribute name='onmouseover'>showHostOverlay('<xsl:value-of select="hid"/>');</xsl:attribute>
-										<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="hid"/>');</xsl:attribute>
+										<xsl:attribute name='onmouseover'>showHostOverlay('<xsl:value-of select="hid"/>', '<xsl:value-of select="domId"/>');</xsl:attribute>
+										<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="domId"/>');</xsl:attribute>
 										<xsl:attribute name="class">infobulle</xsl:attribute>
 										<xsl:attribute name='href'>
 											<xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/>
@@ -668,7 +668,7 @@
 										<xsl:attribute name='href'><xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/></xsl:attribute>
 										<xsl:value-of select='hostname'/>
 										<xsl:element name='span'>
-											<xsl:attribute name='id'>span_<xsl:value-of select='hid'/></xsl:attribute>
+											<xsl:attribute name='id'>span_<xsl:value-of select='domId'/></xsl:attribute>
 										</xsl:element>
 									</xsl:element>
 								</td>							

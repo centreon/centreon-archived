@@ -463,7 +463,9 @@
 	 *  Unhandled hosts
 	 */
 	$style = 'list_two';
-	foreach($tab_hostprobname as $key => $val) {
+	$domId = 0;
+	foreach ($tab_hostprobname as $key => $val) {
+	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
 	    $xml->startElement('unhandledHosts');
 	    $xml->writeElement('hostname', $val);
@@ -473,12 +475,12 @@
 	    $xml->writeElement('output', $tab_hostproboutput[$key]);
 	    $xml->writeElement('icon', $tab_hosticone[$key]);
 	    $xml->writeElement('hid', $tab_hostobjectid[$key]);
+	    $xml->writeElement('domId', $tab_hostobjectid[$key] + '_' + $domId);
 	    $xml->writeElement('class', $style);
 	    if ($tab_hostprobstate[$key] == 1) {
 	        $xml->writeElement('state', _('Down'));
 	        $xml->writeElement('bgcolor', $general_opt['color_critical']);
-	    }
-	    elseif ($tab_hostprobstate[$key] == 2) {
+	    } elseif ($tab_hostprobstate[$key] == 2) {
 	        $xml->writeElement('state', _('Unreachable'));
 	        $xml->writeElement('bgcolor', $general_opt['color_unreachable']);
 	    }
@@ -490,6 +492,7 @@
 	 */
 	$style = 'list_two';
 	foreach($tab_svcname as $key => $val) {
+	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
         $xml->startElement('unhandledServices');
 	    $xml->writeElement('servicename', $val);
@@ -501,6 +504,7 @@
 	    $xml->writeElement('icon', $tab_icone[$key]);
 	    $xml->writeElement('sid', $tab_objectid[$key]);
 	    $xml->writeElement('hid', $tab_hobjectid[$key]);
+	    $xml->writeElement('domId', $tab_hostobjectid[$key] . "_" . $domId);
 	    $xml->writeElement('class', $style);
 	    if ($tab_state[$key] == 1) {
 	        $xml->writeElement('state', _('Warning'));
