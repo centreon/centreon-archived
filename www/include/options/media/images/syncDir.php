@@ -3,47 +3,48 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/options/media/images/listImg.php $
  * SVN : $Id: listImg.php 8061 2009-05-14 20:59:22Z jmathis $
- * 
+ *
  */
- 
+
 	require_once ("@CENTREON_ETC@/centreon.conf.php");
+	//require_once ("/etc/centreon/centreon.conf.php");
 	require_once ("./class/centreonDB.class.php");
 
 	$pearDB = new CentreonDB();
 
 	if (!isset($_GET["session_id"]))
 		exit ;
-	
+
 	if (isset($_GET["session_id"])) {
 		$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$_GET["session_id"]."'");
 		if ($DBRESULT->numRows() == 0)
@@ -76,14 +77,14 @@
 	        }
 	        closedir($dh);
 	    }
-	} 
-	
+	}
+
 	$fileRemoved = DeleteOldPictures($pearDB);
-	
+
 	/*
 	 * Display Stats
 	 */
-	
+
 	?>
 	<br>
 	<?php print "<b>&nbsp;&nbsp;"._("Media Detection")."</b>"; ?>
@@ -103,7 +104,7 @@
 	</div>
 	<br>
 	<?php
-	
+
 	/*
 	 * recreates local centreon directories as defined in DB
 	 */
@@ -118,27 +119,29 @@
  			return $data["dir_id"];
  		} else {
  			$data =& $DBRESULT->fetchRow();
- 			return $data["dir_id"]; 			
+ 			return $data["dir_id"];
  		}
  	}
- 	
-	/* 
+
+	/*
 	 * inserts $dir_id/$picture into DB if not registered yet
 	 */
  	function checkPicture($picture, $dirpath, $dir_id, $pearDB, $regCounter, $gdCounter) {
 		global $allowedExt;
 		$img_info = pathinfo($picture);
 		$img_ext = $img_info["extension"];
-		if (! isset($allowedExt[$img_ext]) && $allowedExt[$img_ext]))
+		if (!isset($allowedExt[$img_ext]) && $allowedExt[$img_ext]) {
 		    return 0;
+		}
         if (!$img_info["filename"]) {
 		    $img_parts = explode(".", $img_info["basename"]);
             $img_info["filename"] = $img_parts[0];
         }
 		if ($img_info["extension"] == 'gd2' && !is_file($img_info["filename"] . ".png") ) {
 			$im = imagecreatefromgd2($dirpath ."/". $picture);
-			if (!$im) 
+			if (!$im) {
 			    return 0;
+			}
 			//unlink($picture);
 			$picture = $img_info["filename"] . ".png";
 			imagepng($im, $dirpath ."/". $picture);
@@ -163,7 +166,7 @@
  			return 0;
  		}
  	}
- 	
+
 	/*
 	 * removes obsolete files from DB if not on filesystem
 	 */
@@ -175,9 +178,9 @@
 				$pearDB->query("DELETE FROM view_img WHERE img_id = '".$row2["img_id"]."'");
 				$fileRemoved++;
 			}
-		}	
+		}
 		$DBRESULT->free();
 		return $fileRemoved;
  	}
- 
+
 ?>
