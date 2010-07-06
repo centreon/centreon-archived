@@ -1251,12 +1251,16 @@ function prepare_sudo_config() {
 	Defaults:CENTREON !requiretty
 	# Nagios Restart
 	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT* restart
+	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart
 	# Nagios reload
 	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT* reload
+	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload
 	# Nagios test config
 	CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY* -v *
+	CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY -v *
 	# Nagios test for optim config
 	CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY* -s *
+	CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY -s *
 	# Snmptrapd Restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
 	# CentStorage Restart
