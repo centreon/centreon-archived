@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
-	
+
 	if (!isset($oreon))
 		exit();
 
@@ -76,14 +76,14 @@
 if(!isset($lca["lca_topos"]))
 $lca["lca_topos"] = array();
 
-	# Init LCA 
-	
+	# Init LCA
+
 	$lca_data = getLCAHostByID($pearDB);
 	$lcaHostStr = getLCAHostStr($lca_data["LcaHost"]);
 	$lcaHGStr = getLCAHGStr($lca_data["LcaHostGroup"]);
 	$lca_sg = getLCASG($pearDB);
 	$lcaSGStr = getLCASGStr($lca_sg);
-	
+
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
@@ -167,7 +167,7 @@ $lca["lca_topos"] = array();
 	## Contact Group concerned
 	#
 	$form->addElement('header', 'cg', _("Implied Contact Groups"));
-	$ams1 =& $form->addElement('advmultiselect', 'lca_cgs', array(_("Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'lca_cgs', array(_("Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -178,13 +178,13 @@ $lca["lca_topos"] = array();
 	#
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$form->addElement('textarea', 'lca_comment', _("Comments"), $attrsTextarea);
-	
+
 	#
 	## Resources concerned
 	#
 	$form->addElement('header', 'rs', _("Implied Resources"));
 
-	$ams1 =& $form->addElement('advmultiselect', 'lca_hgs', array(_("Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'lca_hgs', array(_("Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -195,13 +195,13 @@ $lca["lca_topos"] = array();
 	$form->addGroup($tab, 'lca_hg_childs', _("Include Host Groups -> Hosts"), '&nbsp;');
 	$form->setDefaults(array('lca_hg_childs' => '1'));
 
-	$ams1 =& $form->addElement('advmultiselect', 'lca_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'lca_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'lca_sgs', array(_("Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'lca_sgs', array(_("Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -276,16 +276,16 @@ $lca["lca_topos"] = array();
 
 					/*old*/
 				 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, array_key_exists($topo4["topology_name"], $lang) ? "&nbsp;&nbsp;"._($topo4["topology_name"])."<br />" : "&nbsp;&nbsp;#UNDEF#"."<br />", array("style"=>"margin-top: 5px; margin-left: 55px;"));
-					/*old*/					
+					/*old*/
 					$d++;
 				}
-				$c++;		
+				$c++;
 			}
 			$b++;
 		}
 		$a++;
 	}
-	
+
 
 	if ($o == "a")	{
 		function one($v)	{

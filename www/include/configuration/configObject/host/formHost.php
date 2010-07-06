@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 
 	if (!isset($oreon))
 		exit();
@@ -52,14 +52,14 @@
 		 */
 		$host_list =& $DBRESULT->fetchRow();
 		$host = array_map("myDecode", $host_list);
-		
+
 		/*
 		 * Set Host Notification Options
 		 */
 		$tmp = explode(',', $host["host_notification_options"]);
 		foreach ($tmp as $key => $value)
 			$host["host_notifOpts"][trim($value)] = 1;
-		
+
 		/*
 		 * Set Stalking Options
 		 */
@@ -67,7 +67,7 @@
 		foreach ($tmp as $key => $value)
 			$host["host_stalOpts"][trim($value)] = 1;
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Contact Group
 		 */
@@ -75,7 +75,7 @@
 		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 			$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Contacts
 		 */
@@ -83,7 +83,7 @@
 		for ($i = 0; $notifC =& $DBRESULT->fetchRow(); $i++)
 			$host["host_cs"][$i] = $notifC["contact_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Host Parents
 		 */
@@ -91,7 +91,7 @@
 		for ($i = 0; $parent =& $DBRESULT->fetchRow(); $i++)
 			$host["host_parents"][$i] = $parent["host_parent_hp_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Host Childs
 		 */
@@ -99,7 +99,7 @@
 		for ($i = 0; $child =& $DBRESULT->fetchRow(); $i++)
 			$host["host_childs"][$i] = $child["host_host_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Host Group Parents
 		 */
@@ -107,7 +107,7 @@
 		for ($i = 0; $hg =& $DBRESULT->fetchRow(); $i++)
 			$host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Host and Nagios Server Relation
 		 */
@@ -128,12 +128,12 @@
 	$nbMaxTemplates = 0;
 	while ($hTpl =& $DBRESULT->fetchRow())	{
 		if (!$hTpl["host_name"])
-			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";		
+			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
 		$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
 		$nbMaxTemplates++;
-	}	
+	}
 	$DBRESULT->free();
-	
+
 	/*
 	 * Timeperiods comes from DB -> Store in $tps Array
 	 */
@@ -142,7 +142,7 @@
 	while ($tp =& $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Check commands comes from DB -> Store in $checkCmds Array
 	 */
@@ -151,7 +151,7 @@
 	while($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Check commands comes from DB -> Store in $checkCmds Array
 	 */
@@ -160,7 +160,7 @@
 	while ($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Contact Groups comes from DB -> Store in $notifCcts Array
 	 */
@@ -169,7 +169,7 @@
 	while ($notifCg =& $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Contacts come from DB -> Store in $notifCs Array
 	 */
@@ -178,12 +178,12 @@
 	while ($notifC =& $DBRESULT->fetchRow())
 		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
 	$DBRESULT->free();
-	
-	
+
+
 	/*
 	 * Nagios Server comes from DB -> Store in $nsServer Array
 	 */
-	
+
 	$nsServers = array();
 	if ($o == "mc")
 		$nsServers[NULL] = NULL;
@@ -191,7 +191,7 @@
 	while ($nsServer =& $DBRESULT->fetchRow())
 		$nsServers[$nsServer["id"]] = $nsServer["name"];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Host Groups comes from DB -> Store in $hgs Array
 	 */
@@ -200,7 +200,7 @@
 	while ($hg = $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Host Parents comes from DB -> Store in $hostPs Array
 	 */
@@ -212,8 +212,8 @@
 		$hostPs[$hostP["host_id"]] = $hostP["host_name"];
 	}
 	$DBRESULT->free();
-	
-		
+
+
 	/*
 	 * IMG comes from DB -> Store in $extImg Array
 	 */
@@ -221,10 +221,10 @@
 	$extImg = return_image_list(1);
 	$extImgStatusmap = array();
 	$extImgStatusmap = return_image_list(2);
-	
+
 	/*
 	 *  Host multiple templates relations stored in DB
-	 */	
+	 */
 	$mTp = array();
 	$k = 0;
 	$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
@@ -233,11 +233,11 @@
 		$k++;
 	}
 	$DBRESULT->free();
-	
+
 	/*
 	 *  Host on demand macro stored in DB
 	 */
-	$j = 0;		
+	$j = 0;
 	$DBRESULT =& $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
 	while ($od_macro =& $DBRESULT->fetchRow()){
 		$od_macro_id[$j] = $od_macro["host_macro_id"];
@@ -247,12 +247,12 @@
 		$od_macro_name[$j] = str_replace("#S#", "/", $od_macro_name[$j]);
 		$od_macro_value[$j] = str_replace("#BS#", "\\", $od_macro["host_macro_value"]);
 		$od_macro_value[$j] = str_replace("#S#", "/", $od_macro_value[$j]);
-		$od_macro_host_id[$j] = $od_macro["host_host_id"];		
-		$j++;		
+		$od_macro_host_id[$j] = $od_macro["host_host_id"];
+		$j++;
 	}
 	$DBRESULT->free();
-	
-	
+
+
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -267,13 +267,13 @@
 	$attrsTextarea 		= array("rows"=>"4", "cols"=>"80");
 	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
-	
+
 	#
 	## Form begin
 	#
-	
+
 	$TemplateValues = array();
-	
+
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Host"));
@@ -297,16 +297,16 @@
 	$form->addElement('text', 'host_address', _("IP Address / DNS"), $attrsText);
 	$form->addElement('select', 'host_snmp_version', _("Version"), array(NULL=>NULL, 1=>"1", "2c"=>"2c", 3=>"3"));
 	$form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
-	
+
 	/*
 	 * Include GMT Class
 	 */
 	require_once $centreon_path."www/class/centreonGMT.class.php";
-	
+
 	$CentreonGMT = new CentreonGMT($pearDB);
-	
+
 	$GMTList = $CentreonGMT->getGMTList($pearDB);
-	
+
 	$form->addElement('select', 'host_location', _("Timezone / Location"), $GMTList);
 	if ($o != "mc")
 		$form->setDefaults(array('host_location' => $oreon->optGen["gmt"]));
@@ -315,9 +315,9 @@
 	unset($GMTList);
 
 	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
-	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);	
+	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
 	$form->addElement('text', 'host_parallel_template', _("Host Templates"), $hTpls);
-	
+
 	if ($o == "mc")	{
 		$mc_mod_tplp = array();
 		$mc_mod_tplp[] = &HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Incremental"), '0');
@@ -327,24 +327,24 @@
 	}
 
 	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance")."<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70, FIX, [this, 0, 10])\" onmouseout=\"UnTip()\">". _("Here is a self explanatory image.")."</a>");
-	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));	
-	
-	include_once("makeJS_formHost.php");	
-	if ($o == "c" || $o == "a" || $o == "mc") {		
+	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
+
+	include_once("makeJS_formHost.php");
+	if ($o == "c" || $o == "a" || $o == "mc") {
 		for ($k = 0 ; isset($mTp[$k]); $k++) { ?>
 			<script type="text/javascript">
-			tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;		
-			</script> 
+			tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;
+			</script>
 		<?php
 		}
 		for ($k = 0; isset($od_macro_id[$k]); $k++) { ?>
 			<script type="text/javascript">
-			globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;		
+			globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;
 			globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
 			globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
 			globalMacroTabHostId[<?php echo $k;?>] = <?php echo $od_macro_host_id[$k];?>;
-			</script>				
-		<?php 
+			</script>
+		<?php
 		}
 	}
 
@@ -354,7 +354,7 @@
 	if ($o == "c")
 		$form->setDefaults(array('dupSvTplAssoc' => '0'));
 	else if ($o == "w")
-		; 
+		;
 	else if ($o != "mc")
 		$form->setDefaults(array('dupSvTplAssoc' => '1'));
 	$form->addElement('static', 'dupSvTplAssocText', _("Create Services linked to the Template too"));
@@ -363,10 +363,10 @@
 	## Check information
 	#
 	$form->addElement('header', 'check', _("Host Check Properties"));
-	
+
 	$form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
 	$form->addElement('text', 'command_command_id_arg1', _("Args"), $attrsText);
-	
+
 	$form->addElement('text', 'host_max_check_attempts', _("Max Check Attempts"), $attrsText2);
 	$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
 	$form->addElement('text', 'host_retry_check_interval', _("Retry Check Interval"), $attrsText2);
@@ -379,7 +379,7 @@
 		$form->setDefaults(array('host_event_handler_enabled' => '2'));
 	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
-	
+
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Yes"), '1');
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("No"), '0');
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Default"), '2');
@@ -406,9 +406,9 @@
 	$form->addGroup($hostNE, 'host_notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('host_notifications_enabled' => '2'));
-	
+
 	$form->addElement('text', 'host_first_notification_delay', _("First notification delay"), $attrsText2);
-	
+
 	if ($o == "mc")	{
 		$mc_mod_hcg = array();
 		$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');
@@ -416,20 +416,20 @@
 		$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hcg'=>'0'));
 	}
-		
+
 	/*
 	 *  Contacts
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
-	
+
 	/*
 	 *  Contact groups
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -482,7 +482,7 @@
 		$form->addGroup($mc_mod_hpar, 'mc_mod_hpar', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hpar'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'host_parents', array(_("Parent Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_parents', array(_("Parent Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -495,7 +495,7 @@
 		$form->addGroup($mc_mod_hch, 'mc_mod_hch', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hch'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'host_childs', array(_("Child Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_childs', array(_("Child Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -508,12 +508,12 @@
 		$form->addGroup($mc_mod_hhg, 'mc_mod_hhg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hhg'=>'0'));
 	}
-        $ams3 =& $form->addElement('advmultiselect', 'host_hgs', array(_("Parent Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect);
+        $ams3 =& $form->addElement('advmultiselect', 'host_hgs', array(_("Parent Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
-	
+
 	if ($o == "mc")	{
 		$mc_mod_nsid = array();
 		$mc_mod_nsid[] = &HTML_QuickForm::createElement('radio', 'mc_mod_nsid', null, _("Incremental"), '0');
@@ -541,7 +541,7 @@
 		$form->addElement('header', 'title3', _("Massive Change"));
 
 	$form->addElement('header', 'treatment', _("Data Processing"));
-	
+
 	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Yes"), '1');
 	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("No"), '0');
 	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Default"), '2');
@@ -562,7 +562,7 @@
 	$form->addGroup($hostFDE, 'host_flap_detection_enabled', _("Flap Detection Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('host_flap_detection_enabled' => '2'));
-	
+
 	$form->addElement('text', 'host_freshness_threshold', _("Freshness Threshold"), $attrsText2);
 	$form->addElement('text', 'host_low_flap_threshold', _("Low Flap threshold"), $attrsText2);
 	$form->addElement('text', 'host_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
@@ -607,7 +607,7 @@
 	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("id"=>"ehi_icon_image", "onChange"=>"showLogo('ehi_icon_image_img',this.value)"));
 	$form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
 	$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("id"=>"ehi_vrml_image", "onChange"=>"showLogo('ehi_vrml_image_img',this.value)"));
-	$form->addElement('select', 'ehi_statusmap_image', _("Nagios Status Map Image"), $extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)"));	
+	$form->addElement('select', 'ehi_statusmap_image', _("Nagios Status Map Image"), $extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)"));
 	$form->addElement('text', 'ehi_2d_coords', _("Nagios 2d Coords"), $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', _("Nagios 3d Coords"), $attrsText2);
 
@@ -624,7 +624,7 @@
 		$form->addElement('header', 'title5', _("Massive Change"));
 
 	$form->addElement('header', 'macro', _("Macros"));
-	
+
 	$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
 	$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
 	$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
@@ -650,7 +650,7 @@
 		$select_pear =& $form->addElement('hidden', 'select');
 		$select_pear->setValue($select_str);
 	}
-	
+
 	/*
 	 * Form Rules
 	 */
@@ -669,12 +669,12 @@
 		$form->registerRule('testModule', 'callback', 'testHostName');
 		$form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
 		$form->registerRule('exist', 'callback', 'testHostExistence');
-		$form->addRule('host_name', _("Name is already in use"), 'exist');		
-		
+		$form->addRule('host_name', _("Name is already in use"), 'exist');
+
 		/*
 		 * If we are using a Template, no need to check the value, we hope there are in the Template
 		 */
-		
+
 		if (isset($_POST['nbOfSelect'])) {
 			$z = 0;
 			$ok_flag = 0;
@@ -689,9 +689,9 @@
 			if (!$ok_flag) {
 				$form->addRule('host_alias', _("Compulsory Alias"), 'required');
 				$form->addRule('host_address', _("Compulsory Address"), 'required');
-				$form->addRule('host_max_check_attempts', _("Required Field"), 'required');				
-				$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');				
-				
+				$form->addRule('host_max_check_attempts', _("Required Field"), 'required');
+				$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
+
 				if (!$form->getSubmitValue("host_cs"))
 					$form->addRule('host_cgs', _("Compulsory Contact Group"), 'required');
 				if (!$form->getSubmitValue("host_cgs"))
@@ -699,7 +699,7 @@
 
 				$form->addRule('host_notification_interval', _("Required Field"), 'required');
 				$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
-				$form->addRule('host_notifOpts', _("Compulsory Option"), 'required');		
+				$form->addRule('host_notifOpts', _("Compulsory Option"), 'required');
 			}
 		}
 	} else if ($o == "mc")	{
@@ -708,9 +708,9 @@
 		else
 			$from_list_menu = true;
 	}
-	
+
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
-	    
+
 	/*
 	 * Smarty template Init
 	 */
@@ -745,7 +745,7 @@
 		$subMC =& $form->addElement('submit', 'submitMC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
-	
+
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0/*, "perfparse"=>$oreon->optGen["perfparse_installed"]*/));
 	$tpl->assign('min', $min);
 	$tpl->assign("sort1", _("Host Configuration"));
@@ -755,15 +755,15 @@
 	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>' );
 	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
-	
+
 	# prepare help texts
 	$helptext = "";
 	include_once("help.php");
-	foreach ($help as $key => $text) { 
+	foreach ($help as $key => $text) {
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
-	
+
 	if ($o != "a" && $o != "c")
 		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 	else {
@@ -772,7 +772,7 @@
 		 */
 		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 	}
-		
+
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
 		$hostObj =& $form->getElement('host_id');
@@ -786,8 +786,8 @@
 				if ($value)
 					updateHostInDB($value, true);
 		}
-		$o = "w";		
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));		
+		$o = "w";
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	if (!isset($oreon))
@@ -54,7 +54,7 @@
 	$service = array();
 	$serviceTplId = null;
 	if (($o == "c" || $o == "w") && $service_id)	{
-		
+
 		$DBRESULT =& $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
 		/*
 		 * Set base value
@@ -62,7 +62,7 @@
 		$service = array_map("myDecodeService", $DBRESULT->fetchRow());
 		$serviceTplId = $service['service_template_model_stm_id'];
 		$cmdId = $service['command_command_id'];
-		
+
 		/*
 		 * Grab hostgroup || host
 		 */
@@ -79,21 +79,21 @@
 				$service["service_hgPars"][$parent["hostgroup_hg_id"]] = $parent["hostgroup_hg_id"];
 		}
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Service Notification Options
 		 */
 		$tmp = explode(',', $service["service_notification_options"]);
 		foreach ($tmp as $key => $value)
 			$service["service_notifOpts"][trim($value)] = 1;
-		
+
 		/*
 		 * Set Stalking Options
 		 */
 		$tmp = explode(',', $service["service_stalking_options"]);
 		foreach ($tmp as $key => $value)
 			$service["service_stalOpts"][trim($value)] = 1;
-		
+
 		/*
 		 * Set Contact Group
 		 */
@@ -101,7 +101,7 @@
 		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Contact Group
 		 */
@@ -109,7 +109,7 @@
 		for ($i = 0; $notifC =& $DBRESULT->fetchRow(); $i++)
 			$service["service_cs"][$i] = $notifC["contact_id"];
 		$DBRESULT->free();
-				
+
 		/*
 		 * Set Service Group Parents
 		 */
@@ -117,7 +117,7 @@
 		for ($i = 0; $sg =& $DBRESULT->fetchRow(); $i++)
 			$service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Traps
 		 */
@@ -125,7 +125,7 @@
 		for ($i = 0; $trap =& $DBRESULT->fetchRow(); $i++)
 			$service["service_traps"][$i] = $trap["traps_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Categories
 		 */
@@ -134,19 +134,19 @@
 			$service["service_categories"][$i] = $service_category["sc_id"];
 		$DBRESULT->free();
 	}
-	
-	
+
+
 	/*
 	 * Database retrieve information for differents elements list we need on the page
 	 */
-	
+
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	while ($host =& $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
-	
+
 	# Service Templates comes from DB -> Store in $svTpls Array
 	$svTpls = array(NULL => NULL);
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
@@ -161,7 +161,7 @@
 		$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
 	}
 	$DBRESULT->free();
-	
+
 	# HostGroups comes from DB -> Store in $hgs Array
 	$hgs = array();
 	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
@@ -231,16 +231,16 @@
 	while ($trap =& $DBRESULT->fetchRow())
 		$traps[$trap["traps_id"]] = $trap["traps_name"];
 	$DBRESULT->free();
-	
+
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
 	$extImg = return_image_list(1);
-	
-	
+
+
 	/*
 	 *  Service on demand macro stored in DB
 	 */
-	$j = 0;		
+	$j = 0;
 	$DBRESULT =& $pearDB->query("SELECT svc_macro_id, svc_macro_name, svc_macro_value, svc_svc_id FROM on_demand_macro_service WHERE svc_svc_id = '". $service_id ."' ORDER BY `svc_macro_id`");
 	while($od_macro = $DBRESULT->fetchRow()) {
 		$od_macro_id[$j] = $od_macro["svc_macro_id"];
@@ -249,12 +249,12 @@
 		$od_macro_name[$j] = str_replace("#BS#", "\\", $od_macro_name[$j]);
 		$od_macro_name[$j] = str_replace("#S#", "/", $od_macro_name[$j]);
 		$od_macro_value[$j] = str_replace("#BS#", "\\", $od_macro["svc_macro_value"]);
-		$od_macro_value[$j] = str_replace("#S#", "/", $od_macro_value[$j]);		
+		$od_macro_value[$j] = str_replace("#S#", "/", $od_macro_value[$j]);
 		$od_macro_svc_id[$j] = $od_macro["svc_svc_id"];
-		$j++;		
+		$j++;
 	}
 	$DBRESULT->free();
-	
+
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -295,10 +295,10 @@
 	 */
 	$form->addElement('text', 'service_description', _("Description"), $attrsText);
 	$form->addElement('text', 'service_alias', _("Alias"), $attrsText);
-	
+
 	$form->addElement('select', 'service_template_model_stm_id', _("Service Template"), $svTpls, array('id'=>'svcTemplate', 'onChange'=>'changeServiceTemplate(this.value)'));
 	$form->addElement('static', 'tplText', _("Using a Template exempts you to fill required fields"));
-	
+
 	#
 	## Check information
 	#
@@ -357,7 +357,7 @@
 	$form->addGroup($serviceNE, 'service_notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_notifications_enabled' => '2'));
-	
+
 	if ($o == "mc")	{
 		$mc_mod_cgs = array();
 		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, _("Incremental"), '0');
@@ -368,16 +368,16 @@
 	/*
 	 *  Contacts
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'service_cs', array(_("Implied Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'service_cs', array(_("Implied Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
-	
+
 	/*
 	 *  Contact groups
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'service_cgs', array(_("Implied Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'service_cgs', array(_("Implied Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -411,7 +411,7 @@
 	if ($o != "mc")
 		$form->setDefaults(array('service_activate' => '1'));
 	$form->addElement('textarea', 'service_comment', _("Comments"), $attrsTextarea);
-	
+
 	#
 	## Sort 2 - Service Relations
 	#
@@ -431,18 +431,18 @@
 		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big);
+	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
-	$ams3 =& $form->addElement('advmultiselect', 'service_hgPars', array(_("Linked with Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'service_hgPars', array(_("Linked with Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
-	
+
 	# Service relations
 	$form->addElement('header', 'links', _("Relations"));
 	if ($o == "mc")	{
@@ -452,7 +452,7 @@
 		$form->addGroup($mc_mod_sgs, 'mc_mod_sgs', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_sgs'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'service_sgs', array(_("Parent Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'service_sgs', array(_("Parent Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -466,7 +466,7 @@
 		$form->addGroup($mc_mod_traps, 'mc_mod_traps', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_traps'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'service_traps', array(_("Service Trap Relation"), _("Available"), _("Selected")), $traps, $attrsAdvSelect_big);
+	$ams3 =& $form->addElement('advmultiselect', 'service_traps', array(_("Service Trap Relation"), _("Available"), _("Selected")), $traps, $attrsAdvSelect_big, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -474,7 +474,7 @@
 
 
 	# trap vendor
-	$mnftr = array(NULL=>NULL);	
+	$mnftr = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
 	while ($rmnftr = $DBRESULT->fetchRow())
 		$mnftr[$rmnftr["id"]] =  html_entity_decode($rmnftr["alias"], ENT_QUOTES);
@@ -483,7 +483,7 @@
 	$attrs2 = array('onchange'=>"javascript:getTrap(this.form.elements['mnftr'].value); return false;");
 	$form->addElement('select', 'mnftr', _("Vendor Name"), $mnftr, $attrs2);
 	include("./include/configuration/configObject/traps/ajaxTrap_js.php");
-	
+
 	#
 	## Sort 3 - Data treatment
 	#
@@ -573,7 +573,7 @@
 		$form->addGroup($mc_mod_sc, 'mc_mod_sc', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_sc'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'service_categories', array(_("Categories"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect_small);
+	$ams3 =& $form->addElement('advmultiselect', 'service_categories', array(_("Categories"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect_small, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -592,22 +592,22 @@
 		$form->addElement('header', 'title5', _("Massive Change"));
 
 	$form->addElement('header', 'macro', _("Macros"));
-	
+
 	$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
 	$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
 	$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
 	$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
-	
-	include_once("makeJS_formService.php");	
+
+	include_once("makeJS_formService.php");
 	if ($o == "c" || $o == "a" || $o == "mc")
-	{			
-		for($k=0; isset($od_macro_id[$k]); $k++) {?>				
+	{
+		for($k=0; isset($od_macro_id[$k]); $k++) {?>
 			<script type="text/javascript">
-			globalMacroTabId[<?php echo$k;?>] = <?php echo$od_macro_id[$k];?>;		
+			globalMacroTabId[<?php echo$k;?>] = <?php echo$od_macro_id[$k];?>;
 			globalMacroTabName[<?php echo$k;?>] = '<?php echo$od_macro_name[$k];?>';
 			globalMacroTabValue[<?php echo$k;?>] = '<?php echo$od_macro_value[$k];?>';
-			globalMacroTabSvcId[<?php echo$k;?>] = <?php echo$od_macro_svc_id[$k];?>;				
-			</script>			
+			globalMacroTabSvcId[<?php echo$k;?>] = <?php echo$od_macro_svc_id[$k];?>;
+			</script>
 	<?php
 		}
 	}
@@ -633,7 +633,7 @@
 		$select_pear =& $form->addElement('hidden', 'select');
 		$select_pear->setValue($select_str);
 	}
-	
+
 	#
 	## Form Rules
 	#
@@ -674,7 +674,7 @@
 		else
 			$from_list_menu = true;
 	}
-	
+
 	#
 	##End of form definition
 	#
@@ -714,22 +714,22 @@
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 	$tpl->assign("p", $p);
 	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
-	
+
 	# prepare help texts
 	$helptext = "";
 	include_once("help.php");
-	foreach ($help as $key => $text) { 
+	foreach ($help as $key => $text) {
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
-	
+
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
 		$serviceObj =& $form->getElement('service_id');
 		if ($form->getSubmitValue("submitA"))
 			$serviceObj->setValue(insertServiceInDB());
 		else if ($form->getSubmitValue("submitC"))
-			updateServiceInDB($serviceObj->getValue());	
+			updateServiceInDB($serviceObj->getValue());
 		else if ($form->getSubmitValue("submitMC"))	{
 			$select = explode(",", $select);
 			foreach ($select as $key=>$value)
@@ -763,7 +763,7 @@
 		$tpl->assign('is_not_template', $service_register);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
-		
+
 		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
 		$tpl->assign("Flapping_Options", _("Flapping options"));
 		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
@@ -771,13 +771,13 @@
 		$tpl->assign("Event_Handler", _("Event Handler"));
 		$tpl->assign("topdoc", _("Documentation"));
 		$tpl->assign("seconds", _("seconds"));
-		
-		$tpl->assign('v', $oreon->user->get_version());		
+
+		$tpl->assign('v', $oreon->user->get_version());
 		$tpl->display("formService.ihtml");
 	}
 	if (!$action["action"]["action"]){
 ?>
-<script type="text/javascript">		
+<script type="text/javascript">
 		displayExistingMacroSvc(<?php echo $k;?>, '<?php echo $o;?>');
 		showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
 		if (o != "mc") {

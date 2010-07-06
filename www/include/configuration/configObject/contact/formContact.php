@@ -3,41 +3,41 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
-	
+
 	if (!isset($oreon))
-		exit(); 
+		exit();
 
 	$cct = array();
 	if (($o == "c" || $o == "w") && $contact_id)	{
@@ -47,11 +47,11 @@
 		$cct["contact_hostNotifCmds"] = array();
 		$cct["contact_svNotifCmds"] = array();
 		$cct["contact_cgNotif"] = array();
-		
+
 		$DBRESULT =& $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$contact_id."' LIMIT 1");
 		$cct = array_map("myDecode", $DBRESULT->fetchRow());
 		$cct["contact_passwd"] = NULL;
-		
+
 		/*
 		 * Set Host Notification Options
 		 */
@@ -65,7 +65,7 @@
 		foreach ($tmp as $key => $value)
 			$cct["contact_svNotifOpts"][trim($value)] = 1;
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Contact Group Parents
 		 */
@@ -73,7 +73,7 @@
 		for($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 			$cct["contact_cgNotif"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Host Notification Commands
 		 */
@@ -81,7 +81,7 @@
 		for($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++)
 			$cct["contact_hostNotifCmds"][$i] = $notifCmd["command_command_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set Service Notification Commands
 		 */
@@ -89,7 +89,7 @@
 		for($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++)
 			$cct["contact_svNotifCmds"][$i] = $notifCmd["command_command_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Get DLAP auth informations
 		 */
@@ -98,18 +98,18 @@
 			$ldap_auth[$ldap_auths["key"]] = myDecode($ldap_auths["value"]);
 		$DBRESULT->free();
 	}
-	
+
 	/*
 	 * Get Langs
 	 */
 	$langs = array();
 	$langs = getLangs();
-	
+
 	/*
 	 * Timeperiods comes from DB -> Store in $notifsTps Array
 	 * When we make a massive change, give the possibility to not crush value
 	 */
-	
+
 	$notifTps = array(NULL => NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	while($notifTp =& $DBRESULT->fetchRow())
@@ -163,11 +163,11 @@
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('header', 'additional', _("Additional Information"));
 	$form->addElement('header', 'centreon', _("Centreon Authentication"));
-	
+
 	/*
 	 * No possibility to change name and alias, because there's no interest
 	 */
-	
+
 	/*
 	 * Don't change contact name and alias in massif change'
 	 */
@@ -175,10 +175,10 @@
 		$form->addElement('text', 'contact_name', _("Full Name"), $attrsText);
 		$form->addElement('text', 'contact_alias', _("Alias/Login"), $attrsText);
 	}
-	
+
 	$form->addElement('text', 'contact_email', _("Email"), $attrsText);
 	$form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
-	
+
 	$form->addElement('header', 'furtherAddress', _("Additional Addresses"));
 	$form->addElement('text', 'contact_address1', _("Address1"), $attrsText);
 	$form->addElement('text', 'contact_address2', _("Address2"), $attrsText);
@@ -189,7 +189,7 @@
 
 	/*
 	 * Contact Groups Field
-	 */	
+	 */
 	if ($o == "mc")	{
 		$mc_mod_cg = array();
 		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
@@ -197,7 +197,7 @@
 		$form->addGroup($mc_mod_cg, 'mc_mod_cg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cg'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'contact_cgNotif', array(_("Linked to Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'contact_cgNotif', array(_("Linked to Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -211,7 +211,7 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_oreon', null, _("Yes"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_oreon', null, _("No"), '0');
 	$form->addGroup($tab, 'contact_oreon', _("Reach Centreon Front-end"), '&nbsp;');
-	
+
 	$form->addElement('password', 'contact_passwd', _("Password"), array("size"=>"30", "autocomplete"=>"off"));
 	$form->addElement('password', 'contact_passwd2', _("Confirm Password"), array("size"=>"30", "autocomplete"=>"off"));
     $form->addElement('select', 'contact_lang', _("Default Language"), $langs);
@@ -220,21 +220,21 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("Yes"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
 	$form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
-	
+
 	/*
 	 * Include GMT Class
 	 */
 	require_once $centreon_path."www/class/centreonGMT.class.php";
-	
+
 	$CentreonGMT = new CentreonGMT($pearDB);
-	
+
 	$GMTList = $CentreonGMT->getGMTList();
 	$form->addElement('select', 'contact_location', _("Timezone / Location"), $GMTList);
 	$form->setDefaults(array('contact_location' => '0'));
 	if (!isset($cct["contact_location"]))
 		$cct["contact_location"] = 0;
 	unset($GMTList);
-	
+
    	$auth_type = array();
    	$auth_type["local"] = "Centreon";
 	if ($oreon->optGen['ldap_auth_enable'] == 1) {
@@ -243,7 +243,7 @@
 	}
 	$form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0'));
    	$form->addElement('select', 'contact_auth_type', _("Authentication Source"), $auth_type);
-	
+
 	/*
 	 * Notification informations
 	 */
@@ -262,7 +262,7 @@
 	$form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Host Notification Options"), '&nbsp;&nbsp;');
     $form->addElement('select', 'timeperiod_tp_id', _("Host Notification Period"), $notifTps);
 	unset($hostNotifOpt);
-	
+
 	if ($o == "mc")	{
 		$mc_mod_hcmds = array();
 		$mc_mod_hcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, _("Incremental"), '0');
@@ -270,8 +270,8 @@
 		$form->addGroup($mc_mod_hcmds, 'mc_mod_hcmds', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hcmds'=>'0'));
 	}
-	
-	$ams1 =& $form->addElement('advmultiselect', 'contact_hostNotifCmds', array(_("Host Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect);
+
+	$ams1 =& $form->addElement('advmultiselect', 'contact_hostNotifCmds', array(_("Host Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -297,7 +297,7 @@
 		$form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_svcmds'=>'0'));
 	}
-	$ams2 =& $form->addElement('advmultiselect', 'contact_svNotifCmds', array(_("Service Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'contact_svNotifCmds', array(_("Service Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
@@ -329,7 +329,7 @@
 		$select_pear =& $form->addElement('hidden', 'select');
 		$select_pear->setValue($select_str);
 	}
-	
+
 	/*
 	 * Form Rules
 	 */
@@ -381,11 +381,11 @@
 	# prepare help texts
 	$helptext = "";
 	include_once("help.php");
-	foreach ($help as $key => $text) { 
+	foreach ($help as $key => $text) {
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
-	
+
 	if ($o == "w")	{
 		# Just watch a contact information
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&contact_id=".$contact_id."'"));
@@ -397,7 +397,7 @@
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cct);
 	} else if ($o == "a")	{
-		# Add a contact information	
+		# Add a contact information
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	} else if ($o == "mc")	{
@@ -443,13 +443,13 @@
 ?>
 <script type="text/javascript">
 function uncheckAllH(object) {
-	if (object.id == "hNone" && object.checked) {		
+	if (object.id == "hNone" && object.checked) {
 		document.getElementById('hDown').checked = false;
 		document.getElementById('hUnreachable').checked = false;
 		document.getElementById('hRecovery').checked = false;
 		if (document.getElementById('hFlapping')) {
 			document.getElementById('hFlapping').checked = false;
-		}		
+		}
 		if (document.getElementById('hScheduled')) {
 			document.getElementById('hScheduled').checked = false;
 		}
@@ -468,7 +468,7 @@ function uncheckAllS(object) {
 			document.getElementById('sFlapping').checked = false;
 		}
 		if(document.getElementById('sScheduled')) {
-			document.getElementById('sScheduled').checked = false;		
+			document.getElementById('sScheduled').checked = false;
 		}
 	} else {
 		document.getElementById('sNone').checked = false;

@@ -3,53 +3,53 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
  	if (!isset($oreon))
  		exit();
-	
+
 	$ms = array();
 	if (($o == "c" || $o == "w") && $meta_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
 		# Set base value
 		$ms = array_map("myDecode", $DBRESULT->fetchRow());
-		
+
 		# Set Service Notification Options
 		$tmp = explode(',', $ms["notification_options"]);
 		foreach ($tmp as $key => $value)
 			$ms["ms_notifOpts"][trim($value)] = 1;
-		
+
 		/*
 		 * Set Contact Group
 		 */
@@ -58,13 +58,13 @@
 			$ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
 		$DBRESULT->free();
 	}
-	
+
 	/*
 	 * Perfparse Metric comes from DB -> Store in $metrics Array
 	 */
 	require_once("./class/centreonDB.class.php");
 	$pearDBO = new CentreonDB("centstorage");
-	
+
 	$metrics = array(NULL=>NULL);
 	$DBRESULT =& $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
 	while ($metric =& $DBRESULT->fetchRow())
@@ -78,7 +78,7 @@
 	while ($tp =& $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Check commands comes from DB -> Store in $checkCmds Array
 	 */
@@ -87,7 +87,7 @@
 	while($checkCmd =& $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Contact Groups comes from DB -> Store in $notifCcts Array
 	 */
@@ -96,7 +96,7 @@
 	while($notifCg =& $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Escalations comes from DB -> Store in $escs Array
 	 */
@@ -114,12 +114,12 @@
 	while($dep =& $DBRESULT->fetchRow())
 		$deps[$dep["meta_id"]] = $dep["meta_name"];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Calc Type
 	 */
 	$calType = array("AVE"=>_("Average"), "SOM"=>_("Sum"), "MIN"=>_("Min"), "MAX"=>_("Max"));
-	
+
 	/*
 	 * Graphs Template comes from DB -> Store in $graphTpls Array
 	 */
@@ -151,7 +151,7 @@
 
 	/*
 	 * Service basic information
-	 */	
+	 */
 	$form->addElement('header', 'information', _("General Information"));
 
 	$form->addElement('text', 'meta_name', _("Meta Service Name"), $attrsText);
@@ -189,7 +189,7 @@
 	$form->addGroup($tab, 'notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	$form->setDefaults(array('notifications_enabled' => '2'));
 
-	$ams3 =& $form->addElement('advmultiselect', 'ms_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'ms_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -203,7 +203,7 @@
 	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
 	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
 	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
-	
+
 	$form->addGroup($msNotifOpt, 'ms_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
 	/*
@@ -263,11 +263,11 @@
 	# prepare help texts
 	$helptext = "";
 	include_once("help.php");
-	foreach ($help as $key => $text) { 
+	foreach ($help as $key => $text) {
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
-	
+
 	if ($o == "w")	{
 		/*
 		 * Just watch a host information

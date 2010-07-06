@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
  	if (!isset($oreon))
  		exit();
 
@@ -46,7 +46,7 @@
 		global $form;
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["cg_name"]));
-	}	
+	}
 
 	/*
 	 * Database retrieve information for Contact
@@ -57,12 +57,12 @@
 		 * Get host Group information
 		 */
 		$DBRESULT =& $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
-		
+
 		/*
 		 * Set base value
-		 */	
+		 */
 		$cg = array_map("myDecode", $DBRESULT->fetchRow());
-		
+
 		/*
 		 * Set Contact Childs
 		 */
@@ -81,7 +81,7 @@
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
 	$DBRESULT->free();
-	
+
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"60");
@@ -104,18 +104,18 @@
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text', 'cg_name', _("Contact Group Name"), $attrsText);
 	$form->addElement('text', 'cg_alias', _("Alias"), $attrsText);
-	
+
 	/*
 	 * Contacts Selection
 	 */
 	$form->addElement('header', 'notification', _("Relations"));
-	
-	$ams1 =& $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect);
+
+	$ams1 =& $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
-	
+
 	/*
 	 * Further informations
 	 */
@@ -125,17 +125,17 @@
 	$form->addGroup($cgActivation, 'cg_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('cg_activate' => '1'));
 	$form->addElement('textarea', 'cg_comment', _("Comments"), $attrsTextarea);
-	
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');	
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
-	
+
 	$form->addElement('hidden', 'cg_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-	
+
 	/*
 	 * Set rules
 	 */
@@ -152,12 +152,12 @@
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 	# prepare help texts
 	$helptext = "";
 	include_once("help.php");
-	foreach ($help as $key => $text) { 
+	foreach ($help as $key => $text) {
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
@@ -183,33 +183,33 @@
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
-	
+
 	$valid = false;
 	if ($form->validate())	{
-		
+
 		$cgObj =& $form->getElement('cg_id');
-		
+
 		if ($form->getSubmitValue("submitA"))
 			$cgObj->setValue(insertContactGroupInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateContactGroupInDB($cgObj->getValue());
-		
+
 		$o = NULL;
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cgObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"]) { 
+	if ($valid && $action["action"]["action"]) {
 		require_once($path."listContactGroup.php");
 	} else {
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);	
-		$tpl->assign('form', $renderer->toArray());	
-		$tpl->assign('o', $o);		
-		
+		$form->accept($renderer);
+		$tpl->assign('form', $renderer->toArray());
+		$tpl->assign('o', $o);
+
 		$tpl->display("formContactGroup.ihtml");
 	}
 ?>

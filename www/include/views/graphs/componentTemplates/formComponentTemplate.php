@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 	if (!isset($oreon))
 		exit;
@@ -46,8 +46,8 @@
 		 */
 		$compo = array_map("myDecode", $res->fetchRow());
 	}
-	
- 
+
+
 	/*
 	 * Graphs comes from DB -> Store in $graphs Array
 	 */
@@ -98,14 +98,14 @@
 	$form->addElement('header', 'color', _("Colors"));
 	$form->addElement('header', 'legend', _("Legend"));
 	$form->addElement('text', 'name', _("Template Name"), $attrsText);
-	
+
 	for ($cpt = 1; $cpt <= 100; $cpt++)
 		$orders[$cpt] = $cpt;
-	
+
 	$form->addElement('select', 'ds_order', _("Order"), $orders);
 	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
 	$form->addElement('select', 'datasources', null, $datasources);
-	
+
 	$TabColorNameAndLang = array("ds_color_line"=>_("Line color"),"ds_color_area"=>_("Area color"));
 
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
@@ -114,15 +114,15 @@
 			isset($compo[$nameColor]) ?	$codeColor = $compo[$nameColor] : $codeColor = "#FFFFFF";
 		} else if ($nameColor == "ds_color_line")
 			isset($compo[$nameColor]) ?	$codeColor = $compo[$nameColor] : $codeColor = "#0000FF";
-		
+
 		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"9","maxlength"=>"7");
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
-		
+
 		$attrsText4 	= array("style"=>"width:50px; height:18px; background-color: ".$codeColor."; border-color:".$codeColor.";");
 		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
-		
+
 		if ($o == "c" || $o == "a")	{
 			$form->addElement('button', $nameColor.'_modify', _("Modify"), $attrsText5);
 		}
@@ -144,7 +144,7 @@
 	 * Components linked with
 	 */
 	$form->addElement('header', 'graphs', _("Graph Choice"));
-	$ams1 =& $form->addElement('advmultiselect', 'compo_graphs', array(_("Graph List"),_("Available"), _("Selected")), $graphs, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'compo_graphs', array(_("Graph List"),_("Available"), _("Selected")), $graphs, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -161,21 +161,21 @@
 	$redirect->setValue($o);
 
 	function testFilled() {
-		
+
 	}
 
 	/*
 	 * Form Rules
 	 */
 	$form->registerRule('exist', 'callback', 'testExistence');
-	
+
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('ds_name', _("Compulsory Name"), 'required');
 	$form->addRule('ds_name', _("Name is already in use"), 'exist');
 	$form->addRule('ds_name', _("Required Field"), 'required');
 	$form->addRule('ds_legend', _("Required Field"), 'required');
 	$form->addRule('ds_color_line', _("Required Field"), 'required');
-	
+
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	/*
@@ -223,7 +223,7 @@
 			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name+'&title='+title, 'cp', 'resizable=no, location=no, width='
 						+width+', height='+height+', menubar=no, status=yes, scrollbars=no, menubar=no');
 		}
-		function insertValueQuery(elem) 
+		function insertValueQuery(elem)
 		{
 		    var myQuery = document.Form.ds_name;
 		    if(elem == 1)	{
@@ -234,7 +234,7 @@
 	</script>
     "
     );
-	
+
 	$valid = false;
 	if ($form->validate())	{
 		$compoObj =& $form->getElement('compo_id');

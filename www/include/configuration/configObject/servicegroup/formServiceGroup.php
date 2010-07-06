@@ -3,58 +3,58 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset($oreon))
 		exit();
-		
+
 	#
 	## Database retrieve information for ServiceGroup
 	#
-	
+
 	$sg = array();
-	if (($o == "c" || $o == "w") && $sg_id)	{	
+	if (($o == "c" || $o == "w") && $sg_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
-		
+
 		# Set base value
 		$sg = array_map("myDecode", $DBRESULT->fetchRow());
-		
-		# Set ServiceGroup Childs		
+
+		# Set ServiceGroup Childs
 		$DBRESULT =& $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL ORDER BY service_service_id");
 		for ($i = 0; $host =& $DBRESULT->fetchRow(); $i++)
 			$sg["sg_hServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
-		
+
 		$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
 		for ($i = 0; $services =& $DBRESULT->fetchRow(); $i++)
 			$sg["sg_hgServices"][$i] = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
@@ -67,7 +67,7 @@
 	$hServices = array();
 	$hgServices = array();
 	$initName = NULL;
-	
+
 	$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' ORDER BY host_name");
 	while ($host =& $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($host["host_id"]);
@@ -87,14 +87,14 @@
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])
 			$elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
-		
+
 		$elem["service_description"] = str_replace("#S#", "/", $elem["service_description"]);
 		$elem["service_description"] = str_replace("#BS#", "\\", $elem["service_description"]);
-		
+
 		$hgServices[$elem["hg_id"] . '-'.$elem["service_id"]] = $elem["hg_name"]."&nbsp;&nbsp;&nbsp;&nbsp;".$elem["service_description"];
 	}
 	$DBRESULT->free();
-	
+
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -123,24 +123,24 @@
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text', 'sg_name', _("Service Group Name"), $attrsText);
 	$form->addElement('text', 'sg_alias', _("Description"), $attrsText);
-	
+
 	##
 	## Services Selection
 	##
 	$form->addElement('header', 'relation', _("Relations"));
-	$ams1 =& $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
-	
+
 	$form->addElement('header', 'relation', _("Relations"));
-	$ams1 =& $form->addElement('advmultiselect', 'sg_hgServices', array(_("Linked Host Group Services"), _("Available"), _("Selected")), $hgServices, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'sg_hgServices', array(_("Linked Host Group Services"), _("Available"), _("Selected")), $hgServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
-		
+
 	#
 	## Further informations
 	#
@@ -150,17 +150,17 @@
 	$form->addGroup($sgActivation, 'sg_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('sg_activate' => '1'));
 	$form->addElement('textarea', 'sg_comment', _("Comments"), $attrsTextarea);
-	
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');	
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
-	
+
 	$form->addElement('hidden', 'sg_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-	
+
 	#
 	## Form Rules
 	#
@@ -177,14 +177,14 @@
 	$form->addRule('sg_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
-	# 
+	#
 	##End of form definition
 	#
-	
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	# Just watch a Service Group information
 	if ($o == "w")	{
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sg_id."'"));
@@ -209,7 +209,7 @@
 	# prepare help texts
 	$helptext = "";
 	include_once("help.php");
-	foreach ($help as $key => $text) { 
+	foreach ($help as $key => $text) {
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
@@ -227,7 +227,7 @@
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	
+
 	if ($valid && $action["action"]["action"])
 		require_once($path."listServiceGroup.php");
 	else	{
@@ -235,9 +235,9 @@
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);	
-		$tpl->assign('form', $renderer->toArray());	
-		$tpl->assign('o', $o);		
+		$form->accept($renderer);
+		$tpl->assign('form', $renderer->toArray());
+		$tpl->assign('o', $o);
 		$tpl->display("formServiceGroup.ihtml");
 	}
 ?>

@@ -209,7 +209,7 @@
 	 */
 	$form->addElement('header', 'contacts_infos', _("People linked to this Access list"));
 
-	$ams1 = $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect);
+	$ams1 = $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -222,7 +222,7 @@
 	/*
 	 * Hosts
 	 */
-	$ams2 = $form->addElement('advmultiselect', 'acl_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect);
+	$ams2 = $form->addElement('advmultiselect', 'acl_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
@@ -231,13 +231,13 @@
 	/*
 	 * Host Groups
 	 */
-	$ams2 = $form->addElement('advmultiselect', 'acl_hostgroup', array(_("Host Groups"), _("Available"), _("Selected")), $hostgroups, $attrsAdvSelect);
+	$ams2 = $form->addElement('advmultiselect', 'acl_hostgroup', array(_("Host Groups"), _("Available"), _("Selected")), $hostgroups, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 
-	$ams2 = $form->addElement('advmultiselect', 'acl_hostexclude', array(_("Exclude hosts from selected host groups"), _("Available"), _("Selected")), $hosttoexcludes, $attrsAdvSelect);
+	$ams2 = $form->addElement('advmultiselect', 'acl_hostexclude', array(_("Exclude hosts from selected host groups"), _("Available"), _("Selected")), $hosttoexcludes, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
@@ -246,13 +246,13 @@
 	/*
 	 * Host Filters
 	 */
-	$ams2 = $form->addElement('advmultiselect', 'acl_sc', array(_("Service Categories Access"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect);
+	$ams2 = $form->addElement('advmultiselect', 'acl_sc', array(_("Service Categories Access"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 
-	$ams2 = $form->addElement('advmultiselect', 'acl_hc', array(_("Host Categories Access"), _("Available"), _("Selected")), $host_categories, $attrsAdvSelect);
+	$ams2 = $form->addElement('advmultiselect', 'acl_hc', array(_("Host Categories Access"), _("Available"), _("Selected")), $host_categories, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
@@ -263,7 +263,7 @@
 	 * Service Groups Add
 	 */
 	$form->addElement('header', 'SSharedExplain', "");
-	$ams2 = $form->addElement('advmultiselect', 'acl_sg', array(_("Service Groups"), _("Available"), _("Selected")), $service_groups, $attrsAdvSelect);
+	$ams2 = $form->addElement('advmultiselect', 'acl_sg', array(_("Service Groups"), _("Available"), _("Selected")), $service_groups, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
@@ -273,7 +273,7 @@
 	 * Meta Services
 	 */
 	$form->addElement('header', 'MSSharedExplain', "");
-	$ams2 = $form->addElement('advmultiselect', 'acl_meta', array(_("Meta Services"), _("Available"), _("Selected")), $meta_services, $attrsAdvSelect);
+	$ams2 = $form->addElement('advmultiselect', 'acl_meta', array(_("Meta Services"), _("Available"), _("Selected")), $meta_services, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);

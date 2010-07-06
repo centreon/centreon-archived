@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
-	
+
 	if (!isset($oreon))
 		exit();
 	/*
@@ -43,16 +43,16 @@
 	 */
 	if ($o == "c" || $o == "w")	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM acl_topology WHERE acl_topo_id = '".$acl_id."' LIMIT 1");
-		
+
 		# Set base value
 		$acl = array_map("myDecode", $DBRESULT->fetchRow());
-		
+
 		# Set Topology relations
 		$DBRESULT =& $pearDB->query("SELECT topology_topology_id FROM acl_topology_relations WHERE acl_topo_id = '".$acl_id."'");
 		for ($i = 0; $topo =& $DBRESULT->fetchRow(); $i++)
 			$acl["acl_topos"][$topo["topology_topology_id"]] = 1;
 		$DBRESULT->free();
-		
+
 		# Set Contact Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_topology_relations WHERE acl_topology_id = '".$acl_id."'");
 		for($i = 0; $groups =& $DBRESULT->fetchRow(); $i++)
@@ -61,7 +61,7 @@
 	}
 
 	$groups = array();
-	$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");	
+	$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
 	while ($group =& $DBRESULT->fetchRow())
 		$groups[$group["acl_group_id"]] = $group["acl_group_name"];
 	$DBRESULT->free();
@@ -72,7 +72,7 @@
 	/*
 	 * Var information to format the element
 	 */
-	
+
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
@@ -96,7 +96,7 @@
 	$form->addElement('text',	'acl_topo_name', _("ACL Definition"), $attrsText);
 	$form->addElement('text', 	'acl_topo_alias', _("Alias"), $attrsText);
 
-	$ams1 =& $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -113,11 +113,11 @@
 	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$form->addElement('textarea', 'lca_comment', _("Comments"), $attrsTextarea);
-	
+
 	/*
 	 * Create buffer group list for Foorth level.
 	 */
-	
+
 	$DBRESULT =& $pearDB->query("SELECT topology_group, topology_name, topology_parent FROM `topology` WHERE topology_page IS NULL ORDER BY topology_group, topology_page");
 	while ($group =& $DBRESULT->fetchRow()) {
 		if (!isset($groups[$group["topology_group"]]))
@@ -126,13 +126,13 @@
 	}
 	$DBRESULT->free();
 	unset($group);
-	
+
 	/*
 	 * Topology concerned
 	 */
 	$form->addElement('header', 'pages', _("Accessible Pages"));
 	$DBRESULT1 =& $pearDB->query("SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_show = '1' ORDER BY topology_order, topology_group");
-	
+
 	$acl_topos 	= array();
 	$acl_topos2 = array();
 	$a = 0;
@@ -155,19 +155,19 @@
 			$acl_topos2[$a]["childs"][$b]["checked"] = isset($acl["acl_topos"][$topo2["topology_id"]]) ? "true" : "false";
 			$acl_topos2[$a]["childs"][$b]["c_id"] = $a."_".$b;
 			$acl_topos2[$a]["childs"][$b]["childs"] = array();
-			
+
 		 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo2["topology_id"], NULL, _($topo2["topology_name"])."<br />", array("style"=>"margin-top: 5px; margin-left: 20px;"));
 			$c = 0;
 		 	$DBRESULT3 =& $pearDB->query("SELECT topology_id, topology_name, topology_parent, topology_page, topology_group FROM topology WHERE topology_parent = '".$topo2["topology_page"]."' AND topology_page IS NOT NULL ORDER BY topology_group, topology_order");
 			while ($topo3 =& $DBRESULT3->fetchRow()){
 				$acl_topos2[$a]["childs"][$b]["childs"][$c] = array();
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["name"] = _($topo3["topology_name"]);
-				
+
 				if (isset($groups[$topo3["topology_group"]]) && isset($groups[$topo3["topology_group"]][$topo3["topology_parent"]]))
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["group"] = $groups[$topo3["topology_group"]][$topo3["topology_parent"]];
 				else
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["group"] = _("Main Menu");
-					
+
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["id"] = $topo3["topology_id"];
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["checked"] = isset($acl["acl_topos"][$topo3["topology_id"]]) ? "true" : "false";
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["c_id"] = $a."_".$b."_".$c;
@@ -186,10 +186,10 @@
 
 					/*old*/
 				 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, _("Name"), array("style"=>"margin-top: 5px; margin-left: 55px;"));
-					/*old*/					
+					/*old*/
 					$d++;
 				}
-				$c++;		
+				$c++;
 			}
 			$b++;
 		}
@@ -206,14 +206,14 @@
 	*/
 	$form->addGroup($acl_topos, 'acl_topos', _("Visible page"), '&nbsp;&nbsp;');
 	$form->addElement('hidden', 'acl_topo_id');
-	
+
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
 	 * Form Rules
 	 */
-	 
+
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('acl_topo_name', _("Required"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
@@ -223,7 +223,7 @@
 
 	/*
 	 * Smarty template Init
-	 */ 
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 

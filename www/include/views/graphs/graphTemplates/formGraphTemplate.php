@@ -3,41 +3,41 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 	if (!isset($oreon))
 		exit();
-		
+
 	$graph = array();
 	if (($o == "c" || $o == "w") && $graph_id)	{
 		$res =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$graph_id."' LIMIT 1");
@@ -50,20 +50,20 @@
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Components comes from DB -> Store in $compos Array
-	
+
 	$compos = array();
 	$res =& $pearDB->query("SELECT compo_id, name FROM giv_components_template ORDER BY name");
 	while ($compo =& $res->fetchRow())
 		$compos[$compo["compo_id"]] = $compo["name"];
 	$res->free();
-	
+
 	#
 	# End of "database-retrieved" information
 	##########################################################
 	##########################################################
 	# Var information to format the element
 	#
-	
+
 	$attrsText 	= array("size"=>"30");
 	$attrsText2 	= array("size"=>"6");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
@@ -96,13 +96,13 @@
 	$form->addElement('text', 'upper_limit', _("Upper Limit"), $attrsText2);
 	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
 	$form->addElement('select', 'base', _("Base"), array("1000"=>"1000", "1024"=>"1024"));
-	
+
 	$periods = array(	"10800"=>_("Last 3 Hours"),
 						"21600"=>_("Last 6 Hours"),
 						"43200"=>_("Last 12 Hours"),
 						"86400"=>_("Last 24 Hours"),
 						"172800"=>_("Last 2 Days"),
-						"302400"=>_("Last 4 Days"),	
+						"302400"=>_("Last 4 Days"),
 						"604800"=>_("Last 7 Days"),
 						"1209600"=>_("Last 14 Days"),
 						"2419200"=>_("Last 28 Days"),
@@ -111,8 +111,8 @@
 						"5184000"=>_("Last 2 Months"),
 						"10368000"=>_("Last 4 Months"),
 						"15552000"=>_("Last 6 Months"),
-						"31104000"=>_("Last Year"));	
-	
+						"31104000"=>_("Last Year"));
+
 	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods);
 	$steps = array(	"0"=>_("No Step"),
 					"2"=>"2",
@@ -120,8 +120,8 @@
 					"10"=>"10",
 					"20"=>"20",
 					"50"=>"50",
-					"100"=>"100");					
-	
+					"100"=>"100");
+
 	$sel =& $form->addElement('select', 'step', _("Recovery Step"), $steps);
 
 	$TabColorNameAndLang 	= array(	"bg_grid_color"=>_("Grid background color"),
@@ -142,7 +142,7 @@
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"8","maxlength"=>"7");
 		$attrsText4 	= array("style"=>"width:50px; height:18px; background-color:".$codeColor."; border-color:".$codeColor.";");
 		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
-		
+
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
 		if ($o == "c" || $o == "a")	{
@@ -150,18 +150,18 @@
 		}
 	}
 
-	
+
 	$form->addElement('checkbox', 'stacked', _("Stacking"));
 	$form->addElement('checkbox', 'split_component', _("Split Components"));
-	$form->addElement('checkbox', 'scaled', _("Scale Graph Values")); 
+	$form->addElement('checkbox', 'scaled', _("Scale Graph Values"));
 	$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 	$form->addElement('checkbox', 'default_tpl1', _("Default Centreon Graph Template"));
-	
+
 	/*
 	 * Components linked with
 	 */
 	$form->addElement('header', 'compos', _("Data Source Choice"));
-	$ams1 =& $form->addElement('advmultiselect', 'graph_compos', array(_("Data Source List"),_("Available"), _("Selected")), $compos, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'graph_compos', array(_("Data Source List"),_("Available"), _("Selected")), $compos, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -179,7 +179,7 @@
 
 	/*
 	 * Form Rules
-	 */	
+	 */
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('name', _("Compulsory Name"), 'required');
 	$form->addRule('vertical_label', _("Required Field"), 'required');
@@ -232,7 +232,7 @@
 	</script>
     "
     );
-    
+
 	/*
 	 * End of Picker Color
 	 */
@@ -249,7 +249,7 @@
 		$form->freeze();
 		$valid = true;
 	}
-	
+
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once("listGraphTemplates.php");

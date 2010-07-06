@@ -151,13 +151,13 @@
 	 * Hosts Selection
 	 */
 	$form->addElement('header', 'relation', _("Relations"));
-    $ams1 =& $form->addElement('advmultiselect', 'hc_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect);
+    $ams1 =& $form->addElement('advmultiselect', 'hc_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'hc_hostsTemplate', array(_("Linked Host Template"), _("Available"), _("Selected")) , $hostTpl, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'hc_hostsTemplate', array(_("Linked Host Template"), _("Available"), _("Selected")) , $hostTpl, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);

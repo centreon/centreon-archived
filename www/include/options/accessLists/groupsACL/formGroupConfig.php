@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 	
+
  	if (!isset($centreon))
  		exit();
 
@@ -43,13 +43,13 @@
 	 * Retreive information
 	 */
 	$group = array();
-	if (($o == "c" || $o == "w") && $acl_group_id) {	
+	if (($o == "c" || $o == "w") && $acl_group_id) {
 		$DBRESULT =& $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '".$acl_group_id."' LIMIT 1");
 		/*
 		 * Set base value
 		 */
 		$group = array_map("myDecode", $DBRESULT->fetchRow());
-		
+
 		/*
 		 * Set Contact Childs
 		 */
@@ -73,7 +73,7 @@
 		for ($i = 0; $data =& $DBRESULT->fetchRow(); $i++)
 			$group["menuAccess"][$i] = $data["acl_topology_id"];
 		$DBRESULT->free();
-		
+
 		/*
 		 * Set resources List
 		 */
@@ -91,7 +91,7 @@
 		$DBRESULT->free();
 
 	}
-	
+
 	/*
 	 * Database retrieve information for differents elements list we need on the page
 	 */
@@ -134,7 +134,7 @@
 		$resources[$res["acl_res_id"]] = $res["acl_res_name"];
 	unset($res);
 	$DBRESULT->free();
-		
+
 	##########################################################
 	# Var information to format the element
 	#
@@ -157,7 +157,7 @@
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text', 'acl_group_name', _("Group Name"), $attrsText);
 	$form->addElement('text', 'acl_group_alias', _("Alias"), $attrsText);
-	
+
 	/*
 	 * Contacts Selection
 	 */
@@ -165,37 +165,37 @@
 	$form->addElement('header', 'menu', _("Menu access list link"));
 	$form->addElement('header', 'resource', _("Resources access list link"));
 	$form->addElement('header', 'actions', _("Action access list link"));
-	
-	$ams1 =& $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect);
+
+	$ams1 =& $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'cg_contactGroups', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $contactGroups, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'cg_contactGroups', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $contactGroups, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'menuAccess', array(_("Menu access"), _("Available"), _("Selected")), $menus, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'menuAccess', array(_("Menu access"), _("Available"), _("Selected")), $menus, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'actionAccess', array(_("Actions access"), _("Available"), _("Selected")), $action, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'actionAccess', array(_("Actions access"), _("Available"), _("Selected")), $action, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'resourceAccess', array(_("Resources access"), _("Available"), _("Selected")), $resources, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'resourceAccess', array(_("Resources access"), _("Available"), _("Selected")), $resources, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
-	
+
 	/*
 	 * Further informations
 	 */
@@ -208,9 +208,9 @@
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');	
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
-	
+
 	$form->addElement('hidden', 'acl_group_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -237,13 +237,13 @@
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	/*
 	 * Define tab title
 	 */
 	$tpl->assign("sort1", "Group Information");
 	$tpl->assign("sort2", "Authorizations information");
-	
+
 	/*
 	 * Just watch a Contact Group information
 	 */
@@ -265,7 +265,7 @@
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
-	
+
 	$valid = false;
 	if ($form->validate())	{
 		$groupObj =& $form->getElement('acl_group_id');
@@ -288,9 +288,9 @@
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);	
-		$tpl->assign('form', $renderer->toArray());	
-		$tpl->assign('o', $o);		
+		$form->accept($renderer);
+		$tpl->assign('form', $renderer->toArray());
+		$tpl->assign('o', $o);
 		$tpl->display("formGroupConfig.ihtml");
 	}
 ?>

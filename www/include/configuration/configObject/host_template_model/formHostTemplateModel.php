@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	#
 	## Database retrieve information for Host
 	#
@@ -84,7 +84,7 @@
 				$tpReg = $DBRESULT2->fetchRow();
 				if ($tpReg['service_register'] == 0)
 					$host["host_svTpls"][$i] = $svTpl["service_service_id"];
-				
+
 			}
 			$DBRESULT->free();
 		}
@@ -92,18 +92,18 @@
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
-	
+
 	/*
 	 * Get all Templates who use himself
 	 */
 	$host_tmplt_who_use_me = array();
-	if (isset($_GET["host_id"]) && $_GET["host_id"]){ 
+	if (isset($_GET["host_id"]) && $_GET["host_id"]){
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_template_model_htm_id = '".$_GET["host_id"]."'");
 		while($host_tmpl_father =& $DBRESULT->fetchRow())
 			$host_tmplt_who_use_me[$host_tmpl_father["host_id"]] = $host_tmpl_father["host_name"];
 		$DBRESULT->free();
-	}	
-	
+	}
+
 	/*
 	 * Host Templates comes from DB -> Store in $hTpls Array
 	 */
@@ -124,7 +124,7 @@
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
 		else	{
 			$svTpl["service_description"] = str_replace('#S#', "/", $svTpl["service_description"]);
-			$svTpl["service_description"] = str_replace('#BS#', "\\", $svTpl["service_description"]);			
+			$svTpl["service_description"] = str_replace('#BS#', "\\", $svTpl["service_description"]);
 		}
 		$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
 	}
@@ -160,10 +160,10 @@
 		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
 	$DBRESULT->free();
 
-		
+
 	/*
 	 *  Host multiple templates relations stored in DB
-	 */	
+	 */
 	$mTp = array();
 	$k = 0;
 	$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
@@ -172,30 +172,30 @@
 		$k++;
 	}
 	$DBRESULT->free();
-	
+
 	/*
 	 *  Host on demand macro stored in DB
 	 */
-	$j = 0;		
+	$j = 0;
 	$DBRESULT =& $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
 	while ($od_macro = $DBRESULT->fetchRow()){
 		$od_macro_id[$j] = $od_macro["host_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
 		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
 		$od_macro_name[$j] = str_replace("#BS#", "\\", $od_macro_name[$j]);
-		$od_macro_name[$j] = str_replace("#S#", "/", $od_macro_name[$j]);		
+		$od_macro_name[$j] = str_replace("#S#", "/", $od_macro_name[$j]);
 		$od_macro_value[$j] = str_replace("#BS#", "\\", $od_macro["host_macro_value"]);
 		$od_macro_value[$j] = str_replace("#S#", "/", $od_macro_value[$j]);
 		$od_macro_host_id[$j] = $od_macro["host_host_id"];
-		$j++;		
+		$j++;
 	}
 	$DBRESULT->free();
-			
+
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
 	$extImg = return_image_list(1);
 	$extImgStatusmap = array();
-	$extImgStatusmap = return_image_list(2);	
+	$extImgStatusmap = return_image_list(2);
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -243,22 +243,22 @@
 	<?php
 	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance")."<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70)\" onmouseout=\"UnTip()\">"._("Here is a self explanatory image.")."</a>");
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
-	
+
 	include_once("include/configuration/configObject/host/makeJS_formHost.php");
 	if ($o == "c" || $o == "a" || $o == "mc")
 	{
 		for ($k = 0; isset($mTp[$k]) && $mTp[$k] ; $k++) {?>
 			<script type="text/javascript">
-			tab[<?php echo $k; ?>] = <?php echo $mTp[$k]; ?>;		
-			</script> 
+			tab[<?php echo $k; ?>] = <?php echo $mTp[$k]; ?>;
+			</script>
 		<?php }
 		for($k=0; isset($od_macro_id[$k]); $k++) {?>
 			<script type="text/javascript">
-			globalMacroTabId[<?php echo $k; ?>] = <?php echo $od_macro_id[$k]; ?>;		
+			globalMacroTabId[<?php echo $k; ?>] = <?php echo $od_macro_id[$k]; ?>;
 			globalMacroTabName[<?php echo $k; ?>] = '<?php echo $od_macro_name[$k]; ?>';
 			globalMacroTabValue[<?php echo $k; ?>] = '<?php echo $od_macro_value[$k]; ?>';
 			globalMacroTabHostId[<?php echo $k; ?>] = <?php echo $od_macro_host_id[$k]; ?>;
-			</script>				
+			</script>
 		<?php
 		}
 	}
@@ -282,7 +282,7 @@
 	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 
 	# Nagios 2
-	
+
 	$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
 	$form->addElement('text', 'host_retry_check_interval', _("Retry Check Interval"), $attrsText2);
 
@@ -312,7 +312,7 @@
 	$form->addGroup($hostNE, 'host_notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('host_notifications_enabled' => '2'));
-	
+
 	$form->addElement('text', 'host_first_notification_delay', _("First notification delay"), $attrsText2);
 
 	if ($o == "mc")	{
@@ -322,21 +322,21 @@
 		$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hcg'=>'0'));
 	}
-	
+
 	/*
 	 *  Contacts
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
-	
-	
+
+
 	/*
 	 *  Contact groups
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -360,13 +360,13 @@
 	#
 	## Further informations
 	#
-	$form->addElement('header', 'furtherInfos', _("Additional Information"));	
+	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$hostActivation[] = &HTML_QuickForm::createElement('radio', 'host_activate', null, _("Enabled"), '1');
 	$hostActivation[] = &HTML_QuickForm::createElement('radio', 'host_activate', null, _("Disabled"), '0');
 	$form->addGroup($hostActivation, 'host_activate', _("Status"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('host_activate' => '1'));
-	
+
 	$form->addElement('textarea', 'host_comment', _("Comments"), $attrsTextarea);
 
 	#
@@ -389,7 +389,7 @@
 		$form->addGroup($mc_mod_htpl, 'mc_mod_htpl', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_htpl'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'host_svTpls', array(_("Linked Service Templates"), _("Available"), _("Selected")), $svTpls, $attrsAdvSelect2);
+	$ams3 =& $form->addElement('advmultiselect', 'host_svTpls', array(_("Linked Service Templates"), _("Available"), _("Selected")), $svTpls, $attrsAdvSelect2, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -408,7 +408,7 @@
 		$form->addElement('header', 'title2', _("Massive Change"));
 
 	$form->addElement('header', 'treatment', _("Data Processing"));
-	
+
 	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Yes"), '1');
 	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("No"), '0');
 	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Default"), '2');
@@ -429,7 +429,7 @@
 	$form->addGroup($hostFDE, 'host_flap_detection_enabled', _("Flap Detection Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('host_flap_detection_enabled' => '2'));
-	
+
 	$form->addElement('text', 'host_freshness_threshold', _("Freshness Threshold"), $attrsText2);
 	$form->addElement('text', 'host_low_flap_threshold', _("Low Flap threshold"), $attrsText2);
 	$form->addElement('text', 'host_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
@@ -454,7 +454,7 @@
 	$form->addGroup($hostRNI, 'host_retain_nonstatus_information', _("Retain Non Status Information"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('host_retain_nonstatus_information' => '2'));
-	
+
 	#
 	## Sort 4 - Extended Infos
 	#
@@ -481,7 +481,7 @@
 	#
 	## Sort 5 - Macros - NAGIOS 3
 	#
-	
+
 	if ($o == "a")
 		$form->addElement('header', 'title5', _("Add macros"));
 	else if ($o == "c")
@@ -495,7 +495,7 @@
 	$form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
 	$form->addElement('text', 'macroName', _("Macro name"), $attrsText2);
 	$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
-	$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);		
+	$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
@@ -539,7 +539,7 @@
 		else
 			$from_list_menu = true;
 	}
-	
+
 	#
 	##End of form definition
 	#
@@ -571,7 +571,7 @@
 		$subMC =& $form->addElement('submit', 'submitMC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
-	
+
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1, "min"=>$min));
 	$tpl->assign('min', $min);
 	$tpl->assign('p', $p);
@@ -591,11 +591,11 @@
 	# prepare help texts
 	$helptext = "";
 	include_once("include/configuration/configObject/host/help.php");
-	foreach ($help as $key => $text) { 
+	foreach ($help as $key => $text) {
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
-	
+
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
 
 	$valid = false;
@@ -627,7 +627,7 @@
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
-		
+
 		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
 		$tpl->assign("Flapping_Options", _("Flapping options"));
 		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
@@ -636,7 +636,7 @@
 		$tpl->assign("add_mtp_label", _("Add a template"));
 		$tpl->assign("seconds", _("seconds"));
 		$tpl->assign("tpl", 1);
-		
+
 		$tpl->display("formHost.ihtml");
 	}
 if (!$action["action"]["action"]) {

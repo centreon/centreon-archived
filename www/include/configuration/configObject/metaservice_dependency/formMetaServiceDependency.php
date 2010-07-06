@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	#
@@ -101,7 +101,7 @@
 	$form->addElement('header', 'information', _("Information"));
 	$form->addElement('text', 'dep_name', _("Name"), $attrsText);
 	$form->addElement('text', 'dep_description', _("Description"), $attrsText);
-	
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
@@ -115,7 +115,7 @@
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"), array('id' => 'sPending', 'onClick' => 'uncheckAllS(this);'));
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
 	$form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
-	
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok"), array('id' => 'sOk2', 'onClick' => 'uncheckAllS2(this);'));
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"), array('id' => 'sWarning2', 'onClick' => 'uncheckAllS2(this);'));
@@ -125,13 +125,13 @@
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone2', 'onClick' => 'uncheckAllS2(this);'));
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_msParents', array(_("Meta Service Names"), _("Available"), _("Selected")), $metas, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'dep_msParents', array(_("Meta Service Names"), _("Available"), _("Selected")), $metas, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_msChilds', array(_("Dependent Meta Service Names"), _("Available"), _("Selected")), $metas, $attrsAdvSelect);
+	$ams1 =& $form->addElement('advmultiselect', 'dep_msChilds', array(_("Dependent Meta Service Names"), _("Available"), _("Selected")), $metas, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -193,7 +193,7 @@
 	# prepare help texts
 	$helptext = "";
 	include_once("include/configuration/configObject/service_dependency/help.php");
-	foreach ($help as $key => $text) { 
+	foreach ($help as $key => $text) {
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
@@ -225,25 +225,25 @@
 	}
 ?>
 <script type="text/javascript">
-function uncheckAllS(object) {	
+function uncheckAllS(object) {
 	if (object.id == "sNone" && object.checked) {
-		document.getElementById('sOk').checked = false;	
+		document.getElementById('sOk').checked = false;
 		document.getElementById('sWarning').checked = false;
 		document.getElementById('sUnknown').checked = false;
 		document.getElementById('sCritical').checked = false;
-		document.getElementById('sRecovery').checked = false;		
+		document.getElementById('sRecovery').checked = false;
 	}
 	else {
 		document.getElementById('sNone').checked = false;
 	}
 }
-function uncheckAllS2(object) {	
+function uncheckAllS2(object) {
 	if (object.id == "sNone2" && object.checked) {
-		document.getElementById('sOk2').checked = false;	
+		document.getElementById('sOk2').checked = false;
 		document.getElementById('sWarning2').checked = false;
 		document.getElementById('sUnknown2').checked = false;
 		document.getElementById('sCritical2').checked = false;
-		document.getElementById('sRecovery2').checked = false;		
+		document.getElementById('sRecovery2').checked = false;
 	}
 	else {
 		document.getElementById('sNone2').checked = false;
