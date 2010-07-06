@@ -12,7 +12,7 @@ $help["use"] = dgettext("help", "This is where you specify the name of the templ
 $help["is_volatile"] = dgettext("help", "This directive is used to denote whether the service is \"volatile\". A volatile service resets its state to OK with every query. Services are normally not volatile.");
 $help["check_period"] = dgettext("help", "Specify the time period during which active checks of this service can be made.");
 $help["check_command"] = dgettext("help", "Specify the command that Nagios will run in order to check the status of the service.");
-$help["check_command_args"] = dgettext("help", "Specify the parameters for the selected check command here. The format is: !ARG1!ARG2!...ARGn");
+$help["check_command_args"] = dgettext("help", "Specify the parameters for the selected check command here.");
 
 $help["max_check_attempts"] = dgettext("help", "Define the number of times that Nagios will retry the service check command if it returns any state other than an OK state. Setting this value to 1 will cause Nagios to generate an alert without retrying the service check again.");
 $help["check_interval"] = dgettext("help", "Define the number of \"time units\" between regularly scheduled checks of the service. With the default time unit of 60s, this number will mean multiples of 1 minute. \"Regular\" checks are those that occur when the service is in an OK state or when the service is in a non-OK state, but has already been rechecked max_check_attempts number of times.");
