@@ -4,12 +4,12 @@
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.infos}</td></tr>	 	
-		<tr class="list_one"><td class="FormRowField">{$form.host.label}</td><td class="FormRowValue">{$form.host.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host">&nbsp;{$form.host.label}</td><td class="FormRowValue">{$form.host.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/breakpoint_run.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>	 	
-		<tr class="list_two"><td class="FormRowField">{$form.gen.html}&nbsp;{$form.gen.label}</td><td>{$form.comment.html}&nbsp;{$form.comment.label}</td></tr>
-		<tr class="list_one"><td class="FormRowField" colspan="2">{$form.debug.html}&nbsp;{$form.debug.label}</td></tr>
-		<tr class="list_two"><td class="FormRowField" colspan="2">{$form.move.html}&nbsp;{$form.move.label}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.restart.html}&nbsp;{$form.restart.label}</td><td class="FormRowValue">{$form.restart_mode.label}&nbsp;{$form.restart_mode.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="gen">&nbsp;{$form.gen.html}&nbsp;{$form.gen.label}</td><td>{$form.comment.html}&nbsp;{$form.comment.label}</td></tr>
+		<tr class="list_one"><td class="FormRowField" colspan="2"><img class="helpTooltip" name="debug">&nbsp;{$form.debug.html}&nbsp;{$form.debug.label}</td></tr>
+		<tr class="list_two"><td class="FormRowField" colspan="2"><img class="helpTooltip" name="move">&nbsp;{$form.move.html}&nbsp;{$form.move.label}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="restart">&nbsp;{$form.restart.html}&nbsp;{$form.restart.label}</td><td class="FormRowValue">{$form.restart_mode.label}&nbsp;{$form.restart_mode.html}</td></tr>
 	</table>
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
 	<br /><br /><br /><br />
@@ -55,3 +55,4 @@
 	{/if}
 	{$form.hidden}
 </form>
+{$helptext}

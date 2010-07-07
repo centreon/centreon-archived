@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset($oreon))
 		exit();
 
@@ -64,20 +64,20 @@
 	 */
 	if ($n > 1)
 		$tab_nagios_server = array(-1 => "");
-	
+
 	/*
 	 * Display all servers list
 	 */
 	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++)
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 	$DBRESULT->free();
-	
+
 	/*
 	 * Display all server options
 	 */
 	if ($n > 1)
 		$tab_nagios_server[0] = _("All Nagios Servers");
-	
+
 	/*
 	 * Form begin
 	 */
@@ -87,20 +87,20 @@
 	$form->addElement('header', 'title', 	_("Nagios Configuration Files Export"));
 	$form->addElement('header', 'infos', 	_("Implied Server"));
 	$form->addElement('header', 'opt', 		_("Export Options"));
-	$form->addElement('header', 'result', 	_("Actions"));	
-    
+	$form->addElement('header', 'result', 	_("Actions"));
+
     $form->addElement('select', 'host', 	_("Nagios Server"), $tab_nagios_server, $attrSelect);
-	
+
 	$form->addElement('checkbox', 'comment', _("Include Comments"));
 
 	$form->addElement('checkbox', 'debug', _("Run Nagios debug (-v)"));
-	$form->setDefaults(array('debug' => '1'));	
-	
+	$form->setDefaults(array('debug' => '1'));
+
 	$form->addElement('checkbox', 'gen', _("Generate Configuration Files"));
-	$form->setDefaults(array('gen' => '1'));	
+	$form->setDefaults(array('gen' => '1'));
 	$form->addElement('checkbox', 'move', _("Move Export Files"));
 	$form->addElement('checkbox', 'restart', _("Restart Nagios"));
-	
+
 	$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
 	$form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, $attrSelect);
 	$form->setDefaults(array('restart_mode' => '2'));
@@ -119,22 +119,22 @@
 	$stdout = NULL;
 	if ($form->validate()) {
 		$ret = $form->getSubmitValues();
-		
+
 		if (!isset($ret["comment"]))
 			$ret["comment"] = 0;
-		
+
 		$host_list = array();
 		foreach ($tab_nagios_server as $key => $value) {
 			if ($key && ($res["host"] == 0 || $res["host"] == $key))
 				$host_list[$key] = $value;
 		}
-				
+
 		if (isset($ret["gen"]) && $ret["gen"] && ($ret["host"] == 0 || $ret["host"])) {
 			/*
 			 * Check dependancies
 			 */
 			$gbArr = manageDependencies();
-			
+
 			/*
 			 * Request id and host type.
 			 */
@@ -163,7 +163,7 @@
 					require $path."genEscalations.php";
 					require $path."genDependencies.php";
 					require $path."centreon_pm.php";
-					
+
 					if ($tab['localhost']) {
 						$flag_localhost = $tab['localhost'];
 						/*
@@ -172,7 +172,7 @@
 						if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
 							foreach ($files as $filename)
 								require_once($filename);
-						
+
 						/*
 						 * Module Generation
 						 */
@@ -185,14 +185,14 @@
 					unset($generatedHG);
 					unset($generatedSG);
 					unset($generatedS);
-				}		
+				}
 			}
-		}			
+		}
 
 		/*
 		 * Create Server List to restart
 		 */
-		 
+
 		$tab_server = array();
 		$DBRESULT_Servers =& $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
 		while ($tab =& $DBRESULT_Servers->fetchRow()) {
@@ -200,10 +200,10 @@
 				$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
 			}
 		}
-		
+
 		/*
 		 * If debug needed
-		 */		
+		 */
 		if (isset($ret["debug"]) && $ret["debug"])	{
 			$DBRESULT_Servers =& $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '1' LIMIT 1");
 			$nagios_bin = $DBRESULT_Servers->fetchRow();
@@ -218,26 +218,26 @@
 				$msg_debug[$host['id']] = str_replace ("Total Warnings: 0", "<font color='green'>Total Warnings: 0</font>", $msg_debug[$host['id']]);
 				$msg_debug[$host['id']] = str_replace ("Total Errors: 0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);
 				$msg_debug[$host['id']] = str_replace ("<br />License:", " - License:", $msg_debug[$host['id']]);
-				
+
 				$lines = split("<br />", $msg_debug[$host['id']]);
 				$msg_debug[$host['id']] = "";
 				$i = 0;
 				foreach ($lines as $line) {
-					if (strncmp($line, "Processing object config file", strlen("Processing object config file")) && $i 
+					if (strncmp($line, "Processing object config file", strlen("Processing object config file")) && $i
 						&& strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org")))
 						$msg_debug[$host['id']] .= $line . "<br>";
 					$i++;
 				}
-						
+
 			}
 		}
-		
+
 
 		/*
 		 * Move Configuration Files and Images
 		 */
 		if (isset($ret["move"]) && $ret["move"]) {
-			
+
 			/*
 			 * Copying image in logos directory
 			 */
@@ -276,7 +276,7 @@
 				}
 			}
 		}
-		
+
 		/*
 		 * Restart Nagios Poller
 		 */
@@ -284,7 +284,7 @@
 			$stdout = "";
 			if (!isset($msg_restart))
 				$msg_restart = array();
-			
+
 			/*
 			 * Get Init Script
 			 */
@@ -293,12 +293,12 @@
 			unset($DBRESULT);
 			(isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
 			unset($serveurs);
-							
+
 			foreach ($tab_server as $host) {
 				if ($ret["restart_mode"] == 1) {
 					if (isset($host['localhost']) && $host['localhost'] == 1) {
 						$msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " reload");
-					} else { 
+					} else {
 						system("echo 'RELOAD:".$host["id"]."' >> $centcore_pipe");
 						if (!isset($msg_restart[$host["id"]]))
 							$msg_restart[$host["id"]] = "";
@@ -325,7 +325,7 @@
 				}
 				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
 			}
-			
+
 			foreach ($msg_restart as $key => $str) {
 				$msg_restart[$key] = str_replace("\n", "<br>", $str);
 			}
@@ -345,11 +345,20 @@
 		$tpl->assign('tab_server', $tab_server);
 	if (isset($host_list) && $host_list)
 		$tpl->assign('host_list', $host_list);
-	
+
+	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+	# prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+
 	/*
 	 * Apply a template definition
 	 */
-	
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -358,3 +367,8 @@
 	$tpl->assign('o', $o);
 	$tpl->display("formGenerateFiles.ihtml");
 ?>
+
+<script type='text/javascript'>
+var tooltip = new CentreonToolTip();
+tooltip.render();
+</script>
