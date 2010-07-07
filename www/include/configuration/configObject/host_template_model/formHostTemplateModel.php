@@ -528,8 +528,10 @@
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('host_name', 'myReplace');
-	$form->registerRule('exist', 'callback', 'testHostTplExistence');
-	$form->addRule('host_name', _("Name is already in use"), 'exist');
+	$form->registerRule('existTemplate', 'callback', 'testHostTplExistence');
+	$form->registerRule('exist', 'callback', 'testHostExistence');
+	$form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
+	$form->addRule('host_name', _("Host name is already in use"), 'exist');
 	$form->addRule('host_name', _("Compulsory Name"), 'required');
 	$form->addRule('host_alias', _("Compulsory Alias"), 'required');
 	$from_list_menu = false;

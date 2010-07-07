@@ -668,8 +668,10 @@
 		 */
 		$form->registerRule('testModule', 'callback', 'testHostName');
 		$form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
-		$form->registerRule('exist', 'callback', 'testHostExistence');
-		$form->addRule('host_name', _("Name is already in use"), 'exist');
+		$form->registerRule('existTemplate', 'callback', 'testHostTplExistence');
+	    $form->registerRule('exist', 'callback', 'testHostExistence');
+	    $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
+	    $form->addRule('host_name', _("Host name is already in use"), 'exist');
 
 		/*
 		 * If we are using a Template, no need to check the value, we hope there are in the Template
