@@ -268,7 +268,7 @@ class CentreonDB
 	 * @param	char	$grant	User Name
 	 * @return	int		result flag
      */
-	protected function hasGrants($grant = "")
+	public function hasGrants($grant = "")
 	{
 		if ($grant == "") {
 			return 0;
