@@ -116,6 +116,9 @@
 	}
 	
 	$form->applyFilter('__ALL__', 'myTrim');
+	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
+	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
+	
 	$form->addRule('rrdtool_path_bin', _("Can't execute binary"), 'is_executable_binary');
 	$form->addRule('oreon_rrdbase_path', _("Can't write in directory"), 'is_writable_path');
 
@@ -131,7 +134,7 @@
 	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
 
 
-    $valid = false;
+	$valid = false;
 	if ($form->validate())	{
 		/*
 		 * Update in DB
