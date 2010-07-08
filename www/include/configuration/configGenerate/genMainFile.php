@@ -3,47 +3,47 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/configuration/configGenerate/genTimeperiods.php $
  * SVN : $Id: genTimeperiods.php 9954 2010-02-15 15:30:26Z shotamchay $
- * 
+ *
  */
 
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key => $value)	{
 		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{
-			if ($key == "enable_notifications" && $value == 2);	
-			else if ($key == "execute_service_checks" && $value == 2);	
-			else if ($key == "accept_passive_service_checks" && $value == 2);	
-			else if ($key == "execute_host_checks" && $value == 2);	
-			else if ($key == "accept_passive_host_checks" && $value == 2);	
+			if ($key == "enable_notifications" && $value == 2);
+			else if ($key == "execute_service_checks" && $value == 2);
+			else if ($key == "accept_passive_service_checks" && $value == 2);
+			else if ($key == "execute_host_checks" && $value == 2);
+			else if ($key == "accept_passive_host_checks" && $value == 2);
 			else if ($key == "enable_event_handlers" && $value == 2);
 			else if ($key == "check_external_commands" && $value == 2);
 			else if ($key == "retain_state_information" && $value == 2);
@@ -117,13 +117,13 @@
 				if ($centreon->optGen["monitoring_engine"] == "ICINGA") {
 					$key = str_replace("nagios", "icinga", $key);
 				}
-				$str .= $key."=".$value."\n"; 
+				$str .= $key."=".$value."\n";
 			}
 			else if ($key == "broker_module") {
 				foreach ($nagios["broker_module"] as $kBrm => $vBrm)
 					if ( $vBrm["broker_module"] != NULL )
-						>$str .= $key."=".$vBrm["broker_module"]."\n";
-					
+						$str .= $key."=".$vBrm["broker_module"]."\n";
+
 			}
 			else if ($key == "debug_level_opt");
 			else
