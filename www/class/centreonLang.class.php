@@ -125,13 +125,13 @@
  	 *
  	 *  @return void
  	 */
- 	public function bindLang()
+ 	public function bindLang($domain = "messages", $path = "www/locale/")
  	{
 		putenv("LANG=$this->_lang");
 		setlocale(LC_ALL, $this->_lang);
-		bindtextdomain("*", $this->_path."www/locale/");
-		bind_textdomain_codeset("*", $this->_charset);
-		textdomain("messages");
+		bindtextdomain($domain, $this->_path.$path);
+		bind_textdomain_codeset($domain, $this->_charset);
+		textdomain('messages');
  	}
 
  	/**

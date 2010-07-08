@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset($oreon))
 		exit();
 
@@ -65,6 +65,10 @@
 	$auth = NULL;
 
 	require_once("./menu/MenuJS.php");
+	require_once $centreon_path . 'www/class/centreonMenu.class.php';
+	require_once $centreon_path . 'www/class/centreonLang.class.php';
+
+    $centreonMenu = new CentreonMenu(new CentreonLang($centreon_path, $oreon));
 
 	/*
 	 * block headerHTML
@@ -87,7 +91,7 @@
 	$color["UNREACHABLE"] = $oreon->optGen["color_unreachable"];
 
 	$tpl->assign("urlLogo", 'img/centreon.gif');
-	
+
 	$tpl->assign("Ok", _("Ok"));
 	$tpl->assign("Warning", _("Warning"));
 	$tpl->assign("Critical", _("Critical"));
@@ -128,18 +132,19 @@
 	 */
 	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT =& $pearDB->query($rq);
-	for ($i = 0; $DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()); $i++)
-		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
+	for ($i = 0; $DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()); $i++) {
+	    $elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
 								"Menu1Page" => $elem["topology_page"] ,
 								"Menu1Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1UrlPopup" => $elem["topology_popup"],
 								"Menu1UrlPopupOpen" => $elem["topology_url"],
-								"Menu1Name" => _($elem["topology_name"]),
+								"Menu1Name" => $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
 								"Menu1Popup" => $elem["topology_popup"] ? true : false);
+	}
 	$DBRESULT->free();
-	
+
 	$userUrl = "main.php?p=50104&o=c";
-	
+
 	$logDate = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $oreon->user->getMyGMT());
     $logOut = _("Logout");
     $logOutUrl = "index.php?disconnect=1";
@@ -151,30 +156,30 @@
 		$userCrypted = $oreon->user->userCrypted;
 		$passwdCrypted = $oreon->user->get_passwd();
 		$autoLoginUrl = "p=$p&o=$o&min=$min&autologin=1&useralias=$userCrypted&password=$passwdCrypted";
-		if ($oreon->optGen["enable_autologin"] && $oreon->optGen["display_autologin_shortcut"])
+		if ($oreon->optGen["enable_autologin"] && $oreon->optGen["display_autologin_shortcut"]) {
 			$tpl->assign("autoLoginEnable", 1);
-		else
+		} else {
 			$tpl->assign("autoLoginEnable", 0);
-		
+		}
 		$prefix = '';
 		if (!strncmp($_SERVER["SERVER_PROTOCOL"], "HTTP/", 5)) {
 			$prefix .= "http://";
 		} else {
 			$prefix .= "https://";
 		}
-		
+
 		$prefix .= $_SERVER["SERVER_NAME"];
 		$prefix .= str_replace("main.php", "index.php", $_SERVER["REQUEST_URI"]);
 		$prefix .= "?";
-		
+
 		$tpl->assign("autoLoginUrl", $prefix.$autoLoginUrl);
-		$tpl->assign("CentreonAutologin", _("Centreon Autologin URL"));		
+		$tpl->assign("CentreonAutologin", _("Centreon Autologin URL"));
 	}
 
 	/*
 	 * Grab elements for level 2
 	 */
-	$rq = "SELECT topology_page, topology_url_opt, topology_popup, topology_url, topology_name FROM topology WHERE topology_parent = '".$level1."' $lcaSTR AND topology_show = '1'  ORDER BY topology_group, topology_order";
+	$rq = "SELECT topology_page, topology_url_opt, topology_popup, topology_url, topology_name, topology_modules FROM topology WHERE topology_parent = '".$level1."' $lcaSTR AND topology_show = '1'  ORDER BY topology_group, topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	$firstP = NULL;
 	$sep = "&nbsp;";
@@ -184,7 +189,7 @@
 								"Menu2Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu2UrlPopup" => $elem["topology_popup"],
 								"Menu2UrlPopupOpen" => $elem["topology_url"].$auth,
-								"Menu2Name" => _($elem["topology_name"]),
+								"Menu2Name" =>  $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
 								"Menu2Popup" => $elem["topology_popup"] ? true : false);
 		$sep = "&nbsp;|&nbsp;";
 	}
@@ -192,17 +197,19 @@
 	/*
 	 * Grab elements for level 3
 	 */
-	$request = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' $lcaSTR AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";	
+	$request = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' $lcaSTR AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
 	$DBRESULT =& $pearDB->query($request);
 	for ($i = 0; $elem =& $DBRESULT->fetchRow();$i++)	{
 		# grab menu title for each group
 		$DBRESULT_title =& $pearDB->query("SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1");
 		$title = "";
 		$topoName = $DBRESULT_title->fetchRow();
-		if ($DBRESULT_title->numRows())
+		if ($DBRESULT_title->numRows()) {
 			$title = _($topoName['topology_name']);
-		else
+		}
+		else {
 			$title = _("Main Menu");
+		}
 
 		$Menu3Url = "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
 		$elemArr[3][$elem["topology_group"]]["title"] = $title;
@@ -214,7 +221,7 @@
 								"MenuOnClick" => $elem["topology_OnClick"],
 								"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
 								"Menu3UrlPopup" => $elem["topology_url"],
-								"Menu3Name" => _($elem["topology_name"]),
+								"Menu3Name" => $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
 								"Menu3Popup" => $elem["topology_popup"] ? true : false);
 	}
 	unset($elem);
@@ -223,23 +230,24 @@
 	 * Grab elements for level 4
 	 */
 	if ($level1 && $level2 && $level3){
-		$request = "SELECT topology_icone, topology_page, topology_url_opt, topology_url, topology_OnClick, topology_name, topology_popup FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' $lcaSTR AND topology_show = '1' ORDER BY topology_order";
+		$request = "SELECT topology_icone, topology_page, topology_url_opt, topology_url, topology_OnClick, topology_name, topology_popup, topology_modules FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 		$DBRESULT =& $pearDB->query($request);
-		for ($i = 0; $elem =& $DBRESULT->fetchRow();$i++){
-			$elemArr[4][$level1.$level2.$level3][$i] = array(	"Menu4Icone" => $elem["topology_icone"],
+		for ($i = 0; $elem =& $DBRESULT->fetchRow();$i++) {
+		    $elemArr[4][$level1.$level2.$level3][$i] = array(	"Menu4Icone" => $elem["topology_icone"],
 																"Menu4Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 																"Menu4UrlPopup" => $elem["topology_url"],
 																"MenuOnClick" => $elem["topology_OnClick"],
 																"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
-																"Menu4Name" => _($elem["topology_name"]),
+																"Menu4Name" => $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
 																"Menu4Popup" => $elem["topology_popup"] ? true : false);
+			$centreonLang->bindLang();
 		}
 	}
 
 	/*
 	 * Create Menu Level 1-2-3-4
 	 */
-	$tpl->assign("PageID", $p);	 
+	$tpl->assign("PageID", $p);
 	$tpl->assign("UserInfoUrl", $userUrl);
 	$tpl->assign("UserName", $oreon->user->get_alias());
 	$tpl->assign("Date", $logDate);
@@ -255,7 +263,7 @@
 	$tpl->assign("Menu4ID", "menu4_bgcolor");
 	$tpl->assign("connected_users", _("Connected"));
 	$tpl->assign("main_menu", _("Main Menu"));
-	
+
 	/*
 	 * Send ACL Topology in template
 	 */
@@ -269,7 +277,7 @@
 	count($elemArr[3]) ? $tpl->assign("elemArr3", $elemArr[3]) : NULL;
 	count($elemArr[4]) ? $tpl->assign("elemArr4", $elemArr[4]) : NULL;
 	$tpl->assign("idParent", $level1.$level2.$level3);
-	
+
 	/*
 	 * Legend icon
 	 */
@@ -281,7 +289,7 @@
 	 */
 	$tpl->assign("user_update_pref_header", $user_update_pref . "?uid=".$oreon->user->user_id."&div=header");
 	$tpl->assign("user_update_pref_menu_3", $user_update_pref . "?uid=".$oreon->user->user_id."&div=menu_3");
-	
+
 	/*
 	 * User Online
 	 */
@@ -289,12 +297,12 @@
 		$tab_user = array();
 		$DBRESULT =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
 		while ($session =& $DBRESULT->fetchRow())
-			$tab_user[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);	
+			$tab_user[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);
 		$DBRESULT->free();
 		$tpl->assign("tab_user", $tab_user);
 	}
 	$tpl->assign('amIadmin', $oreon->user->admin);
-	
+
 	/*
 	 * Display
 	 */

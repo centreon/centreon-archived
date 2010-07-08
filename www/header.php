@@ -3,38 +3,38 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
- */ 
+ *
+ */
 	/*
 	 * Bench
 	 */
@@ -57,11 +57,11 @@
 	 * Include
 	 */
 	require_once "@CENTREON_ETC@/centreon.conf.php";
-	
+
 	require_once "$classdir/centreonDB.class.php";
 	require_once "$classdir/centreonLang.class.php";
 	require_once "$classdir/centreonSession.class.php";
-	require_once "$classdir/centreon.class.php";	
+	require_once "$classdir/centreon.class.php";
 	require_once SMARTY_DIR."Smarty.class.php";
 
 	/*
@@ -79,19 +79,19 @@
 	/*
 	 * Delete Session Expired
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");	
+	$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");
 	$session_expire =& $DBRESULT->fetchRow();
 	if (!isset($session_expire["value"]) || !$session_expire["value"])
 		$session_expire["value"] = 2;
 	$time_limit = time() - ($session_expire["value"] * 60);
 
-	$DBRESULT =& $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");	
+	$DBRESULT =& $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");
 
 	/*
 	 * Get session and Check if session is not expired
 	 */
-	$DBRESULT =& $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");	
-	
+	$DBRESULT =& $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
+
 	if (!$DBRESULT->numRows())
 		header("Location: index.php?disconnect=2");
 
@@ -116,9 +116,9 @@
 
 	if (!$p){
 		$root_menu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
-		if (isset($root_menu["topology_page"])) 
-			$p = $root_menu["topology_page"]; 
-		else 
+		if (isset($root_menu["topology_page"]))
+			$p = $root_menu["topology_page"];
+		else
 			$p = NULL;
 		if (isset($root_menu["topology_url_opt"])){
 			$tab = split("\=", $root_menu["topology_url_opt"]);
@@ -172,11 +172,12 @@
 	/*
 	 * Update Session Table For last_reload and current_page row
 	 */
-	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$centreon->user->user_id."' LIMIT 1");	
-	
+	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$centreon->user->user_id."' LIMIT 1");
+
 	/*
-	 * Init Language 
+	 * Init Language
 	 */
 	$centreonLang = new CentreonLang($centreon_path, $centreon);
 	$centreonLang->bindLang();
+	$centreonLang->bindLang('help');
 ?>

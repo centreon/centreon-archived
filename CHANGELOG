@@ -1,10 +1,11 @@
 ## Centreon 2.2
 
 => feature #1570: new command and service interface
+=> feature #1561: context-aware help tooltips
 => enhancement : removes useless/deprecated Nagios options 
 => enhancement : better overview of monitoring status
 => enhancement : new Views > Graphs interface (possibility to export images etc...)
-
+=> enhancement : menus of modules can be translated
 
 ## Centreon 2.1.6
 
