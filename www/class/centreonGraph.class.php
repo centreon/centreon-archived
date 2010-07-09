@@ -194,6 +194,13 @@ class CentreonGraph	{
 					$ds_data =& $DBRESULT2->fetchRow();
 					$DBRESULT2->free();
 					if (!$ds_data) {
+            					$ds = array();
+            					$DBRESULT =& $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+            					if ($DBRESULT->numRows()) {
+									foreach ($DBRESULT->fetchRow() as $key => $ds_val) {
+										$ds[$key] = $ds_val;
+							}
+						}
 						$ds["ds_color_line"] = $this->getRandomWebColor();
 						$this->metrics[$metric["metric_id"]]["ds_id"] = $ds;
 						$ds_data =& $ds;
@@ -214,10 +221,12 @@ class CentreonGraph	{
 							$this->metrics[$metric["metric_id"]][$key] = $ds_d ;
 					}
 					
-					if (preg_match('/DS/', $ds_data["ds_name"], $matches)){
+					if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
 						$this->metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metric["metric_name"]);
+						$this->metrics[$metric["metric_id"]]["legend"] = str_replace("#BS", "\/", $this->metrics[$metric["metric_id"]]["legend"]);
+						$this->metrics[$metric["metric_id"]]["legend"] = str_replace("slash_", "/", $this->metrics[$metric["metric_id"]]["legend"]);
 					} else {
-	                	$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+						$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
 					}
 					
 					if (strcmp($metric["unit_name"], ""))
