@@ -135,7 +135,7 @@
 		print "setTimeout('reloadStatusCounter($tS, \"$sid\")', $tFS);\n";
 
 	$res = null;
-	$DBRESULT =& $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 	while ($topology_js =& $DBRESULT->fetchRow()){
 		if ($topology_js['init'] == "initM") {
 			if ($o != "hd" && $o != "svcd") {
