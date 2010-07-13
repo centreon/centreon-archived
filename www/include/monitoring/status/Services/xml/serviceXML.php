@@ -3,64 +3,64 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	//include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once "/etc/centreon/centreon.conf.php";
-	
+
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-	
-	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";	
+
+	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	/*
 	 * Create XML Request Objects
 	 */
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
-	
+
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
 	} else {
 		print "Bad Session ID";
 		exit();
 	}
-	
+
 	/*
 	 * Set Default Poller
 	 */
 	$obj->getDefaultFilters();
-	
+
 	/* **************************************************
 	 * Check Arguments From GET tab
 	 */
@@ -77,12 +77,12 @@
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 	$search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
 	$search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
-	
+
 	/*
 	 * Backup poller selection
 	 */
 	$obj->setInstanceHistory($instance);
-	
+
 	$service = array();
 	$host_status = array();
 	$service_status = array();
@@ -91,7 +91,7 @@
 	$tab_host_service = array();
 
 	/* *************************************************
-	 * Get Host status 
+	 * Get Host status
 	 */
 	$rq1 = 	"SELECT DISTINCT no.name1 as host_name," .
 			" nhs.current_state, nhs.problem_has_been_acknowledged, nhs.scheduled_downtime_depth, " .
@@ -101,21 +101,21 @@
 	if ($hostgroups) {
 		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hm ";
 	}
-	
+
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id " .
 			" 	AND nh.host_object_id = no.object_id " .
 			" 	AND no.objecttype_id = 1 " .
 			" 	AND no.object_id = nh.host_object_id";
-	
+
 	if ($hostgroups && $o != "meta") {
 		$rq1 .= " AND nh.host_object_id = hm.host_object_id AND hm.hostgroup_id IN ";
 		$rq1 .= " (SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."')";
 	}
-	
+
 	$rq1 .= (preg_match("/^svc_unhandled/", $o)) ? " AND nhs.problem_has_been_acknowledged = 0 AND nhs.scheduled_downtime_depth = 0 " : "";
 	$rq1 .= ($o == "meta") ?" AND no.name1 = '_Module_Meta'" : " AND no.name1 != '_Module_Meta'";
 	$rq1 .= ($instance) ? " AND no.instance_id = ".$instance : "" ;
-	
+
 	$DBRESULT =& $obj->DBNdo->query($rq1);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		/*
@@ -134,7 +134,7 @@
 	/* **************************************************
 	 * Get Service status
 	 */
-	
+
 	$tabOrder = array();
 	$tabOrder["host_name"] 			= " ORDER BY host_name ". $order.", service_description";
 	$tabOrder["service_description"]= " ORDER BY service_description ". $order.", host_name";
@@ -144,13 +144,13 @@
 	$tabOrder["last_check"] 		= " ORDER BY nss.last_check ". $order.", host_name, service_description";
 	$tabOrder["current_attempt"] 	= " ORDER BY nss.current_check_attempt ". $order.", host_name, service_description";
 	$tabOrder["default"] 			= " ORDER BY host_name ". $order ;
-	
+
 	if (isset($tabOrder[$sort_type])) {
 		$rq_sorte = $tabOrder[$sort_type];
 	} else {
 		$rq_sorte = $tabOrder["default"];
 	}
-	
+
 	$rq_limit = " LIMIT ".($num * $limit).",".$limit;
 
 	$ArgNeeded = "A.host_name, A.object_id, A.service_description, A.notes, A.notes_url, A.action_url, A.max_check_attempts, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.state_type as state_type, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_hard_state_change) as last_hard_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.scheduled_downtime_depth, nss.flap_detection_enabled";
@@ -167,12 +167,12 @@
 	 * Prepare current_state condition
 	 */
 	$rq_state = "";
-	
+
 	$instance_filter = "";
 	if ($instance) {
 		$instance_filter = " AND no.instance_id = '".$instance."' ";
 	}
-	
+
 	if ($o == "svcpb")
 		$rq_state = " AND nss.current_state != 0";
 	if ($o == "svc_ok")
@@ -183,8 +183,8 @@
 		$rq_state = " AND nss.current_state = 2 ";
 	if ($o == "svc_unknown")
 		$rq_state = " AND nss.current_state = 3 ";
-	
-		
+
+
 	if (preg_match("/^svc_unhandled/", $o)) {
 		if (preg_match("/^svc_unhandled_(warning|critical|unknown)\$/", $o, $matches)) {
 			if (isset($matches[1]) && $matches[1] == 'warning') {
@@ -204,7 +204,7 @@
 		$rq_state .= " AND nss.problem_has_been_acknowledged = 0";
 		$rq_state .= " AND nss.scheduled_downtime_depth = 0";
 	}
-	
+
 	$searchHost = "";
 	if ($search_type_host && $search) {
 		if ($search_type_service && $search)
@@ -213,7 +213,7 @@
 			$searchHost .= " AND ";
 		$searchHost .= "no.name1 LIKE '%$search%' ";
 	}
-	
+
 	$searchService = "";
 	if ($search_type_service && $search) {
 		if ($search_type_host && $search) {
@@ -224,8 +224,8 @@
 		$searchService .= " no.name2 LIKE '%$search%' ";
 	}
 	if ($search_type_host && $search)
-		$searchService .= ")";	
-	
+		$searchService .= ")";
+
 	$hgCondition = "";
 	if ($hostgroups) {
 		if ($hostHGString != "") {
@@ -234,9 +234,9 @@
 			$hgCondition = " AND no.name1 IN ('') ";
 		}
 	}
-	
+
 	$rq3 = 	"SELECT 1 FROM ".$obj->ndoPrefix."servicestatus WHERE no.object_id = ns.service_object_id  ";
-	
+
 	$rq1 = 	"SELECT $ArgNeeded " .
 		 	"FROM (";
 
@@ -252,37 +252,55 @@
 
 	$finalRequest = $rq1 . $rq2;
 
-	/* *************************************************** 
-	 * Get Pagination Rows 
+	/* ***************************************************
+	 * Get Pagination Rows
 	 */
-	
-	/* 
-	 * Get Pagination Rows 
-	 */	
+
+	/*
+	 * Get Pagination Rows
+	 */
 	if ($hostgroups) {
 		$hgCondition = " AND no.name1 IN (SELECT no.name1 FROM ".$obj->ndoPrefix."hostgroup_members hm, ".$obj->ndoPrefix."objects no WHERE no.object_id = hm.host_object_id AND hm.hostgroup_id IN
 						 (SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."')) ";
 	} else {
 		$hgCondition = "";
-	} 
-	 
+	}
+
 	if ($obj->is_admin) {
-		$rq = "SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
-				"FROM ".$obj->ndoPrefix."objects no ,  ".$obj->ndoPrefix."servicestatus nss " .
-				"WHERE no.object_id = nss.service_object_id $rq_state $instance_filter " .
-				"	AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService";
+		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))
+			    FROM ".$obj->ndoPrefix."objects no ,  ".$obj->ndoPrefix."servicestatus nss ";
+		if (preg_match("/^svc_unhandled/", $o)) {
+            $rq .= ", " . $ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."services s ";
+		}
+		$rq .= " WHERE no.object_id = nss.service_object_id $rq_state $instance_filter
+				 AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService";
+		if (preg_match("/^svc_unhandled/", $o)) {
+    		$rq .= " AND nss.service_object_id  = s.service_object_id
+                	 AND s.host_object_id = hs.host_object_id
+                	 AND hs.scheduled_downtime_depth = 0
+                	 AND hs.problem_has_been_acknowledged = 0";
+		}
 	} else {
-		$rq = "SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
-				"FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, centreon_acl " .
-				"WHERE no.object_id = nss.service_object_id $rq_state $instance_filter " .
-				"	AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService $ACLCondition";
+		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))
+				FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, centreon_acl ";
+	    if (preg_match("/^svc_unhandled/", $o)) {
+            $rq .= ", " . $ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."services s ";
+		}
+		$rq .= " WHERE no.object_id = nss.service_object_id $rq_state $instance_filter
+				 AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService $ACLCondition";
+		if (preg_match("/^svc_unhandled/", $o)) {
+    		$rq .= " AND nss.service_object_id  = s.service_object_id
+                	 AND s.host_object_id = hs.host_object_id
+                	 AND hs.scheduled_downtime_depth = 0
+                	 AND hs.problem_has_been_acknowledged = 0";
+		}
 	}
 	$DBRESULT =& $obj->DBNdo->query($rq);
 	$data =& $DBRESULT->fetchRow();
 	$numRows =& $data["count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))"];
 	$DBRESULT->free();
 	unset($data);
-	
+
 	/* ***************************************************
 	 * Create Buffer
 	 */
@@ -300,7 +318,7 @@
 	$host_prev = "";
 	$ct = 0;
 	$flag = 0;
-	
+
 	$DBRESULT =& $obj->DBNdo->query($finalRequest);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		if (isset($host_status[$ndo["host_name"]])){
@@ -326,39 +344,39 @@
 			} else {
 				if ($ndo["problem_has_been_acknowledged"] == 1)
 					$class = "line_ack";
-			} 
-			
+			}
+
 			$obj->XML->startElement("l");
 			$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 			$obj->XML->writeElement("o", $ct++);
-			
+
 			if ($host_prev == $ndo["host_name"]){
-				$obj->XML->writeElement("hc", "transparent");				
+				$obj->XML->writeElement("hc", "transparent");
 				$obj->XML->startElement("hn");
 				$obj->XML->writeAttribute("none", "1");
 				$obj->XML->writeAttribute("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->text($ndo["host_name"]);
-				$obj->XML->endElement();				
-			} else {				
+				$obj->XML->endElement();
+			} else {
 				$host_prev = $ndo["host_name"];
 				if ($host_status[$ndo["host_name"]]["scheduled_downtime_depth"] == 0) {
 					$obj->XML->writeElement("hc", $obj->colorHostInService[$host_status[$ndo["host_name"]]["current_state"]]);
 				} else {
 					$obj->XML->writeElement("hc", $general_opt['color_downtime']);
 				}
-			
+
 				$obj->XML->startElement("hn");
 				$obj->XML->writeAttribute("none", "0");
 				$obj->XML->writeAttribute("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->text($ndo["host_name"]);
 				$obj->XML->endElement();
-				$obj->XML->writeElement("hau", $host_status[$ndo["host_name"]]["action_url"]);								
+				$obj->XML->writeElement("hau", $host_status[$ndo["host_name"]]["action_url"]);
 
 				if ($host_status[$ndo["host_name"]]["notes_url"]) {
 					$obj->XML->writeElement("hnu", str_replace("\$HOSTNAME\$", $ndo["host_name"], $host_status[$ndo["host_name"]]["notes_url"]));
 				} else
 					$obj->XML->writeElement("hnu", "none");
-					
+
 				$obj->XML->writeElement("hnn", $host_status[$ndo["host_name"]]["notes"]);
 				$obj->XML->writeElement("hico", $host_status[$ndo["host_name"]]["icon_image"]);
 				$obj->XML->writeElement("hip", $host_status[$ndo["host_name"]]["address"]);
@@ -367,22 +385,22 @@
 			}
 
 			$obj->XML->writeElement("ppd", 	$ndo["process_performance_data"]);
-			$obj->XML->writeElement("hs", 	$host_status[$ndo["host_name"]]["current_state"]);			
+			$obj->XML->writeElement("hs", 	$host_status[$ndo["host_name"]]["current_state"]);
 			$obj->XML->writeElement("sd", 	$ndo["service_description"]);
 			$obj->XML->writeElement("sdl", 	urlencode($ndo["service_description"]));
-			$obj->XML->writeElement("svc_id", $ndo["object_id"]);						
+			$obj->XML->writeElement("svc_id", $ndo["object_id"]);
 			$obj->XML->writeElement("sc", 	$obj->colorService[$ndo["current_state"]]);
 			$obj->XML->writeElement("cs", 	_($obj->statusService[$ndo["current_state"]]));
 			$obj->XML->writeElement("po", 	$ndo["plugin_output"], 1);
 			$obj->XML->writeElement("ca", 	$ndo["current_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
 			$obj->XML->writeElement("ne", 	$ndo["notifications_enabled"]);
 			$obj->XML->writeElement("pa", 	$ndo["problem_has_been_acknowledged"]);
-			$obj->XML->writeElement("pc", 	$ndo["passive_checks_enabled"]);			
+			$obj->XML->writeElement("pc", 	$ndo["passive_checks_enabled"]);
 			$obj->XML->writeElement("ac", 	$ndo["active_checks_enabled"]);
 			$obj->XML->writeElement("eh", 	$ndo["event_handler_enabled"]);
 			$obj->XML->writeElement("is", 	$ndo["is_flapping"]);
 			$obj->XML->writeElement("dtm",	$ndo["scheduled_downtime_depth"]);
-			
+
 			if ($ndo["notes_url"] != "") {
 				$ndo["notes_url"] = $string = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes_url"]);
 				$ndo["notes_url"] = $string = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes_url"]);
@@ -398,7 +416,7 @@
 				$obj->XML->writeElement("sn", 'none');
 			}
 
-			$obj->XML->writeElement("fd", $ndo["flap_detection_enabled"]);			
+			$obj->XML->writeElement("fd", $ndo["flap_detection_enabled"]);
 			$obj->XML->writeElement("ha", $host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]);
 			$obj->XML->writeElement("hae", $host_status[$ndo["host_name"]]["active_checks_enabled"]);
 			$obj->XML->writeElement("hpe", $host_status[$ndo["host_name"]]["passive_checks_enabled"]);
@@ -407,7 +425,7 @@
 			$obj->XML->writeElement("d", $duration);
 			$obj->XML->writeElement("last_hard_state_change", $hard_duration);
 			$obj->XML->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $obj->prepareObjectName($ndo["service_description"]), $obj->DBC));
-			$obj->XML->endElement();			
+			$obj->XML->endElement();
 		}
 	}
 	$DBRESULT->free();
@@ -417,9 +435,9 @@
 	if (!$ct)
 		$obj->XML->writeElement("infos", "none");
 
-	$obj->XML->writeElement("sid", $obj->session_id);			
+	$obj->XML->writeElement("sid", $obj->session_id);
 	$obj->XML->endElement();
-	
+
 	/*
 	 * Send Header
 	 */
@@ -427,6 +445,6 @@
 
 	/*
 	 * Send XML
-	 */	
+	 */
 	$obj->XML->output();
 ?>
