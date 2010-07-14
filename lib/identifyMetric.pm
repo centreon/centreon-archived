@@ -186,7 +186,7 @@ sub identify_metric($$$$$$$$){
 		    $just_insert = 0;
 		}
 		undef($sth1);
-	    }
+
 
 	    updateMetricInformation($metric->{'metric_id'}, $data[3], $data[4], $data[5], $data[6]);
 
@@ -204,7 +204,7 @@ sub identify_metric($$$$$$$$){
 		}
 	    }
 	    $just_insert = 0;
-	}
+
 	undef(@data);
     }
     undef($metric_name);
