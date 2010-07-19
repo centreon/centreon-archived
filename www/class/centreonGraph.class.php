@@ -72,7 +72,18 @@ class CentreonGraph	{
 	var $serviceObj;
 	
 	var $session_id;
-	
+
+	/* 
+	 * private vars
+	 */
+	protected $_RRDoptions;
+	protected $_arguments;
+	protected $_argcount;
+	protected $_options;
+	protected $_colors;
+	protected $_fonts;
+	protected $_flag;
+
 	/*
 	 * Variables
 	 */
@@ -83,22 +94,21 @@ class CentreonGraph	{
 	var $filename;
 	var $commandLine;
 	var $dbPath;
-	var $width;
-	var $height;
-	var $end;
-	var $start;
 	var $index;
 	var $indexData;
 	var $template_id;
 	var $templateInformations;
 	var $gprintScaleOption;
-	var $title;
 	var $graphID;
-	var $metricsActivate;
+	var $metricsActive;
 	var $metricsEnabled;
 	var $metrics;
 	var $longer;
 	
+	static function _cmplegend($a, $b) {
+		return strnatcasecmp($a["legend"], $b["legend"]);
+	}
+
 	/*
 	 * Class constructor
 	 *
@@ -137,231 +147,284 @@ class CentreonGraph	{
 		 */
 		$this->hostObj		= new CentreonHost($this->DB);
 		$this->serviceObj	= new CentreonService($this->DB);
-	
+
 		/*
 		 * Timezone management
 		 */
 		$this->GMT = new CentreonGMT($this->DB);
-		$this->GMT->getMyGMTFromSession($this->session_id, $this->DB);		
-		
-		/*
-		 * Set Command line
-		 */
-		$this->commandLine = "";
-		
-		/*
-		 * Set parameters
-		 */
-		$this->width = 500;
-		$this->height = 120;
+		$this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
+
+		$this->_RRDoptions = array();
+		$this->_arguments = array();
+		$this->_options = array();
+		$this->_colors = array();
+		$this->_fonts = array();
+		$this->_argcount = 0;
+		$this->_flag = 0;
 
 		/*
-		 * Get index data
+		 * Set default parameters
 		 */
-		$this->getIndexData();
-		$this->setFilename();
+		$this->setRRDOption("width", 500);
+		$this->setRRDOption("height", 120);	
 
-		$this->getRRDToolPath();
-		
+		$this->_getIndexData();
+
+		$this->filename = $this->indexData["host_name"]. "-".$this->indexData["service_description"];
+		$this->filename = str_replace(array("/", "\\"), array("-", "-"), $this->filename);
+
 		$this->templateInformations = array();
 		$this->metricsEnabled = array();
+		$this->metricsActive = array();
 		$this->metrics = array();
+
+		$DBRESULT =& $this->DBC->query("SELECT RRDdatabase_path FROM config LIMIT 1");
+		$config =& $DBRESULT->fetchRow();
+		$this->dbPath = $config["RRDdatabase_path"];
+		unset($config);	
+		$DBRESULT->free();
+		
+		$DBRESULT =& $this->DB->query("SELECT * FROM options");
+		while ($opt =& $DBRESULT->fetchRow()) {
+			$this->general_opt[$opt['key']] = $opt['value'];  
+		}
+		$DBRESULT->free();
+		unset($opt);
+
+		$DBRESULT =& $this->DB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$this->index."' AND `contact_id` = '".$this->user_id."'");
+		while ($metric_Active =& $DBRESULT->fetchRow()){
+			$this->metricsActive[$metric_Active["metric_id"]] = $metric_Active["metric_id"];
+		}
+		$DBRESULT->free();
+		unset($metric_Active);
+
 	}
 
 	public function setMetricList($metrics) {
-		$this->metricsEnabled = $metrics;
+		if (is_array($metrics) && count($metrics)) {
+			$this->metricsEnabled = array_keys($metrics);
+		} else if ($metrics != "") {
+			$this->metricsEnabled = array($metrics);
+		}
 	}
+
+	public function init() {
+		$this->setRRDOption("interlaced");
+		$this->setRRDOption("imgformat", "PNG");
+		$this->setRRDOption("vertical-label", $this->templateInformations["vertical_label"]);
+
+		if ($this->general_opt["rrdtool_version"] != "1.0")
+			$this->setRRDOption("slope-mode");
+		
+		if ($this->general_opt["rrdtool_version"] == "1.3") {
+	       if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"]))
+	          $this->setFont("TITLE:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
+	       if (isset($this->general_opt["rrdtool_unit_font"]) && isset($this->general_opt["rrdtool_unit_fontsize"]))
+	          $this->setFont("UNIT:", $this->general_opt["rrdtool_unit_fontsize"].":".$this->general_opt["rrdtool_unit_font"]);
+	       if (isset($this->general_opt["rrdtool_axis_font"]) && isset($this->general_opt["rrdtool_axis_fontsize"]))
+	          $this->setFont("AXIS:", $this->general_opt["rrdtool_axis_fontsize"].":".$this->general_opt["rrdtool_axis_font"]);
+	       if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"]))
+	          $this->setFont("WATERMARK:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
+	       if (isset($this->general_opt["rrdtool_legend_title"]) && isset($this->general_opt["rrdtool_legend_fontsize"]))
+	          $this->setFont("LEGEND:", $this->general_opt["rrdtool_legend_fontsize"].":".$this->general_opt["rrdtool_legend_title"]);
+	    }
+
+		if (isset($this->templateInformations["base"]) && $this->templateInformations["base"])
+			$this->setRRDOption("base", $this->templateInformations["base"]);
+		if (isset($this->templateInformations["width"]) && $this->templateInformations["width"])
+			$this->setRRDOption("width", $this->templateInformations["width"]);
+		if (isset($this->templateInformations["height"]) && $this->templateInformations["height"])
+			$this->setRRDOption("height", $this->templateInformations["height"]);
+
+		/*
+		 * Init Graph Template Value
+		 */
+		if (isset($this->templateInformations["bg_grid_color"]) && $this->templateInformations["bg_grid_color"])
+			$this->setColor("CANVAS", $this->templateInformations["bg_grid_color"]);
+	
+		if (isset($this->templateInformations["bg_color"]) && $this->templateInformations["bg_color"])
+			$this->setColor("BACK", $this->templateInformations["bg_color"]);
+		else
+			$this->setColor("BACK", "#F0F0F0");
+	
+		if (isset($this->templateInformations["police_color"]) && $this->templateInformations["police_color"])
+			$this->setColor("FONT", $this->templateInformations["police_color"]);
+		if (isset($this->templateInformations["grid_main_color"]) && $this->templateInformations["grid_main_color"])
+			$this->setColor("MGRID", $this->templateInformations["grid_main_color"]);
+		if (isset($this->templateInformations["grid_sec_color"]) && $this->templateInformations["grid_sec_color"])
+			$this->setColor("GRID", $this->templateInformations["grid_sec_color"]);
+		if (isset($this->templateInformations["contour_cub_color"]) && $this->templateInformations["contour_cub_color"])
+			$this->setColor("FRAME", $this->templateInformations["contour_cub_color"]);
+		if (isset($this->templateInformations["col_arrow"]) && $this->templateInformations["col_arrow"])
+			$this->setColor("ARROW", $this->templateInformations["col_arrow"]);
+		if (isset($this->templateInformations["col_top"]) && $this->templateInformations["col_top"])
+			$this->setColor("SHADEA", $this->templateInformations["col_top"]);
+		if (isset($this->templateInformations["col_bot"]) && $this->templateInformations["col_bot"])
+			$this->setColor("SHADEB", $this->templateInformations["col_bot"]);
+		
+		if (isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL)
+			$this->setRRDOption("lower-limit", $this->templateInformations["lower_limit"]);
+		if (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != NULL)
+			$this->setRRDOption("upper-limit", $this->templateInformations["upper_limit"]);
+		if ((isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL) || (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != NULL)) {
+			$this->setRRDOption("rigid"); 
+			$this->setRRDOption("alt-autoscale-max");
+		}
+		
+		$this->gprintScaleOption = "%s"; 
+		if ($this->templateInformations["scaled"] == "0"){ 
+			# Disable y-axis scaling 
+			$this->setRRDOption("units-exponent", 0); 
+			# Suppress Scaling in Text Output 
+			$this->gprintScaleOption = ""; 
+		} 
+	}
+
+	private static function quote($elem) { return "'".$elem."'"; }
 
 	public function initCurveList() {
 		$cpt = 0;
-		$metrics = array();		
-		$DBRESULT =& $this->DBC->query("SELECT metric_id, metric_name, unit_name, warn, crit FROM metrics WHERE index_id = '".$this->index."' AND `hidden` = '0' ORDER BY metric_name");
+		$metrics = array();
+		if (isset($this->metricsEnabled) && count($this->metricsEnabled) > 0) {
+			$selector = "metric_id IN (".implode(",", array_map(array("CentreonGraph", "quote"), $this->metricsEnabled)).")";
+		} else {
+			$selector = "index_id = '".$this->index."'";
+		}
+		$this->_log("initCurveList with selector= ".$selector);
+		$DBRESULT =& $this->DBC->query("SELECT metric_id, metric_name, unit_name, warn, crit, min, max FROM metrics WHERE ".$selector." AND `hidden` = '0' ORDER BY metric_name");
 		while ($metric =& $DBRESULT->fetchRow()){
-			if (!isset($this->metricsEnabled) || (isset($this->metricsEnabled) && isset($this->metricsEnabled[$metric["metric_id"]]))){	
-				if (!isset($obj->metricsActivate) || (isset($obj->metricsActivate) && isset($obj->metricsActivate[$metric["metric_id"]]) && $obj->metricsActivate[$metric["metric_id"]])){
-					
-					$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
-					$this->metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
-					$this->metrics[$metric["metric_id"]]["metric"] = str_replace("#BS#", "bslash_", $this->metrics[$metric["metric_id"]]["metric"]);
-					$this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
-					$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
-					$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
-					
-					/*
-					 * Copy Template values
-					 */
-					$DBRESULT2 =& $this->DB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".str_replace("#S#", "/", str_replace("#BS#", "\\", $metric["metric_name"]))."'");
-					$ds_data =& $DBRESULT2->fetchRow();
-					$DBRESULT2->free();
-					if (!$ds_data) {
-            					$ds = array();
-            					$DBRESULT =& $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
-            					if ($DBRESULT->numRows()) {
-									foreach ($DBRESULT->fetchRow() as $key => $ds_val) {
-										$ds[$key] = $ds_val;
-							}
-						}
-						$ds["ds_color_line"] = $this->getRandomWebColor();
-						$this->metrics[$metric["metric_id"]]["ds_id"] = $ds;
-						$ds_data =& $ds;
-					}
-					
-					/*
-					 * Fetch Datas
-					 */
-					foreach ($ds_data as $key => $ds_d) {
-						if ($key == "ds_transparency"){
-							$transparency = dechex(255-($ds_d*255)/100);
-							if (strlen($transparency) == 1) {
-								$transparency = "0" . $transparency;
-							}
-							$this->metrics[$metric["metric_id"]][$key] = $transparency;
-							unset($transparency);
-						} else
-							$this->metrics[$metric["metric_id"]][$key] = $ds_d ;
-					}
-					
-					if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
-						$this->metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metric["metric_name"]);
-						$this->metrics[$metric["metric_id"]]["legend"] = str_replace("#BS", "\/", $this->metrics[$metric["metric_id"]]["legend"]);
-						$this->metrics[$metric["metric_id"]]["legend"] = str_replace("slash_", "/", $this->metrics[$metric["metric_id"]]["legend"]);
-					} else {
-						$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
-					}
-					
-					if (strcmp($metric["unit_name"], ""))
-						$this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
-					
-					$this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
-				}
+			$this->_log("found metric ".$metric["metric_id"]." with selector= ".$selector);
+			if ( isset($this->metricsEnabled) && count($this->metricsEnabled) && !in_array($metric["metric_id"], $this->metricsEnabled) ) {
+				$this->_log("metric disabled ".$metric["metric_id"]);
+				continue;
 			}
+			if ( isset($this->metricsActive) && count($this->metricsActive) && !isset($this->metricsActive[$metric["metric_id"]]) ) {
+				$this->_log("metric inactive ".$metric["metric_id"]);
+				continue;
+			}
+			
+			$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
+			$this->metrics[$metric["metric_id"]]["index_id"] = $metric["index_id"];
+			$this->metrics[$metric["metric_id"]]["metric"] = str_replace(array("#S#","#BS#"), array("slash_", "bslash_"), $metric["metric_name"]);
+			$this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
+			$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
+			$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
+
+/*		$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$metric_ODS["index_id"]."'");
+		$metricnumber = $DBRESULT->numRows();
+		$DBRESULT->free();
+		$order = ($_GET["cpt"] - 1);
+		$order = $order % $metricnumber;
+*/
+
+			/*
+			 * Copy Template values
+			 */
+			$DBRESULT2 =& $this->DB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".str_replace(array("#S#","#BS#"), array("/", "\\"), $metric["metric_name"])."'");
+			$ds_data =& $DBRESULT2->fetchRow();
+			$DBRESULT2->free();
+			if (!$ds_data) {
+				$ds = array();
+				$DBRESULT3 =& $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+				if ($DBRESULT3->numRows()) {
+					foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
+						$ds[$key] = $ds_val;
+					}
+				}
+				$DBRESULT3->free();
+				$ds["ds_color_line"] = $this->getRandomWebColor();
+				$this->metrics[$metric["metric_id"]]["ds_id"] = $ds;
+				$ds_data =& $ds;
+			}
+			
+			/*
+			 * Fetch Datas
+			 */
+			foreach ($ds_data as $key => $ds_d) {
+				if ($key == "ds_transparency"){
+					$transparency = dechex(255-($ds_d*255)/100);
+					if (strlen($transparency) == 1) {
+						$transparency = "0" . $transparency;
+					}
+					$this->metrics[$metric["metric_id"]][$key] = $transparency;
+					unset($transparency);
+				} else
+					$this->metrics[$metric["metric_id"]][$key] = $ds_d ;
+			}
+			
+			if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
+				$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("#S#","slash_", "#BS#"), array("/", "/", "\/"), $metric["metric_name"]);
+			} else {
+				$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+			}
+			
+			if (strcmp($metric["unit_name"], ""))
+				$this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
+			
+			$this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
 			$cpt++;
 		}
 		$DBRESULT->free();
-	}
-	
-	public function addCurveInCommandLine() {
+
+		/*
+		 * add data definitions for each metric
+		 */
 		$cpt = 0;
 		$this->longer = 0;
 		if (isset($this->metrics))
 			foreach ($this->metrics as $key => $tm){
 				if (isset($tm["ds_invert"]) && $tm["ds_invert"])
-					$this->fillCommandLine("DEF:va".$cpt."=".$this->dbPath.$key.".rrd:".substr($this->metrics[$key]["metric"],0 , 19).":AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,*");
+					$this->addArgument("DEF:va".$cpt."=".$this->dbPath.$key.".rrd:".substr($this->metrics[$key]["metric"],0 , 19).":AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,*");
 				else
-					$this->fillCommandLine("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($this->metrics[$key]["metric"],0 , 19).":AVERAGE");
+					$this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($this->metrics[$key]["metric"],0 , 19).":AVERAGE");
 				if ($tm["legend_len"] > $this->longer)
 					$this->longer = $tm["legend_len"];
 				$cpt++;
 			}
 	}
 	
-
-	static function cmplegend($a, $b) {
-		return strnatcasecmp($a["legend"], $b["legend"]);
-	}
-
 	public function createLegend() {
 		$cpt = 0;
-		uasort($this->metrics, array("CentreonGraph", "cmplegend"));
+		uasort($this->metrics, array("CentreonGraph", "_cmplegend"));
 		foreach ($this->metrics as $key => $tm) {
 			if ($this->metrics[$key]["ds_filled"])
-				$this->commandLine .= " AREA:v".$cpt.$tm["ds_color_area"].$tm["ds_transparency"]." ";
-			$this->commandLine .= " LINE".$tm["ds_tickness"].":v".$cpt.$tm["ds_color_line"].":\"".$this->metrics[$key]["legend"];
-			
-			
+				$this->addArgument("AREA:v".$cpt.$tm["ds_color_area"].$tm["ds_transparency"]);
+
+			$arg = "LINE".$tm["ds_tickness"].":v".$cpt.$tm["ds_color_line"].":\"".$this->metrics[$key]["legend"];
 			for ($i = $this->metrics[$key]["legend_len"]; $i != $this->longer + 1; $i++)
-				$this->commandLine .= " ";
-			
-			$this->commandLine .= "\"";
+				$arg .= " ";
+			$arg .= "\"";
+			$this->addArgument($arg);
 			
 			if ($tm["ds_last"]){
-				$this->fillCommandLine("GPRINT:v".($cpt).":LAST:\"Last\:%7.2lf".($this->gprintScaleOption));
-				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $this->commandLine .= "\"" : $this->commandLine .= "\\l\" ";
+				$arg = "GPRINT:v".($cpt).":LAST:\"Last\:%7.2lf".($this->gprintScaleOption);
+				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
+				$this->addArgument($arg);
 			}
 			if ($tm["ds_min"]){
-				$this->fillCommandLine("GPRINT:v".($cpt).":MIN:\"Min\:%7.2lf".($this->gprintScaleOption));
-				$tm["ds_max"] || $tm["ds_average"] ? $this->commandLine .= "\"" : $this->commandLine .= "\\l\" ";
+				$arg = "GPRINT:v".($cpt).":MIN:\"Min\:%7.2lf".($this->gprintScaleOption);
+				$tm["ds_max"] || $tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
+				$this->addArgument($arg);
 			}
 			if ($tm["ds_max"]){
-				$this->fillCommandLine("GPRINT:v".($cpt).":MAX:\"Max\:%7.2lf".($this->gprintScaleOption)); 
-				$tm["ds_average"] ? $this->commandLine .= "\"" : $this->commandLine .= "\\l\" ";
+				$arg = "GPRINT:v".($cpt).":MAX:\"Max\:%7.2lf".($this->gprintScaleOption);
+				$tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
+				$this->addArgument($arg);
 			}
 			if ($tm["ds_average"]){
-				$this->fillCommandLine("GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
+				$this->addArgument("GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
 			}
 			if (isset($tm["warn"]) && $tm["warn"] != 0)
-				$this->fillCommandLine("HRULE:".$tm["warn"]."#00FF00:\"Warning \: ".$tm["warn"]."\\l\" "); 
+				$this->addArgument("HRULE:".$tm["warn"]."#00FF00:\"Warning \: ".$tm["warn"]."\\l\" "); 
 			if (isset($tm["crit"]) && $tm["crit"] != 0)	
-				$this->fillCommandLine("HRULE:".$tm["crit"]."#FF0000:\"Critical \: ".$tm["crit"]."\""); 
-
+				$this->addArgument("HRULE:".$tm["crit"]."#FF0000:\"Critical \: ".$tm["crit"]."\""); 
 			
 			$cpt++;
 		}
 	}
 
-	public function addRRDToolProperties() {
-		if ($this->general_opt["rrdtool_version"] != "1.0")
-			$this->commandLine .= " --slope-mode ";
-		
-		if ($this->general_opt["rrdtool_version"] == "1.3") {
-	       if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"]))
-	          $this->commandLine .= " --font TITLE:".$this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]." ";
-	       if (isset($this->general_opt["rrdtool_unit_font"]) && isset($this->general_opt["rrdtool_unit_fontsize"]))
-	          $this->commandLine .= " --font UNIT:".$this->general_opt["rrdtool_unit_fontsize"].":".$this->general_opt["rrdtool_unit_font"]." ";
-	       if (isset($this->general_opt["rrdtool_axis_font"]) && isset($this->general_opt["rrdtool_axis_fontsize"]))
-	          $this->commandLine .= " --font AXIS:".$this->general_opt["rrdtool_axis_fontsize"].":".$this->general_opt["rrdtool_axis_font"]." ";
-	       if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"]))
-	          $this->commandLine .= " --font WATERMARK:".$this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]." ";
-	       if (isset($this->general_opt["rrdtool_legend_title"]) && isset($this->general_opt["rrdtool_legend_fontsize"]))
-	          $this->commandLine .= " --font LEGEND:".$this->general_opt["rrdtool_legend_fontsize"].":".$this->general_opt["rrdtool_legend_title"]." ";
-	    }
-	}
-
-	public function setTemplate($template_id = NULL) {
-		if (!isset($template_id)|| !$template_id){
-			if ($this->indexData["host_name"] != "_Module_Meta") {
-				/*
-				 * graph is based on real host/service
-				 */
-				$this->getDefaultGraphTemplate();
-				$this->setTemplateInformations();			
-			} else {
-				/*
-				 * Graph is based on a module check point
-				 */
-				$tab = split("_", $this->indexData["service_description"]);
-				$DBRESULT =& $this->DB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
-				$tempRes =& $DBRESULT->fetchRow();
-				$DBRESULT->free();
-				$this->template_id = $tempRes["graph_id"];
-				$this->setTemplateInformations();
-				unset($tempRes);
-				unset($tab);
-			}
-		} else {
-			$this->template_id = htmlentities($_GET["template_id"], ENT_QUOTES);
-			$this->setTemplateInformations();
-		}
-	}
-	
-	public function getServiceGraphID()	{
-		$service_id = $this->indexData["service_id"];
-		while (1) {
-			$DBRESULT =& $this->DB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
-			if ($row["graph_id"]) {
-				$this->graphID = $row["graph_id"];
-				return $this->graphID;
-			} else if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
-				break;
-		}
-		return $this->graphID;
-	}
-
-	public function getDefaultGraphTemplate() {
-		$template_id = $this->getServiceGraphID();
+	private function _getDefaultGraphTemplate() {
+		$template_id = $this->_getServiceGraphID();
 		if ($template_id != "") {
 			$this->template_id = $template_id;
 			return;
@@ -388,69 +451,62 @@ class CentreonGraph	{
 			return;
 		}
 	}
-	
-	public function setTemplateInformations() {
+
+	public function setTemplate($template_id = NULL) {
+		if (!isset($template_id)|| !$template_id){
+			if ($this->indexData["host_name"] != "_Module_Meta") {
+				/*
+				 * graph is based on real host/service
+				 */
+				$this->_getDefaultGraphTemplate();
+			} else {
+				/*
+				 * Graph is based on a module check point
+				 */
+				$tab = split("_", $this->indexData["service_description"]);
+				$DBRESULT =& $this->DB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
+				$tempRes =& $DBRESULT->fetchRow();
+				$DBRESULT->free();
+				$this->template_id = $tempRes["graph_id"];
+				unset($tempRes);
+				unset($tab);
+			}
+		} else {
+			$this->template_id = htmlentities($_GET["template_id"], ENT_QUOTES);
+		}
 		$DBRESULT =& $this->DB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$this->template_id."' LIMIT 1");
 		$this->templateInformations =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
+
 	}
 	
-	public function addInformationToCommandLine() {
-		/*
-		 * Init Graph Template Value
-		 */
-		if (isset($this->templateInformations["bg_grid_color"]) && $this->templateInformations["bg_grid_color"])
-			$this->commandLine .= "--color CANVAS".$this->templateInformations["bg_grid_color"]." ";
-	
-		if (isset($this->templateInformations["bg_color"]) && $this->templateInformations["bg_color"])
-			$this->commandLine .= "--color BACK".$this->templateInformations["bg_color"]." ";
-		else
-			$this->commandLine .= "--color BACK#F0F0F0 ";
-	
-		if (isset($this->templateInformations["police_color"]) && $this->templateInformations["police_color"])
-			$this->commandLine .= "--color FONT".$this->templateInformations["police_color"]." ";
-		if (isset($this->templateInformations["grid_main_color"]) && $this->templateInformations["grid_main_color"])
-			$this->commandLine .= "--color MGRID".$this->templateInformations["grid_main_color"]." ";
-		if (isset($this->templateInformations["grid_sec_color"]) && $this->templateInformations["grid_sec_color"])
-			$this->commandLine .= "--color GRID".$this->templateInformations["grid_sec_color"]." ";
-		if (isset($this->templateInformations["contour_cub_color"]) && $this->templateInformations["contour_cub_color"])
-			$this->commandLine .= "--color FRAME".$this->templateInformations["contour_cub_color"]." ";
-		if (isset($this->templateInformations["col_arrow"]) && $this->templateInformations["col_arrow"])
-			$this->commandLine .= "--color ARROW".$this->templateInformations["col_arrow"]." ";
-		if (isset($this->templateInformations["col_top"]) && $this->templateInformations["col_top"])
-			$this->commandLine .= "--color SHADEA".$this->templateInformations["col_top"]." ";
-		if (isset($this->templateInformations["col_bot"]) && $this->templateInformations["col_bot"])
-			$this->commandLine .= "--color SHADEB".$this->templateInformations["col_bot"]." ";
-		
-		if (isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL)
-			$this->commandLine .= "--lower-limit ".$this->templateInformations["lower_limit"]." ";
-		if (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != NULL)
-			$this->commandLine .= "--upper-limit ".$this->templateInformations["upper_limit"]." ";
-		if ((isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL) || (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != NULL))
-			$this->commandLine .= "--rigid --alt-autoscale-max ";
-		
-		$this->gprintScaleOption = "%s"; 
-		if ($this->templateInformations["scaled"] == "0"){ 
-	    	# Disable y-axis scaling 
-			$this->commandLine .= " -X0 "; 
-	        # Suppress Scaling in Text Output 
-	        $this->gprintScaleOption = ""; 
-	    } 
+	private function _getServiceGraphID()	{
+		$service_id = $this->indexData["service_id"];
+		while (1) {
+			$DBRESULT =& $this->DB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+			$row =& $DBRESULT->fetchRow();
+			if ($row["graph_id"]) {
+				$this->graphID = $row["graph_id"];
+				return $this->graphID;
+			} else if ($row["service_template_model_stm_id"])
+				$service_id = $row["service_template_model_stm_id"];
+			else
+				break;
+		}
+		return $this->graphID;
 	}
 
-	private function setFilename() {
-		$this->filename = $this->indexData["host_name"]. "-".$this->indexData["service_description"];
-		$this->filename = str_replace("#S#", "/", $this->filename);
-		$this->filename = str_replace("#BS#", "\\", $this->filename);
-	}
 
 	/*
 	 * Get index Data
 	 */
-	private function getIndexData() {
-//		$svc_instance = $metric_ODS["index_id"];
-		$svc_instance = $this->index;
+	private function _getIndexData() {
+		if (isset($this->metricsEnabled))
+			$svc_instance = $this->metrics[$this->metricsEnabled[0]]["index_id"];
+		else
+			$svc_instance = $this->index;
 
+		$this->_log("index_data for ".$svc_instance);
 		$DBRESULT =& $this->DBC->query("SELECT * FROM index_data WHERE id = '".$svc_instance."' LIMIT 1");
 		if (!$DBRESULT->numRows()) {
 			$this->indexData = 0;
@@ -466,146 +522,142 @@ class CentreonGraph	{
 				unset($meta);
 				$DBRESULT_meta->free();
 			}
-			$this->indexData["host_name"] = str_replace("#S#", "/", $this->indexData["host_name"]);
-			$this->indexData["host_name"] = str_replace("#BS#", "\\", $this->indexData["host_name"]);
-			$this->indexData["service_description"] = str_replace("#S#", "/", $this->indexData["service_description"]);
-			$this->indexData["service_description"] = str_replace("#BS#", "\\", $this->indexData["service_description"]);
-		}
-		$DBRESULT->free();	
-	}
-	
-	/*
-	 * Set General options 
-	 */
-	public function setGeneralOption() {
-		$DBRESULT =& $this->DB->query("SELECT * FROM options");
-		while ($opt =& $DBRESULT->fetchRow()) {
-			$this->general_opt[$opt['key']] = $opt['value'];  
+			$this->indexData["host_name"] = str_replace(array("#S#", "#BS#"), array("/", "\\"), $this->indexData["host_name"]);
+			$this->indexData["service_description"] = str_replace(array("#S#", "#BS#"), array("/", "\\"), $this->indexData["service_description"]);
 		}
 		$DBRESULT->free();
-		unset($opt);
+
+		if (isset($this->metricsEnabled))
+			$metrictitle = " metric ".$this->metrics[$this->metricsEnabled]["metric_name"];
+		else
+			$metrictitle = "";
+		if ($this->indexData["host_name"] != "_Module_Meta")
+			$this->setRRDOption("title", $this->indexData["service_description"]." "._("graph on")." ".$this->indexData["host_name"].$metrictitle);
+		else
+			$this->setRRDOption("title", _("Graph")." ".$this->indexData["service_description"].$metrictitle);
+
+
+
 	}
 	
 	/*
-	 * Get user id from session_id
+	 * Display Start and end time on graph
 	 */
-	private function getUserIdFromSID() {
-		$DBRESULT =& $this->DB->query("SELECT user_id FROM session WHERE session_id = '".$this->session_id."' LIMIT 1");
-		$admin =& $DBRESULT->fetchRow();
-		unset($DBRESULT);
-		if (isset($admin["user_id"])) {
-			$this->user_id = $admin["user_id"];
-		}
+	public function addArgument($arg) {
+		$this->_arguments[$this->_argcount++] = $arg;
 	}
 	
-	/*
-	 * Send headers information for web server
-	 */
-	public function header() {
+	public function displayError() {
+		$image = imagecreate(250,100);
+		$fond = imagecolorallocate($image,0xEF,0xF2,0xFB);
+		header("Content-Type: image/gif");
+		imagegif($image);
+		exit;
+	}
+
+	public function setFont($name, $value) {
+		$this->_fonts[$name] = $value;
+	}
+
+	public function setColor($name, $value) {
+		$this->_colors[$name] = $value;
+	}
+	
+	public function setRRDOption($name, $value = null) {
+		if (strpos($value, " ")!==false)
+			$value = "'".$value."'";
+		$this->_RRDoptions[$name] = $value;
+	}
+
+	public function setCommandLineTimeLimit($flag) {
+		if (isset($flag))
+			$this->_flag = $flag;
+	}
+
+	public function setOption($name, $bool = true) {
+		$this->_options[$name] = $bool;
+	}
+
+	public function getOption($name) {
+		if (isset($this->_options[$name]))
+			return $this->_options[$name];
+		return false;
+	}
+	
+	public function displayImageFlow() {
+		$commandLine = "";
+	
+		/*
+		 * Send header
+		 */
 		global $HTTP_ACCEPT_ENCODING;
-	   
 		if (headers_sent()){
-	        $encoding = false;
-	    } else if (strpos($HTTP_ACCEPT_ENCODING, 'x-gzip') !== false){
-	        $encoding = 'x-gzip';
-	    } else if (strpos($HTTP_ACCEPT_ENCODING,'gzip') !== false){
-	        $encoding = 'gzip';
-	    } else {
-	        $encoding = false;
-	    }
+			$encoding = false;
+		} else if (strpos($HTTP_ACCEPT_ENCODING, 'x-gzip') !== false){
+			$encoding = 'x-gzip';
+		} else if (strpos($HTTP_ACCEPT_ENCODING,'gzip') !== false){
+			$encoding = 'gzip';
+		} else {
+			$encoding = false;
+		}
  		
 		header("Content-Type: image/png");
 		header("Content-Transfer-Encoding: binary");
 		header("Content-Disposition: attachment; filename=\"".$this->filename.".png\";");
 		if ($this->compress && $encoding)
 			header('Content-Encoding: '.$encoding);
-	}
-	
-	/*
-	 * Display Start and end time on graph
-	 */
-	public function addCommentTime() {
 		
-		$rrd_time  = addslashes($this->GMT->getDate("Y\/m\/d G:i", $this->start));
-		$rrd_time = str_replace(":", "\:", $rrd_time);
-		$rrd_time2 = addslashes($this->GMT->getDate("Y\/m\/d G:i", $this->end)) ;
-		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
+		$commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
 		
-		$this->fillCommandLine("COMMENT:\" From $rrd_time to $rrd_time2 \\c\"");
-	}
-	
-	public function displayError() {
-		$image = imagecreate(250,100);
-		$fond = imagecolorallocate($image,0xEF,0xF2,0xFB);		
-		header("Content-Type: image/gif");
-		imagegif($image);
-		exit;
-	}
-	
-	public function setTitle() {
-		if ($this->indexData["host_name"] != "_Module_Meta")
-			$this->title = $this->indexData["service_description"]." "._("graph on")." ".$this->indexData["host_name"];
-		else
-			$this->title = _("Graph")." ".$this->indexData["service_description"] ;
-	}
-	
-	public function initCommandLine() {
-		$this->setTitle();
-		$this->commandLine = $this->general_opt["rrdtool_path_bin"];
-		$this->commandLine .= " graph - ";
-		$this->fillCommandLine("--interlaced");
-		if (isset($this->templateInformations["base"]) && $this->templateInformations["base"])
-			$this->fillCommandLine("-b ".$this->templateInformations["base"]);
-		$this->fillCommandLine("--imgformat PNG");
-		$this->fillCommandLine("--width=".$this->width);
-		$this->fillCommandLine("--height=".$this->height);
-		$this->fillCommandLine("--title='".$this->title."'");
-		$this->fillCommandLine("--vertical-label='".$this->templateInformations["vertical_label"]."'");
-		$this->addRRDToolProperties();
-		$this->addInformationToCommandLine();
-	}
-	
-	public function endCommandLine() {
-		$this->commandLine .= " 2>&1"; 
-	}
-	
-	public function addCommandLineTimeLimit($flag) {
-		$xconfig = "";
-		if (isset($flag) && $flag == 0) {
-			if ($this->GMT->used()) {
-				$this->start 	= $this->GMT->getUTCDate($this->start);
-				$this->end 		= $this->GMT->getUTCDate($this->end);
-			}
+		if ($this->_flag == 0 && $this->GMT->used() ) {
+				$this->setRRDOption("start", $this->GMT->getUTCDate($this->_RRDoptions["start"]) );
+				$this->setRRDOption("end",   $this->GMT->getUTCDate($this->_RRDoptions["end"]) );
 		}
-		if($end - $start > 2160000 and $end - $start < 12960000)
+		if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] > 2160000 
+		&& $this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000 )
 		{
-			if($end - $start < 12960000 - (86400*7))
-				$xconfig = "--x-grid DAY:1:DAY:7:DAY:7:0:%d/%m";
+			if($this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000 - (86400*7))
+				$this->setRRDOption("x-grid", "DAY:1:DAY:7:DAY:7:0:%d/%m");
 			else
-				$xconfig = "--x-grid DAY:1:DAY:7:DAY:14:0:%d/%m";
+				$this->setRRDOption("x-grid", "DAY:1:DAY:7:DAY:14:0:%d/%m");
 		}
-		$this->commandLine .= " $xconfig --start=".$this->start." --end=".$this->end." ";
-	}
-	
-	/*
-	 * Concat command line parameters
-	 */
-	public function fillCommandLine($args) {
-		$this->commandLine .= " ".$args." ";
-	}
-	
-	public function displayImageFlow() {
-		$this->escapeCommand();
-		$this->logCommandLine();
+
+		foreach ($this->_RRDoptions as $key => $value) {
+			$commandLine .= "--".$key;
+			if (isset($value))
+				$commandLine .= "=".$value;
+			$commandLine .= " ";
+		}
+		foreach ($this->_colors as $key => $value) {
+			$commandLine .= "--color ".$key.$value." ";
+		}
+		foreach ($this->_fonts as $key => $value) {
+			$commandLine .= "--font ".$key.$value." ";
+		}
+
 		/*
-		 * Send header
+		 * ... order does matter!
 		 */
-		$this->header();
-		
+		if ($this->_options["comment_time"] == true) {
+				$rrd_time  = addslashes($this->GMT->getDate("Y\/m\/d G:i", $this->_RRDoptions["start"]));
+				$rrd_time = str_replace(":", "\:", $rrd_time);
+				$rrd_time2 = addslashes($this->GMT->getDate("Y\/m\/d G:i", $this->_RRDoptions["end"])) ;
+				$rrd_time2 = str_replace(":", "\:", $rrd_time2);
+				$commandLine .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
+		}
+		foreach ($this->_arguments as $arg) {
+			$commandLine .= " ".$arg." ";
+		}
+
+		$commandLine = ereg_replace("(\\\$|`)", "", $commandLine);
+		if ($this->GMT->used())
+			$commandLine = "export TZ='CMT".$this->GMT->getMyGMTForRRD()."' ; ".$commandLine;
+
+		$this->_log($commandLine);
 		/*
 		 * Send Binary Data
 		 */
-		$fp = popen($this->commandLine  , 'r');
+		$fp = popen($commandLine." 2>&1"  , 'r');
 		if (isset($fp) && $fp ) {
 			$str ='';
 			while (!feof ($fp)) {
@@ -615,12 +667,7 @@ class CentreonGraph	{
 			print $str;
 		}
 	}
-	
-	public function logCommandLine() {
-		if ($this->general_opt['debug_rrdtool'])
-			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : ".$this->commandLine." \n", 3, $this->general_opt["debug_path"]."rrdtool.log");
-	}
-	
+
 	public function checkArgument($name, $tab, $defaultValue) {
 		if (isset($name) && isset($tab)) {
 			if (isset($tab[$name]))
@@ -629,40 +676,7 @@ class CentreonGraph	{
 				return htmlentities($defaultValue, ENT_QUOTES);
 		}
 	}
-	
-	public function setTimezone() {
-		if ($this->GMT->used())
-			$this->commandLine = "export TZ='CMT".$this->GMT->getMyGMTForRRD()."' ; ".$this->commandLine;
-	}
-	
-	public function escapeCommand() {
-		$this->commandLine = ereg_replace("(\\\$|`)", "", $this->commandLine);
-	}
-	
-	public function getRRDToolPath(){
-		$DBRESULT =& $this->DBC->query("SELECT RRDdatabase_path FROM config LIMIT 1");
-		$config =& $DBRESULT->fetchRow();
-		$DBRESULT->free();
-		$this->dbPath = $config["RRDdatabase_path"];
-		unset($config);
-	}
-	
-	public function setActivateMetrics() {
-		$DBRESULT =& $this->DB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$this->index."' AND `contact_id` = '".$this->user_id."'");
-		while ($metric_activate =& $DBRESULT->fetchRow()){
-			$this->metricsActivate[$metric_activate["metric_id"]] = $metric_activate["metric_id"];
-		}
-		$DBRESULT->free();
-		unset($metric_activate);
-	}
-
-	public function setWidth($width) {
-		$this->width = $width;
-	}
-
-	public function setHeight($height) {
-		$this->height = $height;
-	}
+		
 	
 	public 	function getRandomWebColor() {
 		$web_safe_colors = array('#000033', '#000066', '#000099', '#0000cc', 
@@ -703,6 +717,12 @@ class CentreonGraph	{
 			'#ffccff', '#ffff00', '#ffff33', '#ffff66', '#ffff99', '#ffffcc');
 			return $web_safe_colors[rand(0,sizeof($web_safe_colors))];
 	}
+
+	private function _log($message) {
+		if ($this->general_opt['debug_rrdtool'])
+			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : ".$message." \n", 3, $this->general_opt["debug_path"]."rrdtool.log");
+	}
+	
 		
 }
 ?>

@@ -40,7 +40,7 @@
 	 * Include config file
 	 */
 	include "@CENTREON_ETC@/centreon.conf.php";
-		
+
 	require_once "./DB-Func.php";
 	require_once "$centreon_path/www/class/centreonGraph.class.php";
 
@@ -56,17 +56,12 @@
 	}
 	
 	require_once $centreon_path."www/include/common/common-Func.php";
-
-	/*
-	 * Set General Options
-	 */
-	$obj->setGeneralOption();
 	
 	/*
 	 * Set arguments from GET
 	 */	
-	$obj->start 	= $obj->checkArgument("start", $_GET, time() - (60*60*48));
-	$obj->end 	= $obj->checkArgument("end", $_GET, time());
+	$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
+	$obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
 		
  	$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
 
@@ -75,51 +70,25 @@
 	 */
 	$obj->setTemplate($_GET["template_id"]);
 
-	/*
-	 * Check Graphs size
-	 */
-	if (isset($obj->templateInformations["width"]) && $obj->templateInformations["width"] != "") 
-		$obj->setWidth($obj->templateInformations["width"]);
-	if (isset($obj->templateInformations["height"]) && $obj->templateInformations["height"] != "")
-		$obj->setHeight($obj->templateInformations["height"]);	
-
-	/*
-	 * Get Activate Metrics
-	 */
-	$obj->setActivateMetrics();
-	
-	/*
-	 * Begin command line build
-	 */
-	$obj->initCommandLine();
-	$obj->addCommandLineTimeLimit($_GET["flagperiod"]);
+	$obj->init();
+	$obj->setCommandLineTimeLimit($_GET["flagperiod"]);
 	
 	/*
 	 * Init Curve list
 	 */
 	$obj->setMetricList($_GET["metric"]);
 	$obj->initCurveList();	
-	$obj->addCurveInCommandLine();
 	
 	/*
 	 * Comment time
 	 */
-	$obj->addCommentTime();
+	$obj->setOption("comment_time");
 	
 	/*
 	 * Create Legende
 	 */
 	$obj->createLegend();
 
-	/*
-	 * Close command line
-	 */
-	$obj->endCommandLine();
-	/*
-	 * Add Timezone for current user.
-	 */
-	$obj->setTimezone();
-	//print $obj->commandLine;
 	
 	/*
 	 * Display Images Binary Data
