@@ -7,6 +7,37 @@
 => enhancement : new Views > Graphs interface (possibility to export images etc...)
 => enhancement : menus of modules can be translated
 
+## Centreon 2.1.9
+
+=> fix: change heartbeat for RRDTool databases
+=> fix: remove problem with js and topology (can cause problem with pause button in the monitoring)
+=> fix: remove special char problem in object descriptions
+=> fix: remove issue when acknownledging a service (#1731)
+=> fix: Improve sql request in monitoring
+=> fix: remove issue with PEAR upgrade during upgrade step
+=> fix: accepte % in metric name
+=> fix: remove problem with # in host or service name in the monitoring
+=> fix: add rules checks for meta service form
+=> enhancement: Update prototype lib.
+
+## Centreon 2.1.8
+
+=> fix: problem with macro not replaced during install step in centAcl.php
+=> fix: problem with a bad comment in trap handler
+=> enhancement: generate traps during install/upgrade process 
+
+## Centreon 2.1.7
+
+=> fix: hardcoded path in topcounter status
+=> fix: problem in ACL (generation flag not updated)
+=> fix: problem with icones in monitoring
+=> enhancement: Time for ACL generation  
+=> enhancement: request number for ACL generation
+=> fix: add lock for centACL.php
+=> enhancement: improvement of ACL action (service schedule forced not link with service schedule)
+=> enhancement: SNMPTT configuration optimization
+=> enhancement: Add long output in monitoring 
+
 ## Centreon 2.1.6
 
 => fix: missing column in eventlog csv export
