@@ -56,6 +56,20 @@
 	}
 	
 	/* *********************************************
+	 * Get active poller only
+	 */
+	$pollerList = "";
+	$request = "SELECT name FROM nagios_server WHERE ns_activate = '1'";
+	$DBRESULT =& $obj->DB->query($request);
+	while ($d = $DBRESULT->fetchRow()) {
+		if ($pollerList = "") {
+			$pollerList .= ", ";
+		}
+		$pollerList .= "'".$d["name"]."'";
+	}
+	$DBRESULT->free();
+	
+	/* *********************************************
 	 * Get Host stats
 	 */
 	$rq1 = 	" SELECT count(DISTINCT ".$obj->ndoPrefix."objects.name1), ".$obj->ndoPrefix."hoststatus.current_state" .
@@ -172,7 +186,7 @@
 	
 	$request = 	"SELECT UNIX_TIMESTAMP(`status_update_time`) AS last_update, `is_currently_running`, instance_name, ".$obj->ndoPrefix."instances.instance_id " .
 				"FROM `".$obj->ndoPrefix."programstatus`, ".$obj->ndoPrefix."instances " .
-				"WHERE ".$obj->ndoPrefix."programstatus.instance_id = ".$obj->ndoPrefix."instances.instance_id";
+				"WHERE ".$obj->ndoPrefix."programstatus.instance_id = ".$obj->ndoPrefix."instances.instance_id AND ".$obj->ndoPrefix."instances.instance_name IN ($pollerList)";
 	$DBRESULT =& $obj->DBNdo->query($request);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		/*
@@ -207,7 +221,8 @@
 				"FROM `nagios_stats` ns, instance i " .
 				"WHERE ns.stat_label = 'Service Check Latency' " .
 				"	AND ns.stat_key LIKE 'Average' " .
-				"	AND ns.instance_id = i.instance_id";
+				"	AND ns.instance_id = i.instance_id" .
+				"	AND i.instance_name IN ($pollerList)";
 	$DBRESULT =& $obj->DBC->query($request);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		if ($latency != 2 && $ndo["stat_value"] >= 60) {
