@@ -270,12 +270,13 @@ sub getGeneralConfig(){
 
 sub GetPerfData() {
     # Init Var
-    my ($line_tab, $sth2, $data, $flag_drop, $sleeptime, $configOptions);
+    my ($line_tab, $sth2, $data, $flag_drop, $sleeptime, $configOptions, $now);
     use vars qw($con_oreon $con_ods %host %service $dataBinInfo $counterData);
 
     # Init Buffer var
     $counterData = 0;
     $dataBinInfo = "";
+    $now = time() + 86400;
 
     # Connect MySQL DB
     CheckMySQLConnexion();				
@@ -316,7 +317,11 @@ sub GetPerfData() {
 		    }
 		    $_ =~ s/\n//g;
 		    @line_tab = prepardPerfdataParsed($_);
-		    if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "")){
+		    if ($line_tab[0] > $now) {
+            	writeLogFile("Error Timestamp... Unknown format : ".$line_tab[0]);
+            }
+		    
+		    if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "" && $line_tab[0] < $now)){
 			checkAndUpdate(@line_tab, $configOptions);
 			$counterData++;
 		    }
