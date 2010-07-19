@@ -280,7 +280,7 @@ sub rrd_process {
 		}
 		$j++;
     }
-    if (!$error) {
+    if (!$error && ($query_str ne "")) {
  	   my $rq = "DELETE FROM `nagios_stats` WHERE instance_id = '".$ns_id."'";
 	   my $res = $dbh->do($rq);
 	   print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));
