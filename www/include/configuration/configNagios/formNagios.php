@@ -84,7 +84,7 @@
 	 */
 	$nBk = 0;
 	$aBk = array();
-	$DBRESULT=& $pearDB->query("SELECT bkmod_id, broker_module FROM cfg_nagios_bkmod WHERE nagios_id='".$nagios_id."'");
+	$DBRESULT=& $pearDB->query("SELECT bk_mod_id, broker_module FROM cfg_nagios_broker_module WHERE cfg_nagios_id = '".$nagios_id."'");
 	while ($lineBk =& $DBRESULT->fetchRow()){
 		$aBk[$nBk] = $lineBk;
 		$nBk++;
@@ -486,7 +486,7 @@
 	 * Event Broker Option
 	 */
 	$form->addElement('text', 'multiple_broker_module', _("Multiple Broker Module"), $attrsText2);
-	$form->addElement('static', 'bkTextMultiple', _("This directive can be used multiple times, see nagios documentation.<BR>NDO use the broker module directive, Nagvis too."));
+	$form->addElement('static', 'bkTextMultiple', _("This directive can be used multiple times, see nagios documentation.<BR>NDO use the broker module directive."));
 	$form->addElement('text', 'addBroker', _("Add a new broker module"), $attrsText2);
 	$form->addElement('text', 'delBroker', _("Delete this broker module"), $attrsText2);
 	include_once("makeJS_formNagios.php");

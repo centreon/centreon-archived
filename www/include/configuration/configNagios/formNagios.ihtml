@@ -153,8 +153,6 @@
 	<div id='tab4' class='tab'>
 		 <table class="ListTable">
 		 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row.gif'>&nbsp;&nbsp;{$NDO}</td></tr>
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row.gif'>&nbsp;&nbsp;{$BrokerModule}</td></tr>
 			<tr class="list_one">
 				<td class="FormRowField">
@@ -164,17 +162,17 @@
 				<input type="hidden" name="nbOfBroker" id="hiNbBroker">
 				</td>
 				<td class="FormRowValue" id="multipleBroker">
-					{if $o == "a" || $o == "c"}
-                        	        	{$form.addBroker.label}&nbsp;<img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBroker();">
-                        		{/if}
+				{if $o == "a" || $o == "c"}
+       	        	{$form.addBroker.label}&nbsp;<img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBroker();">
+           		{/if}
 				</td>
 			</tr>
-
+			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:event_broker_options", {$helpattr});'>&nbsp;{$form.event_broker_options.label}</td><td class="FormRowValue">{$form.event_broker_options.html}</td></tr>
+			
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gauge.gif'>&nbsp;&nbsp;{$Perfdata}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:process_performance_data", {$helpattr});'>&nbsp;{$form.process_performance_data.label}</td><td class="FormRowValue">{$form.process_performance_data.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:host_perfdata_command", {$helpattr});'>&nbsp;{$form.host_perfdata_command.label}</td><td class="FormRowValue">{$form.host_perfdata_command.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:service_perfdata_command", {$helpattr});'>&nbsp;{$form.service_perfdata_command.label}</td><td class="FormRowValue">{$form.service_perfdata_command.html}</td></tr>
-	
 			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:host_perfdata_file", {$helpattr});'>&nbsp;{$form.host_perfdata_file.label}</td><td class="FormRowValue">{$form.host_perfdata_file.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:service_perfdata_file", {$helpattr});'>&nbsp;{$form.service_perfdata_file.label}</td><td class="FormRowValue">{$form.service_perfdata_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:host_perfdata_file_template", {$helpattr});'>&nbsp;{$form.host_perfdata_file_template.label}</td><td class="FormRowValue">{$form.host_perfdata_file_template.html}</td></tr>

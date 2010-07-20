@@ -495,17 +495,19 @@
 		$rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
 		$DBRESULT =& $pearDB->query($rq);
+		
+		
 		/*
 		 *  Update multiple broker module
 		 */
 		if (isset($_POST['lsOfBroker'])) {
 			/* Find how many Broker we already have */
-			$DBRESULT =& $pearDB->query("SELECT count(bkmod_id) as nbOldBroker FROM cfg_nagios_bkmod WHERE nagios_id='".$nagios_id."'");
+			$DBRESULT =& $pearDB->query("SELECT count(bk_mod_id) as nbOldBroker FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$nagios_id."'");
 			$nRow =& $DBRESULT->fetchRow();
 			$DBRESULT->free();
 			$nbOldBroker = $nRow["nbOldBroker"];
 			$oldBks = array();
-			$DBRESULT =& $pearDB->query("SELECT bkmod_id FROM cfg_nagios_bkmod WHERE nagios_id='".$nagios_id."'");
+			$DBRESULT =& $pearDB->query("SELECT bk_mod_id FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$nagios_id."'");
 			while ($oldBk =& $DBRESULT->fetchRow())
 				$oldBks[] = $oldBk;
 			$DBRESULT->free();
@@ -515,24 +517,25 @@
 				if (isset($_POST[$inBr])) {
 					if ( $cBk < $nbOldBroker ) {
 						# Update broker module
-						$rq = "UPDATE cfg_nagios_bkmod SET broker_module = '".$_POST[$inBr]."' WHERE bkmod_id ='".$oldBks[$cBk]['bkmod_id']."'";
+						$rq = "UPDATE cfg_nagios_bkmod SET cfg_nagios_broker_module = '".$_POST[$inBr]."' WHERE bk_mod_id ='".$oldBks[$cBk]['bkmod_id']."'";
 					} else {
 						# Insert broker module
-						$rq = "INSERT INTO cfg_nagios_bkmod (`nagios_id`, `broker_module`) VALUES ('".$nagios_id."', '".$_POST[$inBr]."')";
+						$rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id."', '".$_POST[$inBr]."')";
 					}
 					$DBRESULT =& $pearDB->query($rq);
 					$cBk++;
 				}
 			}
 			while ( $cBk < $nbOldBroker ) {
-				$rq = "DELETE FROM cfg_nagios_bkmod WHERE bkmod_id ='".$oldBks[$cBk]['bkmod_id']."'";
+				$rq = "DELETE FROM cfg_nagios_broker_module WHERE bkmod_id ='".$oldBks[$cBk]['bkmod_id']."'";
 				$DBRESULT =& $pearDB->query($rq);
 				$cBk++;
 			}
 		}
 
-		if ($ret["nagios_activate"]["nagios_activate"])
+		if ($ret["nagios_activate"]["nagios_activate"]) {
 			enableNagiosInDB($nagios_id);
+		}
 	}
 	
 ?>
