@@ -43,14 +43,26 @@
 		mkdir($nagiosCFGPath.$tab['id']."/");
 	}
 
+	/*
+	 * Create file
+	 */
 	$handle = create_file($nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG", $oreon->user->get_name(), false);
+	
+	/*
+	 * Get all information for nagios.cfg for this poller
+	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
 	$nagios = $DBRESULT->fetchRow();
 	$DBRESULT->free();
-	$DBRESULT =& $pearDB->query("SELECT broker_module FROM `cfg_nagios_bkmod` WHERE `nagios_id` = '".$nagios["nagios_id"]."'");
+	
+	/*
+	 * Get broker module informations
+	 */
+	$DBRESULT =& $pearDB->query("SELECT broker_module FROM `cfg_nagios_broker_module` WHERE `cfg_nagios_id` = '".$nagios["nagios_id"]."'");
 	$nagios["broker_module"] = NULL;
-	while ($arBk =& $DBRESULT->fetchRow())
+	while ($arBk =& $DBRESULT->fetchRow()) {
 		$nagios["broker_module"][] = $arBk;
+	}
 	$DBRESULT->free();
 	
 	$str = NULL;
@@ -104,6 +116,9 @@
 	}
 	$str .= "resource_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/resource.cfg\n";
 	
+	/*
+	 * Generate all parameters
+	 */
 	require "./include/configuration/configGenerate/genMainFile.php";
 	
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
