@@ -204,11 +204,11 @@ INSERT INTO `options` (`key`, `value`) VALUES ('monitoring_engine', 'NAGIOS');
 
 ALTER TABLE `modules_informations` ADD `svc_tools` ENUM( '0', '1' ) NOT NULL DEFAULT '0', ADD `host_tools` ENUM( '0', '1' ) NOT NULL DEFAULT '0', ADD INDEX ( svc_tools, host_tools );
 
-CREATE TABLE IF NOT EXISTS `cfg_nagios_bkmod` (
-  `bkmod_id` int(11) NOT NULL AUTO_INCREMENT,
-  `nagios_id` int(11) DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `cfg_nagios_broker_module` (
+  `bk_mod_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cfg_nagios_id` int(11) DEFAULT NULL,
   `broker_module` varchar(255) DEFAULT NULL,
-PRIMARY KEY (`bkmod_id`)
+PRIMARY KEY (`bk_mod_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 

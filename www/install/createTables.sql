@@ -437,8 +437,6 @@ CREATE TABLE IF NOT EXISTS `cfg_nagios` (
   `admin_pager` varchar(255) default NULL,
   `nagios_comment` text,
   `nagios_activate` enum('0','1') default NULL,
-  `broker_module` varchar(255) default NULL,
-  `event_broker_options` varchar(255) default NULL,
   `translate_passive_host_checks` enum('0','1') default NULL,
   `nagios_server_id` int(11) default NULL,
   `enable_predictive_host_dependency_checks` enum('0','1','2') default NULL,
@@ -472,14 +470,14 @@ CREATE TABLE IF NOT EXISTS `cfg_nagios` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `cfg_nagios_bkmod`
+-- Structure de la table `cfg_nagios_broker_module`
 --
 
 CREATE TABLE IF NOT EXISTS `cfg_nagios_bkmod` (
-  `bkmod_id` int(11) NOT NULL AUTO_INCREMENT,
-  `nagios_id` int(11) DEFAULT NULL,
+  `bk_mod_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cfg_nagios_id` int(11) DEFAULT NULL,
   `broker_module` varchar(255) DEFAULT NULL,
-PRIMARY KEY (`bkmod_id`)
+PRIMARY KEY (`bk_mod_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
