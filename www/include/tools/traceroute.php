@@ -39,18 +39,19 @@
  	ini_set("Display_errors", "Off");
 
 	 include("@CENTREON_ETC@/centreon.conf.php");
-	 require_once ("../../$classdir/Session.class.php");
-	 require_once ("../../$classdir/Oreon.class.php");
+	 require_once ("../../$classdir/centreonSession.class.php");
+	 require_once ("../../$classdir/centreon.class.php");
 
-	 Session::start();
-
-	 if (!isset($_SESSION["oreon"])) {
-	 	// Quick dirty protection
+	CentreonSession::start();
+	
+	if (!isset($_SESSION["centreon"])) {
+		// Quick dirty protection
 	 	header("Location: ../../index.php");
 		exit;
-	 } else
-	 	$oreon =& $_SESSION["oreon"];
-
+	} else {
+	 	$centreon =& $_SESSION["centreon"];
+	}
+	
 	if (isset($_GET["host"]))
 		$host = htmlentities($_GET["host"], ENT_QUOTES);
 	else if (isset($_POST["host"]))
@@ -65,11 +66,12 @@
 	$msg = "";
 	if (!PEAR::isError($tr))	{
 		$tr->setArgs(array('timeout' => 5));
-
-		 # patch for user that have PEAR Traceroute 0.21.1, remote exec possible Julien Cayssol
+		
+		# patch for user that have PEAR Traceroute 0.21.1, remote exec possible Julien Cayssol
 	    $response = $tr->traceroute(escapeshellcmd($host));
-		foreach ($response->getRawData() as $key => $data)
+		foreach ($response->getRawData() as $key => $data) {
    			$msg .= $data ."<br />";
+		}
 		print $msg;
 	}
 

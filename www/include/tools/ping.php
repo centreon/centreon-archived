@@ -35,19 +35,21 @@
  * SVN : $Id$
  * 
  */
-	 include("@CENTREON_ETC@/centreon.conf.php");
-	 require_once ("../../$classdir/Session.class.php");
-	 require_once ("../../$classdir/Oreon.class.php");
-
-	 Session::start();
 	
-	 if (!isset($_SESSION["oreon"])) {
-	 	// Quick dirty protection
+	include("@CENTREON_ETC@/centreon.conf.php");
+	require_once ("../../$classdir/centreonSession.class.php");
+	require_once ("../../$classdir/centreon.class.php");
+
+	CentreonSession::start();
+	
+	if (!isset($_SESSION["centreon"])) {
+		// Quick dirty protection
 	 	header("Location: ../../index.php");
 		exit;
-	 } else
-	 	$oreon =& $_SESSION["oreon"];
-
+	} else {
+	 	$centreon =& $_SESSION["centreon"];
+	}
+	 
 	if (isset($_GET["host"]))
 		$host = htmlentities($_GET["host"], ENT_QUOTES);
 	else if (isset($_POST["host"]))

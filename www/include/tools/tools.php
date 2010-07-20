@@ -36,25 +36,32 @@
  * 
  */
  
- 	if (!isset ($oreon))
+ 	if (!isset ($centreon)) {
 		exit ();
+ 	}
 
 	isset($_GET["host_id"]) ? $hostG = htmlentities($_GET["host_id"], ENT_QUOTES) : $hostG = NULL;
 	isset($_POST["host_id"]) ? $hostP = htmlentities($_POST["host_id"], ENT_QUOTES) : $hostP = NULL;
 	$hostG ? $host_id = $hostG : $host_id = $hostP;
 
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/tools/";
 
-	#PHP functions
-	//require_once $path."DB-Func.php";
+	/*
+	 * PHP functions
+	 */
 	require_once "./include/common/common-Func.php";
 
-	if ($min)
+	if ($min) {
 		require_once($path."minTools.php");
-
+	}
+	
 ?>
