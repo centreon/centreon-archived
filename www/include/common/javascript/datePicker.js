@@ -106,6 +106,129 @@ This would display the datepicker beneath the StartDate field (because the
 displayBelowThisObject parameter was false), and update the StartDate field with
 the chosen value of the datepicker using a date format of dd.mm.yyyy
 */
+
+function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)	{
+	if (document.getElementsByName (timeFieldName).item(1))
+	  	var targetDateField = document.getElementsByName (timeFieldName).item(1);
+	else
+	  	var targetDateField = document.getElementsByName (timeFieldName).item(0);
+
+
+ 	var x = displayBelowThisObject.offsetLeft;
+  	var y = displayBelowThisObject.offsetTop + displayBelowThisObject.offsetHeight ;
+ 
+  	// deal with elements inside tables and such
+  	var parent = displayBelowThisObject;
+  	while (parent.offsetParent) {
+    	parent = parent.offsetParent;
+    	x += parent.offsetLeft;
+    	y += parent.offsetTop ;
+  	}
+	drawTimePicker(timeFieldName, targetDateField, x, y);
+}
+
+function drawTimePicker(timeFieldName, targetTimeField, x, y) {
+ 	var timePickerDivID = timeFieldName + "_timePickerDivID";
+ 	
+ 	// Check if the listbox is already open, if yes then close it 	
+ 	if (document.getElementById(timePickerDivID) 
+ 		&& document.getElementById(timePickerDivID+"_close")){
+ 		
+ 		var pickerDiv = document.getElementById(timePickerDivID); 	
+ 		pickerDiv.style.visibility = "hidden";
+ 		pickerDiv.value = '';
+ 		pickerDiv.innerHTML = '';
+ 		
+ 		var pickerDiv_close = document.getElementById(timePickerDivID+"_close");
+ 		pickerDiv_close.style.visibility = "hidden"; 		
+ 		pickerDiv_close.value = ''; 		
+ 		
+ 		document.body.removeChild(pickerDiv); 		
+ 		document.body.removeChild(pickerDiv_close); 		
+ 		return false;
+ 	}
+ 
+	var newNode = document.createElement("select");
+    newNode.setAttribute("id", timePickerDivID);
+    newNode.setAttribute("class", "tpDiv");
+    newNode.setAttribute("size", 6);
+    newNode.setAttribute("style", "visibility: hidden;");
+	newNode.onchange = function() {	
+		var pickerDiv = document.getElementById(timePickerDivID);		
+		targetTimeField.value = '';
+		targetTimeField.value = pickerDiv.options[pickerDiv.selectedIndex].value;
+		pickerDiv.style.visibility = (pickerDiv.style.visibility == "visible" ? "hidden" : "visible");
+		pickerDiv.style.display = (pickerDiv.style.display == "block" ? "none" : "block");
+
+		var pickerDiv_close = document.getElementById(timePickerDivID+"_close");
+		pickerDiv_close.style.visibility = "hidden";
+		pickerDiv_close.style.display = "block";
+		
+		document.body.removeChild(pickerDiv);
+ 		document.body.removeChild(pickerDiv_close);
+		return false;
+	};
+
+	var _zero = "0";
+	for (var i=0; i < 24; i++) {
+		if(i < 10)
+			_zero = "0";
+		else
+			_zero = "";
+		
+		var k = document.createElement('option');
+		k.value= _zero + i + ":00";
+		k.innerHTML= _zero + i + ":00";
+		var currentTime = new Date()
+		if(i == currentTime.getHours())
+		k.selected = true;
+		newNode.appendChild(k);		
+
+		var k = document.createElement('option');
+		k.value= _zero + i+":30";
+		k.innerHTML= _zero + i+":30";
+		newNode.appendChild(k);
+	}
+    document.body.appendChild(newNode);
+    
+  
+	var pickerDiv = document.getElementById(timePickerDivID);
+	pickerDiv.style.position = "absolute";
+	pickerDiv.style.left = x + "px";
+	pickerDiv.style.top = y + "px";
+	pickerDiv.style.visibility = (pickerDiv.style.visibility == "visible" ? "hidden" : "visible");
+	pickerDiv.style.display = (pickerDiv.style.display == "block" ? "none" : "block");
+	pickerDiv.style.zIndex = 10000;
+
+
+	var closeButton = document.createElement("input");
+    closeButton.type= "button";
+    closeButton.value= "close";
+	closeButton.style.position = "absolute";
+	closeButton.id = timePickerDivID + "_close";
+	closeButton.style.left = x + "px";
+	closeButton.style.top = y + 83 + "px";
+	closeButton.style.width = 45 + "px";
+	closeButton.style.zIndex = 10000;
+	closeButton.style.textDecoration = "none";
+
+	closeButton.onclick = function() { 
+
+		var pickerDiv = document.getElementById(timePickerDivID);
+		pickerDiv.style.visibility = "hidden";
+		pickerDiv.style.display = "block";
+		
+//		var pickerDiv_close = document.getElementById(timePickerDivID+"_close");
+		var pickerDiv_close = this;
+		pickerDiv_close.style.visibility = "hidden";
+		pickerDiv_close.style.display = "block";
+		document.body.removeChild(pickerDiv);
+		document.body.removeChild(pickerDiv_close);
+		return false;
+	};
+    document.body.appendChild(closeButton);    
+}
+
 function displayDatePicker(dateFieldName, displayBelowThisObject, dtFormat, dtSep)
 {
 	if (document.getElementsByName (dateFieldName).item(1))
@@ -427,9 +550,30 @@ function datePickerClosed(dateField)
 }
 
 */
+
+function datePickerClosed(changedField) { 
+    if (changedField.name=='start' || changedField.name=='end' 
+	|| changedField.name=='StartDate'
+	|| changedField.name=='StartTime'
+	|| changedField.name=='EndDate'
+	|| changedField.name=='EndTime' ) { 
+        document.FormPeriod.period.value=''; 
+    } 
+}
+
+function resetFields(fields) {
+    for(i=0;i<fields.length;i++ ) {
+	fields[i].value="";
+    }
+}
+
+
 function updateDateField(dateFieldName, dateString)
 {
-  var targetDateField = document.getElementsByName (dateFieldName).item(0);
+	if (document.getElementsByName (dateFieldName).item(1))
+	  var targetDateField = document.getElementsByName (dateFieldName).item(1);
+	else
+	  var targetDateField = document.getElementsByName (dateFieldName).item(0);
   if (dateString)
     targetDateField.value = dateString;
  
@@ -485,8 +629,8 @@ function adjustiFrame(pickerDiv, iFrameDiv)
     
     try {
       iFrameDiv.style.position = "absolute";
-      iFrameDiv.style.width = pickerDiv.offsetWidth;
-      iFrameDiv.style.height = pickerDiv.offsetHeight ;
+//      iFrameDiv.style.width = pickerDiv.offsetWidth;
+//      iFrameDiv.style.height = pickerDiv.offsetHeight ;
       iFrameDiv.style.top = pickerDiv.style.top;
       iFrameDiv.style.left = pickerDiv.style.left;
       iFrameDiv.style.zIndex = pickerDiv.style.zIndex - 1;
