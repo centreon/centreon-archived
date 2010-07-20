@@ -27,7 +27,7 @@
 	header('Content-Type: text/xml');
 	header('Cache-Control: no-cache');
 	
-	require_once "/usr/local/app/centreon/etc/centreon.conf.php";
+	require_once "/etc/centreon/centreon.conf.php";
 	require_once $centreon_path."/www/class/centreonDB.class.php";	
 	require_once $centreon_path."/www/class/centreonXML.class.php";
 		
@@ -39,22 +39,17 @@
 	
 	#
 	# Existing services data comes from DBO -> Store in $s_datas Array
-	$s_datas = array(""=>"Services list&nbsp;&nbsp;&nbsp;");
+	$s_datas = array(""=>"&nbsp;");
 	$mx_l = strlen($s_datas[""]);
 
 	if (isset($_GET["host_id"]) && $_GET["host_id"] != 0) {
 		$pq_sql =& $pearDBO->query("SELECT id index_id, service_description FROM index_data WHERE host_id='".$_GET['host_id']."'ORDER BY service_description");
 		while($fw_sql = $pq_sql->fetchRow()) {
 			$fw_sql["service_description"] = str_replace($a_this, $a_that, $fw_sql["service_description"]);
-			$s_datas[$fw_sql["index_id"]] = $fw_sql["service_description"]."&nbsp;&nbsp;&nbsp;";
-			$sd_l = strlen($fw_sql["service_description"]);
-			if ( $sd_l > $mx_l)
-				$mx_l = $sd_l;
-    	}
+			$s_datas[$fw_sql["index_id"]] = $fw_sql["service_description"];
+		}
 		$pq_sql->free();
 	}
-    for ($i = strlen($s_datas[""]); $i != $mx_l; $i++)
-		$s_datas[""] .= "&nbsp;";
 	
 	/*
 	 *  The first element of the select is empty

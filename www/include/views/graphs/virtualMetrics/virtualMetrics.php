@@ -56,7 +56,6 @@
 	 */
 	require_once $path."DB-Func.php";
 	require_once $path."../common/Image-Func.php";
-	require_once $path."checkRRDGraph.php";
 	require_once "./include/common/common-Func.php";
 	
 	switch ($o)	{

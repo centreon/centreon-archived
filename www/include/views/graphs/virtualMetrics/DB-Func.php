@@ -26,6 +26,16 @@
 	if (!isset($oreon))
 		exit;
 
+	/* Need Global Varriables */
+	$rmetrics = array();
+	$vmetrics = array();
+	$mlist = array();
+	$ptr = array(0, 0);
+ 	
+	function escape_command($command) {
+		return ereg_replace("(\\\$|`)", "", $command);
+	}
+
 	function NameTestExistence ($vmetric_name = NULL, $index_id = NULL) {
 		global $pearDB, $pearDBO, $form;
 		$gsvs = NULL;
@@ -34,7 +44,7 @@
 
 		$sql = "SELECT vmetric_id FROM virtual_metrics WHERE ";
 		$sql .= "vmetric_name = '".($vmetric_name == NULL ? $gsvs["vmetric_name"] : $vmetric_name)."' ";
-        $sql .= "AND index_id = '".($index_id == NULL ? $gsvs["index_id"] : $index_id)."'";
+		$sql .= "AND index_id = '".($index_id == NULL ? $gsvs["index_id"] : $index_id)."'";
 		$DBRESULT =& $pearDB->query($sql);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo();
@@ -44,7 +54,7 @@
 
 		$sql = "SELECT metric_id FROM metrics WHERE ";
 		$sql .= "metric_name = '".($vmetric_name == NULL ? $gsvs["vmetric_name"] : $vmetric_name)."' ";
-        $sql .= "AND index_id = '".($index_id == NULL ? $gsvs["index_id"] : $index_id)."'";
+		$sql .= "AND index_id = '".($index_id == NULL ? $gsvs["index_id"] : $index_id)."'";
 		$DBRESULT =& $pearDBO->query($sql);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo();
@@ -108,7 +118,30 @@
 		$vmetric_id = insertVirtualMetric();
 		return ($vmetric_id);
 	}
+
+	/* recursive function */
+	function enableVirtualMetricInDB($vmetric_id = null) {
+		if (!$vmetric_id) return;
+		global $pearDB;
+		$v_ena = array();		
+		$v_ena =& enableVirtualMetric($vmetric_id);
+		foreach($v_ena as $pkey => $v_id) {
+//			if ( checkRRDGraphData($v_id) == 0 )
+				$p_qy  =& $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` ='".$v_id."';");
+//			else
+//				break;
+		}
+	}
 	
+	function disableVirtualMetricInDB($vmetric_id = null, $force = 0) {
+		if (!$vmetric_id) return;
+		global $pearDB;
+		$v_dis= array();
+		$v_dis =& disableVirtualMetric($vmetric_id, $force);
+		foreach($v_dis as $pkey => $vm)
+			$p_qy  =& $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '0' WHERE `vmetric_id` ='".$vm."';");
+	}
+
 	function insertVirtualMetric()	{
 		global $form, $pearDB;
 		$h_id = NULL;
@@ -160,26 +193,14 @@
 		$rq .= "WHERE vmetric_id = '".$vmetric_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 
-		# Check RRDGraph Data
-		if ( checkRRDGraphData($vmetric_id, 1) == 0 )
+//		if ( checkRRDGraphData($vmetric_id) == 0 )
 			enableVirtualMetricInDB($vmetric_id);
-		else
-			disableVirtualMetricInDB($vmetric_id, 1);
+//		else
+//			disableVirtualMetricInDB($vmetric_id, 1);
 		
 	}		
 
-	function disableVirtualMetricInDB($vmetric_id = null, $force = 0) {
-        if (!$vmetric_id)
-			return;
-
-        global $pearDB;
-
-		$v_dis= array();
-		$v_dis =& disableVirtualMetric($vmetric_id, $force);
-		foreach($v_dis as $pkey => $vm)
-			$p_qy  =& $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '0' WHERE `vmetric_id` ='".$vm."';");
-	}
-
+	/* recursive function */
 	function &disableVirtualMetric($v_id = null, $force = 0) {
 		global $pearDB;
 
@@ -189,9 +210,9 @@
 		if ($force == 0)
 			$l_where = " AND `vmetric_activate` = '1'";
 
-        $l_pqy =& $pearDB->query("SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`='".$v_id."'".$l_where.";");
+		$l_pqy =& $pearDB->query("SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`='".$v_id."'".$l_where.";");
 		if ( $l_pqy->numRows() == 1 ) {		
-        	$vmetric =& $l_pqy->fetchRow();
+			$vmetric =& $l_pqy->fetchRow();
 			$l_pqy->free();
 			$l_pqy =& $pearDB->query("SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`='".$vmetric["index_id"]."' AND `vmetric_activate` = '1' AND `rpn_function` REGEXP '(^|,)".str_replace($repA, $repB, $vmetric["vmetric_name"])."(,|$)';");
 			while ($d_vmetric =& $l_pqy->fetchRow()) {
@@ -205,32 +226,19 @@
 				$v_dis[] = $v_id;
 			return $v_dis;
 		}
-    }
+	}
 
-	function enableVirtualMetricInDB($vmetric_id = null) {
-		if (!$vmetric_id)
-			return;
-
-        global $pearDB;
-	
-		$v_ena = array();		
-		$v_ena =& enableVirtualMetric($vmetric_id);
-
-		foreach($v_ena as $pkey => $v_id) {
-			if ( checkRRDGraphData($v_id) == 0 )
-				$p_qy  =& $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` ='".$v_id."';");
-			else
-				break;
-		}
-    }
-
-	function &enableVirtualMetric($v_id, $v_name, $index_id) {
+	/* recursive function */
+	function &enableVirtualMetric($v_id, $v_name = null, $index_id = null) {
 		global $pearDB;
 
-		$l_where = "vmetric_id = '".$v_id."'";
 		if ( is_null($v_id) )
-			$l_where = "vmetric_name = '".$v_name."' AND index_id ='".$index_id."'";
-
+			if ( is_null($v_name) || is_null($index_id) )
+			    return;
+			else
+			    $l_where = "vmetric_name = '".$v_name."' AND index_id ='".$index_id."'";
+		else
+			$l_where = "vmetric_id = '".$v_id."'";
 		
 		$l_pqy =& $pearDB->query("SELECT vmetric_id, index_id, rpn_function FROM virtual_metrics WHERE ".$l_where." AND (vmetric_activate = '0' OR vmetric_activate IS NULL);");	
 		if ( $l_pqy->numRows() == 1 ) {
@@ -246,6 +254,7 @@
 			$v_ena[] = $p_vmetric["vmetric_id"];
 			return $v_ena;
 		} else 
-            $l_pqy->free();
+			$l_pqy->free();
 	}
+
 ?>

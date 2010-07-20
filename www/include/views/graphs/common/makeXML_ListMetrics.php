@@ -26,7 +26,7 @@
 	header('Content-Type: text/xml');
 	header('Cache-Control: no-cache');
 	
-	require_once "/usr/local/app/centreon/etc/centreon.conf.php";
+	require_once "/etc/centreon/centreon.conf.php";
 	require_once $centreon_path."/www/class/centreonDB.class.php";	
 	require_once $centreon_path."/www/class/centreonXML.class.php";
 
@@ -39,12 +39,15 @@
 	$pearDB = new CentreonDB();
 	$pearDBO = new CentreonDB("centstorage");
 
+	# replace array
+	$a_this = array( "#S#", "#BS#" );
+	$a_that = array( "/", "\\" );
+
 	#
 	# Existing Real Metric List comes from DBO -> Store in $rmetrics Array
 	#
 	$s_datas = array();
-	$o_datas = array(""=>"List of known metrics&nbsp;&nbsp;&nbsp;");
-	$mx_l = strlen($o_datas[""]);
+	$o_datas = array(""=>"&nbsp;");
 	$where = "";
 	$def_type = array(0=>"CDEF",1=>"VDEF");
 
@@ -54,23 +57,17 @@
 	if (isset($_GET["index_id"]) && $_GET["index_id"] != 0) {
 		$pq_sql =& $pearDBO->query("SELECT metric_id, metric_name FROM metrics as ms, index_data as ixd WHERE ms.index_id = ixd.id and ms.index_id='".$_GET["index_id"]."';");
 		while($fw_sql = $pq_sql->fetchRow()) {
-			$sd_l = strlen($fw_sql["metric_name"]);
-			$fw_sql["metric_name"] = $fw_sql["metric_name"]."&nbsp;&nbsp;&nbsp;";
+			$fw_sql["metric_name"] = str_replace($a_this, $a_that, $fw_sql["metric_name"]);
 			$s_datas[] = $fw_sql;
-			if ( $sd_l > $mx_l )
-				$mx_l = $sd_l;
-    	}
+		}
 		$pq_sql->free();
 		$pq_sql =& $pearDB->query("SELECT vmetric_id, vmetric_name, def_type FROM virtual_metrics WHERE index_id='".$_GET["index_id"]."'".$where.";");
 		
 		while($fw_sql = $pq_sql->fetchRow()) {
-			$sd_l = strlen($fw_sql["vmetric_name"]." [CDEF]");
-			$fw_sql["metric_name"] = $fw_sql["vmetric_name"]." [".$def_type[$fw_sql["def_type"]]."]&nbsp;&nbsp;&nbsp;";
+			$fw_sql["metric_name"] = $fw_sql["vmetric_name"]." [".$def_type[$fw_sql["def_type"]]."]";
 			$fw_sql["metric_id"] = "v".$fw_sql["vmetric_id"];
 			$s_datas[] = $fw_sql;
-			if ( $sd_l > $mx_l )
-				$mx_l = $sd_l;
-    	}
+		}
 		$pq_sql->free();
 	}
 
@@ -80,8 +77,6 @@
 		$o_datas[$om["metric_id"]] = $om["metric_name"];
 	}
 
-	for ($i = strlen($o_datas[""]); $i != $mx_l; $i++)
-		$o_datas[""] .= "&nbsp;";
 	
 	/*
 	 *  The first element of the select is empty
