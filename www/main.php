@@ -82,7 +82,7 @@
 	include_once ("./include/common/common-Func.php");
 	include_once ("./header.php");
 
-	require_once $centreon_path . 'www/autoloader.php';
+	require_once $centreon_path . "www/autoloader.php";
 
 	/*
 	 * LCA Init Common Var
