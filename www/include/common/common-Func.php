@@ -683,7 +683,15 @@
 		return NULL;
 	}
 
-	function getMyHostGroupHosts($hg_id = NULL, $searchHost = NULL)	{
+	/* *******************************
+	 * Get all host for a specific hostgroup
+	 * 
+	 * @var hostgroup id
+	 * @var search string
+	 * 
+	 * @return list of host
+	 */
+	function getMyHostGroupHosts($hg_id = NULL, $searchHost = NULL, $level = 1)	{
 		global $pearDB;
 		
 		if (!$hg_id) 
@@ -699,12 +707,42 @@
 									"WHERE hgr.hostgroup_hg_id = '".$hg_id."' " .
 									"AND h.host_id = hgr.host_host_id $searchSTR " .
 									"ORDER by h.host_name");
-		while ($elem =& $DBRESULT->fetchRow())
+		while ($elem =& $DBRESULT->fetchRow()) {
 			$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
+		}
 		$DBRESULT->free();
 		unset($elem);
+		
+		if ($level) {
+			$hgHgCache = setHgHgCache($pearDB);	
+			$hostgroups = getMyHostGroupHostGroups($hg_id);
+			if (isset($hostgroups) && count($hostgroups)) {
+				foreach ($hostgroups as $hg_id2) {
+					$tmp = getMyHostGroupHosts($hg_id2, "", 1);
+					foreach ($tmp as $id) {
+						$hosts[$id] = $id;
+					}
+					unset($tmp);
+				}
+			}
+			
+		}
+		
 		return $hosts;
 	}
+	
+	function setHgHgCache($pearDB) {
+		$hgHgCache = array();
+		$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ hg_parent_id, hg_child_id FROM hostgroup_hg_relation");
+		while ($data =& $DBRESULT->fetchRow()) {
+			if (!isset($hgHgCache[$data["hg_parent_id"]]))
+				$hgHgCache[$data["hg_parent_id"]] = array();
+			$hgHgCache[$data["hg_parent_id"]][$data["hg_child_id"]] = 1;
+		}
+		$DBRESULT->free();
+		unset($data);
+		return $hgHgCache;
+	}	
 
 	function getMyHostGroupHostGroups($hg_id = NULL) {
 		global $pearDB;
