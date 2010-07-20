@@ -153,7 +153,9 @@
 	function deleteImg ($img_id) {
 		if (!isset($img_id))
 			return;
+		
 		global $pearDB;
+		
 		$mediadir = "./img/media/";
 
 		$rq = "SELECT dir_alias, img_path FROM view_img, view_img_dir, view_img_dir_relation ";
@@ -161,8 +163,9 @@
 		$DBRESULT =& $pearDB->query($rq);
 		while ($img_path =& $DBRESULT->fetchRow()) {
 			$fullpath = $mediadir.$img_path["dir_alias"]."/".$img_path["img_path"];
-			if (is_file($fullpath))
+			if (is_file($fullpath)) {
 				unlink($fullpath);
+			}
 			$pearDB->query("DELETE FROM view_img WHERE img_id = '".$img_id."'");
 			$pearDB->query("DELETE FROM view_img_dir_relation WHERE img_img_id = '".$img_id."'");
 		}
@@ -229,7 +232,6 @@
 		if ($img_comment) {
 			$DBRESULT = $pearDB->query("UPDATE view_img SET img_comment = '".htmlentities($img_comment, ENT_QUOTES)."' WHERE img_id = '".$img_id."'");
 		}
-//		$DBRESULT->free();
 	}
 
 	function moveMultImg ($images, $dirName) {
@@ -286,7 +288,6 @@
 			$dir =& $DBRESULT->fetchRow();
 			$dir_id = $dir["dir_id"];
 		}
-//		$DBRESULT->free();
 		return $dir_id;
 	}
 
@@ -362,7 +363,6 @@
 		if (!is_dir($mediadir.$dir_alias["dir_alias"]))	{
 			$DBRESULT =& $pearDB->query("DELETE FROM view_img_dir WHERE dir_id = '".$dirid."'");
 		}
-//		$DBRESULT->free();
 	}
 
 
@@ -387,7 +387,6 @@
 					"WHERE dir_id = '".$dir_id."'";
 			$DBRESULT =& $pearDB->query($rq);
 		}
-//		$DBRESULT->free();
 	}
 
 ?>

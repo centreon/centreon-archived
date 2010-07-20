@@ -36,9 +36,13 @@
  *
  */
 
-	#
-	## Database retrieve information
-	#
+	if (!isset($centreon)) {
+		exit();
+	}
+
+	/*
+	 * Database retrieve information
+	 */
 	$img = array("img_path"=>NULL);
 	if ($o == "ci" || $o == "w")	{
 		$res =& $pearDB->query("SELECT * FROM view_img WHERE img_id = '".$img_id."' LIMIT 1");
@@ -56,28 +60,28 @@
 		$img["directories"] = $dir["dir_name"];
 		$DBRESULT->free();
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
+	
+	
+	/*
+	 * Get Directories
+	 */
 	$dir_ids = array();
 	$DBRESULT =& $pearDB->query("SELECT dir_id, dir_name FROM view_img_dir ORDER BY dir_name");
 	while ($dir =& $DBRESULT->fetchRow()) {
 		$dir_ids[$dir["dir_id"]] = $dir["dir_name"];
 	}
 	$DBRESULT->free();
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
+	
+	/*
+	 * Styles
+	 */
 	$attrsText 	= array("size"=>"35");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"80");
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a") {
 		$form->addElement('header', 'title', _("Add Image(s)"));
@@ -115,24 +119,31 @@
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-	#
-	## Form Rules
-	#
+	/*
+	 * Form Rules
+	 */
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('directories', _("Required Field"), 'required');
 	$form->setRequiredNote(_("Required Field"));
 
-	# watch/view
+	/*
+	 * watch/view
+	 */
 	if ($o == "w")	{
-		$form->freeze(); // modifications not allowed
+		$form->freeze(); 
 	}
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
 	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
-	# prepare help texts
+	
+	/*
+	 * prepare help texts
+	 */
 	$helptext = "";
 	include_once("help.php");
 	foreach ($help as $key => $text) {
@@ -157,16 +168,20 @@
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid)
-	// && $action["action"]["action"])
+	
+	if ($valid) {
 		require_once("listImg.php");
-	else	{
-		#Apply a template definition
+	} else {
+		
+		/*
+		 * Apply a template definition
+		 */
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
+		$tpl->assign('max_uploader_file', ini_get("upload_max_filesize"));
 		$tpl->assign('o', $o);
 		$tpl->display("formImg.ihtml");
 	}

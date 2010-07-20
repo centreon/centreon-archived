@@ -128,8 +128,22 @@
 	 */
  	function checkPicture($picture, $dirpath, $dir_id, $pearDB, $regCounter, $gdCounter) {
 		global $allowedExt;
+		
+		$acceptedExtensions = array( 
+			"gif" => 1,
+			"jpg" => 1,
+			"jpeg" => 1,
+			"gd2" => 1,
+			"png" => 1
+			);
+		
 		$img_info = pathinfo($picture);
 		$img_ext = $img_info["extension"];
+	
+		if (!isset($acceptedExtensions[$img_ext])) {
+			return 0;
+		}
+
 		if (!isset($allowedExt[$img_ext]) && $allowedExt[$img_ext]) {
 		    return 0;
 		}

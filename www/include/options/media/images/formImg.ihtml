@@ -29,6 +29,7 @@
 				{else if $o == "w"}
 					{$form.img_path.html}
 				{/if}
+				&nbsp;&nbsp;(Max file size {$max_uploader_file})
 			</td>
 		</tr>
 		<tr class="list_two">
