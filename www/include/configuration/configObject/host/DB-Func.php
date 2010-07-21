@@ -276,6 +276,10 @@
 								$DBRESULT1 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$maxId["MAX(host_id)"]."', NULL, '".$svs["service_service_id"]."')");
 							}
 						}
+						
+						/*
+						 * ContactGroup duplication
+						 */
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$key."'");
 						$fields["host_cgs"] = "";
 						while($Cg =& $DBRESULT->fetchRow()){
@@ -283,6 +287,21 @@
 							$fields["host_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
 						}
 						$fields["host_cgs"] = trim($fields["host_cgs"], ",");
+
+						/*
+						 * Contact duplication
+						 */
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '".$key."'");
+						$fields["host_cs"] = "";
+						while($C =& $DBRESULT->fetchRow()){
+							$DBRESULT1 =& $pearDB->query("INSERT INTO contact_host_relation VALUES ('', '".$maxId["MAX(host_id)"]."', '".$C["contact_id"]."')");
+							$fields["host_cs"] .= $C["contact_id"] . ",";
+						}
+						$fields["host_cs"] = trim($fields["host_cs"], ",");
+
+						/*
+						 * Hostgroup duplication
+						 */
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$key."'");
 						while($Hg =& $DBRESULT->fetchRow()){
 							$DBRESULT1 =& $pearDB->query("INSERT INTO hostgroup_relation VALUES ('', '".$Hg["hostgroup_hg_id"]."', '".$maxId["MAX(host_id)"]."')");
@@ -300,6 +319,10 @@
 							$val ? $rq = "INSERT INTO extended_host_information VALUES (".$val.")" : $rq = null;
 							$DBRESULT2 =& $pearDB->query($rq);
 						}
+						
+						/*
+						 * Poller link ducplication
+						 */
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT nagios_server_id FROM ns_host_relation WHERE host_host_id = '".$key."'");
 						$fields["nagios_server_id"] = "";
 						while($Hg =& $DBRESULT->fetchRow()){
