@@ -71,7 +71,7 @@
 	$tpl->assign("headerMenu_options", _("Options"));
 	
 	if ($search) {
-		$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE (sg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR sg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 	} else {
 		$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 	}
