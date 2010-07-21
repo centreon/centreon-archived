@@ -36,18 +36,21 @@
  * 
  */
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
-	include_once($centreon_path . "www/include/common/common-Func.php");
-	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
+	include_once $centreon_path . "www/include/common/common-Func.php";
+	include_once $centreon_path . "www/include/reporting/dashboard/common-Func.php";
 	require_once $centreon_path . "www/class/User.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";
 	require_once $centreon_path . "www/class/centreonDuration.class.php";	
-	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
+	include_once $centreon_path . "www/include/reporting/dashboard/DB-Func.php";
 	
-	$pearDB = new CentreonDB();
-	$pearDBndo = new CentreonDB("ndo");
-	$pearDBO = new CentreonDB("centstorage");
+	/*
+	 * DB connexion
+	 */
+	$pearDB 	= new CentreonDB();
+	$pearDBndo 	= new CentreonDB("ndo");
+	$pearDBO 	= new CentreonDB("centstorage");
 	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$res =& $pearDB->query("SELECT * FROM contact, session WHERE session.session_id='".$_GET['sid']."' AND session.user_id = contact.contact_id");
@@ -57,27 +60,32 @@
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
+		if ($session = $res->fetchRow()) {
 			$_POST["sid"] = $sid;
-		} else
+		} else {
 			get_error('bad session id');
-	} else
+		}
+	} else {
 		get_error('need session id!');
-
-	/* getting host and service id */
-	isset ($_GET["host"]) ? $host_id = $_GET["host"] : $host_id = "NULL";
-	isset ($_POST["host"]) ? $host_id = $_POST["host"] : $host_id;
-	isset ($_GET["service"]) ? $service_id = $_GET["service"] : $service_id = "NULL";
-	isset ($_POST["service"]) ? $service_id = $_POST["service"] : $service_id;
+	}
+	
+	/* 
+	 * getting host and service id 
+	 */
+	isset ($_GET["host"]) ? $host_id =  htmlentities($_GET["host"], ENT_QUOTES) : $host_id = "NULL";
+	isset ($_POST["host"]) ? $host_id =  htmlentities($_POST["host"], ENT_QUOTES) : $host_id;
+	isset ($_GET["service"]) ? $service_id =  htmlentities($_GET["service"], ENT_QUOTES) : $service_id = "NULL";
+	isset ($_POST["service"]) ? $service_id =  htmlentities($_POST["service"], ENT_QUOTES) : $service_id;
 
 	/*
 	 * Getting time interval to report
 	 */
 	$dates = getPeriodToReport();
-	$start_date = $_GET['start'];
-	$end_date = $_GET['end'];
+	$start_date =  htmlentities($_GET['start'], ENT_QUOTES);
+	$end_date =  htmlentities($_GET['end'], ENT_QUOTES);
 	$host_name = getHostNameFromId($host_id);
 	$service_description = getServiceDescriptionFromId($service_id);
+	
 	/*
 	 * file type setting
 	 */
@@ -85,17 +93,17 @@
 	header("Content-disposition: filename=".$host_name. "_" .$service_description.".csv");
 
 	echo _("Host").";"._("Service").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
-	echo $host_name."; ".$service_description."; ".$start_date."; ".$end_date."; ".($end_date - $start_date)."\n";
+	echo $host_name."; ".$service_description."; ".date(_("d/m/Y H:i:s"), $start_date)."; ".date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date)."s\n";
 	echo "\n";
 
 	echo _("Status").";"._("Time").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
 	$reportingTimePeriod = getreportingTimePeriod();
 	$serviceStats = getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportingTimePeriod) ;
-	echo "OK;".$serviceStats["OK_T"].";".$serviceStats["OK_TP"]."%;".$serviceStats["OK_MP"]. "%;".$serviceStats["OK_A"].";\n";
-	echo "WARNING;".$serviceStats["WARNING_T"].";".$serviceStats["WARNING_TP"]."%;".$serviceStats["WARNING_MP"]. "%;".$serviceStats["WARNING_A"].";\n";
-	echo "CRITICAL;".$serviceStats["CRITICAL_T"].";".$serviceStats["CRITICAL_TP"]."%;".$serviceStats["CRITICAL_MP"]. "%;".$serviceStats["CRITICAL_A"].";\n";
-	echo "UNKNOWN;".$serviceStats["UNKNOWN_T"].";".$serviceStats["UNKNOWN_TP"]."%;".$serviceStats["UNKNOWN_MP"]. "%;".$serviceStats["UNKNOWN_A"].";\n";
-	echo "UNDETERMINED;".$serviceStats["UNDETERMINED_T"].";".$serviceStats["UNDETERMINED_TP"]."%;;;\n";
+	echo "OK;".$serviceStats["OK_T"]."s;".$serviceStats["OK_TP"]."%;".$serviceStats["OK_MP"]. "%;".$serviceStats["OK_A"].";\n";
+	echo "WARNING;".$serviceStats["WARNING_T"]."s;".$serviceStats["WARNING_TP"]."%;".$serviceStats["WARNING_MP"]. "%;".$serviceStats["WARNING_A"].";\n";
+	echo "CRITICAL;".$serviceStats["CRITICAL_T"]."s;".$serviceStats["CRITICAL_TP"]."%;".$serviceStats["CRITICAL_MP"]. "%;".$serviceStats["CRITICAL_A"].";\n";
+	echo "UNKNOWN;".$serviceStats["UNKNOWN_T"]."s;".$serviceStats["UNKNOWN_TP"]."%;".$serviceStats["UNKNOWN_MP"]. "%;".$serviceStats["UNKNOWN_A"].";\n";
+	echo "UNDETERMINED;".$serviceStats["UNDETERMINED_T"]."s;".$serviceStats["UNDETERMINED_TP"]."%;;;\n";
 	echo "\n";
 	echo "\n";
 
@@ -118,16 +126,16 @@
 	while ($row =& $DBRESULT->fetchRow()) {
 		$duration = $row["date_end"] - $row["date_start"];
 		/* Percentage by status */
-		$duration = $row["OKTimeScheduled"] + $row["WARNINGTimeScheduled"] + $row["UNKNOWNTimeScheduled"]
-					+ $row["CRITICALTimeScheduled"];
+		$duration = $row["OKTimeScheduled"] + $row["WARNINGTimeScheduled"] + $row["UNKNOWNTimeScheduled"] + $row["CRITICALTimeScheduled"];
 		$row["OK_MP"] = round($row["OKTimeScheduled"] * 100 / $duration, 2);
 		$row["WARNING_MP"] = round($row["WARNINGTimeScheduled"] * 100 / $duration, 2);
 		$row["UNKNOWN_MP"] = round($row["UNKNOWNTimeScheduled"] * 100 / $duration, 2);
 		$row["CRITICAL_MP"] = round($row["CRITICALTimeScheduled"] * 100 / $duration, 2);
 		echo $row["date_start"].";".$duration.";".
-		 	$row["OKTimeScheduled"].";".$row["OK_MP"]."%;".$row["OKnbEvent"].";".
-		 	$row["WARNINGTimeScheduled"].";".$row["WARNING_MP"]."%;".$row["WARNINGnbEvent"].";".
-		 	$row["UNKNOWNTimeScheduled"].";".$row["UNKNOWN_MP"]."%;".$row["UNKNOWNnbEvent"].";".
-		 	$row["CRITICALTimeScheduled"].";".$row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";\n";
+		 	$row["OKTimeScheduled"]."s;".$row["OK_MP"]."%;".$row["OKnbEvent"].";".
+		 	$row["WARNINGTimeScheduled"]."s;".$row["WARNING_MP"]."%;".$row["WARNINGnbEvent"].";".
+		 	$row["UNKNOWNTimeScheduled"]."s;".$row["UNKNOWN_MP"]."%;".$row["UNKNOWNnbEvent"].";".
+		 	$row["CRITICALTimeScheduled"]."s;".$row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";\n";
 	}
+	$DBRESULT->free();
 ?>

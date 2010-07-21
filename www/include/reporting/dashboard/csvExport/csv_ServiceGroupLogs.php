@@ -36,18 +36,21 @@
  * 
  */
  
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
-	include_once($centreon_path . "www/include/common/common-Func.php");
-	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
+	include_once $centreon_path . "www/include/common/common-Func.php";
+	include_once $centreon_path . "www/include/reporting/dashboard/common-Func.php";
 	require_once $centreon_path . "www/class/User.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";
 	require_once $centreon_path."www/class/centreonDuration.class.php";	
-	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
+	include_once $centreon_path . "www/include/reporting/dashboard/DB-Func.php";
 	
-	$pearDB = new CentreonDB();
-	$pearDBndo = new CentreonDB("ndo");
-	$pearDBO = new CentreonDB("centstorage");
+	/*
+	 * DB Connexion
+	 */
+	$pearDB 	= new CentreonDB();
+	$pearDBndo 	= new CentreonDB("ndo");
+	$pearDBO 	= new CentreonDB("centstorage");
 	
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$res =& $pearDB->query("SELECT * FROM contact, session WHERE session.session_id='".$_GET['sid']."' AND session.user_id = contact.contact_id");
@@ -57,21 +60,26 @@
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
+		if ($session = $res->fetchRow()) {
 			$_POST["sid"] = $sid;
-		} else
+		} else {
 			get_error('bad session id');
-	} else
+		}
+	} else {
 		get_error('need session id!');
-	isset ($_GET["servicegroup"]) ? $id = $_GET["servicegroup"] : $id = "NULL";
-	isset ($_POST["servicegroup"]) ? $id = $_POST["servicegroup"] : $id = $id;
+	}
+	
+	isset ($_GET["servicegroup"]) ? $id = htmlentities($_GET["servicegroup"], ENT_QUOTES) : $id = "NULL";
+	isset ($_POST["servicegroup"]) ? $id = htmlentities($_POST["servicegroup"], ENT_QUOTES) : $id = $id;
+	
 	/*
 	 * Getting time interval to report
 	 */
 	$dates = getPeriodToReport();
-	$start_date = $_GET['start'];
-	$end_date = $_GET['end'];
+	$start_date = htmlentities($_GET['start'], ENT_QUOTES);
+	$end_date = htmlentities($_GET['end'], ENT_QUOTES);
 	$servicegroup_name = getServiceGroupNameFromId($id);
+	
 	/*
 	 * file type setting
 	 */
@@ -79,7 +87,7 @@
 	header("Content-disposition: filename=".$servicegroup_name.".csv");
 
 	echo _("ServiceGroup").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
-	echo $servicegroup_name.";".$start_date."; ".$end_date."; ".($end_date - $start_date)."\n\n\n";
+	echo $servicegroup_name.";".date(_("d/m/Y H:i:s"), $start_date)."; ".date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date)."s\n\n";
 	/*
      * Getting service group start
      */
@@ -101,32 +109,37 @@
 										_("UNKNOWN Time").";"._("UNKNOWN Mean Time").";"._("UNKNOWN Alerts").
 										_("UNDETERMINED Time").";"._("UNDETERMINED Mean Time").";"._("UNDETERMINED Alerts")."\n";
 	foreach ($stats as $key => $tab) {
-		if ($key != "average")
+		if ($key != "average") {
 			echo $tab["HOST_NAME"]. ";".$tab["SERVICE_DESC"].";".$tab["OK_TP"]. "%;".$tab["OK_MP"]. "%;".$tab["OK_A"]. 
 							  ";".$tab["WARNING_TP"]. "%;".$tab["WARNING_MP"]. "%;".$tab["WARNING_A"]. 
 							  ";".$tab["CRITICAL_TP"]. "%;".$tab["CRITICAL_MP"]. "%;".$tab["CRITICAL_A"]. 
 							  ";".$tab["UNKNOWN_TP"]. "%;".$tab["UNKNOWN_MP"]. "%;".$tab["UNKNOWN_A"]. 
 							  ";".$tab["UNDETERMINED_TP"]. "%;;\n"; 
+		}
 	}
 	echo "\n\n";
+	
 	/*
 	 * Services group stats evolution
 	 */
 	echo _("Day").";"._("Duration").";" 
-				   ._("OK Mean Time")."; "." Alert;"
-				   ._("Warning Mean Time")." Alert;"
-				   ._("Unknown Mean Time")." Alert;"
-				   ._("Critical Mean Time").";\n";
+				   ._("OK Mean Time")."; ".";"._("OK Alert").";"
+				   ._("Warning Mean Time").";"._("Warning Alert").";"
+				   ._("Unknown Mean Time").";"._("Unknown Alert").";"
+				   ._("Critical Mean Time").";"._("Critical Alert")."\n";
 	$str = "";
 	$request = "SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$id."'";
 	$DBRESULT = & $pearDB->query($request);
 	while ($sg =& $DBRESULT->fetchRow()) {
-		if ($str != "")
+		if ($str != "") {
 			$str .= ", ";
+		}
 		$str .= "'" . $sg["service_service_id"] . "'"; 
 	}
-	if ($str == "")
+	$DBRESULT->free();
+	if ($str == "") {
 		$str = "''";
+	}
 	unset($sg);
 	unset($DBRESULT);
 
@@ -142,8 +155,9 @@
 				"GROUP BY `date_end`, `date_start` order by `date_start` desc";
 	$res = & $pearDBO->query($request);
 	$statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
-	while ($row =& $res->fetchRow()){
+	while ($row =& $res->fetchRow()) {
 		$duration = $row["date_end"] - $row["date_start"];
+		
 		/* Percentage by status */
 		$duration = $row["OKTimeScheduled"] + $row["WARNINGTimeScheduled"] + $row["UNKNOWNTimeScheduled"]
 					+ $row["CRITICALTimeScheduled"];
@@ -151,11 +165,13 @@
 		$row["WARNING_MP"] = round($row["WARNINGTimeScheduled"] * 100 / $duration, 2);
 		$row["UNKNOWN_MP"] = round($row["UNKNOWNTimeScheduled"] * 100 / $duration, 2);
 		$row["CRITICAL_MP"] = round($row["CRITICALTimeScheduled"] * 100 / $duration, 2);
-		echo $row["date_start"].";".$duration.";".
+		
+		echo $row["date_start"].";".$duration."s;".
 		 	$row["OK_MP"]."%;".$row["OKnbEvent"].";".
 		 	$row["WARNING_MP"]."%;".$row["WARNINGnbEvent"].";".
 		 	$row["UNKNOWN_MP"]."%;".$row["UNKNOWNnbEvent"].";".
 		 	$row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";\n";
 	}
+	$res->free();
 
 ?>

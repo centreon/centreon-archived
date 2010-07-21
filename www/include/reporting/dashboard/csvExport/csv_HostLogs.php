@@ -36,18 +36,21 @@
  * 
  */
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
-	include_once($centreon_path . "www/include/common/common-Func.php");
-	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
+	include_once $centreon_path . "www/include/common/common-Func.php";
+	include_once $centreon_path . "www/include/reporting/dashboard/common-Func.php";
 	require_once $centreon_path . "www/class/centreonDuration.class.php";
 	require_once $centreon_path . "www/class/User.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";	
-	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
+	include_once $centreon_path . "www/include/reporting/dashboard/DB-Func.php";
 		
-	$pearDB = new CentreonDB();
-	$pearDBndo = new CentreonDB("ndo");
-	$pearDBO = new CentreonDB("centstorage");
+	/*
+	 * DB connexion
+	 */
+	$pearDB 	= new CentreonDB();
+	$pearDBndo 	= new CentreonDB("ndo");
+	$pearDBO 	= new CentreonDB("centstorage");
 	
 	/*
 	 * Checking session
@@ -61,35 +64,36 @@
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");		
-		if($res->fetchInto($session)){
+		if ($session = $res->fetchRow()) {
 			$_POST["sid"] = $sid;
-		} else
+		} else {
 			get_error('bad session id');
+		}
 	} else
 		get_error('need session id!');
 
-	/* getting host id */
-	isset ($_GET["host"]) ? $id = $_GET["host"] : $id = NULL;
-	isset ($_POST["host"]) ? $id = $_POST["host"] : $id;
+	/* 
+	 * getting host id 
+	 */
+	isset ($_GET["host"]) ? $id = htmlentities($_GET["host"], ENT_QUOTES) : $id = NULL;
+	isset ($_POST["host"]) ? $id = htmlentities($_POST["host"], ENT_QUOTES) : $id;
 
 	/*
 	 * Getting time interval to report
 	 */
 	$dates = getPeriodToReport();
-	$start_date = $_GET['start'];
-	$end_date = $_GET['end'];
+	$start_date = htmlentities($_GET['start'], ENT_QUOTES);
+	$end_date = htmlentities($_GET['end'], ENT_QUOTES);
 	$host_name = getHostNameFromId($id);
 	
 	/*
 	 * file type setting
 	 */
-	
 	header("Content-Type: application/csv-tab-delimited-table");
 	header("Content-disposition: filename=".$host_name.".csv");
 
-
 	echo _("Host").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
-	echo $host_name."; ".$start_date."; ".$end_date."; ".($end_date - $start_date) ."\n";
+	echo $host_name."; ".date(_("d/m/Y H:i:s"), $start_date)."; ".date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date) ."s\n";
 	echo "\n";
 	echo _("Status").";"._("Duration").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
 	/*
@@ -97,10 +101,10 @@
 	 */
 	$reportingTimePeriod = getreportingTimePeriod();
 	$hostStats = getLogInDbForHost($id, $start_date, $end_date, $reportingTimePeriod) ;
-	echo _("DOWN").";".$hostStats["DOWN_T"].";".$hostStats["DOWN_TP"].";".$hostStats["DOWN_MP"].";".$hostStats["DOWN_A"].";\n";
-	echo _("UP").";".$hostStats["UP_T"].";".$hostStats["UP_TP"].";".$hostStats["UP_MP"].";".$hostStats["UP_A"].";\n";
-	echo _("UNREACHABLE").";".$hostStats["UNREACHABLE_T"].";".$hostStats["UNREACHABLE_TP"].";".$hostStats["UNREACHABLE_MP"].";".$hostStats["UNREACHABLE_A"].";\n";
-	echo _("UNDETERMINED").";".$hostStats["UNDETERMINED_T"].";".$hostStats["UNDETERMINED_TP"].";\n";	
+	echo _("DOWN").";".$hostStats["DOWN_T"]."s;".$hostStats["DOWN_TP"]."%;".$hostStats["DOWN_MP"]."%;".$hostStats["DOWN_A"].";\n";
+	echo _("UP").";".$hostStats["UP_T"]."s;".$hostStats["UP_TP"]."%;".$hostStats["UP_MP"]."%;".$hostStats["UP_A"].";\n";
+	echo _("UNREACHABLE").";".$hostStats["UNREACHABLE_T"]."s;".$hostStats["UNREACHABLE_TP"]."%;".$hostStats["UNREACHABLE_MP"]."%;".$hostStats["UNREACHABLE_A"].";\n";
+	echo _("UNDETERMINED").";".$hostStats["UNDETERMINED_T"]."s;".$hostStats["UNDETERMINED_TP"]."%;\n";	
 	echo "\n";
 	
 	echo _("Service").";"._("OK")."; "._("OK")." Alert;"
@@ -110,12 +114,13 @@
 				   ._("Undetermined").";\n";
 	$hostServicesStats =  getLogInDbForHostSVC($id, $start_date, $end_date, $reportingTimePeriod);
 	foreach ($hostServicesStats as $tab) {
-		if (isset($tab["DESCRIPTION"]) && $tab["DESCRIPTION"] != "")
+		if (isset($tab["DESCRIPTION"]) && $tab["DESCRIPTION"] != "") {
 			echo $tab["DESCRIPTION"]. ";".$tab["OK_TP"]. "%;".$tab["OK_A"].
 							 	 ";".$tab["WARNING_TP"]. "%;".$tab["WARNING_A"].
 							 	 ";".$tab["CRITICAL_TP"]. "%;".$tab["CRITICAL_A"].
 							 	 ";".$tab["UNKNOWN_TP"]. "%;".$tab["UNKNOWN_A"].
 							 	 ";".$tab["UNDETERMINED_TP"]. "%;;\n";
+		}
 	}
 
 	echo "\n";

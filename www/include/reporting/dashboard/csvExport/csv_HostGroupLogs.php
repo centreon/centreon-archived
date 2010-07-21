@@ -36,18 +36,21 @@
  * 
  */
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
-	include_once($centreon_path . "www/include/common/common-Func.php");
-	include_once($centreon_path . "www/include/reporting/dashboard/common-Func.php");
+	include_once $centreon_path . "www/include/common/common-Func.php";
+	include_once $centreon_path . "www/include/reporting/dashboard/common-Func.php";
 	require_once $centreon_path . "www/class/User.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";
 	require_once $centreon_path . "www/class/centreonDuration.class.php";	
-	include_once($centreon_path . "www/include/reporting/dashboard/DB-Func.php");
+	include_once $centreon_path . "www/include/reporting/dashboard/DB-Func.php";
 
-	$pearDB = new CentreonDB();
-	$pearDBndo = new CentreonDB("ndo");
-	$pearDBO = new CentreonDB("centstorage");
+	/*
+	 * DB Connexion
+	 */
+	$pearDB 	= new CentreonDB();
+	$pearDBndo 	= new CentreonDB("ndo");
+	$pearDBO 	= new CentreonDB("centstorage");
 
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$res =& $pearDB->query("SELECT * FROM contact, session WHERE session.session_id='".$_GET['sid']."' AND session.user_id = contact.contact_id");
@@ -57,23 +60,27 @@
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
+		if ($session = $res->fetchRow()) {
 			$_POST["sid"] = $sid;
-		} else
+		} else {
 			get_error('bad session id');
-	} else
+		}
+	} else {
 		get_error('need session id!');
+	}
 
-	/* getting hostgroup id */
-	isset ($_GET["hostgroup"]) ? $id = $_GET["hostgroup"] : $id = "NULL";
-	isset ($_POST["hostgroup"]) ? $id = $_POST["hostgroup"] : $id;
+	/* 
+	 * getting hostgroup id 
+	 */
+	isset ($_GET["hostgroup"]) ? $id = htmlentities($_GET["hostgroup"], ENT_QUOTES) : $id = "NULL";
+	isset ($_POST["hostgroup"]) ? $id = htmlentities($_POST["hostgroup"], ENT_QUOTES) : $id;
 
 	/*
 	 * Getting time interval to report
 	 */
 	$dates = getPeriodToReport();
-	$start_date = $_GET['start'];
-	$end_date = $_GET['end'];
+	$start_date = htmlentities($_GET['start'], ENT_QUOTES);
+	$end_date = htmlentities($_GET['end'], ENT_QUOTES);
 	$hostgroup_name = getHostgroupNameFromId($id);
 	
 	/*
@@ -84,7 +91,7 @@
 
 
 	echo _("Hostgroup").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
-	echo $hostgroup_name."; ".$start_date."; ".$end_date."; ".($end_date - $start_date)."\n";
+	echo $hostgroup_name."; ".date(_("d/m/Y H:i:s"), $start_date)."; ".date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date)."s\n";
 	echo "\n";
 
 	echo _("Status").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
@@ -94,9 +101,9 @@
 	$reportingTimePeriod = getreportingTimePeriod();
 	$hostgroupStats = array();
 	$hostgroupStats = getLogInDbForHostGroup($id, $start_date, $end_date, $reportingTimePeriod) ;
-	echo _("DOWN").";".$hostgroupStats["average"]["DOWN_TP"].";".$hostgroupStats["average"]["DOWN_MP"].";".$hostgroupStats["average"]["DOWN_A"].";\n";
-	echo _("UP").";".$hostgroupStats["average"]["UP_TP"].";".$hostgroupStats["average"]["UP_MP"].";".$hostgroupStats["average"]["UP_A"].";\n";
-	echo _("UNREACHABLE").";".$hostgroupStats["average"]["UNREACHABLE_TP"].";".$hostgroupStats["average"]["UNREACHABLE_MP"].";".$hostgroupStats["average"]["UNREACHABLE_A"].";\n";
+	echo _("DOWN").";".$hostgroupStats["average"]["DOWN_TP"].";".$hostgroupStats["average"]["DOWN_MP"]."%;".$hostgroupStats["average"]["DOWN_A"].";\n";
+	echo _("UP").";".$hostgroupStats["average"]["UP_TP"].";".$hostgroupStats["average"]["UP_MP"]."%;".$hostgroupStats["average"]["UP_A"].";\n";
+	echo _("UNREACHABLE").";".$hostgroupStats["average"]["UNREACHABLE_TP"].";".$hostgroupStats["average"]["UNREACHABLE_MP"]."%;".$hostgroupStats["average"]["UNREACHABLE_A"].";\n";
 	echo _("UNDETERMINED").";".$hostgroupStats["average"]["UNDETERMINED_TP"].";\n";
 	echo "\n\n";
 	echo _("Hosts Group").";"._("Up Time").";"._("Up Mean Time").";"._("Up Alerts").";".
@@ -146,13 +153,16 @@
 	 	_("Unreachable Mean Time").";"._("Unreachable Alert").";\n";
 	while ($row =& $DBRESULT->fetchRow()) {
 		$duration = $row["UPTimeScheduled"] + $row["DOWNTimeScheduled"] + $row["UNREACHABLETimeScheduled"];
+		
 		/* Percentage by status */
 		$row["UP_MP"] = round($row["UPTimeScheduled"] * 100 / $duration, 2);
 		$row["DOWN_MP"] = round($row["DOWNTimeScheduled"] * 100 / $duration, 2);
 		$row["UNREACHABLE_MP"] = round($row["UNREACHABLETimeScheduled"] * 100 / $duration, 2);
-		echo $row["date_start"].";".$duration.";".
+		
+		echo $row["date_start"].";".$duration."s;".
 		 	$row["UP_MP"]."%;".$row["UPnbEvent"].";".
 		 	$row["DOWN_MP"]."%;".$row["DOWNnbEvent"].";".
 		 	$row["UNREACHABLE_MP"]."%;".$row["UNREACHABLEnbEvent"].";\n";
 	}
+	$DBRESULT->free();
 ?>
