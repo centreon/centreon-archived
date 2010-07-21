@@ -135,7 +135,7 @@ case "$1" in
 	    # Test if running directory exist.
 	    rundir_exist
 	    echo "Starting centstorage Collector : centstorage"
-	    su - @NAGIOS_USER@ -c "$centstorageBin >> $centstorageDemLog 2>&1"
+	    (su - @NAGIOS_USER@ -c "$centstorageBin >> $centstorageDemLog 2>&1") &
 	    if [ -d $centstorageLockDir ]; then 
 	    	touch $centstorageLockDir/$centstorageLockFile; 
 	    fi
