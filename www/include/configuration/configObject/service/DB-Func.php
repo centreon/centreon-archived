@@ -322,6 +322,21 @@
 								$fields["service_hPars"] = trim($fields["service_hPars"], ",");
 								$fields["service_hgPars"] = trim($fields["service_hgPars"], ",");
 							}
+							
+							/*
+							 * Contact duplication
+							 */
+							$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '".$key."'");
+							$fields["service_cs"] = "";
+							while ($C =& $DBRESULT->fetchRow()){
+								$DBRESULT2 =& $pearDB->query("INSERT INTO contact_service_relation VALUES ('', '".$C["contact_id"]."', '".$maxId["MAX(service_id)"]."')");
+								$fields["service_cs"] .= $C["contact_id"] . ",";
+							}
+							$fields["service_cs"] = trim($fields["service_cs"], ",");
+							
+							/*
+							 * ContactGroup duplication
+							 */
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$key."'");
 							$fields["service_cgs"] = "";
 							while($Cg =& $DBRESULT->fetchRow()){
@@ -329,26 +344,34 @@
 								$fields["service_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
 							}
 							$fields["service_cgs"] = trim($fields["service_cgs"], ",");
+							
+							/*
+							 * Servicegroup duplication
+							 */
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id, servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$key."'");
 							$fields["service_sgs"] = "";
 							while($Sg =& $DBRESULT->fetchRow()){
 								if (isset($host) && $host) {
 								    $host_id = $host;
-								}
-								else  {
+								} else  {
 								    $Sg["host_host_id"] ? $host_id = "'".$Sg["host_host_id"]."'" : $host_id = "NULL";
 								}
 							    if (isset($hostgroup) && $hostgroup) {
 							        $hg_id = $hostgroup;
-							    }
-							    else {
+							    } else {
 							        $Sg["hostgroup_hg_id"] ? $hg_id = "'".$Sg["hostgroup_hg_id"]."'" : $hg_id = "NULL";   
 							    }
 								$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$host_id.", ".$hg_id.", '".$maxId["MAX(service_id)"]."', '".$Sg["servicegroup_sg_id"]."')");
-								if ($Sg["host_host_id"])
+								if ($Sg["host_host_id"]) {
 									$fields["service_sgs"] .= $Sg["host_host_id"] . ",";
+								}
 							}
 							$fields["service_sgs"] = trim($fields["service_sgs"], ",");
+							
+							
+							/*
+							 * Trap link ducplication
+							 */
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$key."'");
 							$fields["service_traps"] = "";
 							while($traps =& $DBRESULT->fetchRow()){
@@ -356,6 +379,10 @@
 								$fields["service_traps"] .= $traps["traps_id"] . ",";
 							}
 							$fields["service_traps"] = trim($fields["service_traps"], ",");
+							
+							/*
+							 * Extended information duplication
+							 */
 							$DBRESULT =& $pearDB->query("SELECT * FROM extended_service_information WHERE service_service_id = '".$key."'");
 							while($esi =& $DBRESULT->fetchRow())	{
 								$val = null;
