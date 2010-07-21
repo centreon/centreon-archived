@@ -511,7 +511,7 @@ sub updateServiceState($$$$$$) {
 	    $interval = getServiceCheckIntervalWithSVCid($index) * getIntervalLenght($con_oreon);
 	    #	    $interval = 3 if (!defined($interval));
 	    #	    $interval = getIntervalLenght($con_oreon) * $interval;
-	    my $interval_hb = $interval * 2;
+	    my $interval_hb = $interval * 10;
 
 	    $nb_value = getLenStorageDB() / $interval;
 	    
@@ -652,7 +652,7 @@ sub CheckRebuild(){
 	}
 	$interval = 330 if (!defined($interval));
 
-	my $interval_hb = $interval * 2;
+	my $interval_hb = $interval * 10;
 	my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
 	if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "");}
 
