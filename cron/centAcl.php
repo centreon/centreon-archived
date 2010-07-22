@@ -42,23 +42,13 @@
 	include_once $centreon_path."/cron/centAcl-Func.php";
 	include_once $centreon_path."/www/class/centreonDB.class.php";
 
-	//define("LOCK_FILE", "/var/lib/centreon/centAcl.lock");
-	define("LOCK_FILE", "@CENTREON_VARLIB@/centAcl.lock");
-
 	function programExit($msg)
 	{
 	    echo "[".date("Y-m-d H:i:s")."] ".$msg."\n";
 	    exit;
 	}
 
-	if (is_file(LOCK_FILE)) {
-	    programExit("Lock file found");
-	}
-
 	ini_set('max_execution_time', 0);
-	$fh = fopen(LOCK_FILE, "w+");
-	fwrite($fh, time());
-	fclose($fh);
 
 	try {
     	/*
@@ -72,6 +62,27 @@
     	$pearDB 	= new CentreonDB();
     	$pearDBO 	= new CentreonDB("centstorage");
     	$pearDBndo 	= new CentreonDB("ndo");
+
+		/*
+		 * Lock in MySQL
+		 */
+		$DBRESULT =& $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
+	    $data =& $DBRESULT->fetchRow();
+	
+	    $is_running = $data["running"];
+	    $appID = $data["id"];
+		$beginTime = time();
+	
+	    if (count($data) == 0) {
+	       $DBRESULT = $pearDB->query("INSERT INTO cron_operation (name, system, activate) VALUES ('centAcl.php', '1', '1')");
+	       $is_running = 0;
+	    }
+	
+	    if ($is_running == 0) {
+	       $DBRESULT = $pearDB->query("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
+	    } else {
+	      exit(1);
+	    }
 
     	/* ************************************************
     	 *  Caching of all Data
@@ -365,6 +376,7 @@
     					}
     				}
     			}
+    			
     			/*
     			 * Insert datas
     			 */
@@ -375,10 +387,14 @@
     		}
     		$cpt++;
     	}
-    	unlink(LOCK_FILE);
+    	
+		/*
+		 * remove lock
+		 */
+		$DBRESULT = $pearDB->query("UPDATE cron_operation SET running = '0', last_execution_time = '".(time() - $beginTime)."' WHERE id = '$appID'");
+	
 	}
 	catch (Exception $e) {
-        unlink(LOCK_FILE);
 	    programExit($e->getMessage());
 	}
 ?>
