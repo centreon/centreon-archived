@@ -58,30 +58,38 @@ use Time::Local;
 ####################################################################
 
 # Include Centreon DB Configuration Variables
-use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
+use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $appID);
 require "@CENTREON_ETC@/conf.pm";
 
 # Define Var lib dir
 my $VarLib = "@CENTREON_VARLIB@";
 
-# archiveDayLog's lock file
-my $lock_file = $VarLib."/archiveDayLog.lock";
-my $cmdtmp;
-my $pid;
-if (-e "$lock_file") {
-   chomp($pid = `cat $lock_file`);
-   my @progTab = split(/\//,$0);
-   my $progName = pop(@progTab);
-   my $cmd = "ps -p ".$pid." | grep ".$progName;
-   $cmdtmp = `$cmd`;
-   if (length($cmdtmp) > 0) {
-      print("$progName is already running... (pid=$pid)\n");
-      exit;
-   }
+# ##############################
+# Lock in MySQL
+my $sth = $dbhoreon->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'archiveDayLog'");
+if (!$sth->execute) {
+    die "Error:" . $sth->errstr . "\n";
 }
-$pid = getpgrp(0);
-$cmdtmp = `echo $pid > $lock_file`;
+$data = $sth->fetchrow_hashref();
+print "|".$data->{"id"}."|";
 
+my $sthbis;
+if (defined($data->{'id'})) {
+    if (!defined($data->{"is_running"}) || $data->{"is_running"} == 0) {
+        $appID = $data->{"id"};
+        $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
+        if (!$sthbis->execute) {
+            die "Error:" . $sthbis->errstr . "\n";
+        }
+    } else {
+        exit(1);
+    }
+} else {
+    my $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('logAnalyzer', '1', '1')");
+    if (!$sthbis->execute) {
+        die "Error:" . $sthbis->errstr . "\n";
+    }
+}
 
 # the field "msg_type" in table "log" of Centstorage DB correspond to Nagios Message type 
 my %msg_type = ("svc_alerts" 			=> 0,
@@ -848,4 +856,9 @@ sub rebuild_archives($) {
 #####################################################
 main();
 
-my $cmd = `rm -rf $lock_file`;
+# Remove Lock
+$sth = $dbhoreon->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '".(time()-$beginTime)."' WHERE id = '$appID'");
+if (!$sth->execute) {
+    die "Error:" . $sth->errstr . "\n";
+}
+undef($appID);

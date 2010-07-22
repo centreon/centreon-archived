@@ -389,7 +389,7 @@
     	}
     	
 		/*
-		 * remove lock
+		 * Remove lock
 		 */
 		$DBRESULT = $pearDB->query("UPDATE cron_operation SET running = '0', last_execution_time = '".(time() - $beginTime)."' WHERE id = '$appID'");
 	
