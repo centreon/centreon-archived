@@ -153,7 +153,7 @@
 												"RowMenu_rname"=>$module_conf[$filename]["rname"],
 												"RowMenu_release"=>$module_conf[$filename]["mod_release"],
 												"RowMenu_author"=>$module_conf[$filename]["author"],
-												"RowMenu_infos"=>$module_conf[$filename]["infos"],
+												"RowMenu_infos"=> (isset($module_conf[$filename]["infos"]) ? $module_conf[$filename]["infos"] : ""),
 												"RowMenu_picture" => (file_exists("./modules/$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
 												"RowMenu_isinstalled"=>_("No"),
 												"RowMenu_link"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"],
