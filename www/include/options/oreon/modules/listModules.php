@@ -40,7 +40,7 @@
 		exit();	
 	
 	/*
-	 * Test Modules Existence
+	 * Test Modules Existence for deletion
 	 */
 	if ($id && $o == "d" && testModuleExistence($id))	{
 		$moduleinfo = getModuleInfoInDB(NULL, $id);
@@ -74,14 +74,14 @@
 	/*
 	 * start header menu
 	 */
-	$tpl->assign("headerMenu_name", 	_("Name"));
-	$tpl->assign("headerMenu_rname", 	_("Real name"));
-	$tpl->assign("headerMenu_release", 	_("Release"));
-	$tpl->assign("headerMenu_infos", 	_("Informations"));
-	$tpl->assign("headerMenu_author", 	_("Author"));
-	$tpl->assign("headerMenu_isinstalled", _("Installed"));
-	$tpl->assign("headerMenu_action", 	_("Actions"));
-	$tpl->assign("confirm_removing", 	_("Do you confirm the deletion ?"));
+	$tpl->assign("headerMenu_name", 		_("Name"));
+	$tpl->assign("headerMenu_rname", 		_("Real name"));
+	$tpl->assign("headerMenu_release", 		_("Release"));
+	$tpl->assign("headerMenu_infos", 		_("Informations"));
+	$tpl->assign("headerMenu_author", 		_("Author"));
+	$tpl->assign("headerMenu_isinstalled", 	_("Installed"));
+	$tpl->assign("headerMenu_action", 		_("Actions"));
+	$tpl->assign("confirm_removing", 		_("Do you confirm the deletion ?"));
 	
 	/*
 	 * Different style between each lines
@@ -91,6 +91,8 @@
 	/*
 	 * Get Modules List
 	 */
+	chdir("./modules/");
+	
 	$handle = opendir("./modules/");
 	
 	/*
@@ -106,28 +108,28 @@
 			 * Package already installed
 			 */
 			if (isset($moduleinfo["rname"]))	{				
-				$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
-										"RowMenu_name"=>$moduleinfo["name"],
-										"RowMenu_rname"=>$moduleinfo["rname"],
-										"RowMenu_release"=>$moduleinfo["mod_release"],
-										"RowMenu_infos"=>$moduleinfo["infos"],
-										"RowMenu_author"=>$moduleinfo["author"],
+				$elemArr[$i] = array(	"MenuClass" => "list_".$style, 
+										"RowMenu_name" => $moduleinfo["name"],
+										"RowMenu_rname" => $moduleinfo["rname"],
+										"RowMenu_release" => $moduleinfo["mod_release"],
+										"RowMenu_infos" => $moduleinfo["infos"],
+										"RowMenu_author" => $moduleinfo["author"],
 										"RowMenu_upgrade" => 0,
-										"RowMenu_picture" => (file_exists("./modules/$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
-										"RowMenu_isinstalled"=>_("Yes"),
-										"RowMenu_link"=>"?p=".$p."&o=w&id=".$moduleinfo["id"],
-										"RowMenu_link_install"=>NULL,
-										"RowMenu_link_delete"=>"?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=d",
-										"RowMenu_link_upgrade"=>"?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=u");
+										"RowMenu_picture" => (file_exists("./$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
+										"RowMenu_isinstalled" => _("Yes"),
+										"RowMenu_link" => "?p=".$p."&o=w&id=".$moduleinfo["id"],
+										"RowMenu_link_install" => NULL,
+										"RowMenu_link_delete" => "?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=d",
+										"RowMenu_link_upgrade" => "?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=u");
 				
 				/*
 				 * Check Update
 				 */
-				if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE")) {
-					$handle2 = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
+				if (is_dir("./".$moduleinfo["name"]."/UPGRADE")) {
+					$handle2 = opendir("./".$moduleinfo["name"]."/UPGRADE");
 					while (false !== ($filename2 = readdir($handle2)))	{
-						if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]."-") && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php"))	{
-							include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
+						if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]."-") && file_exists("./".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php"))	{
+							include_once("./".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
 							if ($moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
 								$elemArr[$i]["RowMenu_upgrade"] = 1;
 							}
@@ -144,37 +146,48 @@
 				/*
 				 * Valid package to install
 				 */
-				if (is_file("./modules/".$filename."/conf.php")) {
-					include_once("./modules/".$filename."/conf.php");
+				if (is_file("./".$filename."/conf.php")) {
+					include_once("./".$filename."/conf.php");
+				} else if (is_file("./".$filename."/.api/conf.php")) {
+					include_once("./".$filename."/.api/conf.php");
+				}
 					
-					if (isset($module_conf[$filename]["name"]))	{							
-						$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
-												"RowMenu_name"=>$module_conf[$filename]["name"],
-												"RowMenu_rname"=>$module_conf[$filename]["rname"],
-												"RowMenu_release"=>$module_conf[$filename]["mod_release"],
-												"RowMenu_author"=>$module_conf[$filename]["author"],
-												"RowMenu_infos"=> (isset($module_conf[$filename]["infos"]) ? $module_conf[$filename]["infos"] : ""),
-												"RowMenu_picture" => (file_exists("./modules/$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
-												"RowMenu_isinstalled"=>_("No"),
-												"RowMenu_link"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"],
-												"RowMenu_link_install"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"]."&o=i",
-												"RowMenu_link_delete"=>NULL,
-												"RowMenu_link_upgrade"=>NULL);
-						$style != "two" ? $style = "two" : $style = "one";
-						$i++;
-					}
+				if (isset($module_conf[$filename]["name"]))	{
+					
+					$picturePath = "./img/icones/16x16/component_green.gif";
+					if (file_exists("./$filename/icone.gif") {
+						$picturePath = "./$filename/icone.gif";
+					}					
+					if (file_exists("./$filename/.api/icone.gif") {
+						$picturePath = "./$filename/.api/icone.gif";
+					}					
+							
+					$elemArr[$i] = array(	"MenuClass" => "list_".$style, 
+											"RowMenu_name" => $module_conf[$filename]["name"],
+											"RowMenu_rname" => $module_conf[$filename]["rname"],
+											"RowMenu_release" => $module_conf[$filename]["mod_release"],
+											"RowMenu_author" => $module_conf[$filename]["author"],
+											"RowMenu_infos" =>  (isset($module_conf[$filename]["infos"]) ? $module_conf[$filename]["infos"] : ""),
+											"RowMenu_picture"  =>  $picturePath,
+											"RowMenu_isinstalled" => _("No"),
+											"RowMenu_link" => "?p=".$p."&o=w&name=".$module_conf[$filename]["name"],
+											"RowMenu_link_install" => "?p=".$p."&o=w&name=".$module_conf[$filename]["name"]."&o=i",
+											"RowMenu_link_delete" => NULL,
+											"RowMenu_link_upgrade" => NULL);
+					$style != "two" ? $style = "two" : $style = "one";
+					$i++;
 				} else {							
 					
 					/*
 					 * Non valid package
 					 */	
-					$elemArr[$i] = array(	"MenuClass"=>"list_".$style, 
-											"RowMenu_name"=>$filename,
-											"RowMenu_rname"=>_("NA"),
-											"RowMenu_release"=>_("NA"),
-											"RowMenu_author"=>_("NA"),
-											"RowMenu_isinstalled"=>_("Impossible"),
-											"RowMenu_link"=>NULL);
+					$elemArr[$i] = array(	"MenuClass" => "list_".$style, 
+											"RowMenu_name" => $filename,
+											"RowMenu_rname" => _("NA"),
+											"RowMenu_release" => _("NA"),
+											"RowMenu_author" => _("NA"),
+											"RowMenu_isinstalled" => _("Impossible"),
+											"RowMenu_link" => NULL);
 					$style != "two" ? $style = "two" : $style = "one";
 					$i++;
 				}
