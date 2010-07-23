@@ -84,17 +84,28 @@ sub CheckMySQLDrain(){
 	while ($data = $sth->fetchrow_hashref()) {
 	    if ($data->{'service_id'} && $data->{'host_id'} && !defined($srv_list{$data->{'host_id'}."_".$data->{'service_id'}})){
 		my $data_svc;
+		my $t = 0;
 		my $sth1 = $con_ods->prepare("SELECT metric_id FROM index_data, metrics WHERE index_data.host_id = '".$data->{'host_id'}."' AND index_data.service_id = '".$data->{'service_id'}."' AND metrics.index_id = index_data.id");
 		if (!$sth1->execute) {
 		    writeLogFile("Error in Drain function 3 : " . $sth1->errstr);
 		}
 		while ($data_svc = $sth1->fetchrow_hashref()) {
+		    # Add Metric to delete in buffer
 		    $sth2 = $con_ods->prepare("DELETE FROM metrics WHERE metric_id = '".$data_svc->{'metric_id'}."'");	
 		    if (!$sth2->execute) {
 			writeLogFile("Error when deleting Metrics for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." m : ".$data_svc->{'metric_id'}." : " . $sth2->errstr);
 		    }
 		    $sth2->finish();
 		    undef($sth2);
+		    $t++;
+		}
+
+		if ($t){
+		    $sth2 = $con_ods->prepare("DELETE FROM index_data WHERE `service_id` = '".$data->{'service_id'}."' AND host_id = '".$data->{'host_id'}."'");
+		    if (!$sth2->execute) {
+			writeLogFile("Error when index for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." :" . $sth2->errstr);
+		    }
+		    $sth2->finish();
 		}
 		undef($sth2);
 		undef($data_svc);

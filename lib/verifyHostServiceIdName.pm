@@ -132,7 +132,7 @@ sub DeleteOldRrdDB(){
 	if (!defined($base{$_})){
 	    if (!-d $some_dir."/".$_){
 		if (unlink($some_dir."/".$_)){
-		    writeLogFile("Sync : Warning -> ".$some_dir."/".$_." removed");
+		    writeLogFile("Sync : purge: ".$some_dir."/".$_." removed");
 		} else {
 		    writeLogFile("Sync : Error -> Unable to remove ".$some_dir.$_);
 		}
