@@ -69,6 +69,23 @@
 	}
 
 
+	function isValidImage($filename) {
+		if (!$filename) {
+			return false;
+		$imginfo = getimagesize($filename);
+		if ($imginfo) {
+			return true;
+		} else {
+			$gd_res = imagecreatefromgd2($filename);
+			if ($gd_res) {
+				imagedestroy($gd_res);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	function handleUpload($HTMLfile, $dir_alias, $img_comment = "") {
 		if (!$HTMLfile || !$dir_alias) {
 			return false;
@@ -94,6 +111,8 @@
 				foreach ($filelist as $file) {
 				    if (is_dir($uploaddir.$file))
 					continue; // skip directories in list
+				    if (!isValidImage($uploaddir.$file))
+				    	continue;
 				    $img_ids[] = insertImg($uploaddir, $file, $dir_alias, $file, $img_comment);
 				}
 				unlink($uploaddir.$fileinfo["name"]);
@@ -102,7 +121,7 @@
 			    return false;
 			    break;
                         default :
-			    if (stristr($fileinfo["type"], "image/") ) {
+			    if (isValidImage($uploaddir.$fileinfo["name"]) ) {
 				$HTMLfile->moveUploadedFile($uploaddir);
 				return insertImg($uploaddir, $fileinfo["name"], $dir_alias, $fileinfo["name"], $img_comment);
 			    } else {
@@ -199,9 +218,9 @@
 		/* insert new file */
 		if ($HTMLfile && $HTMLfile->isUploadedFile()) {
 			$fileinfo = $HTMLfile->getValue();
-			if (!isset($fileinfo["name"]) | !isset($fileinfo["type"]))
+			if (!isset($fileinfo["name"]))
 				return false;
-			if (stristr($fileinfo["type"], "image/") )
+			if (isValidImage($uploaddir.$fileinfo["name"]) )
 				$HTMLfile->moveUploadedFile($uploaddir);
 			else
 				return false;
