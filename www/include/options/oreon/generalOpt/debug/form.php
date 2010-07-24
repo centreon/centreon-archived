@@ -57,11 +57,11 @@
 	
 	$form->addElement('text', 'debug_path', _("Logs Directory"), $attrsText);
 
-	$form->addElement('select', 'debug_auth', _("Authentification debug"), array(0=>_("No"), 1=>_("Yes")));
+	$form->addElement('select', 'debug_auth', _("Authentication debug"), array(0=>_("No"), 1=>_("Yes")));
 	$form->addElement('select', 'debug_sql', _("SQL debug"), array(0=>_("No"), 1=>_("Yes")));
 	$form->addElement('select', 'debug_nagios_import', _("Nagios Import debug"), array(0=>_("No"), 1=>_("Yes")));
 	$form->addElement('select', 'debug_rrdtool', _("RRDTool debug"), array(0=>_("No"), 1=>_("Yes")));
-	$form->addElement('select', 'debug_ldap_import', _("LDAP Import Users debug"), array(0=>_("No"), 1=>_("Yes")));
+	$form->addElement('select', 'debug_ldap_import', _("LDAP User Import debug"), array(0=>_("No"), 1=>_("Yes")));
 
 	function slash($elem = NULL)	{
 		if ($elem)

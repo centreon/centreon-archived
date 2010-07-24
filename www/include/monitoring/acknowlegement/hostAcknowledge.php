@@ -117,7 +117,7 @@
 		$form->addElement('hidden', 'en', $en);
 		
 		$textarea =& $form->addElement('textarea', 'comment', _("Comment"), array("rows"=>"8", "cols"=>"80"));
-		$textarea->setValue(_("Acknowledged by ").$oreon->user->get_alias());
+		$textarea->setValue(sprintf(_("Acknowledged by %s"), $oreon->user->get_alias()));
 		
 		$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 		$form->setJsWarnings(_("Invalid information entered"),_("Please correct these fields"));

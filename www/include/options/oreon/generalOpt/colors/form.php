@@ -56,7 +56,7 @@
 	
 	$form->addElement('header', 'host', _("Hosts status colors"));
 	$form->addElement('header', 'service', _("Services status colors"));
-	$form->addElement('header', 'misc', _("Miscelenaous"));
+	$form->addElement('header', 'misc', _("Miscelleneous"));
 	$form->addElement('header', 'hostspec', _("Specifics for hosts"));
 	
 	$TabColorNameAndLang = array("color_up"=>_("Host UP Color"),

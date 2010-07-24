@@ -82,7 +82,7 @@
 	$form->addElement('header', 'Server_Informations', _("Server Information"));
 	$form->addElement('header', 'SSH_Informations', _("SSH Information"));
 	$form->addElement('header', 'Nagios_Informations', _("Nagios Information"));
-	$form->addElement('header', 'Misc', _("Miscelenaous"));
+	$form->addElement('header', 'Misc', _("Miscelleneous"));
 	
 	/*
 	 * Nagios Configuration basic information

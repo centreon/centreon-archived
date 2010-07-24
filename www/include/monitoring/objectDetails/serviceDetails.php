@@ -415,13 +415,13 @@
 		$tpl->assign("serv_shortcut", _("Service Shortcuts"));
 		$tpl->assign("lnk_host_config", _("Configure host"));
 		$tpl->assign("lnk_serv_config", _("Configure service"));
-		$tpl->assign("lnk_host_graphs", _("View graphs for host"));
-		$tpl->assign("lnk_host_reports", _("View report for host"));
-		$tpl->assign("lnk_serv_reports", _("View report for service"));
+		$tpl->assign("lnk_host_graphs", sprintf(_("View graphs for host %s"), $host_name));
+		$tpl->assign("lnk_host_reports", sprintf(_("View report for host %s"), $host_name));
+		$tpl->assign("lnk_serv_reports", sprintf(_("View report for service %s"), $svc_description));
 		$tpl->assign("lnk_host_status", _("View host status page"));
-		$tpl->assign("lnk_serv_status", _("View status of all services on host"));
-		$tpl->assign("lnk_host_logs", _("View logs for host"));
-		$tpl->assign("lnk_serv_logs", _("View logs for service"));
+		$tpl->assign("lnk_serv_status", sprintf(_("View status of all services on host %s"), $host_name));
+		$tpl->assign("lnk_host_logs", sprintf(_("View logs for host %s"), $host_name));
+		$tpl->assign("lnk_serv_logs", sprintf(_("View logs for service %s"), $svc_description));
 
 		/*
 		 * Ext informations

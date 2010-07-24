@@ -108,7 +108,7 @@
 	# Services
 	$form->addElement('checkbox', 'service_checks', _("Enable/Disable Checks for a service"));
 	$form->addElement('checkbox', 'service_notifications', _("Enable/Disable Notifications for a service"));
-	$form->addElement('checkbox', 'service_acknowledgement', _("Acknowledge/Disaknowledge a service"));
+	$form->addElement('checkbox', 'service_acknowledgement', _("Acknowledge/Disacknowledge a service"));
 	$form->addElement('checkbox', 'service_schedule_check', _("Re-schedule the next check for a service"));
 	$form->addElement('checkbox', 'service_schedule_forced_check', _("Re-schedule the next check for a service (Forced)"));
 	$form->addElement('checkbox', 'service_schedule_downtime', _("Schedule downtime for a service"));

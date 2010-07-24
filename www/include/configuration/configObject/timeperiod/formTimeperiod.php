@@ -272,7 +272,7 @@
 	 * Translations
 	 */
 	$tpl->assign("tRDay", _("Days"));
-	$tpl->assign("tRHours", _("Timerange"));
+	$tpl->assign("tRHours", _("Time Range"));
 
 
 	$tpl->assign("helpattr", 'TITLE, "Help", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
