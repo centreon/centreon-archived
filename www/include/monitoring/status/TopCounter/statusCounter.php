@@ -128,7 +128,7 @@
 	/* ********************************************
 	 *  Get Real non-ok Status 
 	 */
-	$rq3 =  "SELECT COUNT(nss.current_state), nss.state_type, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth " .
+	$rq3 =  "SELECT COUNT(DISTINCT CONCAT(no.name1,';', no.name2)), nss.state_type, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth " .
 			"FROM nagios_servicestatus nss, nagios_objects no " .
 			"WHERE no.object_id = nss.service_object_id " .
 			"	AND no.name1 NOT LIKE '_Module_%' " .
@@ -145,7 +145,7 @@
 			"		GROUP BY nss.current_state, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth";
 	$DBRESULT =& $obj->DBNdo->query($rq2);
 	while ($ndo =& $DBRESULT->fetchRow()) {
-		$svc_stat[$ndo["current_state"] + 5] = $ndo["count(nss.current_state)"];
+		$svc_stat[$ndo["current_state"] + 5] = $ndo["DISTINCT CONCAT(no.name1,';', no.name2)"];
 	}
 	$DBRESULT->free();
 	unset($ndo);
