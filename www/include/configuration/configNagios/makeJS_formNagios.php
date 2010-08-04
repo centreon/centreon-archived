@@ -30,8 +30,13 @@ var _o = '<?php echo $o;?>';
 
 
 function delBroker(tid){
-	var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
-	if (response){
+	var confirm = 1;
+
+	var inp_field = document.getElementById('in_broker_' + tid);
+	if (inp_field.value != "") {
+	    confirm = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
+	}
+	if (confirm){
 		var p = document.getElementById('tabBroker');
 		var oldtb = document.getElementById('tbody_broker_' + tid);
 		p.removeChild(oldtb);
