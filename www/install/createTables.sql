@@ -474,7 +474,7 @@ CREATE TABLE IF NOT EXISTS `cfg_nagios` (
 -- Structure de la table `cfg_nagios_broker_module`
 --
 
-CREATE TABLE IF NOT EXISTS `cfg_nagios_bkmod` (
+CREATE TABLE IF NOT EXISTS `cfg_nagios_broker_module` (
   `bk_mod_id` int(11) NOT NULL AUTO_INCREMENT,
   `cfg_nagios_id` int(11) DEFAULT NULL,
   `broker_module` varchar(255) DEFAULT NULL,

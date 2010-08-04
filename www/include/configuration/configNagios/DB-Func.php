@@ -94,7 +94,7 @@
 		
 		foreach ($nagios as $key => $value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM cfg_nagios WHERE nagios_id = '".$key."'");
-			$DBRESULT =& $pearDB->query("DELETE FROM cfg_nagios_bkmod WHERE nagios_id = '".$key."'");
+			$DBRESULT =& $pearDB->query("DELETE FROM cfg_nagios_broker_module WHERE nagios_id = '".$key."'");
 		}
 		$DBRESULT =& $pearDB->query("SELECT nagios_id FROM cfg_nagios WHERE nagios_activate = '1'");		  
 		if (!$DBRESULT->numRows())	{
@@ -114,7 +114,7 @@
 			$row["nagios_activate"] = '0';
 			$DBRESULT->free();
 			$rowBks = array();
-			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios_bkmod WHERE nagios_id='".$key."'");
+			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios_broker_module WHERE nagios_id='".$key."'");
 			while ($rowBk =& $DBRESULT->fetchRow())
 				$rowBks[] = $rowBk;
 			$DBRESULT->free();
@@ -132,7 +132,7 @@
 					$nagios_id = $DBRESULT->fetchRow();
 					$DBRESULT->free();
 					foreach ($rowBks as $keyBk=>$valBk){
-						$rqBk = "INSERT INTO cfg_nagios_bkmod (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$valBk["broker_module"]."')";
+						$rqBk = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$valBk["broker_module"]."')";
 						$DBRESULT =& $pearDB->query($rqBk);
 					}
 				}
@@ -330,12 +330,12 @@
 					$inBr = "in_broker_".$lsIn;
 					if (isset($_POST[$inBr])) {
 						# Insert broker module
-						$rq = "INSERT INTO cfg_nagios_bkmod (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$_POST[$inBr]."')";
+						$rq = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$_POST[$inBr]."')";
 					}
 					$DBRESULT =& $pearDB->query($rq);
 				}
 			} else {
-				$rq = "INSERT INTO cfg_nagios_bkmod (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', NULL)";
+				$rq = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', NULL)";
 				$DBRESULT =& $pearDB->query($rq);
 			}
 		}
@@ -517,7 +517,7 @@
 				if (isset($_POST[$inBr])) {
 					if ( $cBk < $nbOldBroker ) {
 						# Update broker module
-						$rq = "UPDATE cfg_nagios_bkmod SET cfg_nagios_broker_module = '".$_POST[$inBr]."' WHERE bk_mod_id ='".$oldBks[$cBk]['bkmod_id']."'";
+						$rq = "UPDATE cfg_nagios_broker_module SET cfg_nagios_broker_module = '".$_POST[$inBr]."' WHERE bk_mod_id ='".$oldBks[$cBk]['bkmod_id']."'";
 					} else {
 						# Insert broker module
 						$rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id."', '".$_POST[$inBr]."')";
