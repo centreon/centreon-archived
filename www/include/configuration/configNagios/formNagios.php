@@ -498,7 +498,7 @@
 		}
 		for ($nBk = 0 ; isset($aBk[$nBk]); $nBk++) {
 ?>
-	gBkId[<?php echo $nBk;?>] = <?php echo $aBk[$nBk]["bkmod_id"];?>;
+	gBkId[<?php echo $nBk;?>] = <?php echo $aBk[$nBk]["bk_mod_id"];?>;
 	gBkValue[<?php echo $nBk;?>] = '<?php echo $aBk[$nBk]["broker_module"];?>';
 <?php
 		}
