@@ -80,7 +80,7 @@
 	 */
 	$tplService = array();
 	$templateFilter = "<option value='0'></option>";
-	$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service WHERE service_register = '0'");
+	$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service WHERE service_register = '0' ORDER BY service_description");
 	while ($tpl =& $DBRESULT->fetchRow()) {
 		$tplService[$tpl["service_id"]] = $tpl["service_alias"];
 		$tpl["service_description"] = str_replace("#S#", "/", $tpl["service_description"]);
