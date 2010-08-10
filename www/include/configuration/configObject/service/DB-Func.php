@@ -227,6 +227,8 @@
 							if ($lap) {
 								$sv_id = multipleServiceInDB(array($key=>"1"), array($key=>"1"), $host_id, 0, NULL, array(), array($relation["hostgroup_hg_id"]=>NULL));
 								$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host_id."' AND service_id = '".$key."'");
+							} else {
+								$DBRESULT2 =& $pearDB->query("INSERT INTO host_service_relation (host_host_id, service_service_id) VALUES ('$host_id', '".$key."')");
 							}
 							$lap++;
 						}	
