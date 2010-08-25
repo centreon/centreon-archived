@@ -42,14 +42,27 @@
 	include_once $centreon_path."/cron/centAcl-Func.php";
 	include_once $centreon_path."/www/class/centreonDB.class.php";
 
-	function programExit($msg)
-	{
+	function programExit($msg) {
 	    echo "[".date("Y-m-d H:i:s")."] ".$msg."\n";
 	    exit;
 	}
 
 	ini_set('max_execution_time', 0);
 
+	if (is_file(LOCK_FILE)) {
+		(int)$nbProc = exec("ps -edf | grep centAcl.php | grep -v grep | wc -l");
+		if ($nbProc > 1) {
+			programExit("More than one centAcl.php process actually running. exit");
+		}		
+	}
+	
+	/**
+	 * write log file
+	 */
+	$fh = fopen(LOCK_FILE, "w+");
+	fwrite($fh, time());
+	fclose($fh);
+	
 	try {
     	/*
     	 * Init values
@@ -392,9 +405,10 @@
 		 * Remove lock
 		 */
 		$DBRESULT = $pearDB->query("UPDATE cron_operation SET running = '0', last_execution_time = '".(time() - $beginTime)."' WHERE id = '$appID'");
-	
-	}
-	catch (Exception $e) {
-	    programExit($e->getMessage());
+    	unlink(LOCK_FILE);
+		
+	} catch (Exception $e) {
+	   	unlink(LOCK_FILE);
+		programExit($e->getMessage());
 	}
 ?>
