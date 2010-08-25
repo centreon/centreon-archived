@@ -60,19 +60,22 @@ my $dbhoreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host="
 my $sth2 = $dbhoreon->prepare("SELECT `id`, `ns_ip_address` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
 if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
-} else { 
-	while (my $ns_server = $sth2->fetchrow_hashref()) {
-		my $sth = $dbhoreon->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$ns_server->{'id'}."'");
-		if (!$sth->execute) {
-		    die "Error:" . $sth->errstr . "\n";
-		} else {
-			my $archiveData = $sth->fetchrow_hashref();
-			my $ls = `ssh -q $ns_server->{'ns_ip_address'} ls -l $archiveData->{'log_archive_path'}/ 2>> /dev/null | wc -l`;
-		    if ($ls > 1){
-				`$rsyncPath -c $ns_server->{'ns_ip_address'}:$archiveData->{'log_archive_path'}/* /var/lib/centreon/log/$ns_server->{'id'}/archives/`;
-			}
-		}
-	}
+} else {
+        while (my $ns_server = $sth2->fetchrow_hashref()) {
+                my $sth = $dbhoreon->prepare("SELECT `value` FROM `options` WHERE `key` LIKE 'nagios_path_plugins'");
+                if (!$sth->execute) {
+                    die "Error:" . $sth->errstr . "\n";
+                } else {
+                        my $archiveData = $sth->fetchrow_hashref();
+                        my $ls = `ssh -q $ns_server->{'ns_ip_address'} ls -l $archiveData->{'value'}/ 2>> /dev/null | wc -l`;
+                        if ($ls > 1){
+                                `$rsyncPath -prc $archiveData->{'value'}/* $ns_server->{'ns_ip_address'}:$archiveData->{'value'}`;
+                        } else {
+                                print "Directory not present on remote server : ".$ns_server->{'ns_ip_address'}."\n";
+                        }
+                }
+        }
 }
+
 
 exit();
