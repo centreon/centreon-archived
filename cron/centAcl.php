@@ -47,22 +47,13 @@
 	    exit;
 	}
 
+	(int)$nbProc = exec("ps -edf | grep centAcl.php | grep -v grep | wc -l");
+	if ($nbProc > 1) {
+		programExit("More than one centAcl.php process actually running. exit");
+	}
+
 	ini_set('max_execution_time', 0);
 
-	if (is_file(LOCK_FILE)) {
-		(int)$nbProc = exec("ps -edf | grep centAcl.php | grep -v grep | wc -l");
-		if ($nbProc > 1) {
-			programExit("More than one centAcl.php process actually running. exit");
-		}		
-	}
-	
-	/**
-	 * write log file
-	 */
-	$fh = fopen(LOCK_FILE, "w+");
-	fwrite($fh, time());
-	fclose($fh);
-	
 	try {
     	/*
     	 * Init values
@@ -81,16 +72,16 @@
 		 */
 		$DBRESULT =& $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
 	    $data =& $DBRESULT->fetchRow();
-	
+
 	    $is_running = $data["running"];
 	    $appID = $data["id"];
 		$beginTime = time();
-	
+
 	    if (count($data) == 0) {
 	       $DBRESULT = $pearDB->query("INSERT INTO cron_operation (name, system, activate) VALUES ('centAcl.php', '1', '1')");
 	       $is_running = 0;
 	    }
-	
+
 	    if ($is_running == 0) {
 	       $DBRESULT = $pearDB->query("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
 	    } else {
@@ -389,7 +380,7 @@
     					}
     				}
     			}
-    			
+
     			/*
     			 * Insert datas
     			 */
@@ -400,15 +391,12 @@
     		}
     		$cpt++;
     	}
-    	
+
 		/*
 		 * Remove lock
 		 */
 		$DBRESULT = $pearDB->query("UPDATE cron_operation SET running = '0', last_execution_time = '".(time() - $beginTime)."' WHERE id = '$appID'");
-    	unlink(LOCK_FILE);
-		
 	} catch (Exception $e) {
-	   	unlink(LOCK_FILE);
 		programExit($e->getMessage());
 	}
 ?>
