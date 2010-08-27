@@ -171,7 +171,7 @@
 				"`global_service_event_handler` , `sleep_time` , `service_inter_check_delay_method` , " .
 				"`host_inter_check_delay_method` , `service_interleave_factor` , `max_concurrent_checks` , `max_service_check_spread` , " .
 				"`max_host_check_spread` , `check_result_reaper_frequency` , `interval_length` , `auto_reschedule_checks` , `auto_rescheduling_interval` , " .
-				"`auto_rescheduling_window` , `use_aggressive_host_checking` , `enable_predictive_host_dependency_checks`, `enable_flap_detection` , `low_service_flap_threshold` , " .
+				"`auto_rescheduling_window` , `use_agressive_host_checking` , `enable_predictive_host_dependency_checks`, `enable_flap_detection` , `low_service_flap_threshold` , " .
 				"`high_service_flap_threshold` , `low_host_flap_threshold` , `high_host_flap_threshold` , `soft_state_dependencies` ,`enable_predictive_service_dependency_checks` , " .
 				"`service_check_timeout` , `host_check_timeout` , `event_handler_timeout` , `notification_timeout` , `ocsp_timeout` , `ochp_timeout` , " .
 				"`perfdata_timeout` , `obsess_over_services` , `ocsp_command` , `obsess_over_hosts` , `ochp_command` , `process_performance_data` , " .
@@ -244,7 +244,7 @@
         isset($ret["auto_reschedule_checks"]["auto_reschedule_checks"]) && $ret["auto_reschedule_checks"]["auto_reschedule_checks"] != 2 ? $rq .= "'".$ret["auto_reschedule_checks"]["auto_reschedule_checks"]."', " : $rq .= "'2', ";
         isset($ret["auto_rescheduling_interval"]) && $ret["auto_rescheduling_interval"] != NULL ? $rq .= "'".htmlentities($ret["auto_rescheduling_interval"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["auto_rescheduling_window"]) && $ret["auto_rescheduling_window"] != NULL ? $rq .= "'".htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-        isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]) && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 2 ? $rq .= "'".$ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]."',  " : $rq .= "'2', ";
+        isset($ret["use_agressive_host_checking"]["use_agressive_host_checking"]) && $ret["use_agressive_host_checking"]["use_agressive_host_checking"] != 2 ? $rq .= "'".$ret["use_agressive_host_checking"]["use_agressive_host_checking"]."',  " : $rq .= "'2', ";
         isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]) && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2 ? $rq .= "'".$ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]."',  " : $rq .= "'2', ";
         isset($ret["enable_flap_detection"]["enable_flap_detection"]) && $ret["enable_flap_detection"]["enable_flap_detection"] != 2 ? $rq .= "'".$ret["enable_flap_detection"]["enable_flap_detection"]."',  " : $rq .= "'2', ";
         isset($ret["low_service_flap_threshold"]) && $ret["low_service_flap_threshold"] != NULL ? $rq .= "'".htmlentities($ret["low_service_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -417,7 +417,7 @@
         isset($ret["auto_reschedule_checks"]["auto_reschedule_checks"]) && $ret["auto_reschedule_checks"]["auto_reschedule_checks"] != 2 ? $rq .= "auto_reschedule_checks = '".$ret["auto_reschedule_checks"]["auto_reschedule_checks"]."', " : $rq .= "auto_reschedule_checks = '2', ";
         isset($ret["auto_rescheduling_interval"]) && $ret["auto_rescheduling_interval"] != NULL ? $rq .= "auto_rescheduling_interval = '".htmlentities($ret["auto_rescheduling_interval"], ENT_QUOTES)."', " : $rq .= "auto_rescheduling_interval = NULL, ";
         isset($ret["auto_rescheduling_window"]) && $ret["auto_rescheduling_window"] != NULL ? $rq .= "auto_rescheduling_window = '".htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES)."', " : $rq .= "auto_rescheduling_window = NULL, ";
-        isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]) && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 2 ? $rq .= "use_aggressive_host_checking   = '".$ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]."',  " : $rq .= "use_aggressive_host_checking   = '2', ";
+        isset($ret["use_agressive_host_checking"]["use_agressive_host_checking"]) && $ret["use_agressive_host_checking"]["use_agressive_host_checking"] != 2 ? $rq .= "use_agressive_host_checking   = '".$ret["use_agressive_host_checking"]["use_agressive_host_checking"]."',  " : $rq .= "use_agressive_host_checking   = '2', ";
         isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]) && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2 ? $rq .= "enable_predictive_host_dependency_checks   = '".$ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]."',  " : $rq .= "enable_predictive_host_dependency_checks   = '2', ";
         isset($ret["enable_flap_detection"]["enable_flap_detection"]) && $ret["enable_flap_detection"]["enable_flap_detection"] != 2 ? $rq .= "enable_flap_detection = '".$ret["enable_flap_detection"]["enable_flap_detection"]."',  " : $rq .= "enable_flap_detection = '2', ";
         isset($ret["low_service_flap_threshold"]) && $ret["low_service_flap_threshold"] != NULL ? $rq .= "low_service_flap_threshold = '".htmlentities($ret["low_service_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "low_service_flap_threshold = NULL, ";
@@ -500,32 +500,42 @@
 		 */
 		if (isset($_POST['lsOfBroker'])) {
 			/* Find how many Broker we already have */
+
 			$DBRESULT =& $pearDB->query("SELECT count(bk_mod_id) as nbOldBroker FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$nagios_id."'");
 			$nRow =& $DBRESULT->fetchRow();
 			$DBRESULT->free();
 			$nbOldBroker = $nRow["nbOldBroker"];
 			$oldBks = array();
 			$DBRESULT =& $pearDB->query("SELECT bk_mod_id FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$nagios_id."'");
-			while ($oldBk =& $DBRESULT->fetchRow())
+			while ($oldBk =& $DBRESULT->fetchRow()) {
 				$oldBks[] = $oldBk;
+			}
 			$DBRESULT->free();
+
+			print_r($oldBks);
+
 			$cBk = 0;
-			for ($lsIn=0;$lsIn <= $_POST['lsOfBroker']; $lsIn++){
+
+			for ($lsIn=0 ; $lsIn <= $_POST['lsOfBroker'] ; $lsIn++) {
+
+				print $lsIn . " -> " .$_POST['lsOfBroker'] . " --> ".$cBk."($nbOldBroker) <br>";
+
 				$inBr = "in_broker_".$lsIn;
 				if (isset($_POST[$inBr])) {
-					if ( $cBk < $nbOldBroker ) {
+					if ($cBk < $nbOldBroker && isset($oldBks[$cBk]['bk_mod_id'])) {
 						# Update broker module
-						$rq = "UPDATE cfg_nagios_broker_module SET cfg_nagios_broker_module = '".$_POST[$inBr]."' WHERE bk_mod_id ='".$oldBks[$cBk]['bkmod_id']."'";
+						$rq = "UPDATE cfg_nagios_broker_module SET broker_module = '".$_POST[$inBr]."' WHERE bk_mod_id ='".$oldBks[$cBk]['bk_mod_id']."'";
 					} else {
 						# Insert broker module
 						$rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id."', '".$_POST[$inBr]."')";
 					}
+					print $rq;
 					$DBRESULT =& $pearDB->query($rq);
 					$cBk++;
 				}
 			}
 			while ( $cBk < $nbOldBroker ) {
-				$rq = "DELETE FROM cfg_nagios_broker_module WHERE bkmod_id ='".$oldBks[$cBk]['bkmod_id']."'";
+				$rq = "DELETE FROM cfg_nagios_broker_module WHERE bk_mod_id ='".$oldBks[$cBk]['bk_mod_id']."'";
 				$DBRESULT =& $pearDB->query($rq);
 				$cBk++;
 			}
@@ -535,5 +545,4 @@
 			enableNagiosInDB($nagios_id);
 		}
 	}
-
 ?>
