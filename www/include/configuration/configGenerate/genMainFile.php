@@ -58,7 +58,7 @@
 			else if ($key == "log_external_commands" && $value == 2);
 			else if ($key == "log_passive_checks" && $value == 2);
 			else if ($key == "auto_reschedule_checks" && $value == 2);
-			else if ($key == "use_aggressive_host_checking" && $value == 2);
+			else if ($key == "use_agressive_host_checking" && $value == 2);
 			else if ($key == "enable_flap_detection" && $value == 2);
 			else if ($key == "soft_state_dependencies" && $value == 2);
 			else if ($key == "obsess_over_services" && $value == 2);
