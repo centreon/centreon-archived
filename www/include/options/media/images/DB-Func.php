@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -36,6 +36,10 @@
  *
  */
 
+	if (!isset($oreon)) {
+		exit();
+	}
+
 	function sanitizeFilename($filename) {
 		$cleanstr = htmlentities($filename, ENT_QUOTES, "UTF-8");
 		$cleanstr = str_replace(" ", "_", $cleanstr);
@@ -70,7 +74,7 @@
 
 
 	function isValidImage($filename) {
-		if (!$filename) {
+		if (!$filename)
 			return false;
 		$imginfo = getimagesize($filename);
 		if ($imginfo) {
@@ -84,8 +88,8 @@
 		}
 		return false;
 	}
-	
-	
+
+
 	function handleUpload($HTMLfile, $dir_alias, $img_comment = "") {
 		if (!$HTMLfile || !$dir_alias) {
 			return false;
@@ -172,9 +176,9 @@
 	function deleteImg ($img_id) {
 		if (!isset($img_id))
 			return;
-		
+
 		global $pearDB;
-		
+
 		$mediadir = "./img/media/";
 
 		$rq = "SELECT dir_alias, img_path FROM view_img, view_img_dir, view_img_dir_relation ";
@@ -190,7 +194,6 @@
 		}
 		$DBRESULT->free();
 	}
-
 
 	function updateImg($img_id, $HTMLfile, $dir_alias, $img_name, $img_comment) {
 		if (!$img_id)
@@ -294,7 +297,6 @@
 		}
 	}
 
-
 	function testDirectoryCallback ($name) {
 		return testDirectoryExistence($name)==0;
 	}
@@ -347,7 +349,6 @@
 			return "";
 	}
 
-
 	function deleteMultDirectory($dirs = array()) {
 		foreach($dirs as $selector => $val) {
 			$id = explode('-',$selector);
@@ -384,20 +385,23 @@
 		}
 	}
 
-
 	function updateDirectory($dir_id, $dir_alias, $dir_comment = "") {
 		if (!$dir_id)
 			return;
+
 		global $pearDB;
+
 		$mediadir = "./img/media/";
 		$rq = "SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$dir_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		$old_dir =& $DBRESULT->fetchRow();
 		$dir_alias = sanitizePath($dir_alias);
-		if (!is_dir($mediadir.$old_dir["dir_alias"]))
+		if (!is_dir($mediadir.$old_dir["dir_alias"]))  {
 			mkdir($mediadir.$dir_alias);
-		else
+		} else {
 			rename($mediadir.$old_dir["dir_alias"], $mediadir.$dir_alias);
+		}
+
 		if (is_dir($mediadir.$dir_alias))	{
 			$rq = "UPDATE view_img_dir ";
 			$rq .= "SET      dir_name = '".htmlentities($dir_alias, ENT_QUOTES)."', " .
@@ -408,4 +412,4 @@
 		}
 	}
 
-?>
+	?>
