@@ -3,42 +3,42 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset($oreon))
-		exit();	
-	
+		exit();
+
 	/*
 	 * Test Modules Existence for deletion
 	 */
@@ -46,7 +46,7 @@
 		$moduleinfo = getModuleInfoInDB(NULL, $id);
 		deleteModuleInDB($id);
 		if ($moduleinfo["is_removeable"])	{
-			
+
 			/*
 			 * SQL deletion
 			 */
@@ -54,7 +54,7 @@
 			$sql_file_path = "./modules/".$moduleinfo["name"]."/sql/";
 			if ($moduleinfo["sql_files"] && file_exists($sql_file_path.$sql_file))
 				execute_sql_file($sql_file, $sql_file_path);
-			
+
 			/*
 			 * PHP deletion
 			 */
@@ -64,7 +64,7 @@
 				include_once($php_file_path.$php_file);
 		}
 	}
-	
+
 	/*
 	 * Smarty template Init
 	 */
@@ -82,22 +82,20 @@
 	$tpl->assign("headerMenu_isinstalled", 	_("Installed"));
 	$tpl->assign("headerMenu_action", 		_("Actions"));
 	$tpl->assign("confirm_removing", 		_("Do you confirm the deletion ?"));
-	
+
 	/*
 	 * Different style between each lines
 	 */
 	$style = "one";
-	
+
 	/*
 	 * Get Modules List
 	 */
-	chdir("./modules/");
-	
 	$handle = opendir("./modules/");
-	
+
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
-	 */	
+	 */
 	$elemArr = array();
 	$i = 0;
 	while (false !== ($filename = readdir($handle)))	{
@@ -107,8 +105,8 @@
 			/*
 			 * Package already installed
 			 */
-			if (isset($moduleinfo["rname"]))	{				
-				$elemArr[$i] = array(	"MenuClass" => "list_".$style, 
+			if (isset($moduleinfo["rname"]))	{
+				$elemArr[$i] = array(	"MenuClass" => "list_".$style,
 										"RowMenu_name" => $moduleinfo["name"],
 										"RowMenu_rname" => $moduleinfo["rname"],
 										"RowMenu_release" => $moduleinfo["mod_release"],
@@ -121,7 +119,7 @@
 										"RowMenu_link_install" => NULL,
 										"RowMenu_link_delete" => "?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=d",
 										"RowMenu_link_upgrade" => "?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=u");
-				
+
 				/*
 				 * Check Update
 				 */
@@ -135,14 +133,14 @@
 							}
 						}
 					}
-					closedir($handle2);	
+					closedir($handle2);
 				}
-				
+
 				$style != "two" ? $style = "two" : $style = "one";
-				
+
 				$i++;
 			} else {
-				
+
 				/*
 				 * Valid package to install
 				 */
@@ -151,18 +149,18 @@
 				} else if (is_file("./".$filename."/.api/conf.php")) {
 					include_once("./".$filename."/.api/conf.php");
 				}
-					
+
 				if (isset($module_conf[$filename]["name"]))	{
-					
+
 					$picturePath = "./img/icones/16x16/component_green.gif";
-					if (file_exists("./$filename/icone.gif") {
+					if (file_exists("./$filename/icone.gif")) {
 						$picturePath = "./$filename/icone.gif";
-					}					
-					if (file_exists("./$filename/.api/icone.gif") {
+					}
+					if (file_exists("./$filename/.api/icone.gif")) {
 						$picturePath = "./$filename/.api/icone.gif";
-					}					
-							
-					$elemArr[$i] = array(	"MenuClass" => "list_".$style, 
+					}
+
+					$elemArr[$i] = array(	"MenuClass" => "list_".$style,
 											"RowMenu_name" => $module_conf[$filename]["name"],
 											"RowMenu_rname" => $module_conf[$filename]["rname"],
 											"RowMenu_release" => $module_conf[$filename]["mod_release"],
@@ -176,12 +174,12 @@
 											"RowMenu_link_upgrade" => NULL);
 					$style != "two" ? $style = "two" : $style = "one";
 					$i++;
-				} else {							
-					
+				} else {
+
 					/*
 					 * Non valid package
-					 */	
-					$elemArr[$i] = array(	"MenuClass" => "list_".$style, 
+					 */
+					$elemArr[$i] = array(	"MenuClass" => "list_".$style,
 											"RowMenu_name" => $filename,
 											"RowMenu_rname" => _("NA"),
 											"RowMenu_release" => _("NA"),
@@ -195,7 +193,7 @@
 		}
 	}
 	closedir($handle);
-	
+
 	/*
 	 * Init Template Var
 	 */
