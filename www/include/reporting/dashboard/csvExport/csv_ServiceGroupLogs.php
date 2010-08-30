@@ -3,62 +3,62 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	include_once $centreon_path . "www/include/reporting/dashboard/common-Func.php";
 	require_once $centreon_path . "www/class/User.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";
-	require_once $centreon_path."www/class/centreonDuration.class.php";	
+	require_once $centreon_path."www/class/centreonDuration.class.php";
 	include_once $centreon_path . "www/include/reporting/dashboard/DB-Func.php";
-	
+
 	/*
 	 * DB Connexion
 	 */
 	$pearDB 	= new CentreonDB();
 	$pearDBndo 	= new CentreonDB("ndo");
 	$pearDBO 	= new CentreonDB("centstorage");
-	
+
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$res =& $pearDB->query("SELECT * FROM contact, session WHERE session.session_id='".$_GET['sid']."' AND session.user_id = contact.contact_id");
 		$user =& new User($res->fetchRow(), "3");
 		$oreon = new Centreon($user);
-		
+
 		$sid = $_GET["sid"];
-		$sid = htmlentities($sid);
+		$sid = htmlentities($sid, ENT_QUOTES);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if ($session = $res->fetchRow()) {
 			$_POST["sid"] = $sid;
@@ -68,10 +68,10 @@
 	} else {
 		get_error('need session id!');
 	}
-	
+
 	isset ($_GET["servicegroup"]) ? $id = htmlentities($_GET["servicegroup"], ENT_QUOTES) : $id = "NULL";
 	isset ($_POST["servicegroup"]) ? $id = htmlentities($_POST["servicegroup"], ENT_QUOTES) : $id = $id;
-	
+
 	/*
 	 * Getting time interval to report
 	 */
@@ -79,7 +79,7 @@
 	$start_date = htmlentities($_GET['start'], ENT_QUOTES);
 	$end_date = htmlentities($_GET['end'], ENT_QUOTES);
 	$servicegroup_name = getServiceGroupNameFromId($id);
-	
+
 	/*
 	 * file type setting
 	 */
@@ -110,19 +110,19 @@
 										_("UNDETERMINED Time").";"._("UNDETERMINED Mean Time").";"._("UNDETERMINED Alerts")."\n";
 	foreach ($stats as $key => $tab) {
 		if ($key != "average") {
-			echo $tab["HOST_NAME"]. ";".$tab["SERVICE_DESC"].";".$tab["OK_TP"]. "%;".$tab["OK_MP"]. "%;".$tab["OK_A"]. 
-							  ";".$tab["WARNING_TP"]. "%;".$tab["WARNING_MP"]. "%;".$tab["WARNING_A"]. 
-							  ";".$tab["CRITICAL_TP"]. "%;".$tab["CRITICAL_MP"]. "%;".$tab["CRITICAL_A"]. 
-							  ";".$tab["UNKNOWN_TP"]. "%;".$tab["UNKNOWN_MP"]. "%;".$tab["UNKNOWN_A"]. 
-							  ";".$tab["UNDETERMINED_TP"]. "%;;\n"; 
+			echo $tab["HOST_NAME"]. ";".$tab["SERVICE_DESC"].";".$tab["OK_TP"]. "%;".$tab["OK_MP"]. "%;".$tab["OK_A"].
+							  ";".$tab["WARNING_TP"]. "%;".$tab["WARNING_MP"]. "%;".$tab["WARNING_A"].
+							  ";".$tab["CRITICAL_TP"]. "%;".$tab["CRITICAL_MP"]. "%;".$tab["CRITICAL_A"].
+							  ";".$tab["UNKNOWN_TP"]. "%;".$tab["UNKNOWN_MP"]. "%;".$tab["UNKNOWN_A"].
+							  ";".$tab["UNDETERMINED_TP"]. "%;;\n";
 		}
 	}
 	echo "\n\n";
-	
+
 	/*
 	 * Services group stats evolution
 	 */
-	echo _("Day").";"._("Duration").";" 
+	echo _("Day").";"._("Duration").";"
 				   ._("OK Mean Time")."; ".";"._("OK Alert").";"
 				   ._("Warning Mean Time").";"._("Warning Alert").";"
 				   ._("Unknown Mean Time").";"._("Unknown Alert").";"
@@ -134,7 +134,7 @@
 		if ($str != "") {
 			$str .= ", ";
 		}
-		$str .= "'" . $sg["service_service_id"] . "'"; 
+		$str .= "'" . $sg["service_service_id"] . "'";
 	}
 	$DBRESULT->free();
 	if ($str == "") {
@@ -157,7 +157,7 @@
 	$statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
 	while ($row =& $res->fetchRow()) {
 		$duration = $row["date_end"] - $row["date_start"];
-		
+
 		/* Percentage by status */
 		$duration = $row["OKTimeScheduled"] + $row["WARNINGTimeScheduled"] + $row["UNKNOWNTimeScheduled"]
 					+ $row["CRITICALTimeScheduled"];
@@ -165,7 +165,7 @@
 		$row["WARNING_MP"] = round($row["WARNINGTimeScheduled"] * 100 / $duration, 2);
 		$row["UNKNOWN_MP"] = round($row["UNKNOWNTimeScheduled"] * 100 / $duration, 2);
 		$row["CRITICAL_MP"] = round($row["CRITICALTimeScheduled"] * 100 / $duration, 2);
-		
+
 		echo $row["date_start"].";".$duration."s;".
 		 	$row["OK_MP"]."%;".$row["OKnbEvent"].";".
 		 	$row["WARNING_MP"]."%;".$row["WARNINGnbEvent"].";".

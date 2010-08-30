@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
@@ -42,7 +42,7 @@
 	include_once $centreon_path . "www/include/reporting/dashboard/common-Func.php";
 	require_once $centreon_path . "www/class/User.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";
-	require_once $centreon_path . "www/class/centreonDuration.class.php";	
+	require_once $centreon_path . "www/class/centreonDuration.class.php";
 	include_once $centreon_path . "www/include/reporting/dashboard/DB-Func.php";
 
 	/*
@@ -56,9 +56,9 @@
 		$res =& $pearDB->query("SELECT * FROM contact, session WHERE session.session_id='".$_GET['sid']."' AND session.user_id = contact.contact_id");
 		$user =& new User($res->fetchRow(), "3");
 		$oreon = new Centreon($user);
-		
+
 		$sid = $_GET["sid"];
-		$sid = htmlentities($sid);
+		$sid = htmlentities($sid, ENT_QUOTES);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if ($session = $res->fetchRow()) {
 			$_POST["sid"] = $sid;
@@ -69,8 +69,8 @@
 		get_error('need session id!');
 	}
 
-	/* 
-	 * getting hostgroup id 
+	/*
+	 * getting hostgroup id
 	 */
 	isset ($_GET["hostgroup"]) ? $id = htmlentities($_GET["hostgroup"], ENT_QUOTES) : $id = "NULL";
 	isset ($_POST["hostgroup"]) ? $id = htmlentities($_POST["hostgroup"], ENT_QUOTES) : $id;
@@ -82,7 +82,7 @@
 	$start_date = htmlentities($_GET['start'], ENT_QUOTES);
 	$end_date = htmlentities($_GET['end'], ENT_QUOTES);
 	$hostgroup_name = getHostgroupNameFromId($id);
-	
+
 	/*
 	 * file type setting
 	 */
@@ -128,7 +128,7 @@
 	while ($hg =& $DBRESULT->fetchRow()) {
 		if ($str != "")
 			$str .= ", ";
-		$str .= "'".$hg["host_host_id"]."'"; 
+		$str .= "'".$hg["host_host_id"]."'";
 	}
 	if ($str == "")
 		$str = "''";
@@ -146,19 +146,19 @@
 			"AND `date_end` <= '".$end_date."' " .
 			"GROUP BY `date_end`, `date_start`  ORDER BY `date_start` desc";
 	$DBRESULT = & $pearDBO->query($rq);
-	
+
 	echo _("Day").";"._("Duration").";".
 	 	_("Up Mean Time").";"._("Up Alert").";".
 	 	_("Down Mean Time").";"._("Down Alert").";".
 	 	_("Unreachable Mean Time").";"._("Unreachable Alert").";\n";
 	while ($row =& $DBRESULT->fetchRow()) {
 		$duration = $row["UPTimeScheduled"] + $row["DOWNTimeScheduled"] + $row["UNREACHABLETimeScheduled"];
-		
+
 		/* Percentage by status */
 		$row["UP_MP"] = round($row["UPTimeScheduled"] * 100 / $duration, 2);
 		$row["DOWN_MP"] = round($row["DOWNTimeScheduled"] * 100 / $duration, 2);
 		$row["UNREACHABLE_MP"] = round($row["UNREACHABLETimeScheduled"] * 100 / $duration, 2);
-		
+
 		echo $row["date_start"].";".$duration."s;".
 		 	$row["UP_MP"]."%;".$row["UPnbEvent"].";".
 		 	$row["DOWN_MP"]."%;".$row["DOWNnbEvent"].";".

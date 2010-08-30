@@ -3,54 +3,54 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	/*
-	 * if debug == 0 => Normal, 
-	 * debug == 1 => get use, 
+	 * if debug == 0 => Normal,
+	 * debug == 1 => get use,
 	 * debug == 2 => log in file (log.xml)
 	 */
 	$debugXML = 0;
 	$buffer = '';
-	
+
 	include_once("@CENTREON_ETC@/centreon.conf.php");
-	
+
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
 	include_once($centreon_path."www/class/centreonXML.class.php");
 	include_once($centreon_path."www/class/centreonDB.class.php");
-	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";	
+	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";
 	include_once($centreon_path."www/include/common/common-Func.php");
 
 	$pearDB 	= new CentreonDB();
@@ -59,14 +59,14 @@
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
-	
-	/* 
-	 * security check 2/2 
+
+	/*
+	 * security check 2/2
 	 */
-	 
+
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])) {
 		$sid = $_GET["sid"];
-		$sid = htmlentities($sid);
+		$sid = htmlentities($sid, ENT_QUOTES);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
@@ -79,7 +79,7 @@
 	$is_admin = isUserAdmin($sid);
 	$user_id = getUserIdFromSID($sid);
 	$access = new CentreonACL($user_id, $is_admin);
-	
+
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) 		&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
@@ -91,7 +91,7 @@
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 	(isset($_GET["o"]) 			&& !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) 			&& !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
-	(isset($_GET["nc"]) 		&& !check_injection($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";	
+	(isset($_GET["nc"]) 		&& !check_injection($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";
 
 	if (!$is_admin)
 		$_POST["sid"] = $sid;
@@ -112,7 +112,7 @@
 	/* Get Service status */
 	$rq =		" SELECT " .
 				" DISTINCT no.name1 as host_name," .
-				" nss.process_performance_data," . 
+				" nss.process_performance_data," .
 				" nss.current_state," .
 				" nss.output as plugin_output," .
 				" nss.current_check_attempt as current_attempt," .
@@ -130,8 +130,8 @@
 				" no.object_id," .
 				" no.name2 as service_description" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
-			 
-	$rq .= 	" WHERE no.object_id = nss.service_object_id".				
+
+	$rq .= 	" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 LIKE '_Module_Meta'" .
 			" AND no.is_active = 1" .
 		  	" AND objecttype_id = 2";
@@ -146,7 +146,7 @@
 		if ($ACLString == "")
 			$ACLString = "''";
 		$rq .= " AND no.name2 IN (".$ACLString.") AND no.name1 LIKE '_Module_Meta' ";
-	}	
+	}
 	if ($search_type_host && $search_type_service && $search){
 		$rq .= " AND ( no.name1 like '%" . $search . "%' OR no.name2 like '%" . $search . "%' OR nss.output like '%" . $search . "%') ";
 	} else if (!$search_type_service && $search_type_host && $search){
@@ -154,7 +154,7 @@
 	} else if ($search_type_service && !$search_type_host && $search){
 		$rq .= " AND no.name2 like '%" . $search . "%'";
 	}
-	
+
 	if ($o == "svcpb")
 		$rq .= " AND nss.current_state != 0";
 	if ($o == "svc_ok")
@@ -170,7 +170,7 @@
 		$rq .= " AND nss.problem_has_been_acknowledged = 0";
 		$rq .= " AND nss.scheduled_downtime_depth = 0";
 	}
-		
+
 	$rq_pagination = $rq;
 
 	switch ($sort_type){
@@ -187,15 +187,15 @@
 
 	$ct = 0;
 	$flag = 0;
-	
+
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq_pagination);
-	
-	/* 
-	 * Get Pagination Rows 
+
+	/*
+	 * Get Pagination Rows
 	 */
-	
+
 	$numRows = $DBRESULT_NDO2->numRows();
-	
+
 	/*
 	 * Create Buffer
 	 */
@@ -212,9 +212,9 @@
 
 	$host_prev = "";
 	$class = "list_one";
-	
+
 	$DBRESULT_NDO2 =& $pearDBndo->query($rq);
-	
+
 	while ($ndo =& $DBRESULT_NDO2->fetchRow()) {
 
 		$color_service = $tab_color_service[$ndo["current_state"]];
@@ -236,32 +236,32 @@
 			if ($ndo["problem_has_been_acknowledged"] == 1)
 				$class = "list_four";
 		}
-		
+
 		$tabID = split("_", $ndo["service_description"]);
 		$id = $tabID[1];
-		
+
 		$DBRESULT=& $pearDB->query("SELECT `meta_name` FROM  `meta_service` WHERE `meta_id` = '$id'");
 		$dataMeta =& $DBRESULT->fetchRow();
 		$DBRESULT->free();
-		
+
 		$buffer->startElement("l");
-		$buffer->writeAttribute("class", $class);		
+		$buffer->writeAttribute("class", $class);
 		$buffer->writeElement("o", $ct++);
-		$buffer->writeElement("f", $flag);		
+		$buffer->writeElement("f", $flag);
 		$buffer->writeElement("ppd", $ndo["process_performance_data"]);
 		$buffer->writeElement("sd", $dataMeta['meta_name']);
 		$buffer->writeElement("svc_id", $ndo["object_id"]);
-						
+
 		$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
 		$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
-		
+
 		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO));
 		$buffer->writeElement("sc", $color_service);
 		$buffer->writeElement("cs", _($tab_status_svc[$ndo["current_state"]]));
 		$buffer->writeElement("po", $ndo["plugin_output"]);
 		$buffer->writeElement("ca", $ndo["current_attempt"]);
 		$buffer->writeElement("ne", $ndo["notifications_enabled"]);
-		$buffer->writeElement("pa", $ndo["problem_has_been_acknowledged"]);		
+		$buffer->writeElement("pa", $ndo["problem_has_been_acknowledged"]);
 		$buffer->writeElement("pc", $ndo["passive_checks_enabled"]);
 		$buffer->writeElement("ac", $ndo["active_checks_enabled"]);
 		$buffer->writeElement("eh", $ndo["event_handler_enabled"]);
@@ -273,14 +273,14 @@
         $buffer->writeElement("nc", date($date_time_format_status, $ndo["next_check"]));
         $buffer->writeElement("lc", date($date_time_format_status, $ndo["last_check"]));
 		$buffer->writeElement("d", $duration);
-		$buffer->endElement();		
+		$buffer->endElement();
 	}
 
 	if (!$ct)
 		$buffer->writeElement("infos", "none");
 
 	$buffer->writeElement("sid", $sid);
-	$buffer->endElement();	
+	$buffer->endElement();
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
