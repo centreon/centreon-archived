@@ -50,7 +50,7 @@
 	if (isset($search)) {
 		$search = str_replace('/', "#S#", $search);
 		$search = str_replace('\\', "#BS#", $search);	
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sv.service_register = '0'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND sv.service_register = '0'");
 	} else {
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
 	}
@@ -82,7 +82,7 @@
 	 * Service Template Model list
 	 */
 	if ($search)
-		$rq = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);

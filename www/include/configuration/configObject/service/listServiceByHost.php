@@ -136,8 +136,8 @@
 	$tmp = "";
 	$tmp2 = "";
 	$tab_buffer = array();
-	$searchH = htmlentities($searchH, ENT_QUOTES);
-	$searchS = htmlentities($searchS, ENT_QUOTES);
+	$searchH = htmlentities($searchH, ENT_QUOTES, "UTF-8");
+	$searchS = htmlentities($searchS, ENT_QUOTES, "UTF-8");
 	/*
 	 * Search case
 	 */

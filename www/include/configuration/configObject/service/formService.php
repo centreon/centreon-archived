@@ -48,7 +48,7 @@
 		$arg = str_replace('#R#', "\\r", $arg);
 		$arg = str_replace('#S#', "/", $arg);
 		$arg = str_replace('#BS#', "\\", $arg);
-		return html_entity_decode($arg, ENT_QUOTES);
+		return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 	}
 
 	$service = array();
@@ -477,7 +477,7 @@
 	$mnftr = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
 	while ($rmnftr = $DBRESULT->fetchRow())
-		$mnftr[$rmnftr["id"]] =  html_entity_decode($rmnftr["alias"], ENT_QUOTES);
+		$mnftr[$rmnftr["id"]] =  html_entity_decode($rmnftr["alias"], ENT_QUOTES, "UTF-8");
 	$mnftr[""] = "_"._("ALL")."_";
 	$DBRESULT->free();
 	$attrs2 = array('onchange'=>"javascript:getTrap(this.form.elements['mnftr'].value); return false;");

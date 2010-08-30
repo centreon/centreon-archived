@@ -51,15 +51,15 @@
 	/*
 	 * Check session id
 	 */
-	$session =& $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities(session_id(), ENT_QUOTES)."' AND user_id = '".htmlentities($_GET['uid'], ENT_QUOTES)."'");
+	$session =& $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities(session_id(), ENT_QUOTES, "UTF-8")."' AND user_id = '".htmlentities($_GET['uid'], ENT_QUOTES, "UTF-8")."'");
 	if (!$session->numRows()){
 		exit;
 	}
 	
 	if (isset($_GET['div']) && isset($_GET['uid'])) {
 		
-		$my_div = htmlentities($_GET['div'], ENT_QUOTES);
-		$my_uid = htmlentities($_GET['uid'], ENT_QUOTES);
+		$my_div = htmlentities($_GET['div'], ENT_QUOTES, "UTF-8");
+		$my_uid = htmlentities($_GET['uid'], ENT_QUOTES, "UTF-8");
 		
 		$query = "SELECT cp_value FROM contact_param WHERE cp_contact_id = '".$my_uid."' AND cp_key = '_Div_".$my_div."' LIMIT 1";
 		$DBRESULT =& $pearDB->query($query);

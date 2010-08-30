@@ -147,7 +147,7 @@ if (!empty($sensor_program)) {
     require_once(APP_ROOT . '/includes/mb/class.' . $sensor_program . '.inc.php');
     $mbinfo = new mbinfo;
   } else {
-    echo '<center><b>Error: ' . htmlspecialchars($sensor_program, ENT_QUOTES) . ' is not currently supported</b></center>';
+    echo '<center><b>Error: ' . htmlspecialchars($sensor_program, ENT_QUOTES, "UTF-8") . ' is not currently supported</b></center>';
     exit;
   } 
 } 

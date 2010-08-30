@@ -34,16 +34,16 @@ function xml_vitals ()
   } 
 
   $_text = "  <Vitals>\n"
-   . "    <Hostname>" . htmlspecialchars($sysinfo->chostname(), ENT_QUOTES) . "</Hostname>\n"
-   . "    <IPAddr>" . htmlspecialchars($sysinfo->ip_addr(), ENT_QUOTES) . "</IPAddr>\n"
-   . "    <Kernel>" . htmlspecialchars($sysinfo->kernel(), ENT_QUOTES) . "</Kernel>\n"
-   . "    <Distro>" . htmlspecialchars($sysinfo->distro(), ENT_QUOTES) . "</Distro>\n"
-   . "    <Distroicon>" . htmlspecialchars($sysinfo->distroicon(), ENT_QUOTES) . "</Distroicon>\n"
-   . "    <Uptime>" . htmlspecialchars($sysinfo->uptime(), ENT_QUOTES) . "</Uptime>\n"
-   . "    <Users>" . htmlspecialchars($sysinfo->users(), ENT_QUOTES) . "</Users>\n"
-   . "    <LoadAvg>" . htmlspecialchars(trim($load_avg), ENT_QUOTES) . "</LoadAvg>\n";
+   . "    <Hostname>" . htmlspecialchars($sysinfo->chostname(), ENT_QUOTES, "UTF-8") . "</Hostname>\n"
+   . "    <IPAddr>" . htmlspecialchars($sysinfo->ip_addr(), ENT_QUOTES, "UTF-8") . "</IPAddr>\n"
+   . "    <Kernel>" . htmlspecialchars($sysinfo->kernel(), ENT_QUOTES, "UTF-8") . "</Kernel>\n"
+   . "    <Distro>" . htmlspecialchars($sysinfo->distro(), ENT_QUOTES, "UTF-8") . "</Distro>\n"
+   . "    <Distroicon>" . htmlspecialchars($sysinfo->distroicon(), ENT_QUOTES, "UTF-8") . "</Distroicon>\n"
+   . "    <Uptime>" . htmlspecialchars($sysinfo->uptime(), ENT_QUOTES, "UTF-8") . "</Uptime>\n"
+   . "    <Users>" . htmlspecialchars($sysinfo->users(), ENT_QUOTES, "UTF-8") . "</Users>\n"
+   . "    <LoadAvg>" . htmlspecialchars(trim($load_avg), ENT_QUOTES, "UTF-8") . "</LoadAvg>\n";
    if (isset($ar_buf['cpupercent']))
-     $_text .= "   <CPULoad>" . htmlspecialchars(round($ar_buf['cpupercent'], 2), ENT_QUOTES) . "</CPULoad>";
+     $_text .= "   <CPULoad>" . htmlspecialchars(round($ar_buf['cpupercent'], 2), ENT_QUOTES, "UTF-8") . "</CPULoad>";
    $_text .= "  </Vitals>\n";
   return $_text;
 } 

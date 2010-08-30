@@ -47,7 +47,7 @@
 	# end quickSearch form
 	
 	if (isset($search))
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndo2db` WHERE description LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndo2db` WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'");
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndo2db`");
 
@@ -84,7 +84,7 @@
 	 * Nagios list
 	 */
 	if ($search)
-		$rq = "SELECT id, description, ns_nagios_server, activate FROM cfg_ndo2db WHERE description LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT id, description, ns_nagios_server, activate FROM cfg_ndo2db WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ORDER BY description LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT id, description, ns_nagios_server, activate FROM cfg_ndo2db ORDER BY description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);

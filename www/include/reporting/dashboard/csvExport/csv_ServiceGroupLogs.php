@@ -58,7 +58,7 @@
 		$oreon = new Centreon($user);
 
 		$sid = $_GET["sid"];
-		$sid = htmlentities($sid, ENT_QUOTES);
+		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if ($session = $res->fetchRow()) {
 			$_POST["sid"] = $sid;
@@ -69,15 +69,15 @@
 		get_error('need session id!');
 	}
 
-	isset ($_GET["servicegroup"]) ? $id = htmlentities($_GET["servicegroup"], ENT_QUOTES) : $id = "NULL";
-	isset ($_POST["servicegroup"]) ? $id = htmlentities($_POST["servicegroup"], ENT_QUOTES) : $id = $id;
+	isset ($_GET["servicegroup"]) ? $id = htmlentities($_GET["servicegroup"], ENT_QUOTES, "UTF-8") : $id = "NULL";
+	isset ($_POST["servicegroup"]) ? $id = htmlentities($_POST["servicegroup"], ENT_QUOTES, "UTF-8") : $id = $id;
 
 	/*
 	 * Getting time interval to report
 	 */
 	$dates = getPeriodToReport();
-	$start_date = htmlentities($_GET['start'], ENT_QUOTES);
-	$end_date = htmlentities($_GET['end'], ENT_QUOTES);
+	$start_date = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
+	$end_date = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
 	$servicegroup_name = getServiceGroupNameFromId($id);
 
 	/*

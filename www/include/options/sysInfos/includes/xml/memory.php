@@ -27,36 +27,36 @@ function xml_memory () {
     $mem = $sysinfo->memory();
 
     $_text = "  <Memory>\n"
-           . "    <Free>" . htmlspecialchars($mem['ram']['t_free'], ENT_QUOTES) . "</Free>\n"
-           . "    <Used>" . htmlspecialchars($mem['ram']['t_used'], ENT_QUOTES) . "</Used>\n"
-           . "    <Total>" . htmlspecialchars($mem['ram']['total'], ENT_QUOTES) . "</Total>\n"
-           . "    <Percent>" . htmlspecialchars($mem['ram']['percent'], ENT_QUOTES) . "</Percent>\n";
+           . "    <Free>" . htmlspecialchars($mem['ram']['t_free'], ENT_QUOTES, "UTF-8") . "</Free>\n"
+           . "    <Used>" . htmlspecialchars($mem['ram']['t_used'], ENT_QUOTES, "UTF-8") . "</Used>\n"
+           . "    <Total>" . htmlspecialchars($mem['ram']['total'], ENT_QUOTES, "UTF-8") . "</Total>\n"
+           . "    <Percent>" . htmlspecialchars($mem['ram']['percent'], ENT_QUOTES, "UTF-8") . "</Percent>\n";
 	   
     if (isset($mem['ram']['app_percent']))
-      $_text .= "    <App>" . htmlspecialchars($mem['ram']['app'], ENT_QUOTES) . "</App>\n    <AppPercent>" . htmlspecialchars($mem['ram']['app_percent'], ENT_QUOTES) . "</AppPercent>\n";
+      $_text .= "    <App>" . htmlspecialchars($mem['ram']['app'], ENT_QUOTES, "UTF-8") . "</App>\n    <AppPercent>" . htmlspecialchars($mem['ram']['app_percent'], ENT_QUOTES, "UTF-8") . "</AppPercent>\n";
     if (isset($mem['ram']['buffers_percent']))
-      $_text .= "    <Buffers>" . htmlspecialchars($mem['ram']['buffers'], ENT_QUOTES) . "</Buffers>\n    <BuffersPercent>" . htmlspecialchars($mem['ram']['buffers_percent'], ENT_QUOTES) . "</BuffersPercent>\n";
+      $_text .= "    <Buffers>" . htmlspecialchars($mem['ram']['buffers'], ENT_QUOTES, "UTF-8") . "</Buffers>\n    <BuffersPercent>" . htmlspecialchars($mem['ram']['buffers_percent'], ENT_QUOTES, "UTF-8") . "</BuffersPercent>\n";
     if (isset($mem['ram']['cached_percent']))
-      $_text .= "    <Cached>" . htmlspecialchars($mem['ram']['cached'], ENT_QUOTES) . "</Cached>\n    <CachedPercent>" . htmlspecialchars($mem['ram']['cached_percent'], ENT_QUOTES) . "</CachedPercent>\n";
+      $_text .= "    <Cached>" . htmlspecialchars($mem['ram']['cached'], ENT_QUOTES, "UTF-8") . "</Cached>\n    <CachedPercent>" . htmlspecialchars($mem['ram']['cached_percent'], ENT_QUOTES, "UTF-8") . "</CachedPercent>\n";
       
     $_text .= "  </Memory>\n"
            . "  <Swap>\n"
-           . "    <Free>" . htmlspecialchars($mem['swap']['free'], ENT_QUOTES) . "</Free>\n"
-           . "    <Used>" . htmlspecialchars($mem['swap']['used'], ENT_QUOTES) . "</Used>\n"
-           . "    <Total>" . htmlspecialchars($mem['swap']['total'], ENT_QUOTES) . "</Total>\n"
-           . "    <Percent>" . htmlspecialchars($mem['swap']['percent'], ENT_QUOTES) . "</Percent>\n"
+           . "    <Free>" . htmlspecialchars($mem['swap']['free'], ENT_QUOTES, "UTF-8") . "</Free>\n"
+           . "    <Used>" . htmlspecialchars($mem['swap']['used'], ENT_QUOTES, "UTF-8") . "</Used>\n"
+           . "    <Total>" . htmlspecialchars($mem['swap']['total'], ENT_QUOTES, "UTF-8") . "</Total>\n"
+           . "    <Percent>" . htmlspecialchars($mem['swap']['percent'], ENT_QUOTES, "UTF-8") . "</Percent>\n"
            . "  </Swap>\n"
 	   . "  <Swapdevices>\n";
     $i = 0;
     foreach ($mem['devswap'] as $device) {
 	$_text .="    <Mount>\n"
-	       . "     <MountPointID>" . htmlspecialchars($i++, ENT_QUOTES) . "</MountPointID>\n"
+	       . "     <MountPointID>" . htmlspecialchars($i++, ENT_QUOTES, "UTF-8") . "</MountPointID>\n"
 	       . "     <Type>Swap</Type>"
-	       . "     <Device><Name>" . htmlspecialchars($device['dev'], ENT_QUOTES) . "</Name></Device>\n"
-    	       . "     <Percent>" . htmlspecialchars($device['percent'], ENT_QUOTES) . "</Percent>\n"
-    	       . "     <Free>" . htmlspecialchars($device['free'], ENT_QUOTES) . "</Free>\n"
-    	       . "     <Used>" . htmlspecialchars($device['used'], ENT_QUOTES) . "</Used>\n"
-    	       . "     <Size>" . htmlspecialchars($device['total'], ENT_QUOTES) . "</Size>\n"
+	       . "     <Device><Name>" . htmlspecialchars($device['dev'], ENT_QUOTES, "UTF-8") . "</Name></Device>\n"
+    	       . "     <Percent>" . htmlspecialchars($device['percent'], ENT_QUOTES, "UTF-8") . "</Percent>\n"
+    	       . "     <Free>" . htmlspecialchars($device['free'], ENT_QUOTES, "UTF-8") . "</Free>\n"
+    	       . "     <Used>" . htmlspecialchars($device['used'], ENT_QUOTES, "UTF-8") . "</Used>\n"
+    	       . "     <Size>" . htmlspecialchars($device['total'], ENT_QUOTES, "UTF-8") . "</Size>\n"
     	       . "    </Mount>\n";
     }
     $_text .= "  </Swapdevices>\n";

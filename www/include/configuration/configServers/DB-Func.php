@@ -44,7 +44,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('id');
-		$DBRESULT =& $pearDB->query("SELECT name, id FROM `nagios_server` WHERE `name` = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT name, id FROM `nagios_server` WHERE `name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$ndomod =& $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $ndomod["id"] == $id)#Modif case	
 			return true;
@@ -116,15 +116,15 @@
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `nagios_server` (`name` , `localhost` , `ns_ip_address`, `ssh_port`, `nagios_bin`, `nagiostats_bin` , `init_script`, `nagios_perfdata` , `ssh_private_key`, `ns_activate`) ";
 		$rq .= "VALUES (";
-		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities(trim($ret["name"]), ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != NULL ? $rq .= "'".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "'".htmlentities(trim($ret["ns_ip_address"]), ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["ssh_port"]) && $ret["ssh_port"] != NULL ? $rq .= "'".htmlentities(trim($ret["ssh_port"]), ENT_QUOTES)."',  " : $rq .= "'22', ";
-        isset($ret["nagios_bin"]) && $ret["nagios_bin"] != NULL ? $rq .= "'".htmlentities(trim($ret["nagios_bin"]), ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["nagiostats_bin"]) && $ret["nagiostats_bin"] != NULL ? $rq .= "'".htmlentities(trim($ret["nagiostats_bin"]), ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["init_script"]) && $ret["init_script"] != NULL ? $rq .= "'".htmlentities(trim($ret["init_script"]), ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["nagios_perfdata"]) && $ret["nagios_perfdata"] != NULL ? $rq .= "'".htmlentities(trim($ret["nagios_perfdata"]), ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != NULL ? $rq .= "'".htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES)."',  " : $rq .= "NULL, ";
+		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities(trim($ret["name"]), ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != NULL ? $rq .= "'".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "'".htmlentities(trim($ret["ns_ip_address"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["ssh_port"]) && $ret["ssh_port"] != NULL ? $rq .= "'".htmlentities(trim($ret["ssh_port"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "'22', ";
+        isset($ret["nagios_bin"]) && $ret["nagios_bin"] != NULL ? $rq .= "'".htmlentities(trim($ret["nagios_bin"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["nagiostats_bin"]) && $ret["nagiostats_bin"] != NULL ? $rq .= "'".htmlentities(trim($ret["nagiostats_bin"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["init_script"]) && $ret["init_script"] != NULL ? $rq .= "'".htmlentities(trim($ret["init_script"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["nagios_perfdata"]) && $ret["nagios_perfdata"] != NULL ? $rq .= "'".htmlentities(trim($ret["nagios_perfdata"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != NULL ? $rq .= "'".htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["ns_activate"]["ns_activate"]) && $ret["ns_activate"]["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]["ns_activate"]."'  "  : $rq .= "NULL)";
        	$rq .= ")";
        	$DBRESULT =& $pearDB->query($rq);
@@ -144,15 +144,15 @@
 			$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `localhost` = '0'");
 		}
 		$rq = "UPDATE `nagios_server` SET ";
-        isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "name = '".htmlentities($ret["name"], ENT_QUOTES)."', " : $rq .= "name = NULL, ";
-        isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != NULL ? $rq .= "localhost = '".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES)."', " : $rq .= "localhost = NULL, ";
-		isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "ns_ip_address = '".htmlentities(trim($ret["ns_ip_address"]), ENT_QUOTES)."',  " : $rq .= "ns_ip_address = NULL, ";
-        isset($ret["ssh_port"]) && $ret["ssh_port"] != NULL ? $rq .= "ssh_port = '".htmlentities(trim($ret["ssh_port"]), ENT_QUOTES)."',  " : $rq .= "ssh_port = '22', ";
-        isset($ret["init_script"]) && $ret["init_script"] != NULL ? $rq .= "init_script = '".htmlentities(trim($ret["init_script"]), ENT_QUOTES)."',  " : $rq .= "init_script = NULL, ";
-        isset($ret["nagios_bin"]) && $ret["nagios_bin"] != NULL ? $rq .= "nagios_bin = '".htmlentities(trim($ret["nagios_bin"]), ENT_QUOTES)."',  " : $rq .= "nagios_bin = NULL, ";
-        isset($ret["nagiostats_bin"]) && $ret["nagiostats_bin"] != NULL ? $rq .= "nagiostats_bin = '".htmlentities(trim($ret["nagiostats_bin"]), ENT_QUOTES)."',  " : $rq .= "nagiostats_bin = NULL, ";
-        isset($ret["nagios_perfdata"]) && $ret["nagios_perfdata"] != NULL ? $rq .= "nagios_perfdata = '".htmlentities(trim($ret["nagios_perfdata"]), ENT_QUOTES)."',  " : $rq .= "nagios_perfdata = NULL, ";
-        isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != NULL ? $rq .= "ssh_private_key = '".htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES)."',  " : $rq .= "ssh_private_key = NULL, ";
+        isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "name = '".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "name = NULL, ";
+        isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != NULL ? $rq .= "localhost = '".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES, "UTF-8")."', " : $rq .= "localhost = NULL, ";
+		isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "ns_ip_address = '".htmlentities(trim($ret["ns_ip_address"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "ns_ip_address = NULL, ";
+        isset($ret["ssh_port"]) && $ret["ssh_port"] != NULL ? $rq .= "ssh_port = '".htmlentities(trim($ret["ssh_port"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "ssh_port = '22', ";
+        isset($ret["init_script"]) && $ret["init_script"] != NULL ? $rq .= "init_script = '".htmlentities(trim($ret["init_script"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "init_script = NULL, ";
+        isset($ret["nagios_bin"]) && $ret["nagios_bin"] != NULL ? $rq .= "nagios_bin = '".htmlentities(trim($ret["nagios_bin"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagios_bin = NULL, ";
+        isset($ret["nagiostats_bin"]) && $ret["nagiostats_bin"] != NULL ? $rq .= "nagiostats_bin = '".htmlentities(trim($ret["nagiostats_bin"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagiostats_bin = NULL, ";
+        isset($ret["nagios_perfdata"]) && $ret["nagios_perfdata"] != NULL ? $rq .= "nagios_perfdata = '".htmlentities(trim($ret["nagios_perfdata"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagios_perfdata = NULL, ";
+        isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != NULL ? $rq .= "ssh_private_key = '".htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "ssh_private_key = NULL, ";
         $rq .= "ns_activate = '".$ret["ns_activate"]["ns_activate"]."' ";
 		$rq .= "WHERE id = '".$id."'";
 		$DBRESULT =& $pearDB->query($rq);

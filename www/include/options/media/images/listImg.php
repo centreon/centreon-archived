@@ -46,7 +46,7 @@
 	# end quickSearch form
 	
 	if (isset($search))
-		$res = & $pearDB->query("SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND img_img_id = img_id AND dir_dir_parent_id = dir_id");
+		$res = & $pearDB->query("SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND img_img_id = img_id AND dir_dir_parent_id = dir_id");
 	else
 		$res = & $pearDB->query("SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation WHERE img_img_id = img_id AND dir_dir_parent_id = dir_id");
 	$tmp = & $res->fetchRow();
@@ -70,7 +70,7 @@
 	$tpl->assign("headerMenu_comment", _("Comment"));
 
 	if ($search)
-		$rq = "SELECT * FROM view_img_dir LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id LEFT JOIN view_img ON img_img_id = img_id WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'  OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY dir_alias, img_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT * FROM view_img_dir LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id LEFT JOIN view_img ON img_img_id = img_id WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'  OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') ORDER BY dir_alias, img_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM view_img_dir LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id LEFT JOIN view_img ON img_img_id = img_id ORDER BY dir_alias, img_name LIMIT ".$num * $limit.", ".$limit;
 	$res =& $pearDB->query($rq);
@@ -104,9 +104,9 @@
 					"RowMenu_ImgLink"=>"?p=".$p."&o=ci&img_id=".$elem['img_id'],
 					"RowMenu_DirLink"=>"?p=".$p."&o=cd&dir_id=".$elem['dir_id'],
 					"RowMenu_dir"=>$elem["dir_name"],
-					"RowMenu_img"=>html_entity_decode($elem["dir_alias"]."/".$elem["img_path"], ENT_QUOTES),
-					"RowMenu_name"=>html_entity_decode($elem["img_name"], ENT_QUOTES),
-					"RowMenu_comment"=>html_entity_decode($elem["img_comment"], ENT_QUOTES) );
+					"RowMenu_img"=>html_entity_decode($elem["dir_alias"]."/".$elem["img_path"], ENT_QUOTES, "UTF-8"),
+					"RowMenu_name"=>html_entity_decode($elem["img_name"], ENT_QUOTES, "UTF-8"),
+					"RowMenu_comment"=>html_entity_decode($elem["img_comment"], ENT_QUOTES, "UTF-8") );
 			$elemArr[$elem['dir_id']]["elem"][$i] = $rowOpt;
 			$elemArr[$elem['dir_id']]["head"]["counter"]++;
 		}

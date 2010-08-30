@@ -32,7 +32,7 @@ function xml_hardware (&$hddtemp_devices)
     if (count($ar_buf)) {
         for ($i = 0, $max = sizeof($ar_buf); $i < $max; $i++) {
             if ($ar_buf[$i]) {
-                $pci_devices .= "      <Device><Name>" . htmlspecialchars(chop($ar_buf[$i]), ENT_QUOTES) . "</Name></Device>\n";
+                $pci_devices .= "      <Device><Name>" . htmlspecialchars(chop($ar_buf[$i]), ENT_QUOTES, "UTF-8") . "</Name></Device>\n";
             } 
         } 
     } 
@@ -43,9 +43,9 @@ function xml_hardware (&$hddtemp_devices)
 
     if (count($ar_buf)) {
         while (list($key, $value) = each($ar_buf)) {
-            $ide_devices .= "      <Device>\n<Name>" . htmlspecialchars($key . ': ' . $ar_buf[$key]['model'], ENT_QUOTES) . "</Name>\n";
+            $ide_devices .= "      <Device>\n<Name>" . htmlspecialchars($key . ': ' . $ar_buf[$key]['model'], ENT_QUOTES, "UTF-8") . "</Name>\n";
             if (isset($ar_buf[$key]['capacity'])) {
-                $ide_devices .= '<Capacity>' . htmlspecialchars($ar_buf[$key]['capacity'], ENT_QUOTES) . '</Capacity>';
+                $ide_devices .= '<Capacity>' . htmlspecialchars($ar_buf[$key]['capacity'], ENT_QUOTES, "UTF-8") . '</Capacity>';
             }
 	    $hddtemp_devices[] = $key;
 	    $ide_devices .= "</Device>\n";
@@ -59,12 +59,12 @@ function xml_hardware (&$hddtemp_devices)
         while (list($key, $value) = each($ar_buf)) {
 	    $scsi_devices .= "<Device>\n";
             if ($key >= '0' && $key <= '9') {
-                $scsi_devices .= "      <Name>" . htmlspecialchars($ar_buf[$key]['model'], ENT_QUOTES) . "</Name>\n";
+                $scsi_devices .= "      <Name>" . htmlspecialchars($ar_buf[$key]['model'], ENT_QUOTES, "UTF-8") . "</Name>\n";
             } else {
-                $scsi_devices .= "      <Name>" . htmlspecialchars($key . ': ' . $ar_buf[$key]['model'], ENT_QUOTES) . "</Name>\n";
+                $scsi_devices .= "      <Name>" . htmlspecialchars($key . ': ' . $ar_buf[$key]['model'], ENT_QUOTES, "UTF-8") . "</Name>\n";
             } 
             if (isset($ar_buf[$key]['capacity'])) {
-                $scsi_devices .= '<Capacity>' . htmlspecialchars($ar_buf[$key]['capacity'], ENT_QUOTES) . '</Capacity>';
+                $scsi_devices .= '<Capacity>' . htmlspecialchars($ar_buf[$key]['capacity'], ENT_QUOTES, "UTF-8") . '</Capacity>';
             } 
             $scsi_devices .= "</Device>\n";
         } 
@@ -75,7 +75,7 @@ function xml_hardware (&$hddtemp_devices)
     if (count($ar_buf)) {
         for ($i = 0, $max = sizeof($ar_buf); $i < $max; $i++) {
             if ($ar_buf[$i]) {
-                $usb_devices .= "      <Device><Name>" . htmlspecialchars(chop($ar_buf[$i]), ENT_QUOTES) . "</Name></Device>\n";
+                $usb_devices .= "      <Device><Name>" . htmlspecialchars(chop($ar_buf[$i]), ENT_QUOTES, "UTF-8") . "</Name></Device>\n";
             } 
         } 
     } 
@@ -85,7 +85,7 @@ function xml_hardware (&$hddtemp_devices)
     if (count($ar_buf)) {
         for ($i = 0, $max = sizeof($ar_buf); $i < $max; $i++) {
             if ($ar_buf[$i]) {
-                $sbus_devices .= "      <Device>" . htmlspecialchars(chop($ar_buf[$i]), ENT_QUOTES) . "</Device>\n";
+                $sbus_devices .= "      <Device>" . htmlspecialchars(chop($ar_buf[$i]), ENT_QUOTES, "UTF-8") . "</Device>\n";
             } 
         } 
     } 
@@ -93,22 +93,22 @@ function xml_hardware (&$hddtemp_devices)
     $_text = "  <Hardware>\n";
     $_text .= "    <CPU>\n";
     if (isset($sys['cpus'])) {
-        $_text .= "      <Number>" . htmlspecialchars($sys['cpus'], ENT_QUOTES) . "</Number>\n";
+        $_text .= "      <Number>" . htmlspecialchars($sys['cpus'], ENT_QUOTES, "UTF-8") . "</Number>\n";
     } 
     if (isset($sys['model'])) {
-        $_text .= "      <Model>" . htmlspecialchars($sys['model'], ENT_QUOTES) . "</Model>\n";
+        $_text .= "      <Model>" . htmlspecialchars($sys['model'], ENT_QUOTES, "UTF-8") . "</Model>\n";
     } 
     if (isset($sys['cpuspeed'])) {
-        $_text .= "      <Cpuspeed>" . htmlspecialchars($sys['cpuspeed'], ENT_QUOTES) . "</Cpuspeed>\n";
+        $_text .= "      <Cpuspeed>" . htmlspecialchars($sys['cpuspeed'], ENT_QUOTES, "UTF-8") . "</Cpuspeed>\n";
     } 
     if (isset($sys['busspeed'])) {
-        $_text .= "      <Busspeed>" . htmlspecialchars($sys['busspeed'], ENT_QUOTES) . "</Busspeed>\n";
+        $_text .= "      <Busspeed>" . htmlspecialchars($sys['busspeed'], ENT_QUOTES, "UTF-8") . "</Busspeed>\n";
     } 
     if (isset($sys['cache'])) {
-        $_text .= "      <Cache>" . htmlspecialchars($sys['cache'], ENT_QUOTES) . "</Cache>\n";
+        $_text .= "      <Cache>" . htmlspecialchars($sys['cache'], ENT_QUOTES, "UTF-8") . "</Cache>\n";
     } 
     if (isset($sys['bogomips'])) {
-        $_text .= "      <Bogomips>" . htmlspecialchars($sys['bogomips'], ENT_QUOTES) . "</Bogomips>\n";
+        $_text .= "      <Bogomips>" . htmlspecialchars($sys['bogomips'], ENT_QUOTES, "UTF-8") . "</Bogomips>\n";
     } 
     $_text .= "    </CPU>\n";
 

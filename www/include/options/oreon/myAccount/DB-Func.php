@@ -39,7 +39,7 @@
 	function testExistence ($name = NULL)	{
 		global $pearDB, $form, $oreon;
 		
-		$DBRESULT =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$contact =& $DBRESULT->fetchRow();
 		/*
 		 * Modif case
@@ -59,7 +59,7 @@
 	function testAliasExistence ($alias = NULL)	{
 		global $pearDB, $form, $oreon;
 		
-		$DBRESULT =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES, "UTF-8")."'");
 		$contact =& $DBRESULT->fetchRow();
 		
 		/*
@@ -92,9 +92,9 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE contact SET ";
 		$rq .= "contact_name = ";
-		isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_alias = ";
-		isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		
 		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
 			if ($encryptType == 1)
@@ -106,11 +106,11 @@
 		}
 			
 		$rq .=	"contact_lang = ";
-		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_email = ";
-		isset($ret["contact_email"]) && $ret["contact_email"] != NULL ? $rq .= "'".htmlentities($ret["contact_email"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_email"]) && $ret["contact_email"] != NULL ? $rq .= "'".htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_pager = ";
-		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= "WHERE contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		

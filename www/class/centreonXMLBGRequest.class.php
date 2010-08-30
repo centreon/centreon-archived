@@ -120,7 +120,7 @@ class CentreonXMLBGRequest
 			print "Your might check your session id";
 			exit(1);
 		} else {
-			$this->session_id = htmlentities($session_id, ENT_QUOTES);
+			$this->session_id = htmlentities($session_id, ENT_QUOTES, "UTF-8");
 		}
 
 		/*
@@ -322,10 +322,10 @@ class CentreonXMLBGRequest
 	{
 		if (isset($name) && isset($tab)) {
 			if (isset($tab[$name])) {
-				return htmlentities($tab[$name], ENT_QUOTES);
+				return htmlentities($tab[$name], ENT_QUOTES, "UTF-8");
 			}
 			else {
-				return htmlentities($defaultValue, ENT_QUOTES);
+				return htmlentities($defaultValue, ENT_QUOTES, "UTF-8");
 			}
 		}
 	}

@@ -49,9 +49,9 @@
 	 */
 	$pearDBndo = new CentreonDB("ndo");
 	
-	isset($_GET["host_name"]) 	? $host_name = htmlentities($_GET["host_name"], ENT_QUOTES) : $host_name = NULL;
-	isset($_GET["cmd"]) 		? $cmd = htmlentities($_GET["cmd"], ENT_QUOTES) : $cmd = NULL;
-	isset($_GET["en"]) 			? $en = htmlentities($_GET["en"], ENT_QUOTES) : $en = 1;
+	isset($_GET["host_name"]) 	? $host_name = htmlentities($_GET["host_name"], ENT_QUOTES, "UTF-8") : $host_name = NULL;
+	isset($_GET["cmd"]) 		? $cmd = htmlentities($_GET["cmd"], ENT_QUOTES, "UTF-8") : $cmd = NULL;
+	isset($_GET["en"]) 			? $en = htmlentities($_GET["en"], ENT_QUOTES, "UTF-8") : $en = 1;
 	
 	$path = "./include/monitoring/acknowlegement/";
 

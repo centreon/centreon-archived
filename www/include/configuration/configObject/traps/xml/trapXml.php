@@ -64,7 +64,7 @@
     $xml->endElement();
     
     if (isset($_GET['trapId']) && $_GET['trapId']) {
-        $trapId = htmlentities($_GET['trapId'], ENT_QUOTES);
+        $trapId = htmlentities($_GET['trapId'], ENT_QUOTES, "UTF-8");
         $res = $db->query("SELECT * FROM traps_matching_properties WHERE trap_id = '".$trapId."' ORDER BY tmo_order ASC");
         $style = 'list_two';
         while ($row = $res->fetchRow()) {

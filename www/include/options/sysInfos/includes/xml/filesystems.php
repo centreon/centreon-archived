@@ -31,20 +31,20 @@ function xml_filesystems () {
     $_text = "  <FileSystem>\n";
     for ($i=0, $max = sizeof($fs); $i < $max; $i++) {
         $_text .= "    <Mount>\n";
-        $_text .= "      <MountPointID>" . htmlspecialchars($i, ENT_QUOTES) . "</MountPointID>\n";
+        $_text .= "      <MountPointID>" . htmlspecialchars($i, ENT_QUOTES, "UTF-8") . "</MountPointID>\n";
 
         if ($show_mount_point) {
-          $_text .= "      <MountPoint>" . htmlspecialchars($fs[$i]['mount'], ENT_QUOTES) . "</MountPoint>\n";
+          $_text .= "      <MountPoint>" . htmlspecialchars($fs[$i]['mount'], ENT_QUOTES, "UTF-8") . "</MountPoint>\n";
         }
 
-        $_text .= "      <Type>" . htmlspecialchars($fs[$i]['fstype'], ENT_QUOTES) . "</Type>\n"
-                . "      <Device><Name>" . htmlspecialchars($fs[$i]['disk'], ENT_QUOTES) . "</Name></Device>\n"
-                . "      <Percent>" . htmlspecialchars($fs[$i]['percent'], ENT_QUOTES) . "</Percent>\n"
-                . "      <Free>" . htmlspecialchars($fs[$i]['free'], ENT_QUOTES) . "</Free>\n"
-                . "      <Used>" . htmlspecialchars($fs[$i]['used'], ENT_QUOTES) . "</Used>\n"
-                . "      <Size>" . htmlspecialchars($fs[$i]['size'], ENT_QUOTES) . "</Size>\n";
+        $_text .= "      <Type>" . htmlspecialchars($fs[$i]['fstype'], ENT_QUOTES, "UTF-8") . "</Type>\n"
+                . "      <Device><Name>" . htmlspecialchars($fs[$i]['disk'], ENT_QUOTES, "UTF-8") . "</Name></Device>\n"
+                . "      <Percent>" . htmlspecialchars($fs[$i]['percent'], ENT_QUOTES, "UTF-8") . "</Percent>\n"
+                . "      <Free>" . htmlspecialchars($fs[$i]['free'], ENT_QUOTES, "UTF-8") . "</Free>\n"
+                . "      <Used>" . htmlspecialchars($fs[$i]['used'], ENT_QUOTES, "UTF-8") . "</Used>\n"
+                . "      <Size>" . htmlspecialchars($fs[$i]['size'], ENT_QUOTES, "UTF-8") . "</Size>\n";
 	if (isset($fs[$i]['options']))
-	    $_text .= "      <Options>" . htmlspecialchars($fs[$i]['options'], ENT_QUOTES) . "</Options>\n";
+	    $_text .= "      <Options>" . htmlspecialchars($fs[$i]['options'], ENT_QUOTES, "UTF-8") . "</Options>\n";
         $_text  .= "    </Mount>\n";
     }
     $_text .= "  </FileSystem>\n";

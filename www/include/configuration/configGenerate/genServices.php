@@ -644,7 +644,7 @@
 	
 	
 	unset($service);
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/services.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/services.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

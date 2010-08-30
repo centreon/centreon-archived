@@ -88,10 +88,10 @@ class CentreonBase
 			print "Your must check your session id";
 			exit(1);
 		} else {
-			$this->session_id = htmlentities($session_id, ENT_QUOTES);
+			$this->session_id = htmlentities($session_id, ENT_QUOTES, "UTF-8");
 		}
 
-		$this->index = htmlentities($index, ENT_QUOTES);
+		$this->index = htmlentities($index, ENT_QUOTES, "UTF-8");
 
 		/*
 		 * Enable Database Connexions

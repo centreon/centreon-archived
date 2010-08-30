@@ -27,9 +27,9 @@ function xml_hddtemp($hddtemp) {
     if (sizeof($data) > 0) {
       for ($i=0, $max = sizeof($data); $i < $max; $i++) {
         $_text .= "     <Item>\n";
-        $_text .= "        <Label>" . htmlspecialchars($data[$i]['label'], ENT_QUOTES) . "</Label>\n";
-        $_text .= "        <Value>" . htmlspecialchars($data[$i]['value'], ENT_QUOTES) . "</Value>\n";
-        $_text .= "        <Model>" . htmlspecialchars($data[$i]['model'], ENT_QUOTES) . "</Model>\n";
+        $_text .= "        <Label>" . htmlspecialchars($data[$i]['label'], ENT_QUOTES, "UTF-8") . "</Label>\n";
+        $_text .= "        <Value>" . htmlspecialchars($data[$i]['value'], ENT_QUOTES, "UTF-8") . "</Value>\n";
+        $_text .= "        <Model>" . htmlspecialchars($data[$i]['model'], ENT_QUOTES, "UTF-8") . "</Model>\n";
         $_text .= "     </Item>\n";
       }
     }

@@ -45,7 +45,7 @@
 	
 	$pearDB = new CentreonDB();
 	
-	$rq = "UPDATE contact_param SET cp_value = '" .htmlentities($_GET['hostgroups'], ENT_QUOTES). "' WHERE cp_key = 'monitoring_default_hostgroups' AND cp_contact_id = '".htmlentities($_GET['uid'], ENT_QUOTES)."'";
+	$rq = "UPDATE contact_param SET cp_value = '" .htmlentities($_GET['hostgroups'], ENT_QUOTES, "UTF-8"). "' WHERE cp_key = 'monitoring_default_hostgroups' AND cp_contact_id = '".htmlentities($_GET['uid'], ENT_QUOTES, "UTF-8")."'";
 	$pearDB->query($rq);	
  
  ?>

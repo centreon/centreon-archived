@@ -123,7 +123,7 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `acl_topology` (acl_topo_name, acl_topo_alias, acl_topo_activate) ";
-		$rq .= "VALUES ('".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_topo_activate"]["acl_topo_activate"], ENT_QUOTES)."')";
+		$rq .= "VALUES ('".htmlentities($ret["acl_topo_name"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_topo_activate"]["acl_topo_activate"], ENT_QUOTES, "UTF-8")."')";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(acl_topo_id) FROM `acl_topology`");
 		$acl =& $DBRESULT->fetchRow();
@@ -136,7 +136,7 @@
 			return;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `acl_topology` SET acl_topo_name = '".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', acl_topo_alias = '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."', acl_topo_activate = '".htmlentities($ret["acl_topo_activate"]["acl_topo_activate"], ENT_QUOTES)."' WHERE acl_topo_id = '".$acl_id."'";
+		$rq = "UPDATE `acl_topology` SET acl_topo_name = '".htmlentities($ret["acl_topo_name"], ENT_QUOTES, "UTF-8")."', acl_topo_alias = '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES, "UTF-8")."', acl_topo_activate = '".htmlentities($ret["acl_topo_activate"]["acl_topo_activate"], ENT_QUOTES, "UTF-8")."' WHERE acl_topo_id = '".$acl_id."'";
 		$DBRESULT =& $pearDB->query($rq);	
 	}
 	

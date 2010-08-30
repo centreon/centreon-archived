@@ -79,9 +79,9 @@
 	function getGetPostValue($str){
 		$value = NULL;
 		if (isset($_GET[$str]) && $_GET[$str])
-			$value = htmlentities($_GET[$str], ENT_QUOTES);
+			$value = htmlentities($_GET[$str], ENT_QUOTES, "UTF-8");
 		if (isset($_POST[$str]) && $_POST[$str])
-			$value = htmlentities($_POST[$str], ENT_QUOTES);
+			$value = htmlentities($_POST[$str], ENT_QUOTES, "UTF-8");
 		return $value;
 	}
 	

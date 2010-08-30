@@ -51,9 +51,9 @@
 	}
 	 
 	if (isset($_GET["host"]))
-		$host = htmlentities($_GET["host"], ENT_QUOTES);
+		$host = htmlentities($_GET["host"], ENT_QUOTES, "UTF-8");
 	else if (isset($_POST["host"]))
-		$host = htmlentities($_POST["host"], ENT_QUOTES);
+		$host = htmlentities($_POST["host"], ENT_QUOTES, "UTF-8");
 	else {
 		print "Bad Request !";
 		exit;

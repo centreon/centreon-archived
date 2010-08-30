@@ -43,7 +43,7 @@
 	# QuickSearch
 	$SearchStr = "";
 	if (isset($search))
-		$SearchStr = " WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_action_description LIKE '".htmlentities($search, ENT_QUOTES)."')";
+		$SearchStr = " WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_action_description LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM acl_actions" . $SearchStr);
 		
 	$tmp = & $DBRESULT->fetchRow();
@@ -69,7 +69,7 @@
 	
 	$SearchStr = "";
 	if ($search)
-		$SearchStr = "WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_action_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";	
+		$SearchStr = "WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_action_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";	
 	$rq = "SELECT acl_action_id, acl_action_name, acl_action_description, acl_action_activate FROM acl_actions $SearchStr ORDER BY acl_action_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	

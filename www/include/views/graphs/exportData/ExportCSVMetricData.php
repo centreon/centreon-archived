@@ -56,22 +56,22 @@
 
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
-		$sid = htmlentities($sid, ENT_QUOTES);
+		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
 
-	isset ($_GET["metric_id"]) ? $mtrcs = htmlentities($_GET["metric_id"], ENT_QUOTES) : $mtrcs = NULL;
-	isset ($_POST["metric_id"]) ? $mtrcs = htmlentities($_POST["metric_id"], ENT_QUOTES) : $mtrcs = $mtrcs;
+	isset ($_GET["metric_id"]) ? $mtrcs = htmlentities($_GET["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = NULL;
+	isset ($_POST["metric_id"]) ? $mtrcs = htmlentities($_POST["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = $mtrcs;
 
 	$path = "./include/views/graphs/graphODS/";
 	require_once '../../../class/centreonDuration.class.php';
 	require_once '../../common/common-Func.php';
 
-	$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES) : "today";
-	$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES) : $period;
+	$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES, "UTF-8") : "today";
+	$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES, "UTF-8") : $period;
 
 	header("Content-Type: application/csv-tab-delimited-table");
 	header("Content-disposition: filename=".$mhost.".csv");

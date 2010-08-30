@@ -120,7 +120,7 @@
 		unset($strDef);
 	}
 
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/hostgroups.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/hostgroups.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

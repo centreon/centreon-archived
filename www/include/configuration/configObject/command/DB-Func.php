@@ -41,7 +41,7 @@
 
 	if (!function_exists("myDecodeCommand")) {
 		function myDecodeCommand($arg) {
-			$arg = html_entity_decode($arg, ENT_QUOTES);
+			$arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 			$arg = str_replace('#BR#', "\\n", $arg);
 			$arg = str_replace('#T#', "\\t", $arg);
 			$arg = str_replace('#R#', "\\r", $arg);
@@ -58,7 +58,7 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('command_id');
 		
-		$DBRESULT =& $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$command =& $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $command["command_id"] == $id)	{
 			/*
@@ -148,22 +148,22 @@
 		$ret["command_example"] = str_replace('/', "#S#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('\\', "#BS#", $ret["command_example"]);
 		
-		$rq = "UPDATE `command` SET `command_name` = '".htmlentities($ret["command_name"], ENT_QUOTES)."', " .
-				"`command_line` = '".htmlentities($ret["command_line"], ENT_QUOTES)."', " .
-				"`command_example` = '".htmlentities($ret["command_example"], ENT_QUOTES)."', " .
-				"`command_type` = '".htmlentities($ret["command_type"]["command_type"], ENT_QUOTES)."', " .
-				"`command_comment` = '".htmlentities($ret["command_comment"], ENT_QUOTES)."', " .
-				"`graph_id` = '".htmlentities($ret["graph_id"], ENT_QUOTES)."' " .
+		$rq = "UPDATE `command` SET `command_name` = '".htmlentities($ret["command_name"], ENT_QUOTES, "UTF-8")."', " .
+				"`command_line` = '".htmlentities($ret["command_line"], ENT_QUOTES, "UTF-8")."', " .
+				"`command_example` = '".htmlentities($ret["command_example"], ENT_QUOTES, "UTF-8")."', " .
+				"`command_type` = '".htmlentities($ret["command_type"]["command_type"], ENT_QUOTES, "UTF-8")."', " .
+				"`command_comment` = '".htmlentities($ret["command_comment"], ENT_QUOTES, "UTF-8")."', " .
+				"`graph_id` = '".htmlentities($ret["graph_id"], ENT_QUOTES, "UTF-8")."' " .
 				"WHERE `command_id` = '".$cmd_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 			
-		$fields["command_name"] = htmlentities($ret["command_name"], ENT_QUOTES);
-		$fields["command_line"] = htmlentities($ret["command_line"], ENT_QUOTES);
-		$fields["command_example"] = htmlentities($ret["command_example"], ENT_QUOTES);
-		$fields["command_comment"] = htmlentities($ret["command_comment"], ENT_QUOTES);
+		$fields["command_name"] = htmlentities($ret["command_name"], ENT_QUOTES, "UTF-8");
+		$fields["command_line"] = htmlentities($ret["command_line"], ENT_QUOTES, "UTF-8");
+		$fields["command_example"] = htmlentities($ret["command_example"], ENT_QUOTES, "UTF-8");
+		$fields["command_comment"] = htmlentities($ret["command_comment"], ENT_QUOTES, "UTF-8");
 		$fields["command_type"] = $ret["command_type"]["command_type"];
 		$fields["graph_id"] = $ret["graph_id"];
-		$oreon->CentreonLogAction->insertLog("command", $cmd_id, htmlentities($ret["command_name"], ENT_QUOTES), "c", $fields);
+		$oreon->CentreonLogAction->insertLog("command", $cmd_id, htmlentities($ret["command_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 		insertArgDesc($cmd_id, $ret);
 	}
 	
@@ -194,11 +194,11 @@
 		 * Insert
 		 */
 		$rq = "INSERT INTO `command` (`command_name`, `command_line`, `command_example`, `command_type`, `graph_id`) ";
-		$rq .= "VALUES ('".htmlentities($ret["command_name"], ENT_QUOTES)."', '".htmlentities($ret["command_line"], ENT_QUOTES)."', '".htmlentities($ret["command_example"], ENT_QUOTES)."', '".$ret["command_type"]["command_type"]."', '".$ret["graph_id"]."')";
+		$rq .= "VALUES ('".htmlentities($ret["command_name"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["command_line"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["command_example"], ENT_QUOTES, "UTF-8")."', '".$ret["command_type"]["command_type"]."', '".$ret["graph_id"]."')";
 		$DBRESULT =& $pearDB->query($rq);
-		$fields["command_name"] = htmlentities($ret["command_name"], ENT_QUOTES);
-		$fields["command_line"] = htmlentities($ret["command_line"], ENT_QUOTES);
-		$fields["command_example"] = htmlentities($ret["command_example"], ENT_QUOTES);
+		$fields["command_name"] = htmlentities($ret["command_name"], ENT_QUOTES, "UTF-8");
+		$fields["command_line"] = htmlentities($ret["command_line"], ENT_QUOTES, "UTF-8");
+		$fields["command_example"] = htmlentities($ret["command_example"], ENT_QUOTES, "UTF-8");
 		$fields["command_type"] = $ret["command_type"]["command_type"];
 		$fields["graph_id"] = $ret["graph_id"];
 		
@@ -208,7 +208,7 @@
 		$DBRESULT =& $pearDB->query("SELECT MAX(command_id) FROM `command`");
 		$cmd_id = $DBRESULT->fetchRow();
 		
-		$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], htmlentities($ret["command_name"], ENT_QUOTES), "a", $fields);
+		$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], htmlentities($ret["command_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
 		insertArgDesc($cmd_id["MAX(command_id)"], $ret);
 		return ($cmd_id["MAX(command_id)"]);
 	}
@@ -250,7 +250,7 @@
 			$tab1 = split("\n", $ret['listOfArg']);
 			foreach ($tab1 as $key => $value) {
 				$tab2 = split(" : ", $value, 2);
-				$query .= "('" . htmlentities($cmd_id, ENT_QUOTES) . "', '" . htmlentities($tab2[0], ENT_QUOTES) . "', '" .htmlentities($tab2[1], ENT_QUOTES). "'),";				
+				$query .= "('" . htmlentities($cmd_id, ENT_QUOTES, "UTF-8") . "', '" . htmlentities($tab2[0], ENT_QUOTES, "UTF-8") . "', '" .htmlentities($tab2[1], ENT_QUOTES, "UTF-8"). "'),";				
 			}
 			$query = trim($query, ",");
 			$pearDB->query($query);

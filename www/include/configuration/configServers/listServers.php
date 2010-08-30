@@ -53,7 +53,7 @@
 
 	$LCASearch = "";
 	if (isset($search))
-		$LCASearch = " WHERE name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
+		$LCASearch = " WHERE name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `nagios_server`");
 

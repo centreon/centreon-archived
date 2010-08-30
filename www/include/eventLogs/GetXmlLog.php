@@ -96,9 +96,9 @@
  	/*
 	 * Security check
 	 */	
-	(isset($_GET["lang"]) 	&& !check_injection($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"], ENT_QUOTES) : $lang_ = "-1";
-	(isset($_GET["id"]) 	&& !check_injection($_GET["id"])) ? $openid = htmlentities($_GET["id"], ENT_QUOTES) : $openid = "-1";
-	(isset($_GET["sid"]) 	&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES) : $sid = "-1";
+	(isset($_GET["lang"]) 	&& !check_injection($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"], ENT_QUOTES, "UTF-8") : $lang_ = "-1";
+	(isset($_GET["id"]) 	&& !check_injection($_GET["id"])) ? $openid = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8") : $openid = "-1";
+	(isset($_GET["sid"]) 	&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
  
  	/*
 	 * Init GMT class
@@ -140,8 +140,8 @@
 
 	(isset($_GET["search_H"]) 	&& !check_injection($_GET["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($_GET["search_H"])) : $search_H = "VIDE";
 	(isset($_GET["search_S"]) 	&& !check_injection($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
-	(isset($_GET["search_service"]) 		&& !check_injection($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = "";
-	(isset($_GET["export"]) 		&& !check_injection($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES) : $export = 0;
+	(isset($_GET["search_service"]) 		&& !check_injection($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
+	(isset($_GET["export"]) 		&& !check_injection($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : $export = 0;
 
 	/* *********************************************************
 	 * Cache informations

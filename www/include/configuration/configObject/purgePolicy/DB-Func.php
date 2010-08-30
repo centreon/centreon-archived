@@ -45,7 +45,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('purge_policy_id');
-		$DBRESULT =& $pearDB->query("SELECT purge_policy_name, purge_policy_id FROM purge_policy WHERE purge_policy_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT purge_policy_name, purge_policy_id FROM purge_policy WHERE purge_policy_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$pp =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $pp["purge_policy_id"] == $id)
@@ -105,15 +105,15 @@
 				"`purge_policy_metric` , `purge_policy_service` , `purge_policy_host` , " .
 				"`purge_policy_comment` )" .
 				"VALUES ('', ";
-		isset($ret["purge_policy_name"]) && $ret["purge_policy_name"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["purge_policy_alias"]) && $ret["purge_policy_alias"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["purge_policy_name"]) && $ret["purge_policy_name"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["purge_policy_alias"]) && $ret["purge_policy_alias"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["purge_policy_retention"]) && $ret["purge_policy_retention"] != NULL ? $rq .= "'".$ret["purge_policy_retention"]."', ": $rq .= "NULL, ";
 		isset($ret["purge_policy_raw"]["purge_policy_raw"]) && $ret["purge_policy_raw"]["purge_policy_raw"] != NULL ? $rq .= "'".$ret["purge_policy_raw"]["purge_policy_raw"]."', ": $rq .= "NULL, ";
 		isset($ret["purge_policy_bin"]["purge_policy_bin"]) && $ret["purge_policy_bin"]["purge_policy_bin"] != NULL ? $rq .= "'".$ret["purge_policy_bin"]["purge_policy_bin"]."', ": $rq .= "NULL, ";
 		isset($ret["purge_policy_metric"]["purge_policy_metric"]) && $ret["purge_policy_metric"]["purge_policy_metric"] != NULL ? $rq .= "'".$ret["purge_policy_metric"]["purge_policy_metric"]."', ": $rq .= "NULL, ";
 		isset($ret["purge_policy_service"]["purge_policy_service"]) && $ret["purge_policy_service"]["purge_policy_service"] != NULL ? $rq .= "'".$ret["purge_policy_service"]["purge_policy_service"]."', ": $rq .= "NULL, ";
 		isset($ret["purge_policy_host"]["purge_policy_host"]) && $ret["purge_policy_host"]["purge_policy_host"] != NULL ? $rq .= "'".$ret["purge_policy_host"]["purge_policy_host"]."', ": $rq .= "NULL, ";
-		isset($ret["purge_policy_comment"]) && $ret["purge_policy_comment"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_comment"], ENT_QUOTES)."'": $rq .= "NULL";
+		isset($ret["purge_policy_comment"]) && $ret["purge_policy_comment"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(purge_policy_id) FROM purge_policy");
@@ -129,11 +129,11 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE purge_policy ";
 		$rq .= "SET  purge_policy_name = ";
-		isset($ret["purge_policy_name"]) && $ret["purge_policy_name"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["purge_policy_name"]) && $ret["purge_policy_name"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "purge_policy_alias = ";
-		isset($ret["purge_policy_alias"]) && $ret["purge_policy_alias"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["purge_policy_alias"]) && $ret["purge_policy_alias"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "purge_policy_retention = ";
-		isset($ret["purge_policy_retention"]) && $ret["purge_policy_retention"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_retention"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["purge_policy_retention"]) && $ret["purge_policy_retention"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_retention"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "purge_policy_raw = ";
 		isset($ret["purge_policy_raw"]["purge_policy_raw"]) && $ret["purge_policy_raw"]["purge_policy_raw"] != NULL ? $rq .= "'".$ret["purge_policy_raw"]["purge_policy_raw"]."', ": $rq .= "NULL, ";
 		$rq .= "purge_policy_bin = ";
@@ -145,7 +145,7 @@
 		$rq .= "purge_policy_host = ";
 		isset($ret["purge_policy_host"]["purge_policy_host"]) && $ret["purge_policy_host"]["purge_policy_host"] != NULL ? $rq .= "'".$ret["purge_policy_host"]["purge_policy_host"]."', ": $rq .= "NULL, ";
 		$rq .= "purge_policy_comment = ";
-		isset($ret["purge_policy_comment"]) && $ret["purge_policy_comment"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_comment"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["purge_policy_comment"]) && $ret["purge_policy_comment"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_comment"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= "WHERE purge_policy_id = '".$purge_policy_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}

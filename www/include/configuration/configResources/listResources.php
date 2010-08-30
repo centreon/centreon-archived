@@ -51,7 +51,7 @@
 	 */
 	$SearchTool = NULL;
 	if (isset($search) && $search)
-		$SearchTool = " WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
+		$SearchTool = " WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_resource".$SearchTool);
 	
@@ -108,7 +108,7 @@
 								"RowMenu_name"=>$resource["resource_name"],
 								"RowMenu_link"=>"?p=".$p."&o=c&resource_id=".$resource['resource_id'],
 								"RowMenu_values"=>substr($resource["resource_line"], 0, 40),
-								"RowMenu_comment"=>substr(html_entity_decode($resource["resource_comment"], ENT_QUOTES), 0, 40),
+								"RowMenu_comment"=>substr(html_entity_decode($resource["resource_comment"], ENT_QUOTES, "UTF-8"), 0, 40),
 								"RowMenu_status"=>$resource["resource_activate"] ? _("Enabled") :  _("Disabled"),
 								"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	

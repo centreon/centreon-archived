@@ -41,7 +41,7 @@
 
 	isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = NULL;
 	isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = NULL;
-	$sG ? $service_id = htmlentities($sG, ENT_QUOTES) : $service_id = htmlentities($sP, ENT_QUOTES);
+	$sG ? $service_id = htmlentities($sG, ENT_QUOTES, "UTF-8") : $service_id = htmlentities($sP, ENT_QUOTES, "UTF-8");
 
 	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;

@@ -59,7 +59,7 @@
 	
 	
 	if (isset($search))
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')");
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact");
 
@@ -97,7 +97,7 @@
 	 * Contact list
 	 */
 	if ($search)
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email  FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email  FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
@@ -131,8 +131,8 @@
 						"RowMenu_link"=>"?p=".$p."&o=c&contact_id=".$contact['contact_id'],
 						"RowMenu_desc"=>html_entity_decode($contact["contact_alias"]),
 						"RowMenu_email"=>$contact["contact_email"],
-						"RowMenu_hostNotif"=>html_entity_decode($tpCache[$contact["timeperiod_tp_id"]], ENT_QUOTES)." (".$contact["contact_host_notification_options"].")",
-						"RowMenu_svNotif"=>html_entity_decode($tpCache[$contact["timeperiod_tp_id2"]], ENT_QUOTES)." (".$contact["contact_service_notification_options"].")",
+						"RowMenu_hostNotif"=>html_entity_decode($tpCache[$contact["timeperiod_tp_id"]], ENT_QUOTES, "UTF-8")." (".$contact["contact_host_notification_options"].")",
+						"RowMenu_svNotif"=>html_entity_decode($tpCache[$contact["timeperiod_tp_id2"]], ENT_QUOTES, "UTF-8")." (".$contact["contact_service_notification_options"].")",
 						"RowMenu_lang"=>$contact["contact_lang"],
 						"RowMenu_access"=>$contact["contact_oreon"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_status"=>$contact["contact_activate"] ? _("Enabled") : _("Disabled"),

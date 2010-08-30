@@ -43,7 +43,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('contact_id');
-		$DBRESULT =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$contact =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $id)
@@ -60,7 +60,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('contact_id');
-		$DBRESULT =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES, "UTF-8")."'");
 		$contact =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $id)
@@ -276,8 +276,8 @@
 		$rq .= "NULL, ";
 		isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
 		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
-		isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		if ($encryptType == 1)
 			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".md5($ret["contact_passwd"])."', ": $rq .= "NULL, ";
 		else if ($encryptType == 2)
@@ -285,12 +285,12 @@
 		else
 			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".md5($ret["contact_passwd"])."', ": $rq .= "NULL, ";
 
-		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["contact_hostNotifOpts"]))."', ": $rq .= "NULL, ";
 		isset($ret["contact_svNotifOpts"]) && $ret["contact_svNotifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["contact_svNotifOpts"]))."', ": $rq .= "NULL, ";
-		isset($ret["contact_email"]) && $ret["contact_email"] != NULL ? $rq .= "'".htmlentities($ret["contact_email"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL ? $rq .= "'".htmlentities($ret["contact_comment"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_email"]) && $ret["contact_email"] != NULL ? $rq .= "'".htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL ? $rq .= "'".htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		if (isset($_POST["contact_select"]) && isset($_POST["contact_select"]["select"]))
 			$rq .= "'1', ";
 		else
@@ -299,14 +299,14 @@
 		isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL ? $rq .= "'".$ret["contact_type_msg"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_activate"]["contact_activate"]) && $ret["contact_activate"]["contact_activate"] != NULL ? $rq .= "'".$ret["contact_activate"]["contact_activate"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL ? $rq .= "'".$ret["contact_auth_type"]."', ": $rq .= "'local', ";
-		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."' ": $rq .= "NULL ";
-		isset($ret["contact_address1"]) && $ret["contact_address1"] != NULL ? $rq .= "'".htmlentities($ret["contact_address1"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		isset($ret["contact_address2"]) && $ret["contact_address2"] != NULL ? $rq .= "'".htmlentities($ret["contact_address2"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		isset($ret["contact_address3"]) && $ret["contact_address3"] != NULL ? $rq .= "'".htmlentities($ret["contact_address3"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		isset($ret["contact_address4"]) && $ret["contact_address4"] != NULL ? $rq .= "'".htmlentities($ret["contact_address4"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		isset($ret["contact_address5"]) && $ret["contact_address5"] != NULL ? $rq .= "'".htmlentities($ret["contact_address5"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".htmlentities($ret["contact_address6"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["contact_address1"]) && $ret["contact_address1"] != NULL ? $rq .= "'".htmlentities($ret["contact_address1"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
+		isset($ret["contact_address2"]) && $ret["contact_address2"] != NULL ? $rq .= "'".htmlentities($ret["contact_address2"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
+		isset($ret["contact_address3"]) && $ret["contact_address3"] != NULL ? $rq .= "'".htmlentities($ret["contact_address3"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
+		isset($ret["contact_address4"]) && $ret["contact_address4"] != NULL ? $rq .= "'".htmlentities($ret["contact_address4"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
+		isset($ret["contact_address5"]) && $ret["contact_address5"] != NULL ? $rq .= "'".htmlentities($ret["contact_address5"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
+		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".htmlentities($ret["contact_address6"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= ")";
 
 		$DBRESULT =& $pearDB->query($rq);
@@ -318,9 +318,9 @@
 		if (isset( $ret["timeperiod_tp_id2"]))
 			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		if (isset($ret["contact_name"]))
-			$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES);
+			$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["contact_alias"]))
-			$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES);
+			$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["contact_passwd"])) {
 			if ($encryptType == 1)
 				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
@@ -330,17 +330,17 @@
 				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
 		}
 		if (isset($ret["contact_lang"]))
-			$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES);
+			$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["contact_hostNotifOpts"]))
 			$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
 		if (isset($ret["contact_svNotifOpts"]))
 			$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
 		if (isset($ret["contact_email"]))
-			$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES);
+			$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["contact_pager"]))
-			$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES);
+			$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["contact_comment"]))
-			$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
+			$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["contact_oreon"]["contact_oreon"]))
 			$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
 		if (isset($ret["contact_admin"]["contact_admin"]))
@@ -398,9 +398,9 @@
 		# If we are doing a MC, we don't have to set name and alias field
 		if (!$from_MC)	{
 			$rq .= "contact_name = ";
-			isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+			isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 			$rq .= "contact_alias = ";
-			isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+			isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		}
 		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
 			if ($encryptType == 1)
@@ -411,17 +411,17 @@
 				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
 		}
 		$rq .=	"contact_lang = ";
-		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= 	"contact_host_notification_options = ";
 		isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["contact_hostNotifOpts"]))."', ": $rq .= "NULL, ";
 		$rq .= "contact_service_notification_options = ";
 		isset($ret["contact_svNotifOpts"]) && $ret["contact_svNotifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["contact_svNotifOpts"]))."', ": $rq .= "NULL, ";
 		$rq .= "contact_email = ";
-		isset($ret["contact_email"]) && $ret["contact_email"] != NULL ? $rq .= "'".htmlentities($ret["contact_email"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_email"]) && $ret["contact_email"] != NULL ? $rq .= "'".htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_pager = ";
-		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_comment = ";
-		isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL ? $rq .= "'".htmlentities($ret["contact_comment"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL ? $rq .= "'".htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_oreon = ";
 		isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != NULL ? $rq .= "'".$ret["contact_oreon"]["contact_oreon"]."', ": $rq .= "NULL, ";
 		$rq .= "contact_admin = ";
@@ -433,7 +433,7 @@
 		$rq .= "contact_auth_type = ";
 		isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL ? $rq .= "'".$ret["contact_auth_type"]."', ": $rq .= "'local', ";
 		$rq .= "contact_ldap_dn = ";
-		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_location = ";
 		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."', ": $rq .= "NULL, ";
 
@@ -457,20 +457,20 @@
 		}
 		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
 		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-		$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES);
-		$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES);
+		$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8");
+		$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES, "UTF-8");
 		if ($encryptType == 1)
 			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
 		else if ($encryptType == 2)
 			$fields["contact_passwd"] = sha1($ret["contact_passwd"]);
 		else
 			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
-		$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES);
+		$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8");
 		$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
 		$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
-		$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES);
-		$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES);
-		$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
+		$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8");
+		$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8");
+		$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8");
 		$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
 		$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
 		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
@@ -523,8 +523,8 @@
 			}
 		}
 		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL) {
-			$rq .= "contact_lang = '".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ";
-			$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES);
+			$rq .= "contact_lang = '".htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != NULL) {
 			$rq .= "contact_host_notification_options = '".implode(",", array_keys($ret["contact_hostNotifOpts"]))."', ";
@@ -535,16 +535,16 @@
 			$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
 		}
 		if (isset($ret["contact_email"]) && $ret["contact_email"] != NULL) {
-			$rq .= "contact_email = '".htmlentities($ret["contact_email"], ENT_QUOTES)."', ";
-			$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES);
+			$rq .= "contact_email = '".htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL) {
-			$rq .= "contact_pager = '".htmlentities($ret["contact_pager"], ENT_QUOTES)."', ";
-			$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES);
+			$rq .= "contact_pager = '".htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL) {
-			$rq .= "contact_comment = '".htmlentities($ret["contact_comment"], ENT_QUOTES)."', ";
-			$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
+			$rq .= "contact_comment = '".htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != NULL) {
 			$rq .= "contact_oreon = '".$ret["contact_oreon"]["contact_oreon"]."', ";
@@ -567,7 +567,7 @@
 			$fields["contact_auth_type"] = $ret["contact_auth_type"];
 		}
 		if (isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL) {
-			$rq .= "contact_ldap_dn = '".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES)."', ";
+			$rq .= "contact_ldap_dn = '".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES, "UTF-8")."', ";
 			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
 		}
 		if (isset($ret["contact_location"]) && $ret["contact_location"] != NULL) {

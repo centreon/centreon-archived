@@ -49,7 +49,7 @@
 
 		if (!function_exists("myDecodeCommand")) {
 			function myDecodeCommand($arg)	{
-				$arg = html_entity_decode($arg, ENT_QUOTES);
+				$arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 				$arg = str_replace('#BR#', "\\n", $arg);
 				$arg = str_replace('#T#', "\\t", $arg);
 				$arg = str_replace('#R#', "\\r", $arg);

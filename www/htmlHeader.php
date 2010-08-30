@@ -78,14 +78,14 @@
 
 	$searchStr = "";
 	if (isset($_GET["search"]))
-		$searchStr = "&search_host=".htmlentities($_GET["search"], ENT_QUOTES);
+		$searchStr = "&search_host=".htmlentities($_GET["search"], ENT_QUOTES, "UTF-8");
 	if (isset($centreon->historySearch[$url]) && !isset($_GET["search"]))
 		$searchStr = "&search_host=".$centreon->historySearch[$url];
 
 	$searchStrSVC = "";
 	if (isset($_GET["search_service"])) {
-		$searchStrSVC = "&search_service=".htmlentities($_GET["search_service"], ENT_QUOTES);
-		$search_service = htmlentities($_GET["search_service"], ENT_QUOTES);
+		$searchStrSVC = "&search_service=".htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8");
+		$search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8");
 	} else if (isset($centreon->historySearchService[$url]) && !isset($_GET["search_service"])) {
 		$search_service = $centreon->historySearchService[$url];
 		$searchStr = "&search_service=".$centreon->historySearchService[$url];

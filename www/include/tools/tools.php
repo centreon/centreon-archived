@@ -40,8 +40,8 @@
 		exit ();
  	}
 
-	isset($_GET["host_id"]) ? $hostG = htmlentities($_GET["host_id"], ENT_QUOTES) : $hostG = NULL;
-	isset($_POST["host_id"]) ? $hostP = htmlentities($_POST["host_id"], ENT_QUOTES) : $hostP = NULL;
+	isset($_GET["host_id"]) ? $hostG = htmlentities($_GET["host_id"], ENT_QUOTES, "UTF-8") : $hostG = NULL;
+	isset($_POST["host_id"]) ? $hostP = htmlentities($_POST["host_id"], ENT_QUOTES, "UTF-8") : $hostP = NULL;
 	$hostG ? $host_id = $hostG : $host_id = $hostP;
 
 	/*

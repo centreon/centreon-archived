@@ -96,9 +96,9 @@
 		$row["service_description"] = str_replace("#BS#", "\\", $row["service_description"]);
 		$elemArr1[$i] = array(	"MenuClass"=>"list_".$style, 
 								"RowMenu_select"=>$selectedElements->toHtml(),
-								"RowMenu_host"=>htmlentities($row["host_name"], ENT_QUOTES),
+								"RowMenu_host"=>htmlentities($row["host_name"], ENT_QUOTES, "UTF-8"),
 								"RowMenu_link"=>"?p=".$p."&o=ws&msr_id=".$metric['msr_id'],
-								"RowMenu_service"=>htmlentities($row["service_description"], ENT_QUOTES),
+								"RowMenu_service"=>htmlentities($row["service_description"], ENT_QUOTES, "UTF-8"),
 								"RowMenu_metric"=>$row["metric_name"]." (".$row["unit_name"].")",
 								"RowMenu_status"=>$metric["activate"] ? _("Enabled") : _("Disabled"),
 								"RowMenu_options"=>$moptions);

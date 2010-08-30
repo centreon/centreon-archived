@@ -151,12 +151,12 @@
 		$rq = "INSERT INTO `virtual_metrics` ( `vmetric_id` , `index_id`, `vmetric_name`, `def_type` , `rpn_function`, `unit_name` , `hidden` , `comment` , `vmetric_activate`, `ck_state`) ";
 		$rq .= "VALUES ( NULL, ";
                 isset($ret["index_id"]) && $ret["index_id"] != NULL ? $rq .= "'".$ret["index_id"]."', ": $rq .= "NULL, ";
-		isset($ret["vmetric_name"]) && $ret["vmetric_name"] != NULL ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["vmetric_name"]) && $ret["vmetric_name"] != NULL ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["def_type"]) && $ret["def_type"] != NULL ? $rq .= "'".$ret["def_type"]."', ": $rq .= "NULL, ";
 		isset($ret["rpn_function"]) && $ret["rpn_function"] != NULL ? $rq .= "'".$ret["rpn_function"]."', ": $rq .= "NULL, ";
 		isset($ret["unit_name"]) && $ret["unit_name"] != NULL ? $rq .= "'".$ret["unit_name"]."', ": $rq .= "NULL, ";
 		isset($ret["vhidden"]) && $ret["vhidden"] != NULL ? $rq .= "'".$ret["vhidden"]."', ": $rq .= "NULL, ";
-		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."'": $rq .= "NULL, ";
+		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL, ";
 		$rq .= "NULL, NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
@@ -178,7 +178,7 @@
 		$rq .= "SET `index_id` = ";
                 isset($ret["index_id"]) && $ret["index_id"] != NULL ? $rq .= "'".$ret["index_id"]."', ": $rq .= "NULL, ";
 		$rq .=  "vmetric_name = ";
-		isset($ret["vmetric_name"]) && $ret["vmetric_name"] != NULL ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["vmetric_name"]) && $ret["vmetric_name"] != NULL ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .=  "def_type = ";
 		isset($ret["def_type"]) && $ret["def_type"] != NULL ? $rq .= "'".$ret["def_type"]."', ": $rq .= "NULL, ";
 		$rq .=  "rpn_function = ";
@@ -188,7 +188,7 @@
 		$rq .=  "hidden = ";
 		isset($ret["vhidden"]) && $ret["vhidden"] != NULL ? $rq .= "'".$ret["vhidden"]."', ": $rq .= "NULL, ";
 		$rq .=  "comment = ";
-		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "vmetric_activate = NULL, ck_state = NULL ";
 		$rq .= "WHERE vmetric_id = '".$vmetric_id."'";
 		$DBRESULT =& $pearDB->query($rq);

@@ -71,9 +71,9 @@ class CentreonUser	{
 		global $pearDB;
 		
 		$this->user_id = $user["contact_id"];
-		$this->name = html_entity_decode($user["contact_name"], ENT_QUOTES);
-		$this->alias = html_entity_decode($user["contact_alias"], ENT_QUOTES);
-		$this->email = html_entity_decode($user["contact_email"], ENT_QUOTES);
+		$this->name = html_entity_decode($user["contact_name"], ENT_QUOTES, "UTF-8");
+		$this->alias = html_entity_decode($user["contact_alias"], ENT_QUOTES, "UTF-8");
+		$this->email = html_entity_decode($user["contact_email"], ENT_QUOTES, "UTF-8");
 		$this->lang = $user["contact_lang"];
 		$this->charset = "UTF-8";
 		$this->passwd = $user["contact_passwd"];

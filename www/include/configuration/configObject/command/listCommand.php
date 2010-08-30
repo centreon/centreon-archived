@@ -58,7 +58,7 @@
 
 		if ($type_str)
 			$type_str = " AND " . $type_str;
-		$req = "SELECT COUNT(*) FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES)."%' $type_str";
+		$req = "SELECT COUNT(*) FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' $type_str";
 	} else if ($type) {
 		$req = "SELECT COUNT(*) FROM `command` WHERE $type_str";
 	} else {
@@ -91,7 +91,7 @@
 	 * List of elements - Depends on different criteria
 	 */
 	if (isset($search) && $search)
-		$rq = "SELECT `command_id`, `command_name`, `command_line`, `command_type` FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES)."%' $type_str ORDER BY `command_name` LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT `command_id`, `command_name`, `command_line`, `command_type` FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' $type_str ORDER BY `command_name` LIMIT ".$num * $limit.", ".$limit;
 	else if ($type)
 		$rq = "SELECT `command_id`, `command_name`, `command_line`, `command_type` FROM `command` WHERE `command_type` = '".$type."' ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
 	else
@@ -183,7 +183,7 @@
 	 * Different messages we put in the template
 	 */
 	if (isset($_GET['type']) && $_GET['type'] != "")
-		$type = htmlentities($_GET['type'], ENT_QUOTES);
+		$type = htmlentities($_GET['type'], ENT_QUOTES, "UTF-8");
 	else if (!isset($_GET['type']))
 		$type = 2;
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a&type=".$type, "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));

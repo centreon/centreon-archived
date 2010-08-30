@@ -45,7 +45,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('acl_group_id');
-		$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups WHERE acl_group_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups WHERE acl_group_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$cg =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] == $id)	
@@ -124,7 +124,7 @@
 		$rq = "INSERT INTO acl_groups ";
 		$rq .= "(acl_group_name, acl_group_alias, acl_group_activate) ";
 		$rq .= "VALUES ";
-		$rq .= "('".htmlentities($ret["acl_group_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_group_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES)."')";
+		$rq .= "('".htmlentities($ret["acl_group_name"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_group_alias"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES, "UTF-8")."')";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
 		$cg_id =& $DBRESULT->fetchRow();
@@ -152,9 +152,9 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE acl_groups ";
-		$rq .= "SET acl_group_name = '".htmlentities($ret["acl_group_name"], ENT_QUOTES)."', " .
-				"acl_group_alias = '".htmlentities($ret["acl_group_alias"], ENT_QUOTES)."', " .
-				"acl_group_activate = '".htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES)."' " .
+		$rq .= "SET acl_group_name = '".htmlentities($ret["acl_group_name"], ENT_QUOTES, "UTF-8")."', " .
+				"acl_group_alias = '".htmlentities($ret["acl_group_alias"], ENT_QUOTES, "UTF-8")."', " .
+				"acl_group_activate = '".htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES, "UTF-8")."' " .
 				"WHERE acl_group_id = '".$acl_group_id."'";
 		$DBRESULT =& $pearDB->query($rq);		
 	}

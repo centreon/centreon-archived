@@ -49,7 +49,7 @@
 	
 	$SearchTool = NULL;
 	if (isset($search) && $search)
-		$SearchTool = "WHERE (sc_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sc_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
+		$SearchTool = "WHERE (sc_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sc_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service_categories $SearchTool");
 
 	$tmp = & $DBRESULT->fetchRow();

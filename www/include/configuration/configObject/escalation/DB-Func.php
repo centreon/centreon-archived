@@ -168,28 +168,28 @@
 		$rq = "INSERT INTO escalation ";
 		$rq .= "(esc_name, esc_alias, first_notification, last_notification, notification_interval, escalation_period, escalation_options1, escalation_options2, esc_comment) ";
 		$rq .= "VALUES (";
-		isset($ret["esc_name"]) && $ret["esc_name"] != NULL ? $rq .= "'".htmlentities($ret["esc_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["esc_alias"]) && $ret["esc_alias"] != NULL ? $rq .= "'".htmlentities($ret["esc_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["first_notification"]) && $ret["first_notification"] != NULL ? $rq .= "'".htmlentities($ret["first_notification"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["last_notification"]) && $ret["last_notification"] != NULL ? $rq .= "'".htmlentities($ret["last_notification"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["notification_interval"]) && $ret["notification_interval"] != NULL ? $rq .= "'".htmlentities($ret["notification_interval"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["escalation_period"]) && $ret["escalation_period"] != NULL ? $rq .= "'".htmlentities($ret["escalation_period"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["esc_name"]) && $ret["esc_name"] != NULL ? $rq .= "'".htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["esc_alias"]) && $ret["esc_alias"] != NULL ? $rq .= "'".htmlentities($ret["esc_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["first_notification"]) && $ret["first_notification"] != NULL ? $rq .= "'".htmlentities($ret["first_notification"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["last_notification"]) && $ret["last_notification"] != NULL ? $rq .= "'".htmlentities($ret["last_notification"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["notification_interval"]) && $ret["notification_interval"] != NULL ? $rq .= "'".htmlentities($ret["notification_interval"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["escalation_period"]) && $ret["escalation_period"] != NULL ? $rq .= "'".htmlentities($ret["escalation_period"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		isset($ret["escalation_options1"]) && $ret["escalation_options1"] != NULL ? $rq .= "'".implode(",", array_keys($ret["escalation_options1"]))."', " : $rq .= "NULL, ";
 		isset($ret["escalation_options2"]) && $ret["escalation_options2"] != NULL ? $rq .= "'".implode(",", array_keys($ret["escalation_options2"]))."', " : $rq .= "NULL, ";
-		isset($ret["esc_comment"]) && $ret["esc_comment"] != NULL ? $rq .= "'".htmlentities($ret["esc_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
+		isset($ret["esc_comment"]) && $ret["esc_comment"] != NULL ? $rq .= "'".htmlentities($ret["esc_comment"], ENT_QUOTES, "UTF-8")."' " : $rq .= "NULL ";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(esc_id) FROM escalation");
 		$esc_id = $DBRESULT->fetchRow();
-		$fields["esc_name"] = htmlentities($ret["esc_name"], ENT_QUOTES);
-		$fields["esc_alias"] = htmlentities($ret["esc_alias"], ENT_QUOTES);
-		$fields["first_notification"] = htmlentities($ret["first_notification"], ENT_QUOTES);
-		$fields["last_notification"] = htmlentities($ret["last_notification"], ENT_QUOTES);
-		$fields["notification_interval"] = htmlentities($ret["notification_interval"], ENT_QUOTES);
-		$fields["escalation_period"] = htmlentities($ret["escalation_period"], ENT_QUOTES);
+		$fields["esc_name"] = htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8");
+		$fields["esc_alias"] = htmlentities($ret["esc_alias"], ENT_QUOTES, "UTF-8");
+		$fields["first_notification"] = htmlentities($ret["first_notification"], ENT_QUOTES, "UTF-8");
+		$fields["last_notification"] = htmlentities($ret["last_notification"], ENT_QUOTES, "UTF-8");
+		$fields["notification_interval"] = htmlentities($ret["notification_interval"], ENT_QUOTES, "UTF-8");
+		$fields["escalation_period"] = htmlentities($ret["escalation_period"], ENT_QUOTES, "UTF-8");
 		$fields["escalation_options1"] = implode(",", array_keys($ret["escalation_options1"]));
 		$fields["escalation_options2"] = implode(",", array_keys($ret["escalation_options2"]));
-		$fields["esc_comment"] = htmlentities($ret["esc_comment"], ENT_QUOTES);
+		$fields["esc_comment"] = htmlentities($ret["esc_comment"], ENT_QUOTES, "UTF-8");
 		$fields["esc_cgs"] = "";
 		if (isset($ret["esc_cgs"]))
 			$fields["esc_cgs"] = implode(",", $ret["esc_cgs"]);
@@ -208,7 +208,7 @@
 		$fields["esc_metas"] = "";
 		if (isset($ret["esc_metas"]))
 			$fields["esc_metas"] = implode(",", $ret["esc_metas"]);
-		$oreon->CentreonLogAction->insertLog("escalation", $esc_id["MAX(esc_id)"], htmlentities($ret["esc_name"], ENT_QUOTES), "a", $fields);
+		$oreon->CentreonLogAction->insertLog("escalation", $esc_id["MAX(esc_id)"], htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
 		return ($esc_id["MAX(esc_id)"]);
 	}
 	
@@ -220,34 +220,34 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE escalation SET ";
 		$rq .= "esc_name = ";
-		isset($ret["esc_name"]) && $ret["esc_name"] != NULL ? $rq .= "'".htmlentities($ret["esc_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["esc_name"]) && $ret["esc_name"] != NULL ? $rq .= "'".htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "esc_alias = ";
-		isset($ret["esc_alias"]) && $ret["esc_alias"] != NULL ? $rq .= "'".htmlentities($ret["esc_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["esc_alias"]) && $ret["esc_alias"] != NULL ? $rq .= "'".htmlentities($ret["esc_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "first_notification = ";
-		isset($ret["first_notification"]) && $ret["first_notification"] != NULL ? $rq .= "'".htmlentities($ret["first_notification"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["first_notification"]) && $ret["first_notification"] != NULL ? $rq .= "'".htmlentities($ret["first_notification"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "last_notification = ";
-		isset($ret["last_notification"]) && $ret["last_notification"] != NULL ? $rq .= "'".htmlentities($ret["last_notification"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["last_notification"]) && $ret["last_notification"] != NULL ? $rq .= "'".htmlentities($ret["last_notification"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "notification_interval = ";
-		isset($ret["notification_interval"]) && $ret["notification_interval"] != NULL ? $rq .= "'".htmlentities($ret["notification_interval"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["notification_interval"]) && $ret["notification_interval"] != NULL ? $rq .= "'".htmlentities($ret["notification_interval"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "escalation_period = ";
-		isset($ret["escalation_period"]) && $ret["escalation_period"] != NULL ? $rq .= "'".htmlentities($ret["escalation_period"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["escalation_period"]) && $ret["escalation_period"] != NULL ? $rq .= "'".htmlentities($ret["escalation_period"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "escalation_options1 = ";
 		isset($ret["escalation_options1"]) && $ret["escalation_options1"] != NULL ? $rq .= "'".implode(",", array_keys($ret["escalation_options1"]))."', " : $rq .= "NULL, ";
 		$rq .= "escalation_options2 = ";
 		isset($ret["escalation_options2"]) && $ret["escalation_options2"] != NULL ? $rq .= "'".implode(",", array_keys($ret["escalation_options2"]))."', " : $rq .= "NULL, ";
 		$rq .= "esc_comment = ";
-		isset($ret["esc_comment"]) && $ret["esc_comment"] != NULL ? $rq .= "'".htmlentities($ret["esc_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
+		isset($ret["esc_comment"]) && $ret["esc_comment"] != NULL ? $rq .= "'".htmlentities($ret["esc_comment"], ENT_QUOTES, "UTF-8")."' " : $rq .= "NULL ";
 		$rq .= "WHERE esc_id = '".$esc_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		$fields["esc_name"] = htmlentities($ret["esc_name"], ENT_QUOTES);
-		$fields["esc_alias"] = htmlentities($ret["esc_alias"], ENT_QUOTES);
-		$fields["first_notification"] = htmlentities($ret["first_notification"], ENT_QUOTES);
-		$fields["last_notification"] = htmlentities($ret["last_notification"], ENT_QUOTES);
-		$fields["notification_interval"] = htmlentities($ret["notification_interval"], ENT_QUOTES);
-		$fields["escalation_period"] = htmlentities($ret["escalation_period"], ENT_QUOTES);
+		$fields["esc_name"] = htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8");
+		$fields["esc_alias"] = htmlentities($ret["esc_alias"], ENT_QUOTES, "UTF-8");
+		$fields["first_notification"] = htmlentities($ret["first_notification"], ENT_QUOTES, "UTF-8");
+		$fields["last_notification"] = htmlentities($ret["last_notification"], ENT_QUOTES, "UTF-8");
+		$fields["notification_interval"] = htmlentities($ret["notification_interval"], ENT_QUOTES, "UTF-8");
+		$fields["escalation_period"] = htmlentities($ret["escalation_period"], ENT_QUOTES, "UTF-8");
 		$fields["escalation_options1"] = implode(",", array_keys($ret["escalation_options1"]));
 		$fields["escalation_options2"] = implode(",", array_keys($ret["escalation_options2"]));
-		$fields["esc_comment"] = htmlentities($ret["esc_comment"], ENT_QUOTES);
+		$fields["esc_comment"] = htmlentities($ret["esc_comment"], ENT_QUOTES, "UTF-8");
 		$fields["esc_cgs"] = "";
 		if (isset($ret["esc_cgs"]))
 			$fields["esc_cgs"] = implode(",", $ret["esc_cgs"]);
@@ -266,7 +266,7 @@
 		$fields["esc_metas"] = "";
 		if (isset($ret["esc_metas"]))
 			$fields["esc_metas"] = implode(",", $ret["esc_metas"]);
-		$oreon->CentreonLogAction->insertLog("escalation", $esc_id["MAX(esc_id)"], htmlentities($ret["esc_name"], ENT_QUOTES), "c", $fields);
+		$oreon->CentreonLogAction->insertLog("escalation", $esc_id["MAX(esc_id)"], htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 	}
 	
 	function updateEscalationContactGroups($esc_id = null)	{

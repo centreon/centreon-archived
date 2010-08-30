@@ -144,7 +144,7 @@
 		$rq = "INSERT INTO lca_define ";
 		$rq .= "(lca_name, lca_alias, lca_comment, lca_hg_childs, lca_activate) ";
 		$rq .= "VALUES ";
-		$rq .= "('".htmlentities($ret["lca_name"], ENT_QUOTES)."', '".htmlentities($ret["lca_alias"], ENT_QUOTES)."', '".htmlentities($ret["lca_comment"], ENT_QUOTES)."', '".$ret["lca_hg_childs"]["lca_hg_childs"]."', '".$ret["lca_activate"]["lca_activate"]."')";
+		$rq .= "('".htmlentities($ret["lca_name"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["lca_alias"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["lca_comment"], ENT_QUOTES, "UTF-8")."', '".$ret["lca_hg_childs"]["lca_hg_childs"]."', '".$ret["lca_activate"]["lca_activate"]."')";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(lca_id) FROM lca_define");
 		$lca_id =& $DBRESULT->fetchRow();
@@ -158,9 +158,9 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE lca_define ";
-		$rq .= "SET lca_name = '".htmlentities($ret["lca_name"], ENT_QUOTES)."', " .
-				"lca_alias = '".htmlentities($ret["lca_alias"], ENT_QUOTES)."', " .
-				"lca_comment = '".htmlentities($ret["lca_comment"], ENT_QUOTES)."', " .
+		$rq .= "SET lca_name = '".htmlentities($ret["lca_name"], ENT_QUOTES, "UTF-8")."', " .
+				"lca_alias = '".htmlentities($ret["lca_alias"], ENT_QUOTES, "UTF-8")."', " .
+				"lca_comment = '".htmlentities($ret["lca_comment"], ENT_QUOTES, "UTF-8")."', " .
 				"lca_hg_childs = '".$ret["lca_hg_childs"]["lca_hg_childs"]."', " .
 				"lca_activate = '".$ret["lca_activate"]["lca_activate"]."' " .
 				"WHERE lca_id = '".$lca_id."'";

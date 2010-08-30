@@ -43,7 +43,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('compo_id');
-		$DBRESULT =& $pearDB->query("SELECT compo_id, name FROM giv_components_template WHERE name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT compo_id, name FROM giv_components_template WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$compo =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] == $id)	
@@ -122,21 +122,21 @@
 				" `ds_color_line` , `ds_color_area` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
 				"`default_tpl1`, `comment` ) ";
 		$rq .= "VALUES ( NULL, ";
-		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".$ret["ds_name"]."', ": $rq .= "NULL, ";
-		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_line"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_color_area"]) && $ret["ds_color_area"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_filled"]) && $ret["ds_filled"] != NULL ? $rq .= "'".htmlentities($ret["ds_filled"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_max"]) && $ret["ds_max"] != NULL ? $rq .= "'".htmlentities($ret["ds_max"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_min"]) && $ret["ds_min"] != NULL ? $rq .= "'".htmlentities($ret["ds_min"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_average"]) && $ret["ds_average"] != NULL ? $rq .= "'".htmlentities($ret["ds_average"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_last"]) && $ret["ds_last"] != NULL ? $rq .= "'".htmlentities($ret["ds_last"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_tickness"]) && $ret["ds_tickness"] != NULL ? $rq .= "'".htmlentities($ret["ds_tickness"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_transparency"]) && $ret["ds_transparency"] != NULL ? $rq .= "'".htmlentities($ret["ds_transparency"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_line"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_color_area"]) && $ret["ds_color_area"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_filled"]) && $ret["ds_filled"] != NULL ? $rq .= "'".htmlentities($ret["ds_filled"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_max"]) && $ret["ds_max"] != NULL ? $rq .= "'".htmlentities($ret["ds_max"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_min"]) && $ret["ds_min"] != NULL ? $rq .= "'".htmlentities($ret["ds_min"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_average"]) && $ret["ds_average"] != NULL ? $rq .= "'".htmlentities($ret["ds_average"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_last"]) && $ret["ds_last"] != NULL ? $rq .= "'".htmlentities($ret["ds_last"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_tickness"]) && $ret["ds_tickness"] != NULL ? $rq .= "'".htmlentities($ret["ds_tickness"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_transparency"]) && $ret["ds_transparency"] != NULL ? $rq .= "'".htmlentities($ret["ds_transparency"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_invert"]) && $ret["ds_invert"] != NULL ? $rq .= "'".$ret["ds_invert"]."', ": $rq .= "NULL, ";
 		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."'": $rq .= "NULL";
+		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		defaultOreonGraph();
@@ -158,11 +158,11 @@
 	
 		$rq = "UPDATE giv_components_template ";
 		$rq .= "SET name = ";
-		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "`ds_order` = ";
-		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .=	"ds_name = ";
-		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".htmlentities($ret["ds_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".htmlentities($ret["ds_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "ds_color_line = ";
 		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".$ret["ds_color_line"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_color_area = ";
@@ -186,7 +186,7 @@
 		$rq .= "default_tpl1 = ";
 		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
 		$rq .= "comment = ";
-		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= "WHERE compo_id = '".$compo_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		defaultOreonGraph();

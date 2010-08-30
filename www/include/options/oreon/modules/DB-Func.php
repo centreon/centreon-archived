@@ -85,17 +85,17 @@
 		$rq = "INSERT INTO `modules_informations` " .
 				"(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, `sql_files`, `php_files`, `svc_tools`, `host_tools` ) " .
 				"VALUES ( ";
-		isset($name) && $name != NULL ? $rq .= "'".htmlentities($name , ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($module_conf["rname"]) && $module_conf["rname"] != NULL ? $rq .= "'".htmlentities($module_conf["rname"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($module_conf["mod_release"]) && $module_conf["mod_release"] != NULL ? $rq .= "'".htmlentities($module_conf["mod_release"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($module_conf["is_removeable"]) && $module_conf["is_removeable"] != NULL ? $rq .= "'".htmlentities($module_conf["is_removeable"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($module_conf["infos"]) && $module_conf["infos"] != NULL ? $rq .= "'".htmlentities($module_conf["infos"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($module_conf["author"]) && $module_conf["author"] != NULL ? $rq .= "'".htmlentities($module_conf["author"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($module_conf["lang_files"]) && $module_conf["lang_files"] != NULL ? $rq .= "'".htmlentities($module_conf["lang_files"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($module_conf["sql_files"]) && $module_conf["sql_files"] != NULL ? $rq .= "'".htmlentities($module_conf["sql_files"] , ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($module_conf["php_files"]) && $module_conf["php_files"] != NULL ? $rq .= "'".htmlentities($module_conf["php_files"] , ENT_QUOTES)."', ": $rq .= "NULL,";
-		isset($module_conf["svc_tools"]) && $module_conf["svc_tools"] != NULL ? $rq .= "'".htmlentities($module_conf["svc_tools"] , ENT_QUOTES)."', ": $rq .= "NULL,";
-		isset($module_conf["host_tools"]) && $module_conf["host_tools"] != NULL ? $rq .= "'".htmlentities($module_conf["host_tools"] , ENT_QUOTES)."'": $rq .= "NULL";
+		isset($name) && $name != NULL ? $rq .= "'".htmlentities($name , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($module_conf["rname"]) && $module_conf["rname"] != NULL ? $rq .= "'".htmlentities($module_conf["rname"] , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($module_conf["mod_release"]) && $module_conf["mod_release"] != NULL ? $rq .= "'".htmlentities($module_conf["mod_release"] , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($module_conf["is_removeable"]) && $module_conf["is_removeable"] != NULL ? $rq .= "'".htmlentities($module_conf["is_removeable"] , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($module_conf["infos"]) && $module_conf["infos"] != NULL ? $rq .= "'".htmlentities($module_conf["infos"] , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($module_conf["author"]) && $module_conf["author"] != NULL ? $rq .= "'".htmlentities($module_conf["author"] , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($module_conf["lang_files"]) && $module_conf["lang_files"] != NULL ? $rq .= "'".htmlentities($module_conf["lang_files"] , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($module_conf["sql_files"]) && $module_conf["sql_files"] != NULL ? $rq .= "'".htmlentities($module_conf["sql_files"] , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($module_conf["php_files"]) && $module_conf["php_files"] != NULL ? $rq .= "'".htmlentities($module_conf["php_files"] , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL,";
+		isset($module_conf["svc_tools"]) && $module_conf["svc_tools"] != NULL ? $rq .= "'".htmlentities($module_conf["svc_tools"] , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL,";
+		isset($module_conf["host_tools"]) && $module_conf["host_tools"] != NULL ? $rq .= "'".htmlentities($module_conf["host_tools"] , ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM modules_informations");
@@ -108,14 +108,14 @@
 		if (testUpgradeExistence($id, $upgrade_conf["release_to"]))	return NULL;
 		global $pearDB;
 		$rq = "UPDATE `modules_informations` SET ";
-		if (isset($upgrade_conf["rname"]) && $upgrade_conf["rname"]) $rq .= "rname = '".htmlentities($upgrade_conf["rname"] , ENT_QUOTES)."', ";
-		if (isset($upgrade_conf["release_to"]) && $upgrade_conf["release_to"]) $rq .= "mod_release = '".htmlentities($upgrade_conf["release_to"] , ENT_QUOTES)."', ";
-		if (isset($upgrade_conf["is_removeable"]) && $upgrade_conf["is_removeable"]) $rq .= "is_removeable = '".htmlentities($upgrade_conf["is_removeable"] , ENT_QUOTES)."', ";
-		if (isset($upgrade_conf["infos"]) && $upgrade_conf["infos"]) $rq .= "infos = '".htmlentities($upgrade_conf["infos"] , ENT_QUOTES)."', ";
-		if (isset($upgrade_conf["author"]) && $upgrade_conf["author"]) $rq .= "author = '".htmlentities($upgrade_conf["author"] , ENT_QUOTES)."', ";
-		if (isset($upgrade_conf["lang_files"]) && $upgrade_conf["lang_files"]) $rq .= "lang_files = '".htmlentities($upgrade_conf["lang_files"] , ENT_QUOTES)."', ";
-		if (isset($upgrade_conf["sql_files"]) && $upgrade_conf["sql_files"]) $rq .= "sql_files = '".htmlentities($upgrade_conf["sql_files"] , ENT_QUOTES)."', ";
-		if (isset($upgrade_conf["php_files"]) && $upgrade_conf["php_files"]) $rq .= "php_files = '".htmlentities($upgrade_conf["php_files"] , ENT_QUOTES)."', ";
+		if (isset($upgrade_conf["rname"]) && $upgrade_conf["rname"]) $rq .= "rname = '".htmlentities($upgrade_conf["rname"] , ENT_QUOTES, "UTF-8")."', ";
+		if (isset($upgrade_conf["release_to"]) && $upgrade_conf["release_to"]) $rq .= "mod_release = '".htmlentities($upgrade_conf["release_to"] , ENT_QUOTES, "UTF-8")."', ";
+		if (isset($upgrade_conf["is_removeable"]) && $upgrade_conf["is_removeable"]) $rq .= "is_removeable = '".htmlentities($upgrade_conf["is_removeable"] , ENT_QUOTES, "UTF-8")."', ";
+		if (isset($upgrade_conf["infos"]) && $upgrade_conf["infos"]) $rq .= "infos = '".htmlentities($upgrade_conf["infos"] , ENT_QUOTES, "UTF-8")."', ";
+		if (isset($upgrade_conf["author"]) && $upgrade_conf["author"]) $rq .= "author = '".htmlentities($upgrade_conf["author"] , ENT_QUOTES, "UTF-8")."', ";
+		if (isset($upgrade_conf["lang_files"]) && $upgrade_conf["lang_files"]) $rq .= "lang_files = '".htmlentities($upgrade_conf["lang_files"] , ENT_QUOTES, "UTF-8")."', ";
+		if (isset($upgrade_conf["sql_files"]) && $upgrade_conf["sql_files"]) $rq .= "sql_files = '".htmlentities($upgrade_conf["sql_files"] , ENT_QUOTES, "UTF-8")."', ";
+		if (isset($upgrade_conf["php_files"]) && $upgrade_conf["php_files"]) $rq .= "php_files = '".htmlentities($upgrade_conf["php_files"] , ENT_QUOTES, "UTF-8")."', ";
 		if (strcmp("UPDATE `modules_informations` SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";

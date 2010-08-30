@@ -52,7 +52,7 @@
 	 */
 	$SearchTool = NULL;
 	if (isset($search) && $search)
-		$SearchTool = " WHERE (hc_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hc_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
+		$SearchTool = " WHERE (hc_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR hc_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 
 	$request = "SELECT COUNT(*) FROM hostcategories $SearchTool";
 

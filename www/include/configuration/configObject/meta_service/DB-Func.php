@@ -45,7 +45,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('meta_id');
-		$DBRESULT =& $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$meta =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] == $id)	
@@ -181,8 +181,8 @@
 				"notification_period, notification_options, notifications_enabled, calcul_type, meta_select_mode, regexp_str, metric, warning, critical, " .
 				"graph_id, meta_comment, meta_activate) " .
 				"VALUES ( ";
-				isset($ret["meta_name"]) && $ret["meta_name"] != NULL ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-				isset($ret["meta_display"]) && $ret["meta_display"] != NULL ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+				isset($ret["meta_name"]) && $ret["meta_name"] != NULL ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+				isset($ret["meta_display"]) && $ret["meta_display"] != NULL ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 				isset($ret["check_period"]) && $ret["check_period"] != NULL ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
 				isset($ret["max_check_attempts"]) && $ret["max_check_attempts"] != NULL ? $rq .= "'".$ret["max_check_attempts"]."', " : $rq .= "NULL, ";
 				isset($ret["normal_check_interval"]) && $ret["normal_check_interval"] != NULL ? $rq .= "'".$ret["normal_check_interval"]."', ": $rq .= "NULL, ";
@@ -215,9 +215,9 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE meta_service SET " ;
 		$rq .= "meta_name = ";
-		$ret["meta_name"] != NULL ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$ret["meta_name"] != NULL ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "meta_display = ";
-		$ret["meta_display"] != NULL ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$ret["meta_display"] != NULL ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "check_period = ";
 		$ret["check_period"] != NULL ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
 		$rq .= "max_check_attempts = ";
@@ -239,17 +239,17 @@
 		$rq .= "meta_select_mode = ";
 		$ret["meta_select_mode"]["meta_select_mode"] != NULL ? $rq .= "'".$ret["meta_select_mode"]["meta_select_mode"]."', " : $rq .= "NULL, ";
 		$rq .= "regexp_str = ";
-		$ret["regexp_str"] != NULL ? $rq .= "'".htmlentities($ret["regexp_str"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$ret["regexp_str"] != NULL ? $rq .= "'".htmlentities($ret["regexp_str"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "metric = ";
-		$ret["metric"] != NULL ? $rq .= "'".htmlentities($ret["metric"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$ret["metric"] != NULL ? $rq .= "'".htmlentities($ret["metric"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "warning = ";
-		$ret["warning"] != NULL ? $rq .= "'".htmlentities($ret["warning"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$ret["warning"] != NULL ? $rq .= "'".htmlentities($ret["warning"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "critical = ";
-		$ret["critical"] != NULL ? $rq .= "'".htmlentities($ret["critical"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$ret["critical"] != NULL ? $rq .= "'".htmlentities($ret["critical"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "graph_id = ";
 		$ret["graph_id"] != NULL ? $rq .= "'".$ret["graph_id"]."', " : $rq .= "NULL, ";
 		$rq .= "meta_comment = ";
-		$ret["meta_comment"] != NULL ? $rq .= "'".htmlentities($ret["meta_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$ret["meta_comment"] != NULL ? $rq .= "'".htmlentities($ret["meta_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "meta_activate = ";
 		$ret["meta_activate"]["meta_activate"] != NULL ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."' " : $rq .= "NULL ";
 		$rq .= " WHERE meta_id = '".$meta_id."'";
@@ -320,7 +320,7 @@
 		$rq .= "metric_id = ";
 		$ret["metric_id"] != NULL ? $rq .= "'".$ret["metric_id"]."', ": $rq .= "NULL, ";
 		$rq .= "msr_comment = ";
-		$ret["msr_comment"] != NULL ? $rq .= "'".htmlentities($ret["msr_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$ret["msr_comment"] != NULL ? $rq .= "'".htmlentities($ret["msr_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "activate = ";
 		$ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."' " : $rq .= "NULL ";
 		$rq .= " WHERE msr_id = '".$msr_id."'";

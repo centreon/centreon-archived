@@ -31,9 +31,9 @@ function xml_mbtemp() {
     $_text .= "    <Temperature>\n";
     for ($i=0, $max = sizeof($data); $i < $max; $i++) {
         $_text .= "       <Item>\n";
-        $_text .= "      <Label>" . htmlspecialchars($data[$i]['label'], ENT_QUOTES) . "</Label>\n";
-        $_text .= "      <Value>" . htmlspecialchars($data[$i]['value'], ENT_QUOTES) . "</Value>\n";
-        $_text .= "      <Limit>" . htmlspecialchars($data[$i]['limit'], ENT_QUOTES) . "</Limit>\n";
+        $_text .= "      <Label>" . htmlspecialchars($data[$i]['label'], ENT_QUOTES, "UTF-8") . "</Label>\n";
+        $_text .= "      <Value>" . htmlspecialchars($data[$i]['value'], ENT_QUOTES, "UTF-8") . "</Value>\n";
+        $_text .= "      <Limit>" . htmlspecialchars($data[$i]['limit'], ENT_QUOTES, "UTF-8") . "</Limit>\n";
         $_text .= "       </Item>\n";
     }
     $_text .= "    </Temperature>\n";
@@ -52,10 +52,10 @@ function xml_mbfans() {
         $_text = "    <Fans>\n";
         for ($i=0, $max = sizeof($data); $i < $max; $i++) {
             $_text .= "       <Item>\n";
-            $_text .= "      <Label>" . htmlspecialchars($data[$i]['label'], ENT_QUOTES) . "</Label>\n";
-            $_text .= "      <Value>" . htmlspecialchars($data[$i]['value'], ENT_QUOTES) . "</Value>\n";
-            $_text .= "      <Min>" . htmlspecialchars($data[$i]['min'], ENT_QUOTES) . "</Min>\n";
-            $_text .= "      <Div>" . htmlspecialchars($data[$i]['div'], ENT_QUOTES) . "</Div>\n";
+            $_text .= "      <Label>" . htmlspecialchars($data[$i]['label'], ENT_QUOTES, "UTF-8") . "</Label>\n";
+            $_text .= "      <Value>" . htmlspecialchars($data[$i]['value'], ENT_QUOTES, "UTF-8") . "</Value>\n";
+            $_text .= "      <Min>" . htmlspecialchars($data[$i]['min'], ENT_QUOTES, "UTF-8") . "</Min>\n";
+            $_text .= "      <Div>" . htmlspecialchars($data[$i]['div'], ENT_QUOTES, "UTF-8") . "</Div>\n";
             $_text .= "       </Item>\n";
         }
         $_text .= "    </Fans>\n";
@@ -74,10 +74,10 @@ function xml_mbvoltage() {
         $_text = "    <Voltage>\n";
         for ($i=0, $max = sizeof($data); $i < $max; $i++) {
             $_text .= "       <Item>\n";
-            $_text .= "      <Label>" . htmlspecialchars($data[$i]['label'], ENT_QUOTES) . "</Label>\n";
-            $_text .= "      <Value>" . htmlspecialchars($data[$i]['value'], ENT_QUOTES) . "</Value>\n";
-            $_text .= "      <Min>" . htmlspecialchars($data[$i]['min'], ENT_QUOTES) . "</Min>\n";
-            $_text .= "      <Max>" . htmlspecialchars($data[$i]['max'], ENT_QUOTES) . "</Max>\n";
+            $_text .= "      <Label>" . htmlspecialchars($data[$i]['label'], ENT_QUOTES, "UTF-8") . "</Label>\n";
+            $_text .= "      <Value>" . htmlspecialchars($data[$i]['value'], ENT_QUOTES, "UTF-8") . "</Value>\n";
+            $_text .= "      <Min>" . htmlspecialchars($data[$i]['min'], ENT_QUOTES, "UTF-8") . "</Min>\n";
+            $_text .= "      <Max>" . htmlspecialchars($data[$i]['max'], ENT_QUOTES, "UTF-8") . "</Max>\n";
             $_text .= "       </Item>\n";
         }
         $_text .= "    </Voltage>\n";

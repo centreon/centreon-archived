@@ -63,7 +63,7 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');;
 
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '1'");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."' AND host_register = '1'");
 		$host =& $DBRESULT->fetchRow();
 
 		/*
@@ -93,7 +93,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');;
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '0'");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."' AND host_register = '0'");
 		$host =& $DBRESULT->fetchRow();
 
 		/*
@@ -548,9 +548,9 @@
 			isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
 			isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
 			isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".$ret["command_command_id_arg2"]."', ": $rq .= "NULL, ";
-			isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".htmlentities($ret["host_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-			isset($ret["host_alias"]) && $ret["host_alias"] != NULL ? $rq .= "'".htmlentities($ret["host_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-			isset($ret["host_address"]) && $ret["host_address"] != NULL ? $rq .= "'".htmlentities($ret["host_address"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+			isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+			isset($ret["host_alias"]) && $ret["host_alias"] != NULL ? $rq .= "'".htmlentities($ret["host_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+			isset($ret["host_address"]) && $ret["host_address"] != NULL ? $rq .= "'".htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 			isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != NULL ? $rq .= "'".$ret["host_max_check_attempts"]."', " : $rq .= "NULL, ";
 			isset($ret["host_check_interval"]) && $ret["host_check_interval"] != NULL ? $rq .= "'".$ret["host_check_interval"]."', ": $rq .= "NULL, ";
 			isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"] != NULL ? $rq .= "'".$ret["host_retry_check_interval"]."', ": $rq .= "NULL, ";
@@ -572,10 +572,10 @@
 			isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_notifOpts"]))."', " : $rq .= "NULL, ";
 			isset($ret["host_notifications_enabled"]["host_notifications_enabled"]) && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2 ? $rq .= "'".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', " : $rq .= "'2', ";
 			isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_stalOpts"]))."', " : $rq .= "NULL, ";
-			isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_community"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-			isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_version"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-			isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".htmlentities($ret["host_location"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-			isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".htmlentities($ret["host_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+			isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+			isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+			isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+			isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 			isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL ? $rq .= "'".$ret["host_register"]["host_register"]."', " : $rq .= "NULL, ";
 			isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."'" : $rq .= "NULL";
 		$rq .= ")";
@@ -661,11 +661,11 @@
 		if (isset($ret["command_command_id_arg2"]))
 			$fields["command_command_id_arg2"] = $ret["command_command_id_arg2"];
 		if (isset($ret["host_name"]))
-			$fields["host_name"] = htmlentities($ret["host_name"], ENT_QUOTES);
+			$fields["host_name"] = htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_alias"]))
-			$fields["host_alias"] = htmlentities($ret["host_alias"], ENT_QUOTES);
+			$fields["host_alias"] = htmlentities($ret["host_alias"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_address"]))
-			$fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES);
+			$fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_max_check_attempts"]))
 			$fields["host_max_check_attempts"] = $ret["host_max_check_attempts"];
 		if (isset($ret["host_check_interval"]))
@@ -713,13 +713,13 @@
 		if (isset($ret["host_stalOpts"]))
 			$fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
 		if (isset($ret["host_snmp_community"]))
-			$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES);
+			$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_snmp_version"]))
-			$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES);
+			$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_location"]))
-			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES);
+			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_comment"]))
-			$fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES);
+			$fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_register"]))
 			$fields["host_register"] = $ret["host_register"]["host_register"];
 		if (isset($ret["host_activate"]))
@@ -727,23 +727,23 @@
 		if (isset($ret["templates"]))
 			$fields["templates"] = $multiTP_logStr;
 		if (isset($ret["ehi_notes"]))
-			$fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES);
+			$fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_notes_url"]))
-			$fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES);
+			$fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_action_url"]))
-			$fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES);
+			$fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_icon_image"]))
-			$fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES);
+			$fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_icon_image_alt"]))
-			$fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES);
+			$fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_vrml_image"]))
-			$fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES);
+			$fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_statusmap_image"]))
-			$fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES);
+			$fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_2d_coords"]))
-			$fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES);
+			$fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_3d_coords"]))
-			$fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES);
+			$fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8");
 		$fields["host_parents"] = "";
 		if (isset($ret["host_parents"]))
 			$fields["host_parents"] = implode(",", $ret["host_parents"]);
@@ -762,7 +762,7 @@
 		$fields["nagios_server_id"] = "";
 		if (isset($ret["nagios_server_id"]))
 			$fields["nagios_server_id"] = $ret["nagios_server_id"];
-		$centreon->CentreonLogAction->insertLog("host", $host_id["MAX(host_id)"], htmlentities($ret["host_name"], ENT_QUOTES), "a", $fields);
+		$centreon->CentreonLogAction->insertLog("host", $host_id["MAX(host_id)"], htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
 		return ($host_id["MAX(host_id)"]);
 	}
 
@@ -792,15 +792,15 @@
 				"`ehi_3d_coords` )" .
 				"VALUES ( ";
 		$rq .= "NULL, ".$host_id.", ";
-		isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes_url"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_action_url"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_vrml_image"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 	}
@@ -958,12 +958,12 @@
 		# If we are doing a MC, we don't have to set name and alias field
 		if (!$from_MC)	{
 			$rq .= "host_name = ";
-			isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".htmlentities($ret["host_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+			isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 			$rq .= "host_alias = ";
-			isset($ret["host_alias"]) && $ret["host_alias"] != NULL ? $rq .= "'".htmlentities($ret["host_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+			isset($ret["host_alias"]) && $ret["host_alias"] != NULL ? $rq .= "'".htmlentities($ret["host_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		}
 		$rq .= "host_address = ";
-		isset($ret["host_address"]) && $ret["host_address"] != NULL ? $rq .= "'".htmlentities($ret["host_address"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["host_address"]) && $ret["host_address"] != NULL ? $rq .= "'".htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "host_max_check_attempts = ";
 		isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != NULL ? $rq .= "'".$ret["host_max_check_attempts"]."', " : $rq .= "NULL, ";
 		$rq .= "host_check_interval = ";
@@ -1009,13 +1009,13 @@
 		$rq .= "host_stalking_options = ";
 		isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_stalOpts"]))."', " : $rq .= "NULL, ";
 		$rq .= "host_snmp_community = ";
-		isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_community"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "host_snmp_version = ";
-		isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_version"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "host_location = ";
-		isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".htmlentities($ret["host_location"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "host_comment = ";
-		isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".htmlentities($ret["host_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "host_register = ";
 		isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL ? $rq .= "'".$ret["host_register"]["host_register"]."', " : $rq .= "NULL, ";
 		$rq .= "host_activate = ";
@@ -1117,9 +1117,9 @@
 		if (isset($ret["timeperiod_tp_id2"])) $fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		if (isset($ret["command_command_id2"])) $fields["command_command_id2"] = $ret["command_command_id2"];
 		if (isset($ret["command_command_id_arg2"])) $fields["command_command_id_arg2"] = $ret["command_command_id_arg2"];
-		if (isset($ret["host_name"])) $fields["host_name"] = htmlentities($ret["host_name"], ENT_QUOTES);
-		if (isset($ret["host_alias"])) $fields["host_alias"] = htmlentities($ret["host_alias"], ENT_QUOTES);
-		if (isset($ret["host_address"])) $fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES);
+		if (isset($ret["host_name"])) $fields["host_name"] = htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["host_alias"])) $fields["host_alias"] = htmlentities($ret["host_alias"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["host_address"])) $fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_max_check_attempts"])) $fields["host_max_check_attempts"] = $ret["host_max_check_attempts"];
 		if (isset($ret["host_retry_check_interval"])) $fields["host_retry_check_interval"] = $ret["host_retry_check_interval"];
 		if (isset($ret["host_check_interval"])) $fields["host_check_interval"] = $ret["host_check_interval"];
@@ -1148,23 +1148,23 @@
 		$fields["host_stalOpts"] = "";
 		if (isset($ret["host_stalOpts"]))
 			$fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
-		if (isset($ret["host_snmp_community"])) $fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES);
-		if (isset($ret["host_snmp_version"])) $fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES);
+		if (isset($ret["host_snmp_community"])) $fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["host_snmp_version"])) $fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_location"]))
-			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES);
-		if (isset($ret["host_comment"])) $fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES);
+			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["host_comment"])) $fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_register"])) $fields["host_register"] = $ret["host_register"]["host_register"];
 		if (isset($ret["host_activate"])) $fields["host_activate"] = $ret["host_activate"]["host_activate"];
 		if (isset($multiTP_logStr)) $fields["templates"] = $multiTP_logStr;
-		if (isset($ret["ehi_notes"])) $fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES);
-		if (isset($ret["ehi_notes_url"])) $fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES);
-		if (isset($ret["ehi_action_url"])) $fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES);
-		if (isset($ret["ehi_icon_image"])) $fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES);
-		if (isset($ret["ehi_icon_image_alt"])) $fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES);
-		if (isset($ret["ehi_vrml_image"])) $fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES);
-		if (isset($ret["ehi_statusmap_image"])) $fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES);
-		if (isset($ret["ehi_2d_coords"])) $fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES);
-		if (isset($ret["ehi_3d_coords"])) $fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES);
+		if (isset($ret["ehi_notes"])) $fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["ehi_notes_url"])) $fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["ehi_action_url"])) $fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["ehi_icon_image"])) $fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["ehi_icon_image_alt"])) $fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["ehi_vrml_image"])) $fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["ehi_statusmap_image"])) $fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["ehi_2d_coords"])) $fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["ehi_3d_coords"])) $fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8");
 		$fields["host_parents"] = "";
 		if (isset($ret["host_parents"]))
 			$fields["host_parents"] = implode(",", $ret["host_parents"]);
@@ -1183,7 +1183,7 @@
 		$fields["nagios_server_id"] = "";
 		if (isset($ret["nagios_server_id"]))
 			$fields["nagios_server_id"] = $ret["nagios_server_id"];
-		$centreon->CentreonLogAction->insertLog("host", $host_id, htmlentities($ret["host_name"], ENT_QUOTES), "c", $fields);
+		$centreon->CentreonLogAction->insertLog("host", $host_id, htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 		$centreon->user->access->updateACL();
 	}
 
@@ -1248,8 +1248,8 @@
 			$fields["command_command_id_arg2"] = $ret["command_command_id_arg2"];
 		}
 		if (isset($ret["host_address"]) && $ret["host_address"] != NULL) {
-			$rq .= "host_address = '".htmlentities($ret["host_address"], ENT_QUOTES)."', ";
-			$fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES);
+			$rq .= "host_address = '".htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != NULL) {
 			$rq .= "host_max_check_attempts = '".$ret["host_max_check_attempts"]."', " ;
@@ -1336,20 +1336,20 @@
 			$fields["host_stalking_options"] = implode(",", array_keys($ret["host_stalOpts"]));
 		}
 		if (isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL) {
-			$rq .= "host_snmp_community = '".htmlentities($ret["host_snmp_community"], ENT_QUOTES)."', ";
-			$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES);
+			$rq .= "host_snmp_community = '".htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL) {
-			$rq .= "host_snmp_version = '".htmlentities($ret["host_snmp_version"], ENT_QUOTES)."', ";
-			$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES);
+			$rq .= "host_snmp_version = '".htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["host_location"]) && $ret["host_location"] != NULL) {
-			$rq .= "host_location = '".htmlentities($ret["host_location"], ENT_QUOTES)."', ";
-			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES);
+			$rq .= "host_location = '".htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["host_comment"]) && $ret["host_comment"] != NULL) {
-			$rq .= "host_comment = '".htmlentities($ret["host_comment"], ENT_QUOTES)."', ";
-			$fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES);
+			$rq .= "host_comment = '".htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL) {
 			$rq .= "host_register = '".$ret["host_register"]["host_register"]."', ";
@@ -1471,23 +1471,23 @@
 		}
 
 		if (isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL)
-			$fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES);
+			$fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL)
-			$fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES);
+			$fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL)
-			$fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES);
+			$fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL)
-			$fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES);
+			$fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL)
-			$fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES);
+			$fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL)
-			$fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES);
+			$fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL)
-			$fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES);
+			$fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL)
-			$fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES);
+			$fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL)
-			$fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES);
+			$fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["host_parents"]) && $ret["host_parents"] != NULL)
 			$fields["host_parents"] = implode(",", $ret["host_parents"]);
 		if (isset($ret["host_childs"]) && $ret["host_childs"] != NULL)
@@ -1613,23 +1613,23 @@
 		 */
 		$rq = "UPDATE extended_host_information ";
 		$rq .= "SET ehi_notes = ";
-		isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "ehi_notes_url = ";
-		isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes_url"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "ehi_action_url = ";
-		isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_action_url"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "ehi_icon_image = ";
-		isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "ehi_icon_image_alt = ";
-		isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "ehi_vrml_image = ";
-		isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_vrml_image"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "ehi_statusmap_image = ";
-		isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "ehi_2d_coords = ";
-		isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "ehi_3d_coords = ";
-		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 
 		$DBRESULT =& $pearDB->query($rq);
@@ -1640,15 +1640,15 @@
 		global $form, $pearDB;
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE extended_host_information SET ";
-		if (isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL) $rq .= "ehi_notes = '".htmlentities($ret["ehi_notes"], ENT_QUOTES)."', ";
-		if (isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL) $rq .= "ehi_notes_url = '".htmlentities($ret["ehi_notes_url"], ENT_QUOTES)."', ";
-		if (isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL) $rq .= "ehi_action_url = '".htmlentities($ret["ehi_action_url"], ENT_QUOTES)."', ";
-		if (isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL) $rq .= "ehi_icon_image = '".htmlentities($ret["ehi_icon_image"], ENT_QUOTES)."', ";
-		if (isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL) $rq .= "ehi_icon_image_alt = '".htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES)."', ";
-		if (isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL) $rq .= "ehi_vrml_image = '".htmlentities($ret["ehi_vrml_image"], ENT_QUOTES)."', ";
-		if (isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL) $rq .= "ehi_statusmap_image = '".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES)."', ";
-		if (isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL) $rq .= "ehi_2d_coords = '".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES)."', ";
-		if (isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL) $rq .= "ehi_3d_coords = '".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."', ";
+		if (isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL) $rq .= "ehi_notes = '".htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL) $rq .= "ehi_notes_url = '".htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL) $rq .= "ehi_action_url = '".htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL) $rq .= "ehi_icon_image = '".htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL) $rq .= "ehi_icon_image_alt = '".htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL) $rq .= "ehi_vrml_image = '".htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL) $rq .= "ehi_statusmap_image = '".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL) $rq .= "ehi_2d_coords = '".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL) $rq .= "ehi_3d_coords = '".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8")."', ";
 		if (strcmp("UPDATE extended_host_information SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";

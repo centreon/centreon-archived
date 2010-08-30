@@ -51,7 +51,7 @@
 			$var = $_POST[$str];
 		if ($var == "")
 			$var = NULL;
-		return htmlentities($var, ENT_QUOTES);
+		return htmlentities($var, ENT_QUOTES, "UTF-8");
 	}
 
  	/*

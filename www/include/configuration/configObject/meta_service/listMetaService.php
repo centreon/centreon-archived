@@ -47,7 +47,7 @@
 	include_once("./include/common/quickSearch.php");
 	
 	if (isset($search))
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'");
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM meta_service");
 	$tmp = & $DBRESULT->fetchRow();
@@ -78,7 +78,7 @@
 	 * Meta Service list
 	 */
 	if ($search)
-		$rq = "SELECT *  FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY meta_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT *  FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ORDER BY meta_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM meta_service ORDER BY meta_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);

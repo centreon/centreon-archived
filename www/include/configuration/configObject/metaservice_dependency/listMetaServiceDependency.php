@@ -52,7 +52,7 @@
 	$rq = "SELECT COUNT(*) FROM dependency dep";
 	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceParent_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceChild_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0";
 	if ($search)
-		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dep_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
+		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	$DBRESULT =& $pearDB->query($rq);
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -73,7 +73,7 @@
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
 	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceParent_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceChild_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0";
 	if ($search)
-		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
+		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 

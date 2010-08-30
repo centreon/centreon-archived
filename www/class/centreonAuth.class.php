@@ -138,9 +138,9 @@ class CentreonAuth {
 	    
     private function checkUser($username, $password) {
     	if ($this->autologin == 0) {
-	    	$DBRESULT =& $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1"); 	
+	    	$DBRESULT =& $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' LIMIT 1"); 	
     	} else {
-    		$DBRESULT =& $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '".htmlentities($username, ENT_QUOTES)."' AND `contact_activate` = '1' LIMIT 1");
+    		$DBRESULT =& $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' LIMIT 1");
     	}	
     	if ($DBRESULT->numRows()) {
     		$this->userInfos =& $DBRESULT->fetchRow();

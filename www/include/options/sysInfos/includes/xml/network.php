@@ -29,11 +29,11 @@ function xml_network () {
     $_text = "  <Network>\n";
     while (list($dev, $stats) = each($net)) {
         $_text .= "    <NetDevice>\n"
-               .  "      <Name>" . htmlspecialchars(trim($dev), ENT_QUOTES) . "</Name>\n"
-               .  "      <RxBytes>" . htmlspecialchars($stats['rx_bytes'], ENT_QUOTES) . "</RxBytes>\n"
-               .  "      <TxBytes>" . htmlspecialchars($stats['tx_bytes'], ENT_QUOTES) . "</TxBytes>\n"
-               .  "      <Errors>" . htmlspecialchars($stats['errs'], ENT_QUOTES) . "</Errors>\n"
-               .  "      <Drops>" . htmlspecialchars($stats['drop'], ENT_QUOTES) . "</Drops>\n"
+               .  "      <Name>" . htmlspecialchars(trim($dev), ENT_QUOTES, "UTF-8") . "</Name>\n"
+               .  "      <RxBytes>" . htmlspecialchars($stats['rx_bytes'], ENT_QUOTES, "UTF-8") . "</RxBytes>\n"
+               .  "      <TxBytes>" . htmlspecialchars($stats['tx_bytes'], ENT_QUOTES, "UTF-8") . "</TxBytes>\n"
+               .  "      <Errors>" . htmlspecialchars($stats['errs'], ENT_QUOTES, "UTF-8") . "</Errors>\n"
+               .  "      <Drops>" . htmlspecialchars($stats['drop'], ENT_QUOTES, "UTF-8") . "</Drops>\n"
                .  "    </NetDevice>\n";
     }
     $_text .= "  </Network>\n";

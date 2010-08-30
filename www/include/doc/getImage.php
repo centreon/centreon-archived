@@ -41,9 +41,9 @@
 		$lang = filter_var($_GET["lang"]);
 		$version = filter_var($_GET["version"]);
 	} else {
-		$img = htmlentities($_GET["img"], ENT_QUOTES);
-		$lang = htmlentities($_GET["lang"], ENT_QUOTES);
-		$version = htmlentities($_GET["version"], ENT_QUOTES);
+		$img = htmlentities($_GET["img"], ENT_QUOTES, "UTF-8");
+		$lang = htmlentities($_GET["lang"], ENT_QUOTES, "UTF-8");
+		$version = htmlentities($_GET["version"], ENT_QUOTES, "UTF-8");
 	}
 
 	$tab_images = split("/", $img);

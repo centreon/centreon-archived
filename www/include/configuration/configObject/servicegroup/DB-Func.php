@@ -44,7 +44,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('sg_id');
-		$DBRESULT =& $pearDB->query("SELECT sg_name, sg_id FROM servicegroup WHERE sg_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT sg_name, sg_id FROM servicegroup WHERE sg_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$sg =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $sg["sg_id"] == $id)	
@@ -143,9 +143,9 @@
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO servicegroup (sg_name, sg_alias, sg_comment, sg_activate) ";
 		$rq .= "VALUES (";
-		isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "'".htmlentities($ret["sg_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq .= "'".htmlentities($ret["sg_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "'".htmlentities($ret["sg_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "'".htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq .= "'".htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "'".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "'".$ret["sg_activate"]["sg_activate"]."'" : $rq .= "'0'";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
@@ -153,13 +153,13 @@
 		$DBRESULT =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
 		$sg_id = $DBRESULT->fetchRow();
 		
-		$fields["sg_name"] = htmlentities($ret["sg_name"], ENT_QUOTES);
-		$fields["sg_alias"] = htmlentities($ret["sg_alias"], ENT_QUOTES);
-		$fields["sg_comment"] = htmlentities($ret["sg_comment"], ENT_QUOTES);
+		$fields["sg_name"] = htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8");
+		$fields["sg_alias"] = htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8");
+		$fields["sg_comment"] = htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8");
 		$fields["sg_activate"] = $ret["sg_activate"]["sg_activate"];
 		if (isset($ret["sg_hgServices"]))
 			$fields["sg_hgServices"] = implode(",", $ret["sg_hgServices"]);
-		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id["MAX(sg_id)"], htmlentities($ret["sg_name"], ENT_QUOTES), "a", $fields);
+		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id["MAX(sg_id)"], htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
 		$DBRESULT->free();
 		return ($sg_id["MAX(sg_id)"]);
 	}
@@ -171,20 +171,20 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE servicegroup SET ";
-		isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "sg_name = '".htmlentities($ret["sg_name"], ENT_QUOTES)."', " : $rq .= "sg_name = NULL,";
-		isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq.=	"sg_alias = '".htmlentities($ret["sg_alias"], ENT_QUOTES)."', " : $rq .= "sg_alias = NULL";
-		isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "sg_comment = '".htmlentities($ret["sg_comment"], ENT_QUOTES)."', " : $rq .= "sg_comment = NULL,";
+		isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "sg_name = '".htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_name = NULL,";
+		isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq.=	"sg_alias = '".htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_alias = NULL";
+		isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "sg_comment = '".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_comment = NULL,";
 		isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "sg_activate = '".$ret["sg_activate"]["sg_activate"]."' " : $rq .= "sg_activate = '0'";
 		$rq .= "WHERE sg_id = '".$sg_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 			
-		$fields["sg_name"] = htmlentities($ret["sg_name"], ENT_QUOTES);
-		$fields["sg_alias"] = htmlentities($ret["sg_alias"], ENT_QUOTES);
-		$fields["sg_comment"] = htmlentities($ret["sg_comment"], ENT_QUOTES);
+		$fields["sg_name"] = htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8");
+		$fields["sg_alias"] = htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8");
+		$fields["sg_comment"] = htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8");
 		$fields["sg_activate"] = $ret["sg_activate"]["sg_activate"];
 		if (isset($ret["sg_hgServices"]))
 			$fields["sg_hgServices"] = implode(",", $ret["sg_hgServices"]);
-		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, htmlentities($ret["sg_name"], ENT_QUOTES), "c", $fields);
+		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 	}
 	
 	function updateServiceGroupServices($sg_id, $ret = array())	{

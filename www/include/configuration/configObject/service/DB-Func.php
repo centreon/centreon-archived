@@ -94,7 +94,7 @@
 
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
-		$DBRESULT =& $pearDB->query("SELECT service_description FROM service WHERE service_description = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT service_description FROM service WHERE service_description = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		if ($DBRESULT->numRows() >= 1)
 			return true;
 		return false;
@@ -108,7 +108,7 @@
 			$id = $form->getSubmitValue('service_id');
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$service =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $service["service_id"] == $id)
@@ -140,7 +140,7 @@
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
 		foreach ($hPars as $host)	{
-			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES)."'");
+			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 			$service =& $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id)
@@ -148,7 +148,7 @@
 			$DBRESULT->free();
 		}
 		foreach ($hgPars as $hostgroup)	{
-			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES)."'");
+			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 			$service =& $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id)
@@ -533,7 +533,7 @@
 		updateServiceCategories($service_id, $ret);
 		$centreon->user->access->updateACL();
 		$fields = $tmp_fields['fields'];
-		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, htmlentities($fields["service_description"], ENT_QUOTES)), "a", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, htmlentities($fields["service_description"], ENT_QUOTES, "UTF-8")), "a", $fields);
 		return ($service_id);
 	}
 
@@ -572,8 +572,8 @@
 				isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
 				isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
 				isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
-				isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-				isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+				isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+				isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 				isset($ret["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
 				isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != NULL ? $rq .= "'".$ret["service_max_check_attempts"]."', " : $rq .= "NULL, ";
 				isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != NULL ? $rq .= "'".$ret["service_normal_check_interval"]."', ": $rq .= "NULL, ";
@@ -600,12 +600,12 @@
 					$ret["service_comment"] = str_replace('/', "#S#", $ret["service_comment"]);
 					$ret["service_comment"] = str_replace('\\', "#BS#", $ret["service_comment"]);
 				}
-				isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".htmlentities($ret["service_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+				isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 				$ret['command_command_id_arg'] = getCommandArgs($_POST);
-				isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+				isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 
 
-				isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+				isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 				isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL ? $rq .= "'".$ret["service_register"]["service_register"]."', " : $rq .= "NULL, ";
 				isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
 				$rq .= ")";
@@ -645,8 +645,8 @@
 		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
 		$fields["command_command_id2"] = $ret["command_command_id2"];
 		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-		$fields["service_description"] = htmlentities($ret["service_description"], ENT_QUOTES);
-		$fields["service_alias"] = htmlentities($ret["service_alias"], ENT_QUOTES);
+		$fields["service_description"] = htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8");
+		$fields["service_alias"] = htmlentities($ret["service_alias"], ENT_QUOTES, "UTF-8");
 		$fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
 		$fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
 		$fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
@@ -672,16 +672,16 @@
 		$fields["service_stalOpts"] = "";
 		if (isset($ret["service_stalOpts"]))
 			$fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
-		$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES);
-		$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES);
-		$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES);
+		$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8");
+		$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8");
+		$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8");
 		$fields["service_register"] = $ret["service_register"]["service_register"];
 		$fields["service_activate"] = $ret["service_activate"]["service_activate"];
-		$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES);
-		$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES);
-		$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES);
-		$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES);
-		$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES);
+		$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8");
+		$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8");
+		$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8");
+		$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8");
+		$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8");
 		$fields["graph_id"] = $ret["graph_id"];
 		$fields["service_cs"] = "";
 		if (isset($ret["service_cs"]))
@@ -704,7 +704,7 @@
 		$fields["service_traps"] = "";
 		if (isset($ret["service_traps"]))
 			$fields["service_traps"] = implode(",", $ret["service_traps"]);
-		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id["MAX(service_id)"], htmlentities($ret["service_description"], ENT_QUOTES)), "a", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id["MAX(service_id)"], htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8")), "a", $fields);
 		return (array("service_id" => $service_id["MAX(service_id)"], "fields" => $fields));
 	}
 
@@ -727,11 +727,11 @@
 				"`esi_action_url` , `esi_icon_image` , `esi_icon_image_alt`, `graph_id` )" .
 				"VALUES ( ";
 		$rq .= "NULL, ".$service_id.", ";
-		isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes_url"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_action_url"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["graph_id"]) && $ret["graph_id"] != NULL ? $rq .= "'".$ret["graph_id"]."'": $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
@@ -775,10 +775,10 @@
 		# If we are doing a MC, we don't have to set name and alias field
 		if (!$from_MC)	{
 			$rq .= "service_description = ";
-			isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+			isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		}
 		$rq .= "service_alias = ";
-		isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "service_is_volatile = ";
 		isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
 		$rq .= "service_max_check_attempts = ";
@@ -825,13 +825,13 @@
 		$rq .= "service_comment = ";
 		$ret["service_comment"] = str_replace("/", '#S#', $ret["service_comment"]);
 		$ret["service_comment"] = str_replace("\\", '#BS#', $ret["service_comment"]);
-		isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".htmlentities($ret["service_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 
 		$ret["command_command_id_arg"] = getCommandArgs($_POST);
 		$rq .= "command_command_id_arg = ";
-		isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "command_command_id_arg2 = ";
-		isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "service_register = ";
 		isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL ? $rq .= "'".$ret["service_register"]["service_register"]."', " : $rq .= "NULL, ";
 		$rq .= "service_activate = ";
@@ -868,9 +868,9 @@
 		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
 		$fields["command_command_id2"] = $ret["command_command_id2"];
 		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-		$fields["service_description"] = htmlentities($ret["service_description"], ENT_QUOTES);
+		$fields["service_description"] = htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8");
 		if (isset($fields["service_alias"]))
-			$fields["service_alias"] = htmlentities($ret["service_alias"], ENT_QUOTES);
+			$fields["service_alias"] = htmlentities($ret["service_alias"], ENT_QUOTES, "UTF-8");
 		$fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
 		$fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
 		$fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
@@ -897,16 +897,16 @@
 		$fields["service_stalOpts"] = "";
 		if (isset($ret["service_stalOpts"]))
 			$fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
-		$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES);
-		$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES);
-		$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES);
+		$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8");
+		$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8");
+		$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8");
 		$fields["service_register"] = $ret["service_register"]["service_register"];
 		$fields["service_activate"] = $ret["service_activate"]["service_activate"];
-		$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES);
-		$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES);
-		$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES);
-		$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES);
-		$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES);
+		$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8");
+		$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8");
+		$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8");
+		$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8");
+		$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8");
 		$fields["graph_id"] = $ret["graph_id"];
 		$fields["service_cs"] = "";
 		if (isset($ret["service_cs"]))
@@ -929,7 +929,7 @@
 		$fields["service_traps"] = "";
 		if (isset($ret["service_traps"]))
 			$fields["service_traps"] = implode(",", $ret["service_traps"]);
-		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id, htmlentities($ret["service_description"], ENT_QUOTES)), "c", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id, htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8")), "c", $fields);
 		$centreon->user->access->updateACL();
 	}
 
@@ -1074,17 +1074,17 @@
 			$fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
 		}
 		if (isset($ret["service_comment"]) && $ret["service_comment"] != NULL) {
-			$rq .= "service_comment = '".htmlentities($ret["service_comment"], ENT_QUOTES)."', ";
-			$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES);
+			$rq .= "service_comment = '".htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8");
 		}
 		$ret["command_command_id_arg"] = getCommandArgs($_POST);
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL) {
-			$rq .= "command_command_id_arg = '".htmlentities($ret["command_command_id_arg"], ENT_QUOTES)."', ";
-			$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES);
+			$rq .= "command_command_id_arg = '".htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL) {
-			$rq .= "command_command_id_arg2 = '".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES)."', ";
-			$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES);
+			$rq .= "command_command_id_arg2 = '".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8")."', ";
+			$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8");
 		}
 		if (isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL) {
 			$rq .= "service_register = '".$ret["service_register"]["service_register"]."', ";
@@ -1096,15 +1096,15 @@
 		}
 
 		if (isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL)
-			$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES);
+			$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL)
-			$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES);
+			$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL)
-			$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES);
+			$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL)
-			$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES);
+			$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL)
-			$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES);
+			$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["graph_id"]) && $ret["graph_id"] != NULL)
 			$fields["graph_id"] = $ret["graph_id"];
 		if (isset($ret["service_cs"]) && $ret["service_cs"] != NULL)
@@ -1176,7 +1176,7 @@
 	 			$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
 	 		}
 		}
-		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, getMyServiceName($service_id), ENT_QUOTES), "mc", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, getMyServiceName($service_id), ENT_QUOTES, "UTF-8"), "mc", $fields);
 	}
 
 	/*
@@ -1492,17 +1492,17 @@
 		 */
 		$rq = "UPDATE extended_service_information ";
 		$rq .= "SET esi_notes = ";
-		isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "esi_notes_url = ";
-		isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes_url"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "esi_action_url = ";
-		isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_action_url"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "esi_icon_image = ";
-		isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "esi_icon_image_alt = ";
-		isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "graph_id = ";
-		isset($ret["graph_id"]) && $ret["graph_id"] != NULL ? $rq .= "'".htmlentities($ret["graph_id"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["graph_id"]) && $ret["graph_id"] != NULL ? $rq .= "'".htmlentities($ret["graph_id"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}
@@ -1512,12 +1512,12 @@
 		global $form, $pearDB;
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE extended_service_information SET ";
-		if (isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL) $rq .= "esi_notes = '".htmlentities($ret["esi_notes"], ENT_QUOTES)."', ";
-		if (isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL) $rq .= "esi_notes_url = '".htmlentities($ret["esi_notes_url"], ENT_QUOTES)."', ";
-		if (isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL) $rq .= "esi_action_url = '".htmlentities($ret["esi_action_url"], ENT_QUOTES)."', ";
-		if (isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL) $rq .= "esi_icon_image = '".htmlentities($ret["esi_icon_image"], ENT_QUOTES)."', ";
-		if (isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL) $rq .= "esi_icon_image_alt = '".htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES)."', ";
-		if (isset($ret["graph_id"]) && $ret["graph_id"] != NULL) $rq .= "graph_id = '".htmlentities($ret["graph_id"], ENT_QUOTES)."', ";
+		if (isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL) $rq .= "esi_notes = '".htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL) $rq .= "esi_notes_url = '".htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL) $rq .= "esi_action_url = '".htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL) $rq .= "esi_icon_image = '".htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL) $rq .= "esi_icon_image_alt = '".htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["graph_id"]) && $ret["graph_id"] != NULL) $rq .= "graph_id = '".htmlentities($ret["graph_id"], ENT_QUOTES, "UTF-8")."', ";
 		if (strcmp("UPDATE extended_service_information SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";

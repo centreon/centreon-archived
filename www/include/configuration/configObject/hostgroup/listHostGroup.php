@@ -52,7 +52,7 @@
 	 */
 	$SearchTool = NULL;
 	if (isset($search) && $search)	
-		$SearchTool = " WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
+		$SearchTool = " WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	
 	$request = "SELECT COUNT(*) FROM hostgroup $SearchTool";
 	

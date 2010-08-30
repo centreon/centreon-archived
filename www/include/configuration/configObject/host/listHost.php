@@ -106,7 +106,7 @@
 	$SearchTool = "";
 	if (isset($search) && $search) {
 		$search = str_replace('_', "\_", $search);
-		$SearchTool = "(host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_address LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND ";
+		$SearchTool = "(host_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR host_address LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND ";
 	}
 	
 

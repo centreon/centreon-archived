@@ -48,10 +48,10 @@
 	/*
 	 * Security check
 	 */
-	(isset($_GET["sid"]) && !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES) : $sid = "-1";
+	(isset($_GET["sid"]) && !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
 
 	if (isset($sid) && !check_injection($sid)){
-		$sid = htmlentities($sid, ENT_QUOTES);
+		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if($session =& $res->fetchRow()){
 			$_POST["sid"] = $sid;

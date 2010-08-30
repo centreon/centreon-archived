@@ -60,7 +60,7 @@
 	/*
 	 * Check Session existence
 	 */
-	$session =& $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities($_GET["sid"], ENT_QUOTES)."'");
+	$session =& $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8")."'");
 	if (!$session->numRows()){
 		$buffer = new CentreonXML();
 		$buffer->startElement("root");
@@ -83,19 +83,19 @@
 	 */
 	$buffer = new CentreonXML();
 
-	$user_id = getUserIdFromSID(htmlentities($_GET["sid"], ENT_QUOTES));
+	$user_id = getUserIdFromSID(htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8"));
 
 	if (!$user_id)
 		exit();
 
-	$is_admin = isUserAdmin(htmlentities($_GET["sid"], ENT_QUOTES));
+	$is_admin = isUserAdmin(htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8"));
 	$access = new CentreonACL($user_id, $is_admin);
 	$topoStr = $access->getTopologyString();
 
 	/*
 	 * Get CSS
 	 */
-	$DBRESULT2 =& $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".htmlentities($_GET["menu"], ENT_QUOTES)."' LIMIT 1");
+	$DBRESULT2 =& $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".htmlentities($_GET["menu"], ENT_QUOTES, "UTF-8")."' LIMIT 1");
 	$menu_style =& $DBRESULT2->fetchRow();
 
 	ob_start();

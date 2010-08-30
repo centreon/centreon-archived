@@ -51,7 +51,7 @@
 	
 	$SearchTool = NULL;
 	if (isset($search) && $search)
-		$SearchTool = "WHERE traps_oid LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR traps_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
+		$SearchTool = "WHERE traps_oid LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR traps_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps $SearchTool");
 	$tmp = & $DBRESULT->fetchRow();

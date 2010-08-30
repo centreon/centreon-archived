@@ -63,7 +63,7 @@
 	/* security check 2/2*/
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
-		$sid = htmlentities($sid, ENT_QUOTES);
+		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if (!$session =& $res->fetchRow())
 			get_error('bad session id');

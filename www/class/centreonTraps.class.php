@@ -72,16 +72,16 @@ class Centreon_Traps
             foreach($tab as $key => $value) {
                 if (preg_match('/^regularRegexp_(\d)/', $key, $matches)) {
                     $index = $matches[1];
-                    $matchingTab['order'][$i] = htmlentities($tab['regularOrder_'.$index], ENT_QUOTES);
-                    $matchingTab['regexp'][$i] = htmlentities($tab['regularRegexp_'.$index], ENT_QUOTES);
-                    $matchingTab['status'][$i] = htmlentities($tab['regularStatus_'.$index], ENT_QUOTES);
+                    $matchingTab['order'][$i] = htmlentities($tab['regularOrder_'.$index], ENT_QUOTES, "UTF-8");
+                    $matchingTab['regexp'][$i] = htmlentities($tab['regularRegexp_'.$index], ENT_QUOTES, "UTF-8");
+                    $matchingTab['status'][$i] = htmlentities($tab['regularStatus_'.$index], ENT_QUOTES, "UTF-8");
                     $i++;
                 }
                 elseif (preg_match('/^additionalRegexp_(\d)/', $key, $matches)) {                
                     $index = $matches[1];
-                    $matchingTab['order'][$i] = htmlentities($tab['additionalOrder_'.$index], ENT_QUOTES);
-                    $matchingTab['regexp'][$i] = htmlentities($tab['additionalRegexp_'.$index], ENT_QUOTES);
-                    $matchingTab['status'][$i] = htmlentities($tab['additionalStatus_'.$index], ENT_QUOTES);
+                    $matchingTab['order'][$i] = htmlentities($tab['additionalOrder_'.$index], ENT_QUOTES, "UTF-8");
+                    $matchingTab['regexp'][$i] = htmlentities($tab['additionalRegexp_'.$index], ENT_QUOTES, "UTF-8");
+                    $matchingTab['status'][$i] = htmlentities($tab['additionalStatus_'.$index], ENT_QUOTES, "UTF-8");
                     $i++;
                 }
             }
@@ -116,7 +116,7 @@ class Centreon_Traps
 		if (isset($this->_form)) {
 			$id = $this->_form->getSubmitValue('traps_id');
         }
-		$query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '".htmlentities($oid, ENT_QUOTES)."'";
+		$query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '".htmlentities($oid, ENT_QUOTES, "UTF-8")."'";
         $res = $this->_db->query($query);
 		$trap = $res->fetchRow();        
 		
@@ -191,28 +191,28 @@ class Centreon_Traps
         }
 		
 		$rq = "UPDATE traps ";
-		$rq .= "SET `traps_name` = '".htmlentities($ret["traps_name"], ENT_QUOTES)."', ";
-		$rq .= "`traps_oid` = '".htmlentities($ret["traps_oid"], ENT_QUOTES)."', ";
-		$rq .= "`traps_args` = '".htmlentities(addslashes($ret["traps_args"]), ENT_QUOTES)."', ";
-		$rq .= "`traps_status` = '".htmlentities($ret["traps_status"], ENT_QUOTES)."', ";
+		$rq .= "SET `traps_name` = '".htmlentities($ret["traps_name"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "`traps_oid` = '".htmlentities($ret["traps_oid"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "`traps_args` = '".htmlentities(addslashes($ret["traps_args"]), ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "`traps_status` = '".htmlentities($ret["traps_status"], ENT_QUOTES, "UTF-8")."', ";
 		$rq .= "`traps_submit_result_enable` = '".$ret["traps_submit_result_enable"]."', ";
 		$rq .= "`traps_reschedule_svc_enable` = '".$ret["traps_reschedule_svc_enable"]."', ";
-		$rq .= "`traps_execution_command` = '".htmlentities($ret["traps_execution_command"], ENT_QUOTES)."', ";
+		$rq .= "`traps_execution_command` = '".htmlentities($ret["traps_execution_command"], ENT_QUOTES, "UTF-8")."', ";
 		$rq .= "`traps_execution_command_enable` = '".$ret["traps_execution_command_enable"]."', ";
 		$rq .= "`traps_advanced_treatment` = '".$ret["traps_advanced_treatment"]."', ";
-		$rq .= "`traps_comments` = '".htmlentities($ret["traps_comments"], ENT_QUOTES)."', ";
-		$rq .= "`manufacturer_id` = '".htmlentities($ret["manufacturer_id"], ENT_QUOTES)."' ";
+		$rq .= "`traps_comments` = '".htmlentities($ret["traps_comments"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "`manufacturer_id` = '".htmlentities($ret["manufacturer_id"], ENT_QUOTES, "UTF-8")."' ";
 		$rq .= "WHERE `traps_id` = '".$traps_id."'";
 		$res = $this->_db->query($rq);
-		$fields["traps_name"] = htmlentities($ret["traps_name"], ENT_QUOTES);
-		$fields["traps_args"] = htmlentities($ret["traps_args"], ENT_QUOTES);
-		$fields["traps_status"] = htmlentities($ret["traps_status"], ENT_QUOTES);
+		$fields["traps_name"] = htmlentities($ret["traps_name"], ENT_QUOTES, "UTF-8");
+		$fields["traps_args"] = htmlentities($ret["traps_args"], ENT_QUOTES, "UTF-8");
+		$fields["traps_status"] = htmlentities($ret["traps_status"], ENT_QUOTES, "UTF-8");
 		$fields["traps_submit_result_enable"] = $ret["traps_submit_result_enable"];
 		$fields["traps_reschedule_svc_enable"] = $ret["traps_reschedule_svc_enable"];
-		$fields["traps_execution_command"] = htmlentities($ret["traps_execution_command"], ENT_QUOTES);
+		$fields["traps_execution_command"] = htmlentities($ret["traps_execution_command"], ENT_QUOTES, "UTF-8");
 		$fields["traps_execution_command_enable"] = $ret["traps_execution_command_enable"];
-		$fields["traps_comments"] = htmlentities($ret["traps_comments"], ENT_QUOTES);
-		$fields["manufacturer_id"] = htmlentities($ret["manufacturer_id"], ENT_QUOTES);
+		$fields["traps_comments"] = htmlentities($ret["traps_comments"], ENT_QUOTES, "UTF-8");
+		$fields["manufacturer_id"] = htmlentities($ret["manufacturer_id"], ENT_QUOTES, "UTF-8");
         
         $this->_setMatchingOptions($traps_id, $_POST);
         
@@ -229,31 +229,31 @@ class Centreon_Traps
 		$rq = "INSERT INTO traps ";
 		$rq .= "(traps_name, traps_oid, traps_args, traps_status, traps_submit_result_enable, traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, traps_advanced_treatment, traps_comments, manufacturer_id) ";
 		$rq .= "VALUES ";
-		$rq .= "('".htmlentities($ret["traps_name"], ENT_QUOTES)."',";
-		$rq .= "'".htmlentities($ret["traps_oid"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities(addslashes($ret["traps_args"]), ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["traps_status"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["traps_submit_result_enable"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["traps_reschedule_svc_enable"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["traps_execution_command"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["traps_execution_command_enable"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["traps_advanced_treatment"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["traps_comments"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["manufacturer_id"], ENT_QUOTES)."')";
+		$rq .= "('".htmlentities($ret["traps_name"], ENT_QUOTES, "UTF-8")."',";
+		$rq .= "'".htmlentities($ret["traps_oid"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "'".htmlentities(addslashes($ret["traps_args"]), ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "'".htmlentities($ret["traps_status"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "'".htmlentities($ret["traps_submit_result_enable"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "'".htmlentities($ret["traps_reschedule_svc_enable"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "'".htmlentities($ret["traps_execution_command"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "'".htmlentities($ret["traps_execution_command_enable"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "'".htmlentities($ret["traps_advanced_treatment"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "'".htmlentities($ret["traps_comments"], ENT_QUOTES, "UTF-8")."', ";
+		$rq .= "'".htmlentities($ret["manufacturer_id"], ENT_QUOTES, "UTF-8")."')";
 		$this->_db->query($rq);
 		$res = $this->_db->query("SELECT MAX(traps_id) FROM traps");
 		$traps_id = $res->fetchRow();
 		
-		$fields["traps_name"] = htmlentities($ret["traps_name"], ENT_QUOTES);
-		$fields["traps_args"] = htmlentities($ret["traps_args"], ENT_QUOTES);
-		$fields["traps_status"] = htmlentities($ret["traps_status"], ENT_QUOTES);
+		$fields["traps_name"] = htmlentities($ret["traps_name"], ENT_QUOTES, "UTF-8");
+		$fields["traps_args"] = htmlentities($ret["traps_args"], ENT_QUOTES, "UTF-8");
+		$fields["traps_status"] = htmlentities($ret["traps_status"], ENT_QUOTES, "UTF-8");
 		$fields["traps_submit_result_enable"] = $ret["traps_submit_result_enable"];
 		$fields["traps_reschedule_svc_enable"] = $ret["traps_reschedule_svc_enable"];
-		$fields["traps_execution_command"] = htmlentities($ret["traps_execution_command"], ENT_QUOTES);
+		$fields["traps_execution_command"] = htmlentities($ret["traps_execution_command"], ENT_QUOTES, "UTF-8");
 		$fields["traps_execution_command_enable"] = $ret["traps_execution_command_enable"];
 		$fields["traps_advanced_treatment"] = $ret["traps_advanced_treatment"];
-		$fields["traps_comments"] = htmlentities($ret["traps_comments"], ENT_QUOTES);
-		$fields["manufacturer_id"] = htmlentities($ret["manufacturer_id"], ENT_QUOTES);
+		$fields["traps_comments"] = htmlentities($ret["traps_comments"], ENT_QUOTES, "UTF-8");
+		$fields["manufacturer_id"] = htmlentities($ret["manufacturer_id"], ENT_QUOTES, "UTF-8");
 		$this->_centreon->CentreonLogAction->insertLog("traps", $traps_id["MAX(traps_id)"], $fields["traps_name"], "a", $fields);
 		
         $this->_setMatchingOptions($traps_id['MAX(traps_id)'], $_POST);

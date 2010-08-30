@@ -62,7 +62,7 @@
 		$oreon = new Centreon($user);
 
 		$sid = $_GET["sid"];
-		$sid = htmlentities($sid, ENT_QUOTES);
+		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if ($session = $res->fetchRow()) {
 			$_POST["sid"] = $sid;
@@ -75,15 +75,15 @@
 	/*
 	 * getting host id
 	 */
-	isset ($_GET["host"]) ? $id = htmlentities($_GET["host"], ENT_QUOTES) : $id = NULL;
-	isset ($_POST["host"]) ? $id = htmlentities($_POST["host"], ENT_QUOTES) : $id;
+	isset ($_GET["host"]) ? $id = htmlentities($_GET["host"], ENT_QUOTES, "UTF-8") : $id = NULL;
+	isset ($_POST["host"]) ? $id = htmlentities($_POST["host"], ENT_QUOTES, "UTF-8") : $id;
 
 	/*
 	 * Getting time interval to report
 	 */
 	$dates = getPeriodToReport();
-	$start_date = htmlentities($_GET['start'], ENT_QUOTES);
-	$end_date = htmlentities($_GET['end'], ENT_QUOTES);
+	$start_date = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
+	$end_date = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
 	$host_name = getHostNameFromId($id);
 
 	/*

@@ -137,7 +137,7 @@
 		unset($serviceGroup);
 	}
 	
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/servicegroups.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/servicegroups.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

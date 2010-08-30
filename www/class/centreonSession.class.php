@@ -75,7 +75,7 @@ class CentreonSession
 	}
 
 	function checkSession($session_id, $pearDB) {
-		$DBRESULT =& $pearDB->query("SELECT id, user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($session_id), ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT id, user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($session_id), ENT_QUOTES, "UTF-8")."'");
         $i = 0;
         while ($a = $DBRESULT->fetchRow()) {
         	$i++;

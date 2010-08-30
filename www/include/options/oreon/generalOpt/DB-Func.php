@@ -101,10 +101,10 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		
-		updateOption($pearDB, "nagios_path_img", isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? htmlentities($ret["nagios_path_img"], ENT_QUOTES) : "NULL");
-		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? htmlentities($ret["nagios_path_plugins"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "nagios_path_img", isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? htmlentities($ret["nagios_path_img"], ENT_QUOTES, "UTF-8") : "NULL");
+		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? htmlentities($ret["nagios_path_plugins"], ENT_QUOTES, "UTF-8") : "NULL");
 		updateOption($pearDB, "monitoring_engine", isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != NULL ? $ret["monitoring_engine"] : "NULL");
-		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? htmlentities($ret["mailer_path_bin"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? htmlentities($ret["mailer_path_bin"], ENT_QUOTES, "UTF-8") : "NULL");
 		
 		$oreon->initOptGen($pearDB);
 	}
@@ -147,18 +147,18 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 
-		updateOption($pearDB, "ldap_host", isset($ret["ldap_host"]) && $ret["ldap_host"] != NULL ? htmlentities($ret["ldap_host"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "ldap_port", isset($ret["ldap_port"]) && $ret["ldap_port"] != NULL ? htmlentities($ret["ldap_port"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "ldap_base_dn", isset($ret["ldap_base_dn"]) && $ret["ldap_base_dn"] != NULL ? htmlentities($ret["ldap_base_dn"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "ldap_login_attrib", isset($ret["ldap_login_attrib"]) && $ret["ldap_login_attrib"] != NULL ? htmlentities($ret["ldap_login_attrib"], ENT_QUOTES): "");
-		updateOption($pearDB, "ldap_ssl", isset($ret["ldap_ssl"]["ldap_ssl"]) && $ret["ldap_ssl"]["ldap_ssl"] != NULL ? htmlentities($ret["ldap_ssl"]["ldap_ssl"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "ldap_auth_enable", isset($ret["ldap_auth_enable"]["ldap_auth_enable"]) && $ret["ldap_auth_enable"]["ldap_auth_enable"] != NULL ? htmlentities($ret["ldap_auth_enable"]["ldap_auth_enable"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "ldap_search_user", isset($ret["ldap_search_user"]) && $ret["ldap_search_user"] != NULL ? htmlentities($ret["ldap_search_user"], ENT_QUOTES): "");
-		updateOption($pearDB, "ldap_search_user_pwd", isset($ret["ldap_search_user_pwd"]) && $ret["ldap_search_user_pwd"] != NULL ? htmlentities($ret["ldap_search_user_pwd"], ENT_QUOTES): "");
-		updateOption($pearDB, "ldap_search_filter", isset($ret["ldap_search_filter"]) && $ret["ldap_search_filter"] != NULL ? htmlentities($ret["ldap_search_filter"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "ldap_search_timeout", isset($ret["ldap_search_timeout"]) && $ret["ldap_search_timeout"] != NULL ? htmlentities($ret["ldap_search_timeout"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "ldap_search_limit", isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != NULL ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES): "NULL");		
-		updateOption($pearDB, "ldap_protocol_version", isset($ret["ldap_protocol_version"]) && $ret["ldap_protocol_version"] != NULL ? htmlentities($ret["ldap_protocol_version"], ENT_QUOTES): "NULL");
+		updateOption($pearDB, "ldap_host", isset($ret["ldap_host"]) && $ret["ldap_host"] != NULL ? htmlentities($ret["ldap_host"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "ldap_port", isset($ret["ldap_port"]) && $ret["ldap_port"] != NULL ? htmlentities($ret["ldap_port"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "ldap_base_dn", isset($ret["ldap_base_dn"]) && $ret["ldap_base_dn"] != NULL ? htmlentities($ret["ldap_base_dn"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "ldap_login_attrib", isset($ret["ldap_login_attrib"]) && $ret["ldap_login_attrib"] != NULL ? htmlentities($ret["ldap_login_attrib"], ENT_QUOTES, "UTF-8"): "");
+		updateOption($pearDB, "ldap_ssl", isset($ret["ldap_ssl"]["ldap_ssl"]) && $ret["ldap_ssl"]["ldap_ssl"] != NULL ? htmlentities($ret["ldap_ssl"]["ldap_ssl"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "ldap_auth_enable", isset($ret["ldap_auth_enable"]["ldap_auth_enable"]) && $ret["ldap_auth_enable"]["ldap_auth_enable"] != NULL ? htmlentities($ret["ldap_auth_enable"]["ldap_auth_enable"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "ldap_search_user", isset($ret["ldap_search_user"]) && $ret["ldap_search_user"] != NULL ? htmlentities($ret["ldap_search_user"], ENT_QUOTES, "UTF-8"): "");
+		updateOption($pearDB, "ldap_search_user_pwd", isset($ret["ldap_search_user_pwd"]) && $ret["ldap_search_user_pwd"] != NULL ? htmlentities($ret["ldap_search_user_pwd"], ENT_QUOTES, "UTF-8"): "");
+		updateOption($pearDB, "ldap_search_filter", isset($ret["ldap_search_filter"]) && $ret["ldap_search_filter"] != NULL ? htmlentities($ret["ldap_search_filter"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "ldap_search_timeout", isset($ret["ldap_search_timeout"]) && $ret["ldap_search_timeout"] != NULL ? htmlentities($ret["ldap_search_timeout"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "ldap_search_limit", isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != NULL ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES, "UTF-8"): "NULL");		
+		updateOption($pearDB, "ldap_protocol_version", isset($ret["ldap_protocol_version"]) && $ret["ldap_protocol_version"] != NULL ? htmlentities($ret["ldap_protocol_version"], ENT_QUOTES, "UTF-8"): "NULL");
 	
 		$oreon->initOptGen($pearDB);
 	}
@@ -169,19 +169,19 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		
-		updateOption($pearDB, "color_up", isset($ret["color_up"]) && $ret["color_up"] != NULL ? htmlentities($ret["color_up"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "color_down", isset($ret["color_down"]) && $ret["color_down"] != NULL ? htmlentities($ret["color_down"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "color_unreachable", isset($ret["color_unreachable"]) && $ret["color_unreachable"] != NULL ? htmlentities($ret["color_unreachable"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "color_ok", isset($ret["color_ok"]) && $ret["color_ok"] != NULL ? htmlentities($ret["color_ok"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "color_warning", isset($ret["color_warning"]) && $ret["color_warning"] != NULL ? htmlentities($ret["color_warning"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "color_critical", isset($ret["color_critical"]) && $ret["color_critical"] != NULL ? htmlentities($ret["color_critical"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "color_line_critical", isset($ret["color_line_critical"]) && $ret["color_line_critical"] != NULL ? htmlentities($ret["color_line_critical"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "color_pending", isset($ret["color_pending"]) && $ret["color_pending"] != NULL ? htmlentities($ret["color_pending"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "color_unknown", isset($ret["color_unknown"]) && $ret["color_unknown"] != NULL ? htmlentities($ret["color_unknown"], ENT_QUOTES): "NULL ");
-		updateOption($pearDB, "color_ack", isset($ret["color_ack"]) && $ret["color_ack"] != NULL ? htmlentities($ret["color_ack"], ENT_QUOTES): "NULL ");
-		updateOption($pearDB, "color_downtime", isset($ret["color_downtime"]) && $ret["color_downtime"] != NULL ? htmlentities($ret["color_downtime"], ENT_QUOTES): "NULL ");
-		updateOption($pearDB, "color_host_down", isset($ret["color_host_down"]) && $ret["color_host_down"] != NULL ? htmlentities($ret["color_host_down"], ENT_QUOTES): "NULL ");
-		updateOption($pearDB, "color_host_unreachable", isset($ret["color_host_unreachable"]) && $ret["color_host_unreachable"] != NULL ? htmlentities($ret["color_host_unreachable"], ENT_QUOTES): "NULL ");
+		updateOption($pearDB, "color_up", isset($ret["color_up"]) && $ret["color_up"] != NULL ? htmlentities($ret["color_up"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "color_down", isset($ret["color_down"]) && $ret["color_down"] != NULL ? htmlentities($ret["color_down"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "color_unreachable", isset($ret["color_unreachable"]) && $ret["color_unreachable"] != NULL ? htmlentities($ret["color_unreachable"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "color_ok", isset($ret["color_ok"]) && $ret["color_ok"] != NULL ? htmlentities($ret["color_ok"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "color_warning", isset($ret["color_warning"]) && $ret["color_warning"] != NULL ? htmlentities($ret["color_warning"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "color_critical", isset($ret["color_critical"]) && $ret["color_critical"] != NULL ? htmlentities($ret["color_critical"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "color_line_critical", isset($ret["color_line_critical"]) && $ret["color_line_critical"] != NULL ? htmlentities($ret["color_line_critical"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "color_pending", isset($ret["color_pending"]) && $ret["color_pending"] != NULL ? htmlentities($ret["color_pending"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "color_unknown", isset($ret["color_unknown"]) && $ret["color_unknown"] != NULL ? htmlentities($ret["color_unknown"], ENT_QUOTES, "UTF-8"): "NULL ");
+		updateOption($pearDB, "color_ack", isset($ret["color_ack"]) && $ret["color_ack"] != NULL ? htmlentities($ret["color_ack"], ENT_QUOTES, "UTF-8"): "NULL ");
+		updateOption($pearDB, "color_downtime", isset($ret["color_downtime"]) && $ret["color_downtime"] != NULL ? htmlentities($ret["color_downtime"], ENT_QUOTES, "UTF-8"): "NULL ");
+		updateOption($pearDB, "color_host_down", isset($ret["color_host_down"]) && $ret["color_host_down"] != NULL ? htmlentities($ret["color_host_down"], ENT_QUOTES, "UTF-8"): "NULL ");
+		updateOption($pearDB, "color_host_unreachable", isset($ret["color_host_unreachable"]) && $ret["color_host_unreachable"] != NULL ? htmlentities($ret["color_host_unreachable"], ENT_QUOTES, "UTF-8"): "NULL ");
 		
 		$oreon->initOptGen($pearDB);
 	}
@@ -195,23 +195,23 @@
 		if (!isset($ret["session_expire"]) || $ret["session_expire"] == 0)
 			$ret["session_expire"] = 2;
 		
-		updateOption($pearDB, "oreon_path", isset($ret["oreon_path"]) && $ret["oreon_path"] != NULL ? htmlentities($ret["oreon_path"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "oreon_web_path", isset($ret["oreon_web_path"]) && $ret["oreon_web_path"] != NULL ? htmlentities($ret["oreon_web_path"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "oreon_refresh", isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != NULL ? htmlentities($ret["oreon_refresh"], ENT_QUOTES): "NULL");		
-		updateOption($pearDB, "session_expire", isset($ret["session_expire"]) && $ret["session_expire"] != NULL ? htmlentities($ret["session_expire"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "maxViewMonitoring", isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != NULL ? htmlentities($ret["maxViewMonitoring"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "maxViewConfiguration", isset($ret["maxViewConfiguration"]) && $ret["maxViewConfiguration"] != NULL ? htmlentities($ret["maxViewConfiguration"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "AjaxTimeReloadMonitoring", isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != NULL ? htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "AjaxTimeReloadStatistic", isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != NULL ? htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "AjaxFirstTimeReloadMonitoring", isset($ret["AjaxFirstTimeReloadMonitoring"]) && $ret["AjaxFirstTimeReloadMonitoring"] != NULL ? htmlentities($ret["AjaxFirstTimeReloadMonitoring"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "AjaxFirstTimeReloadStatistic", isset($ret["AjaxFirstTimeReloadStatistic"]) && $ret["AjaxFirstTimeReloadStatistic"] != NULL ? htmlentities($ret["AjaxFirstTimeReloadStatistic"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "template", isset($ret["template"]) && $ret["template"] != NULL ? htmlentities($ret["template"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "enable_gmt", isset($ret["enable_gmt"]["yes"]) && $ret["enable_gmt"]["yes"] != NULL ? htmlentities($ret["enable_gmt"]["yes"], ENT_QUOTES): "0");
-		updateOption($pearDB, "gmt", isset($ret["gmt"]) && $ret["gmt"] != NULL ? htmlentities($ret["gmt"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "problem_sort_type", isset($ret["problem_sort_type"]) && $ret["problem_sort_type"] != NULL ? htmlentities($ret["problem_sort_type"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "problem_sort_order", isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != NULL ? htmlentities($ret["problem_sort_order"], ENT_QUOTES): "NULL");
-		updateOption($pearDB, "enable_autologin", isset($ret["enable_autologin"]["yes"]) && $ret["enable_autologin"]["yes"] != NULL ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES): "0");
-		updateOption($pearDB, "display_autologin_shortcut", isset($ret["display_autologin_shortcut"]["yes"]) && $ret["display_autologin_shortcut"]["yes"] != NULL ? htmlentities($ret["display_autologin_shortcut"]["yes"], ENT_QUOTES): "0");
+		updateOption($pearDB, "oreon_path", isset($ret["oreon_path"]) && $ret["oreon_path"] != NULL ? htmlentities($ret["oreon_path"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "oreon_web_path", isset($ret["oreon_web_path"]) && $ret["oreon_web_path"] != NULL ? htmlentities($ret["oreon_web_path"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "oreon_refresh", isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != NULL ? htmlentities($ret["oreon_refresh"], ENT_QUOTES, "UTF-8"): "NULL");		
+		updateOption($pearDB, "session_expire", isset($ret["session_expire"]) && $ret["session_expire"] != NULL ? htmlentities($ret["session_expire"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "maxViewMonitoring", isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != NULL ? htmlentities($ret["maxViewMonitoring"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "maxViewConfiguration", isset($ret["maxViewConfiguration"]) && $ret["maxViewConfiguration"] != NULL ? htmlentities($ret["maxViewConfiguration"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "AjaxTimeReloadMonitoring", isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != NULL ? htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "AjaxTimeReloadStatistic", isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != NULL ? htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "AjaxFirstTimeReloadMonitoring", isset($ret["AjaxFirstTimeReloadMonitoring"]) && $ret["AjaxFirstTimeReloadMonitoring"] != NULL ? htmlentities($ret["AjaxFirstTimeReloadMonitoring"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "AjaxFirstTimeReloadStatistic", isset($ret["AjaxFirstTimeReloadStatistic"]) && $ret["AjaxFirstTimeReloadStatistic"] != NULL ? htmlentities($ret["AjaxFirstTimeReloadStatistic"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "template", isset($ret["template"]) && $ret["template"] != NULL ? htmlentities($ret["template"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "enable_gmt", isset($ret["enable_gmt"]["yes"]) && $ret["enable_gmt"]["yes"] != NULL ? htmlentities($ret["enable_gmt"]["yes"], ENT_QUOTES, "UTF-8"): "0");
+		updateOption($pearDB, "gmt", isset($ret["gmt"]) && $ret["gmt"] != NULL ? htmlentities($ret["gmt"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "problem_sort_type", isset($ret["problem_sort_type"]) && $ret["problem_sort_type"] != NULL ? htmlentities($ret["problem_sort_type"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "problem_sort_order", isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != NULL ? htmlentities($ret["problem_sort_order"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "enable_autologin", isset($ret["enable_autologin"]["yes"]) && $ret["enable_autologin"]["yes"] != NULL ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES, "UTF-8"): "0");
+		updateOption($pearDB, "display_autologin_shortcut", isset($ret["display_autologin_shortcut"]["yes"]) && $ret["display_autologin_shortcut"]["yes"] != NULL ? htmlentities($ret["display_autologin_shortcut"]["yes"], ENT_QUOTES, "UTF-8"): "0");
 
 		$oreon->initOptGen($pearDB);
 	}
@@ -222,23 +222,23 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		
-		updateOption($pearDB, "rrdtool_path_bin", isset($ret["rrdtool_path_bin"]) && $ret["rrdtool_path_bin"] != NULL ? htmlentities($ret["rrdtool_path_bin"], ENT_QUOTES) : "NULL");
-		updateOption($pearDB, "rrdtool_version", isset($ret["rrdtool_version"]) && $ret["rrdtool_version"] != NULL ? htmlentities($ret["rrdtool_version"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "rrdtool_path_bin", isset($ret["rrdtool_path_bin"]) && $ret["rrdtool_path_bin"] != NULL ? htmlentities($ret["rrdtool_path_bin"], ENT_QUOTES, "UTF-8") : "NULL");
+		updateOption($pearDB, "rrdtool_version", isset($ret["rrdtool_version"]) && $ret["rrdtool_version"] != NULL ? htmlentities($ret["rrdtool_version"], ENT_QUOTES, "UTF-8") : "NULL");
 		
-		updateOption($pearDB, "rrdtool_title_font", isset($ret["rrdtool_title_font"]) && $ret["rrdtool_title_font"] != NULL ? htmlentities($ret["rrdtool_title_font"], ENT_QUOTES) : "NULL");
-		updateOption($pearDB, "rrdtool_title_fontsize", isset($ret["rrdtool_title_fontsize"]) && $ret["rrdtool_title_fontsize"] != NULL ? htmlentities($ret["rrdtool_title_fontsize"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "rrdtool_title_font", isset($ret["rrdtool_title_font"]) && $ret["rrdtool_title_font"] != NULL ? htmlentities($ret["rrdtool_title_font"], ENT_QUOTES, "UTF-8") : "NULL");
+		updateOption($pearDB, "rrdtool_title_fontsize", isset($ret["rrdtool_title_fontsize"]) && $ret["rrdtool_title_fontsize"] != NULL ? htmlentities($ret["rrdtool_title_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
 		
-		updateOption($pearDB, "rrdtool_unit_font", isset($ret["rrdtool_unit_font"]) && $ret["rrdtool_unit_font"] != NULL ? htmlentities($ret["rrdtool_unit_font"], ENT_QUOTES) : "NULL");
-		updateOption($pearDB, "rrdtool_unit_fontsize", isset($ret["rrdtool_unit_fontsize"]) && $ret["rrdtool_unit_fontsize"] != NULL ? htmlentities($ret["rrdtool_unit_fontsize"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "rrdtool_unit_font", isset($ret["rrdtool_unit_font"]) && $ret["rrdtool_unit_font"] != NULL ? htmlentities($ret["rrdtool_unit_font"], ENT_QUOTES, "UTF-8") : "NULL");
+		updateOption($pearDB, "rrdtool_unit_fontsize", isset($ret["rrdtool_unit_fontsize"]) && $ret["rrdtool_unit_fontsize"] != NULL ? htmlentities($ret["rrdtool_unit_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
 		
-		updateOption($pearDB, "rrdtool_axis_font", isset($ret["rrdtool_axis_font"]) && $ret["rrdtool_axis_font"] != NULL ? htmlentities($ret["rrdtool_axis_font"], ENT_QUOTES) : "NULL");
-		updateOption($pearDB, "rrdtool_axis_fontsize", isset($ret["rrdtool_axis_fontsize"]) && $ret["rrdtool_axis_fontsize"] != NULL ? htmlentities($ret["rrdtool_axis_fontsize"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "rrdtool_axis_font", isset($ret["rrdtool_axis_font"]) && $ret["rrdtool_axis_font"] != NULL ? htmlentities($ret["rrdtool_axis_font"], ENT_QUOTES, "UTF-8") : "NULL");
+		updateOption($pearDB, "rrdtool_axis_fontsize", isset($ret["rrdtool_axis_fontsize"]) && $ret["rrdtool_axis_fontsize"] != NULL ? htmlentities($ret["rrdtool_axis_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
 		
-		updateOption($pearDB, "rrdtool_watermark_font", isset($ret["rrdtool_watermark_font"]) && $ret["rrdtool_watermark_font"] != NULL ? htmlentities($ret["rrdtool_watermark_font"], ENT_QUOTES) : "NULL");
-		updateOption($pearDB, "rrdtool_watermark_fontsize", isset($ret["rrdtool_watermark_fontsize"]) && $ret["rrdtool_watermark_fontsize"] != NULL ? htmlentities($ret["rrdtool_watermark_fontsize"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "rrdtool_watermark_font", isset($ret["rrdtool_watermark_font"]) && $ret["rrdtool_watermark_font"] != NULL ? htmlentities($ret["rrdtool_watermark_font"], ENT_QUOTES, "UTF-8") : "NULL");
+		updateOption($pearDB, "rrdtool_watermark_fontsize", isset($ret["rrdtool_watermark_fontsize"]) && $ret["rrdtool_watermark_fontsize"] != NULL ? htmlentities($ret["rrdtool_watermark_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
 		
-		updateOption($pearDB, "rrdtool_legend_font", isset($ret["rrdtool_legend_font"]) && $ret["rrdtool_legend_font"] != NULL ? htmlentities($ret["rrdtool_legend_font"], ENT_QUOTES) : "NULL");
-		updateOption($pearDB, "rrdtool_legend_fontsize", isset($ret["rrdtool_legend_fontsize"]) && $ret["rrdtool_legend_fontsize"] != NULL ? htmlentities($ret["rrdtool_legend_fontsize"], ENT_QUOTES) : "NULL");
+		updateOption($pearDB, "rrdtool_legend_font", isset($ret["rrdtool_legend_font"]) && $ret["rrdtool_legend_font"] != NULL ? htmlentities($ret["rrdtool_legend_font"], ENT_QUOTES, "UTF-8") : "NULL");
+		updateOption($pearDB, "rrdtool_legend_fontsize", isset($ret["rrdtool_legend_fontsize"]) && $ret["rrdtool_legend_fontsize"] != NULL ? htmlentities($ret["rrdtool_legend_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
 		
 		$oreon->initOptGen($pearDB);
 	}

@@ -131,10 +131,10 @@ class CentreonGraph	{
 			print "Your might check your session id";
 			exit(1);
 		} else {
-			$this->session_id = htmlentities($session_id, ENT_QUOTES);
+			$this->session_id = htmlentities($session_id, ENT_QUOTES, "UTF-8");
 		}
 		
-		$this->index = htmlentities($index, ENT_QUOTES);
+		$this->index = htmlentities($index, ENT_QUOTES, "UTF-8");
 		
 		/*
 		 * Enable Database Connexions
@@ -472,7 +472,7 @@ class CentreonGraph	{
 				unset($tab);
 			}
 		} else {
-			$this->template_id = htmlentities($_GET["template_id"], ENT_QUOTES);
+			$this->template_id = htmlentities($_GET["template_id"], ENT_QUOTES, "UTF-8");
 		}
 		$DBRESULT =& $this->DB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$this->template_id."' LIMIT 1");
 		$this->templateInformations =& $DBRESULT->fetchRow();
@@ -671,9 +671,9 @@ class CentreonGraph	{
 	public function checkArgument($name, $tab, $defaultValue) {
 		if (isset($name) && isset($tab)) {
 			if (isset($tab[$name]))
-				return htmlentities($tab[$name], ENT_QUOTES);
+				return htmlentities($tab[$name], ENT_QUOTES, "UTF-8");
 			else
-				return htmlentities($defaultValue, ENT_QUOTES);
+				return htmlentities($defaultValue, ENT_QUOTES, "UTF-8");
 		}
 	}
 		

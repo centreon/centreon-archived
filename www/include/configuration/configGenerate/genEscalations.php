@@ -541,7 +541,7 @@
 	/*
 	 * PART 5 - Generating final file configuration escalations.cfg		
 	 */	 
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/escalations.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/escalations.cfg");
 	fclose($handle);
 	unset($str);
 	unset($i);

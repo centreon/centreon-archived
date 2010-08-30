@@ -47,7 +47,7 @@
 	# end quickSearch form
 		
 	if (isset($search))
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM purge_policy WHERE purge_policy_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM purge_policy WHERE purge_policy_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM purge_policy");
 		
@@ -73,7 +73,7 @@
 	# end header menu
 	#Contact list
 	if ($search)
-		$rq = "SELECT *  FROM purge_policy WHERE purge_policy_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY purge_policy_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT *  FROM purge_policy WHERE purge_policy_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ORDER BY purge_policy_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM purge_policy ORDER BY purge_policy_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);

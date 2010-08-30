@@ -58,7 +58,7 @@
 		$oreon = new Centreon($user);
 
 		$sid = $_GET["sid"];
-		$sid = htmlentities($sid, ENT_QUOTES);
+		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if ($session = $res->fetchRow()) {
 			$_POST["sid"] = $sid;
@@ -72,17 +72,17 @@
 	/*
 	 * getting host and service id
 	 */
-	isset ($_GET["host"]) ? $host_id =  htmlentities($_GET["host"], ENT_QUOTES) : $host_id = "NULL";
-	isset ($_POST["host"]) ? $host_id =  htmlentities($_POST["host"], ENT_QUOTES) : $host_id;
-	isset ($_GET["service"]) ? $service_id =  htmlentities($_GET["service"], ENT_QUOTES) : $service_id = "NULL";
-	isset ($_POST["service"]) ? $service_id =  htmlentities($_POST["service"], ENT_QUOTES) : $service_id;
+	isset ($_GET["host"]) ? $host_id =  htmlentities($_GET["host"], ENT_QUOTES, "UTF-8") : $host_id = "NULL";
+	isset ($_POST["host"]) ? $host_id =  htmlentities($_POST["host"], ENT_QUOTES, "UTF-8") : $host_id;
+	isset ($_GET["service"]) ? $service_id =  htmlentities($_GET["service"], ENT_QUOTES, "UTF-8") : $service_id = "NULL";
+	isset ($_POST["service"]) ? $service_id =  htmlentities($_POST["service"], ENT_QUOTES, "UTF-8") : $service_id;
 
 	/*
 	 * Getting time interval to report
 	 */
 	$dates = getPeriodToReport();
-	$start_date =  htmlentities($_GET['start'], ENT_QUOTES);
-	$end_date =  htmlentities($_GET['end'], ENT_QUOTES);
+	$start_date =  htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
+	$end_date =  htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
 	$host_name = getHostNameFromId($host_id);
 	$service_description = getServiceDescriptionFromId($service_id);
 

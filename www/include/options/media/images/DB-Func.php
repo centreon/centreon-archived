@@ -41,7 +41,7 @@
 	}
 
 	function sanitizeFilename($filename) {
-		$cleanstr = htmlentities($filename, ENT_QUOTES, "UTF-8");
+		$cleanstr = htmlentities($filename, ENT_QUOTES, "UTF-8", "UTF-8");
 		$cleanstr = str_replace(" ", "_", $cleanstr);
 		$cleanstr = str_replace("/", "_", $cleanstr);
 		$cleanstr = str_replace("\\", "_", $cleanstr);
@@ -49,7 +49,7 @@
 	}
 
 	function sanitizePath($path) {
-		$cleanstr = htmlentities($path, ENT_QUOTES, "UTF-8");
+		$cleanstr = htmlentities($path, ENT_QUOTES, "UTF-8", "UTF-8");
 		$cleanstr = str_replace("/", "_", $cleanstr);
 		$cleanstr = str_replace("\\", "_", $cleanstr);
 		return $cleanstr;
@@ -153,7 +153,7 @@
 		$rq = "INSERT INTO view_img ";
 		$rq .= "(img_name, img_path, img_comment) ";
 		$rq .= "VALUES ";
-		$rq .= "('".htmlentities($img_name, ENT_QUOTES)."', '".htmlentities($dst_file, ENT_QUOTES)."', '".htmlentities($img_comment, ENT_QUOTES)."')";
+		$rq .= "('".htmlentities($img_name, ENT_QUOTES, "UTF-8")."', '".htmlentities($dst_file, ENT_QUOTES, "UTF-8")."', '".htmlentities($img_comment, ENT_QUOTES, "UTF-8")."')";
 		$pearDB->query($rq);
 		$res =& $pearDB->query("SELECT MAX(img_id) FROM view_img");
 		$img_id =& $res->fetchRow();
@@ -252,7 +252,7 @@
 				$DBRESULT =& $pearDB->query("UPDATE view_img_dir_relation SET dir_dir_parent_id = '".$dir_id."' WHERE img_img_id = '".$img_id."'");
 		}
 		if ($img_comment) {
-			$DBRESULT = $pearDB->query("UPDATE view_img SET img_comment = '".htmlentities($img_comment, ENT_QUOTES)."' WHERE img_id = '".$img_id."'");
+			$DBRESULT = $pearDB->query("UPDATE view_img SET img_comment = '".htmlentities($img_comment, ENT_QUOTES, "UTF-8")."' WHERE img_id = '".$img_id."'");
 		}
 	}
 
@@ -304,7 +304,7 @@
 	function testDirectoryExistence ($name)	{
 		global $pearDB;
 		$dir_id = 0;
-		$DBRESULT =& $pearDB->query("SELECT dir_name, dir_id FROM view_img_dir WHERE dir_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT dir_name, dir_id FROM view_img_dir WHERE dir_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		if ($DBRESULT->numRows() >= 1) {
 			$dir =& $DBRESULT->fetchRow();
 			$dir_id = $dir["dir_id"];
@@ -337,8 +337,8 @@
 			// NF: do we need alias and name?
 			$rq .= "(dir_name, dir_alias, dir_comment) ";
 			$rq .= "VALUES ";
-			$dir_alias_safe = htmlentities($dir_alias, ENT_QUOTES);
-			$rq .= "('".$dir_alias_safe."', '".$dir_alias_safe."', '".htmlentities($dir_comment, ENT_QUOTES)."')";
+			$dir_alias_safe = htmlentities($dir_alias, ENT_QUOTES, "UTF-8");
+			$rq .= "('".$dir_alias_safe."', '".$dir_alias_safe."', '".htmlentities($dir_comment, ENT_QUOTES, "UTF-8")."')";
 			$DBRESULT =& $pearDB->query($rq);
 			$DBRESULT =& $pearDB->query("SELECT MAX(dir_id) FROM view_img_dir");
 			$dir_id =& $DBRESULT->fetchRow();
@@ -404,9 +404,9 @@
 
 		if (is_dir($mediadir.$dir_alias))	{
 			$rq = "UPDATE view_img_dir ";
-			$rq .= "SET      dir_name = '".htmlentities($dir_alias, ENT_QUOTES)."', " .
+			$rq .= "SET      dir_name = '".htmlentities($dir_alias, ENT_QUOTES, "UTF-8")."', " .
 					"dir_alias = '".$dir_alias."', " .
-					"dir_comment = '".htmlentities($dir_comment, ENT_QUOTES)."' " .
+					"dir_comment = '".htmlentities($dir_comment, ENT_QUOTES, "UTF-8")."' " .
 					"WHERE dir_id = '".$dir_id."'";
 			$DBRESULT =& $pearDB->query($rq);
 		}

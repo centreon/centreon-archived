@@ -56,20 +56,20 @@
 
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
-		$sid = htmlentities($sid, ENT_QUOTES);
+		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if (!$session =& $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
 
-	isset($_GET["index"]) ? $index = htmlentities($_GET["index"], ENT_QUOTES) : $index = NULL;
-	isset($_POST["index"]) ? $index = htmlentities($_POST["index"], ENT_QUOTES) : $index = $index;
+	isset($_GET["index"]) ? $index = htmlentities($_GET["index"], ENT_QUOTES, "UTF-8") : $index = NULL;
+	isset($_POST["index"]) ? $index = htmlentities($_POST["index"], ENT_QUOTES, "UTF-8") : $index = $index;
 
 	$path = "./include/views/graphs/graphODS/";
 
-	$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES) : "today";
-	$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES) : $period;
+	$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES, "UTF-8") : "today";
+	$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES, "UTF-8") : $period;
 
 	$DBRESULT =& $pearDBO->query("SELECT host_name, service_description FROM index_data WHERE id = '$index'");
 	while ($res =& $DBRESULT->fetchRow()){
@@ -89,7 +89,7 @@
 	while ($index_data =& $DBRESULT->fetchRow()){
 		if (!isset($listMetric[$index_data["metric_name"]]))
 			$listMetric[$index_data["metric_name"]] = $index_data["metric_name"];
-		$DBRESULT2 =& $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES)."' AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES)."'");
+		$DBRESULT2 =& $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES, "UTF-8")."' AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES, "UTF-8")."'");
 		while ($data =& $DBRESULT2->fetchRow()) {
 			if (!isset($datas[$data["ctime"]]))
 				$datas[$data["ctime"]] = array();

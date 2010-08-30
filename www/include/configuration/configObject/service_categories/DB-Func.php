@@ -44,7 +44,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('sc_id');
-		$DBRESULT =& $pearDB->query("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$sc =& $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $sc["sc_id"] == $id)
 			return true;
@@ -110,7 +110,7 @@
 	function updateServiceCategorieInDB(){
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE `service_categories` SET `sc_name` = '".$_POST["sc_name"]."' , `sc_description` = '".$_POST["sc_description"]."' , `sc_activate` = '".$_POST["sc_activate"]["sc_activate"]."' WHERE `sc_id` = '".$_POST["sc_id"]."'");
-		updateServiceCategoriesServices(htmlentities($_POST["sc_id"], ENT_QUOTES));
+		updateServiceCategoriesServices(htmlentities($_POST["sc_id"], ENT_QUOTES, "UTF-8"));
 	}
 	
 	function deleteServiceCategorieInDB($sc_id = NULL){

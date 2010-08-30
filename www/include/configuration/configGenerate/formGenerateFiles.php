@@ -211,7 +211,7 @@
 			$msg_debug = array();
 			foreach ($tab_server as $host) {
 				$stdout = shell_exec("sudo ".$nagios_bin["nagios_bin"] . " -v ".$nagiosCFGPath.$host["id"]."/nagiosCFG.DEBUG");
-				$stdout = htmlentities($stdout, ENT_QUOTES);
+				$stdout = htmlentities($stdout, ENT_QUOTES, "UTF-8");
 				$msg_debug[$host['id']] = str_replace ("\n", "<br />", $stdout);
 				$msg_debug[$host['id']] = str_replace ("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);
 				$msg_debug[$host['id']] = str_replace ("Error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);

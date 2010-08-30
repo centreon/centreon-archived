@@ -94,8 +94,8 @@
 
 	$rows = 0;
 	$tmp = NULL;
-	$searchH = htmlentities($searchH, ENT_QUOTES);
-	$searchS = htmlentities($searchS, ENT_QUOTES);
+	$searchH = htmlentities($searchH, ENT_QUOTES, "UTF-8");
+	$searchS = htmlentities($searchS, ENT_QUOTES, "UTF-8");
 	/*
 	 * Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
 	 */

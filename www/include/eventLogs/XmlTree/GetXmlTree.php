@@ -162,10 +162,10 @@
 		exit();
 	
 	$normal_mode = 1;
-	(isset($_GET["mode"])) ? $normal_mode = htmlentities($_GET["mode"], ENT_QUOTES) : $normal_mode = 1;
-	(isset($_GET["id"])) ? $url_var = htmlentities($_GET["id"], ENT_QUOTES) : $url_var = 0;
-	(isset($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"], ENT_QUOTES) : $search_host = "";
-	(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = "";
+	(isset($_GET["mode"])) ? $normal_mode = htmlentities($_GET["mode"], ENT_QUOTES, "UTF-8") : $normal_mode = 1;
+	(isset($_GET["id"])) ? $url_var = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8") : $url_var = 0;
+	(isset($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search_host = "";
+	(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 
 	/*
 	 * Create hostCahe

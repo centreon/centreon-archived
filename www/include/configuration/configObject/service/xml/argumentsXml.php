@@ -56,9 +56,9 @@
 	
     if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId'])) {
 
-        $cmdId = htmlentities($_GET['cmdId'], ENT_QUOTES);
-        $svcId = htmlentities($_GET['svcId'], ENT_QUOTES);
-        $svcTplId = htmlentities($_GET['svcTplId'], ENT_QUOTES);
+        $cmdId = htmlentities($_GET['cmdId'], ENT_QUOTES, "UTF-8");
+        $svcId = htmlentities($_GET['svcId'], ENT_QUOTES, "UTF-8");
+        $svcTplId = htmlentities($_GET['svcTplId'], ENT_QUOTES, "UTF-8");
         
         if (!$cmdId && $svcTplId) {
             while (1) {

@@ -120,7 +120,7 @@
 	 */
 	require "./include/configuration/configGenerate/genMainFile.php";
 	
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/nagios.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/nagios.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

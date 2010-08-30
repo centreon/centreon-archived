@@ -44,7 +44,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('hc_id');
-		$DBRESULT =& $pearDB->query("SELECT hc_name, hc_id FROM hostcategories WHERE hc_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT hc_name, hc_id FROM hostcategories WHERE hc_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$hc =& $DBRESULT->fetchRow();
 		# Modif case
 		if ($DBRESULT->numRows() >= 1 && $hc["hc_id"] == $id)
@@ -162,9 +162,9 @@
 		$rq = "INSERT INTO hostcategories ";
 		$rq .= "(hc_name, hc_alias, hc_comment, hc_activate) ";
 		$rq .= "VALUES (";
-		isset($ret["hc_name"]) && $ret["hc_name"] ? $rq .= "'".htmlentities($ret["hc_name"], ENT_QUOTES)."', " : $rq .= "NULL,";
-		isset($ret["hc_alias"]) && $ret["hc_alias"] ? $rq .= "'".htmlentities($ret["hc_alias"], ENT_QUOTES)."', " : $rq .= "NULL,";
-		isset($ret["hc_comment"]) && $ret["hc_comment"] ? $rq .= "'".htmlentities($ret["hc_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["hc_name"]) && $ret["hc_name"] ? $rq .= "'".htmlentities($ret["hc_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
+		isset($ret["hc_alias"]) && $ret["hc_alias"] ? $rq .= "'".htmlentities($ret["hc_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
+		isset($ret["hc_comment"]) && $ret["hc_comment"] ? $rq .= "'".htmlentities($ret["hc_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		isset($ret["hc_activate"]["hc_activate"]) && $ret["hc_activate"]["hc_activate"] ? $rq .= "'".$ret["hc_activate"]["hc_activate"]."'" : $rq .= "'0'";
 		$rq .= ")";
 
@@ -172,16 +172,16 @@
 		$DBRESULT =& $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
 		$hc_id = $DBRESULT->fetchRow();
 
-		$fields["hc_name"] = htmlentities($ret["hc_name"], ENT_QUOTES);
-		$fields["hc_alias"] = htmlentities($ret["hc_alias"], ENT_QUOTES);
-		$fields["hc_comment"] = htmlentities($ret["hc_comment"], ENT_QUOTES);
+		$fields["hc_name"] = htmlentities($ret["hc_name"], ENT_QUOTES, "UTF-8");
+		$fields["hc_alias"] = htmlentities($ret["hc_alias"], ENT_QUOTES, "UTF-8");
+		$fields["hc_comment"] = htmlentities($ret["hc_comment"], ENT_QUOTES, "UTF-8");
 		$fields["hc_activate"] = $ret["hc_activate"]["hc_activate"];
 		if (isset($ret["hc_hosts"]))
 			$fields["hc_hosts"] = implode(",", $ret["hc_hosts"]);
 		if (isset($ret["hc_hg"]))
 			$fields["hc_hg"] = implode(",", $ret["hc_hg"]);
 
-		$oreon->CentreonLogAction->insertLog("hostcategories", $hc_id["MAX(hc_id)"], htmlentities($ret["hc_name"], ENT_QUOTES), "a", $fields);
+		$oreon->CentreonLogAction->insertLog("hostcategories", $hc_id["MAX(hc_id)"], htmlentities($ret["hc_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
 		return ($hc_id["MAX(hc_id)"]);
 	}
 
@@ -192,19 +192,19 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE hostcategories SET ";
 		$rq .= "hc_name = ";
-		isset($ret["hc_name"]) && $ret["hc_name"] != NULL ? $rq .= "'".htmlentities($ret["hc_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["hc_name"]) && $ret["hc_name"] != NULL ? $rq .= "'".htmlentities($ret["hc_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "hc_alias = ";
-		isset($ret["hc_alias"]) && $ret["hc_alias"] != NULL ? $rq .= "'".htmlentities($ret["hc_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["hc_alias"]) && $ret["hc_alias"] != NULL ? $rq .= "'".htmlentities($ret["hc_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "hc_comment = ";
-		isset($ret["hc_comment"]) && $ret["hc_comment"] != NULL ? $rq .= "'".htmlentities($ret["hc_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["hc_comment"]) && $ret["hc_comment"] != NULL ? $rq .= "'".htmlentities($ret["hc_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "hc_activate = ";
 		isset($ret["hc_activate"]["hc_activate"]) && $ret["hc_activate"]["hc_activate"] != NULL ? $rq .= "'".$ret["hc_activate"]["hc_activate"]."'" : $rq .= "NULL ";
 		$rq .= "WHERE hc_id = '".$hc_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 
-		$fields["hc_name"] = htmlentities($ret["hc_name"], ENT_QUOTES);
-		$fields["hc_alias"] = htmlentities($ret["hc_alias"], ENT_QUOTES);
-		$fields["hc_comment"] = htmlentities($ret["hc_comment"], ENT_QUOTES);
+		$fields["hc_name"] = htmlentities($ret["hc_name"], ENT_QUOTES, "UTF-8");
+		$fields["hc_alias"] = htmlentities($ret["hc_alias"], ENT_QUOTES, "UTF-8");
+		$fields["hc_comment"] = htmlentities($ret["hc_comment"], ENT_QUOTES, "UTF-8");
 		$fields["hc_activate"] = $ret["hc_activate"]["hc_activate"];
 
 		if (isset( $ret["hc_hosts"]))
@@ -212,7 +212,7 @@
 		if (isset( $ret["hc_hostsTemplate"]))
 			$fields["hc_hostsTemplate"] = implode(",", $ret["hc_hostsTemplate"]);
 
-		$oreon->CentreonLogAction->insertLog("hostcategories", $hc_id, htmlentities($ret["hc_name"], ENT_QUOTES), "c", $fields);
+		$oreon->CentreonLogAction->insertLog("hostcategories", $hc_id, htmlentities($ret["hc_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 	}
 
 	function updateHostCategoriesHosts($hc_id, $ret = array())	{

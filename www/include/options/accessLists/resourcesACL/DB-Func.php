@@ -133,7 +133,7 @@
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `acl_resources` ";
 		$rq .= "(acl_res_name, acl_res_alias, acl_res_activate, changed) ";
-		$rq .= "VALUES ('".htmlentities($ret["acl_res_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_res_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES)."', '1')";
+		$rq .= "VALUES ('".htmlentities($ret["acl_res_name"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_res_alias"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', '1')";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
 		$acl =& $DBRESULT->fetchRow();
@@ -146,9 +146,9 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE `acl_resources` ";
-		$rq .= "SET acl_res_name = '".htmlentities($ret["acl_res_name"], ENT_QUOTES)."', " .
-				"acl_res_alias = '".htmlentities($ret["acl_res_alias"], ENT_QUOTES)."', " .
-				"acl_res_activate = '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES)."', " .
+		$rq .= "SET acl_res_name = '".htmlentities($ret["acl_res_name"], ENT_QUOTES, "UTF-8")."', " .
+				"acl_res_alias = '".htmlentities($ret["acl_res_alias"], ENT_QUOTES, "UTF-8")."', " .
+				"acl_res_activate = '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', " .
 				"changed = '1' " .
 				"WHERE acl_res_id = '".$acl_id."'";
 		$DBRESULT =& $pearDB->query($rq);

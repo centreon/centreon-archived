@@ -271,14 +271,14 @@
 		if ($actions == true || $is_admin) {
 			$key = $param["host_name"];
 			isset($param['sticky']) && $param['sticky'] == "1" ? $sticky = "2" : $sticky = "1";
-			$host_poller = GetMyHostPoller($pearDB, htmlentities($param["host_name"], ENT_QUOTES));
-			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$param["host_name"].";$sticky;".htmlentities($param["notify"], ENT_QUOTES).";".htmlentities($param["persistent"], ENT_QUOTES).";".htmlentities($param["author"], ENT_QUOTES).";".htmlentities($param["comment"], ENT_QUOTES), $host_poller);
+			$host_poller = GetMyHostPoller($pearDB, htmlentities($param["host_name"], ENT_QUOTES, "UTF-8"));
+			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$param["host_name"].";$sticky;".htmlentities($param["notify"], ENT_QUOTES, "UTF-8").";".htmlentities($param["persistent"], ENT_QUOTES, "UTF-8").";".htmlentities($param["author"], ENT_QUOTES, "UTF-8").";".htmlentities($param["comment"], ENT_QUOTES, "UTF-8"), $host_poller);
 
 			if (isset($param['ackhostservice']) && $param['ackhostservice'] == 1) {
-				$svc_tab = getMyHostServices(getMyHostID(htmlentities($param["host_name"], ENT_QUOTES)));
+				$svc_tab = getMyHostServices(getMyHostID(htmlentities($param["host_name"], ENT_QUOTES, "UTF-8")));
 				if (count($svc_tab)) {
 					foreach ($svc_tab as $key2 => $value) {
-	            				write_command(" ACKNOWLEDGE_SVC_PROBLEM;".htmlentities($param["host_name"], ENT_QUOTES).";".$value.";".$sticky.";".htmlentities($param["notify"], ENT_QUOTES).";".htmlentities($param["persistent"], ENT_QUOTES).";".htmlentities($param["author"], ENT_QUOTES).";".htmlentities($param["comment"], ENT_QUOTES), $host_poller);
+	            				write_command(" ACKNOWLEDGE_SVC_PROBLEM;".htmlentities($param["host_name"], ENT_QUOTES, "UTF-8").";".$value.";".$sticky.";".htmlentities($param["notify"], ENT_QUOTES, "UTF-8").";".htmlentities($param["persistent"], ENT_QUOTES, "UTF-8").";".htmlentities($param["author"], ENT_QUOTES, "UTF-8").";".htmlentities($param["comment"], ENT_QUOTES, "UTF-8"), $host_poller);
 	                		}
 				}
 			}

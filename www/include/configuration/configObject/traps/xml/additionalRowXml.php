@@ -40,9 +40,9 @@
         exit;
     }
     
-    $nextRowId = htmlentities($_GET['id'], ENT_QUOTES) + 1;
-    $nbOfInitialRows = htmlentities($_GET['nbOfInitialRows'], ENT_QUOTES);
-    $currentId = htmlentities($_GET['id'], ENT_QUOTES);
+    $nextRowId = htmlentities($_GET['id'], ENT_QUOTES, "UTF-8") + 1;
+    $nbOfInitialRows = htmlentities($_GET['nbOfInitialRows'], ENT_QUOTES, "UTF-8");
+    $currentId = htmlentities($_GET['id'], ENT_QUOTES, "UTF-8");
     
     include_once("@CENTREON_ETC@/centreon.conf.php");	
 	require_once $centreon_path . "/www/class/centreonXML.class.php";

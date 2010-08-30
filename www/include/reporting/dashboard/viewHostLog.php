@@ -51,7 +51,7 @@
 	 *  Getting host to report 
 	 */
 	isset($_GET["host"]) ? $id = $_GET["host"] : $id = "NULL";
-	isset($_POST["host"]) ? $id = $_POST["host"] : htmlentities($id, ENT_QUOTES);
+	isset($_POST["host"]) ? $id = $_POST["host"] : htmlentities($id, ENT_QUOTES, "UTF-8");
 	
 	/*
 	 * Formulary

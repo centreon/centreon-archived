@@ -47,7 +47,7 @@
 
 	$SearchStr = "";
 	if (isset($search))
-		$SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";	
+		$SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";	
 	$rq = "SELECT COUNT(*) FROM acl_groups $SearchStr ORDER BY acl_group_name";
 	
 	$DBRESULT =& $pearDB->query($rq);
@@ -71,7 +71,7 @@
 	
 	$SearchStr = "";
 	if (isset($search) && $search)
-		$SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";	
+		$SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";	
 	$rq = "SELECT acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups $SearchStr ORDER BY acl_group_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	

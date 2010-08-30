@@ -48,7 +48,7 @@
 	
 	$SearchTool = NULL;
 	if (isset($search) && $search)
-		$SearchTool = "WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
+		$SearchTool = "WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_nagios $SearchTool");
 	
 	$tmp = & $DBRESULT->fetchRow();

@@ -110,8 +110,8 @@
 			$i2++;
 		}
 	}
-	write_in_file($handle1, html_entity_decode($str1, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/misccommands.cfg");
-	write_in_file($handle2, html_entity_decode($str2, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/checkcommands.cfg");
+	write_in_file($handle1, html_entity_decode($str1, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/misccommands.cfg");
+	write_in_file($handle2, html_entity_decode($str2, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/checkcommands.cfg");
 	fclose($handle1);
 	fclose($handle2);
 	$DBRESULT->free();

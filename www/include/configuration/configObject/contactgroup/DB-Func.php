@@ -46,7 +46,7 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('cg_id');
 		
-		$DBRESULT =& $pearDB->query("SELECT `cg_name`, `cg_id` FROM `contactgroup` WHERE `cg_name` = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT `cg_name`, `cg_id` FROM `contactgroup` WHERE `cg_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$cg =& $DBRESULT->fetchRow();
 		
 		if ($DBRESULT->numRows() >= 1 && $cg["cg_id"] == $id){
@@ -149,18 +149,18 @@
 			$ret = $form->getSubmitValues();
 		
 		$rq = "INSERT INTO `contactgroup` (`cg_name`, `cg_alias`, `cg_comment`, `cg_activate`) ";
-		$rq .= "VALUES ('".htmlentities($ret["cg_name"], ENT_QUOTES)."', '".htmlentities($ret["cg_alias"], ENT_QUOTES)."', '".htmlentities($ret["cg_comment"], ENT_QUOTES)."', '".$ret["cg_activate"]["cg_activate"]."')";
+		$rq .= "VALUES ('".htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8")."', '".$ret["cg_activate"]["cg_activate"]."')";
 		$DBRESULT =& $pearDB->query($rq);
 		
 		$DBRESULT =& $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
 		$cg_id = $DBRESULT->fetchRow();
-		$fields["cg_name"] = htmlentities($ret["cg_name"], ENT_QUOTES);
-		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES);
-		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES);
+		$fields["cg_name"] = htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8");
+		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8");
+		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8");
 		$fields["cg_activate"] = $ret["cg_activate"]["cg_activate"];
 		if (isset($ret["cg_contacts"]))
 			$fields["cg_contacts"] = implode(",", $ret["cg_contacts"]);
-		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id["MAX(cg_id)"], htmlentities($ret["cg_name"], ENT_QUOTES), "a", $fields);
+		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id["MAX(cg_id)"], htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
 		return ($cg_id["MAX(cg_id)"]);
 	}
 	
@@ -178,19 +178,19 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE `contactgroup` ";
-		$rq .= "SET `cg_name` = '".htmlentities($ret["cg_name"], ENT_QUOTES)."', " .
-				"`cg_alias` = '".htmlentities($ret["cg_alias"], ENT_QUOTES)."', " .
-				"`cg_comment` = '".htmlentities($ret["cg_comment"], ENT_QUOTES)."', " .
+		$rq .= "SET `cg_name` = '".htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8")."', " .
+				"`cg_alias` = '".htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8")."', " .
+				"`cg_comment` = '".htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8")."', " .
 				"`cg_activate` = '".$ret["cg_activate"]["cg_activate"]."' " .
 				"WHERE `cg_id` = '".$cg_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		$fields["cg_name"] = htmlentities($ret["cg_name"], ENT_QUOTES);
-		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES);
-		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES);
+		$fields["cg_name"] = htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8");
+		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8");
+		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8");
 		$fields["cg_activate"] = $ret["cg_activate"]["cg_activate"];
 		if (isset($ret["cg_contacts"]))
 			$fields["cg_contacts"] = implode(",", $ret["cg_contacts"]);
-		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, htmlentities($ret["cg_name"], ENT_QUOTES), "c", $fields);
+		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 	}
 	
 	function updateContactGroupContacts($cg_id, $ret = array())	{

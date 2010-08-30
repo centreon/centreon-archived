@@ -361,20 +361,20 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
-		$req = "SELECT * FROM `contact` WHERE contact_alias = '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."' ";
+		$req = "SELECT * FROM `contact` WHERE contact_alias = '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES, "UTF-8")."' ";
 		$r  = @mysql_query($req, $res['0']);
 		$nb = @mysql_num_rows($r);
 		while ($tab = @mysql_fetch_array($r))
 			break;
 		if (!$tab && !$nb){
 			$requete = "INSERT INTO `contact` (`contact_name` , `contact_alias` , `contact_passwd` , `contact_lang` , `contact_email` , `contact_oreon` , `contact_admin` , `contact_activate` ) VALUES ";
-			$requete .= "('".htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES). " " .htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)."', '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."', '". md5($_SESSION["oreonpasswd"]) ."', 'en_US', '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES)."', '1', '1', '1');";
+			$requete .= "('".htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8"). " " .htmlentities($_SESSION["oreonlastname"], ENT_QUOTES, "UTF-8")."', '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES, "UTF-8")."', '". md5($_SESSION["oreonpasswd"]) ."', 'en_US', '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES, "UTF-8")."', '1', '1', '1');";
 			if ($DEBUG) 
 				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
-			htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES);
+			htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8");
 		} else {
-			$requete = "UPDATE `contact` SET `contact_name` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES)." ". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)  ."',`contact_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `contact_email` = '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES)."', `contact_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."' LIMIT 1 ;";
+			$requete = "UPDATE `contact` SET `contact_name` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8")." ". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES, "UTF-8")  ."',`contact_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `contact_email` = '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES, "UTF-8")."', `contact_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES, "UTF-8")."' LIMIT 1 ;";
 			if ($DEBUG) 
 				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
@@ -439,7 +439,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
-		$requete = "UPDATE `options` SET `value` = '".htmlentities($_SESSION["rrdtool_dir"], ENT_QUOTES)."' WHERE `key` = 'rrdtool_path_bin'";
+		$requete = "UPDATE `options` SET `value` = '".htmlentities($_SESSION["rrdtool_dir"], ENT_QUOTES, "UTF-8")."' WHERE `key` = 'rrdtool_path_bin'";
 		if ($DEBUG) 
 			print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0']);

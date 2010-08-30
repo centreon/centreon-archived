@@ -114,7 +114,7 @@
 		$query .= ", `patch_type_secu` = '" . $ret['patch_type_secu']['patch_type_secu'] . "'";
 		$query .= ", `patch_type_RC` = '" . $ret['patch_type_RC']['patch_type_RC'] . "'";
 		$query .= ", `patch_type_beta` = '" . $ret['patch_type_beta']['patch_type_beta'] . "'";
-		$query .= ", `patch_path_download`= '" . htmlentities($ret['patch_path_download'], ENT_QUOTES) . "'";
+		$query .= ", `patch_path_download`= '" . htmlentities($ret['patch_path_download'], ENT_QUOTES, "UTF-8") . "'";
 		$query .= " WHERE `gopt_id`=1";
 		$pearDB->query($query);
 	}

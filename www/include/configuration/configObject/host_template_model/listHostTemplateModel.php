@@ -48,7 +48,7 @@
 	include_once("./include/common/quickSearch.php");
 
 	if (isset($search))
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND host_register = '0'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND host_register = '0'");
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_register = '0'");
 	$tmp = & $DBRESULT->fetchRow();
@@ -77,7 +77,7 @@
 	 * Host Template list
 	 */
 	if ($search)
-		$rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);

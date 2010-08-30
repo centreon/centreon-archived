@@ -102,20 +102,20 @@
 	
 	$lca = $access->getHostServices($pearDBndo);		
 
-	(isset($_GET["sid"]) 			&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES) : $sid = "-1";
-	(isset($_GET["template_id"]) 	&& !check_injection($_GET["template_id"])) ? $template_id = htmlentities($_GET["template_id"], ENT_QUOTES) : $template_id = "1";
-	(isset($_GET["split"]) 			&& !check_injection($_GET["split"])) ? $split = htmlentities($_GET["split"], ENT_QUOTES) : $split = "0";
-	(isset($_GET["status"]) 		&& !check_injection($_GET["status"])) ? $status = htmlentities($_GET["status"], ENT_QUOTES) : $status = "0";
-	(isset($_GET["warning"]) 		&& !check_injection($_GET["warning"])) ? $warning = htmlentities($_GET["warning"], ENT_QUOTES) : $warning = "0";
-	(isset($_GET["critical"]) 		&& !check_injection($_GET["critical"])) ? $critical = htmlentities($_GET["critical"], ENT_QUOTES) : $critical = "0";
-	(isset($_GET["StartDate"])		&& !check_injection($_GET["StartDate"])) ? $StartDate = htmlentities($_GET["StartDate"], ENT_QUOTES) : $StartDate = "";
-	(isset($_GET["EndDate"]) 		&& !check_injection($_GET["EndDate"])) ? $EndDate = htmlentities($_GET["EndDate"], ENT_QUOTES) : $EndDate = "";
-	(isset($_GET["StartTime"]) 		&& !check_injection($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"], ENT_QUOTES) : $StartTime = "";
-	(isset($_GET["EndTime"]) 		&& !check_injection($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"], ENT_QUOTES) :$EndTime = "";
-	(isset($_GET["multi"]) 			&& !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"], ENT_QUOTES) : $multi = "-1";
+	(isset($_GET["sid"]) 			&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
+	(isset($_GET["template_id"]) 	&& !check_injection($_GET["template_id"])) ? $template_id = htmlentities($_GET["template_id"], ENT_QUOTES, "UTF-8") : $template_id = "1";
+	(isset($_GET["split"]) 			&& !check_injection($_GET["split"])) ? $split = htmlentities($_GET["split"], ENT_QUOTES, "UTF-8") : $split = "0";
+	(isset($_GET["status"]) 		&& !check_injection($_GET["status"])) ? $status = htmlentities($_GET["status"], ENT_QUOTES, "UTF-8") : $status = "0";
+	(isset($_GET["warning"]) 		&& !check_injection($_GET["warning"])) ? $warning = htmlentities($_GET["warning"], ENT_QUOTES, "UTF-8") : $warning = "0";
+	(isset($_GET["critical"]) 		&& !check_injection($_GET["critical"])) ? $critical = htmlentities($_GET["critical"], ENT_QUOTES, "UTF-8") : $critical = "0";
+	(isset($_GET["StartDate"])		&& !check_injection($_GET["StartDate"])) ? $StartDate = htmlentities($_GET["StartDate"], ENT_QUOTES, "UTF-8") : $StartDate = "";
+	(isset($_GET["EndDate"]) 		&& !check_injection($_GET["EndDate"])) ? $EndDate = htmlentities($_GET["EndDate"], ENT_QUOTES, "UTF-8") : $EndDate = "";
+	(isset($_GET["StartTime"]) 		&& !check_injection($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"], ENT_QUOTES, "UTF-8") : $StartTime = "";
+	(isset($_GET["EndTime"]) 		&& !check_injection($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"], ENT_QUOTES, "UTF-8") :$EndTime = "";
+	(isset($_GET["multi"]) 			&& !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"], ENT_QUOTES, "UTF-8") : $multi = "-1";
 	(isset($_GET["id"])) ? 			$openid = htmlentities($_GET["id"]) : $openid = "-1";
-	(isset($_GET["period"]) 		&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"], ENT_QUOTES) : $auto_period = "-1";
-	(isset($_GET["search_service"]) 		&& !check_injection($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES) : $search_service = "";
+	(isset($_GET["period"]) 		&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"], ENT_QUOTES, "UTF-8") : $auto_period = "-1";
+	(isset($_GET["search_service"]) 		&& !check_injection($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 	
 	/*
  	 * Get GMT for current user

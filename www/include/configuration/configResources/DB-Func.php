@@ -44,7 +44,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('resource_id');
-		$DBRESULT =& $pearDB->query("SELECT resource_name, resource_id FROM cfg_resource WHERE resource_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT resource_name, resource_id FROM cfg_resource WHERE resource_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$res =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $res["resource_id"] == $id)	
@@ -105,9 +105,9 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE cfg_resource ";
-		$rq .= "SET resource_name = '".htmlentities($ret["resource_name"], ENT_QUOTES)."', " .
-				"resource_line = '".htmlentities($ret["resource_line"], ENT_QUOTES)."', " .
-				"resource_comment= '".htmlentities($ret["resource_comment"], ENT_QUOTES)."', " .
+		$rq .= "SET resource_name = '".htmlentities($ret["resource_name"], ENT_QUOTES, "UTF-8")."', " .
+				"resource_line = '".htmlentities($ret["resource_line"], ENT_QUOTES, "UTF-8")."', " .
+				"resource_comment= '".htmlentities($ret["resource_comment"], ENT_QUOTES, "UTF-8")."', " .
 				"resource_activate= '".$ret["resource_activate"]["resource_activate"]."' " .
 				"WHERE resource_id = '".$resource_id."'";
 		$DBRESULT =& $pearDB->query($rq);
@@ -125,9 +125,9 @@
 		$rq = "INSERT INTO cfg_resource ";
 		$rq .= "(resource_name, resource_line, resource_comment, resource_activate) ";
 		$rq .= "VALUES (";
-		isset($ret["resource_name"]) && $ret["resource_name"] != NULL ? $rq .= "'".htmlentities($ret["resource_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["resource_line"]) && $ret["resource_line"] != NULL ? $rq .= "'".htmlentities($ret["resource_line"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["resource_comment"]) && $ret["resource_comment"] != NULL ? $rq .= "'".htmlentities($ret["resource_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		isset($ret["resource_name"]) && $ret["resource_name"] != NULL ? $rq .= "'".htmlentities($ret["resource_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["resource_line"]) && $ret["resource_line"] != NULL ? $rq .= "'".htmlentities($ret["resource_line"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["resource_comment"]) && $ret["resource_comment"] != NULL ? $rq .= "'".htmlentities($ret["resource_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		isset($ret["resource_activate"]["resource_activate"]) && $ret["resource_activate"]["resource_activate"] != NULL ? $rq .= "'".$ret["resource_activate"]["resource_activate"]."'" : $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);

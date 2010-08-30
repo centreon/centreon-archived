@@ -44,7 +44,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('acl_action_id');
-		$DBRESULT =& $pearDB->query("SELECT acl_action_id, acl_action_name FROM acl_actions WHERE acl_action_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT acl_action_id, acl_action_name FROM acl_actions WHERE acl_action_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$cg =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $cg["acl_action_id"] == $id)	
@@ -131,7 +131,7 @@
 			$rq = "INSERT INTO acl_actions ";
 		$rq .= "(acl_action_name, acl_action_description, acl_action_activate) ";
 		$rq .= "VALUES ";
-		$rq .= "('".htmlentities($ret["acl_action_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_action_description"], ENT_QUOTES)."', '".htmlentities($ret["acl_action_activate"]["acl_action_activate"], ENT_QUOTES)."')";
+		$rq .= "('".htmlentities($ret["acl_action_name"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_action_description"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_action_activate"]["acl_action_activate"], ENT_QUOTES, "UTF-8")."')";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(acl_action_id) FROM acl_actions");
 		$cg_id =& $DBRESULT->fetchRow();
@@ -153,9 +153,9 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE acl_actions ";
-		$rq .= "SET acl_action_name = '".htmlentities($ret["acl_action_name"], ENT_QUOTES)."', " .
-				"acl_action_description = '".htmlentities($ret["acl_action_description"], ENT_QUOTES)."', " .
-				"acl_action_activate = '".htmlentities($ret["acl_action_activate"]["acl_action_activate"], ENT_QUOTES)."' " .
+		$rq .= "SET acl_action_name = '".htmlentities($ret["acl_action_name"], ENT_QUOTES, "UTF-8")."', " .
+				"acl_action_description = '".htmlentities($ret["acl_action_description"], ENT_QUOTES, "UTF-8")."', " .
+				"acl_action_activate = '".htmlentities($ret["acl_action_activate"]["acl_action_activate"], ENT_QUOTES, "UTF-8")."' " .
 				"WHERE acl_action_id = '".$acl_action_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}

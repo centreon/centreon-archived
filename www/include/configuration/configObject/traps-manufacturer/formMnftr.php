@@ -41,7 +41,7 @@
 	#
 	
 	function myDecodeMnftr($arg)	{
-		$arg = html_entity_decode($arg, ENT_QUOTES);
+		$arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 		return($arg);
 	}
 

@@ -49,7 +49,7 @@
 	
 	$SearchSTR = "";
 	if (isset($search))
-		$SearchSTR = " WHERE (`cg_name` LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR `cg_alias` LIKE '".htmlentities($search, ENT_QUOTES)."')";		
+		$SearchSTR = " WHERE (`cg_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR `cg_alias` LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";		
 
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM `contactgroup` $SearchSTR");
 		

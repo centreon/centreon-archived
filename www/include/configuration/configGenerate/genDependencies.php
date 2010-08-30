@@ -296,7 +296,7 @@
 	unset($dependency);
 	$DBRESULT->free();
 	
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $path .$tab['id']."/dependencies.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $path .$tab['id']."/dependencies.cfg");
 	fclose($handle);
 	unset($str);
 	unset($i);

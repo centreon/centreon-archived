@@ -717,7 +717,7 @@ class CentreonACL {
 				while ($elem =& $DBRESULT->fetchRow()){
 					$elem["service_description"] = str_replace("#S#", "/", $elem["service_description"]);
 					$elem["service_description"] = str_replace("#BS#", "\\", $elem["service_description"]);
-					$tab[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
+					$tab[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
 				}
 				$DBRESULT->free();
 

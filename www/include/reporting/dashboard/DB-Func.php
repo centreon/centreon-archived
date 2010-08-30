@@ -762,7 +762,7 @@
 		while ($elem =& $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
-			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES);
+			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
 		}
 		$DBRESULT->free();
 		// Uncomment following lines if you want to see services that are now disabled
@@ -773,7 +773,7 @@
 		while ($elem =& $DBRESULT->fetchRow()){
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
-			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
+			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
 		}
 		$DBRESULT->free();
 		*/

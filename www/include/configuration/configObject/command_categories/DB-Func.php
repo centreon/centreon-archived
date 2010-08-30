@@ -46,7 +46,7 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('cmd_category_id');
 		
-		$DBRESULT =& $pearDB->query("SELECT `category_name`, `cmd_category_id` FROM `command_categories` WHERE `category_name` = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT `category_name`, `cmd_category_id` FROM `command_categories` WHERE `category_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$cat =& $DBRESULT->fetchRow();
 		
 		if ($DBRESULT->numRows() >= 1 && $cat["cmd_category_id"] == $id)
