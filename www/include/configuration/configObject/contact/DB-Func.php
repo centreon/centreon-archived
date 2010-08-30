@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 	if (!isset ($oreon))
 		exit ();
@@ -72,27 +72,37 @@
 			return true;
 	}
 
-	function keepOneContactAtLeast()	{
+	/**
+	 *
+	 * Check if a least one contact is enable
+	 */
+	function keepOneContactAtLeast() {
 		global $pearDB, $form;
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) AS nbr_valid FROM contact WHERE contact_activate = '1' AND contact_oreon = '1'");
-		if (isset($form))
-			$cct_oreon = $form->getSubmitValue('contact_oreon');
-		else
-			$cct_oreon["contact_oreon"] = 0;
-		if (isset($form))
-			$cct_activate = $form->getSubmitValue('contact_activate');
-		else
-			$cct_activate["contact_activate"] = 0;
-		$contact = $DBRESULT->fetchRow();
-		if ($contact["nbr_valid"] == 1 && ($cct_oreon["contact_oreon"] == 0 || $cct_activate["contact_activate"] == 0))
-			return false;
+
+		$contact_id = $form->getSubmitValue('contact_id');
+		(isset($form)) ? $cct_oreon = $form->getSubmitValue('contact_oreon') : $cct_oreon["contact_oreon"] = 0;
+		$cct_oreon = $cct_oreon["contact_oreon"];
+		(isset($form)) ? $cct_activate = $form->getSubmitValue('contact_activate') : $cct_activate["contact_activate"] = 0;
+		$cct_activate = $cct_activate["contact_activate"];
+
+		/*
+		 * Get activated contacts
+		 */
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) AS nbr_valid FROM contact WHERE contact_activate = '1' AND contact_oreon = '1' AND contact_id <> '$contact_id'");
+		$contacts = $DBRESULT->fetchRow();
+
+		if ($contacts["nbr_valid"] == 0) {
+			if ($cct_oreon == 0 || $cct_activate == 0) {
+				return false;
+			}
+		}
 		return true;
 	}
 
 	function enableContactInDB ($contact_id = null, $contact_arr = array())	{
 		global $pearDB, $oreon;
-		
-		if (!$contact_id && !count($contact_arr)) 
+
+		if (!$contact_id && !count($contact_arr))
 			return;
 		if ($contact_id)
 			$contact_arr = array($contact_id=>"1");
@@ -124,7 +134,7 @@
 		foreach($contacts as $key=>$value)	{
 			$DBRESULT2 =& $pearDB->query("SELECT contact_name FROM `contact` WHERE `contact_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
-			
+
 			$DBRESULT =& $pearDB->query("DELETE FROM contact WHERE contact_id = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "d");
 		}
@@ -183,7 +193,7 @@
 
 	function updateContactInDB ($contact_id = NULL, $from_MC = false)	{
 		global $form;
-		if (!$contact_id) 
+		if (!$contact_id)
 			return;
 		$ret = $form->getSubmitValues();
 		# Global function to use
@@ -222,7 +232,7 @@
 		else
 			updateContactContactGroup($contact_id);
 	}
-	
+
 	function insertContactInDB ($ret = array())	{
 		$contact_id = insertContact($ret);
 		updateContactHostCommands($contact_id, $ret);
@@ -233,10 +243,10 @@
 
 	function insertContact($ret = array())	{
 		global $form, $pearDB, $oreon, $encryptType;
-	
+
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		
+
 		$rq = "INSERT INTO `contact` ( " .
 				"`contact_id` , `timeperiod_tp_id` , `timeperiod_tp_id2` , `contact_name` , " .
 				"`contact_alias` , `contact_passwd` , `contact_lang` , " .
@@ -257,7 +267,7 @@
 			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".sha1($ret["contact_passwd"])."', ": $rq .= "NULL, ";
 		else
 			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".md5($ret["contact_passwd"])."', ": $rq .= "NULL, ";
-				
+
 		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["contact_hostNotifOpts"]))."', ": $rq .= "NULL, ";
 		isset($ret["contact_svNotifOpts"]) && $ret["contact_svNotifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["contact_svNotifOpts"]))."', ": $rq .= "NULL, ";
@@ -281,11 +291,11 @@
 		isset($ret["contact_address5"]) && $ret["contact_address5"] != NULL ? $rq .= "'".htmlentities($ret["contact_address5"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".htmlentities($ret["contact_address6"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= ")";
-		
+
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(contact_id) FROM contact");
 		$contact_id = $DBRESULT->fetchRow();
-		
+
 		if (isset($ret["timeperiod_tp_id"]))
 			$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
 		if (isset( $ret["timeperiod_tp_id2"]))
@@ -318,13 +328,13 @@
 			$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
 		if (isset($ret["contact_admin"]["contact_admin"]))
 			$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
-		
+
 		if (isset($ret["contact_type_msg"]))
 			$fields["contact_type_msg"] = $ret["contact_type_msg"];
-	
+
 		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
 		$fields["contact_auth_type"] = $ret["contact_auth_type"];
-	
+
 		if (isset($ret["contact_ldap_dn"]))
 			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
 		if (isset($ret["contact_location"]))
@@ -348,18 +358,18 @@
 			$fields["contact_address5"] = $ret["contact_address5"];
 		if (isset($ret["contact_address6"]))
 			$fields["contact_address6"] = $ret["contact_address6"];
-		
+
 		/*
 		 * Write Actions Logs
 		 */
 		$oreon->CentreonLogAction->insertLog("contact", $contact_id["MAX(contact_id)"], $ret["contact_name"], "a", $fields);
-		
+
 		return ($contact_id["MAX(contact_id)"]);
 	}
 
 	function updateContact($contact_id = null, $from_MC = false)	{
 		global $form, $pearDB, $oreon, $encryptType;
-		if (!$contact_id) 
+		if (!$contact_id)
 			return;
 		$ret = array();
 		$ret = $form->getSubmitValues();
@@ -377,11 +387,11 @@
 		}
 		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
 			if ($encryptType == 1)
-				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";	
+				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
 			else if ($encryptType == 2)
-				$rq .= "contact_passwd = '".sha1($ret["contact_passwd"])."', ";	
+				$rq .= "contact_passwd = '".sha1($ret["contact_passwd"])."', ";
 			else
-				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";	
+				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
 		}
 		$rq .=	"contact_lang = ";
 		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ": $rq .= "NULL, ";
@@ -409,7 +419,7 @@
 		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "contact_location = ";
 		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."', ": $rq .= "NULL, ";
-		
+
 		$rq .= "contact_address1 = ";
 		isset($ret["contact_address1"]) && $ret["contact_address1"] != NULL ? $rq .= "'".$ret["contact_address1"]."', ": $rq .= "NULL, ";
 		$rq .= "contact_address2 = ";
@@ -422,7 +432,7 @@
 		isset($ret["contact_address5"]) && $ret["contact_address5"] != NULL ? $rq .= "'".$ret["contact_address5"]."', ": $rq .= "NULL, ";
 		$rq .= "contact_address6 = ";
 		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".$ret["contact_address6"]."' ": $rq .= "NULL ";
-		
+
 		$rq .= "WHERE contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL && $contact_id == $oreon->user->get_id()) {
@@ -470,7 +480,7 @@
 
 	function updateContact_MC($contact_id = null)	{
 		global $form, $pearDB, $oreon, $encryptType;
-		if (!$contact_id) 
+		if (!$contact_id)
 			return;
 		$ret = array();
 		$ret = $form->getSubmitValues();
@@ -481,9 +491,9 @@
 		}
 		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) {
 			$rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
-			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];	
+			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		}
-		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) { 
+		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
 			if ($encryptType == 1) {
 				$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
 				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
@@ -516,13 +526,13 @@
 			$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES);
 		}
 		if (isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL) {
-			$rq .= "contact_comment = '".htmlentities($ret["contact_comment"], ENT_QUOTES)."', ";	
+			$rq .= "contact_comment = '".htmlentities($ret["contact_comment"], ENT_QUOTES)."', ";
 			$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES);
 		}
 		if (isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != NULL) {
 			$rq .= "contact_oreon = '".$ret["contact_oreon"]["contact_oreon"]."', ";
-			$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];	
-		} 
+			$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
+		}
 		if (isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != NULL) {
 			$rq .= "contact_admin = '".$ret["contact_admin"]["contact_admin"]."', ";
 			$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
@@ -580,7 +590,7 @@
 			$rq[strlen($rq)-2] = " ";
 			$rq .= "WHERE contact_id = '".$contact_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-			
+
 			$DBRESULT2 =& $pearDB->query("SELECT contact_name FROM `contact` WHERE contact_id='".$contact_id."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
 			/*
@@ -592,7 +602,7 @@
 
 	function updateContactHostCommands($contact_id = null, $ret = array())	{
 		global $form, $pearDB;
-		if (!$contact_id) 
+		if (!$contact_id)
 			return;
 		$rq = "DELETE FROM contact_hostcommands_relation ";
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
@@ -601,7 +611,7 @@
 			$ret = $ret["contact_hostNotifCmds"];
 		else
 			$ret = $form->getSubmitValue("contact_hostNotifCmds");
-		
+
 		for ($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO contact_hostcommands_relation ";
 			$rq .= "(contact_contact_id, command_command_id) ";
@@ -617,7 +627,7 @@
 
 	function updateContactHostCommands_MC($contact_id = null, $ret = array())	{
 		global $form, $pearDB;
-		if (!$contact_id) 
+		if (!$contact_id)
 			return;
 		$rq = "SELECT * FROM contact_hostcommands_relation ";
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
@@ -639,7 +649,7 @@
 
 	function updateContactServiceCommands($contact_id = null, $ret = array())	{
 		global $form, $pearDB;
-		if (!$contact_id) 
+		if (!$contact_id)
 			return;
 		$rq = "DELETE FROM contact_servicecommands_relation ";
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
@@ -656,13 +666,13 @@
 			$DBRESULT =& $pearDB->query($rq);
 		}
 	}
-	
+
 	/*
 	 * For massive change. We just add the new list if the elem doesn't exist yet
 	 */
 	function updateContactServiceCommands_MC($contact_id = null, $ret = array())	{
 		global $form, $pearDB;
-		if (!$contact_id) 
+		if (!$contact_id)
 			return;
 		$rq = "SELECT * FROM contact_servicecommands_relation ";
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
@@ -684,7 +694,7 @@
 
 	function updateContactContactGroup($contact_id = null, $ret = array())	{
 		global $form, $pearDB;
-		if (!$contact_id) 
+		if (!$contact_id)
 			return;
 		$rq = "DELETE FROM contactgroup_contact_relation ";
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
@@ -707,7 +717,7 @@
 	 */
 	function updateContactContactGroup_MC($contact_id = null, $ret = array())	{
 		global $form, $pearDB;
-		if (!$contact_id) 
+		if (!$contact_id)
 			return;
 		$rq = "SELECT * FROM contactgroup_contact_relation ";
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
@@ -716,7 +726,7 @@
 		while($arr =& $DBRESULT->fetchRow())
 			$cmds[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
 		$ret = $form->getSubmitValue("contact_cgNotif");
-		
+
 		for ($i = 0; $i < count($ret); $i++)	{
 			if (!isset($cmds[$ret[$i]]))	{
 				$rq = "INSERT INTO contactgroup_contact_relation ";
@@ -731,7 +741,7 @@
 	function insertLdapContactInDB($tmpContacts = array())	{
 		global $nbr, $oreon;
 		$tmpConf = array();
-		
+
 		foreach ($tmpContacts["select"] as $select_key=>$select_value) {
 			$tmpContacts["contact_name"][$select_key] = str_replace(" ", "_", $tmpContacts["contact_name"][$select_key]);
 			if (isset($tmpContacts["contact_name"][$select_key]) && testContactExistence($tmpContacts["contact_name"][$select_key]))	{
