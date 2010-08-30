@@ -76,10 +76,17 @@
 	 *
 	 * Check if a least one contact is enable
 	 */
-	function keepOneContactAtLeast() {
+	function keepOneContactAtLeast($ct_id = null) {
 		global $pearDB, $form;
 
-		$contact_id = $form->getSubmitValue('contact_id');
+		if (isset($contact_id)) {
+			$contact_id = $ct_id;
+		} else if (isset($_GET["contact_id"])) {
+			$contact_id = $_GET["contact_id"];
+		} else {
+			$contact_id = $form->getSubmitValue('contact_id');
+		}
+
 		(isset($form)) ? $cct_oreon = $form->getSubmitValue('contact_oreon') : $cct_oreon["contact_oreon"] = 0;
 		$cct_oreon = $cct_oreon["contact_oreon"];
 		(isset($form)) ? $cct_activate = $form->getSubmitValue('contact_activate') : $cct_activate["contact_activate"] = 0;
@@ -102,11 +109,14 @@
 	function enableContactInDB ($contact_id = null, $contact_arr = array())	{
 		global $pearDB, $oreon;
 
-		if (!$contact_id && !count($contact_arr))
+		if (!$contact_id && !count($contact_arr)) {
 			return;
-		if ($contact_id)
+		}
+		if ($contact_id) {
 			$contact_arr = array($contact_id=>"1");
-		foreach($contact_arr as $key=>$value)	{
+		}
+
+		foreach ($contact_arr as $key => $value)	{
 			$DBRESULT =& $pearDB->query("UPDATE contact SET contact_activate = '1' WHERE contact_id = '".$key."'");
 			$DBRESULT2 =& $pearDB->query("SELECT contact_name FROM `contact` WHERE `contact_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
@@ -115,12 +125,17 @@
 	}
 
 	function disableContactInDB ($contact_id = null, $contact_arr = array())	{
-		if (!$contact_id && !count($contact_arr)) return;
 		global $pearDB, $oreon;
-		if ($contact_id)
+
+		if (!$contact_id && !count($contact_arr)) {
+			return;
+		}
+		if ($contact_id) {
 			$contact_arr = array($contact_id=>"1");
-		foreach($contact_arr as $key=>$value)	{
-			if (keepOneContactAtLeast())	{
+		}
+
+		foreach ($contact_arr as $key => $value) {
+			if (keepOneContactAtLeast($key)) {
 				$DBRESULT =& $pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '".$key."'");
 				$DBRESULT2 =& $pearDB->query("SELECT contact_name FROM `contact` WHERE `contact_id` = '".$key."' LIMIT 1");
 				$row = $DBRESULT2->fetchRow();
@@ -131,7 +146,8 @@
 
 	function deleteContactInDB ($contacts = array())	{
 		global $pearDB, $oreon;
-		foreach($contacts as $key=>$value)	{
+
+		foreach($contacts as $key => $value) {
 			$DBRESULT2 =& $pearDB->query("SELECT contact_name FROM `contact` WHERE `contact_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
 
@@ -142,7 +158,8 @@
 
 	function multipleContactInDB ($contacts = array(), $nbrDup = array())	{
 		global $pearDB, $oreon;
-		foreach ($contacts as $key=>$value)	{
+
+		foreach ($contacts as $key => $value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["contact_id"] = '';
