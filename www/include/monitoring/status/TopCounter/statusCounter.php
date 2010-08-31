@@ -3,58 +3,58 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	$debug = 0;
-	
-	include_once "/etc/centreon/centreon.conf.php";	
+
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-	
+
 	include_once $centreon_path . "www/include/common/common-Func.php";
-	
+
 	/*
 	 * Create XML Request Objects
 	 */
 	$obj = new CentreonXMLBGRequest($_POST["sid"], 1, 1, 0, $debug);
-	
+
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		$obj->reloadSession();
 	} else {
 		print "Bad Session ID";
 		exit();
 	}
-	
+
 	/* *********************************************
 	 * Get active poller only
 	 */
@@ -68,24 +68,24 @@
 		$pollerList .= "'".$d["name"]."'";
 	}
 	$DBRESULT->free();
-	
+
 	/* *********************************************
 	 * Get Host stats
 	 */
 	$rq1 = 	" SELECT count(DISTINCT ".$obj->ndoPrefix."objects.name1), ".$obj->ndoPrefix."hoststatus.current_state" .
 			" FROM ".$obj->ndoPrefix."hoststatus, ".$obj->ndoPrefix."objects";
-	
+
 	if (!$obj->is_admin)
 		$rq1 .= " , centreon_acl ";
-	
+
 	$rq1 .= " WHERE ".$obj->ndoPrefix."objects.object_id = ".$obj->ndoPrefix."hoststatus.host_object_id " .
 			" AND ".$obj->ndoPrefix."objects.is_active = 1 " .
-			$obj->access->queryBuilder("AND", $obj->ndoPrefix."objects.name1", "centreon_acl.host_name") .				
-			$obj->access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr) .
-			" AND " . $obj->ndoPrefix. "objects.name1 NOT LIKE '_Module_%' " .				
+			$obj->access->queryBuilder("AND", $obj->ndoPrefix."objects.name1", "centreon_acl.host_name") .
+			$obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr) .
+			" AND " . $obj->ndoPrefix. "objects.name1 NOT LIKE '_Module_%' " .
 			" GROUP BY ".$obj->ndoPrefix."hoststatus.current_state";
-	
-	
+
+
 	$hostCounter = 0;
 	$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
 	$DBRESULT =& $obj->DBNdo->query($rq1);
@@ -95,7 +95,7 @@
 	}
 	$DBRESULT->free();
 	unset($ndo);
-	 
+
 	/* *********************************************
 	 * Get Service stats
 	 */
@@ -103,7 +103,7 @@
 		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 				" FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no, centreon_acl " .
 				" WHERE no.object_id = nss.service_object_id".
-				" AND no.name1 NOT LIKE '_Module_%' ".					
+				" AND no.name1 NOT LIKE '_Module_%' ".
 				" AND no.name1 = centreon_acl.host_name ".
 				" AND no.name2 = centreon_acl.service_description " .
 				" AND centreon_acl.group_id IN (".$grouplistStr.") ".
@@ -113,8 +113,8 @@
 				" FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 NOT LIKE '_Module_%' ".
-				" AND no.is_active = 1 GROUP BY nss.current_state";			
-	
+				" AND no.is_active = 1 GROUP BY nss.current_state";
+
 	$serviceCounter = 0;
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 6=>0, 7=>0, 8=>0);
 	$DBRESULT =& $obj->DBNdo->query($rq2);
@@ -126,9 +126,9 @@
 	unset($ndo);
 
 	/* ********************************************
-	 *  Get Real non-ok Status 
+	 *  Get Real non-ok Status
 	 */
-	$rq3 =  "SELECT COUNT(DISTINCT CONCAT(no.name1,';', no.name2)), nss.state_type, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth " .
+	$rq3 =  "SELECT COUNT(DISTINCT CONCAT(no.name1,';', no.name2)) as number, nss.state_type, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth, nss.current_state " .
 			"FROM nagios_servicestatus nss, nagios_objects no " .
 			"WHERE no.object_id = nss.service_object_id " .
 			"	AND no.name1 NOT LIKE '_Module_%' " .
@@ -143,13 +143,13 @@
 			"			AND no2.name1 = no.name1 " .
 			"			AND nhs.current_state = '0') " .
 			"		GROUP BY nss.current_state, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth";
-	$DBRESULT =& $obj->DBNdo->query($rq2);
+	$DBRESULT =& $obj->DBNdo->query($rq3);
 	while ($ndo =& $DBRESULT->fetchRow()) {
-		$svc_stat[$ndo["current_state"] + 5] = $ndo["DISTINCT CONCAT(no.name1,';', no.name2)"];
+		$svc_stat[$ndo["current_state"] + 5] = $ndo["number"];
 	}
 	$DBRESULT->free();
 	unset($ndo);
-	
+
 	/* ********************************************
 	 * Check Poller Status
 	 */
@@ -158,7 +158,7 @@
 	$activity = 0;
 	$error = "";
 	$pollerListInError = "";
-	
+
 	/*
 	 * Get minimum check interval
 	 */
@@ -170,7 +170,7 @@
 	} else {
 		$minInterval = 5;
 	}
-		
+
 	/*
 	 * Get minimin interval lenght
 	 */
@@ -178,12 +178,12 @@
 	$DBRESULT =& $obj->DB->query($request);
 	$data =& $DBRESULT->fetchRow();
 	$intervalLength = $data["MIN(interval_length)"];
-	
+
 	/* *****************************************************
 	 * Unit Time
 	 */
 	$timeUnit = $minInterval * $intervalLength;
-	
+
 	$request = 	"SELECT UNIX_TIMESTAMP(`status_update_time`) AS last_update, `is_currently_running`, instance_name, ".$obj->ndoPrefix."instances.instance_id " .
 				"FROM `".$obj->ndoPrefix."programstatus`, ".$obj->ndoPrefix."instances " .
 				"WHERE ".$obj->ndoPrefix."programstatus.instance_id = ".$obj->ndoPrefix."instances.instance_id AND ".$obj->ndoPrefix."instances.instance_name IN ($pollerList)";
@@ -197,7 +197,7 @@
 			if ($pollerListInError != "")
 				$pollerListInError .= ", ";
 			$pollerListInError .= $ndo["instance_name"];
-		} 
+		}
 		if ($ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
 			$status = 2;
 			if ($pollerListInError != "")
@@ -241,7 +241,7 @@
 	if ($status != 0) {
 		$errorPstt = "$error";
 	} else {
-		$errorPstt = _("OK : all pollers are running");	
+		$errorPstt = _("OK : all pollers are running");
 	}
 
 	if ($latency != 0) {
@@ -249,13 +249,13 @@
 	} else {
 		$errorLtc = _("OK : no latency detected on your platform");
 	}
-	
+
 	if ($activity != 0) {
 		$errorAct = _("Some database poller updates are not active; check your nagios platform");
 	} else {
 		$errorAct = _("OK : all database poller updates are active");
 	}
-	
+
 	/* *********************************************
 	 * Create Buffer
 	 */
@@ -289,12 +289,12 @@
 	$obj->XML->writeElement("errorAct", $errorAct);
 	$obj->XML->endElement();
 	$obj->XML->endElement();
-	
+
 	/*
 	 * Send headers
-	 */	
+	 */
 	$obj->header();
-	
+
 	/*
 	 * Display XML data
 	 */
