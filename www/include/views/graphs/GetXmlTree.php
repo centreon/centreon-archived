@@ -1,5 +1,5 @@
 <?php
-/*
+/***
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -36,23 +36,24 @@
  *
  */
 
-	/*
+	/***
 	 * Include config file
 	 */
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 
-	include_once "/etc/centreon/centreon.conf.php";
+	/***
+	 * Include Dependancies
+	 */
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 
 	$pearDB 	= new CentreonDB();
 	$pearDBndo 	= new CentreonDB("ndo");
 	$pearDBO 	= new CentreonDB("centstorage");
 
-	/* PHP functions */
-	//include_once $centreon_path . "www/include/common/common-Func.php";
+	/*** PHP functions */
 	include_once $centreon_path . "www/include/views/graphs/common-Func.php";
 
-	/* Tanslation */
+	/** Tanslation */
 	require_once ($centreon_path . "www/class/centreonSession.class.php");
 	require_once ($centreon_path . "www/class/centreon.class.php");
 	require_once ($centreon_path . "www/class/centreonLang.class.php");
@@ -63,7 +64,7 @@
 	$centreonLang = new CentreonLang($centreon_path, $oreon);
 	$centreonLang->bindLang();
 
-	/*
+	/**
 	 * Include Access Class
 	 */
 	include_once $centreon_path . "www/class/centreonACL.class.php";
@@ -91,7 +92,7 @@
 
 	$normal_mode = 1;
 
-	/*
+	/**
 	 * Get Parameters
 	 */
 	(isset($_GET["mode"])) ? $normal_mode = htmlentities($_GET["mode"], ENT_QUOTES, "UTF-8") : $normal_mode = 1;
@@ -101,22 +102,22 @@
 	(isset($_GET["search_host"])) ? $search = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search = 0;
 	(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = 0;
 
-	/*
+	/**
 	 * Create hostCahe
 	 */
 	$hostCache = array();
-	$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
+	$DBRESULT =& $pearDB->query("SELECT /** SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
 	while ($data =& $DBRESULT->fetchRow())
 		$hostCache[$data["host_id"]] = $data["host_name"];
 	$DBRESULT->free();
 	unset($data);
 
-	/*
+	/**
 	 * Create serviceCahe
 	 */
 	function setServiceCache($pearDB) {
 		$serviceCache = array();
-		$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
+		$DBRESULT =& $pearDB->query("SELECT /** SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
 		while ($data =& $DBRESULT->fetchRow())
 			$serviceCache[$data["service_id"]] = db2str($data["service_description"]);
 		$DBRESULT->free();
@@ -124,22 +125,22 @@
 		return $serviceCache;
 	}
 
-	/*
+	/**
 	 * Create hgCahe
 	 */
 	$hgCache = array();
-	$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ hg_id, hg_name FROM hostgroup");
+	$DBRESULT =& $pearDB->query("SELECT /** SQL_CACHE */ hg_id, hg_name FROM hostgroup");
 	while ($data =& $DBRESULT->fetchRow())
 		$hgCache[$data["hg_id"]] = $data["hg_name"];
 	$DBRESULT->free();
 	unset($data);
 
-	/*
+	/**
 	 * Create cache host/hostgroup
 	 */
 	function sethgHCache($pearDB) {
 		$hgHCache = array();
-		$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ hostgroup_hg_id, host_host_id FROM hostgroup_relation hr, host h WHERE hr.host_host_id = h.host_id and h.host_register = '1'");
+		$DBRESULT =& $pearDB->query("SELECT /** SQL_CACHE */ hostgroup_hg_id, host_host_id FROM hostgroup_relation hr, host h WHERE hr.host_host_id = h.host_id and h.host_register = '1'");
 		while ($data =& $DBRESULT->fetchRow()) {
 			if (!isset($hgHCache[$data["hostgroup_hg_id"]]))
 				$hgHCache[$data["hostgroup_hg_id"]] = array();
@@ -158,7 +159,7 @@
 		$id = substr($url_var, 3, strlen($url_var));
 	}
 
-	/*
+	/**
 	 * Initiate XML
 	 */
 	$buffer = new CentreonXML();
@@ -175,7 +176,7 @@
 				$hgHgCache = setHgHgCache($pearDB);
 			}
 
-			/*
+			/**
 			 * Get HostGroups
 			 */
 			$hostgroups = getMyHostGroupHostGroups($id);
@@ -197,10 +198,10 @@
 				}
 			}
 
-			/*
+			/**
 			 * Get Hosts
 			 */
-			$hosts = getMyHostGroupHosts($id, $search);
+			$hosts = getMyHostGroupHosts($id, $search, 0);
 			foreach ($hosts as $host) {
 				if (host_has_one_or_more_GraphService($host)) {
 					if ($is_admin || (!$is_admin && isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host]))) {
@@ -220,7 +221,7 @@
 			if (!isset($serviceCache))
 				$serviceCache = setServiceCache($pearDB);
 
-			/*
+			/**
 			 * Send Service/host list for a SG
 			 */
 			$data = getMyServiceGroupActivateServices($id);
@@ -240,7 +241,7 @@
 				}
 			}
 		} else if ($type == "HH") {
-			/*
+			/**
 			 * get services for host
 			 */
 			$tab_value = split("_", $id);
@@ -279,7 +280,7 @@
 			}
 			$DBRESULT2->free();
 		} else if ($type == "RS") {
-			/*
+			/**
 			 * Send Service Group list
 			 */
 			$lcaSG = $access->getServiceGroups();
@@ -304,7 +305,7 @@
 			}
 			$DBRESULT->free();
 		} else if ($type == "MT") {
-			/*
+			/**
 			 * Send Meta Service list
 			 */
 			$cpt = 0;
@@ -333,7 +334,7 @@
 				$hgHgCache = setHgHgCache($pearDB);
 			}
 
-			/*
+			/**
 			 * Send Host Group list
 			 */
 			if ($search != "")
@@ -357,7 +358,7 @@
 			}
 			$DBRESULT->free();
 
-			/*
+			/**
 			 * Hosts Alone
 			 */
 			$cpt = 0;
@@ -404,7 +405,7 @@
 				$buffer->endElement();
 			$DBRESULT2->free();
 
-			/*
+			/**
 			 * Meta Services
 			 */
 			$cpt = 0;
@@ -422,7 +423,7 @@
 				$buffer->endElement();
 			}
 		} else {
-			/*
+			/**
 			 * Init HostGroups Line
 			 */
 			$buffer->startElement("item");
@@ -439,7 +440,7 @@
 			$buffer->writeElement("itemtext", "label");
 			$buffer->endElement();
 
-			/*
+			/**
 			 * Init ServiceGroups Line
 			 */
 			if (getServiceGroupCount($search)) {
@@ -459,7 +460,7 @@
 			}
 		}
 	} else {
-		/*
+		/**
 		 * direct to ressource (ex: pre-selected by GET)
 		 */
 
@@ -486,12 +487,12 @@
 			$buffer->endElement();
 
 			if ($type == "HH") {
-				/*
+				/**
 				 * host + hg_parent
 				 */
 				$hosts_selected[$id] = $hostCache[$id];
 				$hosts_open[$id] = $hostCache[$id];
-				/* + all svc*/
+				/** + all svc*/
 				$services = getMyHostActiveServices($id);
 				foreach ($services as $svc_id => $svc_name)
 					$svcs_selected[$svc_id] = $svc_name;
@@ -537,13 +538,13 @@
 					$hosts_open[$host_id] = $host_name;
 					$hosts_selected[$host_id] = $host_name;
 
-					/* + all svc*/
+					/** + all svc*/
 					$services = getMyHostActiveServices($host_id);
 					foreach ($services as $svc_id => $svc_name)
 						$svcs_selected[$svc_id] = $svc_name;
 				}
 			} else if ($type == "MS"){ // Meta Services
-				/*
+				/**
 				 * Init Table
 				 */
 				$meta_checked[$id] = $id;
@@ -567,7 +568,7 @@
 			if (!isset($hgHCache))
 				$hgHCache = sethgHCache($pearDB);
 
-			/*
+			/**
 			 * Hostgroups
 			 */
 			if ($hgHCache[$hg_id]  && ($access->admin == 1 || ($access->admin == 0 && isset($access->hostGroups[$hg_id])))) {
@@ -584,7 +585,7 @@
 	    		$buffer->writeAttribute("im1", "../16x16/clients.gif");
 	    		$buffer->writeAttribute("im2", "../16x16/clients.gif");
 
-				/*
+				/**
 				 * Hosts
 				 */
 				if (isset($hgs_open) && isset($hgs_open[$hg_id]) && $hgs_open[$hg_id]) {
@@ -602,7 +603,7 @@
 			    		$buffer->writeAttribute("im1", "../16x16/server_network.gif");
 			    		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
 
-						/*
+						/**
 						 * Services
 						 */
 						if ((isset($hosts_open[$host_id]) && $hosts_open[$host_id]) || (isset($hosts_selected[$host_id]) && $hosts_selected[$host_id]) ) {
@@ -629,7 +630,7 @@
 
 		}
 
-		/*
+		/**
 		 * Orphan Hosts
 		 */
 		$buffer->startElement("item");
@@ -642,7 +643,7 @@
 		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
 		$buffer->endElement();
 
-		/*
+		/**
 		 * Meta Services
 		 */
 		$buffer->startElement("item");
@@ -677,7 +678,7 @@
 
 		$buffer->endElement();
 
-		/*
+		/**
 		 * Display SG
 		 */
 		$buffer->startElement("item");

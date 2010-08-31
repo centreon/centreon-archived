@@ -750,7 +750,7 @@
 		if (!$hg_id)
 			return;
 
-		$hostgroups = array();
+		$hosts = array();
 		$DBRESULT =& $pearDB->query("SELECT hg_child_id " .
 									"FROM hostgroup_hg_relation, hostgroup " .
 									"WHERE hostgroup_hg_relation.hg_parent_id = '".$hg_id."' " .
@@ -771,8 +771,9 @@
 			return;
 		$DBRESULT =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
 		$row =& $DBRESULT->fetchRow();
-		if ($row["hg_snmp_community"])
+		if ($row["hg_snmp_community"]) {
 			return html_entity_decode($row["hg_snmp_community"], ENT_QUOTES, "UTF-8");
+		}
 		return NULL;
 	}
 
