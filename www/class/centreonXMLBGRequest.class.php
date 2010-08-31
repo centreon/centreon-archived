@@ -106,6 +106,7 @@ class CentreonXMLBGRequest
 	 * $dbneeds		bool 	flag for enable ndo connexion
 	 * $headType	bool 	send XML header
 	 * $debug		bool 	debug flag.
+	 * $compress	bool 	compress enable.
 	 */
 	public function __construct($session_id, $dbNeeds, $headerType, $debug, $compress = null)
 	{
@@ -126,10 +127,10 @@ class CentreonXMLBGRequest
 		/*
 		 * Enable Database Connexions
 		 */
-		$this->DB 		= new CentreonDbPdo();
-		$this->DBC 		= new CentreonDbPdo("centstorage");
+		$this->DB 		= new CentreonDB();
+		$this->DBC 		= new CentreonDB("centstorage");
 		if ($dbNeeds) {
-			$this->DBNdo= new CentreonDbPdo("ndo");
+			$this->DBNdo= new CentreonDB("ndo");
 		}
 
 		/*
@@ -185,7 +186,7 @@ class CentreonXMLBGRequest
 		$this->statusHost 	= array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 		$this->statusService= array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 		$this->colorHost 	= array(0 => $this->general_opt["color_up"], 1 => $this->general_opt["color_down"], 2 => $this->general_opt["color_unreachable"]);
-		$this->colorService	= array(0 => $this->general_opt["color_ok"], 1 => $this->general_opt["color_warning"], 2 => $this->general_opt["color_critical"], 3 => $this->general_opt["color_unknown"]);
+		$this->colorService	= array(0 => $this->general_opt["color_ok"], 1 => $this->general_opt["color_warning"], 2 => $this->general_opt["color_critical"], 3 => $this->general_opt["color_unknown"], 4 => $this->general_opt["color_pending"]);
 		$this->colorHostInService = array(0 => "normal", 1 => "#FD8B46", 2 => "normal");
 	}
 
@@ -308,13 +309,13 @@ class CentreonXMLBGRequest
 
 	public function setInstanceHistory($instance)
 	{
-		$this->DB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'MONITORING_POLLER_ID' AND `cp_contact_id` = '$user_id'");
+		$this->DB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'MONITORING_POLLER_ID' AND `cp_contact_id` = '$this->user_id'");
 		$this->DB->query("INSERT INTO `contact_param` SET `cp_key` = 'MONITORING_POLLER_ID', `cp_contact_id` = '" . $this->user_id . "', `cp_value` = '$instance'");
 	}
 
 	public function setHostGroupsHistory($hg)
 	{
-		$this->DB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'monitoring_default_hostgroups' AND `cp_contact_id` = '$user_id'");
+		$this->DB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'monitoring_default_hostgroups' AND `cp_contact_id` = '$this->user_id'");
 		$this->DB->query("INSERT INTO `contact_param` SET `cp_key` = 'monitoring_default_hostgroups', `cp_contact_id` = '" . $this->user_id . "', `cp_value` = '$hg'");
 	}
 
