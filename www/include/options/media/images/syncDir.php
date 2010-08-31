@@ -64,11 +64,11 @@
 	    if ($dh = opendir($dir)) {
 	        while (($subdir = readdir($dh)) !== false) {
 	            if (!isset($rejectedDir[$subdir]) && filetype($dir . $subdir) == "dir") {
-	            	 $dir_id = checkDirectory($subdir, $pearDB, &$dirCreated);
+	            	 $dir_id = checkDirectory($subdir, $pearDB, $dirCreated);
 	            	 if ($dh2 = opendir($dir.$subdir)) {
 	            	 	while (($picture = readdir($dh2)) !== false) {
 	            	 		if (!isset($rejectedDir[$picture])) {
-	            	 			checkPicture($picture, $dir.$subdir, $dir_id, $pearDB, &$regCounter, &$gdCounter);
+	            	 			checkPicture($picture, $dir.$subdir, $dir_id, $pearDB, $regCounter, $gdCounter);
 	            	 		}
 	            	 	}
 	            	 	closedir($dh2);
@@ -128,15 +128,15 @@
 	 */
  	function checkPicture($picture, $dirpath, $dir_id, $pearDB, $regCounter, $gdCounter) {
 		global $allowedExt;
-		
+
 		$img_info = pathinfo($picture);
 		$img_ext = $img_info["extension"];
-	
+
 		if (!isset($allowedExt[$img_ext])) {
 		    return 0;
 		}
-		
-        if (!$img_info["filename"]) {
+
+        if (!isset($img_info["filename"])) {
 		    $img_parts = explode(".", $img_info["basename"]);
             $img_info["filename"] = $img_parts[0];
         }
