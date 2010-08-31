@@ -271,7 +271,7 @@
 		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))
 			    FROM ".$obj->ndoPrefix."objects no ,  ".$obj->ndoPrefix."servicestatus nss ";
 		if (preg_match("/^svc_unhandled/", $o)) {
-            $rq .= ", " . $ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."services s ";
+            $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
 		}
 		$rq .= " WHERE no.object_id = nss.service_object_id $rq_state $instance_filter
 				 AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService";
@@ -285,7 +285,7 @@
 		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))
 				FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, centreon_acl ";
 	    if (preg_match("/^svc_unhandled/", $o)) {
-            $rq .= ", " . $ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."services s ";
+            $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
 		}
 		$rq .= " WHERE no.object_id = nss.service_object_id $rq_state $instance_filter
 				 AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService $ACLCondition";
