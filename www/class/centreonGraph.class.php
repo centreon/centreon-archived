@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/class/centreonXMLBGRequest.class.php $
  * SVN : $Id: centreon.class.php 9656 2010-01-04 09:05:23Z jmathis $
- * 
+ *
  */
 
 /*
@@ -55,8 +55,8 @@ require_once $centreon_path."www/class/centreonSession.class.php";
 
 /*
  * Class for XML/Ajax request
- * 
- */	
+ *
+ */
 class CentreonGraph	{
 
 	/*
@@ -64,16 +64,16 @@ class CentreonGraph	{
 	 */
 	var $DB;
 	var $DBC;
-	
+
 	var $XML;
 	var $GMT;
-	
+
 	var $hostObj;
 	var $serviceObj;
-	
+
 	var $session_id;
 
-	/* 
+	/*
 	 * private vars
 	 */
 	protected $_RRDoptions;
@@ -104,7 +104,7 @@ class CentreonGraph	{
 	var $metricsEnabled;
 	var $metrics;
 	var $longer;
-	
+
 	static function _cmplegend($a, $b) {
 		return strnatcasecmp($a["legend"], $b["legend"]);
 	}
@@ -124,24 +124,24 @@ class CentreonGraph	{
 	function CentreonGraph($session_id, $index, $debug, $compress = NULL) {
 		if (!isset($debug))
 			$this->debug = 0;
-		
+
 		(!isset($compress)) ? $this->compress = 1 : $this->compress = $compress;
-		
+
 		if (!isset($session_id)) {
 			print "Your might check your session id";
 			exit(1);
 		} else {
 			$this->session_id = htmlentities($session_id, ENT_QUOTES, "UTF-8");
 		}
-		
+
 		$this->index = htmlentities($index, ENT_QUOTES, "UTF-8");
-		
+
 		/*
 		 * Enable Database Connexions
 		 */
 		$this->DB 		= new CentreonDB();
 		$this->DBC 		= new CentreonDB("centstorage");
-		
+
 		/*
 		 * Init Objects
 		 */
@@ -166,7 +166,7 @@ class CentreonGraph	{
 		 * Set default parameters
 		 */
 		$this->setRRDOption("width", 500);
-		$this->setRRDOption("height", 120);	
+		$this->setRRDOption("height", 120);
 
 		$this->_getIndexData();
 
@@ -181,12 +181,12 @@ class CentreonGraph	{
 		$DBRESULT =& $this->DBC->query("SELECT RRDdatabase_path FROM config LIMIT 1");
 		$config =& $DBRESULT->fetchRow();
 		$this->dbPath = $config["RRDdatabase_path"];
-		unset($config);	
+		unset($config);
 		$DBRESULT->free();
-		
+
 		$DBRESULT =& $this->DB->query("SELECT * FROM options");
 		while ($opt =& $DBRESULT->fetchRow()) {
-			$this->general_opt[$opt['key']] = $opt['value'];  
+			$this->general_opt[$opt['key']] = $opt['value'];
 		}
 		$DBRESULT->free();
 		unset($opt);
@@ -215,7 +215,7 @@ class CentreonGraph	{
 
 		if ($this->general_opt["rrdtool_version"] != "1.0")
 			$this->setRRDOption("slope-mode");
-		
+
 		if ($this->general_opt["rrdtool_version"] == "1.3") {
 	       if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"]))
 	          $this->setFont("TITLE:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
@@ -241,12 +241,12 @@ class CentreonGraph	{
 		 */
 		if (isset($this->templateInformations["bg_grid_color"]) && $this->templateInformations["bg_grid_color"])
 			$this->setColor("CANVAS", $this->templateInformations["bg_grid_color"]);
-	
+
 		if (isset($this->templateInformations["bg_color"]) && $this->templateInformations["bg_color"])
 			$this->setColor("BACK", $this->templateInformations["bg_color"]);
 		else
 			$this->setColor("BACK", "#F0F0F0");
-	
+
 		if (isset($this->templateInformations["police_color"]) && $this->templateInformations["police_color"])
 			$this->setColor("FONT", $this->templateInformations["police_color"]);
 		if (isset($this->templateInformations["grid_main_color"]) && $this->templateInformations["grid_main_color"])
@@ -261,23 +261,23 @@ class CentreonGraph	{
 			$this->setColor("SHADEA", $this->templateInformations["col_top"]);
 		if (isset($this->templateInformations["col_bot"]) && $this->templateInformations["col_bot"])
 			$this->setColor("SHADEB", $this->templateInformations["col_bot"]);
-		
+
 		if (isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL)
 			$this->setRRDOption("lower-limit", $this->templateInformations["lower_limit"]);
 		if (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != NULL)
 			$this->setRRDOption("upper-limit", $this->templateInformations["upper_limit"]);
 		if ((isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL) || (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != NULL)) {
-			$this->setRRDOption("rigid"); 
+			$this->setRRDOption("rigid");
 			$this->setRRDOption("alt-autoscale-max");
 		}
-		
-		$this->gprintScaleOption = "%s"; 
-		if ($this->templateInformations["scaled"] == "0"){ 
-			# Disable y-axis scaling 
-			$this->setRRDOption("units-exponent", 0); 
-			# Suppress Scaling in Text Output 
-			$this->gprintScaleOption = ""; 
-		} 
+
+		$this->gprintScaleOption = "%s";
+		if ($this->templateInformations["scaled"] == "0"){
+			# Disable y-axis scaling
+			$this->setRRDOption("units-exponent", 0);
+			# Suppress Scaling in Text Output
+			$this->gprintScaleOption = "";
+		}
 	}
 
 	private static function quote($elem) { return "'".$elem."'"; }
@@ -291,7 +291,7 @@ class CentreonGraph	{
 			$selector = "index_id = '".$this->index."'";
 		}
 		$this->_log("initCurveList with selector= ".$selector);
-		$DBRESULT =& $this->DBC->query("SELECT metric_id, metric_name, unit_name, warn, crit, min, max FROM metrics WHERE ".$selector." AND `hidden` = '0' ORDER BY metric_name");
+		$DBRESULT =& $this->DBC->query("SELECT index_id, metric_id, metric_name, unit_name, warn, crit, min, max FROM metrics WHERE ".$selector." AND `hidden` = '0' ORDER BY metric_name");
 		while ($metric =& $DBRESULT->fetchRow()){
 			$this->_log("found metric ".$metric["metric_id"]." with selector= ".$selector);
 			if ( isset($this->metricsEnabled) && count($this->metricsEnabled) && !in_array($metric["metric_id"], $this->metricsEnabled) ) {
@@ -302,20 +302,13 @@ class CentreonGraph	{
 				$this->_log("metric inactive ".$metric["metric_id"]);
 				continue;
 			}
-			
+
 			$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 			$this->metrics[$metric["metric_id"]]["index_id"] = $metric["index_id"];
 			$this->metrics[$metric["metric_id"]]["metric"] = str_replace(array("#S#","#BS#"), array("slash_", "bslash_"), $metric["metric_name"]);
 			$this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 			$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
 			$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
-
-/*		$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$metric_ODS["index_id"]."'");
-		$metricnumber = $DBRESULT->numRows();
-		$DBRESULT->free();
-		$order = ($_GET["cpt"] - 1);
-		$order = $order % $metricnumber;
-*/
 
 			/*
 			 * Copy Template values
@@ -336,7 +329,7 @@ class CentreonGraph	{
 				$this->metrics[$metric["metric_id"]]["ds_id"] = $ds;
 				$ds_data =& $ds;
 			}
-			
+
 			/*
 			 * Fetch Datas
 			 */
@@ -351,16 +344,16 @@ class CentreonGraph	{
 				} else
 					$this->metrics[$metric["metric_id"]][$key] = $ds_d ;
 			}
-			
+
 			if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
 				$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("#S#","slash_", "#BS#"), array("/", "/", "\/"), $metric["metric_name"]);
 			} else {
 				$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
 			}
-			
+
 			if (strcmp($metric["unit_name"], ""))
 				$this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
-			
+
 			$this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
 			$cpt++;
 		}
@@ -382,7 +375,7 @@ class CentreonGraph	{
 				$cpt++;
 			}
 	}
-	
+
 	public function createLegend() {
 		$cpt = 0;
 		uasort($this->metrics, array("CentreonGraph", "_cmplegend"));
@@ -395,7 +388,7 @@ class CentreonGraph	{
 				$arg .= " ";
 			$arg .= "\"";
 			$this->addArgument($arg);
-			
+
 			if ($tm["ds_last"]){
 				$arg = "GPRINT:v".($cpt).":LAST:\"Last\:%7.2lf".($this->gprintScaleOption);
 				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
@@ -415,10 +408,10 @@ class CentreonGraph	{
 				$this->addArgument("GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
 			}
 			if (isset($tm["warn"]) && $tm["warn"] != 0)
-				$this->addArgument("HRULE:".$tm["warn"]."#00FF00:\"Warning \: ".$tm["warn"]."\\l\" "); 
-			if (isset($tm["crit"]) && $tm["crit"] != 0)	
-				$this->addArgument("HRULE:".$tm["crit"]."#FF0000:\"Critical \: ".$tm["crit"]."\""); 
-			
+				$this->addArgument("HRULE:".$tm["warn"]."#00FF00:\"Warning \: ".$tm["warn"]."\\l\" ");
+			if (isset($tm["crit"]) && $tm["crit"] != 0)
+				$this->addArgument("HRULE:".$tm["crit"]."#FF0000:\"Critical \: ".$tm["crit"]."\"");
+
 			$cpt++;
 		}
 	}
@@ -479,7 +472,7 @@ class CentreonGraph	{
 		$DBRESULT->free();
 
 	}
-	
+
 	private function _getServiceGraphID()	{
 		$service_id = $this->indexData["service_id"];
 		while (1) {
@@ -539,14 +532,14 @@ class CentreonGraph	{
 
 
 	}
-	
+
 	/*
 	 * Display Start and end time on graph
 	 */
 	public function addArgument($arg) {
 		$this->_arguments[$this->_argcount++] = $arg;
 	}
-	
+
 	public function displayError() {
 		$image = imagecreate(250,100);
 		$fond = imagecolorallocate($image,0xEF,0xF2,0xFB);
@@ -562,7 +555,7 @@ class CentreonGraph	{
 	public function setColor($name, $value) {
 		$this->_colors[$name] = $value;
 	}
-	
+
 	public function setRRDOption($name, $value = null) {
 		if (strpos($value, " ")!==false)
 			$value = "'".$value."'";
@@ -583,10 +576,10 @@ class CentreonGraph	{
 			return $this->_options[$name];
 		return false;
 	}
-	
+
 	public function displayImageFlow() {
 		$commandLine = "";
-	
+
 		/*
 		 * Send header
 		 */
@@ -600,20 +593,20 @@ class CentreonGraph	{
 		} else {
 			$encoding = false;
 		}
- 		
+
 		header("Content-Type: image/png");
 		header("Content-Transfer-Encoding: binary");
 		header("Content-Disposition: attachment; filename=\"".$this->filename.".png\";");
 		if ($this->compress && $encoding)
 			header('Content-Encoding: '.$encoding);
-		
+
 		$commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
-		
+
 		if ($this->_flag == 0 && $this->GMT->used() ) {
 				$this->setRRDOption("start", $this->GMT->getUTCDate($this->_RRDoptions["start"]) );
 				$this->setRRDOption("end",   $this->GMT->getUTCDate($this->_RRDoptions["end"]) );
 		}
-		if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] > 2160000 
+		if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] > 2160000
 		&& $this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000 )
 		{
 			if($this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000 - (86400*7))
@@ -676,44 +669,44 @@ class CentreonGraph	{
 				return htmlentities($defaultValue, ENT_QUOTES, "UTF-8");
 		}
 	}
-		
-	
+
+
 	public 	function getRandomWebColor() {
-		$web_safe_colors = array('#000033', '#000066', '#000099', '#0000cc', 
-			'#0000ff', '#003300', '#003333', '#003366', '#003399', '#0033cc', 
-			'#0033ff', '#006600', '#006633', '#006666', '#006699', '#0066cc', 
-			'#0066ff', '#009900', '#009933', '#009966', '#009999', '#0099cc', 
-			'#0099ff', '#00cc00', '#00cc33', '#00cc66', '#00cc99', '#00cccc', 
-			'#00ccff', '#00ff00', '#00ff33', '#00ff66', '#00ff99', '#00ffcc', 
-			'#00ffff', '#330000', '#330033', '#330066', '#330099', '#3300cc', 
-			'#3300ff', '#333300', '#333333', '#333366', '#333399', '#3333cc', 
-			'#3333ff', '#336600', '#336633', '#336666', '#336699', '#3366cc', 
-			'#3366ff', '#339900', '#339933', '#339966', '#339999', '#3399cc', 
-			'#3399ff', '#33cc00', '#33cc33', '#33cc66', '#33cc99', '#33cccc', 
-			'#33ccff', '#33ff00', '#33ff33', '#33ff66', '#33ff99', '#33ffcc', 
-			'#33ffff', '#660000', '#660033', '#660066', '#660099', '#6600cc', 
-			'#6600ff', '#663300', '#663333', '#663366', '#663399', '#6633cc', 
-			'#6633ff', '#666600', '#666633', '#666666', '#666699', '#6666cc', 
-			'#6666ff', '#669900', '#669933', '#669966', '#669999', '#6699cc', 
-			'#6699ff', '#66cc00', '#66cc33', '#66cc66', '#66cc99', '#66cccc', 
-			'#66ccff', '#66ff00', '#66ff33', '#66ff66', '#66ff99', '#66ffcc', 
-			'#66ffff', '#990000', '#990033', '#990066', '#990099', '#9900cc', 
-			'#9900ff', '#993300', '#993333', '#993366', '#993399', '#9933cc', 
-			'#9933ff', '#996600', '#996633', '#996666', '#996699', '#9966cc', 
-			'#9966ff', '#999900', '#999933', '#999966', '#999999', '#9999cc', 
-			'#9999ff', '#99cc00', '#99cc33', '#99cc66', '#99cc99', '#99cccc', 
-			'#99ccff', '#99ff00', '#99ff33', '#99ff66', '#99ff99', '#99ffcc', 
-			'#99ffff', '#cc0000', '#cc0033', '#cc0066', '#cc0099', '#cc00cc', 
-			'#cc00ff', '#cc3300', '#cc3333', '#cc3366', '#cc3399', '#cc33cc', 
-			'#cc33ff', '#cc6600', '#cc6633', '#cc6666', '#cc6699', '#cc66cc', 
-			'#cc66ff', '#cc9900', '#cc9933', '#cc9966', '#cc9999', '#cc99cc', 
-			'#cc99ff', '#cccc00', '#cccc33', '#cccc66', '#cccc99', '#cccccc', 
-			'#ccccff', '#ccff00', '#ccff33', '#ccff66', '#ccff99', '#ccffcc', 
-			'#ccffff', '#ff0000', '#ff0033', '#ff0066', '#ff0099', '#ff00cc', 
-			'#ff00ff', '#ff3300', '#ff3333', '#ff3366', '#ff3399', '#ff33cc', 
-			'#ff33ff', '#ff6600', '#ff6633', '#ff6666', '#ff6699', '#ff66cc', 
-			'#ff66ff', '#ff9900', '#ff9933', '#ff9966', '#ff9999', '#ff99cc', 
-			'#ff99ff', '#ffcc00', '#ffcc33', '#ffcc66', '#ffcc99', '#ffcccc', 
+		$web_safe_colors = array('#000033', '#000066', '#000099', '#0000cc',
+			'#0000ff', '#003300', '#003333', '#003366', '#003399', '#0033cc',
+			'#0033ff', '#006600', '#006633', '#006666', '#006699', '#0066cc',
+			'#0066ff', '#009900', '#009933', '#009966', '#009999', '#0099cc',
+			'#0099ff', '#00cc00', '#00cc33', '#00cc66', '#00cc99', '#00cccc',
+			'#00ccff', '#00ff00', '#00ff33', '#00ff66', '#00ff99', '#00ffcc',
+			'#00ffff', '#330000', '#330033', '#330066', '#330099', '#3300cc',
+			'#3300ff', '#333300', '#333333', '#333366', '#333399', '#3333cc',
+			'#3333ff', '#336600', '#336633', '#336666', '#336699', '#3366cc',
+			'#3366ff', '#339900', '#339933', '#339966', '#339999', '#3399cc',
+			'#3399ff', '#33cc00', '#33cc33', '#33cc66', '#33cc99', '#33cccc',
+			'#33ccff', '#33ff00', '#33ff33', '#33ff66', '#33ff99', '#33ffcc',
+			'#33ffff', '#660000', '#660033', '#660066', '#660099', '#6600cc',
+			'#6600ff', '#663300', '#663333', '#663366', '#663399', '#6633cc',
+			'#6633ff', '#666600', '#666633', '#666666', '#666699', '#6666cc',
+			'#6666ff', '#669900', '#669933', '#669966', '#669999', '#6699cc',
+			'#6699ff', '#66cc00', '#66cc33', '#66cc66', '#66cc99', '#66cccc',
+			'#66ccff', '#66ff00', '#66ff33', '#66ff66', '#66ff99', '#66ffcc',
+			'#66ffff', '#990000', '#990033', '#990066', '#990099', '#9900cc',
+			'#9900ff', '#993300', '#993333', '#993366', '#993399', '#9933cc',
+			'#9933ff', '#996600', '#996633', '#996666', '#996699', '#9966cc',
+			'#9966ff', '#999900', '#999933', '#999966', '#999999', '#9999cc',
+			'#9999ff', '#99cc00', '#99cc33', '#99cc66', '#99cc99', '#99cccc',
+			'#99ccff', '#99ff00', '#99ff33', '#99ff66', '#99ff99', '#99ffcc',
+			'#99ffff', '#cc0000', '#cc0033', '#cc0066', '#cc0099', '#cc00cc',
+			'#cc00ff', '#cc3300', '#cc3333', '#cc3366', '#cc3399', '#cc33cc',
+			'#cc33ff', '#cc6600', '#cc6633', '#cc6666', '#cc6699', '#cc66cc',
+			'#cc66ff', '#cc9900', '#cc9933', '#cc9966', '#cc9999', '#cc99cc',
+			'#cc99ff', '#cccc00', '#cccc33', '#cccc66', '#cccc99', '#cccccc',
+			'#ccccff', '#ccff00', '#ccff33', '#ccff66', '#ccff99', '#ccffcc',
+			'#ccffff', '#ff0000', '#ff0033', '#ff0066', '#ff0099', '#ff00cc',
+			'#ff00ff', '#ff3300', '#ff3333', '#ff3366', '#ff3399', '#ff33cc',
+			'#ff33ff', '#ff6600', '#ff6633', '#ff6666', '#ff6699', '#ff66cc',
+			'#ff66ff', '#ff9900', '#ff9933', '#ff9966', '#ff9999', '#ff99cc',
+			'#ff99ff', '#ffcc00', '#ffcc33', '#ffcc66', '#ffcc99', '#ffcccc',
 			'#ffccff', '#ffff00', '#ffff33', '#ffff66', '#ffff99', '#ffffcc');
 			return $web_safe_colors[rand(0,sizeof($web_safe_colors))];
 	}
@@ -722,7 +715,7 @@ class CentreonGraph	{
 		if ($this->general_opt['debug_rrdtool'])
 			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : ".$message." \n", 3, $this->general_opt["debug_path"]."rrdtool.log");
 	}
-	
-		
+
+
 }
 ?>
