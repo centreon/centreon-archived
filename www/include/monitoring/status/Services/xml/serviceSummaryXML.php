@@ -85,13 +85,14 @@
 	$host_services = array();
 	$metaService_status = array();
 	$tab_host_service = array();
+	$tabIcone = array();
 
 	/* **********************************************
 	 * Get Host status
 	 */
 	$rq1 = 		" SELECT " .
-				" DISTINCT no.name1 as host_name, nhs.current_state" .
-				" FROM " .$obj->ndoPrefix."objects no, " .$obj->ndoPrefix."hoststatus nhs";
+				" DISTINCT no.name1 as host_name, nhs.current_state, icon_image" .
+				" FROM " .$obj->ndoPrefix."objects no, " .$obj->ndoPrefix."hoststatus nhs, " .$obj->ndoPrefix."hosts nh ";
 
 	if ($hostgroups) {
 		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hgm ";
@@ -100,7 +101,7 @@
 	if (!$obj->is_admin)	{
 		$rq1 .= ", centreon_acl ";
 	}
-	$rq1 .=	" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
+	$rq1 .=	" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id AND nh.host_object_id = no.object_id ".
 				" AND no.name1 NOT LIKE '_Module_%'";
 
 	if ($o == "svcSum_pb") {
@@ -169,6 +170,11 @@
 		$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 3);
 		$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 4);
 		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
+		if ($ndo["icon_image"] != "") {
+			$tabIcone[$ndo["host_name"]] = $ndo["icon_image"];
+		} else {
+			$tabIcone[$ndo["host_name"]] = "none";
+		}
 	}
 
 	foreach ($tab_final as $host_name => $tab) {
@@ -177,6 +183,7 @@
 		$obj->XML->writeElement("o", $ct++);
 		$obj->XML->writeElement("hn", $host_name);
 		$obj->XML->writeElement("hnl", urlencode($host_name));
+		$obj->XML->writeElement("ico", $tabIcone[$host_name]);
 		$obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
 		$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
 		$obj->XML->writeElement("sk", $tab["nb_service_k"]);
