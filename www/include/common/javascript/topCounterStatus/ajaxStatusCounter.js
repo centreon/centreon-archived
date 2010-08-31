@@ -113,7 +113,7 @@ function reloadStatusCounter(_relaod_time, _sid){
 					document.getElementById('services').innerHTML = '';
 					var _text_total_service = document.createTextNode(_statistic_total_service);
 					var _linkservice_total = document.createElement("a");
-				  	_linkservice_total.href = 'main.php?p=20201&o=svc_ok&search=';
+				  	_linkservice_total.href = 'main.php?p=20201&o=svc&search=';
 					_linkservice_total.appendChild(_text_total_service);
 					document.getElementById('services').appendChild(_linkservice_total);
 					
