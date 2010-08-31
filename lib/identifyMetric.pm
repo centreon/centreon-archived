@@ -98,7 +98,7 @@ sub updateMetricInformation($$$$$){
 }
 
 #
-# perfdata, index, status, ctime, storage_type, counter, rebuild
+# perfdata index status time type counter rebuild
 #
 sub identify_metric($$$$$$$$){ 
     my (@data, $begin, $just_insert, $generalcounter);
@@ -111,8 +111,8 @@ sub identify_metric($$$$$$$$){
 
     # Cut perfdata    	
     my $metric = removeBackSpace($_[0]);
-  
-    while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\%\ \\]+)\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)\s?/g) {
+ 
+    while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\ \\\%]+)\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)\s?/g) {
 		my $metric_name = $1;
 	    $metric_name =~ s/^\s+//;
 	    $metric_name =~ s/\s+$//;

@@ -80,12 +80,11 @@ sub updateRRDDB($$$$$$$$) {
     my $interval_length;
     my $begin;
 
-    $_[3] =~s/,/./g;
     if (checkDBDirectory($_[0]) == 0) {
 	writeLogFile("Data droped....\n");
 	return 0;
     }
-
+    $_[3] =~ s/,/./g;
     # call function to check if DB exist and else create it
     if (-e $_[0]."/".$_[1].".rrd") {
 	updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3]);
@@ -128,7 +127,7 @@ sub getServiceDescFromIndex($$) {
 
     my $sth1 = $cnx->prepare("SELECT service_description FROM `metrics` m, `index_data` i WHERE i.id = m.index_id AND m.metric_id = '".$index."'");
     if (!$sth1->execute){
-	writeLogFile("Error with requeste to get service dscr (getServiceDescFromIndex) : ".$sth1->errstr);
+	writeLogFile("Error with request to get service description (getServiceDescFromIndex) : ".$sth1->errstr);
     }
     my $data = $sth1->fetchrow_hashref();
     undef($sth1);

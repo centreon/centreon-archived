@@ -317,15 +317,16 @@ sub GetPerfData() {
 		    }
 		    $_ =~ s/\n//g;
 		    @line_tab = prepardPerfdataParsed($_);
-		    if ($line_tab[0] > $now) {
-            	writeLogFile("Error Timestamp... Unknown format : ".$line_tab[0]);
-            }
 		    
-		    if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "" && $line_tab[0] < $now)){
-			checkAndUpdate(@line_tab, $configOptions);
-			$counterData++;
-		    }
-		    undef($line_tab);
+		    if ($line_tab[0] !~ m/^[0-9]*$/g || $line_tab[0] > $now) {
+                writeLogFile("Error Timestamp... Unknown format : ".$line_tab[0]);
+            } else {
+                if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "" && $line_tab[0] < $now)){
+                    checkAndUpdate(@line_tab, $configOptions);
+                    $counterData++;
+                }
+                undef($line_tab);
+            }
 		    
 		    # flush buffer
 		    if ($counterData >= 200) {
