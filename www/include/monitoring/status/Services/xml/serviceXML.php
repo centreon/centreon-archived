@@ -321,21 +321,23 @@
 
 	$DBRESULT =& $obj->DBNdo->query($finalRequest);
 	while ($ndo =& $DBRESULT->fetchRow()) {
-		if (isset($host_status[$ndo["host_name"]])){
+		if (isset($host_status[$ndo["host_name"]])) {
 
 			$passive = 0;
 			$active = 1;
 			$last_check = " ";
 			$duration = " ";
 
-			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
+			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
 				$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
-			else if ($ndo["last_state_change"] > 0)
+			} else if ($ndo["last_state_change"] > 0) {
 				$duration = " - ";
+			}
 
 			$hard_duration = " N/S ";
-			if (($ndo["last_hard_state_change"] > 0) && ($ndo["last_hard_state_change"] >= $ndo["last_state_change"]))
+			if (($ndo["last_hard_state_change"] > 0) && ($ndo["last_hard_state_change"] >= $ndo["last_state_change"])) {
 				$hard_duration = CentreonDuration::toString(time() - $ndo["last_hard_state_change"]);
+			}
 
 			if ($ndo["scheduled_downtime_depth"] == 1) {
 				$class = "line_downtime";
@@ -402,15 +404,15 @@
 			$obj->XML->writeElement("dtm",	$ndo["scheduled_downtime_depth"]);
 
 			if ($ndo["notes_url"] != "") {
-				$ndo["notes_url"] = $string = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes_url"]);
-				$ndo["notes_url"] = $string = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes_url"]);
+				$ndo["notes_url"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes_url"]);
+				$ndo["notes_url"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes_url"]);
 				$obj->XML->writeElement("snu", $ndo["notes_url"]);
 			} else {
 				$obj->XML->writeElement("snu", 'none');
 			}
 			if ($ndo["notes"] != "") {
-				$ndo["notes"] = $string = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes"]);
-				$ndo["notes"] = $string = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes"]);
+				$ndo["notes"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes"]);
+				$ndo["notes"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes"]);
 				$obj->XML->writeElement("sn", $ndo["notes"]);
 			} else {
 				$obj->XML->writeElement("sn", 'none');
