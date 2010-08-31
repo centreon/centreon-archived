@@ -96,7 +96,7 @@
 	$rq1 = 	"SELECT DISTINCT no.name1 as host_name," .
 			" nhs.current_state, nhs.problem_has_been_acknowledged, nhs.scheduled_downtime_depth, " .
 			" nhs.passive_checks_enabled, nhs.active_checks_enabled, no.object_id, nh.action_url," .
-			" nh.notes_url, nh.notes, nh.icon_image " .
+			" nh.notes_url, nh.notes, nh.icon_image, nh.address " .
 			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts nh ";
 	if ($hostgroups) {
 		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hm ";
@@ -117,6 +117,7 @@
 	$rq1 .= ($instance) ? " AND no.instance_id = ".$instance : "" ;
 
 	$DBRESULT =& $obj->DBNdo->query($rq1);
+	$hostHGString = "";
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		/*
 		 * HG List
