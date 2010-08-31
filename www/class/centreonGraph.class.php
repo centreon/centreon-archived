@@ -40,7 +40,6 @@
  * Need Centreon Configuration file
  */
 require_once "@CENTREON_ETC@/centreon.conf.php";
-//require_once "/etc/centreon/centreon.conf.php";
 
 /*
  * this class need also others classes
@@ -211,7 +210,9 @@ class CentreonGraph	{
 	public function init() {
 		$this->setRRDOption("interlaced");
 		$this->setRRDOption("imgformat", "PNG");
-		$this->setRRDOption("vertical-label", $this->templateInformations["vertical_label"]);
+		if (isset($this->templateInformations["vertical_label"])) {
+			$this->setRRDOption("vertical-label", $this->templateInformations["vertical_label"]);
+		}
 
 		if ($this->general_opt["rrdtool_version"] != "1.0")
 			$this->setRRDOption("slope-mode");
@@ -272,7 +273,7 @@ class CentreonGraph	{
 		}
 
 		$this->gprintScaleOption = "%s";
-		if ($this->templateInformations["scaled"] == "0"){
+		if (isset($this->templateInformations["scaled"]) && $this->templateInformations["scaled"] == "0"){
 			# Disable y-axis scaling
 			$this->setRRDOption("units-exponent", 0);
 			# Suppress Scaling in Text Output
@@ -446,6 +447,8 @@ class CentreonGraph	{
 	}
 
 	public function setTemplate($template_id = NULL) {
+		$template_id = htmlentitites($template_id, ETN_QUOTES, "UTF-8");
+
 		if (!isset($template_id)|| !$template_id){
 			if ($this->indexData["host_name"] != "_Module_Meta") {
 				/*
@@ -597,8 +600,10 @@ class CentreonGraph	{
 		header("Content-Type: image/png");
 		header("Content-Transfer-Encoding: binary");
 		header("Content-Disposition: attachment; filename=\"".$this->filename.".png\";");
-		if ($this->compress && $encoding)
+
+		if ($this->compress && $encoding) {
 			header('Content-Encoding: '.$encoding);
+		}
 
 		$commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
 
@@ -715,7 +720,6 @@ class CentreonGraph	{
 		if ($this->general_opt['debug_rrdtool'])
 			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : ".$message." \n", 3, $this->general_opt["debug_path"]."rrdtool.log");
 	}
-
 
 }
 ?>
