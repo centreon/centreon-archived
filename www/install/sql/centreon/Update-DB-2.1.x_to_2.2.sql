@@ -252,3 +252,9 @@ ALTER TABLE `acl_resources_hc_relations`
   ADD CONSTRAINT `acl_resources_hc_relations_ibfk_1` FOREIGN KEY (`hc_id`) REFERENCES `hostcategories` (`hc_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `acl_resources_hc_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE;
 
+
+ALTER TABLE `cron_operation` ADD `time_launch` INT NULL AFTER `command` ;
+ALTER TABLE `cron_operation` ADD `last_modification` INT NULL AFTER `time_launch` ;
+ALTER TABLE `cron_operation` ADD `running` enum('0','1') AFTER `module` ;
+ALTER TABLE `cron_operation` ADD `last_execution_time` INT NULL AFTER `running` ;
+

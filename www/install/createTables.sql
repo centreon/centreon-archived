@@ -834,10 +834,12 @@ CREATE TABLE IF NOT EXISTS `cron_operation` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(254) default NULL,
   `command` varchar(254) default NULL,
-  `time_launch` varchar(254) default NULL,
+  `time_launch` int(11) default NULL,
   `last_modification` int(11) default '0',
   `system` enum('0','1') default NULL,
   `module` enum('0','1') default NULL,
+  `running` enum('0','1') default NULL,
+  `last_execution_time` int(11) NOT NULL,
   `activate` enum('0','1') default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
