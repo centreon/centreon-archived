@@ -3,73 +3,76 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
  	if (!isset($oreon))
  		exit();
- 
+
  	include_once $path . "commandType.php";
- 
+
  	/*
 	 * Form Rules
 	 */
-	
+
 	function myReplace()	{
 		global $form;
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["command_name"]));
 	}
-	
+
 	require_once $centreon_path . "www/include/configuration/configObject/command/javascript/commandJs.php";
-	
+
 	/*
 	 * Database retrieve information for Command
 	 */
-	
+
 	$plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
 	$cmd = array();
-	if (($o == "c" || $o == "w") && $command_id)	{		
+	if (($o == "c" || $o == "w") && $command_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
+
 		# Set base value
 		$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
-	    $DBRESULT =& $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '".$command_id."'");	
-		while ($row =& $DBRESULT->fetchRow()) {
+	    $DBRESULT =& $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '".$command_id."'");
+		$strArgDesc = "";
+		$nbRow = 0;
+	    while ($row =& $DBRESULT->fetchRow()) {
 			$strArgDesc .= $row['macro_name'] . " : " . html_entity_decode($row['macro_description']) . "\n";
 			$nbRow++;
 		}
 	}
-	
+
 	/*
 	 * Resource Macro
 	 */
@@ -83,7 +86,7 @@
 	}
 	unset($row);
 	$DBRESULT->free();
-	
+
 	/*
 	 * Graphs Template comes from DB -> Store in $graphTpls Array
 	 */
@@ -93,7 +96,7 @@
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	unset($graphTpl);
 	$DBRESULT->free();
-	
+
 	/*
 	 * Nagios Macro
 	 */
@@ -103,7 +106,7 @@
 		$macros[$row["macro_name"]] = $row["macro_name"];
 	unset($row);
 	$DBRESULT->free();
-	
+
 	$attrsText 		= array("size"=>"35");
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
 	$attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
@@ -128,10 +131,10 @@
 	else
 		$form->addElement('header', 'information', _("Information"));
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
-	
+
 	if (isset($tabCommandType)) {
 		foreach ($tabCommandType as $id => $name) {
-			$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id);	
+			$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id);
 		}
 	} else {
 		$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
@@ -144,7 +147,7 @@
 		$form->setDefaults(array('command_type' => $type));
 	else
 		$form->setDefaults(array('command_type' => '2'));
-		
+
 	$form->addElement('text', 'command_name', _("Command Name"), $attrsText);
 	$form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
 	$form->addElement('text', 'command_hostaddress', _("\$HOSTADDRESS\$"), $attrsText);
@@ -154,7 +157,7 @@
 	$form->addElement('select', 'graph_id', _("Graph template"), $graphTpls);
 
 	$form->addElement('button', 'desc_arg', _("Describe arguments"), array("onClick"=>"goPopup();"));
-	
+
 	$form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
 
 	$tab = array();
@@ -163,13 +166,13 @@
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 	$form->setDefaults(array("listOfArg"=>$strArgDesc));
-	
+
 	$form->addElement('select', 'resource', null, $resource);
 	$form->addElement('select', 'macros', null, $macros);
-	
+
 	ksort($plugins_list);
 	$form->addElement('select', 'plugins', null, $plugins_list);
-	
+
 	/*
 	 * Further informations
 	 */
@@ -178,7 +181,7 @@
 	$redirectType->setValue($type);
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-	
+
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('command_name', 'myReplace');
 	$form->applyFilter('__ALL__', 'myTrim');
@@ -198,7 +201,7 @@
 	# prepare help texts
 	$helptext = "";
 	include_once("help.php");
-	foreach ($help as $key => $text) { 
+	foreach ($help as $key => $text) {
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
@@ -224,11 +227,11 @@
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
-	
+
 	$tpl->assign('msg', array ("comment"=>_("Commands definitions can contain Macros but they have to be valid.")));
 	$tpl->assign('cmd_help',_("Plugin Help"));
 	$tpl->assign('cmd_play',_("Test the plugin"));
-	
+
 	$valid = false;
 	if ($form->validate())	{
 		$cmdObj =& $form->getElement('command_id');
@@ -242,7 +245,7 @@
 		$form->freeze();
 		$valid = true;
 	}
-	
+
 	?><script type='text/javascript'>
 	<!--
 	function insertValueQuery(elem) {
@@ -265,7 +268,7 @@
 	                chaineAj += myListBox.options[i].value;
 	            }
 	        }
-	
+
 	        if (document.selection) {
 	        	// IE support
 	            myQuery.focus();
@@ -285,7 +288,7 @@
 	}
 	//-->
 	</script><?php
-	
+
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once($path."listCommand.php");
