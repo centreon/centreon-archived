@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL:  $
  * SVN : $Id:  $
- * 
+ *
  */
 
 class Centreon_Traps
@@ -41,7 +41,7 @@ class Centreon_Traps
     protected $_db;
     protected $_form;
     protected $_centreon;
-    
+
     /*
      * constructor
      */
@@ -59,14 +59,14 @@ class Centreon_Traps
     }
 
     /*
-     *  _setMatchingOptions takes the $_POST array and analyses it, 
+     *  _setMatchingOptions takes the $_POST array and analyses it,
      *  then inserts data into the  traps_matching_properties
      */
     private function _setMatchingOptions($trapId, $tab = array())
     {
         $this->_db->query("DELETE FROM traps_matching_properties WHERE trap_id = '" . $trapId ."'");
-        
-        if (isset($tab['traps_advanced_treatment']) && $tab['traps_advanced_treatment']) {        
+
+        if (isset($tab['traps_advanced_treatment']) && $tab['traps_advanced_treatment']) {
             $matchingTab = array();
             $i = 0;
             foreach($tab as $key => $value) {
@@ -77,7 +77,7 @@ class Centreon_Traps
                     $matchingTab['status'][$i] = htmlentities($tab['regularStatus_'.$index], ENT_QUOTES, "UTF-8");
                     $i++;
                 }
-                elseif (preg_match('/^additionalRegexp_(\d)/', $key, $matches)) {                
+                elseif (preg_match('/^additionalRegexp_(\d)/', $key, $matches)) {
                     $index = $matches[1];
                     $matchingTab['order'][$i] = htmlentities($tab['additionalOrder_'.$index], ENT_QUOTES, "UTF-8");
                     $matchingTab['regexp'][$i] = htmlentities($tab['additionalRegexp_'.$index], ENT_QUOTES, "UTF-8");
@@ -85,21 +85,23 @@ class Centreon_Traps
                     $i++;
                 }
             }
-            asort($matchingTab['order']);            
-            $j = 1;
-            foreach ($matchingTab['order'] as $key => $value) {
-                $query = "INSERT INTO traps_matching_properties (trap_id, tmo_order, tmo_regexp, tmo_status) VALUES (";
-                $query .= "'".$trapId."', ";
-                $query .= "'".$j."', ";
-                $query .= "'".$matchingTab['regexp'][$key]."', ";
-                $query .= "'".$matchingTab['status'][$key]."' ";                
-                $query .= ")";                
-                $this->_db->query($query);
-                $j++;
+            if (isset($matchingTab['order'])) {
+	            asort($matchingTab['order']);
+	            $j = 1;
+	            foreach ($matchingTab['order'] as $key => $value) {
+	                $query = "INSERT INTO traps_matching_properties (trap_id, tmo_order, tmo_regexp, tmo_status) VALUES (";
+	                $query .= "'".$trapId."', ";
+	                $query .= "'".$j."', ";
+	                $query .= "'".$matchingTab['regexp'][$key]."', ";
+	                $query .= "'".$matchingTab['status'][$key]."' ";
+	                $query .= ")";
+	                $this->_db->query($query);
+	                $j++;
+	            }
             }
-        }
+		}
     }
-    
+
     /*
      * sets form if not passed to constructor beforehands
      */
@@ -107,26 +109,26 @@ class Centreon_Traps
     {
         $this->_form = $form;
     }
-    
+
     /*
      * tests if trap already exists
-     */    
-    public function testTrapExistence($oid = NULL)	{		
+     */
+    public function testTrapExistence($oid = NULL)	{
 		$id = NULL;
 		if (isset($this->_form)) {
 			$id = $this->_form->getSubmitValue('traps_id');
         }
 		$query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '".htmlentities($oid, ENT_QUOTES, "UTF-8")."'";
         $res = $this->_db->query($query);
-		$trap = $res->fetchRow();        
-		
+		$trap = $res->fetchRow();
+
 		if ($res->numRows() >= 1 && $trap["traps_id"] == $id) {
 			return true;
         }
 		else if ($res->numRows() >= 1 && $trap["traps_id"] != $id) {
 			return false;
         }
-		else {			
+		else {
             return true;
         }
 	}
@@ -142,11 +144,11 @@ class Centreon_Traps
 			$this->_centreon->CentreonLogAction->insertLog("traps", $key, $row['traps_name'], "d");
 		}
 	}
-	
+
     /*
      * duplicate traps
      */
-	public function duplicate($traps = array(), $nbrDup = array()) {		
+	public function duplicate($traps = array(), $nbrDup = array()) {
 		foreach ($traps as $key => $value)	{
 			$res = $this->_db->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
 			$row = $res->fetchRow();
@@ -169,7 +171,7 @@ class Centreon_Traps
 			}
 		}
 	}
-	
+
     /*
      * Update
      */
@@ -177,7 +179,7 @@ class Centreon_Traps
 		if (!$traps_id) {
 			return null;
         }
-		
+
 		$ret = array();
 		$ret = $this->_form->getSubmitValues();
 		if (!isset($ret["traps_reschedule_svc_enable"]) || !$ret["traps_reschedule_svc_enable"]) {
@@ -189,7 +191,10 @@ class Centreon_Traps
 		if (!isset($ret["traps_execution_command_enable"])|| !$ret["traps_execution_command_enable"]) {
 			$ret["traps_execution_command_enable"] = 0;
         }
-		
+        if (!isset($ret["traps_advanced_treatment"]) || !$ret["traps_advanced_treatment"]) {
+        	$ret["traps_advanced_treatment"] = 0;
+        }
+
 		$rq = "UPDATE traps ";
 		$rq .= "SET `traps_name` = '".htmlentities($ret["traps_name"], ENT_QUOTES, "UTF-8")."', ";
 		$rq .= "`traps_oid` = '".htmlentities($ret["traps_oid"], ENT_QUOTES, "UTF-8")."', ";
@@ -213,19 +218,34 @@ class Centreon_Traps
 		$fields["traps_execution_command_enable"] = $ret["traps_execution_command_enable"];
 		$fields["traps_comments"] = htmlentities($ret["traps_comments"], ENT_QUOTES, "UTF-8");
 		$fields["manufacturer_id"] = htmlentities($ret["manufacturer_id"], ENT_QUOTES, "UTF-8");
-        
+
         $this->_setMatchingOptions($traps_id, $_POST);
-        
+
 		$this->_centreon->CentreonLogAction->insertLog("traps", $traps_id, $fields["traps_name"], "c", $fields);
 	}
-	
+
     /*
      * inserts trap
      */
-	public function insert($ret = array())	{		
+	public function insert($ret = array())	{
 		if (!count($ret)) {
 			$ret = $this->_form->getSubmitValues();
         }
+
+        if (!isset($ret["traps_reschedule_svc_enable"]) || !$ret["traps_reschedule_svc_enable"]) {
+			$ret["traps_reschedule_svc_enable"] = 0;
+        }
+		if (!isset($ret["traps_submit_result_enable"]) || !$ret["traps_submit_result_enable"]) {
+			$ret["traps_submit_result_enable"] = 0;
+        }
+		if (!isset($ret["traps_execution_command_enable"])|| !$ret["traps_execution_command_enable"]) {
+			$ret["traps_execution_command_enable"] = 0;
+        }
+        if (!isset($ret["traps_advanced_treatment"]) || !$ret["traps_advanced_treatment"]) {
+        	$ret["traps_advanced_treatment"] = 0;
+        }
+
+
 		$rq = "INSERT INTO traps ";
 		$rq .= "(traps_name, traps_oid, traps_args, traps_status, traps_submit_result_enable, traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, traps_advanced_treatment, traps_comments, manufacturer_id) ";
 		$rq .= "VALUES ";
@@ -243,7 +263,7 @@ class Centreon_Traps
 		$this->_db->query($rq);
 		$res = $this->_db->query("SELECT MAX(traps_id) FROM traps");
 		$traps_id = $res->fetchRow();
-		
+
 		$fields["traps_name"] = htmlentities($ret["traps_name"], ENT_QUOTES, "UTF-8");
 		$fields["traps_args"] = htmlentities($ret["traps_args"], ENT_QUOTES, "UTF-8");
 		$fields["traps_status"] = htmlentities($ret["traps_status"], ENT_QUOTES, "UTF-8");
@@ -255,9 +275,9 @@ class Centreon_Traps
 		$fields["traps_comments"] = htmlentities($ret["traps_comments"], ENT_QUOTES, "UTF-8");
 		$fields["manufacturer_id"] = htmlentities($ret["manufacturer_id"], ENT_QUOTES, "UTF-8");
 		$this->_centreon->CentreonLogAction->insertLog("traps", $traps_id["MAX(traps_id)"], $fields["traps_name"], "a", $fields);
-		
+
         $this->_setMatchingOptions($traps_id['MAX(traps_id)'], $_POST);
-        
+
 		return ($traps_id["MAX(traps_id)"]);
 	}
 }
