@@ -94,6 +94,7 @@
 
 	$rows = 0;
 	$tmp = NULL;
+	$tmp2 = NULL;
 	$searchH = htmlentities($searchH, ENT_QUOTES, "UTF-8");
 	$searchS = htmlentities($searchS, ENT_QUOTES, "UTF-8");
 	/*
@@ -104,7 +105,7 @@
 		$searchH = str_replace('\\', "#BS#", $searchH);
 		$searchS = str_replace('/', "#S#", $searchS);
 		$searchS = str_replace('\\', "#BS#", $searchS);
-		if ($search_type_service && !$search_type_host) {
+		if ($searchS && !$searchH) {
 			$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
 										"FROM service sv, host_service_relation hsr " .
 										"WHERE sv.service_register = '1' " .
@@ -118,7 +119,7 @@
 				$tab_buffer[$service["service_id"]] = $service["service_id"];
 				$rows++;
 			}
-		} else if (!$search_type_service && $search_type_host)	{
+		} else if (!$searchS && $searchH)	{
 			$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
 										"FROM service sv, host_service_relation hsr, hostgroup hg " .
 										"WHERE sv.service_register = '1' " .
