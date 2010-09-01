@@ -36,11 +36,20 @@
  *
  */
 
-	require_once ("@CENTREON_ETC@/centreon.conf.php");
-	//require_once ("/etc/centreon/centreon.conf.php");
+	//require_once ("@CENTREON_ETC@/centreon.conf.php");
+	require_once ("/etc/centreon/centreon.conf.php");
 	require_once ("./class/centreonDB.class.php");
 
+	/**
+	 *
+	 * DB Connection
+	 */
 	$pearDB = new CentreonDB();
+
+	/**
+	 * Counters
+	 */
+	global $regCounter, $gdCounter, $fileRemoved, $dirCreated;
 
 	if (!isset($_GET["session_id"]))
 		exit ;
@@ -64,11 +73,11 @@
 	    if ($dh = opendir($dir)) {
 	        while (($subdir = readdir($dh)) !== false) {
 	            if (!isset($rejectedDir[$subdir]) && filetype($dir . $subdir) == "dir") {
-	            	 $dir_id = checkDirectory($subdir, $pearDB, $dirCreated);
+	            	 $dir_id = checkDirectory($subdir, $pearDB);
 	            	 if ($dh2 = opendir($dir.$subdir)) {
 	            	 	while (($picture = readdir($dh2)) !== false) {
 	            	 		if (!isset($rejectedDir[$picture])) {
-	            	 			checkPicture($picture, $dir.$subdir, $dir_id, $pearDB, $regCounter, $gdCounter);
+	            	 			checkPicture($picture, $dir.$subdir, $dir_id, $pearDB);
 	            	 		}
 	            	 	}
 	            	 	closedir($dh2);
@@ -108,7 +117,8 @@
 	/*
 	 * recreates local centreon directories as defined in DB
 	 */
- 	function checkDirectory($dir, $pearDB, $dirCreated) {
+ 	function checkDirectory($dir, $pearDB) {
+ 		global $dirCreated;
  		$DBRESULT =& $pearDB->query("SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir."'");
  		if (!$DBRESULT->numRows()) {
  			$DBRESULT =& $pearDB->query("INSERT INTO view_img_dir (`dir_name`, `dir_alias`) VALUES ('".$dir."', '".$dir."')");
@@ -126,8 +136,9 @@
 	/*
 	 * inserts $dir_id/$picture into DB if not registered yet
 	 */
- 	function checkPicture($picture, $dirpath, $dir_id, $pearDB, $regCounter, $gdCounter) {
+ 	function checkPicture($picture, $dirpath, $dir_id, $pearDB) {
 		global $allowedExt;
+		global $regCounter, $gdCounter, $fileRemoved, $dirCreated;
 
 		$img_info = pathinfo($picture);
 		$img_ext = $img_info["extension"];
