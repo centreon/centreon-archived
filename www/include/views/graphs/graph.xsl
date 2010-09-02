@@ -324,10 +324,6 @@
 							</xsl:element>
 							<xsl:element name="a">
 								<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
-								<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
-							</xsl:element>
-							<xsl:element name="a">
-								<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 								<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
 							</xsl:element>
 						</xsl:if>
