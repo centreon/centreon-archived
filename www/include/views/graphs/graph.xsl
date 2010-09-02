@@ -354,6 +354,7 @@
 							<xsl:element name="img">
 							  	<xsl:attribute name="src">./include/views/graphs/graphStatus/displayServiceStatus.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 							</xsl:element>
+							<img src="./img/icones/1x1/blank.gif" style="margin-right:5px;vertical-align:top;" width="18" />
 						</xsl:if>
 					</div> 
 				</td>
