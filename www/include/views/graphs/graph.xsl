@@ -299,7 +299,7 @@
 							<img src="./img/icones/16x16/save.gif" style="margin-right:5px;"/>
 						</xsl:element>
 						<xsl:element name="a">
-							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
+							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?sid=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 							<img src="./img/icones/16x16/text_binary_csv.gif"/>
 						</xsl:element>		
 					</td>
@@ -333,11 +333,11 @@
 										<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', ''); return false;</xsl:attribute>
 										<xsl:attribute name="href">#</xsl:attribute>
 										<xsl:element name="img">
-									  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+									  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
 										</xsl:element>
 									</xsl:element>
 									<xsl:element name="a">
-										<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+										<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
 										<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
 									</xsl:element>
 									<xsl:element name="a">

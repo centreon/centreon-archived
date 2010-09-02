@@ -116,8 +116,9 @@ class CentreonGraph	{
 	 * $debug		bool 	debug flag.
 	 */
 	function CentreonGraph($session_id, $index, $debug, $compress = NULL) {
-		if (!isset($debug))
+		if (!isset($debug)) {
 			$this->debug = 0;
+		}
 
 		(!isset($compress)) ? $this->compress = 1 : $this->compress = $compress;
 
@@ -522,17 +523,17 @@ class CentreonGraph	{
 		}
 		$DBRESULT->free();
 
-		if (isset($this->metricsEnabled))
+		if (isset($this->metricsEnabled)) {
 			$metrictitle = " metric ".$this->metrics[$this->metricsEnabled]["metric_name"];
-		else
+		} else {
 			$metrictitle = "";
-		if ($this->indexData["host_name"] != "_Module_Meta")
+		}
+
+		if ($this->indexData["host_name"] != "_Module_Meta") {
 			$this->setRRDOption("title", $this->indexData["service_description"]." "._("graph on")." ".$this->indexData["host_name"].$metrictitle);
-		else
+		} else {
 			$this->setRRDOption("title", _("Graph")." ".$this->indexData["service_description"].$metrictitle);
-
-
-
+		}
 	}
 
 	/*
