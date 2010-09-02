@@ -39,7 +39,7 @@
 	/***
 	 * Include config file
 	 */
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 
 	/***
 	 * Include Dependancies
@@ -571,7 +571,7 @@
 			/**
 			 * Hostgroups
 			 */
-			if ($hgHCache[$hg_id]  && ($access->admin == 1 || ($access->admin == 0 && isset($access->hostGroups[$hg_id])))) {
+			if (isset($hgHCache[$hg_id]) && $hgHCache[$hg_id]  && ($access->admin == 1 || ($access->admin == 0 && isset($access->hostGroups[$hg_id])))) {
 	    		$buffer->startElement("item");
 	    		if (isset($hgs_open[$hg_id]))
 	    			$buffer->writeAttribute("open", "1");
