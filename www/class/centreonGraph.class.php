@@ -37,11 +37,6 @@
  */
 
 /*
- * Need Centreon Configuration file
- */
-require_once "@CENTREON_ETC@/centreon.conf.php";
-
-/*
  * this class need also others classes
  */
 require_once $centreon_path."www/class/centreonDuration.class.php";
@@ -418,6 +413,7 @@ class CentreonGraph	{
 	}
 
 	private function _getDefaultGraphTemplate() {
+
 		$template_id = $this->_getServiceGraphID();
 		if ($template_id != "") {
 			$this->template_id = $template_id;
@@ -447,7 +443,10 @@ class CentreonGraph	{
 	}
 
 	public function setTemplate($template_id = NULL) {
-		$template_id = htmlentitites($template_id, ETN_QUOTES, "UTF-8");
+
+		if (isset($template_id)) {
+			$template_id = htmlentities($template_id, ENT_QUOTES, "UTF-8");
+		}
 
 		if (!isset($template_id)|| !$template_id){
 			if ($this->indexData["host_name"] != "_Module_Meta") {
@@ -674,7 +673,6 @@ class CentreonGraph	{
 				return htmlentities($defaultValue, ENT_QUOTES, "UTF-8");
 		}
 	}
-
 
 	public 	function getRandomWebColor() {
 		$web_safe_colors = array('#000033', '#000066', '#000099', '#0000cc',

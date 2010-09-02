@@ -74,18 +74,19 @@
 	       <xsl:for-each select="//period">
 		        <tr class="list_one">
 					<td class='ListColLeft' valign="top" align='center'> <xsl:value-of select="name"/></td>
-					<td style="text-align:right;width:42px;">
-						<xsl:if test="//split = 0">
-							<xsl:element name="a">
-								<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
-								<img src="./img/icones/16x16/save.gif" style="margin-right:5px;"/>
-							</xsl:element>
-						</xsl:if>
+					<td style="text-align:right;width:70px;">	
+						<xsl:element name="a">
+							<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+							<img src="./img/icones/16x16/view.gif" style="margin-right:5px;" />
+						</xsl:element>
+						<xsl:element name="a">
+							<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+							<img src="./img/icones/16x16/save.gif" style="margin-right:5px;" />
+						</xsl:element>
 						<xsl:element name="a">
 							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-							<img src="./img/icones/16x16/text_binary_csv.gif"/>
+							<img src="./img/icones/16x16/text_binary_csv.gif" style="margin-right:5px;" />
 						</xsl:element>
-
 					</td>
 				</tr>
 				<tr>
@@ -101,10 +102,6 @@
 										<xsl:element name="img">
 										  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 										</xsl:element>
-								</xsl:element>
-								<xsl:element name="a">
-									<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
-									<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
 								</xsl:element>
 							</xsl:if>
 							<xsl:if test="//split = 1">
@@ -190,7 +187,11 @@
 		<table class="ListTable">
 			<tr class="list_one">
 				<td class='ListColLeft' valign="top" align='center' colspan="3"><xsl:value-of select="name"/></td>	
-				<td style="text-align:right;width:42px;">
+				<td style="text-align:right;width:65px;">
+					<xsl:element name="a">
+						<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
+						<img src="./img/icones/16x16/view.gif" style="margin-right:5px;" />
+					</xsl:element>
 					<xsl:element name="a">
 						<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
 						<img src="./img/icones/16x16/save.gif" style="margin-right:5px;"/>
@@ -221,10 +222,6 @@
 							</xsl:if>
 							<xsl:element name="img">
 						  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
-							</xsl:element>
-							<xsl:element name="a">
-								<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
-								<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
 							</xsl:element>
 						</xsl:if>
 						<xsl:if test="//split = 1">
@@ -295,23 +292,28 @@
 					<td style="text-align:right;width:42px;" colspan="3">
 						<xsl:element name="a">
 							<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
+							<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
+						</xsl:element>
+						<xsl:element name="a">
+							<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 							<img src="./img/icones/16x16/save.gif" style="margin-right:5px;"/>
 						</xsl:element>
 						<xsl:element name="a">
-							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute><img src="./img/icones/16x16/text_binary_csv.gif"/>
-						</xsl:element>
+							<xsl:attribute name="href">./include/views/graphs/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
+							<img src="./img/icones/16x16/text_binary_csv.gif"/>
+						</xsl:element>		
 					</td>
 				</tr>
 				<tr>
-			<td class='ListColRight' style="text-align:right;">
-				<xsl:element name='input'>
-					<xsl:attribute name="onClick">prevPeriod();</xsl:attribute>
-					<xsl:attribute name="type">button</xsl:attribute>
-					<xsl:attribute name="name">prev</xsl:attribute>
-					<xsl:attribute name="value">&lt;&lt;</xsl:attribute>
-					<xsl:attribute name="style">height:100px;</xsl:attribute>
-				</xsl:element>
-			</td>
+					<td class='ListColRight' style="text-align:right;">
+						<xsl:element name='input'>
+							<xsl:attribute name="onClick">prevPeriod();</xsl:attribute>
+							<xsl:attribute name="type">button</xsl:attribute>
+							<xsl:attribute name="name">prev</xsl:attribute>
+							<xsl:attribute name="value">&lt;&lt;</xsl:attribute>
+							<xsl:attribute name="style">height:100px;</xsl:attribute>
+						</xsl:element>
+					</td>
 	    			<td class='ListColCenter' valign="top" align='center'>
 			    	<div id="imggraph">
 						<xsl:if test="split = 0">
@@ -322,10 +324,7 @@
 								  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 								</xsl:element>
 							</xsl:element>
-							<xsl:element name="a">
-								<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
-								<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
-							</xsl:element>
+							
 						</xsl:if>
 						<xsl:if test="split = 1">
 							<xsl:for-each select="metrics">
@@ -341,6 +340,10 @@
 										<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
 										<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
 									</xsl:element>
+									<xsl:element name="a">
+										<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
+										<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
+									</xsl:element>
 								<br/>
 								</xsl:if>
 							</xsl:for-each>
@@ -354,15 +357,15 @@
 						</xsl:if>
 					</div> 
 				</td>
-			<td class='ListColLeft' style="text-align:left;">
-				<xsl:element name='input'>
-					<xsl:attribute name="onClick">nextPeriod();</xsl:attribute>
-					<xsl:attribute name="type">button</xsl:attribute>
-					<xsl:attribute name="name">next</xsl:attribute>
-					<xsl:attribute name="value">&gt;&gt;</xsl:attribute>
-					<xsl:attribute name="style">height:100px;</xsl:attribute>
-				</xsl:element>
-			</td>
+				<td class='ListColLeft' style="text-align:left;">
+					<xsl:element name='input'>
+						<xsl:attribute name="onClick">nextPeriod();</xsl:attribute>
+						<xsl:attribute name="type">button</xsl:attribute>
+						<xsl:attribute name="name">next</xsl:attribute>
+						<xsl:attribute name="value">&gt;&gt;</xsl:attribute>
+						<xsl:attribute name="style">height:100px;</xsl:attribute>
+					</xsl:element>
+				</td>
 			</tr>
 		</xsl:for-each>
 	</table>
