@@ -70,6 +70,8 @@
 	 */
  	if (isset($_GET["template_id"])) {
 		$obj->setTemplate($_GET["template_id"]);
+ 	} else {
+ 		$obj->setTemplate();
  	}
 
 	$obj->init();
