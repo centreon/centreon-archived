@@ -148,8 +148,22 @@ class CentreonACL {
  				"AND agcr.contact_contact_id = '".$this->userID."' " .
  				"AND acl.acl_group_activate = '1'";
  		$DBRESULT =& $pearDB->query($query);
- 		while ($row =& $DBRESULT->fetchRow())
+ 		while ($row = $DBRESULT->fetchRow()) {
  			$this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
+ 		}
+ 		$DBRESULT->free();
+
+ 		$query = "SELECT acl.acl_group_id, acl.acl_group_name " .
+ 				"FROM acl_groups acl, acl_group_contactgroups_relations agcgr, contactgroup_contact_relation cgcr " .
+ 				"WHERE acl.acl_group_id = agcgr.acl_group_id " .
+ 				"AND cgcr.contactgroup_cg_id = agcgr.cg_cg_id " .
+ 				"AND cgcr.contact_contact_id = '".$this->userID."' " .
+ 				"AND acl.acl_group_activate = '1'";
+ 		$DBRESULT =& $pearDB->query($query);
+ 		while ($row = $DBRESULT->fetchRow()) {
+ 			$this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
+ 		}
+ 		$DBRESULT->free();
  	}
 
  	/*
@@ -164,8 +178,10 @@ class CentreonACL {
  				"AND argr.acl_group_id IN (".$this->getAccessGroupsString().") " .
  				"AND acl.acl_res_activate = '1'";
  		$DBRESULT =& $pearDB->query($query);
- 		while ($row =& $DBRESULT->fetchRow())
+ 		while ($row =& $DBRESULT->fetchRow()) {
  			$this->resourceGroups[$row['acl_res_id']] = $row['acl_res_name'];
+ 		}
+ 		$DBRESULT->free();
  	}
 
 
@@ -186,6 +202,7 @@ class CentreonACL {
  			$this->hostGroupsAlias[$row['hg_id']] = $row['hg_alias'];
  			$this->hostGroupsFilter[$row['acl_res_id']][$row['hg_id']] = $row['hg_id'];
  		}
+ 		$DBRESULT->free();
  	}
 
  	/*
@@ -205,6 +222,7 @@ class CentreonACL {
  			$this->serviceGroupsAlias[$row['sg_id']] = $row['sg_alias'];
  			$this->serviceGroupsFilter[$row['acl_res_id']][$row['sg_id']] = $row['sg_id'];
  		}
+ 		$DBRESULT->free();
  	}
 
  	/*
@@ -224,6 +242,7 @@ class CentreonACL {
  			$this->serviceCategories[$row['sc_id']] = $row['sc_name'];
  			$this->serviceCategoriesFilter[$row['acl_res_id']][$row['sc_id']] = $row['sc_id'];
  		}
+ 		$DBRESULT->free();
  	}
 
   	/*
@@ -245,6 +264,7 @@ class CentreonACL {
  				$this->metaServiceStr .= ",";
  			$this->metaServiceStr .= "'".$row['meta_id']."'";
  		}
+ 		$DBRESULT->free();
  	}
 
  	/*
@@ -260,9 +280,11 @@ class CentreonACL {
 				"AND a.acl_action_activate = '1'" .
 				"AND agar.acl_group_id IN (".$this->getAccessGroupsString().")";
 		$DBRESULT =& $pearDB->query($query);
-		while ($row =& $DBRESULT->fetchRow())
+		while ($row =& $DBRESULT->fetchRow()) {
 			$this->actions[$row['acl_action_name']] = $row['acl_action_name'];
-	}
+		}
+		$DBRESULT->free();
+ 	}
 
 
  	/*
@@ -374,7 +396,7 @@ class CentreonACL {
  		foreach ($this->accessGroups as $key => $value) {
  			if ($i)
  				$string .= ", ";
- 			switch($flag) {
+ 			switch ($flag) {
  				case "ID" : $string .= "'".$key."'"; break;
  				case "NAME" : $string .= "'".$value."'"; break;
  				default : $string .= "'".$key."'"; break;
