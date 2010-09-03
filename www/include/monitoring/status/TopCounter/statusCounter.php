@@ -106,7 +106,7 @@
 				" AND no.name1 NOT LIKE '_Module_%' ".
 				" AND no.name1 = centreon_acl.host_name ".
 				" AND no.name2 = centreon_acl.service_description " .
-				" AND centreon_acl.group_id IN (".$grouplistStr.") ".
+				" AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
 				" AND no.is_active = 1 GROUP BY nss.current_state";
 	else
 		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
