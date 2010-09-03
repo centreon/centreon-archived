@@ -102,8 +102,8 @@
 	$rq1 .=		" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id AND nh.host_object_id = no.object_id ".
 				" AND no.name1 NOT LIKE '_Module_%'";
 
-	$grouplistStr = $obj->access->getAccessGroupsString();
-	$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name").$obj->access->queryBuilder("AND", "group_id", $grouplistStr);
+	//$grouplistStr = $obj->access->getAccessGroupsString();
+	$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name").$obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr);
 
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0") {
 		$rq1 .= " AND no.name1 IN (" .

@@ -163,12 +163,12 @@
 	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
 		$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
 		if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0") {
-			$tab_final[$ndo["host_name"]]["nb_service_k"] = $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 0);
+			$tab_final[$ndo["host_name"]]["nb_service_k"] = $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 0, $obj);
 		}
-		$tab_final[$ndo["host_name"]]["nb_service_w"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 1);
-		$tab_final[$ndo["host_name"]]["nb_service_c"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 2);
-		$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 3);
-		$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 4);
+		$tab_final[$ndo["host_name"]]["nb_service_w"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 1, $obj);
+		$tab_final[$ndo["host_name"]]["nb_service_c"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 2, $obj);
+		$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 3, $obj);
+		$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 4, $obj);
 		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
 		if ($ndo["icon_image"] != "") {
 			$tabIcone[$ndo["host_name"]] = $ndo["icon_image"];

@@ -162,7 +162,7 @@
 
 	$ACLCondition = "";
 	if (!$obj->is_admin)
-		$ACLCondition = " AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND group_id IN ($grouplistStr)";
+		$ACLCondition = " AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND group_id IN ($obj->grouplistStr)";
 
 	/*
 	 * Prepare current_state condition

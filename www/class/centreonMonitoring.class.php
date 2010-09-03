@@ -53,7 +53,8 @@ class CentreonMonitoring {
 		return $this->poller;
 	}
 
-	function getServiceStatusCount($host_name, $objXMLBG, $o, $status){
+	function getServiceStatusCount($host_name, $objXMLBG, $o, $status, $obj) {
+
 		$rq = 	" SELECT count( nss.service_object_id ) AS nb".
 				" FROM " .$objXMLBG->ndoPrefix."servicestatus nss".
 				" WHERE nss.current_state = '".$status."'";
@@ -73,10 +74,11 @@ class CentreonMonitoring {
 			$rq	.=	", centreon_acl";
 		}
 		$rq	.=	" WHERE nno.objecttype_id = 2 " .
-				" AND nno.name1 = '".$host_name."')";
+				" AND nno.name1 LIKE '".$host_name."'";
 		if (!$objXMLBG->is_admin) {
-			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().")";
+			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (". $obj->access->getAccessGroupsString().")";
 		}
+		$rq .=  ")";
 
 		$DBRESULT =& $objXMLBG->DBNdo->query($rq);
 		$tab =& $DBRESULT->fetchRow();
