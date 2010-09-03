@@ -1,5 +1,5 @@
 <?php
-/***
+/**
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -36,12 +36,12 @@
  *
  */
 
-	/***
+	/**
 	 * Include config file
 	 */
 	include_once "/etc/centreon/centreon.conf.php";
 
-	/***
+	/**
 	 * Include Dependancies
 	 */
 	include_once $centreon_path . "www/class/centreonDB.class.php";
@@ -50,7 +50,7 @@
 	$pearDBndo 	= new CentreonDB("ndo");
 	$pearDBO 	= new CentreonDB("centstorage");
 
-	/*** PHP functions */
+	/** PHP functions */
 	include_once $centreon_path . "www/include/views/graphs/common-Func.php";
 
 	/** Tanslation */
