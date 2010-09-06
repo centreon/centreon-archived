@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,10 +31,12 @@
  *
  * For more information : contact@centreon.com
  *
+ * SVN : $URL
+ * SVN : $Id
+ *
  */
 
-    //require_once "@CENTREON_ETC@/centreon.conf.php";
-    require_once "/etc/centreon/centreon.conf.php";
+    require_once "@CENTREON_ETC@/centreon.conf.php";
 
 	require_once $centreon_path . "www/class/centreonDuration.class.php";
 	require_once $centreon_path . "www/include/common/common-Func.php";
@@ -104,7 +106,7 @@
     $tab_hostproboutput[$nbhostpb] = "";
     $tab_hostprobip[$nbhostpb] = "";
     $tab_hosticone = array();
-    $tab_hostobjectid = array();
+    $tab_hostobjectid = array(0=>0, 1=>0, 2=>0, 3=>0);
 
     while ($ndo = $resNdoHosts->fetchRow()) {
 	    $tab_hostprobname[$nbhostpb] = $ndo["name1"];
@@ -119,7 +121,7 @@
 	}
 	$resNdoHosts->free();
 
-	$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);
+	$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2], 3=>$hostStatus[3]);
 	/*
 	 * Get the id's of problem hosts
 	*/
@@ -154,7 +156,7 @@
 			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 
-	$hostAck = array(0=>0, 1=>0, 2=>0);
+	$hostAck = array(0=>0, 1=>0, 2=>0, 3=>0);
 	$resNdo1 = $dbb->query($rq1);
 	while ($ndo = $resNdo1->fetchRow()) {
 		$hostAck[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
@@ -340,8 +342,7 @@
 				" AND obj.name2 = centreon_acl.service_description " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 				" ORDER by stat.current_state ASC, obj.name1";
-	}
-	else {
+	} else {
 		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
 				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht" .
 				" WHERE obj.object_id = stat.service_object_id" .
@@ -473,8 +474,8 @@
 	    $xml->writeElement('duration', $tab_hostprobduration[$key]);
 	    $xml->writeElement('last', $tab_hostproblast[$key]);
 	    $xml->writeElement('output', $tab_hostproboutput[$key]);
-	    $xml->writeElement('icon', $tab_hosticone[$key]);
-	    $xml->writeElement('hid', $tab_hostobjectid[$key]);
+	    $xml->writeElement('icon', (isset($tab_hosticone[$key]) ? $tab_hosticone[$key] : ""));
+	    $xml->writeElement('hid', (isset($tab_hostobjectid[$key]) ? $tab_hostobjectid[$key] : ""));
 	    $xml->writeElement('domId', $tab_hostobjectid[$key] + '_' + $domId);
 	    $xml->writeElement('class', $style);
 	    if ($tab_hostprobstate[$key] == 1) {
