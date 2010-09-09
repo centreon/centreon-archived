@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -36,19 +36,6 @@
  *
  */
 
-/*
- * This script drawing pie charts with hosts and services statistics on home page.
- *
- * PHP version 5
- *
- * @package home.php
- * @author Damien Duponchelle
- * @version $Id$
- * @copyright (c) 2007-2008 Centreon
- * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- */
-
-	// Variables $oreon must exist. it contains all personnals datas (Id, Name etc.) using by user to navigate on the interface.
 	if (!isset($oreon)) {
 		exit();
 	}
@@ -57,7 +44,14 @@
 	include_once "./include/monitoring/common-Func.php";
 	include_once "./class/centreonDB.class.php";
 
+	include_once $centreon_path . "www/include/common/common-Func.php";
+
+	$ndo_base_prefix = getNDOPrefix();
+
 	$pearDBndo = new CentreonDbPdo("ndo");
+
+	$tabSatusHost = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
+	$tabSatusService = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN", 4 => "PENDING");
 
 	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
 		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
@@ -77,6 +71,64 @@
 		$template->assign("session", session_id());
 		$template->assign("host_label", _("Hosts"));
 		$template->assign("svc_label", _("Services"));
+
+		/*
+		 * Status informations
+		 */
+
+		// HOSTS
+		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state" .
+			" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
+			" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
+			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+			$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
+			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+		$data = array();
+		$statHosts = _("Hosts");
+		while ($ndo =& $DBRESULT_NDO1->fetchRow()){
+			$data[] = $ndo["cnt"];
+			if ($statHosts !=  _("Hosts")) {
+				$statHosts .= " - ";
+			}
+			$statHosts .=  " " . _($tabSatusHost[$ndo["current_state"]]).": ".$ndo["cnt"];
+		}
+		$DBRESULT_NDO1->free();
+
+		$template->assign("statHosts", $statHosts);
+
+		// SERVICES
+		if (!$centreon->user->admin)
+			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
+					" WHERE no.object_id = nss.service_object_id".
+					" AND no.name1 NOT LIKE '_Module_%' ".
+					" AND no.name1 = centreon_acl.host_name ".
+					" AND no.name2 = centreon_acl.service_description " .
+					" AND centreon_acl.group_id IN (".$centreon->user->access->getAccessGroupsString().") ".
+					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
+		else
+			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
+					" WHERE no.object_id = nss.service_object_id".
+					" AND no.name1 NOT LIKE '_Module_%' ".
+					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
+		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
+
+		$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+		$data = array();
+		$statServices = _("Services");
+		while ($ndo =& $DBRESULT_NDO2->fetchRow()){
+			$data[] = $ndo["count(nss.current_state)"];
+			if ($statServices !=  _("Services")) {
+				$statServices .= " - ";
+			}
+			$statServices .= " " . _($tabSatusService[$ndo["current_state"]]).": ".$ndo["count(nss.current_state)"];
+		}
+		$DBRESULT_NDO2->free();
+		$template->assign("statServices", $statServices);
+
 		$template->display("home.ihtml");
 	}
 ?>

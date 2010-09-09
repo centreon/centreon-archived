@@ -36,8 +36,10 @@
  *
  */
 
- 	include_once("@CENTREON_ETC@/centreon.conf.php");
- 	require_once ($centreon_path . "www/class/centreonSession.class.php");
+ 	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
+
+	require_once ($centreon_path . "www/class/centreonSession.class.php");
 	require_once ($centreon_path . "www/class/centreon.class.php");
 	require_once ($centreon_path . "www/class/centreonLang.class.php");
 
@@ -85,8 +87,7 @@
 	}
 	$DBRESULT_NDO1->free();
 
-	foreach ($data as $key => $value)
-	{
+	foreach ($data as $key => $value) {
 		$value = round($value / $counter * 100, 2);
 	  	$value = str_replace(",", ".", $value);
 	  	$data[$key] = $value;
@@ -109,7 +110,7 @@
 
 	$g->pie_slice_colours($color);
 	$g->set_tool_tip( '#val#%' );
-	$g->title( sprintf(_('Availability: %s%%'), $data[0]), '{font-size: 18px;}' );
+	$g->title( sprintf(_('Availability: %s%%')."\n\n", $data[0]), '{font-size: 16px;}' );
 	//$g->title( " ", '{font-size:18px; color: #424242}' );
 	header("Cache-Control: cache, must-revalidate");
     header("Pragma: public");

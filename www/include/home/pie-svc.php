@@ -36,7 +36,8 @@
  *
  */
 
- 	include_once "@CENTREON_ETC@/centreon.conf.php";
+ 	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 
 	require_once ($centreon_path."www/class/centreonSession.class.php");
 	require_once ($centreon_path."www/class/centreon.class.php");
@@ -141,7 +142,7 @@
 	$g->pie_slice_colours($color);
 
 	$g->set_tool_tip( '#val#%' );
-	//$g->title( " " . _('Services') . " ", '{font-size:18px; color: #424242}' );
+	$g->title( sprintf(_('Availability: %s%%')."\n\n", $data[0]), '{font-size: 16px;}' );
 	header("Cache-Control: cache, must-revalidate");
     header("Pragma: public");
 	echo $g->render();

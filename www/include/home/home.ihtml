@@ -4,25 +4,27 @@
 			<td>
 				<table class="ListTable">
 					<tr class="ListHeader">
-						<td align="center">
-							{$host_label}
-						</td>
-						<td align="center">
-							{$svc_label}
-						</td>						
+						<td align="center">{$host_label}</td>
+						<td align="center">{$svc_label}</td>
 					</tr>
 					<tr>
-						<td>{php}
+						<td>
+							{php}
 								include_once './lib/ofc-library/open_flash_chart_object.php';
 								open_flash_chart_object( 350, 220, './include/home/pie-host.php?sid='.session_id());
 							{/php}
 						</td>
-						<td>{php}
+						<td>
+							{php}
 								include_once './lib/ofc-library/open_flash_chart_object.php';
 								open_flash_chart_object( 350, 220, './include/home/pie-svc.php?sid='.session_id());
 							{/php}
 						</td>
 					</tr>
+					<tr>
+						<td align='center'>{$statHosts}</td>
+						<td align='center'>{$statServices}</td>
+					</tr>	
 				</table>
 			</td>
 		</tr>
