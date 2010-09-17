@@ -57,7 +57,8 @@
 		$command["command_line"] = str_replace('#R#', "\\r", $command["command_line"]);
 		$command["command_line"] = str_replace('#S#', "/", $command["command_line"]);
 		$command["command_line"] = str_replace('#BS#', "\\", $command["command_line"]);
-
+		$command["command_line"] = str_replace('#P#', "|", $command["command_line"]);
+		
 		if ($command["command_type"] == 1 || $command["command_type"] == 3)	{
 			/*
 			 * Notification Command case -> command_type == 1

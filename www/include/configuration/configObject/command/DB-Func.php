@@ -47,6 +47,7 @@
 			$arg = str_replace('#R#', "\\r", $arg);
 			$arg = str_replace('#S#', "/", $arg);
 			$arg = str_replace('#BS#', "\\", $arg);
+			$arg = str_replace('#P#', "|", $arg);
 			return($arg);
 		}
 	}
@@ -141,6 +142,7 @@
 		$ret["command_line"] = str_replace('\r', "#R#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('/', "#S#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('\\', "#BS#", $ret["command_line"]);
+		$ret["command_line"] = str_replace('|', "#P#", $ret["command_line"]);
 		
 		$ret["command_example"] = str_replace('\n', "#BR#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('\t', "#T#", $ret["command_example"]);
@@ -183,6 +185,7 @@
 		$ret["command_line"] = str_replace("\r", "#R#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('/', "#S#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('\\', "#BS#", $ret["command_line"]);
+		$ret["command_line"] = str_replace('|', "#P#", $ret["command_line"]);
 		
 		$ret["command_example"] = str_replace("\n", "#BR#", $ret["command_example"]);
 		$ret["command_example"] = str_replace("\t", "#T#", $ret["command_example"]);
