@@ -252,6 +252,7 @@ sub prepardPerfdataParsed($) {
     if (defined($line_tab[2])) {
         $line_tab[2] =~ s/\\/\#BS\#/g;
         $line_tab[2] =~ s/\//\#S\#/g;
+        $line_tab[2] =~ s/\%/\#P\#/g;
     }
 
     return @line_tab;
@@ -533,8 +534,10 @@ sub replaceMetricSpecialChar($){
     my $metric_name = $_[0];
     $metric_name =~ s/\//slash\_/g;
     $metric_name =~ s/\\/bslash\_/g;
+    $metric_name =~ s/\%/pct\_/g;
     $metric_name =~ s/\#S\#/slash\_/g;
     $metric_name =~ s/\#BS\#/bslash\_/g;
+    $metric_name =~ s/\#P\#/pct\_/g;
     return $metric_name;
 }
 

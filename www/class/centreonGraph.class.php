@@ -302,7 +302,7 @@ class CentreonGraph	{
 
 			$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 			$this->metrics[$metric["metric_id"]]["index_id"] = $metric["index_id"];
-			$this->metrics[$metric["metric_id"]]["metric"] = str_replace(array("#S#","#BS#"), array("slash_", "bslash_"), $metric["metric_name"]);
+			$this->metrics[$metric["metric_id"]]["metric"] = str_replace(array("#S#","#BS#", "#P#"), array("slash_", "bslash_", "pct_"), $metric["metric_name"]);
 			$this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 			$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
 			$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
@@ -343,7 +343,7 @@ class CentreonGraph	{
 			}
 
 			if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
-				$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("#S#","slash_", "#BS#"), array("/", "/", "\/"), $metric["metric_name"]);
+				$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("#S#","slash_", "#BS#", "slash_", "pct_"), array("/", "/", "\/", "\/", "%"), $metric["metric_name"]);
 			} else {
 				$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
 			}
