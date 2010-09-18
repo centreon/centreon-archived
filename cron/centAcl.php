@@ -87,6 +87,25 @@
 	    } else {
 	      exit(1);
 	    }
+	    
+	    /* ***********************************************
+    	 * Remove data from old groups (suppressed groups)
+    	 */
+    	$strList = "";
+    	$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM acl_groups WHERE acl_group_activate = '1'");
+    	while ($data =& $DBRESULT->fetchRow()) {
+			if ($strList != "") {
+				$strList .= ",";
+			}
+			$strList .= "'".$data["acl_group_id"]."'";
+    	}
+    	if ($strList == "") {
+    		$strList = "''";
+    	}
+    	$DBRESULT->free();
+    	print "DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)";
+    	$pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)");
+    	
 
     	/* ************************************************
     	 *  Caching of all Data
