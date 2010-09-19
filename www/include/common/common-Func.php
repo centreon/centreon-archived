@@ -364,7 +364,34 @@
 			return $row[$field];
 		else
 			return 0;
-
+	}
+	
+	function getMyHostFieldFromMultiTemplates($host_id, $field){
+		global $pearDB;		
+		if (!$host_id) {
+			return NULL;
+		}
+		
+		$rq = "SELECT host_tpl_id " .
+			"FROM host_template_relation " .
+			"WHERE host_host_id = '".$host_id."' " .
+			"ORDER BY `order`";
+		$DBRESULT =& $pearDB->query($rq);
+		while ($row =& $DBRESULT->fetchRow()) {
+			$rq2 = "SELECT $field " .
+				"FROM host " .
+				"WHERE host_id = '".$row['host_tpl_id']."' LIMIT 1";								
+			$DBRESULT2 =& $pearDB->query($rq2);
+			$row2 =& $DBRESULT2->fetchRow();
+			if (isset($row2[$field]) && $row2[$field])
+				return $row2[$field];
+			else {
+				if ($result_field = getMyHostFieldFromMultiTemplates($row['host_tpl_id'], $field)) {
+					return $result_field;
+				}
+			}
+		}
+		return NULL;
 	}
 
 	/*
