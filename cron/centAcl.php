@@ -390,7 +390,7 @@
     					$id_tmp = split(",", $t);
     					$desc = str_replace("#S#", "/", $desc);
     					$desc = str_replace("#BS#", "\\", $desc);
-    					$str .= "('".$host."', '".$desc."', '".$id_tmp[0]."' , '".$id_tmp[1]."' , ".$acl_group_id.") ";
+    					$str .= "('".$host."', '".addslashes($desc)."', '".$id_tmp[0]."' , '".$id_tmp[1]."' , ".$acl_group_id.") ";
     					$i++;
     					if ($i >= 1000) {
     						$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
