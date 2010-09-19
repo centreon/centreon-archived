@@ -65,12 +65,21 @@
  	 *  Method that returns the id of a service
  	 */
  	public function getServiceId($svc_desc, $host_name) {
- 		$rq = "SELECT s.service_id " .
- 		      "FROM service s, host_service_relation hsr, host h " .
- 			  "WHERE s.service_id = hsr.service_service_id " .
- 			  "AND hsr.host_host_id = h.host_id " .
- 			  "AND h.host_name = '".$host_name."' " .
- 			  "AND s.service_description = '".$svc_desc."' LIMIT 1";
+ 		$rq = "SELECT s.service_id" .
+				" FROM service s" .
+				" JOIN (SELECT hsr.service_service_id FROM host_service_relation hsr" .
+				" JOIN host h" .
+				"     ON hsr.host_host_id = h.host_id" .
+				"     	WHERE h.host_name = '".$host_name."'" .
+				"     UNION" .
+				"    	 SELECT hsr.service_service_id FROM hostgroup_relation hgr" .
+				" JOIN host h" .
+				"     ON hgr.host_host_id = h.host_id" .
+				" JOIN host_service_relation hsr" .
+				"     ON hgr.hostgroup_hg_id = hsr.hostgroup_hg_id" .
+				"     	WHERE h.host_name = '".$host_name."' ) ghsrv" .
+				" ON s.service_id = ghsrv.service_service_id" .
+				" WHERE s.service_description = '".$svc_desc."' LIMIT 1";
  		$DBRES = $this->local_pearDB->query($rq);
  		if (!$DBRES->numRows()) {
  			return null;
