@@ -52,20 +52,25 @@
 	}
 
 	function enableLCAInDB ($acl_id = null)	{
-		if (!$acl_id) return;
 		global $pearDB;
+		if (!$acl_id) 
+			return;
+		$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')");			
 		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
 	}
 
 	function disableLCAInDB ($acl_id = null)	{
-		if (!$acl_id) return;
 		global $pearDB;
+		if (!$acl_id) 
+			return;
+		$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')");			
 		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '0', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
 	}
 
 	function deleteLCAInDB ($acls = array())	{
 		global $pearDB;
 		foreach($acls as $key=>$value){
+			$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')");			
 			$DBRESULT =& $pearDB->query("DELETE FROM `acl_resources` WHERE acl_res_id = '".$key."'");
 		}
 	}
