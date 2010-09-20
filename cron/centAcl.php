@@ -103,7 +103,6 @@
     		$strList = "''";
     	}
     	$DBRESULT->free();
-    	print "DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)";
     	$pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)");
     	
 
@@ -135,8 +134,9 @@
     	$hostIncCache = array();
     	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, `acl_resources_host_relations` WHERE acl_resources_host_relations.host_host_id = host.host_id AND host.host_register = '1' AND host.host_activate = '1'");
       	while ($h =& $DBRESULT->fetchRow()) {
-      		if (!isset($hostIncCache[$h["acl_res_id"]]))
+      		if (!isset($hostIncCache[$h["acl_res_id"]])) {
       			$hostIncCache[$h["acl_res_id"]] = array();
+      		}
       		$hostIncCache[$h["acl_res_id"]][$h["host_id"]] = $h["host_name"];
       	}
     	$DBRESULT->free();
@@ -147,8 +147,9 @@
     	$hostExclCache = array();
     	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_resources_hostex_relations.host_host_id = host.host_id AND host.host_register = '1' AND host.host_activate = '1'");
       	while ($h =& $DBRESULT->fetchRow()) {
-      		if (!isset($hostExclCache[$h["acl_res_id"]]))
+      		if (!isset($hostExclCache[$h["acl_res_id"]])) {
       			$hostExclCache[$h["acl_res_id"]] = array();
+      		}
       		$hostExclCache[$h["acl_res_id"]][$h["host_id"]] = $h["host_name"];
       	}
     	$DBRESULT->free();
@@ -169,8 +170,9 @@
     	$hostHGRelation = array();
     	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup_relation");
     	while ($hg =& $DBRESULT->fetchRow()) {
-    		if (!isset($hostHGRelation[$hg["hostgroup_hg_id"]]))
+    		if (!isset($hostHGRelation[$hg["hostgroup_hg_id"]])) {
     			$hostHGRelation[$hg["hostgroup_hg_id"]] = array();
+    		}
     		$hostHGRelation[$hg["hostgroup_hg_id"]][$hg["host_host_id"]] = $hg["host_host_id"];
     	}
     	$DBRESULT->free();
@@ -192,8 +194,9 @@
     		} else {
     			if (isset($hostHGRelation[$sr["hostgroup_hg_id"]])) {
     				foreach ($hostHGRelation[$sr["hostgroup_hg_id"]] as $host_id) {
-    					if (!isset($hsRelation[$host_id]))
+    					if (!isset($hsRelation[$host_id])) {
     						$hsRelation[$host_id] = array();
+    					}
     					$hsRelation[$host_id][$sr["service_service_id"]] = 1;
     				}
     			}
@@ -215,8 +218,9 @@
     	$svcCatCache = array();
     	$DBRESULT =& $pearDB->query("SELECT sc_id, service_service_id FROM `service_categories_relation`");
     	while ($res =& $DBRESULT->fetchRow()) {
-    		if (!isset($svcCatCache[$res["service_service_id"]] ))
+    		if (!isset($svcCatCache[$res["service_service_id"]] )) {
     			$svcCatCache[$res["service_service_id"]]  = array();
+    		}
     		$svcCatCache[$res["service_service_id"]][$res["sc_id"]] = 1;
     	}
     	$DBRESULT->free();
@@ -258,7 +262,8 @@
     									"WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id " .
     									"AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id " .
     									"AND acl_groups.acl_group_activate = '1' ".
-    									"AND acl_resources.changed = '1'");
+    									"AND (acl_groups.acl_group_changed = '1' ".
+    										"OR acl_resources.changed = '1')");
 
     	while ($result =& $DBRESULT1->fetchRow()) {
     	    $tabGroups[$result["acl_group_id"]] = 1;
