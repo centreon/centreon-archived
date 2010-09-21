@@ -62,7 +62,7 @@
 	$request = "SELECT name FROM nagios_server WHERE ns_activate = '1'";
 	$DBRESULT =& $obj->DB->query($request);
 	while ($d = $DBRESULT->fetchRow()) {
-		if ($pollerList = "") {
+		if ($pollerList != "") {
 			$pollerList .= ", ";
 		}
 		$pollerList .= "'".$d["name"]."'";
