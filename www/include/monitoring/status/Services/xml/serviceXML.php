@@ -154,7 +154,7 @@
 
 	$rq_limit = " LIMIT ".($num * $limit).",".$limit;
 
-	$ArgNeeded = "A.host_name, A.object_id, A.service_description, A.notes, A.notes_url, A.action_url, A.max_check_attempts, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.state_type as state_type, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_hard_state_change) as last_hard_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.scheduled_downtime_depth, nss.flap_detection_enabled";
+	$ArgNeeded = "A.host_name, A.object_id, A.service_description, A.notes, A.notes_url, A.action_url, A.max_check_attempts, A.display_name, nss.process_performance_data, nss.current_state, nss.output as plugin_output, nss.state_type as state_type, nss.current_check_attempt as current_attempt, nss.status_update_time as status_update_time, unix_timestamp(nss.last_state_change) as last_state_change, unix_timestamp(nss.last_hard_state_change) as last_hard_state_change, unix_timestamp(nss.last_check) as last_check, unix_timestamp(nss.next_check) as next_check, nss.notifications_enabled, nss.problem_has_been_acknowledged, nss.passive_checks_enabled, nss.active_checks_enabled, nss.event_handler_enabled, nss.is_flapping, nss.scheduled_downtime_depth, nss.flap_detection_enabled";
 
 	$ACLDBName = "";
 	if (!$obj->is_admin)
@@ -242,7 +242,7 @@
 		 	"FROM (";
 
 	$rq2 = 	"SELECT DISTINCT no.name1 as host_name, no.object_id, no.name2 as service_description, " .
-			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts FROM  ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."services ns $ACLDBName" .
+			"ns.notes, ns.notes_url, ns.action_url, ns.max_check_attempts, ns.display_name FROM  ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."services ns $ACLDBName" .
 			"WHERE no.object_id = ns.service_object_id " .
 			"	AND no.name1 NOT LIKE '_Module_%' " .
 			"	$hgCondition $searchHost $searchService $instance_filter $ACLCondition " .
@@ -389,6 +389,15 @@
 
 			$obj->XML->writeElement("ppd", 	$ndo["process_performance_data"]);
 			$obj->XML->writeElement("hs", 	$host_status[$ndo["host_name"]]["current_state"]);
+
+			/*
+			 * Add possibility to use display name
+			 */
+			if (isset($ndo["display_name"]) && $ndo["display_name"]) {
+				$obj->XML->writeElement("sd", 	$ndo["display_name"]);
+			} else {
+				$obj->XML->writeElement("sd", 	$ndo["service_description"]);
+			}
 			$obj->XML->writeElement("sd", 	$ndo["service_description"]);
 			$obj->XML->writeElement("sdl", 	urlencode($ndo["service_description"]));
 			$obj->XML->writeElement("svc_id", $ndo["object_id"]);
