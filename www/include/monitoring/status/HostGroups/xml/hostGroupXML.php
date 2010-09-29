@@ -105,7 +105,7 @@
 	if ($obj->is_admin) {
 		$rq1 = 	"SELECT nhg.alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
 				"FROM ".$obj->ndoPrefix."hostgroup_members nhgm " .
-						"INNER JOIN ".$obj->ndoPrefix."objects noo ON (noo.object_id = nhgm.host_object_id ) " .
+						"INNER JOIN ".$obj->ndoPrefix."objects noo ON (noo.object_id = nhgm.host_object_id) " .
 						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
 						"INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
 						"INNER JOIN ".$obj->ndoPrefix."hoststatus nhs ON (nhs.host_object_id = no.object_id) " .
@@ -114,7 +114,7 @@
 	} else {
 		$rq1 = 	"SELECT nhg.alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
 				"FROM ".$obj->ndoPrefix."hostgroup_members nhgm, centreon_acl " .
-						"INNER JOIN ".$obj->ndoPrefix."objects noo ON (noo.object_id = nhgm.host_object_id ) " .
+						"INNER JOIN ".$obj->ndoPrefix."objects noo ON (noo.object_id = nhgm.host_object_id) " .
 						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
 						"INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
 						"INNER JOIN ".$obj->ndoPrefix."hoststatus nhs ON (nhs.host_object_id = no.object_id) " .
