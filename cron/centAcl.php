@@ -89,7 +89,7 @@
 	    }
 	    
 	    /* ***********************************************
-    	 * Remove data from old groups (suppressed groups)
+    	 * Remove data from old groups (deleted groups)
     	 */
     	$strList = "";
     	$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM acl_groups WHERE acl_group_activate = '1'");
