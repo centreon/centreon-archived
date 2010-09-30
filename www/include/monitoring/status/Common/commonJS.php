@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
-  
+
 	if (!isset($oreon))
 		exit();
 ?>
@@ -83,8 +83,8 @@ function construct_selecteList_ndo_instance(id){
 		var _select = document.createElement("select");
 		_select.name = "select_instance";
 		_select.id = "select_instance";
-		_select.onchange = function() { 
-			_instance = this.value; 
+		_select.onchange = function() {
+			_instance = this.value;
 			_default_instance = this.value;
 			xhr = new XMLHttpRequest();
 			xhr.open('GET','./include/monitoring/status/Common/updateContactParam.php?uid=<?php echo $oreon->user->user_id; ?>&instance_id='+this.value, true);
@@ -105,7 +105,7 @@ function construct_selecteList_ndo_instance(id){
 		var m = document.createElement('option');
 		m.value= "<?php echo $nagios_server["instance_id"]; ?>";
 		_select.appendChild(m);
-		var n = document.createTextNode("<?php echo $nagios_server["instance_name"]; ?>   ");
+		var n = document.createTextNode("<?php echo $nagios_server["instance_name"] . "  "; ?>   ");
 		m.appendChild(n);
 		_select.appendChild(m);
 		select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
@@ -113,9 +113,9 @@ function construct_selecteList_ndo_instance(id){
 <?php }	?>
 		_select.selectedIndex = select_index[_default_instance];
 		_select_instance.appendChild(_select);
-	
+
 	}
-	
+
 }
 
 function construct_HostGroupSelectList(id) {
@@ -125,12 +125,12 @@ function construct_HostGroupSelectList(id) {
 		var _select = document.createElement("select");
 		_select.name = "hostgroups";
 		_select.id = "hostgroups";
-		_select.onchange = function() { 
+		_select.onchange = function() {
 			_default_hg = this.value;
 			xhr = new XMLHttpRequest();
 			xhr.open('GET','./include/monitoring/status/Common/updateContactParamHostGroups.php?uid=<?php echo $oreon->user->user_id; ?>&hostgroups='+this.value, true);
 			xhr.send(null);
-			xhr.onreadystatechange = function() { 
+			xhr.onreadystatechange = function() {
 				monitoring_refresh();
 			};
 		};
@@ -145,7 +145,7 @@ function construct_HostGroupSelectList(id) {
 			 		"FROM hostgroup hg, acl_resources_hg_relations arhr " .
 			 		"WHERE hg.hg_id = arhr.hg_hg_id " .
 			 		"AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
-			 		"AND hg.hg_activate = '1' ORDER BY hg.hg_alias"; 		
+			 		"AND hg.hg_activate = '1' ORDER BY hg.hg_alias";
 			 $DBRESULT =& $pearDB->query($query);
 			 while ($data =& $DBRESULT->fetchRow()) {
 			 	$hg[$data["hg_alias"]] = 1;
@@ -165,7 +165,7 @@ function construct_HostGroupSelectList(id) {
 				_select.appendChild(m);
 				select_index["<?php echo $hostgroups["alias"]; ?>"] = i;
 				i++;
-<?php 		}	
+<?php 		}
 		}
 ?>
 		_select.selectedIndex = select_index[_default_hg];
@@ -241,9 +241,9 @@ function mk_img(_src, _alt)	{
   	_img.alt = _alt;
   	_img.title = _alt;
   	if (_img.complete){
-  		_img.alt = _alt;	
+  		_img.alt = _alt;
   	} else {
-  		_img.alt = "Image could not be generated"; 
+  		_img.alt = "Image could not be generated";
   	}
 	return _img;
 }
@@ -256,9 +256,9 @@ function mk_imgOrder(_src, _alt)	{
   	_img.style.paddingLeft = '10px';
   	_img.style.marginBottom = '0.5px';
   	if (_img.complete){
-  		_img.alt = _alt;	
+  		_img.alt = _alt;
   	} else {
-  		_img.alt = "Image could not be generated"; 
+  		_img.alt = "Image could not be generated";
   	}
 	return _img;
 }
@@ -299,7 +299,7 @@ function mk_paginationFF(resXML){
 		var _nr = infos[0].getElementsByTagName('numrows')[0].firstChild.data;
 		var _nl = infos[0].getElementsByTagName("limit")[0].firstChild.data;
 		var _nn = infos[0].getElementsByTagName("num")[0].firstChild.data;
-	
+
 		if (_numRows != _nr){
 			_numRows = _nr;
 			flag = 1;
@@ -320,7 +320,7 @@ function mk_paginationFF(resXML){
 
 function pagination_changed(){
 	viewDebugInfo('pagination_changed');
-	
+
 	// compute Max Page
 	var page_max = 0;
 	if ((_numRows % _limit) == 0)	{
@@ -343,7 +343,7 @@ function pagination_changed(){
 	var _numnext = Number(_num) + 1;
 	var _numprev = Number(_num) - 1;
 
-<?php	
+<?php
 	for ($i = 1; $i <= 2; $i++) { ?>
 	var _img_previous<?php echo $i; ?> 	= mk_img("./img/icones/16x16/arrow_left_blue.gif", "previous");
 	var _img_next<?php echo $i; ?> 		= mk_img("./img/icones/16x16/arrow_right_blue.gif", "next");
@@ -375,14 +375,14 @@ function pagination_changed(){
 	_linkaction_left<?php echo $i; ?>.appendChild(_img_previous<?php echo $i; ?>);
 
 	var _pagination<?php echo $i; ?> = document.getElementById('pagination<?php echo $i; ?>');
-	
+
 	_pagination<?php echo $i; ?>.innerHTML ='';
 	if (_num > 0){
 		_pagination<?php echo $i; ?>.appendChild(_linkaction_first<?php echo $i; ?>);
 		_pagination<?php echo $i; ?>.appendChild(_linkaction_left<?php echo $i; ?>);
 	}
-<?php } 
-	
+<?php }
+
 	/*
 	 * Page Number
 	 */
@@ -391,10 +391,10 @@ for ($i = 1; $i <= 2; $i++) { ?>
 	var istart = 0;
 	for (i = 5, istart = _num; istart && i > 0 && istart > 0; i--)
 		istart--;
-	
+
 	for (i2 = 0, iend = _num; ( iend <  (_numRows / _limit -1)) && ( i2 < (5 + i)); i2++)
 		iend++;
-	
+
 	for (i = istart; i <= iend && page_max > 1; i++){
 		var span_space = document.createElement("span");
 		span_space.innerHTML = '&nbsp;';
@@ -406,7 +406,7 @@ for ($i = 1; $i <= 2; $i++) { ?>
   		_linkaction_num.onclick=function(){change_page(this.indice)};
 		_linkaction_num.innerHTML = parseInt(i + 1);
 		_linkaction_num.className = "otherPageNumber";
-		
+
 		if (i == _num)
 			_linkaction_num.className = "currentPageNumber";
 		_pagination<?php echo $i; ?>.appendChild(_linkaction_num);
@@ -420,9 +420,9 @@ for ($i = 1; $i <= 2; $i++) { ?>
 		_pagination<?php echo $i; ?>.appendChild(_linkaction_right<?php echo $i; ?>);
 		_pagination<?php echo $i; ?>.appendChild(_linkaction_last<?php echo $i; ?>);
 	}
-<?php 
+<?php
 } ?>
-	
+
 	var _sel1 = document.getElementById('sel1');
 	_sel1.innerHTML ='';
 
@@ -433,7 +433,7 @@ for ($i = 1; $i <= 2; $i++) { ?>
 	sel1.name = 'l';
 	sel1.id = 'l1';
 	sel1.onchange = function() { change_limit(this.value) };
-	
+
 	var sel2 = document.createElement('select');
 	sel2.name = 'l';
 	sel2.id = 'l2';
@@ -443,18 +443,18 @@ for ($i = 1; $i <= 2; $i++) { ?>
 	if (_limit > 100) {
 		_max = 1000;
 	}
-	
+
 	var _index;
-	for (i = 10, j = 0 ; i <= 100 ; i += 10, j++) {		
+	for (i = 10, j = 0 ; i <= 100 ; i += 10, j++) {
 		var k = document.createElement('option');
-		k.value = i;		
+		k.value = i;
 		sel1.appendChild(k);
 		if (_limit == i) {
 			_index = j;
 		}
 		var l = document.createTextNode(i);
 		k.appendChild(l);
-	}	
+	}
 	for (i = 200; i <= 500 ; i += 100, j++) {
 		var k = document.createElement('option');
 		k.value = i;
@@ -465,7 +465,7 @@ for ($i = 1; $i <= 2; $i++) { ?>
 		var l = document.createTextNode(i);
 		k.appendChild(l);
 	}
-	
+
 	for (i = 10, j = 0; i <= 100 ; i += 10, j++) {
 		var k = document.createElement('option');
 		k.value = i;
@@ -489,37 +489,80 @@ for ($i = 1; $i <= 2; $i++) { ?>
 
 	sel1.selectedIndex = _index;
 	_sel1.appendChild(sel1);
-	
+
 	sel2.selectedIndex = _index;
 	_sel2.appendChild(sel2);
 }
 
-function escapeURI(La){
+function escapeURI(La) {
 	if (encodeURIComponent) {
     	return encodeURIComponent(La);
   	}
   	if (escape) {
-  	  return escape(La)
+  	  	return escape(La)
   	}
 }
 
 function mainLoop(){
  	_currentInputField = document.getElementById('input_search');
-  	_currentInputFieldValue = document.getElementById('input_search').value;
-  	if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue!=_currentInputFieldValue){
-    	var valeur=escapeURI(_currentInputFieldValue);
-		_search = valeur;		
-		if (!_lock){
+  	if (document.getElementById('input_search') && document.getElementById('input_search').value) {
+  		_currentInputFieldValue = document.getElementById('input_search').value;
+  	} else {
+  		_currentInputFieldValue = "";
+  	}
+
+ 	_currentInputHostField = document.getElementById('host_search');
+  	if (document.getElementById('host_search') && document.getElementById('host_search').value) {
+  		_currentInputHostFieldValue = document.getElementById('host_search').value;
+  	} else {
+  		_currentInputHostFieldValue = "";
+  	}
+
+ 	_currentInputOutputField = document.getElementById('output_search');
+  	if (document.getElementById('output_search') && document.getElementById('output_search').value) {
+  		_currentInputOutputFieldValue = document.getElementById('output_search').value;
+	} else {
+		_currentInputOutputFieldValue = "";
+	}
+
+  	if (((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue != _currentInputFieldValue)
+  		|| ((_currentInputHostFieldValue.length >= 3 || _currentInputHostFieldValue.length == 0) && _oldInputHostFieldValue != _currentInputHostFieldValue)
+  		|| ((_currentInputOutputFieldValue.length >= 3 || _currentInputOutputFieldValue.length == 0) && _oldInputOutputFieldValue != _currentInputOutputFieldValue)){
+
+    	if (!_lock) {
+
+			set_search(escapeURI(_currentInputFieldValue));
+			_search = _currentInputFieldValue;
+			set_search_host(escapeURI(_currentInputHostFieldValue));
+			_host_search = _currentInputHostFieldValue;
+			set_search_output(escapeURI(_currentInputOutputFieldValue));
+			_output_search = _currentInputOutputFieldValue;
+
 			monitoring_refresh();
-			set_search(_search);						
-			if ( _currentInputFieldValue.length >= 3)
-				_currentInputField.className = "search_input_active";			
-			else
+
+			if (_currentInputFieldValue.length >= 3) {
+				_currentInputField.className = "search_input_active";
+			} else {
 				_currentInputField.className = "search_input";
+			}
+			if (_currentInputHostFieldValue.length >= 3) {
+				_currentInputHostField.className = "search_input_active";
+			} else {
+				_currentInputHostField.className = "search_input";
+			}
+			if (_currentInputOutputFieldValue.length >= 3) {
+				_currentInputOutputField.className = "search_input_active";
+			} else {
+				_currentInputOutputField.className = "search_input";
+			}
 		}
 	}
-	_oldInputFieldValue=_currentInputFieldValue;
-	setTimeout("mainLoop()",222);
+
+	_oldInputFieldValue = _currentInputFieldValue;
+	_oldInputHostFieldValue = _currentInputHostFieldValue;
+	_oldInputOutputFieldValue = _currentInputOutputFieldValue;
+
+	setTimeout("mainLoop()",250);
 }
 
 function set_limit(limit)	{
@@ -535,6 +578,22 @@ function set_search(search)	{
 	xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	_var = "sid=<?php echo $sid; ?>&search="+search+"&url=<?php echo $url; ?>";
+	xhrM.send(_var);
+}
+
+function set_search_host(search_host) {
+	var xhrM = getXhrC();
+	xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
+	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	_var = "sid=<?php echo $sid; ?>&search_host="+search_host+"&url=<?php echo $url; ?>";
+	xhrM.send(_var);
+}
+
+function set_search_output(search_output) {
+	var xhrM = getXhrC();
+	xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
+	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	_var = "sid=<?php echo $sid; ?>&search_output="+search_output+"&url=<?php echo $url; ?>";
 	xhrM.send(_var);
 }
 

@@ -72,6 +72,8 @@
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
+	$search_host	= $obj->checkArgument("search_host", $_GET, "");
+	$search_output 	= $obj->checkArgument("search_output", $_GET, "");
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
@@ -207,25 +209,32 @@
 	}
 
 	$searchHost = "";
-	if ($search_type_host && $search) {
-		if ($search_type_service && $search)
+	if ($search_host) {
+		if ($search  && $search_host)
 			$searchHost .= " AND (";
 		else
 			$searchHost .= " AND ";
-		$searchHost .= "no.name1 LIKE '%$search%' ";
+		$searchHost .= "no.name1 LIKE '%$search_host%' ";
 	}
 
+
 	$searchService = "";
-	if ($search_type_service && $search) {
-		if ($search_type_host && $search) {
-			$searchService .= " OR ";
-		} else {
+	if ($search) {
+		if ($search) {
 			$searchService .= " AND ";
 		}
 		$searchService .= " no.name2 LIKE '%$search%' ";
 	}
-	if ($search_type_host && $search)
+	if ($search_host && $search) {
 		$searchService .= ")";
+	}
+
+	$searchOutput = "";
+	if ($search_output) {
+		$searchOutput .= " AND nss.output LIKE '%$search_output%' ";
+	}
+
+
 
 	$hgCondition = "";
 	if ($hostgroups) {
@@ -249,7 +258,7 @@
 			"	AND objecttype_id = 2 " .
 			"	AND EXISTS ($rq3)" .
 			"	) A, " .
-		 	"".$obj->ndoPrefix."servicestatus nss WHERE A.object_id = nss.service_object_id $rq_state $rq_sorte $rq_limit ";
+		 	"".$obj->ndoPrefix."servicestatus nss WHERE A.object_id = nss.service_object_id $searchOutput $rq_state $rq_sorte $rq_limit ";
 
 	$finalRequest = $rq1 . $rq2;
 
@@ -288,7 +297,7 @@
             $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
 		}
 		$rq .= " WHERE no.object_id = nss.service_object_id $rq_state $instance_filter
-				 AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService $ACLCondition";
+				 AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService $ACLCondition ";
 		if (preg_match("/^svc_unhandled/", $o)) {
     		$rq .= " AND nss.service_object_id  = s.service_object_id
                 	 AND s.host_object_id = hs.host_object_id

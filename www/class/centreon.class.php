@@ -53,6 +53,7 @@ class Centreon	{
 	var $historyPage;
   	var $historySearch;
   	var $historySearchService;
+  	var $historySearchOutput;
 	var $historyLimit;
   	var $search_type_service;
 	var $search_type_host;
@@ -150,6 +151,7 @@ class Centreon	{
   		$this->historyPage = array();
   		$this->historySearch = array();
   		$this->historySearchService = array();
+  		$this->historySearchOutput = array();
   		$this->historyLimit = array();
   		$this->search_type_service = 1;
   		$this->search_type_host = 1;

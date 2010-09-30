@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	if (!isset($oreon))
@@ -52,7 +52,7 @@
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
 	var _debug = 0;
-	
+
 	var _search = '<?php echo $search; ?>';
 	var _sid='<?php echo $sid ?>';
 	var _search_type_host='<?php echo $search_type_host ?>';
@@ -64,7 +64,7 @@
 	var _date_time_format_status='<?php echo _("d/m/Y H:i:s") ?>';
 	var _o='<?php echo $o ?>';
 	var _p='<?php echo $p ?>';
-	
+
 	var _addrXSL = "./include/monitoring/status/Meta/xsl/metaService.xsl";
 	var _timeoutID = 0;
 	var _on = 1;
@@ -72,6 +72,8 @@
 	var _time_live = <?php echo $tFM?>;
 	var _nb = 0;
 	var _oldInputFieldValue = '<?php echo $search?>';
+	var _oldInputHostFieldValue = '';
+	var _oldInputOutputFieldValue = '';
 	var _currentInputFieldValue=""; // valeur actuelle du champ texte
 	var _resultCache=new Object();
 	var _first = 1;
@@ -79,7 +81,7 @@
 	var _instance = 'ALL';
 	var _default_instance = '<?php echo $default_poller?>';
 	var _nc = 0;
-	
+
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
 // linkBar to log/reporting/graph/ID_card
@@ -88,7 +90,7 @@
 		var mesinputs = document.getElementsByTagName("input" );
 		var tab = new Array();
 		var nb = 0;
-	
+
 		for (var i = 0; i < mesinputs.length; i++) {
 	  		if (mesinputs[i].type.toLowerCase() == 'checkbox' && mesinputs[i].checked && mesinputs[i].name.substr(0,6) == _input_name) {
 				var name = mesinputs[i].name;
@@ -103,7 +105,7 @@
 	if (document.getElementById('linkBar'))	{
 		var _linkBar = document.getElementById('linkBar')
 		var _divBar = document.createElement("div");
-		
+
 		_divBar.appendChild(create_graph_link('select','svc_id'));
 		_divBar.appendChild(create_log_link('select','svc_id'));
 		_divBar.setAttribute('style','float:right; margin-right:10px;' );
@@ -131,7 +133,7 @@ function set_header_title(){
 	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "<?php echo _("Sort results (descendant)"); ?>");
 
 	if (document.getElementById('service_description')){
-		
+
 		var h = document.getElementById('service_description');
 		h.innerHTML = '<?php echo _("Meta Services"); ?>';
 	  	h.indice = 'service_description';
@@ -181,7 +183,7 @@ function set_header_title(){
 			_linkaction_asc.appendChild(_img_asc);
 		else
 			_linkaction_asc.appendChild(_img_desc);
-		
+
 		_linkaction_asc.href = '#' ;
 		_linkaction_asc.onclick=function(){change_order()};
 		h.appendChild(_linkaction_asc);
@@ -253,11 +255,11 @@ function goM(_time_reload,_sid,_o){
 
 	_lock = 0;
 	viewDebugInfo('--end--');
-	
+
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
-	
+
 	set_header_title();
 }
 
@@ -272,10 +274,10 @@ function displayPOPUP(id){
 
 	//calcul auto de la largeur de l'ecran client
 	var l = screen.availWidth;
-	
+
 	//calcul auto de la hauteur de l'ecran client
 	var h = screen.availHeight;
-	
+
 	if (h - tempY < span.offsetHeight){
 		span.style.top = '-'+ span.offsetHeight +'px';
 	}
@@ -292,7 +294,7 @@ function displayPOPUP_svc(id){
 
 	// calcul auto de la largeur de l'ecran client
 	var l = screen.availWidth;
-	
+
 	//calcul auto de la hauteur de l'ecran client
 	var h = screen.availHeight;
 
@@ -325,8 +327,8 @@ function displayIMG(index, s_id, id)	{
     if ( PcH ){
 		_img = mk_img('include/views/graphs/generateGraphs/generateODSImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index+'&time=<?php print time(); ?>');
 		Pdiv.appendChild(_img);
-		var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
-		var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
+		var l=screen.availWidth; //calcul auto de la largeur de l'ecran client
+		var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client
 		var posy = tempY + 10;
 		if (h - tempY < 420) {
 			posy = tempY-310;

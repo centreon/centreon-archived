@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset($oreon))
 		exit();
 
@@ -65,10 +65,8 @@
 	$gopt[$data['key']] = myDecode($data['key']);
 
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
-	!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
-	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
 	!isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
-	
+
 	if ($o == "svcpb" || $o == "svc_unhandled") {
 		if (!isset($_GET["sort_type"])) {
 			$sort_type = $oreon->optGen["problem_sort_type"];
@@ -88,15 +86,8 @@
 		} else
 			$order = $_GET["order"];
 	}
-	
-
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
-
 	$rows = 10;
 
 	include_once("./include/monitoring/status/Common/default_poller.php");
@@ -121,6 +112,17 @@
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
 
+	/*
+	 * Values
+	 */
+	if (isset($centreon->historySearch[$url]))
+		$tpl->assign("hostSearchValue", $centreon->historySearch[$url]);
+	if (isset($centreon->historySearchService[$url]))
+		$tpl->assign("serviceSearchValue", $centreon->historySearchService[$url]);
+	if (isset($centreon->historySearchOutput[$url]))
+		$tpl->assign("outputSearchValue", $centreon->historySearchOutput[$url]);
+
+
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
 	$tpl->assign("order", strtolower($order));
@@ -134,45 +136,45 @@
 		document.forms['form'].elements['o1'].selectedIndex = 0;
 		document.forms['form'].elements['o2'].selectedIndex = 0;
 	}
-	</SCRIPT>
+	</script>
 	<?php
-	
+
 	$action_list = array();
 	$action_list[]	= _("More actions...");
-	
+
 	/*
 	 * Showing actions allowed for current user
 	 */
-	if (isset($authorized_actions) && $allActions == false) {		
+	if (isset($authorized_actions) && $allActions == false) {
 		foreach ($authorized_actions as $action_name) {
-			if ($action_name == "service_schedule_check" || $allActions == true) 
+			if ($action_name == "service_schedule_check" || $allActions == true)
 				$action_list[3] = _("Schedule immediate check");
-			if ($action_name == "service_schedule_forced_check" || $allActions == true) 
+			if ($action_name == "service_schedule_forced_check" || $allActions == true)
 				$action_list[4] = _("Schedule immediate check (Forced)");
-			if ($action_name == "service_acknowledgement" || $allActions == true) 
+			if ($action_name == "service_acknowledgement" || $allActions == true)
 				$action_list[70] = _("Services : Acknowledge");
-			if ($action_name == "service_acknowledgement" || $allActions == true) 
+			if ($action_name == "service_acknowledgement" || $allActions == true)
 				$action_list[71] = _("Services : Disacknowledge");
 			if ($action_name == "service_notifications" || $allActions == true)
 				$action_list[80] = _("Services : Enable Notification");
-			if ($action_name == "service_notifications" || $allActions == true) 
+			if ($action_name == "service_notifications" || $allActions == true)
 				$action_list[81] = _("Services : Disable Notification");
-			if ($action_name == "service_checks" || $allActions == true) 
+			if ($action_name == "service_checks" || $allActions == true)
 				$action_list[90] = _("Services : Enable Check");
-			if ($action_name == "service_checks" || $allActions == true) 
+			if ($action_name == "service_checks" || $allActions == true)
 				$action_list[91] = _("Services : Disable Check");
-			if ($action_name == "host_acknowledgement" || $allActions == true) 
+			if ($action_name == "host_acknowledgement" || $allActions == true)
 				$action_list[72] = _("Hosts : Acknowledge");
-			if ($action_name == "host_acknowledgement" || $allActions == true) 
+			if ($action_name == "host_acknowledgement" || $allActions == true)
 				$action_list[73] = _("Hosts : Disacknowledge");
-			if ($action_name == "host_notifications" || $allActions == true) 
+			if ($action_name == "host_notifications" || $allActions == true)
 				$action_list[82] = _("Hosts : Enable Notification");
-			if ($action_name == "host_notifications" || $allActions == true) 
+			if ($action_name == "host_notifications" || $allActions == true)
 				$action_list[83] = _("Hosts : Disable Notification");
-			if ($action_name == "host_checks" || $allActions == true) 
+			if ($action_name == "host_checks" || $allActions == true)
 				$action_list[92] = _("Hosts : Enable Check");
-			if ($action_name == "host_checks" || $allActions == true) 
-				$action_list[93] = _("Hosts : Disable Check");		
+			if ($action_name == "host_checks" || $allActions == true)
+				$action_list[93] = _("Hosts : Disable Check");
 		}
 	} else {
 		$action_list[3] = _("Schedule immediate check");
@@ -190,9 +192,9 @@
 		$action_list[83] = _("Hosts : Disable Notification");
 		$action_list[92] = _("Hosts : Enable Check");
 		$action_list[93] = _("Hosts : Disable Check");
-		$action_list[75] = _("Hosts : Set Downtime");		
+		$action_list[75] = _("Hosts : Set Downtime");
 	}
-	
+
 	$attrs = array( 'onchange'=>"javascript: if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
     $form->addElement('select', 'o1', NULL, $action_list, $attrs);
 
@@ -210,6 +212,9 @@
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
+	$tpl->assign('hostStr', _('Host'));
+	$tpl->assign('serviceStr', _('Service'));
+	$tpl->assign('outputStr', _('Output'));
     $tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('hgStr', _('Hostgroup'));
 	$tpl->assign('form', $renderer->toArray());

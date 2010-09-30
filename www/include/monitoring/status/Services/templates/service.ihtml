@@ -4,7 +4,13 @@
 <input name="o" value="svc" type="hidden">
 <table class="ajaxOption">
 	<tr>
-		<td>{$pollerStr}:</td>
+		<td>{$hostStr}:</td>
+		<td><input type='text' name='host_search' id='host_search'></td>
+	    <td>{$serviceStr}:</td>
+		<td><input type='text' name='search' id='input_search'></td>
+	     <td>{$outputStr}:</td>
+		<td><input type='text' name='output_search' id='output_search'></td>
+	    <td>{$pollerStr}:</td>
 		<td><span id="instance_selected"></span></td>
 	    <td>{$hgStr}:</td>
 	    <td><span id="hostgroups_selected"></span></td>

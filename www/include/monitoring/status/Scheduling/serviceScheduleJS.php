@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	if (!isset($oreon))
@@ -45,13 +45,13 @@
 	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 	$sid = session_id();
 	$time = time();
-	
+
 	if ($num < 0)
 		$num =0;
 ?>
 <script type="text/javascript">
 	var _debug = 0;
-	
+
 	var _search = '<?php echo $search?>';
 	var _sid='<?php echo $sid?>';
 	var _search_type_host='<?php echo $search_type_host?>';
@@ -63,7 +63,7 @@
 	var _date_time_format_status='<?php echo _("d/m/Y H:i:s")?>';
 	var _o='<?php echo $o?>';
 	var _p='<?php echo $p?>';
-	
+
 	var _addrXSL = "./include/monitoring/status/Scheduling/xsl/serviceSchedule.xsl";
 	var _timeoutID = 0;
 	var _on = 1;
@@ -71,6 +71,8 @@
 	var _time_live = <?php echo $tFM?>;
 	var _nb = 0;
 	var _oldInputFieldValue = '<?php echo $search?>';
+	var _oldInputHostFieldValue = '';
+	var _oldInputOutputFieldValue = '';
 	var _currentInputFieldValue=""; // valeur actuelle du champ texte
 	var _resultCache=new Object();
 	var _first = 1;
@@ -93,14 +95,14 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
-		
+
 		var h = document.getElementById('service_description');
 		h.innerHTML = '<?php echo _("Services")?>';
 	  	h.indice = 'service_description';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
-	
+
 		var h = document.getElementById('last_check');
 		h.innerHTML = '<?php echo _("Last Check")?>';
 	  	h.indice = 'last_check';
@@ -114,7 +116,7 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
-	
+
 		var h = document.getElementById('active_check');
 		h.innerHTML = '<?php echo _("Active Check")?>';
 	  	h.indice = 'active_check';
@@ -147,7 +149,7 @@ function monitoring_refresh()	{
 
 function monitoring_play()	{
 	document.getElementById('JS_monitoring_play').style.display = 'none';
-	document.getElementById('JS_monitoring_pause').style.display = 'block';	
+	document.getElementById('JS_monitoring_pause').style.display = 'block';
 	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
 	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
 	_on = 1;
@@ -179,7 +181,7 @@ function initM(_time_reload,_sid,_o){
 
 	if(_first){
 		viewDebugInfo('--loop--');
-	
+
 		mainLoop();
 		_first = 0;
 	}
@@ -196,14 +198,14 @@ function goM(_time_reload,_sid,_o){
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
-	_lock = 0;	
+	_lock = 0;
 
 	viewDebugInfo('--end--');
 
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
-	
+
 	set_header_title();
 }
 </SCRIPT>
