@@ -228,6 +228,6 @@ sub getTrapsInfos($$$$){
 #
 
 if (scalar(@ARGV)) {
-    my ($ip, $hostname, $oid, $arguments) = @ARGV;
-    getTrapsInfos($ip, $hostname, $oid, $arguments);
+    my ($ip, $hostname, $oid, $arguments, $allargs) = @ARGV;
+    getTrapsInfos($ip, $hostname, $oid, $arguments, $allargs);
 }

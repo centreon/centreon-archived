@@ -251,15 +251,14 @@ sub getTrapsInfos($$$$){
 		    $sth->finish();
 
 		    if ($location != 0){
-                        my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
-			print "/bin/echo \"[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $conf[0]\n";
-		    } else {
-                        my $id = get_hostNagiosServerID($dbh, $this_host);
-                        if (defined($id) && $id != 0) {
-                            my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
-                            undef($id);
-                        }
-                    }
+            	my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
+			} else {
+                my $id = get_hostNagiosServerID($dbh, $this_host);
+                if (defined($id) && $id != 0) {
+                    my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
+                    undef($id);
+                }
+            }
 		} else {
 		    # No matching rules
 		    if ($location != 0){
@@ -291,18 +290,18 @@ sub getTrapsInfos($$$$){
 	    ######################################################################
 	    # Execute special command
 	    if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
-		##########################
-		# REPLACE MACROS
-		$traps_execution_command =~ s/\&quot\;/\"/g;
-		$traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
-		$traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
-		$traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
-		$traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
-		$traps_execution_command =~ s/\@TIME\@/$datetime/g;
-
-		##########################
-		# SEND COMMAND
-		system($traps_execution_command);				
+			##########################
+			# REPLACE MACROS
+			$traps_execution_command =~ s/\&quot\;/\"/g;
+			$traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
+			$traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
+			$traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
+			$traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
+			$traps_execution_command =~ s/\@TIME\@/$datetime/g;
+	
+			##########################
+			# SEND COMMAND
+			system($traps_execution_command);				
 	    }
 	    undef($sth);
 	    undef($location);
@@ -317,6 +316,6 @@ sub getTrapsInfos($$$$){
 # PARSE TRAP INFORMATIONS
 #
 if (scalar(@ARGV)) {
-    my ($ip, $hostname, $oid, $arguments) = @ARGV;
-    getTrapsInfos($ip, $hostname, $oid, $arguments);
+    my ($ip, $hostname, $oid, $arguments, $allargs) = @ARGV;
+    getTrapsInfos($ip, $hostname, $oid, $arguments, $allArgs);
 }
