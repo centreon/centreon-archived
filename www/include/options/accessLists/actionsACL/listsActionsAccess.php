@@ -98,7 +98,7 @@
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$topo["acl_action_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&acl_action_id=".$topo['acl_action_id'],
-						"RowMenu_alias"=>$topo["acl_action_description"],
+						"RowMenu_alias"=>myDecode($topo["acl_action_description"]),
 						"RowMenu_status"=>$topo["acl_action_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);
 						

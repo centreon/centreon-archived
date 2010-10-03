@@ -103,7 +103,7 @@
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$resources["acl_res_name"],
-						"RowMenu_alias"=>$resources["acl_res_alias"],
+						"RowMenu_alias"=>myDecode($resources["acl_res_alias"]),
 						"RowMenu_link"=>"?p=".$p."&o=c&acl_res_id=".$resources['acl_res_id'],
 						"RowMenu_status" => $resources["acl_res_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options" => $moptions);
