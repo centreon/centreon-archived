@@ -192,11 +192,12 @@ sub getServiceInformations($$$)	{
 #######################################
 # GET HOSTNAME AND SERVICE DESCRIPTION
 #
-sub getTrapsInfos($$$$){
+sub getTrapsInfos($$$$$){
     my $ip = shift;
     my $hostname = shift;
     my $oid = shift;
     my $arguments_line = shift;
+    my $allargs = shift;
 
     my $dbh = DBI->connect("dbi:mysql:".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
 
@@ -208,104 +209,115 @@ sub getTrapsInfos($$$$){
 
     my @host = get_hostinfos($dbh, $ip, $hostname);
     foreach (@host) {
-	my $this_host = $_;
-	my ($trap_id, $status, $ref_servicename, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment) = getServiceInformations($dbh, $oid, $_);
-	my @servicename = @{$ref_servicename};
-
-	foreach (@servicename) {
-	    my $this_service = $_;
-
-	    my $datetime = `date +%s`;
-	    chomp($datetime);
-
-	    my $location = get_hostlocation($dbh, $this_host);
-
-	    ######################################################################
-	    # Submit value to passiv service
-	    if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
-		# Advanced matching rules
-		if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-		    # Check matching options 
-		    my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
-		    $sth->execute();
-		    while (my ($regexp, $tmoStatus) = $sth->fetchrow_array()) {
-			my @temp = split(//, $regexp);
-			my $i = 0;
-			my $len = length($regexp);
-			$regexp = "";
-			foreach (@temp) {
-			    if ($i eq 0 && $_ =~ "/") {
-				print "";
-			    } elsif ($i eq ($len - 1) && $_ =~ "/") { 
-				print "";
-			    } else {
-				print $_;
-			    }
-			    $i++;
-			}
-			if ($arguments_line =~ m/$regexp/g) {
-			    $status = $tmoStatus;
-			    last;
-			}
-		    }
-		    $sth->finish();
-
-		    if ($location != 0){
-            	my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
-			} else {
-                my $id = get_hostNagiosServerID($dbh, $this_host);
-                if (defined($id) && $id != 0) {
-                    my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
-                    undef($id);
-                }
-            }
-		} else {
-		    # No matching rules
-		    if ($location != 0){
-			my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
-		    } else {
-			my $id = get_hostNagiosServerID($dbh, $this_host);
-			if (defined($id) && $id != 0) {
-			    my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
-			    undef($id);
-			}
-		    }
-		}
-	    }
-	    
-	    ######################################################################
-	    # Force service execution with external command
-	    if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
-		if ($location != 0){
-		    my $submit = `/bin/echo "[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime" >> $conf[0]`;
-		} else {
-		    my $id = get_hostNagiosServerID($dbh, $this_host);
-		    if (defined($id) && $id != 0) {
-			my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime" >> $cmdFile`;
-			undef($id);
-		    }
-		}
-		undef($location);
-	    }
-	    ######################################################################
-	    # Execute special command
-	    if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
-			##########################
-			# REPLACE MACROS
-			$traps_execution_command =~ s/\&quot\;/\"/g;
-			$traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
-			$traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
-			$traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
-			$traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
-			$traps_execution_command =~ s/\@TIME\@/$datetime/g;
+		my $this_host = $_;
+		my ($trap_id, $status, $ref_servicename, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment) = getServiceInformations($dbh, $oid, $_);
+		my @servicename = @{$ref_servicename};
 	
-			##########################
-			# SEND COMMAND
-			system($traps_execution_command);				
-	    }
-	    undef($sth);
-	    undef($location);
-	}
+		## Split $* informations
+		my @args = split(/ /, $allargs);
+	
+		foreach (@servicename) {
+		    my $this_service = $_;
+	
+		    my $datetime = `date +%s`;
+		    chomp($datetime);
+	
+		    my $location = get_hostlocation($dbh, $this_host);
+	
+		    ######################################################################
+		    # Submit value to passiv service
+		    if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
+				# Advanced matching rules
+				if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
+			    	# Check matching options 
+			    	my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
+			    	$sth->execute();
+			    	while (my ($regexp, $tmoStatus) = $sth->fetchrow_array()) {
+						my @temp = split(//, $regexp);
+						my $i = 0;
+						my $len = length($regexp);
+						$regexp = "";
+						foreach (@temp) {
+				    		if ($i eq 0 && $_ =~ "/") {
+								print "";
+				    		} elsif ($i eq ($len - 1) && $_ =~ "/") { 
+								print "";
+				    		} else {
+								print $_;
+				    		}
+				    		$i++;
+						}
+						if ($arguments_line =~ m/$regexp/g) {
+				    		$status = $tmoStatus;
+				    		last;
+						}
+			    	}
+			    	$sth->finish();
+	
+			    	if ($location != 0){
+	            		my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
+					} else {
+	                	my $id = get_hostNagiosServerID($dbh, $this_host);
+	                	if (defined($id) && $id != 0) {
+	                    	my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
+	                    	undef($id);
+	                	}
+	            	}
+				} else {
+			    	# No matching rules
+			    	if ($location != 0){
+						my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
+			    	} else {
+						my $id = get_hostNagiosServerID($dbh, $this_host);
+						if (defined($id) && $id != 0) {
+				    		my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
+				    		undef($id);
+						}
+			    	}
+				}
+		    }
+		    
+		    ######################################################################
+		    # Force service execution with external command
+		    if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
+				if ($location != 0){
+				    my $submit = `/bin/echo "[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime" >> $conf[0]`;
+				} else {
+				    my $id = get_hostNagiosServerID($dbh, $this_host);
+				    if (defined($id) && $id != 0) {
+						my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime" >> $cmdFile`;
+						undef($id);
+				    }
+				}
+				undef($location);
+		    }
+		    ######################################################################
+		    # Execute special command
+		    if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
+				##########################
+				# REPLACE ARGS
+				my $x = 0;
+				foreach (@args) {
+					$traps_execution_command =~ s/\$$x\/$_/g;				
+					$x++;
+				}
+				
+				##########################
+				# REPLACE MACROS
+				$traps_execution_command =~ s/\&quot\;/\"/g;
+				$traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
+				$traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
+				$traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
+				$traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
+				$traps_execution_command =~ s/\@TIME\@/$datetime/g;
+		
+				##########################
+				# SEND COMMAND
+				system($traps_execution_command);				
+		    }
+		    undef($sth);
+		    undef($location);
+		}
     }
     $dbh->disconnect();
     exit;

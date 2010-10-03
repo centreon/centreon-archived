@@ -44,7 +44,7 @@ use DBI;
 use Getopt::Long;
 
 eval "use HTML::Entities";
-if($@) {
+if ($@) {
 	print "NOT using HTML::Entities, you might have problem with special characters. Install HTML::Entities.\n";
 } else {
 	print "Using HTML::Entities\n";
@@ -116,7 +116,7 @@ sub main() {
 		    } else {
 				$values[3] = "no output for trap!";
 		    }
-		    print FILE "EXEC ".$NAGIOS_TRAPS."centTrapHandler-2.x \$aA \$A \$o \"$values[3]\"\n";
+		    print FILE "EXEC ".$NAGIOS_TRAPS."centTrapHandler-2.x \$aA \$A \$o \"$values[3]\" \"$*\"\n";
 		    if (defined($values[4])) {
 				print FILE "SDESC\n".$values[4];
 				if ($values[4] =~ /\n$/) {

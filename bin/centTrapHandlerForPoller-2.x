@@ -145,7 +145,7 @@ sub getServicesIncludeTemplate($$$$) {
 # GET SERVICE DESCRIPTION
 #
 
-sub getServiceInformations($$$)	{
+sub getServiceInformations($$$$)	{
 
     my $sth = $_[0]->prepare("SELECT `host_id` FROM `host` WHERE `host_name` = '$_[2]'");
     $sth->execute();
@@ -190,6 +190,7 @@ sub getTrapsInfos($$$$){
     my $hostname = shift;
     my $oid = shift;
     my $arguments_line = shift;
+    my $allargs = shift;
     
     my $dbh = DBI->connect("dbi:mysql:".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
     my @host = get_hostinfos($dbh, $ip, $hostname);
