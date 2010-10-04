@@ -39,11 +39,14 @@
 		exit ();
 
 	function testContactExistence ($name = NULL)	{
-		global $pearDB, $form;
+		global $pearDB, $form, $oreon;
+
 		$id = NULL;
-		if (isset($form))
+		if (isset($form)) {
 			$id = $form->getSubmitValue('contact_id');
-		$DBRESULT =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		}
+
+		$DBRESULT =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 		$contact =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $id)
@@ -174,6 +177,9 @@
 					$fields["contact_name"] = $contact_name;
 					$fields["contact_alias"] = $contact_alias;
 				}
+
+				$ret["contact_name"] = $oreon->checkIllegalChar($ret["contact_name"]);
+
 				if (testContactExistence($contact_name) && testAliasExistence($contact_alias))	{
 					$val ? $rq = "INSERT INTO contact VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
@@ -263,6 +269,8 @@
 
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+
+		$ret["contact_name"] = $oreon->checkIllegalChar($ret["contact_name"]);
 
 		$rq = "INSERT INTO `contact` ( " .
 				"`contact_id` , `timeperiod_tp_id` , `timeperiod_tp_id2` , `contact_name` , " .
@@ -390,6 +398,9 @@
 			return;
 		$ret = array();
 		$ret = $form->getSubmitValues();
+
+		$ret["contact_name"] = $oreon->checkIllegalChar($ret["contact_name"]);
+
 		$rq = "UPDATE contact ";
 		$rq .= "SET timeperiod_tp_id = ";
 		isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";

@@ -79,7 +79,7 @@ class Centreon	{
      * Class constructor
      *
      * @access public
-	 * @param	objst 	$user	User objets
+	 * @param	object 	$user User objects
 	 * @return	object	objet information
      */
 	function Centreon($userInfos)	{
@@ -192,5 +192,21 @@ class Centreon	{
 		unset($opt);
 	}
 
+	/**
+ 	 *
+ 	 * Check illegal char defined into nagios.cfg file
+ 	 * @param varchar $name
+ 	 */
+ 	public function checkIllegalChar($name) {
+ 		$DBRESULT = $this->DB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+		while ($data = $DBRESULT->fetchRow()) {
+			$tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
+			foreach ($tab as $char) {
+				$name = str_replace($char, "", $name);
+			}
+		}
+		$DBRESULT->free();
+		return $name;
+ 	}
 }
 ?>

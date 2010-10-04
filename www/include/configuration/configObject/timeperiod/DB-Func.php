@@ -40,8 +40,7 @@
 	if (!isset ($oreon))
 		exit ();
 
-	function includeExcludeTimeperiods($tpId, $includeTab = array(), $excludeTab = array())
-	{
+	function includeExcludeTimeperiods($tpId, $includeTab = array(), $excludeTab = array()) {
 		global $pearDB;
 
 		/*
@@ -80,12 +79,14 @@
 	}
 
 	function testTPExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form, $oreon;
+
 		$id = NULL;
-		if (isset($form))
+		if (isset($form)) {
 			$id = $form->getSubmitValue('tp_id');
-		$DBRESULT =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod WHERE tp_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		}
+
+		$DBRESULT =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod WHERE tp_name = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 		$tp =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $tp["tp_id"] == $id)
@@ -176,6 +177,9 @@
 		}
 		$ret = array();
 		$ret = $form->getSubmitValues();
+
+		$ret["tp_name"] = $oreon->checkIllegalChar($ret["tp_name"]);
+
 		$rq = "UPDATE timeperiod ";
 		$rq .= "SET tp_name = '".htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8")."', " .
 				"tp_alias = '".htmlentities($ret["tp_alias"], ENT_QUOTES, "UTF-8")."', " .
@@ -235,10 +239,14 @@
 	}
 
 	function insertTimeperiod($ret = array(), $exceptions = null)	{
-		global $form;
-		global $pearDB, $oreon;
-		if (!count($ret))
+		global $form, $pearDB, $oreon;
+
+		if (!count($ret)) {
 			$ret = $form->getSubmitValues();
+		}
+
+		$ret["sg_name"] = $oreon->checkIllegalChar($ret["sg_name"]);
+
 		$rq = "INSERT INTO timeperiod ";
 		$rq .= "(tp_name, tp_alias, tp_sunday, tp_monday, tp_tuesday, tp_wednesday, tp_thursday, tp_friday, tp_saturday) ";
 		$rq .= "VALUES (";

@@ -40,30 +40,30 @@
 		exit();
 
 	function hostExists($name = NULL){
-		global $pearDB;
+		global $pearDB, $oreon;
 
-		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM ns_host_relation WHERE host_host_id = '".getMyHostID(trim($name))."'");
+		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM ns_host_relation WHERE host_host_id = '".getMyHostID(trim($oreon->checkIllegalChar($name)))."'");
 		if ($DBRESULT->numRows() >= 1)
 			return true;
 		return false;
 	}
 
 	function hostTemplateExists($name = NULL) {
-		global $pearDB;
+		global $pearDB, $oreon;
 
-		$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$name."'");
+		$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$oreon->checkIllegalChar($name)."'");
 		if ($DBRESULT->numRows() >= 1)
 			return true;
 		return false;
 	}
 
 	function testHostExistence ($name = NULL)	{
-		global $pearDB, $form;
+		global $pearDB, $form, $oreon;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');;
 
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."' AND host_register = '1'");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."' AND host_register = '1'");
 		$host =& $DBRESULT->fetchRow();
 
 		/*
@@ -276,7 +276,7 @@
 								$DBRESULT1 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$maxId["MAX(host_id)"]."', NULL, '".$svs["service_service_id"]."')");
 							}
 						}
-						
+
 						/*
 						 * ContactGroup duplication
 						 */
@@ -319,7 +319,7 @@
 							$val ? $rq = "INSERT INTO extended_host_information VALUES (".$val.")" : $rq = null;
 							$DBRESULT2 =& $pearDB->query($rq);
 						}
-						
+
 						/*
 						 * Poller link ducplication
 						 */
@@ -508,6 +508,8 @@
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 
+		$host = new CentreonHost($pearDB);
+
 		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL)		{
 			$ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
@@ -531,6 +533,8 @@
 			$ret["host_template_model_htm_id"] = $result["host_id"];
 			$DBRESULT->free();
 		}
+
+		$ret["host_name"] = $host->checkIllegalChar($ret["host_name"]);
 
 		$rq = "INSERT INTO host " .
 			"(host_template_model_htm_id, command_command_id, command_command_id_arg1, timeperiod_tp_id, timeperiod_tp_id2, command_command_id2, command_command_id_arg2," .
@@ -909,8 +913,14 @@
 	}
 
 	function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
-		if (!$host_id) return;
 		global $form, $pearDB, $centreon;
+
+		if (!$host_id) {
+			return;
+		}
+
+		$host = new CentreonHost($pearDB);
+
 		$ret = array();
 		if (!isset($cfg))
 			$ret = $form->getSubmitValues();
@@ -958,6 +968,7 @@
 		# If we are doing a MC, we don't have to set name and alias field
 		if (!$from_MC)	{
 			$rq .= "host_name = ";
+			$ret["host_name"] = $host->checkIllegalChar($ret["host_name"]);
 			isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 			$rq .= "host_alias = ";
 			isset($ret["host_alias"]) && $ret["host_alias"] != NULL ? $rq .= "'".htmlentities($ret["host_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";

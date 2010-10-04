@@ -3,39 +3,39 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset ($oreon))
 		exit ();
 
@@ -53,13 +53,13 @@
 	}
 
 	function testCmdExistence ($name = NULL)	{
-		global $pearDB, $form;
+		global $pearDB, $form, $oreon;
 		$id = NULL;
-		
+
 		if (isset($form))
 			$id = $form->getSubmitValue('command_id');
-		
-		$DBRESULT =& $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+
+		$DBRESULT =& $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 		$command =& $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $command["command_id"] == $id)	{
 			/*
@@ -77,7 +77,7 @@
 
 	function deleteCommandInDB ($commands = array())	{
 		global $pearDB, $oreon;
-		
+
 		foreach ($commands as $key => $value)	{
 			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE `command_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
@@ -85,12 +85,12 @@
 			$oreon->CentreonLogAction->insertLog("command", $key, $row['command_name'], "d");
 		}
 	}
-	
+
 	function multipleCommandInDB ($commands = array(), $nbrDup = array())	{
 		global $pearDB, $oreon;
-			
+
 		foreach($commands as $key => $value)	{
-			
+
 			$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$key."' LIMIT 1");
 
 			$row = $DBRESULT->fetchRow();
@@ -114,42 +114,44 @@
 		 			* Get Max ID
 		 			*/
 					$DBRESULT =& $pearDB->query("SELECT MAX(command_id) FROM `command`");
-					$cmd_id = $DBRESULT->fetchRow();	
+					$cmd_id = $DBRESULT->fetchRow();
 					$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $command_name, "a", $fields);
 				}
 			}
 		}
 	}
-	
+
 	function updateCommandInDB ($cmd_id = NULL)	{
 		if (!$cmd_id) return;
 		updateCommand($cmd_id);
 	}
-	
+
 	function updateCommand($cmd_id = null)	{
 		global $form, $pearDB, $oreon;
-		
-		if (!$cmd_id) 
+
+		if (!$cmd_id)
 			return;
-		
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		
+
 		set_magic_quotes_runtime(1);
-		
+
 		$ret["command_line"] = str_replace('\n', "#BR#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('\t', "#T#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('\r', "#R#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('/', "#S#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('\\', "#BS#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('|', "#P#", $ret["command_line"]);
-		
+		c
 		$ret["command_example"] = str_replace('\n', "#BR#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('\t', "#T#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('\r', "#R#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('/', "#S#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('\\', "#BS#", $ret["command_example"]);
-		
+
+		$ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
+
 		$rq = "UPDATE `command` SET `command_name` = '".htmlentities($ret["command_name"], ENT_QUOTES, "UTF-8")."', " .
 				"`command_line` = '".htmlentities($ret["command_line"], ENT_QUOTES, "UTF-8")."', " .
 				"`command_example` = '".htmlentities($ret["command_example"], ENT_QUOTES, "UTF-8")."', " .
@@ -158,7 +160,7 @@
 				"`graph_id` = '".htmlentities($ret["graph_id"], ENT_QUOTES, "UTF-8")."' " .
 				"WHERE `command_id` = '".$cmd_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-			
+
 		$fields["command_name"] = htmlentities($ret["command_name"], ENT_QUOTES, "UTF-8");
 		$fields["command_line"] = htmlentities($ret["command_line"], ENT_QUOTES, "UTF-8");
 		$fields["command_example"] = htmlentities($ret["command_example"], ENT_QUOTES, "UTF-8");
@@ -168,31 +170,33 @@
 		$oreon->CentreonLogAction->insertLog("command", $cmd_id, htmlentities($ret["command_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 		insertArgDesc($cmd_id, $ret);
 	}
-	
+
 	function insertCommandInDB ($ret = array())	{
 		$cmd_id = insertCommand($ret);
 		return ($cmd_id);
 	}
-	
+
 	function insertCommand($ret = array())	{
 		global $form, $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		set_magic_quotes_runtime(1);
-		
+
 		$ret["command_line"] = str_replace("\n", "#BR#", $ret["command_line"]);
 		$ret["command_line"] = str_replace("\t", "#T#", $ret["command_line"]);
 		$ret["command_line"] = str_replace("\r", "#R#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('/', "#S#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('\\', "#BS#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('|', "#P#", $ret["command_line"]);
-		
+
 		$ret["command_example"] = str_replace("\n", "#BR#", $ret["command_example"]);
 		$ret["command_example"] = str_replace("\t", "#T#", $ret["command_example"]);
 		$ret["command_example"] = str_replace("\r", "#R#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('/', "#S#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('\\', "#BS#", $ret["command_example"]);
-		
+
+		$ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
+
 		/*
 		 * Insert
 		 */
@@ -204,18 +208,18 @@
 		$fields["command_example"] = htmlentities($ret["command_example"], ENT_QUOTES, "UTF-8");
 		$fields["command_type"] = $ret["command_type"]["command_type"];
 		$fields["graph_id"] = $ret["graph_id"];
-		
+
 		/*
 		 * Get Max ID
 		 */
 		$DBRESULT =& $pearDB->query("SELECT MAX(command_id) FROM `command`");
 		$cmd_id = $DBRESULT->fetchRow();
-		
+
 		$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], htmlentities($ret["command_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
 		insertArgDesc($cmd_id["MAX(command_id)"], $ret);
 		return ($cmd_id["MAX(command_id)"]);
 	}
-	
+
 	function return_plugin($rep){
 		global $oreon;
 		$plugins = array();
@@ -236,24 +240,24 @@
 		closedir($handle[$rep]);
 		return ($plugins);
 	}
-	
+
 	/*
 	 *  Inserts descriptions of arguments
 	 */
 	function insertArgDesc($cmd_id, $ret = NULL) {
 		global $oreon, $pearDB;
-		
+
 		if (!count($ret)) {
 			$ret = $form->getSubmitValues();
 		}
-		
+
 		$pearDB->query("DELETE FROM `command_arg_description` WHERE cmd_id = '".$cmd_id."'");
 		$query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) VALUES ";
 		if (isset($ret['listOfArg']) && $ret['listOfArg']) {
 			$tab1 = split("\n", $ret['listOfArg']);
 			foreach ($tab1 as $key => $value) {
 				$tab2 = split(" : ", $value, 2);
-				$query .= "('" . htmlentities($cmd_id, ENT_QUOTES, "UTF-8") . "', '" . htmlentities($tab2[0], ENT_QUOTES, "UTF-8") . "', '" .htmlentities($tab2[1], ENT_QUOTES, "UTF-8"). "'),";				
+				$query .= "('" . htmlentities($cmd_id, ENT_QUOTES, "UTF-8") . "', '" . htmlentities($tab2[0], ENT_QUOTES, "UTF-8") . "', '" .htmlentities($tab2[1], ENT_QUOTES, "UTF-8"). "'),";
 			}
 			$query = trim($query, ",");
 			$pearDB->query($query);

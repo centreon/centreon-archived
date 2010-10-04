@@ -44,8 +44,7 @@
 	 * @param $argArray
 	 * @return string
 	 */
-    function getCommandArgs($argArray = array())
-    {
+    function getCommandArgs($argArray = array()) {
         $argTab = array();
 		foreach ($argArray as $key => $value) {
 		    if (preg_match('/^ARG(\d+)/', $key, $matches)) {
@@ -89,12 +88,12 @@
 		return $combo;
 	}
 
-	function serviceExists ($name = NULL)	{
-		global $pearDB;
+	function serviceExists($name = NULL)	{
+		global $pearDB, $oreon;
 
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
-		$DBRESULT =& $pearDB->query("SELECT service_description FROM service WHERE service_description = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$DBRESULT =& $pearDB->query("SELECT service_description FROM service WHERE service_description = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 		if ($DBRESULT->numRows() >= 1)
 			return true;
 		return false;
@@ -108,7 +107,7 @@
 			$id = $form->getSubmitValue('service_id');
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$DBRESULT =& $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 		$service =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $service["service_id"] == $id)
@@ -140,7 +139,7 @@
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
 		foreach ($hPars as $host)	{
-			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 			$service =& $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id)
@@ -148,7 +147,7 @@
 			$DBRESULT->free();
 		}
 		foreach ($hgPars as $hostgroup)	{
-			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 			$service =& $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id)
@@ -184,6 +183,7 @@
 			$centreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $row['service_description']), "disable");
 		}
 	}
+
 	function deleteServiceInDB ($services = array())	{
 		global $pearDB, $centreon;
 
@@ -446,9 +446,14 @@
 	}
 
 	function updateServiceInDB ($service_id = NULL, $from_MC = false)	{
-		if (!$service_id) return;
 		global $form;
+
+		if (!$service_id) {
+			return;
+		}
+
 		$ret = $form->getSubmitValues();
+
 		if ($from_MC)
 			updateService_MC($service_id);
 		else
@@ -460,12 +465,10 @@
 		if (isset($ret["mc_mod_cgs"]["mc_mod_cgs"]) && $ret["mc_mod_cgs"]["mc_mod_cgs"]) {
 			updateServiceContactGroup($service_id);
 			updateServiceContact($service_id);
-		}
-		else if (isset($ret["mc_mod_cgs"]["mc_mod_cgs"]) && !$ret["mc_mod_cgs"]["mc_mod_cgs"]) {
+		} else if (isset($ret["mc_mod_cgs"]["mc_mod_cgs"]) && !$ret["mc_mod_cgs"]["mc_mod_cgs"]) {
 			updateServiceContactGroup_MC($service_id);
 			updateServiceContact_MC($service_id);
-		}
-		else {
+		} else {
 			updateServiceContactGroup($service_id);
 			updateServiceContact($service_id);
 		}
@@ -540,8 +543,14 @@
 	function insertService($ret = array(), $macro_on_demand = NULL)	{
 		global $form, $pearDB, $centreon;
 
-		if (!count($ret))
+		$service = new CentreonService($pearDB);
+
+		if (!count($ret)) {
 			$ret = $form->getSubmitValues();
+		}
+
+		$ret["service_description"] = $service->checkIllegalChar($ret["service_description"]);
+
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
@@ -738,14 +747,19 @@
 	}
 
 	function updateService($service_id = null, $from_MC = false)	{
+		global $form, $pearDB, $centreon;
+
 		if (!$service_id) {
 			return;
 		}
 
-		global $form, $pearDB, $centreon;
+		$service = new CentreonService($pearDB);
 
 		$ret = array();
 		$ret = $form->getSubmitValues();
+
+		$ret["sg_name"] = $oreon->checkIllegalChar($ret["sg_name"]);
+
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
@@ -936,10 +950,15 @@
 	function updateService_MC($service_id = null)	{
 		if (!$service_id)
 			return;
-		global $form;
-		global $pearDB, $centreon;
+		global $form, $pearDB, $centreon;
+
+		$service = new CentreonService($pearDB);
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
+
+		$ret["sg_name"] = $oreon->checkIllegalChar($ret["sg_name"]);
+
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
 			$ret["command_command_id_arg"] = str_replace("\n", "#BR#", $ret["command_command_id_arg"]);
 			$ret["command_command_id_arg"] = str_replace("\t", "#T#", $ret["command_command_id_arg"]);

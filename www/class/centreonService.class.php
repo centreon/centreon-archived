@@ -40,13 +40,13 @@
   *  Class that contains various methods for managing services
   */
  class CentreonService {
- 	private $local_pearDB;
+ 	private $DB;
 
  	/*
  	 *  Constructor
  	 */
  	function CentreonService($pearDB) {
- 		$this->local_pearDB = $pearDB;
+ 		$this->DB = $pearDB;
  	}
 
  	/*
@@ -54,7 +54,7 @@
  	 */
  	public function getServiceDesc($svc_id) {
  		$rq = "SELECT service_description FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
- 		$DBRES =& $this->local_pearDB->query($rq);
+ 		$DBRES =& $this->DB->query($rq);
  		if (!$DBRES->numRows())
  			return NULL;
  		$row =& $DBRES->fetchRow();
@@ -80,7 +80,7 @@
 				"     	WHERE h.host_name = '".$host_name."' ) ghsrv" .
 				" ON s.service_id = ghsrv.service_service_id" .
 				" WHERE s.service_description = '".$svc_desc."' LIMIT 1";
- 		$DBRES = $this->local_pearDB->query($rq);
+ 		$DBRES = $this->DB->query($rq);
  		if (!$DBRES->numRows()) {
  			return null;
  		}
@@ -88,12 +88,29 @@
  		return $row['service_id'];
  	}
 
+ 	/**
+ 	 *
+ 	 * Check illegal char defined into nagios.cfg file
+ 	 * @param varchar $name
+ 	 */
+ 	public function checkIllegalChar($name) {
+ 		$DBRESULT = $this->DB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+		while ($data = $DBRESULT->fetchRow()) {
+			$tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
+			foreach ($tab as $char) {
+				$name = str_replace($char, "", $name);
+			}
+		}
+		$DBRESULT->free();
+		return $name;
+ 	}
+
  	/*
  	 *  Returns a string that replaces on demand macros by their values
  	 */
  	public function replaceMacroInString($svc_id, $string) {
  		$rq = "SELECT service_register FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
-        $DBRES =& $this->local_pearDB->query($rq);
+        $DBRES =& $this->DB->query($rq);
         if (!$DBRES->numRows())
         	return $string;
         $row =& $DBRES->fetchRow();
@@ -111,7 +128,7 @@
  		$i = 0;
  		while (isset($matches[1][$i])) {
  			$rq = "SELECT svc_macro_value FROM on_demand_macro_service WHERE svc_svc_id = '".$svc_id."' AND svc_macro_name LIKE '".$matches[1][$i]."'";
- 			$DBRES =& $this->local_pearDB->query($rq);
+ 			$DBRES =& $this->DB->query($rq);
 	 		while ($row =& $DBRES->fetchRow()) {
 	 			$string = str_replace($matches[1][$i], $row['svc_macro_value'], $string);
 	 		}
@@ -119,7 +136,7 @@
  		}
  		if ($i) {
 	 		$rq2 = "SELECT service_template_model_stm_id FROM service WHERE service_id = '".$svc_id."'";
-	 		$DBRES2 =& $this->local_pearDB->query($rq2);
+	 		$DBRES2 =& $this->DB->query($rq2);
 	 		while ($row2 =& $DBRES2->fetchRow()) {
 	 			$string = $this->replaceMacroInString($row2['service_template_model_stm_id'], $string);
 	 		}
