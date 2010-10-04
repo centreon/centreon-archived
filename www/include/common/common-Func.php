@@ -365,13 +365,13 @@
 		else
 			return 0;
 	}
-	
+
 	function getMyHostFieldFromMultiTemplates($host_id, $field){
-		global $pearDB;		
+		global $pearDB;
 		if (!$host_id) {
 			return NULL;
 		}
-		
+
 		$rq = "SELECT host_tpl_id " .
 			"FROM host_template_relation " .
 			"WHERE host_host_id = '".$host_id."' " .
@@ -380,7 +380,7 @@
 		while ($row =& $DBRESULT->fetchRow()) {
 			$rq2 = "SELECT $field " .
 				"FROM host " .
-				"WHERE host_id = '".$row['host_tpl_id']."' LIMIT 1";								
+				"WHERE host_id = '".$row['host_tpl_id']."' LIMIT 1";
 			$DBRESULT2 =& $pearDB->query($rq2);
 			$row2 =& $DBRESULT2->fetchRow();
 			if (isset($row2[$field]) && $row2[$field])
@@ -1697,7 +1697,7 @@
 		$string = str_replace('#R#', "\\r", $string);
 		$string = str_replace('#S#', "/", $string);
 		$string = str_replace('#BS#', "\\", $string);
-		return $string;
+		return utf8_encode($string);
 	}
 
 	function str2db($string) {
