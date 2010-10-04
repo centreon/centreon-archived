@@ -224,7 +224,6 @@
 				/*
 				 * Event_handler
 				 */
-				 
 				if ($service["command_command_id2"])
 					$strTMP .= print_line("event_handler", $commands[$service["command_command_id2"]].$service["command_command_id_arg2"]);
 				if ($service["service_event_handler_enabled"] != 2) 
@@ -390,8 +389,9 @@
 				if ($ret["comment"] && $service["service_comment"])	{
 					$comment = array();
 					$comment = explode("\n", $service["service_comment"]);
-					foreach ($comment as $cmt)
+					foreach ($comment as $cmt) {
 						$strTMP .= "# ".$cmt."\n";
+					}
 				}
 				$strTMP .= "define service{\n";
 				if ($service["service_register"] == 1 && (isset($serviceRelation[$service["service_id"]]["h"]) || isset($serviceRelation[$service["service_id"]]["hg"])))	{
