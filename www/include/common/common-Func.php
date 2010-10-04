@@ -1263,9 +1263,17 @@
 		return NULL;
 	}
 
+	/**
+	 * 
+	 * @param $service_id
+	 * @return unknown_type
+	 */
 	function getMyCheckCmdParam($service_id = NULL)	{
-		if (!$service_id)	return;
 		global $pearDB;
+		if (!$service_id) {
+			return;
+		}
+		
 		$cmd = NULL;
 		$arg = NULL;
 		$DBRESULT =& $pearDB->query("SELECT command_command_id, command_command_id_arg FROM service WHERE service_id = '".$service_id."' LIMIT 1");
@@ -1273,21 +1281,18 @@
 		if ($row["command_command_id_arg"] && !$row["command_command_id"])	{
 			$cmd = getMyCheckCmdName($service_id);
 			return $cmd.db2str($row["command_command_id_arg"]);
-		}
-		else if($row["command_command_id"] && !$row["command_command_id_arg"])	{
+		} else if ($row["command_command_id"] && !$row["command_command_id_arg"])	{
 			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
 			$row2 =& $DBRESULT2->fetchRow();
-			// Uncomment if we want to take the template arg by default if it's not define in the current service
-			//$arg = getMyCheckCmdArg($service_id);
+			$arg = getMyCheckCmdArg($service_id);
 			return $row2["command_name"].$arg;
-		}
-		else if($row["command_command_id"] && $row["command_command_id_arg"])	{
+		} else if ($row["command_command_id"] && $row["command_command_id_arg"])	{
 			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
 			$row2 =& $DBRESULT2->fetchRow();
-			return $row2["command_name"].db2str($row["command_command_id_arg"]);
-		}
-		else
+			return $row2["command_name"].db2str(utf8_encode($row["command_command_id_arg"]));
+		} else {
 			return NULL;
+		}
 	}
 
 	#
