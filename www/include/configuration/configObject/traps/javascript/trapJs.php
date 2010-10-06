@@ -49,8 +49,8 @@ var nbOfInitialRows = 0;
 var o = '<?php echo $o;?>';
 
 /*
-** Transform our div
-*/
+ * Transform our div
+ */
 function transformForm()
 {
     var params;
@@ -70,8 +70,7 @@ function transformForm()
     	proc.transform("dynamicDiv");
         trapId = 0;
         o = 0;
-    }
-    else {
+    } else {
     	params = '?id=' + counter + '&nbOfInitialRows=' + nbOfInitialRows;
         proc = new Transformation();
     	addrXML = './include/configuration/configObject/traps/xml/additionalRowXml.php' + params;
@@ -83,10 +82,9 @@ function transformForm()
 }
 
 /*
-** called when the 'Advanced matching options' checkbox is clicked
-*/
-function toggleParams(checkValue)
-{
+ * called when the 'Advanced matching options' checkbox is clicked
+ */
+function toggleParams(checkValue) {
 
     if (checkValue == true) {
         transformForm();
@@ -100,32 +98,29 @@ function toggleParams(checkValue)
 }
 
 /*
-** Initialises advanced parameters
-*/
-function initParams()
-{
-    if (document.getElementById('traps_advanced_treatment')) {
-        toggleParams(document.getElementById('traps_advanced_treatment').checked);
-    }
+ * Initialises advanced parameters
+ */
+function initParams() {
+	if (document.getElementById('traps_advanced_treatment')) {
+    	toggleParams(document.getElementById('traps_advanced_treatment').checked);
+	}
 }
 
 /*
-** Function is called when the '+' button is pressed
-*/
-function addNewRow()
-{
+ * Function is called when the '+' button is pressed
+ */
+function addNewRow() {
     counter++;
     nextRowId = 'additionalRow_' + counter;
     transformForm();
 }
 
 /*
-** function that is called when the 'x' button is pressed
-*/
-function removeTr(trId)
-{
+ * function that is called when the 'x' button is pressed
+ */
+function removeTr(trId) {
     if (document.getElementById(trId)) {
-        document.getElementById(trId).innerText = '<td></td>';
+		document.getElementById(trId).innerHTML = '<td></td>';
         Effect.Fade(trId, { duration : 0 });
     }
 }
