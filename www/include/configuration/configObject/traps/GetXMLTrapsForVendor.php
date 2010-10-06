@@ -3,69 +3,86 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
+
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 
-	require_once $centreon_path . "/www/class/centreonDB.class.php";	
-	require_once $centreon_path . "/www/class/centreonXML.class.php";
-	/* 
-	 * start init db
-	 */	
-	$pearDB = new CentreonDB();
-		
-	$buffer = new CentreonXML();
-	$buffer->startElement("traps");		
+	if (isset($_POST["mnftr_id"])) {
+		$mnftr_id = (int)htmlentities($_POST["mnftr_id"], ENT_QUOTES, "UTF-8");
+	} else {
+		$mnftr_id = null;
+	}
 
-	if (isset($_POST["mnftr_id"])){ 
+	require_once $centreon_path . "/www/class/centreonDB.class.php";
+	require_once $centreon_path . "/www/class/centreonXML.class.php";
+
+	/**
+	 * start init db
+	 */
+	$pearDB = new CentreonDB();
+
+	$buffer = new CentreonXML();
+
+	/**
+	 * Start XML
+	 */
+	$buffer->startElement("traps");
+
+	if (isset($_POST["mnftr_id"])){
 		$traps = array();
-		if ($_POST["mnftr_id"])
-			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps WHERE manufacturer_id = " . $_POST["mnftr_id"]. " ORDER BY traps_name");
-		else
-			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
-		
+		if ($_POST["mnftr_id"]) {
+			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps WHERE manufacturer_id = " . $mnftr_id. " ORDER BY traps_name");
+		} else {
+ 			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
+		}
 
 		while ($trap =& $DBRESULT->fetchRow()){
-				$buffer->startElement("trap");
-				$buffer->writeElement("id", $trap["traps_id"]);
-				$buffer->writeElement("name", $trap["traps_name"]);
-				$buffer->endElement();							
+			$buffer->startElement("trap");
+			$buffer->writeElement("id", $trap["traps_id"]);
+			$buffer->writeElement("name", $trap["traps_name"]);
+			$buffer->endElement();
 		}
 		$DBRESULT->free();
 	} else{
-		$buffer->writeElement("error", "mnftr_id not found");		
+		$buffer->writeElement("error", "mnftr_id not found");
 	}
-	$buffer->endElement();	
+	$buffer->endElement();
+
+	/**
+	 * Send Header
+	 */
 	header('Content-Type: text/xml');
 	$buffer->output();
+
 ?>
