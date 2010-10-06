@@ -146,6 +146,11 @@
 	$form->addElement('checkbox', 'global_host_obsess', _("Enable/Disable Obsessive host checks"));
 	$form->addElement('checkbox', 'global_perf_data', _("Enable/Disable Performance Data"));
 
+	# Global Functionnalities
+	$form->addElement('checkbox', 'top_counter', _("Display Top Counter"));
+	$form->addElement('checkbox', 'poller_listing', _("Display Poller Listing"));
+
+
 	$form->setDefaults(array("hostComment" => 1 ));
 
 	# Contacts Selection
@@ -153,6 +158,7 @@
 	$form->addElement('header', 'service_actions', _("Services Actions Access"));
 	$form->addElement('header', 'host_actions', _("Hosts Actions Access"));
 	$form->addElement('header', 'global_actions', _("Global Nagios Actions (External Process Commands)"));
+	$form->addElement('header', 'global_access', _("Global Fonctionnalities Access"));
 
     $ams1 =& $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
@@ -214,11 +220,11 @@
 	}
 
 	$valid = false;
-	if ($form->validate())	{
+	if ($form->validate()) {
 		$groupObj =& $form->getElement('acl_action_id');
-		if ($form->getSubmitValue("submitA"))
+		if ($form->getSubmitValue("submitA")) {
 			$groupObj->setValue(insertActionInDB());
-		else if ($form->getSubmitValue("submitC")){
+		} else if ($form->getSubmitValue("submitC")){
 			updateActionInDB($groupObj->getValue());
 			updateRulesActions($groupObj->getValue());
 		}
@@ -228,9 +234,9 @@
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
+	if ($valid && $action["action"]["action"]) {
 		require_once($path."listsActionsAccess.php");
-	else	{
+	} else {
 		#Apply a template definition
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
