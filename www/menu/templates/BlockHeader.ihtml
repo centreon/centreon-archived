@@ -29,6 +29,7 @@
 	</form>	
 	<!-- stat -->
 	<div id="resume_light">
+		{if $displayTopCounter == 1}
 		<table cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			{if $amIadmin == 1}
@@ -87,6 +88,7 @@
 			</td>
 		</tr>
 		</table>
+		{/if}
 	</div>	
 	<span id="linkBar"></span>
 	<span id="logli">

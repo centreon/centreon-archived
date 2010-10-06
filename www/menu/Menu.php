@@ -92,6 +92,20 @@
 
 	$tpl->assign("urlLogo", 'img/centreon.gif');
 
+	/**
+	 * ACL
+	 */
+	if ($centreon->user->access->admin == 0) {
+		$tabActionACL = $centreon->user->access->getActions();
+		if (isset($tabActionACL["top_counter"])) {
+			$tpl->assign("displayTopCounter", 1);
+		} else {
+			$tpl->assign("displayTopCounter", 0);
+		}
+	} else {
+		$tpl->assign("displayTopCounter", 1);
+	}
+
 	$tpl->assign("Ok", _("Ok"));
 	$tpl->assign("Warning", _("Warning"));
 	$tpl->assign("Critical", _("Critical"));
