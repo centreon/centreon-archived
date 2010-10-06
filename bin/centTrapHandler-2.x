@@ -230,9 +230,9 @@ sub getTrapsInfos($$$$$){
 				# Advanced matching rules
 				if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
 			    	# Check matching options 
-			    	my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
+			    	my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status, tmo_string FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
 			    	$sth->execute();
-			    	while (my ($regexp, $tmoStatus) = $sth->fetchrow_array()) {
+			    	while (my ($regexp, $tmoStatus, $tmoString) = $sth->fetchrow_array()) {
 						my @temp = split(//, $regexp);
 						my $i = 0;
 						my $len = length($regexp);
@@ -247,7 +247,24 @@ sub getTrapsInfos($$$$$){
 				    		}
 				    		$i++;
 						}
-						if ($arguments_line =~ m/$regexp/g) {
+						##########################
+						# REPLACE ARGS
+						my $x = 0;
+						foreach (@args) {
+							$tmoString =~ s/\$$x\/$_/g;				
+							$x++;
+						}
+						
+						##########################
+						# REPLACE MACROS
+						$tmoString =~ s/\&quot\;/\"/g;
+						$tmoString =~ s/\@HOSTNAME\@/$this_host/g;
+						$tmoString =~ s/\@HOSTADDRESS\@/$_[1]/g;
+						$tmoString =~ s/\@HOSTADDRESS2\@/$_[2]/g;
+						$tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
+						$tmoString =~ s/\@TIME\@/$datetime/g;
+						
+						if (defined(tmoString) && $tmoString =~ m/$regexp/g) {
 				    		$status = $tmoStatus;
 				    		last;
 						}
