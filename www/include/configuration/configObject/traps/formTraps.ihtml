@@ -16,19 +16,26 @@
     		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:trapname", {$helpattr});'> {$form.traps_name.label}</td><td class="FormRowValue">{$form.traps_name.html}</td></tr>
     		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:oid", {$helpattr});'> {$form.traps_oid.label}</td><td class="FormRowValue">{$form.traps_oid.html}</td></tr>
     		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:vendor", {$helpattr});'> {$form.manufacturer_id.label}</td><td class="FormRowValue">{$form.manufacturer_id.html}</td></tr>
-    		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$subtitle1}</td></tr>
-    		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:submit_result_enabled", {$helpattr});'> {$form.traps_submit_result_enable.label}</td><td class="FormRowValue">{$form.traps_submit_result_enable.html}</td></tr>
+    		
+    		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$subtitle0}</td></tr>
     		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:trap_args", {$helpattr});'> {$form.traps_args.label}</td><td class="FormRowValue">{$form.traps_args.html}</td></tr>
     		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:trap_status", {$helpattr});'> {$form.traps_status.label}</td><td class="FormRowValue">{$form.traps_status.html}</td></tr>		
     		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:trap_advanced", {$helpattr});'> {$form.traps_advanced_treatment.label}</td><td class="FormRowValue">{$form.traps_advanced_treatment.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:trap_adv_args", {$helpattr});'> {$trap_adv_args}</td><td><div id='dynamicDiv'></div></td></tr>
+			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:trap_adv_args", {$helpattr});'> {$trap_adv_args}</td><td><div id='dynamicDiv'></div></td></tr>
+    		
+    		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$subtitle1}</td></tr>
+    		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:submit_result_enabled", {$helpattr});'> {$form.traps_submit_result_enable.label}</td><td class="FormRowValue">{$form.traps_submit_result_enable.html}</td></tr>
+    		
     		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$subtitle2}</td></tr>
     		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:reschedule_enabled", {$helpattr});'> {$form.traps_reschedule_svc_enable.label}</td><td class="FormRowValue">{$form.traps_reschedule_svc_enable.html}</td></tr>
+    		
     		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$subtitle3}</td></tr>
     		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:command_enabled", {$helpattr});'> {$form.traps_execution_command_enable.label}</td><td class="FormRowValue">{$form.traps_execution_command_enable.html}</td></tr>
     		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:command_args", {$helpattr});'> {$form.traps_execution_command.label}</td><td class="FormRowValue">{$form.traps_execution_command.html}</td></tr>
+    		
     		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$subtitle4}</td></tr>
     		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:comments", {$helpattr});'> {$form.traps_comments.label}</td><td class="FormRowValue">{$form.traps_comments.html}</td></tr>
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
         </tbody>
 	</table>
 	</div>

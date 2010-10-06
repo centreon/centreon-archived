@@ -1,4 +1,5 @@
 <?php
+
 $help = array();
 
 $help["trapname"] = dgettext("help", "Enter the trap name as specified in the MIB file and send by the SNMP master agent.");
@@ -8,7 +9,7 @@ $help["submit_result_enabled"] = dgettext("help", "Switch the submission of trap
 $help["trap_args"] = dgettext("help", "Enter the status message to be submitted to nagios. The original trap message will be placed into the entered string at the position of the variable \$*.");
 $help["trap_status"] = dgettext("help", "Choose the service state to be submitted to nagios together with the status message. This simple mode can be used if each trap can be mapped to exactly 1 nagios status.");
 $help["trap_advanced"] = dgettext("help", "Enable advanced matching mode for cases where a trap relates to multiple nagios states and the trap message has to be parsed.");
-$help["trap_adv_args"] = dgettext("help", "Define one or multiple regular expressions to match against the trap message and map it to the related nagios service state. Use perlre for the format and place the expression between two slashes.");
+$help["trap_adv_args"] = dgettext("help", "Define one or multiple regular expressions to match against the trap message and map it to the related nagios service state. Use <a href='http://perldoc.perl.org/perlre.html'>perlre</a> for the format and place the expression between two slashes.");
 $help["reschedule_enabled"] = dgettext("help", "Choose whether or not the associated service should be actively rechecked after submission of this trap.");
 $help["command_enabled"] = dgettext("help", "Choose whether or not a special command should be run by snmptrapd when this trap was received.");
 $help["command_args"] = dgettext("help", "Define the command to execute by snmptrapd's trap handler. The command must be located in the PATH of the snmptrapd user.");

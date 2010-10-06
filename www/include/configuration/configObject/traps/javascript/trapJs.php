@@ -120,8 +120,12 @@ function addNewRow() {
  */
 function removeTr(trId) {
     if (document.getElementById(trId)) {
-		document.getElementById(trId).innerHTML = '<td></td>';
-        Effect.Fade(trId, { duration : 0 });
+    	if (navigator.appName == "Microsoft Internet Explorer") {
+			document.getElementById(trId).innerText = "";
+    	} else {
+    		document.getElementById(trId).innerHTML = "";
+        }
+    	Effect.Fade(trId, { duration : 0 });
     }
 }
 </script>

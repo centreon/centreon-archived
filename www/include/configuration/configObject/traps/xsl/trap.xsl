@@ -29,6 +29,13 @@
                                 <xsl:attribute name='id'>regularTr_<xsl:value-of select='order'/></xsl:attribute>
                                 <xsl:attribute name='class'>list_one</xsl:attribute>
                                 <xsl:element name='td'>
+                                	<xsl:value-of select='//main/regexpVar'/>
+                                    <xsl:element name='input'>
+                                        <xsl:attribute name='type'>text</xsl:attribute>
+                                        <xsl:attribute name='value'><xsl:value-of select='var'/></xsl:attribute>
+                                        <xsl:attribute name='name'>regularVar_<xsl:value-of select='order'/></xsl:attribute>
+                                    </xsl:element>
+                                    <xsl:text>  </xsl:text>
                                     <xsl:value-of select='//main/regexpLabel'/>
                                     <xsl:element name='input'>
                                         <xsl:attribute name='type'>text</xsl:attribute>
@@ -39,6 +46,7 @@
                                     <xsl:value-of select='//main/statusLabel'/>                            
                                         <xsl:element name='select'>
                                             <xsl:attribute name='name'>regularStatus_<xsl:value-of select='order'/></xsl:attribute>
+                                            <xsl:attribute name='style'>width:100px;</xsl:attribute>
                                             <xsl:element name='option'>
                                                 <xsl:attribute name='value'>0</xsl:attribute>                                
                                                 <xsl:if test="status = '0'">                                
@@ -60,8 +68,15 @@
                                                 </xsl:if>
                                                 <xsl:value-of select='//main/criticalLabel'/>
                                             </xsl:element>
+                                            <xsl:element name='option'>
+                                                <xsl:attribute name='value'>3</xsl:attribute>                                
+                                                <xsl:if test="status = '3'">
+                                                    <xsl:attribute name='selected'>selected</xsl:attribute>
+                                                </xsl:if>
+                                                <xsl:value-of select='//main/unknownLabel'/>
+                                            </xsl:element>
                                         </xsl:element>                            
-                                    <xsl:text>  </xsl:text>
+                                    <xsl:text>   </xsl:text>
                                     <xsl:value-of select='//main/orderLabel'/>
                                     <xsl:element name='input'>
                                         <xsl:attribute name='name'>regularOrder_<xsl:value-of select='order'/></xsl:attribute>
