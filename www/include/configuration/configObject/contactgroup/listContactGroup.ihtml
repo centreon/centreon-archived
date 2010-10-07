@@ -17,7 +17,7 @@
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
-			<td class="ListColHeaderCenter">{$headerMenu_desc}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_contacts}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
@@ -26,7 +26,7 @@
 		<tr class={$elemArr[elem].MenuClass}>
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
-			<td class="ListColCenter"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
+			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_contacts}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColRight" align="right">{$elemArr[elem].RowMenu_options}</td>
