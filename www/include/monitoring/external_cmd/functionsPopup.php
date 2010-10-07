@@ -53,8 +53,8 @@
 		isset($_GET['force_check']) && $_GET['force_check'] == "true" ? $force_check = "1" : $force_check = "0";
 
 		if ($actions == true || $is_admin) {
-                    $host_poller = GetMyHostPoller($pearDB, $host_name);
-                    $flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".urldecode($host_name).";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+                    $host_poller = GetMyHostPoller($pearDB, urldecode($host_name));
+                    $flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".urldecode($host_name).";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], urldecode($host_poller));
 		}
 
 		$actions = $oreon->user->access->checkAction("service_acknowledgement");
@@ -65,7 +65,7 @@
 			$svc_tab = getMyHostServices($row['host_id']);
 			if (count($svc_tab)) {
 				foreach ($svc_tab as $key2 => $value) {
-					write_command(" ACKNOWLEDGE_SVC_PROBLEM;".urldecode($host_name).";".urldecode($value).";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+					write_command(" ACKNOWLEDGE_SVC_PROBLEM;".urldecode($host_name).";".urldecode($value).";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], urldecode($host_poller));
 					if ($force_check == 1)
 				 		write_command(" SCHEDULE_FORCED_SVC_CHECK;".urldecode($host_name).";".time(), $host_poller);
 				}
@@ -105,7 +105,7 @@
 		isset($_GET['sticky']) && $_GET['sticky'] == "true" 			? $sticky = "2" : $sticky = "1";
 		isset($_GET['force_check']) && $_GET['force_check'] == "true" 		? $force_check = "1" : $force_check = "0";
 
-		$host_poller = GetMyHostPoller($pearDB, $host_name);
+		$host_poller = GetMyHostPoller($pearDB, urldecode($host_name));
 
 		if ($actions == true || $is_admin) {
 			$_GET["comment"] = $_GET["comment"];
@@ -166,8 +166,8 @@
         	    if (!$duration) {
 				    $duration = $end_time - $start_time;
 				}
-				$hostPoller = GetMyHostPoller($pearDB, $host_name);
-				write_command(" SCHEDULE_HOST_DOWNTIME;".urldecode($host_name).";".urldecode($start_time).";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", $hostPoller);
+				$hostPoller = GetMyHostPoller($pearDB, urldecode($host_name));
+				write_command(" SCHEDULE_HOST_DOWNTIME;".urldecode($host_name).";".urldecode($start_time).";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", urldecode($hostPoller));
 
 				$actions = $oreon->user->access->checkAction("service_schedule_downtime");
 				if (($actions == true) && isset($_GET['downtimehostservice']) && $_GET['downtimehostservice'] == "true") {
@@ -177,7 +177,7 @@
 		            $svc_tab = getMyHostServices($row['host_id']);
 		            if (count($svc_tab)) {
 						foreach ($svc_tab as $key2 => $value) {
-		            		write_command(" SCHEDULE_SVC_DOWNTIME;".urldecode($host_name).";".urldecode($value).";".$start_time.";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", $hostPoller);
+		            		write_command(" SCHEDULE_SVC_DOWNTIME;".urldecode($host_name).";".urldecode($value).";".$start_time.";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", urldecode($hostPoller));
 		                }
 					}
 				}
@@ -233,7 +233,7 @@
 				if (!$duration) {
 				    $duration = $end_time - $start_time;
 				}
-				write_command(" SCHEDULE_SVC_DOWNTIME;".urldecode($host_name).";".urldecode($svc_description).";".$start_time.";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", GetMyHostPoller($pearDB, $host_name));
+				write_command(" SCHEDULE_SVC_DOWNTIME;".urldecode($host_name).";".urldecode($svc_description).";".$start_time.";".$end_time.";".$fixed.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n", GetMyHostPoller($pearDB, urldecode($host_name)));
         	}
         	return null;
         }
