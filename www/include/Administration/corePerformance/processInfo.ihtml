@@ -1,12 +1,7 @@
-<div>
-	<ul id="mainnav">
-	{assign var='cpt' value=0}
-	{foreach from=$tab_server key=key item=item}
-		{assign var='cpt' value=$cpt+1}
-		<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$tab_server[$key]}</a></li>
-	{/foreach}
-	</ul>
-</div>
+<form {$form.attributes}>
+<table class="ajaxOption">
+	<tr><td>&nbsp;&nbsp;<b>{$form.pollers.label}</b>&nbsp;&nbsp;{$form.pollers.html}</td></tr>
+</table>
 <a name="generate">
 {assign var='cpt' value=0}
 {foreach from=$host_list key=key item=item}
@@ -19,7 +14,7 @@
 	 	</tr>		
 		<tr valign="top">
 			<td align="center">
-	 			<table class="ListTable">
+	 			<table class="ListTable" style='margin-top:2px;'>
 	 				<tr><td colspan=2 class="tactical_light_header"><b>{$processInfoLabel}</b></td></tr>
 	 				<tr class='list_one'><td>{$str_prog_version}</td><td>{$procInfo.$key.program_version}</td></tr>
 	 				<tr class='list_two'><td>{$str_prog_start_time}</td><td>{$procInfo.$key.program_start_time}</td></tr>
@@ -55,7 +50,7 @@
 	 		{assign var=count value=$count_action}
 	 		{if ($admin || $count)}
 	 		<td align="center">
-	 			<table class="ListTable">
+	 			<table class="ListTable" style='margin-top:2px;'>
 	 				<tr><td class="tactical_light_header"><b>{$commandLabel}</b></td></tr>
 	 				{if $admin || $action_list.global_shutdown }
 					    {if $run}
@@ -176,3 +171,4 @@
 	 </table>	 
 </div>
 {/foreach}
+</form>
