@@ -34,7 +34,7 @@
 				<xsl:attribute name="type">checkbox</xsl:attribute>
 				<xsl:attribute name="value">1</xsl:attribute>
 				<xsl:attribute name="id"><xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
-				<xsl:attribute name="name">select[<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>]</xsl:attribute>
+				<xsl:attribute name="name">select[<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/>]</xsl:attribute>
 				<xsl:attribute name="onclick">
 					if (this.checked) {
 						putInSelectedElem('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');

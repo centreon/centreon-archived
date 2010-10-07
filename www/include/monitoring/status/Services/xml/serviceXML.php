@@ -368,6 +368,7 @@
 				$obj->XML->writeAttribute("none", "1");
 				$obj->XML->writeAttribute("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->text($ndo["host_name"]);
+				$obj->XML->writeElement("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->endElement();
 			} else {
 				$host_prev = $ndo["host_name"];
@@ -382,6 +383,7 @@
 				$obj->XML->writeAttribute("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->text($ndo["host_name"]);
 				$obj->XML->endElement();
+				$obj->XML->writeElement("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->writeElement("hau", $host_status[$ndo["host_name"]]["action_url"]);
 
 				if ($host_status[$ndo["host_name"]]["notes_url"]) {
