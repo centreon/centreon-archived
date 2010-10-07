@@ -2,8 +2,9 @@
 <div>
 <ul id="mainnav">
 	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$form.header.information}</a></li>
-	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$form.header.centreon}</a></li>
-	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.additional}</a></li>
+	<li class="a" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.centreon}</a></li>
+	<li class="a" id='c3'><a href="#" onclick="javascript:montre('3');">{$form.header.acl}</a></li>
+	<li class="a" id='c4'><a href="#" onclick="javascript:montre('4');">{$form.header.additional}</a></li>
 </ul>
 </div>
 <form {$form.attributes}>
@@ -50,7 +51,7 @@
 		{/if}
 	</table>
 	</div>
-	<div id='tab3' class='tab'>
+	<div id='tab2' class='tab'>
 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/centreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
@@ -68,7 +69,20 @@
 		{/if}
 	</table>
 	</div>
-	<div id='tab2' class='tab'>
+	<div id='tab3' class='tab'>
+	<table class="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.acl}</td></tr>
+		{if $o == "mc"}
+			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_acl.label}</td><td class="FormRowValue">{$form.mc_mod_acl.html}</td></tr>
+		{/if}
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:aclgroups", {$helpattr});'> {$form.contact_acl_groups.label}</td><td class="FormRowValue">{$form.contact_acl_groups.html}</td></tr>
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	</div>
+	<div id='tab4' class='tab'>
 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherAddress}</td></tr>

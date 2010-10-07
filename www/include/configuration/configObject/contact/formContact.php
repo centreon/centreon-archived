@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	$cct = array();
 	if (($o == "c" || $o == "w") && $contact_id)	{
@@ -51,13 +52,16 @@
 		$DBRESULT =& $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$contact_id."' LIMIT 1");
 		$cct = array_map("myDecode", $DBRESULT->fetchRow());
 		$cct["contact_passwd"] = NULL;
+		$DBRESULT->free();
 
 		/*
 		 * Set Host Notification Options
 		 */
 		$tmp = explode(',', $cct["contact_host_notification_options"]);
-		foreach ($tmp as $key => $value)
+		foreach ($tmp as $key => $value) {
 			$cct["contact_hostNotifOpts"][trim($value)] = 1;
+		}
+
 		/*
 		 * Set Service Notification Options
 		 */
@@ -70,7 +74,7 @@
 		 * Set Contact Group Parents
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$contact_id."'");
-		for($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
 			$cct["contact_cgNotif"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
 
@@ -78,7 +82,7 @@
 		 * Set Host Notification Commands
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$contact_id."'");
-		for($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++)
 			$cct["contact_hostNotifCmds"][$i] = $notifCmd["command_command_id"];
 		$DBRESULT->free();
 
@@ -86,7 +90,7 @@
 		 * Set Service Notification Commands
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$contact_id."'");
-		for($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++)
 			$cct["contact_svNotifCmds"][$i] = $notifCmd["command_command_id"];
 		$DBRESULT->free();
 
@@ -96,6 +100,15 @@
 		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'ldap_auth_enable'");
 		while ($ldap_auths =& $DBRESULT->fetchRow())
 			$ldap_auth[$ldap_auths["key"]] = myDecode($ldap_auths["value"]);
+		$DBRESULT->free();
+
+		/*
+		 * Get ACL informations for this user
+		 */
+		$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM `acl_group_contacts_relations` WHERE `contact_contact_id` = '".$contact_id."'");
+		for ($i = 0; $data =& $DBRESULT->fetchRow(); $i++) {
+			$cct["contact_acl_groups"][$i] = $data["acl_group_id"];
+		}
 		$DBRESULT->free();
 	}
 
@@ -135,9 +148,18 @@
 	$DBRESULT->free();
 
 	/*
+	 * Get ACL Groups List
+	 */
+	$aclGroups = array();
+	$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
+	while ($aclGroup =& $DBRESULT->fetchRow()) {
+		$aclGroups[$aclGroup["acl_group_id"]] = $aclGroup["acl_group_name"];
+	}
+	$DBRESULT->free();
+
+	/*
 	 * Template / Style for Quickform input
 	 */
-
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"60");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
@@ -163,6 +185,7 @@
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('header', 'additional', _("Additional Information"));
 	$form->addElement('header', 'centreon', _("Centreon Authentication"));
+	$form->addElement('header', 'acl', _("Access lists"));
 
 	/*
 	 * No possibility to change name and alias, because there's no interest
@@ -220,6 +243,22 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("Yes"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
 	$form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
+
+	/**
+	 * ACL configurations
+	 */
+	if ($o == "mc")	{
+		$mc_mod_cg = array();
+		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_acl', null, _("Incremental"), '0');
+		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_acl', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_cg, 'mc_mod_acl', _("Update mode"), '&nbsp;');
+		$form->setDefaults(array('mc_mod_acl'=>'0'));
+	}
+	$ams3 =& $form->addElement('advmultiselect', 'contact_acl_groups', array(_("Access list groups"), _("Available"), _("Selected")), $aclGroups, $attrsAdvSelect, SORT_ASC);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams3->setElementTemplate($template);
+	echo $ams3->getElementJs(false);
 
 	/*
 	 * Include GMT Class
