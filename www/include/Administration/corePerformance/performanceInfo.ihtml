@@ -1,18 +1,13 @@
-<div>
-	<ul id="mainnav">
-	{assign var='cpt' value=0}
-	{foreach from=$tab_server key=key item=item}
-		{assign var='cpt' value=$cpt+1}
-		<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$tab_server[$key]}</a></li>
-	{/foreach}
-	</ul>
-</div>
+<form {$form.attributes}>
+<table class="ajaxOption">
+	<tr><td>&nbsp;&nbsp;<b>{$form.pollers.label}</b>&nbsp;&nbsp;{$form.pollers.html}</td></tr>
+</table>
+<br>
 <a name="generate">
 {assign var='cpt' value=0}
 {foreach from=$host_list key=key item=item}
 {assign var='cpt2' value=$cpt}
 {assign var='cpt' value=$cpt+1}
-<div id='tab{$cpt}' class='tab'>
  	<table class="ListTable">
 	 	<tr class="ListHeader">
 	 		<td class="FormHeader" valign='top' colspan="4"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$tab_server[$cpt2]}&nbsp;</td>
@@ -74,5 +69,18 @@
 	 	</tr>
 	 	{/if}
 	 </table>
-</div>
 {/foreach}
+{if $emptyPage}
+<a name="generate">
+	<table class="ListTable">
+ 		<tr class="ListHeader">
+ 			<td class="FormHeader" valign='top' colspan="4"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$tab_server[$cpt2]}&nbsp;</td>
+ 		</tr>
+ 		<tr>
+ 			<td align="center"><b>{$empty_page_label}</b></td>
+ 		</tr>
+	</table>
+</a>
+{/if}
+
+</form>

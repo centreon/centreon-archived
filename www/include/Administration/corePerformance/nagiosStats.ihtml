@@ -1,26 +1,16 @@
 <form {$form.attributes}>
 <table class="ajaxOption">
-	<tr><td>&nbsp;&nbsp;<b>{$form.start.label}</b>&nbsp;&nbsp;{$form.start.html}</td></tr>
+	<tr><td>&nbsp;&nbsp;<b>{$form.pollers.label}</b>&nbsp;&nbsp;{$form.pollers.html}</td><td>&nbsp;&nbsp;<b>{$form.start.label}</b>&nbsp;&nbsp;{$form.start.html}</td></tr>
 </table>
 <br>
-<div>
-	<ul id="mainnav">
-	{assign var='cpt' value=0}
-	{foreach from=$tab_server key=key item=item}
-		{assign var='cpt' value=$cpt+1}
-		<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$tab_server[$key]}</a></li>
-	{/foreach}
-	</ul>
-</div>
 <a name="generate">
 {assign var='cpt' value=0}
 {foreach from=$host_list key=key item=item}
 {assign var='cpt2' value=$cpt}
 {assign var='cpt' value=$cpt+1}
-<div id='tab{$cpt}' class='tab'>
- 	<table class="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader">
-	 		<td class="FormHeader"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$tab_server[$cpt2]}&nbsp;</td>
+	 		<td class="FormHeader"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$pollerName}&nbsp;</td>
 	 	</tr>
 		{assign var='counter' value=0}
 		<tr>
@@ -36,6 +26,5 @@
 	 		</td>
 	 	</tr>	 	
 	 </table>
-</div>
 {/foreach}
 </form>
