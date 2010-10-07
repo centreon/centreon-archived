@@ -28,11 +28,12 @@
 		</div>
 	</form>	
 	<!-- stat -->
+	{$displayTopCounter}|{$displayPollerStats}
 	<div id="resume_light">
-		{if $displayTopCounter == 1}
+		{if $displayTopCounter == 1 || $displayPollerStats == 1}
 		<table cellpadding="0" cellspacing="0" border="0">
 		<tr>
-			{if $amIadmin == 1}
+			{if $displayPollerStats == 1}
 			<td>
 				<table class='Resume_light_table'>
 					<tr class='Resume_light_header' style="white-space:nowrap;">
@@ -47,6 +48,7 @@
 			</td>
 			<td>&nbsp;</td>
 			{/if}
+			{if $displayTopCounter == 1}
 			<td>
 				<table class='Resume_light_table'>
 					<tr class='Resume_light_header' style="white-space:nowrap;">
@@ -86,6 +88,7 @@
 					</tr>
 				</table>
 			</td>
+			{/if}
 		</tr>
 		</table>
 		{/if}

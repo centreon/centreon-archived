@@ -63,7 +63,8 @@
 	/*
 	 * Add Javascript for NDO status Counter
 	 */
-	if ($min != 1) {
+	$tabActionACL = $centreon->user->access->getActions();
+	if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
 		print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
 	}
 
@@ -100,10 +101,13 @@
 	$res = null;
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 	while ($topology_js =& $DBRESULT->fetchRow()) {
-		if ($topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js" && $topology_js['PathName_js'] != "./include/common/javascript/codebase/dhtmlxtree.js")
-			if ($topology_js['PathName_js'] != "")
+		if ($topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js" && $topology_js['PathName_js'] != "./include/common/javascript/codebase/dhtmlxtree.js") {
+			if ($topology_js['PathName_js'] != "") {
 				echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script>\n";
+			}
+		}
 	}
+	$DBRESULT->free();
 
 	/*
 	 * init javascript
@@ -131,8 +135,11 @@
     window.onload = function () {
 	<?php
 
-	if ($min != 1)
+	if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
 		print "setTimeout('reloadStatusCounter($tS, \"$sid\")', $tFS);\n";
+	}
+
+	unset($tabActionACL);
 
 	$res = null;
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
@@ -148,7 +155,7 @@
 	print "check_session();";
 	print "\n};\n</script>\n";
 
-	?>
+?>
 <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
 </head>
 <body>
