@@ -198,7 +198,9 @@ class Centreon	{
  	 * @param varchar $name
  	 */
  	public function checkIllegalChar($name) {
- 		$DBRESULT = $this->DB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+ 		global $pearDB;
+
+ 		$DBRESULT = $pearDB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
 		while ($data = $DBRESULT->fetchRow()) {
 			$tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
 			foreach ($tab as $char) {
