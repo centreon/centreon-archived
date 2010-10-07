@@ -74,19 +74,13 @@
 			print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
 		}
 	}
-	$tabActionACL = $centreon->user->access->getActions();
-	print_r($tabActionACL);
-	if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-		print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
-	}
-	unset($tabActionACL);
 
 	/*
 	 * Add Template CSS for sysInfos Pages
 	 */
-	if (isset($p) && strstr($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
+	if (isset($p) && strstr($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css")) {
 		echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
-
+	}
 
 	global $search, $search_service;
 
