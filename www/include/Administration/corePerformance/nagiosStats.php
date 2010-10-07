@@ -129,7 +129,9 @@
 	}
 
 	$tpl->assign("p", $p);
-	$tpl->assign("pollerName", $pollerName);
+	if (isset($pollerName)) {
+		$tpl->assign("pollerName", $pollerName);
+	}
 	$tpl->assign("options", $options);
 	$tpl->assign("session_id", session_id());
 	$tpl->display("nagiosStats.ihtml");
