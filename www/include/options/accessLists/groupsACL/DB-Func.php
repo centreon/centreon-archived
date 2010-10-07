@@ -3,42 +3,42 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset ($oreon))
 		exit ();
-	
+
 	function testGroupExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
@@ -48,7 +48,7 @@
 		$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups WHERE acl_group_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$cg =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] == $id)
 			return true;
 		#Duplicate entry
 		else if ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] != $id)
@@ -60,22 +60,22 @@
 	function enableGroupInDB ($acl_group_id = null)	{
 		if (!$acl_group_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '".$acl_group_id."'");		
+		$DBRESULT =& $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '".$acl_group_id."'");
 	}
-	
+
 	function disableGroupInDB ($acl_group_id = null)	{
 		if (!$acl_group_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE acl_groups SET acl_group_activate = '0' WHERE acl_group_id = '".$acl_group_id."'");		
+		$DBRESULT =& $pearDB->query("UPDATE acl_groups SET acl_group_activate = '0' WHERE acl_group_id = '".$acl_group_id."'");
 	}
-	
+
 	function deleteGroupInDB ($Groups = array())	{
 		global $pearDB;
 		foreach($Groups as $key=>$value)	{
-			$DBRESULT =& $pearDB->query("DELETE FROM acl_groups WHERE acl_group_id = '".$key."'");			
+			$DBRESULT =& $pearDB->query("DELETE FROM acl_groups WHERE acl_group_id = '".$key."'");
 		}
 	}
-	
+
 	function multipleGroupInDB ($Groups = array(), $nbrDup = array())	{
 		foreach($Groups as $key=>$value)	{
 			global $pearDB;
@@ -104,8 +104,8 @@
 				}
 			}
 		}
-	}	
-	
+	}
+
 	function insertGroupInDB ($ret = array())	{
 		$acl_group_id = insertGroup($ret);
 		updateGroupContacts($acl_group_id, $ret);
@@ -115,10 +115,10 @@
 		updateGroupMenus($acl_group_id);
 		return $acl_group_id;
 	}
-	
+
 	function insertGroup($ret)	{
 		global $form, $pearDB;
-		
+
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO acl_groups ";
@@ -130,9 +130,9 @@
 		$cg_id =& $DBRESULT->fetchRow();
 		return ($cg_id["MAX(acl_group_id)"]);
 	}
-	
+
 	function updateGroupInDB ($acl_group_id = NULL)	{
-		if (!$acl_group_id) 
+		if (!$acl_group_id)
 			return;
 
 		updateGroup($acl_group_id);
@@ -142,13 +142,13 @@
 		updateGroupResources($acl_group_id);
 		updateGroupMenus($acl_group_id);
 	}
-	
+
 	function updateGroup($acl_group_id = null)	{
 		global $form, $pearDB;
-		
-		if (!$acl_group_id) 
+
+		if (!$acl_group_id)
 			return;
-		
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE acl_groups ";
@@ -156,15 +156,15 @@
 				"acl_group_alias = '".htmlentities($ret["acl_group_alias"], ENT_QUOTES, "UTF-8")."', " .
 				"acl_group_activate = '".htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES, "UTF-8")."' " .
 				"WHERE acl_group_id = '".$acl_group_id."'";
-		$DBRESULT =& $pearDB->query($rq);		
+		$DBRESULT =& $pearDB->query($rq);
 	}
-	
+
 	function updateGroupContacts($acl_group_id, $ret = array())	{
 		global $form, $pearDB;
-		
-		if (!$acl_group_id) 
+
+		if (!$acl_group_id)
 			return;
-		
+
 		$rq = "DELETE FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (isset($_POST["cg_contacts"]))
@@ -176,13 +176,13 @@
 				$DBRESULT =& $pearDB->query($rq);
 			}
 	}
-	
+
 	function updateGroupContactGroups($acl_group_id, $ret = array())	{
 		global $form, $pearDB;
-		
-		if (!$acl_group_id) 
+
+		if (!$acl_group_id)
 			return;
-		
+
 		$rq = "DELETE FROM acl_group_contactgroups_relations WHERE acl_group_id = '".$acl_group_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (isset($_POST["cg_contactGroups"]))
@@ -194,13 +194,13 @@
 				$DBRESULT =& $pearDB->query($rq);
 			}
 	}
-	
+
 	function updateGroupActions($acl_group_id, $ret = array())	{
 		global $form, $pearDB;
-		
-		if (!$acl_group_id) 
+
+		if (!$acl_group_id)
 			return;
-		
+
 		$rq = "DELETE FROM acl_group_actions_relations WHERE acl_group_id = '".$acl_group_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (isset($_POST["actionAccess"]))
@@ -212,13 +212,13 @@
 				$DBRESULT =& $pearDB->query($rq);
 			}
 	}
-	
+
 	function updateGroupMenus($acl_group_id, $ret = array())	{
 		global $form, $pearDB;
-		
-		if (!$acl_group_id) 
+
+		if (!$acl_group_id)
 			return;
-		
+
 		$rq = "DELETE FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_group_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (isset($_POST["menuAccess"]))
@@ -230,13 +230,13 @@
 				$DBRESULT =& $pearDB->query($rq);
 			}
 	}
-	
+
 	function updateGroupResources($acl_group_id, $ret = array())	{
 		global $form, $pearDB;
-		
-		if (!$acl_group_id) 
+
+		if (!$acl_group_id)
 			return;
-		
+
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");
 		if (isset($_POST["resourceAccess"])) {
 			foreach ($_POST["resourceAccess"] as $id) {
@@ -248,4 +248,5 @@
 			}
 		}
 	}
+
 ?>
