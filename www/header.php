@@ -81,8 +81,9 @@
 	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");
 	$session_expire =& $DBRESULT->fetchRow();
-	if (!isset($session_expire["value"]) || !$session_expire["value"])
+	if (!isset($session_expire["value"]) || !$session_expire["value"]) {
 		$session_expire["value"] = 2;
+	}
 	$time_limit = time() - ($session_expire["value"] * 60);
 
 	$DBRESULT =& $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");
@@ -92,19 +93,22 @@
 	 */
 	$DBRESULT =& $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
 
-	if (!$DBRESULT->numRows())
+	if (!$DBRESULT->numRows()) {
 		header("Location: index.php?disconnect=2");
+	}
 
-	if (!isset($_SESSION["centreon"]))
+	if (!isset($_SESSION["centreon"])) {
 		header("Location: index.php?disconnect=1");
+	}
 
 	/*
 	 * Define Oreon var alias
 	 */
 	$centreon =& $_SESSION["centreon"];
 	$oreon =& $centreon;
-	if (!is_object($centreon))
+	if (!is_object($centreon)) {
 		exit();
+	}
 
 	/*
 	 * Init differents elements we need in a lot of pages
@@ -114,16 +118,18 @@
 	unset($centreon->optGen);
 	$centreon->initOptGen($pearDB);
 
-	if (!$p){
+	if (!$p) {
 		$root_menu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
-		if (isset($root_menu["topology_page"]))
+		if (isset($root_menu["topology_page"])) {
 			$p = $root_menu["topology_page"];
-		else
+		} else {
 			$p = NULL;
-		if (isset($root_menu["topology_url_opt"])){
+		}
+		if (isset($root_menu["topology_url_opt"])) {
 			$tab = split("\=", $root_menu["topology_url_opt"]);
-			if (isset($tab[1]))
+			if (isset($tab[1])) {
 				$o = $tab[1];
+			}
 		}
 	}
 
@@ -166,8 +172,9 @@
 	 * Get CSS Order and color
 	 */
 	$DBRESULT =& $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
-	if ($DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()))
+	if ($DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow())) {
 		$colorfile = "Color/".$elem["css_name"];
+	}
 
 	/*
 	 * Update Session Table For last_reload and current_page row
