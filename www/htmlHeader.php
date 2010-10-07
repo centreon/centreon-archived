@@ -63,10 +63,23 @@
 	/*
 	 * Add Javascript for NDO status Counter
 	 */
+	if ($centreon->user->access->admin == 0) {
+		$tabActionACL = $centreon->user->access->getActions();
+		if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
+			print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
+		}
+		unset($tabActionACL);
+	} else {
+		if ($min != 1) {
+			print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
+		}
+	}
 	$tabActionACL = $centreon->user->access->getActions();
+	print_r($tabActionACL);
 	if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
 		print "<script type=\"text/javascript\" src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
 	}
+	unset($tabActionACL);
 
 	/*
 	 * Add Template CSS for sysInfos Pages
@@ -135,11 +148,17 @@
     window.onload = function () {
 	<?php
 
-	if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-		print "setTimeout('reloadStatusCounter($tS, \"$sid\")', $tFS);\n";
+	if ($centreon->user->access->admin == 0) {
+		$tabActionACL = $centreon->user->access->getActions();
+		if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
+			print "setTimeout('reloadStatusCounter($tS, \"$sid\")', $tFS);\n";
+		}
+		unset($tabActionACL);
+	} else {
+		if ($min != 1) {
+			print "setTimeout('reloadStatusCounter($tS, \"$sid\")', $tFS);\n";
+		}
 	}
-
-	unset($tabActionACL);
 
 	$res = null;
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
