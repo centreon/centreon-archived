@@ -25,6 +25,7 @@
 			<td class="ListColHeaderCenter">{$headerMenu_svNotif}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_lang}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_access}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_admin}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
@@ -38,6 +39,7 @@
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_svNotif}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_lang}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_access}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_admin}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
