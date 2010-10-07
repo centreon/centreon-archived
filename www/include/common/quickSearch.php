@@ -3,66 +3,65 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 	global $search;
-	
+
 	if (!isset($oreon))
 		exit();
-	
+
 	/*
 	 * Init Flag
 	 */
-
 	$displayHSOptions = 0;
-	
+
 	$form_search = new HTML_QuickForm('quickSearchForm', 'GET', "?p=".$p."&o=".$o);
 	if (isset($_GET["search"]))
 		$search = $_GET["search"];
 	else if (isset($oreon->historySearch[$url]))
 		$search = $oreon->historySearch[$url];
 	else
-		$search = NULL; 
-		
+		$search = NULL;
+
 	$search = mysql_real_escape_string($search);
-	
+
 	if (!isset($search_service))
 		$search_service = "";
 	else
 		$search_service = mysql_real_escape_string($search_service);
-	
+
 	if (isset($search) && $search) {
-		if ($p == "4" || $p == "402" || $p == "203")	
+		if ($p == "4" || $p == "402" || $p == "203")
 			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active_host", "style" => "padding-top:1px;padding-bottom:1px;");
 		else
 			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;");
@@ -73,7 +72,7 @@
 		else
 			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;");
 	}
-	
+
 	if (isset($search_service) && $search_service) {
 		$attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input_active_service", "style" => "padding-top:1px;padding-bottom:1px;", "title" => _("Service Description Search Key"));
 	} else {
@@ -81,12 +80,12 @@
 	}
 	$attrsText["title"] = _("Host Name Search Key");
 	$attrsSubmit = array("style"=>"display:none;");
-	
+
 	if (!isset($limit))
 		$limit = 20;
-	
+
 	$tab = array ("search" => $search, "search_service" => $search_service, "p"=>$p, "o"=>$o, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
-	
+
 	$form_search->addElement('text', 'search', _("Quick Search"), $attrsText);
 	if (isset($FlagSearchService) && $FlagSearchService)
 		$form_search->addElement('text', 'search_service', _("Quick Search"), $attrsText2);
@@ -96,30 +95,30 @@
 	$form_search->addElement('hidden', 'list');
 	$form_search->addElement('hidden', 'o', $o);
 
-	$tabQuickSearch = array(602 => 1, 60201 => 1, 20201 => 1, 20202 => 1, 20207 => 1, 2020201 => 1, 2020202 => 1, 2020203 => 1, 202 => 1,
-							2 => 1, 2020101 => 1, 20203 => 1, 2020301 => 1, 2020302 => 1, 2020303 => 1, 20204 => 1, 2020401 => 1, 
+	$tabQuickSearch = array(602 => 1, 60201 => 1, 20207 => 1, 2020201 => 1, 2020202 => 1, 2020203 => 1, 202 => 1,
+							2 => 1, 2020101 => 1, 20203 => 1, 2020301 => 1, 2020302 => 1, 2020303 => 1, 20204 => 1, 2020401 => 1,
 							2020402 => 1, 2020403 => 1, 20205 => 1, 2020501 => 1, 2020502 => 1, 2020503 => 1, 20208 => 1,
-							2020801 => 1, 2020802 => 1, 2020803 => 1, 20209 => 1, 2020901 => 1, 2020902 => 1, 2020903 => 1, 
-							20210 => 1, 2021001 => 1, 2021002 => 1, 2021003 => 1, 20211 => 1, 2021101 => 1, 2021102 => 1, 
-							2021103 => 1, 20212 => 1, 2021201 => 1, 2021202 => 1, 2021203 => 1, 20213 => 1, 2021301 => 1, 
-							2021302 => 1, 2021303 => 1, 20215 => 1);
+							2020801 => 1, 2020802 => 1, 2020803 => 1, 20209 => 1, 2020901 => 1, 2020902 => 1, 2020903 => 1,
+							20210 => 1, 2021001 => 1, 2021002 => 1, 2021003 => 1, 20211 => 1, 2021101 => 1, 2021102 => 1,
+							2021103 => 1, 20212 => 1, 2021201 => 1, 2021202 => 1, 2021203 => 1, 20213 => 1, 2021301 => 1,
+							2021302 => 1, 2021303 => 1);
 
 	if (isset($tabQuickSearch[$p])) {
 		$form_search->addElement('advcheckbox', 'search_type_host', 	_("host"), 	'', 'class=mini_checkbox');
-		$form_search->addElement('advcheckbox', 'search_type_service', 	_("service"), 	'', 'class=mini_checkbox');		
+		$form_search->addElement('advcheckbox', 'search_type_service', 	_("service"), 	'', 'class=mini_checkbox');
 		$displayHSOptions = 1;
-	}	
+	}
 	$form_search->setDefaults($tab);
-	
+
 	/*
 	 * Render with a smarty template
 	 */
 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./include/common/", $tpl);
-	
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form_search->accept($renderer);	
+	$form_search->accept($renderer);
 	$tpl->assign('form_search', $renderer->toArray());
 	$tpl->assign('p', $p);
 	$tpl->assign("displayHSOptions", $displayHSOptions);
