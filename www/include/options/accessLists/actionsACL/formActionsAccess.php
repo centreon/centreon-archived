@@ -148,6 +148,7 @@
 
 	# Global Functionnalities
 	$form->addElement('checkbox', 'top_counter', _("Display Top Counter"));
+	$form->addElement('checkbox', 'poller_stats', _("Display Top Counter pollers statistics"));
 	$form->addElement('checkbox', 'poller_listing', _("Display Poller Listing"));
 
 

@@ -271,6 +271,7 @@
 
 		# Global Functionnality access
 		$actions[] = "poller_listing";
+		$actions[] = "poller_stats";
 		$actions[] = "top_counter";
 
 		# Services Actions

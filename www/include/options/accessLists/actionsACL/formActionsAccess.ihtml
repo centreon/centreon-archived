@@ -20,7 +20,8 @@
 	 	<!-- Global -->
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.global_access}</td></tr>
 	 	<tr class="list_one"><td class="FormRowField">{$form.top_counter.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.top_counter.html}</p></td></tr>
-	 	<tr class="list_two"><td class="FormRowField">{$form.poller_listing.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.poller_listing.html}</p></td></tr>
+	 	<tr class="list_two"><td class="FormRowField">{$form.poller_stats.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.poller_stats.html}</p></td></tr>
+	 	<tr class="list_one"><td class="FormRowField">{$form.poller_listing.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.poller_listing.html}</p></td></tr>
 
 		<!-- Global External Command -->
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/wrench.gif'>&nbsp;&nbsp;{$form.header.global_actions}</td></tr>
