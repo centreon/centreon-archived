@@ -102,8 +102,14 @@
 		} else {
 			$tpl->assign("displayTopCounter", 0);
 		}
+		if (isset($tabActionACL["poller_stats"])) {
+			$tpl->assign("displayPollerStats", 1);
+		} else {
+			$tpl->assign("displayPollerStats", 0);
+		}
 	} else {
 		$tpl->assign("displayTopCounter", 1);
+		$tpl->assign("displayPollerStats", 1);
 	}
 
 	$tpl->assign("Ok", _("Ok"));
