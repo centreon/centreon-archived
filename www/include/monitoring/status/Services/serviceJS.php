@@ -304,7 +304,6 @@
 			_counter += 1;
 		}
 
-		viewDebugInfo('====> SEARCH: '+_search+" ----");
 		var _addrXML = "./include/monitoring/status/Services/xml/serviceXML.php?"+'&sid='+_sid+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc;
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);
@@ -439,12 +438,12 @@
 	}
 
 	function putInSelectedElem(id) {
-		_selectedElem[id] = id;
+		_selectedElem[encodeURIComponent(id)] = encodeURIComponent(id);
 	}
 
 	function removeFromSelectedElem(id) {
-		if (typeof(_selectedElem[id]) != 'undefined') {
-			_selectedElem[id] = undefined;
+		if (typeof(_selectedElem[encodeURIComponent(id)]) != 'undefined') {
+			_selectedElem[encodeURIComponent(id)] = undefined;
 		}
 	}
 
@@ -456,8 +455,7 @@
 
 		if (cmd != '70' && cmd != '72' && cmd != '74' &&  cmd != '75') {
 			return 1;
-		}
-		else {
+		} else {
 			for (keyz in _selectedElem) {
 				if (keyz == _selectedElem[keyz]) {
 					_getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
@@ -482,25 +480,24 @@
 		if (_cmd == '70' || _cmd == '72') {
 			if (document.getElementById('sticky')) {
 				var sticky = document.getElementById('sticky').checked;
-			} else
+			} else {
 				var sticky = 1;
-
-			if (document.getElementById('persistent'))
+			}
+			if (document.getElementById('persistent')) {
 				var persistent = document.getElementById('persistent').checked;
-			else
+			} else {
 				var persistent = 1;
-
-			if (document.getElementById('notify'))
+			}
+			if (document.getElementById('notify')) {
 				var notify = document.getElementById('notify').checked;
-			else
-				var notify = 0;
-
+			} else {
+				var notify = 1;
+			}
 			if (document.getElementById('force_check')) {
-				var force_check = document.getElementById('force_check').checked;
-			}
-			else {
-				var force_check = 0;
-			}
+	             var force_check = document.getElementById('force_check').checked;
+	     	} else {
+	             var force_check = 1;
+	        }
 
 			var ackhostservice = 0;
 			if (document.getElementById('ackhostservice')) {
@@ -517,8 +514,7 @@
 			}
 			if (document.getElementById('fixed')) {
 				var fixed = document.getElementById('fixed').checked;
-			}
-			else {
+			} else {
 				var fixed = 0;
 			}
 			var start = document.getElementById('start').value;
