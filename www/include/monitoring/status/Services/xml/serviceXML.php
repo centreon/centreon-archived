@@ -362,14 +362,13 @@
 			$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 			$obj->XML->writeElement("o", $ct++);
 
-			if ($host_prev == $ndo["host_name"]){
+			if ($host_prev == $ndo["host_name"]) {
 				$obj->XML->writeElement("hc", "transparent");
 				$obj->XML->startElement("hn");
 				$obj->XML->writeAttribute("none", "1");
-				$obj->XML->writeAttribute("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->text($ndo["host_name"]);
-				$obj->XML->writeElement("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->endElement();
+				$obj->XML->writeElement("hnl", urlencode($ndo["host_name"]));
 			} else {
 				$host_prev = $ndo["host_name"];
 				if ($host_status[$ndo["host_name"]]["scheduled_downtime_depth"] == 0) {
@@ -378,12 +377,11 @@
 					$obj->XML->writeElement("hc", $obj->general_opt['color_downtime']);
 				}
 
+				$obj->XML->writeElement("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->startElement("hn");
 				$obj->XML->writeAttribute("none", "0");
-				$obj->XML->writeAttribute("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->text($ndo["host_name"]);
 				$obj->XML->endElement();
-				$obj->XML->writeElement("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->writeElement("hau", $host_status[$ndo["host_name"]]["action_url"]);
 
 				if ($host_status[$ndo["host_name"]]["notes_url"]) {
