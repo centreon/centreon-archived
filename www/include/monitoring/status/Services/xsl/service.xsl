@@ -37,9 +37,9 @@
 				<xsl:attribute name="name">select[<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/>]</xsl:attribute>
 				<xsl:attribute name="onclick">
 					if (this.checked) {
-						putInSelectedElem('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');
+						putInSelectedElem('<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/>');
 					} else {
-						removeFromSelectedElem('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');
+						removeFromSelectedElem('<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/>');
 					}
 				</xsl:attribute>
 			</xsl:element>
