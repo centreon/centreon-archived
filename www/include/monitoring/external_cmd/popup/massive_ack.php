@@ -103,19 +103,19 @@
 	$form->addElement('textarea', 'comment', _("Comment"), array("rows"=>"5", "cols"=>"85", "id"=>"popupComment"));
 	$form->setDefaults(array("comment" => sprintf(_("Acknowledged by %s"), $oreon->user->alias)));
 
-	$chckbox[] =& $form->addElement('checkbox', 'persistent', _("Persistent") );
+	$chckbox[] =& $form->addElement('checkbox', 'persistent', _("Persistent"), "", array("id"=>"persistent"));
 	$chckbox[0]->setChecked($persistent);
 
-	$chckbox2[] =& $form->addElement('checkbox', 'ackhostservice', _("Acknowledge services attached to hosts"), "ackhostservice");
+	$chckbox2[] =& $form->addElement('checkbox', 'ackhostservice', _("Acknowledge services attached to hosts"), "", array("id"=>"ackhostservice"));
 	$chckbox2[0]->setChecked($ack_services);
 
-	$chckbox3[] =& $form->addElement('checkbox', 'sticky', _("Sticky"));
+	$chckbox3[] =& $form->addElement('checkbox', 'sticky', _("Sticky"), "", array("id"=>"sticky"));
 	$chckbox3[0]->setChecked($sticky);
 
-	$chckbox4[] =& $form->addElement('checkbox', 'force_check', _("Force active checks"));
+	$chckbox4[] =& $form->addElement('checkbox', 'force_check', _("Force active checks"), "", array("id"=>"force_check"));
 	$chckbox4[0]->setChecked($force_check);
 
-	$chckbox5[] =& $form->addElement('checkbox', 'notify', _("Notify"));
+	$chckbox5[] =& $form->addElement('checkbox', 'notify', _("Notify"), "", array("id"=>"notify"));
 	$chckbox5[0]->setChecked($notify);
 
 	$form->addElement('hidden', 'author', $oreon->user->get_alias(), array("id"=>"author"));
