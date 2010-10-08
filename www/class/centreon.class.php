@@ -74,6 +74,7 @@ class Centreon	{
 	public $lang;
 	public $duration;
 	public $media;
+	public $objects;
 
     /** **************************************
      * Class constructor
@@ -124,6 +125,11 @@ class Centreon	{
 		 * Init External CMD object
 		 */
 		$this->extCmd = new CentreonExternalCommand($pearDB);
+
+		/*
+		 * Objects
+		 */
+		$this->objects = new CentreonObjects($this->DB);
 	}
 
 	/**
