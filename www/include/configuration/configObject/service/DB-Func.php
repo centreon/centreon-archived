@@ -59,7 +59,9 @@
 		ksort($argTab);
 		$str = "";
 		foreach ($argTab as $val) {
-		    $str .= "!" . $val;
+		    if ($val) {
+		        $str .= "!" . $val;
+		    }
         }
         if (!strlen($str)) {
             return null;
