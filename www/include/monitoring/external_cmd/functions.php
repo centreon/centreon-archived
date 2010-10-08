@@ -70,7 +70,6 @@
 		if ($actions == true || $is_admin) {
 			$tab_forced = array("0" => "", "1" => "_FORCED");
 			$tab_data = split(";", $arg);
-			print_r($tab_data);
 			$flg = send_cmd(" SCHEDULE".$tab_forced[$forced]."_SVC_CHECK;". urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]) . ";" . time(), GetMyHostPoller($pearDB, urldecode($tab_data[0])));
 			return $flg;
 		}

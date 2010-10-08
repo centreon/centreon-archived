@@ -375,7 +375,7 @@
 				if ($host_status[$ndo["host_name"]]["scheduled_downtime_depth"] == 0) {
 					$obj->XML->writeElement("hc", $obj->colorHostInService[$host_status[$ndo["host_name"]]["current_state"]]);
 				} else {
-					$obj->XML->writeElement("hc", $general_opt['color_downtime']);
+					$obj->XML->writeElement("hc", $obj->general_opt['color_downtime']);
 				}
 
 				$obj->XML->startElement("hn");

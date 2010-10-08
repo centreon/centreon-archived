@@ -224,12 +224,12 @@ function goM(_time_reload,_sid,_o){
 }
 
 function putInSelectedElem(id) {
-	_selectedElem[id] = id;
+	_selectedElem[encodeURIComponent(id)] = encodeURIComponent(id);
 }
 
 function removeFromSelectedElem(id) {
-	if (typeof(_selectedElem[id]) != 'undefined') {
-    	_selectedElem[id] = undefined;
+	if (typeof(_selectedElem[encodeURIComponent(id)]) != 'undefined') {
+    	_selectedElem[encodeURIComponent(id)] = undefined;
     }
 }
 
@@ -266,13 +266,35 @@ function send_the_command() {
 		return 0;
 	}
 	if (_cmd == '70' || _cmd == '72') {
-	    var sticky = document.getElementById('sticky').checked;
-	    var persistent = document.getElementById('persistent').checked;
-	    var notify = document.getElementById('notify').checked;
-	    var ackhostservice = 0;
-	    if (document.getElementById('ackhostservice')) {
-	    	ackhostservice = document.getElementById('ackhostservice').checked;
-	    }
+
+		if (document.getElementById('sticky')) {
+			var sticky = document.getElementById('sticky').checked;
+		} else
+			var sticky = 1;
+
+		if (document.getElementById('persistent')) {
+			var persistent = document.getElementById('persistent').checked;
+		} else {
+			var persistent = 1;
+		}
+
+		if (document.getElementById('notify')) {
+			var notify = document.getElementById('notify').checked;
+		} else {
+			var notify = 0;
+		}
+
+		if (document.getElementById('force_check')) {
+			var force_check = document.getElementById('force_check').checked;
+		} else {
+			var force_check = 0;
+		}
+
+		var ackhostservice = 0;
+		if (document.getElementById('ackhostservice')) {
+			ackhostservice = document.getElementById('ackhostservice').checked;
+		}
+
 	    var author = document.getElementById('author').value;
 
 	    xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
