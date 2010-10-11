@@ -48,8 +48,8 @@ use vars qw($cmdFile $etc);
 ###############################
 # Init 
 
-cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
-etc = "@CENTREON_ETC@";
+$cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
+$etc = "@CENTREON_ETC@";
 
 ###############################
 # require config file
@@ -251,7 +251,7 @@ sub getTrapsInfos($$$$$){
 						# REPLACE ARGS
 						my $x = 0;
 						foreach (@args) {
-							$tmoString =~ s/\$$x\/$_/g;				
+							$tmoString =~ s/\$$x/$_/g;				
 							$x++;
 						}
 						
@@ -264,7 +264,7 @@ sub getTrapsInfos($$$$$){
 						$tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
 						$tmoString =~ s/\@TIME\@/$datetime/g;
 						
-						if (defined(tmoString) && $tmoString =~ m/$regexp/g) {
+						if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
 				    		$status = $tmoStatus;
 				    		last;
 						}
@@ -315,7 +315,7 @@ sub getTrapsInfos($$$$$){
 				# REPLACE ARGS
 				my $x = 0;
 				foreach (@args) {
-					$traps_execution_command =~ s/\$$x\/$_/g;				
+					$traps_execution_command =~ s/\$$x/$_/g;				
 					$x++;
 				}
 				
@@ -346,6 +346,6 @@ sub getTrapsInfos($$$$$){
 # PARSE TRAP INFORMATIONS
 #
 if (scalar(@ARGV)) {
-    my ($ip, $hostname, $oid, $arguments, $allargs) = @ARGV;
+    my ($ip, $hostname, $oid, $arguments, $allArgs) = @ARGV;
     getTrapsInfos($ip, $hostname, $oid, $arguments, $allArgs);
 }
