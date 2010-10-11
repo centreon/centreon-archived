@@ -56,8 +56,7 @@
  	function __construct($pearDB) {
  		$this->DB = $pearDB;
 
-		$this->hostgroups = new CentreonHostGroups($this->DB);
-		$this->hosts = new CentreonHost($this->DB);
+		$this->hostgroups = new CentreonHostGroups($pearDB);
 
  	}
 

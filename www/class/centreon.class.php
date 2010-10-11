@@ -40,6 +40,10 @@ require_once("centreonUser.class.php");
 require_once("centreonGMT.class.php");
 require_once("centreonLogAction.class.php");
 require_once("centreonExternalCommand.class.php");
+require_once("centreonObjects.class.php");
+require_once("centreonCache.class.php");
+
+require_once("centreonHostgroups.class.php");
 
 class Centreon	{
 
@@ -75,6 +79,7 @@ class Centreon	{
 	public $duration;
 	public $media;
 	public $objects;
+	public $cache;
 
     /** **************************************
      * Class constructor
@@ -130,6 +135,11 @@ class Centreon	{
 		 * Objects
 		 */
 		$this->objects = new CentreonObjects($this->DB);
+
+		/*
+		 * Cache
+		 */
+		$this->cache = new CentreonCache($pearDB);
 	}
 
 	/**
