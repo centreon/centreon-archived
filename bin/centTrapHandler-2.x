@@ -326,6 +326,7 @@ sub getTrapsInfos($$$$$){
 				$traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
 				$traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
 				$traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
+				$traps_execution_command =~ s/\@STATUS\@/$status/g;
 				$traps_execution_command =~ s/\@TIME\@/$datetime/g;
 		
 				##########################
