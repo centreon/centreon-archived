@@ -737,7 +737,7 @@
 		$tpl->assign("Event_Handler", _("Event Handler"));
 		$tpl->assign("topdoc", _("Documentation"));
 		$tpl->assign("seconds", _("seconds"));
-
+        $tpl->assign('custom_macro_label', _('Custom macros'));
 		$tpl->display("formService.ihtml");
 	}
 ?>

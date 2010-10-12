@@ -731,11 +731,11 @@
 	##End of form definition
 	#
 
-	# Smarty template Init
+	// Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Just watch a host information
+	// Just watch a host information
 	if ($o == "w") {
 		if (!$min) {
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$service_id."'"));
@@ -743,16 +743,16 @@
 	    $form->setDefaults($service);
 		$form->freeze();
 	} elseif ($o == "c") {
-		# Modify a service information
+		// Modify a service information
 		$subC = $form->addElement('submit', 'submitC', _("Save"));
 		$res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);"));
 	    $form->setDefaults($service);
 	} elseif ($o == "a") {
-		# Add a service information
+		// Add a service information
 		$subA = $form->addElement('submit', 'submitA', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 	} elseif ($o == "mc")	{
-		# Massive Change
+		// Massive Change
 		$subMC = $form->addElement('submit', 'submitMC', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -768,7 +768,7 @@
 	$tpl->assign("p", $p);
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 
-	# prepare help texts
+	// prepare help texts
 	$helptext = "";
 	include_once("help.php");
 	foreach ($help as $key => $text) {
@@ -814,7 +814,7 @@
 			require_once($path."listServiceByHost.php");
 		}
 	} else {
-		#Apply a template definition
+		// Apply a template definition
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -822,6 +822,7 @@
 		$tpl->assign('is_not_template', $service_register);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+		$tpl->assign('custom_macro_label', _('Custom macros'));
 		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
 		$tpl->assign("Flapping_Options", _("Flapping options"));
 		$tpl->assign("Perfdata_Options", _("Perfdata Options"));

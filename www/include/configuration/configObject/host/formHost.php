@@ -818,6 +818,7 @@
 		$tpl->assign("topdoc", _("Documentation"));
 		$tpl->assign("hostID", $host_id);
 		$tpl->assign("add_mtp_label", _("Add a template"));
+		$tpl->assign('custom_macro_label', _('Custom macros'));
 		$tpl->assign("k", $k);
 		$tpl->assign("tpl", 0);
 		$tpl->assign("tzUsed", $CentreonGMT->used());

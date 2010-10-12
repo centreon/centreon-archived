@@ -630,6 +630,7 @@
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 
+        $tpl->assign('custom_macro_label', _('Custom macros'));
 		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
 		$tpl->assign("Flapping_Options", _("Flapping options"));
 		$tpl->assign("Perfdata_Options", _("Perfdata Options"));

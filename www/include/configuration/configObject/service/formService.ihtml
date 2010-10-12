@@ -79,7 +79,7 @@
 		</tr>
 		<tr class="list_one">
 			<td class="FormRowField">
-				<img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:macro", {$helpattr});'> Custom macros
+				<img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:macro", {$helpattr});'> {$custom_macro_label}
 			</td>
 			<td>			
 				<table id="macroTable" class="ListTableSmall">

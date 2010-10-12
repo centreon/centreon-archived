@@ -6,7 +6,6 @@
 	<li class="b" id='c2'><a href="#" style='cursor:pointer' onclick="javascript:montre('2');">{$sort2}</a></li>
 	<li class="b" id='c3'><a href="#" style='cursor:pointer' onclick="javascript:montre('3');">{$sort3}</a></li>
 	<li class="b" id='c4'><a href="#" style='cursor:pointer' onclick="javascript:montre('4');">{$sort4}</a></li>
-	<li class="b" id='c5'><a href="#" style='cursor:pointer' onclick="javascript:montre('5');">{$sort5}</a></li>
 </ul>
 </div>
 <div id="validFormTop">
@@ -80,6 +79,34 @@
 	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:retry_interval", {$helpattr});'> {$form.host_retry_check_interval.label}</td><td class="FormRowValue">{$form.host_retry_check_interval.html} {$time_unit}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:active_checks_enabled", {$helpattr});'> {$form.host_active_checks_enabled.label}</td><td class="FormRowValue">{$form.host_active_checks_enabled.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:passive_checks_enabled", {$helpattr});'> {$form.host_passive_checks_enabled.label}</td><td class="FormRowValue">{$form.host_passive_checks_enabled.html}</td></tr>
+ 	
+ 	<tr class="list_lvl_1">
+ 		<td class="ListColLvl1_name" colspan="2">
+ 			<img src='./img/icones/16x16/gear_new.gif'>&nbsp;&nbsp;{$form.header.macro}
+ 		</td>
+ 	</tr>		
+	<tr style='display: none;'>
+		<td>
+			<input type="hidden" name="nbOfMacro" id="hiddenMacInput">
+		</td>
+	</tr>
+	<tr class="list_one">
+		<td class="FormRowField">
+			<img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:macro", {$helpattr});'> {$custom_macro_label}
+		</td>
+		<td>
+			<table id="macroTable" class="ListTableSmall">
+				<tr class="ListHeader">
+					<td class="ListColLeft">{$form.macroName.label}</td>
+					<td class="ListColCenter">{$form.macroValue.label}</td>
+					{if $o != "w"}
+						<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onclick="javascript:addBlankInput();"></td>			
+					{/if}
+				</tr>
+			</table>
+		</td>
+	</tr>
+ 	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:notifications_enabled", {$helpattr});'> {$form.host_notifications_enabled.label}</td><td class="FormRowValue">{$form.host_notifications_enabled.html}</td></tr>	
 	{if $o == "mc"}
@@ -174,27 +201,6 @@
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
-</table>
-</div>
-<div id='tab5' class='tab'>
-<table class="ListTable">
-	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title5}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear_new.gif'>&nbsp;&nbsp;{$form.header.macro}</td></tr>		
-	<tr><td><input type="hidden" name="nbOfMacro" id="hiddenMacInput"></td></tr>
-	<tr>
-		<td>
-		<img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:macro", {$helpattr});'>
-			<table id="macroTable" class="ListTableSmall">
-				<tr class="ListHeader">
-					<td class="ListColLeft">{$form.macroName.label}</td>
-					<td class="ListColCenter">{$form.macroValue.label}</td>
-					{if $o != "w"}
-						<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onclick="javascript:addBlankInput();"></td>			
-					{/if}
-				</tr>
-			</table>
-		</td>
-	</tr>
 </table>
 </div>
 
