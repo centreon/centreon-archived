@@ -233,7 +233,7 @@
 	# Graphs Template comes from DB -> Store in $graphTpls Array
 	$graphTpls = array(null => null);
 	$DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-	while ($graphTpl =& $DBRESULT->fetchRow()) {
+	while ($graphTpl = $DBRESULT->fetchRow()) {
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	}
 	$DBRESULT->free();
@@ -510,7 +510,7 @@
 	}
 	$mnftr[""] = "_"._("ALL")."_";
 	$DBRESULT->free();
-	$attrs2 = array('onchange'=>"javascript:getTrap(this.form.elements['mnftr'].value); return false;");
+	$attrs2 = array('onchange' => "javascript:getTrap(this.form.elements['mnftr'].value); return false;");
 	$form->addElement('select', 'mnftr', _("Vendor Name"), $mnftr, $attrs2);
 	include("./include/configuration/configObject/traps/ajaxTrap_js.php");
 
@@ -638,8 +638,7 @@
 	$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
 
 	include_once("makeJS_formService.php");
-	if ($o == "c" || $o == "a" || $o == "mc")
-	{
+	if ($o == "c" || $o == "a" || $o == "mc") {
 		for($k=0; isset($od_macro_id[$k]); $k++) {?>
 			<script type="text/javascript">
 			globalMacroTabId[<?php echo$k;?>] = <?php echo$od_macro_id[$k];?>;
@@ -663,14 +662,14 @@
 	$service_register = 1;
 	$page = $form->addElement('hidden', 'p');
 	$page->setValue($p);
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	if (is_array($select))	{
 		$select_str = null;
 		foreach ($select as $key => $value) {
 			$select_str .= $key.",";
 		}
-		$select_pear =& $form->addElement('hidden', 'select');
+		$select_pear = $form->addElement('hidden', 'select');
 		$select_pear->setValue($select_str);
 	}
 
@@ -713,6 +712,12 @@
 		}
 		$form->registerRule('exist', 'callback', 'testServiceExistence');
 		$form->addRule('service_description', _("This description is in conflict with another one that is already defined in the selected relation(s)"), 'exist');
+
+		$argChecker = $form->addElement("hidden", "argChecker");
+	    $argChecker->setValue(1);
+        $form->registerRule("argHandler", "callback", "argHandler");
+	    $form->addRule("argChecker", _("You must either fill all the arguments or leave them all empty"), "argHandler");
+
 		$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 	} elseif ($o == "mc") {
 		if ($form->getSubmitValue("submitMC")) {
@@ -772,8 +777,8 @@
 	$tpl->assign("helptext", $helptext);
 
 	$valid = false;
-	if ($form->validate() && $from_list_menu == false)	{
-		$serviceObj =& $form->getElement('service_id');
+	if ($form->validate() && $from_list_menu == false) {
+		$serviceObj = $form->getElement('service_id');
 		if ($form->getSubmitValue("submitA")) {
 			$serviceObj->setValue(insertServiceInDB());
 		} elseif ($form->getSubmitValue("submitC")) {
@@ -794,7 +799,11 @@
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
+	} elseif ($form->isSubmitted()) {
+	    $tpl->assign("argChecker", "<font color='red'>". $form->getElementError("argChecker") . "</font>");
 	}
+
+	require_once $path.'javascript/argumentJs.php';
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])	{
 		if ($p == "60201") {
@@ -806,7 +815,6 @@
 		}
 	} else {
 		#Apply a template definition
-		require_once $path.'javascript/argumentJs.php';
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -814,7 +822,6 @@
 		$tpl->assign('is_not_template', $service_register);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
-
 		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
 		$tpl->assign("Flapping_Options", _("Flapping options"));
 		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
@@ -825,16 +832,10 @@
 
 		$tpl->assign('v', $oreon->user->get_version());
 		$tpl->display("formService.ihtml");
-	}
-	if (!$action["action"]["action"]) {
 ?>
 <script type="text/javascript">
-		displayExistingMacroSvc(<?php echo $k;?>, '<?php echo $o;?>');
-		showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
-		if (o != "mc") {
-			setTimeout('transformForm()', 200);
-		}
+	setTimeout('transformForm()', 200);
+	displayExistingMacroSvc(<?php echo $k;?>, '<?php echo $o;?>');
+	showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
 </script>
-<?php
-	}
-?>
+<?php } ?>

@@ -36,10 +36,41 @@
  *
  */
 
-	if (!isset($centreon))
+	if (!isset($centreon)) {
 		exit ();
+	}
 
 	/**
+	 * This is a quickform rule for checking if all the argument fields are filled
+	 *
+	 * @return bool
+	 */
+	function argHandler()
+	{
+	    $argArray = $_POST;
+	    $argTab = array();
+		foreach ($argArray as $key => $value) {
+		    if (preg_match('/^ARG(\d+)/', $key, $matches)) {
+			    $argTab[$matches[1]] = $value;
+			}
+        }
+		$fill = false;
+		$nofill = false;
+		foreach ($argTab as $val) {
+		    if ($val) {
+		        $fill = true;
+		    } else {
+                $nofill = true;
+		    }
+        }
+        if ($fill === true && $nofill === true) {
+            return false;
+        }
+        return true;
+	}
+
+	/**
+	 * Returns the formatted string for command arguments
 	 *
 	 * @param $argArray
 	 * @return string
@@ -95,11 +126,11 @@
 
 	function serviceExists($name = null)
 	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
-		$DBRESULT = $pearDB->query("SELECT service_description FROM service WHERE service_description = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+		$DBRESULT = $pearDB->query("SELECT service_description FROM service WHERE service_description = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 		if ($DBRESULT->numRows() >= 1) {
 			return true;
 		}
@@ -116,7 +147,7 @@
 		}
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
-		$DBRESULT = $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+		$DBRESULT = $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 		$service = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $service["service_id"] == $id) {
@@ -130,7 +161,7 @@
 
 	function testServiceExistence ($name = null, $hPars = array(), $hgPars = array())
 	{
-		global $pearDB;
+		global $pearDB, $centreon;
 		global $form;
 		$id = null;
 		if (isset($form) && !count($hPars) && !count($hgPars))	{
@@ -152,7 +183,7 @@
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
 		foreach ($hPars as $host)	{
-			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 			$service = $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
@@ -161,7 +192,7 @@
 			$DBRESULT->free();
 		}
 		foreach ($hgPars as $hostgroup)	{
-			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
 			$service = $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
@@ -796,7 +827,9 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 
-		$ret["sg_name"] = $oreon->checkIllegalChar($ret["sg_name"]);
+		if (isset($ret['sg_name'])) {
+		    $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
+		}
 
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
@@ -995,7 +1028,7 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 
-		$ret["sg_name"] = $oreon->checkIllegalChar($ret["sg_name"]);
+		$ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
 
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
 			$ret["command_command_id_arg"] = str_replace("\n", "#BR#", $ret["command_command_id_arg"]);
