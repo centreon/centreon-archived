@@ -1834,24 +1834,25 @@
 		}
 	}
 
-	function generateHostServiceMultiTemplate($hID, $hID2 = NULL, $antiLoop = NULL){
+	function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null) {
 		global $pearDB, $path, $centreon;
 
 		if (isset($antiLoop[$hID2]) && $antiLoop[$hID2]) {
 			return 0;
 		}
 
-		if (file_exists($path."../service/DB-Func.php"))
-			require_once($path."../service/DB-Func.php");
-		else if (file_exists($path."../configObject/service/DB-Func.php"))
-			require_once($path."../configObject/service/DB-Func.php");
+		if (file_exists($path."../service/DB-Func.php")) {
+			require_once $path."../service/DB-Func.php";
+		} elseif (file_exists($path."../configObject/service/DB-Func.php")) {
+			require_once $path."../configObject/service/DB-Func.php";
+		}
 
-		$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2);
-		while ($hTpl =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2);
+		while ($hTpl = $DBRESULT->fetchRow()) {
 			$rq2 = "SELECT service_service_id FROM `host_service_relation` WHERE host_host_id = " . $hTpl['host_tpl_id'];
-			$DBRESULT2 =& $pearDB->query($rq2);
-			while ($hTpl2 =& $DBRESULT2->fetchRow()) {
-				$alias =& getMyServiceAlias($hTpl2["service_service_id"]);
+			$DBRESULT2 = $pearDB->query($rq2);
+			while ($hTpl2 = $DBRESULT2->fetchRow()) {
+				$alias = getMyServiceAlias($hTpl2["service_service_id"]);
 				if (testServiceExistence($alias, array(0 => $hID))) {
 					$service = array(
 									"service_template_model_stm_id" => $hTpl2["service_service_id"],
@@ -1859,7 +1860,6 @@
 									"service_register" => array("service_register"=> 1),
 									"service_activate" => array("service_activate" => 1),
 									"service_hPars" => array("0" => $hID));
-
 					$service_id = insertServiceInDB($service);
 				}
 			}
@@ -1924,26 +1924,27 @@
 		}
 	}
 
-	function updateHostTemplateService_MC($host_id = null)	{
+	function updateHostTemplateService_MC($host_id = null) {
 		global $form, $pearDB, $centreon, $path;
 
-		if (!$host_id)
+		if (!$host_id) {
 			return;
+		}
 
-		if (file_exists($path."../service/DB-Func.php"))
-			require_once($path."../service/DB-Func.php");
-		else if (file_exists($path."../service/DB-Func.php"))
-			require_once($path."../configObject/service/DB-Func.php");
+		if (file_exists($path."../service/DB-Func.php")) {
+			require_once $path."../service/DB-Func.php";
+		} elseif (file_exists($path."../service/DB-Func.php")) {
+			require_once $path."../configObject/service/DB-Func.php";
+		}
 
-		$DBRESULT =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."'");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."'");
+		$row = $DBRESULT->fetchRow();
 		if ($row["host_register"] == 0) {
-
-			$DBRESULT2 =& $pearDB->query("SELECT * FROM host_service_relation WHERE host_host_id = '".$host_id."'");
-
+			$DBRESULT2 = $pearDB->query("SELECT * FROM host_service_relation WHERE host_host_id = '".$host_id."'");
 			$svtpls = array();
-			while ($arr =& $DBRESULT2->fetchRow())
+			while ($arr = $DBRESULT2->fetchRow()) {
 				$svtpls [$arr["service_service_id"]] = $arr["service_service_id"];
+			}
 
 			$ret = $form->getSubmitValue("host_svTpls");
 			for ($i = 0; $i < count($ret); $i++)	{
@@ -1952,12 +1953,13 @@
 					$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
 					$rq .= "VALUES ";
 					$rq .= "(NULL, '".$host_id."', NULL, '".$ret[$i]."')";
-					$DBRESULT2 =& $pearDB->query($rq);
+					$DBRESULT2 = $pearDB->query($rq);
 				}
 			}
-		} else if ($centreon->user->get_version() >= 3) {
-			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
+		} elseif ($centreon->user->get_version() >= 3) {
+			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
 				generateHostServiceMultiTemplate($host_id, $host_id);
+			}
 		}
 	}
 
