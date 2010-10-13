@@ -492,12 +492,10 @@
 		updateHostTemplateService($host_id, $ret);
 		updateNagiosServerRelation($host_id, $ret);
 		$centreon->user->access->updateACL();
-		/*
 		$ret = $form->getSubmitValues();
 		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
 			createHostTemplateService($host_id);
 		}
-		*/
 		insertHostExtInfos($host_id, $ret);
 		return ($host_id);
 	}
@@ -1920,8 +1918,9 @@
 			}
 		}
 		else if ($centreon->user->get_version() >= 3) {
-			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"])
-				generateHostServiceMultiTemplate($host_id, $host_id);
+			if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
+			    generateHostServiceMultiTemplate($host_id, $host_id);
+			}
 		}
 	}
 
