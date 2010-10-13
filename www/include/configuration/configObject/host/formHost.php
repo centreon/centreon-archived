@@ -823,9 +823,6 @@
 		$tpl->assign("tpl", 0);
 		$tpl->assign("tzUsed", $CentreonGMT->used());
 		$tpl->display("formHost.ihtml");
-	}
-
-if (!$action["action"]["action"] || isset($ok_flag) && !$ok_flag) {
 ?>
 <script type="text/javascript">
 		add_select_template('<?php echo $o;?>');
