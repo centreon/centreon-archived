@@ -373,14 +373,14 @@
 
 	function updateHostInDB ($host_id = NULL, $from_MC = false, $cfg = NULL)	{
 		global $form, $centreon;
+
 		if (!$host_id) {
 			return;
 		}
 
 		if (!isset($cfg)) {
 			$ret = $form->getSubmitValues();
-		}
-		else {
+		} else {
 			$ret = $cfg;
 		}
 
@@ -390,8 +390,7 @@
 
 		if ($from_MC) {
 			updateHost_MC($host_id);
-		}
-		else {
+		} else {
 			updateHost($host_id, $from_MC, $ret);
 		}
 
@@ -1383,8 +1382,8 @@
 
 	 		$oldTp = array();
 	 		$newTp = array();
-	 		$DBRESULT =& $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-	 		while ($hst =& $DBRESULT->fetchRow()) {
+	 		$DBRESULT = $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+	 		while ($hst = $DBRESULT->fetchRow()) {
 	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];
 	 		}
 	 		$multiTP_logStr = "";
@@ -1403,10 +1402,12 @@
 	 		/*
 	 		 *  in case of replacement
 	 		 */
-	 		if (isset($_POST['mc_mod_tplp']['mc_mod_tplp']) && $_POST['mc_mod_tplp']['mc_mod_tplp'] == 1) {
-		 		$DBRESULT =& $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-	 		}
 	 		$allowedToDelete = 0;
+	 		if (isset($_POST['mc_mod_tplp']['mc_mod_tplp']) && $_POST['mc_mod_tplp']['mc_mod_tplp'] == 1) {
+		 		$DBRESULT = $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+		 		$allowedToDelete = 1;
+	 		}
+
 	 		for ($i = 0, $j = 1;$i <= $_POST['nbOfSelect']; $i++) {
 	 			$tpSelect = "tpSelect_" . $i;
 	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
@@ -1414,7 +1415,6 @@
 			 		$DBRESULT = $pearDB->query($rq);
 					$j++;
 					$already_stored[$_POST[$tpSelect]] = 1;
-					$allowedToDelete = 1;
 	 			}
 	 		}
 
