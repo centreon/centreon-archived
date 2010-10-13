@@ -12,9 +12,9 @@
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/factory.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:name", {$helpattr});'> {$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:alias", {$helpattr});'> {$form.alias.label}</td><td class="FormRowValue">{$form.alias.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:description", {$helpattr});'> {$form.description.label}</td><td class="FormRowValue">{$form.description.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name"> {$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.alias.label}</td><td class="FormRowValue">{$form.alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="description"> {$form.description.label}</td><td class="FormRowValue">{$form.description.html}</td></tr>
 		
 	</table>
 	</div>

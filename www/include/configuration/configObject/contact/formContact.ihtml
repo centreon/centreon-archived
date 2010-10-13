@@ -20,32 +20,32 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		{if $o != "mc"}
-			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:contact_name", {$helpattr});'> {$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:alias", {$helpattr});'> {$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_name"> {$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
 		{/if}
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:email", {$helpattr});'> {$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:pager", {$helpattr});'> {$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="email"> {$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
 		{if $o == "mc"}
-			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_cg.label}</td><td class="FormRowValue">{$form.mc_mod_cg.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cg.label}</td><td class="FormRowValue">{$form.mc_mod_cg.html}</td></tr>
 		{/if}
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:contactgroups", {$helpattr});'> {$form.contact_cgNotif.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_cgNotif.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contactgroups"> {$form.contact_cgNotif.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_cgNotif.html}</p></td></tr>
 		{if $ldap == "1" }
-			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:ldap_dn", {$helpattr});'> {$form.contact_ldap_dn.label}</td><td class="FormRowValue">{$form.contact_ldap_dn.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_dn"> {$form.contact_ldap_dn.label}</td><td class="FormRowValue">{$form.contact_ldap_dn.html}</td></tr>
 		{/if}
 	 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.hostNotification}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:host_notification_options", {$helpattr});'> {$form.contact_hostNotifOpts.label}</td><td class="FormRowValue">{$form.contact_hostNotifOpts.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:host_notification_period", {$helpattr});'> {$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_notification_options"> {$form.contact_hostNotifOpts.label}</td><td class="FormRowValue">{$form.contact_hostNotifOpts.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_notification_period"> {$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
 		{if $o == "mc"}
-			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_hcmds.label}</td><td class="FormRowValue">{$form.mc_mod_hcmds.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hcmds.label}</td><td class="FormRowValue">{$form.mc_mod_hcmds.html}</td></tr>
 		{/if}
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:host_notification_commands", {$helpattr});'> {$form.contact_hostNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_hostNotifCmds.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_notification_commands"> {$form.contact_hostNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_hostNotifCmds.html}</p></td></tr>
 	 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.serviceNotification}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:service_notification_options", {$helpattr});'> {$form.contact_svNotifOpts.label}</td><td class="FormRowValue">{$form.contact_svNotifOpts.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:service_notification_period", {$helpattr});'> {$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_notification_options"> {$form.contact_svNotifOpts.label}</td><td class="FormRowValue">{$form.contact_svNotifOpts.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_notification_period"> {$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
 		{if $o == "mc"}
-			<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_svcmds.label}</td><td class="FormRowValue">{$form.mc_mod_svcmds.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_svcmds.label}</td><td class="FormRowValue">{$form.mc_mod_svcmds.html}</td></tr>
 		{/if}
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:service_notification_commands", {$helpattr});'> {$form.contact_svNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_svNotifCmds.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_notification_commands"> {$form.contact_svNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_svNotifCmds.html}</p></td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
@@ -55,15 +55,15 @@
 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/centreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:centreon_login", {$helpattr});'> {$form.contact_oreon.label}</td><td class="FormRowValue">{$form.contact_oreon.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:password", {$helpattr});'> {$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:password2", {$helpattr});'> {$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:language", {$helpattr});'> {$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreon_login"> {$form.contact_oreon.label}</td><td class="FormRowValue">{$form.contact_oreon.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="password"> {$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="password2"> {$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="language"> {$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
 		{if $tzUsed}
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:location", {$helpattr});'> {$form.contact_location.label}</td><td class="FormRowValue">{$form.contact_location.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="location"> {$form.contact_location.label}</td><td class="FormRowValue">{$form.contact_location.html}</td></tr>
 		{/if}
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:admin", {$helpattr});'> {$form.contact_admin.label}</td><td class="FormRowValue">{$form.contact_admin.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:auth_type", {$helpattr});'> {$form.contact_auth_type.label}</td><td class="FormRowValue">{$form.contact_auth_type.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="admin"> {$form.contact_admin.label}</td><td class="FormRowValue">{$form.contact_admin.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="auth_type"> {$form.contact_auth_type.label}</td><td class="FormRowValue">{$form.contact_auth_type.html}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
@@ -74,9 +74,9 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.acl}</td></tr>
 		{if $o == "mc"}
-			<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:mc_update", {$helpattr});'> {$form.mc_mod_acl.label}</td><td class="FormRowValue">{$form.mc_mod_acl.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_acl.label}</td><td class="FormRowValue">{$form.mc_mod_acl.html}</td></tr>
 		{/if}
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:aclgroups", {$helpattr});'> {$form.contact_acl_groups.label}</td><td class="FormRowValue">{$form.contact_acl_groups.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="aclgroups"> {$form.contact_acl_groups.label}</td><td class="FormRowValue">{$form.contact_acl_groups.html}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
@@ -86,12 +86,12 @@
 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherAddress}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:addressx", {$helpattr});'> {$form.contact_address1.label}</td><td class="FormRowValue">{$form.contact_address1.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:addressx", {$helpattr});'> {$form.contact_address2.label}</td><td class="FormRowValue">{$form.contact_address2.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:addressx", {$helpattr});'> {$form.contact_address3.label}</td><td class="FormRowValue">{$form.contact_address3.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:addressx", {$helpattr});'> {$form.contact_address4.label}</td><td class="FormRowValue">{$form.contact_address4.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:addressx", {$helpattr});'> {$form.contact_address5.label}</td><td class="FormRowValue">{$form.contact_address5.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/question_grey.gif" style='cursor:pointer' onclick='TagToTip("help:addressx", {$helpattr});'> {$form.contact_address6.label}</td><td class="FormRowValue">{$form.contact_address6.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address1.label}</td><td class="FormRowValue">{$form.contact_address1.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address2.label}</td><td class="FormRowValue">{$form.contact_address2.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address3.label}</td><td class="FormRowValue">{$form.contact_address3.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address4.label}</td><td class="FormRowValue">{$form.contact_address4.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address5.label}</td><td class="FormRowValue">{$form.contact_address5.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address6.label}</td><td class="FormRowValue">{$form.contact_address6.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
