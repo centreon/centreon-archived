@@ -54,6 +54,7 @@
 		return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 	}
 
+	$cmdId = 0;
 	$service = array();
 	$serviceTplId = null;
 	if (($o == "c" || $o == "w") && $service_id) {
@@ -757,7 +758,7 @@
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
-	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0/*, "perfparse"=>$oreon->optGen["perfparse_installed"]*/));
+	$tpl->assign('msg', array ("nagios" => $oreon->user->get_version(), "tpl"=>0/*, "perfparse"=>$oreon->optGen["perfparse_installed"]*/));
 	$tpl->assign("sort1", _("Service Configuration"));
 	$tpl->assign("sort2", _("Relations"));
 	$tpl->assign("sort3", _("Data Processing"));
