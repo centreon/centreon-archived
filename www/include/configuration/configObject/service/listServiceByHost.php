@@ -36,8 +36,15 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
+
+	/*
+	 * Object init
+	 */
+    $mediaObj = new CentreonMedia($pearDB);
+
 
 	/*
 	 * Get Extended informations
@@ -74,6 +81,7 @@
 
 	require_once "./class/centreonHost.class.php";
 	$host_method = new CentreonHost($pearDB);
+	$service_method = new CentreonService($pearDB);
 
 	if (isset($_POST["searchH"])) {
 		$searchH = $_POST["searchH"];
@@ -91,10 +99,11 @@
 		$oreon->svc_svc_search = $searchS;
 		$search_type_service = 1;
 	} else {
-		if (isset($oreon->svc_svc_search) && $oreon->svc_svc_search)
+		if (isset($oreon->svc_svc_search) && $oreon->svc_svc_search) {
 			$searchS = $oreon->svc_svc_search;
-		else
-			$searchS = NULL;
+		} else {
+			$searchS = null;
+		}
 	}
 
 	include("./include/common/autoNumLimit.php");
@@ -107,18 +116,20 @@
 	if (isset($_GET["search_type_service"])){
 		$search_type_service = $_GET["search_type_service"];
 		$oreon->search_type_service = $_GET["search_type_service"];
-	} else if (isset($oreon->search_type_service))
+	} elseif (isset($oreon->search_type_service)) {
 		 $search_type_service = $oreon->search_type_service;
-	else
-		$search_type_service = NULL;
+	} else {
+		$search_type_service = null;
+	}
 
 	if (isset($_GET["search_type_host"])){
 		$search_type_host = $_GET["search_type_host"];
 		$oreon->search_type_host = $_GET["search_type_host"];
-	} else if (isset($oreon->search_type_host))
+	} elseif (isset($oreon->search_type_host)) {
 		 $search_type_host = $oreon->search_type_host;
-	else
-		$search_type_host = NULL;
+	} else {
+		$search_type_host = null;
+	}
 
 	if ($search && (!isset($searchH) && !isset($searchS))) {
 		$searchH = $search;
@@ -149,13 +160,14 @@
 		if ($search_type_service && !$search_type_host) {
 			$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
 			while ($service = $DBRESULT->fetchRow()){
-				if (!isset($tab_buffer[$service["service_id"]]))
+				if (!isset($tab_buffer[$service["service_id"]])) {
 					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
+				}
 				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];
 				$tab_buffer[$service["service_id"]] = $service["service_id"];
 				$rows++;
 			}
-		} else if (!$search_type_service && $search_type_host)	{
+		} elseif (!$search_type_service && $search_type_host)	{
 			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "");
 			$DBRESULT =& $pearDB->query($locale_query);
 			while ($service = $DBRESULT->fetchRow()) {
@@ -205,11 +217,12 @@
 
 	if ($searchH || $searchS)
 		$rq = 	"SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
-				"WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, " .
-				"sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
+				"WHERE host_service_relation.service_service_id = sv.service_id GROUP BY service_id) AS nbr, " .
+				"esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
 				"host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
 				"sv.service_retry_check_interval, sv.service_max_check_attempts " .
 				"FROM service sv, host, host_service_relation hsr " .
+		        "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
 				"WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") " .
 						"AND host.host_id IN (".($tmp2 ? $tmp2 : 'NULL').") " .
 						"AND sv.service_register = '1' " .
@@ -220,11 +233,13 @@
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = 	"SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
-				"WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, " .
-				"sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, " .
+				"LEFT JOIN extended_service_information esi ON esi.service_service_id = host_service_relation.service_service_id " .
+				"WHERE host_service_relation.service_service_id = sv.service_id GROUP BY service_id) AS nbr, " .
+				"esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, " .
 				"host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, sv.service_retry_check_interval, " .
 				"sv.service_max_check_attempts " .
 				"FROM service sv, host, host_service_relation hsr " .
+		        "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id ".
 				"WHERE sv.service_register = '1' " .
 						"AND hsr.service_service_id = sv.service_id " .
 						"AND host.host_id = hsr.host_host_id " .
@@ -247,17 +262,17 @@
 	$interval_length = $oreon->Nagioscfg['interval_length'];
 
 	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-
 		/*
 		 * If the name of our Host is in the Template definition, we have to catch it, whatever the level of it :-)
 		 */
 		$fgHost["value"] != $service["host_name"] ? ($fgHost["print"] = true && $fgHost["value"] = $service["host_name"]) : $fgHost["print"] = false;
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");
 		$moptions = "";
-		if ($service["service_activate"])
+		if ($service["service_activate"]) {
 			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."&template=$template'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
-		else
+		} else {
 			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."&template=$template'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+		}
 
 		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$service['service_id']."]'></input>";
 
@@ -265,9 +280,9 @@
 		 * If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		 */
 
-		if (!$service["service_description"])
+		if (!$service["service_description"]) {
 			$service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
-		else	{
+		} else {
 			$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
 			$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 		}
@@ -277,10 +292,10 @@
 		 */
 
 		$tplArr = array();
-		$tplStr = NULL;
+		$tplStr = null;
 		$tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
 		if (count($tplArr))
-			foreach($tplArr as $key =>$value){
+			foreach($tplArr as $key => $value){
 				$value = str_replace('#S#', "/", $value);
 				$value = str_replace('#BS#', "\\", $value);
 				$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
@@ -305,17 +320,26 @@
 		}
 
 		if ((isset($ehiCache[$service["host_id"]]) && $ehiCache[$service["host_id"]])) {
-			$host_icone = "./img/media/" . getImageFilePath($ehiCache[$service["host_id"]]);
-		} else if ($icone = $host_method->replaceMacroInString($service["host_id"], getMyHostExtendedInfoImage($service["host_id"], "ehi_icon_image", 1))) {
+		    $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$service["host_id"]]);
+		} elseif ($icone = $host_method->replaceMacroInString($service["host_id"], getMyHostExtendedInfoImage($service["host_id"], "ehi_icon_image", 1))) {
 			$host_icone = "./img/media/" . $icone;
 		} else {
 			$host_icone = "./img/icones/16x16/server_network.gif";
+		}
+
+	    if (isset($service['esi_icon_image']) && $service['esi_icon_image']) {
+			$svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
+		} elseif ($icone = $service_method->replaceMacroInString($service["service_id"], getMyServiceExtendedInfoField($service["service_id"], "esi_icon_image"))) {
+			$svc_icon = "./img/media/" . $icone;
+		} else {
+			$svc_icon = "./img/icones/16x16/gear.gif";
 		}
 
 		$elemArr[$i] = array(	"MenuClass"			=> "list_".($service["nbr"]>1 ? "three" : $style),
 								"RowMenu_select"	=> $selectedElements->toHtml(),
 								"RowMenu_name"		=> $service["host_name"],
 								"RowMenu_icone"		=> $host_icone,
+		                        "RowMenu_sicon"     => $svc_icon,
 								"RowMenu_link"		=> "?p=60101&o=c&host_id=".$service['host_id'],
 								"RowMenu_link2"		=> "?p=".$p."&o=c&service_id=".$service['service_id'],
 								"RowMenu_parent"	=> $tplStr,
@@ -324,7 +348,7 @@
 								"RowMenu_desc"		=> $service["service_description"],
 								"RowMenu_status"	=> $service["service_activate"] ? _("Enabled") : _("Disabled"),
 								"RowMenu_options"	=> $moptions);
-		$fgHost["print"] ? NULL : $elemArr[$i]["RowMenu_name"] = NULL;
+		$fgHost["print"] ? null : $elemArr[$i]["RowMenu_name"] = null;
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);
