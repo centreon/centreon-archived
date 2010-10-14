@@ -63,8 +63,6 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 		new Effect.toggle('footer');
 		Effect.toggle('menu1_bgcolor');
 		Effect.toggle('QuickSearch');
-		var centreonTooltip = new CentreonToolTip();
-		centreonTooltip.render();
 	</script>
 <?php } else {
 	if (!$centreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('footer', 'blind', { duration : 0 });</script> <?php }
@@ -79,3 +77,7 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 	if (isset($pearDBO) && is_object($pearDBO))
 		$pearDBO->disconnect();
 ?>
+<script type='text/javascript'>
+var centreonTooltip = new CentreonToolTip();
+centreonTooltip.render();
+</script>
