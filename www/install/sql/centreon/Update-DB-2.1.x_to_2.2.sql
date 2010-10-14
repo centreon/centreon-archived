@@ -260,3 +260,16 @@ ALTER TABLE `cron_operation` ADD `time_launch` INT NULL AFTER `command` ;
 ALTER TABLE `cron_operation` ADD `last_modification` INT NULL AFTER `time_launch` ;
 ALTER TABLE `cron_operation` ADD `running` enum('0','1') AFTER `module` ;
 ALTER TABLE `cron_operation` ADD `last_execution_time` INT NULL AFTER `running` ;
+
+DELETE FROM `topology` WHERE `topology_parent` = '203' AND `topology_page` = '20305';
+DELETE FROM `topology` WHERE `topology_parent` = '20305' AND `topology_page` = '2030501';
+DELETE FROM `topology` WHERE `topology_parent` = '20305' AND `topology_page` = '2030502';
+DELETE FROM `topology` WHERE `topology_parent` = '203' AND `topology_page` = '20306';
+DELETE FROM `topology` WHERE `topology_parent` = '20306' AND `topology_page` = '2030601';
+DELETE FROM `topology` WHERE `topology_parent` = '20306' AND `topology_page` = '2030602';
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Downtime', './img/icones/16x16/warning.gif', 202, 20218, 60, 33, './include/monitoring/downtime/downtime.php', '&o=vs', '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Comments', './img/icones/16x16/messages.gif', 202, 20219, 60, 33, './include/monitoring/comments/comments.php', '&o=vs', '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Nagios', NULL, 201, NULL, NULL, 2, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Downtime', './img/icones/16x16/warning.gif', 201, 20106, 5, 2, './include/monitoring/downtime/downtime.php', '&o=vh', NULL, NULL, '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Comments', './img/icones/16x16/messages.gif', 201, 20107, 5, 2, './include/monitoring/comments/comments.php', '&o=vh', NULL, NULL, '1', NULL, NULL, NULL);
