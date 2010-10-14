@@ -83,6 +83,10 @@
 		if ($_POST["o2"] != "")
 			$o = $_POST["o2"];
 	}
+	
+	/* Set the real page */
+	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+		$p = $ret['topology_page'];
 
 	if ($min) {
 		switch ($o)	{

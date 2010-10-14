@@ -3,12 +3,15 @@
 <form name='form' method='POST'>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
+			{ if $mode_access == 'w' }
 			<td class="Toolbar_TDSelectAction_Top">
 				{$msg.options} {$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}">{$msg.addT}</a>
 			</td>
-
+			{ else }
+			<td>&nbsp;</td>
+			{ /if }
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
@@ -21,7 +24,7 @@
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
-			<td class="ListColHeaderRight">{$headerMenu_options}</td>
+			<td class="ListColHeaderRight">{if $mode_access == 'w' }{$headerMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
 		{section name=elem loop=$elemArr}
 		<tr class={$elemArr[elem].MenuClass}>
@@ -36,11 +39,15 @@
 	</table>
 	<table class="ToolbarTable">
 		<tr>
+			{ if $mode_access == 'w' }
 			<td class="Toolbar_TDSelectAction_Bottom">
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}">{$msg.addT}</a>
 			</td>
+			{ else }
+			<td>&nbsp;</td>
+			{ /if }
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');

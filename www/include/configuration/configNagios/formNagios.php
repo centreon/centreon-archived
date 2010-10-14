@@ -689,7 +689,8 @@
 
 	if ($o == "w")	{
 		# Just watch a nagios information
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&nagios_id=".$nagios_id."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&nagios_id=".$nagios_id."'"));
 		$form->setDefaults($nagios);
 		$form->freeze();
 	} else if ($o == "c")	{
@@ -723,11 +724,12 @@
 	if ($form->validate())	{
 		$nagiosObj =& $form->getElement('nagios_id');
 		if ($form->getSubmitValue("submitA"))
-		$nagiosObj->setValue(insertNagiosInDB());
+			$nagiosObj->setValue(insertNagiosInDB());
 		else if ($form->getSubmitValue("submitC"))
-		updateNagiosInDB($nagiosObj->getValue());
+			updateNagiosInDB($nagiosObj->getValue());
 		$o = "w";
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&nagios_id=".$nagiosObj->getValue()."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&nagios_id=".$nagiosObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

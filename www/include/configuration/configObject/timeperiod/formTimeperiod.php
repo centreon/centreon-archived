@@ -250,7 +250,8 @@
 		/*
 		 * Just watch a Time Period information
 		 */
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&tp_id=".$tp_id."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&tp_id=".$tp_id."'"));
 	    $form->setDefaults($tp);
 		$form->freeze();
 	} else if ($o == "c")	{

@@ -74,6 +74,10 @@
 			$o = $_POST["o2"];
 	}
 	
+	/* Set the real page */
+	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+		$p = $ret['topology_page'];
+	
 	switch ($o)	{
 		case "a" : require_once($path."formService.php"); break; #Add a service
 		case "w" : require_once($path."formService.php"); break; #Watch a service

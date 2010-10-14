@@ -24,7 +24,14 @@
 				{foreach key=key item=a from=$acl_topos2}
 				<li><table cellpadding=0 cellspacing=0 border=1 margin=0 padding=0><tr><td width="150"><img id="img_{$a.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$a.c_id}');">&nbsp;<label for="{$a.id}">{$a.name}</label> : </td>
 					<td>
-					<input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="checkbox" {if $a.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" /><!--
+					{ if $a.readonly == 1 }
+					<input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="checkbox" {if $a.access > 0}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
+					{ else }
+					{$label_none}&nbsp;<input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="radio" {if $a.access == 0}checked="checked"{/if} value="0" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
+					&nbsp;-&nbsp;{$label_readwrite}&nbsp;<input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="radio" {if $a.access == 1}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
+					&nbsp;-&nbsp;{$label_readonly}&nbsp;<input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="radio" {if $a.access == 2}checked="checked"{/if} value="2" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
+					{ /if }
+					<!--
 					Read <input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="checkbox" {if $a.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
 					 - Write <input id="i{$a.c_id}" name="acl_w_topos[{$a.id}]" type="checkbox" {if $a.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
 					 - Both <input id="i{$a.c_id}" name="acl_a_topos[{$a.id}]" type="checkbox" {if $a.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
@@ -36,7 +43,14 @@
 					<tr>
 						<td width="150"><li><img id="img_{$b.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$b.c_id}');">&nbsp;<label for="{$b.id}">{$b.name}</label> : </td>
 						<td>
-						<input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="checkbox"  {if $b.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" /><!--
+						{ if $b.readonly == 1 }
+						<input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="checkbox"  {if $b.access > 0}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
+						{ else }
+						{$label_none}&nbsp;<input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="radio" {if $b.access == 0}checked="checked"{/if} value="0" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
+						&nbsp;-&nbsp;{$label_readwrite}&nbsp;<input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="radio" {if $b.access == 1}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
+						&nbsp;-&nbsp;{$label_readonly}&nbsp;<input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="radio" {if $b.access == 2}checked="checked"{/if} value="2" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
+						{ /if }
+						<!--
 						Read <input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="checkbox"  {if $b.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
 						 - Write <input id="i{$b.c_id}" name="acl_w_topos[{$b.id}]" type="checkbox"  {if $b.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
 						 - Both <input id="i{$b.c_id}" name="acl_a_topos[{$b.id}]" type="checkbox"  {if $b.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
@@ -54,7 +68,14 @@
 						{/if}
 						<tr>
 							<td width="200"><li><img id="img_{$c.c_id}" src="img/icones/16x16/navigate_plus.gif"  onclick="toggleDisplay('{$c.c_id}');">&nbsp;<label for="{$c.id}">{$c.name}</label> : </td>
-							<td><input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+							<td>
+							{ if $c.readonly == 1 }
+							<input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="checkbox" {if $c.access > 0}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+							{ else }
+							{$label_none}&nbsp;<input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="radio" {if $c.access == 0}checked="checked"{/if} value="0" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+							&nbsp;-&nbsp;{ $label_readwrite }&nbsp;<input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="radio" {if $c.access == 1}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+							&nbsp;-&nbsp;{ $label_readonly }&nbsp;<input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="radio" {if $c.access == 2}checked="checked"{/if} value="2" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+							{ /if }
 							<!--Read <input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
 							- Write <input id="i{$c.c_id}" name="acl_w_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
 							- Both <input id="i{$c.c_id}" name="acl_a_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
@@ -65,7 +86,13 @@
 								{foreach key=key item=d from=$c.childs}
 								<table cellpadding=0 cellspacing=0 border=0 margin=0><tr><td width="170"><li> - <label for="{$d.id}">{$d.name}</label> : </td>
 								<td>
-								<input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" />
+								{ if $c.readonly == 1 }
+								<input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="checkbox" {if $d.access > 0}checked="checked"{/if} value="1" />
+								{ else }
+								{$label_none}&nbsp;<input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="radio" {if $d.access == 0}checked="checked"{/if} value="0" />
+								&nbsp;-&nbsp;{$label_readwrite}&nbsp;<input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="radio" {if $d.access == 1}checked="checked"{/if} value="1" />
+								&nbsp;-&nbsp;{$label_readonly}&nbsp;<input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="radio" {if $d.access == 2}checked="checked"{/if} value="2" />
+								{ /if }
 								<!--
 								Read <input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" /> 
 								- Write <input id="i{$d.c_id}" name="acl_w_topos[{$d.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" /> 

@@ -11,12 +11,15 @@
 <input type='hidden' name='o' id='o' value='42'>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
+			{ if $mode_access == 'w' }
 			<td class="Toolbar_TDSelectAction_Top">
 				{$msg.options} {$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL1}">{$msg.addT}</a>
 			</td>
-
+			{ else }
+			<td>&nbsp;</td>
+			{ /if }
 			<input name="p" value="{$p}" type="hidden">
 		</tr>
 	</table>
@@ -38,17 +41,21 @@
 			<td class="ListColLeft"><a href="{$elemArr1[elem].RowMenu_link}">{$elemArr1[elem].RowMenu_service}</a></td>
 			<td class="ListColCenter">{$elemArr1[elem].RowMenu_metric}</td>
 			<td class="ListColCenter">{$elemArr1[elem].RowMenu_status}</td>
-			<td class="ListColRight">{$elemArr1[elem].RowMenu_options}</td>
+			<td class="ListColRight">{if $mode_access == 'w' }{$elemArr1[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
 		{/section}
 	</table>
 	<table class="ToolbarTable">
 		<tr>
+			{ if $mode_access == 'w' }
 			<td class="Toolbar_TDSelectAction_Bottom">
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL1}">{$msg.addT}</a>
 			</td>
+			{ else }
+			<td>&nbsp;</td>
+			{ /if }
 			<input name="p" value="{$p}" type="hidden">
 		</tr>
 	</table>

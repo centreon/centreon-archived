@@ -211,7 +211,8 @@
 		/*
 		 * Just watch a HostCategorie information
 		 */
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hc_id=".$hc_id."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hc_id=".$hc_id."'"));
 	    $form->setDefaults($hc);
 		$form->freeze();
 	} else if ($o == "c")	{

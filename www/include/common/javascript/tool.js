@@ -17,29 +17,52 @@
 
 <!-- Begin
 
+
+function checkItem(element, toCheck) {
+	if (element.type == 'checkbox') {
+		if (toCheck)
+			element.checked = true;
+		else
+			element.checked = false;
+	} else if (element.type == 'radio') {
+		var element = document.Form[element.name];
+		var value = 0;
+		if (toCheck)
+			value = 1;
+		for (var j = 0; j < element.length; j++) {
+			if (element[j].value == value)
+				element[j].checked = true;
+		}
+	}
+}
+
+function getChecked(element) {
+	if (element.type == 'checkbox')
+		return element.checked;
+	var element = document.Form[element.name];
+	for (var j = 0; j < element.length; j++) {
+		if (element[j].checked) {
+			if (element[j].value > 0)
+				return true;
+		}
+	}
+	return false;
+}
+
 function toggleCheckAll(theElement, id){	
 	var a = document.getElementById(id);
 
 	// enable/disable all subnodes of id
 	for (var i = 0; document.getElementById(id+'_'+i) ;i++){
 		var b = document.getElementById(id+'_'+i);
-		if (a.checked)
-			b.checked = true;
-		else
-			b.checked = false;
+		checkItem(b, getChecked(a));
 
 		for(var j = 0; document.getElementById(id+'_'+i+'_'+j) ;j++){
 			var c = document.getElementById(id+'_'+i+'_'+j);
-			if(b.checked)
-				c.checked = true;
-			else
-				c.checked = false;
+			checkItem(c, getChecked(b));
 			for(var k = 0; document.getElementById(id+'_'+i+'_'+j+'_'+k) ;k++){
 				var d = document.getElementById(id+'_'+i+'_'+j+'_'+k);
-				if (c.checked)
-					d.checked = true;
-				else
-					d.checked = false;
+				checkItem(d, getChecked(c));
 			}
 		}
 	}
@@ -52,19 +75,19 @@ function toggleCheckAll(theElement, id){
 	    upnode = node.substr(0, pos);
 	    elem = document.getElementById(node);
 	    elem_up = document.getElementById(upnode);
-	    if (elem.checked) {
-		elem_up.checked = true;
+	    if (getChecked(elem)) {
+	    	checkItem(elem_up, true);
 	    } else {
-		var enabled = false;
-		for(var k = 0; document.getElementById(upnode+'_'+k) ;k++){
-		    var elem_sub = document.getElementById(upnode+'_'+k);
-			if (elem_sub.checked) {
-			    enabled = true;
-			    break;
+			var enabled = false;
+			for(var k = 0; document.getElementById(upnode+'_'+k) ;k++){
+			    var elem_sub = document.getElementById(upnode+'_'+k);
+				if (getChecked(elem_sub)) {
+				    enabled = true;
+				    break;
+				}
 			}
-		}
-		if (!enabled)
-		    elem_up.checked = false;
+			if (!enabled)
+				checkItem(elem_up, false);
 	    }
 	    node = upnode;
 	    pos = node.lastIndexOf("_");

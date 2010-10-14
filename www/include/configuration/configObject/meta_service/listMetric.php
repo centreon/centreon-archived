@@ -49,6 +49,10 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
+	/* Access level */
+	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r'; 
+	$tpl->assign('mode_access', $lvl_access);
+	
 	require_once("./class/centreonDB.class.php");
 	$pearDBO = new CentreonDB("centstorage");	
 	

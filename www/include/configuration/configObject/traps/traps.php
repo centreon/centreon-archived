@@ -65,6 +65,10 @@
 
     $trapObj = new Centreon_Traps($oreon, $pearDB);
     
+    /* Set the real page */
+	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+		$p = $ret['topology_page'];
+    
 	switch ($o)	{
 		case "a" : require_once($path."formTraps.php"); break; #Add a Trap
 		case "w" : require_once($path."formTraps.php"); break; #Watch a Trap

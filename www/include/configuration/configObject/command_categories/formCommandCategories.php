@@ -127,7 +127,8 @@
 	 * Just watch a command_categories information
 	 */
 	if ($o == "w")	{
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
 	    $form->setDefaults($ccdata);
 		$form->freeze();
 	} else if ($o == "c")	{

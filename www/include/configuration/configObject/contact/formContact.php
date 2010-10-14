@@ -427,7 +427,8 @@
 
 	if ($o == "w")	{
 		# Just watch a contact information
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&contact_id=".$contact_id."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&contact_id=".$contact_id."'"));
 	    $form->setDefaults($cct);
 		$form->freeze();
 	} else if ($o == "c")	{

@@ -63,6 +63,10 @@
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
+	
+	/* Access level */
+	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r'; 
+	$tpl->assign('mode_access', $lvl_access);
 
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));

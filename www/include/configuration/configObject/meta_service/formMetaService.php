@@ -272,7 +272,7 @@
 		/*
 		 * Just watch a host information
 		 */
-		if (!$min)
+		if (!$min && $centreon->user->access->page($p) != 2)
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&meta_id=".$meta_id."'"));
 	    $form->setDefaults($ms);
 		$form->freeze();

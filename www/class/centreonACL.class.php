@@ -315,19 +315,21 @@ class CentreonACL {
 			  		$this->topology[101] = 1;
 			  		$this->topology[10101] = 1;
 				} else {
+					$count = 0;
+					$tmp_topo_page = array();
 					while ($topo_group =& $DBRESULT->fetchRow()) {
-						$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
+						$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id, acl_topology_relations.access_right " .
 				  										"FROM `acl_topology_relations`, acl_topology " .
 				  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
 														"AND acl_topology.acl_topo_activate = '1' " .
 														"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
 
-						$count = 0;
 						while ($topo_page =& $DBRESULT2->fetchRow()){
 							if ($str_topo != "")
 								$str_topo .= ", ";
 							$str_topo .= $topo_page["topology_topology_id"];
 					 		$count++;
+					 		$tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
 						}
 						$DBRESULT2->free();
 					}
@@ -336,10 +338,11 @@ class CentreonACL {
 					$count ? $ACL = "topology_id IN ($str_topo) AND " : $ACL = "";
 					unset($DBRESULT);
 
-					$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");
+					$DBRESULT =& $pearDB->query("SELECT topology_page, topology_id FROM topology WHERE $ACL topology_page IS NOT NULL");
 					while ($topo_page =& $DBRESULT->fetchRow())
-						$this->topology[$topo_page["topology_page"]] = 1;
+						$this->topology[$topo_page["topology_page"]] = $tmp_topo_page[$topo_page["topology_id"]];
 					unset($topo_page);
+					unset($tmp_topo_page);
 					$DBRESULT->free();
 				}
 				unset($DBRESULT);
@@ -669,7 +672,7 @@ class CentreonACL {
 	 public function page($p) {
 	 	$this->checkUpdateACL();
 	 	if ($this->admin || isset($this->topology[$p])) {
-	 		return 1;
+	 		return $this->topology[$p];
 	 	}
 	 	return 0;
 	 }

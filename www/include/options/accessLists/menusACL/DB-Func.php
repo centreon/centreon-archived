@@ -147,11 +147,9 @@
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_topology_relations WHERE acl_topo_id = '".$acl_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_r_topos");
-		if (is_array($ret))
-			$ret = array_keys($ret);		
-		for ($i = 0; $i < count($ret); $i++)	{
-			if (isset($ret[$i]))	{
-				$DBRESULT =& $pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id) VALUES ('".$acl_id."', '".$ret[$i]."')");		
+		foreach ($ret as $key => $value) {
+			if (isset($ret) && $key != 0)	{
+				$DBRESULT =& $pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right) VALUES ('".$acl_id."', '".$key."', " . $value . ")");		
 			}
 		}
 	}
@@ -163,11 +161,12 @@
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_group_topology_relations WHERE acl_topology_id = '".$acl_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_groups");
-		if (isset($ret))
+		if (isset($ret)) {
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id) VALUES ('".$acl_id."', '".$value."')");
 				}
 			}
+		}
 	}
 ?>

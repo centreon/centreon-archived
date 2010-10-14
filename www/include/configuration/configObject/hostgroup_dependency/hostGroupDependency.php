@@ -69,6 +69,10 @@
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	
+	/* Set the real page */
+	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+		$p = $ret['topology_page'];
+	
 	switch ($o)	{
 		case "a" : require_once($path."formHostGroupDependency.php"); break; #Add a Dependency
 		case "w" : require_once($path."formHostGroupDependency.php"); break; #Watch a Dependency

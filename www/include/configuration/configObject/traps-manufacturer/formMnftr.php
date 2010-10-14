@@ -123,7 +123,8 @@
 
 	# Just watch a Command information
 	if ($o == "w")	{
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$id."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$id."'"));
 	    $form->setDefaults($mnftr);
 		$form->freeze();
 	}

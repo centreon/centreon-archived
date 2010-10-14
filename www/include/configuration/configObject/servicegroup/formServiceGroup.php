@@ -187,7 +187,8 @@
 
 	# Just watch a Service Group information
 	if ($o == "w")	{
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sg_id."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sg_id."'"));
 	    $form->setDefaults($sg);
 		$form->freeze();
 	}

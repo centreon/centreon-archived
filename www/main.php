@@ -99,7 +99,8 @@
 	 */
 	$url = "";
 	if (!isset($_GET["doc"])){
-		if ($centreon->user->access->page($p)) {
+		$acl_page = $centreon->user->access->page($p);
+		if ($acl_page == 1 || $acl_page == 2) {
 			if ($redirect["topology_page"] < 100){
 				$ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
 				if (!$ret['topology_page']){
@@ -164,6 +165,13 @@
 						reset_search_page($url);
 					} else
 						$url = "../errors/alt_error.php";
+				}
+			}
+			if (isset($o) && $acl_page == 2) {
+				if ($o == 'c') {
+					$o = 'w';
+				} elseif ($o == 'a') {
+					$url = "../errors/alt_error.php";
 				}
 			}
 		} else {

@@ -7,13 +7,17 @@
 <form name='form' method='POST'>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
+			{ if $mode_access == 'w' }
 			<td class="Toolbar_TDSelectAction_Top">
 				{$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
 				{if $ldap == "1" }<a href="{$msg.ldap_importL}">{$msg.ldap_importT}</a>&nbsp;-&nbsp;{/if}
 				<a href="{$msg.addL}">{$msg.addT}</a>
-				<input name="p" value="{$p}" type="hidden">
 			</td>
+			{ else }
+			<td>&nbsp;</td>
+			{ /if }
+			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -33,19 +37,23 @@
 			<td class="ListColLeft"><a href="{$elemArr[elem].category_link}">{$elemArr[elem].category_name}</a></td>
 			<td class="ListColCenter"><a href="{$elemArr[elem].category_link}">{$elemArr[elem].category_alias}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].cmd_linked}</td>
-			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
+			<td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
 		{/section}
 	</table>
 	<table class="ToolbarTable">
 		<tr>
+			{ if $mode_access == 'w' }
 			<td class="Toolbar_TDSelectAction_Bottom">
 				{$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
 				{if $ldap == "1" }<a href="{$msg.ldap_importL}">{$msg.ldap_importT}</a>&nbsp;-&nbsp;{/if}
 				<a href="{$msg.addL}">{$msg.addT}</a>
-				<input name="p" value="{$p}" type="hidden">
 			</td>
+			{ else }
+			<td>&nbsp;</td>
+			{ /if }
+			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}

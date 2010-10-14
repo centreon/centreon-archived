@@ -729,7 +729,7 @@
 		/*
 		 * Just watch a host information
 		 */
-		if (!$min)
+		if (!$min && $centreon->user->access->page($p) != 2)
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$host_id."'"));
 	    $form->setDefaults($host);
 		$form->freeze();
@@ -796,7 +796,8 @@
 			}
 		}
 		$o = "w";
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

@@ -64,6 +64,10 @@
 	require_once $path2."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	
+	/* Set the real page */
+	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+		$p = $ret['topology_page'];
+	
 	switch ($o)	{
 		case "a" : require_once($path."formHostTemplateModel.php"); break; #Add a host template model
 		case "w" : require_once($path."formHostTemplateModel.php"); break; #Watch a host template model

@@ -163,7 +163,8 @@
 	
 	# Just watch a nagios information
 	if ($o == "w")	{
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'"));
 	    $form->setDefaults($nagios);
 		$form->freeze();
 	} else if ($o == "c")	{# Modify a nagios information

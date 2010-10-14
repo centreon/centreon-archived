@@ -693,8 +693,8 @@
 	$tpl = initSmartyTpl($path2, $tpl);
 
 	# Just watch a host information
-	if ($o == "w") {
-		if (!$min) {
+	if ($o == "w")	{
+		if (!$min && $centreon->user->access->page($p) != 2) {
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$service_id."'"));
 		}
 	    $form->setDefaults($service);
@@ -752,7 +752,8 @@
 		} else {
 			$o = null;
 		}
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

@@ -143,7 +143,7 @@
 		$ret["command_line"] = str_replace('/', "#S#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('\\', "#BS#", $ret["command_line"]);
 		$ret["command_line"] = str_replace('|', "#P#", $ret["command_line"]);
-		c
+		
 		$ret["command_example"] = str_replace('\n', "#BR#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('\t', "#T#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('\r', "#R#", $ret["command_example"]);

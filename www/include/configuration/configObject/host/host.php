@@ -75,7 +75,11 @@
 			$o = $_POST["o1"];
 		if ($_POST["o2"] != "")
 			$o = $_POST["o2"];
-	}	
+	}
+	
+	/* Set the real page */
+	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+		$p = $ret['topology_page'];
 	
 	switch ($o)	{
 		case "a" 	: require_once($path."formHost.php"); break; #Add a host

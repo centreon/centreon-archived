@@ -65,6 +65,10 @@
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	
+	/* Set the real page */
+	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+		$p = $ret['topology_page'];
+	
 	switch ($o)	{
 		case "a" : require_once($path."formNagios.php"); break; #Add Nagios.cfg
 		case "w" : require_once($path."formNagios.php"); break; #Watch Nagios.cfg

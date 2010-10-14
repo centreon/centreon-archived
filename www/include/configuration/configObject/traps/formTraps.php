@@ -187,7 +187,8 @@
 
 	if ($o == "w")	{
 		# Just watch a Command information
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'"));
+		if ($centreon->user->access->page($p) != 2)
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'"));
 	    $form->setDefaults($trap);
 		$form->freeze();
 	} else if ($o == "c")	{
