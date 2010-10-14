@@ -312,7 +312,7 @@
 		$form->setDefaults(array('host_location' => $oreon->optGen["gmt"]));
 	if (!isset($host["host_location"]))
 		$host["host_location"] = NULL;
-	unset($GMTList);
+	unset ($GMTList);
 
 	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
@@ -351,12 +351,13 @@
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("No"), '0');
 	$form->addGroup($dupSvTpl, 'dupSvTplAssoc', _("Checks Enabled"), '&nbsp;');
-	if ($o == "c")
+	if ($o == "c") {
 		$form->setDefaults(array('dupSvTplAssoc' => '0'));
-	else if ($o == "w")
+	} elseif ($o == "w") {
 		;
-	else if ($o != "mc")
+	} elseif ($o != "mc") {
 		$form->setDefaults(array('dupSvTplAssoc' => '1'));
+	}
 	$form->addElement('static', 'dupSvTplAssocText', _("Create Services linked to the Template too"));
 
 	#
@@ -375,8 +376,9 @@
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, _("No"), '0');
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, _("Default"), '2');
 	$form->addGroup($hostEHE, 'host_event_handler_enabled', _("Event Handler Enabled"), '&nbsp;');
-	if ($o != "mc")
+	if ($o != "mc") {
 		$form->setDefaults(array('host_event_handler_enabled' => '2'));
+	}
 	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 
@@ -384,15 +386,17 @@
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("No"), '0');
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Default"), '2');
 	$form->addGroup($hostACE, 'host_active_checks_enabled', _("Active Checks Enabled"), '&nbsp;');
-	if ($o != "mc")
+	if ($o != "mc") {
 		$form->setDefaults(array('host_active_checks_enabled' => '2'));
+	}
 
 	$hostPCE[] = &HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, _("Yes"), '1');
 	$hostPCE[] = &HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, _("No"), '0');
 	$hostPCE[] = &HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, _("Default"), '2');
 	$form->addGroup($hostPCE, 'host_passive_checks_enabled', _("Passive Checks Enabled"), '&nbsp;');
-	if ($o != "mc")
+	if ($o != "mc") {
 		$form->setDefaults(array('host_passive_checks_enabled' => '2'));
+	}
 
 	$form->addElement('select', 'timeperiod_tp_id', _("Check Period"), $tps);
 
@@ -404,8 +408,9 @@
 	$hostNE[] = &HTML_QuickForm::createElement('radio', 'host_notifications_enabled', null, _("No"), '0');
 	$hostNE[] = &HTML_QuickForm::createElement('radio', 'host_notifications_enabled', null, _("Default"), '2');
 	$form->addGroup($hostNE, 'host_notifications_enabled', _("Notification Enabled"), '&nbsp;');
-	if ($o != "mc")
+	if ($o != "mc") {
 		$form->setDefaults(array('host_notifications_enabled' => '2'));
+	}
 
 	$form->addElement('text', 'host_first_notification_delay', _("First notification delay"), $attrsText2);
 
@@ -457,8 +462,9 @@
 	$hostActivation[] = &HTML_QuickForm::createElement('radio', 'host_activate', null, _("Enabled"), '1');
 	$hostActivation[] = &HTML_QuickForm::createElement('radio', 'host_activate', null, _("Disabled"), '0');
 	$form->addGroup($hostActivation, 'host_activate', _("Status"), '&nbsp;');
-	if ($o != "mc")
+	if ($o != "mc") {
 		$form->setDefaults(array('host_activate' => '1'));
+	}
 	$form->addElement('textarea', 'host_comment', _("Comments"), $attrsTextarea);
 
 	#
@@ -756,7 +762,6 @@
 	$tpl->assign("sort4", _("Host Extended Infos"));
 	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>' );
-	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 
 	# prepare help texts
 	$helptext = "";
@@ -766,9 +771,9 @@
 	}
 	$tpl->assign("helptext", $helptext);
 
-	if ($o != "a" && $o != "c")
+	if ($o != "a" && $o != "c") {
 		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
-	else {
+	} else {
 		/*
 		 * Get interval for the good poller.
 		 */
@@ -778,15 +783,17 @@
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
 		$hostObj =& $form->getElement('host_id');
-		if ($form->getSubmitValue("submitA"))
+		if ($form->getSubmitValue("submitA")) {
 			$hostObj->setValue(insertHostInDB());
-		else if ($form->getSubmitValue("submitC"))
+		} elseif ($form->getSubmitValue("submitC")) {
 			updateHostInDB($hostObj->getValue());
-		else if ($form->getSubmitValue("submitMC"))	{
+		} elseif ($form->getSubmitValue("submitMC")) {
 			$select = explode(",", $select);
-			foreach ($select as $key=>$value)
-				if ($value)
-					updateHostInDB($value, true);
+			foreach ($select as $key=>$value) {
+				if ($value) {
+                    updateHostInDB($value, true);
+				}
+			}
 		}
 		$o = "w";
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
@@ -801,7 +808,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);
