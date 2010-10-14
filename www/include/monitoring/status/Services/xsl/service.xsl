@@ -119,6 +119,14 @@
 			</xsl:if>
 		</td>
 		<td class="ListColLeft" style="white-space:nowrap;">
+			<xsl:if test="sico != ''">
+				<xsl:element name="img">
+					<xsl:attribute name="src">./img/media/<xsl:value-of select="sico"/></xsl:attribute>
+					<xsl:attribute name="width">16</xsl:attribute>
+					<xsl:attribute name="height">16</xsl:attribute>
+					<xsl:attribute name="style">padding-right:5px;</xsl:attribute>
+				</xsl:element>
+			</xsl:if>
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn/@hnl"/>&amp;service_description=<xsl:value-of select="sdl"/></xsl:attribute>
 				<xsl:attribute name="class">infobulle</xsl:attribute>
