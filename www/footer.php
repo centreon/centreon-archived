@@ -79,5 +79,6 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 ?>
 <script type='text/javascript'>
 var centreonTooltip = new CentreonToolTip();
+centreonTooltip.setTitle('<?php echo _("Help"); ?>');
 centreonTooltip.render();
 </script>
