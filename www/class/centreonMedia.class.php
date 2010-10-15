@@ -123,6 +123,7 @@ class CentreonMedia
 	    		  WHERE vidr.img_img_id = vi.img_id
 	    		  AND vid.dir_id = vidr.dir_dir_parent_id";
 	    $res = $this->_db->query($query);
+	    $this->_filenames[0] = 0;
 	    while ($row = $res->fetchRow()) {
             $this->_filenames[$row['img_id']] = $row["dir_alias"]."/".$row["img_path"];
 	    }
