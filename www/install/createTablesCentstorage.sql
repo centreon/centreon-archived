@@ -283,8 +283,8 @@ CREATE TABLE IF NOT EXISTS `metrics` (
   `warn` float default NULL,
   `crit` float default NULL,
   `hidden` enum('0','1') default '0',
-  `min` int(11) default NULL,
-  `max` int(11) default NULL,
+  `min` float default NULL,
+  `max` float default NULL,
   `locked` enum('0','1') default NULL,
   PRIMARY KEY  (`metric_id`),
   KEY `index` (`index_id`)
