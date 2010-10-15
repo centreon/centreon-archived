@@ -194,9 +194,9 @@
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	/* Access level */
-	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r'; 
+	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 	$tpl->assign('mode_access', $lvl_access);
 
 	include("./include/common/checkPagination.php");

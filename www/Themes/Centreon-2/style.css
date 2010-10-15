@@ -237,9 +237,8 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .line_ack td,.tab .line_ack td,
 .line_downtime td, .tab .line_downtime td,
 .list_unreachable td,.tab .list_unreachable td {border-left-style:solid;border-top-style:solid;border-width:0.1px 0 0 0.1px;}
-.row_disabled {background-color:#BAAAAB !important;}
-.row_disabled {background-image: url("Images/stripe_disabled.png") !important;}
-.row_disabled:hover {background-image: none !important;}
+.row_disabled {background-color:#A4A4A4 !important;}
+.row_disabled:hover {background-color: #D8D8D8 !important;}
 .row_disabled {background-repeat: repeat !important;}
 .row_disabled a:hover {color: #333333 !important;}
 /*

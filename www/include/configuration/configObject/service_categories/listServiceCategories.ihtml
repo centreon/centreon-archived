@@ -61,3 +61,8 @@
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
+{literal}
+<script type='text/javascript'>
+	setDisabledRowStyle();
+</script>
+{/literal}

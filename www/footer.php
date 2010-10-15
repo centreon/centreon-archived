@@ -81,9 +81,4 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 var centreonTooltip = new CentreonToolTip();
 centreonTooltip.setTitle('<?php echo _("Help"); ?>');
 centreonTooltip.render();
-
-$$('img[src$="element_next.gif"]').each(function(el) {
-	//el.addClassName('row_disabled');
-	el.up(2).setAttribute('class', 'row_disabled');
-})
 </script>

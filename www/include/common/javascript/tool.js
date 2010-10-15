@@ -18,38 +18,46 @@
 <!-- Begin
 
 
-function checkItem(element, toCheck) {
+function checkItem(element, toCheck)
+{
 	if (element.type == 'checkbox') {
-		if (toCheck)
+		if (toCheck) {
 			element.checked = true;
-		else
+		} else {
 			element.checked = false;
+		}
 	} else if (element.type == 'radio') {
 		var element = document.Form[element.name];
 		var value = 0;
-		if (toCheck)
+		if (toCheck) {
 			value = 1;
+		}
 		for (var j = 0; j < element.length; j++) {
-			if (element[j].value == value)
+			if (element[j].value == value) {
 				element[j].checked = true;
+			}
 		}
 	}
 }
 
-function getChecked(element) {
-	if (element.type == 'checkbox')
+function getChecked(element)
+{
+	if (element.type == 'checkbox') {
 		return element.checked;
+	}
 	var element = document.Form[element.name];
 	for (var j = 0; j < element.length; j++) {
 		if (element[j].checked) {
-			if (element[j].value > 0)
+			if (element[j].value > 0) {
 				return true;
+			}
 		}
 	}
 	return false;
 }
 
-function toggleCheckAll(theElement, id){	
+function toggleCheckAll(theElement, id)
+{
 	var a = document.getElementById(id);
 
 	// enable/disable all subnodes of id
@@ -57,10 +65,10 @@ function toggleCheckAll(theElement, id){
 		var b = document.getElementById(id+'_'+i);
 		checkItem(b, getChecked(a));
 
-		for(var j = 0; document.getElementById(id+'_'+i+'_'+j) ;j++){
+		for(var j = 0; document.getElementById(id+'_'+i+'_'+j) ;j++) {
 			var c = document.getElementById(id+'_'+i+'_'+j);
 			checkItem(c, getChecked(b));
-			for(var k = 0; document.getElementById(id+'_'+i+'_'+j+'_'+k) ;k++){
+			for(var k = 0; document.getElementById(id+'_'+i+'_'+j+'_'+k) ;k++) {
 				var d = document.getElementById(id+'_'+i+'_'+j+'_'+k);
 				checkItem(d, getChecked(c));
 			}
@@ -79,30 +87,33 @@ function toggleCheckAll(theElement, id){
 	    	checkItem(elem_up, true);
 	    } else {
 			var enabled = false;
-			for(var k = 0; document.getElementById(upnode+'_'+k) ;k++){
+			for (var k = 0; document.getElementById(upnode+'_'+k) ;k++) {
 			    var elem_sub = document.getElementById(upnode+'_'+k);
 				if (getChecked(elem_sub)) {
 				    enabled = true;
 				    break;
 				}
 			}
-			if (!enabled)
+			if (!enabled) {
 				checkItem(elem_up, false);
+			}
 	    }
 	    node = upnode;
 	    pos = node.lastIndexOf("_");
 	}
 }					
 		
-function toggleDisplay(id)	{
+function toggleDisplay(id)
+{
 	var d = document.getElementById(id);
 	if (d){
 		var img = document.getElementById('img_'+id);
 		if (img){
-			if(d.style.display == 'block')
+			if (d.style.display == 'block') {
 				img.src = 'img/icones/16x16/navigate_plus.gif';
-			else
+			} else {
 				img.src = 'img/icones/16x16/navigate_minus.gif';
+			}
 		}
 		if (d.style.display == 'block') {
 			d.style.display='none';
@@ -112,13 +123,15 @@ function toggleDisplay(id)	{
 	}	
 }
 
-function checkUncheckAll(theElement) {
-     var theForm = theElement.form, z = 0;
-    for (z=0; z<theForm.length;z++) {
-	if (theForm[z].type == 'checkbox' && theForm[z].disabled == '0'){
+function checkUncheckAll(theElement)
+{
+	var theForm = theElement.form, z = 0;
+    
+	for (z=0; z<theForm.length;z++) {
+		if (theForm[z].type == 'checkbox' && theForm[z].disabled == '0'){
             if (theElement.checked && !theForm[z].checked) { 
-        	theForm[z].checked = true; 
-                if (typeof(_selectedElem) != 'undefined') { 
+            	theForm[z].checked = true; 
+        		if (typeof(_selectedElem) != 'undefined') { 
             	    putInSelectedElem(theForm[z].id); 
                 } 
             } else if (!theElement.checked && theForm[z].checked) { 
@@ -127,32 +140,52 @@ function checkUncheckAll(theElement) {
                     removeFromSelectedElem(theForm[z].id); 
                 } 
             } 
-	}
+		}
     }
 }
 
-function DisplayHidden(id) {
+function DisplayHidden(id)
+{
 	var d = document.getElementById(id);
-	if (d){
+	if (d) {
 		if (d.style.display == 'block') {
 			d.style.display='none';
-		} else	{
+		} else {
 			d.style.display='block';
 		}
 	}
 }
 
-function isdigit(c) {return(c >= '0' && c <= '9');}
+function isdigit(c)
+{
+	return(c >= '0' && c <= '9');
+}
 		
-function atoi(s){
+function atoi(s)
+{
 	var t = 0;
- 		
-	for(var i = 0; i < s.length; i++){
+
+	for (var i = 0; i < s.length; i++) {
    		var c = s.charAt(i);
-   		if(!isdigit(c)) return t;
-   		else t = t*10 + (c-'0');
+   		if (!isdigit(c)) {
+   			return t;
+   		} else {
+   			t = t*10 + (c-'0');
+   		}
 	}
 	return t;
+}
+
+function setDisabledRowStyle(img)
+{
+	document.observe("dom:loaded", function() {
+		if (!img) {
+			var img = "element_next.gif";
+		}
+		$$('img[src$="element_next.gif"]').each(function(el) {
+			el.up(2).setAttribute('class', 'row_disabled');
+		});
+	});
 }
 
 //  End -->
