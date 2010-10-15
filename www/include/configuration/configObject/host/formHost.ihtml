@@ -127,12 +127,13 @@
 <div id='tab2' class='tab'>
  <table class="ListTable">
 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title2}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.HGlinks}</td></tr>
 	{if !$msg.tpl}
 		{if $o == "mc"}
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hhg.label}</td><td class="FormRowValue">{$form.mc_mod_hhg.html}</td></tr>
 		{/if}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hostgroups"> {$form.host_hgs.label}</td><td class="FormRowValue">{$form.host_hgs.html}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
 		{if $o == "mc"}
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hpar.label}</td><td class="FormRowValue">{$form.mc_mod_hpar.html}</td></tr>
 		{/if}
@@ -147,6 +148,9 @@
 		{/if}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_templates"> {$form.host_svTpls.label}</td><td class="FormRowValue">{$form.host_svTpls.html}</td></tr>
 	{/if}		
+	{if $o == "a" || $o == "c"}
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+	{/if}
  </table>
 </div>
 <div id='tab3' class='tab'>
@@ -183,6 +187,9 @@
 		&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  style='cursor:pointer' onclick="set_arg('example2','command_command_id_arg2');"></a><input type="text" name="example2" disabled>
 		{/if}</td>
 	</tr>
+	{if $o == "a" || $o == "c"}
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+	{/if}
  </table>
 </div>
 <div id='tab4' class='tab'>
@@ -201,9 +208,11 @@
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
+	{if $o == "a" || $o == "c"}
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+	{/if}
 </table>
 </div>
-
 <div id="validForm">
 {if $o == "a" || $o == "c" || $o == "mc"}
 	<p>{$form.action.html}</p>

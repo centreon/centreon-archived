@@ -480,7 +480,8 @@
 		$form->addElement('header', 'title2', _("Massive Change"));
 
 	$form->addElement('header', 'links', _("Relations"));
-
+	$form->addElement('header', 'HGlinks', _("Hostgroup Relations"));
+	
 	if ($o == "mc")	{
 		$mc_mod_hpar = array();
 		$mc_mod_hpar[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hpar', null, _("Incremental"), '0');
