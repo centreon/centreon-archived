@@ -1580,39 +1580,84 @@
 		}
 	}
 
-	function updateServiceHost($service_id = null, $ret = array())	{
-		if (!$service_id) return;
-		global $form;
-		global $pearDB;
+	function updateServiceHost($service_id = null, $ret = array())	
+	{
+		global $form, $pearDB;
+		if (!$service_id) {
+			return;
+		}
+		
+		$ret1 = array();
+		$ret2 = array();
+		
+		if (isset($ret["service_hPars"])) {
+			$ret1 = $ret["service_hPars"];
+		} else {
+			$ret1 = $form->getSubmitValue("service_hPars");
+		}
+		if (isset($ret["service_hgPars"])) {
+			$ret2 = $ret["service_hgPars"];
+		} else {
+			$ret2 = $form->getSubmitValue("service_hgPars");
+		}
+		
+		/*
+		 * Get actual config
+		 */
+		$rq = "SELECT host_host_id FROM escalation_service_relation " .
+				" WHERE service_service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		$cacheEsc = array();
+		while ($data = $DBRESULT->fetchRow()) {
+			$cacheEsc[$data['host_host_id']] = 1;
+		}
+		
+		/*
+		 * Get actual config
+		 */
+		$rq = "SELECT host_host_id FROM host_service_relation " .
+				" WHERE service_service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		$cache = array();
+		while ($data = $DBRESULT->fetchRow()) {
+			$cache[$data['host_host_id']] = 1;
+		}
+		
+		if (count($ret1) == 1) {
+			foreach ($cache as $host_id => $flag) {
+				if (!isset($cacheEsc[$host_id]) && count($cacheEsc)) {
+					$pearDB->query("UPDATE escalation_service_relation SET host_host_id = '".$ret1[0]."' WHERE service_service_id = '".$service_id."'");
+				}
+			}
+		} else {
+			foreach ($cache as $host_id) {
+				if (!isset($cache[$host_id]) && count($cacheEsc)) {
+					$pearDB->query("DELETE FROM escalation_service_relation WHERE host_host_id = '".$ret1[0]."' AND service_service_id = '".$service_id."'");
+				}
+			}
+		}
+		
 		$rq = "DELETE FROM host_service_relation ";
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		$ret1 = array();
-		$ret2 = array();
-		if (isset($ret["service_hPars"]))
-			$ret1 = $ret["service_hPars"];
-		else
-			$ret1 = $form->getSubmitValue("service_hPars");
-		if (isset($ret["service_hgPars"]))
-			$ret2 = $ret["service_hgPars"];
-		else
-			$ret2 = $form->getSubmitValue("service_hgPars");
-		 if (count($ret2))
-			for($i = 0; $i < count($ret2); $i++)	{
+		
+		if (count($ret2)) {
+			for ($i = 0; $i < count($ret2); $i++)	{
 				$rq = "INSERT INTO host_service_relation ";
 				$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$ret2[$i]."', NULL, NULL, '".$service_id."')";
 				$DBRESULT =& $pearDB->query($rq);
 			}
-		else if (count($ret1))
-			for($i = 0; $i < count($ret1); $i++)	{
+		} else if (count($ret1)) {
+			for ($i = 0; $i < count($ret1); $i++)	{
 				$rq = "INSERT INTO host_service_relation ";
 				$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
 				$rq .= "VALUES ";
 				$rq .= "(NULL, '".$ret1[$i]."', NULL, '".$service_id."')";
 				$DBRESULT =& $pearDB->query($rq);
 			}
+		}
 	}
 
 	# For massive change. We just add the new list if the elem doesn't exist yet
