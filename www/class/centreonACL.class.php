@@ -671,8 +671,10 @@ class CentreonACL {
 	 */
 	 public function page($p) {
 	 	$this->checkUpdateACL();
-	 	if ($this->admin || isset($this->topology[$p])) {
-	 		return $this->topology[$p];
+	 	if ($this->admin) {
+	 		return 1;
+	 	} else if (isset($this->topology[$p])) {
+			return $this->topology[$p];
 	 	}
 	 	return 0;
 	 }
