@@ -3,44 +3,44 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
- 	ini_set("display_errors", "Off"); 
+
+ 	ini_set("display_errors", "Off");
 
 	/*
-	 * if debug == 0 => Normal, 
-	 * debug == 1 => get use, 
+	 * if debug == 0 => Normal,
+	 * debug == 1 => get use,
 	 * debug == 2 => log in file (log.xml)
 	 */
 	$debugXML = 0;
@@ -50,34 +50,34 @@
 	 * XML tag
 	 */
 
-	stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ? header("Content-type: application/xhtml+xml") : header("Content-type: text/xml"); 
-	
+	stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ? header("Content-type: application/xhtml+xml") : header("Content-type: text/xml");
+
 	/*
 	 * pearDB init
-	 */ 	
+	 */
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	
+
 	require_once $centreon_path . "www/include/eventLogs/common-Func.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
 	require_once $centreon_path . "www/class/centreonSession.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";
 
 	centreonSession::start();
-	$oreon =& $_SESSION["oreon"];
+	$oreon =& $_SESSION["centreon"];
 	$locale = $oreon->user->get_lang();
 	putenv("LANG=$locale");
 	setlocale(LC_ALL, $locale);
 	bindtextdomain("messages", $centreon_path . "/www/locale/");
 	bind_textdomain_codeset("messages", "UTF-8");
 	textdomain("messages");
-	
+
 	/*
 	 * Connect to DB
 	 */
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
-	$pearDBndo 	= new CentreonDB("ndo");	
-	
+	$pearDBndo 	= new CentreonDB("ndo");
+
 	/*
 	 * Include Access Class
 	 */
@@ -86,28 +86,28 @@
 	include_once $centreon_path . "www/class/centreonGMT.class.php";
 
 	include_once $centreon_path . "www/include/common/common-Func.php";
-	
+
 	/*
 	 * Start XML document root
 	 */
 	$buffer = new CentreonXML();
-	$buffer->startElement("root");	
- 
+	$buffer->startElement("root");
+
  	/*
 	 * Security check
-	 */	
+	 */
 	(isset($_GET["lang"]) 	&& !check_injection($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"], ENT_QUOTES, "UTF-8") : $lang_ = "-1";
 	(isset($_GET["id"]) 	&& !check_injection($_GET["id"])) ? $openid = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8") : $openid = "-1";
 	(isset($_GET["sid"]) 	&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
- 
+
  	/*
 	 * Init GMT class
 	 */
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession($sid, $pearDB);
- 
+
 	$contact_id = check_session($sid, $pearDB);
-	
+
 	$is_admin = isUserAdmin($sid);
 	if (isset($sid) && $sid){
 		$access = new CentreonAcl($contact_id, $is_admin);
@@ -115,7 +115,7 @@
 		$lcaSTR = $access->getHostsString("NAME", $pearDBndo);
 		$servicestr = $access->getServicesString("NAME", $pearDBndo);
 	}
-	
+
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
 	(isset($_GET["limit"])		&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : $limit = "30";
 	(isset($_GET["StartDate"]) 	&& !check_injection($_GET["StartDate"])) ? $StartDate = htmlentities($_GET["StartDate"]) : $StartDate = "";
@@ -132,7 +132,7 @@
 	(isset($_GET["warning"]) 	&& !check_injection($_GET["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($_GET["warning"])) : $warning = "true";
 	(isset($_GET["critical"]) 	&& !check_injection($_GET["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($_GET["critical"])) : $critical = "true";
 	(isset($_GET["unknown"]) 	&& !check_injection($_GET["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($_GET["unknown"])) : $unknown = "true";
-	
+
 	(isset($_GET["notification"]) && !check_injection($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
 	(isset($_GET["alert"]) 		&& !check_injection($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
 	(isset($_GET["error"]) 		&& !check_injection($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
@@ -158,7 +158,7 @@
 	}
 	$DBRESULT->free();
 	unset($data);
-	
+
 	/*
 	 * Create serviceCahe
 	 */
@@ -171,7 +171,7 @@
 		unset($data);
 		return $serviceCache;
 	}
-		
+
 	/*
 	 * Create hgCahe
 	 */
@@ -181,11 +181,11 @@
 		$hgCache[$data["hg_id"]] = $data["hg_name"];
 	$DBRESULT->free();
 	unset($data);
-	
+
 
 	if ($contact_id){
-		$user_params = get_user_param($contact_id, $pearDB);		
-		
+		$user_params = get_user_param($contact_id, $pearDB);
+
 		if (!isset($user_params["log_filter_host"]))
 			$user_params["log_filter_host"] = 1;
 		if (!isset($user_params["log_filter_svc"]))
@@ -210,12 +210,12 @@
 			$user_params["log_filter_error"] = 1;
 		if (!isset($user_params["log_filter_alert"]))
 			$user_params["log_filter_alert"] = 1;
-			
+
 		if (!isset($user_params["search_H"]))
 			$user_params["search_H"] = "";
 		if (!isset($user_params["search_S"]))
 			$user_params["search_S"] = "";
-		
+
 		$alert = $user_params["log_filter_alert"];
 		$notification = $user_params["log_filter_notif"];
 		$error = $user_params["log_filter_error"];
@@ -227,7 +227,7 @@
 		$warning = $user_params["log_filter_svc_warning"];
 		$critical = $user_params["log_filter_svc_critical"];
 		$oh = $user_params["log_filter_oh"];
-		
+
 		$search_H = $user_params["search_H"];
 		$search_S = $user_params["search_S"];
 	}
@@ -262,7 +262,7 @@
 
 	$tab_color_service 	= array("OK" => $general_opt["color_ok"], "WARNING" => $general_opt["color_warning"], "CRITICAL" => $general_opt["color_critical"], "UNKNOWN" => $general_opt["color_unknown"], "PENDING" => $general_opt["color_pending"]);
 	$tab_color_host		= array("UP" => $general_opt["color_up"], "DOWN" => $general_opt["color_down"], "UNREACHABLE" => $general_opt["color_unreachable"]);
-	
+
 	$tab_type 			= array("1" => "HARD", "0" => "SOFT");
 	$tab_class 			= array("0" => "list_one", "1" => "list_two");
 	$tab_status_host 	= array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
@@ -278,15 +278,15 @@
 			$HostCache[$h["host_name"]] = $h["host_address"];
 		}
 		$DBRESULT->free();
-	} 
-	
+	}
 
-	$logs = array();	
+
+	$logs = array();
 
 	/*
 	 * Print infos..
 	 */
-	$buffer->startElement("infos"); 
+	$buffer->startElement("infos");
 	$buffer->writeElement("multi", $multi);
 	$buffer->writeElement("sid", $sid);
 	$buffer->writeElement("opid", $openid);
@@ -306,7 +306,7 @@
 	$buffer->writeElement("search_H", $search_H);
 	$buffer->writeElement("search_S", $search_S);
 	$buffer->endElement();
-	
+
 	$msg_type_set = array ();
 	if ($alert == 'true')
 		array_push ($msg_type_set, "'0'");
@@ -318,12 +318,12 @@
 		array_push ($msg_type_set, "'3'");
 	if ($error == 'true')
 		array_push ($msg_type_set, "'4'");
-	
+
 	$msg_req = '';
 	$suffix_order = " ORDER BY ctime DESC, host_name ASC, service_description ASC ";
-	
+
 	$msg_status_set = array();
-	
+
 	if ($error == 'true')
 		array_push($msg_status_set, "'NULL'");
 	if ($up == 'true')
@@ -332,7 +332,7 @@
 		array_push($msg_status_set, "'DOWN'");
 	if ($unreachable == 'true' )
 		array_push($msg_status_set, "'UNREACHABLE'");
-	
+
 	if ($ok == 'true')
 		array_push($msg_status_set, "'OK'");
 	if ($warning == 'true')
@@ -341,14 +341,14 @@
 		array_push($msg_status_set, "'CRITICAL'");
 	if ($unknown == 'true')
 		array_push($msg_status_set, "'UNKNOWN'");
-	
+
 	$flag_begin = 0;
 	if ($notification == 'true') {
 		$msg_req .= "AND (";
 		$flag_begin = 1;
 		$msg_req .= " (`msg_type` IN ('2', '3') ";
 		if (count($msg_status_set) > 0)
-			$msg_req .= " AND `status` IN (" . implode(',', $msg_status_set).")"; 	
+			$msg_req .= " AND `status` IN (" . implode(',', $msg_status_set).")";
 	 	$msg_req .= ") ";
 	}
 	if ($alert == 'true') {
@@ -372,14 +372,14 @@
 			$msg_req .= " OR ";
 		$msg_req .= " (`msg_type` IN ('4', '5', '6', '7', '8', '9') AND `status` IS NULL) ";
 	}
-	if ($flag_begin)	
+	if ($flag_begin)
 		$msg_req .= ")";
-		
+
 
 	$multi = 1;
 
 	/*
-	 * If multi checked 
+	 * If multi checked
 	 */
 	if ($multi == 1) {
 		$tab_id = split(",", $openid);
@@ -391,7 +391,7 @@
 		$strSG = "";
 		$tab_SG = array();
 		$flag_already_call = 0;
-		
+
 		foreach ($tab_id as $openid) {
 			$tab_tmp = split("_", $openid);
 			if (isset($tab_tmp[1]))
@@ -441,7 +441,7 @@
 			        $tab_host_name[] = $host_name;
 				} else {
 					if (isset($hostCache[getMyHostIDService($id)])) {
-				  		$host_name = $hostCache[getMyHostIDService($id)];						
+				  		$host_name = $hostCache[getMyHostIDService($id)];
 						$tab_host_name[] = $host_name;
 					}
 				}
@@ -449,10 +449,10 @@
 			     * Servie informations
 			     */
 				$service_description = $serviceCache[$id];
-				
+
 				if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$service_description])) || $is_admin)
 					$tab_svc[$host_name][$id] = $service_description;
-					
+
 				unset($host_name);
 				unset($service_description);
 			} else if ($type == "MS") {
@@ -461,25 +461,25 @@
 				}
 			}
 		}
-		
+
 		$req = "SELECT * FROM `log` WHERE `ctime` > '$start' AND `ctime` <= '$end' $msg_req";
-		
+
 		/*
 		 * Add Host
 		 */
 		$str_unitH_flag = 0;
 		$str_unitH = "";
-		
+
 		foreach ($tab_host_name as $host_name ) {
 			if ($str_unitH != "")
 				$str_unitH .= ", ";
 			$str_unitH .= "'$host_name'";
-		}		
-		
+		}
+
 		if ($str_unitH != "") {
 			$str_unitH = "(`host_name` IN ($str_unitH) AND service_description IS NULL)";
 		}
-		
+
 		/*
 		 * Add services
 		 */
@@ -511,17 +511,17 @@
 		}
 		if ($str_unitH || $str_unitSVC)
 			$req .= " AND (".$str_unitH.$str_unitSVC.")";
-		
+
 		if ($str_unitH  == "" && $str_unitSVC == "" && !isset($_GET['export']))
 			$req = "";
-		
+
 	} else {
-	
+
 		/*
 		 * only click on one element
-		 */  
+		 */
 		$id = substr($openid, 3, strlen($openid));
-		$type = substr($openid, 0, 2);	
+		$type = substr($openid, 0, 2);
 		if ($type == "HG"){
 			$hosts = getMyHostGroupHosts($id);
 			$tab_host_name= array();
@@ -543,13 +543,13 @@
 			$service_description = getMyServiceName($id);
 			$host_id = getMyHostActivateService($id, $search_service);
 			$host_name = getMyHostName($host_id);
-			
+
 			$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` like '".$host_name."'";
 			if ($error  == 'true' || $notification == 'true')
-				$req .= ' OR `host_name` is null';				
+				$req .= ' OR `host_name` is null';
 			$req .= ")";
 			$req .= " AND (`service_description` like '".$service_description."' ";
-			$req .= ") ";		
+			$req .= ") ";
 		} if ($type == "MS") {
 			if ($id != 0) {
 				$other_services = array();
@@ -560,132 +560,132 @@
 						$meta =& $DBRESULT_meta->fetchRow();
 						$DBRESULT_meta->free();
 						$svc_id["service_description"] = $meta["meta_name"];
-					}	
+					}
 					$svc_id["service_description"] = str_replace("#S#", "/", $svc_id["service_description"]);
 					$svc_id["service_description"] = str_replace("#BS#", "\\", $svc_id["service_description"]);
 					$svc_id[$svc_id["id"]] = $svc_id["service_description"];
 				}
 				$DBRESULT2->free();
 			}
-		} else { 
+		} else {
 			if ($is_admin)
 				$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
 		}
 	}
 
 	/*
-	 * calculate size before limit for pagination 
+	 * calculate size before limit for pagination
 	 */
-	
+
 	if (isset($req) && $req) {
 		/*
 		 * Add Suffix for order
 		 */
 		$req .= $suffix_order;
-		
+
 		$lstart = 0;
 		$DBRESULT =& $pearDBO->query($req);
 		$rows = $DBRESULT->numrows();
 		if (($num * $limit) > $rows)
 			$num = round($rows / $limit) - 1;
 		$lstart = $num * $limit;
-		
+
 		if ($lstart <= 0)
 			$lstart = 0;
-		
+
 		/*
 		 * pagination
 		 */
 		$page_max = ceil($rows / $limit);
 		if ($num > $page_max && $rows)
 			$num = $page_max - 1;
-			
+
 		if ($num < 0)
 			$num = 0;
-		
+
 		$pageArr = array();
 		$istart = 0;
-		
+
 		for ($i = 5, $istart = $num; $istart > 0 && $i > 0; $i--)
 			$istart--;
-		
+
 		for ($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
 			$iend++;
-		
+
 		for ($i = $istart; $i <= $iend; $i++)
 			$pageArr[$i] = array("url_page"=>"&num=$i&limit=".$limit, "label_page"=>($i +1),"num"=> $i);
-	
+
 		if ($i > 1){
 			foreach ($pageArr as $key => $tab) {
-				$buffer->startElement("page");				
+				$buffer->startElement("page");
 				if ($tab["num"] == $num)
-					$buffer->writeElement("selected", "1");					
+					$buffer->writeElement("selected", "1");
 				else
-					$buffer->writeElement("selected", "0");					
+					$buffer->writeElement("selected", "0");
 				$buffer->writeElement("num", $tab["num"]);
 				$buffer->writeElement("url_page", $tab["url_page"]);
 				$buffer->writeElement("label_page", $tab["label_page"]);
-				$buffer->endElement();				
+				$buffer->endElement();
 			}
 		}
 		$num_page = 0;
-		
+
 		if ($num > 0 && $num < $rows)
 			$num_page= $num * $limit;
-	
+
 		$prev = $num - 1;
 		$next = $num + 1;
-			
+
 		if ($num > 0) {
 			$buffer->startElement("first");
 			$buffer->writeAttribute("show", "true");
 			$buffer->text("0");
-			$buffer->endElement();			
+			$buffer->endElement();
 		} else {
 			$buffer->startElement("first");
 			$buffer->writeAttribute("show", "false");
 			$buffer->text("none");
-			$buffer->endElement();			
+			$buffer->endElement();
 		}
-	
+
 		if ($num > 1) {
 			$buffer->startElement("prev");
 			$buffer->writeAttribute("show", "true");
 			$buffer->text($prev);
-			$buffer->endElement();			
+			$buffer->endElement();
 		} else {
 			$buffer->startElement("prev");
 			$buffer->writeAttribute("show", "false");
 			$buffer->text("none");
-			$buffer->endElement();			
+			$buffer->endElement();
 		}
-	
+
 		if ($num < $page_max - 1) {
 			$buffer->startElement("next");
 			$buffer->writeAttribute("show", "true");
 			$buffer->text($next);
-			$buffer->endElement();			
+			$buffer->endElement();
 		} else {
 			$buffer->startElement("next");
 			$buffer->writeAttribute("show", "false");
 			$buffer->text("none");
-			$buffer->endElement();			
+			$buffer->endElement();
 		}
-	
+
 		$last = $page_max - 1;
-	
+
 		if ($num < $page_max-1) {
 			$buffer->startElement("last");
 			$buffer->writeAttribute("show", "true");
 			$buffer->text($last);
-			$buffer->endElement();			
+			$buffer->endElement();
 		} else {
 			$buffer->startElement("last");
 			$buffer->writeAttribute("show", "false");
 			$buffer->text("none");
-			$buffer->endElement();			
+			$buffer->endElement();
 		}
-		
+
 		/*
 		 * Full Request
 		 */
@@ -693,16 +693,16 @@
 	    	$req .= " LIMIT 0,64000"; //limit a little less than 2^16 which is excel maximum number of lines
 	    else
 	    	$req .= " LIMIT $lstart,$limit";
-		
+
 		$DBRESULT =& $pearDBO->query($req);
-		
+
 		$cpts = 0;
 		while ($log =& $DBRESULT->fetchRow()) {
 			$buffer->startElement("line");
-			$buffer->writeElement("msg_type", $log["msg_type"]);				
+			$buffer->writeElement("msg_type", $log["msg_type"]);
 			$log["msg_type"] > 1 ? $buffer->writeElement("retry", "") : $buffer->writeElement("retry", $log["retry"]);
 			$log["msg_type"] == 2 || $log["msg_type"] == 3 ? $buffer->writeElement("type", "NOTIF") : $buffer->writeElement("type", $log["type"]);
-	
+
 			/*
 			 * Color initialisation for services and hosts status
 			 */
@@ -719,24 +719,24 @@
 			 */
 	        if ($log["output"] == "" && $log["status"] != "")
 	        	$log["output"] = "INITIAL STATE";
-	
+
 			$buffer->startElement("status");
 			$buffer->writeAttribute("color", $color);
 			$buffer->text($log["status"]);
-			$buffer->endElement();			
+			$buffer->endElement();
 			if ($log["host_name"] == "_Module_Meta") {
 				preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
 				$DBRESULT2 =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
 				$meta =& $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
 				$buffer->writeElement("host_name", $log["host_name"]);
-				$buffer->writeElement("service_description", $meta["meta_name"]);				
+				$buffer->writeElement("service_description", $meta["meta_name"]);
 				unset($meta);
 			} else {
 				$buffer->writeElement("host_name", $log["host_name"]);
 				if ($export)
 					$buffer->writeElement("address", $HostCache[$log["host_name"]]);
-				$buffer->writeElement("service_description", $log["service_description"]);				
+				$buffer->writeElement("service_description", $log["service_description"]);
 			}
 			$buffer->writeElement("class", $tab_class[$cpts % 2]);
 			$buffer->writeElement("date", $centreonGMT->getDate(_("Y/m/d"), $log["ctime"]));
@@ -744,11 +744,11 @@
 			$buffer->writeElement("output", $log["output"]);
 			$buffer->writeElement("contact", $log["notification_contact"]);
 			$buffer->writeElement("contact_cmd", $log["notification_cmd"]);
-			$buffer->endElement();			
+			$buffer->endElement();
 			$cpts++;
 		}
 	}
-	
+
 	/*
 	 * Translation for Menu.
 	 */
@@ -767,7 +767,7 @@
 	$buffer->writeElement("uk", _("Unknown"), 0);
 	$buffer->writeElement("oh", _("Hard Only"), 0);
 	$buffer->writeElement("sch", _("Search"), 0);
-	
+
 	/*
 	 * Translation for tables.
 	 */
@@ -780,13 +780,13 @@
 	$buffer->writeElement("o", _("Output"), 0);
 	$buffer->writeElement("c", _("Contact"), 0);
 	$buffer->writeElement("C", _("Command"), 0);
-	
+
 	$buffer->endElement();
 	$buffer->endElement();
 	$buffer->output();
-	
+
 	/*
-	 * Saves user's period selection 
+	 * Saves user's period selection
 	 */
 	if ($period != "-1") {
 		set_user_param($contact_id, $pearDB, "log_filter_period", $period);
