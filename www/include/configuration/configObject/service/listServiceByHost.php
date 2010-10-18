@@ -416,8 +416,16 @@
 	$searchS = str_replace("#S#", "/", $searchS);
 	$searchS = str_replace("#BS#", "\\", $searchS);
 
-	$tpl->assign("searchH", (isset($searchH) ? $searchH : NULL));
-	$tpl->assign("searchS", (isset($searchS) ? $searchS : NULL));
+	if (isset($searchH) && $searchH) {
+        $searchH = html_entity_decode($searchH);
+        $searchH = stripslashes(str_replace('"', "&quot;", $searchH));
+	}
+	if (isset($searchS) && $searchS) {
+	    $searchS = html_entity_decode($searchS);
+        $searchS = stripslashes(str_replace('"', "&quot;", $searchS));
+	}
+	$tpl->assign("searchH", $searchH);
+	$tpl->assign("searchS", $searchS);
 	$tpl->assign("templateFilter", $templateFilter);
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
