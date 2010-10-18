@@ -45,20 +45,27 @@
 	 */
 	$displayHSOptions = 0;
 
-	$form_search = new HTML_QuickForm('quickSearchForm', 'GET', "?p=".$p."&o=".$o);
-	if (isset($_GET["search"]))
-		$search = $_GET["search"];
-	else if (isset($oreon->historySearch[$url]))
+	$form_search = new HTML_QuickForm('quickSearchForm', 'POST', "?p=".$p."&o=".$o);
+	if (isset($_POST["search"])) {
+		$search = $_POST["search"];
+	} elseif (isset($_GET["search"])) {
+        $search = $_GET["search"];
+	} elseif (isset($oreon->historySearch[$url])) {
 		$search = $oreon->historySearch[$url];
-	else
-		$search = NULL;
+	} else {
+		$search = null;
+	}
 
+    $searchRaw = $search;
 	$search = mysql_real_escape_string($search);
 
-	if (!isset($search_service))
+	if (!isset($search_service)) {
 		$search_service = "";
-	else
-		$search_service = mysql_real_escape_string($search_service);
+		$search_serviceRaw = "";
+	} else {
+		$search_serviceRaw = $search_service;
+	    $search_service = mysql_real_escape_string($search_service);
+	}
 
 	if (isset($search) && $search) {
 		if ($p == "4" || $p == "402" || $p == "203")
@@ -84,7 +91,13 @@
 	if (!isset($limit))
 		$limit = 20;
 
-	$tab = array ("search" => $search, "search_service" => $search_service, "p"=>$p, "o"=>$o, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
+	$tab = array ("search"              => $searchRaw,
+				  "search_service"      => $search_serviceRaw,
+				  "p"                   => $p,
+				  "o"                   => $o,
+				  "limit"               => $limit,
+				  "search_type_host"    => 1,
+				  "search_type_service" => 1);
 
 	$form_search->addElement('text', 'search', _("Quick Search"), $attrsText);
 	if (isset($FlagSearchService) && $FlagSearchService)
