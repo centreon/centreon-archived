@@ -264,7 +264,7 @@
 			}
 			$DBRESULT2->free();
 	
-			if (isset($strTemp) && isset($escalation)) {
+			if (isset($strTemp) && strlen($strTemp) && isset($escalation)) {
 				$ret["comment"] ? ($str .= "# '".$escalation["esc_name"]."' host (group) escalation definition ".$i."\n") : NULL;	
 				if (isset($ret["comment"]) == true && isset($escalation["esc_comment"]) == true) {
 					$comment = array();
@@ -415,7 +415,7 @@
 			}
 			$DBRESULT2->free();
 				
-			if (isset($strTemp)) {
+			if (isset($strTemp) && strlen($strTemp)) {
 				$ret["comment"] ? ($str .= "# '".$escalation["esc_name"]."' service (group) escalation definition ".$i."\n") : NULL;
 				
 				if ($ret["comment"] && $escalation["esc_comment"]) {
