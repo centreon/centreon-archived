@@ -46,11 +46,11 @@
 
  	CentreonSession::start();
 
-	if (!isset($_SESSION["oreon"])) {
+	if (!isset($_SESSION["centreon"])) {
 		header("Location: ../../../../index.php");
 		exit();
 	} else {
-		$oreon =& $_SESSION["oreon"];
+		$oreon =& $_SESSION["centreon"];
 	}
 
 	global $buffer;
