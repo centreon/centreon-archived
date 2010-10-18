@@ -276,41 +276,39 @@
 	 * Get Pagination Rows
 	 */
 	if ($hostgroups) {
-		$hgCondition = " AND no.name1 IN (SELECT no.name1 FROM ".$obj->ndoPrefix."hostgroup_members hm, ".$obj->ndoPrefix."objects no WHERE no.object_id = hm.host_object_id AND hm.hostgroup_id IN
-						 (SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."')) ";
+		$hgCondition = " AND ns.host_object_id = hm.host_object_id AND hm.host_object_id = ns.host_object_id AND hm.hostgroup_id = hg.hostgroup_id AND hg.alias LIKE '".$hostgroups."' ";
 	} else {
 		$hgCondition = "";
 	}
 
-	if ($obj->is_admin) {
-		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))
-			    FROM ".$obj->ndoPrefix."objects no ,  ".$obj->ndoPrefix."servicestatus nss ";
-		if (preg_match("/^svc_unhandled/", $o)) {
-            $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
+	if ($is_admin) {
+		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
+						 " FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."services ns ".(isset($hgCondition) && $hgCondition != "" ? ", nagios_hostgroup_members hm, nagios_hostgroups hg " : " ");
+		if ($o == "svc_unhandled") {
+            $rq .= ", " . $ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."services s ";
 		}
-		$rq .= " WHERE no.object_id = nss.service_object_id $rq_state $instance_filter
-				 AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService";
-		if (preg_match("/^svc_unhandled/", $o)) {
-    		$rq .= " AND nss.service_object_id  = s.service_object_id
-                	 AND s.host_object_id = hs.host_object_id
-                	 AND hs.scheduled_downtime_depth = 0
-                	 AND hs.problem_has_been_acknowledged = 0";
-		}
+        $rq .= " WHERE no.object_id = ns.service_object_id AND no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService ";
+        if ($o == "svc_unhandled") {
+            $rq .= " AND nss.service_object_id  = s.service_object_id
+            	    AND s.host_object_id = hs.host_object_id
+            	    AND hs.scheduled_downtime_depth = 0
+            	    AND hs.problem_has_been_acknowledged = 0";
+        }
 	} else {
-		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))
-				FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, centreon_acl ";
-	    if (preg_match("/^svc_unhandled/", $o)) {
-            $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
+		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
+						 " FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."services ns, centreon_acl ".(isset($hgCondition) && $hgCondition != "" ? ", nagios_hostgroup_members hm, nagios_hostgroups hg " : " ");
+	    if ($o == "svc_unhandled") {
+            $rq .= ", " . $ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."services s ";
 		}
-		$rq .= " WHERE no.object_id = nss.service_object_id $rq_state $instance_filter
-				 AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService $ACLCondition ";
-		if (preg_match("/^svc_unhandled/", $o)) {
-    		$rq .= " AND nss.service_object_id  = s.service_object_id
-                	 AND s.host_object_id = hs.host_object_id
-                	 AND hs.scheduled_downtime_depth = 0
-                	 AND hs.problem_has_been_acknowledged = 0";
-		}
+		$rq .= " WHERE no.object_id = ns.service_object_id AND no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService $ACLCondition";
+        if ($o == "svc_unhandled") {
+            $rq .= " AND nss.service_object_id  = s.service_object_id
+            	    AND s.host_object_id = hs.host_object_id
+            	    AND hs.scheduled_downtime_depth = 0
+            	    AND hs.problem_has_been_acknowledged = 0";
+        }
 	}
+	
 	$DBRESULT =& $obj->DBNdo->query($rq);
 	$data =& $DBRESULT->fetchRow();
 	$numRows =& $data["count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))"];
