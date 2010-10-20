@@ -85,7 +85,7 @@
 	# Var information to format the element
 	#
 	$attrsText 		= array("size"=>"30");
-	$attrsAdvSelect = array("style" => "width: 250px; height: 100px;");
+	$attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"60");
 	$template 		= "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 

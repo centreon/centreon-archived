@@ -74,8 +74,8 @@
 	 */
 
 	$attrsText 		= array("size"=>"30");
-	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
+	$attrsAdvSelect = array("style" => "width: 300px; height: 180px;");
+	$attrsTextarea 	= array("rows"=>"5", "cols"=>"80");
 	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	#
@@ -253,7 +253,7 @@
 	$tpl->assign("sort1", _("General Information"));
 	$tpl->assign("sort2", _("Resources"));
 	$tpl->assign("sort3", _("Topology"));
-	
+
 	$tpl->assign("label_none", _("No access"));
 	$tpl->assign("label_readwrite", _("Read/Write"));
 	$tpl->assign("label_readonly", _("Read Only"));
