@@ -228,6 +228,10 @@
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 
+	$allHosts[] = &HTML_QuickForm::createElement('checkbox', 'allH', '&nbsp;', "");
+	$form->addGroup($allHosts, 'all_hosts', _("Include all hosts"), '&nbsp;&nbsp;');
+
+
 	/*
 	 * Host Groups
 	 */

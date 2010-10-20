@@ -1,0 +1,33 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name='form' method='POST'>
+	<br>
+	<table class="ajaxOption">
+		<tr>
+			<td>{$form.contact.label}&nbsp;&nbsp;&nbsp;{$form.contact.html}<input name="p" value="{$p}" type="hidden"><input name="o" value="t" type="hidden"></td>
+		</tr>
+	</table>
+	<br>
+	{if $i == 0}
+		{if $contact != 0}
+			<div class="updateSecu" style='text-align:center;'>{$msg}</div>
+		{else}
+			<div class="uptodate" style='text-align:center;'>{$msgSelect}</div>
+		{/if}
+	{else}
+	<table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft">{$headerMenu_host}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_service}</td>
+		</tr>
+		{section name=elem loop=$elemArr}
+		{assign var=host value=$elemArr[elem].RowMenu_host}
+		<tr class={$elemArr[elem].MenuClass}>
+			<td class="ListColLeft">{if $host != $hostOld}<img src='{$elemArr[elem].RowMenu_hico}'>&nbsp;&nbsp;<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_host}{else}&nbsp;{/if}</a></td>
+			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_service}</a></td>
+		</tr>
+		{assign var=hostOld value=$elemArr[elem].RowMenu_host}
+		{/section}
+	</table>
+	{/if}
+{$form.hidden}
+</form>
