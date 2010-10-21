@@ -178,9 +178,6 @@
 				"acl_res_activate = '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', " .
 				"changed = '1' " .
 				"WHERE acl_res_id = '".$acl_id."'";
-
-		print $rq;
-
 		$DBRESULT =& $pearDB->query($rq);
 	}
 
