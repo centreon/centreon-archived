@@ -97,6 +97,7 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 50203, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 50203, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
 ALTER TABLE `host` ADD `host_retry_check_interval` INT NULL AFTER `host_check_interval` ;
+
 ALTER TABLE `contact` ADD `contact_address1` VARCHAR( 200 ) NULL AFTER `contact_pager` ,
 ADD `contact_address2` VARCHAR( 250 ) NULL AFTER `contact_address1` ,
 ADD `contact_address3` VARCHAR( 200 ) NULL AFTER `contact_address2` ,
@@ -111,6 +112,9 @@ INSERT INTO `topology_JS` (`id_page`, `id_page`, `o`, ,PathName_js`, `Init`) VAL
 -- Graphs
 ALTER TABLE `giv_components_template` ADD `ds_stack` enum('0','1') default NULL;
 
+ALTER TABLE `acl_resources` ADD `all_hosts` enum('0','1') default NULL AFTER acl_res_alias;
+ALTER TABLE `acl_resources` ADD `all_hostgroups` enum('0','1') default NULL AFTER all_hosts;
+ALTER TABLE `acl_resources` ADD `all_servicegroups` enum('0','1') default NULL AFTER all_hostgroups;
 
 
 
@@ -259,7 +263,7 @@ ALTER TABLE `cron_operation` ADD `last_modification` INT NULL AFTER `time_launch
 ALTER TABLE `cron_operation` ADD `running` enum('0','1') AFTER `module` ;
 ALTER TABLE `cron_operation` ADD `last_execution_time` INT NULL AFTER `running` ;
 
-ALTER TABLE traps_matching_properties ADD tmo_string VARCHAR(255) AFTER tmo_regexp
+ALTER TABLE traps_matching_properties ADD tmo_string VARCHAR(255) AFTER tmo_regexp;
 
 DELETE FROM `topology` WHERE `topology_parent` = '203' AND `topology_page` = '20305';
 DELETE FROM `topology` WHERE `topology_parent` = '20305' AND `topology_page` = '2030501';

@@ -22,11 +22,17 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>	 	
 		<tr class="list_one"><td class="FormRowField">{$form.acl_res_name.label}</td><td class="FormRowValue">{$form.acl_res_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.acl_res_alias.label}</td><td class="FormRowValue">{$form.acl_res_alias.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.acl_res_activate.label}</td><td class="FormRowValue">{$form.acl_res_activate.html}</td></tr>
+		
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/lock_ok.gif'>&nbsp;&nbsp;{$form.header.Host_infos}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src='./img/icones/16x16/server_network.gif'>&nbsp;{$form.all_hosts.label}</td><td class="FormRowValue">{$form.all_hosts.html}&nbsp;</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img src='./img/icones/16x16/clients.gif'>&nbsp;{$form.all_hostgroups.label}</td><td class="FormRowValue">{$form.all_hostgroups.html}&nbsp;</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src='./img/icones/16x16/gears.gif'>&nbsp;{$form.all_servicegroups.label}</td><td class="FormRowValue">{$form.all_servicegroups.html}&nbsp;</td></tr>
+		
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.contacts_infos}</td></tr>	 	
 		<tr class="list_two"><td class="FormRowField">{$form.acl_groups.label}</td><td class="FormRowValue">{$form.acl_groups.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.lca_comment.label}</td><td class="FormRowValue">{$form.lca_comment.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.acl_res_activate.label}</td><td class="FormRowValue">{$form.acl_res_activate.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.lca_comment.label}</td><td class="FormRowValue">{$form.lca_comment.html}</td></tr>
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 </div>
@@ -34,7 +40,6 @@
 	<table class="ListTable">
 		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lock_new.gif'>&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/lock_ok.gif'>&nbsp;&nbsp;{$form.header.Host_infos}</td></tr>
-		<tr class="list_two"><td class="FormRowField" colspan="2">{$form.all_hosts.label}&nbsp;&nbsp;{$form.all_hosts.html}&nbsp;</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img src='./img/icones/16x16/server_network.gif'>&nbsp;{$form.acl_hosts.label}</td><td class="FormRowValue">{$form.acl_hosts.html}</td></tr>
 	 	<tr class="list_one"><td class="FormRowField"><img src='./img/icones/16x16/clients.gif'>&nbsp;{$form.acl_hostgroup.label}</td><td class="FormRowValue">{$form.acl_hostgroup.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img src='./img/icones/16x16/warning.gif'>&nbsp;{$form.acl_hostexclude.label}</td><td class="FormRowValue">{$form.acl_hostexclude.html}</td></tr>

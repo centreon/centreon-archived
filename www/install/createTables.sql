@@ -118,6 +118,9 @@ CREATE TABLE IF NOT EXISTS `acl_resources` (
   `acl_res_id` int(11) NOT NULL auto_increment,
   `acl_res_name` varchar(255) default NULL,
   `acl_res_alias` varchar(255) default NULL,
+  `all_hosts` enum('0','1') default NULL,
+  `all_hostgroups` enum('0','1') default NULL,
+  `all_servicegroups` enum('0','1') default NULL,
   `acl_res_activate` enum('0','1','2') default NULL,
   `acl_res_comment` text,
   `acl_res_status` enum('0','1') default NULL,
@@ -1210,6 +1213,7 @@ CREATE TABLE IF NOT EXISTS `giv_components_template` (
   `ds_tickness` int(11) default NULL,
   `ds_transparency` varchar(254) default NULL,
   `ds_invert` enum('0','1') default NULL,
+  `ds_stack` enum('0','1') default NULL,
   `default_tpl1` enum('0','1') default NULL,
   `comment` text,
   PRIMARY KEY  (`compo_id`)

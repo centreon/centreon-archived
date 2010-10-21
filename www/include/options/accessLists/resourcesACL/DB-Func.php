@@ -53,24 +53,24 @@
 
 	function enableLCAInDB ($acl_id = null)	{
 		global $pearDB;
-		if (!$acl_id) 
+		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')");			
+		$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')");
 		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
 	}
 
 	function disableLCAInDB ($acl_id = null)	{
 		global $pearDB;
-		if (!$acl_id) 
+		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')");			
+		$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')");
 		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '0', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
 	}
 
 	function deleteLCAInDB ($acls = array())	{
 		global $pearDB;
 		foreach($acls as $key=>$value){
-			$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')");			
+			$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')");
 			$DBRESULT =& $pearDB->query("DELETE FROM `acl_resources` WHERE acl_res_id = '".$key."'");
 		}
 	}
@@ -132,30 +132,55 @@
 		return ($acl_id);
 	}
 
+	/**
+	 *
+	 * Insert New ACL
+	 */
 	function insertLCA()	{
 		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `acl_resources` ";
-		$rq .= "(acl_res_name, acl_res_alias, acl_res_activate, changed) ";
-		$rq .= "VALUES ('".htmlentities($ret["acl_res_name"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_res_alias"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', '1')";
+		$rq .= "(acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate, changed) ";
+		$rq .= "VALUES ('".htmlentities($ret["acl_res_name"], ENT_QUOTES, "UTF-8")."', " .
+				"'".htmlentities($ret["acl_res_alias"], ENT_QUOTES, "UTF-8")."', " .
+				"'".(isset($ret["all_hosts"]["all_hosts"]) ? htmlentities($ret["all_hosts"]["all_hosts"], ENT_QUOTES, "UTF-8") : 0)."', " .
+				"'".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? htmlentities($ret["all_hostgroups"]["all_hostgroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
+				"'".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? htmlentities($ret["all_servicegroups"]["all_servicegroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
+				"'".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', " .
+				"'1')";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
 		$acl =& $DBRESULT->fetchRow();
 		return ($acl["MAX(acl_res_id)"]);
 	}
 
+	/**
+	 *
+	 * Update resource ACL
+	 * @param $acl_id
+	 */
 	function updateLCA($acl_id = null)	{
-		if (!$acl_id) return;
 		global $form, $pearDB;
+		if (!$acl_id) {
+			return;
+		}
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
+
 		$rq = "UPDATE `acl_resources` ";
 		$rq .= "SET acl_res_name = '".htmlentities($ret["acl_res_name"], ENT_QUOTES, "UTF-8")."', " .
 				"acl_res_alias = '".htmlentities($ret["acl_res_alias"], ENT_QUOTES, "UTF-8")."', " .
+				"all_hosts = '".(isset($ret["all_hosts"]["all_hosts"]) ? htmlentities($ret["all_hosts"]["all_hosts"], ENT_QUOTES, "UTF-8") : 0)."', " .
+				"all_hostgroups = '".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? htmlentities($ret["all_hostgroups"]["all_hostgroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
+				"all_servicegroups = '".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? htmlentities($ret["all_servicegroups"]["all_servicegroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
 				"acl_res_activate = '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', " .
 				"changed = '1' " .
 				"WHERE acl_res_id = '".$acl_id."'";
+
+		print $rq;
+
 		$DBRESULT =& $pearDB->query($rq);
 	}
 
