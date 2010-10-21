@@ -236,11 +236,15 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .list_down td,.tab .list_down td,
 .line_ack td,.tab .line_ack td,
 .line_downtime td, .tab .line_downtime td,
-.list_unreachable td,.tab .list_unreachable td {border-left-style:solid;border-top-style:solid;border-width:0.1px 0 0 0.1px;}
-.row_disabled {background-color:#A4A4A4 !important;}
-.row_disabled:hover {background-color: #D8D8D8 !important;}
-.row_disabled {background-repeat: repeat !important;}
-.row_disabled a:hover {color: #333333 !important;}
+.list_unreachable td,.tab .list_unreachable td, 
+.row_disabled td, .tab .row_disabled td {border-left-style:solid;border-top-style:solid;border-width:0.1px 0 0 0.1px;}
+
+.row_disabled {background-color:#BDBDBD;padding:1px 3px;}
+.row_disabled:hover {background-color: #D8D8D8;padding:1px 3px;}
+
+//.row_disabled {background-repeat: repeat !important;}
+//.row_disabled a:hover {color: #333333 !important;}
+
 /*
 .limitPage 	{background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-left:4px;padding-top:1px;text-align:left;width:160px;}
 .pageNumber {background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-right:3px;padding-top:4px;text-align:right;width:80px;}
@@ -398,7 +402,7 @@ margin-top:0;
 .ToolbarTR 			{padding-left:10px;}
 .ToolbarPagination	{text-align:center;}
 
-input,select,option,input,textarea,checkbox,.list_one a,.list_two a {font-weight:400;}
+input,select,option,input,textarea,checkbox,.list_one a,.list_two a, .row_disabled a {font-weight:400;}
 input,checkbox,a.infobulle:hover table 								{border:1px gray solid;}
 
 td,a.infobulle:hover td {padding:0px;}
@@ -415,6 +419,6 @@ a.infobulle span,.img_volante 		{display:none;position:absolute;z-index:500;}
 
 .FormFooter,.ListColFooter5,.ListColFooter5 a,.ListColFooterCenter,.ListColFooterLeft,.ListColFooterRight 	{font-size:12px;font-weight:700;padding-right:10px;}
 .ListColFooterRight,.ListColRight,.Toolbar_pagelimit {text-align:right;}
-.list_one,.list_two,.list_three,.list_four,.line_ack,.line_downtime,.list_unreachable		{font-weight:400;vertical-align:middle;}
+.list_one,.list_two,.list_three,.list_four,.line_ack,.line_downtime,.list_unreachable,.row_disabled		{font-weight:400;vertical-align:middle;}
 
 div.ams		{text-align:center;font-style:italic;}
