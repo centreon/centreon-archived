@@ -13,6 +13,9 @@
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderLeft">{$headerMenu_alias}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_allH}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_allHG}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_allSG}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
@@ -21,6 +24,9 @@
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_alias}</a></td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_all_hosts}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_all_hostgroups}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_all_servicegroups}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>

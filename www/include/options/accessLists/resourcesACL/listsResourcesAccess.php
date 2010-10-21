@@ -71,6 +71,9 @@
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_alias", _("Description"));
 	$tpl->assign("headerMenu_contacts", _("Contacts"));
+	$tpl->assign("headerMenu_allH", _("All Hosts"));
+	$tpl->assign("headerMenu_allHG", _("All Hostgroups"));
+	$tpl->assign("headerMenu_allSG", _("All Servicegroups"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
@@ -78,7 +81,7 @@
 	if ($search) {
 		$SearchStr = "WHERE (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_res_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	}
-	$rq = "SELECT acl_res_id, acl_res_name, acl_res_alias, acl_res_activate FROM acl_resources ". $SearchStr ." ORDER BY acl_res_name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate FROM acl_resources ". $SearchStr ." ORDER BY acl_res_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
@@ -110,13 +113,16 @@
 		$rq = "SELECT COUNT(*) AS nbr FROM acl_resources_host_relations WHERE acl_res_id = '".$resources['acl_res_id']."'";
 		$DBRESULT2 =& $pearDB->query($rq);
 		$ctNbr =& $DBRESULT2->fetchRow();
-		$elemArr[$i] = array("MenuClass"=>"list_".$style,
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$resources["acl_res_name"],
-						"RowMenu_alias"=>myDecode($resources["acl_res_alias"]),
-						"RowMenu_link"=>"?p=".$p."&o=c&acl_res_id=".$resources['acl_res_id'],
-						"RowMenu_status" => $resources["acl_res_activate"] ? _("Enabled") : _("Disabled"),
-						"RowMenu_options" => $moptions);
+		$elemArr[$i] = array("MenuClass" => "list_".$style,
+						"RowMenu_select" => $selectedElements->toHtml(),
+						"RowMenu_name" => $resources["acl_res_name"],
+						"RowMenu_alias" => myDecode($resources["acl_res_alias"]),
+						"RowMenu_all_hosts" => (isset($resources["all_hosts"]) && $resources["all_hosts"] == 1 ? _("Yes") : _("No")),
+						"RowMenu_all_hostgroups" => (isset($resources["all_hostgroups"]) && $resources["all_hostgroups"] == 1 ? _("Yes") : _("No")),
+						"RowMenu_all_servicegroups" => (isset($resources["all_servicegroups"]) && $resources["all_servicegroups"] == 1 ? _("Yes") : _("No")),
+						"RowMenu_link" => "?p=".$p."&o=c&acl_res_id=".$resources['acl_res_id'],
+						"RowMenu_status"  =>  $resources["acl_res_activate"] ? _("Enabled") : _("Disabled"),
+						"RowMenu_options"  =>  $moptions);
 
 		$style != "two" ? $style = "two" : $style = "one";
 	}
