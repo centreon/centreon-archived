@@ -26,8 +26,8 @@
 			<td class="ListColHeaderLeft">&nbsp;{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostAct}</td>
 			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostDeact}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostgroupAct}</td>
-			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostgroupDeact}</td>
+<!--			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostgroupAct}</td>
+			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_hostgroupDeact}</td> -->
 			<td class="ListColHeaderCenter">&nbsp;{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">&nbsp;{$headerMenu_options}</td>
 		</tr>
@@ -38,8 +38,8 @@
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_hostAct}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_hostDeact}</td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_hostgroupAct}</td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_hostgroupDeact}</td>
+<!--			<td class="ListColCenter">{$elemArr[elem].RowMenu_hostgroupAct}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_hostgroupDeact}</td> -->
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
