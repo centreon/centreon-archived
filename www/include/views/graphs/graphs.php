@@ -360,10 +360,11 @@ function nextPeriod() {
 		document.FormPeriod.EndTime.value = EndTime;
 	}
 
-	function graph_4_host(id, multi, pStart, pEnd)	{
+	function graph_4_host(id, multi, pStart, pEnd, metrics)	{
 		if (!multi)
 			multi = 0;
-				
+		
+		
 		if (pStart && pEnd){
 			period = pEnd - pStart;			
 		} else if (document.FormPeriod.period.value != "") {
@@ -385,14 +386,20 @@ function nextPeriod() {
 
 		// Metrics
 		var _metrics ="";
-		var _checked = "0";
-		if (document.formu2 && document.formu2.elements["metric"]){
-			for (i=0; i < document.formu2.elements["metric"].length; i++) {
-				_checked = "0";
-				if (document.formu2.elements["metric"][i].checked)	{
-					_checked = "1";
+		if (metrics) {
+			_metrics += '&metric['+metrics+']=1';
+			//multi = 1;
+		} else {
+			var _checked = "0";
+			if (document.formu2 && document.formu2.elements["metric"]){
+				//multi = 1;
+				for (i=0; i < document.formu2.elements["metric"].length; i++) {
+					_checked = "0";
+					if (document.formu2.elements["metric"][i].checked)	{
+						_checked = "1";
+					}
+					_metrics += '&metric['+document.formu2.elements["metric"][i].value+']='+_checked ;
 				}
-				_metrics += '&metric['+document.formu2.elements["metric"][i].value+']='+_checked ;
 			}
 		}
 
@@ -428,9 +435,9 @@ function nextPeriod() {
 		var _addrXSL = "./include/views/graphs/graph.xsl";
 		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
 
-		proc.setXml(_addrXML)
-		proc.setXslt(_addrXSL)
-		proc.transform("graphView4xml");
+		proc.setXml(_addrXML);
+		proc.setXslt(_addrXSL);
+		proc.transform("graphView4xml");		
 	}
 
 	// Let's save the existing assignment, if any
@@ -450,4 +457,78 @@ function nextPeriod() {
 
     // Your precious function
     function myOnloadFunction1() {}
+
+    /* Graph zoom*/
+    var margeLeftGraph = 67;
+    var margeTopGraph = 27;
+    var margeRightGraph = 24;
+    var margeBottomGraph = 82;
+    var list_img = new Hash();
+    function addGrapthZoom(img_name) {
+        var maxheight = document.getElementById(img_name).offsetHeight;
+    	list_img.set(img_name, new Cropper.Img(img_name, {
+    		minHeight: maxheight,
+    		maxHeight: maxheight,
+    		onEndCrop: function(coords, dim, self){
+    			var basename = self.gsub(/(.*)__M:.*/, function(matches){
+        			return(matches[1] + "__M:");
+    			});
+    			$$("img[id^=" + basename + "]").each(function(el) {
+        			if (el.id != self) {
+            			list_img.get(el.id).setArea(coords.x1, coords.y1, coords.x2, coords.y2);
+        			}
+    			});
+        	}
+    	}));
+    	var parent = $(img_name).ancestors()[0];
+    	parent.setStyle({
+        	'margin-right': 'auto',
+        	'margin-left': 'auto'
+        	});
+    }
+
+
+    /**
+     * Call the zoom
+	 *
+     * @var img_name The tag name
+     */
+    function toGraphZoom(img_name) {
+        mutli = 0;
+    	var s_multi = true;
+        if ($$("img[id=" + img_name + "]").size() == 0) {
+            var s_multi = false;
+            var tmplist = $$("img[id^=" + img_name + "]");
+            if (tmplist.size() == 0) {
+                return(false);
+            }
+            img_name = tmplist[0].id;
+        }
+        var coords = list_img.get(img_name).areaCoords;
+        var img_url = $(img_name).src.parseQuery();
+        var period = (img_url.end * 1000) - (img_url.start * 1000);
+        var zoneGraph = $(img_name).width - margeLeftGraph - margeRightGraph;
+        if (coords.x1 < margeLeftGraph || coords.x1 > ($(img_name).width - margeRightGraph)) {
+            return(false);
+        }
+        if (coords.x2 < margeLeftGraph || coords.x2 > ($(img_name).width - margeRightGraph)) {
+            return(false);
+        }
+        var start = parseInt((img_url.start * 1000) + ((coords.x1 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
+        var end = parseInt((img_url.start * 1000) + ((coords.x2 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
+        var id = img_name.split('__')[0];
+        id = id.replace('HS_', 'SS_');
+        
+        document.FormPeriod.StartDate.value = ctime2date(start);
+		document.FormPeriod.EndDate.value = ctime2date(end);
+		document.FormPeriod.StartTime.value = ctime2time(start);
+		document.FormPeriod.EndTime.value = ctime2time(end);
+		if (img_name.indexOf('__M:') != -1 && s_multi) {
+            metrics = img_name.substring(img_name.indexOf('__M:') + 4);
+            graph_4_host(id, 0, "", "", metrics);
+            return false;
+        }
+        graph_4_host(id, 0);
+        return false;
+    }
 </script>

@@ -569,7 +569,7 @@
 					$flag = 0;
 					$str = "";
 					foreach ($metrics as $id => $metric)	{
-						if (isset($_GET["metric"]) && $_GET["metric"][$id] == 1){
+						if (isset($_GET["metric"]) && isset($_GET["metric"][$id]) && $_GET["metric"][$id] == 1){
                         	if ($flag)
                             	$str .= "&amp;";
                             $flag = 1;
@@ -584,10 +584,11 @@
 				foreach ($metrics as $id => $metric){
 					$buffer->startElement("metrics");
 					$buffer->writeElement("metric_id", $id);					
-					if (isset($_GET["metric"]) && $_GET["metric"][$id] == 0)
-						$buffer->writeElement("select", "0");						
-					else
+					if (isset($_GET["metric"]) && isset($_GET["metric"][$id]) && $_GET["metric"][$id] == 1) {
 						$buffer->writeElement("select", "1");						
+					} else {
+						$buffer->writeElement("select", "0");
+					}						
 					$buffer->writeElement("metric_name", $metric["metric_name"]);
 					$buffer->endElement();					
 				}
