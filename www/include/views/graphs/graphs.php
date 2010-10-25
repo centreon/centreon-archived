@@ -481,10 +481,9 @@ function nextPeriod() {
         	}
     	}));
     	var parent = $(img_name).ancestors()[0];
-    	parent.setStyle({
-        	'margin-right': 'auto',
-        	'margin-left': 'auto'
-        	});
+    	parent.style.setProperty("margin", "0 auto", "");
+    	//parent.style.setProperty("margin-right", "auto", "");
+    	//parent.style.setProperty("margin-left", "auto", "");
     }
 
 

@@ -1242,6 +1242,12 @@ Cropper.Img = Class.create({
 	 * @return void
 	 */
 	endCrop : function(event) {
+		/* Fix for firefox */
+		var inCrop = false;
+		event.element().classNames().each(function(classname) { if (classname.indexOf('imgCrop_') != -1) { inCrop = true; } } );
+		if (!inCrop)
+			return(false);
+		
 		this.dragging = false;
 		this.resizing = false;
 		

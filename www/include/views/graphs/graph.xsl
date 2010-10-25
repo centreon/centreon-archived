@@ -76,7 +76,8 @@
 					<td class='ListColLeft' valign="top" align='center'> <xsl:value-of select="name"/></td>
 					<td style="text-align:right;width:70px;">	
 						<xsl:element name="a">
-							<xsl:attribute name="href">javascript:toGraphZoom("<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/>");</xsl:attribute>
+							<xsl:attribute name="onClick">toGraphZoom("<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/>");</xsl:attribute>
+							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 							<img src="./img/icones/16x16/view.gif" style="margin-right:5px;" />
 						</xsl:element>
 						<xsl:element name="a">
@@ -196,7 +197,8 @@
 				<td class='ListColLeft' valign="top" align='center' colspan="3"><xsl:value-of select="name"/></td>	
 				<td style="text-align:right;width:65px;">
 					<xsl:element name="a">
-						<xsl:attribute name="href">javascript:toGraphZoom("<xsl:value-of select="//opid"/>");</xsl:attribute>
+						<xsl:attribute name="onClick">toGraphZoom("<xsl:value-of select="//opid"/>");</xsl:attribute>
+						<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 						<img src="./img/icones/16x16/view.gif" style="margin-right:5px;" />
 					</xsl:element>
 					<xsl:element name="a">
@@ -305,7 +307,8 @@
 		        <tr class="list_one">
 					<td style="text-align:right;width:42px;" colspan="3">
 						<xsl:element name="a">
-							<xsl:attribute name="href">javascript:toGraphZoom("<xsl:value-of select="opid"/>");</xsl:attribute>
+							<xsl:attribute name="onClick">toGraphZoom("<xsl:value-of select="opid"/>");</xsl:attribute>
+							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 							<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
 						</xsl:element>
 						<xsl:element name="a">
@@ -363,8 +366,8 @@
 										<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
 									</xsl:element>
 									<xsl:element name="a">
-										<xsl:attribute name="style">float: right;</xsl:attribute>
-										<xsl:attribute name="href">javascript:toGraphZoom("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>");</xsl:attribute>
+										<xsl:attribute name="style">float: right; cursor: pointer;</xsl:attribute>
+										<xsl:attribute name="onClick">toGraphZoom("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>");</xsl:attribute>
 										<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
 									</xsl:element>
 								</xsl:element>
