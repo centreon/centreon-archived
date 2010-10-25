@@ -251,7 +251,7 @@
 	function set_header_title(){;}
 	function apply_period()	{
 		var openid = document.getElementById('openid').innerHTML;
-		graph_4_host(openid, multi);
+		graph_4_host(openid);
 	}
 
 function form2ctime(dpart, tpart) {
@@ -296,7 +296,7 @@ function prevPeriod() {
         end = start;
         start = start - period;
 
-	document.FormPeriod.period.value = "";
+		document.FormPeriod.period.value = "";
         document.FormPeriod.StartDate.value = ctime2date(start);
         document.FormPeriod.StartTime.value = ctime2time(start);
         document.FormPeriod.EndDate.value = ctime2date(end);
@@ -475,7 +475,8 @@ function nextPeriod() {
     			});
     			$$("img[id^=" + basename + "]").each(function(el) {
         			if (el.id != self) {
-            			list_img.get(el.id).setArea(coords.x1, coords.y1, coords.x2, coords.y2);
+            			var elHeight = el.height;
+            			list_img.get(el.id).setArea(coords.x1, 0, coords.x2, elHeight);
         			}
     			});
         	}
@@ -517,7 +518,8 @@ function nextPeriod() {
         var end = parseInt((img_url.start * 1000) + ((coords.x2 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
         var id = img_name.split('__')[0];
         id = id.replace('HS_', 'SS_');
-        
+
+        document.FormPeriod.period.selectedIndex = 0;
         document.FormPeriod.StartDate.value = ctime2date(start);
 		document.FormPeriod.EndDate.value = ctime2date(end);
 		document.FormPeriod.StartTime.value = ctime2time(start);
