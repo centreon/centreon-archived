@@ -231,7 +231,7 @@
 		multi = 1;
 		if (document.getElementById('openid'))
 			document.getElementById('openid').innerHTML = tree.getAllChecked();
-		graph_4_host(tree.getAllChecked(),1);
+		graph_4_host(tree.getAllChecked(), 1);
 	}
 	
 	function onNodeSelect(nodeId){
@@ -251,7 +251,11 @@
 	function set_header_title(){;}
 	function apply_period()	{
 		var openid = document.getElementById('openid').innerHTML;
-		graph_4_host(openid);
+		var multi = 0;
+		if (openid.indexOf(',') != -1) {
+			multi = 1;
+		}
+		graph_4_host(openid, multi);
 	}
 
 function form2ctime(dpart, tpart) {
