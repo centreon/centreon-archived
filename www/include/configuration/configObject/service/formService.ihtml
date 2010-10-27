@@ -48,7 +48,7 @@
 				{/if}
 			</td>
 		</tr>
-		{if $o == "a" || $o == "c"}
+		{if $o == "a" || $o == "c" || $o == "w" || $o == "mc"}
 		<tr class="list_one">
 			<td class="FormRowField">
 				<img class="helpTooltip" name="check_command_args">{$form.command_command_id_arg.label}

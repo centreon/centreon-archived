@@ -330,23 +330,24 @@
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
 
 	include_once("makeJS_formHost.php");
-	if ($o == "c" || $o == "a" || $o == "mc") {
-		for ($k = 0 ; isset($mTp[$k]); $k++) { ?>
-			<script type="text/javascript">
-			tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;
-			</script>
-		<?php
-		}
-		for ($k = 0; isset($od_macro_id[$k]); $k++) { ?>
-			<script type="text/javascript">
-			globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;
-			globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
-			globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
-			globalMacroTabHostId[<?php echo $k;?>] = <?php echo $od_macro_host_id[$k];?>;
-			</script>
-		<?php
-		}
+
+	for ($k = 0 ; isset($mTp[$k]); $k++) { ?>
+		<script type="text/javascript">
+		tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;
+		</script>
+	<?php
 	}
+	for ($k = 0; isset($od_macro_id[$k]); $k++) { ?>
+		<script type="text/javascript">
+		globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;
+		globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
+		globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
+		globalMacroTabHostId[<?php echo $k;?>] = <?php echo $od_macro_host_id[$k];?>;
+		</script>
+	<?php
+
+	}
+
 
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("No"), '0');
@@ -481,7 +482,7 @@
 
 	$form->addElement('header', 'links', _("Relations"));
 	$form->addElement('header', 'HGlinks', _("Hostgroup Relations"));
-	
+
 	if ($o == "mc")	{
 		$mc_mod_hpar = array();
 		$mc_mod_hpar[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hpar', null, _("Incremental"), '0');

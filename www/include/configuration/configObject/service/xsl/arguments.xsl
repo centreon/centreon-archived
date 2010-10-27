@@ -26,6 +26,9 @@
 	                        	<xsl:attribute name='type'>text</xsl:attribute>
 	                            <xsl:attribute name='value'><xsl:value-of select='value'/></xsl:attribute>
 	                            <xsl:attribute name='name'><xsl:value-of select='name'/></xsl:attribute>
+	                            <xsl:if test='disabled = 1'>
+	                            	<xsl:attribute name='disabled'>disabled</xsl:attribute>
+	                            </xsl:if>
 	                        </xsl:element>
 	                    </xsl:element>
 	                    <xsl:element name='td'><xsl:value-of select='example'/></xsl:element>

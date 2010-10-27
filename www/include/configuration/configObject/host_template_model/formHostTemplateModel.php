@@ -245,23 +245,22 @@
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
 
 	include_once("include/configuration/configObject/host/makeJS_formHost.php");
-	if ($o == "c" || $o == "a" || $o == "mc")
-	{
-		for ($k = 0; isset($mTp[$k]) && $mTp[$k] ; $k++) {?>
-			<script type="text/javascript">
-			tab[<?php echo $k; ?>] = <?php echo $mTp[$k]; ?>;
-			</script>
-		<?php }
-		for($k=0; isset($od_macro_id[$k]); $k++) {?>
-			<script type="text/javascript">
-			globalMacroTabId[<?php echo $k; ?>] = <?php echo $od_macro_id[$k]; ?>;
-			globalMacroTabName[<?php echo $k; ?>] = '<?php echo $od_macro_name[$k]; ?>';
-			globalMacroTabValue[<?php echo $k; ?>] = '<?php echo $od_macro_value[$k]; ?>';
-			globalMacroTabHostId[<?php echo $k; ?>] = <?php echo $od_macro_host_id[$k]; ?>;
-			</script>
-		<?php
-		}
+
+	for ($k = 0; isset($mTp[$k]) && $mTp[$k] ; $k++) {?>
+		<script type="text/javascript">
+		tab[<?php echo $k; ?>] = <?php echo $mTp[$k]; ?>;
+		</script>
+	<?php }
+	for($k=0; isset($od_macro_id[$k]); $k++) {?>
+		<script type="text/javascript">
+		globalMacroTabId[<?php echo $k; ?>] = <?php echo $od_macro_id[$k]; ?>;
+		globalMacroTabName[<?php echo $k; ?>] = '<?php echo $od_macro_name[$k]; ?>';
+		globalMacroTabValue[<?php echo $k; ?>] = '<?php echo $od_macro_value[$k]; ?>';
+		globalMacroTabHostId[<?php echo $k; ?>] = <?php echo $od_macro_host_id[$k]; ?>;
+		</script>
+	<?php
 	}
+
 
 	/*
 	 * Check information
@@ -639,13 +638,11 @@
 		$tpl->assign("add_mtp_label", _("Add a template"));
 		$tpl->assign("seconds", _("seconds"));
 		$tpl->assign("tpl", 1);
-
 		$tpl->display("formHost.ihtml");
-	}
-if (!$action["action"]["action"]) {
+
 ?>
 <script type="text/javascript">
-		add_select_template();
+		add_select_template('<?php echo $o;?>');
 		displayExistingMacroHost(<?php echo $k; ?>);
 		showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
 		showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
