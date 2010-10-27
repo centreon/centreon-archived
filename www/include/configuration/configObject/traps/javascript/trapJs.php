@@ -60,7 +60,17 @@ function transformForm()
 
     nbOfInitialRows = '<?php echo $nbOfInitialRows; ?>';
 
-    if (trapId || o == 'a') {
+	if (trapId && o == 'w') {
+		params = '?trapId=' + trapId;
+    	proc = new Transformation();
+    	addrXML = './include/configuration/configObject/traps/xml/trapXml.php' + params;
+    	addrXSL = './include/configuration/configObject/traps/xsl/trap-ro.xsl';
+    	proc.setXml(addrXML);
+    	proc.setXslt(addrXSL);
+    	proc.transform("dynamicDiv");
+        trapId = 0;
+        o = 0;
+	} else if (trapId || o == 'a') {
         params = '?trapId=' + trapId;
     	proc = new Transformation();
     	addrXML = './include/configuration/configObject/traps/xml/trapXml.php' + params;
@@ -102,7 +112,16 @@ function toggleParams(checkValue) {
  */
 function initParams() {
 	if (document.getElementById('traps_advanced_treatment')) {
-    	toggleParams(document.getElementById('traps_advanced_treatment').checked);
+		var adv = false;
+		if (document.getElementById('traps_advanced_treatment').type == 'checkbox') {
+			adv = document.getElementById('traps_advanced_treatment').checked;
+		}
+		if (document.getElementById('traps_advanced_treatment').type == 'hidden') {
+			if (document.getElementById('traps_advanced_treatment').value == 1) {
+				adv = true;
+			}
+		}
+    	toggleParams(adv);
 	}
 }
 
