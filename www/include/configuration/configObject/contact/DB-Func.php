@@ -580,7 +580,7 @@
 				$fields["contact_passwd"] = md5($ret["contact_passwd"]);
 			}
 		}
-		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL) {
+		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL && $ret['contact_lang']) {
 			$rq .= "contact_lang = '".htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8")."', ";
 			$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8");
 		}

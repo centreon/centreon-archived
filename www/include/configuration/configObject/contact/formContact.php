@@ -117,6 +117,9 @@
 	 */
 	$langs = array();
 	$langs = getLangs();
+    if ($o == "mc") {
+	    array_unshift($langs, null);
+	}
 
 	/*
 	 * Timeperiods comes from DB -> Store in $notifsTps Array
@@ -274,13 +277,19 @@
 		$cct["contact_location"] = 0;
 	unset($GMTList);
 
-   	$auth_type = array();
+	if ($o != "mc") {
+        $auth_type = array();
+	} else {
+	    $auth_type = array(null => null);
+	}
    	$auth_type["local"] = "Centreon";
 	if ($oreon->optGen['ldap_auth_enable'] == 1) {
 		$auth_type["ldap"] = "LDAP";
 		$form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
 	}
-	$form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0'));
+	if ($o != "mc") {
+	    $form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0'));
+	}
    	$form->addElement('select', 'contact_auth_type', _("Authentication Source"), $auth_type);
 
 	/*
