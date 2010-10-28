@@ -134,6 +134,14 @@ class CentreonAuth {
 			else
 				$this->passwdOk = 0;
 		}
+		if ($this->passwdOk == 2) {
+			if ($this->userInfos["contact_passwd"] == $password && $this->autologin)
+				$this->passwdOk = 1;
+			else if ($this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0)
+				$this->passwdOk = 1;
+			else
+				$this->passwdOk = 0;
+		}
 	}
 	    
     private function checkUser($username, $password) {

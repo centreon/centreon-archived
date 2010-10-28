@@ -39,6 +39,7 @@
 
 class CentreonAuthLDAP {
 	
+	var $pearDB;
 	var $ldapInfos;
 	var $ldapuri;
 	var $ds;
@@ -46,13 +47,16 @@ class CentreonAuthLDAP {
 	var $contactInfos;
 	var $typePassword;
 	var $debug;
+	var $firstCheck = true;
 	
 	
 	function CentreonAuthLDAP($pearDB, $CentreonLog, $login, $password, $contactInfos) {
 		
+		$this->pearDB = $pearDB;
+		
 		$this->CentreonLog = $CentreonLog;
 		
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_auth_enable', 'ldap_protocol_version')");
+		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_auth_enable', 'ldap_protocol_version', 'ldap_search', 'ldap_search_user', 'ldap_search_user_pwd')");
 		while ($res =& $DBRESULT->fetchRow())
 			$this->ldapInfos[$res["key"]] = $res["value"];
 		$DBRESULT->free();
@@ -130,35 +134,74 @@ class CentreonAuthLDAP {
 				case 2:
 					if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : Protocol Error ");
-				   	return 1;
+				   	return 2;
 				   	break;
 				case -1:
 				case 51:
 					if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server Busy. Try later");
-					return 0;
+					return 2;
 					break;
 				case 52:
 					if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server unavailable. Try later");
-					return 0;
+					return 2;
 					break;
 				case 81:
 					if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Fallback to Local AUTH");
-					return 0;
+					return 2;
 					break;
 				default:
 				   	if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : LDAP don't like you, sorry");
+					if ($this->firstCheck && $this->updateUserDn()) {
+						$this->firstCheck = false;
+						return $this->checkPassword();				
+					}
 				   	return 0;
 				   	break;
 			}
 		} else {
 			if ($this->debug)
 				$this->CentreonLog->insertLog(3, "DS empty");
-			return 0;
+			return 0; /* 2 ?? */
 		}
+	}
+	
+	/**
+	 * Search and update the user dn
+	 * 
+	 * @return bool If the DN is modified
+	 */
+	function updateUserDn() {
+		if (!is_null($this->ldapInfos['ldap_search_user'])) {
+			$bind = @ldap_bind($this->ds, $this->ldapInfos['ldap_search_user'], $this->ldapInfos['ldap_search_user_pwd']);
+		} else {
+			@ldap_bind($this->ds);
+		}
+		if ($bind) {
+			$filter = "(&(" . $this->ldapInfos['ldap_login_attrib'] ."=" . $this->contactInfos['contact_alias'] . ")" . $this->ldapInfos['ldap_search'] . ")";
+			$sr = ldap_search($this->ds, $this->ldapInfos['ldap_base_dn'], $filter);
+			$entries = ldap_get_entries($this->ds, $sr);
+			if ($entries["count"] == 0) {
+				$this->CentreonLog->insertLog(3, "LDAP AUTH : No DN for user " . $this->contactInfos['contact_alias']);
+				return false;
+			} else if ($entries["count"] > 1) {
+				$this->CentreonLog->insertLog(3, "LDAP AUTH : Found more than one DN for user " . $this->contactInfos['contact_alias']);
+				return false;
+			} else {
+				$dn = $entries[0]["dn"];
+				if ($dn != $this->contactInfos['contact_ldap_dn']) {
+					$this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . $this->contactInfos['contact_alias']);
+					$query = "UPDATE contact SET contact_ldap_dn = '" .  $dn . "'  WHERE contact_id = " . $this->contactInfos['contact_id'];
+					$this->pearDB->query($query);
+					$this->contactInfos['contact_ldap_dn'] = $dn;
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/*

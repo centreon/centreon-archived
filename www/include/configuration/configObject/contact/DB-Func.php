@@ -355,12 +355,12 @@
 		isset($ret["contact_activate"]["contact_activate"]) && $ret["contact_activate"]["contact_activate"] != NULL ? $rq .= "'".$ret["contact_activate"]["contact_activate"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL ? $rq .= "'".$ret["contact_auth_type"]."', ": $rq .= "'local', ";
 		isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL ? $rq .= "'".htmlentities(str_replace("\\", "\\\\", $ret["contact_ldap_dn"]), ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."' ": $rq .= "NULL, ";
-		isset($ret["contact_address1"]) && $ret["contact_address1"] != NULL ? $rq .= "'".htmlentities($ret["contact_address1"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL, ";
-		isset($ret["contact_address2"]) && $ret["contact_address2"] != NULL ? $rq .= "'".htmlentities($ret["contact_address2"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL, ";
-		isset($ret["contact_address3"]) && $ret["contact_address3"] != NULL ? $rq .= "'".htmlentities($ret["contact_address3"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL, ";
-		isset($ret["contact_address4"]) && $ret["contact_address4"] != NULL ? $rq .= "'".htmlentities($ret["contact_address4"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL, ";
-		isset($ret["contact_address5"]) && $ret["contact_address5"] != NULL ? $rq .= "'".htmlentities($ret["contact_address5"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL, ";
+		isset($ret["contact_location"]) && $ret["contact_location"] != NULL ? $rq .= "'".$ret["contact_location"]."', ": $rq .= "NULL, ";
+		isset($ret["contact_address1"]) && $ret["contact_address1"] != NULL ? $rq .= "'".htmlentities($ret["contact_address1"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["contact_address2"]) && $ret["contact_address2"] != NULL ? $rq .= "'".htmlentities($ret["contact_address2"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["contact_address3"]) && $ret["contact_address3"] != NULL ? $rq .= "'".htmlentities($ret["contact_address3"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["contact_address4"]) && $ret["contact_address4"] != NULL ? $rq .= "'".htmlentities($ret["contact_address4"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["contact_address5"]) && $ret["contact_address5"] != NULL ? $rq .= "'".htmlentities($ret["contact_address5"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".htmlentities($ret["contact_address6"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= ")";
 
