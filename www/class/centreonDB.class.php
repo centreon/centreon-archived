@@ -240,16 +240,32 @@ class CentreonDB
     }
 
     /**
+     * Escapes a string for query
+     *
+     * @access public
+     * @param string $str
+     * @return string
+     */
+    public function escape($str)
+    {
+        return $this->db->escapeSimple($str);
+    }
+
+    /**
      * launch a query
      *
      * @access public
 	 * @param	string	$query_string	query
 	 * @return	object	query result
      */
-	public function query($query_string = null)
+	public function query($query_string = null, $placeHolders = array())
 	{
 		$this->requestExecuted++;
-    	$DBRES = $this->db->query($query_string);
+		if (count($placeHolders)) {
+            $DBRES = $thsi->db->query($query_string, $placeHolders);
+		} else {
+    	    $DBRES = $this->db->query($query_string);
+		}
     	if (PEAR::isError($DBRES)) {
     		if ($this->debug) {
 				$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
