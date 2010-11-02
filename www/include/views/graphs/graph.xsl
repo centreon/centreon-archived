@@ -76,7 +76,8 @@
 					<td class='ListColLeft' valign="top" align='center'> <xsl:value-of select="name"/></td>
 					<td style="text-align:right;width:70px;">	
 						<xsl:element name="a">
-							<xsl:attribute name="onClick">toGraphZoom("<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/>");</xsl:attribute>
+							<xsl:attribute name="id">zoom_<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/></xsl:attribute>
+							<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/>");</xsl:attribute>
 							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 							<img src="./img/icones/16x16/view.gif" style="margin-right:5px;" />
 						</xsl:element>
@@ -97,36 +98,39 @@
 								<xsl:value-of select="start"/>
 							</xsl:variable>
 							<xsl:if test="//split = 0">
-								<!-- <xsl:element name="a">
+								<xsl:element name="a">
 									<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', '', '<xsl:value-of select="start"/>', '<xsl:value-of select="end"/>'); return false;</xsl:attribute>
-									<xsl:attribute name="href">#</xsl:attribute> -->
+									<xsl:attribute name="href">#</xsl:attribute>
 										<xsl:element name="img">
 											<xsl:attribute name="id"><xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/></xsl:attribute>
-											<xsl:attribute name="onload">addGrapthZoom(this.id)</xsl:attribute>
 										  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 										</xsl:element>
-								<!-- </xsl:element> -->
+								</xsl:element>
 							</xsl:if>
 							<xsl:if test="//split = 1">
+								<table style="width: 100%">
 								<xsl:for-each select="metric">
-									<xsl:element name="div">
-										<!-- <xsl:element name="a">
+									<tr>
+										<td style="vertical-align: top">
+										<xsl:element name="a">
 											<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', ''); return false;</xsl:attribute>
-											<xsl:attribute name="href">#</xsl:attribute> -->
+											<xsl:attribute name="href">#</xsl:attribute>
 											<xsl:element name="img">
 												<xsl:attribute name="id"><xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="../name"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
-												<xsl:attribute name="onload">addGrapthZoom(this.id)</xsl:attribute>
 												<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="$mstart"/></xsl:attribute>
 											</xsl:element>
-										<!-- </xsl:element> -->
+										</xsl:element>
+										</td>
+										<td style="vertical-align: top">
 										<xsl:element name="a">
 											<xsl:attribute name="style">float: right;</xsl:attribute>
 											<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="$mstart"/></xsl:attribute>
 											<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
 										</xsl:element>
-									</xsl:element>
-									<br/>
+										</td>
+									</tr>
 								</xsl:for-each>
+								</table>
 							</xsl:if>
 						 <br/>
 					 </div> 
@@ -197,7 +201,8 @@
 				<td class='ListColLeft' valign="top" align='center' colspan="3"><xsl:value-of select="name"/></td>	
 				<td style="text-align:right;width:65px;">
 					<xsl:element name="a">
-						<xsl:attribute name="onClick">toGraphZoom("<xsl:value-of select="//opid"/>");</xsl:attribute>
+						<xsl:attribute name="id">zoom_<xsl:value-of select="//opid"/></xsl:attribute>
+						<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="//opid"/>");</xsl:attribute>
 						<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 						<img src="./img/icones/16x16/view.gif" style="margin-right:5px;" />
 					</xsl:element>
@@ -229,30 +234,41 @@
 									<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
 								</xsl:element>
 							</xsl:if>
-							<xsl:element name="img">
-								<xsl:attribute name="id"><xsl:value-of select="//opid"/></xsl:attribute>
-								<xsl:attribute name="onload">addGrapthZoom(this.id)</xsl:attribute>
-						  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
+							<xsl:element name="a">
+								<xsl:attribute name="href">#</xsl:attribute>
+								<xsl:attribute name="onclick">var host_search = '<xsl:value-of select="//opid"/>'.sub('SS', 'HS'); graph_4_host(host_search); return false;</xsl:attribute>
+								<xsl:element name="img">
+									<xsl:attribute name="id"><xsl:value-of select="//opid"/></xsl:attribute>
+							  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>&amp;warn=<xsl:value-of select="//warning"/>&amp;crit=<xsl:value-of select="//critical"/></xsl:attribute>
+								</xsl:element>
 							</xsl:element>
 						</xsl:if>
 						<xsl:if test="//split = 1">
+							<table style="width: 100%">
 							<xsl:for-each select="//metrics">
 								<xsl:if test="select = 1">
-									<xsl:element name="div">
-										<xsl:element name="img">
-											<xsl:attribute name="id"><xsl:value-of select="//opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
-											<xsl:attribute name="onload">addGrapthZoom(this.id)</xsl:attribute>
-										  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?template_id=<xsl:value-of select="//tpl"/>&amp;session_id=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="//index"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+								<tr>
+									<td style="vertical-align: top">
+										<xsl:element name="a">
+											<xsl:attribute name="href">#</xsl:attribute>
+											<xsl:attribute name="onclick">var host_search = '<xsl:value-of select="//opid"/>'.sub('SS', 'HS'); graph_4_host(host_search); return false;</xsl:attribute>
+											<xsl:element name="img">
+												<xsl:attribute name="id"><xsl:value-of select="//opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
+											  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?template_id=<xsl:value-of select="//tpl"/>&amp;session_id=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="//index"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+											</xsl:element>
 										</xsl:element>
+									</td>
+									<td style="vertical-align: top">
 										<xsl:element name="a">
 											<xsl:attribute name="style">float: right;</xsl:attribute>
 											<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateMetricImage.php?template_id=<xsl:value-of select="//tpl"/>&amp;session_id=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="//index"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
 											<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
 										</xsl:element>
-									</xsl:element>
-									<br/>
+									</td>
+								</tr>
 								</xsl:if>
 							</xsl:for-each>
+							</table>
 						</xsl:if>
 					<br/>
 					</div>
@@ -307,7 +323,8 @@
 		        <tr class="list_one">
 					<td style="text-align:right;width:42px;" colspan="3">
 						<xsl:element name="a">
-							<xsl:attribute name="onClick">toGraphZoom("<xsl:value-of select="opid"/>");</xsl:attribute>
+							<xsl:attribute name="id">zoom_<xsl:value-of select="opid"/></xsl:attribute>
+							<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="opid"/>");</xsl:attribute>
 							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 							<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
 						</xsl:element>
@@ -336,43 +353,48 @@
 			    		<ul style="list-style-type: none;">
 			    			<li style="list-style-type: none;">
 						<xsl:if test="split = 0">
-							<!--  <xsl:element name="a">
+							<xsl:element name="a">
 								<xsl:attribute name="onClick">multi=0;graph_4_host('<xsl:value-of select="opid"/>', ''); return false;</xsl:attribute>
-								<xsl:attribute name="href">#</xsl:attribute> -->
+								<xsl:attribute name="href">#</xsl:attribute>
 								<xsl:element name="img">
 									<xsl:attribute name="id"><xsl:value-of select="opid"/></xsl:attribute>
-									<xsl:attribute name="onload">addGrapthZoom(this.id)</xsl:attribute>
 								  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
 								</xsl:element>
-							<!--  </xsl:element> -->
-							
+							</xsl:element>
 						</xsl:if>
 						<xsl:if test="split = 1">
+							<table style="width: 100%">
 							<xsl:for-each select="metrics">
+								<tr>
 								<xsl:if test="select = 1">
-								<xsl:element name="div">
-									<!-- <xsl:element name="a">
-										<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', ''); return false;</xsl:attribute>
-										<xsl:attribute name="href">#</xsl:attribute> -->
-										<xsl:element name="img">
-											<xsl:attribute name="id"><xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
-											<xsl:attribute name="onload">addGrapthZoom(this.id)</xsl:attribute>
-									  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-										</xsl:element>
-									<!-- </xsl:element> -->
-									<xsl:element name="a">
-										<xsl:attribute name="style">float: right;</xsl:attribute>
-										<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-										<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
-									</xsl:element>
-									<xsl:element name="a">
-										<xsl:attribute name="style">float: right; cursor: pointer;</xsl:attribute>
-										<xsl:attribute name="onClick">toGraphZoom("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>");</xsl:attribute>
-										<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
-									</xsl:element>
-								</xsl:element>
+											<td style="vertical-align: top">
+											<xsl:element name="a">
+												<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', ''); return false;</xsl:attribute>
+												<xsl:attribute name="href">#</xsl:attribute>
+												<xsl:element name="img">
+													<xsl:attribute name="id"><xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
+											  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+												</xsl:element>
+											</xsl:element>
+											</td>
+											<td style="vertical-align: top">
+											<xsl:element name="a">
+												<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+												<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
+											</xsl:element>
+											</td>
+											<td style="vertical-align: top">
+											<xsl:element name="a">
+												<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
+												<xsl:attribute name="id">zoom_<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
+												<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>");</xsl:attribute>
+												<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
+											</xsl:element>
+											</td>
 								</xsl:if>
+								</tr>
 							</xsl:for-each>
+							</table>
 						</xsl:if>
 							</li>
 							<xsl:if test="status = 1">

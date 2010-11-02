@@ -251,7 +251,6 @@
 	function set_header_title(){;}
 	function apply_period()	{
 		var openid = document.getElementById('openid').innerHTML;
-		var multi = 0;
 		if (openid.indexOf(',') != -1) {
 			multi = 1;
 		}
@@ -441,7 +440,8 @@ function nextPeriod() {
 
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);
-		proc.transform("graphView4xml");		
+		proc.transform("graphView4xml");
+		list_img = new Hash();
 	}
 
 	// Let's save the existing assignment, if any
@@ -468,7 +468,16 @@ function nextPeriod() {
     var margeRightGraph = 24;
     var margeBottomGraph = 82;
     var list_img = new Hash();
-    function addGrapthZoom(img_name) {
+
+    /**
+     * Add zoom to graph img_name
+     *
+     * @var img_name The tag name
+     */
+    function addGraphZoom(img_name) {
+        if ($(img_name).ancestors()[0].match('a')) {
+        	$(img_name).ancestors()[0].setAttribute('onClick', ''); 
+        }
         var maxheight = document.getElementById(img_name).offsetHeight;
     	list_img.set(img_name, new Cropper.Img(img_name, {
     		minHeight: maxheight,
@@ -536,4 +545,16 @@ function nextPeriod() {
         graph_4_host(id, 0);
         return false;
     }
+
+    function switchZoomGraph(tag_name) {
+        $("zoom_" + tag_name).setAttribute("onClick", "toGraphZoom('" + tag_name + "')");
+        if ($(tag_name) != null) {
+            if (list_img.get(tag_name) == undefined) {
+        		addGraphZoom(tag_name);
+            }
+        	return false;
+        }
+        $$("img[id^=" + tag_name + "]").each(function(el) { if (list_img.get(el.id) == undefined) { addGraphZoom(el.id); } });
+        return false;
+    }   
 </script>
