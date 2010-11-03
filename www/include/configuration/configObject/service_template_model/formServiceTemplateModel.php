@@ -623,7 +623,7 @@
 		<script type="text/javascript">
 		globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;
 		globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
-		globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
+		globalMacroTabValue[<?php echo $k;?>] = '<?php echo addslashes($od_macro_value[$k]);?>';
 		globalMacroTabSvcId[<?php echo $k;?>] = <?php echo $od_macro_svc_id[$k];?>;
 		</script>
 	<?php

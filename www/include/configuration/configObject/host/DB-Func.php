@@ -63,7 +63,7 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');;
 
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."' AND host_register = '1'");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".CentreonDB::escape($oreon->checkIllegalChar($name))."' AND host_register = '1'");
 		$host =& $DBRESULT->fetchRow();
 
 		/*
@@ -93,7 +93,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');;
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."' AND host_register = '0'");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".CentreonDB::escape($name)."' AND host_register = '0'");
 		$host =& $DBRESULT->fetchRow();
 
 		/*
@@ -549,9 +549,9 @@
 			isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
 			isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
 			isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".$ret["command_command_id_arg2"]."', ": $rq .= "NULL, ";
-			isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-			isset($ret["host_alias"]) && $ret["host_alias"] != NULL ? $rq .= "'".htmlentities($ret["host_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-			isset($ret["host_address"]) && $ret["host_address"] != NULL ? $rq .= "'".htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+			isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_name"])."', ": $rq .= "NULL, ";
+			isset($ret["host_alias"]) && $ret["host_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_alias"])."', ": $rq .= "NULL, ";
+			isset($ret["host_address"]) && $ret["host_address"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_address"])."', ": $rq .= "NULL, ";
 			isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != NULL ? $rq .= "'".$ret["host_max_check_attempts"]."', " : $rq .= "NULL, ";
 			isset($ret["host_check_interval"]) && $ret["host_check_interval"] != NULL ? $rq .= "'".$ret["host_check_interval"]."', ": $rq .= "NULL, ";
 			isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"] != NULL ? $rq .= "'".$ret["host_retry_check_interval"]."', ": $rq .= "NULL, ";
@@ -573,10 +573,10 @@
 			isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_notifOpts"]))."', " : $rq .= "NULL, ";
 			isset($ret["host_notifications_enabled"]["host_notifications_enabled"]) && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2 ? $rq .= "'".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', " : $rq .= "'2', ";
 			isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_stalOpts"]))."', " : $rq .= "NULL, ";
-			isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-			isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-			isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-			isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+			isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_snmp_community"])."', " : $rq .= "NULL, ";
+			isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_snmp_version"])."', " : $rq .= "NULL, ";
+			isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_location"])."', " : $rq .= "NULL, ";
+			isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_comment"])."', " : $rq .= "NULL, ";
 			isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL ? $rq .= "'".$ret["host_register"]["host_register"]."', " : $rq .= "NULL, ";
 			isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."'" : $rq .= "NULL";
 		$rq .= ")";
@@ -662,11 +662,11 @@
 		if (isset($ret["command_command_id_arg2"]))
 			$fields["command_command_id_arg2"] = $ret["command_command_id_arg2"];
 		if (isset($ret["host_name"]))
-			$fields["host_name"] = htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8");
+			$fields["host_name"] = CentreonDB::escape($ret["host_name"]);
 		if (isset($ret["host_alias"]))
-			$fields["host_alias"] = htmlentities($ret["host_alias"], ENT_QUOTES, "UTF-8");
+			$fields["host_alias"] = CentreonDB::escape($ret["host_alias"]);
 		if (isset($ret["host_address"]))
-			$fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8");
+			$fields["host_address"] = CentreonDB::escape($ret["host_address"]);
 		if (isset($ret["host_max_check_attempts"]))
 			$fields["host_max_check_attempts"] = $ret["host_max_check_attempts"];
 		if (isset($ret["host_check_interval"]))
@@ -714,13 +714,13 @@
 		if (isset($ret["host_stalOpts"]))
 			$fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
 		if (isset($ret["host_snmp_community"]))
-			$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8");
+			$fields["host_snmp_community"] = CentreonDB::escape($ret["host_snmp_community"]);
 		if (isset($ret["host_snmp_version"]))
-			$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8");
+			$fields["host_snmp_version"] = CentreonDB::escape($ret["host_snmp_version"]);
 		if (isset($ret["host_location"]))
-			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8");
+			$fields["host_location"] = CentreonDB::escape($ret["host_location"]);
 		if (isset($ret["host_comment"]))
-			$fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8");
+			$fields["host_comment"] = CentreonDB::escape($ret["host_comment"]);
 		if (isset($ret["host_register"]))
 			$fields["host_register"] = $ret["host_register"]["host_register"];
 		if (isset($ret["host_activate"]))
@@ -728,23 +728,23 @@
 		if (isset($ret["templates"]))
 			$fields["templates"] = $multiTP_logStr;
 		if (isset($ret["ehi_notes"]))
-			$fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_notes"] = CentreonDB::escape($ret["ehi_notes"]);
 		if (isset($ret["ehi_notes_url"]))
-			$fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_notes_url"] = CentreonDB::escape($ret["ehi_notes_url"]);
 		if (isset($ret["ehi_action_url"]))
-			$fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_action_url"] = CentreonDB::escape($ret["ehi_action_url"]);
 		if (isset($ret["ehi_icon_image"]))
-			$fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_icon_image"] = CentreonDB::escape($ret["ehi_icon_image"]);
 		if (isset($ret["ehi_icon_image_alt"]))
-			$fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_icon_image_alt"] = CentreonDB::escape($ret["ehi_icon_image_alt"]);
 		if (isset($ret["ehi_vrml_image"]))
-			$fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_vrml_image"] = CentreonDB::escape($ret["ehi_vrml_image"]);
 		if (isset($ret["ehi_statusmap_image"]))
-			$fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_statusmap_image"] = CentreonDB::escape($ret["ehi_statusmap_image"]);
 		if (isset($ret["ehi_2d_coords"]))
-			$fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_2d_coords"] = CentreonDB::escape($ret["ehi_2d_coords"]);
 		if (isset($ret["ehi_3d_coords"]))
-			$fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_3d_coords"] = CentreonDB::escape($ret["ehi_3d_coords"]);
 		$fields["host_parents"] = "";
 		if (isset($ret["host_parents"]))
 			$fields["host_parents"] = implode(",", $ret["host_parents"]);
@@ -763,7 +763,7 @@
 		$fields["nagios_server_id"] = "";
 		if (isset($ret["nagios_server_id"]))
 			$fields["nagios_server_id"] = $ret["nagios_server_id"];
-		$centreon->CentreonLogAction->insertLog("host", $host_id["MAX(host_id)"], htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
+		$centreon->CentreonLogAction->insertLog("host", $host_id["MAX(host_id)"], CentreonDB::escape($ret["host_name"]), "a", $fields);
 		return ($host_id["MAX(host_id)"]);
 	}
 
@@ -793,15 +793,15 @@
 				"`ehi_3d_coords` )" .
 				"VALUES ( ";
 		$rq .= "NULL, ".$host_id.", ";
-		isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
+		isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_notes"])."', ": $rq .= "NULL, ";
+		isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_notes_url"])."', ": $rq .= "NULL, ";
+		isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_action_url"])."', ": $rq .= "NULL, ";
+		isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_icon_image"])."', ": $rq .= "NULL, ";
+		isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_icon_image_alt"])."', ": $rq .= "NULL, ";
+		isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_vrml_image"])."', ": $rq .= "NULL, ";
+		isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_statusmap_image"])."', ": $rq .= "NULL, ";
+		isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_2d_coords"])."', ": $rq .= "NULL, ";
+		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_3d_coords"])."' ": $rq .= "NULL ";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 	}
@@ -966,12 +966,12 @@
 		if (!$from_MC)	{
 			$rq .= "host_name = ";
 			$ret["host_name"] = $host->checkIllegalChar($ret["host_name"]);
-			isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+			isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_name"])."', ": $rq .= "NULL, ";
 			$rq .= "host_alias = ";
-			isset($ret["host_alias"]) && $ret["host_alias"] != NULL ? $rq .= "'".htmlentities($ret["host_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+			isset($ret["host_alias"]) && $ret["host_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_alias"])."', ": $rq .= "NULL, ";
 		}
 		$rq .= "host_address = ";
-		isset($ret["host_address"]) && $ret["host_address"] != NULL ? $rq .= "'".htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["host_address"]) && $ret["host_address"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_address"])."', ": $rq .= "NULL, ";
 		$rq .= "host_max_check_attempts = ";
 		isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != NULL ? $rq .= "'".$ret["host_max_check_attempts"]."', " : $rq .= "NULL, ";
 		$rq .= "host_check_interval = ";
@@ -1017,13 +1017,13 @@
 		$rq .= "host_stalking_options = ";
 		isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_stalOpts"]))."', " : $rq .= "NULL, ";
 		$rq .= "host_snmp_community = ";
-		isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_snmp_community"])."', " : $rq .= "NULL, ";
 		$rq .= "host_snmp_version = ";
-		isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_snmp_version"])."', " : $rq .= "NULL, ";
 		$rq .= "host_location = ";
-		isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_location"])."', " : $rq .= "NULL, ";
 		$rq .= "host_comment = ";
-		isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_comment"])."', " : $rq .= "NULL, ";
 		$rq .= "host_register = ";
 		isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL ? $rq .= "'".$ret["host_register"]["host_register"]."', " : $rq .= "NULL, ";
 		$rq .= "host_activate = ";
@@ -1108,7 +1108,7 @@
 		 			$macName = str_replace("\\", "#BS#", $macName);
 		 			$macVal = str_replace("/", "#S#", $_POST[$macValue]);
 		 			$macVal = str_replace("\\", "#BS#", $macVal);
-		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($macName) ."\$', '". $macVal ."', ". $host_id .")";
+		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $host_id .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
 					$already_stored[strtolower($_POST[$macInput])] = 1;
@@ -1125,9 +1125,9 @@
 		if (isset($ret["timeperiod_tp_id2"])) $fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		if (isset($ret["command_command_id2"])) $fields["command_command_id2"] = $ret["command_command_id2"];
 		if (isset($ret["command_command_id_arg2"])) $fields["command_command_id_arg2"] = $ret["command_command_id_arg2"];
-		if (isset($ret["host_name"])) $fields["host_name"] = htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["host_alias"])) $fields["host_alias"] = htmlentities($ret["host_alias"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["host_address"])) $fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["host_name"])) $fields["host_name"] = CentreonDB::escape($ret["host_name"]);
+		if (isset($ret["host_alias"])) $fields["host_alias"] = CentreonDB::escape($ret["host_alias"]);
+		if (isset($ret["host_address"])) $fields["host_address"] = CentreonDB::escape($ret["host_address"]);
 		if (isset($ret["host_max_check_attempts"])) $fields["host_max_check_attempts"] = $ret["host_max_check_attempts"];
 		if (isset($ret["host_retry_check_interval"])) $fields["host_retry_check_interval"] = $ret["host_retry_check_interval"];
 		if (isset($ret["host_check_interval"])) $fields["host_check_interval"] = $ret["host_check_interval"];
@@ -1156,23 +1156,23 @@
 		$fields["host_stalOpts"] = "";
 		if (isset($ret["host_stalOpts"]))
 			$fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
-		if (isset($ret["host_snmp_community"])) $fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["host_snmp_version"])) $fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["host_snmp_community"])) $fields["host_snmp_community"] = CentreonDB::escape($ret["host_snmp_community"]);
+		if (isset($ret["host_snmp_version"])) $fields["host_snmp_version"] = CentreonDB::escape($ret["host_snmp_version"]);
 		if (isset($ret["host_location"]))
-			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["host_comment"])) $fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8");
+			$fields["host_location"] = CentreonDB::escape($ret["host_location"]);
+		if (isset($ret["host_comment"])) $fields["host_comment"] = CentreonDB::escape($ret["host_comment"]);
 		if (isset($ret["host_register"])) $fields["host_register"] = $ret["host_register"]["host_register"];
 		if (isset($ret["host_activate"])) $fields["host_activate"] = $ret["host_activate"]["host_activate"];
 		if (isset($multiTP_logStr)) $fields["templates"] = $multiTP_logStr;
-		if (isset($ret["ehi_notes"])) $fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["ehi_notes_url"])) $fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["ehi_action_url"])) $fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["ehi_icon_image"])) $fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["ehi_icon_image_alt"])) $fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["ehi_vrml_image"])) $fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["ehi_statusmap_image"])) $fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["ehi_2d_coords"])) $fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8");
-		if (isset($ret["ehi_3d_coords"])) $fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8");
+		if (isset($ret["ehi_notes"])) $fields["ehi_notes"] = CentreonDB::escape($ret["ehi_notes"]);
+		if (isset($ret["ehi_notes_url"])) $fields["ehi_notes_url"] = CentreonDB::escape($ret["ehi_notes_url"]);
+		if (isset($ret["ehi_action_url"])) $fields["ehi_action_url"] = CentreonDB::escape($ret["ehi_action_url"]);
+		if (isset($ret["ehi_icon_image"])) $fields["ehi_icon_image"] = CentreonDB::escape($ret["ehi_icon_image"]);
+		if (isset($ret["ehi_icon_image_alt"])) $fields["ehi_icon_image_alt"] = CentreonDB::escape($ret["ehi_icon_image_alt"]);
+		if (isset($ret["ehi_vrml_image"])) $fields["ehi_vrml_image"] = CentreonDB::escape($ret["ehi_vrml_image"]);
+		if (isset($ret["ehi_statusmap_image"])) $fields["ehi_statusmap_image"] = CentreonDB::escape($ret["ehi_statusmap_image"]);
+		if (isset($ret["ehi_2d_coords"])) $fields["ehi_2d_coords"] = CentreonDB::escape($ret["ehi_2d_coords"]);
+		if (isset($ret["ehi_3d_coords"])) $fields["ehi_3d_coords"] = CentreonDB::escape($ret["ehi_3d_coords"]);
 		$fields["host_parents"] = "";
 		if (isset($ret["host_parents"]))
 			$fields["host_parents"] = implode(",", $ret["host_parents"]);
@@ -1191,7 +1191,7 @@
 		$fields["nagios_server_id"] = "";
 		if (isset($ret["nagios_server_id"]))
 			$fields["nagios_server_id"] = $ret["nagios_server_id"];
-		$centreon->CentreonLogAction->insertLog("host", $host_id, htmlentities($ret["host_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
+		$centreon->CentreonLogAction->insertLog("host", $host_id, CentreonDB::escape($ret["host_name"]), "c", $fields);
 		$centreon->user->access->updateACL();
 	}
 
@@ -1256,8 +1256,8 @@
 			$fields["command_command_id_arg2"] = $ret["command_command_id_arg2"];
 		}
 		if (isset($ret["host_address"]) && $ret["host_address"] != NULL) {
-			$rq .= "host_address = '".htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8")."', ";
-			$fields["host_address"] = htmlentities($ret["host_address"], ENT_QUOTES, "UTF-8");
+			$rq .= "host_address = '".CentreonDB::escape($ret["host_address"])."', ";
+			$fields["host_address"] = CentreonDB::escape($ret["host_address"]);
 		}
 		if (isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != NULL) {
 			$rq .= "host_max_check_attempts = '".$ret["host_max_check_attempts"]."', " ;
@@ -1344,20 +1344,20 @@
 			$fields["host_stalking_options"] = implode(",", array_keys($ret["host_stalOpts"]));
 		}
 		if (isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL) {
-			$rq .= "host_snmp_community = '".htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8")."', ";
-			$fields["host_snmp_community"] = htmlentities($ret["host_snmp_community"], ENT_QUOTES, "UTF-8");
+			$rq .= "host_snmp_community = '".CentreonDB::escape($ret["host_snmp_community"])."', ";
+			$fields["host_snmp_community"] = CentreonDB::escape($ret["host_snmp_community"]);
 		}
 		if (isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL) {
-			$rq .= "host_snmp_version = '".htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8")."', ";
-			$fields["host_snmp_version"] = htmlentities($ret["host_snmp_version"], ENT_QUOTES, "UTF-8");
+			$rq .= "host_snmp_version = '".CentreonDB::escape($ret["host_snmp_version"])."', ";
+			$fields["host_snmp_version"] = CentreonDB::escape($ret["host_snmp_version"]);
 		}
 		if (isset($ret["host_location"]) && $ret["host_location"] != NULL) {
-			$rq .= "host_location = '".htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8")."', ";
-			$fields["host_location"] = htmlentities($ret["host_location"], ENT_QUOTES, "UTF-8");
+			$rq .= "host_location = '".CentreonDB::escape($ret["host_location"])."', ";
+			$fields["host_location"] = CentreonDB::escape($ret["host_location"]);
 		}
 		if (isset($ret["host_comment"]) && $ret["host_comment"] != NULL) {
-			$rq .= "host_comment = '".htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8")."', ";
-			$fields["host_comment"] = htmlentities($ret["host_comment"], ENT_QUOTES, "UTF-8");
+			$rq .= "host_comment = '".CentreonDB::escape($ret["host_comment"])."', ";
+			$fields["host_comment"] = CentreonDB::escape($ret["host_comment"]);
 		}
 		if (isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL) {
 			$rq .= "host_register = '".$ret["host_register"]["host_register"]."', ";
@@ -1480,23 +1480,23 @@
 		}
 
 		if (isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL)
-			$fields["ehi_notes"] = htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_notes"] = CentreonDB::escape($ret["ehi_notes"]);
 		if (isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL)
-			$fields["ehi_notes_url"] = htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_notes_url"] = CentreonDB::escape($ret["ehi_notes_url"]);
 		if (isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL)
-			$fields["ehi_action_url"] = htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_action_url"] = CentreonDB::escape($ret["ehi_action_url"]);
 		if (isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL)
-			$fields["ehi_icon_image"] = htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_icon_image"] = CentreonDB::escape($ret["ehi_icon_image"]);
 		if (isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL)
-			$fields["ehi_icon_image_alt"] = htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_icon_image_alt"] = CentreonDB::escape($ret["ehi_icon_image_alt"]);
 		if (isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL)
-			$fields["ehi_vrml_image"] = htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_vrml_image"] = CentreonDB::escape($ret["ehi_vrml_image"]);
 		if (isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL)
-			$fields["ehi_statusmap_image"] = htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_statusmap_image"] = CentreonDB::escape($ret["ehi_statusmap_image"]);
 		if (isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL)
-			$fields["ehi_2d_coords"] = htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_2d_coords"] = CentreonDB::escape($ret["ehi_2d_coords"]);
 		if (isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL)
-			$fields["ehi_3d_coords"] = htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8");
+			$fields["ehi_3d_coords"] = CentreonDB::escape($ret["ehi_3d_coords"]);
 		if (isset($ret["host_parents"]) && $ret["host_parents"] != NULL)
 			$fields["host_parents"] = implode(",", $ret["host_parents"]);
 		if (isset($ret["host_childs"]) && $ret["host_childs"] != NULL)
@@ -1622,23 +1622,23 @@
 		 */
 		$rq = "UPDATE extended_host_information ";
 		$rq .= "SET ehi_notes = ";
-		isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_notes"])."', ": $rq .= "NULL, ";
 		$rq .= "ehi_notes_url = ";
-		isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_notes_url"])."', ": $rq .= "NULL, ";
 		$rq .= "ehi_action_url = ";
-		isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_action_url"])."', ": $rq .= "NULL, ";
 		$rq .= "ehi_icon_image = ";
-		isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_icon_image"])."', ": $rq .= "NULL, ";
 		$rq .= "ehi_icon_image_alt = ";
-		isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_icon_image_alt"])."', ": $rq .= "NULL, ";
 		$rq .= "ehi_vrml_image = ";
-		isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_vrml_image"])."', ": $rq .= "NULL, ";
 		$rq .= "ehi_statusmap_image = ";
-		isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_statusmap_image"])."', ": $rq .= "NULL, ";
 		$rq .= "ehi_2d_coords = ";
-		isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_2d_coords"])."', ": $rq .= "NULL, ";
 		$rq .= "ehi_3d_coords = ";
-		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
+		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".CentreonDB::escape($ret["ehi_3d_coords"])."' ": $rq .= "NULL ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 
 		$DBRESULT =& $pearDB->query($rq);
@@ -1649,15 +1649,15 @@
 		global $form, $pearDB;
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE extended_host_information SET ";
-		if (isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL) $rq .= "ehi_notes = '".htmlentities($ret["ehi_notes"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL) $rq .= "ehi_notes_url = '".htmlentities($ret["ehi_notes_url"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL) $rq .= "ehi_action_url = '".htmlentities($ret["ehi_action_url"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL) $rq .= "ehi_icon_image = '".htmlentities($ret["ehi_icon_image"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL) $rq .= "ehi_icon_image_alt = '".htmlentities($ret["ehi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL) $rq .= "ehi_vrml_image = '".htmlentities($ret["ehi_vrml_image"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL) $rq .= "ehi_statusmap_image = '".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL) $rq .= "ehi_2d_coords = '".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL) $rq .= "ehi_3d_coords = '".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL) $rq .= "ehi_notes = '".CentreonDB::escape($ret["ehi_notes"])."', ";
+		if (isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL) $rq .= "ehi_notes_url = '".CentreonDB::escape($ret["ehi_notes_url"])."', ";
+		if (isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != NULL) $rq .= "ehi_action_url = '".CentreonDB::escape($ret["ehi_action_url"])."', ";
+		if (isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != NULL) $rq .= "ehi_icon_image = '".CentreonDB::escape($ret["ehi_icon_image"])."', ";
+		if (isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != NULL) $rq .= "ehi_icon_image_alt = '".CentreonDB::escape($ret["ehi_icon_image_alt"])."', ";
+		if (isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL) $rq .= "ehi_vrml_image = '".CentreonDB::escape($ret["ehi_vrml_image"])."', ";
+		if (isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL) $rq .= "ehi_statusmap_image = '".CentreonDB::escape($ret["ehi_statusmap_image"])."', ";
+		if (isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL) $rq .= "ehi_2d_coords = '".CentreonDB::escape($ret["ehi_2d_coords"])."', ";
+		if (isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL) $rq .= "ehi_3d_coords = '".CentreonDB::escape($ret["ehi_3d_coords"])."', ";
 		if (strcmp("UPDATE extended_host_information SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";

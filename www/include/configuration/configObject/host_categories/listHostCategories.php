@@ -52,7 +52,7 @@
 	 */
 	$SearchTool = NULL;
 	if (isset($search) && $search)
-		$SearchTool = " WHERE (hc_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR hc_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+		$SearchTool = " WHERE (hc_name LIKE '%".CentreonDB::escape($search)."%' OR hc_alias LIKE '%".CentreonDB::escape($search)."%')";
 
 	$request = "SELECT COUNT(*) FROM hostcategories $SearchTool";
 
@@ -67,9 +67,9 @@
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	/* Access level */
-	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r'; 
+	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 	$tpl->assign('mode_access', $lvl_access);
 
 	/*

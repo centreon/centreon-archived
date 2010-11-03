@@ -36,8 +36,8 @@
  *
  */
 
-	//require_once ("@CENTREON_ETC@/centreon.conf.php");
-	require_once ("/etc/centreon/centreon.conf.php");
+	require_once ("@CENTREON_ETC@/centreon.conf.php");
+	//require_once ("/etc/centreon/centreon.conf.php");
 	require_once ("./class/centreonDB.class.php");
 
 	/**

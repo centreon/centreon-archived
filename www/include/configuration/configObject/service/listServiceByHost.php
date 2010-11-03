@@ -72,9 +72,6 @@
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_alias FROM service WHERE service_register = '0' ORDER BY service_description");
 	while ($tpl =& $DBRESULT->fetchRow()) {
 		$tplService[$tpl["service_id"]] = $tpl["service_alias"];
-		$tpl["service_description"] = str_replace("#S#", "/", $tpl["service_description"]);
-		$tpl["service_description"] = str_replace("#BS#", "\\", $tpl["service_description"]);
-
 		$templateFilter .= "<option value='".$tpl["service_id"]."'".(($tpl["service_id"] == $template) ? " selected" : "").">".$tpl["service_description"]."</option>";
 	}
 	$DBRESULT->free();
@@ -147,16 +144,13 @@
 	$tmp = "";
 	$tmp2 = "";
 	$tab_buffer = array();
-	$searchH = htmlentities($searchH, ENT_QUOTES, "UTF-8");
-	$searchS = htmlentities($searchS, ENT_QUOTES, "UTF-8");
+	$searchH = CentreonDB::escape($searchH);
+	$searchS = CentreonDB::escape($searchS);
+
 	/*
 	 * Search case
 	 */
 	if (isset($searchS) || isset($searchH))	{
-		$searchH = str_replace('/', "#S#", $searchH);
-		$searchH = str_replace('\\', "#BS#", $searchH);
-		$searchS = str_replace('/', "#S#", $searchS);
-		$searchS = str_replace('\\', "#BS#", $searchS);
 		if ($search_type_service && !$search_type_host) {
 			$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
 			while ($service = $DBRESULT->fetchRow()){

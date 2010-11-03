@@ -66,8 +66,8 @@ class CentreonDB
 	 */
     public function __construct($db = "centreon", $retry = 3)
     {
-		//include("@CENTREON_ETC@/centreon.conf.php");
-        include("/etc/centreon/centreon.conf.php");
+		include("@CENTREON_ETC@/centreon.conf.php");
+        //include("/etc/centreon/centreon.conf.php");
 		require_once $centreon_path."/www/class/centreonLog.class.php";
 		$this->log = new CentreonLog();
 
@@ -248,7 +248,7 @@ class CentreonDB
      */
     public function escape($str)
     {
-        return $this->db->escapeSimple($str);
+        return DB_common::escapeSimple($str);
     }
 
     /**

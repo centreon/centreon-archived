@@ -1264,7 +1264,7 @@
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $service_id
 	 * @return unknown_type
 	 */
@@ -1273,7 +1273,7 @@
 		if (!$service_id) {
 			return;
 		}
-		
+
 		$cmd = NULL;
 		$arg = NULL;
 		$DBRESULT =& $pearDB->query("SELECT command_command_id, command_command_id_arg FROM service WHERE service_id = '".$service_id."' LIMIT 1");
@@ -1289,7 +1289,7 @@
 		} else if ($row["command_command_id"] && $row["command_command_id_arg"])	{
 			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
 			$row2 =& $DBRESULT2->fetchRow();
-			return $row2["command_name"].db2str(utf8_encode($row["command_command_id_arg"]));
+			return $row2["command_name"].db2str($row["command_command_id_arg"]);
 		} else {
 			return NULL;
 		}
@@ -1702,7 +1702,7 @@
 		$string = str_replace('#R#', "\\r", $string);
 		$string = str_replace('#S#', "/", $string);
 		$string = str_replace('#BS#', "\\", $string);
-		return utf8_encode($string);
+		return $string;
 	}
 
 	function str2db($string) {

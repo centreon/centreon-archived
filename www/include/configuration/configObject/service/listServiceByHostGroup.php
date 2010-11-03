@@ -95,16 +95,12 @@
 	$rows = 0;
 	$tmp = NULL;
 	$tmp2 = NULL;
-	$searchH = htmlentities($searchH, ENT_QUOTES, "UTF-8");
-	$searchS = htmlentities($searchS, ENT_QUOTES, "UTF-8");
+	$searchH = CentreonDB::escape($searchH);
+	$searchS = CentreonDB::escape($searchS);
 	/*
 	 * Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
 	 */
 	if ($searchS != "" || $searchH != "") {
-		$searchH = str_replace('/', "#S#", $searchH);
-		$searchH = str_replace('\\', "#BS#", $searchH);
-		$searchS = str_replace('/', "#S#", $searchS);
-		$searchS = str_replace('\\', "#BS#", $searchS);
 		if ($searchS && !$searchH) {
 			$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
 										"FROM service sv, host_service_relation hsr " .

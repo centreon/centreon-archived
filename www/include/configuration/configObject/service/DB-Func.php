@@ -84,8 +84,6 @@
 				$argTab[$matches[1]] = str_replace("\n", "#BR#", $argTab[$matches[1]]);
 			    $argTab[$matches[1]] = str_replace("\t", "#T#", $argTab[$matches[1]]);
                 $argTab[$matches[1]] = str_replace("\r", "#R#", $argTab[$matches[1]]);
-			    $argTab[$matches[1]] = str_replace('/', "#S#", $argTab[$matches[1]]);
-			    $argTab[$matches[1]] = str_replace("\\\\", "#BS#", $argTab[$matches[1]]);
 			}
         }
 		ksort($argTab);
@@ -98,7 +96,7 @@
         if (!strlen($str)) {
             return null;
         }
-        return $str;
+        return addslashes($str);
     }
 
 	function getHostServiceCombo($service_id = null, $service_description = null)
@@ -130,7 +128,7 @@
 
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
-		$DBRESULT = $pearDB->query("SELECT service_description FROM service WHERE service_description = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+		$DBRESULT = $pearDB->query("SELECT service_description FROM service WHERE service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
 		if ($DBRESULT->numRows() >= 1) {
 			return true;
 		}
@@ -147,7 +145,7 @@
 		}
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
-		$DBRESULT = $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+		$DBRESULT = $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
 		$service = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $service["service_id"] == $id) {
@@ -183,7 +181,7 @@
 		$name = str_replace('/', "#S#", $name);
 		$name = str_replace('\\', "#BS#", $name);
 		foreach ($hPars as $host)	{
-			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
 			$service = $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
@@ -192,7 +190,7 @@
 			$DBRESULT->free();
 		}
 		foreach ($hgPars as $hostgroup)	{
-			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
 			$service = $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
@@ -464,10 +462,7 @@
 						 	$DBRESULT3 = $pearDB->query($mTpRq1);
 							while ($sv = $DBRESULT3->fetchRow()) {
 								$macName = str_replace("\$", "", $sv["svc_macro_name"]);
-								$macName = str_replace("/", "#S#", $macName);
-							    $macName = str_replace("\\", "#BS#", $macName);
-							    $macVal = str_replace("/", "#S#", $hst['svc_macro_value']);
-							    $macVal = str_replace("\\", "#BS#", $macVal);
+							    $macVal = $hst['svc_macro_value'];
 								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES " .
 											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $macVal ."')";
 						 		$DBRESULT4 = $pearDB->query($mTpRq2);
@@ -493,8 +488,6 @@
 							if ($DBRES->numRows()) {
 								$row2 = $DBRES->fetchRow();
 								$description = $row2['service_description'];
-								$description = str_replace("#S#", "/", $description);
-								$description = str_replace("#BS#", "\\", $description);
 								$centreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], getHostServiceCombo($maxId["MAX(service_id)"], $description), "a", $fields);
 							}
 						}
@@ -604,7 +597,7 @@
 		updateServiceCategories($service_id, $ret);
 		$centreon->user->access->updateACL();
 		$fields = $tmp_fields['fields'];
-		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, htmlentities($fields["service_description"], ENT_QUOTES, "UTF-8")), "a", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, CentreonDB::escape($fields["service_description"])), "a", $fields);
 		return ($service_id);
 	}
 
@@ -650,8 +643,8 @@
 				isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
 				isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
 				isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
-				isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-				isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+				isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_description"])."', ": $rq .= "NULL, ";
+				isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_alias"])."', ": $rq .= "NULL, ";
 				isset($ret["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
 				isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != NULL ? $rq .= "'".$ret["service_max_check_attempts"]."', " : $rq .= "NULL, ";
 				isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != NULL ? $rq .= "'".$ret["service_normal_check_interval"]."', ": $rq .= "NULL, ";
@@ -678,12 +671,12 @@
 					$ret["service_comment"] = str_replace('/', "#S#", $ret["service_comment"]);
 					$ret["service_comment"] = str_replace('\\', "#BS#", $ret["service_comment"]);
 				}
-				isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+				isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
 				$ret['command_command_id_arg'] = getCommandArgs($_POST);
-				isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+				isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
 
 
-				isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+				isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
 				isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL ? $rq .= "'".$ret["service_register"]["service_register"]."', " : $rq .= "NULL, ";
 				isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
 				$rq .= ")";
@@ -707,11 +700,9 @@
 	 			if (isset($my_tab[$macInput]) && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]) {
 		 			$my_tab[$macInput] = str_replace("\$_SERVICE", "", $my_tab[$macInput]);
 		 			$my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
-		 			$macName = str_replace("/", "#S#", $my_tab[$macInput]);
-		 			$macName = str_replace("\\", "#BS#", $macName);
-		 			$macVal = str_replace("/", "#S#", $my_tab[$macValue]);
-		 			$macVal = str_replace("\\", "#BS#", $macVal);
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($macName) ."\$', '". $macVal ."', ". $service_id["MAX(service_id)"] .")";
+		 			$macName = $my_tab[$macInput];
+		 			$macVal = $my_tab[$macValue];
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id["MAX(service_id)"] .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					$fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];
 					$already_stored[strtolower($my_tab[$macInput])] = 1;
@@ -735,10 +726,10 @@
 		    $fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		}
 		if (isset($ret["service_description"])) {
-		    $fields["service_description"] = htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8");
+		    $fields["service_description"] = CentreonDB::escape($ret["service_description"]);
 		}
 		if (isset($ret["service_alias"])) {
-		    $fields["service_alias"] = htmlentities($ret["service_alias"], ENT_QUOTES, "UTF-8");
+		    $fields["service_alias"] = CentreonDB::escape($ret["service_alias"]);
 		}
 		if (isset($ret["service_is_volatile"]) &&
 		    isset($ret["service_is_volatile"]['service_is_volatile'])) {
@@ -817,13 +808,13 @@
 			$fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
 		}
 		if (isset($ret["service_comment"])) {
-		    $fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8");
+		    $fields["service_comment"] = CentreonDB::escape($ret["service_comment"]);
 		}
 		if (isset($ret["command_command_id_arg"])) {
-		    $fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8");
+		    $fields["command_command_id_arg"] = CentreonDB::escape($ret["command_command_id_arg"]);
 		}
 		if (isset($ret["command_command_id_arg2"])) {
-		    $fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8");
+		    $fields["command_command_id_arg2"] = CentreonDB::escape($ret["command_command_id_arg2"]);
 		}
 		if (isset($ret["service_register"]) && isset($ret["service_register"]["service_register"])) {
 		    $fields["service_register"] = $ret["service_register"]["service_register"];
@@ -832,19 +823,19 @@
 		    $fields["service_activate"] = $ret["service_activate"]["service_activate"];
 		}
 		if (isset($ret["esi_notes"])) {
-		    $fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8");
+		    $fields["esi_notes"] = CentreonDB::escape($ret["esi_notes"]);
 		}
 		if (isset($ret["esi_notes_url"])) {
-		    $fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8");
+		    $fields["esi_notes_url"] = CentreonDB::escape($ret["esi_notes_url"]);
 		}
 		if (isset($ret["esi_action_url"])) {
-		    $fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8");
+		    $fields["esi_action_url"] = CentreonDB::escape($ret["esi_action_url"]);
 		}
 		if (isset($ret["esi_icon_image"])) {
-		    $fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8");
+		    $fields["esi_icon_image"] = CentreonDB::escape($ret["esi_icon_image"]);
 		}
 		if (isset($ret["esi_icon_image_alt"])) {
-		    $fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8");
+		    $fields["esi_icon_image_alt"] = CentreonDB::escape($ret["esi_icon_image_alt"]);
 		}
 		if (isset($ret["graph_id"])) {
 		    $fields["graph_id"] = $ret["graph_id"];
@@ -877,7 +868,7 @@
 		if (isset($ret["service_traps"])) {
 			$fields["service_traps"] = implode(",", $ret["service_traps"]);
 		}
-		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id["MAX(service_id)"], htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8")), "a", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id["MAX(service_id)"], CentreonDB::escape($ret["service_description"])), "a", $fields);
 		return (array("service_id" => $service_id["MAX(service_id)"], "fields" => $fields));
 	}
 
@@ -900,11 +891,11 @@
 				"`esi_action_url` , `esi_icon_image` , `esi_icon_image_alt`, `graph_id` )" .
 				"VALUES ( ";
 		$rq .= "NULL, ".$service_id.", ";
-		isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL ? $rq .= "'".CentreonDB::escape($ret["esi_notes"])."', ": $rq .= "NULL, ";
+		isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL ? $rq .= "'".CentreonDB::escape($ret["esi_notes_url"])."', ": $rq .= "NULL, ";
+		isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL ? $rq .= "'".CentreonDB::escape($ret["esi_action_url"])."', ": $rq .= "NULL, ";
+		isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL ? $rq .= "'".CentreonDB::escape($ret["esi_icon_image"])."', ": $rq .= "NULL, ";
+		isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL ? $rq .= "'".CentreonDB::escape($ret["esi_icon_image_alt"])."', ": $rq .= "NULL, ";
 		isset($ret["graph_id"]) && $ret["graph_id"] != NULL ? $rq .= "'".$ret["graph_id"]."'": $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
@@ -930,16 +921,6 @@
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
-		}
-		if (isset($ret["service_description"]) && $ret["service_description"] != NULL)		{
-			$ret["service_description"] = str_replace('/', "#S#", $ret["service_description"]);
-			$ret["service_description"] = str_replace('\\', "#BS#", $ret["service_description"]);
-		}
-		if (isset($ret["service_alias"]) && $ret["service_alias"] != NULL)		{
-			$ret["service_alias"] = str_replace('/', "#S#", $ret["service_alias"]);
-			$ret["service_alias"] = str_replace('\\', "#BS#", $ret["service_alias"]);
 		}
 		$rq = "UPDATE service SET " ;
 		$rq .= "service_template_model_stm_id = ";
@@ -955,10 +936,10 @@
 		# If we are doing a MC, we don't have to set name and alias field
 		if (!$from_MC)	{
 			$rq .= "service_description = ";
-			isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+			isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_description"])."', ": $rq .= "NULL, ";
 		}
 		$rq .= "service_alias = ";
-		isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_alias"])."', ": $rq .= "NULL, ";
 		$rq .= "service_is_volatile = ";
 		isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
 		$rq .= "service_max_check_attempts = ";
@@ -1003,15 +984,13 @@
 		isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
 
 		$rq .= "service_comment = ";
-		$ret["service_comment"] = str_replace("/", '#S#', $ret["service_comment"]);
-		$ret["service_comment"] = str_replace("\\", '#BS#', $ret["service_comment"]);
-		isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
 
 		$ret["command_command_id_arg"] = getCommandArgs($_POST);
 		$rq .= "command_command_id_arg = ";
-		isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
 		$rq .= "command_command_id_arg2 = ";
-		isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
 		$rq .= "service_register = ";
 		isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL ? $rq .= "'".$ret["service_register"]["service_register"]."', " : $rq .= "NULL, ";
 		$rq .= "service_activate = ";
@@ -1032,12 +1011,10 @@
 	 			if (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
 		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = str_replace("/", "#S#", $_POST[$macInput]);
-		 			$macName = str_replace("\\", "#BS#", $macName);
-		 			$macVal = str_replace("/", "#S#", $_POST[$macValue]);
-		 			$macVal = str_replace("\\", "#BS#", $macVal);
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($macName) ."\$', '". $macVal ."', ". $service_id .")";
-			 		$DBRESULT =& $pearDB->query($rq);
+		 			$macName = $_POST[$macInput];
+		 			$macVal = $_POST[$macValue];
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id .")";
+			 		$DBRESULT = $pearDB->query($rq);
 					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
 					$already_stored[strtolower($_POST[$macInput])] = 1;
 	 			}
@@ -1048,9 +1025,9 @@
 		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
 		$fields["command_command_id2"] = $ret["command_command_id2"];
 		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-		$fields["service_description"] = htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8");
+		$fields["service_description"] = CentreonDB::escape($ret["service_description"]);
 		if (isset($fields["service_alias"]))
-			$fields["service_alias"] = htmlentities($ret["service_alias"], ENT_QUOTES, "UTF-8");
+			$fields["service_alias"] = CentreonDB::escape($ret["service_alias"]);
 		$fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
 		$fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
 		$fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
@@ -1077,16 +1054,16 @@
 		$fields["service_stalOpts"] = "";
 		if (isset($ret["service_stalOpts"]))
 			$fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
-		$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8");
-		$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8");
-		$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8");
+		$fields["service_comment"] = CentreonDB::escape($ret["service_comment"]);
+		$fields["command_command_id_arg"] = CentreonDB::escape($ret["command_command_id_arg"]);
+		$fields["command_command_id_arg2"] = CentreonDB::escape($ret["command_command_id_arg2"]);
 		$fields["service_register"] = $ret["service_register"]["service_register"];
 		$fields["service_activate"] = $ret["service_activate"]["service_activate"];
-		$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8");
-		$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8");
-		$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8");
-		$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8");
-		$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8");
+		$fields["esi_notes"] = CentreonDB::escape($ret["esi_notes"]);
+		$fields["esi_notes_url"] = CentreonDB::escape($ret["esi_notes_url"]);
+		$fields["esi_action_url"] = CentreonDB::escape($ret["esi_action_url"]);
+		$fields["esi_icon_image"] = CentreonDB::escape($ret["esi_icon_image"]);
+		$fields["esi_icon_image_alt"] = CentreonDB::escape($ret["esi_icon_image_alt"]);
 		$fields["graph_id"] = $ret["graph_id"];
 		$fields["service_cs"] = "";
 		if (isset($ret["service_cs"]))
@@ -1109,7 +1086,7 @@
 		$fields["service_traps"] = "";
 		if (isset($ret["service_traps"]))
 			$fields["service_traps"] = implode(",", $ret["service_traps"]);
-		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id, htmlentities($ret["service_description"], ENT_QUOTES, "UTF-8")), "c", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id, CentreonDB::escape($ret["service_description"])), "c", $fields);
 		$centreon->user->access->updateACL();
 	}
 
@@ -1129,23 +1106,11 @@
 			$ret["command_command_id_arg"] = str_replace("\n", "#BR#", $ret["command_command_id_arg"]);
 			$ret["command_command_id_arg"] = str_replace("\t", "#T#", $ret["command_command_id_arg"]);
 			$ret["command_command_id_arg"] = str_replace("\r", "#R#", $ret["command_command_id_arg"]);
-			$ret["command_command_id_arg"] = str_replace('/', "#S#", $ret["command_command_id_arg"]);
-			$ret["command_command_id_arg"] = str_replace('\\', "#BS#", $ret["command_command_id_arg"]);
 		}
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);"', " ;
-			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
-		}
-		if (isset($ret["service_description"]) && $ret["service_description"] != NULL)		{
-			$ret["service_description"] = str_replace('/', "#S#", $ret["service_description"]);
-			$ret["service_description"] = str_replace('\\', "#BS#", $ret["service_description"]);
-		}
-		if (isset($ret["service_alias"]) && $ret["service_alias"] != NULL)		{
-			$ret["service_alias"] = str_replace('/', "#S#", $ret["service_alias"]);
-			$ret["service_alias"] = str_replace('\\', "#BS#", $ret["service_alias"]);
 		}
 
 		$rq = "UPDATE service SET ";
@@ -1259,17 +1224,17 @@
 			$fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
 		}
 		if (isset($ret["service_comment"]) && $ret["service_comment"] != NULL) {
-			$rq .= "service_comment = '".htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8")."', ";
-			$fields["service_comment"] = htmlentities($ret["service_comment"], ENT_QUOTES, "UTF-8");
+			$rq .= "service_comment = '".CentreonDB::escape($ret["service_comment"])."', ";
+			$fields["service_comment"] = CentreonDB::escape($ret["service_comment"]);
 		}
 		$ret["command_command_id_arg"] = getCommandArgs($_POST);
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL) {
-			$rq .= "command_command_id_arg = '".htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8")."', ";
-			$fields["command_command_id_arg"] = htmlentities($ret["command_command_id_arg"], ENT_QUOTES, "UTF-8");
+			$rq .= "command_command_id_arg = '".CentreonDB::escape($ret["command_command_id_arg"])."', ";
+			$fields["command_command_id_arg"] = CentreonDB::escape($ret["command_command_id_arg"]);
 		}
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL) {
-			$rq .= "command_command_id_arg2 = '".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8")."', ";
-			$fields["command_command_id_arg2"] = htmlentities($ret["command_command_id_arg2"], ENT_QUOTES, "UTF-8");
+			$rq .= "command_command_id_arg2 = '".CentreonDB::escape($ret["command_command_id_arg2"])."', ";
+			$fields["command_command_id_arg2"] = CentreonDB::escape($ret["command_command_id_arg2"]);
 		}
 		if (isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL) {
 			$rq .= "service_register = '".$ret["service_register"]["service_register"]."', ";
@@ -1281,15 +1246,15 @@
 		}
 
 		if (isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL)
-			$fields["esi_notes"] = htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8");
+			$fields["esi_notes"] = CentreonDB::escape($ret["esi_notes"]);
 		if (isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL)
-			$fields["esi_notes_url"] = htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8");
+			$fields["esi_notes_url"] = CentreonDB::escape($ret["esi_notes_url"]);
 		if (isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL)
-			$fields["esi_action_url"] = htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8");
+			$fields["esi_action_url"] = CentreonDB::escape($ret["esi_action_url"]);
 		if (isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL)
-			$fields["esi_icon_image"] = htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8");
+			$fields["esi_icon_image"] = CentreonDB::escape($ret["esi_icon_image"]);
 		if (isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL)
-			$fields["esi_icon_image_alt"] = htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8");
+			$fields["esi_icon_image_alt"] = CentreonDB::escape($ret["esi_icon_image_alt"]);
 		if (isset($ret["graph_id"]) && $ret["graph_id"] != NULL)
 			$fields["graph_id"] = $ret["graph_id"];
 		if (isset($ret["service_cs"]) && $ret["service_cs"] != NULL)
@@ -1338,23 +1303,19 @@
 	 			if (isset($_POST[$macInput]) && isset($already_stored_in_db[strtolower($_POST[$macInput])])) {
 	 				$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = str_replace("/", "#S#", $_POST[$macInput]);
-		 			$macName = str_replace("\\", "#BS#", $macName);
-		 			$macVal = str_replace("/", "#S#", $_POST[$macValue]);
-		 			$macVal = str_replace("\\", "#BS#", $macVal);
-	 				$rq = "UPDATE on_demand_macro_service SET `svc_macro_value`='". $macVal . "'".
+		 			$macName = $_POST[$macInput];
+		 			$macVal = $_POST[$macValue];
+	 				$rq = "UPDATE on_demand_macro_service SET `svc_macro_value`='". CentreonDB::escape($macVal) . "'".
 	 					  " WHERE `svc_svc_id`=" . $service_id .
-	 					  " AND `svc_macro_name`='\$_SERVICE" . $macName . "\$'";
+	 					  " AND `svc_macro_name`='\$_SERVICE" . CentreonDB::escape($macName) . "\$'";
 			 		$DBRESULT =& $pearDB->query($rq);
 	 			}
 	 			elseif (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
 		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = str_replace("/", "#S#", $_POST[$macInput]);
-		 			$macName = str_replace("\\", "#BS#", $macName);
-		 			$macVal = str_replace("/", "#S#", $_POST[$macValue]);
-		 			$macVal = str_replace("\\", "#BS#", $macVal);
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". strtoupper($macName) ."\$', '". $macVal ."', ". $service_id .")";
+		 			$macName = $_POST[$macInput];
+		 			$macVal = $_POST[$macValue];
+		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id .")";
 			 		$DBRESULT =& $pearDB->query($rq);
 					$already_stored[$_POST[$macInput]] = 1;
 	 			}
@@ -1580,16 +1541,16 @@
 		}
 	}
 
-	function updateServiceHost($service_id = null, $ret = array())	
+	function updateServiceHost($service_id = null, $ret = array())
 	{
 		global $form, $pearDB;
 		if (!$service_id) {
 			return;
 		}
-		
+
 		$ret1 = array();
 		$ret2 = array();
-		
+
 		if (isset($ret["service_hPars"])) {
 			$ret1 = $ret["service_hPars"];
 		} else {
@@ -1600,7 +1561,7 @@
 		} else {
 			$ret2 = $form->getSubmitValue("service_hgPars");
 		}
-		
+
 		/*
 		 * Get actual config
 		 */
@@ -1611,7 +1572,7 @@
 		while ($data = $DBRESULT->fetchRow()) {
 			$cacheEsc[$data['host_host_id']] = 1;
 		}
-		
+
 		/*
 		 * Get actual config
 		 */
@@ -1622,7 +1583,7 @@
 		while ($data = $DBRESULT->fetchRow()) {
 			$cache[$data['host_host_id']] = 1;
 		}
-		
+
 		if (count($ret1) == 1) {
 			foreach ($cache as $host_id => $flag) {
 				if (!isset($cacheEsc[$host_id]) && count($cacheEsc)) {
@@ -1636,11 +1597,11 @@
 				}
 			}
 		}
-		
+
 		$rq = "DELETE FROM host_service_relation ";
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		
+
 		if (count($ret2)) {
 			for ($i = 0; $i < count($ret2); $i++)	{
 				$rq = "INSERT INTO host_service_relation ";
@@ -1722,17 +1683,17 @@
 		 */
 		$rq = "UPDATE extended_service_information ";
 		$rq .= "SET esi_notes = ";
-		isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL ? $rq .= "'".CentreonDB::escape($ret["esi_notes"])."', ": $rq .= "NULL, ";
 		$rq .= "esi_notes_url = ";
-		isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL ? $rq .= "'".CentreonDB::escape($ret["esi_notes_url"])."', ": $rq .= "NULL, ";
 		$rq .= "esi_action_url = ";
-		isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL ? $rq .= "'".htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL ? $rq .= "'".CentreonDB::escape($ret["esi_action_url"])."', ": $rq .= "NULL, ";
 		$rq .= "esi_icon_image = ";
-		isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL ? $rq .= "'".CentreonDB::escape($ret["esi_icon_image"])."', ": $rq .= "NULL, ";
 		$rq .= "esi_icon_image_alt = ";
-		isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL ? $rq .= "'".htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL ? $rq .= "'".CentreonDB::escape($ret["esi_icon_image_alt"])."', ": $rq .= "NULL, ";
 		$rq .= "graph_id = ";
-		isset($ret["graph_id"]) && $ret["graph_id"] != NULL ? $rq .= "'".htmlentities($ret["graph_id"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
+		isset($ret["graph_id"]) && $ret["graph_id"] != NULL ? $rq .= "'".CentreonDB::escape($ret["graph_id"])."' ": $rq .= "NULL ";
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}
@@ -1742,12 +1703,12 @@
 		global $form, $pearDB;
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE extended_service_information SET ";
-		if (isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL) $rq .= "esi_notes = '".htmlentities($ret["esi_notes"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL) $rq .= "esi_notes_url = '".htmlentities($ret["esi_notes_url"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL) $rq .= "esi_action_url = '".htmlentities($ret["esi_action_url"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL) $rq .= "esi_icon_image = '".htmlentities($ret["esi_icon_image"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL) $rq .= "esi_icon_image_alt = '".htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES, "UTF-8")."', ";
-		if (isset($ret["graph_id"]) && $ret["graph_id"] != NULL) $rq .= "graph_id = '".htmlentities($ret["graph_id"], ENT_QUOTES, "UTF-8")."', ";
+		if (isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL) $rq .= "esi_notes = '".CentreonDB::escape($ret["esi_notes"])."', ";
+		if (isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL) $rq .= "esi_notes_url = '".CentreonDB::escape($ret["esi_notes_url"])."', ";
+		if (isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL) $rq .= "esi_action_url = '".CentreonDB::escape($ret["esi_action_url"])."', ";
+		if (isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL) $rq .= "esi_icon_image = '".CentreonDB::escape($ret["esi_icon_image"])."', ";
+		if (isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL) $rq .= "esi_icon_image_alt = '".CentreonDB::escape($ret["esi_icon_image_alt"])."', ";
+		if (isset($ret["graph_id"]) && $ret["graph_id"] != NULL) $rq .= "graph_id = '".CentreonDB::escape($ret["graph_id"])."', ";
 		if (strcmp("UPDATE extended_service_information SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";

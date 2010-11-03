@@ -281,11 +281,11 @@
 		$hgCondition = "";
 	}
 
-	if ($is_admin) {
+	if ($obj->is_admin) {
 		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
-						 " FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."services ns ".(isset($hgCondition) && $hgCondition != "" ? ", nagios_hostgroup_members hm, nagios_hostgroups hg " : " ");
+						 " FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."services ns ".(isset($hgCondition) && $hgCondition != "" ? ", nagios_hostgroup_members hm, nagios_hostgroups hg " : " ");
 		if ($o == "svc_unhandled") {
-            $rq .= ", " . $ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."services s ";
+            $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
 		}
         $rq .= " WHERE no.object_id = ns.service_object_id AND no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService ";
         if ($o == "svc_unhandled") {
@@ -296,9 +296,9 @@
         }
 	} else {
 		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
-						 " FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."services ns, centreon_acl ".(isset($hgCondition) && $hgCondition != "" ? ", nagios_hostgroup_members hm, nagios_hostgroups hg " : " ");
+						 " FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."services ns, centreon_acl ".(isset($hgCondition) && $hgCondition != "" ? ", nagios_hostgroup_members hm, nagios_hostgroups hg " : " ");
 	    if ($o == "svc_unhandled") {
-            $rq .= ", " . $ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."services s ";
+            $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
 		}
 		$rq .= " WHERE no.object_id = ns.service_object_id AND no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService $ACLCondition";
         if ($o == "svc_unhandled") {
@@ -308,7 +308,7 @@
             	    AND hs.problem_has_been_acknowledged = 0";
         }
 	}
-	
+
 	$DBRESULT =& $obj->DBNdo->query($rq);
 	$data =& $DBRESULT->fetchRow();
 	$numRows =& $data["count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))"];
@@ -384,7 +384,7 @@
 				$obj->XML->writeElement("hnl", urlencode($ndo["host_name"]));
 				$obj->XML->startElement("hn");
 				$obj->XML->writeAttribute("none", "0");
-				$obj->XML->text($ndo["host_name"]);
+				$obj->XML->text($ndo["host_name"], true, false);
 				$obj->XML->endElement();
 				$obj->XML->writeElement("hau", $host_status[$ndo["host_name"]]["action_url"]);
 
@@ -407,9 +407,9 @@
 			 * Add possibility to use display name
 			 */
 			if (isset($ndo["display_name"]) && $ndo["display_name"]) {
-				$obj->XML->writeElement("sd", 	$ndo["display_name"]);
+				$obj->XML->writeElement("sd", 	$ndo["display_name"], false);
 			} else {
-				$obj->XML->writeElement("sd", 	$ndo["service_description"]);
+				$obj->XML->writeElement("sd", 	$ndo["service_description"], false);
 			}
 			$obj->XML->writeElement("sico", $ndo["icon_image"]);
 			$obj->XML->writeElement("sd", 	$ndo["service_description"]);
@@ -417,7 +417,7 @@
 			$obj->XML->writeElement("svc_id", $ndo["object_id"]);
 			$obj->XML->writeElement("sc", 	$obj->colorService[$ndo["current_state"]]);
 			$obj->XML->writeElement("cs", 	_($obj->statusService[$ndo["current_state"]]));
-			$obj->XML->writeElement("po", 	$ndo["plugin_output"], 1);
+			$obj->XML->writeElement("po", 	$ndo["plugin_output"], false);
 			$obj->XML->writeElement("ca", 	$ndo["current_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
 			$obj->XML->writeElement("ne", 	$ndo["notifications_enabled"]);
 			$obj->XML->writeElement("pa", 	$ndo["problem_has_been_acknowledged"]);
@@ -428,6 +428,7 @@
 			$obj->XML->writeElement("dtm",	$ndo["scheduled_downtime_depth"]);
 
 			if ($ndo["notes_url"] != "") {
+
 				$ndo["notes_url"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes_url"]);
 				$ndo["notes_url"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes_url"]);
 				$obj->XML->writeElement("snu", $ndo["notes_url"]);

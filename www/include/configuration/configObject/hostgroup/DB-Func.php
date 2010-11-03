@@ -59,7 +59,7 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('hg_id');
-		$DBRESULT =& $pearDB->query("SELECT hg_name, hg_id FROM hostgroup WHERE hg_name = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+		$DBRESULT =& $pearDB->query("SELECT hg_name, hg_id FROM hostgroup WHERE hg_name = '".CentreonDB::escape($oreon->checkIllegalChar($name))."'");
 		$hg =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $hg["hg_id"] == $id)
@@ -201,16 +201,16 @@
 		$rq = "INSERT INTO hostgroup ";
 		$rq .= "(hg_name, hg_alias, hg_snmp_community, hg_snmp_version, hg_notes, hg_notes_url, hg_action_url, hg_icon_image, hg_map_icon_image, hg_comment, hg_activate) ";
 		$rq .= "VALUES (";
-		isset($ret["hg_name"]) && $ret["hg_name"] ? $rq .= "'".htmlentities($ret["hg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
-		isset($ret["hg_alias"]) && $ret["hg_alias"] ? $rq .= "'".htmlentities($ret["hg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
-		isset($ret["hg_snmp_community"]) && $ret["hg_snmp_community"] ? $rq .= "'".htmlentities($ret["hg_snmp_community"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
-		isset($ret["hg_snmp_version"]) && $ret["hg_snmp_version"] ? $rq .= "'".htmlentities($ret["hg_snmp_version"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
-		isset($ret["hg_notes"]) && $ret["hg_notes"] ? $rq .= "'".htmlentities($ret["hg_notes"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
-		isset($ret["hg_notes_url"]) && $ret["hg_notes_url"] ? $rq .= "'".htmlentities($ret["hg_notes_url"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
-		isset($ret["hg_action_url"]) && $ret["hg_action_url"] ? $rq .= "'".htmlentities($ret["hg_action_url"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
-		isset($ret["hg_icon_image"]) && $ret["hg_icon_image"] ? $rq .= "'".htmlentities($ret["hg_icon_image"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
-		isset($ret["hg_map_icon_image"]) && $ret["hg_map_icon_image"] ? $rq .= "'".htmlentities($ret["hg_map_icon_image"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL,";
-		isset($ret["hg_comment"]) && $ret["hg_comment"] ? $rq .= "'".htmlentities($ret["hg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_name"]) && $ret["hg_name"] ? $rq .= "'".CentreonDB::escape($ret["hg_name"])."', " : $rq .= "NULL,";
+		isset($ret["hg_alias"]) && $ret["hg_alias"] ? $rq .= "'".CentreonDB::escape($ret["hg_alias"])."', " : $rq .= "NULL,";
+		isset($ret["hg_snmp_community"]) && $ret["hg_snmp_community"] ? $rq .= "'".CentreonDB::escape($ret["hg_snmp_community"])."', " : $rq .= "NULL,";
+		isset($ret["hg_snmp_version"]) && $ret["hg_snmp_version"] ? $rq .= "'".CentreonDB::escape($ret["hg_snmp_version"])."', " : $rq .= "NULL,";
+		isset($ret["hg_notes"]) && $ret["hg_notes"] ? $rq .= "'".CentreonDB::escape($ret["hg_notes"])."', " : $rq .= "NULL,";
+		isset($ret["hg_notes_url"]) && $ret["hg_notes_url"] ? $rq .= "'".CentreonDB::escape($ret["hg_notes_url"])."', " : $rq .= "NULL,";
+		isset($ret["hg_action_url"]) && $ret["hg_action_url"] ? $rq .= "'".CentreonDB::escape($ret["hg_action_url"])."', " : $rq .= "NULL,";
+		isset($ret["hg_icon_image"]) && $ret["hg_icon_image"] ? $rq .= "'".CentreonDB::escape($ret["hg_icon_image"])."', " : $rq .= "NULL,";
+		isset($ret["hg_map_icon_image"]) && $ret["hg_map_icon_image"] ? $rq .= "'".CentreonDB::escape($ret["hg_map_icon_image"])."', " : $rq .= "NULL,";
+		isset($ret["hg_comment"]) && $ret["hg_comment"] ? $rq .= "'".CentreonDB::escape($ret["hg_comment"])."', " : $rq .= "NULL, ";
 		isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] ? $rq .= "'".$ret["hg_activate"]["hg_activate"]."'" : $rq .= "'0'";
 		$rq .= ")";
 
@@ -218,16 +218,16 @@
 		$DBRESULT =& $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
 		$hg_id = $DBRESULT->fetchRow();
 
-		$fields["hg_name"] = htmlentities($ret["hg_name"], ENT_QUOTES, "UTF-8");
-		$fields["hg_alias"] = htmlentities($ret["hg_alias"], ENT_QUOTES, "UTF-8");
-		$fields["hg_snmp_community"] = htmlentities($ret["hg_snmp_community"], ENT_QUOTES, "UTF-8");
-		$fields["hg_snmp_version"] = htmlentities($ret["hg_snmp_version"], ENT_QUOTES, "UTF-8");
-		$fields["hg_notes"] = htmlentities($ret["hg_notes"], ENT_QUOTES, "UTF-8");
-		$fields["hg_notes_url"] = htmlentities($ret["hg_notes_url"], ENT_QUOTES, "UTF-8");
-		$fields["hg_action_url"] = htmlentities($ret["hg_action_url"], ENT_QUOTES, "UTF-8");
-		$fields["hg_icon_image"] = htmlentities($ret["hg_notes_url"], ENT_QUOTES, "UTF-8");
-		$fields["hg_map_icon_image"] = htmlentities($ret["hg_action_url"], ENT_QUOTES, "UTF-8");
-		$fields["hg_comment"] = htmlentities($ret["hg_comment"], ENT_QUOTES, "UTF-8");
+		$fields["hg_name"] = CentreonDB::escape($ret["hg_name"]);
+		$fields["hg_alias"] = CentreonDB::escape($ret["hg_alias"]);
+		$fields["hg_snmp_community"] = CentreonDB::escape($ret["hg_snmp_community"]);
+		$fields["hg_snmp_version"] = CentreonDB::escape($ret["hg_snmp_version"]);
+		$fields["hg_notes"] = CentreonDB::escape($ret["hg_notes"]);
+		$fields["hg_notes_url"] = CentreonDB::escape($ret["hg_notes_url"]);
+		$fields["hg_action_url"] = CentreonDB::escape($ret["hg_action_url"]);
+		$fields["hg_icon_image"] = CentreonDB::escape($ret["hg_notes_url"]);
+		$fields["hg_map_icon_image"] = CentreonDB::escape($ret["hg_action_url"]);
+		$fields["hg_comment"] = CentreonDB::escape($ret["hg_comment"]);
 		$fields["hg_activate"] = $ret["hg_activate"]["hg_activate"];
 		if (isset($ret["hg_hosts"]))
 			$fields["hg_hosts"] = implode(",", $ret["hg_hosts"]);
@@ -245,7 +245,7 @@
 			}
 		}
 
-		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id["MAX(hg_id)"], htmlentities($ret["hg_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
+		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id["MAX(hg_id)"], CentreonDB::escape($ret["hg_name"]), "a", $fields);
 
 		return ($hg_id["MAX(hg_id)"]);
 	}
@@ -263,40 +263,40 @@
 
 		$rq = "UPDATE hostgroup SET ";
 		$rq .= "hg_name = ";
-		isset($ret["hg_name"]) && $ret["hg_name"] != NULL ? $rq .= "'".htmlentities($ret["hg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_name"]) && $ret["hg_name"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_name"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_alias = ";
-		isset($ret["hg_alias"]) && $ret["hg_alias"] != NULL ? $rq .= "'".htmlentities($ret["hg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_alias"]) && $ret["hg_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_alias"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_snmp_community = ";
-		isset($ret["hg_snmp_community"]) && $ret["hg_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["hg_snmp_community"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_snmp_community"]) && $ret["hg_snmp_community"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_snmp_community"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_snmp_version = ";
-		isset($ret["hg_snmp_version"]) && $ret["hg_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["hg_snmp_version"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_snmp_version"]) && $ret["hg_snmp_version"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_snmp_version"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_notes = ";
-		isset($ret["hg_notes"]) && $ret["hg_notes"] != NULL ? $rq .= "'".htmlentities($ret["hg_notes"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_notes"]) && $ret["hg_notes"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_notes"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_notes_url = ";
-		isset($ret["hg_notes_url"]) && $ret["hg_notes_url"] != NULL ? $rq .= "'".htmlentities($ret["hg_notes_url"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_notes_url"]) && $ret["hg_notes_url"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_notes_url"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_action_url = ";
-		isset($ret["hg_action_url"]) && $ret["hg_action_url"] != NULL ? $rq .= "'".htmlentities($ret["hg_action_url"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_action_url"]) && $ret["hg_action_url"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_action_url"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_icon_image = ";
-		isset($ret["hg_icon_image"]) && $ret["hg_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["hg_icon_image"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_icon_image"]) && $ret["hg_icon_image"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_icon_image"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_map_icon_image = ";
-		isset($ret["hg_map_icon_image"]) && $ret["hg_map_icon_image"] != NULL ? $rq .= "'".htmlentities($ret["hg_map_icon_image"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_map_icon_image"]) && $ret["hg_map_icon_image"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_map_icon_image"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_comment = ";
-		isset($ret["hg_comment"]) && $ret["hg_comment"] != NULL ? $rq .= "'".htmlentities($ret["hg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["hg_comment"]) && $ret["hg_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_comment"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_activate = ";
 		isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] != NULL ? $rq .= "'".$ret["hg_activate"]["hg_activate"]."'" : $rq .= "NULL ";
 		$rq .= "WHERE hg_id = '".$hg_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 
-		$fields["hg_name"] = htmlentities($ret["hg_name"], ENT_QUOTES, "UTF-8");
-		$fields["hg_alias"] = htmlentities($ret["hg_alias"], ENT_QUOTES, "UTF-8");
-		$fields["hg_snmp_community"] = htmlentities($ret["hg_snmp_community"], ENT_QUOTES, "UTF-8");
-		$fields["hg_snmp_version"] = htmlentities($ret["hg_snmp_version"], ENT_QUOTES, "UTF-8");
-		$fields["hg_notes"] = htmlentities($ret["hg_notes"], ENT_QUOTES, "UTF-8");
-		$fields["hg_notes_url"] = htmlentities($ret["hg_notes_url"], ENT_QUOTES, "UTF-8");
-		$fields["hg_action_url"] = htmlentities($ret["hg_action_url"], ENT_QUOTES, "UTF-8");
-		$fields["hg_icon_image"] = htmlentities($ret["hg_icon_image"], ENT_QUOTES, "UTF-8");
-		$fields["hg_map_icon_image"] = htmlentities($ret["hg_map_icon_image"], ENT_QUOTES, "UTF-8");
-		$fields["hg_comment"] = htmlentities($ret["hg_comment"], ENT_QUOTES, "UTF-8");
+		$fields["hg_name"] = CentreonDB::escape($ret["hg_name"]);
+		$fields["hg_alias"] = CentreonDB::escape($ret["hg_alias"]);
+		$fields["hg_snmp_community"] = CentreonDB::escape($ret["hg_snmp_community"]);
+		$fields["hg_snmp_version"] = CentreonDB::escape($ret["hg_snmp_version"]);
+		$fields["hg_notes"] = CentreonDB::escape($ret["hg_notes"]);
+		$fields["hg_notes_url"] = CentreonDB::escape($ret["hg_notes_url"]);
+		$fields["hg_action_url"] = CentreonDB::escape($ret["hg_action_url"]);
+		$fields["hg_icon_image"] = CentreonDB::escape($ret["hg_icon_image"]);
+		$fields["hg_map_icon_image"] = CentreonDB::escape($ret["hg_map_icon_image"]);
+		$fields["hg_comment"] = CentreonDB::escape($ret["hg_comment"]);
 		$fields["hg_activate"] = $ret["hg_activate"]["hg_activate"];
 
 		if (isset( $ret["hg_hosts"]))
@@ -315,7 +315,7 @@
 		}
 
 
-		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id, htmlentities($ret["hg_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
+		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id, CentreonDB::escape($ret["hg_name"]), "c", $fields);
 	}
 
 	function updateHostGroupHosts($hg_id, $ret = array())	{

@@ -496,12 +496,12 @@
 	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
         $xml->startElement('unhandledServices');
-	    $xml->writeElement('servicename', $val);
-	    $xml->writeElement('hostname', $tab_hostname[$key]);
+	    $xml->writeElement('servicename', $val, false);
+	    $xml->writeElement('hostname', $tab_hostname[$key], false);
 	    $xml->writeElement('ip', $tab_ip[$key]);
 	    $xml->writeElement('duration', $tab_duration[$key]);
 	    $xml->writeElement('last', $tab_last[$key]);
-	    $xml->writeElement('output', $tab_output[$key]);
+	    $xml->writeElement('output', $tab_output[$key], false);
 	    $xml->writeElement('icon', $tab_icone[$key]);
 	    $xml->writeElement('sid', $tab_objectid[$key]);
 	    $xml->writeElement('hid', $tab_hobjectid[$key]);

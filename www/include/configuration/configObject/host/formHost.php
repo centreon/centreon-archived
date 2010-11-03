@@ -243,10 +243,7 @@
 		$od_macro_id[$j] = $od_macro["host_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
 		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
-		$od_macro_name[$j] = str_replace("#BS#", "\\", $od_macro_name[$j]);
-		$od_macro_name[$j] = str_replace("#S#", "/", $od_macro_name[$j]);
-		$od_macro_value[$j] = str_replace("#BS#", "\\", $od_macro["host_macro_value"]);
-		$od_macro_value[$j] = str_replace("#S#", "/", $od_macro_value[$j]);
+		$od_macro_value[$j] = $od_macro["host_macro_value"];
 		$od_macro_host_id[$j] = $od_macro["host_host_id"];
 		$j++;
 	}
@@ -341,7 +338,7 @@
 		<script type="text/javascript">
 		globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;
 		globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
-		globalMacroTabValue[<?php echo $k;?>] = '<?php echo $od_macro_value[$k];?>';
+		globalMacroTabValue[<?php echo $k;?>] = '<?php echo addslashes($od_macro_value[$k]);?>';
 		globalMacroTabHostId[<?php echo $k;?>] = <?php echo $od_macro_host_id[$k];?>;
 		</script>
 	<?php

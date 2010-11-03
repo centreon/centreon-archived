@@ -39,8 +39,8 @@
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 
-	//require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once "/etc/centreon/centreon.conf.php";
+	require_once "@CENTREON_ETC@/centreon.conf.php";
+	//require_once "/etc/centreon/centreon.conf.php";
 
 	require_once $centreon_path."/www/class/centreonDB.class.php";
 	require_once $centreon_path."/www/class/centreonSession.class.php";

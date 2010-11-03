@@ -56,6 +56,7 @@
 	 * pearDB init
 	 */
 	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "/etc/centreon/centreon.conf.php";
 
 	require_once $centreon_path . "www/include/eventLogs/common-Func.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
@@ -448,7 +449,10 @@
 			    /*
 			     * Servie informations
 			     */
-				$service_description = $serviceCache[$id];
+				$service_description = "";
+				if (isset($serviceCache) && isset($serviceCache[$id])) {
+				    $service_description = $serviceCache[$id];
+				}
 
 				if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$service_description])) || $is_admin)
 					$tab_svc[$host_name][$id] = $service_description;

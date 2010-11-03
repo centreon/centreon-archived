@@ -36,7 +36,8 @@
  *
  */
 
-    include_once("/etc/centreon/centreon.conf.php");
+    include_once "@CENTREON_ETC@/centreon.conf.php";
+    //include_once "/etc/centreon/centreon.conf.php";
 	require_once $centreon_path . "/www/class/centreonDB.class.php";
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
 
@@ -56,10 +57,10 @@
 
     if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId']) && isset($_GET['o'])) {
 
-        $cmdId = htmlentities($_GET['cmdId'], ENT_QUOTES, "UTF-8");
-        $svcId = htmlentities($_GET['svcId'], ENT_QUOTES, "UTF-8");
-        $svcTplId = htmlentities($_GET['svcTplId'], ENT_QUOTES, "UTF-8");
-        $o = htmlentities($_GET['o'], ENT_QUOTES, "UTF-8");
+        $cmdId = CentreonDB::escape($_GET['cmdId']);
+        $svcId = CentreonDB::escape($_GET['svcId']);
+        $svcTplId = CentreonDB::escape($_GET['svcTplId']);
+        $o = CentreonDB::escape($_GET['o']);
 
         if (!$cmdId && $svcTplId) {
             while (1) {
@@ -91,8 +92,6 @@
         if (is_array($exampleTab)) {
             foreach ($exampleTab as $key => $value) {
                 $nbTmp = $key;
-                $value = str_replace('#S#', "/", $value);
-                $value = str_replace('#BS#', "\\", $value);
                 $exampleTab['ARG'.$nbTmp] = $value;
                 unset($exampleTab[$key]);
             }
@@ -111,8 +110,6 @@
                 foreach($valueTab as $key => $value) {
                     $nbTmp = $key;
                     $valueTab['ARG'.$nbTmp] = $value;
-                    $valueTab['ARG'.$nbTmp] = str_replace('#S#', "/", $valueTab['ARG'.$nbTmp]);
-                    $valueTab['ARG'.$nbTmp] = str_replace('#BS#', "\\", $valueTab['ARG'.$nbTmp]);
                     unset($valueTab[$key]);
                 }
             } else {
@@ -140,10 +137,10 @@
                 $disabled = 1;
             }
             $xml->startElement('arg');
-            $xml->writeElement('name', $name);
-            $xml->writeElement('description', $description);
-            $xml->writeElement('value', isset($valueTab[$name]) ? $valueTab[$name] : "");
-            $xml->writeElement('example', isset($exampleTab[$name]) ? $exampleTab[$name] : "");
+            $xml->writeElement('name', $name, false);
+            $xml->writeElement('description', $description, false);
+            $xml->writeElement('value', isset($valueTab[$name]) ? $valueTab[$name] : "", false);
+            $xml->writeElement('example', isset($exampleTab[$name]) ? $exampleTab[$name] : "", false);
             $xml->writeElement('style', $style);
             $xml->writeElement('disabled', $disabled);
             $xml->endElement();

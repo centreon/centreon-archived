@@ -52,7 +52,7 @@
 	 */
 	$SearchTool = NULL;
 	if (isset($search) && $search)
-		$SearchTool = " (hg_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND ";
+		$SearchTool = " (hg_name LIKE '%".CentreonDB::escape($search)."%' OR hg_alias LIKE '%".CentreonDB::escape($search)."%') AND ";
 
 	$request = "SELECT COUNT(*) FROM hostgroup WHERE $SearchTool hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation)";
 
@@ -73,9 +73,9 @@
 	$centreon->cache->initHostGroupCache($pearDB);
 
 	/* Access level */
-	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r'; 
+	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 	$tpl->assign('mode_access', $lvl_access);
-	
+
 	/*
 	 * start header menu
 	 */

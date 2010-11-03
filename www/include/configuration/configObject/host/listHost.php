@@ -106,7 +106,7 @@
 	$SearchTool = "";
 	if (isset($search) && $search) {
 		$search = str_replace('_', "\_", $search);
-		$SearchTool = "(host_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR host_address LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') AND ";
+		$SearchTool = "(host_name LIKE '%".CentreonDB::escape($search)."%' OR host_alias LIKE '%".CentreonDB::escape($search)."%' OR host_address LIKE '%".CentreonDB::escape($search)."%') AND ";
 	}
 
 
@@ -122,16 +122,18 @@
 	 * Launch Request
 	 */
 	if ($hostgroup) {
-	  if ($poller)
-	    $DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup'");
-	  else
-	    $DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup'");
-	 } else {
-	  if ($poller)
-	    $DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller'");
-	  else
-	    $DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host h $templateFROM WHERE $SearchTool $templateWHERE host_register = '1'");
-	 }
+        if ($poller) {
+    	    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup'");
+        } else {
+    	    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host h, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup'");
+        }
+    } else {
+        if ($poller) {
+	        $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller'");
+        } else {
+            $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host h $templateFROM WHERE $SearchTool $templateWHERE host_register = '1'");
+        }
+    }
 
 
 	$tmp =& $DBRESULT->fetchRow();
@@ -278,8 +280,8 @@
 							"RowMenu_icone"=> $host_icone,
 							"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
 							"RowMenu_desc"=>$host["host_alias"],
-							"RowMenu_address"=>htmlentities($host["host_address"]),
-							"RowMenu_poller"=>htmlentities(isset($tab_relation[$host["host_id"]]) ? $tab_relation[$host["host_id"]] : ""),
+							"RowMenu_address"=>$host["host_address"],
+							"RowMenu_poller"=> isset($tab_relation[$host["host_id"]]) ? $tab_relation[$host["host_id"]] : "",
 							"RowMenu_parent"=>$tplStr,
 							"RowMenu_status"=>$host["host_activate"] ? _("Enabled") : _("Disabled"),
 							"RowMenu_options"=>$moptions);
@@ -291,10 +293,10 @@
 	 * Header title for same name - Ajust pattern lenght with (0, 4) param
 	 */
 
-	$pattern = NULL;
+	$pattern = null;
 	for ($i = 0; $i < count($elemArr); $i++)	{
 		# Searching for a pattern wich n+1 elem
-		if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 4)) && !$pattern)	{
+		if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 4)) && !$pattern) {
 			for ($j = 0; isset($elemArr[$i]["RowMenu_name"][$j]); $j++)	{
 				if (isset($elemArr[$i+1]["RowMenu_name"][$j]) && $elemArr[$i+1]["RowMenu_name"][$j] == $elemArr[$i]["RowMenu_name"][$j])
 					;
@@ -303,12 +305,12 @@
 			}
 			$pattern = substr($elemArr[$i]["RowMenu_name"], 0, $j);
 		}
-		if (strstr($elemArr[$i]["RowMenu_name"], $pattern))
+		if ($pattern && strstr($elemArr[$i]["RowMenu_name"], $pattern)) {
 			$elemArr[$i]["pattern"] = $pattern;
-		else	{
-			$elemArr[$i]["pattern"] = NULL;
-			$pattern = NULL;
-			if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 4)) && !$pattern)	{
+		} else {
+			$elemArr[$i]["pattern"] = null;
+			$pattern = null;
+			if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 4)) && !$pattern) {
 				for ($j = 0; isset($elemArr[$i]["RowMenu_name"][$j]); $j++)	{
 					if (isset($elemArr[$i+1]["RowMenu_name"][$j]) && $elemArr[$i+1]["RowMenu_name"][$j] == $elemArr[$i]["RowMenu_name"][$j])
 						;
@@ -347,7 +349,7 @@
 				"else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"this.form.elements['o1'].selectedIndex = 0");
-    $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
+    $form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
 
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
@@ -358,13 +360,13 @@
 				"else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"this.form.elements['o2'].selectedIndex = 0");
-    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
+    $form->addElement('select', 'o2', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
 
 	$o1 =& $form->getElement('o1');
-	$o1->setValue(NULL);
+	$o1->setValue(null);
 
 	$o2 =& $form->getElement('o2');
-	$o2->setValue(NULL);
+	$o2->setValue(null);
 
 	$tpl->assign('limit', $limit);
 
@@ -378,8 +380,9 @@
 	 */
 
 	$options = "<option value='0'>"._("All Pollers")."</option>";
-	foreach ($nagios_server as $key => $name)
+	foreach ($nagios_server as $key => $name) {
 		$options .= "<option value='$key' ".(($poller == $key) ? 'selected' : "").">$name</option>";
+	}
 
 	$tpl->assign("poller", $options);
 	unset($options);
@@ -387,18 +390,18 @@
 
 	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 	$options = "<option value='0'></options>";
-	while ($data =& $DBRESULT->fetchRow()){
-	  $options .= "<option value='".$data["hg_id"]."' ".(($hostgroup == $data["hg_id"]) ? 'selected' : "").">".$data["hg_name"]."</option>";
-	 }
+	while ($data =& $DBRESULT->fetchRow()) {
+        $options .= "<option value='".$data["hg_id"]."' ".(($hostgroup == $data["hg_id"]) ? 'selected' : "").">".$data["hg_name"]."</option>";
+    }
 
 	$tpl->assign('hostgroup', $options);
 	unset($options);
 
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
 	$options = "<option value='0'></options>";
-	while ($data =& $DBRESULT->fetchRow()){
-	  $options .= "<option value='".$data["host_id"]."' ".(($template == $data["host_id"]) ? 'selected' : "").">".$data["host_name"]."</option>";
-	 }
+	while ($data =& $DBRESULT->fetchRow()) {
+        $options .= "<option value='".$data["host_id"]."' ".(($template == $data["host_id"]) ? 'selected' : "").">".$data["host_name"]."</option>";
+    }
 
 	$tpl->assign('template', $options);
 	unset($options);

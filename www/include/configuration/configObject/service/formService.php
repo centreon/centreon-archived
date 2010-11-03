@@ -641,10 +641,10 @@
 	include_once("makeJS_formService.php");
 	for($k=0; isset($od_macro_id[$k]); $k++) {?>
 		<script type="text/javascript">
-		globalMacroTabId[<?php echo$k;?>] = <?php echo$od_macro_id[$k];?>;
-		globalMacroTabName[<?php echo$k;?>] = '<?php echo$od_macro_name[$k];?>';
-		globalMacroTabValue[<?php echo$k;?>] = '<?php echo$od_macro_value[$k];?>';
-		globalMacroTabSvcId[<?php echo$k;?>] = <?php echo$od_macro_svc_id[$k];?>;
+		globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;
+		globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
+		globalMacroTabValue[<?php echo $k;?>] = '<?php echo addslashes($od_macro_value[$k]);?>';
+		globalMacroTabSvcId[<?php echo $k;?>] = <?php echo $od_macro_svc_id[$k];?>;
 		</script>
 	<?php
 	}

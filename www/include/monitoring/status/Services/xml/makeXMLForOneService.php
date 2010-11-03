@@ -37,6 +37,7 @@
  */
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonDuration.class.php";
 	include_once $centreon_path . "www/class/centreonGMT.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";
@@ -179,8 +180,8 @@
 		if ($ndo["next_notification"] > 0)
 			$next_notification = $ndo["next_notification"];
 
-		$buffer->writeElement("service_description", $ndo["service_description"]);
-		$buffer->writeElement("hostname", $ndo["hostname"]);
+		$buffer->writeElement("service_description", $ndo["service_description"], false);
+		$buffer->writeElement("hostname", $ndo["hostname"], false);
 		$buffer->startElement("current_state");
 		$buffer->writeAttribute("color", $tab_color_service[$ndo["current_state"]]);
 		$buffer->text(_($tab_status_svc[$ndo["current_state"]]));
