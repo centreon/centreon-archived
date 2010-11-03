@@ -478,16 +478,23 @@ class CentreonGraph	{
 
 	private function _getServiceGraphID()	{
 		$service_id = $this->indexData["service_id"];
+
+		$tab = array();
 		while (1) {
 			$DBRESULT =& $this->DB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
 			$row =& $DBRESULT->fetchRow();
 			if ($row["graph_id"]) {
 				$this->graphID = $row["graph_id"];
 				return $this->graphID;
-			} else if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
+			} elseif ($row["service_template_model_stm_id"]) {
+				if (isset($tab[$row['service_template_model_stm_id']])) {
+				    break;
+				}
+			    $service_id = $row["service_template_model_stm_id"];
+			    $tab[$service_id] = 1;
+			} else {
 				break;
+			}
 		}
 		return $this->graphID;
 	}

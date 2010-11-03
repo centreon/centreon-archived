@@ -62,6 +62,7 @@
         $svcTplId = CentreonDB::escape($_GET['svcTplId']);
         $o = CentreonDB::escape($_GET['o']);
 
+        $tab = array();
         if (!$cmdId && $svcTplId) {
             while (1) {
 			    $query4 = "SELECT service_template_model_stm_id, command_command_id, command_command_id_arg FROM `service` WHERE service_id = '" . $svcTplId . "'";
@@ -74,7 +75,11 @@
 			 	if (!isset($row4['service_template_model_stm_id']) || !$row4['service_template_model_stm_id']) {
 		 			break;
 			 	}
+			 	if (isset($tab[$row4['service_template_model_stm_id']])) {
+                    break;
+			 	}
 			 	$svcTplId = $row4['service_template_model_stm_id'];
+                $tab[$svcTplId] = 1;
             }
         }
 

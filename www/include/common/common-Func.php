@@ -504,6 +504,7 @@
 		if (!$service_id)
 	    	return;
 
+	    $tab = array();
 	  	while (1) {
 	  		$DBRESULT =& $pearDB->query("SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc WHERE scr.service_service_id = '".$service_id."' AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'");
 	    	if ($DBRESULT->numRows()) {
@@ -514,10 +515,15 @@
 	    	} else {
 	      		$DBRESULT =& $pearDB->query("SELECT service_template_model_stm_id FROM service WHERE service_id = '".$service_id."'");
 	      		$row =& $DBRESULT->fetchRow();
-	      		if ($row["service_template_model_stm_id"])
-					$service_id = $row["service_template_model_stm_id"];
-	      		else
+	      		if ($row["service_template_model_stm_id"]) {
+					if (isset($tab[$row['service_template_model_stm_id']])) {
+					    break;
+					}
+	      		    $service_id = $row["service_template_model_stm_id"];
+					$tab[$service_id] = 1;
+	      		} else {
 					return array();
+	      		}
 	    	}
 	  	}
 	}
@@ -915,52 +921,72 @@
 	function getMyServiceField($service_id = NULL, $field)	{
 		if (!$service_id) return;
 		global $pearDB;
-		while(1)	{
+		$tab = array();
+		while (1)	{
 			$DBRESULT =& $pearDB->query("SELECT `".$field."`, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
 			$row =& $DBRESULT->fetchRow();
 			$field_result = $row[$field];
-			if ($row[$field])
+			if ($row[$field]) {
 				return $row[$field];
-			else if ($row["service_template_model_stm_id"])
+			} elseif ($row["service_template_model_stm_id"]) {
+				if (isset($tab[$row['service_template_model_stm_id']])) {
+			        break;
+				}
 				$service_id = $row["service_template_model_stm_id"];
-			else
+				$tab[$service_id] = 1;
+			} else {
 				break;
+			}
 		}
 	}
 
 	function getMyServiceExtendedInfoField($service_id = NULL, $field)	{
 		if (!$service_id) return;
 		global $pearDB;
+
+		$tab = array();
 		while(1) {
-			$DBRESULT =& $pearDB->query("SELECT `extended_service_information`.`".$field."`, `service`.`service_template_model_stm_id` FROM `service`, `extended_service_information` WHERE `extended_service_information`.`service_service_id` = '".$service_id."' AND `service`.`service_id` = '".$service_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT `extended_service_information`.`".$field."`, `service`.`service_template_model_stm_id` FROM `service`, `extended_service_information` WHERE `extended_service_information`.`service_service_id` = '".$service_id."' AND `service`.`service_id` = '".$service_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			$field_result = $row[$field];
-			if ($row[$field])
+			if ($row[$field]) {
 				return $row[$field];
-			else if ($row["service_template_model_stm_id"])
+			} elseif ($row["service_template_model_stm_id"]) {
+				if (isset($tab[$row['service_template_model_stm_id']])) {
+                    break;
+				}
 				$service_id = $row["service_template_model_stm_id"];
-			else
+				$tab[$service_id] = 1;
+			} else {
 				break;
+			}
 		}
 	}
 
 	function getMyServiceExtendedInfoImage($service_id = NULL, $field)	{
 		if (!$service_id) return;
 		global $pearDB;
-		while(1)	{
+
+		$tab = array();
+		while(1) {
 			$DBRESULT =& $pearDB->query("SELECT s.service_template_model_stm_id, `".$field."` FROM service s, extended_service_information esi WHERE s.service_id = '".$service_id."' AND esi.service_service_id = s.service_id LIMIT 1");
 			$row =& $DBRESULT->fetchRow();
 			if (isset($row[$field]) && $row[$field])	{
 				$DBRESULT =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '".$row[$field]."' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
 				$row =& $DBRESULT->fetchRow();
-				if (isset($row["dir_alias"]) && isset($row["img_path"]) && $row["dir_alias"] && $row["img_path"])
+				if (isset($row["dir_alias"]) && isset($row["img_path"]) && $row["dir_alias"] && $row["img_path"]) {
 					return $row["dir_alias"]."/".$row["img_path"];
-			}
-			else	{
-				if ($row["service_template_model_stm_id"])
+				}
+			} else {
+				if ($row["service_template_model_stm_id"]) {
+					if (isset($tab[$row['service_template_model_stm_id']])) {
+				        break;
+					}
 					$service_id = $row["service_template_model_stm_id"];
-				else
+					$tab[$service_id] = 1;
+				} else {
 					return NULL;
+				}
 			}
 		}
 	}
@@ -970,46 +996,65 @@
 	function getMyServiceName($service_id = NULL)	{
 		if (!$service_id) return;
 		global $pearDB;
+		$tab = array();
 		while (1) {
 			$DBRESULT =& $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
 			$row =& $DBRESULT->fetchRow();
 			if ($row["service_description"])	{
 				return html_entity_decode(db2str($row["service_description"]), ENT_QUOTES, "UTF-8");
-			} else if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
+			} elseif ($row["service_template_model_stm_id"]) {
+			    if (isset($tab[$row['service_template_model_stm_id']])) {
+			        break;
+			    }
+			    $service_id = $row["service_template_model_stm_id"];
+			    $tab[$service_id] = 1;
+			} else {
 				break;
+			}
 		}
 	}
 
-	function getMyServiceAlias($service_id = NULL)	{
+	function getMyServiceAlias($service_id = NULL) {
 		if (!$service_id) return;
 		global $pearDB;
-		while(1)	{
+
+		$tab = array();
+		while(1) {
 			$DBRESULT =& $pearDB->query("SELECT service_alias, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
 			$row =& $DBRESULT->fetchRow();
 			if ($row["service_alias"])	{
 				return html_entity_decode(db2str($row["service_alias"]), ENT_QUOTES, "UTF-8");
-			}
-			else if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
+			} elseif ($row["service_template_model_stm_id"]) {
+				if (isset($tab[$row['service_template_model_stm_id']])) {
+				    break;
+				}
+			    $service_id = $row["service_template_model_stm_id"];
+				$tab[$service_id] = 1;
+			} else {
 				break;
+			}
 		}
 	}
 
-	function getMyServiceGraphID($service_id = NULL)	{
+	function getMyServiceGraphID($service_id = NULL) {
 		if (!$service_id) return;
 		global $pearDB;
-		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
-			if ($row["graph_id"])
+
+		$tab = array();
+		while(1) {
+			$DBRESULT = $pearDB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+			$row = $DBRESULT->fetchRow();
+			if ($row["graph_id"]) {
 				return $row["graph_id"];
-			else if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
+			} elseif ($row["service_template_model_stm_id"]) {
+				if (isset($tab[$row['service_template_model_stm_id']])) {
+				    break;
+				}
+			    $service_id = $row["service_template_model_stm_id"];
+				$tab[$service_id] = 1;
+			} else {
 				break;
+			}
 		}
 		return NULL;
 	}
@@ -1185,21 +1230,28 @@
 	function isACheckGraphService($service_id = NULL)	{
 		if (!$service_id)	return;
 		global $pearDB;
-		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT command_command_id, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+
+		$tab = array();
+		while(1) {
+			$DBRESULT = $pearDB->query("SELECT command_command_id, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["command_command_id"])	{
-				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
-				$row2 =& $DBRESULT2->fetchRow();
-				if (strstr($row2["command_name"], "check_graph_"))
+				$DBRESULT2 = $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
+				$row2 = $DBRESULT2->fetchRow();
+				if (strstr($row2["command_name"], "check_graph_")) {
 					return true;
-				else
+				} else {
 					return false;
-			}
-			else if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
+				}
+			} elseif ($row["service_template_model_stm_id"]) {
+				if ($tab[$row['service_template_model_stm_id']]) {
+				    break;
+				}
+			    $service_id = $row["service_template_model_stm_id"];
+			    $tab[$service_id] = 1;
+			} else {
 				return NULL;
+			}
 		}
 		return NULL;
 	}
@@ -1207,18 +1259,24 @@
 	function getMyServiceTemplateModels($service_id = NULL)	{
 		if (!$service_id) return;
 		global $pearDB;
+
 		$tplArr = array();
-		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
-			if ($row["service_description"])
+		while(1) {
+			$DBRESULT = $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
+			if ($row["service_description"]) {
 				$tplArr[$service_id] = html_entity_decode(db2str($row["service_description"]), ENT_QUOTES, "UTF-8");
-			else
+			} else {
 				break;
-			if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
+			}
+			if ($row["service_template_model_stm_id"]) {
+				if (isset($tplArr[$row['service_template_model_stm_id']])) {
+				    break;
+				}
+			    $service_id = $row["service_template_model_stm_id"];
+			} else {
 				break;
+			}
 		}
 		return ($tplArr);
 	}
@@ -1227,38 +1285,50 @@
 	## COMMAND
 	#
 
-	function getMyCheckCmdName($service_id = NULL)	{
+	function getMyCheckCmdName($service_id = NULL) {
 		if (!$service_id)	return;
 		global $pearDB;
-		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT command_command_id, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+
+		$tab = array();
+		while(1) {
+			$DBRESULT = $pearDB->query("SELECT command_command_id, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["command_command_id"])	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
-				$row2 =& $DBRESULT2->fetchRow();
+				$row2 = $DBRESULT2->fetchRow();
 				return ($row2["command_name"]);
-			}
-			else if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
+			} elseif ($row["service_template_model_stm_id"]) {
+				if (isset($tab[$row['service_template_model_stm_id']])) {
+				    break;
+				}
+			    $service_id = $row["service_template_model_stm_id"];
+				$tab[$service_id] = 1;
+			} else {
 				return NULL;
+			}
 		}
 		return NULL;
 	}
 
-	function getMyCheckCmdArg($service_id = NULL)	{
+	function getMyCheckCmdArg($service_id = NULL) {
 		if (!$service_id)	return;
 		global $pearDB;
-		while(1)	{
+
+		$tab = array();
+		while(1) {
 			$DBRESULT =& $pearDB->query("SELECT command_command_id_arg, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
 			$row =& $DBRESULT->fetchRow();
 			if ($row["command_command_id_arg"])	{
 				return (db2str($row["command_command_id_arg"]));
-			}
-			else if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
+			} elseif ($row["service_template_model_stm_id"]) {
+				if (isset($tab[$row['service_template_model_stm_id']])) {
+				    break;
+				}
+			    $service_id = $row["service_template_model_stm_id"];
+				$tab[$service_id] = 1;
+			} else {
 				return NULL;
+			}
 		}
 		return NULL;
 	}
