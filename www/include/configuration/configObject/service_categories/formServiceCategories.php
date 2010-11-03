@@ -66,6 +66,7 @@
 	/*
 	 * Get Service Available
 	 */
+	/*
 	$hServices = array();
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	while ($elem =& $DBRESULT->fetchRow())	{
@@ -76,6 +77,7 @@
 			$hServices[$key] = $elem["host_name"]." / ".$index;
 		}
 	}
+	*/
 
 	/*
 	 * Get Service Template Available
