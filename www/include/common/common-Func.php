@@ -606,7 +606,7 @@
 		}
 	}
 
-	function getMyHostExtendedInfoImage($host_id = NULL, $field, $flag1stLevel = NULL)	{
+	function getMyHostExtendedInfoImage($host_id = null, $field, $flag1stLevel = null, $antiLoop = null)	{
 		global $pearDB, $oreon;
 
 		if (!$host_id)
@@ -625,10 +625,11 @@
 					return $row2["dir_alias"]."/".$row2["img_path"];
 			}
 			else {
-				if ($result_field = getMyHostExtendedInfoImage($host_id, $field))
+				if ($result_field = getMyHostExtendedInfoImage($host_id, $field)) {
 					return $result_field;
+				}
 			}
-			return NULL;
+			return null;
 		} else {
 			$rq = "SELECT host_tpl_id " .
 				"FROM host_template_relation " .
@@ -646,13 +647,21 @@
 					$row3 =& $DBRESULT3->fetchRow();
 					if (isset($row3["dir_alias"]) && isset($row3["img_path"]) && $row3["dir_alias"] && $row3["img_path"])
 						return $row3["dir_alias"]."/".$row3["img_path"];
-				}
-				else {
-					if ($result_field = getMyHostExtendedInfoImage($row['host_tpl_id'], $field))
-						return $result_field;
+				} else {
+					if (isset($antiLoop) && $antiLoop) {
+					    if ($antiLoop != $row['host_tpl_id']) {
+    					    if ($result_field = getMyHostExtendedInfoImage($row['host_tpl_id'], $field, null, $antiLoop)) {
+        						return $result_field;
+        				    }
+					    }
+					} else {
+					    if ($result_field = getMyHostExtendedInfoImage($row['host_tpl_id'], $field, null, $row['host_tpl_id'])) {
+    						return $result_field;
+    				    }
+					}
 				}
 			}
-			return NULL;
+			return null;
 		}
 	}
 
@@ -691,12 +700,13 @@
 
 	function getMyHostMultipleTemplateModels($host_id = NULL)	{
 		if (!$host_id) return;
+
 		global $pearDB;
 		$tplArr = array();
-		$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = '".$host_id."' ORDER BY `order`");
-		while($row =& $DBRESULT->fetchRow())	{
-			$DBRESULT2 =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$row['host_tpl_id']."' LIMIT 1");
-			$hTpl =& $DBRESULT2->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = '".$host_id."' ORDER BY `order`");
+		while($row = $DBRESULT->fetchRow()) {
+			$DBRESULT2 = $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$row['host_tpl_id']."' LIMIT 1");
+			$hTpl = $DBRESULT2->fetchRow();
 			$tplArr[$row['host_tpl_id']] = html_entity_decode($hTpl["host_name"], ENT_QUOTES, "UTF-8");
 		}
 		return ($tplArr);

@@ -145,7 +145,7 @@
  	 * @param unknown_type $hostParam
  	 * @param unknown_type $string
  	 */
- 	public function replaceMacroInString($hostParam, $string) {
+ 	public function replaceMacroInString($hostParam, $string, $antiLoop = null) {
 		if (is_numeric($hostParam)) {
  	        $host_id = $hostParam;
 		} elseif (is_string($hostParam)) {
@@ -186,7 +186,11 @@
 	 		$rq2 = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$host_id."' ORDER BY `order`";
 	 		$DBRES2 =& $this->DB->query($rq2);
 	 		while ($row2 =& $DBRES2->fetchRow()) {
-	 			$string = $this->replaceMacroInString($row2['host_tpl_id'], $string);
+	 		    if (!isset($antiLoop) || !$antiLoop) {
+	 		        $string = $this->replaceMacroInString($row2['host_tpl_id'], $string, $row2['host_tpl_id']);
+	 		    } elseif ($row2['host_tpl_id'] != $antiLoop) {
+	 		        $string = $this->replaceMacroInString($row2['host_tpl_id'], $string);
+	 		    }
 	 		}
  		}
 		return $string;
