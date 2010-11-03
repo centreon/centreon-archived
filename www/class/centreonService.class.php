@@ -108,7 +108,7 @@
  	/*
  	 *  Returns a string that replaces on demand macros by their values
  	 */
- 	public function replaceMacroInString($svc_id, $string) {
+ 	public function replaceMacroInString($svc_id, $string, $antiLoop = null) {
  		$rq = "SELECT service_register FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
         $DBRES =& $this->DB->query($rq);
         if (!$DBRES->numRows())
@@ -138,7 +138,11 @@
 	 		$rq2 = "SELECT service_template_model_stm_id FROM service WHERE service_id = '".$svc_id."'";
 	 		$DBRES2 =& $this->DB->query($rq2);
 	 		while ($row2 =& $DBRES2->fetchRow()) {
-	 			$string = $this->replaceMacroInString($row2['service_template_model_stm_id'], $string);
+	 		    if (!isset($antiLoop) || !$antiLoop) {
+	 		        $string = $this->replaceMacroInString($row2['service_template_model_stm_id'], $string, $row2['service_template_model_stm_id']);
+	 			} elseif ($row2['service_template_model_stm_id'] != $antiLoop) {
+	 			    $string = $this->replaceMacroInString($row2['service_template_model_stm_id'], $string, $antiLoop);
+	 			}
 	 		}
  		}
  		return $string;
