@@ -307,4 +307,18 @@ class CentreonDB
 			}
 		}
 	}
+	
+	/**
+	 * return number of rows
+	 * 
+	 */
+	public function numberRows() {
+		$number = 0;
+		$DBRESULT = $this->query("SELECT FOUND_ROWS() AS number");
+		$data = $DBRESULT->fetchRow();
+		if (isset($data["number"])) {
+			$number = $data["number"];
+		}
+		return $number;
+	}
 }
