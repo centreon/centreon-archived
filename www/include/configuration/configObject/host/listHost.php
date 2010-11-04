@@ -117,35 +117,9 @@
 	  $templateFROM = "";
 	  $templateWHERE = "";
 	}
-
-	/*
-	 * Launch Request
-	 */
-	if ($hostgroup) {
-        if ($poller) {
-    	    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup'");
-        } else {
-    	    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host h, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup'");
-        }
-    } else {
-        if ($poller) {
-	        $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host h, ns_host_relation $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller'");
-        } else {
-            $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host h $templateFROM WHERE $SearchTool $templateWHERE host_register = '1'");
-        }
-    }
-
-
-	$tmp =& $DBRESULT->fetchRow();
-	$DBRESULT->free();
-	$rows = $tmp["COUNT(*)"];
-
-	include("./include/common/checkPagination.php");
-
 	/*
 	 * Smarty template Init
 	 */
-
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
@@ -169,7 +143,6 @@
 	/*
 	 * Host list
 	 */
-
 	$nagios_server = array();
 	$DBRESULT =& $pearDB->query("SELECT ns.name, ns.id FROM nagios_server ns ORDER BY ns.name");
 	while ($relation =& $DBRESULT->fetchRow()) {
@@ -208,16 +181,19 @@
 	 */
 	if ($hostgroup) {
 	  if ($poller)
-	    $DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
+	    $DBRESULT =& $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
 	  else
-	    $DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
+	    $DBRESULT =& $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
 	 } else {
 	  if ($poller)
-	    $DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
+	    $DBRESULT =& $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
 	  else
-	    $DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
+	    $DBRESULT =& $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
 	}
 
+	$rows = $pearDB->numberRows();
+    include("./include/common/checkPagination.php");
+	
 	$search = tidySearchKey($search, $advanced_search);
 
 	$elemArr = array();
@@ -239,7 +215,6 @@
 			/*
 			 * TPL List
 			 */
-
 			$tplArr = array();
 			$tplStr = "";
 
