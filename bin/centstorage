@@ -209,16 +209,21 @@ sub movePerfDataFile($){
     my $PERFDATA = $_[0];
 
     # Copy file before reading
-    if (copy($PERFDATA, $PERFDATA."_read")){
-	# Erase old perfdata file.
-	`echo "# New File " > $PERFDATA`;
-	undef($PERFDATA);
-	return(1);
+    if ( -f $PERFDATA . "_read" ) {
+    	writeLogFile("The " . $PERFDATA . "_read already exists.");
+    	return(1);
     } else {
-	writeLogFile("Cannot copy $PERFDATA file : $!");
-	undef($PERFDATA);
-	return (0);
-    }
+	    if (copy($PERFDATA, $PERFDATA."_read")){
+			# Erase old perfdata file.
+			`echo "# New File " > $PERFDATA`;
+			undef($PERFDATA);
+			return(1);
+	    } else {
+			writeLogFile("Cannot copy $PERFDATA file : $!");
+			undef($PERFDATA);
+			return (0);
+	    }
+	}
 }
 
 ########################################
