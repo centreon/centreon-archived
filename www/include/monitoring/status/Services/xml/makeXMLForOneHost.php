@@ -104,10 +104,18 @@
 	$tab_color_host[1] = $general_opt["color_down"];
 	$tab_color_host[2] = $general_opt["color_unreachable"];
 
-	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
+	$tab_status_svc = array("0" => _("OK"),
+							"1" => _("WARNING"),
+							"2" => _("CRITICAL"),
+							"3" => _("UNKNOWN"),
+							"4" => _("PENDING"));
 
-	$state_type = array("1" => "HARD","0" => "SOFT");
+	$tab_status_host = array("0" => _("UP"),
+							 "1" => _("DOWN"),
+							 "2" => _("UNREACHABLE"));
+
+	$state_type = array("1" => "HARD",
+						"0" => "SOFT");
 
 	/* Get Host status */
 	$rq1 =  " SELECT nhs.current_state," .
@@ -181,7 +189,7 @@
 		$buffer->writeElement("address", $ndo["address"]);
 		$buffer->startElement("current_state");
 		$buffer->writeAttribute("color", $tab_color_host[$ndo["current_state"]]);
-		$buffer->text(_($tab_status_host[$ndo["current_state"]]));
+		$buffer->text(_($tab_status_host[$ndo["current_state"]]), false);
 		$buffer->endElement();
 		$buffer->writeElement("current_state_name", _("Host Status"), 0);
 		$buffer->startElement("plugin_output");

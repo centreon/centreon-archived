@@ -35,7 +35,8 @@
  * SVN : $Id$
  *
  */
-	include_once "/etc/centreon/centreon.conf.php";
+	//include_once "/etc/centreon/centreon.conf.php";
+    include_once "@CENTREON_ETC@/centreon.conf.php";
 
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
@@ -191,16 +192,16 @@
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 		foreach ($tab["tab_svc"] as $svc => $state) {
 			$obj->XML->startElement("svc");
-			$obj->XML->writeElement("sn", $svc);
+			$obj->XML->writeElement("sn", $svc, false);
 			$obj->XML->writeElement("snl", urlencode($svc));
 			$obj->XML->writeElement("sc", $obj->colorService[$state]);
 			$obj->XML->endElement();
 		}
 		$obj->XML->writeElement("o", $ct++);
 		$obj->XML->writeElement("ico", $tabIcone[$host_name]);
-		$obj->XML->writeElement("hn", $host_name);
+		$obj->XML->writeElement("hn", $host_name, false);
 		$obj->XML->writeElement("hnl", urlencode($host_name));
-		$obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
+		$obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
 		$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
 		$obj->XML->endElement();
 	}

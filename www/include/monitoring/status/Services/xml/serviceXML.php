@@ -412,11 +412,11 @@
 				$obj->XML->writeElement("sd", 	$ndo["service_description"], false);
 			}
 			$obj->XML->writeElement("sico", $ndo["icon_image"]);
-			$obj->XML->writeElement("sd", 	$ndo["service_description"]);
+			//$obj->XML->writeElement("sd", 	$ndo["service_description"]);
 			$obj->XML->writeElement("sdl", 	urlencode($ndo["service_description"]));
 			$obj->XML->writeElement("svc_id", $ndo["object_id"]);
 			$obj->XML->writeElement("sc", 	$obj->colorService[$ndo["current_state"]]);
-			$obj->XML->writeElement("cs", 	_($obj->statusService[$ndo["current_state"]]));
+			$obj->XML->writeElement("cs", 	_($obj->statusService[$ndo["current_state"]]), false);
 			$obj->XML->writeElement("po", 	$ndo["plugin_output"], false);
 			$obj->XML->writeElement("ca", 	$ndo["current_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
 			$obj->XML->writeElement("ne", 	$ndo["notifications_enabled"]);

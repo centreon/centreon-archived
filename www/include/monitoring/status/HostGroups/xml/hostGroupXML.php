@@ -188,7 +188,7 @@
 				$obj->XML->startElement("l");
 				$obj->XML->writeAttribute("class", $class);
 				$obj->XML->writeElement("o", $ct++);
-				$obj->XML->writeElement("hn", $name);
+				$obj->XML->writeElement("hn", $name, false);
 				$obj->XML->writeElement("hu", $stat["h"][0]);
 				$obj->XML->writeElement("huc", $obj->colorHost[0]);
 				$obj->XML->writeElement("hd", $stat["h"][1]);
