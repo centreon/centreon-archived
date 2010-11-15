@@ -57,12 +57,30 @@ use File::stat;
 use Getopt::Long;
 use POSIX;
 
-use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $data $appID);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $opt_p $data);
 
 require "@CENTREON_ETC@/conf.pm";
 
 # Define Var lib dir
 my $VarLib = "@CENTREON_VARLIB@";
+
+# logAnalyser's lock file
+my $lock_file = "$VarLib/logAnalyser.lock";
+my $cmdtmp;
+my $pid;
+if (-e "$lock_file") {
+   chomp($pid = `cat $lock_file`);
+   my @progTab = split(/\//,$0);
+   my $progName = pop(@progTab);
+   my $cmd = "ps -p ".$pid." | grep ".$progName;
+   $cmdtmp = `$cmd`;
+   if (length($cmdtmp) > 0) {
+      print("$progName is already running... (pid=$pid)\n");
+      exit;
+   }
+}
+$pid = getpgrp(0);
+$cmdtmp = `echo $pid > $lock_file`;
 
 ## Init Date
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
@@ -73,42 +91,35 @@ my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql
 # Init MySQL Connexion
 my $dbhoreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 
-# ##############################
-# Lock in MySQL
-my $sth = $dbhoreon->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'logAnalyzer'");
-if (!$sth->execute) {
-    die "Error:" . $sth->errstr . "\n";
-}
-$data = $sth->fetchrow_hashref();
-
-my $sthbis;
-if (defined($data->{'id'})) {
-    if (!defined($data->{"is_running"}) || $data->{"is_running"} == 0) {
-        $appID = $data->{"id"};
-        $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
-        if (!$sthbis->execute) {
-            die "Error:" . $sthbis->errstr . "\n";
-        }
-    } else {
-        exit(1);
-    }
-} else {
-    my $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('logAnalyzer', '1', '1')");
-    if (!$sthbis->execute) {
-        die "Error:" . $sthbis->errstr . "\n";
-    }
-}
-
-
 Getopt::Long::Configure('bundling');
 GetOptions("h" => \$opt_h, "help" => \$opt_h,
-           "a" => \$opt_a, "archives" => \$opt_a);
+           "a" => \$opt_a, "archives" => \$opt_a,
+		   "p=s" => \$opt_p, "poller" => \$opt_p);
 
 if ($opt_h) {
     print " Usage : $0 :\n";
     print "    -a (--archives) load data from log archives to database\n";
+	print "    -p (--poller <value>) load data from log archives to database from specific poller ID\n";
     print "    -h (--help) show help\n";
     exit(0);
+}
+
+if (defined($opt_p)) {
+	if ($opt_p =~ m/\d+/) {
+		my $sth = $dbh->prepare("SELECT `instance_name` FROM `instance` WHERE `instance_id` = '".$opt_p."'");
+		if (!$sth->execute) {
+			die "Error:" . $sth->errstr . "\n";
+		}
+		my $result = $sth->rows();
+		$sth->finish();
+		if ($result ne 1) {
+			print "Invalid poller ID 1\n";
+			exit (1);
+		}
+	} else {
+		print "Invalid poller ID\n";
+		exit (1);
+	}
 }
 
 # Get conf Data
@@ -306,8 +317,9 @@ sub parseFile ($$) {
 		    $ctime = $1;
 		    my @tab = split(/;/, $2);
 		    $tab[0] =~ s/\\/\\\\/g;
-            $tab[0] =~ s/\'/\\\'/g;
-		    $tab[5] =~ s/\'/\\\'/g;
+			$tab[0] =~ s/\'/\\\'/g;
+			$tab[5] =~ s/\\/\\\\/g;
+			$tab[5] =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `notification_contact`, `output`, `instance`) VALUES ('11', '$ctime', '".$tab[0]."', '".$tab[4]."', '".$tab[5]."','".$instance."')";
 		    my $res = $dbh->do($rq);
 		    print "SQL INSERT ERROR :" . $rq. "\n" if (!$res);	
@@ -424,50 +436,54 @@ if (!$sth2->execute) {
     die "Error:" . $sth2->errstr . "\n";
 } else { 
 	my $flag = 0;
-    while (my $ns_server = $sth2->fetchrow_hashref()) {
-		my $sth1 = $dbh->prepare("SELECT `instance_name` FROM `instance` WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
-		if (!$sth1->execute) {
-		    die "Error:" . $sth1->errstr . "\n";
-		}
-		if (!$sth1->rows()){
-		    my $sthinsert = $dbh->prepare("INSERT INTO `instance` (`instance_id` , `instance_name` , `log_flag`) VALUES ('".$ns_server->{'id'}."', '".$ns_server->{'name'}."', '0');");
-		    if (!$sthinsert->execute) {
-				die "Error:" . $sthinsert->errstr . "\n";
-		    }
-		    $sthinsert->finish();			
-		} else {
-		    my $sthupdate = $dbh->prepare("UPDATE `instance` SET `instance_name` = '".$ns_server->{'name'}."' WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
-		    if (!$sthupdate->execute) {
-				die "Error:" . $sthupdate->errstr . "\n";
-		    }
-			$sthupdate->finish();			
-		}
-		$sth1->finish();
-		if ($opt_a) {
-			# Empty line counter
-		    my $res = $dbh->do("UPDATE `instance` SET `log_flag` = '0'");
-		    if (!defined($res)) {die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";}
+	my $res ;
 	
-			if (!$flag) {
-				$res = $dbh->do("TRUNCATE TABLE `log`");
-			    print "SQL INSERT ERROR :TRUNCATE TABLE `log`\n" if (!defined($res));	   
-				$flag = 1;
+	if (defined($opt_p)) {
+		$res = $dbh->do("UPDATE `instance` SET `log_flag` = '0' WHERE `instance_id` = '".$opt_p."'");
+		if (!defined($res)) {die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";};
+		
+		$res = $dbh->do("DELETE FROM `log` WHERE instance = '".$opt_p."'");
+		print "SQL INSERT ERROR :TRUNCATE TABLE `log`\n" if (!defined($res));	   
+		parseArchive($opt_p, '0');
+	} else {
+		while (my $ns_server = $sth2->fetchrow_hashref()) {
+			my $sth1 = $dbh->prepare("SELECT `instance_name` FROM `instance` WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
+			if (!$sth1->execute) {
+				die "Error:" . $sth1->errstr . "\n";
 			}
-		    parseArchive($ns_server->{'id'}, $ns_server->{'localhost'});
-		} else {
-		    parseLogFile($ns_server->{'id'}, $ns_server->{'localhost'});
+			if (!$sth1->rows()){
+				my $sthinsert = $dbh->prepare("INSERT INTO `instance` (`instance_id` , `instance_name` , `log_flag`) VALUES ('".$ns_server->{'id'}."', '".$ns_server->{'name'}."', '0');");
+				if (!$sthinsert->execute) {
+					die "Error:" . $sthinsert->errstr . "\n";
+				}
+				$sthinsert->finish();			
+			} else {
+				my $sthupdate = $dbh->prepare("UPDATE `instance` SET `instance_name` = '".$ns_server->{'name'}."' WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
+				if (!$sthupdate->execute) {
+					die "Error:" . $sthupdate->errstr . "\n";
+				}
+				$sthupdate->finish();			
+			}
+			$sth1->finish();
+			
+			if ($opt_a) {
+				# Empty line counter
+				$res = $dbh->do("UPDATE `instance` SET `log_flag` = '0'");
+				if (!defined($res)) {die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";}
+		
+				if (!$flag) {
+					$res = $dbh->do("TRUNCATE TABLE `log`");
+					print "SQL INSERT ERROR :TRUNCATE TABLE `log`\n" if (!defined($res));	   
+					$flag = 1;
+				}
+				parseArchive($ns_server->{'id'}, $ns_server->{'localhost'});
+			} else {
+				parseLogFile($ns_server->{'id'}, $ns_server->{'localhost'});
+			}
 		}
-    }
+	}
     $sth2->finish();
 }
-
-# Remove Lock
-$sth = $dbhoreon->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '".(time()-$beginTime)."' WHERE id = '$appID'");
-if (!$sth->execute) {
-    die "Error:" . $sth->errstr . "\n";
-}
-undef($appID);
-
 
 $dbh->disconnect();
 $dbhoreon->disconnect();
