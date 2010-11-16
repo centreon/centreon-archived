@@ -305,6 +305,7 @@
 		}
 
 		var _addrXML = "./include/monitoring/status/Services/xml/serviceXML.php?"+'&sid='+_sid+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc;
+		proc.setCallback(resetSelectedCheckboxes);
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);
 		proc.transform("forAjax");

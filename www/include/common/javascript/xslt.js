@@ -37,7 +37,7 @@ var pickRecentProgID = function (idList){
         };
     };
     if (!bFound)
-		throw ("Aucun ActiveXObject n'est valide sur votre ordinateur, pensez à mettre à jour votre navigateur");
+		throw ("Aucun ActiveXObject n'est valide sur votre ordinateur, pensez ï¿½ mettre ï¿½ jour votre navigateur");
     idList = null;
     return o2Store;
 }
@@ -88,7 +88,7 @@ function loadXML(url) {
     var xmlDoc;
     /* chargement du fichier XML */
     try {
-      // navigateur basé sur Gecko
+      // navigateur basï¿½ sur Gecko
       if (document.implementation && document.implementation.createDocument) {
         xmlDoc = document.implementation.createDocument('', '', null);
         xmlDoc.load(url);
@@ -102,7 +102,7 @@ function loadXML(url) {
         xmlDoc.async = false;
         xmlDoc.load(url);
       } else if (window.XMLHttpRequest) {
-		// à l'aide de lobjet XMLHTTPRequest
+		// ï¿½ l'aide de lobjet XMLHTTPRequest
       	xmlDoc = new XMLHttpRequest();
 		xmlDoc.overrideMimeType('text/xml');
 		xmlDoc.open('GET', url, false);
@@ -263,10 +263,10 @@ function Transformation() {
 						}
 		              	if (document.all[xmlID].readyState == 'complete' || document.all[xmlID].readyState == 'loading') {
 			                xmlDoc = document.all[xmlID].XMLDocument;
-			                xsltDoc = document.all[xsltID].XMLDocument;
-			                callback(t);
+			                xsltDoc = document.all[xsltID].XMLDocument;			                
 			                mk_pagination(xmlDoc);
 							document.all[target].innerHTML = document.all[xmlID].transformNode(document.all[xsltID].XMLDocument);
+							callback(t);
 							set_header_title();
 							transformed = true;
 							_clear("centreonMsg");
@@ -308,10 +308,10 @@ function Transformation() {
 					document.getElementById(target).innerHTML = '';
 	
 					processor.importStylesheet(xsltDoc);
-					resultDoc = processor.transformToFragment(xmlDoc, document);
-					callback(t);
+					resultDoc = processor.transformToFragment(xmlDoc, document);					
 					mk_paginationFF(xmlDoc);				
 					document.getElementById(target).appendChild(resultDoc);
+					callback(t);
 					set_header_title();
 	                transformed = true;
 	                _clear("centreonMsg");

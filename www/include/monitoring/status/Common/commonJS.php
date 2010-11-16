@@ -39,6 +39,16 @@
 	if (!isset($oreon))
 		exit();
 ?>
+
+function resetSelectedCheckboxes()
+{
+	$$('input[type="checkbox"]').each(function(el) {
+		if (_selectedElem[el.id]) {
+			el.checked = true;
+		}
+	});
+}
+
 function getXhrC(){
 	if (window.XMLHttpRequest) // Firefox et autres
 	   var xhrC = new XMLHttpRequest();
@@ -185,6 +195,7 @@ function viewDebugInfo(_str) {
 }
 
 function change_page(page_number) {
+	_selectedElem = new Array();
 	viewDebugInfo('change page');
 	_num = page_number;
 	monitoring_refresh();
