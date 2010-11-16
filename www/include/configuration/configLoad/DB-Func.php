@@ -659,6 +659,11 @@
 					$tmpConf["host_hgs"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["host_hgs"] as $key2=>$value2)	{
 						$tmpConf["host_hgs"][$key2] = getMyHostGroupID(trim($value2));
+						if (!isset($tmpConf["host_hgs"][$key2]) || $tmpConf["host_hgs"][$key2] == "") {
+							if (insertHostGroupCFG(array("hostgroup_name" => $value, "alias" => $value))) {
+								$tmpConf["host_hgs"][$key2] = getMyHostGroupID(trim($value2));
+							}
+						}
 						if (!$tmpConf["host_hgs"][$key2])
 							unset($tmpConf["host_hgs"][$key2]);
 					}
