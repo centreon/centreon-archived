@@ -3,43 +3,43 @@
  * Copyright 2005-2009 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	function deleteAllConfCFG()	{
 		global $pearDB;
 		global $oreon;
-		
+
 		$rq = "DELETE FROM command";
 		$DBRESULT =& $pearDB->query($rq);
 		$rq = "DELETE FROM timeperiod";
@@ -64,7 +64,7 @@
 
 	function insertResourceCFG(& $buf)	{
 		global $oreon, $debug_nagios_import, $debug_path;
-		
+
 		$i = 0;
 		foreach ($buf as $str)	{
 			$regs = array();
@@ -77,7 +77,7 @@
 				}	else	{
 					$resCFG["resource_activate"]["resource_activate"] = "1";
 					$resCFG["resource_name"] = trim($regs[1]);
-				}				
+				}
 				$resCFG["resource_line"] = trim($regs[2]);
 				$resCFG["resource_comment"] = trim($regs[1])." ".date("d/m/Y - H:i:s", time());
 				# Add in db
@@ -183,7 +183,7 @@
 		global $pearDB;
 		$rq = "DELETE FROM cfg_perfparse; ";
 		$DBRESULT =& $pearDB->query($rq);
-	
+
 	}
 
 	function insertCFG(& $buf, & $ret)	{
@@ -193,7 +193,7 @@
 		$tmpConf = array();
 		$get = false;
 		$regexp = "/^[ \t]*(.[^ \t#]+)[ \t]+((\\\;|[^;])+)/";
-		
+
 		/*
 		 * Fill with buffer value
 		 * Turn 1 -> Time Period, Commands
@@ -281,7 +281,7 @@
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				$useTpl = insertHostCFG($tmpConf);
-				
+
 				if (isset($tmpConf["host_name"]) && !hostExists($tmpConf["host_name"]))	{
 					$rq = "INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) VALUES ('".getMyHostID($tmpConf["host_name"])."', '".$_POST['host']."')";
 					$DBRESULT = $pearDB->query($rq);
@@ -290,8 +290,8 @@
 				isset($useTpl[2]) ? $parentsTMP[$useTpl[0]] = $useTpl[2] : NULL;
 				$get = false;
 				$tmpConf = array();
-				
-				
+
+
 			}
 			if (preg_match("/^[ \t]*define host[ \t]*{/", $str, $def))
 				$get = true;
@@ -342,7 +342,7 @@
 			}
 			unset($regs);
 		}
-		
+
 		/*
 		 * Turn 7 -> Service Groups
 		 */
@@ -371,20 +371,20 @@
 			}
 			unset($regs);
 		}
-		
+
 		/*
 		 * Turn 6 -> Services
-		 */		
+		 */
 		if ($debug_nagios_import == 1)
 			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 6 -> Services\n", 3, $debug_path."cfgimport.log");
-			
+
 		reset($buf);
 		$useTpl = array();
 		$useTpls = array();
 		require_once("./include/configuration/configObject/service/DB-Func.php");
-		foreach ($buf as $str)	{			
+		foreach ($buf as $str)	{
 			$regs = array();
-			if (preg_match("/}/", $str) && $get)	{								
+			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
 					case "service": $useTpl = insertServiceCFG($tmpConf); count($useTpl) ? $useTpls[$useTpl[0]] = $useTpl[1] : NULL; break;
 					case "hostdependency": insertHostDependencyCFG($tmpConf); break;
@@ -533,9 +533,9 @@
 
 	function insertContactGroupCFG($tmpConf = array())	{
 		global $nbr, $oreon, $pearDB, $debug_nagios_import, $debug_path;
-		
+
 		require_once("./include/configuration/configObject/contactgroup/DB-Func.php");
-		
+
 		if (isset($tmpConf["contactgroup_name"]) && testContactGroupExistence($tmpConf["contactgroup_name"]))	{
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertContactGroupCFG : ". $tmpConf["contactgroup_name"] ."\n", 3, $debug_path."cfgimport.log");
@@ -568,7 +568,7 @@
 
 	function insertHostCFG($tmpConf = array())	{
 		global $nbr, $oreon, $pearDB, $debug_nagios_import, $debug_path;
-		
+
 		$use = NULL;
 		$useTpl = array();
 		$macro_on_demand = array();
@@ -580,11 +580,11 @@
 				case "use" : $use = trim($tmpConf[$key]);
 					$tmp = explode(",", $use);
 					foreach ($tmp as $value) {
-						if (!hostTemplateExists($value)) {									
+						if (!hostTemplateExists($value)) {
 							$pearDB->query("INSERT INTO `host` (host_name, host_register) VALUES ('".$value."', '0')");
 							$DBRES =& $pearDB->query("SELECT MAX(host_id) FROM `host` WHERE host_register = '0' LIMIT 1");
 							$row =& $DBRES->fetchRow();
-							$pearDB->query("INSERT INTO `extended_host_information` (host_host_id) VALUES ('".$row['MAX(host_id)']."')");									
+							$pearDB->query("INSERT INTO `extended_host_information` (host_host_id) VALUES ('".$row['MAX(host_id)']."')");
 						}
 					}
 					break;
@@ -660,7 +660,7 @@
 					foreach ($tmpConf["host_hgs"] as $key2=>$value2)	{
 						$tmpConf["host_hgs"][$key2] = getMyHostGroupID(trim($value2));
 						if (!isset($tmpConf["host_hgs"][$key2]) || $tmpConf["host_hgs"][$key2] == "") {
-							if (insertHostGroupCFG(array("hostgroup_name" => $value, "alias" => $value))) {
+							if (insertHostGroupCFG(array("hostgroup_name" => $value2, "alias" => $value2))) {
 								$tmpConf["host_hgs"][$key2] = getMyHostGroupID(trim($value2));
 							}
 						}
@@ -669,18 +669,18 @@
 					}
 					unset ($tmpConf[$key]);
 					break;
-				case "_SNMPCOMMUNITY" : 
+				case "_SNMPCOMMUNITY" :
 					$tmpConf["host_snmp_community"] = $tmpConf[$key];
 					break;
-					
-				case "_SNMPVERSION" : 
+
+				case "_SNMPVERSION" :
 					$tmpConf["host_snmp_version"] = $tmpConf[$key];
 					break;
 				default :
 					if (preg_match("/^_([a-zA-Z0-9\_\-]+)/", $key, $def)) {
 						$macro_on_demand["macroInput_".$counter] = $def[1];
 						$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
-						$macro_on_demand["nbOfMacro"] = $counter++;	
+						$macro_on_demand["nbOfMacro"] = $counter++;
 					}
 					break;
 			}
@@ -692,7 +692,7 @@
 				$tmpConf["host_register"]["host_register"] = '0';
 		} else
 			$tmpConf["host_register"]["host_register"] = '1';
-		
+
 		$tmpConf["host_activate"]["host_activate"] = "1";
 		$tmpConf["host_comment"] = date("d/m/Y - H:i:s", time());
 		$tmpConf["ehi_notes"] = NULL;
@@ -704,22 +704,22 @@
 		$tmpConf["ehi_statusmap_image"] = NULL;
 		$tmpConf["ehi_2d_coords"] = NULL;
 		$tmpConf["ehi_3d_coords"] = NULL;
-		
+
 		/*
 		 * Auto deploy Service attached to host templates
 		 */
 		$tmpConf["dupSvTplAssoc"] = array("dupSvTplAssoc" => 1);
-		
-		if ($tmpConf["host_register"]["host_register"]) {				
+
+		if ($tmpConf["host_register"]["host_register"]) {
 			if (!hostExists($tmpConf['host_name'])) {
-				$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);				
-			} else {				
-				$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);					
-			}
-		} else {				
-			if (!hostTemplateExists($tmpConf['host_name'])) {									
 				$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
-			} else {														
+			} else {
+				$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
+			}
+		} else {
+			if (!hostTemplateExists($tmpConf['host_name'])) {
+				$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
+			} else {
 				$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
 			}
 		}
@@ -727,7 +727,7 @@
 		 * Create all sevices
 		 */
 		generateHostServiceMultiTemplate($useTpl[0], $useTpl[0]);
-		
+
 		$useTpl[1] = $use;
 		isset($tmpConf["host_parentsTMP"]) ? $useTpl[2] = $tmpConf["host_parentsTMP"] : NULL;
 		$nbr["h"] += 1;
@@ -736,17 +736,17 @@
 
 	function insertHostExtInfoCFG($tmpConf = array())	{
 		global $nbr, $oreon, $debug_nagios_import, $debug_path;
-		
+
 		/*
 		 * Include host Tools
-		 */		
+		 */
 		require_once("./include/configuration/configObject/host/DB-Func.php");
 		require_once("./class/centreonDB.class.php");
 		require_once("./class/centreonMedia.class.php");
-		
+
 		$DB = new CentreonDB();
 		$mediaObj = new CentreonMedia($DB);
-		
+
 		foreach ($tmpConf as $key => $value) {
 			switch($key)	{
 				case "notes" : $tmpConf["ehi_notes"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -776,10 +776,10 @@
 		return true;
 	}
 
-	
+
 	function insertServiceExtInfoCFG($tmpConf = array())	{
-		global $nbr, $oreon, $debug_nagios_import, $debug_path;		
-		
+		global $nbr, $oreon, $debug_nagios_import, $debug_path;
+
 		/*
 		 * Include host Tools
 		 */
@@ -787,11 +787,11 @@
 		require_once("./class/centreonDB.class.php");
 		require_once("./class/centreonService.class.php");
 		require_once("./class/centreonMedia.class.php");
-		
+
 		$DB = new CentreonDB();
 		$svcObj = new CentreonService($DB);
 		$mediaObj = new CentreonMedia($DB);
-		
+
 		foreach ($tmpConf as $key => $value) {
 			switch($key)	{
 				case "notes" : $tmpConf["esi_notes"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -799,41 +799,41 @@
 				case "action_url" : $tmpConf["esi_action_url"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "icon_image" : $tmpConf["esi_icon_image"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;
 				case "icon_image_alt" : $tmpConf["esi_icon_image_alt"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;												case "host_name" :
-					$tmpConf["host_name"] = trim($tmpConf[$key]);					
+					$tmpConf["host_name"] = trim($tmpConf[$key]);
 					$tmpConf["host_name"] = str_replace("/", "#S#", $tmpConf["host_name"]);
-					$tmpConf["host_name"] = str_replace("\\", "#BS#", $tmpConf["host_name"]);					
+					$tmpConf["host_name"] = str_replace("\\", "#BS#", $tmpConf["host_name"]);
 					break;
-				case "service_description" : 
-					$tmpConf["service_descriptions"] = explode(",", $tmpConf[$key]);					
+				case "service_description" :
+					$tmpConf["service_descriptions"] = explode(",", $tmpConf[$key]);
 					unset ($tmpConf[$key]); break;
 			}
 		}
-				
-		if (isset($tmpConf["host_name"]) && isset($tmpConf["service_descriptions"])) {			
+
+		if (isset($tmpConf["host_name"]) && isset($tmpConf["service_descriptions"])) {
 			foreach ($tmpConf["service_descriptions"] as $key2 => $value2)	{
 				$value2 = str_replace("/", "#S#", $value2);
 				$value2 = str_replace("\\", "#BS#", $value2);
 				$tmpConf["service_descriptions"][$key2] = $svcObj->getServiceId(trim($value2), $tmpConf["host_name"]);
 				if (!$tmpConf["service_descriptions"][$key2])
 					unset($tmpConf["service_descriptions"][$key2]);
-			}			
-			foreach($tmpConf["service_descriptions"] as $key => $value)	{				
+			}
+			foreach($tmpConf["service_descriptions"] as $key => $value)	{
 				updateServiceExtInfos($value, $tmpConf);
 				$nbr["sei"] += 1;
 			}
 		}
 		return true;
 	}
-	
-	
+
+
 	function insertHostGroupCFG($tmpConf = array())	{
 		global $nbr, $oreon, $debug_nagios_import, $debug_path;
-		
+
 		/*
 		 * REquire Hostgroups tools
 		 */
 		require_once("./include/configuration/configObject/hostgroup/DB-Func.php");
-		
+
 		if (isset($tmpConf["hostgroup_name"]) && testHostGroupExistence($tmpConf["hostgroup_name"])) {
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostGroupCFG : ". $tmpConf["hostgroup_name"] ."  \n", 3, $debug_path."cfgimport.log");
@@ -874,10 +874,10 @@
 
 	function insertHostDependencyCFG($tmpConf = array())	{
 		global $nbr, $oreon, $debug_nagios_import, $debug_path;
-		
+
 		require_once("./include/configuration/configObject/host_dependency/DB-Func.php");
 		require_once("./include/configuration/configObject/hostgroup_dependency/DB-Func.php");
-		
+
 		foreach ($tmpConf as $key => $value)
 			switch($key)	{
 				case "inherits_parent" : $tmpConf["inherits_parent"]["inherits_parent"] = $tmpConf[$key]; break;
@@ -1093,26 +1093,26 @@
 		$tmpConf["service_hPars"] = array();
 		$tmpConf["service_hgPars"] = array();
 		global $nbr, $oreon, $debug_nagios_import, $debug_path, $pearDB;
-		
+
 		# For loading template link
 		$cpt_tpl = 0;
 		$tab_link_tpl = array();
 		$counter = 0;
-		foreach ($tmpConf as $key => $value){			
+		foreach ($tmpConf as $key => $value){
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
-				case "name" : 
+				case "name" :
 					$tmpConf["name"] = $tmpConf[$key];
 					break;
-				case "service_description" : 
+				case "service_description" :
 					if (isset($tmpConf["name"]) && $tmpConf["name"] != ""){
-						$tmpConf["service_alias"] = $tmpConf["service_description"]; 
-						$tmpConf["service_description"] = $tmpConf["name"]; 
+						$tmpConf["service_alias"] = $tmpConf["service_description"];
+						$tmpConf["service_description"] = $tmpConf["name"];
 					} else
 						$tmpConf["service_description"] = $tmpConf[$key];
-	
+
 					if (isset($tmpConf["name"]))
-						unset($tmpConf["name"]);			
+						unset($tmpConf["name"]);
 					break;
 				case "max_check_attempts" : $tmpConf["service_max_check_attempts"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "normal_check_interval" : $tmpConf["service_normal_check_interval"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -1180,7 +1180,7 @@
 							unset($tmpConf["service_cs"][$key2]);
 					}
 					unset ($tmpConf[$key]);
-					break;	
+					break;
 				case "host_name" :
 					$tmpConf["service_hPars"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["service_hPars"] as $key2=>$value2)	{
@@ -1206,15 +1206,15 @@
 					foreach ($tmpConf["service_sgs"] as $key2 => $value2) {
 						$tmpConf["service_sgs"][$key2] = getMyServiceGroupID(trim($value2));
 						if (!$tmpConf["service_sgs"][$key2])
-							unset($tmpConf["service_sgs"][$key2]);	
+							unset($tmpConf["service_sgs"][$key2]);
 					}
 					unset($tmpConf[$key2]);
 					break;
-				case "#TEMPLATE-HOST-LINK" : 
+				case "#TEMPLATE-HOST-LINK" :
 					$tab_link_tpl[$cpt_tpl] = $value;
-					$cpt_tpl++;					
+					$cpt_tpl++;
 					break;
-				case ";TEMPLATE-HOST-LINK" : 
+				case ";TEMPLATE-HOST-LINK" :
 					$tab_link_tpl[$cpt_tpl] = $value;
 					$cpt_tpl++;
 					break;
@@ -1222,7 +1222,7 @@
 					if (preg_match("/^_([a-zA-Z0-9\_\-]+)/", $key, $def)) {
 						$macro_on_demand["macroInput_".$counter] = $def[1];
 						$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
-						$macro_on_demand["nbOfMacro"] = $counter++;	
+						$macro_on_demand["nbOfMacro"] = $counter++;
 					}
 					break;
 			}
@@ -1234,7 +1234,7 @@
 				$tmpConf["service_register"]["service_register"] = '0';
 		}  else
 			$tmpConf["service_register"]["service_register"] = '1';
-				
+
 		$tmpConf["service_activate"]["service_activate"] = "1";
 		$tmpConf["service_comment"] = date("d/m/Y - H:i:s", time());
 		if (isset($tmpConf["service_description"]) && testServiceTemplateExistence($tmpConf["service_description"]) && testServiceExistence($tmpConf["service_description"], $tmpConf["service_hPars"], $tmpConf["service_hgPars"]))	{
@@ -1246,15 +1246,15 @@
 				$useTpl[1] = $use;
 				$nbr["sv"] += 1;
 				# Add link with host template
-				if (isset($tab_link_tpl))					
+				if (isset($tab_link_tpl))
 					foreach ($tab_link_tpl as $tkey => $tvalue){
 						foreach ($tvalue as $template_link_name) {
-							$host_host_id = getMyHostID($template_link_name);		
+							$host_host_id = getMyHostID($template_link_name);
 							if ($host_host_id) {
 								$DBRESULT_TEMP =& $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
 							}
 						}
-					}			
+					}
 			}
 		} else {
 			if ($debug_nagios_import == 1)
