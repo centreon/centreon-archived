@@ -577,6 +577,7 @@ CREATE TABLE IF NOT EXISTS `command` (
   `command_line` text,
   `command_example` varchar(254) default NULL,
   `command_type` tinyint(4) default NULL,
+  `command_comment` TEXT NULL,
   `graph_id` int(11) default NULL,
   `cmd_cat_id` int(11) default NULL,
   PRIMARY KEY  (`command_id`)
