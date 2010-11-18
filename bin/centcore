@@ -677,6 +677,8 @@ sub parseRequest($){
 		testConfig($1);
     } elsif ($_[0] =~ /SYNCTRAP\:([0-9]*)/){
 		syncTraps($1);
+    } elsif ($_[0] =~ /RESTARTSNMPTT\:([0-9]*)/){
+		;
     } elsif ($_[0] =~ /SYNCPLUGINS\:([0-9]*)/){
 		;
     } elsif ($_[0] =~ /SYNCARCHIVES\:([0-9]*)/){
