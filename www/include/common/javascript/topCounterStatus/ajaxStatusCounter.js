@@ -159,45 +159,47 @@ function reloadStatusCounter(_relaod_time, _sid){
 			}
 			
 			// Get Poller Statistics
-			var statPoller = reponseC.getElementsByTagName("m");
-			for (var i = 0 ; i < statPoller.length ; i++) {
-				var statp = statPoller[i];
-				var _statistic_pollingState = statp.getElementsByTagName("pstt")[0].firstChild.nodeValue;
-				var _statistic_latency = statp.getElementsByTagName("ltc")[0].firstChild.nodeValue;
-				var _statistic_activity = statp.getElementsByTagName("act")[0].firstChild.nodeValue;
-				var _error_pollingState = statp.getElementsByTagName("errorPstt")[0].firstChild.nodeValue;
-				var _error_latency = statp.getElementsByTagName("errorLtc")[0].firstChild.nodeValue;
-				var _error_activity = statp.getElementsByTagName("errorAct")[0].firstChild.nodeValue;
-				
-				document.getElementById("img_pollingState").title = _error_pollingState;
-				document.getElementById("img_latency").title = _error_latency;
-				document.getElementById("img_activity").title = _error_activity;
-				
-				if (_statistic_latency == 0) {
-					document.getElementById("latency").style.backgroundColor = "";
-				} else if (_statistic_latency == 1) {
-					document.getElementById("latency").style.backgroundColor = "orange";
-				} else if (_statistic_latency == 2) {
-					document.getElementById("latency").style.backgroundColor = "red";
+			if (document.getElementById('img_pollingState')) {
+				var statPoller = reponseC.getElementsByTagName("m");
+				for (var i = 0 ; i < statPoller.length ; i++) {
+					var statp = statPoller[i];
+					var _statistic_pollingState = statp.getElementsByTagName("pstt")[0].firstChild.nodeValue;
+					var _statistic_latency = statp.getElementsByTagName("ltc")[0].firstChild.nodeValue;
+					var _statistic_activity = statp.getElementsByTagName("act")[0].firstChild.nodeValue;
+					var _error_pollingState = statp.getElementsByTagName("errorPstt")[0].firstChild.nodeValue;
+					var _error_latency = statp.getElementsByTagName("errorLtc")[0].firstChild.nodeValue;
+					var _error_activity = statp.getElementsByTagName("errorAct")[0].firstChild.nodeValue;
+					
+					document.getElementById("img_pollingState").title = _error_pollingState;
+					document.getElementById("img_latency").title = _error_latency;
+					document.getElementById("img_activity").title = _error_activity;
+					
+					if (_statistic_latency == 0) {
+						document.getElementById("latency").style.backgroundColor = "";
+					} else if (_statistic_latency == 1) {
+						document.getElementById("latency").style.backgroundColor = "orange";
+					} else if (_statistic_latency == 2) {
+						document.getElementById("latency").style.backgroundColor = "red";
+					}
+					
+					if (_statistic_activity == 0) {
+						document.getElementById("activity").style.backgroundColor = "";
+					} else if (_statistic_activity == 1) {
+						document.getElementById("activity").style.backgroundColor = "orange";
+					} else if (_statistic_activity == 2) {
+						document.getElementById("activity").style.backgroundColor = "red";
+					}
+	
+					if (_statistic_pollingState == 0) {
+						document.getElementById("pollingState").style.backgroundColor = "";
+					} else if (_statistic_pollingState == 1) {
+						document.getElementById("pollingState").style.backgroundColor = "orange";
+					} else if (_statistic_pollingState == 2) {
+						document.getElementById("pollingState").style.backgroundColor = "red";
+					}
+					
+					//alert("Latence : "+_statistic_latency);
 				}
-				
-				if (_statistic_activity == 0) {
-					document.getElementById("activity").style.backgroundColor = "";
-				} else if (_statistic_activity == 1) {
-					document.getElementById("activity").style.backgroundColor = "orange";
-				} else if (_statistic_activity == 2) {
-					document.getElementById("activity").style.backgroundColor = "red";
-				}
-
-				if (_statistic_pollingState == 0) {
-					document.getElementById("pollingState").style.backgroundColor = "";
-				} else if (_statistic_pollingState == 1) {
-					document.getElementById("pollingState").style.backgroundColor = "orange";
-				} else if (_statistic_pollingState == 2) {
-					document.getElementById("pollingState").style.backgroundColor = "red";
-				}
-				
-				//alert("Latence : "+_statistic_latency);
 			}
 		}
 	}
