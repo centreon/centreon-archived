@@ -41,7 +41,7 @@
 	}
 
 	function sanitizeFilename($filename) {
-		$cleanstr = htmlentities($filename, ENT_QUOTES, "UTF-8", "UTF-8");
+		$cleanstr = htmlentities($filename, ENT_QUOTES, "UTF-8");
 		$cleanstr = str_replace(" ", "_", $cleanstr);
 		$cleanstr = str_replace("/", "_", $cleanstr);
 		$cleanstr = str_replace("\\", "_", $cleanstr);
@@ -49,7 +49,7 @@
 	}
 
 	function sanitizePath($path) {
-		$cleanstr = htmlentities($path, ENT_QUOTES, "UTF-8", "UTF-8");
+		$cleanstr = htmlentities($path, ENT_QUOTES, "UTF-8");
 		$cleanstr = str_replace("/", "_", $cleanstr);
 		$cleanstr = str_replace("\\", "_", $cleanstr);
 		return $cleanstr;
@@ -80,11 +80,16 @@
 		if ($imginfo) {
 			return true;
 		} else {
-			$gd_res = imagecreatefromgd2($filename);
-			if ($gd_res) {
-				imagedestroy($gd_res);
-				return true;
-			}
+			return is_gd2($filename);
+		}
+		return false;
+	}
+	
+	function is_gd2($filename) {
+		$gd_res = imagecreatefromgd2($filename);
+		if ($gd_res) {
+			imagedestroy($gd_res);
+			return true;
 		}
 		return false;
 	}
@@ -100,6 +105,8 @@
 		}
 
 		$uploaddir = "../filesUpload/images/";
+		
+		$HTMLfile->moveUploadedFile($uploaddir);
 
                 switch ($fileinfo["type"]) {
 			// known archive types
@@ -108,15 +115,25 @@
                         case "application/x-gzip" :
                         case "application/x-bzip" :
                         case "application/x-zip-compressed" :
-			    $HTMLfile->moveUploadedFile($uploaddir);
 			    $arc = new CentreonEasyArchive();
 			    $filelist = $arc->extract($uploaddir.$fileinfo["name"]);
 			    if ($filelist!==false) {
 				foreach ($filelist as $file) {
 				    if (is_dir($uploaddir.$file))
-					continue; // skip directories in list
+						continue; // skip directories in list
 				    if (!isValidImage($uploaddir.$file))
 				    	continue;
+				    if (is_gd2($uploaddir.$file)) {
+				    	$im = imagecreatefromgd2($uploaddir.$file);
+				    	if (preg_match('/gd2$/', $file)) {
+				    		$png_file = preg_replace('/gd2$/', 'png', $file);
+				    	} else {
+				    		$png_file = $file . '.png';
+				    	}
+				    	imagepng($im, $uploaddir.$png_file);
+				    	imagedestroy($im);
+				    	$img_ids[] = insertImg($uploaddir, $png_file, $dir_alias, $png_file, $img_comment);
+				    }
 				    $img_ids[] = insertImg($uploaddir, $file, $dir_alias, $file, $img_comment);
 				}
 				unlink($uploaddir.$fileinfo["name"]);
@@ -126,12 +143,23 @@
 			    break;
                         default :
 			    if (isValidImage($uploaddir.$fileinfo["name"]) ) {
-				$HTMLfile->moveUploadedFile($uploaddir);
-				return insertImg($uploaddir, $fileinfo["name"], $dir_alias, $fileinfo["name"], $img_comment);
+			   		if (is_gd2($uploaddir.$fileinfo["name"])) {
+				    	$im = imagecreatefromgd2($uploaddir.$fileinfo["name"]);
+				    	if (preg_match('/gd2$/', $fileinfo["name"])) {
+				    		$png_file = preg_replace('/gd2$/', 'png', $fileinfo["name"]);
+				    	} else {
+				    		$png_file = $fileinfo["name"] . '.png';
+				    	}
+				    	imagepng($im, $uploaddir.$png_file);
+				    	imagedestroy($im);
+				    	$img_ids[] = insertImg($uploaddir, $png_file, $dir_alias, $png_file, $img_comment);
+				    }
+				    $img_ids[] = insertImg($uploaddir, $fileinfo["name"], $dir_alias, $fileinfo["name"], $img_comment);
+					return $img_ids;
 			    } else {
-				return false;
+					return false;
 			    }
-                }
+			}
 	}
 
 	function insertImg ($src_dir, $src_file, $dst_dir, $dst_file, $img_comment = "") {
