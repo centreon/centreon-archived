@@ -342,7 +342,6 @@
 								"RowMenu_link2"		=> "?p=".$p."&o=c&service_id=".$service['service_id'],
 								"RowMenu_parent"	=> $tplStr,
 								"RowMenu_retry"		=> "$normal_check_interval $normal_units / $retry_check_interval $retry_units",
-								"RowMenu_attempts"	=> getMyServiceField($service['service_id'], "service_max_check_attempts"),
 								"RowMenu_desc"		=> $service["service_description"],
 								"RowMenu_status"	=> $service["service_activate"] ? _("Enabled") : _("Disabled"),
 								"RowMenu_options"	=> $moptions);
