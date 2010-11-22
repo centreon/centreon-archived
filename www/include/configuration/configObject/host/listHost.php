@@ -193,7 +193,7 @@
 
 	$rows = $pearDB->numberRows();
     include("./include/common/checkPagination.php");
-	
+
 	$search = tidySearchKey($search, $advanced_search);
 
 	$elemArr = array();
@@ -253,6 +253,7 @@
 			$elemArr[$i] = array("MenuClass"=>"list_".$style,
 							"RowMenu_select"=>$selectedElements->toHtml(),
 							"RowMenu_name"=>$host["host_name"],
+							"RowMenu_id"=>$host["host_id"],
 							"RowMenu_icone"=> $host_icone,
 							"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
 							"RowMenu_desc"=>$host["host_alias"],
@@ -386,6 +387,7 @@
 	$tpl->assign('Hosts', _("Hosts"));
 	$tpl->assign('Poller', _("Poller"));
 	$tpl->assign('Hostgroup', _("Hostgroup"));
+	$tpl->assign('HelpServices', _("Display all Services fo this host"));
 	$tpl->assign('Template', _("Template"));
 	$tpl->assign('Search', _("Search"));
 	$tpl->display("listHost.ihtml");
