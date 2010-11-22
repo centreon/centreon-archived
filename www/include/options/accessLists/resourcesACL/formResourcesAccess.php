@@ -50,6 +50,15 @@
 		$acl = array_map("myDecode", $DBRESULT->fetchRow());
 
 		/*
+		 * Set Poller relations
+		 */
+		$DBRESULT = $pearDB->query("SELECT poller_id FROM acl_resources_poller_relations WHERE acl_res_id = '".$acl_id."'");
+		for ($i = 0; $pollers_list =& $DBRESULT->fetchRow(); $i++) {
+			$acl["acl_pollers"][$i] = $pollers_list["poller_id"];
+		}
+		$DBRESULT->free();
+
+		/*
 		 * Set Hosts relations
 		 */
 		$hostnotexludes = array();
@@ -125,6 +134,12 @@
 	$DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
 	while ($group = $DBRESULT->fetchRow())
 		$groups[$group["acl_group_id"]] = $group["acl_group_name"];
+	$DBRESULT->free();
+
+	$pollers = array();
+	$DBRESULT = $pearDB->query("SELECT id, name FROM nagios_server ORDER BY name");
+	while ($poller = $DBRESULT->fetchRow())
+		$pollers[$poller["id"]] = $poller["name"];
 	$DBRESULT->free();
 
 	$hosts = array();
@@ -234,6 +249,15 @@
 	/*
 	 * Hosts
 	 */
+	$ams0 = $form->addElement('advmultiselect', 'acl_pollers', array(_("Pollers"), _("Available"), _("Selected")), $pollers, $attrsAdvSelect, SORT_ASC);
+	$ams0->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams0->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams0->setElementTemplate($template);
+	echo $ams0->getElementJs(false);
+
+	/*
+	 * Hosts
+	 */
 	$ams2 = $form->addElement('advmultiselect', 'acl_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
@@ -256,7 +280,7 @@
 	echo $ams2->getElementJs(false);
 
 	/*
-	 * Host Filters
+	 * Service Filters
 	 */
 	$ams2 = $form->addElement('advmultiselect', 'acl_sc', array(_("Service Categories Access"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
@@ -264,6 +288,9 @@
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 
+	/*
+	 * Host Filters
+	 */
 	$ams2 = $form->addElement('advmultiselect', 'acl_hc', array(_("Host Categories Access"), _("Available"), _("Selected")), $host_categories, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
