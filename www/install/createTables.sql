@@ -192,6 +192,21 @@ CREATE TABLE IF NOT EXISTS `acl_resources_meta_relations` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `acl_resources_poller_relations`
+--
+
+CREATE TABLE IF NOT EXISTS `acl_resources_poller_relations` (
+  `arpr_id` int(11) NOT NULL auto_increment,
+  `poller_id` int(11) default NULL,
+  `acl_res_id` int(11) default NULL,
+  PRIMARY KEY  (`arpr_id`),
+  KEY `poller_id` (`poller_id`),
+  KEY `acl_res_id` (`acl_res_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `acl_resources_sc_relations`
 --
 
@@ -2075,6 +2090,17 @@ ALTER TABLE `acl_res_group_relations`
 ALTER TABLE `acl_topology_relations`
   ADD CONSTRAINT `acl_topology_relations_ibfk_2` FOREIGN KEY (`topology_topology_id`) REFERENCES `topology` (`topology_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `acl_topology_relations_ibfk_3` FOREIGN KEY (`acl_topo_id`) REFERENCES `acl_topology` (`acl_topo_id`) ON DELETE CASCADE;
+
+
+--
+-- Contraintes pour la table `acl_resources_poller_relations`
+--
+
+ALTER TABLE `acl_resources_poller_relations`
+  ADD CONSTRAINT `acl_resources_poller_relations_ibfk_1` FOREIGN KEY (`poller_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `acl_resources_poller_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE;
+
+
 
 --
 -- Contraintes pour la table `cfg_nagios`
