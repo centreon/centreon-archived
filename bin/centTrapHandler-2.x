@@ -53,13 +53,12 @@ $etc = "@CENTREON_ETC@";
 
 ###############################
 # require config file
-
 require $etc."/conf.pm";
 
 ###############################
 ## GET HOSTNAME FROM IP ADDRESS
 #
-sub get_hostinfos($$$){
+sub get_hostinfos($$$) {
     my $sth = $_[0]->prepare("SELECT host_name FROM host WHERE host_address='$_[1]' OR host_address='$_[2]'");
     $sth->execute();
     my @host;
@@ -73,7 +72,7 @@ sub get_hostinfos($$$){
 ###############################
 ## GET host location
 #
-sub get_hostlocation($$){
+sub get_hostlocation($$) {
     my $sth = $_[0]->prepare("SELECT localhost FROM host, `ns_host_relation`, nagios_server WHERE host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id AND host.host_name = '".$_[1]."'");
     $sth->execute();
     if ($sth->rows()){
@@ -88,7 +87,7 @@ sub get_hostlocation($$){
 ##################################
 ## GET nagios server id for a host
 #
-sub get_hostNagiosServerID($$){
+sub get_hostNagiosServerID($$) {
     my $sth = $_[0]->prepare("SELECT id FROM host, `ns_host_relation`, nagios_server WHERE host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id AND (host.host_name = '".$_[1]."' OR host.host_address = '".$_[1]."')");
     $sth->execute();
     if ($sth->rows()){
@@ -192,7 +191,7 @@ sub getServiceInformations($$$)	{
 #######################################
 # GET HOSTNAME AND SERVICE DESCRIPTION
 #
-sub getTrapsInfos($$$$$){
+sub getTrapsInfos($$$$$) {
     my $ip = shift;
     my $hostname = shift;
     my $oid = shift;
@@ -202,7 +201,7 @@ sub getTrapsInfos($$$$$){
     my $dbh = DBI->connect("dbi:mysql:".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
 
     # Get Nagios.cfg configuration
-    my $sth = $dbh->prepare("SELECT `command_file` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+    my $sth = $dbh->prepare("SELECT `command_file` FROM `cfg_nagios`, `nagios_server` WHERE `nagios_activate` = '1' AND nagios_server.id = cfg_nagios.nagios_server_id AND nagios_server.localhost = '1' LIMIT 1");
     $sth->execute();
     my @conf = $sth->fetchrow_array();
     $sth->finish();
@@ -213,8 +212,27 @@ sub getTrapsInfos($$$$$){
 	my ($trap_id, $status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $ref_servicename) = getServiceInformations($dbh, $oid, $_);
 	my @servicename = @{$ref_servicename};
 
-	## Split $* informations
-	my @args = split(/ /, $allargs);
+	##########################
+	# REPLACE ARGS	
+	my @macros;
+	my $x = 0;
+	my @args = split(/\'\s+\'|\'/, $allargs);
+	my $x_arg = 0;
+	foreach (@args) {
+	    my $str = $_;
+	    if ($str !~ m/^$/) {
+		$x_arg = $x + 1;
+		$macros[$x_arg] = $_;
+		$macros[$x_arg] =~ s/\=/\-/g;
+		$macros[$x_arg] =~ s/\;/\,/g;
+		#$macros[$x_arg] =~ s/\n/\<BR\>/g;
+		$macros[$x_arg] =~ s/\t//g;
+		if ($debug) {
+			print "\$$x_arg => ". $macros[$x_arg]."\n";
+		}
+		$x++;
+	    }
+	}
 
 	foreach (@servicename) {
 	    my $this_service = $_;
@@ -225,73 +243,70 @@ sub getTrapsInfos($$$$$){
 	    my $location = get_hostlocation($dbh, $this_host);
 
 	    ######################################################################
-	    # Submit value to passiv service
-	    if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
-		# Advanced matching rules
-		if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-		    # Check matching options 
-		    my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status, tmo_string FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
-		    $sth->execute();
-		    while (my ($regexp, $tmoStatus, $tmoString) = $sth->fetchrow_array()) {
-			my @temp = split(//, $regexp);
-			my $i = 0;
-			my $len = length($regexp);
-			$regexp = "";
-			foreach (@temp) {
-			    if ($i eq 0 && $_ =~ "/") {
-				print "";
-			    } elsif ($i eq ($len - 1) && $_ =~ "/") { 
-				print "";
-			    } else {
-				print $_;
-			    }
-			    $i++;
+	    # Advanced matching rules
+	    if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
+		# Check matching options 
+		my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status, tmo_string FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
+		$sth->execute();
+		while (my ($regexp, $tmoStatus, $tmoString) = $sth->fetchrow_array()) {
+		    my @temp = split(//, $regexp);
+		    my $i = 0;
+		    my $len = length($regexp);
+		    $regexp = "";
+		    foreach (@temp) {
+			if ($i eq 0 && $_ =~ "/") {
+			    $regexp = $regexp . "";
+			} elsif ($i eq ($len - 1) && $_ =~ "/") { 
+			    $regexp = $regexp . "";
+			} else {
+			    $regexp = $regexp . $_;
 			}
-			##########################
-			# REPLACE ARGS
-			my $x = 0;
-			foreach (@args) {
-			    $tmoString =~ s/\$$x/$_/g;				
+			$i++;
+		    }
+
+		    ##########################
+		    # REPLACE ARGS
+		    my $x = 1;
+		    foreach (@macros) {
+			if (defined($macros[$x])) {
+			    $tmoString =~ s/\$$x/$macros[$x]/g;
 			    $x++;
 			}
-
-			##########################
-			# REPLACE MACROS
-			$tmoString =~ s/\&quot\;/\"/g;
-			$tmoString =~ s/\@HOSTNAME\@/$this_host/g;
-			$tmoString =~ s/\@HOSTADDRESS\@/$_[1]/g;
-			$tmoString =~ s/\@HOSTADDRESS2\@/$_[2]/g;
-			$tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
-			$tmoString =~ s/\@TIME\@/$datetime/g;
-
-			if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
-			    $status = $tmoStatus;
-			    last;
-			}
 		    }
-		    $sth->finish();
-
-		    if ($location != 0){
-			my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
-		    } else {
-			my $id = get_hostNagiosServerID($dbh, $this_host);
-			if (defined($id) && $id != 0) {
-			    my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
-			    undef($id);
-			}
-		    }
-		} else {
-		    # No matching rules
-		    if ($location != 0){
-			my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
-		    } else {
-			my $id = get_hostNagiosServerID($dbh, $this_host);
-			if (defined($id) && $id != 0) {
-			    my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
-			    undef($id);
-			}
+		    
+		    ##########################
+		    # REPLACE MACROS
+		    $tmoString =~ s/\&quot\;/\"/g;
+		    $tmoString =~ s/\@HOSTNAME\@/$this_host/g;
+		    $tmoString =~ s/\@HOSTADDRESS\@/$_[1]/g;
+		    $tmoString =~ s/\@HOSTADDRESS2\@/$_[2]/g;
+		    $tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
+		    $tmoString =~ s/\@TIME\@/$datetime/g;
+		    
+		    if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
+			$status = $tmoStatus;
+			print "Regexp: $tmoString => $regexp\n";
+			print "Status: $status ($tmoStatus)\n";
+			last;
 		    }
 		}
+
+		$sth->finish();
+	    }
+
+	    #####################################################################
+	    # Submit value to passiv service
+	    if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
+		  # No matching rules
+		  if ($location != 0){
+		      my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
+		  } else {
+		      my $id = get_hostNagiosServerID($dbh, $this_host);
+		      if (defined($id) && $id != 0) {
+		          my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
+		          undef($id);
+		      }
+		  }
 	    }
 
 	    ######################################################################
@@ -312,12 +327,13 @@ sub getTrapsInfos($$$$$){
 	    ######################################################################
 	    # Execute special command
 	    if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
-		##########################
-		# REPLACE ARGS
-		my $x = 0;
-		foreach (@args) {
-		    $traps_execution_command =~ s/\$$x/$_/g;				
-		    $x++;
+
+		my $x = 1;
+		foreach (@macros) {
+		    if (defined($macros[$x])) {
+			$traps_execution_command =~ s/\$$x/$macros[$x]/g;
+			$x++;
+		    }
 		}
 
 		##########################
@@ -349,10 +365,18 @@ sub getTrapsInfos($$$$$){
 }
 
 
-##########################
+#########################################################
 # PARSE TRAP INFORMATIONS
 #
 if (scalar(@ARGV)) {
     my ($ip, $hostname, $oid, $arguments, $allArgs) = @ARGV;
+    if ($debug) {
+	print "HOSTNAME: $hostname\n";
+	print "IP: $ip\n";
+	print "OID: $oid\n";
+	print "ARGS: $allArgs\n";
+    }
     getTrapsInfos($ip, $hostname, $oid, $arguments, $allArgs);
 }
+
+
