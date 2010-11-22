@@ -51,8 +51,9 @@
 	 * Search
 	 */
 	$SearchTool = NULL;
-	if (isset($search) && $search)
+	if (isset($search) && $search) {
 		$SearchTool = " (hg_name LIKE '%".CentreonDB::escape($search)."%' OR hg_alias LIKE '%".CentreonDB::escape($search)."%') AND ";
+	}
 
 	$request = "SELECT COUNT(*) FROM hostgroup WHERE $SearchTool hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation)";
 
@@ -68,8 +69,6 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	print "CACHE:";
-	print_r($centreon->cache);
 	$centreon->cache->initHostGroupCache($pearDB);
 
 	/* Access level */
