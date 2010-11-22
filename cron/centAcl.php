@@ -37,8 +37,8 @@
  */
 
 	include_once "DB.php";
-	//include_once "/etc/centreon/centreon.conf.php";
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."/cron/centAcl-Func.php";
 	include_once $centreon_path."/www/class/centreonDB.class.php";
 
@@ -87,7 +87,7 @@
 	    } else {
 	      	exit(1);
 	    }
-	    
+
 	    /* ***********************************************
     	 * Remove data from old groups (deleted groups)
     	 */
@@ -104,12 +104,13 @@
     	}
     	$DBRESULT->free();
     	$pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)");
-    	
-    	
+
+
     	/* ************************************************
-    	 * Check if some ACL have global options for 
+    	 * Check if some ACL have global options for
     	 * all resources are selected
     	 */
+    	print "OK";
     	$query = "SELECT acl_res_id, all_hosts, all_hostgroups, all_servicegroups " .
     			"FROM acl_resources WHERE acl_res_activate = '1' ".
     			"AND (all_hosts IS NOT NULL OR all_hostgroups IS NOT NULL AND all_servicegroups IS NOT NULL)";
@@ -119,47 +120,47 @@
 			 * Specific counter
 			 */
 			$i = 0;
-	
+
 			/**
 			 * Add Hosts
 			 */
 		    $query = "SELECT host_id FROM host WHERE host_id NOT IN (SELECT DISTINCT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = '".$row['acl_res_id']."') AND host_register = '1'";
 		    $res1 = $pearDB->query($query);
 		    for (; $rowData = $res1->fetchRow(); $i++) {
-		    	$insert_query = "INSERT INTO acl_resources_host_relations (host_host_id, acl_res_id) VALUES ('".$rowData['host_id']."', '".$rowData['acl_res_id']."')";
+		    	$insert_query = "INSERT INTO acl_resources_host_relations (host_host_id, acl_res_id) VALUES ('".$rowData['host_id']."', '".$row['acl_res_id']."')";
 		    	$pearDB->query($insert_query);
 		    }
 		    $res1->free();
-			
+
 			/**
 			 * Add Hostgroups
 			 */
 		    $query = "SELECT hg_id FROM hostgroup WHERE hg_id NOT IN (SELECT DISTINCT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = '".$row['acl_res_id']."')";
 		    $res1 = $pearDB->query($query);
 		    for (; $rowData = $res1->fetchRow(); $i++) {
-		    	$insert_query = "INSERT INTO acl_resources_hg_relations (hg_hg_id, acl_res_id) VALUES ('".$rowData['hg_id']."', '".$rowData['acl_res_id']."')";
+		    	$insert_query = "INSERT INTO acl_resources_hg_relations (hg_hg_id, acl_res_id) VALUES ('".$rowData['hg_id']."', '".$row['acl_res_id']."')";
 		    	$pearDB->query($insert_query);
 		    }
 		    $res1->free();
-		    
+
 		    /**
 			 * Add Servicesgroups
 			 */
 		    $query = "SELECT sg_id FROM servicegroup WHERE sg_id NOT IN (SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = '".$row['acl_res_id']."')";
 		    $res1 = $pearDB->query($query);
 		    for (; $rowData = $res1->fetchRow(); $i++) {
-		    	$insert_query = "INSERT INTO acl_resources_sg_relations (sg_id, acl_res_id) VALUES ('".$rowData['sg_id']."', '".$rowData['acl_res_id']."')";
+		    	$insert_query = "INSERT INTO acl_resources_sg_relations (sg_id, acl_res_id) VALUES ('".$rowData['sg_id']."', '".$row['acl_res_id']."')";
 		    	print $insert_query;
 		    	$pearDB->query($insert_query);
 		    }
 		    $res1->free();
-    
+
 		    if ($i != 0) {
 		    	$pearDB->query("UPDATE acl_resources_hg_relations SET changed = '1' WHERE acl_res_id = '".$row['acl_res_id']."'");
 		    }
         }
         $res->free();
-        
+
     	/* ************************************************
     	 *  Caching of all Data
     	 *
@@ -182,6 +183,11 @@
     	}
     	$DBRESULT->free();
     	unset($h);
+
+    	/* ************************************************
+    	 * Cache for host poller relation
+    	 */
+
 
     	/* ************************************************
     	 * Get all included Hosts
@@ -290,8 +296,8 @@
     	while ($row = $res->fetchRow()) {
     	    $sgCache[$row['acl_group_id']][$row['acl_res_id']] = array();
     	}
-    	
-    	
+
+
     	$query = "SELECT service_service_id, sgr.host_host_id, acl_res_id " .
     			 "FROM servicegroup sg, acl_resources_sg_relations acl, servicegroup_relation sgr " .
     			 "WHERE acl.sg_id = sg.sg_id " .
@@ -314,14 +320,14 @@
     	 * Begin to build ACL
     	 */
     	$tabGroups = array();
-    	$DBRESULT1 =& $pearDB->query(	"SELECT DISTINCT acl_groups.acl_group_id, acl_resources.acl_res_id " .
-    									"FROM acl_res_group_relations, `acl_groups`, `acl_resources` " .
-    									"WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id " .
-    									"AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id " .
-    									"AND acl_groups.acl_group_activate = '1' ".
-    									"AND (acl_groups.acl_group_changed = '1' ".
-    										"OR acl_resources.changed = '1')");
-
+    	$query = "SELECT DISTINCT acl_groups.acl_group_id, acl_resources.acl_res_id " .
+    			"FROM acl_res_group_relations, `acl_groups`, `acl_resources` " .
+    			"WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id " .
+    			"AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id " .
+    			"AND acl_groups.acl_group_activate = '1' ".
+    			"AND (acl_groups.acl_group_changed = '1' ".
+    				"OR acl_resources.changed = '1')";
+    	$DBRESULT1 =& $pearDB->query($query);
     	while ($result =& $DBRESULT1->fetchRow()) {
     	    $tabGroups[$result["acl_group_id"]] = 1;
     	}
@@ -479,5 +485,5 @@
 	} catch (Exception $e) {
 		programExit($e->getMessage());
 	}
-	
+
 ?>
