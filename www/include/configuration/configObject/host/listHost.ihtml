@@ -29,7 +29,7 @@
 	<tr class="ListHeader">
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 		<td class="ListColHeaderLeft">{$headerMenu_name}</td>
-		<td class="ListColHeaderLeft">&nbsp;</td>
+		<td class="ListColHeaderLeft" style="width:20px;">&nbsp;</td>
 		<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_address}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_poller}</td>
@@ -53,7 +53,7 @@
 			{if $elemArr[elem].pattern}&nbsp;&nbsp;&nbsp;&nbsp;{/if}
 			<img src="{$elemArr[elem].RowMenu_icone}" style='width:16px;heigyh:16px;' />&nbsp;<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
 		</td>
-		<td class="ListColCenter"><a href='./main.php?p=602&host_id={$elemArr[elem].RowMenu_id}'><img src="./img/icones/16x16/gear.gif" title='{$HelpServices}'></a></td>
+		<td class="ListColCenter"><a href='./main.php?p=602&host_id={$elemArr[elem].RowMenu_id}'><img src="./img/icones/16x16/gear_view.gif" title='{$HelpServices}'></a></td>
 		<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_address}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_poller}</td>
