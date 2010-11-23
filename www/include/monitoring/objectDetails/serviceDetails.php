@@ -3,48 +3,49 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	include_once("./class/centreonDB.class.php");
 	include_once("./class/centreonHost.class.php");
 	include_once("./class/centreonService.class.php");
-	
+
 	$pearDBndo 	= new CentreonDB("ndo");
-	
+
 	$hostObj 	= new CentreonHost($pearDB);
 	$svcObj 	= new CentreonService($pearDB);
 
@@ -53,7 +54,7 @@
 	 */
 	$GroupListofUser = array();
 	$GroupListofUser =  $oreon->user->access->getAccessGroups();
-	
+
 	$allActions = false;
 	/*
 	 * Get list of actions allowed for user
@@ -69,8 +70,9 @@
 		$host_name = htmlentities($_GET["host_name"], ENT_QUOTES, "UTF-8");
 		$svc_description = htmlentities(str_replace("\\\\", "\\", $_GET["service_description"]), ENT_QUOTES, "UTF-8");
 	} else {
-		foreach ($_GET["select"] as $key => $value)
+		foreach ($_GET["select"] as $key => $value) {
 			$tab_data = split(";", $key);
+		}
 		$host_name = htmlentities($tab_data[0], ENT_QUOTES, "UTF-8");
 		$svc_description = htmlentities($tab_data[1], ENT_QUOTES, "UTF-8");
 	}
@@ -87,28 +89,29 @@
 
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."' " .
 					$oreon->user->access->queryBuilder("AND", "host_host_id", $oreon->user->access->getHostsString("ID", $pearDBndo)));
-		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
 			$hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
+		}
 		$DBRESULT->free();
-	
+
 		$service_id = getMyServiceID($svc_description, $host_id);
-	
+
 		if (isset($service_id) && $service_id) {
 			$proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
 			$proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
 		}
-	
+
 		/*
 		 * Get service category
 		 */
-		
+
 		$tab_sc = getMyServiceCategories($service_id);
         foreach ($tab_sc as $sc_id) {
           	$serviceCategories[] = getMyCategorieName($sc_id);
         }
 
 		$tab_status = array();
-		
+
 		/*
 		 * start ndo service info
 		 */
@@ -143,42 +146,44 @@
 				" ns.notes, " .
 				" ns.action_url " .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns " .
-				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' AND no.object_id = ns.service_object_id";
-	
-		$DBRESULT_NDO =& $pearDBndo->query($rq);		
-	
+				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' AND no.object_id = ns.service_object_id AND config_type = '1'";
+
+		$DBRESULT_NDO =& $pearDBndo->query($rq);
+
 		$tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-	
+
 		while ($ndo =& $DBRESULT_NDO->fetchRow()) {
-			if ($ndo["service_description"] == $svc_description)
+			//print " - SERVICE: |".urldecode($ndo["service_description"])."|".urldecode($svc_description)."|<br>";
+			if ($ndo["service_description"] == $svc_description) {
 				$service_status[$host_name."_".$svc_description] = $ndo;
-	
-			if (!isset($tab_status[$ndo["current_state"]]))
+			}
+			if (!isset($tab_status[$ndo["current_state"]])) {
 				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
+			}
 			$tab_status[$tab_status_service[$ndo["current_state"]]]++;
 		}
-	
+
 		$service_status[$host_name."_".$svc_description]["current_state"] = $tab_status_service[$service_status[$host_name."_".$svc_description]["current_state"]];
-			
-		/* 
+
+		/*
 		 * start ndo host detail
 		 */
 		$tab_host_status[0] = "UP";
 		$tab_host_status[1] = "DOWN";
 		$tab_host_status[2] = "UNREACHABLE";
-	
+
 		$rq2 =	"SELECT nhs.current_state" .
 				" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		$ndo2 =& $DBRESULT_NDO->fetchRow();
 		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
-		
+
 		$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		$host =& $DBRESULT->fetchrow();
 		$host_id = getMyHostID($host["host_name"]);
 		$DBRESULT->free();
-		
+
 		$service_id = getMyServiceID($svc_description, $host_id);
 		$total_current_attempts = getMyServiceField($service_id, "service_max_check_attempts");
 
@@ -191,7 +196,7 @@
 		$tpl = initSmartyTpl($path, $tpl, "./template/");
 
 		$en = array("0" => _("No"), "1" => _("Yes"));
-		
+
 		/*
 		 * Get comments for service
 		 */
@@ -205,7 +210,7 @@
 			$tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
 		}
 		unset($data);
-		
+
 		$en_acknowledge_text= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Service Problem"));
 		$en_acknowledge 	= array("1" => "0", "0" => "1");
 		$en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
@@ -218,31 +223,31 @@
 		/*
 		 * Ajust data for beeing displayed in template
 		 */
-		 
+
 		 $service_status[$host_name."_".$svc_description]["status_color"] = $oreon->optGen["color_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])];
 		 $service_status[$host_name."_".$svc_description]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_check"], $oreon->user->getMyGMT());
 		 $service_status[$host_name."_".$svc_description]["next_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_check"], $oreon->user->getMyGMT());
 		!$service_status[$host_name."_".$svc_description]["check_latency"] ? $service_status[$host_name."_".$svc_description]["check_latency"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_latency"] = $service_status[$host_name."_".$svc_description]["check_latency"] . " seconds";
 		!$service_status[$host_name."_".$svc_description]["check_execution_time"] ? $service_status[$host_name."_".$svc_description]["check_execution_time"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_execution_time"] = $service_status[$host_name."_".$svc_description]["check_execution_time"] . " seconds";
-		
+
 		!$service_status[$host_name."_".$svc_description]["last_notification"] ? $service_status[$host_name."_".$svc_description]["notification"] = "": $service_status[$host_name."_".$svc_description]["last_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_notification"], $oreon->user->getMyGMT());
-		
-		if (isset($service_status[$host_name."_".$svc_description]["next_notification"]) && !$service_status[$host_name."_".$svc_description]["next_notification"]) 
+
+		if (isset($service_status[$host_name."_".$svc_description]["next_notification"]) && !$service_status[$host_name."_".$svc_description]["next_notification"])
 			$service_status[$host_name."_".$svc_description]["next_notification"] = "";
 		else if (!isset($service_status[$host_name."_".$svc_description]["next_notification"]))
 			$service_status[$host_name."_".$svc_description]["next_notification"] = "N/A";
 		else
 			$service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"], $oreon->user->getMyGMT());
-		
+
 		$service_status[$host_name."_".$svc_description]["plugin_output"] = utf8_encode($service_status[$host_name."_".$svc_description]["plugin_output"]);
-		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);	
+		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
 		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
 		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace("\\n", "<br>", $service_status[$host_name."_".$svc_description]["plugin_output"]);
 		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace('\n', "<br>", $service_status[$host_name."_".$svc_description]["plugin_output"]);
-		
+
 		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
 		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
-		
+
 		$service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["action_url"]);
 		$service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["action_url"]);
 
@@ -255,11 +260,11 @@
 		if ($service_status[$host_name."_".$svc_description]["problem_has_been_acknowledged"])
 			$service_status[$host_name."_".$svc_description]["current_state"] .= "&nbsp;&nbsp;<b>("._("ACKNOWLEDGED").")</b>";
 
-		if (isset($service_status[$host_name."_".$svc_description]["scheduled_downtime_depth"]) && 
+		if (isset($service_status[$host_name."_".$svc_description]["scheduled_downtime_depth"]) &&
 		    $service_status[$host_name."_".$svc_description]["scheduled_downtime_depth"]) {
 		    $service_status[$host_name."_".$svc_description]["scheduled_downtime_depth"] = 1;
 		}
-			
+
 		if (isset($ndo) && $ndo) {
 			foreach ($tab_host_service[$host_name] as $key_name => $s) {
 				if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
@@ -267,7 +272,7 @@
 				$tab_status[$service_status[$host_name."_".$key_name]["current_state"]]++;
 			}
 		}
-		
+
 		$status = NULL;
 		foreach ($tab_status as $key => $value)
 			$status .= "&value[".$key."]=".$value;
@@ -326,7 +331,7 @@
 		$tpl->assign("secondes", _("seconds"));
 		$tpl->assign("m_mon_ticket", "Open Ticket");
 		$tpl->assign("links", _("Links"));
-		
+
 		$tpl->assign("m_mon_services_en_check_active", _("Active Checks"));
 		$tpl->assign("m_mon_services_en_check_passif", _("Passive Checks"));
 		$tpl->assign("m_mon_accept_passive", _("Passive Checks"));
@@ -336,6 +341,7 @@
 		$tpl->assign("m_mon_event_handler", _("Event Handler"));
 		$tpl->assign("m_mon_flap_detection", _("Flap Detection"));
 		$tpl->assign("m_mon_services_en_flap", _("Flap Detection"));
+
 		$str_check_svc_enable = _("Enable Active Checks");
 		$str_check_svc_disable = _("Disable Active Checks");
 		$str_passive_svc_enable = _("Enable Passive Checks");
@@ -348,14 +354,14 @@
 		$str_flap_svc_disable = _("Disable Flap Detection");
 		$str_obsess_svc_enable = _("Enable Obsess Over Service");
 		$str_obsess_svc_disable = _("Disable Obsess Over Service");
-		
+
 		/*
-		 * if user is admin, allActions is true, 
+		 * if user is admin, allActions is true,
 		 * else we introduce all actions allowed for user
 		 */
 		if (isset($authorized_actions))
 			$tpl->assign("aclAct", $authorized_actions);
-		
+
 		$tpl->assign("p", $p);
 		$tpl->assign("o", $o);
 		$tpl->assign("en", $en);
@@ -382,24 +388,23 @@
 		$tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
 		$tpl->assign("host_name", $host_name);
 		$tpl->assign("svc_description", $svc_description);
-		
 		$tpl->assign("status_str", _("Status Graph"));
 		$tpl->assign("detailed_graph", _("Detailed Graph"));
-		
+
 		/*
 		 * Hostgroups Display
 		 */
 		$tpl->assign("hostgroups_label", _("Host Groups"));
 		if (isset($hostGroups))
 			$tpl->assign("hostgroups", $hostGroups);
-	
+
 		/*
 		 * Service Categories
 		 */
 		$tpl->assign("sg_label", _("Service Categories"));
 		if (isset($serviceCategories))
 			$tpl->assign("service_categories", $serviceCategories);
-					
+
 		/*
 		 * Macros
 		 */
@@ -407,7 +412,7 @@
 			$tpl->assign("proc_warning", $proc_warning);
 		if (isset($proc_critical) && $proc_critical)
 			$tpl->assign("proc_critical", $proc_critical);
-		
+
 		/*
 		 * Tips translations
 		 */
@@ -432,7 +437,7 @@
 		$actionurl = getMyServiceExtendedInfoField($service_id, "esi_action_url");
 		$actionurl = $hostObj->replaceMacroInString($host_id, $actionurl);
 		$actionurl =  $svcObj->replaceMacroInString($service_id, $actionurl);
-		
+
 		$tpl->assign("sv_ext_notes", getMyServiceExtendedInfoField($service_id, "esi_notes"));
 		$tpl->assign("sv_ext_notes_url", $notesurl);
 		$tpl->assign("sv_ext_action_url_lang", _("Action URL"));
@@ -466,7 +471,7 @@
 	}
 ?>
 
-<script type="text/javascript">		
+<script type="text/javascript">
 	var _sid = '<?php echo session_id();?>';
 	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
 	var command_sent = '<?php echo _("Command sent"); ?>';
@@ -474,57 +479,57 @@
 	var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
 	var svc_id = '<?php echo $svcObj->getServiceId($svc_description, $host_name);?>';
 	var labels = new Array();
-	
-	labels['service_checks'] = new Array(	
+
+	labels['service_checks'] = new Array(
 	    "<?php echo $str_check_svc_enable;?>",
 	    "<?php echo $str_check_svc_disable;?>",
 	    "<?php echo $img_en[0];?>",
 	    "<?php echo $img_en[1];?>"
 	);
-	
-	labels['service_notifications'] = new Array(	
+
+	labels['service_notifications'] = new Array(
 	    "<?php echo $str_notif_svc_enable;?>",
 	    "<?php echo $str_notif_svc_disable;?>",
 	    "<?php echo $img_en[0];?>",
 	    "<?php echo $img_en[1];?>"
 	);
-	
-	labels['service_event_handler'] = new Array(	
+
+	labels['service_event_handler'] = new Array(
 	    "<?php echo $str_handler_svc_enable;?>",
 	    "<?php echo $str_handler_svc_disable;?>",
 	    "<?php echo $img_en[0];?>",
 	    "<?php echo $img_en[1];?>"
 	);
-	
-	labels['service_flap_detection'] = new Array(	
+
+	labels['service_flap_detection'] = new Array(
 	    "<?php echo $str_flap_svc_enable;?>",
 	    "<?php echo $str_flap_svc_disable;?>",
 	    "<?php echo $img_en[0];?>",
 	    "<?php echo $img_en[1];?>"
 	);
-	
-	labels['service_passive_checks'] = new Array(	
+
+	labels['service_passive_checks'] = new Array(
 	    "<?php echo $str_passive_svc_enable;?>",
 	    "<?php echo $str_passive_svc_disable;?>",
 	    "<?php echo $img_en[0];?>",
 	    "<?php echo $img_en[1];?>"
 	);
-	
-	labels['service_obsess'] = new Array(	
+
+	labels['service_obsess'] = new Array(
 	    "<?php echo $str_obsess_svc_enable;?>",
 	    "<?php echo $str_obsess_svc_disable;?>",
 	    "<?php echo $img_en[0];?>",
 	    "<?php echo $img_en[1];?>"
 	);
-	
+
 	function send_command(cmd, actiontype) {
 		if (!confirm(glb_confirm)) {
 			return 0;
 		}
-		if (window.XMLHttpRequest) { 
+		if (window.XMLHttpRequest) {
 		    xhr_cmd = new XMLHttpRequest();
 		}
-		else if (window.ActiveXObject) 
+		else if (window.ActiveXObject)
 		{
 		    xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 		}
@@ -532,28 +537,28 @@
 	   	xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&service_id=" + svc_id + "&sid=" + _sid + "&actiontype=" + actiontype, true);
     		xhr_cmd.send(null);
 	}
-	
+
 	function display_result(xhr_cmd, cmd) {
 		if (xhr_cmd.readyState != 4 && xhr_cmd.readyState != "complete")
-			return(0);			
-		var msg_result;		
+			return(0);
+		var msg_result;
 		var docXML= xhr_cmd.responseXML;
 		var items_state = docXML.getElementsByTagName("result");
 		var received_command = docXML.getElementsByTagName("cmd");
 		var acttype = docXML.getElementsByTagName("actiontype");
-		var state = items_state.item(0).firstChild.data;		
+		var state = items_state.item(0).firstChild.data;
 		var actiontype = acttype.item(0).firstChild.data;
 		var executed_command = received_command.item(0).firstChild.data;
 		var commands = new Array("service_checks", "service_notifications", "service_event_handler", "service_flap_detection", "service_passive_checks", "service_obsess");
-    		
+
 		if (state == "0") {
 			msg_result = command_sent;
 			for each (var mycmd in commands)
 			    if (cmd == mycmd) {
 				var tmp = atoi(actiontype) + 2;
-				img_src= labels[executed_command][tmp];	
+				img_src= labels[executed_command][tmp];
 				document.getElementById(cmd).innerHTML = "<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"
-				+ "<img src=" + img_src 
+				+ "<img src=" + img_src
 				+ " alt=\"'" + labels[executed_command][actiontype] + "\"'"
 				+ " onmouseover=\"Tip('" + labels[executed_command][actiontype] + "')\""
 				+ " onmouseout='UnTip()'>"
@@ -567,7 +572,7 @@
 		require_once "./class/centreonMsg.class.php";
 		?>
 		_clear("centreonMsg");
-		_setTextStyle("centreonMsg", "bold");	
+		_setTextStyle("centreonMsg", "bold");
 		_setText("centreonMsg", msg_result);
 		_nextLine("centreonMsg");
 		_setTimeout("centreonMsg", 3);
