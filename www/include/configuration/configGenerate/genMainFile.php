@@ -130,8 +130,6 @@
 				$str .= $key."=".$value."\n";
 		}
 	}
-	/*
 	$str .= "check_for_updates=0\n";
 	$str .= "bare_update_checks=0\n";
-	*/
 ?>
