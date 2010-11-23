@@ -128,7 +128,7 @@
 				</xsl:element>
 			</xsl:if>
 			<xsl:element name="a">
-			  	<xsl:attribute name="href">main.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn/@hnl"/>&amp;service_description=<xsl:value-of select="sdl"/></xsl:attribute>
+			  	<xsl:attribute name="href">main.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sdl"/></xsl:attribute>
 				<xsl:attribute name="class">infobulle</xsl:attribute>
 				<xsl:attribute name="onmouseover">displayPOPUP_svc('<xsl:value-of select="svc_id"/>');</xsl:attribute>
 				<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="svc_id"/>');</xsl:attribute>
