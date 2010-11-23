@@ -527,7 +527,6 @@
 						# Insert broker module
 						$rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id."', '".$_POST[$inBr]."')";
 					}
-					print $rq;
 					$DBRESULT =& $pearDB->query($rq);
 					$cBk++;
 				}
