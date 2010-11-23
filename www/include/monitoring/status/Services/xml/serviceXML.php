@@ -412,7 +412,6 @@
 				$obj->XML->writeElement("sd", 	$ndo["service_description"], false);
 			}
 			$obj->XML->writeElement("sico", $ndo["icon_image"]);
-			//$obj->XML->writeElement("sd", 	$ndo["service_description"]);
 			$obj->XML->writeElement("sdl", 	urlencode($ndo["service_description"]));
 			$obj->XML->writeElement("svc_id", $ndo["object_id"]);
 			$obj->XML->writeElement("sc", 	$obj->colorService[$ndo["current_state"]]);
@@ -448,7 +447,11 @@
 			$obj->XML->writeElement("hae", $host_status[$ndo["host_name"]]["active_checks_enabled"]);
 			$obj->XML->writeElement("hpe", $host_status[$ndo["host_name"]]["passive_checks_enabled"]);
 			$obj->XML->writeElement("nc", $obj->GMT->getDate($dateFormat, $ndo["next_check"]));
-			$obj->XML->writeElement("lc", $obj->GMT->getDate($dateFormat, $ndo["last_check"]));
+			if ($ndo["last_check"] != 0) {
+				$obj->XML->writeElement("lc", $obj->GMT->getDate($dateFormat, $ndo["last_check"]));
+			} else {
+				$obj->XML->writeElement("lc", "N/A");
+			}
 			$obj->XML->writeElement("d", $duration);
 			$obj->XML->writeElement("last_hard_state_change", $hard_duration);
 			$obj->XML->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $obj->prepareObjectName($ndo["service_description"]), $obj->DBC));
@@ -459,8 +462,9 @@
 	unset($ndo);
 	unset($host_status);
 
-	if (!$ct)
+	if (!$ct) {
 		$obj->XML->writeElement("infos", "none");
+	}
 
 	$obj->XML->writeElement("sid", $obj->session_id);
 	$obj->XML->endElement();
