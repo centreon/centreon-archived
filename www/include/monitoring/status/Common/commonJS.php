@@ -43,7 +43,7 @@
 function resetSelectedCheckboxes()
 {
 	$$('input[type="checkbox"]').each(function(el) {
-		if (_selectedElem[el.id]) {
+		if (_selectedElem[encodeURIComponent(el.id)]) {
 			el.checked = true;
 		}
 	});
