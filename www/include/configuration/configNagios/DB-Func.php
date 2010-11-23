@@ -512,8 +512,6 @@
 			}
 			$DBRESULT->free();
 
-			print_r($oldBks);
-
 			$cBk = 0;
 
 			for ($lsIn=0 ; $lsIn <= $_POST['lsOfBroker'] ; $lsIn++) {
