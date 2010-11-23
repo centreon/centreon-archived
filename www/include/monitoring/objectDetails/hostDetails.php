@@ -3,45 +3,45 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset($oreon))
 		exit();
-	
+
 	include_once "./class/centreonDB.class.php";
 	include_once "./class/centreonHost.class.php";
-	
+
 	$pearDBndo 	= new CentreonDB("ndo");
 	$hostObj 	= new CentreonHost($pearDB);
 
@@ -50,13 +50,13 @@
 	 */
 	$GroupListofUser = array();
 	$GroupListofUser =  $oreon->user->access->getAccessGroups();
-	
+
 	$allActions = false;
 	if (count($GroupListofUser) > 0 && $is_admin == 0) {
 		$authorized_actions = array();
 		$authorized_actions = $oreon->user->access->getActions();
 	}
-	
+
 	/*
 	 * ACL
 	 */
@@ -79,28 +79,28 @@
 		/*
 		 * Host Group List
 		 */
-	
+
 		$host_id = getMyHostID($host_name);
-	
+
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
 		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
 			$hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
 		$DBRESULT->free();
-	
+
 		if (isset($host_id)) {
 			$proc_warning = getMyHostMacro($host_id, "PROC_WARNING");
 			$proc_critical = getMyHostMacro($host_id, "PROC_CRITICAL");
 		}
-				
-		
+
+
 		/*
 		 * Init Table status
 		 */
 		$tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 		$tab_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
-		
-		/* 
-		 * start ndo svc info 
+
+		/*
+		 * start ndo svc info
 		 */
 		$rq ="SELECT nss.current_state," .
 					" nss.output as plugin_output," .
@@ -123,15 +123,15 @@
 					" no.name2 as service_description" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 					" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
-	
+
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
 		while ($ndo =& $DBRESULT_NDO->fetchRow())	{
 			if (!isset($tab_status[$ndo["current_state"]]))
 				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
 			$tab_status[$tab_status_service[$ndo["current_state"]]]++;
 		}
-	
-		/* 
+
+		/*
 		 * start ndo host detail
 		 */
 		$rq2 = "SELECT nhs.current_state," .
@@ -166,27 +166,27 @@
 			" nh.action_url " .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
 			" WHERE no.object_id = nhs.host_object_id AND no.object_id = nh.host_object_id AND no.name1 like '".$host_name."'";
-	
+
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		$ndo2 =& $DBRESULT_NDO->fetchRow();
-	
+
 		$host_status[$host_name] = $ndo2;
 		$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
 		$host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $ndo2["host_name"], $ndo2["notes_url"]);
 		$host_status[$host_name]["notes_url"] = str_replace("\$HOSTADDRESS\$", $ndo2["address"], $ndo2["notes_url"]);
 		$host_status[$host_name]["action_url"] = str_replace("\$HOSTNAME\$", $ndo2["host_name"], $ndo2["action_url"]);
 		$host_status[$host_name]["action_url"] = str_replace("\$HOSTADDRESS\$", $ndo2["address"], $ndo2["action_url"]);
-		
+
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		$hostDB =& $res->fetchRow();
 		$current_attempts = getMyHostField($hostDB["host_id"], "host_max_check_attempts");
-		
+
 		$url_id = NULL;
 
 		$path = "./include/monitoring/objectDetails/";
 
 		$en = array("0" => _("No"), "1" => _("Yes"));
-		
+
 		/*
 		 * Smarty template Init
 		 */
@@ -239,9 +239,9 @@
 		    $host_status[$host_name]["scheduled_downtime_depth"]) {
 		    $host_status[$host_name]["scheduled_downtime_depth"] = 1;
 		}
-		
+
 		$host_status[$host_name]["comments"] = $hostDB["host_comment"];
-		
+
 		if (isset($tab_host_service[$host_name]) && count($tab_host_service[$host_name]))
 			foreach ($tab_host_service[$host_name] as $key_name => $s){
 				if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
@@ -274,7 +274,7 @@
 		$tpl->assign("m_mon_percent_state_change", _("Percent State Change"));
 		$tpl->assign("m_mon_downtime_sc", _("In Scheduled Downtime?"));
 		$tpl->assign("m_mon_last_update", _("Last Update"));
-		$tpl->assign("m_mon_tools", _("Tools"));		
+		$tpl->assign("m_mon_tools", _("Tools"));
 		$tpl->assign("cmt_host_name", _("Host Name"));
 		$tpl->assign("cmt_entry_time", _("Entry Time"));
 		$tpl->assign("cmt_author", _("Author"));
@@ -311,7 +311,7 @@
 		$tpl->assign("m_mon_flap_detection", _("Flap Detection"));
 		$tpl->assign("m_mon_services_en_acknowledge", _("Acknowledged"));
 		$tpl->assign("m_mon_submit_passive", _("Submit result for this host"));
-		
+
 		/*
 		 * Strings are used by javascript command handler
 		 */
@@ -339,12 +339,12 @@
 		$tpl->assign("lnk_host_logs", sprintf(_("View logs for host %s"), $host_name));
 
 		/*
-		 * if user is admin, allActions is true, 
+		 * if user is admin, allActions is true,
 		 * else we introduce all actions allowed for user
 		 */
 		if (isset($authorized_actions))
 			$tpl->assign("aclAct", $authorized_actions);
-			
+
 		$tpl->assign("p", $p);
 		$tpl->assign("en", $en);
 		$tpl->assign("en_inv", $en_inv);
@@ -362,14 +362,14 @@
 		$tpl->assign("h", $hostDB);
 		$tpl->assign("url_id", $url_id);
 		$tpl->assign("m_mon_ticket", "Open Ticket");
-		
+
 		/*
 		 * Hostgroups Display
 		 */
 		$tpl->assign("hostgroups_label", _("Member of Host Groups"));
 		if (isset($hostGroups))
 			$tpl->assign("hostgroups", $hostGroups);
-		
+
 		/*
 		 * Macros
 		 */
@@ -377,11 +377,11 @@
 			$tpl->assign("proc_warning", $proc_warning);
 		if (isset($proc_critical) && $proc_critical)
 			$tpl->assign("proc_critical", $proc_critical);
-		
-		
+
+
 		if (isset($tabCommentHosts))
 			$tpl->assign("tab_comments_host", $tabCommentHosts);
-		
+
 		$tpl->assign("host_data", $host_status[$host_name]);
 
 		/*
@@ -418,61 +418,59 @@
 		$tpl->display("hostDetails.ihtml");
 		$host_name = str_replace("/", "#S#", $host_name);
 		$host_name = str_replace("\\", "#BS#", $host_name);
-		$svc_description = str_replace("/", "#S#", $svc_description);
-		$svc_description = str_replace("\\", "#BS#", $svc_description);
 	}
 ?>
-<script type="text/javascript">	
+<script type="text/javascript">
 	var _sid = '<?php echo session_id();?>';
 	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
 	var command_sent = '<?php echo _("Command sent"); ?>';
 	var command_failure = "<?php echo _("Failed to execute command");?>";
 	var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
 	var labels = new Array();
-	
+
 	labels['host_checks'] = new Array(
 	    "<?php echo $str_check_host_enable;?>",
 	    "<?php echo $str_check_host_disable;?>",
 	    "<?php echo $img_en[0];?>",
 	    "<?php echo $img_en[1];?>"
 	);
-	
+
 	labels['host_notifications'] = new Array(
 	    "<?php echo $str_notif_host_enable;?>",
 	    "<?php echo $str_notif_host_disable;?>",
 	    "<?php echo $img_en[0];?>",
-	    "<?php echo $img_en[1];?>"	
+	    "<?php echo $img_en[1];?>"
 	);
-	
+
 	labels['host_event_handler'] = new Array(
 	    "<?php echo $str_handler_host_enable;?>",
 	    "<?php echo $str_handler_host_disable;?>",
 	    "<?php echo $img_en[0];?>",
 	    "<?php echo $img_en[1];?>"
 	);
-	
+
 	labels['host_flap_detection'] = new Array(
 	    "<?php echo $str_flap_host_enable;?>",
 	    "<?php echo $str_flap_host_disable;?>",
 	    "<?php echo $img_en[0];?>",
 	    "<?php echo $img_en[1];?>"
 	);
-	
+
 	labels['host_obsess'] = new Array(
 	    "<?php echo $str_obsess_host_enable;?>",
 	    "<?php echo $str_obsess_host_disable;?>",
 	    "<?php echo $img_en[0];?>",
-	    "<?php echo $img_en[1];?>"	
+	    "<?php echo $img_en[1];?>"
 	);
-	
-	function send_command(cmd, actiontype) {		
+
+	function send_command(cmd, actiontype) {
 		if (!confirm(glb_confirm)) {
 			return 0;
 		}
-		if (window.XMLHttpRequest) { 
+		if (window.XMLHttpRequest) {
 		    xhr_cmd = new XMLHttpRequest();
 		}
-		else if (window.ActiveXObject) 
+		else if (window.ActiveXObject)
 		{
 		    xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 		}
@@ -480,11 +478,11 @@
 	    xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&sid=" + _sid + "&actiontype=" + actiontype, true);
     	    xhr_cmd.send(null);
 	}
-	
+
 	function display_result(xhr_cmd, cmd) {
 		if (xhr_cmd.readyState != 4 && xhr_cmd.readyState != "complete")
-			return(0);			
-		var msg_result;		
+			return(0);
+		var msg_result;
 		var docXML= xhr_cmd.responseXML;
 		var items_state = docXML.getElementsByTagName("result");
 		var acttype = docXML.getElementsByTagName("actiontype");
@@ -492,16 +490,16 @@
 		var received_command = docXML.getElementsByTagName("cmd");
 		var executed_command = received_command.item(0).firstChild.data;
 		var commands = new Array("host_checks", "host_notifications", "host_event_handler", "host_flap_detection", "host_obsess");
-		
-		var state = items_state.item(0).firstChild.data;				
+
+		var state = items_state.item(0).firstChild.data;
 		if (state == "0") {
-			 msg_result = command_sent; 
-			 for each (var mycmd in commands) 
+			 msg_result = command_sent;
+			 for each (var mycmd in commands)
 			    if (cmd == mycmd) {
 				var tmp = atoi(actiontype) + 2;
-				img_src= labels[executed_command][tmp];		
+				img_src= labels[executed_command][tmp];
 			 	document.getElementById(cmd).innerHTML = "<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"
-				+ "<img src=" + img_src 
+				+ "<img src=" + img_src
 				+ " alt=\"'" + labels[executed_command][actiontype] + "\"'"
 				+ " onmouseover=\"Tip('" + labels[executed_command][actiontype] + "')\""
 				+ " onmouseout='UnTip()'>"
@@ -515,7 +513,7 @@
 		require_once "./class/centreonMsg.class.php";
 		?>
 		_clear("centreonMsg");
-		_setTextStyle("centreonMsg", "bold");	
+		_setTextStyle("centreonMsg", "bold");
 		_setText("centreonMsg", msg_result);
 		_nextLine("centreonMsg");
 		_setTimeout("centreonMsg", 3);
