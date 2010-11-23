@@ -427,13 +427,13 @@
 			$obj->XML->writeElement("dtm",	$ndo["scheduled_downtime_depth"]);
 
 			if ($ndo["notes_url"] != "") {
-
 				$ndo["notes_url"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes_url"]);
 				$ndo["notes_url"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes_url"]);
 				$obj->XML->writeElement("snu", $ndo["notes_url"]);
 			} else {
 				$obj->XML->writeElement("snu", 'none');
 			}
+
 			if ($ndo["notes"] != "") {
 				$ndo["notes"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes"]);
 				$ndo["notes"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes"]);
