@@ -82,7 +82,7 @@
 	$send_cmd .= ";" . $hName . ";" . $svcDesc . ";" . time();
 	$command->set_process_command($send_cmd, $poller);
 	$act_type ? $return_type = 0 : $return_type = 1;
-	$result = $command->writeCommand();
+	$result = $command->write();
 	$buffer = new CentreonXML();
 	$buffer->startElement("root");
 		$buffer->writeElement("result", $result);

@@ -62,14 +62,17 @@
 	 */
 	$ndo_base_prefix = getNDOPrefix();
 
-	if (isset($_GET["host_name"]) && $_GET["host_name"])
-		$host_name = htmlentities($_GET["host_name"], ENT_QUOTES, "UTF-8");
-	else
-		foreach ($_GET["select"] as $key => $value)
-			$host_name = htmlentities($key, ENT_QUOTES, "UTF-8");
+	if (isset($_GET["host_name"]) && $_GET["host_name"]) {
+		$host_name = $_GET["host_name"];
+	} else {
+		foreach ($_GET["select"] as $key => $value) {
+			$host_name = $key;
+		}
+	}
 
-	if (!$is_admin)
+	if (!$is_admin) {
 		$lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName($pearDBndo);
+	}
 
 	$tab_status = array();
 

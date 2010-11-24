@@ -1077,7 +1077,7 @@
 		if ($host_id)	{
 			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr " .
 									"WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id " .
-									"AND service_description = '".$service_description."' LIMIT 1");
+									"AND service_description = '".$pearDB->escape($service_description)."' LIMIT 1");
 			$row =& $DBRESULT->fetchRow();
 			# Service is directely link to a host, no problem
 			if ($row["service_id"])
@@ -1382,7 +1382,7 @@
 	function getMyHostID($host_name = NULL)	{
 		if (!$host_name) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT host_id FROM host WHERE host_name = '".htmlentities($host_name, ENT_QUOTES, "UTF-8")."' LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT host_id FROM host WHERE host_name = '".$pearDB->escape($host_name)."' LIMIT 1");
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
 			return $row["host_id"];
@@ -1390,11 +1390,11 @@
 		return NULL;
 	}
 
-	function getMyHostGroupID($hostgroup_name = NULL)	{
+	function getMyHostGroupID($hostgroup_name = NULL) {
 		if (!$hostgroup_name) return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT hg_id FROM hostgroup WHERE hg_name = '".htmlentities(str2db($hostgroup_name), ENT_QUOTES, "UTF-8")."' LIMIT 1");
-		if ($DBRESULT->numRows())	{
+		if ($DBRESULT->numRows()) {
 			$row =& $DBRESULT->fetchRow();
 			return $row["hg_id"];
 		}

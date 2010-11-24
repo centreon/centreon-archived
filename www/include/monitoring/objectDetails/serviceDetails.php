@@ -67,14 +67,14 @@
 	$ndo_base_prefix = getNDOPrefix();
 
 	if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
-		$host_name = htmlentities($_GET["host_name"], ENT_QUOTES, "UTF-8");
-		$svc_description = htmlentities(str_replace("\\\\", "\\", $_GET["service_description"]), ENT_QUOTES, "UTF-8");
+		$host_name = $_GET["host_name"];
+		$svc_description = $_GET["service_description"];
 	} else {
 		foreach ($_GET["select"] as $key => $value) {
 			$tab_data = split(";", $key);
 		}
-		$host_name = htmlentities($tab_data[0], ENT_QUOTES, "UTF-8");
-		$svc_description = htmlentities($tab_data[1], ENT_QUOTES, "UTF-8");
+		$host_name = $tab_data[0];
+		$svc_description = $tab_data[1];
 	}
 
 	/*
@@ -146,10 +146,9 @@
 				" ns.notes, " .
 				" ns.action_url " .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns " .
-				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' AND no.object_id = ns.service_object_id AND config_type = '1'";
+				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$pearDBndo->escape($host_name)."' AND no.object_id = ns.service_object_id";
 
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
-
 		$tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 
 		while ($ndo =& $DBRESULT_NDO->fetchRow()) {
@@ -181,10 +180,11 @@
 
 		$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		$host =& $DBRESULT->fetchrow();
-		$host_id = getMyHostID($host["host_name"]);
+		//$host_id = getMyHostID($host["host_name"]);
 		$DBRESULT->free();
-
+		/*
 		$service_id = getMyServiceID($svc_description, $host_id);
+		*/
 		$total_current_attempts = getMyServiceField($service_id, "service_max_check_attempts");
 
 		$path = "./include/monitoring/objectDetails/";
@@ -274,13 +274,14 @@
 		}
 
 		$status = NULL;
-		foreach ($tab_status as $key => $value)
+		foreach ($tab_status as $key => $value) {
 			$status .= "&value[".$key."]=".$value;
+		}
 
 		$optionsURL = "session_id=".session_id()."&host_name=".$host_name."&service_description=".$svc_description;
 
 
-		$DBRES =& $pearDBO->query("SELECT id FROM `index_data` WHERE host_name LIKE '".$host_name."' AND service_description LIKE '".str_replace("/", "#S#",$svc_description)."' LIMIT 1");
+		$DBRES =& $pearDBO->query("SELECT id FROM `index_data` WHERE host_name LIKE '".$pearDBO->escape($host_name)."' AND service_description LIKE '".$pearDBO->escape($svc_description)."' LIMIT 1");
 		$index_data = 0;
 		if ($DBRES->numRows()) {
 			$row =& $DBRES->fetchRow();
@@ -382,8 +383,8 @@
 		$tpl->assign("lcaTopo", $oreon->user->access->topology);
 		$tpl->assign("count_comments_svc", count($tabCommentServices));
 		$tpl->assign("tab_comments_svc", $tabCommentServices);
-		$tpl->assign("flag_graph", service_has_graph($host["host_id"], getMyServiceID($svc_description, $host["host_id"])));
-		$tpl->assign("service_id", getMyServiceID($svc_description, $host["host_id"]));
+		$tpl->assign("flag_graph", service_has_graph($host_id, $service_id));
+		$tpl->assign("service_id", $service_id);
 		$tpl->assign("host_data", $host_status[$host_name]);
 		$tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
 		$tpl->assign("host_name", $host_name);
