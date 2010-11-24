@@ -184,7 +184,7 @@ ALTER TABLE `cfg_nagios` ADD `check_for_orphaned_hosts` enum('0','1','2') defaul
 ALTER TABLE `cfg_nagios` ADD `external_command_buffer_slots` INT NULL ;
 ALTER TABLE `cfg_nagios` CHANGE service_reaper_frequency check_result_reaper_frequency INT(11);
 ALTER TABLE `cfg_nagios` ADD `translate_passive_host_checks` INT NULL ;
-ALTER TABLE `cfg_nagios` CHANGE use_aggressive_host_checking use_agressive_host_checking enum('0','1','2') default NULL;
+ALTER TABLE `cfg_nagios` CHANGE use_aggressive_host_checking use_aggressive_host_checking enum('0','1','2') default NULL;
 
 ALTER TABLE `cfg_nagios` DROP COLUMN aggregate_status_updates;
 
