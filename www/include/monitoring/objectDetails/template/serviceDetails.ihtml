@@ -236,14 +236,14 @@
 						{if $aclAct.service_schedule_downtime || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft">
-									<img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='./main.php?p=20305&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_downtime}</a>
+									<img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='./main.php?p=20218&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_downtime}</a>
 								</td>
 							</tr>
 						{/if}
 						{if $aclAct.service_comment || $admin == true}
 							<tr class='list_two'>
 								<td class="ListColLeft">
-									<img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='./main.php?p=20306&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a>
+									<img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='./main.php?p=20219&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a>
 								</td>
 							</tr>
 						{/if}
