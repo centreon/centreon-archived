@@ -256,19 +256,27 @@ sub parseFile ($$) {
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
 		    $tab[2] =~ s/\\/\\\\/g;
-                    $tab[2] =~ s/\'/\\\'/g;
+            $tab[2] =~ s/\'/\\\'/g;
 		    $tab[1] =~ s/\\/\\\\/g;
-                    $tab[1] =~ s/\'/\\\'/g;
-		    $tab[5] =~ s/\\/\\\\/g; 
-		    $tab[5] =~ s/\'/\\\'/g;
+            $tab[1] =~ s/\'/\\\'/g;
+		    if (defined($tab[5])) {
+		    	$tab[5] =~ s/\\/\\\\/g; 
+		    	$tab[5] =~ s/\'/\\\'/g;
+		    } else {
+		    	$tab[5] = "";
+		    }
 		    my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `notification_cmd`, `notification_contact`, `output`, `instance`) VALUES ('2', '$ctime', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$tab[4]."','".$tab[0]."','".$tab[5]."', '".$instance."')";
 		    my $res = $dbh->do($rq);
 		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
-		    $tab[4] =~ s/\\/\\\\/g; 
-		    $tab[4] =~ s/\'/\\\'/g;
+		   	if (defined($tab[4])) {
+		    	$tab[4] =~ s/\\/\\\\/g; 
+		    	$tab[4] =~ s/\'/\\\'/g;
+		    } else {
+		    	$tab[4] = "";
+		    }
 		    my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `notification_contact`, `host_name` , `status`, `notification_cmd`,  `output`, `instance`) VALUES ('3', '$ctime', '".$tab[0]."','".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."', '".$instance."')";
 		    my $res = $dbh->do($rq);
 		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
