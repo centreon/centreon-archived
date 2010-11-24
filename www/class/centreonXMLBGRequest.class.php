@@ -323,10 +323,10 @@ class CentreonXMLBGRequest
 	{
 		if (isset($name) && isset($tab)) {
 			if (isset($tab[$name])) {
-				return htmlentities($tab[$name], ENT_QUOTES, "UTF-8");
+				return CentreonDB::escape($tab[$name]);
 			}
 			else {
-				return htmlentities($defaultValue, ENT_QUOTES, "UTF-8");
+				return CentreonDB::escape($defaultValue);
 			}
 		}
 	}
