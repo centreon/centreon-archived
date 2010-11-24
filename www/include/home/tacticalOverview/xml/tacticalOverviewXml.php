@@ -147,20 +147,28 @@
 	/*
 	 * Get Host Ack  UP(0), DOWN(1),  UNREACHABLE(2)
 	 */
-	$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1), ".$ndo_base_prefix."hoststatus.current_state" .
+	$rq1 = 	" SELECT DISTINCT ".$ndo_base_prefix."objects.name1, ".
+	        $ndo_base_prefix."hoststatus.current_state, ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged, ".
+	        $ndo_base_prefix."hoststatus.scheduled_downtime_depth " .
 			" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
 			" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
 			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-			" AND ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 " .
+			" AND (".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 OR " .
+	        " " . $ndo_base_prefix."hoststatus.scheduled_downtime_depth > 0) ".
 			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
-			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state ";
 
 	$hostAck = array(0=>0, 1=>0, 2=>0, 3=>0);
+	$hostDt = array(0=>0, 1=>0, 2=>0, 3=>0);
 	$resNdo1 = $dbb->query($rq1);
 	while ($ndo = $resNdo1->fetchRow()) {
-		$hostAck[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.name1)"];
-		$hostUnhand[$ndo["current_state"]] -= $hostAck[$ndo["current_state"]];
+		if ($ndo['problem_has_been_acknowledged']) {
+		    $hostAck[$ndo["current_state"]]++;
+		}
+		if ($ndo['scheduled_downtime_depth']) {
+		    $hostDt[$ndo['current_state']]++;
+		}
+		$hostUnhand[$ndo["current_state"]]--;
 	}
 	$resNdo1->free();
 
@@ -257,36 +265,48 @@
 
 
 	/*
-	 * Get ServiceAck  OK(0), WARNING(1),  CRITICAL(2), UNKNOWN(3)
+	 * Get Service Acknowledgements and Downtimes OK(0), WARNING(1),  CRITICAL(2), UNKNOWN(3)
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), " . $ndo_base_prefix."servicestatus.current_state" .
+		$rq1 = 	" SELECT DISTINCT ".$ndo_base_prefix."objects.object_id, " . $ndo_base_prefix."servicestatus.current_state, " .
+		        $ndo_base_prefix."servicestatus.problem_has_been_acknowledged, " .
+		        $ndo_base_prefix."servicestatus.scheduled_downtime_depth " .
 				" FROM ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus, centreon_acl" .
 				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
-				" AND ".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 " .
+				" AND (".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 OR " .
+				" " . $ndo_base_prefix."servicestatus.scheduled_downtime_depth > 0) " .
 				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 				" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name ".
 				" AND ".$ndo_base_prefix."objects.name2 = centreon_acl.service_description " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-				" GROUP BY ".$ndo_base_prefix."servicestatus.current_state";
-	}
-	else {
-		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.object_id), " . $ndo_base_prefix."servicestatus.current_state" .
+				" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' ";
+	} else {
+		$rq1 = 	" SELECT DISTINCT ".$ndo_base_prefix."objects.object_id, " . $ndo_base_prefix."servicestatus.current_state, " .
+		        $ndo_base_prefix."servicestatus.problem_has_been_acknowledged, " .
+		        $ndo_base_prefix."servicestatus.scheduled_downtime_depth " .
 				" FROM ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus" .
 				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
-				" AND ".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 " .
+				" AND (".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 OR " .
+				" " . $ndo_base_prefix."servicestatus.scheduled_downtime_depth > 0) " .
 				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-				" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-				" GROUP BY ".$ndo_base_prefix."servicestatus.current_state";
+				" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' ";
 	}
 	$resNdo1 = $dbb->query($rq1);
 
+	$svcAckDt = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	$svcAck = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+	$svcDt = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	while ($ndo = $resNdo1->fetchRow()) {
-		$svcAck[$ndo["current_state"]] = $ndo["count(DISTINCT ".$ndo_base_prefix."objects.object_id)"];
+	    $svcAckDt[$ndo["current_state"]]++;
+	    if ($ndo['problem_has_been_acknowledged']) {
+	        $svcAck[$ndo["current_state"]]++;
+	    }
+	    if ($ndo['scheduled_downtime_depth']) {
+	        $svcDt[$ndo["current_state"]]++;
+	    }
 	}
 	$resNdo1->free();
+
 
 	/*
 	 * Get Services Inactive objects
@@ -321,7 +341,7 @@
 	 */
 	$svcUnhandled = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	for ($i=0; $i<=4; $i++) {
-		$svcUnhandled[$i] = $SvcStat[$i] - $svcAck[$i] - $svcInactive[$i] - $onPbHost[$i];
+		$svcUnhandled[$i] = $SvcStat[$i] - $svcAckDt[$i] - $svcInactive[$i] - $onPbHost[$i];
 	}
 
 	/*
