@@ -515,9 +515,6 @@
 			$cBk = 0;
 
 			for ($lsIn=0 ; $lsIn <= $_POST['lsOfBroker'] ; $lsIn++) {
-
-				print $lsIn . " -> " .$_POST['lsOfBroker'] . " --> ".$cBk."($nbOldBroker) <br>";
-
 				$inBr = "in_broker_".$lsIn;
 				if (isset($_POST[$inBr])) {
 					if ($cBk < $nbOldBroker && isset($oldBks[$cBk]['bk_mod_id'])) {
