@@ -353,7 +353,7 @@
 				$hard_duration = CentreonDuration::toString(time() - $ndo["last_hard_state_change"]);
 			}
 
-			if ($ndo["scheduled_downtime_depth"] == 1) {
+			if ($ndo["scheduled_downtime_depth"] > 0) {
 				$class = "line_downtime";
 			} else if ($ndo["current_state"] == 2) {
 				$ndo["problem_has_been_acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
