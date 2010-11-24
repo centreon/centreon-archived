@@ -41,6 +41,7 @@
 	 */
 
 	$nagios = array();
+	$nagios_d = array();
 	if (($o == "c" || $o == "w") && $nagios_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
 		# Set base value
@@ -48,7 +49,6 @@
 		$DBRESULT->free();
 
 		$tmp = explode(',', $nagios["debug_level_opt"]);
-		$nagios_d = array();
 		foreach ($tmp as $key => $value) {
 			$nagios_d["nagios_debug_level"][$value] = 1;
 		}
@@ -502,12 +502,12 @@
 	gBkValue[<?php echo $nBk;?>] = '<?php echo $aBk[$nBk]["broker_module"];?>';
 <?php
 		}
-		if ( $nBk > 0 ) {
 ?>
 </script>
 <?php
+		//if ( $nBk > 0 ) {
 	$form->addElement('text', 'event_broker_options', _("Broker Module Options"), $attrsText2);
-		}
+		//}
 	}
 
 	$tab = array();
