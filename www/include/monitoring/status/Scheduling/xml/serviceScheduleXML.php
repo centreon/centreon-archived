@@ -287,18 +287,18 @@
 				$buffer->writeElement("hc", "transparent");
 				$buffer->startElement("hn");
 				$buffer->writeAttribute("none", "1");
-				$buffer->text($ndo["host_name"]);
+				$buffer->text($ndo["host_name"], true, false);
 				$buffer->endElement();
 			} else {
 				$host_prev = $ndo["host_name"];
 				$buffer->writeElement("hc", $color_host);
 				$buffer->startElement("hn");
 				$buffer->writeAttribute("none", "0");
-				$buffer->text($ndo["host_name"]);
+				$buffer->text($ndo["host_name"], true, false);
 				$buffer->endElement();
 			}
 			$buffer->writeElement("hs", $host_status[$ndo["host_name"]]["current_state"]);
-			$buffer->writeElement("sd", $ndo["service_description"]);
+			$buffer->writeElement("sd", $ndo["service_description"], false);
 			$buffer->writeElement("ac", $color_en_label[$ndo["active_checks_enabled"]]);
 			$buffer->writeElement("sc", $color_service);
 			$buffer->writeElement("cs", _($tab_status_svc[$ndo["current_state"]]));
