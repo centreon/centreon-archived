@@ -3,38 +3,38 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
- */ 
+ *
+ */
 
 	if (!isset($oreon))
 		exit();
@@ -47,7 +47,7 @@
 	/*
 	 * Include Pear Lib
 	 */
-	 
+
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
@@ -73,26 +73,26 @@
 	}
 
 	(isset($_GET["host_id"]) && $open_id_type == "HH") ? $_GET["host_id"] = $open_id_sub : $_GET["host_id"] = null;
-	
+
 	$id = 1;
 
 	function getGetPostValue($str){
 		$value = NULL;
 		if (isset($_GET[$str]) && $_GET[$str])
-			$value = htmlentities($_GET[$str], ENT_QUOTES, "UTF-8");
+			$value = $_GET[$str];
 		if (isset($_POST[$str]) && $_POST[$str])
-			$value = htmlentities($_POST[$str], ENT_QUOTES, "UTF-8");
+			$value = $_POST[$str];
 		return $value;
 	}
-	
+
 	/*
 	 * Get Arguments
 	 */
-	
+
 	$id 	= getGetPostValue("id");
 	$id_svc = getGetPostValue("svc_id");
 	$meta 	= getGetPostValue("meta");
-	
+
 	if (isset($id_svc) && $id_svc){
 		$id = "";
 		$tab_svcs = explode(",", $id_svc);
@@ -112,7 +112,7 @@
 			}
 		}
 	}
-	
+
 	$id_log = "'RR_0'";
 	$multi = 0;
 	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
@@ -153,16 +153,16 @@
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5));
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "size"=>10));
 	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "onclick"=>"displayTimePicker('EndTime', this)", "size"=>5));
-	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));	
-	
+	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
-		
+
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('periodORlabel', _("or"));
 	$tpl->assign('from', _("From"));
-	$tpl->assign('to', _("to"));	
-	$tpl->assign('Apply', _("Apply"));	
+	$tpl->assign('to', _("to"));
+	$tpl->assign('Apply', _("Apply"));
 
 	$tpl->display("graphs.ihtml");
 ?>
@@ -170,13 +170,13 @@
 <script type="text/javascript">
 
 	var css_file 	= './include/common/javascript/codebase/dhtmlxtree.css';
-    var headID 		= document.getElementsByTagName("head")[0];  
+    var headID 		= document.getElementsByTagName("head")[0];
     var cssNode 	= document.createElement('link');
     cssNode.type 	= 'text/css';
     cssNode.rel 	= 'stylesheet';
     cssNode.href 	= css_file;
     cssNode.media 	= 'screen';
-    
+
     headID.appendChild(cssNode);
 
 	var multi 	= <?php echo $multi; ?>;
@@ -184,38 +184,38 @@
 
 	tree = new dhtmlXTreeObject("menu_40201","100%","100%","1");
     tree.setImagePath("./img/icones/csh_vista/");
-    
+
     //link tree to xml
     tree.setXMLAutoLoading("./include/views/graphs/GetXmlTree.php");
-        
+
     //load first level of tree
     tree.loadXML("./include/views/graphs/GetXmlTree.php?<?php if (isset($meta) && $meta) print "meta=$meta"."&"; ?><?php if (isset($search) && $search) print "search=$search"."&"; ?><?php if (isset($search_service) && $search_service) print "search_service=$search_service"."&"; ?>id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
 
 	// system to reload page after link with new url
-	//set function object to call on node select 
+	//set function object to call on node select
 	tree.attachEvent("onClick", onNodeSelect)
-	
-	//set function object to call on node select 
+
+	//set function object to call on node select
 	tree.attachEvent("onDblClick", onDblClick)
-	
-	//set function object to call on node select 		
+
+	//set function object to call on node select
 	tree.attachEvent("onCheck",onCheck)
-	
-	//see other available event handlers in API documentation 
+
+	//see other available event handlers in API documentation
 	tree.enableDragAndDrop(0);
-	tree.enableTreeLines(false);	
+	tree.enableTreeLines(false);
 	tree.enableCheckBoxes(true);
 	tree.enableThreeStateCheckboxes(true);
 
-	// linkBar to log/reporting/graph/ID_card		
+	// linkBar to log/reporting/graph/ID_card
 	function getCheckedList(tree){
 		return tree.getAllChecked();
 	}
-	
+
 	if (document.getElementById('linkBar')){
 		var _menu_2 = document.getElementById('linkBar')
 		var _divBar = document.createElement("div");
-	
+
 		_divBar.appendChild(create_log_link(tree,'id'));
 		//_divBar.appendChild(create_monitoring_link(tree,'id'));
 		_divBar.setAttribute('style','float:right; margin-right:10px;' );
@@ -226,14 +226,14 @@
 		tree.openAllItems(nodeId);
 		return(false);
 	}
-	
+
 	function onCheck(nodeId){
 		multi = 1;
 		if (document.getElementById('openid'))
 			document.getElementById('openid').innerHTML = tree.getAllChecked();
 		graph_4_host(tree.getAllChecked(), 1);
 	}
-	
+
 	function onNodeSelect(nodeId){
 		multi = 0;
 
@@ -244,7 +244,7 @@
 			graph_4_host(nodeId);
 		}
 	}
-	
+
 	// it's fake methode for using ajax system by default
 	function mk_pagination(){;}
 	function mk_paginationFF(){;}
@@ -366,10 +366,10 @@ function nextPeriod() {
 	function graph_4_host(id, multi, pStart, pEnd, metrics)	{
 		if (!multi)
 			multi = 0;
-		
-		
+
+
 		if (pStart && pEnd){
-			period = pEnd - pStart;			
+			period = pEnd - pStart;
 		} else if (document.FormPeriod.period.value != "") {
 			period = document.FormPeriod.period.value;
 		} else if (document.FormPeriod) {
@@ -411,7 +411,7 @@ function nextPeriod() {
 		if (document.formu2 && document.formu2.template_select && document.formu2.template_select.value != ""){
 			_tpl_id = document.formu2.template_select.value;
 		}
-		
+
 		// Split metric
 		var _split = 0;
 		if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
@@ -422,17 +422,17 @@ function nextPeriod() {
 		if (document.formu2 && document.formu2.status && document.formu2.status.checked)	{
 			_status = 1;
 		}
-		
+
 		var _warning = 0;
 		if (document.formu2 && document.formu2.warning && document.formu2.warning.checked)	{
 			_warning = 1;
 		}
-		
+
 		var _critical = 0;
 		if (document.formu2 && document.formu2.critical && document.formu2.critical.checked)	{
 			_critical = 1;
 		}
-		
+
 		tree.selectItem(id);
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/graph.xsl";
@@ -450,9 +450,9 @@ function nextPeriod() {
 	    // Here is your precious function
 	    // You can call as many functions as you want here;
 	    myOnloadFunction1();
-		
+
 		graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
-	
+
 	    // Now we call old function which was assigned to onLoad, thus playing nice
 	    if (nowOnload != null && typeof(nowOnload) == 'function') {
 	        nowOnload();
@@ -476,7 +476,7 @@ function nextPeriod() {
      */
     function addGraphZoom(img_name) {
         if ($(img_name).ancestors()[0].match('a')) {
-        	$(img_name).ancestors()[0].setAttribute('onClick', ''); 
+        	$(img_name).ancestors()[0].setAttribute('onClick', '');
         }
         var maxheight = document.getElementById(img_name).offsetHeight;
     	list_img.set(img_name, new Cropper.Img(img_name, {
@@ -556,5 +556,5 @@ function nextPeriod() {
         }
         $$("img[id^=" + tag_name + "]").each(function(el) { if (list_img.get(el.id) == undefined) { addGraphZoom(el.id); } });
         return false;
-    }   
+    }
 </script>
