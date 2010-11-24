@@ -67,7 +67,8 @@
 	/*
 	 * Object init
 	 */
-    $mediaObj = new CentreonMedia($pearDB);
+    $mediaObj 		= new CentreonMedia($pearDB);
+    $host_method 	= new CentreonHost($pearDB);
 
 	/*
 	 * Smarty template Init
