@@ -36,10 +36,19 @@
  *
  */
 
-    include_once "@CENTREON_ETC@/centreon.conf.php";
-    //include_once "/etc/centreon/centreon.conf.php";
+    //include_once "@CENTREON_ETC@/centreon.conf.php";
+    include_once "/etc/centreon/centreon.conf.php";
 	require_once $centreon_path . "/www/class/centreonDB.class.php";
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
+
+	/*
+	 * Declare Function
+	 */
+	function myDecodeValue($arg) {
+		$arg = str_replace('#S#', "/", $arg);
+		$arg = str_replace('#BS#', "\\", $arg);
+		return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
+	}
 
     /*
 	 * start init db
@@ -129,6 +138,7 @@
         while ($row = $res->fetchRow()) {
             $argTab[$row['macro_name']] = $row['macro_description'];
         }
+        $res->free();
 
         /*
          * Write XML
@@ -145,7 +155,7 @@
             $xml->writeElement('name', $name, false);
             $xml->writeElement('description', $description, false);
             $xml->writeElement('value', isset($valueTab[$name]) ? $valueTab[$name] : "", false);
-            $xml->writeElement('example', isset($exampleTab[$name]) ? $exampleTab[$name] : "", false);
+            $xml->writeElement('example', isset($exampleTab[$name]) ? myDecodeValue($exampleTab[$name]) : "", false);
             $xml->writeElement('style', $style);
             $xml->writeElement('disabled', $disabled);
             $xml->endElement();
