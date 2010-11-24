@@ -156,7 +156,7 @@
 			" AND (".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 OR " .
 	        " " . $ndo_base_prefix."hoststatus.scheduled_downtime_depth > 0) ".
 			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
-			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state ";
+			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 
 	$hostAck = array(0=>0, 1=>0, 2=>0, 3=>0);
 	$hostDt = array(0=>0, 1=>0, 2=>0, 3=>0);
