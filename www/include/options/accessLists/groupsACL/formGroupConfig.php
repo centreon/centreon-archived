@@ -112,7 +112,7 @@
 	$DBRESULT->free();
 
 	# topology comes from DB -> Store in $contacts Array
-	$menu = array();
+	$menus = array();
 	$DBRESULT =& $pearDB->query("SELECT acl_topo_id, acl_topo_name FROM acl_topology ORDER BY acl_topo_name");
 	while ($topo =& $DBRESULT->fetchRow())
 		$menus[$topo["acl_topo_id"]] = $topo["acl_topo_name"];
