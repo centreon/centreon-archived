@@ -82,6 +82,7 @@ if (!$sth->execute) {
 $data = $sth->fetchrow_hashref();
 
 my $sthbis;
+my $appID;
 if (defined($data->{'id'})) {
     if (!defined($data->{"is_running"}) || $data->{"is_running"} == 0) {
         $appID = $data->{"id"};
@@ -495,12 +496,13 @@ if (!$sth2->execute) {
 }
 
 # Remove Lock
-$sth = $dbhoreon->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '".(time()-$beginTime)."' WHERE id = '$appID'");
-if (!$sth->execute) {
-    die "Error:" . $sth->errstr . "\n";
+if ($appID) {
+	$sth = $dbhoreon->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '" . time() . "' WHERE id = '$appID'");
+	if (!$sth->execute) {
+	    die "Error:" . $sth->errstr . "\n";
+	}
+	undef($appID);
 }
-undef($appID);
-
 
 $dbh->disconnect();
 $dbhoreon->disconnect();
