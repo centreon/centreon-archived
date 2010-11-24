@@ -39,12 +39,13 @@
 	if (!isset($oreon)) {
 		exit();
 	}
-	#
-	## Database retrieve information for Service
-	#
 
-	function myDecodeService($arg)
-	{
+	/**
+	 *
+	 * Database retrieve information for Service
+	 * @param unknown_type $arg
+	 */
+	function myDecodeService($arg) {
 		$arg = str_replace('#BR#', "\\n", $arg);
 		$arg = str_replace('#T#', "\\t", $arg);
 		$arg = str_replace('#R#', "\\r", $arg);
