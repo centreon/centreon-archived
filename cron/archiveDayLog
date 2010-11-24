@@ -64,32 +64,6 @@ require "@CENTREON_ETC@/conf.pm";
 # Define Var lib dir
 my $VarLib = "@CENTREON_VARLIB@";
 
-# ##############################
-# Lock in MySQL
-my $sth = $dbhoreon->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'archiveDayLog'");
-if (!$sth->execute) {
-    die "Error:" . $sth->errstr . "\n";
-}
-$data = $sth->fetchrow_hashref();
-print "|".$data->{"id"}."|";
-
-my $sthbis;
-if (defined($data->{'id'})) {
-    if (!defined($data->{"is_running"}) || $data->{"is_running"} == 0) {
-        $appID = $data->{"id"};
-        $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
-        if (!$sthbis->execute) {
-            die "Error:" . $sthbis->errstr . "\n";
-        }
-    } else {
-        exit(1);
-    }
-} else {
-    my $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('logAnalyzer', '1', '1')");
-    if (!$sthbis->execute) {
-        die "Error:" . $sthbis->errstr . "\n";
-    }
-}
 
 # the field "msg_type" in table "log" of Centstorage DB correspond to Nagios Message type 
 my %msg_type = ("svc_alerts" 			=> 0,
@@ -105,6 +79,8 @@ my (%hosts, %services, %host_ids, %service_ids);
 # DB Connection instance
 my $dbh;
 my $dbhoreon;
+my $appID;
+my $sthRun;
 
 ####################################################################
 #FUNCTIONS
@@ -709,6 +685,39 @@ sub check_date($$$) {
 	return 1;
 }
 
+
+############################################################################################################
+# Checks if archiveDayLog is already running 
+#############################################################################################################
+
+sub checkRun()
+{
+	$sthRun = $dbhoreon->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'archiveDayLog'");
+	if (!$sthRun->execute) {
+	    die "Error:" . $sthRun->errstr . "\n";
+	}
+	my $data = $sthRun->fetchrow_hashref();
+	
+	my $sthbis;
+	if (defined($data->{'id'})) {
+	    if (!defined($data->{"is_running"}) || $data->{"is_running"} == 0) {
+	        $appID = $data->{"id"};
+	        $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
+	        if (!$sthbis->execute) {
+	            die "Error:" . $sthbis->errstr . "\n";
+	        }
+	    } else {
+	        exit(1);
+	    }
+	} else {
+	    my $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('archiveDayLog', '1', '1')");
+	    if (!$sthbis->execute) {
+	        die "Error:" . $sthbis->errstr . "\n";
+	    }
+	}
+}
+
+
 ############################################################################################################
 # Main function parse parameters 
 # and select to build archive for one day log or to rebuild all archives
@@ -742,6 +751,8 @@ sub main {
     if (!$sth) {
 		print "error";
     }
+
+	checkRun();
 
     my %time_period;
     while (my $row = $sth->fetchrow_hashref()) {
@@ -778,6 +789,14 @@ sub main {
 		display_services_stats;
 		display_host_stats;
     }
+    
+    # Remove Lock
+	$sthRun = $dbhoreon->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '".(time())."' WHERE id = '$appID'");
+	if (!$sthRun->execute) {
+	    die "Error:" . $sthRun->errstr . "\n";
+	}
+	undef($appID);
+        
     $dbh->disconnect();
     $dbhoreon->disconnect();
 }
@@ -855,10 +874,3 @@ sub rebuild_archives($) {
 # MAIN EXECUTION 
 #####################################################
 main();
-
-# Remove Lock
-$sth = $dbhoreon->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '".(time()-$beginTime)."' WHERE id = '$appID'");
-if (!$sth->execute) {
-    die "Error:" . $sth->errstr . "\n";
-}
-undef($appID);
