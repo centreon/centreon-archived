@@ -148,8 +148,6 @@
 			$this->dataTree[$data['hg_id']] = $this->getHostGroupHosts($data['hg_id'], $this->dataTree);
 		}
 		$DBRESULT->free();
-
-		print_r($this->dataTree);
 		return $hostgroups;
 	}
 
