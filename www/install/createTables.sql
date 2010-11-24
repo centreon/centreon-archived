@@ -304,6 +304,7 @@ CREATE TABLE IF NOT EXISTS `acl_topology_relations` (
   `agt_id` int(11) NOT NULL auto_increment,
   `topology_topology_id` int(11) default NULL,
   `acl_topo_id` int(11) default NULL,
+  `access_right` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY  (`agt_id`),
   KEY `topology_topology_id` (`topology_topology_id`),
   KEY `acl_topo_id` (`acl_topo_id`)
@@ -1888,6 +1889,7 @@ CREATE TABLE IF NOT EXISTS `topology` (
   `topology_style_class` varchar(255) default NULL,
   `topology_style_id` varchar(255) default NULL,
   `topology_OnClick` varchar(255) default NULL,
+  `readonly` ENUM('0', '1') NOT NULL DEFAULT '1',
   PRIMARY KEY  (`topology_id`),
   KEY `topology_page` (`topology_page`),
   KEY `topology_parent` (`topology_parent`),
