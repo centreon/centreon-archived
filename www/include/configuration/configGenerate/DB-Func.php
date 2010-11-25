@@ -243,9 +243,10 @@
 		 * ContactGroup
 		 */
 		$contactGroup = array();
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT cgcr.contactgroup_cg_id, cgcr.contact_contact_id FROM contactgroup cg, contactgroup_contact_relation cgcr WHERE cg.cg_activate ='1' AND cgcr.contactgroup_cg_id = cg.cg_id");
-		while ($contactGroup =& $DBRESULT->fetchRow())
-			isset($cctEnb[$contactGroup["contact_contact_id"]]) ? $cgEnb[$contactGroup["contactgroup_cg_id"]] = 1 : NULL;
+		$DBRESULT =& $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_activate ='1'");
+		while ($contactGroup =& $DBRESULT->fetchRow()) {
+			$cgEnb[$contactGroup["cg_id"]] = 1;
+		}
 		unset($contactGroup);
 		$DBRESULT->free();
 
