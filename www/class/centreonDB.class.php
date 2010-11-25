@@ -66,50 +66,55 @@ class CentreonDB
 	 */
     public function __construct($db = "centreon", $retry = 3)
     {
-		include("@CENTREON_ETC@/centreon.conf.php");
-        //include("/etc/centreon/centreon.conf.php");
-		require_once $centreon_path."/www/class/centreonLog.class.php";
-		$this->log = new CentreonLog();
+		try {
+            include("@CENTREON_ETC@/centreon.conf.php");
+            //include("/etc/centreon/centreon.conf.php");
+    		require_once $centreon_path."/www/class/centreonLog.class.php";
+    		$this->log = new CentreonLog();
 
-		$this->centreon_path = $centreon_path;
-		$this->retry = $retry;
-		$this->options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
+    		$this->centreon_path = $centreon_path;
+    		$this->retry = $retry;
+    		$this->options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 
-		/*
-		 * Add possibility to change SGDB port
-		 */
-		if (isset($conf_centreon["port"]) && $conf_centreon["port"] != "") {
-			$this->db_port = $conf_centreon["port"];
+    		/*
+    		 * Add possibility to change SGDB port
+    		 */
+    		if (isset($conf_centreon["port"]) && $conf_centreon["port"] != "") {
+    			$this->db_port = $conf_centreon["port"];
+    		}
+
+    		switch (strtolower($db)) {
+    			case "centreon" :
+    				$this->connectToCentreon($conf_centreon);
+    				$this->connect();
+    				break;
+    			case "centstorage" :
+    				$this->connectToCentstorage($conf_centreon);
+    				$this->connect();
+    				break;
+    			case "ndo" :
+    				$this->connectToCentreon($conf_centreon);
+    				$this->connect();
+    				$this->connectToNDO($conf_centreon);
+    				$this->connect();
+    				break;
+    			case "default" :
+    				$this->connectToCentreon($conf_centreon);
+    				$this->connect();
+    				break;
+    		}
+    		/*
+    		 * Init request statistics
+    		 */
+    		$this->requestExecuted = 0;
+    		$this->requestSuccessful = 0;
+    		$this->lineRead = 0;
+
+    		$this->debug = 1;
 		}
-
-		switch (strtolower($db)) {
-			case "centreon" :
-				$this->connectToCentreon($conf_centreon);
-				$this->connect();
-				break;
-			case "centstorage" :
-				$this->connectToCentstorage($conf_centreon);
-				$this->connect();
-				break;
-			case "ndo" :
-				$this->connectToCentreon($conf_centreon);
-				$this->connect();
-				$this->connectToNDO($conf_centreon);
-				$this->connect();
-				break;
-			case "default" :
-				$this->connectToCentreon($conf_centreon);
-				$this->connect();
-				break;
+		catch (Exception $e) {
+		    $this->displayConnectionErrorPage($e->getMessage());
 		}
-		/*
-		 * Init request statistics
-		 */
-		$this->requestExecuted = 0;
-		$this->requestSuccessful = 0;
-		$this->lineRead = 0;
-
-		$this->debug = 1;
     }
 
 	/**
@@ -118,10 +123,14 @@ class CentreonDB
      * @access protected
 	 * @return	void
      */
-    protected function displayConnectionErrorPage()
+    protected function displayConnectionErrorPage($msg = null)
     {
 		echo "<img src='./img/centreon.gif'><br/>";
-		echo "<b>" . _("Connection failed, please contact your administrator") . "</b>";
+		if ($msg) {
+            echo "<b>" . $msg . "</b>";
+		} else {
+		    echo "<b>" . _("Connection failed, please contact your administrator") . "</b>";
+		}
 		exit;
 	}
 
@@ -176,8 +185,14 @@ class CentreonDB
     protected function connectToNDO($conf_centreon)
     {
 		$DBRESULT = $this->db->query("SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db LIMIT 1;");
-		if (PEAR::isError($DBRESULT))
+		if (PEAR::isError($DBRESULT)) {
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		}
+
+		if (!$DBRESULT->numRows()) {
+		    throw new Exception('No broker connection found');
+		}
+
 		$confNDO = $DBRESULT->fetchRow();
 		unset($DBRESULT);
 
@@ -307,10 +322,10 @@ class CentreonDB
 			}
 		}
 	}
-	
+
 	/**
 	 * return number of rows
-	 * 
+	 *
 	 */
 	public function numberRows() {
 		$number = 0;
