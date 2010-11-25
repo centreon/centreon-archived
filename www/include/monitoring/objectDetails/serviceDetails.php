@@ -239,7 +239,7 @@
 		else
 			$service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"], $oreon->user->getMyGMT());
 
-		$service_status[$host_name."_".$svc_description]["plugin_output"] = utf8_encode($service_status[$host_name."_".$svc_description]["plugin_output"]);
+		$service_status[$host_name."_".$svc_description]["plugin_output"] = $service_status[$host_name."_".$svc_description]["plugin_output"];
 		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
 		$service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
 		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace("\\n", "<br>", $service_status[$host_name."_".$svc_description]["plugin_output"]);

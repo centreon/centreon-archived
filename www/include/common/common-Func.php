@@ -1140,14 +1140,14 @@
 
 		$searchSTR = "";
 		if (isset($search) && $search)
-			$searchSTR = " AND `service_description` LIKE '%$search%'";
+			$searchSTR = " AND `service_description` LIKE '%".$pearDB->escape($search)."%'";
 
 		/*
 		 * Get Services attached to hosts
 		 */
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_activate = '1' $searchSTR");
 		while ($elem =& $DBRESULT->fetchRow())	{
-			$hSvs[$elem["service_id"]] = html_entity_decode(db2str($elem["service_description"]), ENT_QUOTES, "UTF-8");
+			$hSvs[$elem["service_id"]] = $elem["service_description"];
 		}
 		$DBRESULT->free();
 
@@ -1158,7 +1158,7 @@
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id AND service_activate = '1' $searchSTR ");
 		while ($elem =& $DBRESULT->fetchRow()) {
-			$hSvs[$elem["service_id"]]	= html_entity_decode(db2str($elem["service_description"]), ENT_QUOTES, "UTF-8");
+			$hSvs[$elem["service_id"]]	= $elem["service_description"];
 		}
 		$DBRESULT->free();
 		asort($hSvs);
