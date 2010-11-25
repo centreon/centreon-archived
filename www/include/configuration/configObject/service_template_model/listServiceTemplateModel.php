@@ -39,6 +39,11 @@
 	if (!isset($oreon))
 		exit();
 
+	/*
+	 * Object init
+	 */
+    $mediaObj = new CentreonMedia($pearDB);
+
 	include("./include/common/autoNumLimit.php");
 
 	/*
@@ -167,16 +172,25 @@
 				$retry_units = "sec";
 			}
 
-			$elemArr[$i] = array("MenuClass"=>"list_".$style,
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_desc"=>$service["service_description"],
-						"RowMenu_alias"=>$service["service_alias"],
-						"RowMenu_parent"=>$tplStr,
-						"RowMenu_retry"		=> "$normal_check_interval $normal_units / $retry_check_interval $retry_units",
-						"RowMenu_attempts"	=> getMyServiceField($service['service_id'], "service_max_check_attempts"),
-						"RowMenu_link"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
-						"RowMenu_status"=>$service["service_activate"] ? _("Enabled") : _("Disabled"),
-						"RowMenu_options"=>$moptions);
+			if (isset($service['esi_icon_image']) && $service['esi_icon_image']) {
+				$svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
+			} elseif ($icone = $mediaObj->getFilename(getMyServiceExtendedInfoField($service["service_id"], "esi_icon_image"))) {
+				$svc_icon = "./img/media/" . $icone;
+			} else {
+				$svc_icon = "./img/icones/16x16/gear.gif";
+			}
+
+			$elemArr[$i] = array("MenuClass" => "list_".$style,
+									"RowMenu_select" => $selectedElements->toHtml(),
+									"RowMenu_desc" => $service["service_description"],
+									"RowMenu_alias" => $service["service_alias"],
+									"RowMenu_parent" => $tplStr,
+									"RowMenu_icon" => $svc_icon,
+									"RowMenu_retry" => "$normal_check_interval $normal_units / $retry_check_interval $retry_units",
+									"RowMenu_attempts" => getMyServiceField($service['service_id'], "service_max_check_attempts"),
+									"RowMenu_link" => "?p=".$p."&o=c&service_id=".$service['service_id'],
+									"RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),
+									"RowMenu_options" => $moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 
