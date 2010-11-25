@@ -86,6 +86,9 @@
 	}
 	
 	function is_gd2($filename) {
+		if (getimagesize($filename) !== false) {
+			return false;
+		}
 		$gd_res = imagecreatefromgd2($filename);
 		if ($gd_res) {
 			imagedestroy($gd_res);
