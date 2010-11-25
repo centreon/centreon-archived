@@ -32,12 +32,12 @@
 				<tr class='list_one'><td colspan='2'><img src='./img/icones/16x16/warning.gif'>&nbsp; {$noExceptionMessage}</td></tr>
 			{/if}
 			<tr class="list_two">
-				<td colspan='2'><input type="hidden" name="nbOfExceptions" id="hiddenExInput">
-				<img class="helpTooltip" name="exception">
+				<td class='FormRowField'><img class="helpTooltip" name="exception">{$exceptionLabel}<input type="hidden" name="nbOfExceptions" id="hiddenExInput" style='display:none'></td>								
+				<td class='FormRowValue'>
 					<table id="exceptionTable" class="ListTableSmall" style='padding-top:0px'>
 						<tr class="ListHeader">
 							<td class="ListColLeft">{$tRDay}</td>
-							<td class="ListColCenter">{$tRHours}</td>
+							<td class="ListColLeft">{$tRHours}</td>
 							{if $o != "w"}
 								<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBlankInput();"></td>			
 							{/if}
