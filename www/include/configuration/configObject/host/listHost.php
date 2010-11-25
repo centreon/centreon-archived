@@ -49,6 +49,11 @@
 	$host_method = new CentreonHost($pearDB);
 
 	/*
+	 * Object init
+	 */
+    $mediaObj = new CentreonMedia($pearDB);
+
+	/*
 	 * Get Extended informations
 	 */
 	$ehiCache = array();
@@ -243,7 +248,7 @@
 			 * Check icon
 			 */
 			if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
-				$host_icone = "./img/media/" . getImageFilePath($ehiCache[$host["host_id"]]);
+				$host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
 			} else if ($icone = $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1))) {
 				$host_icone = "./img/media/" . $icone;
 			} else {

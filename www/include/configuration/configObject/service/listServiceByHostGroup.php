@@ -39,6 +39,8 @@
 	if (!isset($oreon))
 		exit();
 
+	$mediaObj = new CentreonMedia($pearDB);
+
 	if (isset($_POST["searchH"])) {
 		$searchH = $_POST["searchH"];
 		$centreon->svc_host_search = $searchH;
@@ -231,12 +233,21 @@
 		$tplArr = array();
 		$tplStr = NULL;
 		$tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
-		if (count($tplArr))
+		if (count($tplArr)) {
 			foreach ($tplArr as $key =>$value){
 				$value = str_replace('#S#', "/", $value);
 				$value = str_replace('#BS#', "\\", $value);
 				$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
 			}
+		}
+
+		if (isset($service['esi_icon_image']) && $service['esi_icon_image']) {
+			$svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
+		} elseif ($icone = $mediaObj->getFilename(getMyServiceExtendedInfoField($service["service_id"], "esi_icon_image"))) {
+			$svc_icon = "./img/media/" . $icone;
+		} else {
+			$svc_icon = "./img/icones/16x16/gear.gif";
+		}
 
 		/*
 		 * Get service intervals in seconds
@@ -264,6 +275,7 @@
 								"RowMenu_link" => "?p=60102&o=c&hg_id=".$service['hg_id'],
 								"RowMenu_link2" => "?p=".$p."&o=c&service_id=".$service['service_id'],
 								"RowMenu_parent" => $tplStr,
+								"RowMenu_sicon" => $svc_icon,
 								"RowMenu_retry" =>  "$normal_check_interval $normal_units / $retry_check_interval $retry_units",
 								"RowMenu_attempts" => getMyServiceField($service['service_id'], "service_max_check_attempts"),
 								"RowMenu_desc" => $service["service_description"],
