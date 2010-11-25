@@ -36,10 +36,26 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	include("./include/common/autoNumLimit.php");
+
+	/*
+	 * Init Host Method
+	 */
+	$host_method = new CentreonHost($pearDB);
+
+	/*
+	 * Get Extended informations
+	 */
+	$ehiCache = array();
+	$DBRESULT =& $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
+	while ($ehi =& $DBRESULT->fetchRow()) {
+		$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
+	}
+	$DBRESULT->free();
 
 	/*
 	 * start quickSearch form
@@ -109,10 +125,10 @@
 		if (!$host["host_name"]) {
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
 		}
+
 		/* TPL List */
 		$tplArr = array();
 		$tplStr = NULL;
-
 
 		$tplArr = getMyHostMultipleTemplateModels($host['host_id']);
 		if (count($tplArr)) {
@@ -127,24 +143,41 @@
 			}
 		}
 
-		/* Service List */
+		/*
+		 * Check icon
+		 */
+		if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
+			$host_icone = "./img/media/" . getImageFilePath($ehiCache[$host["host_id"]]);
+		} else if ($icone = $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1))) {
+			$host_icone = "./img/media/" . $icone;
+		} else {
+			$host_icone = "./img/icones/16x16/server_network.gif";
+		}
+
+		/*
+		 * Service List
+		 */
 		$svArr = array();
 		$svStr = NULL;
 		$svArr = getMyHostServices($host['host_id']);
-		$elemArr[$i] = array("MenuClass"=>"list_".$style,
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$host["host_name"],
-						"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
-						"RowMenu_desc"=>$host["host_alias"],
-						"RowMenu_svChilds"=>count($svArr),
-						"RowMenu_parent"=>$tplStr,
-						"RowMenu_status"=>$host["host_activate"] ? _("Enabled") : _("Disabled"),
-						"RowMenu_options"=>$moptions);
+		$elemArr[$i] = array("MenuClass" => "list_".$style,
+						"RowMenu_select" => $selectedElements->toHtml(),
+						"RowMenu_name" => $host["host_name"],
+						"RowMenu_link" => "?p=".$p."&o=c&host_id=".$host['host_id'],
+						"RowMenu_desc" => $host["host_alias"],
+						"RowMenu_icone" => $host_icone,
+						"RowMenu_svChilds" => count($svArr),
+						"RowMenu_parent" => $tplStr,
+						"RowMenu_status" => $host["host_activate"] ? _("Enabled") : _("Disabled"),
+						"RowMenu_options" => $moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
-	# Header title for same name - Ajust pattern lenght with (0, 4) param
+
+	/*
+	 * Header title for same name - Ajust pattern lenght with (0, 4) param
+	 */
 	$pattern = null;
-	for ($i = 0; $i < count($elemArr); $i++)	{
+	for ($i = 0; $i < count($elemArr); $i++) {
 		# Searching for a pattern wich n+1 elem
 		if (isset($elemArr[$i+1]["RowMenu_name"]) && strstr($elemArr[$i+1]["RowMenu_name"], substr($elemArr[$i]["RowMenu_name"], 0, 4)) && !$pattern)	{
 			for ($j = 0; isset($elemArr[$i]["RowMenu_name"][$j]); $j++)	{
