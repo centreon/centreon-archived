@@ -36,12 +36,16 @@
  *
  */
 
- 	if (!isset($oreon))
+ 	if (!isset($oreon)) {
 		exit();
+ 	}
 
 	require_once ("./include/common/autoNumLimit.php");
 	require_once ($centreon_path . "/www/class/centreonHost.class.php");
 
+	/*
+	 * Init Host Method
+	 */
 	$host_method = new CentreonHost($pearDB);
 
 	/*
@@ -209,8 +213,9 @@
 
 			$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$host['host_id']."]'></input>";
 
-			if (!$host["host_name"])
+			if (!$host["host_name"]) {
 				$host["host_name"] = getMyHostField($host['host_id'], "host_name");
+			}
 
 			/*
 			 * TPL List
@@ -237,7 +242,6 @@
 			/*
 			 * Check icon
 			 */
-
 			if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
 				$host_icone = "./img/media/" . getImageFilePath($ehiCache[$host["host_id"]]);
 			} else if ($icone = $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1))) {
