@@ -68,6 +68,7 @@
 	$dir_ids = getListDirectory();
 	$dir_list_sel = $dir_ids;
 	$dir_list_sel[0] = "";
+	asort($dir_list_sel);
 	
 	/*
 	 * Styles
