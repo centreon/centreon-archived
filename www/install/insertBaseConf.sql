@@ -27,13 +27,13 @@ INSERT INTO `cfg_nagios` (`nagios_name`, `log_file`, `cfg_dir`, `object_cache_fi
 -- Contenu de la table `cfg_nagios`
 --
 
-INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('1', '@NAGIOS_BIN@/ndo2db -c @NAGIOS_ETC@/ndo2db.cfg')
+INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('1', '@NAGIOS_BIN@/ndomod.o -c @NAGIOS_ETC@/ndomod.cfg');
 
 --
 -- Contenu de la table `cfg_ndo2db`
 --
 
-INSERT INTO `cfg_ndo2db` (`id`, `description`, `ndo2db_user`, `ndo2db_group`, `local`, `ns_nagios_server`, `socket_type`, `socket_name`, `tcp_port`, `db_servertype`, `db_host`, `db_name`, `db_port`, `db_prefix`, `db_user`, `db_pass`, `max_timedevents_age`, `max_systemcommands_age`, `max_servicechecks_age`, `max_hostchecks_age`, `max_eventhandlers_age`, `activate`) VALUES(1, 'Principal', '@NAGIOS_USER@', '@NAGIOS_GROUP@', '0', 1, 'tcp', '/var/run/ndo.sock', 5668, 'mysql', 'localhost', 'ndo', '3306', 'nagios_', 'centreon', 'centreon', '1440', '1440', '1440', '1440', '1440', '1');
+INSERT INTO `cfg_ndo2db` (`id`, `description`, `ndo2db_user`, `ndo2db_group`, `local`, `ns_nagios_server`, `socket_type`, `socket_name`, `tcp_port`, `db_servertype`, `db_host`, `db_name`, `db_port`, `db_prefix`, `db_user`, `db_pass`, `max_timedevents_age`, `max_systemcommands_age`, `max_servicechecks_age`, `max_hostchecks_age`, `max_eventhandlers_age`, `activate`) VALUES(1, 'Principal', '@NAGIOS_USER@', '@NAGIOS_GROUP@', '0', 1, 'tcp', '/var/run/ndo.sock', 5668, 'mysql', 'localhost', 'centstatus', '3306', 'nagios_', 'centreon', 'centreon', '1440', '1440', '1440', '1440', '1440', '1');
 
 --
 -- Contenu de la table `cfg_ndomod`
