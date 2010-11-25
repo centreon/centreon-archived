@@ -132,7 +132,9 @@
 					$nagios_id = $DBRESULT->fetchRow();
 					$DBRESULT->free();
 					foreach ($rowBks as $keyBk=>$valBk){
-						$rqBk = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$valBk["broker_module"]."')";
+						if ($valBk["broker_module"]) {
+					        $rqBk = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$valBk["broker_module"]."')";
+						}
 						$DBRESULT =& $pearDB->query($rqBk);
 					}
 				}
@@ -327,9 +329,9 @@
 			if (isset($_POST['nbOfBroker']) && $_POST['nbOfBroker'] != 0) {
 				for ($lsIn=0;$lsIn <= $_POST['lsOfBroker']; $lsIn++){
 					$inBr = "in_broker_".$lsIn;
-					if (isset($_POST[$inBr])) {
+					if (isset($_POST[$inBr]) && $_POST[$inBr]) {
 						# Insert broker module
-						$rq = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$_POST[$inBr]."')";
+					    $rq = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$_POST[$inBr]."')";
 					}
 					$DBRESULT =& $pearDB->query($rq);
 				}
@@ -520,7 +522,7 @@
 					if ($cBk < $nbOldBroker && isset($oldBks[$cBk]['bk_mod_id'])) {
 						# Update broker module
 						$rq = "UPDATE cfg_nagios_broker_module SET broker_module = '".$_POST[$inBr]."' WHERE bk_mod_id ='".$oldBks[$cBk]['bk_mod_id']."'";
-					} else {
+					} elseif ($_POST[$inBr]) {
 						# Insert broker module
 						$rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id."', '".$_POST[$inBr]."')";
 					}
