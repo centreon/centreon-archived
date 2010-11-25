@@ -50,7 +50,7 @@
 		$img = array_map("myDecode", $res->fetchRow());
 
 		# Set Directories
-		$q =  "SELECT dir_name, dir_alias, img_path FROM view_img";
+		$q =  "SELECT dir_id, dir_name, dir_alias, img_path FROM view_img";
 		$q .= "  JOIN view_img_dir_relation ON img_id = view_img_dir_relation.img_img_id";
 		$q .= "  JOIN view_img_dir ON dir_id = dir_dir_parent_id";
 		$q .= "  WHERE img_id = '".$img_id."' LIMIT 1";
@@ -65,12 +65,9 @@
 	/*
 	 * Get Directories
 	 */
-	$dir_ids = array();
-	$DBRESULT =& $pearDB->query("SELECT dir_id, dir_name FROM view_img_dir ORDER BY dir_name");
-	while ($dir =& $DBRESULT->fetchRow()) {
-		$dir_ids[$dir["dir_id"]] = $dir["dir_name"];
-	}
-	$DBRESULT->free();
+	$dir_ids = getListDirectory();
+	$dir_list_sel = $dir_ids;
+	$dir_list_sel[0] = "";
 	
 	/*
 	 * Styles
@@ -85,13 +82,16 @@
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a") {
 		$form->addElement('header', 'title', _("Add Image(s)"));
-		$form->addElement('autocomplete', 'directories', _("Existing or new directory"), $dir_ids);
+		$form->addElement('autocomplete', 'directories', _("Existing or new directory"), $dir_ids, array('id' => 'directories'));
+		$form->addElement('select', 'list_dir', "", $dir_list_sel, array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;'));
  		$file =& $form->addElement('file', 'filename', _("Image or archive"));
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 	} else if ($o == "ci") {
 		$form->addElement('header', 'title', _("Modify Image"));
 		$form->addElement('text', 'img_name', _("Image Name"), $attrsText);
-		$form->addElement('autocomplete', 'directories', _("Existing or new directory"), $dir_ids);
+		$form->addElement('autocomplete', 'directories', _("Existing or new directory"), $dir_ids, array('id' => 'directories'));
+		$list_dir =& $form->addElement('select', 'list_dir', "", $dir_list_sel, array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;'));
+		$list_dir->setSelected($dir['dir_id']);
  		$file =& $form->addElement('file', 'filename', _("Image"));
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$form->setDefaults($img);
@@ -100,7 +100,7 @@
 		$form->addElement('header', 'title', _("View Image"));
 		$form->addElement('text', 'img_name', _("Image Name"), $attrsText);
 		$form->addElement('text', 'img_path', $img_path, NULL);
-		$form->addElement('autocomplete', 'directories', _("Directory"), $dir_ids);
+		$form->addElement('autocomplete', 'directories', _("Directory"), $dir_ids, array('id', 'directories'));
  		$file =& $form->addElement('file', 'filename', _("Image"));
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ci&img_id=".$img_id."'"));
 		$form->setDefaults($img);
