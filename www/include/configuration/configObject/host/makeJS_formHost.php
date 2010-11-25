@@ -283,7 +283,7 @@ function addBlankInput() {
 
 	trElem.id = "trMacroInput_" + globalj;
 	var tdElem1 = document.createElement('td');
-	tdElem1.className = "ListColCenter";
+	tdElem1.className = "ListColLeft";
 	var tdElem2 = document.createElement('td');
 	tdElem2.className = "ListColLeft";
 	var tdElem3 = document.createElement('td');
@@ -343,7 +343,7 @@ function displayExistingMacroHost(max){
 		trElem.id = "trMacroInput_" + globalj;
 
 		var tdElem1 = document.createElement('td');
-		tdElem1.className = "ListColCenter";
+		tdElem1.className = "ListColLeft";
 		var tdElem2 = document.createElement('td');
 		tdElem2.className = "ListColLeft";
 		var tdElem3 = document.createElement('td');
