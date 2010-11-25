@@ -40,7 +40,7 @@
 		exit ();
 
 	function testServiceGroupExistence ($name = NULL)	{
-		global $pearDB, $form;
+		global $pearDB, $form, $oreon;
 
 		$id = NULL;
 
