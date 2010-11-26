@@ -228,7 +228,7 @@
 							</a>
 						    {/if}
 						    {if $lcaTopo.20201 || $admin == 1}
-						        <a href='./main.php?p=20201&o=svc&search={$h.host_name}&search_host=1&search_service=0'>
+						        <a href='./main.php?p=20201&o=svc&host_search={$h.host_name}'>
 							<img src="./img/icones/16x16/svc_lights16.png" alt='{$lnk_all_services}' onmouseover="Tip('{$lnk_all_services}')" onmouseout="UnTip()">
 							</a>
 						    {/if}

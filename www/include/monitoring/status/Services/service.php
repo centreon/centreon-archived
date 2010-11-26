@@ -86,6 +86,16 @@
 		} else
 			$order = $_GET["order"];
 	}
+	
+	/**
+	 * Check the _GET variables
+	 */
+	if (isset($_GET['host_search']) && $_GET['host_search'] != "") {
+		$centreon->historySearch[$url] = $_GET['host_search'];
+	}
+	if (isset($_GET['output_search']) && $_GET['output_search'] != "") {
+		$centreon->historySearchOutput[$url] = $_GET['output_search'];
+	}
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
@@ -111,7 +121,7 @@
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
-
+	
 	/*
 	 * Values
 	 */
