@@ -131,6 +131,11 @@ UPDATE      `topology` SET `topology_parent` = '605', `topology_page` = '60501' 
 DELETE FROM `topology` WHERE `topology_parent` = '50102' AND `topology_page` = '5010201';
 DELETE FROM `topology` WHERE `topology_parent` = '50102' AND `topology_page` = '5010202';
 
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021501, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021502, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021503, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
+
+
 CREATE TABLE IF NOT EXISTS `acl_group_contactgroups_relations` (
   `agcgr_id` int(11) NOT NULL auto_increment,
   `cg_cg_id` int(11) default NULL,
