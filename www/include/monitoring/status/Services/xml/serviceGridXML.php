@@ -35,8 +35,9 @@
  * SVN : $Id$
  *
  */
-	//include_once "/etc/centreon/centreon.conf.php";
-    include_once "@CENTREON_ETC@/centreon.conf.php";
+
+	include_once "/etc/centreon/centreon.conf.php";
+    //include_once "@CENTREON_ETC@/centreon.conf.php";
 
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
@@ -90,7 +91,7 @@
 	/*
 	 * Get Host status
 	 */
-	$rq1 =	  	" SELECT DISTINCT no.name1 as host_name, nhs.current_state, icon_image" .
+	$rq1 =	  	" SELECT DISTINCT no.name1 as host_name, nhs.current_state, icon_image, nh.host_object_id " .
 				" FROM " .$obj->ndoPrefix."objects no, " .$obj->ndoPrefix."hoststatus nhs, " .$obj->ndoPrefix."hosts nh ";
 
 	if ($hostgroups) {
@@ -167,7 +168,7 @@
 			$str .= ",";
 		}
 		$str .= "'".$ndo["host_name"]."'";
-		$tab_final[$ndo["host_name"]] = array("cs" => $ndo["current_state"]);
+		$tab_final[$ndo["host_name"]] = array("cs" => $ndo["current_state"], "hid" => $ndo["host_object_id"]);
 		if ($ndo["icon_image"] != "") {
 			$tabIcone[$ndo["host_name"]] = $ndo["icon_image"];
 		} else {
@@ -200,6 +201,7 @@
 		$obj->XML->writeElement("o", $ct++);
 		$obj->XML->writeElement("ico", $tabIcone[$host_name]);
 		$obj->XML->writeElement("hn", $host_name, false);
+		$obj->XML->writeElement("hid", $tab["hid"], false);
 		$obj->XML->writeElement("hnl", urlencode($host_name));
 		$obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
 		$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);

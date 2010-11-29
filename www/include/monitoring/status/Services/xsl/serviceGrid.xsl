@@ -24,8 +24,13 @@
 			</xsl:if>
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
-				<xsl:attribute name="class">pop</xsl:attribute>
+			  	<xsl:attribute name="class">infobulle</xsl:attribute>
+				<xsl:attribute name="onmouseover">displayPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
+				<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
 				<xsl:value-of select="hn"/>
+				<xsl:element name="span">
+					<xsl:attribute name="id">span_<xsl:value-of select="hid"/></xsl:attribute>
+				</xsl:element>
 			</xsl:element>
 		</td>
 		<td class="ListColLeft" style="white-space:nowrap;width:37px;">
@@ -62,7 +67,13 @@
 				</xsl:attribute>
 				<xsl:element name="a">
 				  	<xsl:attribute name="href">main.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hnl"/>&amp;service_description=<xsl:value-of select="snl"/></xsl:attribute>
+					<xsl:attribute name="class">infobulle</xsl:attribute>
+					<xsl:attribute name="onmouseover">displayPOPUP_svc('<xsl:value-of select="svc_id"/>');</xsl:attribute>
+					<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="svc_id"/>');</xsl:attribute>
 					<xsl:value-of select="sn"/>
+					<xsl:element name="span">
+						<xsl:attribute name="id">span_<xsl:value-of select="svc_id"/></xsl:attribute>
+					</xsl:element>
 				</xsl:element>
 			</span>&#160;
 		</xsl:for-each>
