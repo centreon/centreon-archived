@@ -454,7 +454,7 @@
 			}
 			$obj->XML->writeElement("d", $duration);
 			$obj->XML->writeElement("last_hard_state_change", $hard_duration);
-			$obj->XML->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $obj->prepareObjectName($ndo["service_description"]), $obj->DBC));
+			$obj->XML->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $ndo["service_description"], $obj->DBC));
 			$obj->XML->endElement();
 		}
 	}

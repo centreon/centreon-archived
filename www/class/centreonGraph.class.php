@@ -525,8 +525,8 @@ class CentreonGraph	{
 				unset($meta);
 				$DBRESULT_meta->free();
 			}
-			$this->indexData["host_name"] = str_replace(array("#S#", "#BS#"), array("/", "\\"), $this->indexData["host_name"]);
-			$this->indexData["service_description"] = str_replace(array("#S#", "#BS#"), array("/", "\\"), $this->indexData["service_description"]);
+			$this->indexData["host_name"] = $this->indexData["host_name"];
+			$this->indexData["service_description"] = $this->indexData["service_description"];
 		}
 		$DBRESULT->free();
 
