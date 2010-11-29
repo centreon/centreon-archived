@@ -497,7 +497,8 @@
 		var state = items_state.item(0).firstChild.data;
 		if (state == "0") {
 			 msg_result = command_sent;
-			 for each (var mycmd in commands)
+			 for (var i = 0;i < commands.length; i++)
+				 mycmd = commands[i];
 			    if (cmd == mycmd) {
 				var tmp = atoi(actiontype) + 2;
 				img_src= labels[executed_command][tmp];
