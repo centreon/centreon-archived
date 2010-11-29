@@ -2,6 +2,13 @@
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
+<table class="ajaxOption">
+	<tr>
+		<td>{$pollerStr}:</td>
+		<td><span id="instance_selected"></span></td>
+	</tr>
+</table>
+<br/>
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
 		<td class="Toolbar_TDSelectAction_Top" width="300">
