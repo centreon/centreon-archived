@@ -78,6 +78,7 @@
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 	(isset($_GET["o"]) 				&& !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) 				&& !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
+	(isset($_GET["hg"]))			&& !check_injection($_GET["hg"]) ? $hg = htmlentities($_GET["hg"]) : $hg = "";
 
 	// check is admin
 	$is_admin = isUserAdmin($sid);
@@ -138,6 +139,9 @@
 
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+		
+	if ($hg != "")
+		$rq1 .= " AND hg.alias = '" . $hg . "'";
 
 	$rq_pagination = $rq1;
 

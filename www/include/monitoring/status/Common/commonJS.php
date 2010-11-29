@@ -178,7 +178,9 @@ function construct_HostGroupSelectList(id) {
 <?php 		}
 		}
 ?>
-		_select.selectedIndex = select_index[_default_hg];
+		if (typeof(_default_hg) != "undefined") {
+			_select.selectedIndex = select_index[_default_hg];
+		}
 		_select_hostgroups.appendChild(_select);
 	}
 }
