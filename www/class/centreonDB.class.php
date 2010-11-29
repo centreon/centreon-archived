@@ -263,7 +263,8 @@ class CentreonDB
      */
     public function escape($str)
     {
-        return DB_common::escapeSimple($str);
+        //return DB_common::escapeSimple($str);
+        return mysql_real_escape_string($str);
     }
 
     /**

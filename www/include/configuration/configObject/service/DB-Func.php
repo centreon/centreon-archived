@@ -96,7 +96,7 @@
         if (!strlen($str)) {
             return null;
         }
-        return addslashes($str);
+        return $str;
     }
 
 	function getHostServiceCombo($service_id = null, $service_description = null)
@@ -994,7 +994,7 @@
 		$rq .= "service_register = ";
 		isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL ? $rq .= "'".$ret["service_register"]["service_register"]."', " : $rq .= "NULL, ";
 		$rq .= "service_activate = ";
-		isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL ";
+		isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."' " : $rq .= "NULL ";
 		$rq .= "WHERE service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 

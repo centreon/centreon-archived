@@ -167,7 +167,7 @@
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if ($ndo =& $DBRESULT_NDO1->fetchRow()){
 
-		$buffer->writeElement("svc_name", $ndo["service_description"]);
+		$buffer->writeElement("svc_name", $ndo["service_description"], false);
 
 		if ($ndo["icon_image"] == "")
 			$icon_image = "./img/icones/16x16/gear.gif";
