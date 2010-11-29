@@ -87,6 +87,19 @@ var _default_instance = '<?php echo $default_poller?>';
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
+var tempX = 0;
+var tempY = 0;
+
+function position(e){
+	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
+	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
+}
+
+if (navigator.appName.substring(0, 3) == "Net") {
+	document.captureEvents(Event.MOUSEMOVE);
+}
+document.onmousemove = position;
+
 function set_header_title(){
 	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
@@ -173,6 +186,73 @@ function initM(_time_reload,_sid,_o){
 
 	if(_on)
 	goM(_time_reload,_sid,_o);
+}
+
+
+function displayPOPUP(id, hg) {
+	if (window.ActiveXObject) {
+		viewDebugInfo('Internet Explorer');
+	} else {
+		viewDebugInfo('Recup span_'+hg+id);
+		var span = document.getElementById('span_'+hg+id);
+		var proc_popup = new Transformation();
+		var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
+		var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
+		proc_popup.setXml(_addrXMLSpan);
+		proc_popup.setXslt(_addrXSLSpan);
+		proc_popup.transform('span_'+hg+id);
+
+		//calcul auto de la largeur de l'ecran client
+		var l = screen.availWidth;
+
+		//calcul auto de la hauteur de l'ecran client
+		var h = screen.availHeight;
+
+		if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h) {
+        	span.style.top = '-380px';
+        }
+        span.style.left = '150px';
+
+		viewDebugInfo('Display span_'+id);
+	}
+}
+
+function displayPOPUP_svc(id){
+	if (window.ActiveXObject) {
+		viewDebugInfo('Internet Explorer');
+	} else {
+		viewDebugInfo('Recup span_'+id);
+		var span = document.getElementById('span_'+id);
+
+		// calcul auto de la largeur de l'ecran client
+		var l = screen.availWidth;
+
+		//calcul auto de la hauteur de l'ecran client
+		var h = screen.availHeight;
+
+		if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h){
+        	span.style.top = '-380px';
+        }
+        span.style.left = '150px';
+
+		var proc_popup = new Transformation();
+		var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
+		var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForService.xsl";
+		proc_popup.setXml(_addrXMLSpan);
+		proc_popup.setXslt(_addrXSLSpan);
+		proc_popup.transform('span_'+id);
+
+		viewDebugInfo('Display span_'+id);
+	}
+}
+
+function hiddenPOPUP(id, hg){
+	if (window.ActiveXObject) {
+		//viewDebugInfo('Internet Explorer');
+	} else {
+		var span = document.getElementById('span_'+hg+id);
+		span.innerHTML = '';
+	}
 }
 
 function goM(_time_reload,_sid,_o){

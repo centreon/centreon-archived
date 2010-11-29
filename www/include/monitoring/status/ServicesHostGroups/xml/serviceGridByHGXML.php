@@ -163,6 +163,7 @@
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	$tabH = array();
+	$tabHG = array();
 	$tab_finalH = array();
 	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
 		if (!isset($tab_finalH[$ndo["alias"]])) {
@@ -170,7 +171,8 @@
 		}
 		$tab_finalH[$ndo["alias"]][$ndo["host_name"]]["cs"] = $ndo["hs"];
 		$tab_finalH[$ndo["alias"]][$ndo["host_name"]]["tab_svc"] = array();
-		$tabH[$ndo["id"]] = 1;
+		$tabH[$ndo["host_name"]] = $ndo["id"];
+		$tabHG[$ndo["alias"]] = $ndo["hostgroup_id"];
 	}
 	$DBRESULT_NDO1->free();
 
@@ -205,13 +207,17 @@
 	$rq1 .= " ORDER BY $sort_type, svc_name  $order";
 
 	$tabService = array();
+	$tabHost = array();
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
-		if (!isset($tabService[$ndo["host_name"]]))
+		if (!isset($tabService[$ndo["host_name"]])) {
 			$tabService[$ndo["host_name"]] = array();
-		if (!isset($tabService[$ndo["host_name"]]))
+		}
+		if (!isset($tabService[$ndo["host_name"]])) {
 			$tabService[$ndo["host_name"]] = array("tab_svc" => array());
+		}
 		$tabService[$ndo["host_name"]]["tab_svc"][$ndo["svc_name"]] = $ndo["svcs"];
+		$tabHost[$ndo["host_name"]] = $ndo["id"];
 	}
 	$DBRESULT_NDO1->free();
 
@@ -234,21 +240,24 @@
 	$class = "list_one";
 	$ct = 0;
 	$hg = "";
-	if (isset($tab_finalH))
+	$count = 0;
+	if (isset($tab_finalH)) {
 		foreach ($tab_finalH as $hg_name => $tab_host) {
 			foreach ($tab_host as $host_name => $tab) {
 				if (isset($tabService[$host_name]["tab_svc"]) && count($tabService[$host_name]["tab_svc"])) {
 					$class == "list_one" ? $class = "list_two" : $class = "list_one";
 					if (isset($hg_name) && $hg != $hg_name){
-						if ($hg != "")
+						if ($hg != "") {
 							$buffer->endElement();
+						}
 						$hg = $hg_name;
 						$buffer->startElement("hg");
 						$buffer->writeElement("hgn", $hg_name);
+						$buffer->writeElement("hgid", $tabHG[$hg_name]);
 					}
 					$buffer->startElement("l");
 					$buffer->writeAttribute("class", $class);
-					if (isset($tabService[$host_name]["tab_svc"]))
+					if (isset($tabService[$host_name]["tab_svc"])) {
 						foreach ($tabService[$host_name]["tab_svc"] as $svc => $state) {
 							$buffer->startElement("svc");
 							$buffer->writeElement("sn", $svc);
@@ -256,6 +265,7 @@
 							$buffer->writeElement("sc", $tab_color_service[$state]);
 							$buffer->endElement();
 						}
+					}
 					$buffer->writeElement("o", $ct);
 					$buffer->writeElement("hn", $host_name);
 					if (isset($hostIcones[$host_name])) {
@@ -264,20 +274,24 @@
 						$buffer->writeElement("hico", "none");
 					}
 					$buffer->writeElement("hnl", urlencode($host_name));
+					$buffer->writeElement("hid", $tabH[$host_name]);
 					$buffer->writeElement("hs", $tab_status_host[$tab["cs"]]);
 					$buffer->writeElement("hc", $tab_color_host[$tab["cs"]]);
+					$buffer->writeElement("hcount", $count);
 					$buffer->endElement();
+					$count++;
 				}
 			}
 			$ct++;
 		}
+	}
 	$buffer->endElement();
 	/* end */
-
 
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
 	header('Expires: 0');
 	header('Cache-Control: no-cache, must-revalidate');
+	
 	$buffer->output();
 ?>

@@ -226,33 +226,37 @@
 	$o == "svcOVHG" ? $buffer->writeElement("s", "1") : $buffer->writeElement("s", "0");
 	$buffer->endElement();
 
-	$DBRESULT_NDO =& $pearDBndo->query($rq1);
-
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
 
 	$tab_final = array();
+	$DBRESULT_NDO =& $pearDBndo->query($rq1);
 	while ($ndo =& $DBRESULT_NDO->fetchRow()) {
-		if (!isset($tab_final[$ndo["alias"]]))
+		if (!isset($tab_final[$ndo["alias"]])) {
 			$tab_final[$ndo["alias"]] = array();
-		if (!isset($tab_final[$ndo["alias"]][$ndo["host_name"]]))
+		}
+		if (!isset($tab_final[$ndo["alias"]][$ndo["host_name"]])) {
 			$tab_final[$ndo["alias"]][$ndo["host_name"]] = array("0"=>0,"1"=>0,"2"=>0,"3"=>0,"4"=>0);
-
+		}
 		$tab_svc = get_services($ndo["host_name"]);
-		foreach ($tab_svc as $name => $status)
+		foreach ($tab_svc as $name => $status) {
 			$tab_final[$ndo["alias"]][$ndo["host_name"]][$status]++;
+		}
 		$tab_final[$ndo["alias"]][$ndo["host_name"]]["cs"] = $ndo["current_state"];
+		$tab_final[$ndo["alias"]][$ndo["host_name"]]["hid"] = $ndo["host_object_id"];
 	}
 
 	$hg = "";
+	$count = 0;
 	if (isset($tab_final))
 		foreach ($tab_final as $hg_name => $tab_host) {
 			foreach ($tab_host as $host_name => $tab) {
 				$class == "list_one" ? $class = "list_two" : $class = "list_one";
 				if (isset($hg_name) && $hg != $hg_name){
-					if ($hg != "")
+					if ($hg != "") {
 						$buffer->endElement();
+					}
 					$hg = $hg_name;
 					$buffer->startElement("hg");
 					$buffer->writeElement("hgn", $hg_name);
@@ -277,15 +281,19 @@
 					$buffer->writeElement("hico", "none");
 				}
 				$buffer->writeElement("hnl", urlencode($host_name));
+				$buffer->writeElement("hid", $tab["hid"]);
+				$buffer->writeElement("hcount", $count);
 				$buffer->writeElement("hs", $tab_status_host[$tab["cs"]]);
 				$buffer->writeElement("hc", $tab_color_host[$tab["cs"]]);
 				$buffer->endElement();
+				$count++;
 			}
 		}
 
-	if (!$ct)
+	if (!$ct) {
 		$buffer->writeElement("infos", "none");
-
+	}
+	
 	$buffer->endElement();
 	header('Content-Type: text/xml');
 	header('Pragma: no-cache');
