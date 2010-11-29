@@ -95,7 +95,6 @@
 		$DBRESULT->free();
 
 		$service_id = getMyServiceID($svc_description, $host_id);
-
 		if (isset($service_id) && $service_id) {
 			$proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
 			$proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
@@ -106,8 +105,10 @@
 		 */
 
 		$tab_sc = getMyServiceCategories($service_id);
-        foreach ($tab_sc as $sc_id) {
-          	$serviceCategories[] = getMyCategorieName($sc_id);
+        if (is_array($tab_sc)) {
+    		foreach ($tab_sc as $sc_id) {
+              	$serviceCategories[] = getMyCategorieName($sc_id);
+            }
         }
 
 		$tab_status = array();

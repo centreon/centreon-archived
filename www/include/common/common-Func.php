@@ -1069,7 +1069,7 @@
 		return NULL;
 	}
 
-	function getMyServiceID($service_description = NULL, $host_id = NULL, $hg_id = NULL)	{
+	function getMyServiceID($service_description = null, $host_id = null, $hg_id = null)	{
 		if (!$service_description && (!$host_id || !$hg_id))
 			return;
 		global $pearDB;
@@ -1786,11 +1786,11 @@
 	}
 
 	function str2db($string) {
-		$string = str_replace("\\n", '#BR#', $string);
+		/*$string = str_replace("\\n", '#BR#', $string);
 		$string = str_replace("\\t", '#T#', $string);
 		$string = str_replace("\\r", '#R#', $string);
 		$string = str_replace("/", '#S#', $string);
-		$string = str_replace("\\", '#BS#', $string);
+		$string = str_replace("\\", '#BS#', $string);*/
 		return $string;
 	}
 
