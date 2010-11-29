@@ -59,6 +59,10 @@
 
 	$plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
 	$cmd = array();
+	
+	$nbRow = "10";
+	$strArgDesc = "";
+	
 	if (($o == "c" || $o == "w") && $command_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
 

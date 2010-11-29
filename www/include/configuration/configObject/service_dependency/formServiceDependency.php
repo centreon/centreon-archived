@@ -218,6 +218,7 @@
 	else if ($o == "a")	{
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$form->setDefaults(array('inherits_parent', '0'));
 	}
 	$tpl->assign("nagios", $oreon->user->get_version());
 
