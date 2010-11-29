@@ -2126,7 +2126,7 @@ sub substitute
   my $temp_wildcard3 = ();
   for(my $i=1;$i <= $#entvar+1; $i++)
   {
-    $temp_wildcard1 = $temp_wildcard1 . "\$$i" . $wildcard_expansion_separator;
+    $temp_wildcard1 = $temp_wildcard1 . "'\$$i'" . $wildcard_expansion_separator;
     $temp_wildcard2 = $temp_wildcard2 . "\$\+$i" . $wildcard_expansion_separator;
     $temp_wildcard3 = $temp_wildcard3 . "\$-$i" . $wildcard_expansion_separator;
   }
@@ -2138,7 +2138,26 @@ sub substitute
     chop ($temp_wildcard2);
     chop ($temp_wildcard3);
   }
-
+  
+  #######################################
+  # Specific Centreon
+  my $tmp = "";
+  for (my $i = 0 ; $i < $#entvar+1 ; $i++) {
+  	$tmp .= "'".$entvar[$i]."' ";
+  	print "$i: ".$entvar[$i]."\n";
+  }
+  
+  if ($DEBUGGING >= 2)
+  {
+  		print "Centreon Arguments: $tmp\n";
+  }
+  
+  &substitute2 ("\$CA", $tmp);
+  undef($tmp);
+  
+  #######################################
+  
+  
   #s(\$\*)($temp_wildcard1)g;
   &substitute2 ("\$\*", $temp_wildcard1);
 
@@ -2150,7 +2169,7 @@ sub substitute
 
  # $v - Names of variable-bindings 
  # Count down backwards to make sure 10 is not mistaken for $1
-  for(my $i=$#entvarname+1;$i > 0; $i--)
+  for(my $i=$#entvarname+1; $i > 0; $i--)
   {
     if ($net_snmp_perl_enable == 1)
     {
@@ -3235,7 +3254,8 @@ sub readtrap
           chomp $line2;
           push(@rawtrap, $line2);
           $temp2.=" ".$line2;
-          if ($line2 =~ /[^\\]\"$/)     # Ends in a non-escaped quote
+          #if ($line2 =~ /[^\\]\"$/)     # Ends in a non-escaped quote
+          if ($temp2 =~ /[^\\]\"$/)     # Ends in a non-escaped quote
           {
             last;
           }
