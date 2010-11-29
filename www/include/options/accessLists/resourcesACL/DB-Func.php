@@ -117,6 +117,7 @@
 		updateHostCategories($acl_id);
 		updateServiceGroups($acl_id);
 		updateMetaServices($acl_id);
+		updatePollers($acl_id);
 	}
 
 	function insertLCAInDB ()	{
@@ -129,6 +130,7 @@
 		updateHostCategories($acl_id);
 		updateServiceGroups($acl_id);
 		updateMetaServices($acl_id);
+		updatePollers($acl_id);
 		return ($acl_id);
 	}
 
@@ -136,7 +138,8 @@
 	 *
 	 * Insert New ACL
 	 */
-	function insertLCA()	{
+	function insertLCA()
+	{
 		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
@@ -160,7 +163,8 @@
 	 * Update resource ACL
 	 * @param $acl_id
 	 */
-	function updateLCA($acl_id = null)	{
+	function updateLCA($acl_id = null)
+	{
 		global $form, $pearDB;
 		if (!$acl_id) {
 			return;
@@ -181,7 +185,8 @@
 		$DBRESULT =& $pearDB->query($rq);
 	}
 
-	function updateGroups($acl_id = null)	{
+	function updateGroups($acl_id = null)
+	{
 		global $form, $pearDB;
 		if (!$acl_id)
 			return;
@@ -209,6 +214,25 @@
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
 				}
 			}
+	}
+
+	function updatePollers($acl_id = null)
+	{
+        global $form, $pearDB;
+
+        if (!$acl_id) {
+            return;
+        }
+        $res = $pearDB->query("DELETE FROM acl_resources_poller_relations WHERE acl_res_id = '".$acl_id."'");
+        $ret = array();
+        $ret = $form->getSubmitValue("acl_pollers");
+        if (isset($ret)) {
+            foreach ($ret as $key => $value) {
+                if (isset($value)) {
+                    $res = $pearDB->query("INSERT INTO acl_resources_poller_relations (acl_res_id, poller_id) VALUES ('".$acl_id."', '".$value."')");
+                }
+            }
+        }
 	}
 
 	function updateHostexcludes($acl_id = null)	{

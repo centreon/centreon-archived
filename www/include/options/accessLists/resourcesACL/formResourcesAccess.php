@@ -209,7 +209,7 @@
 	 */
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('header', 'hostgroups', _("Hosts Groups Shared"));
-	$form->addElement('header', 'services', _("Services Filters"));
+	$form->addElement('header', 'services', _("Filters"));
 	$form->addElement('text',	'acl_res_name', _("Access list name"), $attrsText);
 	$form->addElement('text', 	'acl_res_alias', _("Description"), $attrsText2);
 
@@ -222,13 +222,13 @@
 	/*
 	 * All ressources
 	 */
-	$allHosts[] = &HTML_QuickForm::createElement('checkbox', 'all_hosts', '&nbsp;', "");
-	$form->addGroup($allHosts, 'all_hosts', _("Include all hosts"), '&nbsp;&nbsp;');
+	$allHosts[] = &HTML_QuickForm::createElement('checkbox', 'all_hosts', '&nbsp;', "", array('id' => 'all_hosts', 'onclick' => 'advancedDisplay(this.id, "hostAdvancedSelect")'));
+	$form->addGroup($allHosts, 'all_hosts', _("Include all hosts"), '&nbsp;&nbsp;', '');
 
-	$allHostgroups[] = &HTML_QuickForm::createElement('checkbox', 'all_hostgroups', '&nbsp;', "");
+	$allHostgroups[] = &HTML_QuickForm::createElement('checkbox', 'all_hostgroups', '&nbsp;', "", array('id' => 'all_hostgroups', 'onclick' => 'advancedDisplay(this.id, "hostgroupAdvancedSelect")'));
 	$form->addGroup($allHostgroups, 'all_hostgroups', _("Include all hostgroups"), '&nbsp;&nbsp;');
 
-	$allServiceGroups[] = &HTML_QuickForm::createElement('checkbox', 'all_servicegroups', '&nbsp;', "");
+	$allServiceGroups[] = &HTML_QuickForm::createElement('checkbox', 'all_servicegroups', '&nbsp;', "", array('id' => 'all_servicegroups', 'onclick' => 'advancedDisplay(this.id, "servicegroupAdvancedSelect")'));
 	$form->addGroup($allServiceGroups, 'all_servicegroups', _("Include all servicegroups"), '&nbsp;&nbsp;');
 
 	/*
@@ -247,9 +247,9 @@
 	$form->addElement('header', 'HSharedExplain', _("<b><i>Help :</i></b> In this tab, you will be able to select hosts and hostgroups that you want to shared to people present in group selected on the previous tab. You have also the possibilty to exclude host on selected hostgroup. You can also do filters on selected hosts services. If you select a service category, user will only see only services of the selected categories."));
 
 	/*
-	 * Hosts
+	 * Pollers
 	 */
-	$ams0 = $form->addElement('advmultiselect', 'acl_pollers', array(_("Pollers"), _("Available"), _("Selected")), $pollers, $attrsAdvSelect, SORT_ASC);
+	$ams0 = $form->addElement('advmultiselect', 'acl_pollers', array(_("Poller Filter"), _("Available"), _("Selected")), $pollers, $attrsAdvSelect, SORT_ASC);
 	$ams0->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams0->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams0->setElementTemplate($template);
@@ -258,6 +258,7 @@
 	/*
 	 * Hosts
 	 */
+	$attrsAdvSelect['id'] = 'hostAdvancedSelect';
 	$ams2 = $form->addElement('advmultiselect', 'acl_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
@@ -267,11 +268,14 @@
 	/*
 	 * Host Groups
 	 */
+	$attrsAdvSelect['id'] = 'hostgroupAdvancedSelect';
 	$ams2 = $form->addElement('advmultiselect', 'acl_hostgroup', array(_("Host Groups"), _("Available"), _("Selected")), $hostgroups, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
+
+	unset($attrsAdvSelect['id']);
 
 	$ams2 = $form->addElement('advmultiselect', 'acl_hostexclude', array(_("Exclude hosts from selected host groups"), _("Available"), _("Selected")), $hosttoexcludes, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
@@ -282,7 +286,7 @@
 	/*
 	 * Service Filters
 	 */
-	$ams2 = $form->addElement('advmultiselect', 'acl_sc', array(_("Service Categories Access"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect, SORT_ASC);
+	$ams2 = $form->addElement('advmultiselect', 'acl_sc', array(_("Service Category Filter"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
@@ -291,7 +295,7 @@
 	/*
 	 * Host Filters
 	 */
-	$ams2 = $form->addElement('advmultiselect', 'acl_hc', array(_("Host Categories Access"), _("Available"), _("Selected")), $host_categories, $attrsAdvSelect, SORT_ASC);
+	$ams2 = $form->addElement('advmultiselect', 'acl_hc', array(_("Host Category Filter"), _("Available"), _("Selected")), $host_categories, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
@@ -302,11 +306,13 @@
 	 * Service Groups Add
 	 */
 	$form->addElement('header', 'SSharedExplain', "");
+	$attrsAdvSelect['id'] = 'servicegroupAdvancedSelect';
 	$ams2 = $form->addElement('advmultiselect', 'acl_sg', array(_("Service Groups"), _("Available"), _("Selected")), $service_groups, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
+    unset($attrsAdvSelect['id']);
 
 	/*
 	 * Meta Services
@@ -399,3 +405,34 @@
 		}
 	}
 ?>
+<script type='text/javascript'>
+function hideAdvancedSelect(advId)
+{
+	$$("#"+advId).each(function(e) {
+		e.up('table').setAttribute('style', 'display: none');
+	});
+}
+
+function showAdvancedSelect(advId)
+{
+	$$("#"+advId).each(function(e) {
+		e.up('table').setAttribute('style', 'display: visible');
+	});
+}
+
+function advancedDisplay(checkboxId, advSelectId)
+{
+	$$("#"+checkboxId).each(function(e) {
+		if (e.checked) {
+			hideAdvancedSelect(advSelectId);
+		} else {
+			showAdvancedSelect(advSelectId);
+		}
+	});
+}
+
+advancedDisplay('all_hosts', 'hostAdvancedSelect');
+advancedDisplay('all_hostgroups', 'hostgroupAdvancedSelect');
+advancedDisplay('all_servicegroups', 'servicegroupAdvancedSelect');
+
+</script>
