@@ -245,7 +245,7 @@
 			$ret = $form->getSubmitValues();
 		}
 
-		$ret["sg_name"] = $oreon->checkIllegalChar($ret["sg_name"]);
+		$ret["tp_name"] = $oreon->checkIllegalChar($ret["tp_name"]);
 
 		$rq = "INSERT INTO timeperiod ";
 		$rq .= "(tp_name, tp_alias, tp_sunday, tp_monday, tp_tuesday, tp_wednesday, tp_thursday, tp_friday, tp_saturday) ";
