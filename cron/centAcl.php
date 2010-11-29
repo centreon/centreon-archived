@@ -37,8 +37,8 @@
  */
 
 	include_once "DB.php";
-	include_once "/etc/centreon/centreon.conf.php";
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."/cron/centAcl-Func.php";
 	include_once $centreon_path."/www/class/centreonDB.class.php";
 
@@ -110,7 +110,6 @@
     	 * Check if some ACL have global options for
     	 * all resources are selected
     	 */
-    	print "OK";
     	$query = "SELECT acl_res_id, all_hosts, all_hostgroups, all_servicegroups " .
     			"FROM acl_resources WHERE acl_res_activate = '1' ".
     			"AND (all_hosts IS NOT NULL OR all_hostgroups IS NOT NULL AND all_servicegroups IS NOT NULL)";
