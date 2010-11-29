@@ -36,11 +36,7 @@
  *
  */
 
-	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
-	$debugXML = 0;
-	$buffer = '';
-
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path . "www/class/centreonDuration.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/class/centreonXML.class.php");
@@ -82,17 +78,26 @@
 	$grouplistStr = $access->getAccessGroupsString();
 	$groupnumber = count($grouplist);
 
+	/**
+	 * Get Icone list
+	 */
+	$query = "SELECT no.name1, h.icon_image FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts h WHERE no.object_id = h.host_object_id";
+	$DBRESULT = $pearDBndo->query($query);
+	while ($data = $DBRESULT->fetchRow()) {
+		$hostIcones[$data['name1']] = $data['icon_image'];
+	}
+	$DBRESULT->free();
 
 	/*
 	 * invert HG Name and Alias
 	 */
-
 	$tabAliasName = array();
 	$row = array();
 	$DBRESULT_PAGINATION =& $pearDB->query("SELECT hg_name, hg_alias FROM hostgroup");
-	while ($row &= $DBRESULT_PAGINATION->numRows())
+	while ($row &= $DBRESULT_PAGINATION->numRows()) {
 		$tabAliasName[$row["hg_name"]] = $row["hg_alias"];
-
+	}
+	$DBRESULT_PAGINATION->free();
 	/*
 	 * Get Acl Group list
 	 */
@@ -195,7 +200,7 @@
 
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-		
+
 	if ($hg != "")
 		$rq1 .= " AND hg.alias = '" . $hg . "'";
 
@@ -266,6 +271,11 @@
 				$buffer->writeElement("spc", $tab_color_service[4] );
 				$buffer->writeElement("o", $ct++);
 				$buffer->writeElement("hn", $host_name);
+				if (isset($hostIcones[$host_name])) {
+					$buffer->writeElement("hico", $hostIcones[$host_name]);
+				} else {
+					$buffer->writeElement("hico", "none");
+				}
 				$buffer->writeElement("hnl", urlencode($host_name));
 				$buffer->writeElement("hs", $tab_status_host[$tab["cs"]]);
 				$buffer->writeElement("hc", $tab_color_host[$tab["cs"]]);

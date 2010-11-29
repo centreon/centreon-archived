@@ -45,7 +45,7 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
 	include_once($centreon_path."www/class/centreonXML.class.php");
@@ -102,6 +102,15 @@
 	$grouplistStr = $access->getAccessGroupsString();
 	$groupnumber = count($grouplist);
 
+	/**
+	 * Get Icone list
+	 */
+	$query = "SELECT no.name1, h.icon_image FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts h WHERE no.object_id = h.host_object_id";
+	$DBRESULT = $pearDBndo->query($query);
+	while ($data = $DBRESULT->fetchRow()) {
+		$hostIcones[$data['name1']] = $data['icon_image'];
+	}
+	$DBRESULT->free();
 
 	function get_services($host_name){
 		global $pearDBndo, $general_opt, $o, $lcaSGStr, $ndo_base_prefix;
@@ -357,6 +366,11 @@
 				$buffer->startElement("h");
 				$buffer->writeAttribute("class", $class);
 				$buffer->writeElement("hn", $h);
+				if (isset($hostIcones[$host_name])) {
+					$buffer->writeElement("hico", $hostIcones[$h]);
+				} else {
+					$buffer->writeElement("hico", "none");
+				}
 				$buffer->writeElement("hnl", urlencode($h));
 				$buffer->writeElement("hs", $tab_status_host[$hs]);
 				$buffer->writeElement("hc", $tab_color_host[$hs]);
@@ -393,6 +407,11 @@
 		$buffer->startElement("h");
 		$buffer->writeAttribute("class", $class);
 		$buffer->writeElement("hn", $h);
+		if (isset($hostIcones[$host_name])) {
+			$buffer->writeElement("hico", $hostIcones[$h]);
+		} else {
+			$buffer->writeElement("hico", "none");
+		}
 		$buffer->writeElement("hs", $tab_status_host[$hs]);
 		$buffer->writeElement("hc", $tab_color_host[$hs]);
 		$buffer->writeElement("sk", $nb_service[0]);

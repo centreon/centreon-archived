@@ -44,7 +44,7 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
 	include_once($centreon_path."www/class/centreonXML.class.php");
@@ -149,6 +149,16 @@
 
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
+
+	/**
+	 * Get Icone list
+	 */
+	$query = "SELECT no.name1, h.icon_image FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts h WHERE no.object_id = h.host_object_id";
+	$DBRESULT = $pearDBndo->query($query);
+	while ($data = $DBRESULT->fetchRow()) {
+		$hostIcones[$data['name1']] = $data['icon_image'];
+	}
+	$DBRESULT->free();
 
 	/*
 	 * Prepare pagination
@@ -372,6 +382,11 @@
 				$buffer->startElement("h");
 				$buffer->writeAttribute("class", $class);
 				$buffer->writeElement("hn", $tab["host_name"]);
+				if (isset($hostIcones[$host_name])) {
+					$buffer->writeElement("hico", $hostIcones[$tab["host_name"]]);
+				} else {
+					$buffer->writeElement("hico", "none");
+				}
 				$buffer->writeElement("hnl", urlencode($tab["host_name"]));
 				$buffer->writeElement("hs", $tab_status_host[$hs]);
 				$buffer->writeElement("hc", $tab_color_host[$hs]);

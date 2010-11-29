@@ -36,15 +36,9 @@
  *
  */
 
-	/*
-	 * if debug == 0 => Normal,
-	 * debug == 1 => get use,
-	 * debug == 2 => log in file (log.xml)
-	 */
-	$debugXML = 0;
-	$buffer = '';
+	ini_set("display_error", "On");
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path . "www/class/centreonDuration.class.php");
 	include_once($centreon_path . "www/class/centreonACL.class.php");
 	include_once($centreon_path . "www/class/centreonXML.class.php");
@@ -73,7 +67,7 @@
 	(isset($_GET["limit"]) 			&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	(isset($_GET["instance"])		/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
 	(isset($_GET["search"]) 		&& !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
-	(isset($_GET["sort_type"]) 		&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "host_name";
+	(isset($_GET["sort_type"]) 		&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "";
 	(isset($_GET["order"]) 			&& !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 	(isset($_GET["o"]) 				&& !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
@@ -101,9 +95,21 @@
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE", NULL => "");
 
-	/* Get Host status */
+	/**
+	 * Get Icone list
+	 */
+	$query = "SELECT no.name1, h.icon_image FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts h WHERE no.object_id = h.host_object_id";
+	$DBRESULT = $pearDBndo->query($query);
+	while ($data = $DBRESULT->fetchRow()) {
+		$hostIcones[$data['name1']] = $data['icon_image'];
+	}
+	$DBRESULT->free();
 
-	$rq1 = 			" SELECT DISTINCT hg.alias, no.object_id id, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state hs".
+	/**
+	 * Get Host status
+	 * @var unknown_type
+	 */
+	$rq1 = 			" SELECT DISTINCT hg.alias, no.object_id id, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state hs ".
 					" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no";
 
 	if (!$is_admin)
@@ -139,7 +145,7 @@
 
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-		
+
 	if ($hg != "")
 		$rq1 .= " AND hg.alias = '" . $hg . "'";
 
@@ -168,8 +174,11 @@
 	}
 	$DBRESULT_NDO1->free();
 
-	/* Get Services status */
 
+	/**
+	 * Get Services status
+	 *
+	 */
 	$rq1 =	  	" SELECT DISTINCT no.object_id id, no.name1 as host_name, no.name2 svc_name, nss.current_state svcs " .
 				" FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."servicestatus nss ";
 
@@ -249,6 +258,11 @@
 						}
 					$buffer->writeElement("o", $ct);
 					$buffer->writeElement("hn", $host_name);
+					if (isset($hostIcones[$host_name])) {
+						$buffer->writeElement("hico", $hostIcones[$host_name]);
+					} else {
+						$buffer->writeElement("hico", "none");
+					}
 					$buffer->writeElement("hnl", urlencode($host_name));
 					$buffer->writeElement("hs", $tab_status_host[$tab["cs"]]);
 					$buffer->writeElement("hc", $tab_color_host[$tab["cs"]]);
