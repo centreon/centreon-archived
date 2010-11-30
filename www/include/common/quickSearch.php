@@ -37,8 +37,9 @@
  */
 	global $search;
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	/*
 	 * Init Flag
@@ -72,8 +73,7 @@
 			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active_host", "style" => "padding-top:1px;padding-bottom:1px;");
 		else
 			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;");
-	}
-	else {
+	} else {
 		if ($p == "4" || $p == "402" || $p == "203")
 			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_host", "style" => "padding-top:1px;padding-bottom:1px;");
 		else
@@ -88,8 +88,9 @@
 	$attrsText["title"] = _("Host Name Search Key");
 	$attrsSubmit = array("style"=>"display:none;");
 
-	if (!isset($limit))
+	if (!isset($limit)) {
 		$limit = 20;
+	}
 
 	$tab = array ("search"              => $searchRaw,
 				  "search_service"      => $search_serviceRaw,
@@ -100,8 +101,9 @@
 				  "search_type_service" => 1);
 
 	$form_search->addElement('text', 'search', _("Quick Search"), $attrsText);
-	if (isset($FlagSearchService) && $FlagSearchService)
+	if (isset($FlagSearchService) && $FlagSearchService) {
 		$form_search->addElement('text', 'search_service', _("Quick Search"), $attrsText2);
+	}
 	$form_search->addElement('submit', 'submit', _("Go"), $attrsSubmit);
 	$form_search->addElement('hidden', 'p');
 	$form_search->addElement('hidden', 'limit');
@@ -109,8 +111,8 @@
 	$form_search->addElement('hidden', 'o', $o);
 
 	$tabQuickSearch = array(602 => 1, 60201 => 1, 20207 => 1, 2020201 => 1, 2020202 => 1, 2020203 => 1, 202 => 1,
-							2 => 1, 2020101 => 1, 20203 => 1, 2020301 => 1, 2020302 => 1, 2020303 => 1, 20208 => 1, 2020801 => 1, 2020802 => 1,
-							2020803 => 1, 20211 => 1,
+							2 => 1, 2020101 => 1, 20203 => 1, 2020301 => 1, 2020302 => 1, 2020303 => 1, 20208 => 1,
+							2020801 => 1, 2020802 => 1, 2020803 => 1, 20211 => 1,
 							2021101 => 1, 2021102 => 1, 2021103 => 1);
 
 	if (isset($tabQuickSearch[$p])) {
@@ -123,7 +125,6 @@
 	/*
 	 * Render with a smarty template
 	 */
-
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./include/common/", $tpl);
 
@@ -132,7 +133,8 @@
 	$tpl->assign('form_search', $renderer->toArray());
 	$tpl->assign('p', $p);
 	$tpl->assign("displayHSOptions", $displayHSOptions);
-	if (isset($FlagSearchService) && $FlagSearchService)
+	if (isset($FlagSearchService) && $FlagSearchService) {
 		$tpl->assign("FlagSearchService", $FlagSearchService);
+	}
 	$tpl->display("quickSearch.ihtml");
 ?>
