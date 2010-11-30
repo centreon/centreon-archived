@@ -36,14 +36,6 @@
  *
  */
 
-	/*
-	 * if debug == 0 => Normal,
-	 * debug == 1 => get use,
-	 * debug == 2 => log in file (log.xml)
-	 */
-	$debugXML = 0;
-	$buffer = '';
-
 	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
@@ -230,19 +222,22 @@
 		}
 		$DBRESULT->free();
 
-		/*
+		/**
 		 * Create Buffer for host status
 		 */
-		$rq = "SELECT nhs.current_state, nh.display_name FROM `" .$ndo_base_prefix."hoststatus` nhs, `" .$ndo_base_prefix."hosts` nh " .
+		$rq = "SELECT nhs.current_state, nh.display_name, nh.host_object_id FROM `" .$ndo_base_prefix."hoststatus` nhs, `" .$ndo_base_prefix."hosts` nh " .
  	            "WHERE nh.display_name IN ($tabString) " .
  	            "AND nh.host_object_id = nhs.host_object_id" ;
 		$DBRESULT =& $pearDBndo->query($rq);
 		$tabHostStatus = array();
+		$tabHost = array();
 		while ($row =& $DBRESULT->fetchRow()) {
 			$tabHostStatus[$row["display_name"]] = $row["current_state"];
+			$tabHost[$row["display_name"]] = $row["host_object_id"];
 		}
 		unset($row);
 		$DBRESULT->free();
+
 
 		$rq1 = "SELECT DISTINCT sg.alias, no.name1 as host_name".
 		" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
@@ -355,11 +350,12 @@
 	$sg = "";
 	$h = "";
 	$flag = 0;
+	$count = 0;
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	while ($tab =& $DBRESULT_NDO1->fetchRow() && $numRows){
+	while ($tab =& $DBRESULT_NDO1->fetchRow() && $numRows) {
 		if (isset($sg_table[$tab["alias"]]) && isset($sg_table[$tab["alias"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
-			if ($sg != $tab["alias"]){
+			if ($sg != $tab["alias"]) {
 				$flag = 0;
 				if ($sg != "") {
 					$buffer->endElement();
@@ -373,9 +369,10 @@
 			}
 			$ct++;
 
-			if ($h != $tab["host_name"]){
-				if ($h != "" && $flag)
+			if ($h != $tab["host_name"]) {
+				if ($h != "" && $flag) {
 					$buffer->endElement();
+				}
 				$flag = 1;
 				$h = $tab["host_name"];
 				$hs = $tabHostStatus[$tab["host_name"]];
@@ -388,8 +385,11 @@
 					$buffer->writeElement("hico", "none");
 				}
 				$buffer->writeElement("hnl", urlencode($tab["host_name"]));
+				$buffer->writeElement("hid", $tabHost[$tab["host_name"]]);
+				$buffer->writeElement("hcount", $count);
 				$buffer->writeElement("hs", $tab_status_host[$hs]);
 				$buffer->writeElement("hc", $tab_color_host[$hs]);
+				$count++;
 			}
 			$buffer->startElement("svc");
 			$buffer->writeElement("sn", $tab["service_description"]);

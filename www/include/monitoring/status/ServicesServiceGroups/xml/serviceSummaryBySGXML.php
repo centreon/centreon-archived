@@ -36,15 +36,6 @@
  *
  */
 
-	/*
-	 *    if debug == 0 => Normal,
-	 *       debug == 1 => get use,
-	 *       debug == 2 => log in file (log.xml)
-	 */
-
-	$debugXML = 0;
-	$buffer = '';
-
 	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
@@ -105,10 +96,13 @@
 	/**
 	 * Get Icone list
 	 */
-	$query = "SELECT no.name1, h.icon_image FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts h WHERE no.object_id = h.host_object_id";
+	$hostIcones = array();
+	$tabHost = array();
+	$query = "SELECT no.name1, h.icon_image, h.host_object_id FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts h WHERE no.object_id = h.host_object_id";
 	$DBRESULT = $pearDBndo->query($query);
 	while ($data = $DBRESULT->fetchRow()) {
 		$hostIcones[$data['name1']] = $data['icon_image'];
+		$tabHost[$data['name1']] = $data['host_object_id'];
 	}
 	$DBRESULT->free();
 
@@ -358,6 +352,7 @@
 	$h = "";
 	$flag = 0;
 	$ct = 0;
+	$count = 0;
 	$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	while ($numRows && $tab =& $DBRESULT_NDO1->fetchRow()){
 		if (isset($sg_table[$tab["alias"]]) && isset($sg_table[$tab["alias"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
@@ -373,6 +368,8 @@
 				}
 				$buffer->writeElement("hnl", urlencode($h));
 				$buffer->writeElement("hs", $tab_status_host[$hs]);
+				$buffer->writeElement("hcount", $count);
+				$buffer->writeElement("hid", $tabHost[$h]);
 				$buffer->writeElement("hc", $tab_color_host[$hs]);
 				$buffer->writeElement("sk", $nb_service[0]);
 				$buffer->writeElement("sw", $nb_service[1]);
@@ -380,6 +377,7 @@
 				$buffer->writeElement("su", $nb_service[3]);
 				$buffer->writeElement("sp", $nb_service[4]);
 				$buffer->endElement();
+				$count++;
 			}
 			if ($sg != $tab["alias"]){
 				$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
