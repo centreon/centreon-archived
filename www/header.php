@@ -51,7 +51,7 @@
 	/*
 	 * Define
 	 */
-	define('SMARTY_DIR', '../GPL_LIB/Smarty/libs/');
+	define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
 
 	/*
 	 * Include
