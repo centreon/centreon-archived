@@ -3,37 +3,37 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	if (!isset($oreon))
@@ -44,7 +44,7 @@
 	 */
 	$GroupListofUser = array();
 	$GroupListofUser =  $oreon->user->access->getAccessGroups();
-	
+
 	$allActions = false;
 	/*
 	 * Get list of actions allowed for user
@@ -70,10 +70,10 @@
 	 * start quickSearch form
 	 */
 	include_once("./include/common/quickSearch.php");
-	
+
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
-	
+
 	include_once("./include/monitoring/status/Common/default_poller.php");
 	include_once("./include/monitoring/status/Common/default_hostgroups.php");
 	include_once("hostJS.php");
@@ -121,20 +121,20 @@
 	/*
 	 * Showing actions allowed for current user
 	 */
-	if(isset($authorized_actions) && $allActions == false){		
+	if(isset($authorized_actions) && $allActions == false){
 		foreach($authorized_actions as $action_name) {
-			if($action_name == "host_acknowledgement" || $allActions == true) 
+			if($action_name == "host_acknowledgement" || $allActions == true)
 				$action_list[72] = _("Hosts : Acknowledge");
-			if($action_name == "host_acknowledgement" || $allActions == true) 
+			if($action_name == "host_acknowledgement" || $allActions == true)
 				$action_list[73] = _("Hosts : Disacknowledge");
-			if($action_name == "host_notifications" || $allActions == true) 
+			if($action_name == "host_notifications" || $allActions == true)
 				$action_list[82] = _("Hosts : Enable Notification");
-			if($action_name == "host_notifications" || $allActions == true) 
+			if($action_name == "host_notifications" || $allActions == true)
 				$action_list[83] = _("Hosts : Disable Notification");
-			if($action_name == "host_checks" || $allActions == true) 
+			if($action_name == "host_checks" || $allActions == true)
 				$action_list[92] = _("Hosts : Enable Check");
-			if($action_name == "host_checks" || $allActions == true) 
-				$action_list[93] = _("Hosts : Disable Check");		
+			if($action_name == "host_checks" || $allActions == true)
+				$action_list[93] = _("Hosts : Disable Check");
 		}
 	} else {
 		$action_list[72] = _("Hosts : Acknowledge");
@@ -160,6 +160,7 @@
 	$o2->setSelected(NULL);
 	$tpl->assign('limit', $limit);
 	$tpl->assign('pollerStr', _('Poller'));
+	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign('hgStr', _('Hostgroup'));
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);

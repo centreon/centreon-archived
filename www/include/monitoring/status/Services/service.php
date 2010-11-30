@@ -86,7 +86,7 @@
 		} else
 			$order = $_GET["order"];
 	}
-	
+
 	/**
 	 * Check the _GET variables
 	 */
@@ -121,7 +121,7 @@
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
-	
+
 	/*
 	 * Values
 	 */
@@ -225,6 +225,7 @@
 	$tpl->assign('hostStr', _('Host'));
 	$tpl->assign('serviceStr', _('Service'));
 	$tpl->assign('outputStr', _('Output'));
+	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
     $tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('hgStr', _('Hostgroup'));
 	$tpl->assign('form', $renderer->toArray());

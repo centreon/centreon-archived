@@ -4,8 +4,10 @@
 <input name="o" value="svc" type="hidden">
 <table class="ajaxOption">
 	<tr>
+		{if $poller_listing}
 		<td>{$pollerStr}:</td>
 		<td><span id="instance_selected"></span></td>
+		{/if}
 	    <td>{$hgStr}:</td>
 	    <td><span id="hostgroups_selected"></span></td>
 	</tr>

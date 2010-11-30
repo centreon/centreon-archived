@@ -9,8 +9,10 @@
 	    <td>{$serviceStr}:</td>
 		<td><input type='text' name='search' id='input_search'></td>
 	     <td>{$outputStr}:</td>
-		<td><input type='text' name='output_search' id='output_search'></td>
+		<td><input type='text' name='output_search' id='output_search'></td>	    
+	    {if $poller_listing}
 	    <td>{$pollerStr}:</td>
+	    {/if}
 		<td><span id="instance_selected"></span></td>
 	    <td>{$hgStr}:</td>
 	    <td><span id="hostgroups_selected"></span></td>
