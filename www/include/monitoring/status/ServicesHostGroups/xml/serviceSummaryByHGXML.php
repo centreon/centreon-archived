@@ -146,7 +146,6 @@
 
 	$class = "list_one";
 	$ct = 0;
-	$flag = 0;
 
 	$tab_final = array();
 	$DBRESULT_NDO =& $obj->DBNdo->query($rq1);
