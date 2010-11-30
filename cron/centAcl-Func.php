@@ -44,7 +44,35 @@
 	   return ((float)$usec + (float)$sec);
 	}
 
-	/*
+	/**
+	 * Return host tab after poller filter
+	 */
+	function getFilteredPollers($host, $acl_group_id, $res_id)
+	{
+	    global $pearDB, $hostCache;
+
+	    $hostTmp = $host;
+	    $request = "SELECT host_host_id " .
+					"FROM acl_resources_poller_relations, acl_res_group_relations, acl_resources, ns_host_relation " .
+					"WHERE acl_resources_poller_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
+					"AND acl_res_group_relations.acl_group_id = '".$acl_group_id."' " .
+					"AND acl_resources_poller_relations.acl_res_id = acl_resources.acl_res_id " .
+					"AND acl_resources.acl_res_id = '".$res_id."' " .
+	                "AND ns_host_relation.nagios_server_id = acl_resources_poller_relations.poller_id " .
+					"AND acl_res_activate = '1'";
+		$DBRESULT = $pearDB->query($request);
+		if ($DBRESULT->numRows()) {
+            $host = array();
+		}
+		while ($row = $DBRESULT->fetchRow()) {
+            if (isset($hostTmp[$row['host_host_id']])) {
+                $host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
+            }
+		}
+	    return $host;
+	}
+
+	/**
 	 * Return host tab after host categories filter
 	 */
 	function getFilteredHostCategories($host, $acl_group_id, $res_id) {
