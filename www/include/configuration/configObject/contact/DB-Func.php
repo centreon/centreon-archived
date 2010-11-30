@@ -818,7 +818,7 @@
 		$tmpConf = array();
 
 		foreach ($tmpContacts["select"] as $select_key=>$select_value) {
-			$tmpContacts["contact_name"][$select_key] = str_replace(" ", "_", $tmpContacts["contact_name"][$select_key]);
+			$tmpContacts["contact_name"][$select_key] = str_replace(array(" ", ","), array("_", "_"), $tmpContacts["contact_name"][$select_key]);
 			if (isset($tmpContacts["contact_name"][$select_key]) && testContactExistence($tmpContacts["contact_name"][$select_key]))	{
 				$tmpConf["contact_name"] = $tmpContacts["contact_name"][$select_key];
 				$tmpConf["contact_alias"] = $tmpContacts["contact_alias"][$select_key];
