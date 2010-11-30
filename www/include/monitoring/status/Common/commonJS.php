@@ -40,6 +40,15 @@
 		exit();
 ?>
 
+//Hosts WS For Poppin
+var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php";
+var _addrXSLSpanhost = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
+
+// Services WS For Poppin
+var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/makeXMLForOneService.php";
+var _addrXSLSpanSvc = "./include/monitoring/status/Services/xsl/popupForService.xsl";
+
+
 function resetSelectedCheckboxes()
 {
 	$$('input[type="checkbox"]').each(function(el) {
@@ -49,18 +58,20 @@ function resetSelectedCheckboxes()
 	});
 }
 
-function getXhrC(){
-	if (window.XMLHttpRequest) // Firefox et autres
-	   var xhrC = new XMLHttpRequest();
-	else if (window.ActiveXObject){ // Internet Explorer
-	   try {
-                var xhrC = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
-                var xhrC = new ActiveXObject("Microsoft.XMLHTTP");
-            }
+function getXhrC()
+{
+	if (window.XMLHttpRequest) {
+		// Firefox et autres
+		var xhrC = new XMLHttpRequest();
+	} else if (window.ActiveXObject) { // Internet Explorer
+	   	try {
+			var xhrC = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+        	var xhrC = new ActiveXObject("Microsoft.XMLHTTP");
+        }
 	} else { // XMLHttpRequest non support2 par le navigateur
-	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
-	   var xhrC = false;
+	   	alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+	   	var xhrC = false;
 	}
 	return xhrC;
 }
@@ -169,7 +180,7 @@ function construct_HostGroupSelectList(id) {
 			unset($data);
 		}
 
-		$DBRESULT =& $pearDBndo->query("SELECT DISTINCT `alias` FROM `".getNDOPrefix()."hostgroups` ORDER BY `alias`");
+		$DBRESULT =& $pearDBndo->query("SELECT DISTINCT `alias` FROM `".getNDOPrefix()."hostgroups`  ORDER BY `alias`");
 		while ($hostgroups =& $DBRESULT->fetchRow()) {
 			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hg[$hostgroups["alias"]]))) { ?>
 				var m = document.createElement('option');
@@ -220,11 +231,11 @@ function change_type_order(_type) {
 function change_order(_odr) {
 	if (_order == 'ASC'){
 		_order = 'DESC';
-	} else
+	} else {
 		_order = 'ASC';
+	}
 	monitoring_refresh();
 }
-
 
 function change_limit(l) {
 	_limit= l;
@@ -291,19 +302,19 @@ function mk_pagination(resXML){
 	var _nl = infos[0].getElementsByTagName("limit")[0].firstChild.data;
 	var _nn = infos[0].getElementsByTagName("num")[0].firstChild.data;
 
-	if (_numRows != _nr){
+	if (_numRows != _nr) {
 		_numRows = _nr;
 		flag = 1;
 	}
-	if (_num != _nn){
+	if (_num != _nn) {
 		_num = _nn;
 		flag = 1;
 	}
-	if (_limit != _nl){
+	if (_limit != _nl) {
 		_limit = _nl;
 		flag = 1;
 	}
-	if (flag == 1){
+	if (flag == 1) {
 		pagination_changed();
 	}
 }
@@ -407,13 +418,16 @@ function pagination_changed(){
 
 for ($i = 1; $i <= 2; $i++) { ?>
 	var istart = 0;
-	for (i = 5, istart = _num; istart && i > 0 && istart > 0; i--)
+
+	for (i = 5, istart = _num; istart && i > 0 && istart > 0; i--) {
 		istart--;
+	}
 
-	for (i2 = 0, iend = _num; ( iend <  (_numRows / _limit -1)) && ( i2 < (5 + i)); i2++)
+	for (i2 = 0, iend = _num; ( iend <  (_numRows / _limit -1)) && ( i2 < (5 + i)); i2++) {
 		iend++;
+	}
 
-	for (i = istart; i <= iend && page_max > 1; i++){
+	for (i = istart; i <= iend && page_max > 1; i++) {
 		var span_space = document.createElement("span");
 		span_space.innerHTML = '&nbsp;';
 		_pagination<?php echo $i; ?>.appendChild(span_space);
@@ -548,7 +562,6 @@ function mainLoop(){
   		|| ((_currentInputOutputFieldValue.length >= 3 || _currentInputOutputFieldValue.length == 0) && _oldInputOutputFieldValue != _currentInputOutputFieldValue)){
 
     	if (!_lock) {
-
 			set_search(escapeURI(_currentInputFieldValue));
 			_search = _currentInputFieldValue;
 			set_search_host(escapeURI(_currentInputHostFieldValue));
@@ -575,13 +588,14 @@ function mainLoop(){
 			}
 		}
 	}
-
 	_oldInputFieldValue = _currentInputFieldValue;
 	_oldInputHostFieldValue = _currentInputHostFieldValue;
 	_oldInputOutputFieldValue = _currentInputOutputFieldValue;
 
 	setTimeout("mainLoop()",250);
 }
+
+// History Functions
 
 function set_limit(limit)	{
 	var xhrM = getXhrC();
@@ -621,4 +635,66 @@ function set_page(page)	{
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	_var = "sid=<?php echo $sid; ?>&page="+page+"&url=<?php echo $url; ?>";
 	xhrM.send(_var);
+}
+
+// Poppin Function
+
+function hiddenPOPUP(span) {
+	if (window.ActiveXObject) {
+		//viewDebugInfo('Internet Explorer');
+	} else {
+		var span = document.getElementById('span_'+span);
+		span.innerHTML = '';
+	}
+}
+
+function setSpanStyle(span, top, left) {
+	//calcul auto de la largeur de l'ecran client
+	var l = screen.availWidth;
+
+	//calcul auto de la hauteur de l'ecran client
+	var h = screen.availHeight;
+
+	if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h) {
+    	span.style.top = top+'px';
+    }
+    span.style.left = left+'px';
+}
+
+// Monitoring Refresh management Options
+
+function monitoring_play()	{
+	document.getElementById('JS_monitoring_play').style.display = 'none';
+	document.getElementById('JS_monitoring_pause').style.display = 'block';
+	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
+	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
+	_on = 1;
+	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
+}
+
+function monitoring_pause()	{
+	document.getElementById('JS_monitoring_play').style.display = 'block';
+	document.getElementById('JS_monitoring_pause_gray').style.display = 'block';
+	document.getElementById('JS_monitoring_play_gray').style.display = 'none';
+	document.getElementById('JS_monitoring_pause').style.display='none';
+	_on = 0;
+	window.clearTimeout(_timeoutID);
+}
+
+function monitoring_refresh()	{
+	_tmp_on = _on;
+	_time_live = _time_reload;
+	_on = 1;
+
+	window.clearTimeout(_timeoutID);
+	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
+	_on = _tmp_on;
+	viewDebugInfo('refresh');
+}
+
+// Windows size Management
+
+function position(e) {
+	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
+	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
 }

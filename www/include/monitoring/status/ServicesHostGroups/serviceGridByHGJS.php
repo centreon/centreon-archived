@@ -36,21 +36,22 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
-	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
-	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 	$sid = session_id();
 	$time = time();
 
 	$obis = $o;
-	if (isset($_GET["problem"]))
+	if (isset($_GET["problem"])) {
 		$obis .= '_pb';
-	if (isset($_GET["acknowledge"]))
+	}
+	if (isset($_GET["acknowledge"])) {
 		$obis .= '_ack_' . $_GET["acknowledge"];
+	}
 
 ?>
 <script type="text/javascript">
@@ -68,7 +69,9 @@
 	var _o='<?php echo $o?>';
 	var _p='<?php echo $p?>';
 
+	var _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/serviceGridByHGXML.php";
 	var _addrXSL = "./include/monitoring/status/ServicesHostGroups/xsl/serviceGridByHG.xsl";
+
 	var _timeoutID = 0;
 	var _on = 1;
 	var _time_reload = <?php echo $tM?>;
@@ -90,32 +93,27 @@
 var tempX = 0;
 var tempY = 0;
 
-function position(e){
-	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
-	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
-}
-
 if (navigator.appName.substring(0, 3) == "Net") {
 	document.captureEvents(Event.MOUSEMOVE);
 }
 document.onmousemove = position;
 
-function set_header_title(){
+function set_header_title() {
 	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
 
-	if (document.getElementById('host_name')){
+	if (document.getElementById('host_name')) {
 		var h = document.getElementById('host_name');
 		h.innerHTML = '<?php echo _("Hosts")?>';
 	  	h.indice = 'host_name';
-	  	h.onclick=function(){change_type_order(this.indice)};
+	  	h.onclick=function() {change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
-		if(document.getElementById('current_state')){
+		if (document.getElementById('current_state')) {
 			var h = document.getElementById('current_state');
 			h.innerHTML = '<?php echo _("Status")?>';
 		  	h.indice = 'current_state';
-		  	h.onclick=function(){change_type_order(this.indice)};
+		  	h.onclick=function() {change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 		}
 
@@ -125,50 +123,21 @@ function set_header_title(){
 
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
-		if (_order == 'ASC')
+		if (_order == 'ASC') {
 			_linkaction_asc.appendChild(_img_asc);
-		else
+		} else {
 			_linkaction_asc.appendChild(_img_desc);
+		}
 		_linkaction_asc.href = '#' ;
-		_linkaction_asc.onclick=function(){change_order()};
+		_linkaction_asc.onclick=function() {change_order()};
 		h.appendChild(_linkaction_asc);
 	}
 }
 
-function monitoring_refresh()	{
-	_tmp_on = _on;
-	_time_live = _time_reload;
-	_on = 1;
-	window.clearTimeout(_timeoutID);
-
-	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
-	_on = _tmp_on;
-
-	viewDebugInfo('refresh');
-}
-
-function monitoring_play()	{
-	document.getElementById('JS_monitoring_play').style.display = 'none';
-	document.getElementById('JS_monitoring_pause').style.display = 'block';
-	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
-	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
-	_on = 1;
-	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
-}
-
-function monitoring_pause()	{
-	document.getElementById('JS_monitoring_play').style.display = 'block';
-	document.getElementById('JS_monitoring_pause_gray').style.display = 'block';
-	document.getElementById('JS_monitoring_play_gray').style.display = 'none';
-	document.getElementById('JS_monitoring_pause').style.display='none';
-	_on = 0;
-	window.clearTimeout(_timeoutID);
-}
-
-function initM(_time_reload,_sid,_o){
+function initM(_time_reload, _sid, _o) {
 	construct_selecteList_ndo_instance('instance_selected');
 	construct_HostGroupSelectList('hostgroups_selected');
-	if(!document.getElementById('debug')){
+	if (!document.getElementById('debug') && _debug == 1) {
 		var _divdebug = document.createElement("div");
 		_divdebug.id = 'debug';
 		var _debugtable = document.createElement("table");
@@ -180,92 +149,48 @@ function initM(_time_reload,_sid,_o){
 		_header.appendChild(_divdebug);
 	}
 
-	if(_first){
+	if (_first) {
 		mainLoop();
 		_first = 0;
 	}
 
 	_time=<?php echo $time?>;
 
-	if (_on)
+	if (_on) {
 		goM(_time_reload,_sid,_o);
+	}
 }
 
-function displayPOPUP(id, hg) {
+function displayPOPUP(type, span_id, id) {
 	if (window.ActiveXObject) {
 		viewDebugInfo('Internet Explorer');
 	} else {
-		viewDebugInfo('Recup span_'+hg+id);
-		var span = document.getElementById('span_'+hg+id);
-		var proc_popup = new Transformation();
-		var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
-		var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
-		proc_popup.setXml(_addrXMLSpan);
-		proc_popup.setXslt(_addrXSLSpan);
-		proc_popup.transform('span_'+hg+id);
-
-		//calcul auto de la largeur de l'ecran client
-		var l = screen.availWidth;
-
-		//calcul auto de la hauteur de l'ecran client
-		var h = screen.availHeight;
-
-		if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h) {
-        	span.style.top = '-380px';
-        }
-        span.style.left = '150px';
-
-		viewDebugInfo('Display span_'+id);
-	}
-}
-
-function displayPOPUP_svc(id){
-	if (window.ActiveXObject) {
-		viewDebugInfo('Internet Explorer');
-	} else {
-		viewDebugInfo('Recup span_'+id);
-		var span = document.getElementById('span_'+id);
-
-		// calcul auto de la largeur de l'ecran client
-		var l = screen.availWidth;
-
-		//calcul auto de la hauteur de l'ecran client
-		var h = screen.availHeight;
-
-		if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h){
-        	span.style.top = '-380px';
-        }
-        span.style.left = '150px';
+		var span = document.getElementById('span_'+span_id);
+		setSpanStyle(span, "-380", "150");
 
 		var proc_popup = new Transformation();
-		var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
-		var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForService.xsl";
-		proc_popup.setXml(_addrXMLSpan);
-		proc_popup.setXslt(_addrXSLSpan);
-		proc_popup.transform('span_'+id);
-
-		viewDebugInfo('Display span_'+id);
+		if (type == "host") {
+			proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id='+id);
+			proc_popup.setXslt(_addrXSLSpanhost);
+		} else {
+			proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id='+id);
+			proc_popup.setXslt(_addrXSLSpanSvc);
+		}
+		proc_popup.transform('span_'+span_id);
 	}
 }
 
-function hiddenPOPUP(id, hg){
-	if (window.ActiveXObject) {
-		//viewDebugInfo('Internet Explorer');
-	} else {
-		var span = document.getElementById('span_'+hg+id);
-		span.innerHTML = '';
-	}
-}
-
-function goM(_time_reload,_sid,_o){
+function goM(_time_reload, _sid, _o) {
 	_lock = 1;
+
 	var proc = new Transformation();
 	var _hg = document.getElementById("hostgroups").options[document.getElementById("hostgroups").selectedIndex].value;
 	var _hg_sel = "";
 	if (_hg != 0) {
 		_hg_sel = "&hg=" + _hg;
 	}
-	var _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/serviceGridByHGXML.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o=<?php echo $obis?>&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>' + _hg_sel;
+
+	_addrXML = _addrXML+"?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o=<?php echo $obis?>&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>' + _hg_sel;
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
@@ -275,4 +200,7 @@ function goM(_time_reload,_sid,_o){
 	_on = 1;
 	set_header_title();
 }
+
+//
+
 </SCRIPT>
