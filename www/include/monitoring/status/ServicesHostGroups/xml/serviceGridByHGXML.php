@@ -36,135 +36,107 @@
  *
  */
 
-	ini_set("display_error", "On");
 
-	include_once("/etc/centreon/centreon.conf.php");
-	include_once($centreon_path . "www/class/centreonDuration.class.php");
-	include_once($centreon_path . "www/class/centreonACL.class.php");
-	include_once($centreon_path . "www/class/centreonXML.class.php");
-	include_once($centreon_path . "www/class/centreonDB.class.php");
-	include_once($centreon_path . "www/include/monitoring/status/Common/common-Func.php");
-	include_once($centreon_path . "www/include/common/common-Func.php");
+	include_once "/etc/centreon/centreon.conf.php";
+    //include_once "@CENTREON_ETC@/centreon.conf.php";
 
-	$pearDB = new CentreonDB();
-	$pearDBndo = new CentreonDB("ndo");
+	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
+	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
+	include_once $centreon_path . "www/include/common/common-Func.php";
 
-	$ndo_base_prefix = getNDOPrefix();
-	$general_opt = getStatusColor($pearDB);
-
-	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
-		$sid = $_GET["sid"];
-		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$session =& $res->fetchRow())
-			get_error('bad session id');
-	} else
-		get_error('need session identifiant !');
-
-
-	/* requisit */
-	(isset($_GET["num"]) 			&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
-	(isset($_GET["limit"]) 			&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
-	(isset($_GET["instance"])		/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
-	(isset($_GET["search"]) 		&& !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
-	(isset($_GET["sort_type"]) 		&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "";
-	(isset($_GET["order"]) 			&& !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
-	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
-	(isset($_GET["o"]) 				&& !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
-	(isset($_GET["p"]) 				&& !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
-	(isset($_GET["hg"]))			&& !check_injection($_GET["hg"]) ? $hg = htmlentities($_GET["hg"]) : $hg = "";
-
-	// check is admin
-	$is_admin = isUserAdmin($sid);
-	$user_id = getUserIdFromSID($sid);
-	$access = new CentreonACL($user_id, $is_admin);
-	$grouplist = $access->getAccessGroups();
-	$grouplistStr = $access->getAccessGroupsString();
-	$groupnumber = count($grouplist);
-
-	$service = array();
-	$host_status = array();
-	$service_status = array();
-	$host_services = array();
-	$metaService_status = array();
-	$tab_host_service = array();
-
-	$tab_color_service = array(0 => $general_opt["color_ok"], 1 => $general_opt["color_warning"], 2 => $general_opt["color_critical"], 3 => $general_opt["color_unknown"], 4 => $general_opt["color_pending"]);
-    $tab_color_host = array(0 => $general_opt["color_up"], 1 => $general_opt["color_down"], 2 => $general_opt["color_unreachable"]);
-
-	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE", NULL => "");
-
-	/**
-	 * Get Icone list
+	/*
+	 * Create XML Request Objects
 	 */
-	$query = "SELECT no.name1, h.icon_image FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts h WHERE no.object_id = h.host_object_id";
-	$DBRESULT = $pearDBndo->query($query);
+	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
+
+	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+		;
+	} else {
+		print "Bad Session ID";
+		exit();
+	}
+
+	/*
+	 * Set Default Poller
+	 */
+	$obj->getDefaultFilters();
+
+	/* **************************************************
+	 * Check Arguments From GET tab
+	 */
+	$o 			= $obj->checkArgument("o", $_GET, "h");
+	$p 			= $obj->checkArgument("p", $_GET, "2");
+	$hg 		= $obj->checkArgument("hg", $_GET, "");
+	$num 		= $obj->checkArgument("num", $_GET, 0);
+	$limit 		= $obj->checkArgument("limit", $_GET, 20);
+	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
+	$search 	= $obj->checkArgument("search", $_GET, "");
+	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+	$order 		= $obj->checkArgument("order", $_GET, "ASC");
+	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+
+	/** **************************************
+	 * Get Icone list
+	 *
+	 */
+	$hostIcones = array();
+	$query = "SELECT no.name1, h.icon_image FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts h WHERE no.object_id = h.host_object_id";
+	$DBRESULT = $obj->DBNdo->query($query);
 	while ($data = $DBRESULT->fetchRow()) {
 		$hostIcones[$data['name1']] = $data['icon_image'];
 	}
 	$DBRESULT->free();
 
-	/**
+	/** **************************************
 	 * Get Host status
-	 * @var unknown_type
+	 *
 	 */
-	$rq1 = 			" SELECT DISTINCT hg.alias, no.object_id id, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state hs ".
-					" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no";
-
-	if (!$is_admin)
+	$rq1 =	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.alias, no.object_id id, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state hs ".
+			" FROM " .$obj->ndoPrefix."hostgroups hg," .$obj->ndoPrefix."hostgroup_members hgm, " .$obj->ndoPrefix."hoststatus hs, " .$obj->ndoPrefix."objects no";
+	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
-
-	$rq1 .= 		" WHERE hs.host_object_id = hgm.host_object_id".
-					" AND no.object_id = hgm.host_object_id" .
-					" AND hgm.hostgroup_id = hg.hostgroup_id".
-					" AND no.name1 not like '_Module_%'";
-
-	if (!$is_admin)
-		$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $access->queryBuilder("AND", "hg.alias", $access->getHostGroupsString("ALIAS"));
-
-	if ($instance != "ALL")
+	}
+	$rq1 .= " WHERE hs.host_object_id = hgm.host_object_id".
+			" AND no.object_id = hgm.host_object_id" .
+			" AND hgm.hostgroup_id = hg.hostgroup_id".
+			" AND no.name1 not like '_Module_%'";
+	if (!$obj->is_admin) {
+		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.alias", $obj->access->getHostGroupsString("ALIAS"));
+	}
+	if ($instance != "ALL") {
 		$rq1 .= 	" AND no.instance_id = ".$instance;
-
+	}
 	if ($o == "svcgrid_pb" || $o == "svcOVHG_pb") {
 		$rq1 .= " AND no.name1 IN (" .
-				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
 				" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
 	}
-
 	if ($o == "svcOVHG_ack_0") {
 		$rq1 .= 	" AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+					" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0)";
 	}
 	if ($o == "svcOVHG_ack_1"){
 		$rq1 .= 	" AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+					" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0)";
 	}
-
-	if ($search != "")
+	if ($search != "") {
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-
-	if ($hg != "")
+	}
+	if ($hg != "") {
 		$rq1 .= " AND hg.alias = '" . $hg . "'";
-
-	$rq_pagination = $rq1;
-
-	/*
-	 * Get Pagination Rows
-	 */
-
-	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	$numRows = $DBRESULT_PAGINATION->numRows();
-
+	}
 	$rq1 .= " ORDER BY $sort_type $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	$tabH = array();
 	$tabHG = array();
 	$tab_finalH = array();
+
+	$DBRESULT_NDO1 =& $obj->DBNdo->query($rq1);
+	$numRows = $obj->DBNdo->numberRows();
 	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
 		if (!isset($tab_finalH[$ndo["alias"]])) {
 			$tab_finalH[$ndo["alias"]] = array($ndo["host_name"] => array());
@@ -177,38 +149,39 @@
 	$DBRESULT_NDO1->free();
 
 
-	/**
+	/** **************************************
 	 * Get Services status
 	 *
 	 */
-	$rq1 =	  	" SELECT DISTINCT no.object_id id, no.name1 as host_name, no.name2 svc_name, nss.current_state svcs " .
-				" FROM ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."servicestatus nss ";
-
-	if (!$is_admin)
+	$rq1 = 	" SELECT DISTINCT no.object_id id, no.name1 as host_name, no.name2 svc_name, nss.current_state svcs " .
+		 	" FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss ";
+	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
-
-	$rq1 .=  	" WHERE no.objecttype_id = '2' AND nss.service_object_id = no.object_id ".
-				" AND no.name1 NOT LIKE '_Module_%' ".
-				" AND no.is_active = 1 ";
-
-	$rq1 .= $access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $access->queryBuilder("AND","no.name2", "centreon_acl.service_description") . $access->queryBuilder("AND", "group_id", $grouplistStr);
-
-	if ($o == "svcgrid_pb" || $o == "svcOVHG_pb" || $o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0")
+	}
+	$rq1 .=  " WHERE no.objecttype_id = '2' AND nss.service_object_id = no.object_id ".
+			 " AND no.name1 NOT LIKE '_Module_%' ".
+			 " AND no.is_active = 1 ";
+	$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND","no.name2", "centreon_acl.service_description") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
+	if ($o == "svcgrid_pb" || $o == "svcOVHG_pb" || $o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
 		$rq1 .= " AND nss.current_state != 0 ";
-	if ($o == "svcgrid_ack_1" || $o == "svcOVHG_ack_1")
+	}
+	if ($o == "svcgrid_ack_1" || $o == "svcOVHG_ack_1") {
 		$rq1 .= "AND nss.problem_has_been_acknowledged = 1";
-	if ($o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0")
+	}
+	if ($o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
 		$rq1 .= "AND nss.problem_has_been_acknowledged = 0";
-	if ($search != "")
+	}
+	if ($search != "") {
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-	if ($instance != "ALL")
+	}
+	if ($instance != "ALL") {
 		$rq1 .= " AND no.instance_id = ".$instance;
-
+	}
 	$rq1 .= " ORDER BY $sort_type, svc_name  $order";
 
 	$tabService = array();
 	$tabHost = array();
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+	$DBRESULT_NDO1 =& $obj->DBNdo->query($rq1);
 	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
 		if (!isset($tabService[$ndo["host_name"]])) {
 			$tabService[$ndo["host_name"]] = array();
@@ -224,20 +197,18 @@
 	/*
 	 * Begin XML Generation
 	 */
+	$obj->XML = new CentreonXML();
+	$obj->XML->startElement("reponse");
+	$obj->XML->startElement("i");
+	$obj->XML->writeElement("numrows", $numRows);
+	$obj->XML->writeElement("num", $num);
+	$obj->XML->writeElement("limit", $limit);
+	$obj->XML->writeElement("host_name", _("Hosts"), 0);
+	$obj->XML->writeElement("services", _("Services"), 0);
+	$obj->XML->writeElement("p", $p);
+	$o == "svcOVHG" ? $obj->XML->writeElement("s", "1") : $obj->XML->writeElement("s", "0");
+	$obj->XML->endElement();
 
-	$buffer = new CentreonXML();
-	$buffer->startElement("reponse");
-	$buffer->startElement("i");
-	$buffer->writeElement("numrows", $numRows);
-	$buffer->writeElement("num", $num);
-	$buffer->writeElement("limit", $limit);
-	$buffer->writeElement("host_name", _("Hosts"), 0);
-	$buffer->writeElement("services", _("Services"), 0);
-	$buffer->writeElement("p", $p);
-	$o == "svcOVHG" ? $buffer->writeElement("s", "1") : $buffer->writeElement("s", "0");
-	$buffer->endElement();
-
-	$class = "list_one";
 	$ct = 0;
 	$hg = "";
 	$count = 0;
@@ -245,53 +216,54 @@
 		foreach ($tab_finalH as $hg_name => $tab_host) {
 			foreach ($tab_host as $host_name => $tab) {
 				if (isset($tabService[$host_name]["tab_svc"]) && count($tabService[$host_name]["tab_svc"])) {
-					$class == "list_one" ? $class = "list_two" : $class = "list_one";
 					if (isset($hg_name) && $hg != $hg_name){
 						if ($hg != "") {
-							$buffer->endElement();
+							$obj->XML->endElement();
 						}
 						$hg = $hg_name;
-						$buffer->startElement("hg");
-						$buffer->writeElement("hgn", $hg_name);
-						$buffer->writeElement("hgid", $tabHG[$hg_name]);
+						$obj->XML->startElement("hg");
+						$obj->XML->writeElement("hgn", $hg_name);
+						$obj->XML->writeElement("hgid", $tabHG[$hg_name]);
 					}
-					$buffer->startElement("l");
-					$buffer->writeAttribute("class", $class);
+					$obj->XML->startElement("l");
+					$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 					if (isset($tabService[$host_name]["tab_svc"])) {
 						foreach ($tabService[$host_name]["tab_svc"] as $svc => $state) {
-							$buffer->startElement("svc");
-							$buffer->writeElement("sn", $svc);
-							$buffer->writeElement("snl", urlencode($svc));
-							$buffer->writeElement("sc", $tab_color_service[$state]);
-							$buffer->endElement();
+							$obj->XML->startElement("svc");
+							$obj->XML->writeElement("sn", $svc);
+							$obj->XML->writeElement("snl", urlencode($svc));
+							$obj->XML->writeElement("sc", $obj->colorService[$state]);
+							$obj->XML->endElement();
 						}
 					}
-					$buffer->writeElement("o", $ct);
-					$buffer->writeElement("hn", $host_name);
+					$obj->XML->writeElement("o", $ct);
+					$obj->XML->writeElement("hn", $host_name);
 					if (isset($hostIcones[$host_name])) {
-						$buffer->writeElement("hico", $hostIcones[$host_name]);
+						$obj->XML->writeElement("hico", $hostIcones[$host_name]);
 					} else {
-						$buffer->writeElement("hico", "none");
+						$obj->XML->writeElement("hico", "none");
 					}
-					$buffer->writeElement("hnl", urlencode($host_name));
-					$buffer->writeElement("hid", $tabH[$host_name]);
-					$buffer->writeElement("hs", $tab_status_host[$tab["cs"]]);
-					$buffer->writeElement("hc", $tab_color_host[$tab["cs"]]);
-					$buffer->writeElement("hcount", $count);
-					$buffer->endElement();
+					$obj->XML->writeElement("hnl", urlencode($host_name));
+					$obj->XML->writeElement("hid", $tabH[$host_name]);
+					$obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
+					$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
+					$obj->XML->writeElement("hcount", $count);
+					$obj->XML->endElement();
 					$count++;
 				}
 			}
 			$ct++;
 		}
 	}
-	$buffer->endElement();
-	/* end */
+	$obj->XML->endElement();
 
-	header('Content-Type: text/xml');
-	header('Pragma: no-cache');
-	header('Expires: 0');
-	header('Cache-Control: no-cache, must-revalidate');
-	
-	$buffer->output();
+	/*
+	 * Send Header
+	 */
+	$obj->header();
+
+	/*
+	 * Send XML
+	 */
+	$obj->XML->output();
 ?>
