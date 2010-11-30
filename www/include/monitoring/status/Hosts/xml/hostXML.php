@@ -37,8 +37,6 @@
  */
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-    //include_once "/etc/centreon/centreon.conf.php";
-
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
@@ -82,7 +80,7 @@
 	/*
 	 * Get Host status
 	 */
-	$rq1 = 	" SELECT DISTINCT nhs.current_state," .
+	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT nhs.current_state," .
 			" nhs.problem_has_been_acknowledged, " .
 			" nhs.passive_checks_enabled," .
 			" nhs.active_checks_enabled," .
@@ -167,16 +165,12 @@
 			$rq1 .= " order by no.name1 ";
 			break;
 	}
-	$rq_pagination = $rq1;
-
-	/*
-	 * Get Pagination Rows
-	 */
-	$DBRESULT =& $obj->DBNdo->query($rq_pagination);
-	$numRows = $DBRESULT->numRows();
-	$DBRESULT->free();
-
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+
+	$ct = 0;
+	$flag = 0;
+	$DBRESULT =& $obj->DBNdo->query($rq1);
+	$numRows = $obj->DBNdo->numberRows();
 
 	$obj->XML->startElement("reponse");
 	$obj->XML->startElement("i");
@@ -188,9 +182,6 @@
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
 	$obj->XML->endElement();
 
-	$ct = 0;
-	$flag = 0;
-	$DBRESULT =& $obj->DBNdo->query($rq1);
 	while ($ndo =& $DBRESULT->fetchRow()){
 
 		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
