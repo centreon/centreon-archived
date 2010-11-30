@@ -2144,7 +2144,10 @@ sub substitute
   my $tmp = "";
   for (my $i = 0 ; $i < $#entvar+1 ; $i++) {
   	$tmp .= "'".$entvar[$i]."' ";
-  	print "$i: ".$entvar[$i]."\n";
+  	if ($DEBUGGING >= 2)
+	{
+	  	print "$i: ".$entvar[$i]."\n";
+  	}
   }
   
   if ($DEBUGGING >= 2)
