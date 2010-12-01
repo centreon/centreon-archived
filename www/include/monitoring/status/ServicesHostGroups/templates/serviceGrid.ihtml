@@ -27,7 +27,7 @@
 		<td id="sel1" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>
-<div id="forAjax">...</div>
+<div id="forAjax"></div>
 <table class="ToolbarTable">
 	<tr>
 		<td class="Toolbar_TDSelectAction_Bottom" width="300"><input name="p" value="{$p}" type="hidden"></td>

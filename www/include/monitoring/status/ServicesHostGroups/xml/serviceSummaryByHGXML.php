@@ -71,7 +71,7 @@
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
-	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "alias");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 
@@ -114,7 +114,7 @@
 	if (!$obj->is_admin) {
 		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.alias", $obj->access->getHostGroupsString("ALIAS"));
 	}
-	if ($instance != "ALL") {
+	if ($instance != -1) {
 		$rq1 .= " AND no.instance_id = ".$instance;
 	}
 	if	($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
@@ -138,7 +138,7 @@
 	if ($hg != "") {
 		$rq1 .= " AND hg.alias = '" . $hg . "'";
 	}
-	$rq1 .= " ORDER BY $sort_type $order ";
+	$rq1 .= " ORDER BY $sort_type, host_name $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	$obj->XML = new CentreonXML();

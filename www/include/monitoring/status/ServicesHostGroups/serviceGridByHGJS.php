@@ -66,10 +66,10 @@ function set_header_title() {
 	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
 
-	if (document.getElementById('host_name')) {
-		var h = document.getElementById('host_name');
-		h.innerHTML = '<?php echo _("Hosts")?>';
-	  	h.indice = 'host_name';
+	if (document.getElementById('alias')) {
+		var h = document.getElementById('alias');
+		h.innerHTML = '<?php echo _("Hostgroups / Hosts")?>';
+	  	h.indice = 'alias';
 	  	h.onclick=function() {change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
@@ -82,7 +82,7 @@ function set_header_title() {
 		}
 
 		var h = document.getElementById('service_description');
-		h.innerHTML = '<?php echo _("Services")?>';
+		h.innerHTML = '<?php echo _("Services information")?>';
 	  	h.indice = 'service_description';
 
 		var h = document.getElementById(_sort_type);

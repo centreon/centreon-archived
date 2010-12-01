@@ -104,7 +104,7 @@
 	if (!$obj->is_admin) {
 		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.alias", $obj->access->getHostGroupsString("ALIAS"));
 	}
-	if ($instance != "ALL") {
+	if ($instance != -1) {
 		$rq1 .= 	" AND no.instance_id = ".$instance;
 	}
 	if ($o == "svcgrid_pb" || $o == "svcOVHG_pb") {
@@ -128,7 +128,7 @@
 	if ($hg != "") {
 		$rq1 .= " AND hg.alias = '" . $hg . "'";
 	}
-	$rq1 .= " ORDER BY $sort_type $order ";
+	$rq1 .= " ORDER BY $sort_type, host_name $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	$tabH = array();
@@ -174,10 +174,10 @@
 	if ($search != "") {
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
-	if ($instance != "ALL") {
+	if ($instance != -1) {
 		$rq1 .= " AND no.instance_id = ".$instance;
 	}
-	$rq1 .= " ORDER BY $sort_type, svc_name  $order";
+	$rq1 .= " ORDER BY svc_name";
 
 	$tabService = array();
 	$tabHost = array();
