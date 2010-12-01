@@ -34,6 +34,17 @@
  *
  */
 
+/**
+ * Replaces characters such as #S# #BS# etc...
+ */
+function upgradeReplaceSpecialChars($str)
+{
+    $newStr = str_replace("#S#", "/", $str);
+    $newStr = str_replace("#BS#", "\\", $str);
+
+    return CentreonDB::escape($newStr);
+}
+
 if (isset($pearDB)) {
     /**
      * Decodes Host names and host alias
@@ -41,8 +52,8 @@ if (isset($pearDB)) {
     $query = "SELECT host_id, host_alias, host_name FROM host";
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
-        $query2 = "UPDATE host SET host_name = '".html_entity_decode($rows['host_name'])."',
-        		   host_alias = '" . html_entity_decode($rows['host_alias']) . "' WHERE host_id = '".$rows['host_id']."'";
+        $query2 = "UPDATE host SET host_name = '".upgradeReplaceSpecialChars(html_entity_decode($rows['host_name']))."',
+        		   host_alias = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['host_alias'])) . "' WHERE host_id = '".$rows['host_id']."'";
         $pearDB->query($query2);
     }
 
@@ -52,8 +63,8 @@ if (isset($pearDB)) {
     $query = "SELECT service_id, service_description, service_alias FROM service";
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
-        $query2 = "UPDATE service SET service_description = '".html_entity_decode($rows['service_description'])."',
-        		   service_alias = '" . html_entity_decode($rows['service_alias']) . "' WHERE service_id = '".$rows['service_id']."'";
+        $query2 = "UPDATE service SET service_description = '".upgradeReplaceSpecialChars(html_entity_decode($rows['service_description']))."',
+        		   service_alias = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['service_alias'])) . "' WHERE service_id = '".$rows['service_id']."'";
         $pearDB->query($query2);
     }
 
@@ -63,8 +74,8 @@ if (isset($pearDB)) {
     $query = "SELECT hg_id, hg_alias, hg_name FROM hostgroup";
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
-        $query2 = "UPDATE hostgroup SET hg_name = '".html_entity_decode($rows['hg_name'])."',
-        		   hg_alias = '" . html_entity_decode($rows['hg_alias']) . "' WHERE hg_id = '".$rows['hg_id']."'";
+        $query2 = "UPDATE hostgroup SET hg_name = '".upgradeReplaceSpecialChars(html_entity_decode($rows['hg_name']))."',
+        		   hg_alias = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['hg_alias'])) . "' WHERE hg_id = '".$rows['hg_id']."'";
         $pearDB->query($query2);
     }
 
@@ -75,7 +86,7 @@ if (isset($pearDB)) {
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
         $query2 = "UPDATE on_demand_macro_host
-        		   SET host_macro_value = '".html_entity_decode($rows['host_macro_value'])."'
+        		   SET host_macro_value = '".upgradeReplaceSpecialChars(html_entity_decode($rows['host_macro_value']))."'
         		   WHERE host_macro_id = '".$rows['host_macro_id']."'";
         $pearDB->query($query2);
     }
@@ -87,7 +98,7 @@ if (isset($pearDB)) {
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
         $query2 = "UPDATE on_demand_macro_service
-        		   SET svc_macro_value = '".html_entity_decode($rows['svc_macro_value'])."'
+        		   SET svc_macro_value = '".upgradeReplaceSpecialChars(html_entity_decode($rows['svc_macro_value']))."'
         		   WHERE svc_macro_id = '".$rows['svc_macro_id']."'";
         $pearDB->query($query2);
     }
