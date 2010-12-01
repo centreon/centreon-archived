@@ -119,6 +119,7 @@ if (isset($pearDBO)) {
     while ($rows = $res->fetchRow()) {
         $query2 = "UPDATE index_data SET host_name = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['host_name'])) .  "',
         		   service_description = '". upgradeReplaceSpecialChars(html_entity_decode($rows['service_description'])) ."' WHERE id = '".$rows['id']."'";
+        $pearDB->query($query2);
     }
 }
 ?>
