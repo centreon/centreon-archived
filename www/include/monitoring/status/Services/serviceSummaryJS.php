@@ -36,22 +36,22 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
-	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
-	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 	$sid = session_id();
 	$time = time();
 
 	$obis = $o;
-	if(isset($_GET["problem"]))
-	$obis .= '_pb';
-	if(isset($_GET["acknowledge"]))
-	$obis .= '_ack_' . $_GET["acknowledge"];
-
+	if(isset($_GET["problem"])) {
+		$obis .= '_pb';
+	}
+	if(isset($_GET["acknowledge"])) {
+		$obis .= '_ack_' . $_GET["acknowledge"];
+	}
 ?>
 <script type="text/javascript">
 var _debug = 0;
@@ -68,6 +68,7 @@ var _date_time_format_status='<?php echo _("d/m/Y H:i:s")?>';
 var _o='<?php echo $o?>';
 var _p='<?php echo $p?>';
 
+var _addrXML = "./include/monitoring/status/Services/xml/serviceSummaryXML.php";
 var _addrXSL = "./include/monitoring/status/Services/xsl/serviceSummary.xsl";
 
 var _timeoutID = 0;
@@ -86,7 +87,15 @@ var _instance = 'ALL';
 var _default_hg = '<?php echo $default_hg;?>';
 var _default_instance = '<?php echo $default_poller?>';
 
+var tempX = 0;
+var tempY = 0;
+
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
+
+if (navigator.appName.substring(0, 3) == "Net") {
+	document.captureEvents(Event.MOUSEMOVE);
+}
+document.onmousemove = position;
 
 function set_header_title(){
 	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
@@ -113,7 +122,6 @@ function set_header_title(){
 		h.style.cursor = "pointer";
 		}
 
-
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
 		if(_order == 'ASC')
@@ -128,36 +136,6 @@ function set_header_title(){
 
 
 
-function monitoring_refresh()	{
-	_tmp_on = _on;
-	_time_live = _time_reload;
-	_on = 1;
-	window.clearTimeout(_timeoutID);
-
-	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
-	_on = _tmp_on;
-
-	viewDebugInfo('refresh');
-}
-
-function monitoring_play()	{
-	document.getElementById('JS_monitoring_play').style.display = 'none';
-	document.getElementById('JS_monitoring_pause').style.display = 'block';
-	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
-	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
-	_on = 1;
-	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
-}
-
-function monitoring_pause()	{
-	document.getElementById('JS_monitoring_play').style.display = 'block';
-	document.getElementById('JS_monitoring_pause_gray').style.display = 'block';
-	document.getElementById('JS_monitoring_play_gray').style.display = 'none';
-	document.getElementById('JS_monitoring_pause').style.display='none';
-	_on = 0;
-	window.clearTimeout(_timeoutID);
-}
-
 function initM(_time_reload,_sid,_o){
 	construct_selecteList_ndo_instance('instance_selected');
 	construct_HostGroupSelectList('hostgroups_selected');
@@ -171,7 +149,6 @@ function initM(_time_reload,_sid,_o){
 		_divdebug.appendChild(_debugtable);
 		_header = document.getElementById('header');
 		_header.appendChild(_divdebug);
-//		viewDebugInfo('--INIT Debug--');
 	}
 
 	if(_first){
@@ -185,11 +162,36 @@ function initM(_time_reload,_sid,_o){
 	goM(_time_reload,_sid,_o);
 }
 
-function goM(_time_reload,_sid,_o){
+function displayPOPUP(type, span_id, id) {
+	if (window.ActiveXObject) {
+		viewDebugInfo('Internet Explorer');
+	} else {
+		var span = document.getElementById('span_'+span_id);
+		setSpanStyle(span, "-380", "150");
+
+		var proc_popup = new Transformation();
+		if (type == "host") {
+			proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id='+id);
+			proc_popup.setXslt(_addrXSLSpanhost);
+		} else {
+			proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id='+id);
+			proc_popup.setXslt(_addrXSLSpanSvc);
+		}
+		proc_popup.transform('span_'+span_id);
+	}
+}
+
+function goM(_time_reload,_sid,_o) {
 	_lock = 1;
 	var proc = new Transformation();
-	var _addrXML = "./include/monitoring/status/Services/xml/serviceSummaryXML.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o=<?php echo $obis?>&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>';
-	proc.setXml(_addrXML);
+	var _hg = document.getElementById("hostgroups").options[document.getElementById("hostgroups").selectedIndex].value;
+	var _hg_sel = "";
+	if (_hg != 0) {
+		_hg_sel = "&hg=" + _hg;
+	}
+
+	var proc = new Transformation();
+	proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o=<?php echo $obis?>&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>');
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 	_lock = 0;

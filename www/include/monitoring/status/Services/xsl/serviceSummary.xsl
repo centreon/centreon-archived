@@ -3,7 +3,7 @@
 <xsl:template match="/">
 <table class="ListTable">
 	<tr class='ListHeader'>
-		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name" width="200"></td>
+		<td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name" width="200"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state" width="70">Status</td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
 	</tr>
@@ -20,8 +20,13 @@
 			</xsl:if>
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
-				<xsl:attribute name="class">pop</xsl:attribute>
+				<xsl:attribute name="class">infobulle</xsl:attribute>
+				<xsl:attribute name="onmouseover">displayPOPUP('host', '<xsl:value-of select="hid"/>', '<xsl:value-of select="hid"/>');</xsl:attribute>
+				<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
 				<xsl:value-of select="hn"/>
+				<xsl:element name="span">
+					<xsl:attribute name="id">span_<xsl:value-of select="hid"/></xsl:attribute>
+				</xsl:element>
 			</xsl:element>
 		</td>
 		<td class="ListColLeft" style="white-space:nowrap;width:37px;">
