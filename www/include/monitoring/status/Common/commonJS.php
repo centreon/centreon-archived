@@ -44,8 +44,12 @@
 // Dynamique
 var _search = '<?php echo $search?>';
 var _sid='<?php echo $sid?>';
+<?php if (isset($search_type_host)) { ?>
 var _search_type_host='<?php echo $search_type_host?>';
+<?php } ?>
+<?php if (isset($search_type_service)) { ?>
 var _search_type_service='<?php echo $search_type_service?>';
+<?php } ?>
 var _num='<?php echo $num?>';
 var _limit='<?php echo $limit?>';
 var _sort_type='<?php echo $sort_type?>';
