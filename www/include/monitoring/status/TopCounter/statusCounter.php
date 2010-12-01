@@ -38,8 +38,8 @@
 
 	$debug = 0;
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
-	//include_once "/etc/centreon/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 
 	include_once $centreon_path . "www/include/common/common-Func.php";
@@ -47,7 +47,7 @@
 	/*
 	 * Create XML Request Objects
 	 */
-	$obj = new CentreonXMLBGRequest($_POST["sid"], 1, 1, 0, $debug);
+	$obj = new CentreonXMLBGRequest((isset($_POST["sid"]) ? $_POST["sid"] : $_GET["sid"]), 1, 1, 0, $debug);
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		$obj->reloadSession();
@@ -75,18 +75,15 @@
 	 */
 	$rq1 = 	" SELECT count(DISTINCT ".$obj->ndoPrefix."objects.name1), ".$obj->ndoPrefix."hoststatus.current_state" .
 			" FROM ".$obj->ndoPrefix."hoststatus, ".$obj->ndoPrefix."objects";
-
-	if (!$obj->is_admin)
+	if (!$obj->is_admin) {
 		$rq1 .= " , centreon_acl ";
-
+	}
 	$rq1 .= " WHERE ".$obj->ndoPrefix."objects.object_id = ".$obj->ndoPrefix."hoststatus.host_object_id " .
 			" AND ".$obj->ndoPrefix."objects.is_active = 1 " .
 			$obj->access->queryBuilder("AND", $obj->ndoPrefix."objects.name1", "centreon_acl.host_name") .
 			$obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr) .
 			" AND " . $obj->ndoPrefix. "objects.name1 NOT LIKE '_Module_%' " .
 			" GROUP BY ".$obj->ndoPrefix."hoststatus.current_state";
-
-
 	$hostCounter = 0;
 	$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
 	$DBRESULT =& $obj->DBNdo->query($rq1);
@@ -100,7 +97,7 @@
 	/* *********************************************
 	 * Get Service stats
 	 */
-	if (!$obj->is_admin)
+	if (!$obj->is_admin) {
 		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 				" FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no, centreon_acl " .
 				" WHERE no.object_id = nss.service_object_id".
@@ -109,13 +106,13 @@
 				" AND no.name2 = centreon_acl.service_description " .
 				" AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
 				" AND no.is_active = 1 GROUP BY nss.current_state";
-	else
+	} else {
 		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
 				" FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 NOT LIKE '_Module_%' ".
 				" AND no.is_active = 1 GROUP BY nss.current_state";
-
+	}
 	$serviceCounter = 0;
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 6=>0, 7=>0, 8=>0);
 	$DBRESULT =& $obj->DBNdo->query($rq2);

@@ -80,14 +80,6 @@
 	 */
 	$obj->setInstanceHistory($instance);
 
-	$service = array();
-	$host_status = array();
-	$service_status = array();
-	$host_services = array();
-	$metaService_status = array();
-	$tab_host_service = array();
-	$tabIcone = array();
-
 	/*
 	 * Get Host status
 	 */

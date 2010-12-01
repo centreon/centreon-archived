@@ -36,17 +36,57 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
-?>
+	}
 
-//Hosts WS For Poppin
+?>
+// Dynamique
+var _search = '<?php echo $search?>';
+var _sid='<?php echo $sid?>';
+var _search_type_host='<?php echo $search_type_host?>';
+var _search_type_service='<?php echo $search_type_service?>';
+var _num='<?php echo $num?>';
+var _limit='<?php echo $limit?>';
+var _sort_type='<?php echo $sort_type?>';
+var _order='<?php echo $order?>';
+var _date_time_format_status='<?php echo _("d/m/Y H:i:s")?>';
+var _o='<?php echo $o?>';
+var _p='<?php echo $p?>';
+
+// Parameters
+var _timeoutID = 0;
+var _hostgroup_enable = 1;
+var _on = 1;
+var _time_reload = <?php echo $tM?>;
+var _time_live = <?php echo $tFM?>;
+var _nb = 0;
+var _oldInputFieldValue = '<?php echo $search?>';
+var _oldInputHostFieldValue = '';
+var _oldInputOutputFieldValue = '';
+var _currentInputFieldValue=""; // valeur actuelle du champ texte
+var _resultCache=new Object();
+var _first = 1;
+var _lock = 0;
+var _instance = 'ALL';
+var _default_instance = '<?php echo $default_poller?>';
+
+// Hosts WS For Poppin
 var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php";
 var _addrXSLSpanhost = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
 
 // Services WS For Poppin
 var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/makeXMLForOneService.php";
 var _addrXSLSpanSvc = "./include/monitoring/status/Services/xsl/popupForService.xsl";
+
+// Position
+var tempX = 0;
+var tempY = 0;
+
+if (navigator.appName.substring(0, 3) == "Net") {
+	document.captureEvents(Event.MOUSEMOVE);
+}
+document.onmousemove = position;
 
 
 function resetSelectedCheckboxes()
@@ -76,7 +116,7 @@ function getXhrC()
 	return xhrC;
 }
 
-function addORdelTab(_name){
+function addORdelTab(_name) {
 	var d = document.getElementsByName('next_check_case');
 	if (d[0].checked == true) {
 		_nc = 1;
@@ -86,7 +126,7 @@ function addORdelTab(_name){
 	monitoring_refresh();
 }
 
-function advanced_options(id){
+function advanced_options(id) {
 	var d = document.getElementById(id);
 	if (d) {
 		if (d.style.display == 'block') {
@@ -195,6 +235,7 @@ function construct_HostGroupSelectList(id) {
 				select_index["<?php echo $hostgroups["alias"]; ?>"] = i;
 				i++;
 <?php 		}
+
 		}
 ?>
 		if (typeof(_default_hg) != "undefined") {
@@ -642,6 +683,25 @@ function set_page(page)	{
 
 // Poppin Function
 
+function displayPOPUP(type, span_id, id) {
+	if (window.ActiveXObject) {
+		viewDebugInfo('Internet Explorer');
+	} else {
+		var span = document.getElementById('span_'+span_id);
+		setSpanStyle(span, "-380", "150");
+
+		var proc_popup = new Transformation();
+		if (type == "host") {
+			proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id='+id);
+			proc_popup.setXslt(_addrXSLSpanhost);
+		} else {
+			proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id='+id);
+			proc_popup.setXslt(_addrXSLSpanSvc);
+		}
+		proc_popup.transform('span_'+span_id);
+	}
+}
+
 function hiddenPOPUP(span) {
 	if (window.ActiveXObject) {
 		//viewDebugInfo('Internet Explorer');
@@ -693,6 +753,35 @@ function monitoring_refresh()	{
 	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
 	_on = _tmp_on;
 	viewDebugInfo('refresh');
+}
+
+function initM(_time_reload, _sid, _o) {
+	construct_selecteList_ndo_instance('instance_selected');
+	if (_hostgroup_enable == 1) {
+		construct_HostGroupSelectList('hostgroups_selected');
+	}
+	if (!document.getElementById('debug')) {
+		var _divdebug = document.createElement("div");
+		_divdebug.id = 'debug';
+		var _debugtable = document.createElement("table");
+		_debugtable.id = 'debugtable';
+		var _debugtr = document.createElement("tr");
+		_debugtable.appendChild(_debugtr);
+		_divdebug.appendChild(_debugtable);
+		_header = document.getElementById('header');
+		_header.appendChild(_divdebug);
+	}
+
+	if (_first){
+		mainLoop();
+		_first = 0;
+	}
+
+	_time=<?php echo $time?>;
+
+	if (_on) {
+		goM(_time_reload,_sid,_o);
+	}
 }
 
 // Windows size Management
