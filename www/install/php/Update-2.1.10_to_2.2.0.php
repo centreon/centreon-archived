@@ -40,7 +40,7 @@
 function upgradeReplaceSpecialChars($str)
 {
     $newStr = str_replace("#S#", "/", $str);
-    $newStr = str_replace("#BS#", "\\", $str);
+    $newStr = str_replace("#BS#", "\\", $newStr);
 
     return CentreonDB::escape($newStr);
 }
