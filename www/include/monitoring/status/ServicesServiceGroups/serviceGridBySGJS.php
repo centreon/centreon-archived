@@ -72,7 +72,7 @@ function set_header_title(){
 
 	if (document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?php echo _("Hosts")?>';
+		h.innerHTML = '<?php echo _("Servicegroups / Hosts")?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
@@ -86,9 +86,9 @@ function set_header_title(){
 			h.style.cursor = "pointer";
 		}
 
-		var h = document.getElementById('services');
-		h.innerHTML = '<?php echo _("Services")?>';
-	  	h.indice = 'services';
+		var h = document.getElementById('service_description');
+		h.innerHTML = '<?php echo _("Services informations")?>';
+	  	h.indice = 'service_description';
 
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");

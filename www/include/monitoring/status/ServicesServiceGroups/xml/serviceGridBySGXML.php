@@ -104,7 +104,7 @@
 
 	$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
 
-	if ($instance != "ALL")
+	if ($instance != -1)
 		$rq1 .= " AND no.instance_id = ".$instance;
 
 	if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
@@ -193,7 +193,7 @@
 
 		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
 
-		if ($instance != "ALL") {
+		if ($instance != -1) {
 			$rq1 .= " AND no.instance_id = ".$instance;
 		}
 		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
@@ -251,7 +251,7 @@
 
 		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
 
-		if ($instance != "ALL") {
+		if ($instance != -1) {
 			$rq1 .= " AND no.instance_id = ".$instance;
 		}
 		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {

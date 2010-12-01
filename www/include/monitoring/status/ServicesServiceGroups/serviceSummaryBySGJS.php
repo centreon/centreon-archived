@@ -57,8 +57,8 @@
 <script type="text/javascript">
 var _debug = 0;
 
-var _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/serviceGridBySGXML.php";
-var _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceGridBySG.xsl";
+var _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/serviceSummaryBySGXML.php";
+var _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceSummaryBySG.xsl";
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
@@ -71,14 +71,14 @@ function set_header_title(){
 
 	if(document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?php echo _("Hosts")?>';
+		h.innerHTML = '<?php echo _("Servicegroups / Hosts")?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
-		var h = document.getElementById('services');
-		h.innerHTML = '<?php echo _("Services")?>';
-	  	h.indice = 'services';
+		var h = document.getElementById('service_description');
+		h.innerHTML = '<?php echo _("Services informations")?>';
+	  	h.indice = 'service_description';
 
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
