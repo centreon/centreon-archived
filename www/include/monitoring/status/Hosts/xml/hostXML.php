@@ -36,7 +36,8 @@
  *
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
@@ -99,43 +100,42 @@
 			" nhs.max_check_attempts," .
 			" nhs.state_type," .
 			" nhs.current_check_attempt, " .
-			" nhs.scheduled_downtime_depth" .
+			" nhs.scheduled_downtime_depth, " .
+			" nh.host_object_id " .
 			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts nh";
-	if (!$obj->is_admin)
+	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
-
+	}
 	if ($hostgroups) {
 		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hm ";
 	}
-
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id " .
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
 			" AND no.name1 NOT LIKE '_Module_%'";
 
-	if (!$obj->is_admin)
+	if (!$obj->is_admin) {
 		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
-
-	if ($search != "")
+	}
+	if ($search != "") {
 		$rq1 .= " AND (no.name1 LIKE '%" . $search . "%' OR nh.alias LIKE '%" . $search . "%') ";
-
-	if ($o == "hpb")
+	}
+	if ($o == "hpb") {
 		$rq1 .= " AND nhs.current_state != 0 ";
-
+	}
 	if ($o == "h_unhandled") {
 		$rq1 .= " AND nhs.current_state != 0 ";
 		$rq1 .= " AND nhs.state_type = '1'";
 		$rq1 .= " AND nhs.problem_has_been_acknowledged = 0";
 		$rq1 .= " AND nhs.scheduled_downtime_depth = 0";
 	}
-
 	if ($hostgroups) {
 		$rq1 .= " AND nh.host_object_id = hm.host_object_id AND hm.hostgroup_id IN
 				(SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."') ";
 	}
 
-	if ($instance)
+	if ($instance != -1) {
 		$rq1 .= " AND no.instance_id = ".$instance;
-
+	}
 	switch ($sort_type) {
 		case 'host_name' :
 			$rq1 .= " order by no.name1 ". $order;
@@ -182,25 +182,28 @@
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
 	$obj->XML->endElement();
 
-	while ($ndo =& $DBRESULT->fetchRow()){
+	while ($ndo =& $DBRESULT->fetchRow()) {
 
-		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
+		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
 			$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
-		else
+		} else {
 			$duration = "N/A";
+		}
 
-		if (($ndo["last_hard_state_change"] > 0) && ($ndo["last_hard_state_change"] >= $ndo["last_state_change"]))
+		if (($ndo["last_hard_state_change"] > 0) && ($ndo["last_hard_state_change"] >= $ndo["last_state_change"])) {
 			$hard_duration = CentreonDuration::toString(time() - $ndo["last_hard_state_change"]);
-		else if ($ndo["last_hard_state_change"] > 0)
+		} else if ($ndo["last_hard_state_change"] > 0) {
 			$hard_duration = " N/A ";
-		else
+		} else {
 			$hard_duration = "N/A";
+		}
 
 		$obj->XML->startElement("l");
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 		$obj->XML->writeElement("o", 	$ct++);
 		$obj->XML->writeElement("hc", 	$obj->colorHost[$ndo["current_state"]]);
 		$obj->XML->writeElement("f", 	$flag);
+		$obj->XML->writeElement("hid",	$ndo["host_object_id"]);
 		$obj->XML->writeElement("hn",	$ndo["host_name"], false);
 		$obj->XML->writeElement("hnl",	urlencode($ndo["host_name"]));
 		$obj->XML->writeElement("a", 	($ndo["address"] ? $ndo["address"] : "N/A"));
@@ -235,8 +238,9 @@
 	}
 	$DBRESULT->free();
 
-	if (!$ct)
+	if (!$ct) {
 		$obj->XML->writeElement("infos", "none");
+	}
 	$obj->XML->endElement();
 
 	$obj->header();
