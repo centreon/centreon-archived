@@ -1,0 +1,56 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>	
+<form name='form' method='POST'>
+	<hidden name="p" value='{$p}'>	
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+		</tr>
+	</table>
+	<table class="ListTable">
+		<tr class='ListHeader'>
+		<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$cmt_host_comment}</td>		
+		<td align='right'>{if $msgh}<a href="{$msgh.addL}">{$msgh.addT}</a>{/if}</td>		
+	</tr>
+	</table>
+	<br />	
+	{if $nb_comments_host}
+	<table class="ListTable">	
+		<tr class='ListHeader'>
+			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+			<td class="ListColHeaderCenter">{$cmt_host_name}</td>
+			<td class="ListColHeaderCenter" width="120">{$cmt_entry_time}</td>
+			<td class="ListColHeaderCenter">{$cmt_author}</td>
+			<td class="ListColHeaderCenter">{$cmt_comment}</td>
+			<td class="ListColHeaderCenter" width="60">{$cmt_persistent}</td>
+		</tr>
+		{foreach item=tch from=$tab_comments_host}
+		<tr class={cycle values="list_two, list_one"}>
+			<td class="ListColPicker"><input type="checkbox" name='select[{$tch.host_name};{$tch.internal_comment_id}]'></td>
+			<td class="ListColLeft">{$tch.host_name}</td>
+			<td class="ListColRight">{$tch.entry_time}</td>
+			<td class="ListColCenter">{$tch.author_name}</td>
+			<td class="ListColNoWrap">{$tch.comment_data}</td>
+			<td class="ListColCenter">{$tch.is_persistent}</td>
+		</tr>
+		{/foreach}
+		<tr>
+			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="dh"><input type="submit" name="submit2" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgh.delConfirm}')"></td>
+			<td class="ListColFooterCenter" colspan="3">&nbsp;</td>
+			<td class="ListColFooterRight" align="right"><a href="{$msgh.addL}">{$msgh.addT}</a></td>
+		</tr>		
+	</table>	
+	{else}
+	<center><b>{$no_host_comments}</b></center>
+	{/if}
+	<table class="ToolbarTable">
+		<tr class="ToolbarTR">
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+		</tr>
+	</table>
+	<input type='hidden' id='limit' name='limit' value='{$limit}'>
+	{$form.hidden}
+	</form>
