@@ -38,20 +38,6 @@
 
 	ini_set("Display_error", "On");
 
-	function get_Host_Status($host_name, $pearDBndo, $general_opt){
-		global $ndo_base_prefix;
-
-		$ndo_base_prefix = "nagios_";
-
-		 $rq = "SELECT nhs.current_state FROM `" .$ndo_base_prefix."hoststatus` nhs, `" .$ndo_base_prefix."hosts` nh " .
- 	            "WHERE nh.display_name = '".$host_name."'" .
- 	            "AND nh.host_object_id = nhs.host_object_id" ;
-		$DBRESULT =& $pearDBndo->query($rq);
-		$status =& $DBRESULT->fetchRow();
-		unset($DBRESULT);
-		return $status["current_state"];
-	}
-
 	function getMyIndexGraph4Service($host_name = NULL, $service_description = NULL, $pearDBO)	{
 		if ((!isset($service_description) || !$service_description ) || (!isset($host_name) || !$host_name))
 			return NULL;

@@ -68,7 +68,7 @@ var _currentInputFieldValue=""; // valeur actuelle du champ texte
 var _resultCache=new Object();
 var _first = 1;
 var _lock = 0;
-var _instance = 'ALL';
+var _instance = "-1";
 var _default_instance = '<?php echo $default_poller?>';
 
 // Hosts WS For Poppin
