@@ -63,11 +63,26 @@ if (isset($pearDB)) {
     /**
      * Decodes Service description and service alias
      */
-    $query = "SELECT service_id, service_description, service_alias FROM service";
+    $query = "SELECT service_id, service_description, service_alias, command_command_id_arg, command_command_id_arg2 FROM service";
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
         $query2 = "UPDATE service SET service_description = '".upgradeReplaceSpecialChars(html_entity_decode($rows['service_description']))."',
-        		   service_alias = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['service_alias'])) . "' WHERE service_id = '".$rows['service_id']."'";
+        		   service_alias = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['service_alias'])) . "',
+        		   command_command_id_arg = '". upgradeReplaceSpecialChars(html_entity_decode($rows['command_command_id_arg'])) ."',
+        		   command_command_id_arg2 = '". upgradeReplaceSpecialChars(html_entity_decode($rows['command_command_id_arg2'])) ."' WHERE service_id = '".$rows['service_id']."'";
+        $pearDB->query($query2);
+    }
+
+    /**
+     * Decodes command lines and command examples
+     */
+    $query = "SELECT command_id, command_name, command_line, command_example FROM command";
+    $res = $pearDB->query($query);
+    while ($rows = $res->fetchRow()) {
+        $query2 = "UPDATE service SET command_name = '".upgradeReplaceSpecialChars(html_entity_decode($rows['command_name']))."',
+        		   command_line = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['command_line'])) . "',
+        		   command_example = '". upgradeReplaceSpecialChars(html_entity_decode($rows['command_example'])) ."',
+        		   command_comment = '". upgradeReplaceSpecialChars(html_entity_decode($rows['command_comment'])) ."' WHERE command_id = '".$rows['command_id']."'";
         $pearDB->query($query2);
     }
 
