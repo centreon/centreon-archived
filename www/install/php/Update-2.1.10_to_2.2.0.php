@@ -115,7 +115,7 @@ if (isset($pearDBO)) {
      * Decodes index data table entries
      */
     $query = "SELECT id, host_name, service_description FROM index_data";
-    $res = $pearDB->query($query);
+    $res = $pearDBO->query($query);
     while ($rows = $res->fetchRow()) {
         $query2 = "UPDATE index_data SET host_name = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['host_name'])) .  "',
         		   service_description = '". upgradeReplaceSpecialChars(html_entity_decode($rows['service_description'])) ."' WHERE id = '".$rows['id']."'";
