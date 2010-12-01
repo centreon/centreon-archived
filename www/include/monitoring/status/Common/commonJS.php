@@ -106,6 +106,9 @@ function construct_selecteList_ndo_instance(id){
 	if (!document.getElementById("select_instance")){
 		var select_index = new Array();
 		var _select_instance = document.getElementById(id);
+		if (_select_instance == null) {
+			return;
+		}
 		var _select = document.createElement("select");
 		_select.name = "select_instance";
 		_select.id = "select_instance";
