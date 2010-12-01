@@ -116,7 +116,7 @@
 
 	$rq1 .= (preg_match("/^svc_unhandled/", $o)) ? " AND nhs.problem_has_been_acknowledged = 0 AND nhs.scheduled_downtime_depth = 0 " : "";
 	$rq1 .= ($o == "meta") ?" AND no.name1 = '_Module_Meta'" : " AND no.name1 != '_Module_Meta'";
-	$rq1 .= ($instance) ? " AND no.instance_id = ".$instance : "" ;
+	$rq1 .= ($instance != -1) ? " AND no.instance_id = ".$instance : "" ;
 
 	$DBRESULT =& $obj->DBNdo->query($rq1);
 	$hostHGString = "";
@@ -178,8 +178,8 @@
 	$rq_state = "";
 
 	$instance_filter = "";
-	if ($instance) {
-		$instance_filter = " AND no.instance_id = '".$instance."' ";
+	if ($instance != -1) {
+		$instance_filter = " AND no.instance_id = ".$instance." ";
 	}
 
 	if ($o == "svcpb")

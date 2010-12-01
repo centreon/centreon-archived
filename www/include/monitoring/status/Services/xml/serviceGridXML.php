@@ -36,6 +36,8 @@
  *
  */
 
+	ini_set("display_errors", "On");
+
 	include_once "/etc/centreon/centreon.conf.php";
     //include_once "@CENTREON_ETC@/centreon.conf.php";
 
@@ -80,25 +82,20 @@
 	 */
 	$obj->setInstanceHistory($instance);
 
-	/*
+	/** *********************************************
 	 * Get Host status
 	 */
-	$rq1 =	  	" SELECT DISTINCT no.name1 as host_name, nhs.current_state, icon_image, nh.host_object_id " .
+	$rq1 =	  	" SELECT SQL_CALC_FOUND_ROWS DISTINCT no.name1 as host_name, nhs.current_state, icon_image, nh.host_object_id " .
 				" FROM " .$obj->ndoPrefix."objects no, " .$obj->ndoPrefix."hoststatus nhs, " .$obj->ndoPrefix."hosts nh ";
-
 	if ($hostgroups) {
 		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hgm ";
 	}
-
-	if (!$obj->is_admin)
+	if (!$obj->is_admin) {
 		$rq1 	.= ", centreon_acl ";
-
+	}
 	$rq1 .=		" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id AND nh.host_object_id = no.object_id ".
 				" AND no.name1 NOT LIKE '_Module_%'";
-
-	//$grouplistStr = $obj->access->getAccessGroupsString();
 	$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name").$obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr);
-
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0") {
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
@@ -112,31 +109,24 @@
 	if ($search != "") {
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
-	if ($instance) {
-		$rq1 .= " AND no.instance_id = ".$instance;
+	if ($instance != -1) {
+		$rq1 .= " AND no.instance_id = ".$instance."";
 	}
 	if ($hostgroups) {
 	    $rq1 .= " AND nhs.host_object_id = hgm.host_object_id ";
 	    $rq1 .= " AND hgm.hostgroup_id IN (SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."') ";
 	}
-
 	switch ($sort_type) {
 		case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 "; break;
 		default : $rq1 .= " order by no.name1 ". $order; break;
 	}
-
-	$rq_pagination = $rq1;
-
-	/*
-	 * Add limit
-	 */
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	/*
-	 * Get Pagination Rows
+	 * Execute request
 	 */
-	$DBRESULT_PAGINATION =& $obj->DBNdo->query($rq_pagination);
-	$numRows = $DBRESULT_PAGINATION->numRows();
+	$DBRESULT = $obj->DBNdo->query($rq1);
+	$numRows = $obj->DBNdo->numberRows();
 
 	$obj->XML->startElement("reponse");
 	$obj->XML->startElement("i");
@@ -150,11 +140,6 @@
 
 	$tab_final = array();
 	$str = "";
-
-	/*
-	 * Execute request
-	 */
-	$DBRESULT =& $obj->DBNdo->query($rq1);
 	while ($ndo =& $DBRESULT->fetchRow()) {
 		if ($str != "") {
 			$str .= ",";

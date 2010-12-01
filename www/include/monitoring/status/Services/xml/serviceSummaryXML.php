@@ -124,6 +124,9 @@
 	if ($search != "") {
 		$rq1 .= " AND no.name1 LIKE '%" . $search . "%' ";
 	}
+	if ($instance != -1) {
+		$rq1 .= " AND no.instance_id = ".$instance."";
+	}
 	if ($hostgroups) {
 	    $rq1 .= " AND nhs.host_object_id = hgm.host_object_id ";
 	    $rq1 .= " AND hgm.hostgroup_id IN (SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."') ";
