@@ -162,10 +162,12 @@
 		}
 	}
 
-	if ($order == "DESC")
+	if ($order == "DESC") {
 		ksort($stats);
-	else
+	} else {
 		krsort($stats);
+	}
+
 	/*
 	 * Get Pagination Rows
 	 */
