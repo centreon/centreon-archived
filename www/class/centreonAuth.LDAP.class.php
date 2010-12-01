@@ -83,7 +83,8 @@ class CentreonAuthLDAP {
 	 * Is loging enable ?
 	 */
 	private function getLogFlag() {
-		$DBRESULT =& $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap'");
+		global $pearDB;
+		$DBRESULT =& $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap'");
 		$data = $DBRESULT->fetchRow();
 		if (isset($data["value"])) {
 			return $data["value"];
