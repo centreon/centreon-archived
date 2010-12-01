@@ -119,7 +119,7 @@
 					$_POST["comment"] = 0;
 				AddHostComment($_POST["host_id"], $_POST["comment"], $_POST["persistant"]);
 				$valid = true;
-		    	require_once($path."viewComment.php");
+		    	require_once($path."viewHostComment.php");
 		    } else {
 				/*
 				 * Smarty template Init

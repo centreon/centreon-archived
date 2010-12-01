@@ -42,6 +42,22 @@
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once "./include/common/autoNumLimit.php";
 
+	if (isset($_POST["hostgroup"]))
+	  $hostgroup = $_POST["hostgroup"];
+	else if (isset($_GET["hostgroup"]))
+	   $hostgroup = $_GET["hostgroup"];
+	else if (isset($oreon->hostgroup) && $oreon->hostgroup)
+	   $hostgroup = $oreon->hostgroup;
+	else
+	   $hostgroup = 0;
+
+	if (isset($_POST["search_host"]))
+		$host_name = $_POST["search_host"];
+	else if (isset($_GET["search_host"]))
+		$host_name = $_GET["search_host"];
+	else 
+		$host_name = NULL;
+		
 	/*
 	 * Init GMT class
 	 */
@@ -59,13 +75,6 @@
 
 	$pearDBndo = new CentreonDB("ndo");
 
-	/*
-	 * Pear library
-	 */
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
 	$tab_comments_host = array();
@@ -75,24 +84,36 @@
 
 	$acl_host_list = $oreon->user->access->getHostsString("NAME", $pearDBndo);
 
-	/*
+	$search_request = "";
+	if (isset($host_name)) {
+		$search_request = " AND obj.name1 LIKE '%$host_name%'";
+	}
+
+	$search_HG_request = "";
+	if (isset($hostgroup)) {
+		$search_HG_request = " AND obj.name1 LIKE '%$host_name%'";
+	}
+	
+	/** *******************************************
 	 * Hosts Comments
 	 */
 	if ($is_admin) {
 		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm " : "") .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NULL " .
-				"AND obj.object_id = cmt.object_id " .
-				"AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+				"AND obj.object_id = cmt.object_id $search_request " .
+				($hostgroup ? " AND hgm.hostgroup_id = $hostgroup AND hgm.host_object_id = cmt.object_id " : "")  .
+				"AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
 	} else {
 		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm " : "") .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NULL " .
-				"AND obj.object_id = cmt.object_id " .
+				($hostgroup ? " AND hgm.hostgroup_id = $hostgroup AND hgm.host_object_id = cmt.object_id " : "")  .
+				"AND obj.object_id = cmt.object_id $search_request " .
 				$oreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
-				" AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+				" AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
 	}
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
 
@@ -131,6 +152,23 @@
 	$tpl->assign("svc_comment_link", "./main.php?p=".$p."&o=vs");
 	$tpl->assign("view_svc_comments", _("View comments of services"));
 	$tpl->assign("delete", _("Delete"));
+
+
+	$tpl->assign("Host", _("Host Name"));
+	$tpl->assign("user", _("Utilisateurs"));
+	$tpl->assign('Hostgroup', _("Hostgroup"));
+	$tpl->assign('Search', _("Search"));
+	$tpl->assign('search_host', $host_name);
+	
+	$DBRESULT =& $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
+	$options = "<option value='0'></options>";
+	while ($data =& $DBRESULT->fetchRow()) {
+        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["alias"]."</option>";
+    }
+    $DBRESULT->free();
+
+	$tpl->assign('hostgroup', $options);
+	unset($options);
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 

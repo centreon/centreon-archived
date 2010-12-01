@@ -35,8 +35,9 @@
  * SVN : $Id$
  * 
  */
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include("./include/common/autoNumLimit.php");
@@ -48,6 +49,20 @@
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
+	if (isset($_POST["search_host"]))
+		$host_name = $_POST["search_host"];
+	else if (isset($_GET["search_host"]))
+		$host_name = $_GET["search_host"];
+	else 
+		$host_name = NULL;
+	
+	if (isset($_POST["search_service"]))
+		$service_description = $_POST["search_service"];
+	else if (isset($_GET["search_service"]))
+		$service_description = $_GET["search_service"];
+	else 
+		$service_description = NULL;
+	
 	/*
 	 * Smarty template Init
 	 */
@@ -71,44 +86,19 @@
 	$tab_comments_svc = array();
 
 	$en = array("0" => _("No"), "1" => _("Yes"));
-	
-	/* Pagination Services */
-	if ($is_admin) {					
-		$rq3 =	"SELECT COUNT(*) " .
-				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-				"WHERE obj.name1 IS NOT NULL " .
-				"AND obj.name2 IS NOT NULL " .			
-				"AND obj.object_id = cmt.object_id " .
-				"AND cmt.expires = 0";
-	} else {				
-		$rq3 =	"SELECT COUNT(*) " .
-				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj, centreon_acl " .
-				"WHERE obj.name1 IS NOT NULL " .
-				"AND obj.name2 IS NOT NULL " .			
-				"AND obj.object_id = cmt.object_id " .
-				"AND obj.name1 = centreon_acl.host_name " .
-				"AND obj.name2 = centreon_acl.service_description " .
-				"AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
-				"AND cmt.expires = 0";
-	}
-	$DBRES =& $pearDBndo->query($rq3);
-	$rows =& $DBRES->fetchRow();
-	$rows = $rows['COUNT(*)'];	
-	include("./include/common/checkPagination.php");
-	
 		
 	/*
 	 * Service Comments
 	 */
 	if ($is_admin) {
-		$rq2 =	"SELECT DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NOT NULL " .			
 				"AND obj.object_id = cmt.object_id " .
 				"AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		$rq2 =	"SELECT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj, centreon_acl " .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NOT NULL " .			
@@ -126,6 +116,9 @@
 	}
 	unset($data);
 
+	$rows = $pearDBndo->numberRows();
+	include("./include/common/checkPagination.php");
+	
 	/*
 	 * Element we need when we reload the page
 	 */
@@ -133,15 +126,13 @@
 	$tab = array ("p" => $p);
 	$form->setDefaults($tab);
 		
-	if ($oreon->user->access->checkAction("service_comment"))
+	if ($oreon->user->access->checkAction("service_comment")) {
 		$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-		
+	}		
 	
 	$tpl->assign("p", $p);
 	$tpl->assign("tab_comments_svc", $tab_comments_svc);
-	
 	$tpl->assign("nb_comments_svc", count($tab_comments_svc));
-	
 	$tpl->assign("no_svc_comments", _("No Comment for services."));
 
 	$tpl->assign("cmt_host_name", _("Host Name"));
