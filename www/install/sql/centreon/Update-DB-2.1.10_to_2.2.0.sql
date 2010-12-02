@@ -232,6 +232,7 @@ CREATE TABLE IF NOT EXISTS `cfg_nagios_broker_module` (
 PRIMARY KEY (`bk_mod_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('1', '@NAGIOS_BIN@/ndomod.o config_file=@NAGIOS_ETC@/ndomod.cfg');
 
 CREATE TABLE IF NOT EXISTS `hostcategories` (
   `hc_id` int(11) NOT NULL auto_increment,
