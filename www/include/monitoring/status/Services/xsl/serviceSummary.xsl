@@ -3,7 +3,7 @@
 <xsl:template match="/">
 <table class="ListTable">
 	<tr class='ListHeader'>
-		<td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name" width="200"></td>
+		<td colspan="2" class="ListColHeaderLeft" style="white-space:nowrap;" id="host_name" width="200"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state" width="70">Status</td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
 	</tr>
