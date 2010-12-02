@@ -733,21 +733,21 @@
 				$DBRESULT2 =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
 				$meta =& $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
-				$buffer->writeElement("host_name", $log["host_name"]);
-				$buffer->writeElement("service_description", $meta["meta_name"]);
+				$buffer->writeElement("host_name", $log["host_name"], false);
+				$buffer->writeElement("service_description", $meta["meta_name"], false);
 				unset($meta);
 			} else {
-				$buffer->writeElement("host_name", $log["host_name"]);
+				$buffer->writeElement("host_name", $log["host_name"], false);
 				if ($export)
-					$buffer->writeElement("address", $HostCache[$log["host_name"]]);
-				$buffer->writeElement("service_description", $log["service_description"]);
+					$buffer->writeElement("address", $HostCache[$log["host_name"]], false);
+				$buffer->writeElement("service_description", $log["service_description"], false);
 			}
 			$buffer->writeElement("class", $tab_class[$cpts % 2]);
 			$buffer->writeElement("date", $centreonGMT->getDate(_("Y/m/d"), $log["ctime"]));
 			$buffer->writeElement("time", $centreonGMT->getDate(_("H:i:s"), $log["ctime"]));
-			$buffer->writeElement("output", $log["output"]);
-			$buffer->writeElement("contact", $log["notification_contact"]);
-			$buffer->writeElement("contact_cmd", $log["notification_cmd"]);
+			$buffer->writeElement("output", $log["output"], false);
+			$buffer->writeElement("contact", $log["notification_contact"], false);
+			$buffer->writeElement("contact_cmd", $log["notification_cmd"], false);
 			$buffer->endElement();
 			$cpts++;
 		}
