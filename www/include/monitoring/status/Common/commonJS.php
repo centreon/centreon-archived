@@ -165,7 +165,7 @@ function construct_selecteList_ndo_instance(id){
 			xhr.onreadystatechange = function() { monitoring_refresh(); };
 		};
 		var k = document.createElement('option');
-		k.value= 0;
+		k.value= -1;
 		var l = document.createTextNode("");
 		k.appendChild(l);
 		_select.appendChild(k);

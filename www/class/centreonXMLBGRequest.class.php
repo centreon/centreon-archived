@@ -290,8 +290,8 @@ class CentreonXMLBGRequest
 
 	public function getDefaultFilters()
 	{
-		$this->defaultPoller = NULL;
-		$this->defaultHostgroups = NULL;
+		$this->defaultPoller = -1;
+		$this->defaultHostgroups = -1;
 		if (isset($_SESSION['monitoring_default_hostgroups'])) {
 			$this->defaultHostgroups = $_SESSION['monitoring_default_hostgroups'];
 		}

@@ -40,6 +40,6 @@
 	if (isset($_SESSION['monitoring_default_poller'])) {
 		$default_poller = $_SESSION['monitoring_default_poller'];
 	} else {
-		$default_poller = "0";
+		$default_poller = -1;
 	}
 ?>
