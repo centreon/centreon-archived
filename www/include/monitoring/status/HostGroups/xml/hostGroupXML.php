@@ -46,6 +46,7 @@
 	 * Create XML Request Objects
 	 */
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
+	CentreonSession::start();
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
@@ -84,7 +85,7 @@
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-
+	
 	/*
 	 * Backup poller selection
 	 */
@@ -113,7 +114,7 @@
 				"GROUP BY nhg.alias, nhs.current_state";
 	} else {
 		$rq1 = 	"SELECT nhg.alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
-				"FROM ".$obj->ndoPrefix."hostgroup_members nhgm, centreon_acl " .
+				"FROM centreon_acl, ".$obj->ndoPrefix."hostgroup_members nhgm " .
 						"INNER JOIN ".$obj->ndoPrefix."objects noo ON (noo.object_id = nhgm.host_object_id) " .
 						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
 						"INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
@@ -142,6 +143,7 @@
 			"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2 $searchStr " .
 			"GROUP BY nhg.alias, nss.current_state";
 	} else {
+		$hostStr = $obj->access->getHostsString("NAME", $obj->DBNdo); 
 		$rq2 = 	"SELECT nhg.alias, nss.current_state, count( nss.service_object_id ) AS nb " .
 				"FROM ".$obj->ndoPrefix."hostgroup_members nhgm " .
 					"INNER JOIN ".$obj->ndoPrefix."objects noo ON ( noo.object_id = nhgm.host_object_id ) " .

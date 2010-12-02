@@ -47,6 +47,7 @@
 	 * Create XML Request Objects
 	 */
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
+	CentreonSession::start();
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
@@ -74,7 +75,7 @@
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "alias");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-
+	$grouplistStr = $obj->access->getAccessGroupsString();
 	/** **************************************
 	 * Get Icone list
 	 *
