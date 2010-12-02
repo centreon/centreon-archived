@@ -41,9 +41,9 @@ sub removeBackSpace($){
 }
 
 sub putSpecialCharInMetric($){
-    $_[0] =~ s/#S#/\//g;
-    $_[0] =~ s/#BS#/\\/g;
-    $_[0] =~ s/#P#/\%/g;
+#    $_[0] =~ s/#S#/\//g;
+#    $_[0] =~ s/#BS#/\\/g;
+#    $_[0] =~ s/#P#/\%/g;
     $_[0] =~ s/\-/\./g;
     $_[0] =~ s/\-/\,/g;
     $_[0] =~ s/\-/\:/g;
@@ -52,9 +52,9 @@ sub putSpecialCharInMetric($){
 }
 
 sub removeSpecialCharInMetric($){
-    $_[0] =~ s/\//#S#/g;
-    $_[0] =~ s/\\/#BS#/g;
-    $_[0] =~ s/\%/#P#/g;
+#    $_[0] =~ s/\//#S#/g;
+#    $_[0] =~ s/\\/#BS#/g;
+#    $_[0] =~ s/\%/#P#/g;
     $_[0] =~ s/\./\-/g;
     $_[0] =~ s/\,/\-/g;
     $_[0] =~ s/\:/\-/g;
@@ -233,9 +233,9 @@ sub identify_hidden_metric($$$$$$$$){ # perfdata index status time type counter 
 	}
 	if ($1 && defined($2)) {			
 	    # Check if metric is known...
-	    $data[0] =~ s/\//#S#/g;
-	    $data[0] =~ s/\\/#BS#/g;
-	    $data[0] =~ s/\%/#P#/g;
+	    #$data[0] =~ s/\//#S#/g;
+	    #$data[0] =~ s/\\/#BS#/g;
+	    #$data[0] =~ s/\%/#P#/g;
 	    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
 	    if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
 
