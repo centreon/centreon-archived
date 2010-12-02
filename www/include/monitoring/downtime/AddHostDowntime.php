@@ -122,7 +122,7 @@
 					$_POST["persistant"] = 1;
 				if (!isset($_POST["comment"]))
 					$_POST["comment"] = 0;
-				AddHostDowntime($_POST["host_id"], $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
+				$ecObj->AddHostDowntime($_POST["host_id"], $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
 				require_once("viewHostDowntime.php");
 		    } else {
 				/*

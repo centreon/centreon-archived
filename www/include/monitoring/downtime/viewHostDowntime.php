@@ -36,16 +36,39 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($centreon)) {
 		exit();
+	}
 
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once "./include/common/autoNumLimit.php";
 
+	if (isset($_POST["hostgroup"]))
+	  $hostgroup = $_POST["hostgroup"];
+	else if (isset($_GET["hostgroup"]))
+	   $hostgroup = $_GET["hostgroup"];
+	else if (isset($centreon->hostgroup) && $centreon->hostgroup)
+	   $hostgroup = $centreon->hostgroup;
+	else
+	   $hostgroup = 0;
+
+	if (isset($_POST["search_host"]))
+		$host_name = $_POST["search_host"];
+	else if (isset($_GET["search_host"]))
+		$host_name = $_GET["search_host"];
+	else
+		$host_name = NULL;
+
+	if (isset($_POST["search_output"]))
+		$search_output = $_POST["search_output"];
+	else if (isset($_GET["search_output"]))
+		$search_output = $_GET["search_output"];
+	else
+		$search_output = NULL;
+
 	/*
 	 * Init GMT class
 	 */
-
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
@@ -69,38 +92,28 @@
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
-	$tab_downtime_host = array();
-
-	$hostStr = $oreon->user->access->getHostsString("NAME", $pearDBndo);
-
-	/* Pagination Hosts */
-	$rq2 =	"SELECT COUNT(*) " .
-			"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
-			"WHERE obj.name1 IS NOT NULL " .
-			"AND obj.name2 IS NULL " .
-			"AND obj.object_id = dtm.object_id " .
-			$oreon->user->access->queryBuilder("AND", "obj.name1", $hostStr) .
-			"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."'";
-	$DBRES =& $pearDBndo->query($rq2);
-	$rows =& $DBRES->fetchRow();
-	$rows = $rows['COUNT(*)'];
-	$DBRES->free();
-
-	include("./include/common/checkPagination.php");
+	$hostStr = $centreon->user->access->getHostsString("NAME", $pearDBndo);
 
 	/************************************
 	 * Hosts Downtimes
 	 */
-	$rq2 =	"SELECT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
+	$rq2 =	"SELECT SQL_CALC_FOUND_ROWS dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), " .
+			"dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, ".
+			"unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, was_started " .
 			"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
+			(isset($hostgroup) && $hostgroup != 0 ? ", ".$ndo_base_prefix."hostgroup_members mb " : "") .
 			"WHERE obj.name1 IS NOT NULL " .
 			"AND obj.name2 IS NULL " .
+			(isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
+			(isset($search_output) && $search_output != "" ? " AND dtm.comment_data LIKE '%$search_output%'" : "") .
+			(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
 			"AND obj.object_id = dtm.object_id " .
-			$oreon->user->access->queryBuilder("AND", "obj.name1", $hostStr) .
+			$centreon->user->access->queryBuilder("AND", "obj.name1", $hostStr) .
 			"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
-			"ORDER BY dtm.actual_start_time DESC " .
+			"ORDER BY dtm.scheduled_start_time DESC " .
 			"LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
+	$tab_downtime_host = array();
 	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_downtime_host[$i] = $data;
 		$tab_downtime_host[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_start_time"])." ";
@@ -109,6 +122,8 @@
 	$DBRESULT_NDO->free();
 	unset($data);
 
+	$rows = $pearDBndo->numberRows();
+	include("./include/common/checkPagination.php");
 
 	$en = array("0" => _("No"), "1" => _("Yes"));
 	foreach ($tab_downtime_host as $key => $value) {
@@ -123,8 +138,9 @@
 	$tab = array ("p" => $p);
 	$form->setDefaults($tab);
 
-	if ($oreon->user->access->checkAction("host_schedule_downtime"))
+	if ($centreon->user->access->checkAction("host_schedule_downtime")) {
 		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+	}
 
 	$tpl->assign("p", $p);
 
@@ -132,7 +148,7 @@
 	$tpl->assign("nb_downtime_host", count($tab_downtime_host));
 
 	$tpl->assign("dtm_host_name", _("Host Name"));
-	$tpl->assign("dtm_start_time", _("start Time"));
+	$tpl->assign("dtm_start_time", _("Start Time"));
 	$tpl->assign("dtm_end_time", _("End Time"));
 	$tpl->assign("dtm_author", _("Author"));
 	$tpl->assign("dtm_comment", _("Comments"));
@@ -148,6 +164,25 @@
 	$tpl->assign("svc_dtm_link", "./main.php?p=".$p."&o=vs");
 	$tpl->assign("limit", $limit);
 	$tpl->assign("delete", _("Delete"));
+
+	$tpl->assign("Host", _("Host Name"));
+	$tpl->assign("Output", _("Output"));
+	$tpl->assign("user", _("Utilisateurs"));
+	$tpl->assign('Hostgroup', _("Hostgroup"));
+	$tpl->assign('Search', _("Search"));
+	$tpl->assign("search_output", $search_output);
+	$tpl->assign('search_host', $host_name);
+
+	$DBRESULT =& $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
+	$options = "<option value='0'></options>";
+	while ($data =& $DBRESULT->fetchRow()) {
+        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["alias"]."</option>";
+    }
+    $DBRESULT->free();
+
+	$tpl->assign('hostgroup', $options);
+	unset($options);
+
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
