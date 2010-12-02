@@ -120,6 +120,12 @@ if (isset($pearDB)) {
         		   WHERE svc_macro_id = '".$rows['svc_macro_id']."'";
         $pearDB->query($query2);
     }
+
+    /**
+     * Insert default broker conf
+     */
+    $query = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('1', '@NAGIOS_BIN@/ndomod.o config_file=@NAGIOS_ETC@/ndomod.cfg')";
+    $pearDB->query($query);
 }
 
 /**
