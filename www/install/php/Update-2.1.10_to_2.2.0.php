@@ -124,8 +124,13 @@ if (isset($pearDB)) {
     /**
      * Insert default broker conf
      */
-    $query = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('1', '@NAGIOS_BIN@/ndomod.o config_file=@NAGIOS_ETC@/ndomod.cfg')";
-    $pearDB->query($query);
+    $query = "SELECT nagios_id as cfg_nagios_id, broker_module FROM cfg_nagios WHERE nagios_server_id IN (
+    			SELECT id from nagios_server WHERE localhost = '1')";
+    $res = $pearDB->query($query);
+    while ($rows = $res->fetchRow()) {
+        $query2 = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$rows['cfg_nagios_id']."', '".$rows['broker_module']."')";
+        $pearDB->query($query2);
+    }
 }
 
 /**
