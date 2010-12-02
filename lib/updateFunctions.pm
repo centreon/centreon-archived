@@ -84,6 +84,7 @@ sub updateRRDDB($$$$$$$$) {
 	writeLogFile("Data droped....\n");
 	return 0;
     }
+
     $_[3] =~ s/,/./g;
     # call function to check if DB exist and else create it
     if (-e $_[0]."/".$_[1].".rrd") {
@@ -114,6 +115,9 @@ sub updateRRDDB($$$$$$$$) {
 sub updateMysqlDB($$$$) {
     if (length($dataBinInfo)) {
 	$dataBinInfo .= ", ";
+    }
+    if (!defined($_[3])) {
+	$_[3] = "";
     }
     $dataBinInfo .= "('".$_[0]."', '".$_[1]."', '".$_[2]."', '".$_[3]."')";
 }

@@ -44,6 +44,7 @@ sub identify_service($$){
 
     while (!$con_ods->ping){;}
     if ($con_ods->ping) {
+	writeLogFile("HOST: '".$_[0]."' => Service: '".$_[1]."'");
 	my $sth1 = $con_ods->prepare("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
 	if (!$sth1->execute) {
 	    writeLogFile("Error:" . $sth1->errstr . "\n");
