@@ -311,5 +311,7 @@ ALTER TABLE `acl_topology_relations` ADD COLUMN `access_right` TINYINT NOT NULL 
 ALTER TABLE `topology` ADD COLUMN `readonly` ENUM('0', '1') NOT NULL DEFAULT '1';
 UPDATE `topology` SET `readonly` = '0' WHERE `topology_page` IN (60101, 60102, 60103, 60201, 60202, 60203, 60206, 60209, 60207, 60205, 60204, 602080, 60301, 60302, 60304, 60305, 60708, 60707, 60703, 60401, 60402, 60403, 60404, 60405, 60406, 60407, 60408, 60409, 60410, 60411);
 
+UPDATE `cfg_nagios` SET `downtime_file` = NULL, `comment_file` = NULL;
+
 
 UPDATE `informations` SET `value` = '2.2.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.1.10' LIMIT 1;
