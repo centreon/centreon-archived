@@ -124,6 +124,14 @@ if (isset($pearDB)) {
     /**
      * Insert default broker conf
      */
+    $query = "CREATE TABLE IF NOT EXISTS `cfg_nagios_broker_module` (
+  										`bk_mod_id` int(11) NOT NULL AUTO_INCREMENT,
+  										`cfg_nagios_id` int(11) DEFAULT NULL,
+  										`broker_module` varchar(255) DEFAULT NULL,
+										PRIMARY KEY (`bk_mod_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1" ;
+    $pearDB->query($query);
+
     $query = "SELECT nagios_id as cfg_nagios_id, broker_module FROM cfg_nagios WHERE nagios_server_id IN (
     			SELECT id from nagios_server WHERE localhost = '1')";
     $res = $pearDB->query($query);
