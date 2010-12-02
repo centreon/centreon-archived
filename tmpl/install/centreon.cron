@@ -44,4 +44,4 @@ CRONTAB_EXEC_USER=""
 0 1 1-31 * * @NAGIOS_USER@ @PERL_BIN@ @INSTALL_DIR_CENTREON@/cron/archiveDayLog >> @CENTREON_LOG@/archiveDayLog.log 2>&1
 
 # Cron for CentACL
-*/2 * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/centAcl.php >> @CENTREON_LOG@/centAcl.log 2>&1
+* * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/centAcl.php >> @CENTREON_LOG@/centAcl.log 2>&1
