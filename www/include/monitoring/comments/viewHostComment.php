@@ -35,7 +35,7 @@
  * SVN : $Id$
  *
  */
-	if (!isset($oreon)) {
+	if (!isset($centreon)) {
 		exit();
 	}
 
@@ -46,8 +46,8 @@
 	  $hostgroup = $_POST["hostgroup"];
 	else if (isset($_GET["hostgroup"]))
 	   $hostgroup = $_GET["hostgroup"];
-	else if (isset($oreon->hostgroup) && $oreon->hostgroup)
-	   $hostgroup = $oreon->hostgroup;
+	else if (isset($centreon->hostgroup) && $centreon->hostgroup)
+	   $hostgroup = $centreon->hostgroup;
 	else
 	   $hostgroup = 0;
 
@@ -55,9 +55,16 @@
 		$host_name = $_POST["search_host"];
 	else if (isset($_GET["search_host"]))
 		$host_name = $_GET["search_host"];
-	else 
+	else
 		$host_name = NULL;
-		
+
+	if (isset($_POST["search_output"]))
+		$search_output = $_POST["search_output"];
+	else if (isset($_GET["search_output"]))
+		$search_output = $_GET["search_output"];
+	else
+		$search_output = NULL;
+
 	/*
 	 * Init GMT class
 	 */
@@ -82,7 +89,7 @@
 
 	$en = array("0" => _("No"), "1" => _("Yes"));
 
-	$acl_host_list = $oreon->user->access->getHostsString("NAME", $pearDBndo);
+	$acl_host_list = $centreon->user->access->getHostsString("NAME", $pearDBndo);
 
 	$search_request = "";
 	if (isset($host_name)) {
@@ -93,7 +100,7 @@
 	if (isset($hostgroup)) {
 		$search_HG_request = " AND obj.name1 LIKE '%$host_name%'";
 	}
-	
+
 	/** *******************************************
 	 * Hosts Comments
 	 */
@@ -102,17 +109,19 @@
 				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm " : "") .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NULL " .
-				"AND obj.object_id = cmt.object_id $search_request " .
+				(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
 				($hostgroup ? " AND hgm.hostgroup_id = $hostgroup AND hgm.host_object_id = cmt.object_id " : "")  .
+				"AND obj.object_id = cmt.object_id $search_request " .
 				"AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
 	} else {
 		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm " : "") .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NULL " .
+				(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
 				($hostgroup ? " AND hgm.hostgroup_id = $hostgroup AND hgm.host_object_id = cmt.object_id " : "")  .
 				"AND obj.object_id = cmt.object_id $search_request " .
-				$oreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
+				$centreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
 				" AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
 	}
 	$DBRESULT_NDO =& $pearDBndo->query($rq2);
@@ -135,7 +144,7 @@
 	$form->setDefaults($tab);
 
 
-	if ($oreon->user->access->checkAction("host_comment")) {
+	if ($centreon->user->access->checkAction("host_comment")) {
 		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	}
 
@@ -155,11 +164,13 @@
 
 
 	$tpl->assign("Host", _("Host Name"));
+	$tpl->assign("Output", _("Output"));
 	$tpl->assign("user", _("Utilisateurs"));
 	$tpl->assign('Hostgroup', _("Hostgroup"));
 	$tpl->assign('Search', _("Search"));
+	$tpl->assign("search_output", $search_output);
 	$tpl->assign('search_host', $host_name);
-	
+
 	$DBRESULT =& $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
 	$options = "<option value='0'></options>";
 	while ($data =& $DBRESULT->fetchRow()) {
