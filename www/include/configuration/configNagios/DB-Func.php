@@ -114,7 +114,7 @@
 			$row["nagios_activate"] = '0';
 			$DBRESULT->free();
 			$rowBks = array();
-			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios_broker_module WHERE nagios_id='".$key."'");
+			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$key."'");
 			while ($rowBk =& $DBRESULT->fetchRow())
 				$rowBks[] = $rowBk;
 			$DBRESULT->free();
@@ -133,7 +133,7 @@
 					$DBRESULT->free();
 					foreach ($rowBks as $keyBk=>$valBk){
 						if ($valBk["broker_module"]) {
-					        $rqBk = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$valBk["broker_module"]."')";
+					        $rqBk = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$valBk["broker_module"]."')";
 						}
 						$DBRESULT =& $pearDB->query($rqBk);
 					}
@@ -336,7 +336,7 @@
 					$DBRESULT =& $pearDB->query($rq);
 				}
 			} else {
-				$rq = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', NULL)";
+				$rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', NULL)";
 				$DBRESULT =& $pearDB->query($rq);
 			}
 		}
