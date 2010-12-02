@@ -126,6 +126,19 @@
 	}
 
 	/*
+	 * Update PHP
+	 */
+	print "<tr><td><b>PHP Script : Upgrade</b></td>";
+	if (file_exists("./php/Update-".$_SESSION["script"].".php")) {
+		if (include_once("./php/Update-".$_SESSION["script"].".php"))
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		else
+			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+	} else {
+		echo '<td align="right"><b><span class="go">OK</span></b></td></tr>';
+	}
+
+	/*
 	 * Update Centreon
 	 */
 	print "<tr><td><b>Database &#146;".$conf_centreon['db']."&#146; : Upgrade</b></td>";
@@ -155,19 +168,6 @@
         }
 	} else {
 		echo '<td align="right"><b><span class="go">PASS</span></b></td></tr>';
-	}
-
-	/*
-	 * Update PHP
-	 */
-	print "<tr><td><b>PHP Script : Upgrade</b></td>";
-	if (file_exists("./php/Update-".$_SESSION["script"].".php")) {
-		if (include_once("./php/Update-".$_SESSION["script"].".php"))
-			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
-		else
-			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
-	} else {
-		echo '<td align="right"><b><span class="go">OK</span></b></td></tr>';
 	}
 
 	aff_middle();
