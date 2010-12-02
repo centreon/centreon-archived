@@ -1626,7 +1626,7 @@
 			return true;
 
 		if (isset($hgHCache) && isset($hgHCache[$hg_id])) {
-			foreach ($hgHCache[$hg_id] as $host_id) {
+			foreach ($hgHCache[$hg_id] as $host_id => $enable) {
 				if (isset($lca["LcaHost"][$host_id]) || $is_admin) {
 					if ($is_admin) {
 						return true;
