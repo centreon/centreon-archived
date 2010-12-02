@@ -39,6 +39,10 @@
 	if (!isset($oreon)) {
 		exit();
 	}
+	
+	if (!isset($default_poller)) {
+		include_once "./include/monitoring/status/Common/default_poller.php";
+	}
 
 ?>
 // Dynamique
@@ -195,6 +199,9 @@ function construct_HostGroupSelectList(id) {
 	if (!document.getElementById("hostgroups")) {
 		var select_index = new Array();
 		var _select_hostgroups = document.getElementById(id);
+		if (_select_hostgroups == null) {
+			return;
+		}
 		var _select = document.createElement("select");
 		_select.name = "hostgroups";
 		_select.id = "hostgroups";
