@@ -100,14 +100,10 @@ class CentreonUser	{
   		if (!isset($div_name))
   			return 0;
   		
-  		$query = "SELECT cp_value " .
-  				"FROM contact_param " .
-  				"WHERE cp_contact_id = '".$this->user_id."' " .
-  				"AND cp_key LIKE '_Div_".$div_name."' LIMIT 1" ;
-  		$DBRESULT =& $pearDB->query($query);
-  		while ($row  =& $DBRESULT->fetchRow())
-  			return $row['cp_value'];  		
-  		return "1";  		
+  		if (isset($_SESSION['_Div_' . $div_name])) {
+  			return $_SESSION['_Div_' . $div_name]; 
+  		}
+  		return 1;  		
   	}
   
   	function getAllTopology($pearDB){

@@ -37,20 +37,22 @@
  */
   
 	function get_user_param($user_id, $pearDB){
+		$list_param = array('log_filter_host', 'log_filter_svc', 'log_filter_host_down',
+			'log_filter_host_up', 'log_filter_host_unreachable', 'log_filter_svc_ok', 
+			'log_filter_svc_warning', 'log_filter_svc_critical', 'log_filter_svc_unknown',
+			'log_filter_notif', 'log_filter_error', 'log_filter_alert', 'log_filter_oh',
+			'search_H', 'search_S');
 		$tab_row = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");		
-		while( $row =& $DBRESULT->fetchRow())
-			$tab_row[$row["cp_key"]] = $row["cp_value"];
+		foreach ($list_param as $param) {
+			if (isset($_SESSION[$param])) {
+				$tab_row[$param] = $_SESSION[$param]; 
+			}
+		}
 		return $tab_row;
 	}
 
 	function set_user_param($user_id, $pearDB, $key, $value){
-		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param WHERE cp_contact_id like '".$user_id."' AND cp_key like '".$key."'");		
-		if ($DBRESULT->numRows()){
-			$DBRESULT =& $pearDB->query("UPDATE contact_param set cp_value ='".$value."' where cp_contact_id like '".$user_id."' AND cp_key like '".$key."' ");		
-		} else {
-			$DBRESULT =& $pearDB->query("INSERT INTO `contact_param` ( `cp_value`, `cp_contact_id`, `cp_key`) VALUES ('".$value."', '".$user_id."', '".$key."')");		
-		}
+		$_SESSION[$key] = $value;		
 	}
  
  	function getMyHostIDService($svc_id = NULL)	{

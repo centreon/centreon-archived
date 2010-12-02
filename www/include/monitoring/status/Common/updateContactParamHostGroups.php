@@ -42,10 +42,11 @@
 		
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path . "/www/class/centreonDB.class.php";
+	require_once $centreon_path . "/www/class/centreonSession.class.php";
 	
 	$pearDB = new CentreonDB();
 	
-	$rq = "UPDATE contact_param SET cp_value = '" .htmlentities($_GET['hostgroups'], ENT_QUOTES, "UTF-8"). "' WHERE cp_key = 'monitoring_default_hostgroups' AND cp_contact_id = '".htmlentities($_GET['uid'], ENT_QUOTES, "UTF-8")."'";
-	$pearDB->query($rq);	
- 
+	CentreonSession::start();
+
+	$_SESSION['monitoring_default_hostgroups'] = $_GET['hostgroups'];
  ?>

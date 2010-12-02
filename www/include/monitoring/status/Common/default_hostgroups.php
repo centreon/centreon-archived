@@ -36,15 +36,9 @@
  * 
  */
  
- 
-	$DBRESULT = $pearDB->query("SELECT cp_value FROM contact_param WHERE cp_key = 'monitoring_default_hostgroups' AND cp_contact_id = '" .$oreon->user->user_id. "'");
-	$row_cp = $DBRESULT->fetchRow();
-	if ($DBRESULT->numRows()) {
-		$default_hg = $row_cp['cp_value'];
-	}
-	else {
-		$pearDB->query("INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES ('monitoring_default_hostgroups', '0', '".$oreon->user->user_id."')");
+	if (isset($_SESSION['monitoring_default_hostgroups'])) {
+		$default_hg = $_SESSION['monitoring_default_hostgroups'];
+	} else {
 		$default_hg = "0";
 	} 
-
 ?>

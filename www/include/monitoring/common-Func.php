@@ -56,20 +56,17 @@
 	}
 
 	function get_user_param($user_id, $pearDB){
+		$list_param = array('ack_sticky', 'ack_notify', 'ack_persistent', 'ack_services', 'force_active', 'force_check');
 		$tab_row = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");		
-		while( $row =& $DBRESULT->fetchRow())
-			$tab_row[$row["cp_key"]] = $row["cp_value"];
+		foreach ($list_param as $param) {
+			if (isset($_SESSION[$param])) {
+				$tab_row[$param] = $_SESSION[$param]; 
+			}
+		}
 		return $tab_row;
 	}
 
 	function set_user_param($user_id, $pearDB, $key, $value){
-		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param WHERE cp_contact_id like '".$user_id."' AND cp_key like '".$key."'");		
-		if ($DBRESULT->numRows()){
-			$DBRESULT =& $pearDB->query("UPDATE contact_param set cp_value ='".$value."' where cp_contact_id like '".$user_id."' AND cp_key like '".$key."' ");		
-		} else {
-			$DBRESULT =& $pearDB->query("INSERT INTO `contact_param` ( `cp_value`, `cp_contact_id`, `cp_key`) VALUES ('".$value."', '".$user_id."', '".$key."')");		
-		}
+		$_SESSION[$key] = $value;		
 	}
-
 ?>

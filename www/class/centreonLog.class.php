@@ -37,6 +37,8 @@
  */
  
 class CentreonUserLog {
+	
+	private static $instance;
 
 	private $errorType;
 	private $uid;
@@ -102,6 +104,20 @@ class CentreonUserLog {
 	
 	public function setUID($uid)  {
 		$this->uid = $uid;
+	}
+
+	/**
+	 * Singleton
+	 * 
+	 * @param int $uid The user id 
+	 * @return CentreonUserLog
+	 */
+	public static function singleton($uid = 0)
+	{
+		if (is_null(self::$instance)) {
+			self::$instance = new CentreonUserLog($uid, CentreonDB::factory('centreon'));
+		}
+		return self::$intance;
 	}
 	
 }

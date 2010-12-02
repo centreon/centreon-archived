@@ -84,16 +84,16 @@
 		$DBRESULT->free();
 		unset($elem);
 
-        if (isset($hostgroups) && count($hostgroups)) {
-            foreach ($hostgroups as $hg_id2) {
-                $ref[$hg_id2] = array();
-                $tmp = $this->getHostGroupHosts($hg_id2, "", 1);
-                foreach ($tmp as $id) {
-                    print "     host: $id<br>";
-                }
+		if (isset($hostgroups) && count($hostgroups)) {
+			foreach ($hostgroups as $hg_id2) {
+				$ref[$hg_id2] = array();
+				$tmp = $this->getHostGroupHosts($hg_id2, "", 1);
+				foreach ($tmp as $id) {
+					print "     host: $id<br>";
+				}
 				unset($tmp);
-            }
-        }
+			}
+		}
 		return $hosts;
 	}
 

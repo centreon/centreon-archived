@@ -40,6 +40,9 @@ require_once ("DB.php");
 
 class CentreonDB
 {
+	
+	private static $instance = array();
+	
 	protected $db_type = "mysql";
 	protected $db_port = "3306";
 	protected $retry;
@@ -324,6 +327,24 @@ class CentreonDB
 		}
 	}
 
+	/**
+	 * Factory for singleton
+	 * 
+	 * @param string $name The name of centreon datasource
+	 * @throws Exception
+	 * @return CentreonDB
+	 */
+	public static function factory($name = "centreon")
+	{
+		if (!in_array($name, array('centreon', 'centstorage', 'ndo'))) {
+			throw new Exception("The datasource isn't defined in configuration file.");
+		}
+		if (!isset(self::$instance[$name])) {
+			self::$instance[$name] = new CentreonDB($name);
+		}
+		return self::$instance[$name];
+	}
+	
 	/**
 	 * return number of rows
 	 *

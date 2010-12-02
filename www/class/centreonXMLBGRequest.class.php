@@ -292,31 +292,22 @@ class CentreonXMLBGRequest
 	{
 		$this->defaultPoller = NULL;
 		$this->defaultHostgroups = NULL;
-		$DBRESULT = $this->DB->query("SELECT cp_value, cp_key FROM contact_param WHERE cp_key IN ('monitoring_default_hostgroups', 'monitoring_default_poller') AND cp_contact_id = '".$this->user_id."'");
-		if ($DBRESULT->numRows()) {
-			while ($tmpRow =& $DBRESULT->fetchRow()) {
-				if ($tmpRow['cp_key'] == "monitoring_default_hostgroups") {
-					$this->defaultHostgroups = $tmpRow['cp_value'];
-				}
-				if ($tmpRow['cp_key'] == "monitoring_default_poller") {
-					$this->defaultPoller = $tmpRow['cp_value'];
-				}
-			}
-			$DBRESULT->free();
-			unset($tmpRow);
+		if (isset($_SESSION['monitoring_default_hostgroups'])) {
+			$this->defaultHostgroups = $_SESSION['monitoring_default_hostgroups'];
+		}
+		if (isset($_SESSION['monitoring_default_poller'])) {
+			$this->defaultPoller = $_SESSION['monitoring_default_poller'];
 		}
 	}
 
 	public function setInstanceHistory($instance)
 	{
-		$this->DB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'MONITORING_POLLER_ID' AND `cp_contact_id` = '$this->user_id'");
-		$this->DB->query("INSERT INTO `contact_param` SET `cp_key` = 'MONITORING_POLLER_ID', `cp_contact_id` = '" . $this->user_id . "', `cp_value` = '$instance'");
+		$_SESSION['monitoring_default_poller'] = $instance;
 	}
 
 	public function setHostGroupsHistory($hg)
 	{
-		$this->DB->query("DELETE FROM `contact_param` WHERE `cp_key` = 'monitoring_default_hostgroups' AND `cp_contact_id` = '$this->user_id'");
-		$this->DB->query("INSERT INTO `contact_param` SET `cp_key` = 'monitoring_default_hostgroups', `cp_contact_id` = '" . $this->user_id . "', `cp_value` = '$hg'");
+		$_SESSION['monitoring_default_hostgroups'] = $hg;
 	}
 
 	public function checkArgument($name, $tab, $defaultValue)

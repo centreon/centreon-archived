@@ -61,17 +61,10 @@
 		$my_div = htmlentities($_GET['div'], ENT_QUOTES, "UTF-8");
 		$my_uid = htmlentities($_GET['uid'], ENT_QUOTES, "UTF-8");
 		
-		$query = "SELECT cp_value FROM contact_param WHERE cp_contact_id = '".$my_uid."' AND cp_key = '_Div_".$my_div."' LIMIT 1";
-		$DBRESULT =& $pearDB->query($query);
-		if ($DBRESULT->numRows()) {		
-			$row =& $DBRESULT->fetchRow();
-			if ($row['cp_value'] == "1")
-				$update_val = "0"; 
-			else
-				$update_val = "1";
-			$query2 = "UPDATE contact_param set cp_value = '".$update_val."' WHERE cp_contact_id = '".$my_uid."' AND cp_key = '_Div_".$my_div."'";		
-		} else
-			$query2 = "INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES ('_Div_".$my_div."', '0', '".$my_uid."')";
-		$pearDB->query($query2);		
+		if (!isset($_SESSION['_Div_' . $my_div]) || $_SESSION['_Div_' . $my_div] == 1) {
+			$_SESSION['_Div_' . $my_div] = 0; 
+		} else {
+			$_SESSION['_Div_' . $my_div] = 1;
+		}
 	}
 ?>

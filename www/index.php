@@ -121,15 +121,10 @@
 	if (isset($_SESSION["centreon"])) {	
 		$centreon = & $_SESSION["centreon"];
 		
+		header('Location: main.php');
 		/*
 		 * Init log class
 		 */
-		$CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
-		$CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
-
-		$pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
-		CentreonSession::stop();
-		CentreonSession::start();
 	}
 	
 	if (isset($_POST["submit"]) 
