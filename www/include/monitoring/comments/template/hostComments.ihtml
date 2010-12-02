@@ -1,6 +1,7 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>	
-<form name='form' method='POST'>
+<form name='form' method='GST'>
 <hidden name="p" value='{$p}'>
+<hidden name="o" value='{$o}'>
 <table class="ajaxOption">
 	<tr>
 		<td>{$Host}: <input type='text' name='search_host' value="{$search_host}" /></td>

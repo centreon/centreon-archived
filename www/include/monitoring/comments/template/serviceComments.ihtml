@@ -1,9 +1,12 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>		
-<form name="form" method='GET'>
+<form name="form" method='POST'>
+<hidden name="p" value='{$p}'>
+<hidden name="o" value='{$o}'>
 <table class="ajaxOption">
 	<tr>
-		<td>{$Host} : <input type='text' name='search_host' value="{$search_host}" /></td>
-		<td>&nbsp;&nbsp;{$Hostgroup} : <select name='hostgroup'>{$hostgroup}</select></td>
+		<td>{$Host}: <input type='text' name='search_host' value="{$search_host}" /></td>
+		<td>&nbsp;&nbsp;{$Hostgroup}: <select name='hostgroup'>{$hostgroup}</select></td>
+		<td>&nbsp;&nbsp;{$Output}: <input type='text' name='search_output' value="{$search_output}" /></td>
 	    <td><input type='submit' name='SearchB' value='{$Search}' /></td>
 	</tr>
 </table>
@@ -18,7 +21,7 @@
 </table>
 <table class="ListTable">
 	<tr class='ListHeader'>
-	<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$cmt_service_comment}</td>		
+	<td>&nbsp;<img src='./img/icones/16x16/message.gif'>&nbsp;{$cmt_service_comment}</td>		
 	<td align='right'>
 		{if $msgs}<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
 	</td>		
@@ -29,10 +32,10 @@
 <table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-		<td class="ListColHeaderCenter">{$cmt_host_name}</td>
-		<td class="ListColHeaderCenter">{$cmt_service_descr}</td>
-		<td class="ListColHeaderCenter" width="120">{$cmt_entry_time}</td>
-		<td class="ListColHeaderCenter">{$cmt_author}</td>
+		<td class="ListColHeaderCenter" width="150">{$cmt_host_name}</td>
+		<td class="ListColHeaderCenter" width="120">{$cmt_service_descr}</td>
+		<td class="ListColHeaderCenter" width="110">{$cmt_entry_time}</td>
+		<td class="ListColHeaderCenter" width="120">{$cmt_author}</td>
 		<td class="ListColHeaderCenter">{$cmt_comment}</td>
 		<td class="ListColHeaderCenter" width="60">{$cmt_persistent}</td>
 	</tr>
