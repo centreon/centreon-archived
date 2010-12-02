@@ -489,11 +489,11 @@
 	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
 	    $xml->startElement('unhandledHosts');
-	    $xml->writeElement('hostname', $val);
+	    $xml->writeElement('hostname', $val, false);
 	    $xml->writeElement('ip', $tab_hostprobip[$key]);
 	    $xml->writeElement('duration', $tab_hostprobduration[$key]);
 	    $xml->writeElement('last', $tab_hostproblast[$key]);
-	    $xml->writeElement('output', $tab_hostproboutput[$key]);
+	    $xml->writeElement('output', $tab_hostproboutput[$key], false);
 	    $xml->writeElement('icon', (isset($tab_hosticone[$key]) ? $tab_hosticone[$key] : ""));
 	    $xml->writeElement('hid', (isset($tab_hostobjectid[$key]) ? $tab_hostobjectid[$key] : ""));
 	    $xml->writeElement('domId', $tab_hostobjectid[$key] + '_' + $domId);
