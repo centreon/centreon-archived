@@ -36,58 +36,30 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
-	global $search;
-
-	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
-	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 	$sid = session_id();
 	$time = time();
 
-	if ($num < 0)
-		$num = 0;
+	$obis = $o;
+	if(isset($_GET["problem"])) {
+		$obis .= '_pb';
+	}
+	if(isset($_GET["acknowledge"])) {
+		$obis .= '_ack_' . $_GET["acknowledge"];
+	}
 
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
-	var _debug = 0;
+var _debug = 0;
 
-	var _search = '<?php global $url ; echo ($search ? $search : (isset($centreon->historySearchService[$url]) ? $centreon->historySearchService[$url] : ""));?>';
-	var _host_search = '<?php global $url ; echo (isset($search_host) && $search_host != "" ? $search_host : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
-	var _output_search = '<?php global $url ; echo (isset($search_output) && $search_output != "" ? $search_output : (isset($centreon->historySearchOutput[$url]) ? $centreon->historySearchOutput[$url] : "")); ?>';
-	var _sid='<?php echo $sid ?>';
-	var _num='<?php echo $num ?>';
-	var _limit='<?php echo $limit ?>';
-	var _sort_type='<?php echo $sort_type ?>';
-	var _order='<?php echo $order ?>';
-	var _date_time_format_status='<?php echo _("d/m/Y H:i:s") ?>';
-	var _o='<?php echo $o ?>';
-	var _p='<?php echo $p ?>';
-
-	var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
-	var _timeoutID = 0;
-	var _on = 1;
-	var _time_reload = <?php echo $tM?>;
-	var _time_live = <?php echo $tFM?>;
-	var _nb = 0;
-	var _counter = 0;
-	var _oldInputFieldValue = '';
-	var _oldInputHostFieldValue = '';
-	var _oldInputOutputFieldValue = '';
-	var _currentInputFieldValue=""; // valeur actuelle du champ texte
-	var _resultCache=new Object();
-	var _first = 1;
-	var _lock = 0;
-	var _instance = 'ALL';
-	var _default_hg = '<?php echo $default_hg;?>';
-	var _default_instance = '<?php echo $default_poller?>';
-	var _nc = 0;
-	var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
-	var _popup_no_comment_msg = '<?php echo _("Please enter a comment"); ?>';
+var _addrXML = "./include/monitoring/status/Services/xml/serviceXML.php";
+var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
@@ -119,20 +91,7 @@
 		_linkBar.appendChild(_divBar);
 	}
 
-	var tempX = 0;
-	var tempY = 0;
-
-	function position(e){
-		tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
-		tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
-	}
-
-	if (navigator.appName.substring(0, 3) == "Net") {
-		document.captureEvents(Event.MOUSEMOVE);
-	}
-	document.onmousemove = position;
-
-	function set_header_title(){
+	function set_header_title() {
 
 		var _img_asc  = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "<?php echo _("Sort results (ascendant)"); ?>");
 		var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "<?php echo _("Sort results (descendant)"); ?>");
@@ -212,36 +171,6 @@
 		}
 	}
 
-	function monitoring_refresh()	{
-		_tmp_on = _on;
-		_time_live = _time_reload;
-		_on = 1;
-		window.clearTimeout(_timeoutID);
-
-		initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o; ?>");
-		_on = _tmp_on;
-
-		viewDebugInfo('refresh');
-	}
-
-	function monitoring_play()	{
-		document.getElementById('JS_monitoring_play').style.display = 'none';
-		document.getElementById('JS_monitoring_pause').style.display = 'block';
-		document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
-		document.getElementById('JS_monitoring_play_gray').style.display = 'block';
-		_on = 1;
-		initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o; ?>");
-	}
-
-	function monitoring_pause()	{
-		document.getElementById('JS_monitoring_play').style.display = 'block';
-		document.getElementById('JS_monitoring_pause_gray').style.display = 'block';
-		document.getElementById('JS_monitoring_play_gray').style.display = 'none';
-		document.getElementById('JS_monitoring_pause').style.display='none';
-		_on = 0;
-		window.clearTimeout(_timeoutID);
-	}
-
 	function initM(_time_reload,_sid,_o){
 
 		// INIT Select objects
@@ -304,9 +233,8 @@
 			_counter += 1;
 		}
 
-		var _addrXML = "./include/monitoring/status/Services/xml/serviceXML.php?"+'&sid='+_sid+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc;
 		proc.setCallback(resetSelectedCheckboxes);
-		proc.setXml(_addrXML);
+		proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc);
 		proc.setXslt(_addrXSL);
 		proc.transform("forAjax");
 
@@ -316,136 +244,6 @@
 		_on = 1;
 
 		set_header_title();
-	}
-
-	function displayPOPUP(id) {
-		if (window.ActiveXObject) {
-			viewDebugInfo('Internet Explorer');
-		} else {
-			viewDebugInfo('Recup span_'+id);
-			var span = document.getElementById('span_'+id);
-			var proc_popup = new Transformation();
-			var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
-			var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
-			proc_popup.setXml(_addrXMLSpan);
-			proc_popup.setXslt(_addrXSLSpan);
-			proc_popup.transform('span_'+id);
-
-			//calcul auto de la largeur de l'ecran client
-			var l = screen.availWidth;
-
-			//calcul auto de la hauteur de l'ecran client
-			var h = screen.availHeight;
-
-			if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h) {
-            	span.style.top = '-380px';
-            }
-            span.style.left = '150px';
-
-			viewDebugInfo('Display span_'+id);
-		}
-	}
-
-	function displayPOPUP_svc(id){
-		if (window.ActiveXObject) {
-			viewDebugInfo('Internet Explorer');
-		} else {
-			viewDebugInfo('Recup span_'+id);
-			var span = document.getElementById('span_'+id);
-
-			// calcul auto de la largeur de l'ecran client
-			var l = screen.availWidth;
-
-			//calcul auto de la hauteur de l'ecran client
-			var h = screen.availHeight;
-
-			if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h){
-            	span.style.top = '-380px';
-            }
-            span.style.left = '150px';
-
-			var proc_popup = new Transformation();
-			var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
-			var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForService.xsl";
-			proc_popup.setXml(_addrXMLSpan);
-			proc_popup.setXslt(_addrXSLSpan);
-			proc_popup.transform('span_'+id);
-
-			viewDebugInfo('Display span_'+id);
-		}
-	}
-
-	function hiddenPOPUP(id){
-		if (window.ActiveXObject) {
-			//viewDebugInfo('Internet Explorer');
-		} else {
-			var span = document.getElementById('span_'+id);
-			span.innerHTML = '';
-			//viewDebugInfo('Hidde span_'+id);
-		}
-	}
-
-	function displayIMG(index, s_id, id)	{
-		// Pour les navigateurs recents
-	    if ( document.getElementById && document.getElementById( 'div_img' ) ){
-	        Pdiv = document.getElementById( 'div_img' );
-	        PcH = true;
-	    } else if ( document.all && document.all[ 'div_img' ] ){
-		    // Pour les veilles versions
-	        Pdiv = document.all[ 'div_img' ];
-	        PcH = true;
-	    } else if ( document.layers && document.layers[ 'div_img' ] ){
-	    	// Pour les tres veilles versions
-	        Pdiv = document.layers[ 'div_img' ];
-	        PcH = true;
-	    } else {
-	        PcH = false;
-	    }
-	    if (PcH){
-			_img = mk_img('include/views/graphs/generateGraphs/generateImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index+'&time=<?php print time(); ?>');
-			Pdiv.appendChild(_img);
-			var l = screen.availWidth; // calcul auto de la largeur de l'ecran client
-			var h = screen.availHeight; // calcul auto de la hauteur de l'ecran client
-			var posy = tempY + 10;
-			if (h - tempY < 420){
-				posy = tempY - 310;
-			}
-			Pdiv.style.display = "block";
-			Pdiv.style.left = tempX +'px';
-			Pdiv.style.top = posy +'px';
-	    }
-	}
-
-	function hiddenIMG(id){
-		// Pour les navigateurs recents
-	    if ( document.getElementById && document.getElementById( 'div_img' ) ){
-	        Pdiv = document.getElementById( 'div_img' );
-	        PcH = true;
-	    } else if ( document.all && document.all[ 'div_img' ] ){
-		    // Pour les veilles versions
-	        Pdiv = document.all[ 'div_img' ];
-	        PcH = true;
-	    } else if ( document.layers && document.layers[ 'div_img' ] ){
-		    // Pour les tres veilles versions
-	        Pdiv = document.layers[ 'div_img' ];
-	        PcH = true;
-	    } else{
-	        PcH = false;
-	    }
-	    if (PcH) {
-			Pdiv.style.display = "none";
-			Pdiv.innerHTML = '';
-		}
-	}
-
-	function putInSelectedElem(id) {
-		_selectedElem[encodeURIComponent(id)] = encodeURIComponent(id);
-	}
-
-	function removeFromSelectedElem(id) {
-		if (typeof(_selectedElem[encodeURIComponent(id)]) != 'undefined') {
-			_selectedElem[encodeURIComponent(id)] = undefined;
-		}
 	}
 
 	function cmdCallback(cmd) {
