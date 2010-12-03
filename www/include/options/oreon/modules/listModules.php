@@ -144,20 +144,20 @@
 				/*
 				 * Valid package to install
 				 */
-				if (is_file("./".$filename."/conf.php")) {
-					include_once("./".$filename."/conf.php");
-				} else if (is_file("./".$filename."/.api/conf.php")) {
-					include_once("./".$filename."/.api/conf.php");
+				if (is_file($centreon_path . "www/modules/".$filename."/conf.php")) {
+					include_once($centreon_path . "www/modules/".$filename."/conf.php");
+				} else if (is_file($centreon_path . "www/modules/".$filename."/.api/conf.php")) {
+					include_once($centreon_path . "www/modules/".$filename."/.api/conf.php");
 				}
 
 				if (isset($module_conf[$filename]["name"]))	{
 
 					$picturePath = "./img/icones/16x16/component_green.gif";
-					if (file_exists("./$filename/icone.gif")) {
-						$picturePath = "./$filename/icone.gif";
+					if (file_exists($centreon_path . "www/modules/".$filename."/icone.gif")) {
+						$picturePath = $centreon_path . "www/modules/".$filename."/icone.gif";
 					}
-					if (file_exists("./$filename/.api/icone.gif")) {
-						$picturePath = "./$filename/.api/icone.gif";
+					if (file_exists($centreon_path . "www/modules/".$filename."/.api/icone.gif")) {
+						$picturePath = $centreon_path . "www/modules/".$filename."/.api/icone.gif";
 					}
 
 					$elemArr[$i] = array(	"MenuClass" => "list_".$style,

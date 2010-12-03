@@ -226,7 +226,7 @@ ALTER TABLE `command` ADD `command_comment` TEXT NULL ;
 
 INSERT INTO `options` (`key`, `value`) VALUES ('monitoring_engine', 'NAGIOS');
 
-ALTER TABLE `modules_informations` ADD `svc_tools` ENUM( '0', '1' ) NOT NULL DEFAULT '0', ADD `host_tools` ENUM( '0', '1' ) NOT NULL DEFAULT '0', ADD INDEX ( svc_tools, host_tools );
+ALTER TABLE `modules_informations` ADD `svc_tools` ENUM( '0', '1' ) DEFAULT '0', ADD `host_tools` ENUM( '0', '1' ) DEFAULT '0', ADD INDEX ( svc_tools, host_tools );
 
 CREATE TABLE IF NOT EXISTS `cfg_nagios_broker_module` (
   `bk_mod_id` int(11) NOT NULL AUTO_INCREMENT,
