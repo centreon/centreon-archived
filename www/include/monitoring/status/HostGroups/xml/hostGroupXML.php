@@ -86,6 +86,7 @@
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 	
+	$groupStr = $obj->access->getAccessGroupsString();
 	/*
 	 * Backup poller selection
 	 */
@@ -114,12 +115,14 @@
 				"GROUP BY nhg.alias, nhs.current_state";
 	} else {
 		$rq1 = 	"SELECT nhg.alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
-				"FROM centreon_acl, ".$obj->ndoPrefix."hostgroup_members nhgm " .
+				"FROM ".$obj->ndoPrefix."hostgroup_members nhgm " .
 						"INNER JOIN ".$obj->ndoPrefix."objects noo ON (noo.object_id = nhgm.host_object_id) " .
 						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
 						"INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
 						"INNER JOIN ".$obj->ndoPrefix."hoststatus nhs ON (nhs.host_object_id = no.object_id) " .
-				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 AND noo.name1 = centreon_acl.host_name AND noo.name2 IS NULL $searchStr" .
+				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 " . 
+					"AND noo.name1 IN (SELECT host_name FROM centreon_acl WHERE group_id IN (" . $groupStr . ")) " .
+					"AND noo.name2 IS NULL $searchStr" .
 				"GROUP BY nhg.alias, nhs.current_state";
 	}
 	$DBRESULT =& $obj->DBNdo->query($rq1);
