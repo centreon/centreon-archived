@@ -85,7 +85,7 @@
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-	
+
 	$groupStr = $obj->access->getAccessGroupsString();
 	/*
 	 * Backup poller selection
@@ -120,7 +120,7 @@
 						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
 						"INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
 						"INNER JOIN ".$obj->ndoPrefix."hoststatus nhs ON (nhs.host_object_id = no.object_id) " .
-				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 " . 
+				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 " .
 					"AND noo.name1 IN (SELECT host_name FROM centreon_acl WHERE group_id IN (" . $groupStr . ")) " .
 					"AND noo.name2 IS NULL $searchStr" .
 				"GROUP BY nhg.alias, nhs.current_state";
@@ -146,15 +146,16 @@
 			"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2 $searchStr " .
 			"GROUP BY nhg.alias, nss.current_state";
 	} else {
-		$hostStr = $obj->access->getHostsString("NAME", $obj->DBNdo); 
+		$hostStr = $obj->access->getHostsString("NAME", $obj->DBNdo);
+		$svcStr = $obj->access->getServicesString("NAME", $obj->DBNdo);
 		$rq2 = 	"SELECT nhg.alias, nss.current_state, count( nss.service_object_id ) AS nb " .
 				"FROM ".$obj->ndoPrefix."hostgroup_members nhgm " .
-					"INNER JOIN ".$obj->ndoPrefix."objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
-					"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
-					"INNER JOIN ".$obj->ndoPrefix."objects no ON ( noo.name1 = no.name1 ) " .
-					//"INNER JOIN centreon_acl ON (noo.name1 = host_name AND noo.name2 = service_description AND group_id IN ($groupStr)) " .
-					"INNER JOIN ".$obj->ndoPrefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
-				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2 AND noo.name1 IN ($hostStr) $searchStr " .
+				"INNER JOIN ".$obj->ndoPrefix."objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
+				"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
+				"INNER JOIN ".$obj->ndoPrefix."objects no ON ( noo.name1 = no.name1 ) " .
+				"INNER JOIN ".$obj->ndoPrefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
+				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2
+				AND no.name1 IN (".$hostStr.") AND no.name2 IN (".$svcStr. ") ". $searchStr .
 				"GROUP BY nhg.alias, nss.current_state";
 	}
 	$DBRESULT =& $obj->DBNdo->query($rq2);

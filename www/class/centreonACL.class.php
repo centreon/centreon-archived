@@ -429,7 +429,7 @@ class CentreonACL
  	 *  - ID => will return the id's of the element
  	 *  - NAME => will return the names of the element
  	 */
- 	public function getAccessGroupsString($flag = null)
+ 	public function getAccessGroupsString($flag = null, $escape = true)
  	{
  		$string = "";
  		$i = 0;
@@ -442,8 +442,16 @@ class CentreonACL
  				$string .= ", ";
  			}
  			switch ($flag) {
- 				case "ID" : $string .= "'".$key."'"; break;
- 				case "NAME" : $string .= "'".$value."'"; break;
+ 				case "ID" :
+ 				    $string .= "'".$key."'";
+ 				    break;
+ 				case "NAME" :
+ 				    if ($escape === true) {
+ 				        $string .= "'".CentreonDB::escape($value)."'";
+ 				    } else {
+ 				        $string .= "'".$value."'";
+ 				    }
+ 				    break;
  				default : $string .= "'".$key."'"; break;
  			}
  			$i++;
@@ -468,7 +476,7 @@ class CentreonACL
  	 *  - ID => will return the id's of the element
  	 *  - NAME => will return the names of the element
  	 */
- 	public function getResourceGroupsString($flag = null)
+ 	public function getResourceGroupsString($flag = null, $escape = true)
  	{
  		$string = "";
  		$i = 0;
@@ -481,8 +489,16 @@ class CentreonACL
  				$string .= ", ";
  			}
  			switch($flag) {
- 				case "ID" : $string .= "'".$key."'"; break;
- 				case "NAME" : $string .= "'".$value."'"; break;
+ 				case "ID" :
+ 				    $string .= "'".$key."'";
+ 				    break;
+ 				case "NAME" :
+ 				    if ($escape === true) {
+ 				        $string .= "'".CentreonDB::escape($value)."'";
+ 				    } else {
+ 				        $string .= "'".$value."'";
+ 				    }
+ 				    break;
  				default : $string .= "'".$key."'"; break;
  			}
  			$i++;
@@ -552,7 +568,7 @@ class CentreonACL
  	 *  - ID => will return the id's of the element
  	 *  - NAME => will return the names of the element
  	 */
- 	public function getPollerString($flag = null)
+ 	public function getPollerString($flag = null, $escape = true)
  	{
  		$string = "";
  		$i = 0;
@@ -566,7 +582,13 @@ class CentreonACL
  			}
  			switch ($flag) {
  				case "ID" : $string .= "'".$key."'"; break;
- 				case "NAME" : $string .= "'".$value."'"; break;
+ 				case "NAME" :
+ 				    if ($escape === true) {
+ 				        $string .= "'".CentreonDB::escape($value)."'";
+ 				    } else {
+ 				        $string .= "'".$value."'";
+ 				    }
+ 				    break;
  				default : $string .= "'".$key."'"; break;
  			}
  			$i++;
@@ -591,7 +613,7 @@ class CentreonACL
  	 *  - ID => will return the id's of the element
  	 *  - NAME => will return the names of the element
  	 */
- 	public function getServiceGroupsString($flag = null)
+ 	public function getServiceGroupsString($flag = null, $escape = true)
  	{
  		$string = "";
  		$i = 0;
@@ -604,9 +626,19 @@ class CentreonACL
  				$string .= ", ";
  			}
  			switch ($flag) {
- 				case "ID" : $string .= "'".$key."'"; break;
- 				case "NAME" : $string .= "'".$value."'"; break;
- 				case "ALIAS" : $string .= "'".$this->serviceGroupsAlias[$key]."'"; break;
+ 				case "ID" :
+ 				    $string .= "'".$key."'";
+ 				    break;
+ 				case "NAME" :
+ 				    if ($escape === true) {
+ 				        $string .= "'".CentreonDB::escape($value)."'";
+ 				    } else {
+ 				        $string .= "'".$value."'";
+ 				    }
+ 				    break;
+ 				case "ALIAS" :
+ 				    $string .= "'".$this->serviceGroupsAlias[$key]."'";
+ 				    break;
  				default : $string .= "'".$key."'"; break;
  			}
  			$i++;
@@ -631,7 +663,7 @@ class CentreonACL
  	 *  - ID => will return the id's of the element
  	 *  - NAME => will return the names of the element
  	 */
- 	public function getServiceCategoriesString($flag = null)
+ 	public function getServiceCategoriesString($flag = null, $escape = true)
  	{
  		$string = "";
  		$i = 0;
@@ -644,8 +676,16 @@ class CentreonACL
  				$string .= ", ";
  			}
  			switch($flag) {
- 				case "ID" : $string .= "'".$key."'"; break;
- 				case "NAME" : $string .= "'".$value."'"; break;
+ 				case "ID" :
+ 				    $string .= "'".$key."'";
+ 				    break;
+ 				case "NAME" :
+ 				    if ($escape === true) {
+ 				        $string .= "'".CentreonDB::escape($value)."'";
+ 				    } else {
+ 				        $string .= "'".$value."'";
+ 				    }
+ 				    break;
  				default : $string .= "'".$key."'"; break;
  			}
  			$i++;
@@ -662,7 +702,7 @@ class CentreonACL
  	 *  - ID => will return the id's of the element
  	 *  - NAME => will return the names of the element
  	 */
- 	public function getHostsString($flag = null, $pearDBndo)
+ 	public function getHostsString($flag = null, $pearDBndo, $escape = true)
  	{
  		$this->checkUpdateACL();
 
@@ -680,8 +720,16 @@ class CentreonACL
  					$string .= ", ";
  				}
  				switch ($flag) {
- 					case "ID" : $string .= "'".$row['host_id']."'"; break;
- 					case "NAME" : $string .= "'".$row['host_name']."'"; break;
+ 					case "ID" :
+ 					    $string .= "'".$row['host_id']."'";
+ 					    break;
+ 					case "NAME" :
+ 					    if ($escape === true) {
+ 					        $string .= "'".CentreonDB::escape($row['host_name'])."'";
+ 					    } else {
+ 					        $string .= "'".$row['host_name']."'";
+ 					    }
+ 					    break;
  					default : $string .= "'".$row['host_id']."'"; break;
  				}
  				$i++;
@@ -699,7 +747,7 @@ class CentreonACL
  	 *  - ID => will return the id's of the element
  	 *  - NAME => will return the names of the element
  	 */
- 	public function getServicesString($flag = null, $pearDBndo)
+ 	public function getServicesString($flag = null, $pearDBndo, $escape = true)
  	{
  		$this->checkUpdateACL();
 
@@ -717,8 +765,16 @@ class CentreonACL
  					$string .= ", ";
  				}
  				switch ($flag) {
- 					case "ID" : $string .= "'".$row['service_id']."'"; break;
- 					case "NAME" : $string .= "'".$row['service_description']."'"; break;
+ 					case "ID" :
+ 					    $string .= "'".$row['service_id']."'";
+ 					    break;
+ 					case "NAME" :
+ 					    if ($escape === true) {
+ 					        $string .= "'".CentreonDB::escape($row['service_description'])."'";
+ 					    } else {
+ 					        $string .= "'".$row['service_description']."'";
+ 					    }
+ 					    break;
  					default : $string .= "'".$row['service_id']."'"; break;
  				}
  				$i++;
@@ -852,8 +908,6 @@ class CentreonACL
 						"AND h.host_id = '".$host_id."'";
 				$DBRESULT = $pearDB->query($query);
 				while ($row = $DBRESULT->fetchRow()) {
-					$row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-					$row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
 					$tab[$row['service_id']] = $row['service_description'];
 				}
 				$DBRESULT->free();
@@ -865,8 +919,6 @@ class CentreonACL
 						" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 						" AND service_id = hsr.service_service_id");
 				while ($elem = $DBRESULT->fetchRow()){
-					$elem["service_description"] = str_replace("#S#", "/", $elem["service_description"]);
-					$elem["service_description"] = str_replace("#BS#", "\\", $elem["service_description"]);
 					$tab[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
 				}
 				$DBRESULT->free();
@@ -875,8 +927,6 @@ class CentreonACL
 				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_id = '".$host_id."' AND group_id IN (".$this->getAccessGroupsString().")";
 				$DBRESULT = $pearDBndo->query($query);
 				while ($row = $DBRESULT->fetchRow()) {
-					$row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-					$row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
 					$tab[$row['service_id']] = $row['service_description'];
 				}
 				$DBRESULT->free();
@@ -904,8 +954,6 @@ class CentreonACL
 				$tab[$row['host_name']][$row['service_description']] = 1;
 			}
 		} else {
-			$host_name = str_replace('/', "#S#", $host_name);
-			$host_name = str_replace('\\', "#BS#", $host_name);
 			if ($this->admin) {
 				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_name = '".$host_name."'";
 			} else {
