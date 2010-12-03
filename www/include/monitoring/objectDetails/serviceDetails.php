@@ -466,10 +466,6 @@
 		/* Dynamics tools */
 
 		$tpl->display("serviceDetails.ihtml");
-		$host_name = str_replace("/", "#S#", $host_name);
-		$host_name = str_replace("\\", "#BS#", $host_name);
-		$svc_description = str_replace("/", "#S#", $svc_description);
-		$svc_description = str_replace("\\", "#BS#", $svc_description);
 	}
 ?>
 
