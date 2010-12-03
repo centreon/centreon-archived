@@ -39,7 +39,7 @@
 	if (!isset($oreon)) {
 		exit();
 	}
-	
+
 	if (!isset($default_poller)) {
 		include_once "./include/monitoring/status/Common/default_poller.php";
 	}
@@ -54,6 +54,11 @@ var _search_type_host='<?php echo $search_type_host?>';
 <?php if (isset($search_type_service)) { ?>
 var _search_type_service='<?php echo $search_type_service?>';
 <?php } ?>
+
+var _search = '<?php global $url ; echo ($search ? $search : (isset($centreon->historySearchService[$url]) ? $centreon->historySearchService[$url] : ""));?>';
+var _host_search = '<?php global $url ; echo (isset($search_host) && $search_host != "" ? $search_host : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
+var _output_search = '<?php global $url ; echo (isset($search_output) && $search_output != "" ? $search_output : (isset($centreon->historySearchOutput[$url]) ? $centreon->historySearchOutput[$url] : "")); ?>';
+
 var _num='<?php echo $num?>';
 var _limit='<?php echo $limit?>';
 var _sort_type='<?php echo $sort_type?>';
@@ -64,6 +69,7 @@ var _p='<?php echo $p?>';
 
 // Parameters
 var _timeoutID = 0;
+var _counter = 0;
 var _hostgroup_enable = 1;
 var _on = 1;
 var _time_reload = <?php echo $tM?>;
@@ -77,7 +83,12 @@ var _resultCache=new Object();
 var _first = 1;
 var _lock = 0;
 var _instance = "-1";
+var _default_hg = '<?php echo $default_hg;?>';
 var _default_instance = '<?php echo $default_poller?>';
+var _nc = 0;
+var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
+var _popup_no_comment_msg = '<?php echo _("Please enter a comment"); ?>';
+
 
 // Hosts WS For Poppin
 var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php";
@@ -692,6 +703,61 @@ function set_page(page)	{
 	xhrM.send(_var);
 }
 
+// Popin images
+
+function displayIMG(index, s_id, id)	{
+	// Pour les navigateurs recents
+    if ( document.getElementById && document.getElementById( 'div_img' ) ){
+        Pdiv = document.getElementById( 'div_img' );
+        PcH = true;
+    } else if ( document.all && document.all[ 'div_img' ] ){
+	    // Pour les veilles versions
+        Pdiv = document.all[ 'div_img' ];
+        PcH = true;
+    } else if ( document.layers && document.layers[ 'div_img' ] ){
+    	// Pour les tres veilles versions
+        Pdiv = document.layers[ 'div_img' ];
+        PcH = true;
+    } else {
+        PcH = false;
+    }
+    if (PcH){
+		_img = mk_img('include/views/graphs/generateGraphs/generateImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index+'&time=<?php print time(); ?>');
+		Pdiv.appendChild(_img);
+		var l = screen.availWidth; // calcul auto de la largeur de l'ecran client
+		var h = screen.availHeight; // calcul auto de la hauteur de l'ecran client
+		var posy = tempY + 10;
+		if (h - tempY < 420){
+			posy = tempY - 310;
+		}
+		Pdiv.style.display = "block";
+		Pdiv.style.left = tempX +'px';
+		Pdiv.style.top = posy +'px';
+    }
+}
+
+function hiddenIMG(id) {
+	// Pour les navigateurs recents
+	if ( document.getElementById && document.getElementById( 'div_img' ) ){
+		Pdiv = document.getElementById( 'div_img' );
+		PcH = true;
+	} else if ( document.all && document.all[ 'div_img' ] ){
+	// Pour les veilles versions
+		Pdiv = document.all[ 'div_img' ];
+	    PcH = true;
+	} else if ( document.layers && document.layers[ 'div_img' ] ){
+	// Pour les tres veilles versions
+		Pdiv = document.layers[ 'div_img' ];
+	    PcH = true;
+	} else{
+		PcH = false;
+	}
+	if (PcH) {
+		Pdiv.style.display = "none";
+		Pdiv.innerHTML = '';
+	}
+}
+
 // Poppin Function
 
 function displayPOPUP(type, span_id, id) {
@@ -800,4 +866,16 @@ function initM(_time_reload, _sid, _o) {
 function position(e) {
 	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
 	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
+}
+
+// Multi Select Management
+
+function putInSelectedElem(id) {
+	_selectedElem[encodeURIComponent(id)] = encodeURIComponent(id);
+}
+
+function removeFromSelectedElem(id) {
+	if (typeof(_selectedElem[encodeURIComponent(id)]) != 'undefined') {
+		_selectedElem[encodeURIComponent(id)] = undefined;
+	}
 }
