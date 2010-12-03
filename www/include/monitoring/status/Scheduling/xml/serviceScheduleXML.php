@@ -36,15 +36,6 @@
  *
  */
 
-	/*
-	 * if debug == 0 => Normal,
-	 * debug == 1 => get use,
-	 * debug == 2 => log in file (log.xml)
-	 *
-	 */
-	$debugXML = 0;
-	$buffer = '';
-
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path . "www/class/centreonDuration.class.php");
 	include_once($centreon_path . "www/class/centreonGMT.class.php");
@@ -144,7 +135,7 @@
 
 	$rq1 .= $access->queryBuilder("AND", "no.name1", $lcaSTR);
 
-	if ($instance != "ALL")
+	if ($instance != -1)
 		$rq1 .= " AND no.instance_id = ".$instance;
 
 	($o == "meta") ? $rq1 .= " AND no.name1 = '_Module_Meta'" : $rq1 .= " AND no.name1 != '_Module_Meta'";
@@ -187,7 +178,7 @@
 		$rq .= " AND no.name1 != '_Module_Meta'";
 
 
-	if ($instance != "ALL")
+	if ($instance != -1)
 		$rq .= " AND no.instance_id = ".$instance;
 
 
