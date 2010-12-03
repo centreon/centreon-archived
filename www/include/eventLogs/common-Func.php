@@ -46,13 +46,37 @@
 		foreach ($list_param as $param) {
 			if (isset($_SESSION[$param])) {
 				$tab_row[$param] = $_SESSION[$param]; 
+			} else {
+				if (is_null($cache)) {
+					$cache = array();
+					$query = "SELECT cp_key, cp_value FROM contact_param
+						WHERE cp_key in ('" . join("', '", $list_param) . "') AND cp_contact_id = " . $user_id;
+					$DBRESULT = $pearDB->query($query);
+					while ($row = $DBRESULT->fetchRow()) {
+						$cache[$row['cp_key']] = $row['cp_value'];
+					}
+				}
+				if (isset($cache[$param])) {
+					$tab_row[$param] = $cache[$param];	
+				}
 			}
 		}
 		return $tab_row;
 	}
 
 	function set_user_param($user_id, $pearDB, $key, $value){
-		$_SESSION[$key] = $value;		
+		$_SESSION[$key] = $value;
+		$list_param = array('log_filter_host', 'log_filter_svc', 'log_filter_host_down',
+			'log_filter_host_up', 'log_filter_host_unreachable', 'log_filter_svc_ok', 
+			'log_filter_svc_warning', 'log_filter_svc_critical', 'log_filter_svc_unknown',
+			'log_filter_notif', 'log_filter_error', 'log_filter_alert', 'log_filter_oh');
+		if (in_array($key, $list_param)) {
+			$queryDel = "DELETE FROM contact_param WHERE cp_key = '" .$key . "' AND cp_contact_id = '" . $user_id . "'"; 
+			$queryIns = "INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) " .
+				"VALUES ('" . $key . "', '" . $value . "', " . $user_id . ")";
+			$pearDB->query($queryDel);
+			$pearDB->query($queryIns);
+		}
 	}
  
  	function getMyHostIDService($svc_id = NULL)	{
@@ -65,5 +89,4 @@
 		}
 		return NULL;
 	}
- 	
 ?>

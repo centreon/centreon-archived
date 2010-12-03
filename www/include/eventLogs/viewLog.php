@@ -46,9 +46,23 @@
 			'log_filter_notif', 'log_filter_error', 'log_filter_alert', 'log_filter_oh',
 			'search_H', 'search_S');
 		$tab_row = array();
+		$cache = null;
 		foreach ($list_param as $param) {
 			if (isset($_SESSION[$param])) {
 				$tab_row[$param] = $_SESSION[$param]; 
+			} else {
+				if (is_null($cache)) {
+					$cache = array();
+					$query = "SELECT cp_key, cp_value FROM contact_param
+						WHERE cp_key in ('" . join("', '", $list_param) . "') AND cp_contact_id = " . $user_id;
+					$DBRESULT = $pearDB->query($query);
+					while ($row = $DBRESULT->fetchRow()) {
+						$cache[$row['cp_key']] = $row['cp_value'];
+					}
+				}
+				if (isset($cache[$param])) {
+					$tab_row[$param] = $cache[$param];	
+				}
 			}
 		}
 		return $tab_row;
