@@ -83,7 +83,7 @@ var _resultCache=new Object();
 var _first = 1;
 var _lock = 0;
 var _instance = "-1";
-var _default_hg = '<?php echo $default_hg;?>';
+var _default_hg = '<?php if (isset($default_hg)) { echo $default_hg; } ?>';
 var _default_instance = '<?php echo $default_poller?>';
 var _nc = 0;
 var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
@@ -187,8 +187,15 @@ function construct_selecteList_ndo_instance(id){
 		var i = 1;
 
 <?php
-	$DBRESULT =& $pearDBndo->query("SELECT `instance_id`, instance_name FROM `".getNDOPrefix()."instances`");
-	while ($nagios_server =& $DBRESULT->fetchRow())	{
+    $pollerArray = $oreon->user->access->getPollers();
+	if ($oreon->user->admin || !count($pollerArray)) {
+        $instanceQuery = "SELECT instance_id, instance_name FROM `".getNDOPrefix()."instances`";
+	} else {
+	    $instanceQuery = "SELECT instance_id, instance_name  ".
+	    				 "FROM `".getNDOPrefix()."instances` WHERE instance_name IN (". $oreon->user->access->getPollerString('NAME') .")";
+	}
+    $DBRESULT = $pearDBndo->query($instanceQuery);
+	while ($nagios_server = $DBRESULT->fetchRow())	{
 ?>
 		var m = document.createElement('option');
 		m.value= "<?php echo $nagios_server["instance_id"]; ?>";
