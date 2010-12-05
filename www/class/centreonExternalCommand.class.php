@@ -369,7 +369,7 @@ class CentreonExternalCommand {
 		/*
 		 * Send command
 		 */
-		$this->set_process_command("SCHEDULE_SVC_DOWNTIME;".getMyHostName($host).";".getMyServiceName($service).";".$start_time.";".$end_time.";".$persistant.";0;".($end_time - $start_time).";".$oreon->user->get_alias().";".$comment."\n", $poller_id);
+		$this->set_process_command("SCHEDULE_SVC_DOWNTIME;".getMyHostName($host).";".getMyServiceName($service).";".$start_time.";".$end_time.";".$persistant.";0;".($end_time - $start_time).";".$centreon->user->get_alias().";".$comment."\n", $poller_id);
 		$this->write();
 	}
 
