@@ -40,7 +40,6 @@
  * Need Centreon Configuration file
  */
 require_once "@CENTREON_ETC@/centreon.conf.php";
-//require_once "/etc/centreon/centreon.conf.php";
 require_once $centreon_path . '/www/autoloader.php';
 
 
@@ -274,8 +273,9 @@ class CentreonXMLBGRequest
 		header('Pragma: no-cache');
 		header('Expires: 0');
 		header('Cache-Control: no-cache, must-revalidate');
-		if ($this->compress && $encoding)
+		if ($this->compress && $encoding) {
 			header('Content-Encoding: '.$encoding);
+		}
 	}
 
 	public function getNextLineClass()
