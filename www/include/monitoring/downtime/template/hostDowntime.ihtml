@@ -1,5 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<form name="form" action="" method='GET'>
+<form name="form" action="" method='POST'>
 <hidden name="p" value='{$p}'>
 <table class="ajaxOption">
 	<tr>
