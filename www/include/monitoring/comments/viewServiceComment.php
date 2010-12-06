@@ -42,14 +42,12 @@
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include("./include/common/autoNumLimit.php");
 
-	if (isset($_POST["hostgroup"]))
-	  $hostgroup = $_POST["hostgroup"];
-	else if (isset($_GET["hostgroup"]))
-	   $hostgroup = $_GET["hostgroup"];
-	else if (isset($centreon->hostgroup) && $centreon->hostgroup)
-	   $hostgroup = $centreon->hostgroup;
+	if (isset($_POST["search_service"]))
+	  	$search_service = $_POST["search_service"];
+	else if (isset($_GET["search_service"]))
+	  	$search_service = $_GET["search_service"];
 	else
-	   $hostgroup = 0;
+	  	$search_service = NULL;
 
 	if (isset($_POST["search_host"]))
 		$host_name = $_POST["search_host"];
@@ -70,20 +68,6 @@
 	 */
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
-
-	if (isset($_POST["search_host"]))
-		$host_name = $_POST["search_host"];
-	else if (isset($_GET["search_host"]))
-		$host_name = $_GET["search_host"];
-	else
-		$host_name = NULL;
-
-	if (isset($_POST["search_service"]))
-		$service_description = $_POST["search_service"];
-	else if (isset($_GET["search_service"]))
-		$service_description = $_GET["search_service"];
-	else
-		$service_description = NULL;
 
 	/*
 	 * Smarty template Init
@@ -117,6 +101,7 @@
 				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NOT NULL " .
+				(isset($search_service) && $search_service != "" ? " AND obj.name2 LIKE '%$search_service%'" : "") .
 				(isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
 				(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
 				"AND obj.object_id = cmt.object_id " .
@@ -128,6 +113,7 @@
 				"AND obj.name2 IS NOT NULL " .
 				"AND obj.object_id = cmt.object_id " .
 				"AND obj.name1 = centreon_acl.host_name " .
+				(isset($search_service) && $search_service != "" ? " AND obj.name2 LIKE '%$search_service%'" : "") .
 				(isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
 				(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
 				"AND obj.name2 = centreon_acl.service_description " .
@@ -173,23 +159,18 @@
 	$tpl->assign("view_host_comments", _("View comments of hosts"));
 	$tpl->assign("delete", _("Delete"));
 
+	$tpl->assign("search", $search_service);
+
 	$tpl->assign("Host", _("Host Name"));
+	$tpl->assign("Service", _("Service"));
+
 	$tpl->assign("Output", _("Output"));
 	$tpl->assign("user", _("Utilisateurs"));
 	$tpl->assign('Hostgroup', _("Hostgroup"));
 	$tpl->assign('Search', _("Search"));
 	$tpl->assign("search_output", $search_output);
 	$tpl->assign('search_host', $host_name);
-
-	$DBRESULT =& $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
-	$options = "<option value='0'></options>";
-	while ($data =& $DBRESULT->fetchRow()) {
-        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["alias"]."</option>";
-    }
-    $DBRESULT->free();
-
-	$tpl->assign('hostgroup', $options);
-	unset($options);
+	$tpl->assign('search_service', $search_service);
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);

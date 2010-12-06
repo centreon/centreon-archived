@@ -4,7 +4,7 @@
 <table class="ajaxOption">
 	<tr>
 		<td>{$Host}: <input type='text' name='search_host' value="{$search_host}" /></td>
-		<td>&nbsp;&nbsp;{$Hostgroup}: <select name='hostgroup'>{$hostgroup}</select></td>
+		<td>&nbsp;&nbsp;{$Service}: <input type='text' name='search_service' value="{$search_service}" /></td>
 		<td>&nbsp;&nbsp;{$Output}: <input type='text' name='search_output' value="{$search_output}" /></td>
 	    <td><input type='submit' name='SearchB' value='{$Search}' /></td>
 	</tr>
