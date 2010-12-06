@@ -364,7 +364,6 @@
 	/*
 	 * create Poller Select
 	 */
-
 	$options = "<option value='0'>"._("All Pollers")."</option>";
 	foreach ($nagios_server as $key => $name) {
 		$options .= "<option value='$key' ".(($poller == $key) ? 'selected' : "").">$name</option>";
@@ -372,7 +371,6 @@
 
 	$tpl->assign("poller", $options);
 	unset($options);
-
 
 	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 	$options = "<option value='0'></options>";
