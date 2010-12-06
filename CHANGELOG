@@ -1,11 +1,45 @@
-## Centreon 2.2
+## Centreon 2.2.0
 
 => feature #1570: new command and service interface
 => feature #1561: context-aware help tooltips
+=> feature : new type of objects, Host Categories for ACL
+=> feature : ACL can be set on Poller. When set, resources will be filtered
+=> feature : command arguments can have their descriptions. When set, there is no need to know the argument order of your commands
+=> feature : possibility to synchronize media directory with database
+=> feature : possibility to use multiple broker modules
+=> enhancement : code refactoring
 => enhancement : removes useless/deprecated Nagios options 
 => enhancement : better overview of monitoring status
-=> enhancement : new Views > Graphs interface (possibility to export images etc...)
+=> enhancement : new Views > Graphs interface (possibility to export images, zoom in etc...)
 => enhancement : menus of modules can be translated
+=> enhancement : home > tactical overview is ajax'ed
+=> enhancement : service icons are displayed in monitoring and configuration pages
+=> enhancement : overlay windows show up in tactical overview and host monitoring pages
+=> enhancement : Nagios process control page in Administration > Server Status page (used to be in Home > Nagios Statistics)
+=> enhancement : Downtime and Comment pages in Monitoring > Services and Monitoring > Hosts pages (used to be in Monitoring > Event Logs)
+=> enhancement : New search fields in Monitoring > Services pages (search by host, service, plugin output)
+=> enhancement : cron jobs running status are stored in database
+=> enhancement : custom macro tab has been removed, the custom macro fields are displayed in the first tab
+=> enhancement : special characters with accents are now properly displayed in monitoring/views/configuration pages
+
+
+## Centreon 2.1.10
+
+=> fix: Tactical Overview : Unhandled problems shows services in scheduled downtime
+=> fix: Problem with pagination in services problems pages
+=> fix: Host check_command from Host-Template - inheritance problem
+=> fix: Problem with hosts and Services with "\" not shown for user with ACL
+=> fix: Command : "Re-schedule the next check for this service" not working
+=> fix: Specials chars in quicksearch
+=> fix: check_meta_service not taking NDO port into account
+=> fix: hierarchy view in menus access interface
+=> fix: Wrong parsing of regexp character in arguments
+=> fix: Media upload error by Centreon Version 2.1.9
+=> fix: HTML entities not decoded in ACL lists
+=> fix: When monitoring is refreshed the selection is not kept
+=> fix: Massive change in Users replace some fileds that I don't want
+=> fix: Generate unactivated services linked to servicegroups
+=> fix: Generate unactivated contacts linked to services
 
 ## Centreon 2.1.9
 
