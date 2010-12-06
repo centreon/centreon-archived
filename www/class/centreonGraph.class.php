@@ -404,11 +404,12 @@ class CentreonGraph	{
 			if ($tm["ds_average"]){
 				$this->addArgument("GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
 			}
-			if (isset($tm["warn"]) && $tm["warn"] != 0)
-				$this->addArgument("HRULE:".$tm["warn"]."#00FF00:\"Warning \: ".$tm["warn"]."\\l\" ");
-			if (isset($tm["crit"]) && $tm["crit"] != 0)
-				$this->addArgument("HRULE:".$tm["crit"]."#FF0000:\"Critical \: ".$tm["crit"]."\"");
-
+			if (count($this->metrics) == 1) {
+				if (isset($tm["warn"]) && $tm["warn"] != 0)
+					$this->addArgument("HRULE:".$tm["warn"].$this->general_opt["color_warning"].":\"Warning \: ".$tm["warn"]."\\l\" ");
+				if (isset($tm["crit"]) && $tm["crit"] != 0)
+					$this->addArgument("HRULE:".$tm["crit"].$this->general_opt["color_critical"].":\"Critical \: ".$tm["crit"]."\"");
+			}
 			$cpt++;
 		}
 	}
