@@ -352,59 +352,65 @@
 			    	<div id="imggraph">
 			    		<ul style="list-style-type: none;">
 			    			<li style="list-style-type: none;">
-						<xsl:if test="split = 0">
-							<xsl:element name="a">
-								<xsl:attribute name="onClick">multi=0;graph_4_host('<xsl:value-of select="opid"/>', ''); return false;</xsl:attribute>
-								<xsl:attribute name="href">#</xsl:attribute>
-								<xsl:element name="img">
-									<xsl:attribute name="id"><xsl:value-of select="opid"/></xsl:attribute>
-								  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
-								</xsl:element>
-							</xsl:element>
-						</xsl:if>
-						<xsl:if test="split = 1">
-							<table style="width: 100%">
-							<xsl:for-each select="metrics">
-								<tr>
-								<xsl:if test="select = 1">
-											<td style="vertical-align: top">
-											<xsl:element name="a">
-												<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', ''); return false;</xsl:attribute>
-												<xsl:attribute name="href">#</xsl:attribute>
-												<xsl:element name="img">
-													<xsl:attribute name="id"><xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
-											  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-												</xsl:element>
-											</xsl:element>
-											</td>
-											<td style="vertical-align: top">
-											<xsl:element name="a">
-												<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
-												<img src="./img/icones/16x16/save.gif" style="margin-right:5px;vertical-align:top;" />
-											</xsl:element>
-											</td>
-											<td style="vertical-align: top">
-											<xsl:element name="a">
-												<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
-												<xsl:attribute name="id">zoom_<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
-												<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>");</xsl:attribute>
-												<img src="./img/icones/16x16/view.gif" style="margin-right:5px;vertical-align:top;" />
-											</xsl:element>
-											</td>
+								<xsl:if test="split = 0">
+									<xsl:element name="a">
+										<xsl:attribute name="onClick">multi=0;graph_4_host('<xsl:value-of select="opid"/>', ''); return false;</xsl:attribute>
+										<xsl:attribute name="href">#</xsl:attribute>
+										<xsl:element name="img">
+											<xsl:attribute name="id"><xsl:value-of select="opid"/></xsl:attribute>
+										  	<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
+										</xsl:element>
+									</xsl:element>
 								</xsl:if>
-								</tr>
-							</xsl:for-each>
-							</table>
-						</xsl:if>
+								<xsl:if test="split = 1">
+									<table style="width: 100%">
+									<xsl:for-each select="metrics">
+										<tr>
+										<xsl:if test="select = 1">
+											<td style="vertical-align: top">
+												<xsl:element name="a">
+													<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', ''); return false;</xsl:attribute>
+													<xsl:attribute name="href">#</xsl:attribute>
+													<xsl:element name="img">
+														<xsl:attribute name="id"><xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
+												  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+													</xsl:element>
+												</xsl:element>
+											</td>
+											<td style="vertical-align: top;width: 16px;">
+												<xsl:element name="a">
+													<xsl:attribute name="href">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+													<img src="./img/icones/16x16/save.gif" style="vertical-align:top;" />
+												</xsl:element>
+											</td>
+											<td style="vertical-align: top;width: 16px;">
+												<xsl:element name="a">
+													<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
+													<xsl:attribute name="id">zoom_<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
+													<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/>");</xsl:attribute>
+													<img src="./img/icones/16x16/view.gif" style="vertical-align:top;" />
+												</xsl:element>
+											</td>
+										</xsl:if>
+										</tr>
+									</xsl:for-each>
+									</table>
+								</xsl:if>
 							</li>
 							<xsl:if test="status = 1">
 							<li style="list-style-type: none; margin-top: 15px;">
-								<xsl:element name="div">
-									<xsl:element name="img">
-									  	<xsl:attribute name="src">./include/views/graphs/graphStatus/displayServiceStatus.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
-									</xsl:element>
-									<img src="./img/icones/1x1/blank.gif" style="margin-right:5px;vertical-align:top;" width="18" />
-								</xsl:element>
+								<table style="width: 100%">
+									<tr>
+										<td style="vertical-align: top">
+											<xsl:element name="div">
+												<xsl:element name="img">
+												  	<xsl:attribute name="src">./include/views/graphs/graphStatus/displayServiceStatus.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/></xsl:attribute>
+												</xsl:element>
+											</xsl:element>
+										</td>
+										<td style="vertical-align: top;width: 32px;"><img src="./img/icones/1x1/blank.gif" style="vertical-align:top;" /></td>
+									</tr>
+								</table>
 							</li>
 							</xsl:if>
 						</ul>
