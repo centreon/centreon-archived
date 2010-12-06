@@ -76,6 +76,9 @@ my %msg_type = ("svc_alerts" 			=> 0,
 #Hash tables that will contain host and services availability stats by day
 my (%hosts, %services, %host_ids, %service_ids);
 
+my ($hostsIDToRebuild, $hostsNameToRebuild, %tabHostsToRebuild);
+my %options;
+
 # DB Connection instance
 my $dbh;
 my $dbhoreon;
@@ -86,11 +89,18 @@ my $sthRun;
 #FUNCTIONS
 ####################################################################
 
+sub trim($) {
+        my $string = shift;
+        $string =~ s/^\s+//;
+        $string =~ s/\s+$//;
+        return $string;
+}
+
 #################################
 # Program execution help function
 #################################
 sub print_help {
-    print "usage : ".$0." [-r|--rebuild] [-d|--debug] [l|--log <file>]\n";
+    print "usage : ".$0." [-r|--rebuild [--startTime <ctime>]] [-d|--debug] [l|--log <file>] [--rebuildList <path+file> [--startTime <ctime>]] \n";
 }
 
 ################################################################
@@ -223,8 +233,14 @@ sub get_hosts_services_stats ($$) {
 										$msg_type{"host_init_state"}."', '".$msg_type{"svc_alerts"}."','".
 										$msg_type{"svc_current_state"}."','".$msg_type{"svc_init_state"}."') ".
 				" AND `ctime` >= ".$start." AND `ctime` <= ".$end.
-				" AND (`type` = 'HARD' OR (`type` = 'SOFT' AND `status` = 'OK'))".
-				" ORDER BY `ctime`";
+				" AND (`type` = 'HARD' OR (`type` = 'SOFT' AND `status` = 'OK'))";
+				
+	if (defined($options{"rebuildList"})) {
+		$query .= " AND `host_name` IN (".$hostsNameToRebuild.")";
+	}
+				
+	$query .= " ORDER BY `ctime`";
+	
     my $sth = $dbh->prepare($query);
     die "Error : " . $dbh->errstr . "\n" if (!$sth);
     $sth->execute();
@@ -258,8 +274,14 @@ sub get_last_status_in_ignored_time($$) {
 				" AND `msg_type` IN ('".$msg_type{"host_alerts"}."', '".$msg_type{"svc_alerts"}."', '".
 									$msg_type{"host_current_state"}."', '".$msg_type{"svc_current_state"}.
 									"', '".$msg_type{"host_init_state"}."', '".$msg_type{"svc_current_state"}."') ".
-				" AND (`type` = 'HARD' OR (`type` = 'SOFT' AND `status` = 'OK'))".
-				" ORDER BY `ctime`";	
+				" AND (`type` = 'HARD' OR (`type` = 'SOFT' AND `status` = 'OK'))";
+				
+	if (defined($options{"rebuildList"})) {
+		$query .= " AND `host_name` IN (".$hostsNameToRebuild.")";
+	}
+				
+	$query .= " ORDER BY `ctime`";
+	
     my $sth = $dbh->prepare($query);
     die "Error: " . $dbh->errstr . "\n" if (!$sth);
     $sth->execute;
@@ -733,7 +755,9 @@ sub main {
     GetOptions ("h|help" 	=> \$options{"help"},
 		"d|debug" 	=> \$options{"debug"},
 		"r|rebuild" => \$options{"rebuild"},
-		"l|log"		=> \$options{"log"});
+		"l|log"		=> \$options{"log"},
+		"rebuildList=s"	=> \$options{"rebuildList"},
+		"startTime=s"	=> \$options{"startTime"});
     
     if ($options{"help"}) {
 		print_help;
@@ -744,6 +768,41 @@ sub main {
 			{'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
     $dbhoreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd,
 			     {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+    
+    # Create list of specifique hosts to rebuild using option --rebuildList
+	if (defined($options{"rebuildList"})) {
+		if ( -e $options{"rebuildList"}) {
+			if (( ! -r $options{"rebuildList"}) || ( -z $options{"rebuildList"})) {
+				print "Unable to read: \"".$options{"rebuildList"}."\n";
+				exit 1;
+			} else {
+				open(FILE,"<".$options{"rebuildList"});
+				while (<FILE>) {
+					if ($_ !~ m/^#/) {
+						if (defined($hostsIDToRebuild) && ($hostsIDToRebuild ne "")) {
+							$hostsIDToRebuild .= ", ";
+							$hostsNameToRebuild .= ", ";
+						}
+						my $host_id = getHostID(trim($_), $dbhoreon);
+						
+						if (defined($host_id) && ($host_id =~ m/[0-9]+/)) {
+							$hostsIDToRebuild .= "'".$host_id."'";
+							$hostsNameToRebuild .= "\"".trim($_)."\"";
+							$tabHostsToRebuild{'$element'} = $host_id;
+						}
+					}
+				}
+				close(FILE);
+				if (!defined($hostsIDToRebuild)) {
+					print "No host available in file: \"".$options{"rebuildList"}."\"\n";
+					exit 1;
+				}
+			}
+		} else {
+			print "File: \"".$options{"rebuildList"}."\" doesn't exists\n";
+			exit 1;
+		}
+	}
     
     # Getting time_period in which we must collect logs
     my $sth = $dbhoreon->prepare("SELECT * FROM `contact_param` WHERE `cp_contact_id` is null");
@@ -774,7 +833,7 @@ sub main {
 		    							- mktime(0, 0, 0, 0, 0, 100,0,0,-1);
     }
     
-    if ($options{"rebuild"}) {
+    if (defined($options{"rebuild"}) || defined($options{"rebuildList"})) {
 		# rebuiling all archives from log table
 		rebuild_archives(\%time_period);
     } else {
@@ -806,9 +865,21 @@ sub rebuild_archives($) {
     my $one_day_real_duration = 60 * 60 * 24;
     
     # Emptying log archives tables 
-    $dbh->do("TRUNCATE TABLE `log_archive_host`");
-    $dbh->do("TRUNCATE TABLE `log_archive_service`");
-    $dbh->do("TRUNCATE TABLE `log_archive_last_status`");
+    if (!defined($hostsIDToRebuild)) {
+		$dbh->do("TRUNCATE TABLE `log_archive_host`");
+		$dbh->do("TRUNCATE TABLE `log_archive_service`");
+		$dbh->do("TRUNCATE TABLE `log_archive_last_status`");
+	} else {
+		if (defined($options{"startTime"})) {
+			$dbh->do("DELETE FROM `log_archive_host` WHERE `host_id` IN (".$hostsIDToRebuild.") AND date_start >= '".$options{"startTime"}."'");
+			$dbh->do("DELETE FROM `log_archive_service` WHERE `host_id` IN (".$hostsIDToRebuild.") AND date_start >= '".$options{"startTime"}."'");
+			$dbh->do("DELETE FROM `log_archive_last_status` WHERE `host_id` IN (".$hostsIDToRebuild.") AND date_start >= '".$options{"startTime"}."'");
+		} else {
+			$dbh->do("DELETE FROM `log_archive_host` WHERE `host_id` IN (".$hostsIDToRebuild.")");
+			$dbh->do("DELETE FROM `log_archive_service` WHERE `host_id` IN (".$hostsIDToRebuild.")");
+			$dbh->do("DELETE FROM `log_archive_last_status` WHERE `host_id` IN (".$hostsIDToRebuild.")");
+		}
+	}
     
     # Getting first log and last log times
     my $query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `log`";
@@ -825,6 +896,10 @@ sub rebuild_archives($) {
 		$end = $today_begin;
     }
     $sth->finish;
+    
+    if (defined($options{"startTime"})) {
+		$start = $options{"startTime"};
+	}
     
     # Getting list of days between the first log and last log
     my @days;
