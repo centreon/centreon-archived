@@ -49,13 +49,11 @@ function __autoload($className)
     $fileName{0} = strtolower($fileName{0});
     $fileNameType1 = $centreon_path  . "/www/class/" . $fileName . ".class.php";
     $fileNameType2 = $centreon_path  . "/www/class/" . $fileName . ".php";
-    
+
     if (file_exists($fileNameType1)) {
         require_once $fileNameType1;
     } else if (file_exists($fileNameType2)) {
         require_once $fileNameType2;
-    } else {
-        throw new Exception( $className . ' could not be autoloaded.');
     }
 }
 
