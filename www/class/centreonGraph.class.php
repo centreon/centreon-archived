@@ -302,7 +302,7 @@ class CentreonGraph	{
 
 			$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 			$this->metrics[$metric["metric_id"]]["index_id"] = $metric["index_id"];
-			$this->metrics[$metric["metric_id"]]["metric"] = str_replace(array("#S#","#BS#", "#P#"), array("slash_", "bslash_", "pct_"), $metric["metric_name"]);
+			$this->metrics[$metric["metric_id"]]["metric"] = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $metric["metric_name"]);
 			$this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 			$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
 			$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
@@ -310,7 +310,7 @@ class CentreonGraph	{
 			/*
 			 * Copy Template values
 			 */
-			$DBRESULT2 =& $this->DB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".str_replace(array("#S#","#BS#"), array("/", "\\"), $metric["metric_name"])."'");
+			$DBRESULT2 =& $this->DB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metric["metric_name"]."'");
 			$ds_data =& $DBRESULT2->fetchRow();
 			$DBRESULT2->free();
 			if (!$ds_data) {
@@ -343,7 +343,7 @@ class CentreonGraph	{
 			}
 
 			if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
-				$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("#S#","slash_", "#BS#", "slash_", "pct_"), array("/", "/", "\/", "\/", "%"), $metric["metric_name"]);
+				$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("slash_", "bslash_", "pct_"), array("/", "\\", "%"), $metric["metric_name"]);
 			} else {
 				$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
 			}
@@ -587,6 +587,16 @@ class CentreonGraph	{
 		return false;
 	}
 
+	public function setHeaders() {
+		header("Content-Type: image/png");
+		header("Content-Transfer-Encoding: binary");
+		header("Content-Disposition: attachment; filename=\"".$this->filename.".png\";");
+
+		if ($this->compress && $encoding) {
+			header('Content-Encoding: '.$encoding);
+		}
+	}
+
 	public function displayImageFlow() {
 		$commandLine = "";
 
@@ -604,13 +614,7 @@ class CentreonGraph	{
 			$encoding = false;
 		}
 
-		header("Content-Type: image/png");
-		header("Content-Transfer-Encoding: binary");
-		header("Content-Disposition: attachment; filename=\"".$this->filename.".png\";");
-
-		if ($this->compress && $encoding) {
-			header('Content-Encoding: '.$encoding);
-		}
+		$this->setHeaders();
 
 		$commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
 
@@ -619,8 +623,7 @@ class CentreonGraph	{
 				$this->setRRDOption("end",   $this->GMT->getUTCDate($this->_RRDoptions["end"]) );
 		}
 		if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] > 2160000
-		&& $this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000 )
-		{
+		&& $this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000 ) {
 			if($this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000 - (86400*7))
 				$this->setRRDOption("x-grid", "DAY:1:DAY:7:DAY:7:0:%d/%m");
 			else
