@@ -36,6 +36,8 @@
 => enhancement: Improve macros management in host and service configuration page
 => enhancement: Add a specific color for disable object in monitoring
 => enhancement: Sort all object in multi select box in configuration pages
+=> enhancement: Add more options in search engine in monitoring
+=> enhancement: Add overlay in montoring on host link in all gird and summary pages
 
 
 ## Centreon 2.1.10
