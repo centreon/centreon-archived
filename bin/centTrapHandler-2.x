@@ -278,8 +278,8 @@ sub getTrapsInfos($$$$$) {
 		    # REPLACE MACROS
 		    $tmoString =~ s/\&quot\;/\"/g;
 		    $tmoString =~ s/\@HOSTNAME\@/$this_host/g;
-		    $tmoString =~ s/\@HOSTADDRESS\@/$_[1]/g;
-		    $tmoString =~ s/\@HOSTADDRESS2\@/$_[2]/g;
+		    $tmoString =~ s/\@HOSTADDRESS\@/$ip/g;
+		    $tmoString =~ s/\@HOSTADDRESS2\@/$hostname/g;
 		    $tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
 		    $tmoString =~ s/\@TIME\@/$datetime/g;
 		    
