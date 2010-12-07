@@ -315,4 +315,4 @@ UPDATE `topology` SET `readonly` = '0' WHERE `topology_page` IN (60101, 60102, 6
 UPDATE `cfg_nagios` SET `downtime_file` = NULL, `comment_file` = NULL;
 
 
-UPDATE `informations` SET `value` = '2.2.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.1.10' LIMIT 1;
+UPDATE `informations` SET `value` = '2.2.0-b1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.1.10' LIMIT 1;
