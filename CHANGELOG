@@ -1,26 +1,41 @@
 ## Centreon 2.2.0
 
+=> feature: Add shortcut from host configuration page to service configuration page
+=> feature: Improve trap management with adding rules for status detection
+=> feature: Add icones in all services, hosts, host template and service templates pages 
+=> feature: Add possibility to set ACL groupes directly from contact form
+=> feature: Add possibility to add link between ACL groups and ACL resources, menu and actions.
+=> feature: Add graph zoom
+=> feature: Add graph period swicth (previous / next)
+=> feature: Add graph image export icone
+=> feature: Add radmon colors for unknown datasource
+=> feature: Refactory of all graphs system
+=> feature: Add Engine name, Engine version and status in Configuration > Centreon > pollers 
 => feature #1570: new command and service interface
 => feature #1561: context-aware help tooltips
-=> feature : new type of objects, Host Categories for ACL
-=> feature : ACL can be set on Poller. When set, resources will be filtered
-=> feature : command arguments can have their descriptions. When set, there is no need to know the argument order of your commands
-=> feature : possibility to synchronize media directory with database
-=> feature : possibility to use multiple broker modules
-=> enhancement : code refactoring
-=> enhancement : removes useless/deprecated Nagios options 
-=> enhancement : better overview of monitoring status
-=> enhancement : new Views > Graphs interface (possibility to export images, zoom in etc...)
-=> enhancement : menus of modules can be translated
-=> enhancement : home > tactical overview is ajax'ed
-=> enhancement : service icons are displayed in monitoring and configuration pages
-=> enhancement : overlay windows show up in tactical overview and host monitoring pages
-=> enhancement : Nagios process control page in Administration > Server Status page (used to be in Home > Nagios Statistics)
-=> enhancement : Downtime and Comment pages in Monitoring > Services and Monitoring > Hosts pages (used to be in Monitoring > Event Logs)
-=> enhancement : New search fields in Monitoring > Services pages (search by host, service, plugin output)
-=> enhancement : cron jobs running status are stored in database
-=> enhancement : custom macro tab has been removed, the custom macro fields are displayed in the first tab
-=> enhancement : special characters with accents are now properly displayed in monitoring/views/configuration pages
+=> feature: new type of objects, Host Categories for ACL
+=> feature: ACL can be set on Poller. When set, resources will be filtered
+=> feature: command arguments can have their descriptions. When set, there is no need to know the argument order of your commands
+=> feature: possibility to synchronize media directory with database
+=> feature: possibility to use multiple broker modules
+=> enhancement: code refactoring
+=> enhancement: removes useless/deprecated Nagios options 
+=> enhancement: better overview of monitoring status
+=> enhancement: new Views > Graphs interface (possibility to export images, zoom in etc...)
+=> enhancement: menus of modules can be translated
+=> enhancement: home > tactical overview is ajax'ed
+=> enhancement: service icons are displayed in monitoring and configuration pages
+=> enhancement: overlay windows show up in tactical overview and host monitoring pages
+=> enhancement: Nagios process control page in Administration > Server Status page (used to be in Home > Nagios Statistics)
+=> enhancement: Downtime and Comment pages in Monitoring > Services and Monitoring > Hosts pages (used to be in Monitoring > Event Logs)
+=> enhancement: New search fields in Monitoring > Services pages (search by host, service, plugin output)
+=> enhancement: cron jobs running status are stored in database
+=> enhancement: custom macro tab has been removed, the custom macro fields are displayed in the first tab
+=> enhancement: special characters with accents are now properly displayed in monitoring/views/configuration pages
+=> enhancement: Add more search option in service pages 
+=> enhancement: Improve macros management in host and service configuration page
+=> enhancement: Add a specific color for disable object in monitoring
+=> enhancement: Sort all object in multi select box in configuration pages
 
 
 ## Centreon 2.1.10
