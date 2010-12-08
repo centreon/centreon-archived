@@ -22,9 +22,9 @@ ADD `contact_address4` VARCHAR( 200 ) NULL AFTER `contact_address3` ,
 ADD `contact_address5` VARCHAR( 200 ) NULL AFTER `contact_address4` ,
 ADD `contact_address6` VARCHAR( 200 ) NULL AFTER `contact_address5` ;
 
-INSERT INTO `topology_JS` (`id_page`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021501, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
-INSERT INTO `topology_JS` (`id_page`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021502, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
-INSERT INTO `topology_JS` (`id_page`, `id_page`, `o`, ,PathName_js`, `Init`) VALUES(NULL, 2021503, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021501, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021502, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, ,PathName_js`, `Init`) VALUES(NULL, 2021503, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 
 -- Graphs
 ALTER TABLE `giv_components_template` ADD `ds_stack` enum('0','1') default NULL;
@@ -106,9 +106,9 @@ ALTER TABLE `timeperiod_exceptions`
 
 ALTER TABLE `cfg_nagios` ADD `passive_host_checks_are_soft` INT(11) DEFAULT NULL ;
 ALTER TABLE `cfg_nagios` ADD `check_for_orphaned_hosts` enum('0','1','2') default NULL ;
-ALTER TABLE `cfg_nagios` ADD `external_command_buffer_slots` INT NULL ;
+ALTER TABLE `cfg_nagios` ADD `external_command_buffer_slots` INT(11) DEFAULT NULL ;
 ALTER TABLE `cfg_nagios` CHANGE service_reaper_frequency check_result_reaper_frequency INT(11);
-ALTER TABLE `cfg_nagios` CHANGE `translate_passive_host_checks` INT NULL ;
+ALTER TABLE `cfg_nagios` CHANGE `translate_passive_host_checks` INT(11) DEFAULT NULL ;
 ALTER TABLE `cfg_nagios` ADD use_aggressive_host_checking enum('0','1','2') default NULL;
 
 ALTER TABLE `cfg_nagios` DROP COLUMN aggregate_status_updates;
