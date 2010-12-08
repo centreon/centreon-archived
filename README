@@ -1,3 +1,10 @@
+Upgrade from 2.1.x
+=====================
+After Web upgrade
+---------------------
+Make sure to restart centstorage, hosts and/or services which contain unicode characters were renamed
+# /etc/init.d/centstorage restart
+
 Upgrade from 2.0.x
 =====================
 Before Web upgrade
