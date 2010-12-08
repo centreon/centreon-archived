@@ -1585,6 +1585,7 @@ CREATE TABLE IF NOT EXISTS `nagios_server` (
   `ns_activate` enum('1','0') default '1',
   `ns_status` enum('0','1','2','3','4') default '0',
   `init_script` varchar(255) default NULL,
+  `monitoring_engine` varchar(20) default NULL,
   `nagios_bin` varchar(255) default NULL,
   `nagiostats_bin` varchar(255) default NULL,
   `nagios_perfdata` varchar(255) default NULL,

@@ -34,11 +34,6 @@ ALTER TABLE `acl_resources` ADD `all_hostgroups` enum('0','1') default NULL AFTE
 ALTER TABLE `acl_resources` ADD `all_servicegroups` enum('0','1') default NULL AFTER all_hostgroups;
 
 
-
--------------
---- No valide
--------------
-
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Warning', NULL, 20215, 2021501, 10, NULL, './include/monitoring/status/monitoringService.php', '&o=svc_unhandled_warning', NULL, NULL, '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Critical', NULL, 20215, 2021502, 10, NULL, './include/monitoring/status/monitoringService.php', '&o=svc_unhandled_critical', NULL, NULL, '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Unknown', NULL, 20215, 2021503, 10, NULL, './include/monitoring/status/monitoringService.php', '&o=svc_unhandled_unknown', NULL, NULL, '1', NULL, NULL, NULL);
@@ -314,5 +309,6 @@ UPDATE `topology` SET `readonly` = '0' WHERE `topology_page` IN (60101, 60102, 6
 
 UPDATE `cfg_nagios` SET `downtime_file` = NULL, `comment_file` = NULL;
 
+ALTER TABLE `nagios_server` ADD COLUMN `monitoring_engine` VARCHAR(20) NULL AFTER `init_script`;
 
 UPDATE `informations` SET `value` = '2.2.0-b1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.1.10' LIMIT 1;
