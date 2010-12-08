@@ -36,7 +36,7 @@
  *
  */
 
- 	ini_set("display_errors", "On");
+ 	ini_set("display_errors", "Off");
 
 	/*
 	 * Define Local Functions
@@ -108,7 +108,7 @@
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
 					} else
-						$url = "../errors/alt_error.php";
+						$url = "./alt_error.php";
 				} else {
 					$ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
 					if ($ret2["topology_url_opt"])	{
@@ -126,7 +126,7 @@
 							$o = $tab[1];
 						}
 					} else {
-						$url = "../errors/alt_error.php";
+						$url = "./alt_error.php";
 					}
 				}
 			} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
@@ -136,7 +136,7 @@
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
 					} else
-						$url = "../errors/alt_error.php";
+						$url = "./alt_error.php";
 				} else {
 					if ($ret["topology_url_opt"]){
 						if (!$o) {
@@ -149,7 +149,7 @@
 						$url = $ret["topology_url"];
 						reset_search_page($url);
 					} else
-						$url = "../errors/alt_error.php";
+						$url = "./alt_error.php";
 				}
 			} else if ($redirect["topology_page"] >= 1000) {
 				$ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
@@ -158,24 +158,24 @@
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
 					} else
-						$url = "../errors/alt_error.php";
+						$url = "./alt_error.php";
 				} else {
 					if (file_exists($redirect["topology_url"]) && $ret['topology_page']){
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
 					} else
-						$url = "../errors/alt_error.php";
+						$url = "./alt_error.php";
 				}
 			}
 			if (isset($o) && $acl_page == 2) {
 				if ($o == 'c') {
 					$o = 'w';
 				} elseif ($o == 'a') {
-					$url = "../errors/alt_error.php";
+					$url = "./alt_error.php";
 				}
 			}
 		} else {
-			$url = "../errors/alt_error.php";
+			$url = "./alt_error.php";
 		}
 	} else
 		$url = "./include/doc/index.php";
