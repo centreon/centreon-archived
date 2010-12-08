@@ -79,7 +79,7 @@ if (isset($pearDB)) {
     $query = "SELECT command_id, command_name, command_line, command_example FROM command";
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
-        $query2 = "UPDATE service SET command_name = '".upgradeReplaceSpecialChars(html_entity_decode($rows['command_name']))."',
+        $query2 = "UPDATE command SET command_name = '".upgradeReplaceSpecialChars(html_entity_decode($rows['command_name']))."',
         		   command_line = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['command_line'])) . "',
         		   command_example = '". upgradeReplaceSpecialChars(html_entity_decode($rows['command_example'])) ."',
         		   command_comment = '". upgradeReplaceSpecialChars(html_entity_decode($rows['command_comment'])) ."' WHERE command_id = '".$rows['command_id']."'";

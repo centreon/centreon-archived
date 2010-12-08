@@ -22,8 +22,8 @@ ADD `contact_address4` VARCHAR( 200 ) NULL AFTER `contact_address3` ,
 ADD `contact_address5` VARCHAR( 200 ) NULL AFTER `contact_address4` ,
 ADD `contact_address6` VARCHAR( 200 ) NULL AFTER `contact_address5` ;
 
-INSERT INTO `topology_JS` (`id_page`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021501, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM'),
-INSERT INTO `topology_JS` (`id_page`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021502, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM'),
+INSERT INTO `topology_JS` (`id_page`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021501, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
+INSERT INTO `topology_JS` (`id_page`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021502, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 INSERT INTO `topology_JS` (`id_page`, `id_page`, `o`, ,PathName_js`, `Init`) VALUES(NULL, 2021503, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 
 -- Graphs
@@ -104,12 +104,12 @@ CREATE TABLE IF NOT EXISTS `timeperiod_exceptions` (
 ALTER TABLE `timeperiod_exceptions`
   ADD CONSTRAINT `timeperiod_exceptions_relation_ibfk_1` FOREIGN KEY (`timeperiod_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE CASCADE;
 
-ALTER TABLE `cfg_nagios` ADD `passive_host_checks_are_soft` INT NULL ;
+ALTER TABLE `cfg_nagios` ADD `passive_host_checks_are_soft` INT(11) DEFAULT NULL ;
 ALTER TABLE `cfg_nagios` ADD `check_for_orphaned_hosts` enum('0','1','2') default NULL ;
 ALTER TABLE `cfg_nagios` ADD `external_command_buffer_slots` INT NULL ;
 ALTER TABLE `cfg_nagios` CHANGE service_reaper_frequency check_result_reaper_frequency INT(11);
-ALTER TABLE `cfg_nagios` ADD `translate_passive_host_checks` INT NULL ;
-ALTER TABLE `cfg_nagios` CHANGE use_aggressive_host_checking use_aggressive_host_checking enum('0','1','2') default NULL;
+ALTER TABLE `cfg_nagios` CHANGE `translate_passive_host_checks` INT NULL ;
+ALTER TABLE `cfg_nagios` ADD use_aggressive_host_checking enum('0','1','2') default NULL;
 
 ALTER TABLE `cfg_nagios` DROP COLUMN aggregate_status_updates;
 
@@ -268,8 +268,7 @@ ALTER TABLE `acl_resources_hc_relations`
   ADD CONSTRAINT `acl_resources_hc_relations_ibfk_1` FOREIGN KEY (`hc_id`) REFERENCES `hostcategories` (`hc_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `acl_resources_hc_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE;
 
-ALTER TABLE `cron_operation` ADD `time_launch` INT NULL AFTER `command` ;
-ALTER TABLE `cron_operation` ADD `last_modification` INT NULL AFTER `time_launch` ;
+ALTER TABLE `cron_operation` CHANGE `time_launch` INT NULL ;
 ALTER TABLE `cron_operation` ADD `running` enum('0','1') AFTER `module` ;
 ALTER TABLE `cron_operation` ADD `last_execution_time` INT NULL AFTER `running` ;
 
