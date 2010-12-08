@@ -1,4 +1,5 @@
-ALTER TABLE `topology_JS` ON UPDATE CASCADE;
+ALTER TABLE `topology_JS` ADD CONSTRAINT `topology_page_idfk_1` FOREIGN KEY (`id_page`) REFERENCES `topology` (`topology_page`) ON DELETE CASCADE;
+
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 603, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 603, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 603, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
@@ -21,10 +22,6 @@ ADD `contact_address3` VARCHAR( 200 ) NULL AFTER `contact_address2` ,
 ADD `contact_address4` VARCHAR( 200 ) NULL AFTER `contact_address3` ,
 ADD `contact_address5` VARCHAR( 200 ) NULL AFTER `contact_address4` ,
 ADD `contact_address6` VARCHAR( 200 ) NULL AFTER `contact_address5` ;
-
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021501, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 2021502, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, ,PathName_js`, `Init`) VALUES(NULL, 2021503, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 
 -- Graphs
 ALTER TABLE `giv_components_template` ADD `ds_stack` enum('0','1') default NULL;
@@ -108,7 +105,7 @@ ALTER TABLE `cfg_nagios` ADD `passive_host_checks_are_soft` INT(11) DEFAULT NULL
 ALTER TABLE `cfg_nagios` ADD `check_for_orphaned_hosts` enum('0','1','2') default NULL ;
 ALTER TABLE `cfg_nagios` ADD `external_command_buffer_slots` INT(11) DEFAULT NULL ;
 ALTER TABLE `cfg_nagios` CHANGE service_reaper_frequency check_result_reaper_frequency INT(11);
-ALTER TABLE `cfg_nagios` CHANGE `translate_passive_host_checks` INT(11) DEFAULT NULL ;
+ALTER TABLE `cfg_nagios` CHANGE `translate_passive_host_checks` `translate_passive_host_checks` INT(11) DEFAULT NULL ;
 ALTER TABLE `cfg_nagios` ADD use_aggressive_host_checking enum('0','1','2') default NULL;
 
 ALTER TABLE `cfg_nagios` DROP COLUMN aggregate_status_updates;
@@ -268,7 +265,7 @@ ALTER TABLE `acl_resources_hc_relations`
   ADD CONSTRAINT `acl_resources_hc_relations_ibfk_1` FOREIGN KEY (`hc_id`) REFERENCES `hostcategories` (`hc_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `acl_resources_hc_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE;
 
-ALTER TABLE `cron_operation` CHANGE `time_launch` INT NULL ;
+ALTER TABLE `cron_operation` CHANGE `time_launch` `time_launch` INT(11) DEFAULT NULL ;
 ALTER TABLE `cron_operation` ADD `running` enum('0','1') AFTER `module` ;
 ALTER TABLE `cron_operation` ADD `last_execution_time` INT NULL AFTER `running` ;
 
