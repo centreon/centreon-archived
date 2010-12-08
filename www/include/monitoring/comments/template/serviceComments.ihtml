@@ -21,7 +21,7 @@
 </table>
 <table class="ListTable">
 	<tr class='ListHeader'>
-	<td>&nbsp;<img src='./img/icones/16x16/message.gif'>&nbsp;{$cmt_service_comment}</td>		
+	<td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$cmt_service_comment}</td>		
 	<td align='right'>
 		{if $msgs}<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
 	</td>		
