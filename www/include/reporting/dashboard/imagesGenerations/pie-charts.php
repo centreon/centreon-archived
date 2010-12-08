@@ -83,9 +83,9 @@
 	$g->set_tool_tip( '#val#%' );
 
 	if (isset($_GET["service_name"]) && isset($_GET["host_name"]))
-		$g->title( $_GET["service_name"] . " on " . $_GET["host_name"], '{font-size:15px; color: #424242}' );
+		$g->title( utf8_encode($_GET["service_name"]) . " on " . utf8_encode($_GET["host_name"]), '{font-size:15px; color: #424242}' );
 	else if (isset($_GET["host_name"]))
-		$g->title( $_GET["host_name"], '{font-size:18px; color: #424242}' );
+		$g->title( utf8_encode($_GET["host_name"]), '{font-size:18px; color: #424242}' );
 	header("Cache-Control: cache, must-revalidate");
 	header("Pragma: public");
 	echo $g->render();
