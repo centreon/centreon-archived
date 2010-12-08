@@ -114,7 +114,7 @@
 		global $form, $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		$rq = "INSERT INTO `nagios_server` (`name` , `localhost` , `ns_ip_address`, `ssh_port`, `monitoring_engine`, nagios_bin`, `nagiostats_bin` , `init_script`, `nagios_perfdata` , `ssh_private_key`, `ns_activate`) ";
+		$rq = "INSERT INTO `nagios_server` (`name` , `localhost` , `ns_ip_address`, `ssh_port`, `monitoring_engine`, `nagios_bin`, `nagiostats_bin` , `init_script`, `nagios_perfdata` , `ssh_private_key`, `ns_activate`) ";
 		$rq .= "VALUES (";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities(trim($ret["name"]), ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != NULL ? $rq .= "'".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
