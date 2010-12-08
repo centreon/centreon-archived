@@ -27,7 +27,7 @@ INSERT INTO `cfg_nagios` (`nagios_name`, `log_file`, `cfg_dir`, `object_cache_fi
 -- Contenu de la table `cfg_nagios`
 --
 
-INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('1', '@NAGIOS_BIN@/ndomod.o config_file=@NAGIOS_ETC@/ndomod.cfg');
+INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('1', '@NDOMOD_BINARY@ config_file=@NAGIOS_ETC@/ndomod.cfg');
 
 --
 -- Contenu de la table `cfg_ndo2db`
