@@ -76,7 +76,7 @@
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-	$grouplistStr = $obj->access->getAccessGroupsString();   
+	$grouplistStr = $obj->access->getAccessGroupsString();
 
 	/** **************************************
 	 * Get Icone list
@@ -239,8 +239,8 @@
 						}
 					}
 					$obj->XML->writeElement("o", $ct);
-					$obj->XML->writeElement("hn", $host_name);
-					if (isset($hostIcones[$host_name])) {
+					$obj->XML->writeElement("hn", $host_name, false);
+					if (isset($hostIcones[$host_name]) && $hostIcones[$host_name]) {
 						$obj->XML->writeElement("hico", $hostIcones[$host_name]);
 					} else {
 						$obj->XML->writeElement("hico", "none");

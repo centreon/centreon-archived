@@ -36,7 +36,7 @@
  *
  */
 
-	ini_set("display_errors", "On");
+	ini_set("display_errors", "Off");
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
     //include_once "@CENTREON_ETC@/centreon.conf.php";
@@ -321,8 +321,8 @@
 				$hs = $tabHostStatus[$tab["host_name"]];
 				$obj->XML->startElement("h");
 				$obj->XML->writeAttribute("class", $obj->getNextLineClass());
-				$obj->XML->writeElement("hn", $tab["host_name"]);
-				if (isset($hostIcones[$host_name])) {
+				$obj->XML->writeElement("hn", $tab["host_name"], false);
+				if (isset($hostIcones[$host_name]) && $hostIcones[$host_name]) {
 					$obj->XML->writeElement("hico", $hostIcones[$tab["host_name"]]);
 				} else {
 					$obj->XML->writeElement("hico", "none");

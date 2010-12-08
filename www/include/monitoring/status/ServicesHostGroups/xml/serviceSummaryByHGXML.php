@@ -205,8 +205,8 @@
 				$obj->XML->writeElement("sp", $tab[4]);
 				$obj->XML->writeElement("spc", $obj->colorService[4] );
 				$obj->XML->writeElement("o", $ct++);
-				$obj->XML->writeElement("hn", $host_name);
-				if (isset($hostIcones[$host_name])) {
+				$obj->XML->writeElement("hn", $host_name, false);
+				if (isset($hostIcones[$host_name]) && $hostIcones[$host_name]) {
 					$obj->XML->writeElement("hico", $hostIcones[$host_name]);
 				} else {
 					$obj->XML->writeElement("hico", "none");
