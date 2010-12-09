@@ -172,6 +172,7 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 	background : white;
 	color : <?php print $menu1_bgcolor; ?>;
 	border-color : <?php print $menu1_bgcolor; ?>;
+	cursor: pointer;
 	}
 
 input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
