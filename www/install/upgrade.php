@@ -77,13 +77,6 @@
 	} else if (isset($_POST["step"]) && $_POST["step"] == 6){
 		include("./step_upgrade/step7.php");
 	}
-?>
-<script type='text/javascript' src='../include/common/javascript/scriptaculous/prototype.js'></script>
-<script type='text/javascript'>
-$$('input[class="button"]').each(function(el) {
-	el.setAttribute('onclick', "this.setAttribute('disabled', 'disabled'); $$('form').each(function(frm) { frm.submit()});");
-});
-</script>
-<?php
+
 	exit();
 ?>
