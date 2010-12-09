@@ -102,8 +102,8 @@ if [ -e "$SNMPTT_BINDIR/snmpttconvertmib" ] ; then
 	log "INFO" "$(gettext "Backup") : $SNMPTT_BINDIR/snmpttconvertmib"
 	mv $SNMPTT_BINDIR/snmpttconvertmib \
 		$SNMPTT_BINDIR/snmpttconvertmib.bak-centreon
+	check_result $?  "$(gettext "Backup all your snmp files")"
 fi
-echo_info "$(gettext "Backup all your snmp files")" "$ok"
 
 log "INFO" "$(gettext "Installing snmptt")"
 # Change macros on snmptrapd.conf
