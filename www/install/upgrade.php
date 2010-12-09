@@ -81,7 +81,7 @@
 <script type='text/javascript' src='../include/common/javascript/scriptaculous/prototype.js'></script>
 <script type='text/javascript'>
 $$('input[class="button"]').each(function(el) {
-	el.setAttribute('onclick', "el.setAttribute('disabled', 'disabled'); $$('form').each(function(frm) { frm.submit()});");
+	el.setAttribute('onclick', "this.setAttribute('disabled', 'disabled'); $$('form').each(function(frm) { frm.submit()});");
 });
 </script>
 <?php
