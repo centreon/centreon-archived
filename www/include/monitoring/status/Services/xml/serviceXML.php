@@ -96,7 +96,7 @@
 	/* *************************************************
 	 * Get Host status
 	 */
-	$rq1 = 	"SELECT DISTINCT no.name1 as host_name," .
+	$rq1 = 	"SELECT DISTINCT no.name1 as host_name, nh.address, nh.alias as host_alias, " .
 			" nhs.current_state, nhs.problem_has_been_acknowledged, nhs.scheduled_downtime_depth, " .
 			" nhs.passive_checks_enabled, nhs.active_checks_enabled, no.object_id, nh.action_url," .
 			" nh.notes_url, nh.notes, nh.icon_image, nh.address " .
@@ -430,6 +430,12 @@
 			if ($ndo["notes_url"] != "") {
 				$ndo["notes_url"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes_url"]);
 				$ndo["notes_url"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes_url"]);
+				if (isset($host_status[$ndo["host_name"]]['host_alias']) && $host_status[$ndo["host_name"]]['host_alias']) {
+				    $ndo["notes_url"] = str_replace("\$HOSTALIAS\$", $host_status[$ndo["host_name"]]['host_alias'], $ndo["notes_url"]);
+				}
+				if (isset($host_status[$ndo["host_name"]]['address']) && $host_status[$ndo["host_name"]]['address']) {
+                    $ndo["notes_url"] = str_replace("\$HOSTADDRESS\$", $host_status[$ndo["host_name"]]['address'], $ndo["notes_url"]);
+				}
 				$obj->XML->writeElement("snu", $ndo["notes_url"]);
 			} else {
 				$obj->XML->writeElement("snu", 'none');
