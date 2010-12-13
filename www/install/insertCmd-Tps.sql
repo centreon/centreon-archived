@@ -81,9 +81,6 @@ INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_descriptio
 INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG3", "critical");
 INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG4", "community");
 INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG5", "SNMP version");
-INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG1", "warning");
-INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG2", "critical");
-INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (8, "ARG3", "path, partition");
 INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (10, "ARG1", "interface");
 INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (10, "ARG2", "warning");
 INSERT INTO `command_arg_description` (`cmd_id`, `macro_name`, `macro_description`) VALUES (10, "ARG3", "critical");
