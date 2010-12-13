@@ -42,6 +42,9 @@
 	include_once($centreon_path . "www/class/centreonDB.class.php");
 	include_once($centreon_path . "www/include/common/common-Func.php");
 
+	/*
+	 * Connect MySQL DB
+	 */
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
 
@@ -50,21 +53,20 @@
 	 */
 	(isset($_GET["sid"]) && !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
 
+	/**
+	 * Check Session ID
+	 */
 	if (isset($sid) && !check_injection($sid)){
 		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($session =& $res->fetchRow()){
+		if ($session =& $res->fetchRow()) {
 			$_POST["sid"] = $sid;
 		} else
 			get_error('bad session id');
-
-	} else
+	} else {
 			get_error('need session identifiant !');
-
-	require_once $centreon_path . "www/class/other.class.php";
-	require_once $centreon_path . "www/include/common/common-Func.php";
-
-
+	}
+	
 	// save of the XML flow in $flux
 	$csv_flag = 1; //setting the csv_flag variable to change limit in SQL request of getODSXmlLog.php when CSV exporting
 	ob_start();
