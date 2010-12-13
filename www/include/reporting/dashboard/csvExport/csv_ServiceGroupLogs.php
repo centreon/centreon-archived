@@ -40,9 +40,10 @@
 	require_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 	include_once $centreon_path . "www/include/reporting/dashboard/common-Func.php";
-	require_once $centreon_path . "www/class/User.class.php";
+	require_once $centreon_path . "www/class/centreonUser.class.php";
+	require_once $centreon_path . "www/class/centreonSession.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";
-	require_once $centreon_path."www/class/centreonDuration.class.php";
+	require_once $centreon_path . "www/class/centreonDuration.class.php";
 	include_once $centreon_path . "www/include/reporting/dashboard/DB-Func.php";
 
 	/*
@@ -52,19 +53,13 @@
 	$pearDBndo 	= new CentreonDB("ndo");
 	$pearDBO 	= new CentreonDB("centstorage");
 
-	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
-		$res =& $pearDB->query("SELECT * FROM contact, session WHERE session.session_id='".$_GET['sid']."' AND session.user_id = contact.contact_id");
-		$user =& new User($res->fetchRow(), "3");
-		$oreon = new Centreon($user);
-
-		$sid = $_GET["sid"];
-		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if ($session = $res->fetchRow()) {
-			$_POST["sid"] = $sid;
-		} else {
-			get_error('bad session id');
-		}
+	if (isset($_GET["sid"]) && isset($_SESSION['centreon']) && !check_injection($_GET["sid"])){
+	    $oreon = $_SESSION['centreon'];
+        $query = "SELECT user_id FROM session WHERE user_id = '".$pearDB->escape($oreon->user->user_id)."'";
+        $res = $pearDB->query($query);
+        if (!$res->numRows()) {
+            get_error('bad session id');
+        }
 	} else {
 		get_error('need session id!');
 	}
