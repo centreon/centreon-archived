@@ -166,6 +166,7 @@
 			" nh.address," .
 			" no.name1 as host_name, " .
 			" nh.notes_url, " .
+		    " nh.alias, " .
 			" nh.action_url " .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
 			" WHERE no.object_id = nhs.host_object_id AND no.object_id = nh.host_object_id AND no.name1 like '".$host_name."'";
@@ -175,10 +176,16 @@
 
 		$host_status[$host_name] = $ndo2;
 		$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
-		$host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $ndo2["host_name"], $ndo2["notes_url"]);
-		$host_status[$host_name]["notes_url"] = str_replace("\$HOSTADDRESS\$", $ndo2["address"], $ndo2["notes_url"]);
-		$host_status[$host_name]["action_url"] = str_replace("\$HOSTNAME\$", $ndo2["host_name"], $ndo2["action_url"]);
-		$host_status[$host_name]["action_url"] = str_replace("\$HOSTADDRESS\$", $ndo2["address"], $ndo2["action_url"]);
+		if (isset($host_status[$host_name]["notes_url"]) && $host_status[$host_name]["notes_url"]) {
+		    $host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $ndo2["host_name"], $ndo2["notes_url"]);
+		    $host_status[$host_name]["notes_url"] = str_replace("\$HOSTADDRESS\$", $ndo2["address"], $ndo2["notes_url"]);
+		    $host_status[$host_name]["notes_url"] = str_replace("\$HOSTALIAS\$", $ndo2["alias"], $ndo2["notes_url"]);
+		}
+		if (isset($host_status[$host_name]["action_url"]) && $host_status[$host_name]["action_url"]) {
+    		$host_status[$host_name]["action_url"] = str_replace("\$HOSTNAME\$", $ndo2["host_name"], $ndo2["action_url"]);
+    		$host_status[$host_name]["action_url"] = str_replace("\$HOSTADDRESS\$", $ndo2["address"], $ndo2["action_url"]);
+    		$host_status[$host_name]["action_url"] = str_replace("\$HOSTALIAS\$", $ndo2["alias"], $ndo2["action_url"]);
+		}
 
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		$hostDB =& $res->fetchRow();
