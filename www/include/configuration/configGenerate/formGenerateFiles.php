@@ -144,6 +144,10 @@
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
 				if (isset($ret["host"]) && ($tab['id'] == $ret["host"] || $ret["host"] == 0)) {
 					unset($DBRESULT2);
+					if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "SHINKEN" &&
+					    $tab['localhost']) {
+                        require $path . "genShinkenBroker.php";
+					}
 					require $path."genCGICFG.php";
 					require $path."genNagiosCFG.php";
 					require $path."genNdomod.php";
