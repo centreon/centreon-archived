@@ -130,6 +130,8 @@
 				$str .= $key."=".$value."\n";
 		}
 	}
-	$str .= "check_for_updates=0\n";
+	if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "NAGIOS") {
+	    $str .= "check_for_updates=0\n";
+	}
 //	$str .= "bare_update_checks=1\n";
 ?>
