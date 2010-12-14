@@ -167,8 +167,8 @@ sub analyse_host_row($$) {
 sub analyse_service_row($$) {
     my ($start, $row) = (shift, shift);
 
-    $row->{"service_description"} =~ s/\//#S#/g;
-    $row->{"service_description"} =~ s/\\/#BS#/g;
+#    $row->{"service_description"} =~ s/\//#S#/g;
+#    $row->{"service_description"} =~ s/\\/#BS#/g;
 
     my $svc = $row->{"host_name"}.";".$row->{"service_description"};
     if (!defined($services{$svc})) {
@@ -288,8 +288,8 @@ sub get_last_status_in_ignored_time($$) {
     die "Error: " . $dbh->errstr . "\n" if (!$sth);
     while (my $row = $sth->fetchrow_hashref()) {
 
-	$row->{"host_name"} =~ s/\//#S#/g;
-	$row->{"host_name"} =~ s/\\/#BS#/g;
+#	$row->{"host_name"} =~ s/\//#S#/g;
+#	$row->{"host_name"} =~ s/\\/#BS#/g;
 	$row->{"host_name"} = uc($row->{"host_name"});
 
 	if (!defined($row->{"service_description"})) {
@@ -331,8 +331,8 @@ sub get_last_status_in_ignored_time($$) {
 		}
 	    }
 	}else {
-	    $row->{"service_description"} =~ s/\//#S#/g;
-	    $row->{"service_description"} =~ s/\\/#BS#/g;
+#	    $row->{"service_description"} =~ s/\//#S#/g;
+#	    $row->{"service_description"} =~ s/\\/#BS#/g;
 	    $row->{"service_description"} = uc($row->{"service_description"});
 	    # service already exists in table log_archive_last_status
 	    if (defined($services{$row->{"host_name"}.";".$row->{"service_description"}})) {
@@ -569,8 +569,8 @@ sub insert_hosts_stats_in_db ($$) {
 	$value->{$value->{"current_state"}."_D"} += $date_end - $value->{"current_state_time"};
 
 	# Replace special chars
-	$key =~ s/\//#S#/g;
-	$key =~ s/\\/#BS#/g;
+#	$key =~ s/\//#S#/g;
+#	$key =~ s/\\/#BS#/g;
 
 	# Fetching host_id from host_name if host_id is not defined in %value hash table
 	my $host_id;
@@ -624,10 +624,10 @@ sub insert_services_stats_in_db ($$) {
 	my ($host_name, $svc_desc) = split (";", $key);
 
 	# Replace special chars
-	$host_name =~ s/\//#S#/g;
-	$host_name =~ s/\\/#BS#/g;
-	$svc_desc =~ s/\//#S#/g;
-	$svc_desc =~ s/\\/#BS#/g;
+#	$host_name =~ s/\//#S#/g;
+#	$host_name =~ s/\\/#BS#/g;
+#	$svc_desc =~ s/\//#S#/g;
+#	$svc_desc =~ s/\\/#BS#/g;
 
 	# Fetching host_id from host_name if host_id is not defined in %value hash table
 	my $host_id;
