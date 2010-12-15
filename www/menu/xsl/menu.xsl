@@ -20,7 +20,7 @@
 				</xsl:attribute>
 				<xsl:element name="a">
 					<xsl:attribute name="onclick">
-						loadAjax(<xsl:value-of select="Menu1Page"/>);
+						loadAjax(<xsl:value-of select="Menu1Page"/>); return false;
 					</xsl:attribute>
 					<xsl:attribute name="href">
 						#

@@ -6,7 +6,7 @@
 		      	{if $elemArr1[elem1].Menu1UrlPopup}
 		      	<li><div id="{$elemArr1[elem1].Menu1ClassImg}"><a href='{$elemArr1[elem1].Menu1UrlPopupOpen}' target="_blank">{$elemArr1[elem1].Menu1Name}</a></div></li>
 		      	{else}
-		      	<li><div id="{$elemArr1[elem1].Menu1ClassImg}"><a href='#' onClick="loadAjax({$elemArr1[elem1].Menu1Page});">{$elemArr1[elem1].Menu1Name}</a></div></li>
+		      	<li><div id="{$elemArr1[elem1].Menu1ClassImg}"><a href='#' onClick="loadAjax({$elemArr1[elem1].Menu1Page}); return false;">{$elemArr1[elem1].Menu1Name}</a></div></li>
 		      	{/if}
 				{/section}
 		        </ul>
