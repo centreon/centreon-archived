@@ -476,7 +476,7 @@ function nextPeriod() {
      */
     function addGraphZoom(img_name) {
         if ($(img_name).ancestors()[0].match('a')) {
-        	$(img_name).ancestors()[0].setAttribute('onClick', '');
+        	$(img_name).ancestors()[0].setAttribute('onClick', 'return false;');
         }
         var maxheight = document.getElementById(img_name).offsetHeight;
     	list_img.set(img_name, new Cropper.Img(img_name, {
@@ -547,7 +547,7 @@ function nextPeriod() {
     }
 
     function switchZoomGraph(tag_name) {
-        $("zoom_" + tag_name).setAttribute("onClick", "toGraphZoom('" + tag_name + "')");
+        $("zoom_" + tag_name).setAttribute("onClick", "toGraphZoom('" + tag_name + "'); return false;");
         if ($(tag_name) != null) {
             if (list_img.get(tag_name) == undefined) {
         		addGraphZoom(tag_name);

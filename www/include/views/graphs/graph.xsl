@@ -77,7 +77,7 @@
 					<td style="text-align:right;width:70px;">	
 						<xsl:element name="a">
 							<xsl:attribute name="id">zoom_<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/></xsl:attribute>
-							<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/>");</xsl:attribute>
+							<xsl:attribute name="onClick">switchZoomGraph("<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/>"); return false;</xsl:attribute>
 							<xsl:attribute name="style">cursor: pointer;</xsl:attribute>
 							<img src="./img/icones/16x16/view.gif" style="margin-right:5px;" />
 						</xsl:element>
