@@ -180,8 +180,8 @@
 							"upgrade_author" => $upgrade_conf[$moduleinfo["name"]]["author"],
 							"upgrade_infos" => $upgrade_conf[$moduleinfo["name"]]["infos"],
 							"upgrade_infosTxt" => $upgrade_infosTxt,
-							"upgrade_is_validUp" => $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? _("Yes") : _("No"),
-							"upgrade_choice" => $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false);
+							"upgrade_is_validUp" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? _("Yes") : _("No"),
+							"upgrade_choice" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false);
 						$i++;
 						$hid_id =& $form->addElement('hidden', 'id');
 						$hid_id->setValue($id);
