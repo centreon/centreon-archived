@@ -196,13 +196,20 @@
 					$key2 == "contact_name" ? ($contact_name = $value2 = $value2."_".$i) : null;
 					$key2 == "contact_alias" ? ($contact_alias = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2 != NULL?("'".$value2."'"):"NULL");
-					if ($key2 != "contact_id")
+					if ($key2 != "contact_id") {
 						$fields[$key2] = $value2;
-					$fields["contact_name"] = $contact_name;
-					$fields["contact_alias"] = $contact_alias;
+					}
+					if (isset($contact_name)) {
+					    $fields["contact_name"] = $contact_name;
+					}
+					if (isset($contact_alias)) {
+					    $fields["contact_alias"] = $contact_alias;
+					}
 				}
 
-				$ret["contact_name"] = $oreon->checkIllegalChar($ret["contact_name"]);
+				if (isset($row['contact_name'])) {
+				    $row["contact_name"] = $oreon->checkIllegalChar($row["contact_name"]);
+				}
 
 				if (testContactExistence($contact_name) && testAliasExistence($contact_alias))	{
 					$val ? $rq = "INSERT INTO contact VALUES (".$val.")" : $rq = null;

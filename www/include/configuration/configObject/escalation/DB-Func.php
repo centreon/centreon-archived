@@ -3,42 +3,42 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset ($oreon))
 		exit ();
-	
+
 	function testExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
@@ -48,7 +48,7 @@
 		$DBRESULT =& $pearDB->query("SELECT esc_name, esc_id FROM escalation WHERE esc_name = '".$name."'");
 		$esc =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($DBRESULT->numRows() >= 1 && $esc["esc_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $esc["esc_id"] == $id)
 			return true;
 		#Duplicate entry
 		else if ($DBRESULT->numRows() >= 1 && $esc["esc_id"] != $id)
@@ -56,18 +56,18 @@
 		else
 			return true;
 	}
-		
+
 	function deleteEscalationInDB ($escalations = array())	{
 		global $pearDB, $oreon;
 		foreach($escalations as $key=>$value)	{
 			$DBRESULT2 =& $pearDB->query("SELECT esc_name FROM `escalation` WHERE `esc_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
-			
+
 			$DBRESULT =& $pearDB->query("DELETE FROM escalation WHERE esc_id = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("escalation", $key, $row['esc_name'], "d");
 		}
 	}
-	
+
 	function multipleEscalationInDB ($escalations = array(), $nbrDup = array())	{
 		foreach($escalations as $key=>$value)	{
 			global $pearDB, $oreon;
@@ -81,9 +81,11 @@
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 					if ($key2 != "esc_id")
 						$fields[$key2] = $value2;
-					$fields["esc_name"] = $esc_name;
+					if (isset($esc_name)) {
+					    $fields["esc_name"] = $esc_name;
+					}
 				}
-				if (testExistence($esc_name))	{
+				if (isset($esc_name) && testExistence($esc_name))	{
 					$val ? $rq = "INSERT INTO escalation VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					$DBRESULT =& $pearDB->query("SELECT MAX(esc_id) FROM escalation");
@@ -137,7 +139,7 @@
 			}
 		}
 	}
-	
+
 	function updateEscalationInDB ($esc_id = NULL)	{
 		if (!$esc_id) exit();
 		updateEscalation($esc_id);
@@ -147,8 +149,8 @@
 		updateEscalationServices($esc_id);
 		updateEscalationMetaServices($esc_id);
 		updateEscalationServiceGroups($esc_id);
-	}	
-	
+	}
+
 	function insertEscalationInDB ()	{
 		$esc_id = insertEscalation();
 		updateEscalationContactGroups($esc_id);
@@ -159,7 +161,7 @@
 		updateEscalationServiceGroups($esc_id);
 		return ($esc_id);
 	}
-	
+
 	function insertEscalation()	{
 		global $form;
 		global $pearDB, $oreon;
@@ -211,7 +213,7 @@
 		$oreon->CentreonLogAction->insertLog("escalation", $esc_id["MAX(esc_id)"], htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
 		return ($esc_id["MAX(esc_id)"]);
 	}
-	
+
 	function updateEscalation($esc_id = null)	{
 		if (!$esc_id) exit();
 		global $form;
@@ -268,7 +270,7 @@
 			$fields["esc_metas"] = implode(",", $ret["esc_metas"]);
 		$oreon->CentreonLogAction->insertLog("escalation", $esc_id["MAX(esc_id)"], htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 	}
-	
+
 	function updateEscalationContactGroups($esc_id = null)	{
 		if (!$esc_id) exit();
 		global $form;
@@ -286,7 +288,7 @@
 			$DBRESULT =& $pearDB->query($rq);
 		}
 	}
-	
+
 	function updateEscalationHosts($esc_id = null)	{
 		if (!$esc_id) exit();
 		global $form;
@@ -304,7 +306,7 @@
 			$DBRESULT =& $pearDB->query($rq);
 		}
 	}
-	
+
 	function updateEscalationHostGroups($esc_id = null)	{
 		if (!$esc_id) exit();
 		global $form;
@@ -322,7 +324,7 @@
 			$DBRESULT =& $pearDB->query($rq);
 		}
 	}
-	
+
 	function updateEscalationServiceGroups($esc_id = null)	{
 		if (!$esc_id) exit();
 		global $form;
@@ -340,7 +342,7 @@
 			$DBRESULT =& $pearDB->query($rq);
 		}
 	}
-	
+
 	function updateEscalationServices($esc_id = null)	{
 		if (!$esc_id) exit();
 		global $form;
@@ -361,7 +363,7 @@
 			}
 		}
 	}
-	
+
 	function updateEscalationMetaServices($esc_id = null)	{
 		if (!$esc_id) exit();
 		global $form;

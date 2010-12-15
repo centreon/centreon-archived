@@ -3,42 +3,42 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset ($oreon))
 		exit ();
-	
+
 	function testServiceDependencyExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
@@ -48,7 +48,7 @@
 		$DBRESULT =& $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$dep =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id)
 			return true;
 		#Duplicate entry
 		else if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] != $id)
@@ -56,7 +56,7 @@
 		else
 			return true;
 	}
-	
+
 	function testCycleH ($childs = NULL)	{
 		global $pearDB;
 		global $form;
@@ -78,12 +78,12 @@
 		foreach($dependencies as $key=>$value)	{
 			$DBRESULT2 =& $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
-			
+
 			$DBRESULT =& $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("service dependency", $key, $row['dep_name'], "d");
 		}
 	}
-	
+
 	function multipleServiceDependencyInDB ($dependencies = array(), $nbrDup = array())	{
 		foreach($dependencies as $key=>$value)	{
 			global $pearDB, $oreon;
@@ -97,9 +97,11 @@
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 					if ($key2 != "dep_id")
 						$fields[$key2] = $value2;
-					$fields["dep_name"] = $dep_name;
+					if (isset($dep_name)) {
+                        $fields["dep_name"] = $dep_name;
+					}
 				}
-				if (testServiceDependencyExistence($dep_name))	{
+				if (isset($dep_name) && testServiceDependencyExistence($dep_name))	{
 					$val ? $rq = "INSERT INTO dependency VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
 					$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
@@ -125,21 +127,21 @@
 			}
 		}
 	}
-	
+
 	function updateServiceDependencyInDB ($dep_id = NULL)	{
 		if (!$dep_id) exit();
 		updateServiceDependency($dep_id);
 		updateServiceDependencyServiceParents($dep_id);
 		updateServiceDependencyServiceChilds($dep_id);
-	}	
-	
+	}
+
 	function insertServiceDependencyInDB ($ret = array())	{
 		$dep_id = insertServiceDependency($ret);
 		updateServiceDependencyServiceParents($dep_id, $ret);
 		updateServiceDependencyServiceChilds($dep_id, $ret);
 		return ($dep_id);
 	}
-	
+
 	function insertServiceDependency($ret = array())	{
 		global $form;
 		global $pearDB, $oreon;
@@ -158,7 +160,7 @@
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
 		$dep_id = $DBRESULT->fetchRow();
-		
+
 		$fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
 		$fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8");
 		$fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
@@ -174,7 +176,7 @@
 		$oreon->CentreonLogAction->insertLog("service dependency", $dep_id["MAX(dep_id)"], htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
 		return ($dep_id["MAX(dep_id)"]);
 	}
-	
+
 	function updateServiceDependency($dep_id = null)	{
 		if (!$dep_id) exit();
 		global $form;
@@ -196,7 +198,7 @@
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8")."' " : $rq .= "NULL ";
 		$rq .= "WHERE dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		
+
 		$fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
 		$fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8");
 		$fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
@@ -211,7 +213,7 @@
 			$fields["dep_hSvChi"] = implode(",", $ret["dep_hSvChi"]);
 		$oreon->CentreonLogAction->insertLog("service dependency", $dep_id, htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 	}
-		
+
 	function updateServiceDependencyServiceParents($dep_id = null, $ret = array())	{
 		if (!$dep_id) exit();
 		global $form;
@@ -220,7 +222,7 @@
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (isset($ret["dep_hSvPar"]))
-			$ret1 = $ret["dep_hSvPar"]; 
+			$ret1 = $ret["dep_hSvPar"];
 		else
 			$ret1 = $form->getSubmitValue("dep_hSvPar");
 		for($i = 0; $i < count($ret1); $i++)	{
@@ -234,7 +236,7 @@
 			}
 		}
 	}
-		
+
 	function updateServiceDependencyServiceChilds($dep_id = null, $ret = array())	{
 		if (!$dep_id) exit();
 		global $form;

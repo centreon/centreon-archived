@@ -183,7 +183,8 @@
 	$DBRESULT->free();
 	unset($data);
 
-
+	$start = 0;
+    $end = 0;
 	if ($contact_id){
 		$user_params = get_user_param($contact_id, $pearDB);
 

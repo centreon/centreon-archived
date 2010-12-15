@@ -588,7 +588,7 @@ class CentreonGraph	{
 		return false;
 	}
 
-	public function setHeaders() {
+	public function setHeaders($encoding) {
 		header("Content-Type: image/png");
 		header("Content-Transfer-Encoding: binary");
 		header("Content-Disposition: attachment; filename=\"".$this->filename.".png\";");
@@ -615,7 +615,7 @@ class CentreonGraph	{
 			$encoding = false;
 		}
 
-		$this->setHeaders();
+		$this->setHeaders($encoding);
 
 		$commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
 

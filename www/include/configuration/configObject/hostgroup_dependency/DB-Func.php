@@ -95,11 +95,14 @@
 				foreach ($row as $key2=>$value2)	{
 					$key2 == "dep_name" ? ($dep_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
-					if ($key2 != "dep_id")
+					if ($key2 != "dep_id") {
 						$fields[$key2] = $value2;
-					$fields["dep_name"] = $dep_name;
+					}
+					if (isset($dep_name)) {
+					    $fields["dep_name"] = $dep_name;
+					}
 				}
-				if (testHostGroupDependencyExistence($dep_name))	{
+				if (isset($dep_name) && testHostGroupDependencyExistence($dep_name)) {
 					$val ? $rq = "INSERT INTO dependency VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");

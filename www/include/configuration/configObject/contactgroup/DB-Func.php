@@ -103,29 +103,32 @@
 
 			$DBRESULT =& $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '".$key."' LIMIT 1");
 
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			$row["cg_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
-				foreach ($row as $key2=>$value2) {
+				foreach ($row as $key2 => $value2) {
 					$key2 == "cg_name" ? ($cg_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ", '".$value2."'" : $val .= "'".$value2."'";
-					if ($key2 != "cg_id")
+					if ($key2 != "cg_id") {
 						$fields[$key2] = $value2;
-					$fields["cg_name"] = $cg_name;
+					}
+					if (isset($cg_name)) {
+					    $fields["cg_name"] = $cg_name;
+					}
 				}
-				if (testContactGroupExistence($cg_name))	{
+				if (isset($cg_name) && testContactGroupExistence($cg_name)) {
 					$val ? $rq = "INSERT INTO `contactgroup` VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
+					$DBRESULT = $pearDB->query($rq);
 
-					$DBRESULT =& $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
-					$maxId =& $DBRESULT->fetchRow();
+					$DBRESULT = $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
+					$maxId = $DBRESULT->fetchRow();
 
 					if (isset($maxId["MAX(cg_id)"])) {
-						$DBRESULT =& $pearDB->query("SELECT DISTINCT `cgcr`.`contact_contact_id` FROM `contactgroup_contact_relation` `cgcr` WHERE `cgcr`.`contactgroup_cg_id` = '".$key."'");
+						$DBRESULT = $pearDB->query("SELECT DISTINCT `cgcr`.`contact_contact_id` FROM `contactgroup_contact_relation` `cgcr` WHERE `cgcr`.`contactgroup_cg_id` = '".$key."'");
 						$fields["cg_contacts"] = "";
-						while($cct =& $DBRESULT->fetchRow())	{
-							$DBRESULT2 =& $pearDB->query("INSERT INTO `contactgroup_contact_relation` VALUES ('', '".$cct["contact_contact_id"]."', '".$maxId["MAX(cg_id)"]."')");
+						while($cct = $DBRESULT->fetchRow())	{
+							$DBRESULT2 = $pearDB->query("INSERT INTO `contactgroup_contact_relation` VALUES ('', '".$cct["contact_contact_id"]."', '".$maxId["MAX(cg_id)"]."')");
 							$fields["cg_contacts"] .= $cct["contact_contact_id"] . ",";
 						}
 						$fields["cg_contacts"] = trim($fields["cg_contacts"], ",");

@@ -109,10 +109,12 @@
 					if ($key2 != "command_id") {
 						$fields[$key2] = $value2;
 					}
-					$fields["command_name"] = $command_name;
+					if (isset($command_name)) {
+					    $fields["command_name"] = $command_name;
+					}
 				}
 
-				if (testCmdExistence($command_name))	{
+				if (isset($command_name) && testCmdExistence($command_name)) {
 					$val ? $rq = "INSERT INTO `command` VALUES (".$val.")" : $rq = null;
 					$DBRESULT = $pearDB->query($rq);
 					/*

@@ -150,6 +150,8 @@
  	        $host_id = $hostParam;
 		} elseif (is_string($hostParam)) {
 		    $host_id = $this->getHostId($hostParam);
+		} else {
+		    return $string;
 		}
 		$rq = "SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1";
         $DBRESULT =& $this->DB->query($rq);

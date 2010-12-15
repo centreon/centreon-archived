@@ -226,13 +226,13 @@
 
         $hostObj = new CentreonHost($obj->DB);
 		if ($ndo["notes"] != "") {
-			$obj->XML->writeElement("hnn", $hostObj->replaceMacroInString($ndo["name1"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes"]))));
+			$obj->XML->writeElement("hnn", $hostObj->replaceMacroInString($ndo["host_name"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes"]))));
 		} else {
 			$obj->XML->writeElement("hnn", "none");
 		}
 
 		if ($ndo["notes_url"] != "") {
-			$obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["name1"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], str_replace("\$HOSTNOTES\$", $ndo["notes"], $ndo["notes_url"])))));
+			$obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["host_name"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], str_replace("\$HOSTNOTES\$", $ndo["notes"], $ndo["notes_url"])))));
 		} else {
 			$obj->XML->writeElement("hnu", "none");
 		}
