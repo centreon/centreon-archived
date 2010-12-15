@@ -129,15 +129,20 @@
 			$row["tp_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
-				foreach ($row as $key2=>$value2) {
-					$value2 .= "_" . $i;
+				foreach ($row as $key2 => $value2) {
+					if ($key2 == "tp_name") {
+					    $value2 .= "_" . $i;
+					}
 				    $key2 == "tp_name" ? ($tp_name = $value2) : $tp_name = null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
-					if ($key2 != "tp_id")
+					if ($key2 != "tp_id") {
 						$fields[$key2] = $value2;
-					$fields["tp_name"] = $tp_name;
+					}
+					if (isset($tp_name)) {
+					    $fields["tp_name"] = $tp_name;
+					}
 				}
-				if (testTPExistence($tp_name))	{
+				if (isset($tp_name) && testTPExistence($tp_name)) {
 					$DBRESULT =& $pearDB->query($val ? $rq = "INSERT INTO timeperiod VALUES (".$val.")" : $rq = null);
 
 					/*
