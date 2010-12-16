@@ -29,9 +29,6 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cg.label}</td><td class="FormRowValue">{$form.mc_mod_cg.html}</td></tr>
 		{/if}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contactgroups"> {$form.contact_cgNotif.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_cgNotif.html}</p></td></tr>
-		{if $ldap == "1" }
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_dn"> {$form.contact_ldap_dn.label}</td><td class="FormRowValue">{$form.contact_ldap_dn.html}</td></tr>
-		{/if}
 	 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.hostNotification}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_notification_options"> {$form.contact_hostNotifOpts.label}</td><td class="FormRowValue">{$form.contact_hostNotifOpts.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_notification_period"> {$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
@@ -64,6 +61,9 @@
 		{/if}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="admin"> {$form.contact_admin.label}</td><td class="FormRowValue">{$form.contact_admin.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="auth_type"> {$form.contact_auth_type.label}</td><td class="FormRowValue">{$form.contact_auth_type.html}</td></tr>
+		{if $ldap == "1" }
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_dn"> {$form.contact_ldap_dn.label}</td><td class="FormRowValue">{$form.contact_ldap_dn.html}</td></tr>
+		{/if}
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
