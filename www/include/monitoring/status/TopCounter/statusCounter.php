@@ -214,25 +214,35 @@
 		 */
 		if ($status != 2 && $ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit * 2)) {
 			$status = 1;
-			if ($pollerListInError != "")
+			if ($pollerListInError != "") {
 				$pollerListInError .= ", ";
+			}
 			$pollerListInError .= $ndo["instance_name"];
 		}
 		if ($ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
 			$status = 2;
-			if ($pollerListInError != "")
+			if ($pollerListInError != "") {
 				$pollerListInError .= ", ";
+			}
 			$pollerListInError .= $ndo["instance_name"];
 		}
 		/*
 		 * Activity
 		 */
-		if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 2)) {
-			$activity = 1;
-		}
-		if ((time() - $ndo["last_update"] >= $timeUnit * 4)) {
+		if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
 			$activity = 2;
+			if ($inactivInstance != "") {
+            	$inactivInstance .= ",";
+            }
+            $inactivInstance .= $ndo["instance_name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+		} else if ((time() - $ndo["last_update"] >= $timeUnit * 2)) {
+			$activity = 1;
+			if ($inactivInstance != "") {
+            	$inactivInstance .= ",";
+            }
+            $inactivInstance .= $ndo["instance_name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
 		}
+		
 	}
 	$DBRESULT->free();
 	$error = "Pollers $pollerListInError not running.";
