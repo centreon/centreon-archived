@@ -43,6 +43,7 @@ use strict;
 use POSIX qw(mkfifo);
 use DBI;
 use File::Copy;
+use File::Path qw(mkpath);
 
 use vars qw($debug $LOG %status $generalcounter $stop $method);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
@@ -360,11 +361,8 @@ sub GetPerfData($){
     my $localbasevardir = "$VARLIB/perfdata/$id";
 
     # check if directory exists
-    if (!-d "$VARLIB/perfdata") {
-	mkdir "$VARLIB/perfdata";
-    }
     if (!-d $localbasevardir) {
-	mkdir $localbasevardir;
+		mkpath $localbasevardir;
     }
 
     my $localtmpperffile = "$localbasevardir/service-perfdata";
@@ -422,8 +420,7 @@ sub GetLogFile($){
     my $localDir = $VARLIB."/log/$id/";
 
     # Create tmp directory
-    mkdir $VARLIB."/log" if (!-d $VARLIB."/log");
-    mkdir $localDir if (!-d $localDir);
+    mkpath $localDir if (!-d $localDir);
 
     # Get logs if dir exists
     if (-d $localDir){
@@ -618,11 +615,8 @@ sub syncArchives($) {
     if ($id != 0) {
 	# Sync Archive for one poller
 	if (! -d "$VARLIB/log/".$ns_server->{'id'}."/archives/") {
-	    if (! -d "$VARLIB/log/".$ns_server->{'id'}) {
-		mkdir "$VARLIB/log/".$ns_server->{'id'};
-	    }
 	    if (! -d "$VARLIB/log/".$ns_server->{'id'}."/archives/") {
-		mkdir "$VARLIB/log/".$ns_server->{'id'}."/archives/";
+		mkpath "$VARLIB/log/".$ns_server->{'id'}."/archives/";
 	    }
 	}
 	my $sth = $con->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$id."' AND `nagios_activate` = '1'");
