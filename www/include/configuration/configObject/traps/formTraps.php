@@ -67,7 +67,7 @@
 		$trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
 		$DBRESULT->free();
 	}
-	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor");
+	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
 	while ($rmnftr =& $DBRESULT->fetchRow()){
 		$mnftr[$rmnftr["id"]] = $rmnftr["alias"];
 	}
