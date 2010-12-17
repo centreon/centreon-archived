@@ -444,6 +444,12 @@
 			if ($ndo["notes"] != "") {
 				$ndo["notes"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes"]);
 				$ndo["notes"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["notes"]);
+			    if (isset($host_status[$ndo["host_name"]]['host_alias']) && $host_status[$ndo["host_name"]]['host_alias']) {
+				    $ndo["notes"] = str_replace("\$HOSTALIAS\$", $host_status[$ndo["host_name"]]['host_alias'], $ndo["notes"]);
+				}
+				if (isset($host_status[$ndo["host_name"]]['address']) && $host_status[$ndo["host_name"]]['address']) {
+                    $ndo["notes"] = str_replace("\$HOSTADDRESS\$", $host_status[$ndo["host_name"]]['address'], $ndo["notes"]);
+				}
 				$obj->XML->writeElement("sn", $ndo["notes"]);
 			} else {
 				$obj->XML->writeElement("sn", 'none');
