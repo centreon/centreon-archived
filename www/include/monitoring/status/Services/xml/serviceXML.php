@@ -328,6 +328,16 @@
 	$obj->XML->writeElement("nc", $nc);
 	$obj->XML->writeElement("o", $o);
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
+	$obj->XML->writeElement("http_link", _("HTTP Link"));
+	$obj->XML->writeElement("host_currently_downtime", _("Host is currently on downtime"));
+	$obj->XML->writeElement("problem_ack", _("Problem has been acknowledged"));
+	$obj->XML->writeElement("host_passive_mode", _("This host is only checked in passive mode"));
+	$obj->XML->writeElement("host_never_checked", _("This host is never checked"));
+	$obj->XML->writeElement("service_currently_downtime", _("Service is currently on Downtime"));
+	$obj->XML->writeElement("service_passive_mode", _("This service is only checked in passive mode"));
+	$obj->XML->writeElement("service_not_active_not_passive", _("This service is neither active nor passive"));
+	$obj->XML->writeElement("service_flapping", _("This Service is flapping"));
+	$obj->XML->writeElement("notif_disabled", _("Notification is disabled"));
 	$obj->XML->endElement();
 
 	$host_prev = "";

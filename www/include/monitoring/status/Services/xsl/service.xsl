@@ -88,32 +88,41 @@
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
-						  	<xsl:attribute name="title">HTTP Link <xsl:value-of select="hnn"/></xsl:attribute>
+						  	<xsl:attribute name="title">
+						  		<xsl:value-of select="//i/http_link"/>&#160;<xsl:value-of select="hnn"/></xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hdtm != 0">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
-					  	<xsl:attribute name="title">Host is currently on downtime</xsl:attribute>
+					  	<xsl:attribute name="title">
+					  		<xsl:value-of select='//i/host_currently_downtime'/>
+					  	</xsl:attribute>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="ha = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-					  	<xsl:attribute name="title">Problem has been acknowledged</xsl:attribute>
+					  	<xsl:attribute name="title">
+					  		<xsl:value-of select='//i/problem_ack'/>
+					  	</xsl:attribute>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
-					  	<xsl:attribute name="title">This host is only check by passive mode</xsl:attribute>
+					  	<xsl:attribute name="title">
+					  		<xsl:value-of select='//i/host_passive_mode'/>					  		
+					  	</xsl:attribute>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 0">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
-					  	<xsl:attribute name="title">This host is never checked</xsl:attribute>
+					  	<xsl:attribute name="title">					  		
+					  		<xsl:value-of select='//i/host_never_checked'/>
+					  	</xsl:attribute>
 					</xsl:element>
 				</xsl:if>
 			</xsl:if>
@@ -146,44 +155,58 @@
 				  	<xsl:attribute name="href"><xsl:value-of select="snu"/></xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
-						  	<xsl:attribute name="title">HTTP Link <xsl:value-of select="sn"/></xsl:attribute>
+						  	<xsl:attribute name="title">
+						  		<xsl:value-of select='//i/http_link'/>&#160;<xsl:value-of select="sn"/>
+						  	</xsl:attribute>
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>
 			<xsl:if test="dtm != 0">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
-					  	<xsl:attribute name="title">Service is currently on Downtime</xsl:attribute>
+					  	<xsl:attribute name="title">					  		
+					  		<xsl:value-of select='//i/service_currently_downtime'/>
+					  	</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="pa = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-					  	<xsl:attribute name="title">Problem has been acknowledged</xsl:attribute>
+					  	<xsl:attribute name="title">					  		
+					  		<xsl:value-of select='//i/problem_ack'/>
+					  	</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
-					  	<xsl:attribute name="title">This service is checked passive only</xsl:attribute>
+					  	<xsl:attribute name="title">					  	
+					  		<xsl:value-of select='//i/service_passive_mode'/>
+					  	</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 0">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
-					  	<xsl:attribute name="title">This service is neither active nor passive</xsl:attribute>
+					  	<xsl:attribute name="title">					  		
+					  		<xsl:value-of select='//i/service_not_active_not_passive'/>
+					  	</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="is = 1">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/flapping.gif</xsl:attribute>
-					  	<xsl:attribute name="title">This Service is flapping</xsl:attribute>
+					  	<xsl:attribute name="title">					  		
+					  		<xsl:value-of select='//i/service_flapping'/>
+					  	</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 			<xsl:if test="ne = 0">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
-					  	<xsl:attribute name="title">Notification is disabled</xsl:attribute>
+					  	<xsl:attribute name="title">					  		
+					  		<xsl:value-of select='//i/notif_disabled'/>
+					  	</xsl:attribute>
 					</xsl:element>
 			</xsl:if>
 		</td>
