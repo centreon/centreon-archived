@@ -79,6 +79,7 @@
 	$tpl->assign("headerMenu_release", 		_("Release"));
 	$tpl->assign("headerMenu_infos", 		_("Informations"));
 	$tpl->assign("headerMenu_author", 		_("Author"));
+	$tpl->assign("headerMenu_licenseExpire", _("Expiration date"));
 	$tpl->assign("headerMenu_isinstalled", 	_("Installed"));
 	$tpl->assign("headerMenu_action", 		_("Actions"));
 	$tpl->assign("confirm_removing", 		_("Do you confirm the deletion ?"));
@@ -106,12 +107,23 @@
 			 * Package already installed
 			 */
 			if (isset($moduleinfo["rname"]))	{
+				if (function_exists('zend_loader_enabled') && file_exists($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
+					if (zend_loader_file_encoded($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
+						$zend_info = zend_loader_file_licensed($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+					} else {
+						$zend_info = parse_ini_file($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+					}
+					$license_expires = date("d/m/Y", strtotime($zend_info['Expires']));
+				} else {
+					$license_expires = "N/A";
+				}
 				$elemArr[$i] = array(	"MenuClass" => "list_".$style,
 										"RowMenu_name" => $moduleinfo["name"],
 										"RowMenu_rname" => $moduleinfo["rname"],
 										"RowMenu_release" => $moduleinfo["mod_release"],
 										"RowMenu_infos" => $moduleinfo["infos"],
 										"RowMenu_author" => $moduleinfo["author"],
+										"RowMenu_licenseExpire" => $license_expires,
 										"RowMenu_upgrade" => 0,
 										"RowMenu_picture" => (file_exists("./$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
 										"RowMenu_isinstalled" => _("Yes"),
@@ -159,12 +171,23 @@
 					if (file_exists($centreon_path . "www/modules/".$filename."/.api/icone.gif")) {
 						$picturePath = $centreon_path . "www/modules/".$filename."/.api/icone.gif";
 					}
+					if (function_exists('zend_loader_enabled') && file_exists($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
+						if (zend_loader_file_encoded($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
+							$zend_info = zend_loader_file_licensed($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+						} else {
+							$zend_info = parse_ini_file($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+						}
+						$license_expires = date("d/m/Y", strtotime($zend_info['Expires']));
+					} else {
+						$license_expires = "N/A";
+					}
 
 					$elemArr[$i] = array(	"MenuClass" => "list_".$style,
 											"RowMenu_name" => $module_conf[$filename]["name"],
 											"RowMenu_rname" => $module_conf[$filename]["rname"],
 											"RowMenu_release" => $module_conf[$filename]["mod_release"],
 											"RowMenu_author" => $module_conf[$filename]["author"],
+										    "RowMenu_licenseExpire" => $license_expires,
 											"RowMenu_infos" =>  (isset($module_conf[$filename]["infos"]) ? $module_conf[$filename]["infos"] : ""),
 											"RowMenu_picture"  =>  $picturePath,
 											"RowMenu_isinstalled" => _("No"),

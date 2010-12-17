@@ -6,6 +6,7 @@
 		<td class="ListColHeaderCenter">{$headerMenu_infos}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_release}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_author}</td>
+		<td class="ListColHeaderCenter">{$headerMenu_licenseExpire}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_isinstalled}</td>
 		<td class="ListColHeaderRight">{$headerMenu_action}</td>
 	</tr>
@@ -29,6 +30,7 @@
 		<td class="ListColLeft">{$elemArr[elem].RowMenu_infos}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_release}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_author}</td>
+		<td class="ListColCenter">{$elemArr[elem].RowMenu_licenseExpire}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_isinstalled}</td>		
 		<td class="ListColRight">
 			{if $elemArr[elem].RowMenu_link_install}
