@@ -178,8 +178,6 @@
 				$hgPars = array();
 			}
 		}
-		$name = str_replace('/', "#S#", $name);
-		$name = str_replace('\\', "#BS#", $name);
 		foreach ($hPars as $host)	{
 			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
 			$service = $DBRESULT->fetchRow();
