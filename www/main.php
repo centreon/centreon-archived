@@ -87,7 +87,6 @@
 	/*
 	 * LCA Init Common Var
 	 */
-
 	global $is_admin;
 	$is_admin = $centreon->user->admin;
 
@@ -177,8 +176,9 @@
 		} else {
 			$url = "./alt_error.php";
 		}
-	} else
+	} else {
 		$url = "./include/doc/index.php";
+	}
 
 	/*
 	 *  Header HTML
@@ -188,16 +188,20 @@
 	/*
 	 * Display Menu
 	 */
-	if (!$min)
+	if (!$min) {
 		include_once "menu/Menu.php";
+	}
+
 	if (!$centreon->user->showDiv("header")) { ?> <script type="text/javascript">new Effect.toggle('header', 'blind', { duration : 0 });</script> <?php }
 	if (!$centreon->user->showDiv("menu_3")) { ?> <script type="text/javascript">new Effect.toggle('menu_3', 'blind', { duration : 0 });</script> <?php }
 	if (!$centreon->user->showDiv("menu_2")) { ?> <script type="text/javascript">new Effect.toggle('menu_2', 'blind', { duration : 0 });</script> <?php }
+
 	/*
 	 * Display PathWay
 	 */
-	if ($min != 1)
+	if ($min != 1) {
 		include_once "pathWay.php";
+	}
 
 	/*
 	 * Go on our page
@@ -211,16 +215,18 @@
 		$msg->setTimeOut("3");
 	}
 
-	if (isset($url) && $url)
+	if (isset($url) && $url) {
     	include_once $url;
+	}
 
-	if (!isset($centreon->historyPage))
+	if (!isset($centreon->historyPage)) {
 		$centreon->createHistory();
+	}
 
 	/*
 	 * Keep in memory all informations about pagination, keyword for search...
 	 */
-	if (isset($url) && $url){
+	if (isset($url) && $url) {
 		if (isset($_GET["num"]))
 			$centreon->historyPage[$url] = $_GET["num"];
 		if (isset($_POST["num"]))
@@ -245,6 +251,8 @@
 	/*
 	 * Display Footer
 	 */
-	if (!$min)
+	if (!$min) {
 		include_once "footer.php";
+	}
+
 ?>
