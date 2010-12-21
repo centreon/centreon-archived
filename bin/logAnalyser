@@ -381,7 +381,7 @@ sub parseArchive($$) {
 
     my $archives;
     if ($localhost){
-		my $sth = $dbhoreon->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$_[0]."'");
+		my $sth = $dbhoreon->prepare("SELECT `log_archive_path` FROM `cfg_nagios`, `nagios_server` WHERE `nagios_server_id` = '".$_[0]."' AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` AND `nagios_server`.`ns_activate` = 1");
 		if (!$sth->execute()) {
 		    die "Error:" . $sth->errstr . "\n";
 		}
