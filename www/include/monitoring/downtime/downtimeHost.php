@@ -31,8 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
+ * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/downtime/downtime.php $
+ * SVN : $Id: downtime.php 11216 2010-12-02 18:16:38Z jmathis $
  *
  */
 
@@ -70,22 +70,12 @@
 		case "ah" :
 			require_once($path."AddHostDowntime.php");
 			break;
-		case "as" :
-			require_once($path."AddSvcDowntime.php");
-			break;
-		case "ds" :
-			$ecObj->DeleteDowntime("SVC", isset($_GET["select"]) ? $_GET["select"] : array());
-			require_once($path."viewServiceDowntime.php");
-			break;
 		case "dh" :
 			$ecObj->DeleteDowntime("HOST", isset($_GET["select"]) ? $_GET["select"] : array());
 			require_once($path."viewHostDowntime.php");
 			break;
 		case "vh" :
 			require_once($path."viewHostDowntime.php");
-			break;
-		case "vs" :
-			require_once($path."viewServiceDowntime.php");
 			break;
 		default :
 			require_once($path."viewHostDowntime.php");

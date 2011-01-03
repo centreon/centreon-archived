@@ -66,6 +66,13 @@
 	else
 		$search_output = NULL;
 
+	if (isset($_POST["view_all"]))
+		$view_all = 1;
+	else if (isset($_GET["view_all"]))
+		$view_all = 1;
+	else
+		$view_all = 0;
+
 	/*
 	 * Init GMT class
 	 */
@@ -97,10 +104,17 @@
 	/************************************
 	 * Hosts Downtimes
 	 */
-	$rq2 =	"SELECT SQL_CALC_FOUND_ROWS dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), " .
+
+	if ($view_all == 1) {
+		$downtimeTable = "downtimehistory";
+	} else {
+		$downtimeTable = "scheduleddowntime";
+	}
+
+	$request =	"SELECT SQL_CALC_FOUND_ROWS dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), " .
 			"dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, ".
 			"unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, was_started " .
-			"FROM ".$ndo_base_prefix."scheduleddowntime dtm, ".$ndo_base_prefix."objects obj " .
+			"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj " .
 			(isset($hostgroup) && $hostgroup != 0 ? ", ".$ndo_base_prefix."hostgroup_members mb " : "") .
 			"WHERE obj.name1 IS NOT NULL " .
 			"AND obj.name2 IS NULL " .
@@ -109,10 +123,10 @@
 			(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
 			"AND obj.object_id = dtm.object_id " .
 			$centreon->user->access->queryBuilder("AND", "obj.name1", $hostStr) .
-			"AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " .
+			(isset($view_all) && $view_all == 0 ? "AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " : "") .
 			"ORDER BY dtm.scheduled_start_time DESC " .
 			"LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT_NDO =& $pearDBndo->query($rq2);
+	$DBRESULT_NDO =& $pearDBndo->query($request);
 	$tab_downtime_host = array();
 	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_downtime_host[$i] = $data;
@@ -170,9 +184,14 @@
 	$tpl->assign("user", _("Utilisateurs"));
 	$tpl->assign('Hostgroup', _("Hostgroup"));
 	$tpl->assign('Search', _("Search"));
+	$tpl->assign("ViewAll", _("Show finished downtime"));
 	$tpl->assign("search_output", $search_output);
 	$tpl->assign('search_host', $host_name);
+	$tpl->assign('view_all', $view_all);
 
+	/**
+	 * Get Hostgroups
+	 */
 	$DBRESULT =& $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
 	$options = "<option value='0'></options>";
 	while ($data =& $DBRESULT->fetchRow()) {
@@ -182,7 +201,6 @@
 
 	$tpl->assign('hostgroup', $options);
 	unset($options);
-
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);

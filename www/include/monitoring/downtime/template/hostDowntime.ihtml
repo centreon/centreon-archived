@@ -4,8 +4,9 @@
 <table class="ajaxOption">
 	<tr>
 		<td>{$Host}: <input type='text' name='search_host' value="{$search_host}" /></td>
-		<td>&nbsp;&nbsp;{$Hostgroup}: <select name='hostgroup'>{$hostgroup}</select></td>
+		<!--<td>&nbsp;&nbsp;{$Hostgroup}: <select name='hostgroup'>{$hostgroup}</select></td>-->
 		<td>&nbsp;&nbsp;{$Output}: <input type='text' name='search_output' value="{$search_output}" /></td>
+		<td>&nbsp;&nbsp;{$ViewAll}: <input type='checkbox' name='view_all' {if $view_all == '1'}checked{/if} /></td>
 	    <td><input type='submit' name='SearchB' value='{$Search}' /></td>
 	</tr>
 </table>
