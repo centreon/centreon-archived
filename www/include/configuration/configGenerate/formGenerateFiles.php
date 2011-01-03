@@ -57,7 +57,7 @@
 	/*
 	 *  Get Poller List
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
 	$n = $DBRESULT->numRows();
 	/*
 	 * Display null option
@@ -201,7 +201,7 @@
 		 */
 
 		$tab_server = array();
-		$DBRESULT_Servers =& $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` DESC");
+		$DBRESULT_Servers =& $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
 		while ($tab =& $DBRESULT_Servers->fetchRow()) {
 			if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
 				$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
@@ -293,8 +293,9 @@
 		 */
 		if (isset($ret["restart"]) && $ret["restart"])	{
 			$stdout = "";
-			if (!isset($msg_restart))
+			if (!isset($msg_restart)) {
 				$msg_restart = array();
+			}
 
 			/*
 			 * Get Init Script
