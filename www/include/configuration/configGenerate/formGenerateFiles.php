@@ -62,21 +62,24 @@
 	/*
 	 * Display null option
 	 */
-	if ($n > 1)
+	if ($n > 1) {
 		$tab_nagios_server = array(-1 => "");
+	}
 
 	/*
 	 * Display all servers list
 	 */
-	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++)
+	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
+	}
 	$DBRESULT->free();
 
 	/*
 	 * Display all server options
 	 */
-	if ($n > 1)
+	if ($n > 1) {
 		$tab_nagios_server[0] = _("All Nagios Servers");
+	}
 
 	/*
 	 * Form begin
@@ -256,15 +259,18 @@
 				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $host['id'])) {
 					if (isset($host['localhost']) && $host['localhost'] == 1) {
 						$msg_copy[$host["id"]] = "";
-						if (!is_dir($oreon->Nagioscfg["cfg_dir"]))
+						if (!is_dir($oreon->Nagioscfg["cfg_dir"])) {
 							$msg_copy[$host["id"]] .= sprintf(_("Nagios config directory %s does not exist!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
-						if (!is_writable($oreon->Nagioscfg["cfg_dir"]))
+						}
+						if (!is_writable($oreon->Nagioscfg["cfg_dir"])) {
 							$msg_copy[$host["id"]] .= sprintf(_("Nagios config directory %s is not writable for webserver's user!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
+						}
 						foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
 							$bool = @copy($filename, $oreon->Nagioscfg["cfg_dir"].basename($filename));
 							$filename = array_pop(explode("/", $filename));
-							if (!$bool)
+							if (!$bool) {
 								$msg_copy[$host["id"]] .= display_copying_file($filename, " - "._("movement")." <font color='res'>KO</font>");
+							}
 						}
 						if (strlen($msg_copy[$host["id"]])) {
 							$msg_copy[$host["id"]] = "<table border=0 width=300>".$msg_copy[$host["id"]]."</table>";
@@ -273,8 +279,9 @@
 						}
 					} else {
 						passthru("echo 'SENDCFGFILE:".$host['id']."' >> $centcore_pipe", $return);
-						if (!isset($msg_restart[$host["id"]]))
+						if (!isset($msg_restart[$host["id"]])) {
 							$msg_restart[$host["id"]] = "";
+						}
 						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>All configuration will be send to ".$host['name']." by centcore in several minutes.");
 					}
 				}
@@ -303,19 +310,30 @@
 					if (isset($host['localhost']) && $host['localhost'] == 1) {
 						$msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " reload");
 					} else {
-						system("echo 'RELOAD:".$host["id"]."' >> $centcore_pipe");
-						if (!isset($msg_restart[$host["id"]]))
+						system("echo 'RELOAD:".$host["id"]."' >> $centcore_pipe", $return);
+						if (!isset($msg_restart[$host["id"]])) {
 							$msg_restart[$host["id"]] = "";
-						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A reload signal has been sent to ".$host["name"]."\n");
+						}
+						if ($return != FALSE) {
+							$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A reload signal has been sent to ".$host["name"]."\n");
+						} else {
+							$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to ".$host["name"].". Check $centcore_pipe properties.\n");
+						}
 					}
 				} else if ($ret["restart_mode"] == 2) {
 					if (isset($host['localhost']) && $host['localhost'] == 1) {
 						$msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " restart");
 					} else {
 						system("echo \"RESTART:".$host["id"]."\" >> $centcore_pipe", $return);
-						if (!isset($msg_restart[$host["id"]]))
+
+						if (!isset($msg_restart[$host["id"]])) {
 							$msg_restart[$host["id"]] = "";
-						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to ".$host["name"]."\n");
+						}
+						if ($return != FALSE) {
+							$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to ".$host["name"]."\n");
+						} else {
+							$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to ".$host["name"].". Check $centcore_pipe properties.\n");
+						}
 					}
 				} else if ($ret["restart_mode"] == 3) {
 					/*
@@ -323,8 +341,9 @@
 					 */
 					require_once "./include/monitoring/external_cmd/functions.php";
 					write_command(" RESTART_PROGRAM", $host["id"]);
-					if (!isset($msg_restart[$host["id"]]))
+					if (!isset($msg_restart[$host["id"]])) {
 						$msg_restart[$host["id"]] = "";
+					}
 					$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to ".$host["name"]."\n");
 				}
 				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
@@ -335,8 +354,6 @@
 			}
 		}
 	}
-
-
 
 	$form->addElement('header', 'status', _("Status"));
 	if (isset($msg_restart) && $msg_restart)
@@ -371,7 +388,6 @@
 	$tpl->assign('o', $o);
 	$tpl->display("formGenerateFiles.ihtml");
 ?>
-
 <script type='text/javascript'>
 var tooltip = new CentreonToolTip();
 tooltip.render();
