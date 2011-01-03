@@ -307,7 +307,7 @@ class CentreonGraph	{
 			$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
 			$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
 
-			/*
+			/** **********************************
 			 * Copy Template values
 			 */
 			$DBRESULT2 =& $this->DB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metric["metric_name"]."'");
@@ -315,31 +315,59 @@ class CentreonGraph	{
 			$DBRESULT2->free();
 			if (!$ds_data) {
 				$ds = array();
-				$DBRESULT3 =& $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+
+				/** *******************************************
+				 * Get Matching Template
+				 */
+				$DBRESULT3 =& $this->DB->query("SELECT * FROM giv_components_template");
 				if ($DBRESULT3->numRows()) {
-					foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
-						$ds[$key] = $ds_val;
+					while ($data = $DBRESULT3->fetchRow()) {
+						$DBRESULT4 =& $this->DBC->query("SELECT * from metrics WHERE index_id = '".$metric["metric_id"]."' AND metric_name = '".$metric["metric_name"]."' AND metric_name LIKE '".$data["ds_name"]."'");
+						if ($DBRESULT4->numRows()) {
+							$ds_data = $data;
+							$DBRESULT4->free();
+							break;
+						}
+						$DBRESULT4->free();
 					}
 				}
 				$DBRESULT3->free();
-				$ds["ds_color_line"] = $this->getRandomWebColor();
-				$this->metrics[$metric["metric_id"]]["ds_id"] = $ds;
-				$ds_data =& $ds;
+
+				if (!isset($ds_data) && !$ds_data) {
+					/** *******************************************
+					 * Get default info in default template
+					 */
+					$DBRESULT3 =& $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+					if ($DBRESULT3->numRows()) {
+						foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
+							$ds[$key] = $ds_val;
+						}
+					}
+					$DBRESULT3->free();
+
+					/** ******************************************
+					 * Get random color. Only line will be set
+					 */
+					$ds["ds_color_line"] = $this->getRandomWebColor();
+					$this->metrics[$metric["metric_id"]]["ds_id"] = $ds;
+					$ds_data =& $ds;
+				}
 			}
 
-			/*
+			/** **********************************
 			 * Fetch Datas
 			 */
 			foreach ($ds_data as $key => $ds_d) {
-				if ($key == "ds_transparency"){
+				if ($key == "ds_transparency") {
 					$transparency = dechex(255-($ds_d*255)/100);
 					if (strlen($transparency) == 1) {
 						$transparency = "0" . $transparency;
 					}
 					$this->metrics[$metric["metric_id"]][$key] = $transparency;
 					unset($transparency);
-				} else
-					$this->metrics[$metric["metric_id"]][$key] = $ds_d ;
+				} else {
+					$this->metrics[$metric["metric_id"]][$key] = $ds_d;
+				}
 			}
 
 			if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
@@ -648,11 +676,11 @@ class CentreonGraph	{
 		 * ... order does matter!
 		 */
 		if ($this->_options["comment_time"] == true) {
-				$rrd_time  = addslashes($this->GMT->getDate("Y\/m\/d G:i", $this->_RRDoptions["start"]));
-				$rrd_time = str_replace(":", "\:", $rrd_time);
-				$rrd_time2 = addslashes($this->GMT->getDate("Y\/m\/d G:i", $this->_RRDoptions["end"])) ;
-				$rrd_time2 = str_replace(":", "\:", $rrd_time2);
-				$commandLine .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
+			$rrd_time  = addslashes($this->GMT->getDate("Y\/m\/d G:i", $this->_RRDoptions["start"]));
+			$rrd_time = str_replace(":", "\:", $rrd_time);
+			$rrd_time2 = addslashes($this->GMT->getDate("Y\/m\/d G:i", $this->_RRDoptions["end"])) ;
+			$rrd_time2 = str_replace(":", "\:", $rrd_time2);
+			$commandLine .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
 		}
 		foreach ($this->_arguments as $arg) {
 			$commandLine .= " ".$arg." ";
