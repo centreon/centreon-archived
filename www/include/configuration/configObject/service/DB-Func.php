@@ -899,6 +899,12 @@
 		$DBRESULT =& $pearDB->query($rq);
 	}
 
+	/** *************************************
+	 *
+	 * Update service informations
+	 * @param $service_id
+	 * @param $from_MC
+	 */
 	function updateService($service_id = null, $from_MC = false)	{
 		global $form, $pearDB, $centreon;
 
@@ -1112,7 +1118,6 @@
 		}
 
 		$rq = "UPDATE service SET ";
-		//$rq .= "service_description = '".$ret["service_description"]."', ";
 		if (isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL) {
 			$rq .= "service_template_model_stm_id = '".$ret["service_template_model_stm_id"]."', ";
 			$fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
