@@ -144,14 +144,15 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `acl_resources` ";
-		$rq .= "(acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate, changed) ";
+		$rq .= "(acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate, changed, acl_res_comment) ";
 		$rq .= "VALUES ('".htmlentities($ret["acl_res_name"], ENT_QUOTES, "UTF-8")."', " .
 				"'".htmlentities($ret["acl_res_alias"], ENT_QUOTES, "UTF-8")."', " .
 				"'".(isset($ret["all_hosts"]["all_hosts"]) ? htmlentities($ret["all_hosts"]["all_hosts"], ENT_QUOTES, "UTF-8") : 0)."', " .
 				"'".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? htmlentities($ret["all_hostgroups"]["all_hostgroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
 				"'".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? htmlentities($ret["all_servicegroups"]["all_servicegroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
 				"'".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', " .
-				"'1')";
+				"'1', " .
+				"'".htmlentities($ret["acl_res_comment"], ENT_QUOTES, "UTF-8")."')";
 		$DBRESULT =& $pearDB->query($rq);
 		$DBRESULT =& $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
 		$acl =& $DBRESULT->fetchRow();
@@ -163,8 +164,7 @@
 	 * Update resource ACL
 	 * @param $acl_id
 	 */
-	function updateLCA($acl_id = null)
-	{
+	function updateLCA($acl_id = null) {
 		global $form, $pearDB;
 		if (!$acl_id) {
 			return;
@@ -180,13 +180,18 @@
 				"all_hostgroups = '".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? htmlentities($ret["all_hostgroups"]["all_hostgroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
 				"all_servicegroups = '".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? htmlentities($ret["all_servicegroups"]["all_servicegroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
 				"acl_res_activate = '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', " .
+				"acl_res_comment = '".htmlentities($ret["acl_res_comment"], ENT_QUOTES, "UTF-8")."', " .
 				"changed = '1' " .
 				"WHERE acl_res_id = '".$acl_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}
 
-	function updateGroups($acl_id = null)
-	{
+	/** ****************
+	 * 
+	 * @param $acl_id
+	 * @return unknown_type
+	 */
+	function updateGroups($acl_id = null) {
 		global $form, $pearDB;
 		if (!$acl_id)
 			return;
@@ -201,6 +206,11 @@
 			}
 	}
 
+	/** ******************
+	 * 
+	 * @param $acl_id
+	 * @return unknown_type
+	 */
 	function updateHosts($acl_id = null) {
 		global $form, $pearDB;
 		if (!$acl_id)
@@ -216,8 +226,12 @@
 			}
 	}
 
-	function updatePollers($acl_id = null)
-	{
+	/** ******************
+	 * 
+	 * @param $acl_id
+	 * @return unknown_type
+	 */
+	function updatePollers($acl_id = null) {
         global $form, $pearDB;
 
         if (!$acl_id) {
@@ -234,7 +248,12 @@
             }
         }
 	}
-
+	
+	/** ********************
+	 * 
+	 * @param $acl_id
+	 * @return unknown_type
+	 */
 	function updateHostexcludes($acl_id = null)	{
 		global $form, $pearDB;
 		if (!$acl_id)
