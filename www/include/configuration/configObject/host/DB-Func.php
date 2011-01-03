@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset ($centreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	function hostExists($name = NULL){
 		global $pearDB, $oreon;
