@@ -5,17 +5,19 @@
 --
 
 CREATE TABLE IF NOT EXISTS `centreon_acl` (
-  `id` int(11) NOT NULL auto_increment,
-  `host_id` int(11) default NULL,
-  `host_name` char(64) default NULL,
-  `service_id` int(11) default NULL,
-  `service_description` char(128) default NULL,
-  `group_id` int(11) default NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `host_id` int(11) DEFAULT NULL,
+  `host_name` varchar(255) DEFAULT NULL,
+  `service_id` int(11) DEFAULT NULL,
+  `service_description` varchar(255) DEFAULT NULL,
+  `group_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `tripleIndex` (`host_name`,`service_description`,`group_id`),
-  KEY `host_name_2` (`host_name`),
-  KEY `host_id` (`host_id`,`service_id`,`group_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  KEY `host_name` (`host_name`),
+  KEY `service_description` (`service_description`),
+  KEY `group_id_by_name` (`group_id`,`host_name`(70),`service_description`(120)),
+  KEY `group_id_by_id` (`group_id`,`host_id`,`service_id`),
+  KEY `group_id_for_host` (`group_id`,`host_name`(70))
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -679,8 +681,7 @@ CREATE TABLE IF NOT EXISTS `nagios_hosts` (
   PRIMARY KEY  (`host_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`host_object_id`),
   KEY `host_object_id` (`host_object_id`),
-  KEY `display_name` (`display_name`),
-  KEY `host_object_id_2` (`host_object_id`)
+  KEY `display_name` (`display_name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Host definitions' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1181,8 +1182,7 @@ CREATE TABLE IF NOT EXISTS `nagios_services` (
   PRIMARY KEY  (`service_id`),
   UNIQUE KEY `instance_id` (`instance_id`,`config_type`,`service_object_id`),
   KEY `host_object_id` (`host_object_id`),
-  KEY `service_object_id` (`service_object_id`),
-  KEY `service_object_id_2` (`service_object_id`)
+  KEY `service_object_id` (`service_object_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Service definitions' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1245,7 +1245,6 @@ CREATE TABLE IF NOT EXISTS `nagios_servicestatus` (
   KEY `current_state` (`current_state`),
   KEY `instance_id` (`instance_id`),
   KEY `status_update_time` (`status_update_time`),
-  KEY `current_state_2` (`current_state`),
   KEY `check_type` (`check_type`),
   KEY `state_type` (`state_type`),
   KEY `last_state_change` (`last_state_change`),
