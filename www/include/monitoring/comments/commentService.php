@@ -31,8 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
+ * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/comments/comments.php $
+ * SVN : $Id: comments.php 10505 2010-05-25 21:28:36Z jmathis $
  *
  */
 
@@ -66,9 +66,6 @@
 	require_once "./include/monitoring/external_cmd/functions.php";
 
 	switch ($o)	{
-		case "ah" :
-			require_once($path."AddHostComment.php");
-			break;
 		case "as" :
 			require_once($path."AddSvcComment.php");
 			break;
@@ -76,18 +73,11 @@
 			DeleteComment("SVC",isset($_GET["select"]) ? $_GET["select"] : array());
 			require_once($path."viewServiceComment.php");
 			break;
-		case "dh" :
-			DeleteComment("HOST",isset($_POST["select"]) ? $_POST["select"] : array());
-			require_once($path."viewHostComment.php");
-			break;
-		case "vh" :
-			require_once($path."viewHostComment.php");
-			break;
 		case "vs" :
 			require_once($path."viewServiceComment.php");
 			break;
 		default :
-			require_once($path."viewHostComment.php");
+			require_once($path."viewServiceComment.php");
 			break;
 	}
 ?>
