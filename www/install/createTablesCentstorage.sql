@@ -109,9 +109,9 @@ CREATE TABLE IF NOT EXISTS `data_stats_yearly` (
 
 CREATE TABLE IF NOT EXISTS `index_data` (
   `id` int(11) NOT NULL auto_increment,
-  `host_name` varchar(75) default NULL,
+  `host_name` varchar(255) default NULL,
   `host_id` int(11) default NULL,
-  `service_description` varchar(75) default NULL,
+  `service_description` varchar(255) default NULL,
   `service_id` int(11) default NULL,
   `check_interval` int(11) default NULL,
   `special` enum('0','1') default '0',
