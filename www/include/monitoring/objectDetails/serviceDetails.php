@@ -118,7 +118,9 @@
 		 */
 		$rq =	"SELECT " .
 				" nss.current_state," .
-				" CONCAT( '<b>', nss.output, '</b><br>', nss.long_output ) as plugin_output," .
+				" nss.output as plugin_output, " .
+				" nss.long_output as long_plugin_output, " .
+				" CONCAT( '<b>', nss.output, '</b><br>', nss.long_output ) as plugin_output2," .
 				" nss.current_check_attempt as current_attempt," .
 				" nss.status_update_time as status_update_time," .
 				" unix_timestamp(nss.last_state_change) as last_state_change," .
@@ -153,7 +155,6 @@
 		$tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 
 		while ($ndo =& $DBRESULT_NDO->fetchRow()) {
-			//print " - SERVICE: |".urldecode($ndo["service_description"])."|".urldecode($svc_description)."|<br>";
 			if ($ndo["service_description"] == $svc_description) {
 				$service_status[$host_name."_".$svc_description] = $ndo;
 			}
@@ -246,6 +247,15 @@
 		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace("\\n", "<br>", $service_status[$host_name."_".$svc_description]["plugin_output"]);
 		$service_status[$host_name."_".$svc_description]["plugin_output"] = str_replace('\n', "<br>", $service_status[$host_name."_".$svc_description]["plugin_output"]);
 
+        ## Added for long_plugin_output <gavinw>
+        $service_status[$host_name."_".$svc_description]["long_plugin_output"] = str_replace("<b>", "", $service_status[$host_name."_".$svc_description]["long_plugin_output"]);
+        $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace("</b>", "", $service_status[$host_name."_".$svc_description]["long_plugin_output"]);
+        $service_status[$host_name."_".$svc_description]["long_plugin_output"] = str_replace("<br>", "", $service_status[$host_name."_".$svc_description]["long_plugin_output"]);
+        $service_status[$host_name."_".$svc_description]["long_plugin_output"] = utf8_encode($service_status[$host_name."_".$svc_description]["long_plugin_output"]);
+        $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["long_plugin_output"]);
+        $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]["long_plugin_output"]);
+        $service_status[$host_name.'_'.$svc_description]["long_plugin_output"] = str_replace('\n', '<br />', $service_status[$host_name.'_'.$svc_description]["long_plugin_output"]);
+
 		if (isset($service_status[$host_name.'_'.$svc_description]["notes_url"]) && $service_status[$host_name.'_'.$svc_description]["notes_url"]) {
     		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
     		$service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
@@ -310,6 +320,7 @@
 		$tpl->assign("m_mon_on_host", _("on host"));
 		$tpl->assign("m_mon_services_status", _("Service Status"));
 		$tpl->assign("m_mon_host_status_info", _("Status information"));
+		$tpl->assign("m_mon_host_long_info", _("Extended status information"));
 		$tpl->assign("m_mon_performance_data", _("Performance Data"));
 		$tpl->assign("m_mon_services_attempt", _("Current Attempt"));
 		$tpl->assign("m_mon_services_state", _("State Type"));

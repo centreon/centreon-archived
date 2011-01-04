@@ -24,13 +24,17 @@
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$m_mon_status_info}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$m_mon_services_status}</td>
 						<td class="ListColLeft" style='background:{$service_data.status_color}'>{$service_data.current_state}</td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_one'>
 						<td class="ListColLeft" style="vertical-align:top;">{$m_mon_host_status_info}</td>
-						<td class="ListColNoWrap"><div style="overflow:auto; width:100%; max-height:500px;" >{$service_data.plugin_output}</div></td>
+						<td class="ListColNoWrap"><div style="overflow:auto; width:100%; max-height:500px;"><b>{$service_data.plugin_output}<b></div></td>
+					</tr>
+					<tr class='list_two'>
+						<td class="ListColLeft" style="vertical-align:top;">{$m_mon_host_long_info}</td>
+						<td class="ListColNoWrap"><div style="overflow:auto; width:100%; max-height:500px;">{$service_data.long_plugin_output}</div></td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColLeft">{$m_mon_performance_data}</td>

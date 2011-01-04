@@ -140,6 +140,7 @@
 			" nss.current_notification_number," .
 			" nss.scheduled_downtime_depth," .
 			" nss.output," .
+			" nss.long_output," .
 			" ROUND(nss.percent_state_change) as percent_state_change," .
 			" nss.notifications_enabled," .
 			" nss.perfdata," .
@@ -198,6 +199,20 @@
 		$buffer->writeAttribute("name", _("Status Information"));
 		$buffer->text($ndo["output"], 0, 0);
 		$buffer->endElement();
+
+		/*
+		 * Long Output
+		 */
+		$buffer->writeElement("long_name", _("Extended Status Information"), 0);
+       	$lo_array = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A/', $ndo["long_output"]);
+        foreach ($lo_array as $val) {
+        	if ($val != "") {
+				$buffer->startElement("long_output_data");
+	            $buffer->writeElement("lo_data", $val);
+	            $buffer->endElement();
+	        }
+        }
+
 		$tab_perf = split(" ", $ndo["perfdata"]);
 		foreach ($tab_perf as $val) {
 			$buffer->startElement("performance_data");

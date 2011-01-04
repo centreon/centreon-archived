@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="//reponse">
-	<table style="padding:5px;margin:5px;z-index:15;">
+	<table style="padding:5px;margin:5px;z-index:15;" width='350'>
 		<tr class="ListHeaderPopup">
 			<td rowspan="2">
 				<xsl:element name="img">
@@ -22,6 +22,16 @@
 				<b><xsl:value-of select="plugin_output"/></b>
 			</td>
 		</tr>
+		<tr class='list_one'>
+			<td class="ColPopup" style='vertical-align:top;'>&#160;<xsl:value-of select="long_name" /></td>
+            <td class="ColPopup">
+                <ul>
+	                <xsl:for-each select="long_output_data">
+	                	&#160;&#186;&#160;<xsl:value-of select="lo_data" /><br />
+	            	</xsl:for-each>
+            	</ul>
+        	</td>
+        </tr>
 		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="last_state_change_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="last_state_change"/></td>
@@ -30,6 +40,7 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="duration_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="duration"/> s</td>
 		</tr>
+		
 		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type"/></td>
