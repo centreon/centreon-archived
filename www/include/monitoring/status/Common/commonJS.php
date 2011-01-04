@@ -608,7 +608,7 @@ function escapeURI(La) {
   	}
 }
 
-function mainLoop(){
+function mainLoop() {
  	_currentInputField = document.getElementById('input_search');
   	if (document.getElementById('input_search') && document.getElementById('input_search').value) {
   		_currentInputFieldValue = document.getElementById('input_search').value;
@@ -644,17 +644,17 @@ function mainLoop(){
 
 			monitoring_refresh();
 
-			if (_currentInputFieldValue.length >= 3) {
+			if (isset(_currentInputFieldValue.className) && _currentInputFieldValue.length >= 3) {
 				_currentInputField.className = "search_input_active";
 			} else {
 				_currentInputField.className = "search_input";
 			}
-			if (_currentInputHostFieldValue.length >= 3) {
+			if (isset(_currentInputHostFieldValue.className) && _currentInputHostFieldValue.length >= 3) {
 				_currentInputHostField.className = "search_input_active";
 			} else {
 				_currentInputHostField.className = "search_input";
 			}
-			if (_currentInputOutputFieldValue.length >= 3) {
+			if (isset(_currentInputOutputFieldValue.className) && _currentInputOutputFieldValue.length >= 3) {
 				_currentInputOutputField.className = "search_input_active";
 			} else {
 				_currentInputOutputField.className = "search_input";
@@ -856,7 +856,7 @@ function initM(_time_reload, _sid, _o) {
 		_header.appendChild(_divdebug);
 	}
 
-	if (_first){
+	if (_first) {
 		mainLoop();
 		_first = 0;
 	}
@@ -869,14 +869,12 @@ function initM(_time_reload, _sid, _o) {
 }
 
 // Windows size Management
-
 function position(e) {
 	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
 	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
 }
 
 // Multi Select Management
-
 function putInSelectedElem(id) {
 	_selectedElem[encodeURIComponent(id)] = encodeURIComponent(id);
 }
@@ -884,5 +882,14 @@ function putInSelectedElem(id) {
 function removeFromSelectedElem(id) {
 	if (typeof(_selectedElem[encodeURIComponent(id)]) != 'undefined') {
 		_selectedElem[encodeURIComponent(id)] = undefined;
+	}
+}
+
+// Misc
+function isset(variable) {
+	if ( typeof( window[variable] ) != "undefined" ) {
+		return true;
+	} else {
+		return false;
 	}
 }
