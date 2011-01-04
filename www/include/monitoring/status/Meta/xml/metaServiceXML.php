@@ -44,7 +44,8 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	//include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
@@ -249,7 +250,7 @@
 		$buffer->writeElement("o", $ct++);
 		$buffer->writeElement("f", $flag);
 		$buffer->writeElement("ppd", $ndo["process_performance_data"]);
-		$buffer->writeElement("sd", $dataMeta['meta_name']);
+		$buffer->writeElement("sd", $dataMeta['meta_name'], false);
 		$buffer->writeElement("svc_id", $ndo["object_id"]);
 
 		$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
@@ -258,7 +259,7 @@
 		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO));
 		$buffer->writeElement("sc", $color_service);
 		$buffer->writeElement("cs", _($tab_status_svc[$ndo["current_state"]]));
-		$buffer->writeElement("po", $ndo["plugin_output"]);
+		$buffer->writeElement("po", $ndo["plugin_output"], false);
 		$buffer->writeElement("ca", $ndo["current_attempt"]);
 		$buffer->writeElement("ne", $ndo["notifications_enabled"]);
 		$buffer->writeElement("pa", $ndo["problem_has_been_acknowledged"]);
@@ -276,8 +277,9 @@
 		$buffer->endElement();
 	}
 
-	if (!$ct)
+	if (!$ct) {
 		$buffer->writeElement("infos", "none");
+	}
 
 	$buffer->writeElement("sid", $sid);
 	$buffer->endElement();

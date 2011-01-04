@@ -34,7 +34,7 @@
 				<xsl:attribute name="class">infobulle</xsl:attribute>
 				<xsl:attribute name="onmouseover">displayPOPUP_svc('<xsl:value-of select="svc_id"/>');</xsl:attribute>
 				<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="svc_id"/>');</xsl:attribute>
-				<xsl:value-of select="sd"/>
+				<xsl:value-of select="sd" disable-output-escaping="yes" />
 				<xsl:element name="span">
 					<xsl:attribute name="id">span_<xsl:value-of select="svc_id"/></xsl:attribute>
 				</xsl:element>
@@ -102,7 +102,7 @@
         	<xsl:value-of select="ca"/>
         </td>
         <td class="ListColLeft" >
-        	<xsl:value-of select="po"/>
+        	<xsl:value-of select="po" disable-output-escaping="yes" />
         </td>
 		<xsl:if test="//i/nc = 1">
 			<td class="ListColCenter" style="white-space:nowrap;">
