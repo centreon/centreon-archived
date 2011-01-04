@@ -118,7 +118,7 @@
 		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 	}
 	if ($search != "") {
-		$rq1 .= " AND (no.name1 LIKE '%" . $search . "%' OR nh.alias LIKE '%" . $search . "%') ";
+		$rq1 .= " AND (no.name1 LIKE '%" . $search . "%' OR nh.alias LIKE '%" . $search . "%' OR nh.address LIKE '%" . $search . "%') ";
 	}
 	if ($o == "hpb") {
 		$rq1 .= " AND nhs.current_state != 0 ";
