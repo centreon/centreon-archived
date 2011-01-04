@@ -167,7 +167,7 @@
 			isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
 			isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
 			isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
-			isset($_GET['fixed']) && $_GET['fixed'] == true ? $fixed = 1 : $fixed = 0;
+			isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
 			isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
 
 			$res = preg_split("/ /", $start);
@@ -238,7 +238,7 @@
 			isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
 			isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
 			isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
-			isset($_GET['fixed']) && $_GET['fixed'] == true ? $fixed = 1 : $fixed = 0;
+			isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
 			isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
 
 			$res = preg_split("/ /", $start);
