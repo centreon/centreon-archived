@@ -44,8 +44,7 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	//include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once("/etc/centreon/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");
 
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
