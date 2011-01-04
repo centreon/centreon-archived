@@ -41,7 +41,6 @@
 
 	include("./include/common/autoNumLimit.php");
 
-
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
 	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
