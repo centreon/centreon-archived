@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	include("./include/common/autoNumLimit.php");
 
@@ -47,9 +48,6 @@
 	!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
 	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
 	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
-
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
@@ -135,6 +133,7 @@
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
+	$tpl->assign('search', _('Search'));
     $tpl->assign('pollerStr', _('Poller'));
     $tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign('hgStr', _('Hostgroup'));

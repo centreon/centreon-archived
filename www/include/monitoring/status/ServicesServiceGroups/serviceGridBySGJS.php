@@ -102,13 +102,70 @@ function set_header_title(){
 	}
 }
 
-function goM(_time_reload,_sid,_o){
-	_lock = 1;
+function mainLoopLocal() {
+ 	_currentInputField = document.getElementById('input_search');
+  	if (document.getElementById('input_search') && document.getElementById('input_search').value) {
+  		_currentInputFieldValue = document.getElementById('input_search').value;
+  	} else {
+  		_currentInputFieldValue = "";
+  	}
 
+  	if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue != _currentInputFieldValue){
+    	if (!_lock) {
+			set_search(escapeURI(_currentInputFieldValue));
+			_search = _currentInputFieldValue;
+
+			monitoring_refresh();
+
+			if (_currentInputFieldValue.length >= 3) {
+				_currentInputField.className = "search_input_active";
+			} else {
+				_currentInputField.className = "search_input";
+			}
+		}
+	}
+	_oldInputFieldValue = _currentInputFieldValue;
+
+	setTimeout("mainLoopLocal()", 250);
+}
+
+function initM(_time_reload, _sid, _o ){
+
+	// INIT Select objects
+	construct_selecteList_ndo_instance('instance_selected');
+	construct_HostGroupSelectList('hostgroups_selected');
+
+	if (document.getElementById("input_search") && document.getElementById("input_search").value) {
+		_search = document.getElementById("input_search").value;
+		viewDebugInfo('search: '+document.getElementById("input_search").value);
+	} else if (document.getElementById("input_search").lenght == 0) {
+		_search = "";
+	}
+
+	if (_first){
+		mainLoopLocal();
+		_first = 0;
+	}
+
+	_time=<?php echo $time; ?>;
+	if (_on) {
+		goM(_time_reload,_sid,_o);
+	}
+}
+
+function goM(_time_reload, _sid, _o) {
+	_lock = 1;
 	var proc = new Transformation();
-	proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o=<?php echo $obis?>&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>');
+	proc.setCallback(resetSelectedCheckboxes);
+	proc.setXml(_addrXML+"?"+'sid='+_sid+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>');
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
+
+	if (_counter == 0) {
+		document.getElementById("input_search").value = _search;
+		_counter += 1;
+	}
+
 	_lock = 0;
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;

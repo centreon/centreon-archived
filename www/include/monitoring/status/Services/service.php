@@ -125,13 +125,15 @@
 	/*
 	 * Values
 	 */
-	if (isset($centreon->historySearch[$url]))
+	if (isset($centreon->historySearch[$url])) {
 		$tpl->assign("hostSearchValue", $centreon->historySearch[$url]);
-	if (isset($centreon->historySearchService[$url]))
+	}
+	if (isset($centreon->historySearchService[$url])) {
 		$tpl->assign("serviceSearchValue", $centreon->historySearchService[$url]);
-	if (isset($centreon->historySearchOutput[$url]))
+	}
+	if (isset($centreon->historySearchOutput[$url])) {
 		$tpl->assign("outputSearchValue", $centreon->historySearchOutput[$url]);
-
+	}
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 

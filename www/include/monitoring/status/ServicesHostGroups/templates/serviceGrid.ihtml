@@ -4,6 +4,8 @@
 <input name="o" value="svc" type="hidden">
 <table class="ajaxOption">
 	<tr>
+		<td>{$search}</td>
+		<td><input size="15" id="input_search" class="search_input" style="padding-top:1px;padding-bottom:1px;" name="search" type="text" /></td>
 		{if $poller_listing}
 		<td>{$pollerStr}:</td>
 		{/if}

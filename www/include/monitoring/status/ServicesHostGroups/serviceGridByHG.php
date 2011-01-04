@@ -48,9 +48,6 @@
 	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
 	!isset($_GET["sort_type"]) ? $sort_type = "alias" : $sort_type = $_GET["sort_type"];
 
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
 
@@ -73,6 +70,7 @@
 	$tpl->assign("mon_last_check", _("Last Check"));
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
+	$tpl->assign('search', _('Search'));
 	$tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign('hgStr', _('Hostgroup'));
