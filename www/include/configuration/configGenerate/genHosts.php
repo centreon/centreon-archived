@@ -259,11 +259,10 @@
 				 */
 				if (isset($host["command_command_id_arg1"]) && $host["command_command_id_arg1"]) {
 					$host["command_command_id_arg1"] = removeSpecialChar($host["command_command_id_arg1"]);
-					if (!isset($host['command_command_id']) || !$host['command_command_id']) {
-					    $host["command_command_id"] = getMyHostFieldFromMultiTemplates($host["host_id"], "command_command_id");
-					}
 					if (isset($host["command_command_id"]) && $host['command_command_id']) {
 					    $str .= print_line("check_command", $commands[$host["command_command_id"]].$host["command_command_id_arg1"]);
+					} else {
+						$host["command_command_id"] = getMyHostFieldFromMultiTemplates($host["host_id"], "command_command_id");
 					}
 				} else if (isset($host["command_command_id"]) && $host["command_command_id"]) {
 					$host["command_command_id_arg1"] = removeSpecialChar($host["command_command_id_arg1"]);
