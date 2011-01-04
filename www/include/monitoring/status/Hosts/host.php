@@ -66,11 +66,6 @@
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
 
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
-
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
 
@@ -158,14 +153,15 @@
 	$o2 =& $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
+
 	$tpl->assign('limit', $limit);
+	$tpl->assign('hostStr', _('Host'));
 	$tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign('hgStr', _('Hostgroup'));
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
-
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("host.ihtml");
 ?>

@@ -4,6 +4,8 @@
 <input name="o" value="svc" type="hidden">
 <table class="ajaxOption">
 	<tr>
+		<td>{$hostStr}:</td>
+		<td><input type='text' name='search' id='host_search'></td>
 		{if $poller_listing}
 		<td>{$pollerStr}:</td>
 		<td><span id="instance_selected"></span></td>
