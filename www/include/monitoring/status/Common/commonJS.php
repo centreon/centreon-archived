@@ -83,7 +83,7 @@ var _resultCache=new Object();
 var _first = 1;
 var _lock = 0;
 var _instance = "-1";
-var _default_hg = "<?php if (isset($default_hg)) { echo $default_hg; } ?>";
+var _default_hg = "<?php if (isset($default_hg)) { echo htmlentities($default_hg, ENT_QUOTES, "UTF-8"); } ?>";
 var _default_instance = "<?php echo $default_poller?>";
 var _nc = 0;
 var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
