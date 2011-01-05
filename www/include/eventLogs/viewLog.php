@@ -36,15 +36,16 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
-	function get_user_param($user_id, $pearDB){
+	function get_user_param($user_id, $pearDB) {
 		$list_param = array('log_filter_host', 'log_filter_svc', 'log_filter_host_down',
 			'log_filter_host_up', 'log_filter_host_unreachable', 'log_filter_svc_ok',
 			'log_filter_svc_warning', 'log_filter_svc_critical', 'log_filter_svc_unknown',
 			'log_filter_notif', 'log_filter_error', 'log_filter_alert', 'log_filter_oh',
-			'search_H', 'search_S');
+			'search_H', 'search_S', 'log_filter_period');
 		$tab_row = array();
 		$cache = null;
 		foreach ($list_param as $param) {
@@ -53,8 +54,7 @@
 			} else {
 				if (is_null($cache)) {
 					$cache = array();
-					$query = "SELECT cp_key, cp_value FROM contact_param
-						WHERE cp_key in ('" . join("', '", $list_param) . "') AND cp_contact_id = " . $user_id;
+					$query = "SELECT cp_key, cp_value FROM contact_param WHERE cp_key in ('" . join("', '", $list_param) . "') AND cp_contact_id = " . $user_id;
 					$DBRESULT = $pearDB->query($query);
 					while ($row = $DBRESULT->fetchRow()) {
 						$cache[$row['cp_key']] = $row['cp_value'];
@@ -210,14 +210,14 @@
 						"15552000"=>_("Last 6 Months"),
 						"31104000"=>_("Last Year"));
 
-	$form->addElement('select', 'period', _("Log Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
+	$form->addElement('select', 'period', _("Log Period"), $periods, array("onchange" => "resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
 	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "size"=>8));
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5));
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "size"=>8));
 	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "onclick"=>"displayTimePicker('EndTime', this)", "size"=>5));
 	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
 
-	$form->setDefaults(array("period"=>$user_params['log_filter_period']));
+	$form->setDefaults(array("period" => $user_params['log_filter_period']));
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
@@ -350,28 +350,27 @@
 	var StartTime='';
 	var EndTime='';
 
-	if (document.FormPeriod && document.FormPeriod.period.value!="")	{
+	if (document.FormPeriod && document.FormPeriod.period.value != "")	{
 		period = document.FormPeriod.period.value;
 	}
 
-	if (document.FormPeriod && document.FormPeriod.period.value==""){
+	if (document.FormPeriod && document.FormPeriod.period.value == ""){
 		document.FormPeriod.StartDate.value = StartDate;
 		document.FormPeriod.EndDate.value = EndDate;
 		document.FormPeriod.StartTime.value = StartTime;
 		document.FormPeriod.EndTime.value = EndTime;
 	}
 
-
 	function log_4_host(id, formu, type){
 		if (document.FormPeriod) {
 		    if (document.FormPeriod.period.value!="")	{
-			period = document.FormPeriod.period.value;
+				period = document.FormPeriod.period.value;
 		    } else {
-			period = '';
-			StartDate = document.FormPeriod.StartDate.value;
-			EndDate = document.FormPeriod.EndDate.value;
-			StartTime = document.FormPeriod.StartTime.value;
-			EndTime = document.FormPeriod.EndTime.value;
+				period = '';
+				StartDate = document.FormPeriod.StartDate.value;
+				EndDate = document.FormPeriod.EndDate.value;
+				StartTime = document.FormPeriod.StartTime.value;
+				EndTime = document.FormPeriod.EndTime.value;
 		    }
 		}
 
@@ -427,7 +426,7 @@
 			proc.setXml(_addr)
 			proc.setXslt(_addrXSL)
 			proc.transform("logView4xml");
-		} else{
+		} else {
 			var openid = document.getElementById('openid').innerHTML;
 			var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+openid+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
 			document.location.href = _addr;
