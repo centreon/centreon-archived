@@ -42,7 +42,6 @@
 require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once $centreon_path . '/www/autoloader.php';
 
-
 /*
  * Class for XML/Ajax request
  *
@@ -66,7 +65,8 @@ class CentreonXMLBGRequest
 
 	var $access;
 	var $session_id;
-
+	var $broker;
+	
 	/*
 	 * Variables
 	 */
@@ -137,7 +137,7 @@ class CentreonXMLBGRequest
 		 */
 		$this->hostObj		= new CentreonHost($this->DB);
 		$this->serviceObj	= new CentreonService($this->DB);
-
+		$this->broker 		= new CentreonBroker();
 		/*
 		 * Init Object Monitoring
 		 */
