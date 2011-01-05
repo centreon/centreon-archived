@@ -19,7 +19,7 @@
 	</table>
 </form>
 </div>
-<div id="logView4xml">.</div>
+<div id="logView4xml"></div>
 {literal}
 <script type='text/javascript'>
 new DatePicker({relative:'StartDate', keepFieldEmpty:true});
