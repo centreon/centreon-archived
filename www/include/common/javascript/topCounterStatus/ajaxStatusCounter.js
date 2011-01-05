@@ -16,7 +16,7 @@
 
 // JavaScript Document
 
-var _adrrsearchC = "./include/monitoring/status/TopCounter/statusCounter.php";
+var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/broker/statusCounter.php";
 
 function getXhrC(){
 	if (window.XMLHttpRequest) {
