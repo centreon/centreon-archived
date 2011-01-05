@@ -39,25 +39,19 @@
  	ini_set("display_errors", "Off");
 
 	/*
-	 * if debug == 0 => Normal,
-	 * debug == 1 => get use,
-	 * debug == 2 => log in file (log.xml)
-	 */
-	$debugXML = 0;
-	$buffer = '';
-
-	/*
 	 * XML tag
 	 */
 
 	stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ? header("Content-type: application/xhtml+xml") : header("Content-type: text/xml");
 
-	/*
-	 * pearDB init
+	/** ****************************
+	 * Include configurations files
 	 */
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	//include_once "/etc/centreon/centreon.conf.php";
 
+	/**
+	 * Require Classes
+	 */
 	require_once $centreon_path . "www/include/eventLogs/common-Func.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
 	require_once $centreon_path . "www/class/centreonSession.class.php";
@@ -65,6 +59,10 @@
 
 	centreonSession::start();
 	$oreon =& $_SESSION["centreon"];
+
+	/**
+	 * Language informations init
+	 */
 	$locale = $oreon->user->get_lang();
 	putenv("LANG=$locale");
 	setlocale(LC_ALL, $locale);
@@ -72,7 +70,7 @@
 	bind_textdomain_codeset("messages", "UTF-8");
 	textdomain("messages");
 
-	/*
+	/**
 	 * Connect to DB
 	 */
 	$pearDB 	= new CentreonDB();
@@ -148,7 +146,7 @@
 	 * Cache informations
 	 */
 
-	/*
+	/** *******************************************
 	 * Create hostCahe
 	 */
 	$hostCache = array();
@@ -160,7 +158,7 @@
 	$DBRESULT->free();
 	unset($data);
 
-	/*
+	/** *******************************************
 	 * Create serviceCahe
 	 */
 	function setServiceCache($pearDB) {
@@ -173,7 +171,7 @@
 		return $serviceCache;
 	}
 
-	/*
+	/** *******************************************
 	 * Create hgCahe
 	 */
 	$hgCache = array();

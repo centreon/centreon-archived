@@ -38,17 +38,24 @@
 
  	ini_set("display_errors", "Off");
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
-	include_once($centreon_path . "www/class/centreonDB.class.php");
-	include_once($centreon_path . "www/include/common/common-Func.php");
+ 	/**
+ 	 * Include configuration
+ 	 */
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 
-	/*
+	/**
+	 * Include Classes / Methods
+	 */
+	include_once $centreon_path . "www/class/centreonDB.class.php";
+	include_once $centreon_path . "www/include/common/common-Func.php";
+
+	/** *****************************************
 	 * Connect MySQL DB
 	 */
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
 
-	/*
+	/**
 	 * Security check
 	 */
 	(isset($_GET["sid"]) && !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
@@ -66,22 +73,30 @@
 	} else {
 			get_error('need session identifiant !');
 	}
-	
-	// save of the XML flow in $flux
+
+	/**
+	 * save of the XML flow in $flow
+	 */
 	$csv_flag = 1; //setting the csv_flag variable to change limit in SQL request of getODSXmlLog.php when CSV exporting
 	ob_start();
 	require_once $centreon_path."www/include/eventLogs/GetXmlLog.php";
-	$flux = ob_get_contents();
+	$flow = ob_get_contents();
 	ob_end_clean();
 
 	$nom = "EventLog";
 
+	/**
+	 * Send Headers
+	 */
 	header("Content-Type: application/csv-tab-delimited-table");
 	header("Content-disposition: filename=".$nom.".csv");
 	header("Cache-Control: cache, must-revalidate");
     header("Pragma: public");
 
-	$xml = new SimpleXMLElement($flux);
+    /**
+     * Read flow
+     */
+	$xml = new SimpleXMLElement($flow);
 
 	echo _("Begin date")."; "._("End date").";\n";
 	echo date('d/m/y (H:i:s)', intval($xml->infos->start)).";".date('d/m/y (H:i:s)', intval($xml->infos->end))."\n";
@@ -104,4 +119,4 @@
 		echo $line->date.";".$line->time.";".$line->host_name.";".$line->address.";".$line->service_description.";".$line->status.";".$line->type.";".$line->retry.";".$line->output.";".$line->contact.";".$line->contact_cmd."\n";
 	}
 
-	?>
+?>
