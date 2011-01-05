@@ -40,6 +40,8 @@
 		exit();
 	}
 
+	$broker = "broker";
+
 	if (!isset($default_poller)) {
 		include_once "./include/monitoring/status/Common/default_poller.php";
 	}
@@ -188,29 +190,56 @@ function construct_selecteList_ndo_instance(id){
 
 <?php
     $pollerArray = $oreon->user->access->getPollers();
-	if ($oreon->user->admin || !count($pollerArray)) {
-        $instanceQuery = "SELECT instance_id, instance_name FROM `".getNDOPrefix()."instances`";
-	} else {
-	    $instanceQuery = "SELECT instance_id, instance_name  ".
-	    				 "FROM `".getNDOPrefix()."instances` WHERE instance_name IN (". $oreon->user->access->getPollerString('NAME') .")";
-	}
-    $DBRESULT = $pearDBndo->query($instanceQuery);
-	while ($nagios_server = $DBRESULT->fetchRow())	{
+    /** *************************************
+     * Get instance listing
+     */
+    if ($broker == "broker") {
+    	if ($oreon->user->admin || !count($pollerArray)) {
+	        $instanceQuery = "SELECT instance_id, name FROM `instances`";
+		} else {
+		    $instanceQuery = "SELECT instance_id, name  ".
+		    				 "FROM `instances` WHERE name IN (". $oreon->user->access->getPollerString('NAME') .")";
+		}
+		$DBRESULT = $pearDBO->query($instanceQuery);
+   		 while ($nagios_server = $DBRESULT->fetchRow())	{   ?>
+			var m = document.createElement('option');
+			m.value= "<?php echo $nagios_server["instance_id"]; ?>";
+			_select.appendChild(m);
+			var n = document.createTextNode("<?php echo $nagios_server["name"] . "  "; ?>   ");
+			m.appendChild(n);
+			_select.appendChild(m);
+			select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
+			i++;
+	<?php }	?>
+			_select.selectedIndex = select_index[_default_instance];
+			_select_instance.appendChild(_select);
+		}
+		<?php
+    } else {
+		if ($oreon->user->admin || !count($pollerArray)) {
+	        $instanceQuery = "SELECT instance_id, instance_name FROM `".getNDOPrefix()."instances`";
+		} else {
+		    $instanceQuery = "SELECT instance_id, instance_name  ".
+		    				 "FROM `".getNDOPrefix()."instances` WHERE instance_name IN (". $oreon->user->access->getPollerString('NAME') .")";
+		}
+		$DBRESULT = $pearDBndo->query($instanceQuery);
+		while ($nagios_server = $DBRESULT->fetchRow())	{
 ?>
-		var m = document.createElement('option');
-		m.value= "<?php echo $nagios_server["instance_id"]; ?>";
-		_select.appendChild(m);
-		var n = document.createTextNode("<?php echo $nagios_server["instance_name"] . "  "; ?>   ");
-		m.appendChild(n);
-		_select.appendChild(m);
-		select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
-		i++;
-<?php }	?>
-		_select.selectedIndex = select_index[_default_instance];
-		_select_instance.appendChild(_select);
-
-	}
-
+			var m = document.createElement('option');
+			m.value= "<?php echo $nagios_server["instance_id"]; ?>";
+			_select.appendChild(m);
+			var n = document.createTextNode("<?php echo $nagios_server["instance_name"] . "  "; ?>   ");
+			m.appendChild(n);
+			_select.appendChild(m);
+			select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
+			i++;
+	<?php }	?>
+			_select.selectedIndex = select_index[_default_instance];
+			_select_instance.appendChild(_select);
+		}
+	<?php
+    }
+    ?>
 }
 
 function construct_HostGroupSelectList(id) {
@@ -240,31 +269,34 @@ function construct_HostGroupSelectList(id) {
 		$hg = array();
 		if (!$oreon->user->access->admin) {
 			$query = "SELECT DISTINCT hg.hg_alias " .
-			 		"FROM hostgroup hg, acl_resources_hg_relations arhr " .
-			 		"WHERE hg.hg_id = arhr.hg_hg_id " .
-			 		"AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
-			 		"AND hg.hg_activate = '1' ORDER BY hg.hg_alias";
-			 $DBRESULT =& $pearDB->query($query);
-			 while ($data =& $DBRESULT->fetchRow()) {
-			 	$hg[$data["hg_alias"]] = 1;
-			 }
-			 $DBRESULT->free();
+				 		"FROM hostgroup hg, acl_resources_hg_relations arhr " .
+				 		"WHERE hg.hg_id = arhr.hg_hg_id" .
+				 		"AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
+				 		"AND hg.hg_activate = '1' ORDER BY hg.hg_alias";
+			$DBRESULT =& $pearDB->query($query);
+			while ($data =& $DBRESULT->fetchRow()) {
+				$hg[$data["name"]] = 1;
+			}
+			$DBRESULT->free();
 			unset($data);
 		}
 
-		$DBRESULT =& $pearDBndo->query("SELECT DISTINCT `alias` FROM `".getNDOPrefix()."hostgroups`  ORDER BY `alias`");
+		if ($broker = 'broker') {
+			$DBRESULT =& $pearDBO->query("SELECT DISTINCT `name`, hostgroup_id FROM `hostgroups` ORDER BY `name`");
+		} else {
+			$DBRESULT =& $pearDBndo->query("SELECT DISTINCT `name`, hostgroup_id FROM `hostgroups` ORDER BY `name`");
+		}
 		while ($hostgroups =& $DBRESULT->fetchRow()) {
-			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hg[$hostgroups["alias"]]))) { ?>
+			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hg[$hostgroups["name"]]))) { ?>
 				var m = document.createElement('option');
-				m.value= "<?php echo $hostgroups["alias"]; ?>";
+				m.value= "<?php echo $hostgroups["hostgroup_id"]; ?>";
 				_select.appendChild(m);
-				var n = document.createTextNode("<?php echo $hostgroups["alias"]; ?>   ");
+				var n = document.createTextNode("<?php echo $hostgroups["name"]; ?>   ");
 				m.appendChild(n);
 				_select.appendChild(m);
-				select_index["<?php echo $hostgroups["alias"]; ?>"] = i;
+				select_index["<?php echo $hostgroups["hostgroup_id"]; ?>"] = i;
 				i++;
 <?php 		}
-
 		}
 ?>
 		if (typeof(_default_hg) != "undefined") {
