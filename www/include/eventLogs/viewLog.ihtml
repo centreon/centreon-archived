@@ -4,7 +4,7 @@
 <form {$form.attributes}>
 	<table class="ajaxOption">
         <tr>
-        		<td>&nbsp;&nbsp;<b>{$form.period.label} : </b>&nbsp;&nbsp;{$form.period.html}</td>
+        	<td>&nbsp;&nbsp;<b>{$form.period.label} : </b>&nbsp;&nbsp;{$form.period.html}</td>
 			<td style='white-space:nowrap;'> {$periodORlabel}</td>
 			<td>
 				&nbsp;{$From}&nbsp;{$form.StartDate.html}&nbsp;{$form.StartTime.html} 
