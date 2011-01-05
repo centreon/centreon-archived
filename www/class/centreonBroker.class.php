@@ -38,7 +38,7 @@
 
 class CentreonBroker
 {
-	public $broker;
+	private $name;
 	
 	/*
 	 * Constructor class
@@ -47,14 +47,14 @@ class CentreonBroker
 	 * @return 	object	object session
 	 */
 	public function __construct() {
-		$this->broker = "broker";
+		$this->name = "broker";
 	}
 
 	/*
 	 * return broker engine
 	 */
 	public function getBroker() {
-		return $this->broker; 
+		return $this->name; 
 	}
 	
 }
