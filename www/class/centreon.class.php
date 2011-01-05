@@ -42,6 +42,7 @@ require_once("centreonLogAction.class.php");
 require_once("centreonExternalCommand.class.php");
 require_once("centreonObjects.class.php");
 require_once("centreonCache.class.php");
+require_once("centreonBroker.class.php");
 
 require_once("centreonHostgroups.class.php");
 
@@ -80,6 +81,7 @@ class Centreon	{
 	public $media;
 	public $objects;
 	public $cache;
+	public $broker;
 
     /** **************************************
      * Class constructor
@@ -140,6 +142,11 @@ class Centreon	{
 		 * Cache
 		 */
 		$this->cache = new CentreonCache($pearDB);
+
+		/*
+		 * Engine
+		 */
+		$this->broker = new CentreonBroker();
 	}
 
 	/**
