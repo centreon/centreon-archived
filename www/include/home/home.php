@@ -53,130 +53,129 @@
 
 	$broker = "broker";
 
-	if ($broker = "ndo") {
+	if ($oreon->broker->getBroker() == "ndo") {
 		$pearDBndo = new CentreonDbPdo("ndo");
 		$ndo_base_prefix = getNDOPrefix();
 	}
 
-	$tabSatusHost = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
-	$tabSatusService = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN", 4 => "PENDING");
+	/**
+	 * Tab status
+	 */
+	$tabSatusHost 		= array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
+	$tabSatusService 	= array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN", 4 => "PENDING");
 
-	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
-		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
-	} else {
 
-		/**
-		 * The user must install the ndo table with the 'centreon_acl'
-		 */
-		if ($err_msg = table_not_exists("centreon_acl")) {
-			print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
-		}
-
-		/**
-		 * Directory of Home pages
-		 */
-		$path = "./include/home/";
-
-		/**
-		 * Displaying a Smarty Template
-		 */
-		$template = new Smarty();
-		$template = initSmartyTpl($path, $template, "./");
-		$template->assign("session", session_id());
-		$template->assign("host_label", _("Hosts"));
-		$template->assign("svc_label", _("Services"));
-
-		/**
-		 * Status informations
-		 */
-		// HOSTS
-		if ($broker = "broker") {
-			$rq1 = 	" SELECT count(DISTINCT name) cnt, state " .
-				" FROM `hosts` " .
-				$oreon->user->access->queryBuilder("WHERE", "name", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
-				" GROUP BY state " .
-				" ORDER by state";
-			$DBRESULT =& $pearDBO->query($rq1);
-		} else {
-			$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state state" .
-					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
-					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
-					" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-					$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
-					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-			$DBRESULT =& $pearDBndo->query($rq1);
-		}
-		$data = array();
-		$statHosts = _("Hosts");
-		while ($ndo =& $DBRESULT->fetchRow()){
-			$data[] = $ndo["cnt"];
-			if ($statHosts !=  _("Hosts")) {
-				$statHosts .= " - ";
-			}
-			$statHosts .=  " " . _($tabSatusHost[$ndo["state"]]).": ".$ndo["cnt"];
-		}
-		$DBRESULT->free();
-
-		// SERVICES
-		if ($broker = "broker") {
-			if (!$is_admin) {
-				$rq2 = 	" SELECT count(services.state) count, services.state state" .
-						" FROM services, hosts, centreon_acl " .
-						" WHERE services.host_id = hosts.host_id ".
-						" AND hosts.name NOT LIKE '_Module_%' ".
-						" AND services.host_id = centreon_acl.host_id ".
-						" AND services.service_id = centreon_acl.service_id " .
-						" AND centreon_acl.group_id IN (".$grouplistStr.") ".
-						" GROUP BY services.state ORDER by services.state";
-			} else {
-				$rq2 = 	" SELECT count(services.state) count, services.state state" .
-						" FROM services, hosts " .
-						" WHERE services.host_id = hosts.host_id ".
-						" AND hosts.name NOT LIKE '_Module_%' ".
-						" GROUP BY services.state ORDER by services.state";
-			}
-			$DBRESULT =& $pearDBO->query($rq2);
-		} else {
-			if (!$centreon->user->admin) {
-				$rq2 = 	" SELECT count(nss.current_state) count, nss.current_state state" .
-						" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
-						" WHERE no.object_id = nss.service_object_id".
-						" AND no.name1 NOT LIKE '_Module_%' ".
-						" AND no.name1 = centreon_acl.host_name ".
-						" AND no.name2 = centreon_acl.service_description " .
-						" AND centreon_acl.group_id IN (".$centreon->user->access->getAccessGroupsString().") ".
-						" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
-			} else {
-				$rq2 = 	" SELECT count(nss.current_state) count, nss.current_state" .
-						" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-						" WHERE no.object_id = nss.service_object_id".
-						" AND no.name1 NOT LIKE '_Module_%' ".
-						" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
-			}
-			$DBRESULT = $pearDBndo->query($rq2);
-		}
-		$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-		$data = array();
-		$statServices = _("Services");
-		while ($ndo =& $DBRESULT->fetchRow()){
-			$data[] = $ndo["count"];
-			if ($statServices !=  _("Services")) {
-				$statServices .= " - ";
-			}
-			$statServices .= " " . _($tabSatusService[$ndo["state"]]).": ".$ndo["count"];
-		}
-		$DBRESULT->free();
-
-		/**
-		 * Send data to Templates
-		 */
-		$template->assign("statServices", $statServices);
-		$template->assign("statHosts", $statHosts);
-
-		/**
-		 * Display Templates
-		 */
-		$template->display("home.ihtml");
+	/**
+	 * The user must install the ndo table with the 'centreon_acl'
+	 */
+	if ($err_msg = table_not_exists("centreon_acl")) {
+		print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
 	}
+
+	/**
+	 * Directory of Home pages
+	 */
+	$path = "./include/home/";
+
+	/**
+	 * Displaying a Smarty Template
+	 */
+	$template = new Smarty();
+	$template = initSmartyTpl($path, $template, "./");
+	$template->assign("session", session_id());
+	$template->assign("host_label", _("Hosts"));
+	$template->assign("svc_label", _("Services"));
+
+	/**
+	 * Status informations
+	 */
+	// HOSTS
+	if ($oreon->broker->getBroker() == "broker") {
+		$rq1 = 	" SELECT count(DISTINCT name) cnt, state " .
+			" FROM `hosts` " .
+			$oreon->user->access->queryBuilder("WHERE", "name", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
+			" GROUP BY state " .
+			" ORDER by state";
+		$DBRESULT =& $pearDBO->query($rq1);
+	} else {
+		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state state" .
+				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
+				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
+				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+				$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
+				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+		$DBRESULT =& $pearDBndo->query($rq1);
+	}
+	$data = array();
+	$statHosts = _("Hosts");
+	while ($ndo =& $DBRESULT->fetchRow()){
+		$data[] = $ndo["cnt"];
+		if ($statHosts !=  _("Hosts")) {
+			$statHosts .= " - ";
+		}
+		$statHosts .=  " " . _($tabSatusHost[$ndo["state"]]).": ".$ndo["cnt"];
+	}
+	$DBRESULT->free();
+
+	// SERVICES
+	if ($oreon->broker->getBroker() == "broker") {
+		if (!$is_admin) {
+			$rq2 = 	" SELECT count(services.state) count, services.state state" .
+					" FROM services, hosts, centreon_acl " .
+					" WHERE services.host_id = hosts.host_id ".
+					" AND hosts.name NOT LIKE '_Module_%' ".
+					" AND services.host_id = centreon_acl.host_id ".
+					" AND services.service_id = centreon_acl.service_id " .
+					" AND centreon_acl.group_id IN (".$grouplistStr.") ".
+					" GROUP BY services.state ORDER by services.state";
+		} else {
+			$rq2 = 	" SELECT count(services.state) count, services.state state" .
+					" FROM services, hosts " .
+					" WHERE services.host_id = hosts.host_id ".
+					" AND hosts.name NOT LIKE '_Module_%' ".
+					" GROUP BY services.state ORDER by services.state";
+		}
+		$DBRESULT =& $pearDBO->query($rq2);
+	} else {
+		if (!$centreon->user->admin) {
+			$rq2 = 	" SELECT count(nss.current_state) count, nss.current_state state" .
+					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
+					" WHERE no.object_id = nss.service_object_id".
+					" AND no.name1 NOT LIKE '_Module_%' ".
+					" AND no.name1 = centreon_acl.host_name ".
+					" AND no.name2 = centreon_acl.service_description " .
+					" AND centreon_acl.group_id IN (".$centreon->user->access->getAccessGroupsString().") ".
+					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
+		} else {
+			$rq2 = 	" SELECT count(nss.current_state) count, nss.current_state" .
+					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
+					" WHERE no.object_id = nss.service_object_id".
+					" AND no.name1 NOT LIKE '_Module_%' ".
+					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
+		}
+		$DBRESULT = $pearDBndo->query($rq2);
+	}
+	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
+	$data = array();
+	$statServices = _("Services");
+	while ($ndo =& $DBRESULT->fetchRow()){
+		$data[] = $ndo["count"];
+		if ($statServices !=  _("Services")) {
+			$statServices .= " - ";
+		}
+		$statServices .= " " . _($tabSatusService[$ndo["state"]]).": ".$ndo["count"];
+	}
+	$DBRESULT->free();
+
+	/**
+	 * Send data to Templates
+	 */
+	$template->assign("statServices", $statServices);
+	$template->assign("statHosts", $statHosts);
+
+	/**
+	 * Display Templates
+	 */
+	$template->display("home.ihtml");
 ?>

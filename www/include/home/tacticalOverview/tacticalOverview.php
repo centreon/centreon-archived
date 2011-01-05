@@ -54,11 +54,10 @@
 	$tpl->display("tacticalOverview.ihtml");
 
  ?>
-
  <script type='text/javascript' src='./class/centreonAjax.js'></script>
  <script type='text/javascript'>
 	var _sid = '<?php echo session_id();?>';
-	var ajax = new CentreonAjax('./include/home/tacticalOverview/xml/tacticalOverviewXml.php', './include/home/tacticalOverview/xsl/tacticalOverview.xsl', 'ajaxDiv');
+	var ajax = new CentreonAjax('./include/home/tacticalOverview/xml/<?php print $oreon->broker->getBroker(); ?>/tacticalOverviewXml.php', './include/home/tacticalOverview/xsl/tacticalOverview.xsl', 'ajaxDiv');
 	var ajaxOverlay = new CentreonAjaxOverlay();
 	ajax.setTime(10);
   	setTimeout('ajax.start()', 200);
@@ -83,4 +82,4 @@
   	{
   	  	ajaxOverlay.hide('span_'+id);
   	}
- </script>
+</script>
