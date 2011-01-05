@@ -16,7 +16,7 @@
 
 // JavaScript Document
 
-var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/broker/statusCounter.php";
+var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/<?php print $oreon->broker->getBroker(); ?>/statusCounter.php";
 
 function getXhrC(){
 	if (window.XMLHttpRequest) {
