@@ -69,7 +69,7 @@
 		$list_param = array('log_filter_host', 'log_filter_svc', 'log_filter_host_down',
 			'log_filter_host_up', 'log_filter_host_unreachable', 'log_filter_svc_ok',
 			'log_filter_svc_warning', 'log_filter_svc_critical', 'log_filter_svc_unknown',
-			'log_filter_notif', 'log_filter_error', 'log_filter_alert', 'log_filter_oh');
+			'log_filter_notif', 'log_filter_error', 'log_filter_alert', 'log_filter_oh', 'log_filter_period');
 		if (in_array($key, $list_param)) {
 			$queryDel = "DELETE FROM contact_param WHERE cp_key = '" .$key . "' AND cp_contact_id = '" . $user_id . "'";
 			$queryIns = "INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) " .
