@@ -36,55 +36,89 @@
  *
  */
 
+	/**
+	 * Include configuration files
+	 */
  	include_once "@CENTREON_ETC@/centreon.conf.php";
 
-	require_once ($centreon_path . "www/class/centreonSession.class.php");
-	require_once ($centreon_path . "www/class/centreon.class.php");
-	require_once ($centreon_path . "www/class/centreonLang.class.php");
+ 	/**
+ 	 * Require Classes
+ 	 */
+	require_once $centreon_path . "www/class/centreonSession.class.php";
+	require_once $centreon_path . "www/class/centreon.class.php";
+	require_once $centreon_path . "www/class/centreonLang.class.php";
+	require_once $centreon_path . "www/class/centreonDB.class.php";
+	require_once $centreon_path.'/www/lib/ofc-library/open-flash-chart.php';
 
+	/**
+	 * Include functions
+	 */
+	require_once $centreon_path . "www/include/common/common-Func.php" ;
+
+	/**
+	 * Get Session informations
+	 */
 	CentreonSession::start();
 	$oreon =& $_SESSION["centreon"];
 
+	/**
+	 * Initiate Language class
+	 */
 	$centreonLang = new CentreonLang($centreon_path, $oreon);
 	$centreonLang->bindLang();
 
-	include_once($centreon_path . "www/class/centreonDB.class.php");
+	/**
+	 * Broker type
+	 */
+	$broker = "broker";
 
-	/* Connect to oreon DB */
+	/**
+	 * Init DB connexions
+	 */
+	$pearDB 		= new CentreonDB();
+	$pearDBO 		= new CentreonDB("centstorage");
+	$pearDBndo 		= new CentreonDB("ndo");
 
-	$pearDB = new CentreonDB();
+	if ($broker == "broker") {
+		$ndo_base_prefix = getNDOPrefix();
+	}
 
-	include_once($centreon_path . "www/include/common/common-Func.php");
-
-	$ndo_base_prefix = getNDOPrefix();
-
-	$pearDBndo = new CentreonDB("ndo");
-
-	/*
+	/**
 	 * calcul stat for resume
 	 */
 	$statistic_host = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE",3 => "PENDING");
 
-	/* Get HostNDO status */
-	$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state" .
-			" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
-			" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
-			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-			$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
-			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+	/**
+	 * Get DB informations for creating Flash
+	 */
+	if ($broker = "broker") {
+		$rq1 = 	" SELECT count(DISTINCT name) cnt, state " .
+				" FROM `hosts` " .
+				$oreon->user->access->queryBuilder("WHERE", "name", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
+				" GROUP BY state " .
+				" ORDER by state";
+		$DBRESULT =& $pearDBO->query($rq1);
+	} else {
+		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state state" .
+				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
+				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
+				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+				$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
+				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+		$DBRESULT =& $pearDBndo->query($rq1);
+	}
 	$data = array();
 	$color = array();
 	$legend = array();
 	$counter = 0;
-	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
+	while ($ndo =& $DBRESULT->fetchRow()){
 		$data[] = $ndo["cnt"];
 		$legend[] = $statistic_host[$ndo["current_state"]];
-		$color[] = $oreon->optGen["color_".strtolower($statistic_host[$ndo["current_state"]])];
+		$color[] = $oreon->optGen["color_".strtolower($statistic_host[$ndo["state"]])];
 		$counter += $ndo["cnt"];
 	}
-	$DBRESULT_NDO1->free();
+	$DBRESULT->free();
 
 	foreach ($data as $key => $value) {
 		$value = round($value / $counter * 100, 2);
@@ -92,7 +126,9 @@
 	  	$data[$key] = $value;
 	}
 
-	include_once($centreon_path.'/www/lib/ofc-library/open-flash-chart.php');
+	/**
+	 * Create Graphs
+	 */
 	$g = new graph();
 	$g->bg_colour = '#FFFFFF';
 
@@ -101,16 +137,19 @@
 
 	// pass in two arrays, one of data, the other data labels
 	$g->pie_values( $data, $legend );
+
 	//
 	// Colours for each slice, in this case some of the colours
 	// will be re-used (3 colurs for 5 slices means the last two
 	// slices will have colours colour[0] and colour[1]):
 	//
-
 	$g->pie_slice_colours($color);
 	$g->set_tool_tip( '#val#%' );
 	$g->title( sprintf(_('Availability: %s%%')."\n\n", $data[0]), '{font-size: 16px;}' );
-	//$g->title( " ", '{font-size:18px; color: #424242}' );
+
+	/**
+	 * Send HTTP Headers
+	 */
 	header("Cache-Control: cache, must-revalidate");
     header("Pragma: public");
 	echo $g->render();
