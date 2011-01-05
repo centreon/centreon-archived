@@ -53,12 +53,14 @@
 		$obis .= '_ack_' . $_GET["acknowledge"];
 	}
 
+	$broker = "broker";
+
 ?>
 <script type="text/javascript">
 
 var _debug = 0;
 
-var _addrXML = "./include/monitoring/status/Hosts/xml/hostXML.php";
+var _addrXML = "./include/monitoring/status/Hosts/xml/<?php print $broker; ?>/hostXML.php";
 var _addrXSL = "./include/monitoring/status/Hosts/xsl/host.xsl";
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
