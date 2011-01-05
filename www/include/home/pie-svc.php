@@ -68,18 +68,13 @@
 	$centreonLang->bindLang();
 
 	/**
-	 * Broker type
-	 */
-	$broker = "broker";
-
-	/**
 	 * Init DB connexions
 	 */
 	$pearDB 		= new CentreonDB();
 	$pearDBO 		= new CentreonDB("centstorage");
 	$pearDBndo 		= new CentreonDB("ndo");
 
-	if ($broker == "broker") {
+	if ($oreon->broker->getBroker() == "ndo") {
 		$ndo_base_prefix = getNDOPrefix();
 	}
 
@@ -104,7 +99,7 @@
 	/**
 	 * Get DB informations for creating Flash
 	 */
-	if ($broker == "broker") {
+	if ($oreon->broker->getBroker() == "broker") {
 		if (!$is_admin) {
 			$rq2 = 	" SELECT count(services.state), services.state state" .
 					" FROM services, hosts, centreon_acl " .
@@ -148,7 +143,7 @@
 	$legend = array();
 	$counter = 0;
 	while ($data =& $DBRESULT->fetchRow()) {
-		if ($broker = "broker") {
+		if ($oreon->broker->getBroker() = "broker") {
 			$info[] = $data["count(services.state)"];
 			$counter += $data["count(services.state)"];
 		} else {
