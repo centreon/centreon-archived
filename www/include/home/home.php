@@ -68,10 +68,11 @@
 	/**
 	 * The user must install the ndo table with the 'centreon_acl'
 	 */
+/*
 	if ($err_msg = table_not_exists("centreon_acl")) {
 		print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
 	}
-
+*/
 	/**
 	 * Directory of Home pages
 	 */
@@ -93,7 +94,7 @@
 	if ($oreon->broker->getBroker() == "broker") {
 		$rq1 = 	" SELECT count(DISTINCT name) cnt, state " .
 			" FROM `hosts` " .
-			$oreon->user->access->queryBuilder("WHERE", "name", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
+			$oreon->user->access->queryBuilder("WHERE", "name", $oreon->user->access->getHostsString("NAME", $pearDBO)) .
 			" GROUP BY state " .
 			" ORDER by state";
 		$DBRESULT =& $pearDBO->query($rq1);

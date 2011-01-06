@@ -143,7 +143,7 @@
 	$legend = array();
 	$counter = 0;
 	while ($data =& $DBRESULT->fetchRow()) {
-		if ($oreon->broker->getBroker() = "broker") {
+		if ($oreon->broker->getBroker() == "broker") {
 			$info[] = $data["count(services.state)"];
 			$counter += $data["count(services.state)"];
 		} else {
@@ -184,9 +184,7 @@
 	// slices will have colours colour[0] and colour[1]):
 	//
 	$g->set_tool_tip( '#key# : #val# %' );
-
 	$g->pie_slice_colours($color);
-
 	$g->set_tool_tip( '#val#%' );
 	$g->title( sprintf(_('Availability: %s%%')."\n\n", $data[0]), '{font-size: 16px;}' );
 
