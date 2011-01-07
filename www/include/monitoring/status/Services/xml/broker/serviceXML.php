@@ -137,7 +137,7 @@
 	$tabOrder["default"] 			= " ORDER BY h.name ". $order ;
 
 	$request = "SELECT SQL_CALC_FOUND_ROWS h.name, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
-				s.icon_image, s.display_name, s.perfdata, s.state, s.output as plugin_output,
+				s.icon_image, s.display_name, s.process_perfdata, s.state, s.output as plugin_output,
 				s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change,
 				s.last_hard_state_change, s.last_check, s.next_check,
 				s.notify, s.acknowledged, s.passive_checks, s.active_checks, s.event_handler_enabled, s.flapping,
@@ -151,7 +151,8 @@
 	if (!$obj->is_admin) {
 		$request .= ", centreon_acl ";
 	}
-	$request .= " WHERE h.host_id = s.host_id AND service_id IS NOT NULL AND service_id != 0 ";
+	$request .= " WHERE h.host_id = s.host_id AND s.service_id IS NOT NULL AND s.service_id != 0 ";
+	//$request .= " AND s.host_id = i.host_id AND s.service_id = i.service_id ";
 	if ($searchHost) {
 		$request .= $searchHost;
 	}
@@ -309,7 +310,7 @@
 			$obj->XML->writeElement("hdtm", $data["h_scheduled_downtime_depth"]);
 			$obj->XML->writeElement("hid", 	$data["host_id"]);
 		}
-		$obj->XML->writeElement("ppd", 	$data["perfdata"]);
+		$obj->XML->writeElement("ppd", 	$data["process_perfdata"]);
 		$obj->XML->writeElement("hs", 	$data["host_state"]);
 
 		/*
@@ -375,7 +376,7 @@
 		}
 		$obj->XML->writeElement("d", $duration);
 		$obj->XML->writeElement("last_hard_state_change", $hard_duration);
-		$obj->XML->writeElement("svc_index", getMyIndexGraph4Service($data["name"], $data["description"], $obj->DBC));
+		$obj->XML->writeElement("svc_index", 0 /*$data["graph"]*/);
 		$obj->XML->endElement();
 	}
 	$DBRESULT->free();
