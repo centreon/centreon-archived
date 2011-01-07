@@ -128,11 +128,12 @@
 	$tabOrder = array();
 	$tabOrder["host_name"] 			= " ORDER BY h.name ". $order.", s.description ";
 	$tabOrder["service_description"]= " ORDER BY s.description ". $order.", h.name";
-	$tabOrder["current_state"] 		= " ORDER BY s.current_state ". $order.", h.name, s.description";
+	$tabOrder["current_state"] 		= " ORDER BY s.state ". $order.", h.name, s.description";
 	$tabOrder["last_state_change"] 	= " ORDER BY s.last_state_change ". $order.", h.name, s.description";
 	$tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change ". $order.", h.name, s.description";
 	$tabOrder["last_check"] 		= " ORDER BY s.last_check ". $order.", h.name, s.description";
 	$tabOrder["current_attempt"] 	= " ORDER BY s.check_attempt ". $order.", h.name, s.description";
+	$tabOrder["output"] 			= " ORDER BY s.output ". $order.", h.name, s.description";
 	$tabOrder["default"] 			= " ORDER BY h.name ". $order ;
 
 	$request = "SELECT SQL_CALC_FOUND_ROWS h.name, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
@@ -150,7 +151,7 @@
 	if (!$obj->is_admin) {
 		$request .= ", centreon_acl ";
 	}
-	$request .= " WHERE h.host_id = s.host_id AND service_id IS NOT NULL ";
+	$request .= " WHERE h.host_id = s.host_id AND service_id IS NOT NULL AND service_id != 0 ";
 	if ($searchHost) {
 		$request .= $searchHost;
 	}
