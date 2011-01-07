@@ -283,7 +283,7 @@
 			$obj->XML->text($data["name"]);
 			$obj->XML->endElement();
 			$obj->XML->writeElement("hnl", urlencode($data["name"]));
-			$obj->XML->writeElement("hid", $data["host_state"]);
+			$obj->XML->writeElement("hid", $data["host_id"]);
 		} else {
 			$host_prev = $data["name"];
 			if ($data["h_scheduled_downtime_depth"] == 0) {
@@ -322,6 +322,7 @@
 			$obj->XML->writeElement("sd", 	$data["description"], false);
 		}
 		$obj->XML->writeElement("sico", $data["icon_image"]);
+		$obj->XML->writeElement("sid", 	$data["service_id"]);
 		$obj->XML->writeElement("sdl", 	urlencode($data["description"]));
 		$obj->XML->writeElement("svc_id", $data["service_id"]);
 		$obj->XML->writeElement("sc", 	$obj->colorService[$data["state"]]);
