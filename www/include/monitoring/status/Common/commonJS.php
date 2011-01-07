@@ -93,11 +93,11 @@ var _popup_no_comment_msg = '<?php echo _("Please enter a comment"); ?>';
 
 
 // Hosts WS For Poppin
-var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php";
+var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/broker/makeXMLForOneHost.php";
 var _addrXSLSpanhost = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
 
 // Services WS For Poppin
-var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/makeXMLForOneService.php";
+var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/broker/makeXMLForOneService.php";
 var _addrXSLSpanSvc = "./include/monitoring/status/Services/xsl/popupForService.xsl";
 
 // Position
