@@ -42,7 +42,7 @@
 require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once $centreon_path . '/www/autoloader.php';
 
-/*
+/** *****************************
  * Class for XML/Ajax request
  *
  */
@@ -66,7 +66,7 @@ class CentreonXMLBGRequest
 	var $access;
 	var $session_id;
 	var $broker;
-	
+
 	/*
 	 * Variables
 	 */
@@ -87,6 +87,8 @@ class CentreonXMLBGRequest
 	var $colorHost;
 	var $colorHostInService;
 	var $colorService;
+	var $en;
+	var $stateTypeFull;
 
 	/*
 	 * Filters
@@ -181,7 +183,9 @@ class CentreonXMLBGRequest
 		/*
 		 * Init Tables
 		 */
+		$this->en 			= array("0" => _("No"), "1" => _("Yes"));
 		$this->stateType	= array("1" => "H", "0" => "S");
+		$this->stateTypeFull= array("1" => "HARD", "0" => "SOFT");
 		$this->statusHost 	= array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 		$this->statusService= array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 		$this->colorHost 	= array(0 => $this->general_opt["color_up"], 1 => $this->general_opt["color_down"], 2 => $this->general_opt["color_unreachable"]);
@@ -226,6 +230,13 @@ class CentreonXMLBGRequest
 		}
 	}
 
+	/**
+	 * Decode Function
+	 */
+	private function myDecode($arg)	{
+		return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
+	}
+
 	/*
 	 * Get Status Color
 	 */
@@ -234,7 +245,7 @@ class CentreonXMLBGRequest
 		$this->general_opt = array();
 		$DBRESULT =& $this->DB->query("SELECT * FROM `options` WHERE `key` LIKE 'color%'");
 		while ($c =& $DBRESULT->fetchRow()) {
-			$this->general_opt[$c["key"]] = myDecode($c["value"]);
+			$this->general_opt[$c["key"]] = $this->myDecode($c["value"]);
 		}
 		$DBRESULT->free();
 		unset($c);
