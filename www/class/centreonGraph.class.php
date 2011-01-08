@@ -579,10 +579,20 @@ class CentreonGraph	{
 		$this->_arguments[$this->_argcount++] = $arg;
 	}
 
+	/**
+	 * Geneate image...
+	 */
 	public function displayError() {
-		$image = imagecreate(250,100);
-		$fond = imagecolorallocate($image,0xEF,0xF2,0xFB);
+		$image 	= imagecreate(250,100);
+		$fond 	= imagecolorallocate($image,0xEF,0xF2,0xFB);
+		$textcolor = imagecolorallocate($image, 0, 0, 255);
+		// imagestring($image, 5, 0, 0, "Session: ".$_GET['session_id']."svc_id: ".$_GET["index"], $textcolor);
+		
+		/*
+		 * Send Header
+		 */
 		header("Content-Type: image/gif");
+
 		imagegif($image);
 		exit;
 	}
