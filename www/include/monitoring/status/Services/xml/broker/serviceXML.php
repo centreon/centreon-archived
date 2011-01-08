@@ -94,13 +94,11 @@
 	 */
 	$obj->setInstanceHistory($instance);
 
-	$service = array();
-	$host_status = array();
-	$service_status = array();
-	$host_services = array();
-	$metaService_status = array();
-	$tab_host_service = array();
-
+	/**
+	 * Graphs Tables
+	 */
+	$graphs = array();
+	
 	/** **************************************************
 	 * Get Service status
 	 */
@@ -152,7 +150,6 @@
 		$request .= ", centreon_acl ";
 	}
 	$request .= " WHERE h.host_id = s.host_id AND s.service_id IS NOT NULL AND s.service_id != 0 ";
-	//$request .= " AND s.host_id = i.host_id AND s.service_id = i.service_id ";
 	if ($searchHost) {
 		$request .= $searchHost;
 	}
@@ -322,7 +319,6 @@
 			$obj->XML->writeElement("sd", 	$data["description"], false);
 		}
 		$obj->XML->writeElement("sico", $data["icon_image"]);
-		$obj->XML->writeElement("sid", 	$data["service_id"]);
 		$obj->XML->writeElement("sdl", 	urlencode($data["description"]));
 		$obj->XML->writeElement("svc_id", $data["service_id"]);
 		$obj->XML->writeElement("sc", 	$obj->colorService[$data["state"]]);
@@ -377,7 +373,25 @@
 		}
 		$obj->XML->writeElement("d", $duration);
 		$obj->XML->writeElement("last_hard_state_change", $hard_duration);
-		$obj->XML->writeElement("svc_index", 0 /*$data["graph"]*/);
+
+		/**
+		 * Get Service Graph index
+		 */
+		if (!isset($graphs[$data["host_id"]])) {
+			$request2 = "SELECT service_id, id FROM index_data WHERE host_id = '".$data["host_id"]."'";
+			$DBRESULT2 = $obj->DBC->query($request2);
+			while ($dataG = $DBRESULT2->fetchRow()) {
+				if (!isset($graphs[$data["host_id"]])) {
+					$graphs[$data["host_id"]] = array();
+				}
+				$graphs[$data["host_id"]][$dataG["service_id"]] = $dataG["id"];
+			}
+			if (!isset($graphs[$data["host_id"]])) {
+				$graphs[$data["host_id"]] = array();
+			}
+		}
+		$obj->XML->writeElement("svc_index", (isset($graphs[$data["host_id"]][$data["service_id"]]) ? $graphs[$data["host_id"]][$data["service_id"]] : 0));
+
 		$obj->XML->endElement();
 	}
 	$DBRESULT->free();
