@@ -101,17 +101,17 @@ function set_header_title() {
 }
 
 function mainLoopLocal() {
- 	_currentInputField = document.getElementById('input_search');
-  	if (document.getElementById('input_search') && document.getElementById('input_search').value) {
-  		_currentInputFieldValue = document.getElementById('input_search').value;
+ 	_currentInputField = document.getElementById('host_search');
+  	if (document.getElementById('host_search') && document.getElementById('host_search').value) {
+  		_currentInputFieldValue = document.getElementById('host_search').value;
   	} else {
   		_currentInputFieldValue = "";
   	}
 
   	if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue != _currentInputFieldValue){
     	if (!_lock) {
-			set_search(escapeURI(_currentInputFieldValue));
-			_search = _currentInputFieldValue;
+    		set_search_host(escapeURI(_currentInputFieldValue));
+			_host_search = _currentInputFieldValue;
 
 			monitoring_refresh();
 
@@ -133,11 +133,11 @@ function initM(_time_reload, _sid, _o ){
 	construct_selecteList_ndo_instance('instance_selected');
 	construct_HostGroupSelectList('hostgroups_selected');
 
-	if (document.getElementById("input_search") && document.getElementById("input_search").value) {
-		_search = document.getElementById("input_search").value;
-		viewDebugInfo('search: '+document.getElementById("input_search").value);
-	} else if (document.getElementById("input_search").lenght == 0) {
-		_search = "";
+	if (document.getElementById("host_search") && document.getElementById("host_search").value) {
+		_host_search = document.getElementById("host_search").value;
+		viewDebugInfo('search: '+document.getElementById("host_search").value);
+	} else if (document.getElementById("host_search").lenght == 0) {
+		_host_search = "";
 	}
 
 	if (_first){
@@ -155,12 +155,12 @@ function goM(_time_reload, _sid, _o) {
 	_lock = 1;
 	var proc = new Transformation();
 	proc.setCallback(resetSelectedCheckboxes);
-	proc.setXml(_addrXML+"?"+'sid='+_sid+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>');
+	proc.setXml(_addrXML+"?"+'sid='+_sid+'&search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>');
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 
 	if (_counter == 0) {
-		document.getElementById("input_search").value = _search;
+		document.getElementById("host_search").value = _host_search;
 		_counter += 1;
 	}
 
