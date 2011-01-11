@@ -137,6 +137,7 @@ function set_header_title(){
 }
 
 function mainLoopHost() {
+
  	_currentInputField = document.getElementById('host_search');
   	if (document.getElementById('host_search') && document.getElementById('host_search').value) {
   		_currentInputFieldValue = document.getElementById('host_search').value;
@@ -146,8 +147,8 @@ function mainLoopHost() {
 
   	if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue != _currentInputFieldValue){
     	if (!_lock) {
-			set_search(escapeURI(_currentInputFieldValue));
-			_search = _currentInputFieldValue;
+    		set_search_host(escapeURI(_currentInputFieldValue));
+			_host_search = _currentInputFieldValue;
 
 			monitoring_refresh();
 
@@ -169,11 +170,23 @@ function initM(_time_reload, _sid, _o ){
 	construct_selecteList_ndo_instance('instance_selected');
 	construct_HostGroupSelectList('hostgroups_selected');
 
+	if (!document.getElementById('debug')){
+		var _divdebug = document.createElement("div");
+		_divdebug.id = 'debug';
+		var _debugtable = document.createElement("table");
+		_debugtable.id = 'debugtable';
+		var _debugtr = document.createElement("tr");
+		_debugtable.appendChild(_debugtr);
+		_divdebug.appendChild(_debugtable);
+		_header = document.getElementById('header');
+		_header.appendChild(_divdebug);
+	}
+
 	if (document.getElementById("host_search") && document.getElementById("host_search").value) {
-		_search = document.getElementById("host_search").value;
+		_host_search = document.getElementById("host_search").value;
 		viewDebugInfo('service search: '+document.getElementById("host_search").value);
 	} else if (document.getElementById("host_search").lenght == 0) {
-		_search = "";
+		_host_search = "";
 	}
 
 	if (_first){
@@ -188,22 +201,26 @@ function initM(_time_reload, _sid, _o ){
 }
 
 function goM(_time_reload, _sid, _o) {
+
 	_lock = 1;
 	var proc = new Transformation();
-	proc.setCallback(resetSelectedCheckboxes);
-	proc.setXml(_addrXML+"?"+'sid='+_sid+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>');
-	proc.setXslt(_addrXSL);
-	proc.transform("forAjax");
 
+	// INIT search informations
 	if (_counter == 0) {
-		document.getElementById("host_search").value = _search;
+		document.getElementById("host_search").value = _host_search;
 		_counter += 1;
 	}
+
+	proc.setCallback(resetSelectedCheckboxes);
+	proc.setXml(_addrXML+"?"+'sid='+_sid+'&search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>');
+	proc.setXslt(_addrXSL);
+	proc.transform("forAjax");
 
 	_lock = 0;
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
+
 	set_header_title();
 }
 

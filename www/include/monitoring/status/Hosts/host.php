@@ -36,9 +36,8 @@
  *
  */
 
-	if (!isset($oreon)) {
+	if (!isset($oreon))
 		exit();
-	}
 
 	/*
 	 * ACL Actions
@@ -65,15 +64,23 @@
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
 	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
+	!isset($_GET["host_search"]) ? $search_host = "" : $search_host = $_GET["host_search"];
 	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
+
+	/*
+	 * Check search value in Host search field
+	 */
+	if (isset($_GET["host_search"])) {
+		$centreon->historyPage[$url] = $_GET["host_search"];
+	}
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
 
 	include_once("./include/monitoring/status/Common/default_poller.php");
 	include_once("./include/monitoring/status/Common/default_hostgroups.php");
-	include_once("hostJS.php");
 
+	include_once("hostJS.php");
 
 	/*
 	 *  Smarty template Init
