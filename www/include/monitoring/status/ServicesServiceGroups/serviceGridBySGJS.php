@@ -103,16 +103,16 @@ function set_header_title(){
 }
 
 function mainLoopLocal() {
- 	_currentInputField = document.getElementById('input_search');
-  	if (document.getElementById('input_search') && document.getElementById('input_search').value) {
-  		_currentInputFieldValue = document.getElementById('input_search').value;
+ 	_currentInputField = document.getElementById('host_search');
+  	if (document.getElementById('host_search') && document.getElementById('host_search').value) {
+  		_currentInputFieldValue = document.getElementById('host_search').value;
   	} else {
   		_currentInputFieldValue = "";
   	}
 
   	if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue != _currentInputFieldValue){
     	if (!_lock) {
-			set_search(escapeURI(_currentInputFieldValue));
+    		set_search_host(escapeURI(_currentInputFieldValue));
 			_search = _currentInputFieldValue;
 
 			monitoring_refresh();
@@ -135,10 +135,10 @@ function initM(_time_reload, _sid, _o ){
 	construct_selecteList_ndo_instance('instance_selected');
 	construct_HostGroupSelectList('hostgroups_selected');
 
-	if (document.getElementById("input_search") && document.getElementById("input_search").value) {
-		_search = document.getElementById("input_search").value;
-		viewDebugInfo('search: '+document.getElementById("input_search").value);
-	} else if (document.getElementById("input_search").lenght == 0) {
+	if (document.getElementById("host_search") && document.getElementById("host_search").value) {
+		_search = document.getElementById("host_search").value;
+		viewDebugInfo('search: '+document.getElementById("host_search").value);
+	} else if (document.getElementById("host_search").lenght == 0) {
 		_search = "";
 	}
 
@@ -162,7 +162,7 @@ function goM(_time_reload, _sid, _o) {
 	proc.transform("forAjax");
 
 	if (_counter == 0) {
-		document.getElementById("input_search").value = _search;
+		document.getElementById("host_search").value = _host_search;
 		_counter += 1;
 	}
 

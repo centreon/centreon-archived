@@ -47,6 +47,15 @@
 	!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
 	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
 	!isset($_GET["sort_type"]) ? $sort_type = "alias" : $sort_type = $_GET["sort_type"];
+	!isset($_GET["host_search"]) ? $host_search = 0 : $host_search = $_GET["host_search"];
+
+	/*
+	 * Check search value in Host search field
+	 */
+	if (isset($_GET["host_search"])) {
+		$centreon->historySearch[$url] = $_GET["host_search"];
+	}
+
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;

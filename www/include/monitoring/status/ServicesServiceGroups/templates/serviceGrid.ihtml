@@ -6,7 +6,7 @@
 <table class="ajaxOption">
 	<tr>		
 		<td>{$search}</td>
-		<td><input size="15" id="input_search" class="search_input" style="padding-top:1px;padding-bottom:1px;" name="search" type="text" /></td>
+		<td><input size="15" id="host_search" class="search_input" style="padding-top:1px;padding-bottom:1px;" name="host_search" type="text" /></td>
 		<td>{$pollerStr}:</td>
 		<td><span id="instance_selected"></span></td>		
 	</tr>
