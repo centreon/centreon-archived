@@ -71,7 +71,7 @@
 	 * Check search value in Host search field
 	 */
 	if (isset($_GET["host_search"])) {
-		$centreon->historyPage[$url] = $_GET["host_search"];
+		$centreon->historySearch[$url] = $_GET["host_search"];
 	}
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");

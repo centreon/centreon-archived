@@ -48,7 +48,6 @@
 
 ?>
 // Dynamique
-var _search = '<?php echo $search?>';
 var _sid='<?php echo $sid?>';
 <?php if (isset($search_type_host)) { ?>
 var _search_type_host='<?php echo $search_type_host?>';
@@ -77,7 +76,7 @@ var _on = 1;
 var _time_reload = <?php echo $tM?>;
 var _time_live = <?php echo $tFM?>;
 var _nb = 0;
-var _oldInputFieldValue = '<?php echo $search?>';
+var _oldInputFieldValue = '';
 var _oldInputHostFieldValue = '';
 var _oldInputOutputFieldValue = '';
 var _currentInputFieldValue=""; // valeur actuelle du champ texte
@@ -297,6 +296,7 @@ function construct_HostGroupSelectList(id) {
 				select_index["<?php echo $hostgroups["hostgroup_id"]; ?>"] = i;
 				i++;
 <?php 		}
+
 		}
 ?>
 		if (typeof(_default_hg) != "undefined") {
