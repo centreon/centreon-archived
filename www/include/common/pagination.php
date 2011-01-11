@@ -40,7 +40,7 @@
 	if (!isset($oreon))
 		exit();
 
-	global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host, $host_name, $hostgroup, $rows, $p, $gopt, $pagination, $poller, $template, $search_output;
+	global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host, $host_name, $hostgroup, $rows, $p, $gopt, $pagination, $poller, $template, $search_output, $search_service;
 
 	isset($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
 	isset($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
@@ -91,6 +91,9 @@
 	}
 	if (isset($host_name)) {
 		$url_var .= "&search_host=" . $host_name;
+	}
+	if (isset($search_service)) {
+		$url_var .= "&search_service=" . $search_service;
 	}
 	if (isset($search_output) && $search_output != "") {
 		$url_var .= "&search_output=" . $search_output;
