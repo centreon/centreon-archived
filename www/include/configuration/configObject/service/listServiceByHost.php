@@ -190,7 +190,7 @@
 	/*
 	 * Search case
 	 */
-	if (isset($searchS) || isset($searchH))	{
+	if (isset($searchS) && $searchS != "" || isset($searchH) && $searchH != "")	{
 		if ($search_type_service && !$search_type_host) {
 			$DBRESULT =& $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE $searchHostallone sv.service_register = '1' $sqlFilterCase AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
 			while ($service = $DBRESULT->fetchRow()){
@@ -252,11 +252,8 @@
 	/*
 	 * Host/service list
 	 */
-
-	if ($searchH || $searchS)
-		$rq = 	"SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
-				"WHERE host_service_relation.service_service_id = sv.service_id GROUP BY service_id) AS nbr, " .
-				"esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
+	if ($searchH && $searchH != "" || $searchS && $searchS !! "") {
+		$rq = 	"SELECT esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
 				"host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
 				"sv.service_retry_check_interval, sv.service_max_check_attempts " .
 				"FROM service sv, host, host_service_relation hsr " .
@@ -269,11 +266,8 @@
 						"AND host.host_register = '1' " .
 						((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
-	else
-		$rq = 	"SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
-				"LEFT JOIN extended_service_information esi ON esi.service_service_id = host_service_relation.service_service_id " .
-				"WHERE $searchHostallone host_service_relation.service_service_id = sv.service_id GROUP BY service_id) AS nbr, " .
-				"esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, " .
+	} else {
+		$rq = 	"SELECT esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, " .
 				"host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, sv.service_retry_check_interval, " .
 				"sv.service_max_check_attempts " .
 				"FROM service sv, host, host_service_relation hsr " .
@@ -284,23 +278,35 @@
 						"AND host.host_register = '1' " .
 						((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
-
+	}
 	$DBRESULT =& $pearDB->query($rq);
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	# Different style between each lines
+
+	/**
+	 * Different style between each lines
+	 */
 	$style = "one";
 
-	/*
+	/**
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
-
 	$elemArr = array();
 	$fgHost = array("value"=>NULL, "print"=>NULL);
 
 	$interval_length = $oreon->Nagioscfg['interval_length'];
 
 	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-		/*
+		/**
+		 * Get Number of Hosts linked to this one.
+		 */
+		$request = "SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '".$service["service_id"]."'";
+		$BDRESULT2 = $pearDB->query($request);
+		$data = $BDRESULT2->fetchRow();
+		$service["nbr"] = $data["COUNT(*)"];
+		$BDRESULT2->free();
+		unset($data);
+
+		/**
 		 * If the name of our Host is in the Template definition, we have to catch it, whatever the level of it :-)
 		 */
 		$fgHost["value"] != $service["host_name"] ? ($fgHost["print"] = true && $fgHost["value"] = $service["host_name"]) : $fgHost["print"] = false;
@@ -325,7 +331,7 @@
 			$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 		}
 
-		/*
+		/**
 		 * TPL List
 		 */
 		$tplArr = array();
@@ -338,7 +344,9 @@
 				$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
 			}
 
-		# Get service intervals in seconds
+		/**
+		 * Get service intervals in seconds
+		 */
 		$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") * $interval_length;
 		$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") * $interval_length;
 
@@ -397,7 +405,6 @@
 	/*
 	 * Toolbar select
 	 */
-
 	?>
 	<script type="text/javascript">
 	function setO(_i) {
