@@ -250,7 +250,7 @@
 
 	# Traps definition comes from DB -> Store in $traps Array
 	$traps = array();
-	$DBRESULT = $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
+	$DBRESULT =& $pearDB->query("SELECT t.traps_id, t.traps_name FROM traps t, traps_service_relation sr WHERE t.traps_id = sr.traps_id AND sr.service_id = '".$service["service_id"]."' ORDER BY t.traps_name");
 	while ($trap = $DBRESULT->fetchRow()) {
 		$traps[$trap["traps_id"]] = $trap["traps_name"];
 	}
@@ -506,16 +506,19 @@
 	echo $ams3->getElementJs(false);
 
 
-	# trap vendor
-	$mnftr = array(null => null);
-	$DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
+	/**
+	 * Traps vendor form
+	 */
+	$mnftr = array(-2 => "_"._("None")."_", -1 => "_"._("ALL")."_");
+	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
 	while ($rmnftr = $DBRESULT->fetchRow()) {
-		$mnftr[$rmnftr["id"]] =  html_entity_decode($rmnftr["alias"], ENT_QUOTES, "UTF-8");
+		$mnftr[$rmnftr["id"]] =  html_entity_decode($rmnftr["alias"], ENT_QUOTES);
 	}
-	$mnftr[""] = "_"._("ALL")."_";
 	$DBRESULT->free();
-	$attrs2 = array('onchange' => "javascript:getTrap(this.form.elements['mnftr'].value); return false;");
+	$attrs2 = array('onchange'=>"javascript:getTrap(this.form.elements['mnftr'].value); return false;");
 	$form->addElement('select', 'mnftr', _("Vendor Name"), $mnftr, $attrs2);
+
+
 	include("./include/configuration/configObject/traps/ajaxTrap_js.php");
 
 	#

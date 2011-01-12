@@ -38,51 +38,44 @@
 
 	include_once("@CENTREON_ETC@/centreon.conf.php");
 
-	if (isset($_POST["mnftr_id"])) {
-		$mnftr_id = (int)htmlentities($_POST["mnftr_id"], ENT_QUOTES, "UTF-8");
-	} else {
-		$mnftr_id = null;
-	}
-
 	require_once $centreon_path . "/www/class/centreonDB.class.php";
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
 
-	/**
+	/** ************************************
 	 * start init db
 	 */
 	$pearDB = new CentreonDB();
 
-	$buffer = new CentreonXML();
-
-	/**
-	 * Start XML
+	/** ************************************
+	 * start XML Flow
 	 */
+	$buffer = new CentreonXML();
 	$buffer->startElement("traps");
 
+	$empty = 0;
 	if (isset($_POST["mnftr_id"])){
 		$traps = array();
-		if ($_POST["mnftr_id"]) {
-			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps WHERE manufacturer_id = " . $mnftr_id. " ORDER BY traps_name");
-		} else {
- 			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
+		if ($_POST["mnftr_id"] == -1) {
+			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
+		} else if ($_POST["mnftr_id"] == -2) {
+			$empty = 1;
+		} else if ($_POST["mnftr_id"] != 0) {
+			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps WHERE manufacturer_id = " . $_POST["mnftr_id"]. " ORDER BY traps_name");
 		}
 
-		while ($trap =& $DBRESULT->fetchRow()){
-			$buffer->startElement("trap");
-			$buffer->writeElement("id", $trap["traps_id"]);
-			$buffer->writeElement("name", $trap["traps_name"]);
-			$buffer->endElement();
+		if ($empty != 1) {
+			while ($trap =& $DBRESULT->fetchRow()){
+				$buffer->startElement("trap");
+				$buffer->writeElement("id", $trap["traps_id"]);
+				$buffer->writeElement("name", $trap["traps_name"]);
+				$buffer->endElement();
+			}
+			$DBRESULT->free();
 		}
-		$DBRESULT->free();
-	} else{
+	} else {
 		$buffer->writeElement("error", "mnftr_id not found");
 	}
 	$buffer->endElement();
-
-	/**
-	 * Send Header
-	 */
 	header('Content-Type: text/xml');
 	$buffer->output();
-
 ?>
