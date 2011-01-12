@@ -252,7 +252,7 @@
 	/*
 	 * Host/service list
 	 */
-	if ($searchH && $searchH != "" || $searchS && $searchS !! "") {
+	if ($searchH && $searchH != "" || $searchS && $searchS != "") {
 		$rq = 	"SELECT esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
 				"host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
 				"sv.service_retry_check_interval, sv.service_max_check_attempts " .
