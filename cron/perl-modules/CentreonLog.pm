@@ -1,9 +1,7 @@
 use strict;
 use warnings;
-use DBI;
-require "perl-modules/CentreonDB.pm";
 
-package CentreonService;
+package CentreonLog;
 
 # Constructor
 # parameters:
@@ -67,6 +65,22 @@ sub getLogOfHosts {
 				" ORDER BY `ctime`";
 	my $result = $centstorage->query($query);
 	return $result;
+}
+
+# Get First log date and last log date
+sub getFirstLastLogTime {
+	my $self = shift;
+	my $centstorage = $self->{"centstorage"};
+	
+	my $query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `log`";
+	my $sth = $centstorage->query($query);
+	my ($start, $end) = (0,0);
+    if (my $row = $sth->fetchrow_hashref()) {
+		($start, $end) = ($row->{"minc"}, $row->{"maxc"});
+    }
+    $sth->finish;
+    print $start." ".$end."\n";
+    return ($start, $end);
 }
 
 1;

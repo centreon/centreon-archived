@@ -64,6 +64,7 @@ sub password {
 # Connection initializer
 sub connect {
 	my $self = shift;
+	my $logger = $self->{"logger"};
 	$self->{"instance"} = DBI->connect(
 		"DBI:".$self->{"type"} 
 			.":database=".$self->{"db"}
@@ -71,7 +72,11 @@ sub connect {
 		$self->{"user"},
 		$self->{"password"},
 		{ "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
-	  ); # or die "[".time."] SQL connect error : cannot connect to Centstorage database\n";
+	  ); 
+	  if (!defined($self->{"instance"})) {
+	  	$logger->writeLog("FATAL", "MySQL error : cannot connect to database ".$self->{"db"}."\n");
+	  }
+	  
 	return $self->{"instance"};
 }
 
@@ -85,9 +90,20 @@ sub disconnect {
 sub query {
 	my $self = shift;
 	my $query = shift;
+	
 	my $instance = $self->{"instance"};
+	my $logger = $self->{"logger"};
+	
 	my $statement_handle = $instance->prepare($query);
+	if (defined($instance->errstr)) {
+	  	$logger->writeLog("FATAL", "MySQL error : ".$instance->errstr);
+	}
+	
     $statement_handle->execute;
+    if (defined($instance->errstr)) {
+	  		$logger->writeLog("FATAL", "MySQL error : ".$instance->errstr);
+	}
+	
     return $statement_handle;
 }
 

@@ -1,7 +1,5 @@
 use strict;
 use warnings;
-use DBI;
-require "perl-modules/CentreonDB.pm";
 
 package CentreonHost;
 
@@ -52,3 +50,5 @@ sub getAllHostsByName {
 	my ($host_ids, $host_names) = $self->getAllHosts();	
 	return ($host_names);
 }
+
+1;

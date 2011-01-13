@@ -1,7 +1,5 @@
 use strict;
 use warnings;
-use DBI;
-require "perl-modules/CentreonDB.pm";
 
 package CentreonService;
 
@@ -32,7 +30,6 @@ sub getAllServices {
 				" WHERE host_id = host_host_id and service_service_id = service_id".
 						" AND service_register = '1' AND `service_activate`='1'";
 	my $sth = $centreon->query($query);
-    $sth->execute;
     while(my $row = $sth->fetchrow_hashref()) {
 		$service_ids{$row->{'host_name'}.";;".$row->{'service_description'}} = $row->{'host_id'}.";;".$row->{'service_id'};
 		$service_names{$row->{'host_id'}.";;".$row->{'service_id'}} = $row->{'host_name'}.";;".$row->{'service_description'};
@@ -48,7 +45,6 @@ sub getAllServices {
 			" AND service_activate='1'".
 			" AND hg_activate = '1'";
 	$sth = $centreon->query($query);
-    $sth->execute;
     while(my $row = $sth->fetchrow_hashref()) {
 		$service_ids{$row->{'host_name'}.";;".$row->{'service_description'}} = $row->{'host_id'}.";;".$row->{'service_id'};
 		$service_names{$row->{'host_id'}.";;".$row->{'service_id'}} = $row->{'host_name'}.";;".$row->{'service_description'};
@@ -71,3 +67,5 @@ sub getAllservicesByName {
 	my ($service_ids, $service_names) = $self->getAllServices();	
 	return ($service_names);
 }
+
+1;
