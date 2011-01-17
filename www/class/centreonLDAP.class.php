@@ -37,98 +37,384 @@
  */
  
 
+/**
+ * The utils class for LDAP
+ *
+ */
 class CentreonLDAP {
 	
-	var $ldapInfos;
-	var $ldapuri;
-	var $ds;
-	var $CentreonLog;
-	var $contactInfos;
-	var $typePassword;
+	public $CentreonLog;
+	private $_ds;
+	private $_db = null;
+	private $_linkId;
+	private $_ldapHosts = array();
+	private $_constuctCache = array();
+	private $_userSearchInfo = null;
+	private $_groupSearchInfo = null;
 	
-	function CentreonLDAP($pearDB, $CentreonLog) {
-		
+	/**
+	 * Constructor
+	 * 
+	 * @param DB $pearDB The database connection
+	 * @param CentreonLog $CentreonLog The logging object
+	 */
+	public function __construct($pearDB, $CentreonLog)
+	{
 		$this->CentreonLog = $CentreonLog;
+		$this->_db = $pearDB;
 		
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_auth_enable', 'ldap_protocol_version')");
-		while ($res =& $DBRESULT->fetchRow())
-			$this->ldapInfos[$res["key"]] = $res["value"];
-		$DBRESULT->free();
-				
-		/*
-		 * Create URI
-		 */
-		($this->ldapInfos['ldap_ssl']) ? $this->ldapuri = "ldaps://" : $this->ldapuri = "ldap://" ;
-	}
-	
-	function connect() {
-		if  (!isset($this->contactInfos['contact_ldap_dn']) || $this->contactInfos['contact_ldap_dn'] == '')
-			$this->contactInfos['contact_ldap_dn'] = "anonymous" ;
-		$this->ds = ldap_connect($this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']);
-		$this->CentreonLog->insertLog(3, "LDAP Auth Cnx : ". $this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']." : ".ldap_error($this->ds)." (".ldap_errno($this->ds).")");
-	
-		/*
-		 * Set Protocol version
-		 */
-		ldap_set_option($this->ds, LDAP_OPT_PROTOCOL_VERSION, $this->contactInfos['ldap_protocol_version']);
-    	ldap_set_option($this->ds, LDAP_OPT_REFERRALS, 0);
-	}
-	
-	function checkPassword() {
+		/* Check if use service form DNS */
+		$use_dns_srv = 0;
+		$dbresult = $this->_db->query("SELECT `value` FROM options WHERE `key` = 'ldap_srv_dns'");
+		$row = $dbresult->fetchRow();
+		$dbresult->free();
+		if ($row) {
+			$use_dns_srv = $row['value'];
+		}
 		
-		/*
-		 * LDAP BIND
-		 */
-		@ldap_bind($this->ds, $this->contactInfos['contact_ldap_dn'], $this->typePassword);
-		$this->CentreonLog->insertLog(3, "Connexion = ".$this->contactInfos['contact_ldap_dn']." :: ".ldap_error($this->ds));
-
-		/*
-		 * In some case, we fallback to local Auth
-		 * 0 : Bind succesfull => Default case
-		 * 2 : Protocol error
-		 * -1 : Can't contact LDAP server (php4) => Fallback
-		 * 51 : Server is busy => Fallback
-		 * 52 : Server is unavailable => Fallback
-		 * 81 : Can't contact LDAP server (php5) => Fallback
-		 */	
-		if (isset($this->ds) && $this->ds) {
-			switch (ldap_errno($this->ds)) {
-				case 0:
-					$this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
-				   	return 1;
-				   	break;
-				case -1:
-				case 51:
-					$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server Busy. Try later");
-					return 0;
-					break;
-				case 52:
-					$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server unavailable. Try later");
-					return 0;
-					break;
-				case 81:
-					$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Fallback to Local AUTH");
-					return 0;
-					break;
-				default:
-				   	$this->CentreonLog->insertLog(3, "LDAP AUTH : LDAP don't like you, sorry");
-				   	return 0;
-				   	break;
+		/* Get the list of server ldap */
+		if ($use_dns_srv !== 0) {
+			$dns_query = '_ldap._tcp';
+			$dbresult = $this->_db->query("SELECT `value` FROM options WHERE `key` = 'ldap_dns_domain'");
+			$row = $dbresult->fetchRow();
+			$dbresult->free();
+			if ($row && trim($row['value']) != '') {
+				$dns_query .= $row['value'];
+			}
+			$list = dns_get_record($dns_query, DNS_SRV);
+			$dbresult = $this->_db->query("SELECT `value` FROM options WHERE `key` = 'ldap_dns_tmpl'");
+			$row = $dbresult->fetchRow();
+			$dbresult->free();
+			if ($row) {
+				$ar_id = $row['value'];
+			} else {
+				throw new Exception('Not ldap template has defined');
+			}
+			foreach ($list as $entry) {
+				$ldap = array();	
+				$ldap['host'] = $entry['host'];
+				$ldap['id'] = $ar_id;
+				$ldap['info'] = $this->_getInfoConnect($ar_id);
 			}
 		} else {
-			$this->CentreonLog->insertLog(3, "DS empty");
-			return 0;
+			$dbresult =& $this->_db->query("SELECT ar.ar_id, ari.ari_value 
+				FROM auth_ressource as ar, auth_ressource_info as ari  
+				WHERE ar.ar_type = 'ldap' AND ar.ar_enable = '1' AND ar.ar_id = ari.ar_id AND ari.ari_name = 'host'
+				ORDER BY ar_order");
+			while ($row =& $dbresult->fetchRow()) {
+				$ldap = array();
+				$ldap['host'] = $row['ari_value'];
+				$ldap['id'] = $row['ar_id'];
+				$ldap['info'] = $this->_getInfoConnect($row['ar_id']);
+			}
+			$this->_ldapHosts[] = $ldap;
+			$dbresult->free();
 		}
+	}
+	
+	/**
+	 * Connect to the first LDAP server
+	 *
+	 * @return bool
+	 */	
+	public function connect()
+	{
+		foreach ($this->_ldapHosts as $ldap) {
+			$port = 389;
+			if (isset($ldap['info']['port'])) {
+				$port = $ldap['info']['port'];
+			}
+			$this->_ds = ldap_connect($ldap['host'], $port);
+			ldap_set_option($this->_ds, LDAP_OPT_REFERRALS, 0);
+			$protocol_version = 3;
+			if (isset($ldap['info']['protocol_version'])) {
+				$protocol_version = $ldap['info']['protocol_version'];
+			}
+			ldap_set_option($this->_ds, LDAP_OPT_PROTOCOL_VERSION, $protocol_version);
+			if (isset($ldap['info']['bind_dn']) && isset($ldap['info']['bind_pass'])) {
+				if (ldap_bind($this->_ds, $ldap['info']['bind_dn'], $ldap['info']['bind_pass'])) {
+					$this->_linkId = $ldap['id'];
+					$this->_loadSearchInfo();
+					return true;
+				}
+			} else {
+				if (ldap_bind($this->_ds)) {
+					$this->_linkId = $ldap['id'];
+					$this->_loadSearchInfo();
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/*
 	 * Close LDAP Connexion
 	 */
-	function close() {
-		ldap_close($this->ds);
+	public function close() {
+		ldap_close($this->_ds);
 	}
 	
+	/**
+	 * Get the dn for a user
+	 * 
+	 * @param string $username The username
+	 * @return string|bool The dn string or false if not found
+	 */
+	public function findUserDn($username)
+	{
+		$filter = preg_replace('/%s/', $username, $this->_userSearchInfo['filter']);
+		$result = ldap_search($this->_ds, $this->_userSearchInfo['base_search']);
+		$entries = ldap_get_entries($this->_ds, $result);
+		if ($entries["count"] == 0) {
+			return false;
+		}
+		return $entries[0]['dn'];
+	}
+	
+	/**
+	 * Get the dn for a group
+	 * 
+	 * @param string $group The group
+	 * @return string|bool The dn string or false if not found
+	 */
+	public function findGroupDn($group)
+	{
+		$filter = preg_replace('/%s/', $group, $this->_groupSearchInfo['filter']);
+		$result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search']);
+		$entries = ldap_get_entries($this->_ds, $result);
+		if ($entries["count"] == 0) {
+			return false;
+		}
+		return $entries[0]['dn'];
+	}
+	
+	/**
+	 * Get a LDAP entry
+	 * 
+	 * @param string $dn The DN
+	 * @param array $attr The list of attribute
+	 * @return array|bool The list of information, or false in error
+	 */
+	public function getEntry($dn, $attr = array())
+	{
+		$result = ldap_read($this->_ds, $dn, '(objectClass=*)', $attr);
+		if ($result === false) {
+			return false;
+		}
+		$entry = ldap_get_entries($this->_ds, $result);
+		if ($entry['count'] == 0) {
+			return false;
+		}
+		$infos = array();
+		foreach ($entry[0] as $info => $value) {
+			if (isset($value[0])) {
+				$infos[$info] = $value;
+			}
+		}
+		return $infos;
+	} 
+	
+	/**
+	 * Load the search informations
+	 */
+	private function _loadSearchInfo($id = null)
+	{
+		if (is_null($id)) {
+			$id = $this->_linkId;
+		}
+		$dbresult =& $this->_db->query("SELECT ari_name, ari_value
+			FROM auth_ressource_info
+			WHERE ari_name IN ('user_filter', 'user_base_search', 'group_filter', 'group_base_filter') AND ar_id = " . $id);
+		$user = array();
+		$group = array();
+		while ($row =& $dbresult->fetchRow()) {
+			switch ($row['ari_name']) {
+				case 'user_filter':
+					$user['filter'] = $row['ari_value'];
+					break;
+				case 'user_base_search':
+					$user['base_search'] = $row['ari_value'];
+					break;
+				case 'group_filter':
+					$group['filter'] = $row['ari_value'];
+					break;
+				case 'group_base_search':
+					$group['base_search'] = $row['ari_value'];
+					break;
+			}
+		}
+		if (isset($user['filter'])) {
+			$this->_userSearchInfo = $user;
+		}
+		if (isset($group['filter'])) {
+			$this->_groupSearchInfo = $group;
+		}
+	}
+	
+	/**
+	 * Get the information from the database for a ldap connection
+	 * 
+	 * @param int $id The identifiant of ldap connection
+	 * @return array
+	 */
+	private function _getInfoConnect($id)
+	{
+		if (isset($this->_constuctCache[$id])) {
+			return $this->_constuctCache[$id];
+		}
+		$dbresult =& $this->_db->query("SELECT ari_name, ari_value
+			FROM auth_ressource_info
+			WHERE ari_name IN ('port', 'base_dn', 'bind_dn', 'pass_dn', 'protocol_version') AND ar_id = " . $id);
+		$infos = array();
+		while ($row =& $dbresult->fetchRow()) {
+			$infos[$row['ari_name']] = $row['ari_value'];
+		}
+		$dbresult->free();
+		$this->_constuctCache[$id] = $info;
+		return $info;
+	}
 }
- 
- 
+
+
+/**
+ * Ldap Administration class 
+ */
+class CentreonLdapAdmin
+{
+	private $_db;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param DB $pearDB The database connection
+	 */
+	public function __construct($pearDB)
+	{
+		$this->_db = $pearDB;
+	}
+	
+	/**
+	 * Add a Ldap server
+	 * 
+	 * @param string $host The host
+	 * @param int $port The port (389)
+	 * @param int $version The protocol version
+	 * @return int|bool The id of connection, false on error
+	 */
+	public function addServer($host, $port, $version)
+	{
+		if (PEAR::isError($this->_db->query("INSERT INTO auth_ressource (ar_type, ar_enable) VALUES ('ldap', '1')"))) {
+			return false;
+		}
+		$dbresult = $this->_db->query("SELECT MAX(ar_id) FROM auth_ressource WHERE ar_type = 'ldap'");
+		$row = $dbresult->fetchRow();
+		if (PEAR::isError($row)) {
+			return false;
+		}
+		$id = $row[0];
+		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'host', '" . $host . "')");
+		if (PEAR::isError($sth)) {
+			return false;
+		}
+		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'host', '" . $port . "')");
+		if (PEAR::isError($sth)) {
+			return false;
+		}
+		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'protocol_version', '" . $version . "')");
+		if (PEAR::isError($sth)) {
+			return false;
+		}
+		return $id;
+	}
+	
+	/**
+	 * Add a template
+	 * 
+	 * @param array $options A hash table with options for connections and search in ldap
+	 * @return int|bool The id of connection, false on error
+	 */
+	public function addTemplate($options = array())
+	{
+		if (PEAR::isError($this->_db->query("INSERT INTO auth_ressource (ar_type, ar_enable) VALUES ('ldap_tmpl', '0')"))) {
+			return false;
+		}
+		$dbresult = $this->_db->query("SELECT MAX(ar_id) FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
+		$row = $dbresult->fetchRow();
+		if (PEAR::isError($row)) {
+			return false;
+		}
+		$id = $row[0];
+		foreach ($options as $key => $value) {
+			$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", '" . $key . "', '" . $value . "')");
+			if (PEAR::isError($sth)) {
+				return false;
+			}	
+		}
+		return $id;
+	}
+	
+/**
+	 * Modify a template
+	 * 
+	 * @param int The id of the template
+	 * @param array $options A hash table with options for connections and search in ldap
+	 * @return bool
+	 */
+	public function modifyTemplate($id, $options = array())
+	{
+		foreach ($options as $key => $value) {
+			$sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $value . "' WHERE ar_id = " . $id . " AND ari_name = '" . $key . "'");
+			if (PEAR::isError($sth)) {
+				return false;
+			}	
+		}
+		return true;
+	}
+	
+	/**
+	 * Get the default template for Active Directory
+	 * 
+	 * @return array
+	 */
+	private function _getTemplateAd()
+	{
+		$infos = array();
+		$infos['user_filter'] = "(&(objectClass=user)(samAccountType=))";
+		$attr = array();
+		$attr['alias'] = 'samAccountName'; 
+		$attr['email'] = 'mail';
+		$attr['name'] = 'name';
+		$attr['pager'] = 'mobile';
+		$attr['group'] = 'memberOf';
+		$infos['user_attr'] = $attr;
+		$infos['group_filter'] = "()";
+		$attr = array();
+		$attr['member'] = 'member';
+		$infos['group_attr'] = $attr;
+		return $infos;
+	}
+	
+	/**
+	 * Get the default template for ldap
+	 * 
+	 * @return array
+	 */
+	private function _getTemplateLdap()
+	{
+		$infos = array();
+		$info['user_filter'] = "(objectClass=inetOrgPerson)";
+		$attr = array();
+		$attr['alias'] = 'uid';
+		$attr['email'] = 'mail';
+		$attr['name'] = 'displayName';
+		$attr['pager'] = 'mobile';
+		$infos['user_attr'] = $attr;
+		$infos['group_filter'] = "(objectClass=groupOfNames)";
+		$attr = array();
+		$attr['member'] = 'member';
+		$infos['group_attr'] = $attr;
+		return $infos;
+	}
+}
 ?>
