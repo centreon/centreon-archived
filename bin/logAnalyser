@@ -57,12 +57,13 @@ use File::stat;
 use Getopt::Long;
 use POSIX;
 
-use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $opt_p $data);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $opt_p $data $LOG);
 
 require "@CENTREON_ETC@/conf.pm";
 
 # Define Var lib dir
 my $VarLib = "@CENTREON_VARLIB@";
+$LOG = "@CENTREON_LOG@/logAnalyser.log";
 
 ## Init Date
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
@@ -123,11 +124,11 @@ if (defined($opt_p)) {
 		my $result = $sth->rows();
 		$sth->finish();
 		if ($result ne 1) {
-			print "Invalid poller ID 1\n";
+			writeLogFile "Invalid poller ID 1\n";
 			exit (1);
 		}
 	} else {
-		print "Invalid poller ID\n";
+		writeLogFile "Invalid poller ID\n";
 		exit (1);
 	}
 }
@@ -163,7 +164,7 @@ sub parseFile ($$) {
      
     # Get History Flag
    	if (!open(FILE, $historyFile)){
-		print "Cannot open file : $historyFile (READ)\n";
+		writeLogFile "Cannot open file : $historyFile (READ)\n";
     } else {
     	while (<FILE>) {
     		$lastCTime = $_;
@@ -174,7 +175,7 @@ sub parseFile ($$) {
     
     # Get History Flag
    	if (!open(FILE, $logFile)){
-		print "Cannot open file : $logFile (READ)\n";
+		writeLogFile "Cannot open file : $logFile (READ)\n";
 		return;
     } else {
     	my @tab;
@@ -184,7 +185,7 @@ sub parseFile ($$) {
 		    	$CTime =~ s/\n//g;	
 		    	last;
 		    } else {
-		    	print "Cannot find ctime in first line for poller $instance\n";
+		    	writeLogFile "Cannot find ctime in first line for poller $instance\n";
 		    	last;
 		    }
     	}
@@ -203,7 +204,7 @@ sub parseFile ($$) {
 		$last_line_read = $data->{'log_flag'};
 		
 		if (!defined($last_line_read)) {
-			print "Alert : Cannot get last line read in DB for poller $instance\n";
+			writeLogFile "Alert : Cannot get last line read in DB for poller $instance\n";
 			return ;
 		}
 		$sth_flag->finish();
@@ -211,7 +212,7 @@ sub parseFile ($$) {
         
     # Open Log File for parsing
     if (!open (FILE, $_[0])){
-		print "Cannot open file : $_[0]\n";
+		writeLogFile "Cannot open file : $_[0]\n";
 		return;
     }
     
@@ -239,7 +240,7 @@ sub parseFile ($$) {
 		    $tab[5] =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `type`, `retry`, `output`, `instance`) VALUES ('0', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."','".$tab[5]."', '".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -251,7 +252,7 @@ sub parseFile ($$) {
 		    }
 		    my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `status`,  `type`, `retry`, `output`, `instance`) VALUES ('1', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."','".$tab[3]."','".$tab[4]."', '".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -267,7 +268,7 @@ sub parseFile ($$) {
 		    }
 		    my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `notification_cmd`, `notification_contact`, `output`, `instance`) VALUES ('2', '$ctime', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$tab[4]."','".$tab[0]."','".$tab[5]."', '".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -279,7 +280,7 @@ sub parseFile ($$) {
 		    }
 		    my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `notification_contact`, `host_name` , `status`, `notification_cmd`,  `output`, `instance`) VALUES ('3', '$ctime', '".$tab[0]."','".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."', '".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sHOST\sSTATE\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -287,7 +288,7 @@ sub parseFile ($$) {
                     $tab[0] =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance`) VALUES ('7', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -297,7 +298,7 @@ sub parseFile ($$) {
                     $tab[1] =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance`) VALUES ('6', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -305,7 +306,7 @@ sub parseFile ($$) {
                     $tab[0] =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance`) VALUES ('9', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -315,7 +316,7 @@ sub parseFile ($$) {
                     $tab[1] =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance`) VALUES ('8', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_SVC\_PROBLEM\;(.*)$/) {
 		    $ctime = $1;
 		    my @tab = split(/;/, $2);
@@ -330,7 +331,7 @@ sub parseFile ($$) {
                     $tab[6] =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description`, `notification_contact`, `output`, `instance`) VALUES ('10', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[5]."', '".$tab[6]."','".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_HOST\_PROBLEM\;(.*)$/) {
 		    $ctime = $1;
 		    my @tab = split(/;/, $2);
@@ -340,7 +341,7 @@ sub parseFile ($$) {
 			$tab[5] =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `notification_contact`, `output`, `instance`) VALUES ('11', '$ctime', '".$tab[0]."', '".$tab[4]."', '".$tab[5]."','".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!$res);	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!$res);	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sWarning\:\s(.*)$/){
 		    my $tab = $2;
 		    $ctime = $1;
@@ -348,7 +349,7 @@ sub parseFile ($$) {
 		    $tab =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `output`, `instance`) VALUES ('4','$ctime', '".$tab."', '".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\s(.*)$/) {
 		    $ctime = $1;
 		    my $tab = $2;
@@ -356,7 +357,7 @@ sub parseFile ($$) {
 		    $tab =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `output`, `instance`) VALUES ('5','$ctime', '".$tab."', '".$instance."')";
 		    my $res = $dbh->do($rq);
-		    print "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	   
+		    writeLogFile "SQL INSERT ERROR :" . $rq. "\n" if (!defined($res));	   
 		}
 		$cpt++;
     }
@@ -364,7 +365,7 @@ sub parseFile ($$) {
     
     # Add History
    	if (!open(FILE, "> ".$historyFile)){
-		print "Cannot open file : $historyFile (WRITE)\n";
+		writeLogFile "Cannot open file : $historyFile (WRITE)\n";
 		return;
     } else {
     	print FILE $CTime."\n";
@@ -372,6 +373,20 @@ sub parseFile ($$) {
     }
     
     return $cpt;
+}
+
+# Write logs in a file.
+sub writeLogFile($){
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
+    open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+   
+   	# Add initial 0 if value is under 10
+    $hour = "0".$hour if ($hour < 10);
+    $min = "0".$min if ($min < 10);
+    $sec = "0".$sec if ($sec < 10);
+   	
+    print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
+    close LOG or warn $!;
 }
 
 my $retention = $data->{'archive_retention'};
@@ -403,9 +418,9 @@ sub parseArchive($$) {
 		$temp = `date -d $temp +%s`;
 		if ($temp > $last_log) {
 		    if (!(-r $archives.$_)) {
-				print "Error : cannot read file $archives$_\n";
+				writeLogFile "Error : cannot read file $archives$_\n";
 		    } else {
-				print $archives.$_."\n";
+				writeLogFile $archives.$_."\n";
 				parseFile($archives.$_, $instance);
 		    }
 		}
@@ -425,7 +440,7 @@ sub parseLogFile($$) {
 		$data = $sth->fetchrow_hashref();
 		$LOG_FILE = $data->{'log_file'};
 		if (!(-r $LOG_FILE)) {
-		    print "Error : cannot open $LOG_FILE\n";
+		    writeLogFile "Error : cannot open $LOG_FILE\n";
 		    exit(0);
 		}
 		$sth->finish();
@@ -461,7 +476,7 @@ if (!$sth2->execute) {
 		if (!defined($res)) {die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";};
 		
 		$res = $dbh->do("DELETE FROM `log` WHERE instance = '".$opt_p."'");
-		print "SQL INSERT ERROR :TRUNCATE TABLE `log`\n" if (!defined($res));	   
+		writeLogFile "SQL INSERT ERROR :TRUNCATE TABLE `log`\n" if (!defined($res));	   
 		parseArchive($opt_p, '0');
 	} else {
 		while (my $ns_server = $sth2->fetchrow_hashref()) {
@@ -491,7 +506,7 @@ if (!$sth2->execute) {
 		
 				if (!$flag) {
 					$res = $dbh->do("TRUNCATE TABLE `log`");
-					print "SQL INSERT ERROR :TRUNCATE TABLE `log`\n" if (!defined($res));	   
+					writeLogFile "SQL INSERT ERROR :TRUNCATE TABLE `log`\n" if (!defined($res));	   
 					$flag = 1;
 				}
 				parseArchive($ns_server->{'id'}, $ns_server->{'localhost'});
