@@ -36,26 +36,54 @@
  *
  */
 
-
+/**
+ * Class for cycle downtime management
+ * 
+ */
 class CentreonDowntime
 {
 	protected $db;
 	protected $search = '';
+	protected $nbRows = null;
 	
+	
+	/**
+	 * Construtor
+	 * 
+	 * @param CentreonDB $pearDB The connection to database centreon
+	 */
 	public function __construct($pearDB)
 	{
 		$this->db = $pearDB;
 	}
 	
+	/**
+	 * Set the string for filter the display
+	 * 
+	 * The string search is set for filter
+	 * In SQL, the the string is "%$search%"  
+	 * 
+	 * @param string $search The string for filter
+	 */
 	public function setSearch($search = '')
 	{
 		if ('' !== $search) {
-			$this->search = " WHERE dt_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+			$this->search = " WHERE dt_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 		}
 	}
 	
+	/**
+	 * Get the number of rows for display, with applied search filter
+	 * 
+	 * @return int The number of rows
+	 */
 	public function getNbRows()
 	{
+		/* Get the number of rows if getList is call before*/
+		if (false === is_null($this->nbRows)) {
+			return $this->nbRows;
+		}
+		/* Get the number of rows with a COUNT(*) */
 		$query = "SELECT COUNT(*) FROM downtime" . $this->search;
 		$res = $this->db->query($query);
 		if (PEAR::isError($res)) { 
@@ -66,9 +94,28 @@ class CentreonDowntime
 		return $row["COUNT(*)"];
 	}
 	
+	/**
+	 * Get the list of downtime, with applied search filter
+	 * 
+	 * <code>
+	 * $return_array =  
+	 *   array(
+	 *   	array(
+	 *   		'dt_id' => int, // The downtime id
+	 *   		'dt_name' => string, // The downtime name
+	 *   		'dt_description' => string, // The downtime description
+	 *   		'dt_activate' => int // 0 Downtime is deactivated, 1 Downtime is activated
+	 *  	),...
+	 * 	 )
+	 * </code> 
+	 * 
+	 * @param int $num The page number
+	 * @param int $limit The limit by page for pagination
+	 * @return array The list of downtime
+	 */
 	public function getList($num, $limit)
 	{
-		$query = "SELECT dt_id, dt_name, dt_description, dt_activate FROM downtime" . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
+		$query = "SELECT SQL_CALC_FOUND_ROWS dt_id, dt_name, dt_description, dt_activate FROM downtime" . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
 		$res = $this->db->query($query);
 		if (PEAR::isError($res)) {
 			return array();
@@ -78,9 +125,25 @@ class CentreonDowntime
 			$list[] = $row;
 		}
 		$res->free();
+		$this->nbRows = $this->db->numberRows();
 		return $list;
 	}
 	
+	/**
+	 * Get informations for a downtime
+	 * 
+	 * <code>
+	 * $return_array =
+	 * array(
+	 *   	'name' => string, // The downtime name
+	 *   	'description' => string, // The downtime description
+	 *   	'activate' => int // 0 Downtime is deactivated, 1 Downtime is activated
+	 * )
+	 * </code
+	 * 
+	 * @param int $id The downtime id
+	 * @return array The informations for a downtime
+	 */
 	public function getInfos($id)
 	{
 		$query = "SELECT dt_name, dt_description, dt_activate FROM downtime WHERE dt_id=" . $id;
@@ -96,6 +159,27 @@ class CentreonDowntime
 		);
 	}
 	
+	/**
+	 * Get the list of periods for a downtime
+	 * 
+	 * <code>
+	 * $return_array =  
+	 *   array(
+	 *   	array(
+	 *   		'start_time' => string, // The start time of the period (HH:mm)
+	 *   		'end_time' => string, // The end time of the period (HH:mm)
+	 *   		'day_of_week' => array, // The days in week, it is a array with the day number in the week (1 to 7)
+	 *   		'month_cycle' => string, // The cycle method (all: all in month, first: first in month, last: last in month, none: only the day of the month)
+	 *   		'day_of_month' => array, // The days of month
+	 *   		'fixed' => int, // If the downtime is fixed (0: flexible, 1: fixed)
+	 *   		'duration' => int // If the downtime is fexible, the duration of the downtime
+	 *  	),...
+	 * 	 )
+	 * </code> 
+	 * 
+	 * @param int $id The downtime id
+	 * @return array The list of periods
+	 */
 	public function getPeriods($id)
 	{
 		$query = "SELECT dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration
@@ -108,6 +192,7 @@ class CentreonDowntime
 		$list = array();
 		while ($row = $res->fetchRow()) {
 			$days = $row['dtp_day_of_week'];
+			/* Make a array if the cycle is all */
 			if ($row['dtp_month_cycle'] == 'all') {
 				$days = split(',', $days);
 			}
@@ -126,47 +211,110 @@ class CentreonDowntime
 		return $list;
 	}
 	
+	/**
+	 * Get the list of relations for a downtime
+	 * 
+	 * <code>
+	 * $return_array =
+	 * 	array(
+	 * 		'host' => array, // The list of host id
+	 * 		'hostgrp' => array, // The list of hostgroup id
+	 * 		'svc' => array, // The list of service id
+	 * 		'svcgrp' => array, // The list of servicegroup id
+	 *	)
+	 * </code>
+	 * 
+	 * @param int $id The downtime id
+	 * @return array The list of relations
+	 */
 	public function getRelations($id)
 	{
-		$query = "SELECT obj_id, obj_type FROM downtime_relation WHERE dt_id = " . $id . " ORDER BY obj_type";
+		//$query = "SELECT obj_id, obj_type FROM downtime_relation WHERE dt_id = " . $id . " ORDER BY obj_type";
 		$list = array(
 			"host" => array(),
 			"hostgrp" => array(),
 			"svc" => array(),
 			"svcgrp" => array()
 		);
-		$res = $this->db->query($query);
-		while ($row = $res->fetchRow()) {
-			$list[$row['obj_type']][] = $row['obj_id'];
+		foreach (array_keys($list) as $type) {
+			switch ($type) {
+				case 'host':
+					$query = "SELECT host_host_id as obj_id FROM downtime_host_relation WHERE dt_id = ";
+					break;
+				case 'hostgrp':
+					$query = "SELECT hg_hg_id as obj_id FROM downtime_hostgroup_relation WHERE dt_id = ";
+					break;
+				case 'svc':
+					$query = "SELECT service_service_id as obj_id FROM downtime_service_relation WHERE dt_id = ";
+					break;
+				case 'svcgrp':
+					$query = "SELECT sg_sg_id as obj_id FROM downtime_servicegroup_relation WHERE dt_id = ";
+					break;
+			}
+			$res = $this->db->query($query . $id);
+			while ($row = $res->fetchRow()) {
+				$list[$type][] = $row['obj_id'];
+			}
+			$res->free();
 		}
-		$res->free();
+		
 		return $list;
 	}
 	
+	/**
+	 * Get the list of all downtimes
+	 * 
+	 * <code>
+	 * $return_array =
+	 * 	array(
+	 * 		'host' => array, // The list of downtime by host type (see the array after)
+	 * 		'hostgrp' => array, // The list of downtime by hostgroup type
+	 * 		'svc' => array, // The list of downtime by service type
+	 * 		'svcgrp' => array, // The list of downtime by servicegroup type
+	 * 	)
+	 *
+	 *	downtime_array(
+	 *		'dt_id'' => int, // The downtime id
+	 *		'dt_activate' => int, // 0 Downtime is deactivated, 1 Downtime is activated
+	 *		'dtp_start_time' => string, // The start time of the period (HH:mm)
+	 *   	'dtp_end_time' => string, // The end time of the period (HH:mm)
+	 *   	'dtp_day_of_week' => array, // The days in week, it is a array with the day number in the week (1 to 7)
+	 *   	'dtp_month_cycle' => string, // The cycle method (all: all in month, first: first in month, last: last in month, none: only the day of the month)
+	 *   	'dtp_day_of_month' => array, // The days of month
+	 *   	'dtp_fixed' => int, // If the downtime is fixed (0: flexible, 1: fixed)
+	 *   	'dtp_duration' => int, // If the downtime is fexible, the duration of the downtime
+	 *   	'obj_name' => string, // The name of object (host_name, hg_name, service_name or sg_name)
+	 *   	'obj_id' => int, // The object id
+	 *   	'host_name' => string // The hostname for a service only for type service 
+	 *	)
+	 * </code>
+	 * 
+	 * @return array All downtimes
+	 */	
 	public function getDowntime()
 	{
 		$list = array('host' => array(), 'hostgrp' => array(), 'svc' => array(), 'svcgrp' => array());
 		foreach (array_keys($list) as $type) {
 			switch ($type) {
 				case 'host':
-					$name = ', h.host_name as obj_name, dtr.obj_id as obj_id';
-					$table = ', host h';
-					$clause = ' AND dtr.obj_id = h.host_id';
+					$name = ', h.host_name as obj_name, dtr.host_host_id as obj_id';
+					$table = ', downtime_host_relation dtr, host h';
+					$clause = ' AND dtr.host_host_id = h.host_id';
 					break;
 				case 'hostgrp':
-					$name = ', hg.hg_name as obj_name, dtr.obj_id as obj_id';
-					$table = ', hostgroup hg';
-					$clause = ' AND dtr.obj_id = hg.hg_id';
+					$name = ', hg.hg_name as obj_name, dtr.hg_hg_id as obj_id';
+					$table = ', downtime_hostgroup_relation dtr, hostgroup hg';
+					$clause = ' AND dtr.hg_hg_id = hg.hg_id';
 					break;
 				case 'svc':
-					$name = ', s.service_name as obj_name, dtr.obj_id as obj_id, h.host_name as host_name';
-					$table = ', service s, host h, host_service_relation hsr';
-					$clause = ' AND dtr.obj_id = s.service_id AND hsr.service_service_id = s.service_id AND hsr.host_host_id = h.host_id';
+					$name = ', s.service_name as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name';
+					$table = ', downtime_service_relation dtr, service s, host h, host_service_relation hsr';
+					$clause = ' AND dtr.service_service_id = s.service_id AND hsr.service_service_id = s.service_id AND hsr.host_host_id = h.host_id';
 					break;
 				case 'svcgrp':
-					$name = ', sg.sg_name as obj_name, dtr.obj_id as obj_id';
-					$table = ', servicegroup sg';
-					$clause = ' AND dtr.obj_id = sg.sg_id';
+					$name = ', sg.sg_name as obj_name, dtr.sg_sg_id as obj_id';
+					$table = ', downtime_servicegroup_relation dtr, servicegroup sg';
+					$clause = ' AND dtr.sg_sg_id = sg.sg_id';
 					break;
 				default:
 					$name = '';
@@ -174,8 +322,8 @@ class CentreonDowntime
 					$clause = '';
 			}
 			$query = "SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration" . $name . "
-				FROM downtime_period dtp, downtime_relation dtr, downtime dt" . $table . "
-				WHERE  dtp.dt_id = dtr.dt_id AND dtp.dt_id = dt.dt_id AND dtr.obj_type = '" . $type . "'" . $clause;
+				FROM downtime_period dtp, downtime dt" . $table . "
+				WHERE  dtp.dt_id = dtr.dt_id AND dtp.dt_id = dt.dt_id" . $clause;
 			$res = $this->db->query($query);
 			if (false === PEAR::isError($res)) {
 				while ($row = $res->fetchRow()) {
@@ -186,6 +334,12 @@ class CentreonDowntime
 		return $list;
 	}
 	
+	/**
+	 * The duplicate one or many downtime, with periods
+	 * 
+	 * @param array $ids The list of downtime id to replicate
+	 * @param array $nb The list of number of duplicate by downtime id
+	 */
 	public function duplicate($ids, $nb)
 	{
 		if (false === is_array($ids)) {
@@ -206,21 +360,25 @@ class CentreonDowntime
 				$dt_activate = $row['dt_activate'];
 				$index = $i = 1;
 				while ($i <= $nb[$id]) {
+					/* Find the index for duplicate name */
 					$query = "SELECT COUNT(*) as nb FROM downtime WHERE dt_name = '" . $dt_name . "_" . $index . "'";
 					$res = $this->db->query($query);
 					$row = $res->fetchRow();
 					if ($row["nb"] == 0) {
+						/* Insert the new downtime */
 						$rq = "INSERT INTO downtime (dt_name, dt_description, dt_activate) 
 								VALUES ('" . $dt_name . "_" . $index . "', '" . $dt_desc . "', '" . $dt_activate . "')";
 						$res = $this->db->query($rq);
 						if (PEAR::isError($res)) {
 							return;
 						} else {
+							/* Get the new downtime id */
 							$query = "SELECT dt_id FROM downtime WHERE dt_name = '" . $dt_name . "_" . $index . "'";
 							$res = $this->db->query($query);
 							$row = $res->fetchRow();
 							$res->free();
 							$id_new = $row['dt_id'];
+							/* Copy the periods for new downtime */
 							$query = "INSERT INTO downtime_period (dt_id, dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration, dtp_activate) 
 								SELECT " . $id_new . ", dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration, dtp_activate
 								FROM downtime_period WHERE dt_id = " . $id;
@@ -234,6 +392,14 @@ class CentreonDowntime
 		}
 	}
 	
+	/**
+	 * Add a downtime 
+	 * 
+	 * @param string $name The downtime name
+	 * @param string $desc The downtime description 
+	 * @param int $activate If the downtime is activated (0 Downtime is deactivated, 1 Downtime is activated)
+	 * @return int The id of downtime or false if in error
+	 */
 	public function add($name, $desc, $activate)
 	{
 		$query = "INSERT INTO downtime (dt_name, dt_description, dt_activate) VALUES ('" . CentreonDB::escape($name) . "', '" . CentreonDB::escape($desc) . "', '" . $activate . "')";
@@ -249,6 +415,14 @@ class CentreonDowntime
 		return $row['dt_id'];
 	}
 	
+	/**
+	 * Modify a downtime
+	 * 
+	 * @param $id The downtime id
+	 * @param string $name The downtime name
+	 * @param string $desc The downtime description 
+	 * @param int $activate If the downtime is activated (0 Downtime is deactivated, 1 Downtime is activated)
+	 */
 	public function modify($id, $name, $desc, $activate) {
 		$query = "UPDATE downtime SET
 			dt_name = '" . CentreonDB::escape($name) . "',
@@ -258,6 +432,25 @@ class CentreonDowntime
 		$this->db->query($query);
 	}
 	
+	/**
+	 * Add a period to a downtime
+	 * 
+	 * <code>
+	 * $infos = 
+	 * 	array(
+	 * 		'start_period' => string, // The start time of the period (HH:mm)
+	 *   	'end_period' => string, // The end time of the period (HH:mm)
+	 *   	'days' => array, // The days in week, it is a array with the day number in the week (1 to 7) if month_cycle is all, first or last
+	 *   				     // The days of month if month_cycle is none
+	 *   	'month_cycle' => string, // The cycle method (all: all in month, first: first in month, last: last in month, none: only the day of the month)
+	 *   	'fixed' => int, // If the downtime is fixed (0: flexible, 1: fixed)
+	 *   	'duration' => int, // If the downtime is fexible, the duration of the downtime 
+	 * 	)
+	 * </code>
+	 * 
+	 * @param $id The downtime id
+	 * @param array $infos The information for a downtime period
+	 */
 	public function addPeriod($id, $infos)
 	{
 		if (trim($infos['duration']) == '') {
@@ -282,52 +475,123 @@ class CentreonDowntime
 		$res = $this->db->query($query);
 	}
 	
+	/**
+	 * Delete all periods for a downtime
+	 * 
+	 * @param int $id The downtime id
+	 */
 	public function deletePeriods($id)
 	{
 		$query = "DELETE FROM downtime_period WHERE dt_id = " .$id;
 		$this->db->query($query);
 	}
 	
+	/**
+	 * Add relations for downtime
+	 * 
+	 * @param int $id The downtime id
+	 * @param array $obj_ids The list of object id
+	 * @param string $obj_type The object type (host, hostgrp, service, servicegrp)
+	 */
 	public function addRelations($id, $obj_ids, $obj_type)
 	{
-		$query = "INSERT INTO downtime_relation (dt_id, obj_id, obj_type) VALUES (" . $id  . ", ?, ?)";
+		switch ($obj_type) {
+			case 'host':
+				$query = "INSERT INTO downtime_host_relation (dt_id, host_host_id) VALUES (" . $id  . ", %obj_id%)";
+				break;
+			case 'hostgrp':
+				$query = "INSERT INTO downtime_hostgroup_relation (dt_id, hg_hg_id) VALUES (" . $id  . ", %obj_id%)";
+				break;
+			case 'svc':
+				$query = "INSERT INTO downtime_service_relation (dt_id, service_service_id) VALUES (" . $id  . ", %obj_id%)";
+				break;
+			case 'svcgrp':
+				$query = "INSERT INTO downtime_servicegroup_relation (dt_id, sg_sg_id) VALUES (" . $id  . ", %obj_id%)";
+				break;
+		}
 		foreach ($obj_ids as $obj_id) {
-			$query = "INSERT INTO downtime_relation (dt_id, obj_id, obj_type) VALUES (" . $id  . ", " . $obj_id . ", '" . $obj_type . "')";
+			$query = str_replace('%obj_id%', $obj_id, $query);
 			$this->db->query($query);
 		}
 	}
 	
+	/**
+	 * Delete all relations for a downtime
+	 * 
+	 * @param int $id The downtime id
+	 */
 	public function deteleRelations($id)
 	{
-		$query = "DELETE FROM downtime_relation WHERE dt_id = " .$id;
+		$query = "DELETE FROM downtime_host_relation WHERE dt_id = " .$id;
+		$this->db->query($query);
+		$query = "DELETE FROM downtime_hostgroup_relation WHERE dt_id = " .$id;
+		$this->db->query($query);
+		$query = "DELETE FROM downtime_service_relation WHERE dt_id = " .$id;
+		$this->db->query($query);
+		$query = "DELETE FROM downtime_servicegroup_relation WHERE dt_id = " .$id;
 		$this->db->query($query);
 	}
 	
+	/**
+	 * Activate a downtime
+	 * 
+	 * @param int $id The downtime id
+	 * @see CentreonDowntime::setActivate
+	 */
 	public function enable($id)
 	{
 		$this->setActivate($id, '1');
 	}
 	
+	/**
+	 * Activate downtimes
+	 * 
+	 * @param array $id The list of downtimes id
+	 * @see CentreonDowntime::setActivate
+	 */
 	public function multiEnable($ids)
 	{
 		$this->setActivate($ids, '1');
 	}
 	
+	/**
+	 * Deactivate a downtime
+	 * 
+	 * @param int $id The downtime id
+	 * @see CentreonDowntime::setActivate
+	 */
 	public function disable($id)
 	{
 		$this->setActivate($id, '0');
 	}
 	
+	/**
+	 * Deactivate downtimes
+	 * 
+	 * @param array $id The list of downtimes id
+	 * @see CentreonDowntime::setActivate
+	 */
 	public function multiDisable($ids)
 	{
 		$this->setActivate($ids, '0');
 	}
 	
+	/**
+	 * Delete a downtime
+	 * 
+	 * @param int $id The downtime id
+	 * @see CentreonDowntime::multiDelete
+	 */
 	public function delete($id)
 	{
 		$this->multiDelete($id);	
 	}
 	
+	/**
+	 * Delete downtimes
+	 * 
+	 * @param array $id The list of downtimes id
+	 */
 	public function multiDelete($ids)
 	{
 		if (false === is_array($ids)) {
@@ -341,6 +605,25 @@ class CentreonDowntime
 		}		
 	}
 	
+	/**
+	 * Get the list of period to schedule for a time
+	 * 
+	 * <code>
+	 * $return_array =
+	 * 	array(
+	 * 		array(
+	 * 			int, // The start period time in timestamp
+	 * 			int, // The end period time in timestamp
+	 * 		)
+	 * 	)
+	 * </code>
+	 * 
+	 * @param int $id The downtime id
+	 * @param int $time The timestamp for scheduling
+	 * @param int $delay The delay between the timestamp and the start period
+	 * @return array
+	 * @see CentreonDowntime::getPeriods
+	 */
 	public function doSchedule($id, $time, $delay)
 	{
 		$periods = $this->getPeriods($id);
@@ -379,6 +662,12 @@ class CentreonDowntime
 		return $listSchedule;
 	}
 	
+	/**
+	 * Activate or deactivate a downtime
+	 * 
+	 * @param array $ids The list of downtimes id
+	 * @param int $status 0 Downtime is deactivated, 1 Downtime is activated
+	 */
 	private function setActivate($ids, $status)
 	{
 		if (false === is_array($ids)) {
@@ -392,6 +681,12 @@ class CentreonDowntime
 		}
 	}
 	
+	/**
+	 * Normalize a array from post from $key => $value to list of $key
+	 * 
+	 * @param array $arr The array
+	 * @return array
+	 */
 	private function normalizeArray($arr) {
 		$list = array();
 		foreach ($arr as $key => $value) {
@@ -400,9 +695,4 @@ class CentreonDowntime
 		return $list;
 	}
 }
-
-/*
- * dtp.dtp_start_time > CURRENT_TIME AND TIME_TO_SEC(dtp.dtp_start_time) < (TIME_TO_SEC(CURRENT_TIME) + " . $delay . ")
-					AND
- */
 ?>

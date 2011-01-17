@@ -71,7 +71,7 @@ function addPeriods() {
 <tr class="list_two">
 	<td class="FormRowField"><img class="helpTooltip" name="downtime_period"> {$periods}</td>
 	<td class="FormRowField"><table>
-		{if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>
+		{if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>{/if}
 		<tr><td style="vertical-align: top"><img src="./img/icones/16x16/navigate_plus.gif" onclick="addPeriods()" /></td><td><div id="tabs_periods"></div></td></tr>
 	</table></td>
 </tr>

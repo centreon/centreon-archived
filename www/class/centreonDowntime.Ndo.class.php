@@ -36,11 +36,21 @@
  *
  */
 
+/**
+ * Class for management downtime with ndo broker
+ * 
+ * @see CentreonDowntime
+ */
 class CentreonDowntimeNdo extends CentreonDowntime
 {
 	private $dbndo;
 	private $ndoPrefix;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param CentreonDb $pearDB
+	 */
 	public function __construct($pearDB)
 	{
 		$this->db = $pearDB;
@@ -86,7 +96,15 @@ class CentreonDowntimeNdo extends CentreonDowntime
 		return $list; 
 	}
 	
-	public function getDowntimeInternaleId($oname1, $start_time, $dt_id, $oname2 = null)
+	/**
+	 * Get the NDO internal ID
+	 * 
+	 * @param string $oname1 The first object name (host_name)
+	 * @param int $start_time The timestamp for starting downtime
+	 * @param int $dt_id The downtime id
+	 * @param string $oname2 The second object name (service_name), is null if search a host 
+	 */
+	public function getDowntimeInternalId($oname1, $start_time, $dt_id, $oname2 = null)
 	{
 		$query = "SELECT dth.internal_downtime_id
 			FROM " . $this->ndoPrefix . "objects o, " . $this->ndoPrefix . "downtimehistory dth
@@ -105,6 +123,13 @@ class CentreonDowntimeNdo extends CentreonDowntime
 		return $row['internal_downtime_id'];
 	}    
 	
+	/**
+	 * Check if the downtime is scheduled
+	 * 
+	 * @param int $dt_id The downtime id
+	 * @param string $oname1 The first object name (host_name)
+	 * @param string $oname2 The second object name (service_name), is null if search a host
+	 */
 	public function isScheduled($dt_id, $oname1, $oname2 = null)
 	{
 		$query = "SELECT dth.internal_downtime_id, dth.downtime_type

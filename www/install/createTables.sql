@@ -1111,13 +1111,42 @@ CREATE TABLE IF NOT EXISTS `downtime_period` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `downtime_relation`
+-- Structure de la table `downtime_host_relation`
 --
-CREATE TABLE IF NOT EXISTS `downtime_relation` (
+CREATE TABLE IF NOT EXISTS `downtime_host_relation` (
 	`dt_id` INT(11) NOT NULL,
-	`obj_id` INT(11) NOT NULL,
-	`obj_type` ENUM('host', 'hostgrp', 'svc', 'svcgrp') NOT NULL,
-	PRIMARY KEY (`dt_id`, `obj_id`, `obj_type`)
+	`host_host_id` INT(11) NOT NULL,
+	PRIMARY KEY (`dt_id`, `host_host_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `downtime_hostgroup_relation`
+--
+CREATE TABLE IF NOT EXISTS `downtime_hostgroup_relation` (
+	`dt_id` INT(11) NOT NULL,
+	`hg_hg_id` INT(11) NOT NULL,
+	PRIMARY KEY (`dt_id`, `hg_hg_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `downtime_service_relation`
+--
+CREATE TABLE IF NOT EXISTS `downtime_service_relation` (
+	`dt_id` INT(11) NOT NULL,
+	`service_service_id` INT(11) NOT NULL,
+	PRIMARY KEY (`dt_id`, `service_service_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `downtime_servicegroup_relation`
+--
+CREATE TABLE IF NOT EXISTS `downtime_servicegroup_relation` (
+	`dt_id` INT(11) NOT NULL,
+	`sg_sg_id` INT(11) NOT NULL,
+	PRIMARY KEY (`dt_id`, `sg_sg_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- --------------------------------------------------------
 
@@ -2344,10 +2373,38 @@ ALTER TABLE `dependency_serviceParent_relation`
   ADD CONSTRAINT `dependency_serviceParent_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
 
 --
--- Contraintes pour la table `downtime`
+-- Contraintes pour la table `downtime_period`
 --
 ALTER TABLE `downtime_period`
   ADD CONSTRAINT `downtime_period_ibfk_1` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE; 
+  
+--
+-- Contraintes pour la table `downtime_host_relation`
+--
+ALTER TABLE `downtime_host_relation`
+  ADD CONSTRAINT `downtime_host_relation_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `downtime_host_relation_ibfk_2` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE;
+  
+--
+-- Contraintes pour la table `downtime_hostgroup_relation`
+--
+ALTER TABLE `downtime_hostgroup_relation`
+  ADD CONSTRAINT `downtime_hostgroup_relation_ibfk_1` FOREIGN KEY (`hg_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `downtime_hostgroup_relation_ibfk_2` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE;
+  
+--
+-- Contraintes pour la table `downtime_service_relation`
+--
+ALTER TABLE `downtime_service_relation`
+  ADD CONSTRAINT `downtime_service_relation_ibfk_1` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `downtime_service_relation_ibfk_2` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE;
+  
+--
+-- Contraintes pour la table `downtime_service_relation`
+--
+ALTER TABLE `downtime_servicegroup_relation`
+  ADD CONSTRAINT `downtime_servicegroup_relation_ibfk_1` FOREIGN KEY (`sg_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `downtime_servicegroup_relation_ibfk_2` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `escalation`

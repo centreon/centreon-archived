@@ -51,9 +51,7 @@ include_once("./include/common/quickSearch.php");
 if (isset($search) && $search) {
 	$downtime->setSearch($search);
 }
-$rows = $downtime->getNbRows();
 
-include("./include/common/checkPagination.php");
 
 /*
  *  Smarty template Init
@@ -77,6 +75,11 @@ $tpl->assign("headerMenu_options", _("Options"));
 /*
  * Nagios list
  */
+
+$rows = $downtime->getNbRows();
+
+include("./include/common/checkPagination.php");
+
 $listDowntime = $downtime->getList($num, $limit);
 
 $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
