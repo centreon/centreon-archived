@@ -1,0 +1,52 @@
+<table class="ListTable">
+<tr class="list_lvl_1">
+	<td class="FormRowField">{ $weekly_basis }&nbsp;<input type="radio" name="periods[{$period_tab}][period_type]" value="weekly_basis" checked="checked" onclick="selectPeriodType('weekly_basis', {$period_tab});" /></td>
+	<td class="FormRowField">{ $monthly_basis }&nbsp;<input type="radio" name="periods[{$period_tab}][period_type]" value="monthly_basis" onclick="selectPeriodType('monthly_basis', {$period_tab});" /></td>
+	<td class="FormRowField">{ $specific_date }&nbsp;<input type="radio" name="periods[{$period_tab}][period_type]" value="specific_date"  onclick="selectPeriodType('specific_date', {$period_tab});" /></td>
+</tr>
+<tr class="list_one">
+	<td colspan="3" class="FormRowField">
+	<div id="subformperiod_{$period_tab}">
+	</div>
+	</td>
+</tr>
+</table>
+{assign var=period_info value=`$period_tab-1`}
+{literal}
+<script type="text/javascript">
+var firstGeneral = true;
+function selectPeriodType(type, period_id) {
+	new Ext.Panel({
+		applyTo: 'subformperiod_' + period_id,
+		autoLoad: {
+			url: './main.php',
+			params: 'p=60601&min=1&period=' + period_id + "&period_form=" + type,
+			method: 'GET',
+			scripts: true
+		}
+	});
+}
+
+Ext.onReady(function() {
+	if (listPeriod != 'undefined' && listPeriod[{/literal}{$period_info}{literal}] != undefined) {
+		var infos_{/literal}{$period_info}{literal} = listPeriod[{/literal}{$period_info}{literal}];
+		var formname;
+		if (infos_{/literal}{$period_info}{literal}.month_cycle == 'all') {
+			formname = 'weekly_basis';
+		} else if (infos_{/literal}{$period_info}{literal}.month_cycle == 'none') {
+			formname = 'monthly_basis';
+		} else {
+			formname = 'specific_date';
+		}
+		selectPeriodType(formname, {/literal}{$period_tab}{literal});
+		$$('input[name="periods[{/literal}{$period_tab}{literal}][period_type]"]').each(function(item, index){
+			if (item.value == formname) {
+				item.checked = true;
+			} 
+		});
+	} else {
+		selectPeriodType("weekly_basis", {/literal}{$period_tab}{literal});
+	}
+});
+</script>
+{/literal}

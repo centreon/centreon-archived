@@ -212,6 +212,7 @@
 		updateOption($pearDB, "problem_sort_order", isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != NULL ? htmlentities($ret["problem_sort_order"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "enable_autologin", isset($ret["enable_autologin"]["yes"]) && $ret["enable_autologin"]["yes"] != NULL ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES, "UTF-8"): "0");
 		updateOption($pearDB, "display_autologin_shortcut", isset($ret["display_autologin_shortcut"]["yes"]) && $ret["display_autologin_shortcut"]["yes"] != NULL ? htmlentities($ret["display_autologin_shortcut"]["yes"], ENT_QUOTES, "UTF-8"): "0");
+		updateOption($pearDB, "batch_cache_path", isset($ret["batch_cache_path"]) && $ret["batch_cache_path"] != NULL ? htmlentities($ret["batch_cache_path"], ENT_QUOTES, "UTF-8"): "NULL");
 
 		$oreon->initOptGen($pearDB);
 	}

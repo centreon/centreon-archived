@@ -1,0 +1,99 @@
+{$form.javascript}
+<script type="text/javascript" src="./include/configuration/configDowntime/javascript/ext-prototype-adapter.js"></script>
+<script type="text/javascript" src="./include/configuration/configDowntime/javascript/ext-all.js"></script>
+<script type="text/javascript" src="./include/configuration/configDowntime/javascript/ext.ux.mask.js"></script>
+<script type="text/javascript" src="./include/configuration/configDowntime/javascript/ext.ux.TabCloseMenu.js"></script>
+<link rel="stylesheet" type="text/css" href="./include/configuration/configDowntime/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="./include/configuration/configDowntime/resources/css/centreon.css" />  
+{literal}
+<script type="text/javascript">
+var tabsPeriods;
+var periods = 0;
+var listPeriod = 'undefined';
+
+Ext.onReady(function(){
+	tabsPeriods = new Ext.TabPanel({
+		renderTo: 'tabs_periods',
+		width:600,
+        height:300,
+        plugins: new Ext.ux.TabCloseMenu()
+	});
+
+	if ($$('input[name="dt_id"]').length != 0) {
+		Ext.Ajax.request({
+			url: './include/configuration/configDowntime/ajaxPeriods.php?dt_id=' + $$('input[name="dt_id"]')[0].value,
+			success: function(respond, request){
+				listPeriod = Ext.decode(respond.responseText);
+				listPeriod.each(function(infos, index){
+					addPeriods();
+				});
+			}
+        });
+	} else {
+	        addPeriods();
+	}
+
+});
+function addPeriods() {
+	periods++;
+	tabsPeriods.add({
+		id: 'p_' + periods,
+		title: 'Period ' + periods,
+		autoLoad: {url: './main.php?p=60601&min=1&period=' + periods, scripts: true},
+		closable: true
+	}).show();
+	return false;
+}
+</script>
+{/literal}
+<form {$form.attributes}>
+<div>
+	<ul id="mainnav">
+		<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
+		<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
+	</ul>
+</div>
+<div id="validFormTop">
+{if $o == "a" || $o == "c" || $o == "mc"}
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+<div id="tab1" class="tab">
+<table class="ListTable">
+<tr class="ListHeader"><td class="FormHeader"><img src='./img/icones/16x16/warning.gif'>&nbsp;&nbsp;{$form.header.title}</td><td style="text-align:right;"><a href="./main.php?p={$p}&min=1&doc=1&page={if $msg.nagios >= 3}configobject.html{/if}{if $msg.nagios <= 2}xodtemplate.html#service{/if}" target="_blank"  style='cursor:help' alt='{$topdoc}'><img src="./img/icones/16x16/text_code.gif" title="{$topdoc}"></a>&nbsp;&nbsp;</td></tr>
+<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="downtime_name"> {$form.downtime_name.label}</td><td class="FormRowValue">{$form.downtime_name.html}</td></tr>
+<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="downtime_description"> {$form.downtime_description.label}</td><td class="FormRowValue">{$form.downtime_description.html}</td></tr>
+<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="downtime_activate"> {$form.downtime_activate.label}</td><td class="FormRowValue">{$form.downtime_activate.html}</td></tr>
+<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.periods}</td></tr>
+<tr class="list_two">
+	<td class="FormRowField"><img class="helpTooltip" name="downtime_period"> {$periods}</td>
+	<td class="FormRowField"><table>
+		{if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>
+		<tr><td style="vertical-align: top"><img src="./img/icones/16x16/navigate_plus.gif" onclick="addPeriods()" /></td><td><div id="tabs_periods"></div></td></tr>
+	</table></td>
+</tr>
+</table>
+</div>
+<div id="tab2" class="tab">
+<table class="ListTable">
+		<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title2}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_name"> {$form.host_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.host_relation.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name"> {$form.hostgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hostgroup_relation.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroups"> {$form.svcgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.svcgroup_relation.html}</p></td></tr>
+	 </table>
+</div>
+<div id="validForm">
+{if $o == "a" || $o == "c" || $o == "mc"}
+	<p>{$form.action.html}</p>
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}	
+</form>
+{$helptext}

@@ -186,5 +186,21 @@ class CentreonGMT{
 		$DBRESULT->free();
 		$this->myGMT = $info["contact_location"];
 	}
-
+	
+	function getHostCurrentDatetime($host_id, $date_format = 'c')
+	{
+		global $pearDB;
+		$date = time();
+		if ($this->use) {
+			$query = "SELECT host_location FROM host WHERE host_id = " . $host_id;
+			$res = $pearDB->query($query);
+			if (!PEAR::isError($res)) {
+				$row = $res->fetchRow();
+				if (!is_null($row['host_location']))  {
+					$date = $date + $row['host_location'] * 3600; 
+				}
+			}
+		}
+		return date($date_format, $date);
+	}
 }

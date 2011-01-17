@@ -313,6 +313,33 @@ CREATE TABLE IF NOT EXISTS `acl_topology_relations` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table ` auth_ressource`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_ressource` (
+  `ar_id` INT(11) NOT NULL AUTO_INCREMENT;
+  `ar_type` VARCHAR(50) NOT NULL,
+  `ar_enable` ENUM('0', '1') DEFAULT 0,
+  `ar_order` INT(3) DEFAULT 0,
+  PRIMARY KEY (`ar_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table ` auth_ressource_info`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_ressource_info` (
+  `ar_id` INT(11) NOT NULL AUTO_INCREMENT;
+  `ari_name` VARCHAR(100) NOT NULL,
+  `ari_value` vARCHAR(255) NOT NULL,
+  PRIMARY KEY (`ar_id`, `ari_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `cfg_cgi`
 --
 
@@ -1049,6 +1076,49 @@ CREATE TABLE IF NOT EXISTS `dependency_serviceParent_relation` (
   KEY `host_index` (`host_host_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `downtime`
+--
+CREATE TABLE IF NOT EXISTS `downtime` (
+  `dt_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `dt_name` VARCHAR(100) NOT NULL,
+  `dt_description` VARCHAR(255) DEFAULT NULL,
+  `dt_activate` ENUM('0', '1') DEFAULT '1',
+  PRIMARY KEY (`dt_id`),
+  KEY `downtime_idx01` (`dt_id`, `dt_activate`),
+  UNIQUE KEY `downtime_idx02` (`dt_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `downtime_period`
+--
+CREATE TABLE IF NOT EXISTS `downtime_period` (
+  `dt_id` INT(11) NOT NULL,
+  `dtp_start_time` TIME NOT NULL,
+  `dtp_end_time` TIME NOT NULL,
+  `dtp_day_of_week` VARCHAR(15) DEFAULT NULL,
+  `dtp_month_cycle` ENUM('first', 'last', 'all', 'none') DEFAULT 'all',
+  `dtp_day_of_month` VARCHAR(100) DEFAULT NULL,
+  `dtp_fixed` ENUM('0', '1') DEFAULT '1',
+  `dtp_duration` INT DEFAULT NULL,
+  `dtp_next_date` DATE DEFAULT NULL,
+  `dtp_activate` ENUM('0', '1') DEFAULT '1',
+  KEY `downtime_period_idx01` (`dt_id`, `dtp_activate`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `downtime_relation`
+--
+CREATE TABLE IF NOT EXISTS `downtime_relation` (
+	`dt_id` INT(11) NOT NULL,
+	`obj_id` INT(11) NOT NULL,
+	`obj_type` ENUM('host', 'hostgrp', 'svc', 'svcgrp') NOT NULL,
+	PRIMARY KEY (`dt_id`, `obj_id`, `obj_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- --------------------------------------------------------
 
 --
@@ -2272,6 +2342,12 @@ ALTER TABLE `dependency_serviceParent_relation`
   ADD CONSTRAINT `dependency_serviceParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `dependency_serviceParent_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `dependency_serviceParent_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `downtime`
+--
+ALTER TABLE `downtime_period`
+  ADD CONSTRAINT `downtime_period_ibfk_1` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE; 
 
 --
 -- Contraintes pour la table `escalation`

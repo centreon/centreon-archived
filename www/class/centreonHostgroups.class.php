@@ -80,6 +80,7 @@
 									"ORDER by h.host_name");
 		while ($elem =& $DBRESULT->fetchRow()) {
 			$ref[$elem["host_host_id"]] = $elem["host_host_id"];
+			$hosts[] = $elem["host_host_id"];
 		}
 		$DBRESULT->free();
 		unset($elem);

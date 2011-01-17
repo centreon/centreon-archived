@@ -87,6 +87,19 @@
  		$row = $DBRES->fetchRow();
  		return $row['service_id'];
  	}
+ 	
+ 	public function getServiceName($sid)
+ 	{
+ 		$query = "SELECT service_alias
+ 			FROM service
+ 			WHERE service_id = " . $sid;
+ 		$res = $this->DB->query($query);
+ 		if ($res->numRows() == 0) {
+ 			return null;
+ 		}
+ 		$row = $res->fetchRow();
+ 		return $row['service_alias'];
+ 	}
 
  	/**
  	 *

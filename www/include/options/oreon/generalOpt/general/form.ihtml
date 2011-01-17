@@ -36,6 +36,9 @@
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$genOpt_time_zone}</td></tr>
  	<tr class="list_one"><td class="FormRowField">{$form.enable_gmt.label}</td><td class="FormRowValue">{$form.enable_gmt.html}</td></tr>
  	<tr class="list_two"><td class="FormRowField">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
+ 	
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$genOpt_batch}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField">{$form.batch_cache_path.label}</td><td class="FormRowValue">{$form.batch_cache_path.html}</td></tr>
  </table>
 {if !$valid}
 	<div id="validForm">
