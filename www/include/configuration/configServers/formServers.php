@@ -115,13 +115,14 @@
 		"name"=>'',
 		"localhost"=>'0',
 		"ns_ip_address"=>"127.0.0.1",
-		"nagios_bin"=>"/usr/sbin/nagios2",
+		"nagios_bin"=>"/usr/sbin/nagios",
 		"nagiostats_bin"=>"/usr/sbin/nagiostats",
 		"monitoring_engine" => $centreon->optGen["monitoring_engine"],
-		"init_script"=>"/etc/init.d/nagios".$oreon->user->get_version(),
+		"init_script"=>"/etc/init.d/nagios",
 		"ns_activate"=>'1',
 		"ssh_port" => '22',
-		"ssh_private_key" => '~/.ssh/rsa.id'));
+		"ssh_private_key" => '~/.ssh/rsa.id'),
+		"nagios_perfdata" => "/var/log/nagios/service-perfdata");
 	} else {
 		if (isset($cfg_server))
 			$form->setDefaults($cfg_server);
