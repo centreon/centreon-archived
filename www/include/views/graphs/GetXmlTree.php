@@ -411,7 +411,14 @@
 			 */
 			$cpt = 0;
 			$str = 0;
-			if ($is_admin || count($access->getMetaServices())) {
+			if ($is_admin) {
+				$query = "SELECT count(*) FROM meta_service WHERE meta_activate = '1'";
+				$DBRESULT2 = $pearDB->query($query);
+				$meta = $DBRESULT->fetchRow();
+			} else {
+				$meta["count(*)"] = 0;
+			}
+			if (($is_admin && $meta["count(*)"] != 0) || count($access->getMetaServices())) {
 				$buffer->startElement("item");
 				$buffer->writeAttribute("child", "1");
 				$buffer->writeAttribute("id", "MT_0");
