@@ -41,8 +41,8 @@
 	}
 
 	$cct = array();
-	if (($o == "c" || $o == "w") && $contact_id)	{
-		/*
+	if (($o == "c" || $o == "w") && $contact_id) {
+		/**
 		 * Init Tables informations
 		 */
 		$cct["contact_hostNotifCmds"] = array();
@@ -54,7 +54,7 @@
 		$cct["contact_passwd"] = NULL;
 		$DBRESULT->free();
 
-		/*
+		/**
 		 * Set Host Notification Options
 		 */
 		$tmp = explode(',', $cct["contact_host_notification_options"]);
@@ -62,47 +62,52 @@
 			$cct["contact_hostNotifOpts"][trim($value)] = 1;
 		}
 
-		/*
+		/**
 		 * Set Service Notification Options
 		 */
 		$tmp = explode(',', $cct["contact_service_notification_options"]);
-		foreach ($tmp as $key => $value)
+		foreach ($tmp as $key => $value) {
 			$cct["contact_svNotifOpts"][trim($value)] = 1;
+		}
 		$DBRESULT->free();
 
-		/*
+		/**
 		 * Set Contact Group Parents
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$contact_id."'");
-		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++) {
 			$cct["contact_cgNotif"][$i] = $notifCg["contactgroup_cg_id"];
+		}
 		$DBRESULT->free();
 
-		/*
+		/**
 		 * Set Host Notification Commands
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$contact_id."'");
-		for ($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++) {
 			$cct["contact_hostNotifCmds"][$i] = $notifCmd["command_command_id"];
+		}
 		$DBRESULT->free();
 
-		/*
+		/**
 		 * Set Service Notification Commands
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$contact_id."'");
-		for ($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++) {
 			$cct["contact_svNotifCmds"][$i] = $notifCmd["command_command_id"];
+		}
 		$DBRESULT->free();
 
-		/*
+		/**
 		 * Get DLAP auth informations
 		 */
 		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'ldap_auth_enable'");
-		while ($ldap_auths =& $DBRESULT->fetchRow())
+		while ($ldap_auths =& $DBRESULT->fetchRow()) {
 			$ldap_auth[$ldap_auths["key"]] = myDecode($ldap_auths["value"]);
+		}
 		$DBRESULT->free();
 
-		/*
+		/**
 		 * Get ACL informations for this user
 		 */
 		$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM `acl_group_contacts_relations` WHERE `contact_contact_id` = '".$contact_id."'");
@@ -112,7 +117,7 @@
 		$DBRESULT->free();
 	}
 
-	/*
+	/**
 	 * Get Langs
 	 */
 	$langs = array();
@@ -121,36 +126,35 @@
 	    array_unshift($langs, null);
 	}
 
-	/*
+	/**
 	 * Timeperiods comes from DB -> Store in $notifsTps Array
 	 * When we make a massive change, give the possibility to not crush value
 	 */
-
 	$notifTps = array(NULL => NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	while($notifTp =& $DBRESULT->fetchRow())
+	while ($notifTp =& $DBRESULT->fetchRow())
 		$notifTps[$notifTp["tp_id"]] = $notifTp["tp_name"];
 	$DBRESULT->free();
 
-	/*
+	/**
 	 * Notification commands comes from DB -> Store in $notifsCmds Array
 	 */
 	$notifCmds = array();
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
-	while($notifCmd =& $DBRESULT->fetchRow())
+	while ($notifCmd =& $DBRESULT->fetchRow())
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$DBRESULT->free();
 
-	/*
+	/**
 	 * Contact Groups comes from DB -> Store in $notifCcts Array
 	 */
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while($notifCg =& $DBRESULT->fetchRow())
+	while ($notifCg =& $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
 
-	/*
+	/**
 	 * Get ACL Groups List
 	 */
 	$aclGroups = array();
@@ -160,18 +164,33 @@
 	}
 	$DBRESULT->free();
 
-	/*
+	/**
+	 * Contacts Templates
+	 */
+	if (isset($contact_id)) {
+		$strRestrinction = " AND contact_id != '".$contact_id."'";
+	} else {
+		$strRestrinction = "";
+	}
+
+	$contactTpl = array(NULL => "           ");
+	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = '1' $strRestrinction ORDER BY contact_name");
+	while ($contacts =& $DBRESULT->fetchRow()) {
+		$contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
+	}
+	$DBRESULT->free();
+
+	/**
 	 * Template / Style for Quickform input
 	 */
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"60");
+	$attrsTextDescr	= array("size"=>"80");
+	$attrsTextMail 	= array("size"=>"90");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"15", "cols"=>"100");
 	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
-	#
-	## Form begin
-	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a User"));
@@ -182,7 +201,7 @@
 	else if ($o == "mc")
 		$form->addElement('header', 'title', _("Massive Change"));
 
-	/*
+	/**
 	 * Contact basic information
 	 */
 	$form->addElement('header', 'information', _("General Information"));
@@ -190,20 +209,25 @@
 	$form->addElement('header', 'centreon', _("Centreon Authentication"));
 	$form->addElement('header', 'acl', _("Access lists"));
 
-	/*
+	/**
 	 * No possibility to change name and alias, because there's no interest
 	 */
 
-	/*
+	/**
 	 * Don't change contact name and alias in massif change'
 	 */
 	if ($o != "mc")	{
-		$form->addElement('text', 'contact_name', _("Full Name"), $attrsText);
-		$form->addElement('text', 'contact_alias', _("Alias/Login"), $attrsText);
+		$form->addElement('text', 'contact_name', _("Full Name"), $attrsTextDescr);
+		$form->addElement('text', 'contact_alias', _("Alias / Login"), $attrsText);
 	}
 
-	$form->addElement('text', 'contact_email', _("Email"), $attrsText);
+	$form->addElement('text', 'contact_email', _("Email"), $attrsTextMail);
 	$form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
+
+	/**
+	 * Contact template used
+	 */
+	$form->addElement('select', 'contact_template_id', _("Contact template used"), $contactTpl);
 
 	$form->addElement('header', 'furtherAddress', _("Additional Addresses"));
 	$form->addElement('text', 'contact_address1', _("Address1"), $attrsText);
@@ -213,9 +237,10 @@
 	$form->addElement('text', 'contact_address5', _("Address5"), $attrsText);
 	$form->addElement('text', 'contact_address6', _("Address6"), $attrsText);
 
-	/*
+	/**
 	 * Contact Groups Field
 	 */
+	$form->addElement('header', 'groupLinks', _("Groups Links"));
 	if ($o == "mc")	{
 		$mc_mod_cg = array();
 		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
@@ -229,8 +254,8 @@
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
-	/*
-	 * Contact Oreon information
+	/**
+	 * Contact Centreon information
 	 */
 	$form->addElement('header', 'oreon', _("Centreon"));
 	$tab = array();
@@ -263,7 +288,7 @@
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
-	/*
+	/**
 	 * Include GMT Class
 	 */
 	require_once $centreon_path."www/class/centreonGMT.class.php";
@@ -282,6 +307,7 @@
 	} else {
 	    $auth_type = array(null => null);
 	}
+
    	$auth_type["local"] = "Centreon";
 	if ($oreon->optGen['ldap_auth_enable'] == 1) {
 		$auth_type["ldap"] = "LDAP";
@@ -292,12 +318,18 @@
 	}
    	$form->addElement('select', 'contact_auth_type', _("Authentication Source"), $auth_type);
 
-	/*
+	/**
 	 * Notification informations
 	 */
-	$form->addElement('header', 'notification', _("Notification Type"));
+   	$form->addElement('header', 'notification', _("Notification"));
 
-	/*
+	$tab = array();
+	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
+	$form->addGroup($tab, 'contact_enable_notifications', _("Enable Notifications"), '&nbsp;');
+	$form->setDefaults(array('contact_enable_notifications' => '0'));
+
+	/** ******************************
 	 * Host notifications
 	 */
 	$form->addElement('header', 'hostNotification', _("Host"));
@@ -325,7 +357,7 @@
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	/*
+	/** ******************************
 	 * Service notifications
 	 */
 	$form->addElement('header', 'serviceNotification', _("Service"));
@@ -351,7 +383,7 @@
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 
-	/*
+	/**
 	 * Further informations
 	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
@@ -359,6 +391,12 @@
 	$cctActivation[] = &HTML_QuickForm::createElement('radio', 'contact_activate', null, _("Disabled"), '0');
 	$form->addGroup($cctActivation, 'contact_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('contact_activate' => '1'));
+
+	$cctRegister[] = &HTML_QuickForm::createElement('radio', 'contact_register', null, _("Enabled"), '1');
+	$cctRegister[] = &HTML_QuickForm::createElement('radio', 'contact_register', null, _("Disabled"), '0');
+	$form->addGroup($cctRegister, 'contact_register', _("Is this contact a template ?"), '&nbsp;');
+	$form->setDefaults(array('contact_register' => '0'));
+
 	$form->addElement('textarea', 'contact_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
@@ -378,7 +416,7 @@
 		$select_pear->setValue($select_str);
 	}
 
-	/*
+	/**
 	 * Form Rules
 	 */
 	function myReplace()	{
@@ -390,19 +428,24 @@
 	$form->applyFilter('contact_name', 'myReplace');
 	$from_list_menu = false;
 	if ($o != "mc")	{
+		$ret = $form->getSubmitValues();
 		$form->addRule('contact_name', _("Compulsory Name"), 'required');
 		$form->addRule('contact_alias', _("Compulsory Alias"), 'required');
 		$form->addRule('contact_email', _("Valid Email"), 'required');
-		$form->addRule('contact_hostNotifOpts', _("Compulsory Option"), 'required');
 		$form->addRule('contact_oreon', _("Required Field"), 'required');
 		$form->addRule('contact_lang', _("Required Field"), 'required');
 		$form->addRule('contact_admin', _("Required Field"), 'required');
 		$form->addRule('contact_auth_type', _("Required Field"), 'required');
-		$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-		$form->addRule('contact_hostNotifCmds', _("Compulsory Command"), 'required');
-		$form->addRule('contact_svNotifOpts', _("Compulsory Option"), 'required');
-		$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
-		$form->addRule('contact_svNotifCmds', _("Compulsory Command"), 'required');
+
+		if (isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1) {
+			$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
+			$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
+			$form->addRule('contact_hostNotifOpts', _("Compulsory Option"), 'required');
+			$form->addRule('contact_svNotifOpts', _("Compulsory Option"), 'required');
+			$form->addRule('contact_hostNotifCmds', _("Compulsory Command"), 'required');
+			$form->addRule('contact_svNotifCmds', _("Compulsory Command"), 'required');
+		}
+
 		$form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
 		$form->registerRule('exist', 'callback', 'testContactExistence');
 		$form->addRule('contact_name', "<font style='color: red;'>*</font>&nbsp;" . _("Contact already exists"), 'exist');
@@ -419,13 +462,14 @@
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 
-	/*
+	/**
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+
 	# prepare help texts
 	$helptext = "";
 	include_once("help.php");
@@ -474,9 +518,9 @@
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
+	if ($valid && $action["action"]["action"]) {
 		require_once($path."listContact.php");
-	else	{
+	} else	{
 		# Apply a template definition
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -489,8 +533,8 @@
 			$tpl->assign('ldap', $oreon->optGen['ldap_auth_enable'] );
 		$tpl->display("formContact.ihtml");
 	}
-?>
-<script type="text/javascript">
+?><script type="text/javascript">
+
 function uncheckAllH(object) {
 	if (object.id == "hNone" && object.checked) {
 		document.getElementById('hDown').checked = false;

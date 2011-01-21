@@ -3,8 +3,7 @@
 <ul id="mainnav">
 	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$form.header.information}</a></li>
 	<li class="a" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.centreon}</a></li>
-	<li class="a" id='c3'><a href="#" onclick="javascript:montre('3');">{$form.header.acl}</a></li>
-	<li class="a" id='c4'><a href="#" onclick="javascript:montre('4');">{$form.header.additional}</a></li>
+	<li class="a" id='c3'><a href="#" onclick="javascript:montre('3');">{$form.header.additional}</a></li>
 </ul>
 </div>
 <form {$form.attributes}>
@@ -18,18 +17,24 @@
 	<div id='tab1' class='tab'>
 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		{if $o != "mc"}
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_name"> {$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
 		{/if}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="email"> {$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_template_id.label}</td><td class="FormRowValue">{$form.contact_template_id.html}</td></tr>
+		
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2"><img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.groupLinks}</td></tr>
 		{if $o == "mc"}
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cg.label}</td><td class="FormRowValue">{$form.mc_mod_cg.html}</td></tr>
 		{/if}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contactgroups"> {$form.contact_cgNotif.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_cgNotif.html}</p></td></tr>
-	 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.hostNotification}</td></tr>
+
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
+	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_enable_notifications"> {$form.contact_enable_notifications.label}</td><td class="FormRowValue">{$form.contact_enable_notifications.html}</td></tr>
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.hostNotification}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_notification_options"> {$form.contact_hostNotifOpts.label}</td><td class="FormRowValue">{$form.contact_hostNotifOpts.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_notification_period"> {$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
 		{if $o == "mc"}
@@ -64,14 +69,6 @@
 		{if $ldap == "1" }
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_dn"> {$form.contact_ldap_dn.label}</td><td class="FormRowValue">{$form.contact_ldap_dn.html}</td></tr>
 		{/if}
-		{if $o == "a" || $o == "c"}
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
-		{/if}
-	</table>
-	</div>
-	<div id='tab3' class='tab'>
-	<table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.acl}</td></tr>
 		{if $o == "mc"}
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_acl.label}</td><td class="FormRowValue">{$form.mc_mod_acl.html}</td></tr>
@@ -80,9 +77,12 @@
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
 	</table>
 	</div>
-	<div id='tab4' class='tab'>
+	<div id='tab3' class='tab'>
 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherAddress}</td></tr>
@@ -94,7 +94,8 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address6.label}</td><td class="FormRowValue">{$form.contact_address6.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_register.label}</td><td class="FormRowValue">{$form.contact_register.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}

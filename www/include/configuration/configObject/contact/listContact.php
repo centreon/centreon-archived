@@ -50,7 +50,7 @@
 	/*
 	 * Create Timeperiod Cache
 	 */
-	$tpCache = array();
+	$tpCache = array("" => "");
 	$DBRESULT =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
 	while ($data =& $DBRESULT->fetchRow())
 		$tpCache[$data["tp_id"]] = $data["tp_name"];
@@ -73,9 +73,9 @@
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	/* Access level */
-	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r'; 
+	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 	$tpl->assign('mode_access', $lvl_access);
 
 	/*
@@ -134,8 +134,8 @@
 						"RowMenu_link" => "?p=".$p."&o=c&contact_id=".$contact['contact_id'],
 						"RowMenu_desc" => html_entity_decode($contact["contact_alias"]),
 						"RowMenu_email" => $contact["contact_email"],
-						"RowMenu_hostNotif" => html_entity_decode($tpCache[$contact["timeperiod_tp_id"]], ENT_QUOTES, "UTF-8")." (".$contact["contact_host_notification_options"].")",
-						"RowMenu_svNotif" => html_entity_decode($tpCache[$contact["timeperiod_tp_id2"]], ENT_QUOTES, "UTF-8")." (".$contact["contact_service_notification_options"].")",
+						"RowMenu_hostNotif" => html_entity_decode($tpCache[(isset($contact["timeperiod_tp_id"]) ? $contact["timeperiod_tp_id"] : "")], ENT_QUOTES, "UTF-8")." (".(isset($contact["contact_host_notification_options"]) ? $contact["contact_host_notification_options"] : "").")",
+						"RowMenu_svNotif" => html_entity_decode($tpCache[(isset($contact["timeperiod_tp_id2"]) ? $contact["timeperiod_tp_id2"] : "")], ENT_QUOTES, "UTF-8")." (".(isset($contact["contact_service_notification_options"]) ? $contact["contact_service_notification_options"] : "").")",
 						"RowMenu_lang" => $contact["contact_lang"],
 						"RowMenu_access" => $contact["contact_oreon"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_admin" => $contact["contact_admin"] ? _("Yes") : _("No"),

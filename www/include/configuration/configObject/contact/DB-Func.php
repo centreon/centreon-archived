@@ -328,9 +328,9 @@
 
 		$rq = "INSERT INTO `contact` ( " .
 				"`contact_id` , `timeperiod_tp_id` , `timeperiod_tp_id2` , `contact_name` , " .
-				"`contact_alias` , `contact_passwd` , `contact_lang` , " .
+				"`contact_alias` , `contact_passwd` , `contact_lang` , `contact_template_id`, " .
 				"`contact_host_notification_options` , `contact_service_notification_options` , " .
-				"`contact_email` , `contact_pager` , `contact_comment` , `contact_oreon` , " .
+				"`contact_email` , `contact_pager` , `contact_comment` , `contact_oreon`, `contact_register`, `contact_enable_notifications` , " .
 				"`contact_admin` , `contact_type_msg`, `contact_activate`, `contact_auth_type`, " .
 				"`contact_ldap_dn`, `contact_location`, `contact_address1`, `contact_address2`, " .
 				"`contact_address3`, `contact_address4`, `contact_address5`, `contact_address6`)" .
@@ -348,15 +348,21 @@
 			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".md5($ret["contact_passwd"])."', ": $rq .= "NULL, ";
 
 		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["contact_template_id"]) && $ret["contact_template_id"] != NULL ? $rq .= "'".htmlentities($ret["contact_template_id"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["contact_hostNotifOpts"]))."', ": $rq .= "NULL, ";
 		isset($ret["contact_svNotifOpts"]) && $ret["contact_svNotifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["contact_svNotifOpts"]))."', ": $rq .= "NULL, ";
 		isset($ret["contact_email"]) && $ret["contact_email"] != NULL ? $rq .= "'".htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL ? $rq .= "'".htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		if (isset($_POST["contact_select"]) && isset($_POST["contact_select"]["select"]))
+
+		if (isset($_POST["contact_select"]) && isset($_POST["contact_select"]["select"])) {
 			$rq .= "'1', ";
-		else
+		} else {
 			isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != NULL ? $rq .= "'".$ret["contact_oreon"]["contact_oreon"]."', ": $rq .= " '1', ";
+		}
+
+		isset($ret["contact_register"]["contact_register"]) && $ret["contact_register"]["contact_register"] != NULL ? $rq .= "'".$ret["contact_register"]["contact_register"]."', ": $rq .= " '1', ";
+		isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] != NULL ? $rq .= "'".$ret["contact_enable_notifications"]["contact_enable_notifications"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != NULL ? $rq .= "'".$ret["contact_admin"]["contact_admin"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL ? $rq .= "'".$ret["contact_type_msg"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_activate"]["contact_activate"]) && $ret["contact_activate"]["contact_activate"] != NULL ? $rq .= "'".$ret["contact_activate"]["contact_activate"]."', ": $rq .= "NULL, ";
@@ -405,9 +411,10 @@
 			$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8");
 		if (isset($ret["contact_oreon"]["contact_oreon"]))
 			$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
+		if (isset($ret["contact_enable_notifications"]["contact_enable_notifications"]))
+			$fields["contact_enable_notifications"] = $ret["contact_enable_notifications"]["contact_enable_notifications"];
 		if (isset($ret["contact_admin"]["contact_admin"]))
 			$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
-
 		if (isset($ret["contact_type_msg"]))
 			$fields["contact_type_msg"] = $ret["contact_type_msg"];
 
@@ -485,12 +492,22 @@
 		isset($ret["contact_email"]) && $ret["contact_email"] != NULL ? $rq .= "'".htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_pager = ";
 		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+
+		$rq .= "contact_template_id = ";
+		isset($ret["contact_template_id"]) && $ret["contact_template_id"] != NULL ? $rq .= "'".htmlentities($ret["contact_template_id"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+
 		$rq .= "contact_comment = ";
 		isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL ? $rq .= "'".htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_oreon = ";
 		isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != NULL ? $rq .= "'".$ret["contact_oreon"]["contact_oreon"]."', ": $rq .= "NULL, ";
+		$rq .= "contact_enable_notifications = ";
+		isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] != NULL ? $rq .= "'".$ret["contact_enable_notifications"]["contact_enable_notifications"]."', ": $rq .= "NULL, ";
 		$rq .= "contact_admin = ";
 		isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != NULL ? $rq .= "'".$ret["contact_admin"]["contact_admin"]."', ": $rq .= "NULL, ";
+
+		$rq .= "contact_register = ";
+		isset($ret["contact_register"]["contact_register"]) && $ret["contact_register"]["contact_register"] != NULL ? $rq .= "'".$ret["contact_register"]["contact_register"]."', ": $rq .= "NULL, ";
+
 		$rq .= "contact_type_msg = ";
 		isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL ? $rq .= "'".$ret["contact_type_msg"]."', ": $rq .= "NULL, ";
 		$rq .= "contact_activate = ";
@@ -524,22 +541,31 @@
 		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		$fields["contact_name"] = htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8");
 		$fields["contact_alias"] = htmlentities($ret["contact_alias"], ENT_QUOTES, "UTF-8");
-		if ($encryptType == 1)
+
+		if ($encryptType == 1) {
 			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
-		else if ($encryptType == 2)
+		} else if ($encryptType == 2) {
 			$fields["contact_passwd"] = sha1($ret["contact_passwd"]);
-		else
+		} else {
 			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
+		}
+
 		$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8");
-		$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
-		$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
+		if (isset($ret["contact_hostNotifOpts"]))
+			$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
+		if (isset($ret["contact_svNotifOpts"]))
+			$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
 		$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8");
 		$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8");
 		$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8");
 		$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
 		$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
+		if (isset($ret["contact_register"]) && isset($ret["contact_register"]["contact_register"]))
+			$fields["contact_register"] = $ret["contact_register"]["contact_register"];
 		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
 		$fields["contact_auth_type"] = $ret["contact_auth_type"];
+		if (isset($ret["contact_template_id"]))
+			$fields["contact_template_id"] = $ret["contact_template_id"];
 		if (isset($ret["contact_ldap_dn"]))
 			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
 		if (isset($ret["contact_location"]))

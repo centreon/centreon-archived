@@ -11,6 +11,8 @@ $help["email"] = dgettext("help", "Specify the primary email address for the con
 $help["pager"] = dgettext("help", "Specify a pager number or an address at a pager gateway here. Any format is possible as long as it is supported by the notification command.");
 $help["contactgroups"] = dgettext("help", "Link the contact to the contactgroup(s) the user should belong to. This is an alternative way to specifying the members in contactgroup definitions.");
 
+$help["contact_enable_notifications"] = dgettext("help", "Enable notification form for this user. If you select \"no\" , this contact will never be generated into nagios configuration files.");
+
 $help["host_notification_options"] = dgettext("help", "Define the host states for which notifications can be sent out to this contact. If you specify None as an option, the contact will not receive any type of host notifications.");
 $help["host_notification_period"] = dgettext("help", "Specify the time period during which the contact can be notified about host problems or recoveries. You can think of this as an \"on call\" time for host notifications for the contact.");
 $help["host_notification_commands"] = dgettext("help", "Define one or more commands used to notify the contact of a host problem or recovery. All notification commands are executed when the contact needs to be notified.");
