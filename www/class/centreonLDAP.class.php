@@ -120,39 +120,67 @@ class CentreonLDAP {
 	public function connect()
 	{
 		foreach ($this->_ldapHosts as $ldap) {
-			$port = 389;
+			$port = "";
 			if (isset($ldap['info']['port'])) {
-				$port = $ldap['info']['port'];
+				$port = ":" . $ldap['info']['port'];
 			}
-			$this->_ds = ldap_connect($ldap['host'], $port);
+			if (isset($ldap['info']['use_ssl']) && $ldap['info']['use_ssl'] == 1) {
+			    $url = 'ldaps://' . $ldap['host'] . $port . '/';
+			} else {
+			    $url = 'ldap://' . $ldap['host'] . $port . '/';
+			}
+			$this->_ds = ldap_connect($url);
 			ldap_set_option($this->_ds, LDAP_OPT_REFERRALS, 0);
 			$protocol_version = 3;
 			if (isset($ldap['info']['protocol_version'])) {
 				$protocol_version = $ldap['info']['protocol_version'];
 			}
 			ldap_set_option($this->_ds, LDAP_OPT_PROTOCOL_VERSION, $protocol_version);
-			if (isset($ldap['info']['bind_dn']) && isset($ldap['info']['bind_pass'])) {
-				if (ldap_bind($this->_ds, $ldap['info']['bind_dn'], $ldap['info']['bind_pass'])) {
-					$this->_linkId = $ldap['id'];
-					$this->_loadSearchInfo();
-					return true;
-				}
-			} else {
-				if (ldap_bind($this->_ds)) {
-					$this->_linkId = $ldap['id'];
-					$this->_loadSearchInfo();
-					return true;
-				}
+			if (isset($ldap['info']['use_tls']) && $ldap['info']['use_tls'] == 1) {
+			    ldap_start_tls($this->_ds);ldap_start_tls($this->_ds);
 			}
+			return $this->rebind();
 		}
 		return false;
 	}
 	
-	/*
+	/**
 	 * Close LDAP Connexion
 	 */
 	public function close() {
 		ldap_close($this->_ds);
+	}
+	
+	/**
+	 * Rebind with the default bind_dn
+	 * 
+	 * @return If the connection is good
+	 */
+	public function rebind() {
+	    if (isset($ldap['info']['bind_dn']) && isset($ldap['info']['bind_pass'])) {
+			if (ldap_bind($this->_ds, $ldap['info']['bind_dn'], $ldap['info']['bind_pass'])) {
+				$this->_linkId = $ldap['id'];
+				$this->_loadSearchInfo();
+				return true;
+			}
+		} else {
+			if (ldap_bind($this->_ds)) {
+				$this->_linkId = $ldap['id'];
+				$this->_loadSearchInfo();
+				return true;
+			}
+		}
+		return false;  
+	}
+	
+	/**
+	 * Retourne the ldap ressource
+	 * 
+	 * @return ldap_ressource
+	 */
+	public function getDs()
+	{
+	    return $this->_ds;
 	}
 	
 	/**
@@ -164,7 +192,7 @@ class CentreonLDAP {
 	public function findUserDn($username)
 	{
 		$filter = preg_replace('/%s/', $username, $this->_userSearchInfo['filter']);
-		$result = ldap_search($this->_ds, $this->_userSearchInfo['base_search']);
+		$result = ldap_search($this->_ds, $this->_userSearchInfo['base_search'], $filter);
 		$entries = ldap_get_entries($this->_ds, $result);
 		if ($entries["count"] == 0) {
 			return false;
@@ -181,12 +209,50 @@ class CentreonLDAP {
 	public function findGroupDn($group)
 	{
 		$filter = preg_replace('/%s/', $group, $this->_groupSearchInfo['filter']);
-		$result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search']);
+		$result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
 		$entries = ldap_get_entries($this->_ds, $result);
 		if ($entries["count"] == 0) {
 			return false;
 		}
 		return $entries[0]['dn'];
+	}
+	
+	/**
+	 * Return the list of groups
+	 *
+	 * @param string $pattern The pattern for search
+	 * @return array The list of groups
+	 */
+	public function listOfGroups($pattern = '*')
+	{
+	    $filter = preg_replace('/%s/', $pattern, $this->_groupSearchInfo['filter']);
+	    $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
+	    $entries = ldap_get_entries($this->_ds, $result);
+	    $nbEntries = $entries["count"];
+	    $list = array();
+		for ($i = 0; $i < $nbEntries; $i++) {
+		    $list[] = $entries[$i][$this->_groupSearchInfo['group_name']][0];
+		}
+		return $list;
+	}
+	
+	/**
+	 * Return the list of users
+	 *
+	 * @param string $pattern The pattern for search 
+	 * @return array The list of users
+	 */
+	public function listOfUsers($pattern = '*')
+	{
+	    $filter = preg_replace('/%s/', $pattern, $this->_userSearchInfo['filter']);
+	    $result = ldap_search($this->_ds, $this->_userSearchInfo['base_search'], $filter);
+	    $entries = ldap_get_entries($this->_ds, $result);
+	    $nbEntries = $entries["count"];
+	    $list = array();
+		for ($i = 0; $i < $nbEntries; $i++) {
+		    $list[] = $entries[$i][$this->_userSearchInfo['alias']][0];
+		}
+		return $list;
 	}
 	
 	/**
