@@ -363,7 +363,7 @@
 							} elseif ($hostgroup) {
 								$pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$hostgroup."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
 							} else {
-							# Service duplication case -> Duplicate the Service for each relation the base Service have
+								# Service duplication case -> Duplicate the Service for each relation the base Service have
 								$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id FROM host_service_relation WHERE service_service_id = '".$key."'");
 								$fields["service_hPars"] = "";
 								$fields["service_hgPars"] = "";
@@ -385,8 +385,8 @@
 							 */
 							$DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '".$key."'");
 							$fields["service_cs"] = "";
-							while ($C = $DBRESULT->fetchRow()){
-								$DBRESULT2 = $pearDB->query("INSERT INTO contact_service_relation VALUES ('', '".$C["contact_id"]."', '".$maxId["MAX(service_id)"]."')");
+							while ($C = $DBRESULT->fetchRow()) {
+								$DBRESULT2 = $pearDB->query("INSERT INTO contact_service_relation VALUES ('', '".$maxId["MAX(service_id)"]."', '".$C["contact_id"]."')");
 								$fields["service_cs"] .= $C["contact_id"] . ",";
 							}
 							$fields["service_cs"] = trim($fields["service_cs"], ",");
