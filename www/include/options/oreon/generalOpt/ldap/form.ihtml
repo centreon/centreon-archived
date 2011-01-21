@@ -2,21 +2,25 @@
 {$colorJS}
 <form {$form.attributes}>
 <table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$optGen_ldap_properties}</td></tr>
- 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.ldap}</td></tr>
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'/>&nbsp;&nbsp;{$optGen_ldap_properties}</td></tr>
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/users_family.gif'/>&nbsp;&nbsp;{$form.header.ldap}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ldap_auth_enable.label}</td><td class="FormRowValue">{$form.ldap_auth_enable.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.ldap_host.label}</td><td class="FormRowValue">{$form.ldap_host.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ldap_port.label}</td><td class="FormRowValue">{$form.ldap_port.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.ldap_base_dn.label}</td><td class="FormRowValue">{$form.ldap_base_dn.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ldap_login_attrib.label}</td><td class="FormRowValue">{$form.ldap_login_attrib.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.ldap_ssl.label}</td><td class="FormRowValue">{$form.ldap_ssl.html}</td></tr>
- 	<tr class="list_one"><td class="FormRowField">{$form.ldap_protocol_version.label}</td><td class="FormRowValue">{$form.ldap_protocol_version.html}</td></tr>
- 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/user1_view.gif'>&nbsp;&nbsp;{$form.header.searchldap}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ldap_search_user.label}</td><td class="FormRowValue">{$form.ldap_search_user.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.ldap_search_user_pwd.label}</td><td class="FormRowValue">{$form.ldap_search_user_pwd.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ldap_search_filter.label}</td><td class="FormRowValue">{$form.ldap_search_filter.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ldap_search_timeout.label}</td><td class="FormRowValue">{$form.ldap_search_timeout.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.ldap_search_limit.label}</td><td class="FormRowValue">{$form.ldap_search_limit.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.ldap_auto_import.label}</td><td class="FormRowValue">{$form.ldap_auto_import.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ldap_srv_dns.label}</td><td class="FormRowValue">{$form.ldap_srv_dns.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$host_label}</td><td>
+	<div id="dynamicDiv"></div>
+	</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/user1_view.gif'/>&nbsp;&nbsp;{$form.header.ldapinfo}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ldap_binduser.label}</td><td class="FormRowValue">{$form.ldap_binduser.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.ldap_bindpass.label}</td><td class="FormRowValue">{$form.ldap_bindpass.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ldap_version_protocol.label}</td><td class="FormRowValue">{$form.ldap_version_protocol.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.ldap_template.label}</td><td class="FormRowValue">{$form.ldap_template.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ldap_user_basedn.label}</td><td class="FormRowValue">{$form.ldap_user_basedn.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.ldap_group_basedn.label}</td><td class="FormRowValue">{$form.ldap_group_basedn.html}</td></tr>
+	<tr class="list_one" id="ldap_user_filter"><td class="FormRowField">{$form.ldap_user_filter.label}</td><td class="FormRowValue">{$form.ldap_user_filter.html}</td></tr>
+	<tr class="list_two" id="ldap_user_uid_attr"><td class="FormRowField">{$form.ldap_user_uid_attr.label}</td><td class="FormRowValue">{$form.ldap_user_uid_attr.html}</td></tr>
+	<tr class="list_one" id="ldap_group_filter"><td class="FormRowField">{$form.ldap_group_filter.label}</td><td class="FormRowValue">{$form.ldap_group_filter.html}</td></tr>
+	<tr class="list_two" id="ldap_group_gid_attr"><td class="FormRowField">{$form.ldap_group_gid_attr.label}</td><td class="FormRowValue">{$form.ldap_group_gid_attr.html}</td></tr>
 </table>
 {if !$valid}
 	<div id="validForm">

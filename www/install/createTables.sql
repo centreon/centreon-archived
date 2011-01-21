@@ -313,11 +313,11 @@ CREATE TABLE IF NOT EXISTS `acl_topology_relations` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table ` auth_ressource`
+-- Structure de la table `auth_ressource`
 --
 
 CREATE TABLE IF NOT EXISTS `auth_ressource` (
-  `ar_id` INT(11) NOT NULL AUTO_INCREMENT;
+  `ar_id` INT(11) NOT NULL AUTO_INCREMENT,
   `ar_type` VARCHAR(50) NOT NULL,
   `ar_enable` ENUM('0', '1') DEFAULT 0,
   `ar_order` INT(3) DEFAULT 0,
@@ -327,13 +327,13 @@ CREATE TABLE IF NOT EXISTS `auth_ressource` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table ` auth_ressource_info`
+-- Structure de la table `auth_ressource_info`
 --
 
 CREATE TABLE IF NOT EXISTS `auth_ressource_info` (
-  `ar_id` INT(11) NOT NULL AUTO_INCREMENT;
+  `ar_id` INT(11) NOT NULL,
   `ari_name` VARCHAR(100) NOT NULL,
-  `ari_value` vARCHAR(255) NOT NULL,
+  `ari_value` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`ar_id`, `ari_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
@@ -2201,6 +2201,12 @@ ALTER TABLE `acl_topology_relations`
 ALTER TABLE `acl_resources_poller_relations`
   ADD CONSTRAINT `acl_resources_poller_relations_ibfk_1` FOREIGN KEY (`poller_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `acl_resources_poller_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `auth_ressource_info`
+--
+ALTER TABLE `auth_ressource_info`
+  ADD CONSTRAINT `auth_ressource_info_ibfk_1` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE CASCADE;
 
 
 

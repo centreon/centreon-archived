@@ -265,7 +265,7 @@ class CentreonLDAP {
 		}
 		$dbresult =& $this->_db->query("SELECT ari_name, ari_value
 			FROM auth_ressource_info
-			WHERE ari_name IN ('port', 'base_dn', 'bind_dn', 'pass_dn', 'protocol_version') AND ar_id = " . $id);
+			WHERE ari_name IN ('port', 'bind_dn', 'bind_pass', 'protocol_version', 'use_ssl', 'use_tls') AND ar_id = " . $id);
 		$infos = array();
 		while ($row =& $dbresult->fetchRow()) {
 			$infos[$row['ari_name']] = $row['ari_value'];
@@ -287,7 +287,7 @@ class CentreonLdapAdmin
 	/**
 	 * Constructor
 	 * 
-	 * @param DB $pearDB The database connection
+	 * @param CentreonDB $pearDB The database connection
 	 */
 	public function __construct($pearDB)
 	{
@@ -295,33 +295,92 @@ class CentreonLdapAdmin
 	}
 	
 	/**
+	 * Set the general ldap options
+	 * 
+	 * 'ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns'
+	 * 
+	 * @param array $options The list of options
+	 */
+	public function setGeneralOptions($options)
+	{
+	    $keyOptions = array('ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns');
+	    foreach ($keyOptions as $key) {
+	        if (isset($options[$key])) {
+	            $query = "UPDATE `options` SET `value` = '" . $options[$key] . "' WHERE `key` = '" . $key . "'";
+	            $this->_db->query($query);
+	        }
+	    }
+	}
+	
+	/**
 	 * Add a Ldap server
 	 * 
 	 * @param string $host The host
 	 * @param int $port The port (389)
-	 * @param int $version The protocol version
+	 * @param int $use_ssl If use ssl connection 1 - true, 0 - false
+	 * @param int $use_tls If use tls connection 1 - true, 0 - false
+	 * @param int $order Order for connection
 	 * @return int|bool The id of connection, false on error
 	 */
-	public function addServer($host, $port, $version)
+	public function addServer($host, $port, $use_ssl, $use_tls, $order)
 	{
-		if (PEAR::isError($this->_db->query("INSERT INTO auth_ressource (ar_type, ar_enable) VALUES ('ldap', '1')"))) {
+		if (PEAR::isError($this->_db->query("INSERT INTO auth_ressource (ar_type, ar_enable, ar_order) VALUES ('ldap', '1', " . $order . ")"))) {
 			return false;
 		}
-		$dbresult = $this->_db->query("SELECT MAX(ar_id) FROM auth_ressource WHERE ar_type = 'ldap'");
+		$dbresult = $this->_db->query("SELECT MAX(ar_id) as id FROM auth_ressource WHERE ar_type = 'ldap'");
 		$row = $dbresult->fetchRow();
 		if (PEAR::isError($row)) {
 			return false;
 		}
-		$id = $row[0];
+		$id = $row['id'];
 		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'host', '" . $host . "')");
 		if (PEAR::isError($sth)) {
 			return false;
 		}
-		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'host', '" . $port . "')");
+		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'port', '" . $port . "')");
 		if (PEAR::isError($sth)) {
 			return false;
 		}
-		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'protocol_version', '" . $version . "')");
+		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'use_ssl', '" . $use_ssl . "')");
+		if (PEAR::isError($sth)) {
+			return false;
+		}
+	    $sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'use_tls', '" . $use_tls . "')");
+		if (PEAR::isError($sth)) {
+			return false;
+		}
+		return $id;
+	}
+	
+	/**
+	 * Modify a Ldap server
+	 * 
+	 * @param string $host The host
+	 * @param int $port The port (389)
+	 * @param int $use_ssl If use ssl connection 1 - true, 0 - false
+	 * @param int $use_tls If use tls connection 1 - true, 0 - false
+	 * @param int $order Order for connection
+	 * @return int|bool The id of connection, false on error
+	 */
+    public function modifyServer($id, $host, $port, $use_ssl, $use_tls, $order)
+	{
+		if (PEAR::isError($this->_db->query("UPDATE auth_ressource 
+			SET ar_type = 'ldap', ar_order = " . $order . " WHERE ar_id = " . $id))) {
+			return false;
+		}
+		$sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $host . "' WHERE ari_name = 'host' AND ar_id = " .$id);
+		if (PEAR::isError($sth)) {
+			return false;
+		}
+		$sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $port . "' WHERE ari_name = 'port' AND ar_id = " .$id);
+		if (PEAR::isError($sth)) {
+			return false;
+		}
+		$sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $use_ssl . "' WHERE ari_name = 'use_ssl' AND ar_id = " .$id);
+		if (PEAR::isError($sth)) {
+			return false;
+		}
+		$sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $use_tls . "' WHERE ari_name = 'use_tls' AND ar_id = " .$id);
 		if (PEAR::isError($sth)) {
 			return false;
 		}
@@ -339,12 +398,12 @@ class CentreonLdapAdmin
 		if (PEAR::isError($this->_db->query("INSERT INTO auth_ressource (ar_type, ar_enable) VALUES ('ldap_tmpl', '0')"))) {
 			return false;
 		}
-		$dbresult = $this->_db->query("SELECT MAX(ar_id) FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
+		$dbresult = $this->_db->query("SELECT MAX(ar_id) as id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
 		$row = $dbresult->fetchRow();
 		if (PEAR::isError($row)) {
 			return false;
 		}
-		$id = $row[0];
+		$id = $row['id'];
 		foreach ($options as $key => $value) {
 			$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", '" . $key . "', '" . $value . "')");
 			if (PEAR::isError($sth)) {
@@ -354,7 +413,7 @@ class CentreonLdapAdmin
 		return $id;
 	}
 	
-/**
+	/**
 	 * Modify a template
 	 * 
 	 * @param int The id of the template
@@ -372,12 +431,37 @@ class CentreonLdapAdmin
 		return true;
 	}
 	
+	
+	/**
+	 * Get the template information
+	 * 
+	 * @param int $id The template id, if 0 get the template
+	 */
+    public function getTemplate($id = 0)
+    {
+        if ($id == 0) {
+            $queryTemplate = "SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'";
+	        $res = $this->_db->query($queryTemplate);
+	        $row = $res->fetchRow();
+	        $id = $row['ar_id'];
+        }
+        $query = "SELECT ari_name, ari_value
+			FROM auth_ressource_info
+			WHERE ar_id = " . $id;
+        $res = $this->_db->query($query);
+        $list = array();
+        while ($row = $res->fetchRow()) {
+            $list[$row['ari_name']] = $row['ari_value'];
+        }
+        return $list;
+    }
+	
 	/**
 	 * Get the default template for Active Directory
 	 * 
 	 * @return array
 	 */
-	private function _getTemplateAd()
+	public function getTemplateAd()
 	{
 		$infos = array();
 		$infos['user_filter'] = "(&(objectClass=user)(samAccountType=))";
@@ -390,6 +474,7 @@ class CentreonLdapAdmin
 		$infos['user_attr'] = $attr;
 		$infos['group_filter'] = "()";
 		$attr = array();
+		$attr['group_name'] = '';
 		$attr['member'] = 'member';
 		$infos['group_attr'] = $attr;
 		return $infos;
@@ -400,10 +485,10 @@ class CentreonLdapAdmin
 	 * 
 	 * @return array
 	 */
-	private function _getTemplateLdap()
+	public function getTemplateLdap()
 	{
 		$infos = array();
-		$info['user_filter'] = "(objectClass=inetOrgPerson)";
+		$infos['user_filter'] = "(objectClass=inetOrgPerson)";
 		$attr = array();
 		$attr['alias'] = 'uid';
 		$attr['email'] = 'mail';
@@ -412,6 +497,7 @@ class CentreonLdapAdmin
 		$infos['user_attr'] = $attr;
 		$infos['group_filter'] = "(objectClass=groupOfNames)";
 		$attr = array();
+		$attr['group_name'] = '';
 		$attr['member'] = 'member';
 		$infos['group_attr'] = $attr;
 		return $infos;
