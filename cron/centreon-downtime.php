@@ -43,7 +43,14 @@ $delay = 600; /* Default 10 minutes */
 
 /* Does not modified after */
 
-
+/**
+ * Send external command to nagios or centcore 
+ * 
+ * @param CentreonDb $db The database connection to centreon
+ * @param int $host_id The host id for command
+ * @param string $cmd The command to send
+ * @return The command return code
+ */
 function sendCommand($db, $host_id, $cmd)
 {
 	$varlib = "@CENTREON_VARLIB@";
@@ -68,6 +75,7 @@ function sendCommand($db, $host_id, $cmd)
 	return $return;
 }
 
+/* Test if Centreon configuration file exists */ 
 if (false === file_exists($centreonConf)) {
 	file_put_contents('php://stderr', "The configuration file does not exists.");
 	exit(1);
@@ -77,14 +85,16 @@ require_once $centreonConf;
 
 $centreonClasspath = $centreon_path . 'www/class';
 
+/* Include class */
 require_once $centreonClasspath . '/centreonDB.class.php';
 require_once $centreonClasspath . '/centreonGMT.class.php';
-//require_once $centreonClasspath . '/centreonExternalCommand.class.php';
 require_once $centreonClasspath . '/centreonHost.class.php';
 require_once $centreonClasspath . '/centreonHostgroups.class.php';
 require_once $centreonClasspath . '/centreonServicegroups.class.php';
 require_once $centreonClasspath . '/centreonDowntime.class.php';
+/* Connector to centreon DB*/
 $pearDB = new CentreonDB();
+/* GMT Management*/
 $gmt = new CentreonGMT($pearDB);
 
 /* Get broker */
@@ -103,26 +113,22 @@ if (PEAR::isError($res)) {
 }
 $row = $res->fetchRow();
 $cache_path = $row['value'];
-if (false === is_writable($cache_path)) {
-	file_put_contents('php://stderr', "Error : The cron can not write in cache directory.");
-	exit(1);
-}
-$cache_file = $cache_path . 'downtime.cache';
-if (file_exists($last_cache_insert)) {
-	$last_cache_insert = unserialize(file_get_contents($cache_file));
-}
 
+/* Initialize the downtime class with broker */
 if (!file_exists($centreonClasspath . '/centreonDowntime.' . $broker . '.class.php')) {
 	file_put_contents('php://stderr', "The broker class does not exists.\n");
 	exit(1);
 }
 require_once $centreonClasspath . '/centreonDowntime.' . $broker . '.class.php';
-
 $classname = "CentreonDowntime" . $broker;
 $downtime = new $classname($pearDB);
+
+/* Get the list of all downtime*/
 $list = $downtime->getDowntime();
+/* Get the list of scheduled donwtime */
 $downtime_scheduled = $downtime->getSchedDowntime();
 
+/* Template for external command by object type */
 $ext_cmd_add['host'][] = '[%u] SCHEDULE_HOST_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]';
 $ext_cmd_add['host'][] = '[%u] SCHEDULE_HOST_SVC_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]';
 $ext_cmd_del['host'][] = '[%u] DEL_HOST_DOWNTIME;%u';
@@ -136,8 +142,7 @@ $ext_cmd_del['svc'][] = '[%u] DEL_SVC_DOWNTIME;%u';
 $ext_cmd_del['svcgrp'][] = '[%u] DEL_HOST_DOWNTIME;%u';
 $ext_cmd_del['svcgrp'][] = '[%u] DEL_SVC_DOWNTIME;%u';*/
 
-
-$cache_downtime = array();
+// @todo factorize
 foreach ($list as $type => $periods) {
 	foreach ($periods as $period) {
 		switch ($type) {
