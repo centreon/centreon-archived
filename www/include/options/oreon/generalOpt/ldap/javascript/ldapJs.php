@@ -91,9 +91,15 @@ function transformForm()
 function toggleParams(checkValue) {
     if (checkValue == true) {
         transformForm();
+        Effect.Fade('ldap_dns_use_ssl', { duration : 0 });
+        Effect.Fade('ldap_dns_use_tls', { duration : 0 });
+        Effect.Fade('ldap_dns_use_domain', { duration : 0 });
         Effect.Appear('dynamicDiv', { duration : 0 });
     } else {
         Effect.Fade('dynamicDiv', { duration : 0 });
+        Effect.Appear('ldap_dns_use_ssl', { duration : 0 });
+        Effect.Appear('ldap_dns_use_tls', { duration : 0 });
+        Effect.Appear('ldap_dns_use_domain', { duration : 0 });
     }
 }
 

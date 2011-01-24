@@ -39,7 +39,6 @@
 
 /**
  * The utils class for LDAP
- *
  */
 class CentreonLDAP {
 	
@@ -364,12 +363,18 @@ class CentreonLdapAdmin
 	 * Set the general ldap options
 	 * 
 	 * 'ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns'
+	 * and 'ldap_dns_use_ssl', 'ldap_dns_use_tls', 'ldap_dns_use_domain' if ldap_srv_dns = 1
 	 * 
 	 * @param array $options The list of options
 	 */
 	public function setGeneralOptions($options)
 	{
 	    $keyOptions = array('ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns');
+	    if ($options['ldap_srv_dns'] == "1") {
+	        $keyOptions[] = 'ldap_dns_use_ssl';
+	        $keyOptions[] = 'ldap_dns_use_tls';
+	        $keyOptions[] = 'ldap_dns_use_domain';
+	    }
 	    foreach ($keyOptions as $key) {
 	        if (isset($options[$key])) {
 	            $query = "UPDATE `options` SET `value` = '" . $options[$key] . "' WHERE `key` = '" . $key . "'";

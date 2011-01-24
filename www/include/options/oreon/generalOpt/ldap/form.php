@@ -77,6 +77,14 @@
 	$ldapUseDns[] = &HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("No"), '0', array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true);"));
 	$form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
 	
+	$ldapDnsUseSsl[] = &HTML_QuickForm::createElement('radio', 'ldap_dns_use_ssl', null, _("Yes"), '1');
+	$ldapDnsUseSsl[] = &HTML_QuickForm::createElement('radio', 'ldap_dns_use_ssl', null, _("No"), '0');
+	$form->addGroup($ldapDnsUseSsl, 'ldap_dns_use_ssl', _("Use SSL connection"), '&nbsp;');
+	$ldapDnsUseTls[] = &HTML_QuickForm::createElement('radio', 'ldap_dns_use_tls', null, _("Yes"), '1');
+	$ldapDnsUseTls[] = &HTML_QuickForm::createElement('radio', 'ldap_dns_use_tls', null, _("No"), '0');
+	$form->addGroup($ldapDnsUseTls, 'ldap_dns_use_tls', _("Use TLS connection"), '&nbsp;');
+	$form->addElement('text', 'ldap_dns_use_domain', _("Alternative domain for ldap"), $attrsText);
+	
 	$form->addElement('header', 'ldapinfo', _("LDAP Information"));
 	
 	$form->addElement('text', 'ldap_binduser', _("Bind user"), $attrsText);
@@ -116,10 +124,12 @@
 		'ldap_auto_import' => '0',
 		'ldap_srv_dns' => '0',
 		'ldap_template' => '1',
-	    'ldap_version_protocol' => '3');
+	    'ldap_version_protocol' => '3',
+		'ldap_dns_use_ssl' => '0',
+	    'ldap_dns_use_tls' => '0');
 	
 	$query = "SELECT `key`, `value` FROM `options`
-		WHERE `key` IN ('ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns')";
+		WHERE `key` IN ('ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns', 'ldap_dns_use_ssl', 'ldap_dns_use_tls', 'ldap_dns_use_domain')";
 	$res = $pearDB->query($query);
 	while ($row = $res->fetchRow()) {
 	    $gopt[$row['key']] = $row['value'];
@@ -155,6 +165,9 @@
 	    $options = array('ldap_auth_enable' => $values['ldap_auth_enable']['ldap_auth_enable'],
 	        'ldap_auto_import' => $values['ldap_auto_import']['ldap_auto_import'],
 	    	'ldap_srv_dns' => $values['ldap_srv_dns']['ldap_srv_dns'],
+	        'ldap_dns_use_ssl' => $values['ldap_dns_use_ssl']['ldap_dns_use_ssl'],
+	    	'ldap_dns_use_tls' => $values['ldap_dns_use_tls']['ldap_dns_use_tls'],
+	    	'ldap_dns_use_domain' => $values['ldap_dns_use_domain'],
 	        );
 	    $ldapAdmin->setGeneralOptions($options);
 	    
@@ -198,28 +211,32 @@
 	    }
 	    
 	    $hostOld = array();
-	    foreach ($_POST['ldapHosts'] as $ldapHost) {
-	        if (isset($ldapHost['id'])) {
-	            $hostOld[] = $ldapHost['id'];
-	        }
+	    if (isset($_POST['ldapHosts'])) {
+    	    foreach ($_POST['ldapHosts'] as $ldapHost) {
+    	        if (isset($ldapHost['id'])) {
+    	            $hostOld[] = $ldapHost['id'];
+    	        }
+    	    }
+    	    $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap' AND ar_id NOT IN (" . join(', ', $hostOld) . ")";
+    	    $pearDB->query($query);
+    	    
+    	    foreach ($_POST['ldapHosts'] as $ldapHost) {
+    	        if (!isset($ldapHost['use_ssl'])) {
+    	            $ldapHost['use_ssl'] = '0';
+    	        }
+    	        if (!isset($ldapHost['use_tls'])) {
+    	            $ldapHost['use_tls'] = '0';
+    	        }
+    	        if (isset($ldapHost['id'])) {
+    	            $ldapAdmin->modifyServer($ldapHost['id'], $ldapHost['hostname'], $ldapHost['port'], $ldapHost['use_ssl'], $ldapHost['use_tls'], $ldapHost['order']);
+    	        } else {
+    	            $ldapAdmin->addServer($ldapHost['hostname'], $ldapHost['port'], $ldapHost['use_ssl'], $ldapHost['use_tls'], $ldapHost['order']);
+    	        }
+    	    }
+	    } else {
+	        $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap'";
+	        $pearDB->query($query);
 	    }
-	    $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap' AND ar_id NOT IN (" . join(', ', $hostOld) . ")";
-	    $pearDB->query($query);
-	    
-	    foreach ($_POST['ldapHosts'] as $ldapHost) {
-	        if (!isset($ldapHost['use_ssl'])) {
-	            $ldapHost['use_ssl'] = '0';
-	        }
-	        if (!isset($ldapHost['use_tls'])) {
-	            $ldapHost['use_tls'] = '0';
-	        }
-	        if (isset($ldapHost['id'])) {
-	            $ldapAdmin->modifyServer($ldapHost['id'], $ldapHost['hostname'], $ldapHost['port'], $ldapHost['use_ssl'], $ldapHost['use_tls'], $ldapHost['order']);
-	        } else {
-	            $ldapAdmin->addServer($ldapHost['hostname'], $ldapHost['port'], $ldapHost['use_ssl'], $ldapHost['use_tls'], $ldapHost['order']);
-	        }
-	    }
-	    
 		
 		$o = "w";
    		$valid = true;

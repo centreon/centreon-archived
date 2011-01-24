@@ -7,6 +7,9 @@
 	<tr class="list_one"><td class="FormRowField">{$form.ldap_auth_enable.label}</td><td class="FormRowValue">{$form.ldap_auth_enable.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.ldap_auto_import.label}</td><td class="FormRowValue">{$form.ldap_auto_import.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ldap_srv_dns.label}</td><td class="FormRowValue">{$form.ldap_srv_dns.html}</td></tr>
+	<tr class="list_two" id="ldap_dns_use_ssl"><td class="FormRowField">{$form.ldap_dns_use_ssl.label}</td><td class="FormRowValue">{$form.ldap_dns_use_ssl.html}</td></tr>
+	<tr class="list_one" id="ldap_dns_use_tls"><td class="FormRowField">{$form.ldap_dns_use_tls.label}</td><td class="FormRowValue">{$form.ldap_dns_use_tls.html}</td></tr>
+	<tr class="list_two" id="ldap_dns_use_domain"><td class="FormRowField">{$form.ldap_dns_use_domain.label}</td><td class="FormRowValue">{$form.ldap_dns_use_domain.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$host_label}</td><td>
 	<div id="dynamicDiv"></div>
 	</td></tr>
