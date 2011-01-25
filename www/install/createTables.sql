@@ -719,6 +719,8 @@ CREATE TABLE IF NOT EXISTS `contactgroup` (
   `cg_alias` varchar(200) default NULL,
   `cg_comment` text,
   `cg_activate` enum('0','1') default NULL,
+  `cg_type` varchar(10) default 'local',
+  `cg_ldap_dn` varchar(255) default NULL,
   PRIMARY KEY  (`cg_id`),
   KEY `name_index` (`cg_name`),
   KEY `alias_index` (`cg_alias`)

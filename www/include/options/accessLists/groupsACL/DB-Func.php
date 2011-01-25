@@ -187,6 +187,28 @@
 		$DBRESULT =& $pearDB->query($rq);
 		if (isset($_POST["cg_contactGroups"]))
 			foreach ($_POST["cg_contactGroups"] as $id){
+			    if (!is_numeric($id)) {
+			        /* Insert the ldap groups in table contactgroups */
+			        global $ldap;
+			        if (! $ldap instanceof CentreonLDAP){
+			            $ldap = new CentreonLDAP($pearDB, null);
+			            $ldap->connect();
+			        }
+			        $ldap_dn = $ldap->findGroupDn($id);
+			        $query = "INSERT INTO contactgroup
+			        	(cg_name, cg_alias, cg_activate, cg_type, cg_ldap_dn)
+			        	VALUES
+			        	('" . $id . "', '" . $id . "', '1', 'ldap', '" . $ldap_dn . "')";
+			        if (false === PEAR::isError($res = $pearDB->query($query))) {
+    			        /* Get the id insered */
+    			        $query = "SELECT cg_id FROM contactgroup WHERE cg_ldap_dn = '" . $ldap_dn . "'";
+    			        $res = $pearDB->query($query);
+    			        $row = $res->fetchRow();
+    			        $id = $row['cg_id']; 
+			        } else {
+			            continue;
+			        }
+			    }
 				$rq = "INSERT INTO acl_group_contactgroups_relations ";
 				$rq .= "(cg_cg_id, acl_group_id) ";
 				$rq .= "VALUES ";

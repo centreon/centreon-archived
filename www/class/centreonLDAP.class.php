@@ -47,6 +47,7 @@ class CentreonLDAP {
 	private $_db = null;
 	private $_linkId;
 	private $_ldapHosts = array();
+	private $_ldap = null;
 	private $_constuctCache = array();
 	private $_userSearchInfo = null;
 	private $_groupSearchInfo = null;
@@ -71,30 +72,36 @@ class CentreonLDAP {
 			$use_dns_srv = $row['value'];
 		}
 		
+		/* Get the ldap template */
+	    $dbresult = $this->_db->query("SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
+		$row = $dbresult->fetchRow();
+		$dbresult->free();
+		if ($row) {
+			$tmpl_id = $row['ar_id'];
+		} else {
+			throw new Exception('Not ldap template has defined');
+		}
+		
 		/* Get the list of server ldap */
-		if ($use_dns_srv !== 0) {
+		if ($use_dns_srv != "0") {
 			$dns_query = '_ldap._tcp';
-			$dbresult = $this->_db->query("SELECT `value` FROM options WHERE `key` = 'ldap_dns_domain'");
+			$dbresult = $this->_db->query("SELECT `value` FROM options WHERE `key` = 'ldap_dns_use_domain'");
 			$row = $dbresult->fetchRow();
 			$dbresult->free();
 			if ($row && trim($row['value']) != '') {
 				$dns_query .= $row['value'];
 			}
 			$list = dns_get_record($dns_query, DNS_SRV);
-			$dbresult = $this->_db->query("SELECT `value` FROM options WHERE `key` = 'ldap_dns_tmpl'");
-			$row = $dbresult->fetchRow();
-			$dbresult->free();
-			if ($row) {
-				$ar_id = $row['value'];
-			} else {
-				throw new Exception('Not ldap template has defined');
-			}
 			foreach ($list as $entry) {
 				$ldap = array();	
 				$ldap['host'] = $entry['host'];
-				$ldap['id'] = $ar_id;
-				$ldap['info'] = $this->_getInfoConnect($ar_id);
+				$ldap['id'] = 0;
+				$ldap['info'] = $this->_getInfoUseDnsConnect();
+				$ldap['tmpl'] = $tmpl_id;
+				$ldap['info']['port'] = $entry['port'];
+				$ldap['info'] = array_merge($ldap['info'], $this->_getBindInfo($tmpl_id));
 			}
+			$this->_ldapHosts[] = $ldap;
 		} else {
 			$dbresult =& $this->_db->query("SELECT ar.ar_id, ari.ari_value 
 				FROM auth_ressource as ar, auth_ressource_info as ari  
@@ -105,6 +112,8 @@ class CentreonLDAP {
 				$ldap['host'] = $row['ari_value'];
 				$ldap['id'] = $row['ar_id'];
 				$ldap['info'] = $this->_getInfoConnect($row['ar_id']);
+				$ldap['tmpl'] = $tmpl_id;
+				$ldap['info'] = array_merge($ldap['info'], $this->_getBindInfo($tmpl_id));
 			}
 			$this->_ldapHosts[] = $ldap;
 			$dbresult->free();
@@ -138,7 +147,10 @@ class CentreonLDAP {
 			if (isset($ldap['info']['use_tls']) && $ldap['info']['use_tls'] == 1) {
 			    ldap_start_tls($this->_ds);ldap_start_tls($this->_ds);
 			}
-			return $this->rebind();
+			$this->_ldap = $ldap;
+			if ($this->rebind()) {
+			    return true;
+			}
 		}
 		return false;
 	}
@@ -156,16 +168,16 @@ class CentreonLDAP {
 	 * @return If the connection is good
 	 */
 	public function rebind() {
-	    if (isset($ldap['info']['bind_dn']) && isset($ldap['info']['bind_pass'])) {
-			if (ldap_bind($this->_ds, $ldap['info']['bind_dn'], $ldap['info']['bind_pass'])) {
-				$this->_linkId = $ldap['id'];
-				$this->_loadSearchInfo();
+	    if (isset($this->_ldap['info']['bind_dn']) && isset($this->_ldap['info']['bind_pass'])) {
+			if (ldap_bind($this->_ds, $this->_ldap['info']['bind_dn'], $this->_ldap['info']['bind_pass'])) {
+				$this->_linkId = $this->_ldap['id'];
+				$this->_loadSearchInfo($this->_ldap['tmpl']);
 				return true;
 			}
 		} else {
 			if (ldap_bind($this->_ds)) {
-				$this->_linkId = $ldap['id'];
-				$this->_loadSearchInfo();
+				$this->_linkId = $this->_ldap['id'];
+				$this->_loadSearchInfo($this->_ldap['tmpl']);
 				return true;
 			}
 		}
@@ -226,6 +238,10 @@ class CentreonLDAP {
 	{
 	    $filter = preg_replace('/%s/', $pattern, $this->_groupSearchInfo['filter']);
 	    $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
+	    if (false === $result) {
+	        print ldap_error($this->_ds);
+	        return array();
+	    }
 	    $entries = ldap_get_entries($this->_ds, $result);
 	    $nbEntries = $entries["count"];
 	    $list = array();
@@ -290,7 +306,7 @@ class CentreonLDAP {
 		}
 		$dbresult =& $this->_db->query("SELECT ari_name, ari_value
 			FROM auth_ressource_info
-			WHERE ari_name IN ('user_filter', 'user_base_search', 'group_filter', 'group_base_filter') AND ar_id = " . $id);
+			WHERE ari_name IN ('user_filter', 'user_base_search', 'alias', 'group_filter', 'group_base_search', 'group_name') AND ar_id = " . $id);
 		$user = array();
 		$group = array();
 		while ($row =& $dbresult->fetchRow()) {
@@ -301,11 +317,17 @@ class CentreonLDAP {
 				case 'user_base_search':
 					$user['base_search'] = $row['ari_value'];
 					break;
+				case 'alias':
+				    $user['alias'] = $row['ari_value'];
+				    break;
 				case 'group_filter':
 					$group['filter'] = $row['ari_value'];
 					break;
 				case 'group_base_search':
 					$group['base_search'] = $row['ari_value'];
+					break;
+				case 'group_name':
+					$group['group_name'] = $row['ari_value'];
 					break;
 			}
 		}
@@ -325,19 +347,51 @@ class CentreonLDAP {
 	 */
 	private function _getInfoConnect($id)
 	{
-		if (isset($this->_constuctCache[$id])) {
-			return $this->_constuctCache[$id];
-		}
-		$dbresult =& $this->_db->query("SELECT ari_name, ari_value
+		$dbresult = $this->_db->query("SELECT ari_name, ari_value
 			FROM auth_ressource_info
-			WHERE ari_name IN ('port', 'bind_dn', 'bind_pass', 'protocol_version', 'use_ssl', 'use_tls') AND ar_id = " . $id);
+			WHERE ari_name IN ('port', 'use_ssl', 'use_tls') AND ar_id = " . $id);
 		$infos = array();
-		while ($row =& $dbresult->fetchRow()) {
+		while ($row = $dbresult->fetchRow()) {
 			$infos[$row['ari_name']] = $row['ari_value'];
 		}
 		$dbresult->free();
-		$this->_constuctCache[$id] = $info;
-		return $info;
+		return $infos;
+	}
+	
+	/**
+	 * Get the information from the database for a ldap connection
+	 * 
+	 * @return array
+	 */
+	private function _getInfoUseDnsConnect()
+	{
+	    $query = "SELECT `key`, `value` FROM `options` WHERE `key` IN ('ldap_dns_use_ssl', 'ldap_dns_use_tls')";
+	    $dbresult = $this->_db->query($query);
+	    $infos = array();
+	    while ($row = $dbresult->fetchRow()) {
+	        if ($row['key'] == 'ldap_dns_use_ssl') {
+			    $infos['use_ssl'] = $row['value'];
+	        } elseif ($row['key'] == 'ldap_dns_use_tls') {
+	            $infos['use_tls'] = $row['value'];
+	        }
+		}
+		$dbresult->free();
+	}
+	
+	private function _getBindInfo($id)
+	{
+	    if (isset($this->_constuctCache[$id])) {
+			return $this->_constuctCache[$id];
+		}
+	    $query = "SELECT ari_name, ari_value FROM auth_ressource_info WHERE  ari_name IN ('bind_dn', 'bind_pass') AND ar_id = " . $id;
+	    $dbresult = $this->_db->query($query);
+	    $infos = array();
+		while ($row = $dbresult->fetchRow()) {
+			$infos[$row['ari_name']] = $row['ari_value'];
+		}
+		$dbresult->free();
+		$this->_constuctCache[$id] = $infos;
+		return $infos;
 	}
 }
 
@@ -535,17 +589,17 @@ class CentreonLdapAdmin
 	public function getTemplateAd()
 	{
 		$infos = array();
-		$infos['user_filter'] = "(&(objectClass=user)(samAccountType=))";
+		$infos['user_filter'] = "(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368))";
 		$attr = array();
-		$attr['alias'] = 'samAccountName'; 
+		$attr['alias'] = 'samaccountname'; 
 		$attr['email'] = 'mail';
 		$attr['name'] = 'name';
 		$attr['pager'] = 'mobile';
 		$attr['group'] = 'memberOf';
 		$infos['user_attr'] = $attr;
-		$infos['group_filter'] = "()";
+		$infos['group_filter'] = "(&(samAccountName=%s)(objectClass=group)(samAccountType=268435456))";
 		$attr = array();
-		$attr['group_name'] = '';
+		$attr['group_name'] = 'samaccountname';
 		$attr['member'] = 'member';
 		$infos['group_attr'] = $attr;
 		return $infos;
@@ -559,14 +613,14 @@ class CentreonLdapAdmin
 	public function getTemplateLdap()
 	{
 		$infos = array();
-		$infos['user_filter'] = "(objectClass=inetOrgPerson)";
+		$infos['user_filter'] = "(&(uid=%s)(objectClass=inetOrgPerson))";
 		$attr = array();
 		$attr['alias'] = 'uid';
 		$attr['email'] = 'mail';
 		$attr['name'] = 'displayName';
 		$attr['pager'] = 'mobile';
 		$infos['user_attr'] = $attr;
-		$infos['group_filter'] = "(objectClass=groupOfNames)";
+		$infos['group_filter'] = "(&(group=%s)(objectClass=groupOfNames))";
 		$attr = array();
 		$attr['group_name'] = '';
 		$attr['member'] = 'member';
