@@ -654,26 +654,26 @@ sub parseRequest($){
 
     # Checks keys for launching commands
 
-    if ($_[0] =~ /RESTART\:([0-9]*)/){
+    if ($_[0] =~ /^RESTART\:([0-9]*)/){
 		initNagios($1, "restart");
-    } elsif ($_[0] =~ /RELOAD\:([0-9]*)/){
+    } elsif ($_[0] =~ /^RELOAD\:([0-9]*)/){
 		initNagios($1, "reload");
-    } elsif ($_[0] =~ /START\:([0-9]*)/){
+    } elsif ($_[0] =~ /^START\:([0-9]*)/){
 		initNagios($1, "start");
-    } elsif ($_[0] =~ /STOP\:([0-9]*)/){
+    } elsif ($_[0] =~ /^STOP\:([0-9]*)/){
 		initNagios($1, "stop");
-    } elsif ($_[0] =~ /SENDCFGFILE\:([0-9]*)/){
+    } elsif ($_[0] =~ /^SENDCFGFILE\:([0-9]*)/){
 		sendConfigFile($1);
-    } elsif ($_[0] =~ /TEST\:([0-9]*)/){
+    } elsif ($_[0] =~ /^TEST\:([0-9]*)/){
 		# Experimental
 		testConfig($1);
-    } elsif ($_[0] =~ /SYNCTRAP\:([0-9]*)/){
+    } elsif ($_[0] =~ /^SYNCTRAP\:([0-9]*)/){
 		syncTraps($1);
-    } elsif ($_[0] =~ /SYNCPLUGINS\:([0-9]*)/){
+    } elsif ($_[0] =~ /^SYNCPLUGINS\:([0-9]*)/){
 		;
-    } elsif ($_[0] =~ /SYNCARCHIVES\:([0-9]*)/){
+    } elsif ($_[0] =~ /^SYNCARCHIVES\:([0-9]*)/){
 		syncArchives($1);
-    } elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:(.*)/){
+    } elsif ($_[0] =~ /^EXTERNALCMD\:([0-9]*)\:(.*)/){
 		storeCommands($1, $2);
     }
 }
