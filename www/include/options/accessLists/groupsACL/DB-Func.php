@@ -38,6 +38,9 @@
 
 	if (!isset ($oreon))
 		exit ();
+		
+	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+ 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
 	function testGroupExistence ($name = NULL)	{
 		global $pearDB;
@@ -185,26 +188,13 @@
 
 		$rq = "DELETE FROM acl_group_contactgroups_relations WHERE acl_group_id = '".$acl_group_id."'";
 		$DBRESULT =& $pearDB->query($rq);
-		if (isset($_POST["cg_contactGroups"]))
+		if (isset($_POST["cg_contactGroups"])) {
+		    $cg = new CentreonContactgroup($pearDB);
 			foreach ($_POST["cg_contactGroups"] as $id){
 			    if (!is_numeric($id)) {
-			        /* Insert the ldap groups in table contactgroups */
-			        global $ldap;
-			        if (! $ldap instanceof CentreonLDAP){
-			            $ldap = new CentreonLDAP($pearDB, null);
-			            $ldap->connect();
-			        }
-			        $ldap_dn = $ldap->findGroupDn($id);
-			        $query = "INSERT INTO contactgroup
-			        	(cg_name, cg_alias, cg_activate, cg_type, cg_ldap_dn)
-			        	VALUES
-			        	('" . $id . "', '" . $id . "', '1', 'ldap', '" . $ldap_dn . "')";
-			        if (false === PEAR::isError($res = $pearDB->query($query))) {
-    			        /* Get the id insered */
-    			        $query = "SELECT cg_id FROM contactgroup WHERE cg_ldap_dn = '" . $ldap_dn . "'";
-    			        $res = $pearDB->query($query);
-    			        $row = $res->fetchRow();
-    			        $id = $row['cg_id']; 
+			        $res = $cg->insertLdapGroup($id);
+			        if ($res != 0) {
+			            $id = $res; 
 			        } else {
 			            continue;
 			        }
@@ -215,6 +205,7 @@
 				$rq .= "('".$id."', '".$acl_group_id."')";
 				$DBRESULT =& $pearDB->query($rq);
 			}
+		}
 	}
 
 	function updateGroupActions($acl_group_id, $ret = array())	{

@@ -39,6 +39,9 @@
 	if (!isset($oreon)) {
 		exit();
 	}
+	
+	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+ 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
 	function hostExists($name = NULL){
 		global $pearDB, $oreon;
@@ -1674,7 +1677,16 @@
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		isset($ret["host_cgs"]) ? $ret = $ret["host_cgs"] : $ret = $form->getSubmitValue("host_cgs");
+		$cg = new CentreonContactgroup($pearDB);
 		for($i = 0; $i < count($ret); $i++)	{
+		    if (!is_numeric($ret[$i])) {
+		        $res = $cg->insertLdapGroup($ret[$i]);
+		        if ($res != 0) {
+		            $ret[$i] = $res; 
+		        } else {
+		            continue;
+		        }
+			}
 			$rq = "INSERT INTO contactgroup_host_relation ";
 			$rq .= "(host_host_id, contactgroup_cg_id) ";
 			$rq .= "VALUES ";
@@ -1716,8 +1728,17 @@
 		while($arr =& $DBRESULT->fetchRow())
 			$cgs[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
 		$ret = $form->getSubmitValue("host_cgs");
+		$cg = new CentreonContactgroup($pearDB);
 		for($i = 0; $i < count($ret); $i++)	{
 			if (!isset($cgs[$ret[$i]]))	{
+    			if (!is_numeric($ret[$i])) {
+    		        $res = $cg->insertLdapGroup($ret[$i]);
+    		        if ($res != 0) {
+    		            $ret[$i] = $res; 
+    		        } else {
+    		            continue;
+    		        }
+    			}
 				$rq = "INSERT INTO contactgroup_host_relation ";
 				$rq .= "(host_host_id, contactgroup_cg_id) ";
 				$rq .= "VALUES ";

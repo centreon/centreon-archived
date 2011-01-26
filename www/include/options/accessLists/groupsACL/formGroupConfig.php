@@ -40,6 +40,7 @@
  		exit();
 
  	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+ 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
  		
 	/*
 	 * Retreive information
@@ -105,27 +106,8 @@
 	unset($contact);
 	$DBRESULT->free();
 	
-	# ContactGroup from LDAP
-	$centreonLog = new CentreonLog();
-	$ldap = new CentreonLDAP($pearDB, $centreonLog);
-	$ldap->connect();
-	$cg_ldap = $ldap->listOfGroups();
-
-	# ContactGroup comes from DB -> Store in $contacts Array
-	$contactGroups = array();
-	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while ($contactGroup =& $DBRESULT->fetchRow()) {
-		$contactGroups[$contactGroup["cg_id"]] = $contactGroup["cg_name"];
-	}
-	unset($contactGroup);
-	$DBRESULT->free();
-	
-	# Merge contactgroup from ldap and from db
-	foreach ($cg_ldap as $cg_name) {
-	    if (false === array_search($cg_name, $contactGroups)) {
-	        $contactGroups[$cg_name] = $cg_name;
-	    }
-	}
+	$cg = new CentreonContactgroup($pearDB);
+	$contactGroups = $cg->getListContactgroup(true);
 	
 	# topology comes from DB -> Store in $contacts Array
 	$menus = array();

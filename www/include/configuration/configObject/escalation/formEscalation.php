@@ -38,6 +38,9 @@
 
  	if (!isset($oreon))
  		exit();
+ 		
+ 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+ 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
 	/*
 	 * Database retrieve information for Escalation
@@ -147,10 +150,8 @@
 
 	# Contact Groups comes from DB -> Store in $cgs Array
 	$cgs = array();
-	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while ($cg =& $DBRESULT->fetchRow())
-		$cgs[$cg["cg_id"]] = $cg["cg_name"];
-	$DBRESULT->free();
+	$cg = new CentreonContactgroup($pearDB);
+	$cgs = $cg->getListContactgroup(true);
 
 	# TimePeriods comes from DB -> Store in $tps Array
 	$tps = array();

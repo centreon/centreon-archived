@@ -1362,7 +1362,16 @@
 			$ret = $ret["service_cgs"];
 		else
 			$ret = $form->getSubmitValue("service_cgs");
+		$cg = new CentreonContactgroup($pearDB);
 		for($i = 0; $i < count($ret); $i++)	{
+		    if (!is_numeric($ret[$i])) {
+		        $res = $cg->insertLdapGroup($ret[$i]);
+		        if ($res != 0) {
+		            $ret[$i] = $res; 
+		        } else {
+		            continue;
+		        }
+			}
 			$rq = "INSERT INTO contactgroup_service_relation ";
 			$rq .= "(contactgroup_cg_id, service_service_id) ";
 			$rq .= "VALUES ";
@@ -1383,8 +1392,17 @@
 		while($arr =& $DBRESULT->fetchRow())
 			$cgs[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
 		$ret = $form->getSubmitValue("service_cgs");
+		$cg = new CentreonContactgroup($pearDB);
 		for($i = 0; $i < count($ret); $i++)	{
 			if (!isset($cgs[$ret[$i]]))	{
+    			if (!is_numeric($ret[$i])) {
+    		        $res = $cg->insertLdapGroup($ret[$i]);
+    		        if ($res != 0) {
+    		            $ret[$i] = $res; 
+    		        } else {
+    		            continue;
+    		        }
+    			}
 				$rq = "INSERT INTO contactgroup_service_relation ";
 				$rq .= "(contactgroup_cg_id, service_service_id) ";
 				$rq .= "VALUES ";

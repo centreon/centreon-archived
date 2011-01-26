@@ -38,6 +38,9 @@
  
 	if (!isset ($oreon))
 		exit ();
+		
+	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+ 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 			
 	function testExistence ($name = NULL)	{
 		global $pearDB;
@@ -265,7 +268,16 @@
 		$DBRESULT =& $pearDB->query($rq);
 		$ret = array();
 		$ret = $form->getSubmitValue("ms_cgs");
+		$cg = new CentreonContactgroup($pearDB);
 		for($i = 0; $i < count($ret); $i++)	{
+		    if (!is_numeric($ret[$i])) {
+		        $res = $cg->insertLdapGroup($ret[$i]);
+		        if ($res != 0) {
+		            $ret[$i] = $res; 
+		        } else {
+		            continue;
+		        }
+			}
 			$rq = "INSERT INTO meta_contactgroup_relation ";
 			$rq .= "(meta_id, cg_cg_id) ";
 			$rq .= "VALUES ";
