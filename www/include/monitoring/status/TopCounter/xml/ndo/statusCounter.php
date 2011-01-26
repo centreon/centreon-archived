@@ -212,14 +212,14 @@
 		/*
 		 * Running
 		 */
-		if ($status != 2 && $ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit * 2)) {
+		if ($status != 2 && $ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit / 5)) {
 			$status = 1;
 			if ($pollerListInError != "") {
 				$pollerListInError .= ", ";
 			}
 			$pollerListInError .= $ndo["instance_name"];
 		}
-		if ($ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
+		if ($ndo["is_currently_running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit / 4)) {
 			$status = 2;
 			if ($pollerListInError != "") {
 				$pollerListInError .= ", ";
@@ -242,7 +242,7 @@
             }
             $inactivInstance .= $ndo["instance_name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
 		}
-		
+
 	}
 	$DBRESULT->free();
 	$error = "Pollers $pollerListInError not running.";
