@@ -46,7 +46,7 @@
 	<div style="width:700px;padding:20px;background-color:#FFFFFF;border:1px #CDCDCD solid;-moz-border-radius:4px;">
 		<div style='float:left;width:270px;text-align:left;'>
 		<p align="center"><h3><u>Centreon <?php print $release["value"]; ?>&nbsp;</u></h3><br />
-			&nbsp;&nbsp;&nbsp;&nbsp;Developped by <a href="http://www.merethis.com">Merethis</a>
+			&nbsp;&nbsp;&nbsp;&nbsp;Developed by <a href="http://www.merethis.com">Merethis</a>
 		</p>
 		<br /><br />
 		<h3><b><?php echo _("Project Leaders"); ?> :</b></h3>
