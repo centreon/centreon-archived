@@ -46,7 +46,12 @@
 									<tr>
 										<xsl:element name='td'>
 											<xsl:attribute name='style'>background-color:<xsl:value-of select='color_unknown'/>;</xsl:attribute>										
-											<xsl:value-of select='hostDown'/>&#160;<xsl:value-of select='//main/str_down'/>
+											<xsl:element name='a'>
+												<xsl:attribute name='href'>
+													<xsl:value-of select='//main/url_hostPb'/>
+												</xsl:attribute>
+												<xsl:value-of select='hostDown'/>&#160;<xsl:value-of select='//main/str_down'/>
+											</xsl:element>
 										</xsl:element>
 									</tr>
 									</xsl:otherwise>
@@ -54,7 +59,12 @@
 								<xsl:if test="hostDownAck &gt; 0">								
 								<tr>
 									<td class="SubTacticalDT" style="background-color:#ee9572;">
-										<xsl:value-of select='hostDownAck'/>&#160;<xsl:value-of select='//main/str_acknowledged'/>
+										<xsl:element name='a'>
+											<xsl:attribute name='href'>
+												<xsl:value-of select='//main/url_hostPb'/>
+											</xsl:attribute>
+											<xsl:value-of select='hostDownAck'/>&#160;<xsl:value-of select='//main/str_acknowledged'/>
+										</xsl:element>
 									</td>
 								</tr>
 								</xsl:if>
