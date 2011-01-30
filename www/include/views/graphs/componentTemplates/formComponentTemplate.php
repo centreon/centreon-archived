@@ -65,8 +65,9 @@
 	$DBRESULT = $pearDBO->query("SELECT DISTINCT `metric_name`, `unit_name` FROM `metrics` ORDER BY `metric_name`");
 	while ($row = $DBRESULT->fetchRow()){
 		$datasources[$row["metric_name"]] = $row["metric_name"];
-		if (isset($row["unit_name"]) && $row["unit_name"] != "")
+		if (isset($row["unit_name"]) && $row["unit_name"] != "") {
 			 $datasources[$row["metric_name"]] .= " (".$row["unit_name"].")";
+		}
 	}
 	unset($row);
 	$DBRESULT->free();
@@ -99,8 +100,9 @@
 	$form->addElement('header', 'legend', _("Legend"));
 	$form->addElement('text', 'name', _("Template Name"), $attrsText);
 
-	for ($cpt = 1; $cpt <= 100; $cpt++)
+	for ($cpt = 1; $cpt <= 100; $cpt++) {
 		$orders[$cpt] = $cpt;
+	}
 
 	$form->addElement('select', 'ds_order', _("Order"), $orders);
 	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
