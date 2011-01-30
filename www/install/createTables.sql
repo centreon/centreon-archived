@@ -319,8 +319,8 @@ CREATE TABLE IF NOT EXISTS `acl_topology_relations` (
 CREATE TABLE IF NOT EXISTS `auth_ressource` (
   `ar_id` INT(11) NOT NULL AUTO_INCREMENT,
   `ar_type` VARCHAR(50) NOT NULL,
-  `ar_enable` ENUM('0', '1') DEFAULT 0,
-  `ar_order` INT(3) DEFAULT 0,
+  `ar_enable` ENUM('0', '1') default '0',
+  `ar_order` INT(3) default '0',
   PRIMARY KEY (`ar_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
@@ -1906,7 +1906,7 @@ CREATE TABLE IF NOT EXISTS `session` (
   `s_nbServicesCritical` int(11) default NULL,
   `s_nbServicesPending` int(11) default NULL,
   `s_nbServicesUnknown` int(11) default NULL,
-  `update_acl` ENUM('0','1') default 0,
+  `update_acl` ENUM('0','1') default '0',
   PRIMARY KEY  (`id`),
   KEY `session_id` (`session_id`),
   KEY `user_id` (`user_id`)
@@ -2029,11 +2029,11 @@ CREATE TABLE IF NOT EXISTS `traps` (
   `traps_args` varchar(255) default NULL,
   `traps_status` enum('-1','0','1','2','3') default NULL,
   `manufacturer_id` int(11) default NULL,
-  `traps_reschedule_svc_enable` enum('0','1') default 0,
+  `traps_reschedule_svc_enable` enum('0','1') default '0',
   `traps_execution_command` varchar(255) default NULL,
-  `traps_execution_command_enable` enum('0','1') default 0,
+  `traps_execution_command_enable` enum('0','1') default '0',
   `traps_submit_result_enable` enum('0','1') default 1,
-  `traps_advanced_treatment` enum('0','1') default 0,
+  `traps_advanced_treatment` enum('0','1') default '0',
   `traps_comments` text,
   UNIQUE KEY `traps_name` (`traps_name`),
   KEY `traps_id` (`traps_id`),
